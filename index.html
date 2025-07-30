@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaiGuangLin 禪師 | 次世代版終極佛法</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gold: #d4af37;
+            --secondary-gold: #f4e4bc;
+            --deep-brown: #5d4037;
+            --light-cream: #faf8f3;
+            --text-dark: #2c1810;
+            --text-light: #6d4c41;
+            --gradient-bg: linear-gradient(135deg, #faf8f3 0%, #f5f1e8 100%);
+            --shadow-soft: 0 8px 32px rgba(93, 64, 55, 0.1);
+            --shadow-hover: 0 16px 48px rgba(93, 64, 55, 0.15);
+        }
+
+        body {
+            font-family: 'Microsoft JhengHei', '微軟正黑體', sans-serif;
+            line-height: 1.7;
+            color: var(--text-dark);
+            background: var(--gradient-bg);
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: var(--shadow-soft);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary-gold);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .lotus-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            color: var(--primary-gold);
+        }
+
+        .nav-menu a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-menu a:hover::after {
+            width: 100%;
+        }
+
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--primary-gold);
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 80px;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(212, 175, 55, 0.1) 0%, rgba(244, 228, 188, 0.1) 100%);
+            z-index: -1;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: var(--deep-brown);
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+        }
+
+        .hero-quote {
+            font-size: 1.3rem;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+            font-style: italic;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.7);
+            border-left: 4px solid var(--primary-gold);
+            border-radius: 0 12px 12px 0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background: var(--primary-gold);
+            color: white;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-primary:hover {
+            background: #c19b26;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--deep-brown);
+            border: 2px solid var(--primary-gold);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-gold);
+            color: white;
+        }
+
+        .hero-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .meditation-circle {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.2) 0%, rgba(244, 228, 188, 0.1) 70%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: gentle-pulse 4s ease-in-out infinite;
+        }
+
+        .meditation-figure {
+            width: 200px;
+            height: 200px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        @keyframes gentle-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--deep-brown);
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 1.2rem;
+            margin-bottom: 4rem;
+        }
+
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            width: 100%;
+            height: 400px;
+            background: var(--secondary-gold);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--deep-brown);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .about-content h3 {
+            font-size: 2rem;
+            color: var(--deep-brown);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-content p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+        }
+
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 4rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 2.5rem;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-gold);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .feature-card h4 {
+            font-size: 1.5rem;
+            color: var(--deep-brown);
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: var(--text-light);
+        }
+
+        /* Books Section */
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: all 0.3s ease;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .book-cover {
+            height: 300px;
+            background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .book-info {
+            padding: 1.5rem;
+        }
+
+        .book-info h4 {
+            color: var(--deep-brown);
+            margin-bottom: 0.5rem;
+        }
+
+        .book-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Stories Section */
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .story-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: var(--shadow-soft);
+            border-left: 4px solid var(--primary-gold);
+        }
+
+        .story-card h4 {
+            color: var(--deep-brown);
+            margin-bottom: 1rem;
+        }
+
+        .story-card .excerpt {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .story-card .author {
+            color: var(--primary-gold);
+            font-weight: 600;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--deep-brown);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-content h3 {
+            color: var(--primary-gold);
+            margin-bottom: 1rem;
+        }
+
+        .footer-content p {
+            margin-bottom: 2rem;
+            opacity: 0.8;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(212, 175, 55, 0.3);
+            margin-top: 2rem;
+            padding-top: 1rem;
+            opacity: 0.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2.5rem;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .meditation-circle {
+                width: 250px;
+                height: 250px;
+            }
+
+            .meditation-figure {
+                width: 150px;
+                height: 150px;
+                font-size: 3rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .cta-buttons {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-quote {
+                font-size: 1.1rem;
+                padding: 1.5rem;
+            }
+
+            .btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .feature-card,
+            .story-card {
+                padding: 1.5rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Selection color */
+        ::selection {
+            background: var(--primary-gold);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav-container">
+            <a href="#home" class="logo">
+                <div class="lotus-icon">☸</div>
+                TaiGuangLin
+            </a>
+            <ul class="nav-menu">
+                <li><a href="#home">首頁</a></li>
+                <li><a href="#about">關於禪師</a></li>
+                <li><a href="#teachings">修行指導</a></li>
+                <li><a href="#books">著作書籍</a></li>
+                <li><a href="#stories">實修故事</a></li>
+            </ul>
+            <div class="mobile-menu">☰</div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>次世代版<br>終極佛法</h1>
+                <blockquote class="hero-quote">
+                    "大家現在能在這裡學習佛法、追求真理和解脫，都是上輩子修來的福報；大家都是佛前大種福田的人，否則無法遇到此等妙法。"
+                    <footer>— Tai師父</footer>
+                </blockquote>
+                <p class="hero-description">
+                    跟隨TaiGuangLin禪師學習正統佛法修行，從基礎坐禪到四禪境界，用現代通俗易懂的語言，為您開啟解脫之門。
+                </p>
+                <div class="cta-buttons">
+                    <a href="#teachings" class="btn btn-primary">開始修行</a>
+                    <a href="#about" class="btn btn-secondary">認識禪師</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="meditation-circle">
+                    <div class="meditation-figure">🧘</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">認識TaiGuangLin禪師</h2>
+            <p class="section-subtitle">淨土禪傳法者，現代佛法的引路人</p>
+            
+            <div class="about-grid">
+                <div class="about-image">
+                    🕉️
+                </div>
+                <div class="about-content">
+                    <h3>現代佛法的智慧導師</h3>
+                    <p>
+                        TaiGuangLin禪師是一位淨土禪傳法者，於2014年首度在百度貼吧發文，用親身經歷搭配實修實證，從宇宙與各層天界的起源講起，為現代修行者開啟了一扇全新的佛法大門。
+                    </p>
+                    <p>
+                        師父提供了一套從零基礎修到四禪的完整方法，並回答了眾多關於修行方面的問題，其發文內容被眾人整理成《坐禪》與《坐禪之問答錄》兩本書，影響了無數修行者。
+                    </p>
+                    <p>
+                        2024年復出傳法，講述了更多佛法的底層邏輯與原理，諸如功德迴向為什麼有效、善業為什麼會有善報以及加持的原理等，以現代通俗易懂的語言講述，接引了許多在家修行的居士與初學者。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Teachings Section -->
+    <section id="teachings" class="section" style="background: rgba(255, 255, 255, 0.5);">
+        <div class="container">
+            <h2 class="section-title">修行指導</h2>
+            <p class="section-subtitle">完整的佛法修行體系</p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🧘‍♂️</div>
+                    <h4>坐禪基礎</h4>
+                    <p>從零基礎開始，學習正確的坐禪姿勢、呼吸方法，循序漸進地建立穩固的修行根基。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🕉️</div>
+                    <h4>四禪境界</h4>
+                    <p>系統性的四禪修行指導，從初禪到四禪的完整修習方法，實現深層的禪定體驗。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h4>淨土禪法</h4>
+                    <p>結合淨土與禪宗的修行方法，既有禪定的深度，又有淨土的慈悲與願力。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">📿</div>
+                    <h4>大禮拜修行</h4>
+                    <p>透過身體的虔誠禮拜，消除業障，培養謙卑心，是快速淨化身心的有效方法。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🙏</div>
+                    <h4>菩提心培養</h4>
+                    <p>強調發大菩提心的重要性，以得到佛菩薩最有效的幫助，為眾生而修行。</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h4>加持原理</h4>
+                    <p>深入講解加持的原理、功德迴向的效果，以及善業如何產生善報的底層邏輯。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Books Section -->
+    <section id="books" class="section">
+        <div class="container">
+            <h2 class="section-title">坐禪系列著作</h2>
+            <p class="section-subtitle">現代佛法修行的經典指南</p>
+            
+            <div class="books-grid">
+                <div class="book-card">
+                    <div class="book-cover">📚</div>
+                    <div class="book-info">
+                        <h4>坐禪 第一冊</h4>
+                        <p>從零基礎開始的完整坐禪指導，包含基本姿勢、呼吸法、以及初階禪定的修習方法。</p>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📖</div>
+                    <div class="book-info">
+                        <h4>坐禪之問答錄</h4>
+                        <p>師父針對學員修行過程中的各種疑問所給予的詳細解答，是修行路上的重要參考。</p>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">📕</div>
+                    <div class="book-info">
+                        <h4>坐禪 第二冊</h4>
+                        <p>2024年最新著作，講述佛法的底層邏輯與原理，強調菩提心的重要性。</p>
+                    </div>
+                </div>
+                <div class="book-card">
+                    <div class="book-cover">✨</div>
+                    <div class="book-info">
+                        <h4>次世代版終極佛法</h4>
+                        <p style="color: var(--primary-gold); font-weight: 600;">即將出版</p>
+                        <p>融合現代智慧與古老佛法，為新時代修行者量身打造的究竟法門。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stories Section -->
+    <section id="stories" class="section" style="background: rgba(255, 255, 255, 0.5);">
+        <div class="container">
+            <h2 class="section-title">實修故事與心得</h2>
+            <p class="section-subtitle">真實的修行體驗分享</p>
+            
+            <div class="stories-grid">
+                <div class="story-card">
+                    <h4>快速突破雙盤兩小時的階梯法</h4>
+                    <p class="excerpt">"透過循序漸進的方法，我在短時間內就能夠雙盤坐禪兩個小時，身體的柔軟度和專注力都有顯著提升..."</p>
+                    <p class="author">— 美琴師兄</p>
+                </div>
+                <div class="story-card">
+                    <h4>雙盤120分鐘心得總結</h4>
+                    <p class="excerpt">"從最初的疼痛難耐，到現在能夠安住兩小時，這個過程讓我深刻體會到堅持的力量和正確方法的重要性..."</p>
+                    <p class="author">— 湖南不虛師兄</p>
+                </div>
+                <div class="story-card">
+                    <h4>磕大頭經歷分享</h4>
+                    <p class="excerpt">"大禮拜的修行讓我的身心都得到了深度的淨化，業障逐漸消除，內心的平靜與喜悅油然而生..."</p>
+                    <p class="author">— 天禧師兄</p>
+                </div>
+                <div class="story-card">
+                    <h4>磕大頭百日期30萬圓滿分享</h4>
+                    <p class="excerpt">"一百天的大禮拜修行，完成了三十萬次的禮拜。這個過程中體驗到了前所未有的身心變化..."</p>
+                    <p class="author">— 善慧師兄</p>
+                </div>
+                <div class="story-card">
+                    <h4>話頭禪修行心得</h4>
+                    <p class="excerpt">"結合《占察善恶業報經》的學習與《坐禪》的實修，讓我對話頭禪有了更深入的理解和體驗..."</p>
+                    <p class="author">— 話頭禪師兄</p>
+                </div>
+                <div class="story-card">
+                    <h4>腹式呼吸修行體會</h4>
+                    <p class="excerpt">"掌握正確的腹式呼吸方法後，不僅坐禪時更容易入定，日常生活中的身心狀態也大為改善..."</p>
+                    <p class="author">— 黃芪師兄</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <h3>願一切眾生離苦得樂</h3>
+            <p>跟隨TaiGuangLin禪師學習正法，發菩提心，為眾生修行，共同邁向解脫之路。</p>
+            <div class="footer-bottom">
+                <p>&copy; 2024 TaiGuangLin 禪師佛法修行網站. 以慈悲心傳承佛法智慧.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const navMenu = document.querySelector('.nav-menu');
+
+        mobileMenu.addEventListener('click', () => {
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+                
+                // Close mobile menu after clicking
+                if (window.innerWidth <= 768) {
+                    navMenu.style.display = 'none';
+                }
+            });
+        });
+
+        // Header background on scroll
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+            }
+        });
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards and sections for animation
+        document.querySelectorAll('.feature-card, .book-card, .story-card, .about-content').forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'all 0.6s ease';
+            observer.observe(el);
+        });
+
+        // Add floating animation to meditation circle
+        const meditationCircle = document.querySelector('.meditation-circle');
+        let floatDirection = 1;
+        
+        setInterval(() => {
+            const currentTransform = meditationCircle.style.transform || 'translateY(0px)';
+            const currentY = parseFloat(currentTransform.match(/translateY\(([^)]+)\)/)?.[1] || '0');
+            
+            if (currentY >= 10) floatDirection = -1;
+            if (currentY <= -10) floatDirection = 1;
+            
+            meditationCircle.style.transform = `translateY(${currentY + (floatDirection * 0.5)}px)`;
+        }, 100);
+
+        // Responsive navigation
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) {
+                navMenu.style.display = 'flex';
+            } else {
+                navMenu.style.display = 'none';
+            }
+        });
+
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        // Add click effects to buttons
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.style.position = 'absolute';
+                ripple.style.borderRadius = '50%';
+                ripple.style.background = 'rgba(255, 255, 255, 0.3)';
+                ripple.style.transform = 'scale(0)';
+                ripple.style.animation = 'ripple 0.6s linear';
+                ripple.style.pointerEvents = 'none';
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
