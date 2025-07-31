@@ -570,8 +570,10 @@ html {
 
 .qa-methods {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--spacing-lg);
+    max-width: 800px;
+    margin: 0 auto;
 }
 
 .qa-method {
@@ -606,6 +608,25 @@ html {
     margin-bottom: var(--spacing-md);
 }
 
+.qr-code {
+    margin: var(--spacing-md) 0;
+    display: flex;
+    justify-content: center;
+}
+
+.qr-image {
+    width: 120px;
+    height: 120px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition-fast);
+}
+
+.qr-image:hover {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-md);
+}
+
 .method-button {
     background: transparent;
     color: var(--primary-pink);
@@ -615,11 +636,15 @@ html {
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: var(--transition-fast);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 .method-button:hover {
     background: var(--primary-pink);
     color: var(--white);
+    text-decoration: none;
 }
 
 /* Teachings Section */
@@ -1208,5 +1233,11 @@ html {
     
     .dharma-author {
         font-size: 0.9rem;
+    }
+    
+    /* QR Code responsive */
+    .qr-image {
+        width: 100px;
+        height: 100px;
     }
 }
