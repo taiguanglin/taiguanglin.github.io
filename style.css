@@ -779,6 +779,9 @@ html {
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: var(--transition-fast);
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 .story-button:hover {
