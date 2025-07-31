@@ -154,15 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Handle story buttons
-    const storyButtons = document.querySelectorAll('.story-button');
-    storyButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Open full story
-            alert('將顯示完整實修故事');
-        });
-    });
-    
     // Handle community buttons
     const communityButtons = document.querySelectorAll('.community-button, .method-button');
     communityButtons.forEach(button => {
