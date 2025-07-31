@@ -1129,10 +1129,27 @@ html {
     transform: translateY(-2px);
 }
 
-.baidu-icon {
-    width: 24px;
-    height: 24px;
+.social-links .baidu-link {
+    width: 40px !important;
+    height: 40px !important;
+    background: var(--primary-pink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.social-links .baidu-link .baidu-icon {
+    width: 20px !important;
+    height: 20px !important;
     object-fit: contain;
+    filter: brightness(0) invert(1);
+}
+
+.social-links .baidu-link:hover {
+    background: var(--deep-pink) !important;
+    transform: translateY(-2px);
 }
 
 .footer-bottom {
