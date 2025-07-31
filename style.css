@@ -223,7 +223,7 @@ html {
     align-items: center;
     justify-content: center;
     position: relative;
-    background: var(--pink-gradient);
+    background: url('images/cosmic-buddha.png') center/cover no-repeat;
     overflow: hidden;
 }
 
@@ -233,10 +233,7 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-        var(--pink-gradient);
+    background: rgba(0, 0, 0, 0.3);
     animation: float 6s ease-in-out infinite;
 }
 
@@ -519,6 +516,16 @@ html {
     font-weight: var(--font-weight-bold);
     font-size: 1.2rem;
     box-shadow: var(--shadow-md);
+}
+
+.book-image-real {
+    width: 120px;
+    height: 160px;
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-md);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .book-info {
@@ -994,6 +1001,62 @@ html {
     margin-bottom: var(--spacing-xs);
 }
 
+/* Dharma Teaching Section */
+.dharma-teaching-section {
+    background: var(--pink-gradient);
+    padding: var(--spacing-xxl) 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.dharma-teaching-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.dharma-teaching-content {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+.dharma-quote {
+    font-size: 1.2rem;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.8;
+    color: var(--white);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-xl);
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-style: italic;
+    quotes: none;
+    text-align: left;
+    box-shadow: var(--shadow-lg);
+}
+
+.dharma-author {
+    font-size: 1.1rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--white);
+    display: block;
+    margin-top: var(--spacing-md);
+    font-style: normal;
+    opacity: 0.9;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     /* Hide desktop navigation */
@@ -1105,6 +1168,17 @@ html {
     .social-links {
         justify-content: center;
     }
+    
+    /* Dharma Teaching */
+    .dharma-quote {
+        font-size: 1.1rem;
+        padding: var(--spacing-lg);
+        line-height: 1.7;
+    }
+    
+    .dharma-author {
+        font-size: 1rem;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1134,5 +1208,20 @@ html {
     .community-card,
     .download-card {
         padding: var(--spacing-md);
+    }
+    
+    /* Dharma Teaching for small screens */
+    .dharma-teaching-section {
+        padding: var(--spacing-xl) 0;
+    }
+    
+    .dharma-quote {
+        font-size: 1rem;
+        padding: var(--spacing-md);
+        line-height: 1.6;
+    }
+    
+    .dharma-author {
+        font-size: 0.9rem;
     }
 }
