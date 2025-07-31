@@ -667,23 +667,21 @@ html {
     box-shadow: var(--shadow-md);
 }
 
-.teaching-thumbnail {
-    height: 200px;
-    background: var(--soft-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.video-container {
     position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
 }
 
-.teaching-thumbnail i {
-    font-size: 4rem;
-    color: var(--primary-pink);
-    transition: var(--transition-fast);
-}
-
-.teaching-card:hover .teaching-thumbnail i {
-    transform: scale(1.1);
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
 }
 
 .teaching-content {
@@ -705,23 +703,7 @@ html {
 
 .teaching-content p {
     color: var(--gray);
-    margin-bottom: var(--spacing-md);
-}
-
-.teaching-button {
-    background: var(--pink-gradient);
-    color: var(--white);
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-    transition: var(--transition-fast);
-}
-
-.teaching-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
+    margin-bottom: 0;
 }
 
 /* Stories Section */
