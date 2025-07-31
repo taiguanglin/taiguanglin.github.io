@@ -550,26 +550,11 @@ html {
 
 .book-info p {
     color: var(--gray);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: 0;
     flex: 1;
 }
 
-.book-button {
-    background: var(--pink-gradient);
-    color: var(--white);
-    border: none;
-    padding: var(--spacing-sm) var(--spacing-md);
-    border-radius: var(--radius-md);
-    font-weight: var(--font-weight-semibold);
-    cursor: pointer;
-    transition: var(--transition-fast);
-    align-self: flex-start;
-}
 
-.book-button:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-}
 
 /* QA Section */
 .qa-content {
