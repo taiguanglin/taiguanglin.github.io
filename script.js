@@ -137,10 +137,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const buttonText = e.target.textContent;
             if (buttonText.includes('購買') || buttonText.includes('立即購買')) {
                 // Redirect to purchase page or show purchase modal
-                alert('將導向購書頁面');
+                // alert removed as requested
             } else if (buttonText.includes('了解更多')) {
                 // Show more information
-                alert('顯示更多書籍資訊');
+                // alert removed as requested
             }
         });
     });
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', () => {
     teachingButtons.forEach(button => {
         button.addEventListener('click', () => {
             // Open video or audio player
-            alert('將開啟講經內容');
+            // alert removed as requested
         });
     });
     
@@ -162,11 +162,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (buttonText.includes('Facebook') || buttonText.includes('社團')) {
                 window.open('https://www.facebook.com/', '_blank');
             } else if (buttonText.includes('微信') || buttonText.includes('公眾號')) {
-                alert('請在微信中搜索：TaiGuangLin 或 askTaiGuangLin');
+                // alert removed as requested - buttons now use their href links directly
             } else if (buttonText.includes('QQ') || buttonText.includes('群組')) {
-                alert('QQ群號：481903304');
+                // alert removed as requested - buttons now use their href links directly
             } else if (buttonText.includes('頻道') || buttonText.includes('收聽')) {
-                alert('將開啟語音頻道');
+                // alert removed as requested - buttons now use their href links directly
             }
         });
     });
@@ -177,11 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
         button.addEventListener('click', (e) => {
             const buttonText = e.target.textContent;
             if (buttonText.includes('PDF')) {
-                alert('開始下載 PDF 電子書');
+                // alert removed as requested - buttons now use their href links directly
             } else if (buttonText.includes('音頻')) {
-                alert('開始下載講經音頻合集');
+                // alert removed as requested - buttons now use their href links directly
             } else if (buttonText.includes('模板')) {
-                alert('開始下載修行日誌模板');
+                // alert removed as requested - buttons now use their href links directly
             }
         });
     });
