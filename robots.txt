@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+
+# Important pages for SEO
+Sitemap: https://taiguanglin.github.io/sitemap.xml
+
+# Allow access to CSS and JS files
+Allow: /style.css
+Allow: /script.js
+Allow: /images/
+
+# Disallow any admin or private directories if they exist
+# (none currently present)
+
+# Primary pages optimized for: 佛法,修行,打坐,雙盤,TaiGuangLin
+# Main page: https://taiguanglin.github.io/
+# Stories page: https://taiguanglin.github.io/stories.html 
