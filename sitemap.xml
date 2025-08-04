@@ -30,28 +30,28 @@
   <!-- 問答錄章節 - 核心理論篇 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-01.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-02.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-03.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-04.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -59,42 +59,42 @@
   <!-- 問答錄章節 - 實修篇 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-05.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-06.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-07.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-08.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-09.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-10.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
@@ -102,15 +102,110 @@
   <!-- 問答錄章節 - 高階篇 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-11.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-12.html</loc>
-    <lastmod>2025-01-27</lastmod>
+    <lastmod>2025-01-28</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+  
+  <!-- 問答錄完整版 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/index.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- 問答錄完整版章節 - 核心理論篇 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/01-01zi-xing-yu-yi-shi.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/02-02jie-mo-ye.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/03-03fa-xin.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/04-04shi-jie-qi-yuan-yu-lun-zhuan.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <!-- 問答錄完整版章節 - 實修篇 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/05-05jie-xing.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/06-06xiu-fu-ji-gong-de.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/07-07nian-song-jing-zhou.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/08-08fu-shi-hu-xi.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/09-09ke-da-tou.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/10-10shuang-pan.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  
+  <!-- 問答錄完整版章節 - 高階篇 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/11-11shan-ding.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://taiguanglin.info/wenda_complete/12-12fo-men-xiu-xing.html</loc>
+    <lastmod>2025-01-28</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 </urlset>
