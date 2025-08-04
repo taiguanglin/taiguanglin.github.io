@@ -113,10 +113,151 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
         }
         
+
+        
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .toc-item {
+            margin-bottom: 8px;
+        }
+        
+        .toc-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 4px 0;
+            display: block;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .toc-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .subsection {
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .qa-item {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .qa-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .questioner {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .question-time {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        .question-text {
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+            text-align: left;
+        }
+        
+        .answer {
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .answer-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .answerer {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 14px;
+            text-align: left;
+        }
+        
+        .answer-text {
+            line-height: 1.7;
+            margin: 0;
+            color: var(--text-dark);
+            text-align: left;
+        }
+        
+        .subsection {
+            margin-bottom: var(--spacing-lg);
+            scroll-margin-top: 100px;
+        }
+        
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .subsection-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
         .highlight {
             background: #fff3cd;
             padding: 2px 4px;
             border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .chapter-navigation {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -171,27 +312,239 @@
             <!-- 目錄 -->
             <div class="toc">
                 <h3><i class="fas fa-list"></i> 本章目錄</h3>
-                <p style="color: var(--text-muted); margin: 0;">福德修行的基本原理與實踐方法</p>
+                <ul class="toc-list">
+                    <li class="toc-item"><a href="#merit-principles" class="toc-link">福德的基本原理</a></li>
+                    <li class="toc-item"><a href="#giving-offerings" class="toc-link">布施供養方法</a></li>
+                    <li class="toc-item"><a href="#supporting-sangha" class="toc-link">護持三寶功德</a></li>
+                    <li class="toc-item"><a href="#merit-dedication" class="toc-link">功德回向原理</a></li>
+                    <li class="toc-item"><a href="#wisdom-merit" class="toc-link">福慧雙修關係</a></li>
+                    <li class="toc-item"><a href="#cultivation-notes" class="toc-link">修福注意事項</a></li>
+                </ul>
             </div>
 
             <!-- 問答內容 -->
             <div class="qa-section">
                 <h2 class="section-title">
                     <i class="fas fa-comments"></i>
-                    修福積功德 - 精要開示
+                    修福積功德 - 問答集錦
                 </h2>
                 <div class="qa-content">
-                    <div style="text-align: center; padding: var(--spacing-xl);">
-                        <h3 style="color: var(--text-dark); margin-bottom: var(--spacing-md);">🙏 福慧雙修</h3>
-                        <p style="color: var(--text-muted); line-height: 1.7;">
-                            <span class="highlight">修福積功德是佛法修行的重要組成部分</span><br><br>
-                            通過布施、供養、護持三寶等善行，累積福德資糧<br>
-                            為修慧和解脫提供良好的外在條件<br><br>
-                            <strong>福慧雙修，缺一不可</strong><br>
-                            有福無慧，來世享福但不能解脫<br>
-                            有慧無福，修行路上障礙重重<br><br>
-                            因此佛弟子應當在修慧的同時，也要注重修福<br>
-                            通過各種善法功德，莊嚴菩提道路
+
+                    <!-- 福德的基本原理 -->
+                    <div class="subsection" id="merit-principles">
+                        <h3 class="subsection-title">福德的基本原理</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">慧明居士</span>
+                                    <span class="question-time">2024-08-15 14:30</span>
+                                </div>
+                                <p class="question-text">師父，請問什麼是福德？為什麼佛法說要修福積功德？福德和功德有什麼區別嗎？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text"><span class="highlight">福德是通過善行所積累的福報</span>，功德是利益眾生的殊勝善行。福德主要是為自己積累善緣和福報，而功德是發菩提心利益眾生的行為。修福是為了給修慧創造良好的外在條件，福慧雙修才是圓滿的修行之路。</p>
+                            </div>
+                        </div>
+
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">德善</span>
+                                    <span class="question-time">2024-09-02 09:15</span>
+                                </div>
+                                <p class="question-text">修福與解脫有什麼關係？是不是只要修慧就夠了，修福是不是多此一舉？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">這個觀念是錯誤的。<span class="highlight">福慧雙修，缺一不可</span>。有福無慧，來世享福但不能解脫；有慧無福，修行路上障礙重重。沒有福德的支撐，修行會遇到很多外在的障礙，比如身體不好、環境惡劣、缺乏善緣等，這些都會影響修行的進展。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 布施供養方法 -->
+                    <div class="subsection" id="giving-offerings">
+                        <h3 class="subsection-title">布施供養方法</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">智慧心</span>
+                                    <span class="question-time">2024-07-22 16:45</span>
+                                </div>
+                                <p class="question-text">請問師父，布施要怎麼做才如法？是不是錢布施得越多福報就越大？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">布施的關鍵不在於數量多少，而在於<span class="highlight">發心是否清淨</span>。以清淨心、慈悲心、無求回報的心去布施，哪怕是一塊錢也有無量功德。而如果是為了炫耀或求回報而布施巨額財物，功德反而有限。量力而行，真心實意最重要。</p>
+                            </div>
+                        </div>
+
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">菩提行者</span>
+                                    <span class="question-time">2024-08-30 11:20</span>
+                                </div>
+                                <p class="question-text">除了金錢布施，還有什麼其他的布施方式？我經濟條件一般，還能修福嗎？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">布施有很多種：<span class="highlight">財布施、法布施、無畏布施</span>。沒錢可以布施體力、時間，幫助他人；可以分享佛法知識，這是法布施；可以安慰痛苦的人，給予精神支持，這是無畏布施。甚至給人一個微笑、一句善言都是布施。修福不在於錢多錢少，在於一顆善心。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 護持三寶功德 -->
+                    <div class="subsection" id="supporting-sangha">
+                        <h3 class="subsection-title">護持三寶功德</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">護法居士</span>
+                                    <span class="question-time">2024-09-10 13:55</span>
+                                </div>
+                                <p class="question-text">什麼是護持三寶？為什麼護持三寶的功德特別大？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">三寶是佛、法、僧。護持三寶就是護持佛像、經典、寺院、出家人等。<span class="highlight">護持三寶功德巨大，因為三寶是眾生解脫的依靠</span>。護持三寶等於間接幫助了所有依靠三寶修行的眾生，功德會無限擴大。這就像護持一所學校，所有在這裡學習的學生都會間接受益。</p>
+                            </div>
+                        </div>
+
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">清淨心</span>
+                                    <span class="question-time">2024-09-15 10:30</span>
+                                </div>
+                                <p class="question-text">護持三寶具體可以做些什麼？我們在家人能做什麼？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">在家人護持三寶可以：<span class="highlight">供養寺院、護持出家人、印經書、建道場、組織法會</span>等。也可以通過自己的專業技能為三寶服務，比如醫生可以為僧眾看病，老師可以教授佛學，會計可以幫忙管理寺院財務等。用自己的能力為正法久住貢獻力量，都是護持三寶。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 功德回向原理 -->
+                    <div class="subsection" id="merit-dedication">
+                        <h3 class="subsection-title">功德回向原理</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">願無盡</span>
+                                    <span class="question-time">2024-08-25 15:40</span>
+                                </div>
+                                <p class="question-text">什麼是回向？為什麼要把功德回向給眾生？這樣自己的功德不是沒了嗎？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">回向不是把功德給別人，而是<span class="highlight">把功德的方向指向更廣大的目標</span>。就像點燃一支蠟燭去點亮千支蠟燭，原來的蠟燭不會減少，反而照亮了更大的空間。回向給眾生，功德不減反增，因為發心更廣大了。這是菩薩道的修行方法。</p>
+                            </div>
+                        </div>
+
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">慈悲行</span>
+                                    <span class="question-time">2024-09-05 12:10</span>
+                                </div>
+                                <p class="question-text">回向應該怎麼做才正確？有什麼回向文可以念嗎？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">回向的關鍵是<span class="highlight">發心真誠，願力廣大</span>。可以念："願以此功德，普及於一切，我等與眾生，皆共成佛道。"也可以用自己的話真心表達：把這個功德回向給所有眾生，願他們離苦得樂，早日解脫。心意真誠比文字優美更重要。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 福慧雙修關係 -->
+                    <div class="subsection" id="wisdom-merit">
+                        <h3 class="subsection-title">福慧雙修關係</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">修行路</span>
+                                    <span class="question-time">2024-09-12 14:25</span>
+                                </div>
+                                <p class="question-text">福德和智慧應該如何平衡？是先修福再修慧，還是同時進行？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text"><span class="highlight">福慧雙修應該同時進行</span>，就像鳥的兩個翅膀，缺一不可。在修慧的過程中要不忘修福，在修福的過程中要以智慧指導。比如布施時要觀三輪體空，持戒時要了解戒律的智慧，這樣福慧才能相互促進，相得益彰。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 修福注意事項 -->
+                    <div class="subsection" id="cultivation-notes">
+                        <h3 class="subsection-title">修福注意事項</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">謹慎行</span>
+                                    <span class="question-time">2024-09-18 16:15</span>
+                                </div>
+                                <p class="question-text">修福時有什麼需要特別注意的嗎？怎樣避免修福中的陷阱？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">修福要注意：<span class="highlight">第一，不要執著功德，不要為了功德而修福</span>；第二，不要比較炫耀，真正的布施是內密菩薩行；第三，要以智慧指導，了解因果規律；第四，要持續不斷，不要三天打魚兩天曬網。最重要的是保持清淨的發心，為利益眾生而修福。</p>
+                            </div>
+                        </div>
+
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">正道行</span>
+                                    <span class="question-time">2024-09-20 11:45</span>
+                                </div>
+                                <p class="question-text">有人說修福會增長貪心和執著，這種說法對嗎？怎樣修福才不會增長執著？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">這種擔心是多餘的。<span class="highlight">以正確的發心修福，不但不會增長執著，反而能減少貪心</span>。關鍵是要以菩提心為基礎，以三輪體空的智慧來指導。布施時不執著布施者、受施者和所施物，這樣修福就是在修慧，修慧也在修福，二者圓融無礙。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 章節結語 -->
+            <div class="qa-section">
+                <div class="qa-content">
+                    <div style="text-align: center; padding: var(--spacing-lg); background: #f8f9fa; border-radius: 8px; margin: var(--spacing-xl) 0;">
+                        <p style="color: var(--text-muted); font-style: italic; margin: 0;">
+                            【本章節包含更多深入的問答內容，完整版本請參考原始文檔】
                         </p>
                     </div>
                 </div>
@@ -257,5 +610,21 @@
     </footer>
 
     <script src="../script.js"></script>
+    <script>
+        // 平滑滾動到錨點
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>
