@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaiGuangLin 禪師佛法修行問答錄｜完整電子書版本</title>
+    <meta name="description" content="TaiGuangLin禪師佛法修行問答錄，包含自性意識、業力、發心、戒行、禪定等12個章節的詳細問答。完整的電子書格式，方便學習和研究。">
+    <meta name="keywords" content="TaiGuangLin,佛法問答,修行問答,自性意識,業力,發心,禪定,電子書,佛法學習">
+    <meta name="author" content="TaiGuangLin">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="TaiGuangLin 禪師佛法修行問答錄｜完整電子書版本">
+    <meta property="og:description" content="TaiGuangLin禪師佛法修行問答錄，包含自性意識、業力、發心、戒行、禪定等12個章節的詳細問答">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://taiguanglin.info/wenda.html">
+    <meta property="og:image" content="https://taiguanglin.info/images/taiguanglin.png">
+    <link rel="canonical" href="https://taiguanglin.info/wenda.html">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .wenda-hero {
+            background: var(--pink-gradient);
+            padding: var(--spacing-xl) 0;
+            padding-top: calc(var(--spacing-xl) + 80px);
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+
+        
+        .chapter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-xl);
+        }
+        
+        .chapter-card {
+            background: white;
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .chapter-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+        
+        .chapter-number {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .chapter-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.4;
+        }
+        
+        .chapter-description {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .chapter-topics {
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .topic-tag {
+            display: inline-block;
+            background: #f8f9fa;
+            color: var(--text-muted);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin: 2px 4px 2px 0;
+        }
+        
+        .chapter-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .chapter-link:hover {
+            color: var(--accent-color);
+        }
+        
+        .chapter-link i {
+            margin-left: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .chapter-link:hover i {
+            transform: translateX(4px);
+        }
+        
+        .back-to-home {
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .back-button:hover {
+            color: var(--accent-color);
+        }
+        
+        .back-button i {
+            margin-right: 8px;
+        }
+        
+        .wenda-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--spacing-md);
+            margin: var(--spacing-xl) 0;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: var(--spacing-md);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #f0f0f0;
+        }
+        
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>TaiGuangLin</h2>
+                <span>次世代終極佛法</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html#home" class="nav-link">首頁</a>
+                <a href="index.html#about" class="nav-link">TaiGuangLin禪師介紹</a>
+                <a href="index.html#books" class="nav-link">佛法修行書籍</a>
+                <a href="index.html#teachings" class="nav-link">佛法學習影片</a>
+                <a href="index.html#qa" class="nav-link">佛法修行問答</a>
+                <a href="wenda.html" class="nav-link active">問答錄</a>
+                <a href="index.html#stories" class="nav-link">雙盤修行故事</a>
+                <a href="index.html#community" class="nav-link">修行社群</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 區塊 -->
+    <section class="wenda-hero">
+        <div class="container">
+            <h1 class="hero-title">TaiGuangLin 禪師佛法修行問答錄</h1>
+            <p class="hero-subtitle">完整電子書版本 • 截止2025年3月15日答疑合集</p>
+            <div class="wenda-stats">
+                <div class="stat-card">
+                    <span class="stat-number">12</span>
+                    <span class="stat-label">主要章節</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">數百</span>
+                    <span class="stat-label">問答集錦</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number">2025</span>
+                    <span class="stat-label">最新版本</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <div class="back-to-home">
+                <a href="index.html#qa" class="back-button">
+                    <i class="fas fa-arrow-left"></i> 返回首頁
+                </a>
+            </div>
+
+
+
+            <!-- 章節列表 -->
+            <div class="chapter-grid">
+                <div class="chapter-card">
+                    <div class="chapter-number">第01章</div>
+                    <h3 class="chapter-title">自性與意識</h3>
+                    <p class="chapter-description">探討自性的恆常性、不生不滅特性、與意識的關係，以及妄想分別執著的根源。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">自性恆常</span>
+                        <span class="topic-tag">意識結構</span>
+                        <span class="topic-tag">妄想執著</span>
+                        <span class="topic-tag">分別心</span>
+                    </div>
+                    <a href="wenda/chapter-01.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第02章</div>
+                    <h3 class="chapter-title">羯磨（業）</h3>
+                    <p class="chapter-description">深入講解業的原理、產生機制、性質數量，以及業與習氣、加持的關係。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">業的原理</span>
+                        <span class="topic-tag">業的性質</span>
+                        <span class="topic-tag">業與習氣</span>
+                        <span class="topic-tag">加持原理</span>
+                    </div>
+                    <a href="wenda/chapter-02.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第03章</div>
+                    <h3 class="chapter-title">發心</h3>
+                    <p class="chapter-description">闡述菩提心的重要性、發心的層次，以及如何正確發大菩提心度化眾生。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">菩提心</span>
+                        <span class="topic-tag">發心層次</span>
+                        <span class="topic-tag">度化眾生</span>
+                        <span class="topic-tag">慈悲心</span>
+                    </div>
+                    <a href="wenda/chapter-03.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第04章</div>
+                    <h3 class="chapter-title">世界起源與輪轉</h3>
+                    <p class="chapter-description">探索宇宙世界的起源、輪迴的機制，以及三界六道的運行法則。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">世界起源</span>
+                        <span class="topic-tag">輪迴機制</span>
+                        <span class="topic-tag">三界六道</span>
+                        <span class="topic-tag">生死輪轉</span>
+                    </div>
+                    <a href="wenda/chapter-04.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第05章</div>
+                    <h3 class="chapter-title">戒行</h3>
+                    <p class="chapter-description">講解持戒的重要性、戒律的原理，以及在修行中如何正確理解和實踐戒行。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">持戒原理</span>
+                        <span class="topic-tag">戒律實踐</span>
+                        <span class="topic-tag">修行戒行</span>
+                        <span class="topic-tag">清淨心</span>
+                    </div>
+                    <a href="wenda/chapter-05.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第06章</div>
+                    <h3 class="chapter-title">修福積功德</h3>
+                    <p class="chapter-description">說明功德的累積方法、福報的產生機制，以及如何正確修福迴向。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">功德累積</span>
+                        <span class="topic-tag">福報機制</span>
+                        <span class="topic-tag">修福方法</span>
+                        <span class="topic-tag">迴向原理</span>
+                    </div>
+                    <a href="wenda/chapter-06.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第07章</div>
+                    <h3 class="chapter-title">念誦經咒</h3>
+                    <p class="chapter-description">解釋經咒的力量來源、正確的念誦方法，以及念經持咒的修行要點。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">經咒力量</span>
+                        <span class="topic-tag">念誦方法</span>
+                        <span class="topic-tag">持咒要點</span>
+                        <span class="topic-tag">經典學習</span>
+                    </div>
+                    <a href="wenda/chapter-07.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第08章</div>
+                    <h3 class="chapter-title">腹式呼吸</h3>
+                    <p class="chapter-description">詳細介紹腹式呼吸的原理、練習方法，以及在打坐修行中的應用技巧。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">呼吸原理</span>
+                        <span class="topic-tag">練習方法</span>
+                        <span class="topic-tag">打坐應用</span>
+                        <span class="topic-tag">身心調節</span>
+                    </div>
+                    <a href="wenda/chapter-08.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第09章</div>
+                    <h3 class="chapter-title">磕大頭</h3>
+                    <p class="chapter-description">闡述大禮拜的修行意義、正確的練習方法，以及磕大頭的殊勝功德。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">大禮拜</span>
+                        <span class="topic-tag">練習方法</span>
+                        <span class="topic-tag">修行意義</span>
+                        <span class="topic-tag">殊勝功德</span>
+                    </div>
+                    <a href="wenda/chapter-09.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第10章</div>
+                    <h3 class="chapter-title">雙盤</h3>
+                    <p class="chapter-description">指導雙盤的練習技巧、階段性進步方法，以及雙盤對修行的重要作用。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">雙盤技巧</span>
+                        <span class="topic-tag">進步方法</span>
+                        <span class="topic-tag">修行作用</span>
+                        <span class="topic-tag">身體調節</span>
+                    </div>
+                    <a href="wenda/chapter-10.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第11章</div>
+                    <h3 class="chapter-title">禪定</h3>
+                    <p class="chapter-description">深入講解禪定的境界層次、修證方法，以及從初禪到四禪的修行次第。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">禪定境界</span>
+                        <span class="topic-tag">修證方法</span>
+                        <span class="topic-tag">四禪次第</span>
+                        <span class="topic-tag">定慧修行</span>
+                    </div>
+                    <a href="wenda/chapter-11.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="chapter-card">
+                    <div class="chapter-number">第12章</div>
+                    <h3 class="chapter-title">佛門修行</h3>
+                    <p class="chapter-description">總結佛門修行的完整體系、修學次第，以及實踐佛法的根本要點。</p>
+                    <div class="chapter-topics">
+                        <span class="topic-tag">修行體系</span>
+                        <span class="topic-tag">修學次第</span>
+                        <span class="topic-tag">實踐要點</span>
+                        <span class="topic-tag">證悟之道</span>
+                    </div>
+                    <a href="wenda/chapter-12.html" class="chapter-link">
+                        開始閱讀 <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- 禪師法語 -->
+            <section class="dharma-teaching-section" style="margin-top: var(--spacing-xxl);">
+                <div class="dharma-teaching-content">
+                    <blockquote class="dharma-quote">
+                        "在大菩提心之上還有兩個更高級的發心，如果你能發這兩種發心，佛菩薩會為你開小灶，無限的加持和無限的福報資源都會湧來，你缺什麼就給什麼，用最高效的方法把你引入阿耨多羅三藐三菩提。"
+                    </blockquote>
+                    <cite class="dharma-author">- TaiGuangLin 禪師</cite>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TaiGuangLin</h3>
+                    <p>次世代終極版佛法</p>
+                    <p>用現代通俗易懂的語言，傳承純正佛法智慧</p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速連結</h4>
+                    <ul>
+                        <li><a href="index.html#about">TaiGuangLin禪師</a></li>
+                        <li><a href="index.html#books">佛法修行書籍</a></li>
+                        <li><a href="index.html#teachings">佛法學習影片</a></li>
+                        <li><a href="index.html#qa">佛法修行問答</a></li>
+                        <li><a href="wenda.html">問答錄</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>社群媒體</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/groups/866449221907019" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://mp.weixin.qq.com/s/-qVTzUBT2ATUr5s0rYmuyw" target="_blank"><i class="fab fa-weixin"></i></a>
+                        <a href="https://www.youtube.com/channel/UCI6MaE_v72ZfAD3LQwCNldw" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://tieba.baidu.com/f?kw=tai%E6%A3%AE%E6%9E%97%E6%AC%A2%E8%BF%8E%E6%82%A8%E5%9B%9E%E5%AE%B6&ie=utf-8" target="_blank" class="baidu-link"><img src="images/baidu.png" alt="百度貼吧" class="baidu-icon"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 by Tai學院. 歡迎分享給更多人結法緣</p>
+                <p>願一切眾生離苦得樂，早證菩提</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
