@@ -24,6 +24,12 @@
     --pink-gradient: linear-gradient(135deg, var(--light-pink) 0%, var(--primary-pink) 100%);
     --soft-gradient: linear-gradient(135deg, var(--pale-pink) 0%, var(--white) 100%);
     
+    /* Primary Colors (Legacy Support) */
+    --primary-color: var(--primary-pink);
+    --accent-color: var(--deep-pink);
+    --text-dark: var(--black);
+    --text-muted: var(--gray);
+    
     /* Typography */
     --font-primary: 'Noto Sans TC', 'Inter', system-ui, sans-serif;
     --font-weight-light: 300;
@@ -39,6 +45,55 @@
     --spacing-lg: 2rem;
     --spacing-xl: 3rem;
     --spacing-xxl: 4rem;
+    
+    /* Chapter Navigation Styles */
+    .chapter-navigation {
+        background: white;
+        border-radius: 12px;
+        padding: var(--spacing-md);
+        margin-bottom: var(--spacing-lg);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: var(--spacing-sm);
+    }
+    
+    .nav-button {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        border-radius: 25px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        min-width: fit-content;
+    }
+    
+    .nav-button.back,
+    .nav-button.next {
+        background: #f8f9fa;
+        color: var(--black);
+        border: 2px solid transparent;
+    }
+    
+    .nav-button.back:hover,
+    .nav-button.next:hover {
+        background: var(--primary-pink);
+        color: white;
+        border-color: var(--primary-pink);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+    }
+    
+    .nav-button.next {
+        margin-left: auto;
+    }
+    
+    .nav-button i {
+        margin: 0 8px;
+    }
     
     /* Border Radius */
     --radius-sm: 0.5rem;
