@@ -240,12 +240,18 @@
             font-weight: 700;
             color: var(--accent-color);
             font-size: 14px;
+            text-align: left;
         }
         
         .answer-text {
             color: var(--text-dark);
             line-height: 1.7;
             margin: 0;
+            text-align: left;
+        }
+        
+        .question-text {
+            text-align: left;
         }
         
         .subsection {
@@ -614,23 +620,7 @@
 
     <script src="../script.js"></script>
     <script>
-        // 章節內搜尋功能
-        document.getElementById('chapterSearchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const qaItems = document.querySelectorAll('.qa-item');
-            
-            qaItems.forEach(item => {
-                const questionText = item.querySelector('.question-text').textContent.toLowerCase();
-                const answerText = item.querySelector('.answer-text').textContent.toLowerCase();
-                const questioner = item.querySelector('.questioner').textContent.toLowerCase();
-                
-                if (questionText.includes(searchTerm) || answerText.includes(searchTerm) || questioner.includes(searchTerm) || searchTerm === '') {
-                    item.style.display = 'block';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-        });
+
 
         // 平滑滾動到錨點
         document.querySelectorAll('.toc-link').forEach(link => {
