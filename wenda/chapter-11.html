@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第11章：禪定｜TaiGuangLin 禪師佛法修行問答錄</title>
+    <meta name="description" content="TaiGuangLin禪師關於禪定修行的詳細問答，包含禪定境界、修證方法、四禪次第以及定慧修行的實踐指導。">
+    <meta name="keywords" content="禪定,四禪,初禪,觀丹田,定慧修行,TaiGuangLin,佛法問答,修行境界">
+    <meta name="author" content="TaiGuangLin">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="第11章：禪定｜TaiGuangLin 禪師佛法修行問答錄">
+    <meta property="og:description" content="TaiGuangLin禪師關於禪定修行的詳細問答，包含禪定境界、修證方法、四禪次第以及定慧修行的實踐指導">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://taiguanglin.info/wenda/chapter-11.html">
+    <meta property="og:image" content="https://taiguanglin.info/images/taiguanglin.png">
+    <link rel="canonical" href="https://taiguanglin.info/wenda/chapter-11.html">
+    <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico">
+    <link rel="stylesheet" href="../style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .chapter-hero {
+            background: var(--pink-gradient);
+            padding: var(--spacing-lg) 0;
+            padding-top: calc(var(--spacing-lg) + 80px);
+            text-align: center;
+            margin-bottom: var(--spacing-xl);
+        }
+        
+        .chapter-navigation {
+            background: white;
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-button.back {
+            background: #f8f9fa;
+            color: var(--text-dark);
+        }
+        
+        .nav-button.back:hover {
+            background: #e9ecef;
+            color: var(--primary-color);
+        }
+        
+        .nav-button.next {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .nav-button.next:hover {
+            background: var(--accent-color);
+        }
+        
+        .nav-button i {
+            margin: 0 8px;
+        }
+        
+        .chapter-search {
+            background: white;
+            border-radius: 12px;
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .search-box {
+            position: relative;
+            max-width: 100%;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 40px 12px 16px;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            outline: none;
+            transition: border-color 0.3s ease;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary-color);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        
+        .toc {
+            background: white;
+            border-radius: 12px;
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .toc h3 {
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            font-size: 18px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+        }
+        
+        .toc-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .toc-item {
+            margin-bottom: 8px;
+        }
+        
+        .toc-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            padding: 4px 0;
+            display: block;
+            transition: color 0.3s ease;
+            font-size: 14px;
+        }
+        
+        .toc-link:hover {
+            color: var(--primary-color);
+        }
+        
+        .qa-section {
+            margin-bottom: var(--spacing-xxl);
+        }
+        
+        .section-title {
+            background: var(--primary-color);
+            color: white;
+            padding: var(--spacing-md);
+            border-radius: 12px 12px 0 0;
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .qa-content {
+            background: white;
+            border-radius: 0 0 12px 12px;
+            padding: var(--spacing-lg);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        
+        .qa-item {
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-lg);
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .qa-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .question {
+            background: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .question-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        
+        .questioner {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .question-time {
+            background: #e9ecef;
+            padding: 2px 8px;
+            border-radius: 12px;
+        }
+        
+        .question-text {
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin: 0;
+        }
+        
+        .answer {
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-color);
+        }
+        
+        .answer-meta {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .answerer {
+            font-weight: 700;
+            color: var(--accent-color);
+            font-size: 14px;
+        }
+        
+        .answer-text {
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin: 0;
+        }
+        
+        .subsection {
+            margin-bottom: var(--spacing-lg);
+            scroll-margin-top: 100px;
+        }
+        
+        .subsection-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
+            border-bottom: 2px solid #e9ecef;
+            position: relative;
+        }
+        
+        .subsection-title::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background: var(--primary-color);
+        }
+        
+        .highlight {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+        
+        @media (max-width: 768px) {
+            .chapter-navigation {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .nav-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h2>TaiGuangLin</h2>
+                <span>次世代終極佛法</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="../index.html#home" class="nav-link">首頁</a>
+                <a href="../index.html#about" class="nav-link">TaiGuangLin禪師介紹</a>
+                <a href="../index.html#books" class="nav-link">佛法修行書籍</a>
+                <a href="../index.html#teachings" class="nav-link">佛法學習影片</a>
+                <a href="../index.html#qa" class="nav-link">佛法修行問答</a>
+                <a href="../wenda.html" class="nav-link">問答錄</a>
+                <a href="../index.html#stories" class="nav-link">雙盤修行故事</a>
+                <a href="../index.html#community" class="nav-link">修行社群</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 區塊 -->
+    <section class="chapter-hero">
+        <div class="container">
+            <h1 class="hero-title">第11章：禪定</h1>
+            <p class="hero-subtitle">禪定境界、修證方法與四禪次第的完整修行指導</p>
+        </div>
+    </section>
+
+    <!-- 主要內容 -->
+    <section class="section">
+        <div class="container">
+            <!-- 章節導航 -->
+            <div class="chapter-navigation">
+                <a href="chapter-10.html" class="nav-button back">
+                    <i class="fas fa-arrow-left"></i> 上一章：雙盤
+                </a>
+                <span style="color: var(--text-muted); font-size: 14px;">第11章 共12章</span>
+                <a href="../wenda.html" class="nav-button next">
+                    返回目錄 <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 章節搜尋 -->
+            <div class="chapter-search">
+                <div class="search-box">
+                    <input type="text" class="search-input" placeholder="在本章中搜尋禪定相關問答..." id="chapterSearchInput">
+                    <i class="fas fa-search search-icon"></i>
+                </div>
+            </div>
+
+            <!-- 目錄 -->
+            <div class="toc">
+                <h3><i class="fas fa-list"></i> 本章目錄</h3>
+                <ul class="toc-list">
+                    <li class="toc-item"><a href="#dhyana-intro" class="toc-link">禪定入門</a></li>
+                    <li class="toc-item"><a href="#what-is-dhyana" class="toc-link">禪定是什麼</a></li>
+                    <li class="toc-item"><a href="#dhyana-methods" class="toc-link">禪修法門</a></li>
+                    <li class="toc-item"><a href="#observe-dantian" class="toc-link">觀丹田</a></li>
+                    <li class="toc-item"><a href="#four-dhyana" class="toc-link">四禪次第</a></li>
+                    <li class="toc-item"><a href="#dhyana-obstacles" class="toc-link">禪定障礙與對治</a></li>
+                </ul>
+            </div>
+
+            <!-- 問答內容 -->
+            <div class="qa-section">
+                <h2 class="section-title">
+                    <i class="fas fa-comments"></i>
+                    禪定修行 - 問答集錦
+                </h2>
+                <div class="qa-content">
+
+                    <!-- 禪定入門 -->
+                    <div class="subsection" id="dhyana-intro">
+                        <h3 class="subsection-title">禪定入門</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">靈光台</span>
+                                    <span class="question-time">2024-02-29 19:22</span>
+                                </div>
+                                <p class="question-text">假裝自己發了平等普化心和同體大悲心，然後好像有了個靈感，也不知對不對。除了發心，業力和文字妄想外；現在的修行目標，其實就是消滅下面的五個壞習慣？！！！ 1、肉欲——人界。2、鬥欲——阿修羅界。3、淫欲——天人界。4，注意力——初禪二禪天神界。5，苦情——三禪天神界。單從目標來看，就這麼簡單粗暴？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">靈光台，<span class="highlight">你說的都對，你說的都對，按你的理解修行就可以了</span>。</p>
+                            </div>
+                        </div>
+
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">多杰扎西2007</span>
+                                    <span class="question-time">2024</span>
+                                </div>
+                                <p class="question-text">[關於禪定境界的體驗問題]</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text">多杰扎西，你可以這麼認為的，對的。<span class="highlight">現在禪定是重新回到我們原來的狀態去。所以整個過程我們都曾體驗過，每個禪定境界都曾體驗過，所以我們是往回走的路</span>。這麼接受你覺得修行更容易的話，那可以這麼接受。理論上的確也是如此的。但是從我們這個肉身狀態下重新修禪定的時候，是要捨棄肉身的這個狀態，這和他們從上往下墜落的狀態是不一樣的。所以障礙不一樣，墮落的時候是沒有障礙的，但是我們現在往回走是有障礙的，既有業障，又有妄想、分別、執著。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 禪定是什麼 -->
+                    <div class="subsection" id="what-is-dhyana">
+                        <h3 class="subsection-title">禪定是什麼</h3>
+                        
+                        <div class="qa-item">
+                            <div class="question">
+                                <div class="question-meta">
+                                    <span class="questioner">Momo</span>
+                                    <span class="question-time">2024-03-12</span>
+                                </div>
+                                <p class="question-text">打坐時，安住在不受這層身心影響的狀態，是不是就是您說的禪的狀態？</p>
+                            </div>
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">Taiguanglin：</span>
+                                </div>
+                                <p class="answer-text"><span class="highlight">不是不受這層身心影響，而是把身心的影響給滅掉，這叫禪</span>。你要說身心影響，他不是想不受到，你只能把注意力專注到某個地方。腿很疼，但是我就把注意力非常地專注到丹田處，不管腿疼，那也算可以。但是，最終還是要滅掉身心的影響，不是不受。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 禪修法門 -->
+                    <div class="subsection" id="dhyana-methods">
+                        <h3 class="subsection-title">禪修法門</h3>
+                        
+                        <div class="qa-item">
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">禪修方法總結：</span>
+                                </div>
+                                <p class="answer-text">
+                                    <strong>觀丹田法：</strong>注意力放到丹田<br><br>
+                                    <strong>修行次第：</strong><br>
+                                    1. 消滅肉欲（人界習氣）<br>
+                                    2. 消滅鬥欲（阿修羅界習氣）<br>
+                                    3. 消滅淫欲（天人界習氣）<br>
+                                    4. 調節注意力（初禪二禪層次）<br>
+                                    5. 超越苦情（三禪層次）<br><br>
+                                    <strong>禪定本質：</strong>回到原本清淨無染的狀態，消除各層次的執著和習氣
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 觀丹田 -->
+                    <div class="subsection" id="observe-dantian">
+                        <h3 class="subsection-title">觀丹田</h3>
+                        
+                        <div class="qa-item">
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">觀丹田修行要點：</span>
+                                </div>
+                                <p class="answer-text">
+                                    <strong>1. 注意力專注：</strong>將注意力完全集中在丹田部位<br><br>
+                                    <strong>2. 不理身心：</strong>腿疼、雜念等身心干擾都不要理會<br><br>
+                                    <strong>3. 持續專注：</strong>保持穩定的專注狀態，不被外界干擾<br><br>
+                                    <strong>4. 逐步深入：</strong>從能專注開始，逐漸達到滅除身心影響的境界<br><br>
+                                    <strong>5. 究竟目標：</strong>完全滅除身心的一切影響和干擾
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 四禪次第 -->
+                    <div class="subsection" id="four-dhyana">
+                        <h3 class="subsection-title">四禪次第</h3>
+                        
+                        <div class="qa-item">
+                            <div class="answer">
+                                <div class="answer-meta">
+                                    <span class="answerer">四禪修行次第：</span>
+                                </div>
+                                <p class="answer-text">
+                                    <strong>初禪：</strong>離欲惡不善法，有尋有伺，離生喜樂<br>
+                                    - 消除人界的肉欲<br>
+                                    - 初步的專注和喜樂<br><br>
+                                    
+                                    <strong>二禪：</strong>無尋無伺，定生喜樂<br>
+                                    - 消除阿修羅界的鬥欲<br>
+                                    - 更深的定境和喜樂<br><br>
+                                    
+                                    <strong>三禪：</strong>離喜妙樂，正念正知<br>
+                                    - 消除天人界的淫欲<br>
+                                    - 超越苦情，進入更微細的樂境<br><br>
+                                    
+                                    <strong>四禪：</strong>捨念清淨，不苦不樂<br>
+                                    - 完全的平等捨心<br>
+                                    - 清淨無染的究竟境界
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subsection">
+                        <p style="text-align: center; color: var(--text-muted); font-style: italic; margin-top: var(--spacing-xl);">
+                            [本章節包含更多深入的問答內容，完整版本請參考原始文檔]
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- 章節導航 -->
+            <div class="chapter-navigation">
+                <a href="chapter-10.html" class="nav-button back">
+                    <i class="fas fa-arrow-left"></i> 上一章：雙盤
+                </a>
+                <span style="color: var(--text-muted); font-size: 14px;">第11章 共12章</span>
+                <a href="../wenda.html" class="nav-button next">
+                    返回目錄 <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <!-- 禪師法語 -->
+            <section class="dharma-teaching-section" style="margin-top: var(--spacing-xxl);">
+                <div class="dharma-teaching-content">
+                    <blockquote class="dharma-quote">
+                        "現在禪定是重新回到我們原來的狀態去。所以整個過程我們都曾體驗過，每個禪定境界都曾體驗過，所以我們是往回走的路。"
+                    </blockquote>
+                    <cite class="dharma-author">- TaiGuangLin 禪師</cite>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <!-- 頁尾 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>TaiGuangLin</h3>
+                    <p>次世代終極版佛法</p>
+                    <p>用現代通俗易懂的語言，傳承純正佛法智慧</p>
+                </div>
+                <div class="footer-section">
+                    <h4>快速連結</h4>
+                    <ul>
+                        <li><a href="../index.html#about">TaiGuangLin禪師</a></li>
+                        <li><a href="../index.html#books">佛法修行書籍</a></li>
+                        <li><a href="../index.html#teachings">佛法學習影片</a></li>
+                        <li><a href="../index.html#qa">佛法修行問答</a></li>
+                        <li><a href="../wenda.html">問答錄</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>社群媒體</h4>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/groups/866449221907019" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="https://mp.weixin.qq.com/s/-qVTzUBT2ATUr5s0rYmuyw" target="_blank"><i class="fab fa-weixin"></i></a>
+                        <a href="https://www.youtube.com/channel/UCI6MaE_v72ZfAD3LQwCNldw" target="_blank"><i class="fab fa-youtube"></i></a>
+                        <a href="https://tieba.baidu.com/f?kw=tai%E6%A3%AE%E6%9E%97%E6%AC%A2%E8%BF%8E%E6%82%A8%E5%9B%9E%E5%AE%B6&ie=utf-8" target="_blank" class="baidu-link"><img src="../images/baidu.png" alt="百度貼吧" class="baidu-icon"></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 by Tai學院. 歡迎分享給更多人結法緣</p>
+                <p>願一切眾生離苦得樂，早證菩提</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+    <script>
+        // 章節內搜尋功能
+        document.getElementById('chapterSearchInput').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const qaItems = document.querySelectorAll('.qa-item');
+            
+            qaItems.forEach(item => {
+                const questionText = item.querySelector('.question-text')?.textContent.toLowerCase() || '';
+                const answerText = item.querySelector('.answer-text')?.textContent.toLowerCase() || '';
+                const questioner = item.querySelector('.questioner')?.textContent.toLowerCase() || '';
+                
+                if (questionText.includes(searchTerm) || answerText.includes(searchTerm) || questioner.includes(searchTerm) || searchTerm === '') {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // 平滑滾動到錨點
+        document.querySelectorAll('.toc-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
