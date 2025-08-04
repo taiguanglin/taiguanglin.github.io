@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaiGuangLin 禪師佛法修行問答錄｜完整電子書版本</title>
-    <meta name="description" content="TaiGuangLin禪師佛法修行問答錄，包含自性意識、業力、發心、戒行、禪定等12個章節的詳細問答。可搜尋的電子書格式，方便學習和研究。">
+    <meta name="description" content="TaiGuangLin禪師佛法修行問答錄，包含自性意識、業力、發心、戒行、禪定等12個章節的詳細問答。完整的電子書格式，方便學習和研究。">
     <meta name="keywords" content="TaiGuangLin,佛法問答,修行問答,自性意識,業力,發心,禪定,電子書,佛法學習">
     <meta name="author" content="TaiGuangLin">
     <meta name="robots" content="index, follow">
@@ -28,42 +28,7 @@
             margin-bottom: var(--spacing-xl);
         }
         
-        .wenda-search {
-            background: white;
-            border-radius: 12px;
-            padding: var(--spacing-lg);
-            margin: var(--spacing-lg) 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-        }
-        
-        .search-box {
-            position: relative;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
-        .search-input {
-            width: 100%;
-            padding: 15px 50px 15px 20px;
-            font-size: 16px;
-            border: 2px solid #e0e0e0;
-            border-radius: 25px;
-            outline: none;
-            transition: border-color 0.3s ease;
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-        
-        .search-input:focus {
-            border-color: var(--primary-color);
-        }
-        
-        .search-icon {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
+
         
         .chapter-grid {
             display: grid;
@@ -253,20 +218,7 @@
                 </a>
             </div>
 
-            <!-- 搜尋功能 -->
-            <div class="wenda-search">
-                <h2 style="text-align: center; margin-bottom: var(--spacing-md);">
-                    <i class="fas fa-search" style="margin-right: 10px; color: var(--primary-color);"></i>
-                    搜尋問答內容
-                </h2>
-                <div class="search-box">
-                    <input type="text" class="search-input" placeholder="輸入關鍵字搜尋問答內容..." id="searchInput">
-                    <i class="fas fa-search search-icon"></i>
-                </div>
-                <p style="text-align: center; color: var(--text-muted); margin-top: var(--spacing-sm); font-size: 14px;">
-                    可搜尋自性、業力、發心、禪定等佛法修行相關問題
-                </p>
-            </div>
+
 
             <!-- 章節列表 -->
             <div class="chapter-grid">
@@ -500,29 +452,6 @@
     </footer>
 
     <script src="script.js"></script>
-    <script>
-        // 簡單的搜尋功能
-        document.getElementById('searchInput').addEventListener('input', function(e) {
-            const searchTerm = e.target.value.toLowerCase();
-            const chapters = document.querySelectorAll('.chapter-card');
-            
-            chapters.forEach(chapter => {
-                const title = chapter.querySelector('.chapter-title').textContent.toLowerCase();
-                const description = chapter.querySelector('.chapter-description').textContent.toLowerCase();
-                const topics = Array.from(chapter.querySelectorAll('.topic-tag')).map(tag => tag.textContent.toLowerCase()).join(' ');
-                
-                if (title.includes(searchTerm) || description.includes(searchTerm) || topics.includes(searchTerm)) {
-                    chapter.style.display = 'block';
-                    chapter.style.opacity = '1';
-                } else if (searchTerm === '') {
-                    chapter.style.display = 'block';
-                    chapter.style.opacity = '1';
-                } else {
-                    chapter.style.display = 'none';
-                    chapter.style.opacity = '0.5';
-                }
-            });
-        });
-    </script>
+
 </body>
 </html>
