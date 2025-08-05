@@ -10,6 +10,19 @@ from opencc import OpenCC
 # ========== 粉紅色主題 CSS & 平滑滾動 JS ==========
 CSS_CONTENT = """\
 body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
+
+/* 小螢幕寬度重置 - 立即覆蓋基礎max-width限制 */
+@media (max-width: 768px) {
+    body { 
+        max-width: none !important; 
+        width: 100% !important; 
+        margin: 0 !important;
+        padding: 20px 15px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+
 h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
 h2 { color: #d44d75; margin-top: 40px; }
 h3 { color: #b73c65; margin-top: 25px; }
@@ -850,9 +863,11 @@ body.dark-mode .qa-pair-bookmark:hover {
 @media (max-width: 768px) {
     /* 基礎移動設備優化 */
     body { 
-        margin: 20px auto; 
-        padding: 0 15px;
+        margin: 0 !important; 
+        padding: 20px 15px !important;
         font-size: 16px;
+        max-width: none !important;
+        width: 100% !important;
     }
     
     h1 { font-size: 1.8rem; }
@@ -916,12 +931,31 @@ body.dark-mode .qa-pair-bookmark:hover {
     }
 }
 
+/* 480px邊界特殊處理 */
 @media (max-width: 480px) {
-    /* 極小屏幕基礎優化 */
     body { 
-        margin: 15px auto; 
-        padding: 0 10px;
+        margin: 0 !important; 
+        padding: 15px 10px !important;
+        max-width: none !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
+@media (max-width: 479px) {
+    /* 極小屏幕基礎優化 - 徹底移除空白 */
+    * {
+        box-sizing: border-box !important;
+    }
+    
+    body { 
+        margin: 0 !important; 
+        padding: 15px 10px !important;
         font-size: 17px;
+        max-width: none !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
     
     h1 { font-size: 2rem; }
@@ -971,6 +1005,49 @@ body.dark-mode .qa-pair-bookmark:hover {
     
     .nav-logo span {
         font-size: 1.1rem !important;
+    }
+}
+
+/* 手機直放專用優化 */
+@media (max-width: 414px) {
+    /* 確保手機直放時內容充滿螢幕 */
+    body { 
+        margin: 0 !important; 
+        padding: 12px 8px !important;
+        font-size: 17px;
+        max-width: none !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+    
+    .question, .answer {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
+/* 極小屏幕專用（如小型手機） */
+@media (max-width: 360px) {
+    /* 徹底確保小屏幕充滿寬度 */
+    * {
+        box-sizing: border-box !important;
+    }
+    
+    body { 
+        margin: 0 !important; 
+        padding: 10px 6px !important;
+        font-size: 16px;
+        max-width: none !important;
+        width: 100vw !important;
+        overflow-x: hidden !important;
+    }
+    
+    .question, .answer {
+        margin: 0 0 15px 0 !important;
+        padding: 12px !important;
+        width: 100% !important;
     }
 }
 
