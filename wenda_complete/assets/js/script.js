@@ -947,9 +947,9 @@ ${answerText}`;
         updateActiveButton(e.target.parentElement, e.target);
         break;
 
-      // 行距設置
+      // 行距設置 - 擴大調整幅度讓用戶感受到明顯差異
       case 'line-tight':
-        updateLineHeight(1.4);
+        updateLineHeight(1.2);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
@@ -957,7 +957,7 @@ ${answerText}`;
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
-        updateLineHeight(1.8);
+        updateLineHeight(2.2);
         updateActiveButton(e.target.parentElement, e.target);
         break;
 
