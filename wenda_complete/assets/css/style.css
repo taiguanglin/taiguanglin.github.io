@@ -1,4 +1,17 @@
 body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
+
+/* 小螢幕寬度重置 - 立即覆蓋基礎max-width限制 */
+@media (max-width: 768px) {
+    body { 
+        max-width: none !important; 
+        width: 100% !important; 
+        margin: 0 !important;
+        padding: 20px 15px !important;
+        box-sizing: border-box !important;
+    }
+}
+
+
 h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
 h2 { color: #d44d75; margin-top: 40px; }
 h3 { color: #b73c65; margin-top: 25px; }
@@ -907,14 +920,31 @@ body.dark-mode .qa-pair-bookmark:hover {
     }
 }
 
+/* 480px邊界特殊處理 */
+@media (max-width: 480px) {
+    body { 
+        margin: 0 !important; 
+        padding: 15px 10px !important;
+        max-width: none !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+}
+
 @media (max-width: 479px) {
-    /* 極小屏幕基礎優化 */
+    /* 極小屏幕基礎優化 - 徹底移除空白 */
+    * {
+        box-sizing: border-box !important;
+    }
+    
     body { 
         margin: 0 !important; 
         padding: 15px 10px !important;
         font-size: 17px;
         max-width: none !important;
         width: 100% !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
     
     h1 { font-size: 2rem; }
