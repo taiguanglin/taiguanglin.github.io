@@ -314,22 +314,38 @@ body.dark-mode .answerer { color: #ff69b4; }
     border-color: #e75480;
 }
 
+.qa-pair-bookmark {
+    border-left: 3px solid #ff69b4;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+
+.qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.12) 0%, rgba(231, 84, 128, 0.05) 100%);
+}
+
 .bookmark-meta {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 5px;
     font-size: 11px;
     color: #666;
+    gap: 6px;
+}
+
+.bookmark-type {
+    font-size: 12px;
+    flex-shrink: 0;
 }
 
 .bookmark-questioner {
     font-weight: 600;
     color: #e75480;
+    flex: 1;
 }
 
 .bookmark-time {
     font-size: 10px;
+    flex-shrink: 0;
 }
 
 .bookmark-preview {
@@ -527,14 +543,21 @@ body.dark-mode .floating-toc-item.active {
     box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
 }
 
-.bookmarked::before {
-    content: '🔖';
+.bookmark-indicator {
     position: absolute;
     bottom: 8px;
     right: 8px;
     font-size: 16px;
     opacity: 0.8;
     z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.bookmark-indicator:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 body.dark-mode .bookmarked {
@@ -622,23 +645,70 @@ body.dark-mode .floating-toc-tab:hover {
 
 /* 當前章節信息樣式 */
 .current-chapter-info {
-    padding: 12px;
-    margin-bottom: 16px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
     background: rgba(231, 84, 128, 0.1);
-    border-radius: 8px;
+    border-radius: 6px;
     border-left: 4px solid #e75480;
+}
+
+.chapter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
 }
 
 .current-chapter-title {
     font-size: 14px;
     font-weight: 600;
     color: #e75480;
-    margin-bottom: 4px;
+    flex: 1;
 }
 
 .current-chapter-count {
     font-size: 12px;
     color: #666;
+}
+
+.bookmark-clear-icon {
+    background: none;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 3px;
+    border-radius: 3px;
+    position: relative;
+}
+
+.current-chapter-info:hover .bookmark-clear-icon {
+    opacity: 0.7;
+}
+
+.bookmark-clear-icon:hover {
+    opacity: 1 !important;
+    background: rgba(255, 71, 87, 0.1);
+    transform: scale(1.05);
+}
+
+.bookmark-clear-icon:hover::after {
+    content: '清空書籤';
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.bookmark-clear-icon:active {
+    transform: scale(0.95);
 }
 
 body.dark-mode .current-chapter-info {
@@ -653,6 +723,31 @@ body.dark-mode .current-chapter-title {
 body.dark-mode .current-chapter-count {
     color: #fddde6;
 }
+
+body.dark-mode .current-chapter-info:hover .bookmark-clear-icon {
+    opacity: 0.7;
+}
+
+body.dark-mode .bookmark-clear-icon:hover {
+    background: rgba(255, 105, 180, 0.2) !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .bookmark-clear-icon:hover::after {
+    background: #5a2d49;
+    color: #fddde6;
+}
+
+body.dark-mode .qa-pair-bookmark {
+    border-left-color: #ff69b4;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(59, 28, 50, 0.5) 100%);
+}
+
+body.dark-mode .qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
+}
+
+
 
 /* 響應式設計 */
 @media (max-width: 768px) {

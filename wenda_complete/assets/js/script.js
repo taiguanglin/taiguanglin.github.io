@@ -80,20 +80,38 @@ document.addEventListener('DOMContentLoaded', function() {
     const toc = document.createElement('div');
     toc.className = 'floating-toc';
     
-    // 收集所有標題
-    const headings = document.querySelectorAll('h2, h3, h4');
     let tocItems = '';
     
-    headings.forEach((heading, index) => {
-      const text = heading.textContent;
-      const id = heading.id || ('heading-' + index);
-      if (!heading.id) heading.id = id;
-      
-      const level = heading.tagName.toLowerCase();
-      const levelClass = level !== 'h2' ? ' level-' + level : '';
-      
-      tocItems += '<div class="floating-toc-item' + levelClass + '" data-target="#' + id + '">' + text + '</div>';
-    });
+    if (currentChapter.isHomepage) {
+      // 首頁：從TOC連結提取目錄結構
+      const tocLinks = document.querySelectorAll('h2 + ul li a, ul li a');
+      tocLinks.forEach((link, index) => {
+        const text = link.textContent;
+        const href = link.getAttribute('href');
+        
+        // 判斷是否為子目錄（基於縮進或嵌套結構）
+        const listItem = link.closest('li');
+        const parentList = listItem.parentElement;
+        const isSubItem = parentList.parentElement && parentList.parentElement.tagName === 'LI';
+        const levelClass = isSubItem ? ' level-h3' : '';
+        
+        // 為首頁TOC項目使用特殊的data屬性
+        tocItems += '<div class="floating-toc-item' + levelClass + '" data-href="' + href + '">' + text + '</div>';
+      });
+    } else {
+      // 其他頁面：收集標題
+      const headings = document.querySelectorAll('h2, h3, h4');
+      headings.forEach((heading, index) => {
+        const text = heading.textContent;
+        const id = heading.id || ('heading-' + index);
+        if (!heading.id) heading.id = id;
+        
+        const level = heading.tagName.toLowerCase();
+        const levelClass = level !== 'h2' ? ' level-' + level : '';
+        
+        tocItems += '<div class="floating-toc-item' + levelClass + '" data-target="#' + id + '">' + text + '</div>';
+      });
+    }
     
     // 根據是否為首頁決定標籤頁內容
     let tabsHtml = '';
@@ -152,18 +170,32 @@ document.addEventListener('DOMContentLoaded', function() {
   function addQAActions() {
     const qaElements = document.querySelectorAll('.question, .answer');
     qaElements.forEach((element) => {
+      // 確保元素有唯一ID（用於分享功能）
+      ensureElementId(element, element.classList.contains('question') ? 'question' : 'answer');
+      
       element.style.position = 'relative';
       const actions = document.createElement('div');
       actions.className = 'qa-actions';
       
+      const isQuestion = element.classList.contains('question');
+      const isAnswer = element.classList.contains('answer');
+      
       // 首頁不顯示書籤按鈕
-      let actionsHtml = '<button class="qa-btn" data-action="copy" title="複製">📋</button>';
+      let actionsHtml = '';
       
-      if (!currentChapter.isHomepage) {
-        actionsHtml += '<button class="qa-btn" data-action="bookmark" title="書籤">🔖</button>';
+      if (isQuestion) {
+        actionsHtml += '<button class="qa-btn" data-action="copy" title="複製問題">📋</button>';
+        if (!currentChapter.isHomepage) {
+          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="書籤問答">🔖</button>';
+        }
+        actionsHtml += '<button class="qa-btn" data-action="share" title="分享問題">📤</button>';
+      } else if (isAnswer) {
+        actionsHtml += '<button class="qa-btn" data-action="copy-qa" title="複製問答">📋</button>';
+        if (!currentChapter.isHomepage) {
+          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="書籤問答">🔖</button>';
+        }
+        actionsHtml += '<button class="qa-btn" data-action="share" title="分享問題">📤</button>';
       }
-      
-      actionsHtml += '<button class="qa-btn" data-action="share" title="分享">📤</button>';
       
       actions.innerHTML = actionsHtml;
       element.appendChild(actions);
@@ -171,6 +203,79 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============ 功能實現 ============
+  
+  // 確保元素有唯一ID
+  function ensureElementId(element, prefix = 'qa') {
+    if (!element.id) {
+      element.id = prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    }
+    return element.id;
+  }
+  
+  // 生成分享URL
+  function generateShareUrl(targetElement) {
+    const elementId = ensureElementId(targetElement, 'qa-item');
+    const baseUrl = window.location.origin + window.location.pathname;
+    return baseUrl + '#' + elementId;
+  }
+  
+  // 找到問答配對
+  function findQuestionForAnswer(answerElement) {
+    let currentElement = answerElement.previousElementSibling;
+    
+    // 向上查找最近的問題元素
+    while (currentElement) {
+      if (currentElement.classList.contains('question')) {
+        return currentElement;
+      }
+      currentElement = currentElement.previousElementSibling;
+    }
+    
+    return null;
+  }
+  
+  function findAnswerForQuestion(questionElement) {
+    let currentElement = questionElement.nextElementSibling;
+    
+    // 向下查找最近的回答元素
+    while (currentElement) {
+      if (currentElement.classList.contains('answer')) {
+        return currentElement;
+      }
+      currentElement = currentElement.nextElementSibling;
+    }
+    
+    return null;
+  }
+  
+  // 獲取問答的完整文本
+  function getQAPairText(answerElement) {
+    const questionElement = findQuestionForAnswer(answerElement);
+    let text = '';
+    
+    if (questionElement) {
+      // 提取問題內容
+      const questioner = questionElement.querySelector('.questioner')?.textContent || '匿名';
+      const questionTime = questionElement.querySelector('.question-time')?.textContent || '';
+      const questionText = questionElement.querySelector('.question-text')?.textContent || '';
+      
+      text += `問：${questioner}`;
+      if (questionTime) text += ` (${questionTime})`;
+      text += `
+${questionText}
+
+`;
+    }
+    
+    // 提取回答內容
+    const answerer = answerElement.querySelector('.answerer')?.textContent || 'Taiguanglin';
+    const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
+    
+    text += `答：${answerer}
+${answerText}`;
+    
+    return text;
+  }
   
   // ============ 書籤功能 ============
   
@@ -212,12 +317,27 @@ document.addEventListener('DOMContentLoaded', function() {
   function addBookmarkVisualIndicator(element) {
     if (!element.classList.contains('bookmarked')) {
       element.classList.add('bookmarked');
+      
+      // 添加可點擊的書籤標記
+      if (!element.querySelector('.bookmark-indicator')) {
+        const indicator = document.createElement('span');
+        indicator.className = 'bookmark-indicator';
+        indicator.textContent = '🔖';
+        indicator.title = '點擊移除書籤';
+        element.appendChild(indicator);
+      }
     }
   }
   
   // 移除書籤視覺標識
   function removeBookmarkVisualIndicator(element) {
     element.classList.remove('bookmarked');
+    
+    // 移除書籤標記元素
+    const indicator = element.querySelector('.bookmark-indicator');
+    if (indicator) {
+      element.removeChild(indicator);
+    }
   }
   
   // 恢復所有書籤的視覺狀態
@@ -227,6 +347,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const element = document.getElementById(bookmark.elementId);
       if (element) {
         addBookmarkVisualIndicator(element);
+        
+        // 如果是問答書籤，還需要為問題添加視覺標識
+        if (bookmark.type === 'qa-pair' && element.classList.contains('answer')) {
+          const questionElement = findQuestionForAnswer(element);
+          if (questionElement) {
+            addBookmarkVisualIndicator(questionElement);
+          }
+        }
       }
     });
   }
@@ -267,8 +395,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // 初始化當前文件信息（文件級書籤，無需監聽滾動）
   let currentChapter = getCurrentChapter();
 
-  function addBookmark(element) {
-    // 首頁不允許添加書籤
+  function toggleBookmark(element) {
+    // 首頁不允許操作書籤
     if (currentChapter.isHomepage) {
       showToast('首頁不支持書籤功能');
       return;
@@ -281,10 +409,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!isQuestion && !isAnswer) return;
     
     // 生成唯一ID
-    const id = 'bookmark-' + Date.now();
-    element.id = element.id || id;
+    const id = element.id || ('bookmark-' + Date.now());
+    element.id = id;
     
-    // 查找所屬章節
+    // 檢查是否已存在書籤
+    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === id);
+    
+    if (existingBookmark) {
+      // 已存在，移除書籤
+      removeBookmarkVisualIndicator(element);
+      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== id);
+      saveBookmarks(updatedBookmarks);
+      renderBookmarks();
+      showToast('已從書籤移除');
+      return;
+    }
+    
+    // 不存在，添加書籤
     const chapter = findChapterForElement(element);
     
     // 提取內容
@@ -306,16 +447,9 @@ document.addEventListener('DOMContentLoaded', function() {
       preview = textEl ? textEl.textContent.substring(0, 100) + '...' : '';
     }
     
-    // 檢查是否已存在
-    const exists = bookmarks.some(bookmark => bookmark.elementId === element.id);
-    if (exists) {
-      showToast('此內容已在書籤中');
-      return;
-    }
-    
     const bookmark = {
-      id: id,
-      elementId: element.id,
+      id: 'bookmark-' + Date.now(),
+      elementId: id,
       type: isQuestion ? 'question' : 'answer',
       questioner: questioner,
       time: time,
@@ -331,6 +465,87 @@ document.addEventListener('DOMContentLoaded', function() {
     showToast('已添加到書籤');
   }
   
+  function toggleQAPairBookmark(answerElement) {
+    // 首頁不允許操作書籤
+    if (currentChapter.isHomepage) {
+      showToast('首頁不支持書籤功能');
+      return;
+    }
+    
+    const bookmarks = getBookmarks();
+    const questionElement = findQuestionForAnswer(answerElement);
+    
+    // 生成唯一ID
+    const id = answerElement.id || ('qa-bookmark-' + Date.now());
+    answerElement.id = id;
+    
+    // 檢查是否已存在書籤
+    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === id);
+    
+    if (existingBookmark) {
+      // 已存在，移除書籤
+      removeBookmarkVisualIndicator(answerElement);
+      if (questionElement) {
+        removeBookmarkVisualIndicator(questionElement);
+      }
+      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== id);
+      saveBookmarks(updatedBookmarks);
+      renderBookmarks();
+      showToast('已從書籤移除問答');
+      return;
+    }
+    
+    // 不存在，添加問答書籤
+    const chapter = findChapterForElement(answerElement);
+    
+    // 提取問答信息
+    let questioner = '匿名', time = '', preview = '';
+    
+    if (questionElement) {
+      const questionerEl = questionElement.querySelector('.questioner');
+      const timeEl = questionElement.querySelector('.question-time');
+      const questionTextEl = questionElement.querySelector('.question-text');
+      
+      questioner = questionerEl ? questionerEl.textContent : '匿名';
+      time = timeEl ? timeEl.textContent : '';
+      
+      // 構建預覽：問題開頭 + 回答開頭
+      const questionText = questionTextEl ? questionTextEl.textContent : '';
+      const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
+      preview = `問：${questionText.substring(0, 50)}... 答：${answerText.substring(0, 50)}...`;
+    } else {
+      // 只有回答的情況
+      const answererEl = answerElement.querySelector('.answerer');
+      const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
+      
+      questioner = answererEl ? answererEl.textContent : 'Taiguanglin';
+      preview = `答：${answerText.substring(0, 100)}...`;
+    }
+    
+    const bookmark = {
+      id: 'qa-bookmark-' + Date.now(),
+      elementId: id,
+      type: 'qa-pair',
+      questioner: questioner,
+      time: time,
+      preview: preview,
+      chapter: chapter,
+      timestamp: new Date().toLocaleString()
+    };
+    
+    bookmarks.push(bookmark);
+    saveBookmarks(bookmarks);
+    
+    // 為問答添加視覺標識
+    addBookmarkVisualIndicator(answerElement);
+    if (questionElement) {
+      addBookmarkVisualIndicator(questionElement);
+    }
+    
+    renderBookmarks();
+    showToast('已添加問答到書籤');
+  }
+  
   function removeBookmark(bookmarkId) {
     const bookmarks = getBookmarks();
     const bookmark = bookmarks.find(b => b.id === bookmarkId);
@@ -340,6 +555,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const element = document.getElementById(bookmark.elementId);
       if (element) {
         removeBookmarkVisualIndicator(element);
+        
+        // 如果是問答書籤，還需要移除問題的視覺標識
+        if (bookmark.type === 'qa-pair' && element.classList.contains('answer')) {
+          const questionElement = findQuestionForAnswer(element);
+          if (questionElement) {
+            removeBookmarkVisualIndicator(questionElement);
+          }
+        }
       }
     }
     
@@ -347,6 +570,51 @@ document.addEventListener('DOMContentLoaded', function() {
     saveBookmarks(updatedBookmarks);
     renderBookmarks();
     showToast('已從書籤移除');
+  }
+  
+  function clearCurrentChapterBookmarks() {
+    // 首頁不允許清空書籤
+    if (currentChapter.isHomepage) {
+      showToast('首頁不支持書籤功能');
+      return;
+    }
+    
+    const currentBookmarks = getCurrentChapterBookmarks();
+    if (currentBookmarks.length === 0) {
+      showToast('本文件暫無書籤');
+      return;
+    }
+    
+    // 確認對話框
+    if (!confirm(`確定要清空本文件的所有 ${currentBookmarks.length} 個書籤嗎？此操作無法撤銷。`)) {
+      return;
+    }
+    
+    // 移除當前文件所有書籤的視覺標識
+    currentBookmarks.forEach(bookmark => {
+      const element = document.getElementById(bookmark.elementId);
+      if (element) {
+        removeBookmarkVisualIndicator(element);
+        
+        // 如果是問答書籤，還需要移除問題的視覺標識
+        if (bookmark.type === 'qa-pair' && element.classList.contains('answer')) {
+          const questionElement = findQuestionForAnswer(element);
+          if (questionElement) {
+            removeBookmarkVisualIndicator(questionElement);
+          }
+        }
+      }
+    });
+    
+    // 從總書籤列表中移除當前文件的書籤
+    const allBookmarks = getBookmarks();
+    const updatedBookmarks = allBookmarks.filter(bookmark => 
+      !bookmark.chapter || bookmark.chapter.id !== currentChapter.id
+    );
+    
+    saveBookmarks(updatedBookmarks);
+    renderBookmarks();
+    showToast(`已清空本文件的 ${currentBookmarks.length} 個書籤`);
   }
   
   function renderBookmarks() {
@@ -370,18 +638,25 @@ document.addEventListener('DOMContentLoaded', function() {
     
     let bookmarksHTML = '';
     
-    // 添加當前文件標題
+    // 添加當前文件標題和清空按鈕
     bookmarksHTML += 
       '<div class="current-chapter-info">' +
-        '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
-        '<div class="current-chapter-count">' + chapterBookmarks.length + ' 個書籤</div>' +
+        '<div class="chapter-header">' +
+          '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
+          '<button class="bookmark-clear-icon" data-action="clear-bookmarks" title="清空本文件所有書籤">🗑️</button>' +
+        '</div>' +
       '</div>';
     
     // 直接顯示當前文件的書籤，不需要分組
     chapterBookmarks.forEach(bookmark => {
+      const isQAPair = bookmark.type === 'qa-pair';
+      const typeIcon = isQAPair ? '💬' : '📝';
+      const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
+      
       bookmarksHTML += 
-        '<div class="bookmark-item" data-target="#' + bookmark.elementId + '">' +
+        '<div class="bookmark-item' + typeClass + '" data-target="#' + bookmark.elementId + '">' +
           '<div class="bookmark-meta">' +
+            '<span class="bookmark-type">' + typeIcon + '</span>' +
             '<span class="bookmark-questioner">' + bookmark.questioner + '</span>' +
             '<span class="bookmark-time">' + bookmark.time + '</span>' +
           '</div>' +
@@ -576,26 +851,80 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // 問答操作
       case 'copy':
-        const qaElement = e.target.closest('.question, .answer');
-        const text = qaElement.textContent.trim();
+        const copyElement = e.target.closest('.question, .answer');
+        const text = copyElement.textContent.trim();
         copyText(text);
         break;
       case 'bookmark':
         const bookmarkElement = e.target.closest('.question, .answer');
         if (bookmarkElement) {
-          addBookmark(bookmarkElement);
+          toggleBookmark(bookmarkElement);
+        }
+        break;
+      case 'copy-qa':
+        const copyAnswerElement = e.target.closest('.answer');
+        if (copyAnswerElement) {
+          const qaPairText = getQAPairText(copyAnswerElement);
+          copyText(qaPairText);
+        }
+        break;
+      case 'bookmark-qa':
+        const qaBookmarkElement = e.target.closest('.question, .answer');
+        if (qaBookmarkElement) {
+          if (qaBookmarkElement.classList.contains('answer')) {
+            toggleQAPairBookmark(qaBookmarkElement);
+          } else if (qaBookmarkElement.classList.contains('question')) {
+            // 如果是問題，找到對應的回答
+            const answerElement = findAnswerForQuestion(qaBookmarkElement);
+            if (answerElement) {
+              toggleQAPairBookmark(answerElement);
+            } else {
+              // 如果沒有對應回答，提示用戶
+              showToast('找不到對應的回答');
+            }
+          }
         }
         break;
       case 'share':
-        if (navigator.share) {
-          navigator.share({
-            title: document.title,
-            url: window.location.href
-          });
+        const shareElement = e.target.closest('.question, .answer');
+        if (shareElement) {
+          let targetElement = shareElement;
+          
+          // 如果是回答，找到對應的問題來分享
+          if (shareElement.classList.contains('answer')) {
+            const questionElement = findQuestionForAnswer(shareElement);
+            if (questionElement) {
+              targetElement = questionElement;
+            }
+          }
+          
+          const shareUrl = generateShareUrl(targetElement);
+          const shareTitle = document.title;
+          
+          if (navigator.share) {
+            navigator.share({
+              title: shareTitle,
+              url: shareUrl
+            });
+          } else {
+            copyText(shareUrl);
+            showToast('問題鏈接已複製');
+          }
         } else {
-          copyText(window.location.href);
-          showToast('鏈接已複製');
+          // 降級處理：分享頁面鏈接
+          if (navigator.share) {
+            navigator.share({
+              title: document.title,
+              url: window.location.href
+            });
+          } else {
+            copyText(window.location.href);
+            showToast('頁面鏈接已複製');
+          }
         }
+        break;
+      case 'clear-bookmarks':
+        clearCurrentChapterBookmarks();
         break;
     }
   });
@@ -604,6 +933,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', (e) => {
     // 目錄項點擊
     if (e.target.classList.contains('floating-toc-item')) {
+      // 首頁的TOC項目：跳轉到其他頁面
+      if (e.target.dataset.href) {
+        const href = e.target.dataset.href;
+        window.location.href = href;
+        return;
+      }
+      
+      // 其他頁面：頁面內跳轉
       const target = e.target.dataset.target;
       const element = document.querySelector(target);
       if (element) {
@@ -651,7 +988,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
         
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        floatingTOC.classList.remove('visible');
+        // 移除自動關閉側邊欄，讓用戶可以連續瀏覽書籤
+        // floatingTOC.classList.remove('visible');
       }
     }
     
@@ -661,6 +999,41 @@ document.addEventListener('DOMContentLoaded', function() {
       const bookmarkId = e.target.dataset.bookmarkId;
       if (bookmarkId) {
         removeBookmark(bookmarkId);
+      }
+    }
+    
+    // 書籤標記點擊 - 移除書籤
+    if (e.target.classList.contains('bookmark-indicator')) {
+      e.stopPropagation();
+      const bookmarkedElement = e.target.closest('.question, .answer');
+      if (bookmarkedElement) {
+        // 首先檢查是否為問答書籤（通過檢查配對元素）
+        let isQAPairBookmark = false;
+        let answerElement = null;
+        let questionElement = null;
+        
+        if (bookmarkedElement.classList.contains('answer')) {
+          answerElement = bookmarkedElement;
+          questionElement = findQuestionForAnswer(answerElement);
+        } else {
+          questionElement = bookmarkedElement;
+          answerElement = findAnswerForQuestion(questionElement);
+        }
+        
+        // 如果問題和回答都有書籤標記，說明是問答書籤
+        if (questionElement && answerElement && 
+            questionElement.classList.contains('bookmarked') && 
+            answerElement.classList.contains('bookmarked')) {
+          isQAPairBookmark = true;
+        }
+        
+        if (isQAPairBookmark && answerElement) {
+          // 問答書籤：使用問答切換功能移除
+          toggleQAPairBookmark(answerElement);
+        } else {
+          // 單個元素書籤：使用原來的切換功能
+          toggleBookmark(bookmarkedElement);
+        }
       }
     }
   });
