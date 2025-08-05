@@ -1792,17 +1792,17 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         updateActiveButton(e.target.parentElement, e.target);
         break;
 
-      // 行距設置
+      // 行距設置 - 擴大調整幅度讓用戶感受到明顯差異
       case 'line-tight':
-        updateLineHeight(1.4);
+        updateLineHeight(0.4);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
-        updateLineHeight(1.6);
+        updateLineHeight(1.0);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
-        updateLineHeight(1.8);
+        updateLineHeight(2.0);
         updateActiveButton(e.target.parentElement, e.target);
         break;
 
