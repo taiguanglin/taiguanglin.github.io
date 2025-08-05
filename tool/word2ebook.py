@@ -1096,10 +1096,38 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // ============ 功能實現 ============
   
-  // 確保元素有唯一ID
+  // 生成內容的簡單hash
+  function simpleHash(str) {
+    let hash = 0;
+    if (str.length === 0) return hash;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // 轉換為32位整數
+    }
+    return Math.abs(hash).toString(36);
+  }
+  
+  // 確保元素有唯一且穩定的ID
   function ensureElementId(element, prefix = 'qa') {
     if (!element.id) {
-      element.id = prefix + '-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+      // 基於內容生成穩定的ID
+      let contentText = '';
+      
+      if (element.classList.contains('question')) {
+        const questioner = element.querySelector('.questioner')?.textContent || '';
+        const questionText = element.querySelector('.question-text')?.textContent || '';
+        const time = element.querySelector('.question-time')?.textContent || '';
+        contentText = questioner + questionText + time;
+      } else if (element.classList.contains('answer')) {
+        const answerer = element.querySelector('.answerer')?.textContent || '';
+        const answerText = element.querySelector('.answer-text')?.textContent || '';
+        contentText = answerer + answerText.substring(0, 100); // 只取前100字符
+      }
+      
+      // 生成基於內容的穩定ID
+      const contentHash = simpleHash(contentText);
+      element.id = prefix + '-' + contentHash;
     }
     return element.id;
   }
@@ -1699,6 +1727,32 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       showToast('已複製到剪貼板');
     }
   }
+  
+  // 處理頁面加載時的錨點跳轉
+  function handleInitialAnchor() {
+    const hash = window.location.hash;
+    if (hash && hash.length > 1) {
+      const targetId = hash.substring(1); // 移除#號
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // 延遲滾動，確保頁面布局完成
+        setTimeout(() => {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+          
+          // 添加臨時高亮效果
+          targetElement.style.transition = 'background-color 0.3s ease';
+          targetElement.style.backgroundColor = 'rgba(255, 105, 180, 0.2)';
+          setTimeout(() => {
+            targetElement.style.backgroundColor = '';
+          }, 3000);
+        }, 300);
+      }
+    }
+  }
 
   // ============ 事件監聽 ============
   
@@ -1719,6 +1773,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   // 延遲執行章節跟踪，確保頁面完全渲染
   setTimeout(updateCurrentSection, 100);
+  
+  // 處理頁面加載時的錨點跳轉
+  setTimeout(handleInitialAnchor, 200);
 
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
@@ -1848,11 +1905,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
           }
           
           const shareUrl = generateShareUrl(targetElement);
-          const shareTitle = document.title;
           
           if (navigator.share) {
             navigator.share({
-              title: shareTitle,
               url: shareUrl
             });
           } else {
@@ -1863,7 +1918,6 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
           // 降級處理：分享頁面鏈接
           if (navigator.share) {
             navigator.share({
-              title: document.title,
               url: window.location.href
             });
           } else {
