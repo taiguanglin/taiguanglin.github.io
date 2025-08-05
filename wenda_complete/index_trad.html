@@ -56,8 +56,12 @@ if (typeof MiniSearch === 'undefined') {
   <div class="search-results" id="search-results" style="display: none;">
     <div class="search-results-header">
       <span class="search-results-count" id="search-results-count"></span>
-      <button class="search-clear" id="search-clear">清除搜索</button>
-      <button class="search-collapse" id="search-collapse">收起搜索</button>
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more" style="display: none;">显示更多</button>
+        <button class="search-load-all" id="search-load-all" style="display: none;">显示全部</button>
+        <button class="search-clear" id="search-clear">清除搜索</button>
+        <button class="search-collapse" id="search-collapse">收起搜索</button>
+      </div>
     </div>
     <ul class="search-results-list" id="search-results-list"></ul>
   </div>
