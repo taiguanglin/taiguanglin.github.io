@@ -1079,13 +1079,13 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       if (isQuestion) {
         actionsHtml += '<button class="qa-btn" data-action="copy" title="複製問題">📋</button>';
         if (!currentChapter.isHomepage) {
-          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="書籤問答">🔖</button>';
+          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="加入書籤">🔖</button>';
         }
         actionsHtml += '<button class="qa-btn" data-action="share" title="分享問題">📤</button>';
       } else if (isAnswer) {
         actionsHtml += '<button class="qa-btn" data-action="copy-qa" title="複製問答">📋</button>';
         if (!currentChapter.isHomepage) {
-          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="書籤問答">🔖</button>';
+          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="加入書籤">🔖</button>';
         }
         actionsHtml += '<button class="qa-btn" data-action="share" title="分享回答">📤</button>';
       }
