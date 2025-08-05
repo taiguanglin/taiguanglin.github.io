@@ -940,6 +940,14 @@ body.dark-mode .qa-pair-bookmark:hover {
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 1px solid #f8c8dc;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-results-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .search-results-count {
@@ -947,7 +955,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     color: #e75480;
 }
 
-.search-clear, .search-collapse {
+.search-clear, .search-collapse, .search-load-more, .search-load-all {
     background: #f8c8dc;
     color: #b73c65;
     border: none;
@@ -956,10 +964,9 @@ body.dark-mode .qa-pair-bookmark:hover {
     cursor: pointer;
     font-size: 12px;
     transition: all 0.3s ease;
-    margin-left: 8px;
 }
 
-.search-clear:hover, .search-collapse:hover {
+.search-clear:hover, .search-collapse:hover, .search-load-more:hover, .search-load-all:hover {
     background: #e75480;
     color: white;
 }
@@ -974,11 +981,31 @@ body.dark-mode .qa-pair-bookmark:hover {
     color: white;
 }
 
+.search-load-more {
+    background: #e6f3ff;
+    color: #0066cc;
+}
+
+.search-load-more:hover {
+    background: #0066cc;
+    color: white;
+}
+
+.search-load-all {
+    background: #e8f5e8;
+    color: #006600;
+}
+
+.search-load-all:hover {
+    background: #006600;
+    color: white;
+}
+
 .search-results-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 400px;
+    max-height: 600px;
     overflow-y: auto;
 }
 
@@ -1105,12 +1132,14 @@ body.dark-mode .search-result-item:hover .search-result-newtab {
     color: #ff69b4;
 }
 
-body.dark-mode .search-clear, body.dark-mode .search-collapse {
+body.dark-mode .search-clear, body.dark-mode .search-collapse, 
+body.dark-mode .search-load-more, body.dark-mode .search-load-all {
     background: #4a2c4a;
     color: #ff69b4;
 }
 
-body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover {
+body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover,
+body.dark-mode .search-load-more:hover, body.dark-mode .search-load-all:hover {
     background: #ff69b4;
     color: #1a1a1a;
 }
@@ -1123,6 +1152,26 @@ body.dark-mode .search-collapse {
 body.dark-mode .search-collapse:hover {
     background: #555;
     color: #fff;
+}
+
+body.dark-mode .search-load-more {
+    background: #1a2a3a;
+    color: #66ccff;
+}
+
+body.dark-mode .search-load-more:hover {
+    background: #66ccff;
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-load-all {
+    background: #1a3a1a;
+    color: #66ff66;
+}
+
+body.dark-mode .search-load-all:hover {
+    background: #66ff66;
+    color: #1a1a1a;
 }
 
 /* 响应式设计 */
@@ -1149,6 +1198,16 @@ body.dark-mode .search-collapse:hover {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+    }
+    
+    .search-results-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .search-clear, .search-collapse, .search-load-more, .search-load-all {
+        font-size: 11px;
+        padding: 5px 10px;
     }
     
     .search-result-item {

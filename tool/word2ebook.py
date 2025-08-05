@@ -952,6 +952,14 @@ body.dark-mode .qa-pair-bookmark:hover {
     margin-bottom: 15px;
     padding-bottom: 10px;
     border-bottom: 1px solid #f8c8dc;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-results-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .search-results-count {
@@ -959,7 +967,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     color: #e75480;
 }
 
-.search-clear, .search-collapse {
+.search-clear, .search-collapse, .search-load-more, .search-load-all {
     background: #f8c8dc;
     color: #b73c65;
     border: none;
@@ -968,10 +976,9 @@ body.dark-mode .qa-pair-bookmark:hover {
     cursor: pointer;
     font-size: 12px;
     transition: all 0.3s ease;
-    margin-left: 8px;
 }
 
-.search-clear:hover, .search-collapse:hover {
+.search-clear:hover, .search-collapse:hover, .search-load-more:hover, .search-load-all:hover {
     background: #e75480;
     color: white;
 }
@@ -986,11 +993,31 @@ body.dark-mode .qa-pair-bookmark:hover {
     color: white;
 }
 
+.search-load-more {
+    background: #e6f3ff;
+    color: #0066cc;
+}
+
+.search-load-more:hover {
+    background: #0066cc;
+    color: white;
+}
+
+.search-load-all {
+    background: #e8f5e8;
+    color: #006600;
+}
+
+.search-load-all:hover {
+    background: #006600;
+    color: white;
+}
+
 .search-results-list {
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 400px;
+    max-height: 600px;
     overflow-y: auto;
 }
 
@@ -1117,12 +1144,14 @@ body.dark-mode .search-result-item:hover .search-result-newtab {
     color: #ff69b4;
 }
 
-body.dark-mode .search-clear, body.dark-mode .search-collapse {
+body.dark-mode .search-clear, body.dark-mode .search-collapse, 
+body.dark-mode .search-load-more, body.dark-mode .search-load-all {
     background: #4a2c4a;
     color: #ff69b4;
 }
 
-body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover {
+body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover,
+body.dark-mode .search-load-more:hover, body.dark-mode .search-load-all:hover {
     background: #ff69b4;
     color: #1a1a1a;
 }
@@ -1135,6 +1164,26 @@ body.dark-mode .search-collapse {
 body.dark-mode .search-collapse:hover {
     background: #555;
     color: #fff;
+}
+
+body.dark-mode .search-load-more {
+    background: #1a2a3a;
+    color: #66ccff;
+}
+
+body.dark-mode .search-load-more:hover {
+    background: #66ccff;
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-load-all {
+    background: #1a3a1a;
+    color: #66ff66;
+}
+
+body.dark-mode .search-load-all:hover {
+    background: #66ff66;
+    color: #1a1a1a;
 }
 
 /* 响应式设计 */
@@ -1161,6 +1210,16 @@ body.dark-mode .search-collapse:hover {
         flex-direction: column;
         align-items: flex-start;
         gap: 10px;
+    }
+    
+    .search-results-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .search-clear, .search-collapse, .search-load-more, .search-load-all {
+        font-size: 11px;
+        padding: 5px 10px;
     }
     
     .search-result-item {
@@ -1196,6 +1255,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   let searchIndex = null;
   let miniSearch = null;
   let searchInitialized = false;
+  let currentSearchResults = [];
+  let displayedResultsCount = 0;
+  const RESULTS_PER_PAGE = 20;
   
   // 检测当前页面类型
   function isIndexPage() {
@@ -1312,10 +1374,18 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       if (!miniSearch || !query || query.trim().length < 2) {
         searchResults.style.display = 'none';
         tocHeader.style.display = 'block';
+        currentSearchResults = [];
+        displayedResultsCount = 0;
+        hideLoadMoreButtons();
         if (query && query.trim().length > 0 && query.trim().length < 2) {
           searchStatus.textContent = '请输入至少2个字符进行搜索';
         } else {
-          searchStatus.textContent = `搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`;
+          searchStatus.innerHTML = `
+            搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)
+            <span style="color: #999; font-size: 12px; margin-left: 10px;">
+              💡 点击结果将在新标签页打开
+            </span>
+          `;
         }
         return;
       }
@@ -1337,12 +1407,12 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
           return scoreB - scoreA;
         });
         
-        // 限制结果数量
-        const limitedResults = results.slice(0, 20);
+        // 保存所有结果
+        currentSearchResults = results;
+        displayedResultsCount = 0;
         
-        if (limitedResults.length > 0) {
-          displayResults(limitedResults, trimmedQuery);
-          searchStatus.textContent = `找到 ${results.length} 条结果` + (results.length > 20 ? ' (仅显示前20条)' : '');
+        if (results.length > 0) {
+          displayPagedResults(trimmedQuery);
         } else {
           displayNoResults(trimmedQuery);
           searchStatus.textContent = '未找到匹配结果';
@@ -1360,10 +1430,113 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    // 显示搜索结果
-    function displayResults(results, query) {
-      searchResultsCount.textContent = `找到 ${results.length} 条结果`;
+    // 显示分页搜索结果
+    function displayPagedResults(query) {
+      displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+      const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
       
+      displayResults(resultsToShow, query);
+      updateResultsCounter();
+      updateLoadMoreButtons();
+    }
+    
+    // 加载更多结果
+    function loadMoreResults() {
+      const startIndex = displayedResultsCount;
+      const endIndex = Math.min(startIndex + RESULTS_PER_PAGE, currentSearchResults.length);
+      const additionalResults = currentSearchResults.slice(startIndex, endIndex);
+      
+      if (additionalResults.length > 0) {
+        displayedResultsCount = endIndex;
+        appendResults(additionalResults);
+        updateResultsCounter();
+        updateLoadMoreButtons();
+      }
+    }
+    
+    // 加载所有结果
+    function loadAllResults() {
+      if (displayedResultsCount < currentSearchResults.length) {
+        const remainingResults = currentSearchResults.slice(displayedResultsCount);
+        displayedResultsCount = currentSearchResults.length;
+        appendResults(remainingResults);
+        updateResultsCounter();
+        updateLoadMoreButtons();
+      }
+    }
+    
+    // 更新结果计数器
+    function updateResultsCounter() {
+      const totalResults = currentSearchResults.length;
+      searchResultsCount.textContent = `显示 ${displayedResultsCount} / ${totalResults} 条结果`;
+    }
+    
+    // 更新加载更多按钮的显示状态
+    function updateLoadMoreButtons() {
+      const loadMoreBtn = document.getElementById('search-load-more');
+      const loadAllBtn = document.getElementById('search-load-all');
+      
+      if (displayedResultsCount < currentSearchResults.length) {
+        loadMoreBtn.style.display = 'inline-block';
+        loadAllBtn.style.display = 'inline-block';
+      } else {
+        loadMoreBtn.style.display = 'none';
+        loadAllBtn.style.display = 'none';
+      }
+    }
+    
+    // 隐藏加载更多按钮
+    function hideLoadMoreButtons() {
+      const loadMoreBtn = document.getElementById('search-load-more');
+      const loadAllBtn = document.getElementById('search-load-all');
+      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+      if (loadAllBtn) loadAllBtn.style.display = 'none';
+    }
+    
+    // 追加搜索结果到列表
+    function appendResults(results) {
+      const query = document.getElementById('search-input').value.trim();
+      const additionalHTML = results.map(result => {
+        const typeText = {
+          'heading': '标题',
+          'question': '问题', 
+          'answer': '回答',
+          'content': '内容'
+        }[result.type] || '内容';
+        
+        // 高亮搜索关键词 - 安全处理
+        let highlightedContext = result.context;
+        try {
+          if (query && query.trim()) {
+            const escapedQuery = escapeRegex(query.trim());
+            if (escapedQuery) {
+              const regex = new RegExp(`(${escapedQuery})`, 'gi');
+              highlightedContext = result.context.replace(regex, '<span class="search-result-highlight">$1</span>');
+            }
+          }
+        } catch (e) {
+          console.warn('搜索高亮处理失败:', e);
+          highlightedContext = result.context;
+        }
+        
+        return `
+          <li class="search-result-item" data-url="${result.url}">
+            <div class="search-result-title">
+              <span class="search-result-type">${typeText}</span>
+              ${escapeHtml(result.title)}
+              <span class="search-result-newtab">↗</span>
+            </div>
+            <div class="search-result-content">${highlightedContext}</div>
+            <div class="search-result-url">${result.url}</div>
+          </li>
+        `;
+      }).join('');
+      
+      searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+    }
+    
+    // 显示搜索结果（原函数，现在用于内部调用）
+    function displayResults(results, query) {
       searchResultsList.innerHTML = results.map(result => {
         const typeText = {
           'heading': '标题',
@@ -1468,6 +1641,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       searchInput.value = '';
       searchResults.style.display = 'none';
       tocHeader.style.display = 'block';
+      currentSearchResults = [];
+      displayedResultsCount = 0;
+      hideLoadMoreButtons();
       searchStatus.innerHTML = `
         搜索准备就绪 (共${searchIndex.length}条记录)
         <span style="color: #999; font-size: 12px; margin-left: 10px;">
@@ -1493,6 +1669,18 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     
     // 收起搜索按钮
     searchCollapse.addEventListener('click', collapseSearch);
+    
+    // 显示更多按钮
+    const loadMoreBtn = document.getElementById('search-load-more');
+    const loadAllBtn = document.getElementById('search-load-all');
+    
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener('click', loadMoreResults);
+    }
+    
+    if (loadAllBtn) {
+      loadAllBtn.addEventListener('click', loadAllResults);
+    }
     
     // 搜索结果点击
     searchResultsList.addEventListener('click', (e) => {
@@ -1543,10 +1731,15 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     const tocHeader = document.getElementById('toc-header');
     
     if (searchContainer && searchActivation) {
-      // 清除搜索内容
+      // 清除搜索内容和重置分页状态
       if (searchInput) searchInput.value = '';
       if (searchResults) searchResults.style.display = 'none';
       if (tocHeader) tocHeader.style.display = 'block';
+      
+      // 重置分页状态
+      currentSearchResults = [];
+      displayedResultsCount = 0;
+      hideLoadMoreButtons();
       
       // 隐藏搜索容器，显示激活按钮
       searchContainer.style.display = 'none';
@@ -2906,8 +3099,12 @@ if (typeof MiniSearch === 'undefined') {{
   <div class="search-results" id="search-results" style="display: none;">
     <div class="search-results-header">
       <span class="search-results-count" id="search-results-count"></span>
-      <button class="search-clear" id="search-clear">清除搜索</button>
-      <button class="search-collapse" id="search-collapse">收起搜索</button>
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more" style="display: none;">显示更多</button>
+        <button class="search-load-all" id="search-load-all" style="display: none;">显示全部</button>
+        <button class="search-clear" id="search-clear">清除搜索</button>
+        <button class="search-collapse" id="search-collapse">收起搜索</button>
+      </div>
     </div>
     <ul class="search-results-list" id="search-results-list"></ul>
   </div>
@@ -3463,7 +3660,7 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
     if generate_traditional:
         print("🈴 正在生成繁體版...")
         cc = OpenCC('s2t')
-        
+    
         for i, ch in enumerate(chapters):
             trad_filename = get_traditional_filename(ch["filename"])
             
@@ -3476,7 +3673,7 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
             if i < len(chapters)-1:
                 next_trad_filename = get_traditional_filename(chapters[i+1]["filename"])
                 next_link = f'<a href="{next_trad_filename}">下一章 ➡️</a>'
-            
+        
             # 繁體版的語言切換連結
             lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
             
