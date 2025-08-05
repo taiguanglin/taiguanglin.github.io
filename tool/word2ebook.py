@@ -5,29 +5,32 @@ import re
 from docx import Document
 from docx.oxml.ns import qn
 from slugify import slugify
+from opencc import OpenCC
 
-# ========== CSS & JS 模板 ==========
+# ========== 粉紅色主題 CSS & 平滑滾動 JS ==========
 CSS_CONTENT = """\
-body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff; color: #333; transition: 0.3s; }
-h1 { color: #2c3e50; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-h2 { color: #34495e; margin-top: 40px; }
-h3 { color: #4d6273; margin-top: 25px; }
+body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
+h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
+h2 { color: #d44d75; margin-top: 40px; }
+h3 { color: #b73c65; margin-top: 25px; }
 p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
-a { color: #2980b9; text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { color: #e75480; text-decoration: none; }
+a:hover { text-decoration: underline; color: #ff69b4; }
 .nav { margin-bottom: 20px; }
 .nav-footer { display: flex; justify-content: space-between; margin-top: 50px; }
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
-body.dark-mode { background: #121212; color: #ddd; }
-body.dark-mode a { color: #81caff; }
-.toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #eee; border-radius: 5px; }
-body.dark-mode .toggle-dark { background: #333; color: #fff; }
+body.dark-mode { background: #3b1c32; color: #fddde6; }
+body.dark-mode a { color: #ff91af; }
+.toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #f8c8dc; border-radius: 5px; }
+body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top { text-align: right; margin: 20px 0; }
-.back-to-top a { font-size: 0.9em; color: #888; }
-.back-to-top a:hover { color: #2980b9; }
+.back-to-top a { font-size: 0.9em; color: #d44d75; }
+.back-to-top a:hover { color: #ff69b4; }
+.lang-switch { text-align: right; margin-bottom: 10px; }
+.lang-switch a { font-size: 0.9em; margin: 0 5px; }
 """
 
 JS_CONTENT = """\
@@ -48,14 +51,15 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBtn.textContent = isDark ? '☀️ 日間模式' : '🌙 夜間模式';
   });
 
-  // 平滑滾動章節內 TOC
-  document.querySelectorAll('.toc a[href^="#"]').forEach(anchor => {
+  // 平滑滾動章節內 TOC 與回到頂部
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const href = this.getAttribute('href');
+      const target = document.querySelector(href);
       if (target) {
+        e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.pushState(null, null, this.getAttribute('href')); // 更新 URL hash
+        history.pushState(null, null, href);
       }
     });
   });
@@ -64,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 HTML_TEMPLATE = """\
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <title>{title}</title>
@@ -73,8 +77,11 @@ HTML_TEMPLATE = """\
 </head>
 <body>
 <div id="top"></div>
+<div class="lang-switch">
+{lang_switch_links}
+</div>
 <div class="nav">
-<a href="index.html">🏠 回首頁</a>
+<a href="{home_link}">🏠 回首頁</a>
 </div>
 
 <div class="toc">
@@ -94,7 +101,7 @@ HTML_TEMPLATE = """\
 
 INDEX_TEMPLATE = """\
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="UTF-8">
 <title>{book_title}</title>
@@ -102,6 +109,9 @@ INDEX_TEMPLATE = """\
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
+<div class="lang-switch">
+<a href="index.html">简体</a> | <a href="index_trad.html">繁體</a>
+</div>
 <h1>{book_title}</h1>
 <h2>Table of Contents</h2>
 {toc_items}
@@ -147,7 +157,6 @@ def build_chapter_toc(toc_items, filename=None):
 
 def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
     """將段落轉 HTML，並處理圖片、文字與章節內書籤"""
-    # 檢查圖片
     for run in paragraph.runs:
         drawing = run.element.find(qn('w:drawing'))
         pict = run.element.find(qn('w:pict'))
@@ -173,7 +182,6 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
         bold_mode_state["bold_mode"] = False
         return html
 
-    # 判斷段落樣式
     style = paragraph.style.name.lower()
     if "heading 1" in style:
         return f"<h1>{text}</h1>"
@@ -186,10 +194,7 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
         toc_list.append((3, text, anchor))
         return f'<h3 id="{anchor}">{text}</h3>'
     else:
-        if bold_mode_state["bold_mode"]:
-            return f"<p><b>{text}</b></p>"
-        else:
-            return f"<p>{text}</p>"
+        return f"<p><b>{text}</b></p>" if bold_mode_state["bold_mode"] else f"<p>{text}</p>"
 
 def safe_filename(title, index):
     slug = slugify(title)
@@ -197,29 +202,56 @@ def safe_filename(title, index):
         slug = f"chapter{index}"
     return f"{index:02d}-{slug}.html"
 
-def build_index_toc(chapters):
+def build_index_toc(chapters, is_traditional=False):
+    """建立首頁目錄，is_traditional=True 時使用繁體版檔案名"""
     html = "<ul>\n"
     for ch in chapters:
-        html += f'<li><a href="{ch["filename"]}">{ch["title"]}</a>\n'
+        filename = ch["filename"]
+        if is_traditional:
+            filename = filename.replace(".html", "_trad.html")
+        
+        html += f'<li><a href="{filename}">{ch["title"]}</a>\n'
         if ch["toc_items"]:
-            html += build_chapter_toc(ch["toc_items"], ch["filename"])
+            html += build_chapter_toc(ch["toc_items"], filename)
         html += "</li>\n"
     html += "</ul>"
     return html
 
 def insert_back_to_top(content_blocks):
-    """在每個 H3 小節結尾插入回到頂部連結"""
+    """根據章節內 H2/H3 結構插入回到頂部連結"""
     output_blocks = []
-    last_h3_index = None
-    for i, block in enumerate(content_blocks):
-        if block.startswith("<h3 "):
-            if last_h3_index is not None:
+    h3_count = 0
+    h2_count = 0
+    last_heading_type = None
+
+    for block in content_blocks:
+        is_h2 = block.startswith("<h2 ")
+        is_h3 = block.startswith("<h3 ")
+
+        if is_h3:
+            if last_heading_type == "h3":
                 output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
-            last_h3_index = i
+            h3_count += 1
+            last_heading_type = "h3"
+        elif is_h2 and h3_count == 0:  # 無 H3 時 H2 也加按鈕
+            if last_heading_type == "h2":
+                output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
+            h2_count += 1
+            last_heading_type = "h2"
+
         output_blocks.append(block)
-    if last_h3_index is not None:
-        output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
+
+    # 補最後一個小節的回到頂部
+    output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
     return output_blocks
+
+def get_traditional_filename(filename):
+    """將簡體檔名轉換為繁體檔名"""
+    return filename.replace(".html", "_trad.html")
+
+def get_simplified_filename(filename):
+    """將繁體檔名轉換為簡體檔名"""
+    return filename.replace("_trad.html", ".html")
 
 def convert_word_to_ebook(input_file, output_folder):
     if os.path.exists(output_folder):
@@ -266,25 +298,79 @@ def convert_word_to_ebook(input_file, output_folder):
         current_chapter["toc_items"] = toc_items[:]
         chapters.append(current_chapter)
 
-    # 生成章節 HTML
+    # ========== 生成簡體 HTML ==========
     for i, ch in enumerate(chapters):
+        # 簡體版的上下章導航
         prev_link = f'<a href="{chapters[i-1]["filename"]}">⬅️ 上一章</a>' if i > 0 else ""
         next_link = f'<a href="{chapters[i+1]["filename"]}">下一章 ➡️</a>' if i < len(chapters)-1 else ""
+        
+        # 簡體版的語言切換連結
+        trad_filename = get_traditional_filename(ch["filename"])
+        lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
+        
         html_page = HTML_TEMPLATE.format(
             title=ch["title"],
             chapter_toc=ch["chapter_toc"],
             content=ch["content"],
             prev_link=prev_link,
-            next_link=next_link
+            next_link=next_link,
+            home_link="index.html",
+            lang_switch_links=lang_switch_links
         )
         with open(os.path.join(output_folder, ch["filename"]), "w", encoding="utf-8") as f:
             f.write(html_page)
 
-    # 生成目錄 index.html
+    # 簡體 index.html
     book_title = os.path.splitext(os.path.basename(input_file))[0]
-    toc_html = build_index_toc(chapters)
+    toc_html = build_index_toc(chapters, is_traditional=False)
     with open(os.path.join(output_folder, "index.html"), "w", encoding="utf-8") as f:
         f.write(INDEX_TEMPLATE.format(book_title=book_title, toc_items=toc_html))
+
+    # ========== 生成繁體 HTML ==========
+    cc = OpenCC('s2t')
+    
+    for i, ch in enumerate(chapters):
+        trad_filename = get_traditional_filename(ch["filename"])
+        
+        # 繁體版的上下章導航
+        prev_link = ""
+        next_link = ""
+        if i > 0:
+            prev_trad_filename = get_traditional_filename(chapters[i-1]["filename"])
+            prev_link = f'<a href="{prev_trad_filename}">⬅️ 上一章</a>'
+        if i < len(chapters)-1:
+            next_trad_filename = get_traditional_filename(chapters[i+1]["filename"])
+            next_link = f'<a href="{next_trad_filename}">下一章 ➡️</a>'
+        
+        # 繁體版的語言切換連結
+        lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
+        
+        html_page = HTML_TEMPLATE.format(
+            title=cc.convert(ch["title"]),
+            chapter_toc=cc.convert(ch["chapter_toc"]),
+            content=cc.convert(ch["content"]),
+            prev_link=cc.convert(prev_link),
+            next_link=cc.convert(next_link),
+            home_link="index_trad.html",
+            lang_switch_links=cc.convert(lang_switch_links)
+        )
+        with open(os.path.join(output_folder, trad_filename), "w", encoding="utf-8") as f:
+            f.write(html_page)
+
+    # 繁體 index_trad.html - 使用繁體版檔案名的 TOC
+    trad_chapters = []
+    for ch in chapters:
+        trad_ch = ch.copy()
+        trad_ch["title"] = cc.convert(ch["title"])
+        trad_ch["toc_items"] = [(level, cc.convert(text), anchor) for level, text, anchor in ch["toc_items"]]
+        trad_chapters.append(trad_ch)
+    
+    trad_toc_html = build_index_toc(trad_chapters, is_traditional=True)
+    with open(os.path.join(output_folder, "index_trad.html"), "w", encoding="utf-8") as f:
+        f.write(INDEX_TEMPLATE.format(
+            book_title=cc.convert(book_title), 
+            toc_items=trad_toc_html
+        ))
 
     # 寫入 CSS 與 JS
     with open(os.path.join(output_folder, "assets/css/style.css"), "w", encoding="utf-8") as f:
@@ -292,7 +378,9 @@ def convert_word_to_ebook(input_file, output_folder):
     with open(os.path.join(output_folder, "assets/js/script.js"), "w", encoding="utf-8") as f:
         f.write(JS_CONTENT)
 
-    print(f"✅ 轉換完成！HTML 電子書已輸出到 {output_folder}")
+    print(f"✅ 轉換完成！HTML 電子書已輸出到 {output_folder}，含簡體與繁體版本")
+    print(f"📖 簡體版首頁: {output_folder}/index.html")
+    print(f"📖 繁體版首頁: {output_folder}/index_trad.html")
 
 # ========== 主程式入口 ==========
 if __name__ == "__main__":
