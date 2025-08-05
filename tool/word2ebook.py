@@ -1063,7 +1063,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     const qaElements = document.querySelectorAll('.question, .answer');
     qaElements.forEach((element) => {
       // 確保元素有唯一ID（用於分享功能）
-      ensureElementId(element, element.classList.contains('question') ? 'question' : 'answer');
+      const prefix = element.classList.contains('question') ? 'question' : 'answer';
+      ensureElementId(element, prefix);
       
       element.style.position = 'relative';
       const actions = document.createElement('div');
@@ -1086,7 +1087,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         if (!currentChapter.isHomepage) {
           actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="書籤問答">🔖</button>';
         }
-        actionsHtml += '<button class="qa-btn" data-action="share" title="分享問題">📤</button>';
+        actionsHtml += '<button class="qa-btn" data-action="share" title="分享回答">📤</button>';
       }
       
       actions.innerHTML = actionsHtml;
@@ -1134,7 +1135,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   // 生成分享URL
   function generateShareUrl(targetElement) {
-    const elementId = ensureElementId(targetElement, 'qa-item');
+    const prefix = targetElement.classList.contains('question') ? 'question' : 'answer';
+    const elementId = ensureElementId(targetElement, prefix);
     const baseUrl = window.location.origin + window.location.pathname;
     return baseUrl + '#' + elementId;
   }
@@ -1894,17 +1896,10 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       case 'share':
         const shareElement = e.target.closest('.question, .answer');
         if (shareElement) {
-          let targetElement = shareElement;
-          
-          // 如果是回答，找到對應的問題來分享
-          if (shareElement.classList.contains('answer')) {
-            const questionElement = findQuestionForAnswer(shareElement);
-            if (questionElement) {
-              targetElement = questionElement;
-            }
-          }
-          
-          const shareUrl = generateShareUrl(targetElement);
+          // 直接分享點擊的區塊（問題或回答）
+          const shareUrl = generateShareUrl(shareElement);
+          const isQuestion = shareElement.classList.contains('question');
+          const toastMessage = isQuestion ? '問題鏈接已複製' : '回答鏈接已複製';
           
           if (navigator.share) {
             navigator.share({
@@ -1912,7 +1907,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
             });
           } else {
             copyText(shareUrl);
-            showToast('問題鏈接已複製');
+            showToast(toastMessage);
           }
         } else {
           // 降級處理：分享頁面鏈接
