@@ -17,6 +17,7 @@ p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
 a { color: #e75480; text-decoration: none; }
 a:hover { text-decoration: underline; color: #ff69b4; }
+hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc); margin: 30px 0; border-radius: 1px; }
 .nav { margin-bottom: 20px; }
 .nav-footer { display: flex; justify-content: space-between; margin-top: 50px; }
 .toc { margin: 20px 0; }
@@ -24,6 +25,7 @@ a:hover { text-decoration: underline; color: #ff69b4; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
 body.dark-mode { background: #3b1c32; color: #fddde6; }
 body.dark-mode a { color: #ff91af; }
+body.dark-mode hr { background: linear-gradient(to right, #5a2d49, #ff91af, #5a2d49); }
 .toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #f8c8dc; border-radius: 5px; }
 body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top { text-align: right; margin: 20px 0; }
@@ -178,9 +180,8 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
     # 偵測分隔線
     is_separator = bool(re.match(r"^_+$", text)) and len(text) >= 10
     if is_separator and bold_mode_state["bold_mode"]:
-        html = f"<p><b>{text}</b></p>"
         bold_mode_state["bold_mode"] = False
-        return html
+        return "<hr>"
 
     style = paragraph.style.name.lower()
     if "heading 1" in style:
