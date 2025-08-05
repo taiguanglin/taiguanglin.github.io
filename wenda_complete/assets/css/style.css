@@ -231,6 +231,12 @@ body.dark-mode .answerer { color: #ff69b4; }
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: sticky;
+    top: 0;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    border-radius: 12px 12px 0 0;
 }
 
 .floating-toc-list {
@@ -497,6 +503,11 @@ body.dark-mode .reading-toolbar,
 body.dark-mode .floating-toc {
     background: rgba(59, 28, 50, 0.95);
     border-color: #5a2d49;
+}
+
+body.dark-mode .floating-toc-header {
+    background: rgba(59, 28, 50, 0.95);
+    border-bottom: 1px solid #5a2d49;
 }
 
 body.dark-mode .ctrl-btn,
