@@ -134,6 +134,18 @@ body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
     opacity: 0;
 }
 
+.toolbar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e75480;
+}
+
 .toolbar-section {
     margin-bottom: 15px;
     padding-bottom: 10px;
@@ -247,6 +259,18 @@ body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
     border-left: 3px solid transparent;
 }
 
+.floating-toc-item.level-h3 {
+    padding-left: 24px;
+    font-size: 12px;
+    color: #666;
+}
+
+.floating-toc-item.level-h4 {
+    padding-left: 36px;
+    font-size: 11px;
+    color: #888;
+}
+
 .floating-toc-item:hover {
     background: rgba(231, 84, 128, 0.1);
 }
@@ -255,6 +279,112 @@ body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
     background: rgba(231, 84, 128, 0.15);
     border-left-color: #e75480;
     font-weight: 500;
+}
+
+/* 浮動目錄標籤頁 */
+.floating-toc-tabs {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.floating-toc-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s ease;
+    font-size: 12px;
+}
+
+.floating-toc-tab.active {
+    color: #e75480;
+    border-bottom-color: #e75480;
+    font-weight: 600;
+}
+
+.floating-toc-tab:hover {
+    background: rgba(231, 84, 128, 0.05);
+}
+
+/* 書籤樣式 */
+.bookmark-item {
+    padding: 10px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    border: 1px solid #f0f0f0;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+.bookmark-item:hover {
+    background: rgba(231, 84, 128, 0.05);
+    border-color: #e75480;
+}
+
+.bookmark-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 11px;
+    color: #666;
+}
+
+.bookmark-questioner {
+    font-weight: 600;
+    color: #e75480;
+}
+
+.bookmark-time {
+    font-size: 10px;
+}
+
+.bookmark-preview {
+    font-size: 12px;
+    color: #333;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.bookmark-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 10px;
+    color: #999;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.bookmark-item:hover .bookmark-delete {
+    opacity: 1;
+}
+
+.bookmark-delete:hover {
+    background: #ff4757;
+    color: white;
+}
+
+.bookmarks-empty {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 12px;
 }
 
 /* 操作按鈕組 */
@@ -496,6 +626,10 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     const toolbar = document.createElement('div');
     toolbar.className = 'reading-toolbar hidden';
     toolbar.innerHTML = 
+      '<div class="toolbar-header">' +
+        '<span>⚙️ 閱讀設置</span>' +
+        '<button class="ctrl-btn" data-action="close-toolbar">✕</button>' +
+      '</div>' +
       '<div class="toolbar-section">' +
         '<div class="toolbar-label">字體大小</div>' +
         '<div class="toolbar-controls">' +
@@ -539,7 +673,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     toc.className = 'floating-toc';
     
     // 收集所有標題
-    const headings = document.querySelectorAll('h2, h3');
+    const headings = document.querySelectorAll('h2, h3, h4');
     let tocItems = '';
     
     headings.forEach((heading, index) => {
@@ -547,16 +681,28 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       const id = heading.id || ('heading-' + index);
       if (!heading.id) heading.id = id;
       
-      tocItems += '<div class="floating-toc-item" data-target="#' + id + '">' + text + '</div>';
+      const level = heading.tagName.toLowerCase();
+      const levelClass = level !== 'h2' ? ' level-' + level : '';
+      
+      tocItems += '<div class="floating-toc-item' + levelClass + '" data-target="#' + id + '">' + text + '</div>';
     });
     
     toc.innerHTML = 
       '<div class="floating-toc-header">' +
-        '<span>📖 章節目錄</span>' +
+        '<span id="toc-title">📖 章節目錄</span>' +
         '<button class="ctrl-btn" data-action="close-toc">✕</button>' +
       '</div>' +
-      '<div class="floating-toc-list">' +
-        tocItems +
+      '<div class="floating-toc-tabs">' +
+        '<button class="floating-toc-tab active" data-tab="toc">目錄</button>' +
+        '<button class="floating-toc-tab" data-tab="bookmarks">書籤 <span id="bookmark-count">0</span></button>' +
+      '</div>' +
+      '<div class="floating-toc-content">' +
+        '<div class="floating-toc-list" id="toc-list">' +
+          tocItems +
+        '</div>' +
+        '<div class="floating-toc-list" id="bookmarks-list" style="display: none;">' +
+          '<div class="bookmarks-empty">尚無書籤</div>' +
+        '</div>' +
       '</div>';
     
     document.body.appendChild(toc);
@@ -584,6 +730,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       actions.className = 'qa-actions';
       actions.innerHTML = 
         '<button class="qa-btn" data-action="copy" title="複製">📋</button>' +
+        '<button class="qa-btn" data-action="bookmark" title="書籤">🔖</button>' +
         '<button class="qa-btn" data-action="share" title="分享">📤</button>';
       element.appendChild(actions);
     });
@@ -591,7 +738,111 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // ============ 功能實現 ============
   
-  // 搜索功能已移除
+  // ============ 書籤功能 ============
+  
+  // 書籤管理
+  function getBookmarks() {
+    const bookmarks = localStorage.getItem('ebook-bookmarks');
+    return bookmarks ? JSON.parse(bookmarks) : [];
+  }
+  
+  function saveBookmarks(bookmarks) {
+    localStorage.setItem('ebook-bookmarks', JSON.stringify(bookmarks));
+    updateBookmarkCount();
+  }
+  
+  function addBookmark(element) {
+    const bookmarks = getBookmarks();
+    const isQuestion = element.classList.contains('question');
+    const isAnswer = element.classList.contains('answer');
+    
+    if (!isQuestion && !isAnswer) return;
+    
+    // 生成唯一ID
+    const id = 'bookmark-' + Date.now();
+    element.id = element.id || id;
+    
+    // 提取內容
+    let questioner = '', time = '', preview = '';
+    
+    if (isQuestion) {
+      const questionerEl = element.querySelector('.questioner');
+      const timeEl = element.querySelector('.question-time');
+      const textEl = element.querySelector('.question-text');
+      
+      questioner = questionerEl ? questionerEl.textContent : '匿名';
+      time = timeEl ? timeEl.textContent : '';
+      preview = textEl ? textEl.textContent.substring(0, 100) + '...' : '';
+    } else if (isAnswer) {
+      const answererEl = element.querySelector('.answerer');
+      const textEl = element.querySelector('.answer-text');
+      
+      questioner = answererEl ? answererEl.textContent : 'Taiguanglin';
+      preview = textEl ? textEl.textContent.substring(0, 100) + '...' : '';
+    }
+    
+    // 檢查是否已存在
+    const exists = bookmarks.some(bookmark => bookmark.elementId === element.id);
+    if (exists) {
+      showToast('此內容已在書籤中');
+      return;
+    }
+    
+    const bookmark = {
+      id: id,
+      elementId: element.id,
+      type: isQuestion ? 'question' : 'answer',
+      questioner: questioner,
+      time: time,
+      preview: preview,
+      timestamp: new Date().toLocaleString()
+    };
+    
+    bookmarks.push(bookmark);
+    saveBookmarks(bookmarks);
+    renderBookmarks();
+    showToast('已添加到書籤');
+  }
+  
+  function removeBookmark(bookmarkId) {
+    const bookmarks = getBookmarks().filter(bookmark => bookmark.id !== bookmarkId);
+    saveBookmarks(bookmarks);
+    renderBookmarks();
+    showToast('已從書籤移除');
+  }
+  
+  function renderBookmarks() {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    const bookmarks = getBookmarks();
+    
+    if (bookmarks.length === 0) {
+      bookmarksList.innerHTML = '<div class="bookmarks-empty">尚無書籤</div>';
+      return;
+    }
+    
+    let bookmarksHTML = '';
+    bookmarks.forEach(bookmark => {
+      bookmarksHTML += 
+        '<div class="bookmark-item" data-target="#' + bookmark.elementId + '">' +
+          '<div class="bookmark-meta">' +
+            '<span class="bookmark-questioner">' + bookmark.questioner + '</span>' +
+            '<span class="bookmark-time">' + bookmark.time + '</span>' +
+          '</div>' +
+          '<div class="bookmark-preview">' + bookmark.preview + '</div>' +
+          '<button class="bookmark-delete" data-bookmark-id="' + bookmark.id + '" title="刪除書籤">✕</button>' +
+        '</div>';
+    });
+    
+    bookmarksList.innerHTML = bookmarksHTML;
+  }
+  
+  function updateBookmarkCount() {
+    const count = getBookmarks().length;
+    const countEl = document.getElementById('bookmark-count');
+    if (countEl) {
+      countEl.textContent = count;
+    }
+  }
 
   // 閱讀設置功能
   let fontSize = parseInt(localStorage.getItem('fontSize')) || 16;
@@ -675,6 +926,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   const actionButtons = createActionButtons();
   addQAActions();
   applyReadingSettings();
+  updateBookmarkCount();
 
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
@@ -738,12 +990,21 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       case 'settings':
         toolbar.classList.toggle('hidden');
         break;
+      case 'close-toolbar':
+        toolbar.classList.add('hidden');
+        break;
 
       // 問答操作
       case 'copy':
         const qaElement = e.target.closest('.question, .answer');
         const text = qaElement.textContent.trim();
         copyText(text);
+        break;
+      case 'bookmark':
+        const bookmarkElement = e.target.closest('.question, .answer');
+        if (bookmarkElement) {
+          addBookmark(bookmarkElement);
+        }
         break;
       case 'share':
         if (navigator.share) {
@@ -761,12 +1022,57 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // 浮動目錄點擊
   document.addEventListener('click', (e) => {
+    // 目錄項點擊
     if (e.target.classList.contains('floating-toc-item')) {
       const target = e.target.dataset.target;
       const element = document.querySelector(target);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
         floatingTOC.classList.remove('visible');
+      }
+    }
+    
+    // 標籤頁切換
+    if (e.target.classList.contains('floating-toc-tab')) {
+      const tab = e.target.dataset.tab;
+      
+      // 更新標籤頁狀態
+      document.querySelectorAll('.floating-toc-tab').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      
+      // 切換內容
+      const tocList = document.getElementById('toc-list');
+      const bookmarksList = document.getElementById('bookmarks-list');
+      const tocTitle = document.getElementById('toc-title');
+      
+      if (tab === 'toc') {
+        tocList.style.display = 'block';
+        bookmarksList.style.display = 'none';
+        tocTitle.textContent = '📖 章節目錄';
+      } else if (tab === 'bookmarks') {
+        tocList.style.display = 'none';
+        bookmarksList.style.display = 'block';
+        tocTitle.textContent = '🔖 我的書籤';
+        renderBookmarks();
+      }
+    }
+    
+    // 書籤項點擊
+    if (e.target.classList.contains('bookmark-item')) {
+      const target = e.target.dataset.target;
+      const element = document.querySelector(target);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        floatingTOC.classList.remove('visible');
+      }
+    }
+    
+    // 書籤刪除按鈕
+    if (e.target.classList.contains('bookmark-delete')) {
+      e.stopPropagation();
+      const bookmarkId = e.target.dataset.bookmarkId;
+      if (bookmarkId) {
+        removeBookmark(bookmarkId);
       }
     }
   });
