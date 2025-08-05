@@ -23,9 +23,87 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
+
+/* 問答樣式 */
+.question {
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    border-left: 4px solid #e75480;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(231, 84, 128, 0.1);
+}
+
+.question-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.questioner {
+    font-weight: 600;
+    color: #e75480;
+    font-size: 14px;
+}
+
+.question-time {
+    background: #f8c8dc;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #b73c65;
+    font-weight: 500;
+}
+
+.question-text {
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.answer {
+    padding: 15px;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+    border-radius: 8px;
+    border-left: 4px solid #ff69b4;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
+}
+
+.answer-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.answerer {
+    font-weight: 700;
+    color: #ff69b4;
+    font-size: 14px;
+}
+
+.answer-text {
+    color: #333;
+    line-height: 1.7;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* 暗色模式 */
 body.dark-mode { background: #3b1c32; color: #fddde6; }
 body.dark-mode a { color: #ff91af; }
 body.dark-mode hr { background: linear-gradient(to right, #5a2d49, #ff91af, #5a2d49); }
+body.dark-mode .question { background: #4a2c3a; border-left-color: #ff91af; box-shadow: 0 2px 8px rgba(255, 145, 175, 0.1); }
+body.dark-mode .question-text { color: #fddde6; }
+body.dark-mode .questioner { color: #ff91af; }
+body.dark-mode .question-time { background: #5a2d49; color: #ff91af; }
+body.dark-mode .answer { background: linear-gradient(135deg, #4a2c3a 0%, #3b1c32 100%); border-left-color: #ff69b4; }
+body.dark-mode .answer-text { color: #fddde6; }
+body.dark-mode .answerer { color: #ff69b4; }
+
 .toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #f8c8dc; border-radius: 5px; }
 body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top { text-align: right; margin: 20px 0; }
@@ -33,6 +111,14 @@ body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top a:hover { color: #ff69b4; }
 .lang-switch { text-align: right; margin-bottom: 10px; }
 .lang-switch a { font-size: 0.9em; margin: 0 5px; }
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .question-meta, .answer-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
+    .question, .answer { padding: 12px; }
+    .questioner, .answerer { font-size: 13px; }
+    .question-time { font-size: 11px; }
+}
 """
 
 JS_CONTENT = """\
@@ -157,6 +243,32 @@ def build_chapter_toc(toc_items, filename=None):
     html += "</ul>"
     return html
 
+def extract_time_from_text(text):
+    """從文字中提取時間，支援多種格式，正確處理換行符"""
+    # 完整時間格式：2024-02-18 10:47 或 2024-2-23 15:45  
+    time_pattern1 = r'(\d{4}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2})'
+    match = re.search(time_pattern1, text)
+    if match:
+        time_str = match.group(1)
+        # 提取時間後的剩餘內容，處理換行符
+        remaining = text.replace(time_str, '', 1).strip()
+        # 如果剩餘內容以換行符開始，去掉換行符並strip
+        remaining = re.sub(r'^\s*\n\s*', '', remaining)
+        return time_str, remaining
+    
+    # 只有日期：2024/02/03 或 18/02/2024 或 2024-02-18
+    time_pattern2 = r'(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})'
+    match = re.search(time_pattern2, text)
+    if match:
+        time_str = match.group(1)
+        # 提取時間後的剩餘內容，處理換行符
+        remaining = text.replace(time_str, '', 1).strip()
+        # 如果剩餘內容以換行符開始，去掉換行符並strip
+        remaining = re.sub(r'^\s*\n\s*', '', remaining)
+        return time_str, remaining
+    
+    return None, text
+
 def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
     """將段落轉 HTML，並處理圖片、文字與章節內書籤"""
     for run in paragraph.runs:
@@ -173,13 +285,9 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
     if not text:
         return ""
 
-    # Taiguanglin 粗體模式（半形/全形冒號）
-    if not bold_mode_state["bold_mode"] and re.search(r"Taiguanglin[:：]", text):
-        bold_mode_state["bold_mode"] = True
-
     # 偵測分隔線
     is_separator = bool(re.match(r"^_+$", text)) and len(text) >= 10
-    if is_separator and bold_mode_state["bold_mode"]:
+    if is_separator:
         bold_mode_state["bold_mode"] = False
         return "<hr>"
 
@@ -195,7 +303,74 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
         toc_list.append((3, text, anchor))
         return f'<h3 id="{anchor}">{text}</h3>'
     else:
-        return f"<p><b>{text}</b></p>" if bold_mode_state["bold_mode"] else f"<p>{text}</p>"
+        # 檢查是否為 Taiguanglin 回答
+        taiguanglin_match = re.match(r'^(Taiguanglin|taiguanglin)[:：]\s*(.*)', text, re.IGNORECASE | re.DOTALL)
+        if taiguanglin_match:
+            bold_mode_state["bold_mode"] = True
+            answer_content = taiguanglin_match.group(2)
+            time_info, clean_content = extract_time_from_text(answer_content)
+            
+            # 如果有時間則顯示，否則不顯示時間部分
+            time_html = f'<span class="question-time">{time_info}</span>' if time_info else ''
+            
+            return f'''<div class="answer">
+    <div class="answer-meta">
+        <span class="answerer">Taiguanglin</span>
+        {time_html}
+    </div>
+    <div class="answer-text">{clean_content}</div>
+</div>'''
+        
+        # 檢查是否為提問者格式（姓名：時間 內容）
+        questioner_match = re.match(r'^([^：:]+)[:：]\s*(.*)', text, re.DOTALL)
+        if questioner_match and not bold_mode_state["bold_mode"]:
+            questioner_name = questioner_match.group(1).strip()
+            question_content = questioner_match.group(2).strip()
+            
+            # 如果 question_content 為空，表示只有姓名，沒有時間和內容
+            if not question_content:
+                return f'''<div class="question">
+    <div class="question-meta">
+        <span class="questioner">{questioner_name}</span>
+    </div>
+    <div class="question-text"></div>
+</div>'''
+            
+            # 嘗試提取時間
+            time_info, clean_content = extract_time_from_text(question_content)
+            
+            # 如果提取到時間但內容為空，說明這行只有姓名和時間，問題內容在後續段落
+            if time_info and not clean_content.strip():
+                time_html = f'<span class="question-time">{time_info}</span>'
+                return f'''<div class="question">
+    <div class="question-meta">
+        <span class="questioner">{questioner_name}</span>
+        {time_html}
+    </div>
+    <div class="question-text"></div>
+</div>'''
+            
+            # 如果沒有時間信息，整個 question_content 就是問題內容
+            if not time_info:
+                clean_content = question_content
+                time_html = ''
+            else:
+                time_html = f'<span class="question-time">{time_info}</span>'
+            
+            return f'''<div class="question">
+    <div class="question-meta">
+        <span class="questioner">{questioner_name}</span>
+        {time_html}
+    </div>
+    <div class="question-text">{clean_content}</div>
+</div>'''
+        
+        # 一般段落處理
+        if bold_mode_state["bold_mode"]:
+            # 在回答模式中，作為回答內容的延續
+            return f'<div class="answer-text">{text}</div>'
+        else:
+            return f"<p>{text}</p>"
 
 def safe_filename(title, index):
     slug = slugify(title)
@@ -218,8 +393,94 @@ def build_index_toc(chapters, is_traditional=False):
     html += "</ul>"
     return html
 
+def merge_qa_blocks(content_blocks):
+    """合併連續的問答區塊"""
+    merged_blocks = []
+    i = 0
+    
+    while i < len(content_blocks):
+        current_block = content_blocks[i]
+        
+        # 檢查是否為問題開始
+        if current_block.startswith('<div class="question">'):
+            # 收集所有連續的問題內容
+            question_parts = [current_block]
+            i += 1
+            
+            # 收集後續的普通段落作為問題內容的延續
+            while i < len(content_blocks):
+                next_block = content_blocks[i]
+                
+                # 如果遇到新的問題、回答或標題，停止收集
+                if (next_block.startswith('<div class="question">') or 
+                    next_block.startswith('<div class="answer">') or
+                    next_block.startswith('<h1>') or 
+                    next_block.startswith('<h2>') or 
+                    next_block.startswith('<h3>') or
+                    next_block.startswith('<hr>')):
+                    break
+                
+                # 如果是普通段落，添加為問題內容
+                if next_block.startswith('<p>'):
+                    content = next_block.replace('<p>', '').replace('</p>', '')
+                    question_parts.append(f'    <div class="question-text">{content}</div>')
+                    i += 1
+                else:
+                    break
+            
+            # 確保問題區塊正確結束
+            if not question_parts[-1].endswith('</div>'):
+                question_parts.append('</div>')
+                
+            merged_blocks.append('\n'.join(question_parts))
+            
+        # 檢查是否為回答開始
+        elif current_block.startswith('<div class="answer">'):
+            # 收集所有連續的回答內容
+            answer_parts = [current_block]
+            i += 1
+            
+            # 收集後續的 answer-text div 或普通段落（如果是多段落回答）
+            while i < len(content_blocks):
+                next_block = content_blocks[i]
+                
+                # 如果遇到新的問題、回答或標題，停止收集
+                if (next_block.startswith('<div class="question">') or 
+                    next_block.startswith('<div class="answer">') or
+                    next_block.startswith('<h1>') or 
+                    next_block.startswith('<h2>') or 
+                    next_block.startswith('<h3>') or
+                    next_block.startswith('<hr>')):
+                    break
+                
+                # 如果是answer-text或普通段落，添加為回答內容
+                if next_block.startswith('<div class="answer-text">'):
+                    answer_parts.append('    ' + next_block)
+                    i += 1
+                elif next_block.startswith('<p>'):
+                    content = next_block.replace('<p>', '').replace('</p>', '')
+                    answer_parts.append(f'    <div class="answer-text">{content}</div>')
+                    i += 1
+                else:
+                    break
+            
+            # 確保回答區塊正確結束
+            if not answer_parts[-1].endswith('</div>'):
+                answer_parts.append('</div>')
+                
+            merged_blocks.append('\n'.join(answer_parts))
+            
+        else:
+            merged_blocks.append(current_block)
+            i += 1
+    
+    return merged_blocks
+
 def insert_back_to_top(content_blocks):
     """根據章節內 H2/H3 結構插入回到頂部連結"""
+    # 先合併問答區塊
+    content_blocks = merge_qa_blocks(content_blocks)
+    
     output_blocks = []
     h3_count = 0
     h2_count = 0
