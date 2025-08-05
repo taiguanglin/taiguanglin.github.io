@@ -12,9 +12,87 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
+
+/* 問答樣式 */
+.question {
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    border-left: 4px solid #e75480;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(231, 84, 128, 0.1);
+}
+
+.question-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.questioner {
+    font-weight: 600;
+    color: #e75480;
+    font-size: 14px;
+}
+
+.question-time {
+    background: #f8c8dc;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    color: #b73c65;
+    font-weight: 500;
+}
+
+.question-text {
+    color: #333;
+    line-height: 1.6;
+    margin: 0;
+}
+
+.answer {
+    padding: 15px;
+    background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
+    border-radius: 8px;
+    border-left: 4px solid #ff69b4;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
+}
+
+.answer-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.answerer {
+    font-weight: 700;
+    color: #ff69b4;
+    font-size: 14px;
+}
+
+.answer-text {
+    color: #333;
+    line-height: 1.7;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* 暗色模式 */
 body.dark-mode { background: #3b1c32; color: #fddde6; }
 body.dark-mode a { color: #ff91af; }
 body.dark-mode hr { background: linear-gradient(to right, #5a2d49, #ff91af, #5a2d49); }
+body.dark-mode .question { background: #4a2c3a; border-left-color: #ff91af; box-shadow: 0 2px 8px rgba(255, 145, 175, 0.1); }
+body.dark-mode .question-text { color: #fddde6; }
+body.dark-mode .questioner { color: #ff91af; }
+body.dark-mode .question-time { background: #5a2d49; color: #ff91af; }
+body.dark-mode .answer { background: linear-gradient(135deg, #4a2c3a 0%, #3b1c32 100%); border-left-color: #ff69b4; }
+body.dark-mode .answer-text { color: #fddde6; }
+body.dark-mode .answerer { color: #ff69b4; }
+
 .toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #f8c8dc; border-radius: 5px; }
 body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top { text-align: right; margin: 20px 0; }
@@ -22,3 +100,11 @@ body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top a:hover { color: #ff69b4; }
 .lang-switch { text-align: right; margin-bottom: 10px; }
 .lang-switch a { font-size: 0.9em; margin: 0 5px; }
+
+/* 響應式設計 */
+@media (max-width: 768px) {
+    .question-meta, .answer-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
+    .question, .answer { padding: 12px; }
+    .questioner, .answerer { font-size: 13px; }
+    .question-time { font-size: 11px; }
+}
