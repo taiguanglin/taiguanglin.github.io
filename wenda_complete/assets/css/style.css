@@ -768,6 +768,17 @@ body.dark-mode .qa-pair-bookmark:hover {
 
 /* 響應式設計 */
 @media (max-width: 768px) {
+    /* 基礎移動設備優化 */
+    body { 
+        margin: 20px auto; 
+        padding: 0 15px;
+        font-size: 16px;
+    }
+    
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+    
     /* 保持名字和時間在同一行，但調整字體大小 */
     .question-meta, .answer-meta { 
         flex-direction: row; 
@@ -804,9 +815,38 @@ body.dark-mode .qa-pair-bookmark:hover {
         height: 45px;
         font-size: 16px;
     }
+    
+    /* 社群圖標和導航logo移動設備優化 */
+    .community-icon {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    .community-card h3 {
+        font-size: 1.4rem !important;
+    }
+    
+    .nav-logo h2 {
+        font-size: 1.8rem !important;
+    }
+    
+    .nav-logo span {
+        font-size: 1rem !important;
+    }
 }
 
 @media (max-width: 480px) {
+    /* 極小屏幕基礎優化 */
+    body { 
+        margin: 15px auto; 
+        padding: 0 10px;
+        font-size: 17px;
+    }
+    
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.6rem; }
+    h3 { font-size: 1.4rem; }
+    
     /* 極窄屏幕下仍保持名字時間同行，進一步縮小字體 */
     .questioner, .answerer { font-size: 11px; }
     .question-time { font-size: 9px; padding: 1px 4px; }
@@ -826,6 +866,30 @@ body.dark-mode .qa-pair-bookmark:hover {
     
     .floating-toc.visible {
         left: 20px;
+    }
+    
+    /* 極小屏幕的社群圖標和導航logo優化 */
+    .community-icon {
+        width: 120px !important;
+        height: 120px !important;
+    }
+    
+    .community-card h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.8rem !important;
+    }
+    
+    .community-card p {
+        font-size: 1.1rem !important;
+        margin-bottom: 1.2rem !important;
+    }
+    
+    .nav-logo h2 {
+        font-size: 2rem !important;
+    }
+    
+    .nav-logo span {
+        font-size: 1.1rem !important;
     }
 }
 
