@@ -106,7 +106,12 @@ document.addEventListener('DOMContentLoaded', function() {
       // 添加文档到索引
       miniSearch.addAll(searchIndex);
       
-      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      searchStatus.innerHTML = `
+        搜索准备就绪 (共${searchIndex.length}条记录)
+        <span style="color: #999; font-size: 12px; margin-left: 10px;">
+          💡 点击结果将在新标签页打开
+        </span>
+      `;
       searchInitialized = true;
       
       // 聚焦搜索框
@@ -204,6 +209,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="search-result-title">
               <span class="search-result-type">${typeText}</span>
               ${escapeHtml(result.title)}
+              <span class="search-result-newtab">↗</span>
             </div>
             <div class="search-result-content">${highlightedContext}</div>
             <div class="search-result-url">${result.url}</div>
@@ -278,7 +284,12 @@ document.addEventListener('DOMContentLoaded', function() {
       searchInput.value = '';
       searchResults.style.display = 'none';
       tocHeader.style.display = 'block';
-      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      searchStatus.innerHTML = `
+        搜索准备就绪 (共${searchIndex.length}条记录)
+        <span style="color: #999; font-size: 12px; margin-left: 10px;">
+          💡 点击结果将在新标签页打开
+        </span>
+      `;
     }
     
     // 事件监听
@@ -305,7 +316,17 @@ document.addEventListener('DOMContentLoaded', function() {
       if (item) {
         const url = item.dataset.url;
         if (url) {
-          window.location.href = url;
+          // 检查是否按住修饰键
+          if (e.ctrlKey || e.metaKey) {
+            // Ctrl/Cmd+Click：在新标签页打开（静默）
+            window.open(url, '_blank', 'noopener,noreferrer');
+          } else if (e.shiftKey) {
+            // Shift+Click：在新窗口打开
+            window.open(url, '_blank', 'noopener,noreferrer,width=1200,height=800');
+          } else {
+            // 默认：在新标签页打开，保持搜索状态
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }
         }
       }
     });
