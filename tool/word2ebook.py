@@ -848,6 +848,17 @@ body.dark-mode .qa-pair-bookmark:hover {
 
 /* 響應式設計 */
 @media (max-width: 768px) {
+    /* 基礎移動設備優化 */
+    body { 
+        margin: 20px auto; 
+        padding: 0 15px;
+        font-size: 16px;
+    }
+    
+    h1 { font-size: 1.8rem; }
+    h2 { font-size: 1.5rem; }
+    h3 { font-size: 1.3rem; }
+    
     /* 保持名字和時間在同一行，但調整字體大小 */
     .question-meta, .answer-meta { 
         line-height: 1.5;
@@ -857,36 +868,8 @@ body.dark-mode .qa-pair-bookmark:hover {
         margin-right: 8px;
     }
     .question, .answer { padding: 12px; position: relative; }
-    .questioner, .answerer { font-size: 18px; }
-    .question-time { font-size: 18px; padding: 4px 8px; }
-    .question-text, .answer-text { font-size: 18px; }
-    
-    /* 優化手機端問答按鈕 */
-    .qa-btn {
-        width: 42px;
-        height: 32px;
-        font-size: 24px !important;
-        border-radius: 16px;
-    }
-    
-    .qa-actions {
-        gap: 10px;
-        top: 12px;
-        right: 12px;
-    }
-    
-    /* 優化手機端書籤指示器 */
-    .bookmark-indicator {
-        font-size: 24px !important;
-        bottom: 10px;
-        right: 10px;
-    }
-    
-    /* 優化手機端清空書籤按鈕 */
-    .bookmark-clear-icon {
-        font-size: 18px;
-        padding: 4px;
-    }
+    .questioner, .answerer { font-size: 14px; }
+    .question-time { font-size: 12px; padding: 2px 6px; }
     
     .reading-toolbar {
         right: 10px;
@@ -913,47 +896,41 @@ body.dark-mode .qa-pair-bookmark:hover {
         height: 45px;
         font-size: 16px;
     }
+    
+    /* 社群圖標和導航logo移動設備優化 */
+    .community-icon {
+        width: 100px !important;
+        height: 100px !important;
+    }
+    
+    .community-card h3 {
+        font-size: 1.4rem !important;
+    }
+    
+    .nav-logo h2 {
+        font-size: 1.8rem !important;
+    }
+    
+    .nav-logo span {
+        font-size: 1rem !important;
+    }
 }
 
 @media (max-width: 480px) {
-    /* 手機端優化：保持名字時間同行，統一字體大小 */
-    .questioner, .answerer { font-size: 19px; }
-    .question-time { font-size: 19px; padding: 3px 6px; }
-    .question-text, .answer-text { font-size: 19px; }
-    
-    /* 手機端問答按鈕進一步優化 */
-    .qa-btn {
-        width: 48px;
-        height: 40px;
-        font-size: 36px !important;
-        border-radius: 20px;
+    /* 極小屏幕基礎優化 */
+    body { 
+        margin: 15px auto; 
+        padding: 0 10px;
+        font-size: 17px;
     }
     
-    .qa-actions {
-        gap: 8px;
-        top: 10px;
-        right: 12px;
-    }
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.6rem; }
+    h3 { font-size: 1.4rem; }
     
-    /* 手機端書籤指示器進一步優化 */
-    .bookmark-indicator {
-        font-size: 36px !important;
-        bottom: 12px;
-        right: 12px;
-    }
-    
-    /* 手機端清空書籤按鈕進一步優化 */
-    .bookmark-clear-icon {
-        font-size: 19px;
-        padding: 5px;
-    }
-    
-    /* 確保手機上觸控目標足夠大 */
-    .question:hover .qa-actions,
-    .answer:hover .qa-actions,
-    .qa-actions {
-        opacity: 1; /* 手機上總是顯示按鈕 */
-    }
+    /* 極窄屏幕下仍保持名字時間同行，維持清晰字體 */
+    .questioner, .answerer { font-size: 14px; }
+    .question-time { font-size: 12px; padding: 1px 4px; }
     
     .reading-toolbar {
         position: relative;
@@ -972,22 +949,28 @@ body.dark-mode .qa-pair-bookmark:hover {
         left: 20px;
     }
     
-    /* 手機端右下角按鈕組優化 */
-    .action-buttons {
-        bottom: 15px;
-        right: 15px;
+    /* 極小屏幕的社群圖標和導航logo優化 */
+    .community-icon {
+        width: 120px !important;
+        height: 120px !important;
     }
     
-    .action-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 18px;
+    .community-card h3 {
+        font-size: 1.5rem !important;
+        margin-bottom: 0.8rem !important;
     }
     
-    .action-menu-items .action-btn {
-        width: 44px;
-        height: 44px;
-        font-size: 16px;
+    .community-card p {
+        font-size: 1.1rem !important;
+        margin-bottom: 1.2rem !important;
+    }
+    
+    .nav-logo h2 {
+        font-size: 2rem !important;
+    }
+    
+    .nav-logo span {
+        font-size: 1.1rem !important;
     }
 }
 
@@ -2281,6 +2264,7 @@ HTML_TEMPLATE = """\
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="assets/js/script.js" defer></script>
@@ -2314,6 +2298,7 @@ INDEX_TEMPLATE = """\
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{book_title}</title>
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="assets/js/script.js" defer></script>
