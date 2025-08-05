@@ -8,7 +8,287 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ============ UX 增強功能 ============
   
-  // 搜索功能已移除
+  // ============ 搜索功能 ============
+  let searchIndex = null;
+  let miniSearch = null;
+  
+  // 检测当前页面类型
+  function isIndexPage() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index.html' || filename === 'index_trad.html';
+  }
+  
+  // 获取搜索索引文件名
+  function getSearchIndexFile() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
+  }
+  
+  // 初始化搜索功能
+  async function initSearch() {
+    if (!isIndexPage()) return;
+    
+    const searchInput = document.getElementById('search-input');
+    const searchStatus = document.getElementById('search-status');
+    const searchResults = document.getElementById('search-results');
+    const searchResultsList = document.getElementById('search-results-list');
+    const searchResultsCount = document.getElementById('search-results-count');
+    const searchClear = document.getElementById('search-clear');
+    const tocHeader = document.getElementById('toc-header');
+    
+    if (!searchInput) return;
+    
+    try {
+      searchStatus.textContent = '正在加载搜索索引...';
+      
+      // 加载搜索索引
+      const indexFile = getSearchIndexFile();
+      const response = await fetch(indexFile);
+      
+      if (!response.ok) {
+        throw new Error('无法加载搜索索引');
+      }
+      
+      searchIndex = await response.json();
+      
+      // 初始化MiniSearch
+      miniSearch = new MiniSearch({
+        fields: ['title', 'content'], // 搜索字段
+        storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'], // 存储字段
+        searchOptions: {
+          boost: { title: 3, content: 1 }, // 标题权重更高
+          fuzzy: 0.2, // 模糊搜索
+          prefix: true // 前缀匹配
+        },
+        extractField: (document, fieldName) => {
+          // 为中文优化：简单字符分割
+          const text = document[fieldName] || '';
+          return text;
+        }
+      });
+      
+      // 添加文档到索引
+      miniSearch.addAll(searchIndex);
+      
+      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      
+    } catch (error) {
+      console.error('搜索初始化失败:', error);
+      searchStatus.textContent = '搜索功能不可用';
+      return;
+    }
+    
+    // 搜索功能处理
+    function performSearch(query) {
+      if (!miniSearch || !query || query.trim().length < 2) {
+        searchResults.style.display = 'none';
+        tocHeader.style.display = 'block';
+        if (query && query.trim().length > 0 && query.trim().length < 2) {
+          searchStatus.textContent = '请输入至少2个字符进行搜索';
+        } else {
+          searchStatus.textContent = `搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`;
+        }
+        return;
+      }
+      
+      const trimmedQuery = query.trim();
+      
+      try {
+        // 执行搜索
+        const results = miniSearch.search(trimmedQuery, {
+          boost: { title: 3, content: 1 },
+          fuzzy: 0.2,
+          prefix: true
+        });
+        
+        // 按权重和评分排序
+        results.sort((a, b) => {
+          const scoreA = a.score * (a.weight || 1);
+          const scoreB = b.score * (b.weight || 1);
+          return scoreB - scoreA;
+        });
+        
+        // 限制结果数量
+        const limitedResults = results.slice(0, 20);
+        
+        if (limitedResults.length > 0) {
+          displayResults(limitedResults, trimmedQuery);
+          searchStatus.textContent = `找到 ${results.length} 条结果` + (results.length > 20 ? ' (仅显示前20条)' : '');
+        } else {
+          displayNoResults(trimmedQuery);
+          searchStatus.textContent = '未找到匹配结果';
+        }
+        
+        searchResults.style.display = 'block';
+        tocHeader.style.display = 'none';
+        
+      } catch (error) {
+        console.error('搜索出错:', error);
+        searchStatus.textContent = '搜索出现错误，请重试';
+        // 在出错时也隐藏搜索结果
+        searchResults.style.display = 'none';
+        tocHeader.style.display = 'block';
+      }
+    }
+    
+    // 显示搜索结果
+    function displayResults(results, query) {
+      searchResultsCount.textContent = `找到 ${results.length} 条结果`;
+      
+      searchResultsList.innerHTML = results.map(result => {
+        const typeText = {
+          'heading': '标题',
+          'question': '问题', 
+          'answer': '回答',
+          'content': '内容'
+        }[result.type] || '内容';
+        
+        // 高亮搜索关键词 - 安全处理
+        let highlightedContext = result.context;
+        try {
+          if (query && query.trim()) {
+            const escapedQuery = escapeRegex(query.trim());
+            if (escapedQuery) {
+              const regex = new RegExp(`(${escapedQuery})`, 'gi');
+              highlightedContext = result.context.replace(regex, '<span class="search-result-highlight">$1</span>');
+            }
+          }
+        } catch (e) {
+          console.warn('搜索高亮处理失败:', e);
+          // 降级处理：不高亮但显示内容
+          highlightedContext = result.context;
+        }
+        
+        return `
+          <li class="search-result-item" data-url="${result.url}">
+            <div class="search-result-title">
+              <span class="search-result-type">${typeText}</span>
+              ${escapeHtml(result.title)}
+            </div>
+            <div class="search-result-content">${highlightedContext}</div>
+            <div class="search-result-url">${result.url}</div>
+          </li>
+        `;
+      }).join('');
+    }
+    
+    // 显示无结果
+    function displayNoResults(query) {
+      searchResultsCount.textContent = '未找到结果';
+      searchResultsList.innerHTML = `
+        <li class="search-result-item" style="text-align: center; color: #999;">
+          <div>未找到包含"${escapeHtml(query)}"的内容</div>
+          <div style="font-size: 12px; margin-top: 8px;">尝试使用不同的关键词</div>
+        </li>
+      `;
+    }
+    
+    // 转义正则表达式特殊字符
+    function escapeRegex(str) {
+      if (!str || typeof str !== 'string') {
+        return '';
+      }
+      // 简单的字符串替换，避免复杂的正则表达式
+      const chars = {
+        '\\': '\\\\',
+        '.': '\\.',
+        '*': '\\*',
+        '+': '\\+',
+        '?': '\\?',
+        '^': '\\^',
+        '$': '\\$',
+        '{': '\\{',
+        '}': '\\}',
+        '(': '\\(',
+        ')': '\\)',
+        '|': '\\|',
+        '[': '\\[',
+        ']': '\\]',
+        '/': '\\/'
+      };
+      let result = str;
+      Object.keys(chars).forEach(char => {
+        result = result.split(char).join(chars[char]);
+      });
+      return result;
+    }
+    
+    // 转义HTML特殊字符
+    function escapeHtml(str) {
+      if (!str || typeof str !== 'string') {
+        return '';
+      }
+      try {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      } catch (e) {
+        console.warn('HTML转义失败:', e);
+        // 降级处理：手动替换基本的HTML字符
+        return str.replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
+                  .replace(/'/g, '&#39;');
+      }
+    }
+    
+    // 清除搜索
+    function clearSearch() {
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+      tocHeader.style.display = 'block';
+      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+    }
+    
+    // 事件监听
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      const query = e.target.value.trim();
+      
+      // 防抖处理
+      searchTimeout = setTimeout(() => {
+        performSearch(query);
+      }, 300);
+    });
+    
+    // 清除搜索按钮
+    searchClear.addEventListener('click', clearSearch);
+    
+    // 搜索结果点击
+    searchResultsList.addEventListener('click', (e) => {
+      const item = e.target.closest('.search-result-item');
+      if (item) {
+        const url = item.dataset.url;
+        if (url) {
+          window.location.href = url;
+        }
+      }
+    });
+    
+    // 键盘快捷键
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+F 或 Cmd+F 聚焦搜索框
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+      
+      // ESC 清除搜索
+      if (e.key === 'Escape' && document.activeElement === searchInput) {
+        clearSearch();
+        searchInput.blur();
+      }
+    });
+  }
+  
+  // 如果是首页，初始化搜索
+  if (isIndexPage()) {
+    initSearch();
+  }
 
   // 創建閱讀工具欄
   function createReadingToolbar() {
@@ -949,15 +1229,15 @@ ${answerText}`;
 
       // 行距設置 - 擴大調整幅度讓用戶感受到明顯差異
       case 'line-tight':
-        updateLineHeight(1.2);
+        updateLineHeight(0.4);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
-        updateLineHeight(1.6);
+        updateLineHeight(1.0);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
-        updateLineHeight(2.2);
+        updateLineHeight(2.0);
         updateActiveButton(e.target.parentElement, e.target);
         break;
 

@@ -845,6 +845,212 @@ body.dark-mode .qa-pair-bookmark:hover {
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
 }
 
+/* ============ 搜索功能样式 ============ */
+.search-container {
+    margin: 30px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #fff8f5 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 1px solid #f8c8dc;
+    box-shadow: 0 4px 12px rgba(231, 84, 128, 0.1);
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #f8c8dc;
+    border-radius: 25px;
+    background: #fff;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+#search-input:focus {
+    border-color: #e75480;
+    box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1);
+}
+
+#search-input::placeholder {
+    color: #999;
+}
+
+.search-status {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+    min-height: 20px;
+}
+
+.search-results {
+    margin-top: 20px;
+}
+
+.search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f8c8dc;
+}
+
+.search-results-count {
+    font-weight: 600;
+    color: #e75480;
+}
+
+.search-clear {
+    background: #f8c8dc;
+    color: #b73c65;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.search-clear:hover {
+    background: #e75480;
+    color: white;
+}
+
+.search-results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    margin-bottom: 12px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    border-left: 3px solid #e75480;
+    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 84, 128, 0.15);
+    border-left-color: #ff69b4;
+}
+
+.search-result-title {
+    font-weight: 600;
+    color: #e75480;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.search-result-type {
+    display: inline-block;
+    background: #f8c8dc;
+    color: #b73c65;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    margin-right: 8px;
+}
+
+.search-result-content {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 8px 0;
+}
+
+.search-result-highlight {
+    background: linear-gradient(120deg, #ffeb3b 0%, #ffc107 100%);
+    padding: 1px 2px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+.search-result-url {
+    font-size: 12px;
+    color: #999;
+    text-decoration: none;
+}
+
+/* 暗色模式搜索样式 */
+body.dark-mode .search-container {
+    background: linear-gradient(135deg, #2d1e2e 0%, #1a1a1a 100%);
+    border-color: #4a2c4a;
+}
+
+body.dark-mode #search-input {
+    background: #2d1e2e;
+    color: #fff;
+    border-color: #4a2c4a;
+}
+
+body.dark-mode #search-input::placeholder {
+    color: #ccc;
+}
+
+body.dark-mode #search-input:focus {
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .search-results-header {
+    border-bottom-color: #4a2c4a;
+}
+
+body.dark-mode .search-result-item {
+    background: #2d1e2e;
+    border-left-color: #ff69b4;
+}
+
+body.dark-mode .search-result-content {
+    color: #ccc;
+}
+
+body.dark-mode .search-clear {
+    background: #4a2c4a;
+    color: #ff69b4;
+}
+
+body.dark-mode .search-clear:hover {
+    background: #ff69b4;
+    color: #1a1a1a;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .search-container {
+        margin: 20px 0;
+        padding: 15px;
+    }
+    
+    #search-input {
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+    
+    .search-results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .search-result-item {
+        padding: 12px;
+    }
+}
+
 """
 
 JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
@@ -857,7 +1063,287 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // ============ UX 增強功能 ============
   
-  // 搜索功能已移除
+  // ============ 搜索功能 ============
+  let searchIndex = null;
+  let miniSearch = null;
+  
+  // 检测当前页面类型
+  function isIndexPage() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index.html' || filename === 'index_trad.html';
+  }
+  
+  // 获取搜索索引文件名
+  function getSearchIndexFile() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
+  }
+  
+  // 初始化搜索功能
+  async function initSearch() {
+    if (!isIndexPage()) return;
+    
+    const searchInput = document.getElementById('search-input');
+    const searchStatus = document.getElementById('search-status');
+    const searchResults = document.getElementById('search-results');
+    const searchResultsList = document.getElementById('search-results-list');
+    const searchResultsCount = document.getElementById('search-results-count');
+    const searchClear = document.getElementById('search-clear');
+    const tocHeader = document.getElementById('toc-header');
+    
+    if (!searchInput) return;
+    
+    try {
+      searchStatus.textContent = '正在加载搜索索引...';
+      
+      // 加载搜索索引
+      const indexFile = getSearchIndexFile();
+      const response = await fetch(indexFile);
+      
+      if (!response.ok) {
+        throw new Error('无法加载搜索索引');
+      }
+      
+      searchIndex = await response.json();
+      
+      // 初始化MiniSearch
+      miniSearch = new MiniSearch({
+        fields: ['title', 'content'], // 搜索字段
+        storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'], // 存储字段
+        searchOptions: {
+          boost: { title: 3, content: 1 }, // 标题权重更高
+          fuzzy: 0.2, // 模糊搜索
+          prefix: true // 前缀匹配
+        },
+        extractField: (document, fieldName) => {
+          // 为中文优化：简单字符分割
+          const text = document[fieldName] || '';
+          return text;
+        }
+      });
+      
+      // 添加文档到索引
+      miniSearch.addAll(searchIndex);
+      
+      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      
+    } catch (error) {
+      console.error('搜索初始化失败:', error);
+      searchStatus.textContent = '搜索功能不可用';
+      return;
+    }
+    
+    // 搜索功能处理
+    function performSearch(query) {
+      if (!miniSearch || !query || query.trim().length < 2) {
+        searchResults.style.display = 'none';
+        tocHeader.style.display = 'block';
+        if (query && query.trim().length > 0 && query.trim().length < 2) {
+          searchStatus.textContent = '请输入至少2个字符进行搜索';
+        } else {
+          searchStatus.textContent = `搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`;
+        }
+        return;
+      }
+      
+      const trimmedQuery = query.trim();
+      
+      try {
+        // 执行搜索
+        const results = miniSearch.search(trimmedQuery, {
+          boost: { title: 3, content: 1 },
+          fuzzy: 0.2,
+          prefix: true
+        });
+        
+        // 按权重和评分排序
+        results.sort((a, b) => {
+          const scoreA = a.score * (a.weight || 1);
+          const scoreB = b.score * (b.weight || 1);
+          return scoreB - scoreA;
+        });
+        
+        // 限制结果数量
+        const limitedResults = results.slice(0, 20);
+        
+        if (limitedResults.length > 0) {
+          displayResults(limitedResults, trimmedQuery);
+          searchStatus.textContent = `找到 ${results.length} 条结果` + (results.length > 20 ? ' (仅显示前20条)' : '');
+        } else {
+          displayNoResults(trimmedQuery);
+          searchStatus.textContent = '未找到匹配结果';
+        }
+        
+        searchResults.style.display = 'block';
+        tocHeader.style.display = 'none';
+        
+      } catch (error) {
+        console.error('搜索出错:', error);
+        searchStatus.textContent = '搜索出现错误，请重试';
+        // 在出错时也隐藏搜索结果
+        searchResults.style.display = 'none';
+        tocHeader.style.display = 'block';
+      }
+    }
+    
+    // 显示搜索结果
+    function displayResults(results, query) {
+      searchResultsCount.textContent = `找到 ${results.length} 条结果`;
+      
+      searchResultsList.innerHTML = results.map(result => {
+        const typeText = {
+          'heading': '标题',
+          'question': '问题', 
+          'answer': '回答',
+          'content': '内容'
+        }[result.type] || '内容';
+        
+        // 高亮搜索关键词 - 安全处理
+        let highlightedContext = result.context;
+        try {
+          if (query && query.trim()) {
+            const escapedQuery = escapeRegex(query.trim());
+            if (escapedQuery) {
+              const regex = new RegExp(`(${escapedQuery})`, 'gi');
+              highlightedContext = result.context.replace(regex, '<span class="search-result-highlight">$1</span>');
+            }
+          }
+        } catch (e) {
+          console.warn('搜索高亮处理失败:', e);
+          // 降级处理：不高亮但显示内容
+          highlightedContext = result.context;
+        }
+        
+        return `
+          <li class="search-result-item" data-url="${result.url}">
+            <div class="search-result-title">
+              <span class="search-result-type">${typeText}</span>
+              ${escapeHtml(result.title)}
+            </div>
+            <div class="search-result-content">${highlightedContext}</div>
+            <div class="search-result-url">${result.url}</div>
+          </li>
+        `;
+      }).join('');
+    }
+    
+    // 显示无结果
+    function displayNoResults(query) {
+      searchResultsCount.textContent = '未找到结果';
+      searchResultsList.innerHTML = `
+        <li class="search-result-item" style="text-align: center; color: #999;">
+          <div>未找到包含"${escapeHtml(query)}"的内容</div>
+          <div style="font-size: 12px; margin-top: 8px;">尝试使用不同的关键词</div>
+        </li>
+      `;
+    }
+    
+    // 转义正则表达式特殊字符
+    function escapeRegex(str) {
+      if (!str || typeof str !== 'string') {
+        return '';
+      }
+      // 简单的字符串替换，避免复杂的正则表达式
+      const chars = {
+        '\\\\': '\\\\\\\\',
+        '.': '\\\\.',
+        '*': '\\\\*',
+        '+': '\\\\+',
+        '?': '\\\\?',
+        '^': '\\\\^',
+        '$': '\\\\$',
+        '{': '\\\\{',
+        '}': '\\\\}',
+        '(': '\\\\(',
+        ')': '\\\\)',
+        '|': '\\\\|',
+        '[': '\\\\[',
+        ']': '\\\\]',
+        '/': '\\\\/'
+      };
+      let result = str;
+      Object.keys(chars).forEach(char => {
+        result = result.split(char).join(chars[char]);
+      });
+      return result;
+    }
+    
+    // 转义HTML特殊字符
+    function escapeHtml(str) {
+      if (!str || typeof str !== 'string') {
+        return '';
+      }
+      try {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+      } catch (e) {
+        console.warn('HTML转义失败:', e);
+        // 降级处理：手动替换基本的HTML字符
+        return str.replace(/&/g, '&amp;')
+                  .replace(/</g, '&lt;')
+                  .replace(/>/g, '&gt;')
+                  .replace(/"/g, '&quot;')
+                  .replace(/'/g, '&#39;');
+      }
+    }
+    
+    // 清除搜索
+    function clearSearch() {
+      searchInput.value = '';
+      searchResults.style.display = 'none';
+      tocHeader.style.display = 'block';
+      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+    }
+    
+    // 事件监听
+    let searchTimeout;
+    searchInput.addEventListener('input', (e) => {
+      clearTimeout(searchTimeout);
+      const query = e.target.value.trim();
+      
+      // 防抖处理
+      searchTimeout = setTimeout(() => {
+        performSearch(query);
+      }, 300);
+    });
+    
+    // 清除搜索按钮
+    searchClear.addEventListener('click', clearSearch);
+    
+    // 搜索结果点击
+    searchResultsList.addEventListener('click', (e) => {
+      const item = e.target.closest('.search-result-item');
+      if (item) {
+        const url = item.dataset.url;
+        if (url) {
+          window.location.href = url;
+        }
+      }
+    });
+    
+    // 键盘快捷键
+    document.addEventListener('keydown', (e) => {
+      // Ctrl+F 或 Cmd+F 聚焦搜索框
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+        e.preventDefault();
+        searchInput.focus();
+      }
+      
+      // ESC 清除搜索
+      if (e.key === 'Escape' && document.activeElement === searchInput) {
+        clearSearch();
+        searchInput.blur();
+      }
+    });
+  }
+  
+  // 如果是首页，初始化搜索
+  if (isIndexPage()) {
+    initSearch();
+  }
 
   // 創建閱讀工具欄
   function createReadingToolbar() {
@@ -2144,6 +2630,7 @@ INDEX_TEMPLATE = """\
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{book_title}</title>
 <link rel="stylesheet" href="assets/css/style.css">
+<script src="https://unpkg.com/minisearch/dist/umd/index.min.js"></script>
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
@@ -2151,13 +2638,188 @@ INDEX_TEMPLATE = """\
 <a href="index.html">简体</a> | <a href="index_trad.html">繁體</a>
 </div>
 <h1>{book_title}</h1>
-<h2>Table of Contents</h2>
+
+<!-- 搜索功能 -->
+<div class="search-container">
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="搜索全文内容..." autocomplete="off">
+    <div class="search-status" id="search-status"></div>
+  </div>
+  
+  <!-- 搜索结果 -->
+  <div class="search-results" id="search-results" style="display: none;">
+    <div class="search-results-header">
+      <span class="search-results-count" id="search-results-count"></span>
+      <button class="search-clear" id="search-clear">清除搜索</button>
+    </div>
+    <ul class="search-results-list" id="search-results-list"></ul>
+  </div>
+</div>
+
+<h2 id="toc-header">Table of Contents</h2>
 {toc_items}
 </body>
 </html>
 """
 
 # ========== 功能實作 ==========
+
+def extract_text_content(html_content, base_filename):
+    """從HTML內容中提取搜索索引數據"""
+    from bs4 import BeautifulSoup
+    import hashlib
+    
+    soup = BeautifulSoup(html_content, 'html.parser')
+    search_items = []
+    item_id = 0
+    
+    def clean_text(text):
+        """清理文本，移除多余空白"""
+        return ' '.join(text.split())
+    
+    def get_context(element, length=50):
+        """獲取元素的上下文，前後各length個字符"""
+        text = element.get_text()
+        if len(text) <= length * 2:
+            return clean_text(text)
+        # 簡單截取，避免截斷詞語
+        context = text[:length] + "..." + text[-length:]
+        return clean_text(context)
+    
+    def generate_id(element, item_type, content):
+        """為元素生成唯一ID"""
+        if element.get('id'):
+            return element.get('id')
+        # 基於內容生成ID
+        content_hash = hashlib.md5(content[:100].encode()).hexdigest()[:8]
+        return f"{item_type}-{content_hash}"
+    
+    # 提取標題 (h1, h2, h3, h4)
+    for heading in soup.find_all(['h1', 'h2', 'h3', 'h4']):
+        if heading.get_text().strip():
+            content = clean_text(heading.get_text())
+            element_id = generate_id(heading, 'heading', content)
+            heading['id'] = element_id  # 確保HTML中有ID
+            
+            weight = 4.0 if heading.name == 'h1' else (3.0 if heading.name == 'h2' else 2.0)
+            search_items.append({
+                'id': f"{base_filename}-{item_id}",
+                'title': content,
+                'type': 'heading',
+                'content': content,
+                'context': content,
+                'url': f"{base_filename}#{element_id}",
+                'weight': weight
+            })
+            item_id += 1
+    
+    # 提取問題
+    for question in soup.find_all(class_='question'):
+        if question.get_text().strip():
+            content = clean_text(question.get_text())
+            element_id = generate_id(question, 'question', content)
+            question['id'] = element_id
+            
+            # 提取問題者和時間信息作為標題
+            questioner = question.find(class_='questioner')
+            time_elem = question.find(class_='question-time')
+            title_parts = []
+            if questioner:
+                title_parts.append(questioner.get_text().strip())
+            if time_elem:
+                title_parts.append(time_elem.get_text().strip())
+            title = ' | '.join(title_parts) if title_parts else '問題'
+            
+            search_items.append({
+                'id': f"{base_filename}-{item_id}",
+                'title': title,
+                'type': 'question',
+                'content': content,
+                'context': get_context(question, 80),
+                'url': f"{base_filename}#{element_id}",
+                'weight': 3.0
+            })
+            item_id += 1
+    
+    # 提取答案
+    for answer in soup.find_all(class_='answer'):
+        if answer.get_text().strip():
+            content = clean_text(answer.get_text())
+            element_id = generate_id(answer, 'answer', content)
+            answer['id'] = element_id
+            
+            # 提取回答者信息作為標題
+            answerer = answer.find(class_='answerer')
+            title = answerer.get_text().strip() if answerer else 'Taiguanglin'
+            
+            search_items.append({
+                'id': f"{base_filename}-{item_id}",
+                'title': f"{title}的回答",
+                'type': 'answer',
+                'content': content,
+                'context': get_context(answer, 80),
+                'url': f"{base_filename}#{element_id}",
+                'weight': 2.0
+            })
+            item_id += 1
+    
+    # 提取其他段落內容
+    for para in soup.find_all('p'):
+        if para.get_text().strip() and not para.find_parent(class_=['question', 'answer']):
+            content = clean_text(para.get_text())
+            if len(content) > 20:  # 只索引較長的段落
+                element_id = generate_id(para, 'content', content)
+                para['id'] = element_id
+                
+                search_items.append({
+                    'id': f"{base_filename}-{item_id}",
+                    'title': content[:50] + "..." if len(content) > 50 else content,
+                    'type': 'content',
+                    'content': content,
+                    'context': get_context(para, 60),
+                    'url': f"{base_filename}#{element_id}",
+                    'weight': 1.0
+                })
+                item_id += 1
+    
+    return search_items, str(soup)
+
+def generate_search_index(chapters, output_folder, is_traditional=False):
+    """生成搜索索引JSON文件"""
+    import json
+    
+    all_search_items = []
+    
+    for chapter in chapters:
+        filename = chapter['filename']
+        if is_traditional:
+            filename = get_traditional_filename(filename)
+        
+        # 從已生成的HTML文件中讀取內容
+        html_file_path = os.path.join(output_folder, filename)
+        if os.path.exists(html_file_path):
+            with open(html_file_path, 'r', encoding='utf-8') as f:
+                html_content = f.read()
+            
+            base_filename = os.path.splitext(filename)[0]
+            search_items, updated_html = extract_text_content(html_content, filename)
+            all_search_items.extend(search_items)
+            
+            # 更新HTML文件，確保所有元素都有ID
+            with open(html_file_path, 'w', encoding='utf-8') as f:
+                f.write(updated_html)
+    
+    # 按權重和相關性排序
+    all_search_items.sort(key=lambda x: x['weight'], reverse=True)
+    
+    # 生成索引文件
+    index_filename = 'search_index_trad.json' if is_traditional else 'search_index.json'
+    index_path = os.path.join(output_folder, index_filename)
+    
+    with open(index_path, 'w', encoding='utf-8') as f:
+        json.dump(all_search_items, f, ensure_ascii=False, indent=2)
+    
+    print(f"✅ 搜索索引已生成：{index_filename} (共 {len(all_search_items)} 條記錄)")
 
 def extract_images(doc, output_folder):
     """從 Word 取出圖片到 output_folder，返回 mapping {rId: filename}"""
@@ -2583,6 +3245,15 @@ def convert_word_to_ebook(input_file, output_folder):
             book_title=cc.convert(book_title), 
             toc_items=trad_toc_html
         ))
+
+    # ========== 生成搜索索引 ==========
+    print("🔍 正在生成搜索索引...")
+    
+    # 生成簡體版搜索索引
+    generate_search_index(chapters, output_folder, is_traditional=False)
+    
+    # 生成繁體版搜索索引  
+    generate_search_index(trad_chapters, output_folder, is_traditional=True)
 
     # 寫入 CSS 與 JS
     with open(os.path.join(output_folder, "assets/css/style.css"), "w", encoding="utf-8") as f:
