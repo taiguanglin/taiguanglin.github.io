@@ -1,20 +1,22 @@
-body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff; color: #333; transition: 0.3s; }
-h1 { color: #2c3e50; border-bottom: 2px solid #ddd; padding-bottom: 10px; }
-h2 { color: #34495e; margin-top: 40px; }
-h3 { color: #4d6273; margin-top: 25px; }
+body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
+h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
+h2 { color: #d44d75; margin-top: 40px; }
+h3 { color: #b73c65; margin-top: 25px; }
 p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
-a { color: #2980b9; text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { color: #e75480; text-decoration: none; }
+a:hover { text-decoration: underline; color: #ff69b4; }
 .nav { margin-bottom: 20px; }
 .nav-footer { display: flex; justify-content: space-between; margin-top: 50px; }
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
-body.dark-mode { background: #121212; color: #ddd; }
-body.dark-mode a { color: #81caff; }
-.toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #eee; border-radius: 5px; }
-body.dark-mode .toggle-dark { background: #333; color: #fff; }
+body.dark-mode { background: #3b1c32; color: #fddde6; }
+body.dark-mode a { color: #ff91af; }
+.toggle-dark { position: fixed; top: 20px; right: 20px; cursor: pointer; padding: 6px 12px; background: #f8c8dc; border-radius: 5px; }
+body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .back-to-top { text-align: right; margin: 20px 0; }
-.back-to-top a { font-size: 0.9em; color: #888; }
-.back-to-top a:hover { color: #2980b9; }
+.back-to-top a { font-size: 0.9em; color: #d44d75; }
+.back-to-top a:hover { color: #ff69b4; }
+.lang-switch { text-align: right; margin-bottom: 10px; }
+.lang-switch a { font-size: 0.9em; margin: 0 5px; }

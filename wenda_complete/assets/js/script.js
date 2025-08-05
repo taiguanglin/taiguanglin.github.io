@@ -15,14 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
     toggleBtn.textContent = isDark ? '☀️ 日間模式' : '🌙 夜間模式';
   });
 
-  // 平滑滾動章節內 TOC
-  document.querySelectorAll('.toc a[href^="#"]').forEach(anchor => {
+  // 平滑滾動章節內 TOC 與回到頂部
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
+      const href = this.getAttribute('href');
+      const target = document.querySelector(href);
       if (target) {
+        e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        history.pushState(null, null, this.getAttribute('href')); // 更新 URL hash
+        history.pushState(null, null, href);
       }
     });
   });
