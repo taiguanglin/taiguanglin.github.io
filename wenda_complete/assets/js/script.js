@@ -179,9 +179,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.createElement('div');
     buttons.className = 'action-buttons';
     buttons.innerHTML = 
-      '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
-      '<button class="action-btn secondary" data-action="top" title="回到頂部">↑</button>' +
-      '<button class="action-btn secondary" data-action="settings" title="設置">⚙️</button>';
+      '<div class="action-menu">' +
+        '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">⋯</button>' +
+        '<div class="action-menu-items">' +
+          '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
+          '<button class="action-btn" data-action="top" title="回到頂部">↑</button>' +
+          '<button class="action-btn" data-action="settings" title="設置">⚙️</button>' +
+        '</div>' +
+      '</div>';
     document.body.appendChild(buttons);
     return buttons;
   }
@@ -913,6 +918,16 @@ ${answerText}`;
 
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
+    
+    // 點擊外部區域關閉菜單
+    if (!action && !e.target.closest('.action-menu')) {
+      const openMenu = document.querySelector('.action-menu.expanded');
+      if (openMenu) {
+        openMenu.classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+      }
+    }
+    
     if (!action) return;
 
     switch (action) {
@@ -973,17 +988,31 @@ ${answerText}`;
         break;
 
       // 操作按鈕
+      case 'toggle-menu':
+        const actionMenu = e.target.closest('.action-menu');
+        actionMenu.classList.toggle('expanded');
+        e.target.classList.toggle('expanded');
+        break;
       case 'toc':
         floatingTOC.classList.toggle('visible');
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'close-toc':
         floatingTOC.classList.remove('visible');
         break;
       case 'top':
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'settings':
         toolbar.classList.toggle('hidden');
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'close-toolbar':
         toolbar.classList.add('hidden');
