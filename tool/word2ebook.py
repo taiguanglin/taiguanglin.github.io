@@ -253,7 +253,7 @@ body.dark-mode .answerer { color: #ff69b4; }
     margin: 2px 0;
     border-radius: 6px;
     cursor: pointer;
-    transition: background 0.2s ease;
+    transition: all 0.3s ease;
     font-size: 13px;
     border-left: 3px solid transparent;
 }
@@ -275,9 +275,13 @@ body.dark-mode .answerer { color: #ff69b4; }
 }
 
 .floating-toc-item.active {
-    background: rgba(231, 84, 128, 0.15);
+    background: rgba(231, 84, 128, 0.2);
     border-left-color: #e75480;
-    font-weight: 500;
+    font-weight: 600;
+    color: #e75480;
+    border-radius: 4px;
+    transform: translateX(2px);
+    box-shadow: 0 1px 4px rgba(231, 84, 128, 0.3);
 }
 
 /* 浮動目錄標籤頁 */
@@ -542,8 +546,10 @@ body.dark-mode .floating-toc-item:hover {
 }
 
 body.dark-mode .floating-toc-item.active {
-    background: rgba(255, 105, 180, 0.3);
+    background: rgba(255, 105, 180, 0.25);
     border-left-color: #ff69b4;
+    color: #ff69b4;
+    box-shadow: 0 1px 4px rgba(255, 105, 180, 0.4);
 }
 
 /* 書籤視覺標識 */
@@ -944,11 +950,28 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         const text = link.textContent;
         const href = link.getAttribute('href');
         
-        // 判斷是否為子目錄（基於縮進或嵌套結構）
+        // 更準確的層級判斷：計算嵌套深度
         const listItem = link.closest('li');
-        const parentList = listItem.parentElement;
-        const isSubItem = parentList.parentElement && parentList.parentElement.tagName === 'LI';
-        const levelClass = isSubItem ? ' level-h3' : '';
+        let level = 0;
+        let currentElement = listItem.parentElement; // 从ul开始计算
+        
+        // 向上遍歷，計算嵌套的ul層數
+        while (currentElement && currentElement.tagName === 'UL') {
+          level++;
+          // 跳过li，直接到下一个ul
+          currentElement = currentElement.parentElement;
+          if (currentElement && currentElement.tagName === 'LI') {
+            currentElement = currentElement.parentElement;
+          }
+        }
+        
+        // 根據層級添加對應的class (level=1是第一层，无缩进)
+        let levelClass = '';
+        if (level === 2) {
+          levelClass = ' level-h3';
+        } else if (level >= 3) {
+          levelClass = ' level-h4';
+        }
         
         // 為首頁TOC項目使用特殊的data屬性
         tocItems += '<div class="floating-toc-item' + levelClass + '" data-href="' + href + '">' + text + '</div>';
@@ -1573,6 +1596,43 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // 章節跟踪功能
+  function updateCurrentSection() {
+    // 首頁跳過章節跟踪
+    if (currentChapter.isHomepage) {
+      return;
+    }
+    
+    const headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
+    const scrollTop = window.pageYOffset;
+    const offset = 100; // 偏移量，調整觸發點
+    
+    let currentSection = null;
+    
+    // 找到最接近當前位置的章節
+    headings.forEach((heading) => {
+      const rect = heading.getBoundingClientRect();
+      const elementTop = scrollTop + rect.top;
+      
+      if (elementTop <= scrollTop + offset) {
+        currentSection = heading;
+      }
+    });
+    
+    // 更新TOC高亮狀態
+    const tocItems = document.querySelectorAll('.floating-toc-item[data-target]');
+    tocItems.forEach(item => {
+      item.classList.remove('active');
+      
+      if (currentSection) {
+        const targetId = '#' + currentSection.id;
+        if (item.dataset.target === targetId) {
+          item.classList.add('active');
+        }
+      }
+    });
+  }
+
   // 顯示通知
   function showToast(message) {
     const toast = document.createElement('div');
@@ -1621,6 +1681,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   updateBookmarkCount();
   updateThemeButtons();
   restoreBookmarkVisualStates();
+  
+  // 延遲執行章節跟踪，確保頁面完全渲染
+  setTimeout(updateCurrentSection, 100);
 
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
@@ -1796,7 +1859,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       const element = document.querySelector(target);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        floatingTOC.classList.remove('visible');
+        // 移除自動關閉sidebar，讓用戶可以連續導航
+        // floatingTOC.classList.remove('visible');
       }
     }
     
@@ -1894,9 +1958,19 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     activeBtn.classList.add('active');
   }
 
-  // 滾動事件
-  window.addEventListener('scroll', updateReadingProgress);
+  // 滾動事件（帶節流優化）
+  let scrollTimeout;
+  function handleScroll() {
+    updateReadingProgress();
+    
+    // 節流處理章節跟踪，避免過度頻繁更新
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(updateCurrentSection, 50);
+  }
+  
+  window.addEventListener('scroll', handleScroll);
   updateReadingProgress();
+  updateCurrentSection(); // 初始化當前章節
 
   // 快捷鍵支持
   document.addEventListener('keydown', (e) => {
