@@ -538,14 +538,21 @@ body.dark-mode .floating-toc-item.active {
     box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
 }
 
-.bookmarked::before {
-    content: '🔖';
+.bookmark-indicator {
     position: absolute;
     bottom: 8px;
     right: 8px;
     font-size: 16px;
     opacity: 0.8;
     z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.bookmark-indicator:hover {
+    opacity: 1;
+    transform: scale(1.1);
 }
 
 body.dark-mode .bookmarked {
@@ -640,16 +647,59 @@ body.dark-mode .floating-toc-tab:hover {
     border-left: 4px solid #e75480;
 }
 
+.chapter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
 .current-chapter-title {
     font-size: 14px;
     font-weight: 600;
     color: #e75480;
-    margin-bottom: 4px;
+    flex: 1;
 }
 
 .current-chapter-count {
     font-size: 12px;
     color: #666;
+}
+
+.bookmark-clear-icon {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: all 0.2s ease;
+    padding: 4px;
+    border-radius: 4px;
+    position: relative;
+}
+
+.bookmark-clear-icon:hover {
+    opacity: 1;
+    background: rgba(255, 71, 87, 0.1);
+    transform: scale(1.1);
+}
+
+.bookmark-clear-icon:hover::after {
+    content: '清空書籤';
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.bookmark-clear-icon:active {
+    transform: scale(0.95);
 }
 
 body.dark-mode .current-chapter-info {
@@ -664,6 +714,17 @@ body.dark-mode .current-chapter-title {
 body.dark-mode .current-chapter-count {
     color: #fddde6;
 }
+
+body.dark-mode .bookmark-clear-icon:hover {
+    background: rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .bookmark-clear-icon:hover::after {
+    background: #5a2d49;
+    color: #fddde6;
+}
+
+
 
 /* 響應式設計 */
 @media (max-width: 768px) {
@@ -840,20 +901,38 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     const toc = document.createElement('div');
     toc.className = 'floating-toc';
     
-    // 收集所有標題
-    const headings = document.querySelectorAll('h2, h3, h4');
     let tocItems = '';
     
-    headings.forEach((heading, index) => {
-      const text = heading.textContent;
-      const id = heading.id || ('heading-' + index);
-      if (!heading.id) heading.id = id;
-      
-      const level = heading.tagName.toLowerCase();
-      const levelClass = level !== 'h2' ? ' level-' + level : '';
-      
-      tocItems += '<div class="floating-toc-item' + levelClass + '" data-target="#' + id + '">' + text + '</div>';
-    });
+    if (currentChapter.isHomepage) {
+      // 首頁：從TOC連結提取目錄結構
+      const tocLinks = document.querySelectorAll('h2 + ul li a, ul li a');
+      tocLinks.forEach((link, index) => {
+        const text = link.textContent;
+        const href = link.getAttribute('href');
+        
+        // 判斷是否為子目錄（基於縮進或嵌套結構）
+        const listItem = link.closest('li');
+        const parentList = listItem.parentElement;
+        const isSubItem = parentList.parentElement && parentList.parentElement.tagName === 'LI';
+        const levelClass = isSubItem ? ' level-h3' : '';
+        
+        // 為首頁TOC項目使用特殊的data屬性
+        tocItems += '<div class="floating-toc-item' + levelClass + '" data-href="' + href + '">' + text + '</div>';
+      });
+    } else {
+      // 其他頁面：收集標題
+      const headings = document.querySelectorAll('h2, h3, h4');
+      headings.forEach((heading, index) => {
+        const text = heading.textContent;
+        const id = heading.id || ('heading-' + index);
+        if (!heading.id) heading.id = id;
+        
+        const level = heading.tagName.toLowerCase();
+        const levelClass = level !== 'h2' ? ' level-' + level : '';
+        
+        tocItems += '<div class="floating-toc-item' + levelClass + '" data-target="#' + id + '">' + text + '</div>';
+      });
+    }
     
     // 根據是否為首頁決定標籤頁內容
     let tabsHtml = '';
@@ -972,12 +1051,27 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   function addBookmarkVisualIndicator(element) {
     if (!element.classList.contains('bookmarked')) {
       element.classList.add('bookmarked');
+      
+      // 添加可點擊的書籤標記
+      if (!element.querySelector('.bookmark-indicator')) {
+        const indicator = document.createElement('span');
+        indicator.className = 'bookmark-indicator';
+        indicator.textContent = '🔖';
+        indicator.title = '點擊移除書籤';
+        element.appendChild(indicator);
+      }
     }
   }
   
   // 移除書籤視覺標識
   function removeBookmarkVisualIndicator(element) {
     element.classList.remove('bookmarked');
+    
+    // 移除書籤標記元素
+    const indicator = element.querySelector('.bookmark-indicator');
+    if (indicator) {
+      element.removeChild(indicator);
+    }
   }
   
   // 恢復所有書籤的視覺狀態
@@ -1027,8 +1121,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   // 初始化當前文件信息（文件級書籤，無需監聽滾動）
   let currentChapter = getCurrentChapter();
 
-  function addBookmark(element) {
-    // 首頁不允許添加書籤
+  function toggleBookmark(element) {
+    // 首頁不允許操作書籤
     if (currentChapter.isHomepage) {
       showToast('首頁不支持書籤功能');
       return;
@@ -1041,10 +1135,23 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     if (!isQuestion && !isAnswer) return;
     
     // 生成唯一ID
-    const id = 'bookmark-' + Date.now();
-    element.id = element.id || id;
+    const id = element.id || ('bookmark-' + Date.now());
+    element.id = id;
     
-    // 查找所屬章節
+    // 檢查是否已存在書籤
+    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === id);
+    
+    if (existingBookmark) {
+      // 已存在，移除書籤
+      removeBookmarkVisualIndicator(element);
+      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== id);
+      saveBookmarks(updatedBookmarks);
+      renderBookmarks();
+      showToast('已從書籤移除');
+      return;
+    }
+    
+    // 不存在，添加書籤
     const chapter = findChapterForElement(element);
     
     // 提取內容
@@ -1066,16 +1173,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       preview = textEl ? textEl.textContent.substring(0, 100) + '...' : '';
     }
     
-    // 檢查是否已存在
-    const exists = bookmarks.some(bookmark => bookmark.elementId === element.id);
-    if (exists) {
-      showToast('此內容已在書籤中');
-      return;
-    }
-    
     const bookmark = {
-      id: id,
-      elementId: element.id,
+      id: 'bookmark-' + Date.now(),
+      elementId: id,
       type: isQuestion ? 'question' : 'answer',
       questioner: questioner,
       time: time,
@@ -1109,6 +1209,43 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     showToast('已從書籤移除');
   }
   
+  function clearCurrentChapterBookmarks() {
+    // 首頁不允許清空書籤
+    if (currentChapter.isHomepage) {
+      showToast('首頁不支持書籤功能');
+      return;
+    }
+    
+    const currentBookmarks = getCurrentChapterBookmarks();
+    if (currentBookmarks.length === 0) {
+      showToast('本文件暫無書籤');
+      return;
+    }
+    
+    // 確認對話框
+    if (!confirm(`確定要清空本文件的所有 ${currentBookmarks.length} 個書籤嗎？此操作無法撤銷。`)) {
+      return;
+    }
+    
+    // 移除當前文件所有書籤的視覺標識
+    currentBookmarks.forEach(bookmark => {
+      const element = document.getElementById(bookmark.elementId);
+      if (element) {
+        removeBookmarkVisualIndicator(element);
+      }
+    });
+    
+    // 從總書籤列表中移除當前文件的書籤
+    const allBookmarks = getBookmarks();
+    const updatedBookmarks = allBookmarks.filter(bookmark => 
+      !bookmark.chapter || bookmark.chapter.id !== currentChapter.id
+    );
+    
+    saveBookmarks(updatedBookmarks);
+    renderBookmarks();
+    showToast(`已清空本文件的 ${currentBookmarks.length} 個書籤`);
+  }
+  
   function renderBookmarks() {
     const bookmarksList = document.getElementById('bookmarks-list');
     
@@ -1130,10 +1267,13 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     
     let bookmarksHTML = '';
     
-    // 添加當前文件標題
+    // 添加當前文件標題和清空按鈕
     bookmarksHTML += 
       '<div class="current-chapter-info">' +
-        '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
+        '<div class="chapter-header">' +
+          '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
+          '<button class="bookmark-clear-icon" data-action="clear-bookmarks" title="清空本文件所有書籤">🗑️</button>' +
+        '</div>' +
         '<div class="current-chapter-count">' + chapterBookmarks.length + ' 個書籤</div>' +
       '</div>';
     
@@ -1343,7 +1483,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       case 'bookmark':
         const bookmarkElement = e.target.closest('.question, .answer');
         if (bookmarkElement) {
-          addBookmark(bookmarkElement);
+          toggleBookmark(bookmarkElement);
         }
         break;
       case 'share':
@@ -1357,6 +1497,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
           showToast('鏈接已複製');
         }
         break;
+      case 'clear-bookmarks':
+        clearCurrentChapterBookmarks();
+        break;
     }
   });
 
@@ -1364,6 +1507,14 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', (e) => {
     // 目錄項點擊
     if (e.target.classList.contains('floating-toc-item')) {
+      // 首頁的TOC項目：跳轉到其他頁面
+      if (e.target.dataset.href) {
+        const href = e.target.dataset.href;
+        window.location.href = href;
+        return;
+      }
+      
+      // 其他頁面：頁面內跳轉
       const target = e.target.dataset.target;
       const element = document.querySelector(target);
       if (element) {
@@ -1411,7 +1562,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
         
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        floatingTOC.classList.remove('visible');
+        // 移除自動關閉側邊欄，讓用戶可以連續瀏覽書籤
+        // floatingTOC.classList.remove('visible');
       }
     }
     
@@ -1421,6 +1573,15 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       const bookmarkId = e.target.dataset.bookmarkId;
       if (bookmarkId) {
         removeBookmark(bookmarkId);
+      }
+    }
+    
+    // 書籤標記點擊 - 移除書籤
+    if (e.target.classList.contains('bookmark-indicator')) {
+      e.stopPropagation();
+      const bookmarkedElement = e.target.closest('.question, .answer');
+      if (bookmarkedElement) {
+        toggleBookmark(bookmarkedElement);
       }
     }
   });
