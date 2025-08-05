@@ -2,6 +2,7 @@ import os
 import sys
 import shutil
 import re
+import argparse
 from docx import Document
 from docx.oxml.ns import qn
 from slugify import slugify
@@ -845,6 +846,45 @@ body.dark-mode .qa-pair-bookmark:hover {
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
 }
 
+/* ============ 搜索激活按钮样式 ============ */
+.search-activation {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.search-activate-btn {
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(231, 84, 128, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.search-activate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
+    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+}
+
+.search-activate-btn:active {
+    transform: translateY(0);
+}
+
+.search-activate-hint {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    opacity: 0.9;
+    margin-top: 4px;
+}
+
 /* ============ 搜索功能样式 ============ */
 .search-container {
     margin: 30px 0;
@@ -853,6 +893,18 @@ body.dark-mode .qa-pair-bookmark:hover {
     border-radius: 12px;
     border: 1px solid #f8c8dc;
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .search-box {
@@ -907,7 +959,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     color: #e75480;
 }
 
-.search-clear {
+.search-clear, .search-collapse {
     background: #f8c8dc;
     color: #b73c65;
     border: none;
@@ -916,10 +968,21 @@ body.dark-mode .qa-pair-bookmark:hover {
     cursor: pointer;
     font-size: 12px;
     transition: all 0.3s ease;
+    margin-left: 8px;
 }
 
-.search-clear:hover {
+.search-clear:hover, .search-collapse:hover {
     background: #e75480;
+    color: white;
+}
+
+.search-collapse {
+    background: #e0e0e0;
+    color: #666;
+}
+
+.search-collapse:hover {
+    background: #999;
     color: white;
 }
 
@@ -986,6 +1049,16 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 /* 暗色模式搜索样式 */
+body.dark-mode .search-activate-btn {
+    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .search-activate-btn:hover {
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
 body.dark-mode .search-container {
     background: linear-gradient(135deg, #2d1e2e 0%, #1a1a1a 100%);
     border-color: #4a2c4a;
@@ -1019,18 +1092,37 @@ body.dark-mode .search-result-content {
     color: #ccc;
 }
 
-body.dark-mode .search-clear {
+body.dark-mode .search-clear, body.dark-mode .search-collapse {
     background: #4a2c4a;
     color: #ff69b4;
 }
 
-body.dark-mode .search-clear:hover {
+body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover {
     background: #ff69b4;
     color: #1a1a1a;
 }
 
+body.dark-mode .search-collapse {
+    background: #333;
+    color: #ccc;
+}
+
+body.dark-mode .search-collapse:hover {
+    background: #555;
+    color: #fff;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
+    .search-activate-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+    
+    .search-activate-hint {
+        font-size: 11px;
+    }
+    
     .search-container {
         margin: 20px 0;
         padding: 15px;
@@ -1063,9 +1155,10 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // ============ UX 增強功能 ============
   
-  // ============ 搜索功能 ============
+  // ============ 搜索功能（延迟加载） ============
   let searchIndex = null;
   let miniSearch = null;
+  let searchInitialized = false;
   
   // 检测当前页面类型
   function isIndexPage() {
@@ -1081,22 +1174,55 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
   }
   
-  // 初始化搜索功能
+  // 激活搜索功能
+  async function activateSearch() {
+    if (searchInitialized) {
+      // 如果已经初始化，直接显示搜索容器
+      const searchContainer = document.getElementById('search-container');
+      const searchActivation = document.querySelector('.search-activation');
+      if (searchContainer && searchActivation) {
+        searchActivation.style.display = 'none';
+        searchContainer.style.display = 'block';
+        // 聚焦搜索框
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          setTimeout(() => searchInput.focus(), 100);
+        }
+      }
+      return;
+    }
+    
+    await initSearch();
+  }
+  
+  // 初始化搜索功能（内部函数）
   async function initSearch() {
     if (!isIndexPage()) return;
     
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
     const searchInput = document.getElementById('search-input');
     const searchStatus = document.getElementById('search-status');
     const searchResults = document.getElementById('search-results');
     const searchResultsList = document.getElementById('search-results-list');
     const searchResultsCount = document.getElementById('search-results-count');
     const searchClear = document.getElementById('search-clear');
+    const searchCollapse = document.getElementById('search-collapse');
     const tocHeader = document.getElementById('toc-header');
     
-    if (!searchInput) return;
+    if (!searchInput || !searchContainer) return;
     
     try {
+      // 显示搜索容器，隐藏激活按钮
+      if (searchActivation) searchActivation.style.display = 'none';
+      searchContainer.style.display = 'block';
+      
       searchStatus.textContent = '正在加载搜索索引...';
+      
+      // 检查MiniSearch是否可用
+      if (typeof MiniSearch === 'undefined') {
+        throw new Error('MiniSearch库未加载');
+      }
       
       // 加载搜索索引
       const indexFile = getSearchIndexFile();
@@ -1128,10 +1254,14 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       miniSearch.addAll(searchIndex);
       
       searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      searchInitialized = true;
+      
+      // 聚焦搜索框
+      setTimeout(() => searchInput.focus(), 100);
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
-      searchStatus.textContent = '搜索功能不可用';
+      searchStatus.textContent = '搜索功能不可用：' + error.message;
       return;
     }
     
@@ -1313,6 +1443,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     // 清除搜索按钮
     searchClear.addEventListener('click', clearSearch);
     
+    // 收起搜索按钮
+    searchCollapse.addEventListener('click', collapseSearch);
+    
     // 搜索结果点击
     searchResultsList.addEventListener('click', (e) => {
       const item = e.target.closest('.search-result-item');
@@ -1326,23 +1459,57 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     
     // 键盘快捷键
     document.addEventListener('keydown', (e) => {
-      // Ctrl+F 或 Cmd+F 聚焦搜索框
+      // Ctrl+F 或 Cmd+F 激活搜索
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
-        searchInput.focus();
+        if (searchInitialized) {
+          searchInput.focus();
+        } else {
+          activateSearch();
+        }
       }
       
-      // ESC 清除搜索
+      // ESC 收起搜索
       if (e.key === 'Escape' && document.activeElement === searchInput) {
-        clearSearch();
-        searchInput.blur();
+        collapseSearch();
       }
     });
   }
   
-  // 如果是首页，初始化搜索
+  // 收起搜索功能
+  function collapseSearch() {
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const tocHeader = document.getElementById('toc-header');
+    
+    if (searchContainer && searchActivation) {
+      // 清除搜索内容
+      if (searchInput) searchInput.value = '';
+      if (searchResults) searchResults.style.display = 'none';
+      if (tocHeader) tocHeader.style.display = 'block';
+      
+      // 隐藏搜索容器，显示激活按钮
+      searchContainer.style.display = 'none';
+      searchActivation.style.display = 'block';
+    }
+  }
+  
+  // 如果是首页，添加搜索激活事件监听
   if (isIndexPage()) {
-    initSearch();
+    const searchActivateBtn = document.getElementById('search-activate-btn');
+    if (searchActivateBtn) {
+      searchActivateBtn.addEventListener('click', activateSearch);
+    }
+    
+    // Ctrl+F 快捷键激活搜索
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !searchInitialized) {
+        e.preventDefault();
+        activateSearch();
+      }
+    });
   }
 
   // 創建閱讀工具欄
@@ -2630,7 +2797,30 @@ INDEX_TEMPLATE = """\
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{book_title}</title>
 <link rel="stylesheet" href="assets/css/style.css">
-<script src="https://unpkg.com/minisearch/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+<script>
+// 备用CDN加载
+if (typeof MiniSearch === 'undefined') {{
+  console.log('主CDN失败，尝试备用CDN...');
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js';
+  script.onload = function() {{
+    console.log('备用CDN加载成功');
+    // 重新初始化搜索
+    if (typeof initSearch === 'function') {{
+      initSearch();
+    }}
+  }};
+  script.onerror = function() {{
+    console.error('所有CDN都失败了，搜索功能不可用');
+    const searchInput = document.getElementById('search-input');
+    const searchStatus = document.getElementById('search-status');
+    if (searchInput) searchInput.disabled = true;
+    if (searchStatus) searchStatus.textContent = '搜索功能暂不可用（网络问题）';
+  }};
+  document.head.appendChild(script);
+}}
+</script>
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
@@ -2639,11 +2829,19 @@ INDEX_TEMPLATE = """\
 </div>
 <h1>{book_title}</h1>
 
-<!-- 搜索功能 -->
-<div class="search-container">
+<!-- 搜索激活按钮 -->
+<div class="search-activation">
+  <button class="search-activate-btn" id="search-activate-btn">
+    🔍 启用全文搜索
+    <span class="search-activate-hint">点击启用跨章节搜索功能</span>
+  </button>
+</div>
+
+<!-- 搜索功能（默认隐藏） -->
+<div class="search-container" id="search-container" style="display: none;">
   <div class="search-box">
     <input type="text" id="search-input" placeholder="搜索全文内容..." autocomplete="off">
-    <div class="search-status" id="search-status"></div>
+    <div class="search-status" id="search-status">正在初始化搜索功能...</div>
   </div>
   
   <!-- 搜索结果 -->
@@ -2651,6 +2849,7 @@ INDEX_TEMPLATE = """\
     <div class="search-results-header">
       <span class="search-results-count" id="search-results-count"></span>
       <button class="search-clear" id="search-clear">清除搜索</button>
+      <button class="search-collapse" id="search-collapse">收起搜索</button>
     </div>
     <ul class="search-results-list" id="search-results-list"></ul>
   </div>
@@ -3127,7 +3326,7 @@ def get_simplified_filename(filename):
     """將繁體檔名轉換為簡體檔名"""
     return filename.replace("_trad.html", ".html")
 
-def convert_word_to_ebook(input_file, output_folder):
+def convert_word_to_ebook(input_file, output_folder, generate_search=True, generate_traditional=True):
     if os.path.exists(output_folder):
         shutil.rmtree(output_folder)
     os.makedirs(os.path.join(output_folder, "assets/css"), exist_ok=True)
@@ -3201,59 +3400,68 @@ def convert_word_to_ebook(input_file, output_folder):
         f.write(INDEX_TEMPLATE.format(book_title=book_title, toc_items=toc_html))
 
     # ========== 生成繁體 HTML ==========
-    cc = OpenCC('s2t')
+    trad_chapters = []  # 初始化，即使不生成繁体版也需要这个变量
     
-    for i, ch in enumerate(chapters):
-        trad_filename = get_traditional_filename(ch["filename"])
+    if generate_traditional:
+        print("🈴 正在生成繁體版...")
+        cc = OpenCC('s2t')
         
-        # 繁體版的上下章導航
-        prev_link = ""
-        next_link = ""
-        if i > 0:
-            prev_trad_filename = get_traditional_filename(chapters[i-1]["filename"])
-            prev_link = f'<a href="{prev_trad_filename}">⬅️ 上一章</a>'
-        if i < len(chapters)-1:
-            next_trad_filename = get_traditional_filename(chapters[i+1]["filename"])
-            next_link = f'<a href="{next_trad_filename}">下一章 ➡️</a>'
-        
-        # 繁體版的語言切換連結
-        lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
-        
-        html_page = HTML_TEMPLATE.format(
-            title=cc.convert(ch["title"]),
-            chapter_toc=cc.convert(ch["chapter_toc"]),
-            content=cc.convert(ch["content"]),
-            prev_link=cc.convert(prev_link),
-            next_link=cc.convert(next_link),
-            home_link="index_trad.html",
-            lang_switch_links=cc.convert(lang_switch_links)
-        )
-        with open(os.path.join(output_folder, trad_filename), "w", encoding="utf-8") as f:
-            f.write(html_page)
+        for i, ch in enumerate(chapters):
+            trad_filename = get_traditional_filename(ch["filename"])
+            
+            # 繁體版的上下章導航
+            prev_link = ""
+            next_link = ""
+            if i > 0:
+                prev_trad_filename = get_traditional_filename(chapters[i-1]["filename"])
+                prev_link = f'<a href="{prev_trad_filename}">⬅️ 上一章</a>'
+            if i < len(chapters)-1:
+                next_trad_filename = get_traditional_filename(chapters[i+1]["filename"])
+                next_link = f'<a href="{next_trad_filename}">下一章 ➡️</a>'
+            
+            # 繁體版的語言切換連結
+            lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
+            
+            html_page = HTML_TEMPLATE.format(
+                title=cc.convert(ch["title"]),
+                chapter_toc=cc.convert(ch["chapter_toc"]),
+                content=cc.convert(ch["content"]),
+                prev_link=cc.convert(prev_link),
+                next_link=cc.convert(next_link),
+                home_link="index_trad.html",
+                lang_switch_links=cc.convert(lang_switch_links)
+            )
+            with open(os.path.join(output_folder, trad_filename), "w", encoding="utf-8") as f:
+                f.write(html_page)
 
-    # 繁體 index_trad.html - 使用繁體版檔案名的 TOC
-    trad_chapters = []
-    for ch in chapters:
-        trad_ch = ch.copy()
-        trad_ch["title"] = cc.convert(ch["title"])
-        trad_ch["toc_items"] = [(level, cc.convert(text), anchor) for level, text, anchor in ch["toc_items"]]
-        trad_chapters.append(trad_ch)
-    
-    trad_toc_html = build_index_toc(trad_chapters, is_traditional=True)
-    with open(os.path.join(output_folder, "index_trad.html"), "w", encoding="utf-8") as f:
-        f.write(INDEX_TEMPLATE.format(
-            book_title=cc.convert(book_title), 
-            toc_items=trad_toc_html
-        ))
+        # 繁體 index_trad.html - 使用繁體版檔案名的 TOC
+        for ch in chapters:
+            trad_ch = ch.copy()
+            trad_ch["title"] = cc.convert(ch["title"])
+            trad_ch["toc_items"] = [(level, cc.convert(text), anchor) for level, text, anchor in ch["toc_items"]]
+            trad_chapters.append(trad_ch)
+        
+        trad_toc_html = build_index_toc(trad_chapters, is_traditional=True)
+        with open(os.path.join(output_folder, "index_trad.html"), "w", encoding="utf-8") as f:
+            f.write(INDEX_TEMPLATE.format(
+                book_title=cc.convert(book_title), 
+                toc_items=trad_toc_html
+            ))
+    else:
+        print("⏭️  跳過繁體版生成")
 
     # ========== 生成搜索索引 ==========
-    print("🔍 正在生成搜索索引...")
-    
-    # 生成簡體版搜索索引
-    generate_search_index(chapters, output_folder, is_traditional=False)
-    
-    # 生成繁體版搜索索引  
-    generate_search_index(trad_chapters, output_folder, is_traditional=True)
+    if generate_search:
+        print("🔍 正在生成搜索索引...")
+        
+        # 生成簡體版搜索索引
+        generate_search_index(chapters, output_folder, is_traditional=False)
+        
+        # 生成繁體版搜索索引（如果有繁体版）
+        if generate_traditional and trad_chapters:
+            generate_search_index(trad_chapters, output_folder, is_traditional=True)
+    else:
+        print("⏭️  跳過搜索索引生成")
 
     # 寫入 CSS 與 JS
     with open(os.path.join(output_folder, "assets/css/style.css"), "w", encoding="utf-8") as f:
@@ -3267,10 +3475,42 @@ def convert_word_to_ebook(input_file, output_folder):
 
 # ========== 主程式入口 ==========
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("用法: python word2ebook.py input.docx output_folder")
-        sys.exit(1)
-
-    input_file = sys.argv[1]
-    output_folder = sys.argv[2]
-    convert_word_to_ebook(input_file, output_folder)
+    parser = argparse.ArgumentParser(
+        description='將Word文檔轉換為HTML電子書',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+示例:
+  python word2ebook.py input.docx output_folder                    # 生成完整版本
+  python word2ebook.py input.docx output_folder --fast            # 快速模式
+  python word2ebook.py input.docx output_folder --skip-search     # 跳過搜索索引
+  python word2ebook.py input.docx output_folder --skip-traditional # 跳過繁體版
+        """
+    )
+    
+    parser.add_argument('input_file', help='輸入的Word文檔路徑')
+    parser.add_argument('output_folder', help='輸出HTML電子書的目錄')
+    
+    parser.add_argument('--skip-search', action='store_true', 
+                       help='跳過搜索索引生成（加快轉換速度）')
+    parser.add_argument('--skip-traditional', action='store_true',
+                       help='跳過繁體版生成（加快轉換速度）')
+    parser.add_argument('--fast', action='store_true',
+                       help='快速模式：跳過搜索索引和繁體版生成')
+    
+    args = parser.parse_args()
+    
+    # 處理快速模式
+    generate_search = not (args.skip_search or args.fast)
+    generate_traditional = not (args.skip_traditional or args.fast)
+    
+    # 顯示配置信息
+    print("📋 轉換配置:")
+    print(f"   輸入文件: {args.input_file}")
+    print(f"   輸出目錄: {args.output_folder}")
+    print(f"   生成繁體版: {'✅' if generate_traditional else '❌'}")
+    print(f"   生成搜索索引: {'✅' if generate_search else '❌'}")
+    print()
+    
+    convert_word_to_ebook(args.input_file, args.output_folder, 
+                         generate_search=generate_search, 
+                         generate_traditional=generate_traditional)

@@ -5,7 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>wenda2_250608_截止25年3月15日答疑_含图版</title>
 <link rel="stylesheet" href="assets/css/style.css">
-<script src="https://unpkg.com/minisearch/dist/umd/index.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+<script>
+// 备用CDN加载
+if (typeof MiniSearch === 'undefined') {
+  console.log('主CDN失败，尝试备用CDN...');
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js';
+  script.onload = function() {
+    console.log('备用CDN加载成功');
+    // 重新初始化搜索
+    if (typeof initSearch === 'function') {
+      initSearch();
+    }
+  };
+  script.onerror = function() {
+    console.error('所有CDN都失败了，搜索功能不可用');
+    const searchInput = document.getElementById('search-input');
+    const searchStatus = document.getElementById('search-status');
+    if (searchInput) searchInput.disabled = true;
+    if (searchStatus) searchStatus.textContent = '搜索功能暂不可用（网络问题）';
+  };
+  document.head.appendChild(script);
+}
+</script>
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
@@ -14,11 +37,19 @@
 </div>
 <h1>wenda2_250608_截止25年3月15日答疑_含图版</h1>
 
-<!-- 搜索功能 -->
-<div class="search-container">
+<!-- 搜索激活按钮 -->
+<div class="search-activation">
+  <button class="search-activate-btn" id="search-activate-btn">
+    🔍 启用全文搜索
+    <span class="search-activate-hint">点击启用跨章节搜索功能</span>
+  </button>
+</div>
+
+<!-- 搜索功能（默认隐藏） -->
+<div class="search-container" id="search-container" style="display: none;">
   <div class="search-box">
     <input type="text" id="search-input" placeholder="搜索全文内容..." autocomplete="off">
-    <div class="search-status" id="search-status"></div>
+    <div class="search-status" id="search-status">正在初始化搜索功能...</div>
   </div>
   
   <!-- 搜索结果 -->
@@ -26,6 +57,7 @@
     <div class="search-results-header">
       <span class="search-results-count" id="search-results-count"></span>
       <button class="search-clear" id="search-clear">清除搜索</button>
+      <button class="search-collapse" id="search-collapse">收起搜索</button>
     </div>
     <ul class="search-results-list" id="search-results-list"></ul>
   </div>

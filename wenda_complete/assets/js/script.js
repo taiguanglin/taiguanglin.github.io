@@ -8,9 +8,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ============ UX 增強功能 ============
   
-  // ============ 搜索功能 ============
+  // ============ 搜索功能（延迟加载） ============
   let searchIndex = null;
   let miniSearch = null;
+  let searchInitialized = false;
   
   // 检测当前页面类型
   function isIndexPage() {
@@ -26,22 +27,55 @@ document.addEventListener('DOMContentLoaded', function() {
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
   }
   
-  // 初始化搜索功能
+  // 激活搜索功能
+  async function activateSearch() {
+    if (searchInitialized) {
+      // 如果已经初始化，直接显示搜索容器
+      const searchContainer = document.getElementById('search-container');
+      const searchActivation = document.querySelector('.search-activation');
+      if (searchContainer && searchActivation) {
+        searchActivation.style.display = 'none';
+        searchContainer.style.display = 'block';
+        // 聚焦搜索框
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          setTimeout(() => searchInput.focus(), 100);
+        }
+      }
+      return;
+    }
+    
+    await initSearch();
+  }
+  
+  // 初始化搜索功能（内部函数）
   async function initSearch() {
     if (!isIndexPage()) return;
     
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
     const searchInput = document.getElementById('search-input');
     const searchStatus = document.getElementById('search-status');
     const searchResults = document.getElementById('search-results');
     const searchResultsList = document.getElementById('search-results-list');
     const searchResultsCount = document.getElementById('search-results-count');
     const searchClear = document.getElementById('search-clear');
+    const searchCollapse = document.getElementById('search-collapse');
     const tocHeader = document.getElementById('toc-header');
     
-    if (!searchInput) return;
+    if (!searchInput || !searchContainer) return;
     
     try {
+      // 显示搜索容器，隐藏激活按钮
+      if (searchActivation) searchActivation.style.display = 'none';
+      searchContainer.style.display = 'block';
+      
       searchStatus.textContent = '正在加载搜索索引...';
+      
+      // 检查MiniSearch是否可用
+      if (typeof MiniSearch === 'undefined') {
+        throw new Error('MiniSearch库未加载');
+      }
       
       // 加载搜索索引
       const indexFile = getSearchIndexFile();
@@ -73,10 +107,14 @@ document.addEventListener('DOMContentLoaded', function() {
       miniSearch.addAll(searchIndex);
       
       searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      searchInitialized = true;
+      
+      // 聚焦搜索框
+      setTimeout(() => searchInput.focus(), 100);
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
-      searchStatus.textContent = '搜索功能不可用';
+      searchStatus.textContent = '搜索功能不可用：' + error.message;
       return;
     }
     
@@ -258,6 +296,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 清除搜索按钮
     searchClear.addEventListener('click', clearSearch);
     
+    // 收起搜索按钮
+    searchCollapse.addEventListener('click', collapseSearch);
+    
     // 搜索结果点击
     searchResultsList.addEventListener('click', (e) => {
       const item = e.target.closest('.search-result-item');
@@ -271,23 +312,57 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 键盘快捷键
     document.addEventListener('keydown', (e) => {
-      // Ctrl+F 或 Cmd+F 聚焦搜索框
+      // Ctrl+F 或 Cmd+F 激活搜索
       if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
         e.preventDefault();
-        searchInput.focus();
+        if (searchInitialized) {
+          searchInput.focus();
+        } else {
+          activateSearch();
+        }
       }
       
-      // ESC 清除搜索
+      // ESC 收起搜索
       if (e.key === 'Escape' && document.activeElement === searchInput) {
-        clearSearch();
-        searchInput.blur();
+        collapseSearch();
       }
     });
   }
   
-  // 如果是首页，初始化搜索
+  // 收起搜索功能
+  function collapseSearch() {
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
+    const searchInput = document.getElementById('search-input');
+    const searchResults = document.getElementById('search-results');
+    const tocHeader = document.getElementById('toc-header');
+    
+    if (searchContainer && searchActivation) {
+      // 清除搜索内容
+      if (searchInput) searchInput.value = '';
+      if (searchResults) searchResults.style.display = 'none';
+      if (tocHeader) tocHeader.style.display = 'block';
+      
+      // 隐藏搜索容器，显示激活按钮
+      searchContainer.style.display = 'none';
+      searchActivation.style.display = 'block';
+    }
+  }
+  
+  // 如果是首页，添加搜索激活事件监听
   if (isIndexPage()) {
-    initSearch();
+    const searchActivateBtn = document.getElementById('search-activate-btn');
+    if (searchActivateBtn) {
+      searchActivateBtn.addEventListener('click', activateSearch);
+    }
+    
+    // Ctrl+F 快捷键激活搜索
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !searchInitialized) {
+        e.preventDefault();
+        activateSearch();
+      }
+    });
   }
 
   // 創建閱讀工具欄
