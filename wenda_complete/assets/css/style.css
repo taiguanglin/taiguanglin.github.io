@@ -865,6 +865,14 @@ body.dark-mode .qa-pair-bookmark:hover {
     transform: translateY(0);
 }
 
+.search-activate-btn:disabled {
+    background: #ddd !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 .search-activate-hint {
     display: block;
     font-size: 12px;
@@ -916,6 +924,14 @@ body.dark-mode .qa-pair-bookmark:hover {
 #search-input:focus {
     border-color: #e75480;
     box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1);
+}
+
+#search-input:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+    box-shadow: none;
 }
 
 #search-input::placeholder {
@@ -1089,6 +1105,20 @@ body.dark-mode .search-activate-btn {
 body.dark-mode .search-activate-btn:hover {
     background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
     box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .search-activate-btn:disabled {
+    background: #444 !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+body.dark-mode #search-input:disabled {
+    background-color: #333;
+    color: #666;
+    border-color: #555;
 }
 
 body.dark-mode .search-container {
