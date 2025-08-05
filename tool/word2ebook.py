@@ -35,24 +35,25 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 
 .question-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     margin-bottom: 10px;
-    flex-wrap: wrap;
+    line-height: 1.6;
+}
+
+.question-meta .questioner {
+    margin-right: 10px;
 }
 
 .questioner {
     font-weight: 600;
     color: #e75480;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .question-time {
     background: #f8c8dc;
     padding: 3px 8px;
     border-radius: 12px;
-    font-size: 12px;
+    font-size: 14px;
     color: #b73c65;
     font-weight: 500;
 }
@@ -73,16 +74,18 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 
 .answer-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
     margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.answer-meta .answerer {
+    margin-right: 10px;
 }
 
 .answerer {
     font-weight: 700;
     color: #ff69b4;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .answer-text {
@@ -412,15 +415,20 @@ body.dark-mode .answerer { color: #ff69b4; }
     font-size: 12px;
 }
 
-/* 操作按鈕組 */
+/* 操作按鈕組 - 可展開菜單 */
 .action-buttons {
     position: fixed;
     bottom: 30px;
     right: 30px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    align-items: center;
+    gap: 12px;
     z-index: 1000;
+}
+
+.action-menu {
+    position: relative;
 }
 
 .action-btn {
@@ -428,29 +436,90 @@ body.dark-mode .answerer { color: #ff69b4; }
     height: 50px;
     border-radius: 50%;
     border: none;
-    background: #e75480;
+    background: #ff69b4;
     color: white;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 18px;
-    box-shadow: 0 4px 15px rgba(231, 84, 128, 0.3);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
     transition: all 0.3s ease;
 }
 
 .action-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
 }
 
-.action-btn.secondary {
-    background: #666;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+.action-btn.menu-btn {
+    background: #ff69b4;
+    z-index: 1001;
 }
 
-.action-btn.secondary:hover {
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+.action-btn.menu-btn.expanded {
+    transform: rotate(90deg);
+    background: #e75480;
+}
+
+.action-menu-items {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.action-menu.expanded .action-menu-items {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+.action-menu-items .action-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+    background: #ff69b4;
+    transform: scale(0.8);
+}
+
+.action-menu.expanded .action-menu-items .action-btn {
+    transform: scale(1);
+}
+
+.action-menu-items .action-btn:hover {
+    background: #e75480;
+    transform: scale(1.05);
+}
+
+/* 暗色模式適配 */
+body.dark-mode .action-btn {
+    background: #ff69b4;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .action-btn:hover {
+    background: #e75480;
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .action-btn.menu-btn.expanded {
+    background: #e75480;
+}
+
+body.dark-mode .action-menu-items .action-btn {
+    background: #ff69b4;
+}
+
+body.dark-mode .action-menu-items .action-btn:hover {
+    background: #e75480;
 }
 
 /* 問答互動功能 */
@@ -474,12 +543,12 @@ body.dark-mode .answerer { color: #ff69b4; }
     height: 28px;
     border: none;
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
+    border-radius: 14px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
+    font-size: 16px;
     color: #666;
     transition: all 0.2s ease;
 }
@@ -702,7 +771,7 @@ body.dark-mode .floating-toc-tab:hover {
 .bookmark-clear-icon {
     background: none;
     border: none;
-    font-size: 12px;
+    font-size: 16px;
     cursor: pointer;
     opacity: 0;
     transition: all 0.3s ease;
@@ -781,14 +850,43 @@ body.dark-mode .qa-pair-bookmark:hover {
 @media (max-width: 768px) {
     /* 保持名字和時間在同一行，但調整字體大小 */
     .question-meta, .answer-meta { 
-        flex-direction: row; 
-        align-items: center; 
-        gap: 8px; 
-        flex-wrap: wrap;
+        line-height: 1.5;
+    }
+    
+    .question-meta .questioner, .answer-meta .answerer {
+        margin-right: 8px;
     }
     .question, .answer { padding: 12px; position: relative; }
-    .questioner, .answerer { font-size: 12px; }
-    .question-time { font-size: 10px; padding: 2px 6px; }
+    .questioner, .answerer { font-size: 18px; }
+    .question-time { font-size: 18px; padding: 4px 8px; }
+    .question-text, .answer-text { font-size: 18px; }
+    
+    /* 優化手機端問答按鈕 */
+    .qa-btn {
+        width: 42px;
+        height: 32px;
+        font-size: 24px !important;
+        border-radius: 16px;
+    }
+    
+    .qa-actions {
+        gap: 10px;
+        top: 12px;
+        right: 12px;
+    }
+    
+    /* 優化手機端書籤指示器 */
+    .bookmark-indicator {
+        font-size: 24px !important;
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    /* 優化手機端清空書籤按鈕 */
+    .bookmark-clear-icon {
+        font-size: 18px;
+        padding: 4px;
+    }
     
     .reading-toolbar {
         right: 10px;
@@ -818,9 +916,44 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 @media (max-width: 480px) {
-    /* 極窄屏幕下仍保持名字時間同行，進一步縮小字體 */
-    .questioner, .answerer { font-size: 11px; }
-    .question-time { font-size: 9px; padding: 1px 4px; }
+    /* 手機端優化：保持名字時間同行，統一字體大小 */
+    .questioner, .answerer { font-size: 19px; }
+    .question-time { font-size: 19px; padding: 3px 6px; }
+    .question-text, .answer-text { font-size: 19px; }
+    
+    /* 手機端問答按鈕進一步優化 */
+    .qa-btn {
+        width: 48px;
+        height: 40px;
+        font-size: 36px !important;
+        border-radius: 20px;
+    }
+    
+    .qa-actions {
+        gap: 8px;
+        top: 10px;
+        right: 12px;
+    }
+    
+    /* 手機端書籤指示器進一步優化 */
+    .bookmark-indicator {
+        font-size: 36px !important;
+        bottom: 12px;
+        right: 12px;
+    }
+    
+    /* 手機端清空書籤按鈕進一步優化 */
+    .bookmark-clear-icon {
+        font-size: 19px;
+        padding: 5px;
+    }
+    
+    /* 確保手機上觸控目標足夠大 */
+    .question:hover .qa-actions,
+    .answer:hover .qa-actions,
+    .qa-actions {
+        opacity: 1; /* 手機上總是顯示按鈕 */
+    }
     
     .reading-toolbar {
         position: relative;
@@ -837,6 +970,24 @@ body.dark-mode .qa-pair-bookmark:hover {
     
     .floating-toc.visible {
         left: 20px;
+    }
+    
+    /* 手機端右下角按鈕組優化 */
+    .action-buttons {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .action-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+    
+    .action-menu-items .action-btn {
+        width: 44px;
+        height: 44px;
+        font-size: 16px;
     }
 }
 
@@ -1051,9 +1202,14 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.createElement('div');
     buttons.className = 'action-buttons';
     buttons.innerHTML = 
-      '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
-      '<button class="action-btn secondary" data-action="top" title="回到頂部">↑</button>' +
-      '<button class="action-btn secondary" data-action="settings" title="設置">⚙️</button>';
+      '<div class="action-menu">' +
+        '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">⋯</button>' +
+        '<div class="action-menu-items">' +
+          '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
+          '<button class="action-btn" data-action="top" title="回到頂部">↑</button>' +
+          '<button class="action-btn" data-action="settings" title="設置">⚙️</button>' +
+        '</div>' +
+      '</div>';
     document.body.appendChild(buttons);
     return buttons;
   }
@@ -1781,6 +1937,16 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
+    
+    // 點擊外部區域關閉菜單
+    if (!action && !e.target.closest('.action-menu')) {
+      const openMenu = document.querySelector('.action-menu.expanded');
+      if (openMenu) {
+        openMenu.classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+      }
+    }
+    
     if (!action) return;
 
     switch (action) {
@@ -1841,17 +2007,31 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         break;
 
       // 操作按鈕
+      case 'toggle-menu':
+        const actionMenu = e.target.closest('.action-menu');
+        actionMenu.classList.toggle('expanded');
+        e.target.classList.toggle('expanded');
+        break;
       case 'toc':
         floatingTOC.classList.toggle('visible');
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'close-toc':
         floatingTOC.classList.remove('visible');
         break;
       case 'top':
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'settings':
         toolbar.classList.toggle('hidden');
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'close-toolbar':
         toolbar.classList.add('hidden');
