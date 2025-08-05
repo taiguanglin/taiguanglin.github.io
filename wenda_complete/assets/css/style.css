@@ -834,6 +834,45 @@ body.dark-mode .qa-pair-bookmark:hover {
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
 }
 
+/* ============ 搜索激活按钮样式 ============ */
+.search-activation {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.search-activate-btn {
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(231, 84, 128, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.search-activate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
+    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+}
+
+.search-activate-btn:active {
+    transform: translateY(0);
+}
+
+.search-activate-hint {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    opacity: 0.9;
+    margin-top: 4px;
+}
+
 /* ============ 搜索功能样式 ============ */
 .search-container {
     margin: 30px 0;
@@ -842,6 +881,18 @@ body.dark-mode .qa-pair-bookmark:hover {
     border-radius: 12px;
     border: 1px solid #f8c8dc;
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .search-box {
@@ -896,7 +947,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     color: #e75480;
 }
 
-.search-clear {
+.search-clear, .search-collapse {
     background: #f8c8dc;
     color: #b73c65;
     border: none;
@@ -905,10 +956,21 @@ body.dark-mode .qa-pair-bookmark:hover {
     cursor: pointer;
     font-size: 12px;
     transition: all 0.3s ease;
+    margin-left: 8px;
 }
 
-.search-clear:hover {
+.search-clear:hover, .search-collapse:hover {
     background: #e75480;
+    color: white;
+}
+
+.search-collapse {
+    background: #e0e0e0;
+    color: #666;
+}
+
+.search-collapse:hover {
+    background: #999;
     color: white;
 }
 
@@ -975,6 +1037,16 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 /* 暗色模式搜索样式 */
+body.dark-mode .search-activate-btn {
+    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .search-activate-btn:hover {
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
 body.dark-mode .search-container {
     background: linear-gradient(135deg, #2d1e2e 0%, #1a1a1a 100%);
     border-color: #4a2c4a;
@@ -1008,18 +1080,37 @@ body.dark-mode .search-result-content {
     color: #ccc;
 }
 
-body.dark-mode .search-clear {
+body.dark-mode .search-clear, body.dark-mode .search-collapse {
     background: #4a2c4a;
     color: #ff69b4;
 }
 
-body.dark-mode .search-clear:hover {
+body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover {
     background: #ff69b4;
     color: #1a1a1a;
 }
 
+body.dark-mode .search-collapse {
+    background: #333;
+    color: #ccc;
+}
+
+body.dark-mode .search-collapse:hover {
+    background: #555;
+    color: #fff;
+}
+
 /* 响应式设计 */
 @media (max-width: 768px) {
+    .search-activate-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+    
+    .search-activate-hint {
+        font-size: 11px;
+    }
+    
     .search-container {
         margin: 20px 0;
         padding: 15px;
