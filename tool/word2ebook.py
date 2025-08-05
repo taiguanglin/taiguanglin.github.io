@@ -877,6 +877,14 @@ body.dark-mode .qa-pair-bookmark:hover {
     transform: translateY(0);
 }
 
+.search-activate-btn:disabled {
+    background: #ddd !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
 .search-activate-hint {
     display: block;
     font-size: 12px;
@@ -928,6 +936,14 @@ body.dark-mode .qa-pair-bookmark:hover {
 #search-input:focus {
     border-color: #e75480;
     box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1);
+}
+
+#search-input:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+    box-shadow: none;
 }
 
 #search-input::placeholder {
@@ -1103,6 +1119,20 @@ body.dark-mode .search-activate-btn:hover {
     box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
 }
 
+body.dark-mode .search-activate-btn:disabled {
+    background: #444 !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+body.dark-mode #search-input:disabled {
+    background-color: #333;
+    color: #666;
+    border-color: #555;
+}
+
 body.dark-mode .search-container {
     background: linear-gradient(135deg, #2d1e2e 0%, #1a1a1a 100%);
     border-color: #4a2c4a;
@@ -1275,20 +1305,37 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   // 激活搜索功能
   async function activateSearch() {
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
+    const searchInput = document.getElementById('search-input');
+    const searchActivateBtn = document.getElementById('search-activate-btn');
+    
+    // 立即禁用激活按钮防止重复点击
+    if (searchActivateBtn) {
+      searchActivateBtn.disabled = true;
+    }
+    
     if (searchInitialized) {
       // 如果已经初始化，直接显示搜索容器
-      const searchContainer = document.getElementById('search-container');
-      const searchActivation = document.querySelector('.search-activation');
       if (searchContainer && searchActivation) {
         searchActivation.style.display = 'none';
         searchContainer.style.display = 'block';
         // 聚焦搜索框
-        const searchInput = document.getElementById('search-input');
         if (searchInput) {
           setTimeout(() => searchInput.focus(), 100);
         }
       }
+      // 重新启用激活按钮
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
       return;
+    }
+    
+    // 立即禁用搜索输入框并显示加载状态
+    if (searchInput) {
+      searchInput.disabled = true;
+      searchInput.placeholder = '正在加载搜索功能，请稍候...';
     }
     
     await initSearch();
@@ -1360,12 +1407,33 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       `;
       searchInitialized = true;
       
+      // 启用搜索输入框
+      searchInput.disabled = false;
+      searchInput.placeholder = '搜索全文内容...';
+      
+      // 重新启用激活按钮
+      const searchActivateBtn = document.getElementById('search-activate-btn');
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
+      
       // 聚焦搜索框
       setTimeout(() => searchInput.focus(), 100);
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
       searchStatus.textContent = '搜索功能不可用：' + error.message;
+      
+      // 即使失败也要启用输入框，让用户可以重试
+      searchInput.disabled = false;
+      searchInput.placeholder = '搜索功能暂不可用';
+      
+      // 重新启用激活按钮，允许用户重试
+      const searchActivateBtn = document.getElementById('search-activate-btn');
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
+      
       return;
     }
     

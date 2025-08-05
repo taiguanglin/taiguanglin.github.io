@@ -32,20 +32,37 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 激活搜索功能
   async function activateSearch() {
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
+    const searchInput = document.getElementById('search-input');
+    const searchActivateBtn = document.getElementById('search-activate-btn');
+    
+    // 立即禁用激活按钮防止重复点击
+    if (searchActivateBtn) {
+      searchActivateBtn.disabled = true;
+    }
+    
     if (searchInitialized) {
       // 如果已经初始化，直接显示搜索容器
-      const searchContainer = document.getElementById('search-container');
-      const searchActivation = document.querySelector('.search-activation');
       if (searchContainer && searchActivation) {
         searchActivation.style.display = 'none';
         searchContainer.style.display = 'block';
         // 聚焦搜索框
-        const searchInput = document.getElementById('search-input');
         if (searchInput) {
           setTimeout(() => searchInput.focus(), 100);
         }
       }
+      // 重新启用激活按钮
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
       return;
+    }
+    
+    // 立即禁用搜索输入框并显示加载状态
+    if (searchInput) {
+      searchInput.disabled = true;
+      searchInput.placeholder = '正在加载搜索功能，请稍候...';
     }
     
     await initSearch();
@@ -117,12 +134,33 @@ document.addEventListener('DOMContentLoaded', function() {
       `;
       searchInitialized = true;
       
+      // 启用搜索输入框
+      searchInput.disabled = false;
+      searchInput.placeholder = '搜索全文内容...';
+      
+      // 重新启用激活按钮
+      const searchActivateBtn = document.getElementById('search-activate-btn');
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
+      
       // 聚焦搜索框
       setTimeout(() => searchInput.focus(), 100);
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
       searchStatus.textContent = '搜索功能不可用：' + error.message;
+      
+      // 即使失败也要启用输入框，让用户可以重试
+      searchInput.disabled = false;
+      searchInput.placeholder = '搜索功能暂不可用';
+      
+      // 重新启用激活按钮，允许用户重试
+      const searchActivateBtn = document.getElementById('search-activate-btn');
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
+      
       return;
     }
     
