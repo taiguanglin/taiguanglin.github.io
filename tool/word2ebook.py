@@ -1011,11 +1011,28 @@ body.dark-mode .qa-pair-bookmark:hover {
     border-left-color: #ff69b4;
 }
 
+.search-result-item:hover .search-result-newtab {
+    opacity: 1;
+    color: #e75480;
+}
+
 .search-result-title {
     font-weight: 600;
     color: #e75480;
     margin-bottom: 8px;
     font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.search-result-newtab {
+    color: #999;
+    font-size: 12px;
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+    margin-left: auto;
+    flex-shrink: 0;
 }
 
 .search-result-type {
@@ -1092,6 +1109,14 @@ body.dark-mode .search-result-content {
     color: #ccc;
 }
 
+body.dark-mode .search-result-newtab {
+    color: #666;
+}
+
+body.dark-mode .search-result-item:hover .search-result-newtab {
+    color: #ff69b4;
+}
+
 body.dark-mode .search-clear, body.dark-mode .search-collapse {
     background: #4a2c4a;
     color: #ff69b4;
@@ -1140,6 +1165,18 @@ body.dark-mode .search-collapse:hover {
     
     .search-result-item {
         padding: 12px;
+    }
+    
+    .search-result-title {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .search-result-newtab {
+        margin-left: 0;
+        align-self: flex-end;
+        margin-top: -20px;
     }
 }
 
@@ -1253,7 +1290,12 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       // 添加文档到索引
       miniSearch.addAll(searchIndex);
       
-      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      searchStatus.innerHTML = `
+        搜索准备就绪 (共${searchIndex.length}条记录)
+        <span style="color: #999; font-size: 12px; margin-left: 10px;">
+          💡 点击结果将在新标签页打开
+        </span>
+      `;
       searchInitialized = true;
       
       // 聚焦搜索框
@@ -1351,6 +1393,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
             <div class="search-result-title">
               <span class="search-result-type">${typeText}</span>
               ${escapeHtml(result.title)}
+              <span class="search-result-newtab">↗</span>
             </div>
             <div class="search-result-content">${highlightedContext}</div>
             <div class="search-result-url">${result.url}</div>
@@ -1425,7 +1468,12 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       searchInput.value = '';
       searchResults.style.display = 'none';
       tocHeader.style.display = 'block';
-      searchStatus.textContent = `搜索准备就绪 (共${searchIndex.length}条记录)`;
+      searchStatus.innerHTML = `
+        搜索准备就绪 (共${searchIndex.length}条记录)
+        <span style="color: #999; font-size: 12px; margin-left: 10px;">
+          💡 点击结果将在新标签页打开
+        </span>
+      `;
     }
     
     // 事件监听
@@ -1452,7 +1500,17 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       if (item) {
         const url = item.dataset.url;
         if (url) {
-          window.location.href = url;
+          // 检查是否按住修饰键
+          if (e.ctrlKey || e.metaKey) {
+            // Ctrl/Cmd+Click：在新标签页打开（静默）
+            window.open(url, '_blank', 'noopener,noreferrer');
+          } else if (e.shiftKey) {
+            // Shift+Click：在新窗口打开
+            window.open(url, '_blank', 'noopener,noreferrer,width=1200,height=800');
+          } else {
+            // 默认：在新标签页打开，保持搜索状态
+            window.open(url, '_blank', 'noopener,noreferrer');
+          }
         }
       }
     });
