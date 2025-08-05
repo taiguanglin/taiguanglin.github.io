@@ -105,11 +105,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 根據層級添加對應的class (level=1是第一层，无缩进)
+        // 只顯示前兩層目錄，跳過第三層及以下
+        if (level >= 3) {
+          return; // 跳過第三層及以下的項目
+        }
+        
         let levelClass = '';
         if (level === 2) {
           levelClass = ' level-h3';
-        } else if (level >= 3) {
-          levelClass = ' level-h4';
         }
         
         // 為首頁TOC項目使用特殊的data屬性
@@ -764,6 +767,8 @@ ${answerText}`;
     
     // 更新TOC高亮狀態
     const tocItems = document.querySelectorAll('.floating-toc-item[data-target]');
+    let activeItem = null;
+    
     tocItems.forEach(item => {
       item.classList.remove('active');
       
@@ -771,9 +776,28 @@ ${answerText}`;
         const targetId = '#' + currentSection.id;
         if (item.dataset.target === targetId) {
           item.classList.add('active');
+          activeItem = item;
         }
       }
     });
+    
+    // 自動滾動sidebar到當前章節
+    if (activeItem) {
+      const tocContainer = activeItem.closest('.floating-toc');
+      if (tocContainer && tocContainer.classList.contains('visible')) {
+        // 檢查activeItem是否在可視區域內
+        const containerRect = tocContainer.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        
+        // 如果item不在容器的可視區域內，則滾動到該位置
+        if (itemRect.top < containerRect.top + 60 || itemRect.bottom > containerRect.bottom - 20) {
+          activeItem.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
+      }
+    }
   }
 
   // 顯示通知
