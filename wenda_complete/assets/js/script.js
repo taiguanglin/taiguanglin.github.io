@@ -261,20 +261,8 @@ document.addEventListener('DOMContentLoaded', function() {
           'content': '内容'
         }[result.type] || '内容';
         
-        // 高亮搜索关键词 - 安全处理
-        let highlightedContext = result.context;
-        try {
-          if (query && query.trim()) {
-            const escapedQuery = escapeRegex(query.trim());
-            if (escapedQuery) {
-              const regex = new RegExp(`(${escapedQuery})`, 'gi');
-              highlightedContext = result.context.replace(regex, '<span class="search-result-highlight">$1</span>');
-            }
-          }
-        } catch (e) {
-          console.warn('搜索高亮处理失败:', e);
-          highlightedContext = result.context;
-        }
+        // 智能高亮搜索关键词
+        const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
         
         return `
           <li class="search-result-item" data-url="${result.url}">
@@ -302,21 +290,8 @@ document.addEventListener('DOMContentLoaded', function() {
           'content': '内容'
         }[result.type] || '内容';
         
-        // 高亮搜索关键词 - 安全处理
-        let highlightedContext = result.context;
-        try {
-          if (query && query.trim()) {
-            const escapedQuery = escapeRegex(query.trim());
-            if (escapedQuery) {
-              const regex = new RegExp(`(${escapedQuery})`, 'gi');
-              highlightedContext = result.context.replace(regex, '<span class="search-result-highlight">$1</span>');
-            }
-          }
-        } catch (e) {
-          console.warn('搜索高亮处理失败:', e);
-          // 降级处理：不高亮但显示内容
-          highlightedContext = result.context;
-        }
+        // 智能高亮搜索关键词
+        const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
         
         return `
           <li class="search-result-item" data-url="${result.url}">
@@ -390,6 +365,77 @@ document.addEventListener('DOMContentLoaded', function() {
                   .replace(/>/g, '&gt;')
                   .replace(/"/g, '&quot;')
                   .replace(/'/g, '&#39;');
+      }
+    }
+    
+    // 智能高亮搜索关键词
+    function highlightSearchTerm(text, searchTerm) {
+      if (!text || !searchTerm || typeof text !== 'string' || typeof searchTerm !== 'string') {
+        return text;
+      }
+      
+      const term = searchTerm.trim();
+      if (!term) return text;
+      
+      try {
+        // 策略1: 精确匹配（最常见情况）
+        const exactRegex = new RegExp(`(${escapeRegex(term)})`, 'gi');
+        let result = text.replace(exactRegex, '<span class="search-result-highlight">$1</span>');
+        
+        // 检查是否有匹配
+        if (result !== text) {
+          return result;
+        }
+        
+        // 策略2: 忽略标点符号的模糊匹配
+        // 定义中文和英文标点符号（更全面的范围）
+        const punctuation = '[\s\u3000-\u303F\uFF00-\uFFEF\u2000-\u206F\u0020-\u002F\u003A-\u0040\u005B-\u0060\u007B-\u007E\u2010-\u2027\u2030-\u205F\u3001-\u3003\u3008-\u3011\u3014-\u301F\uFE10-\uFE19\uFE30-\uFE6F]';
+        
+        // 为搜索词的每个字符之间添加可选的标点符号匹配
+        const flexiblePattern = term.split('').map(char => {
+          return escapeRegex(char);
+        }).join(`${punctuation}*`);
+        
+        const flexibleRegex = new RegExp(`(${flexiblePattern})`, 'gi');
+        result = text.replace(flexibleRegex, '<span class="search-result-highlight">$1</span>');
+        
+        if (result !== text) {
+          return result;
+        }
+        
+        // 策略3: 字符级模糊匹配（最后的保险）
+        const chars = term.split('');
+        if (chars.length > 1) {
+          // 构建一个匹配所有字符但允许标点符号间隔的正则
+          const charPattern = chars.map(char => escapeRegex(char)).join(`${punctuation}*`);
+          const charRegex = new RegExp(`(${charPattern})`, 'gi');
+          
+          result = text.replace(charRegex, '<span class="search-result-highlight">$1</span>');
+          if (result !== text) {
+            return result;
+          }
+        }
+        
+        // 策略4: 单字符逐个匹配（中文常见情况）
+        chars.forEach(char => {
+          if (char.trim()) {
+            const singleCharRegex = new RegExp(`(${escapeRegex(char)})`, 'gi');
+            result = result.replace(singleCharRegex, '<span class="search-result-highlight">$1</span>');
+          }
+        });
+        
+        return result;
+        
+      } catch (e) {
+        console.warn('智能高亮处理失败:', e, '搜索词:', term);
+        // 安全降级：尝试最简单的匹配
+        try {
+          const simpleRegex = new RegExp(term.replace(/[.*+?^${{}}()|[\]\\]/g, '\\$&'), 'gi');
+          return text.replace(simpleRegex, '<span class="search-result-highlight">$&</span>');
+        } catch (e2) {
+          console.warn('简单高亮也失败:', e2);
+          return text;
+        }
       }
     }
     
