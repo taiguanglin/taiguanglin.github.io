@@ -798,8 +798,8 @@ body.dark-mode .qa-pair-bookmark:hover {
         flex-wrap: wrap;
     }
     .question, .answer { padding: 12px; position: relative; }
-    .questioner, .answerer { font-size: 12px; }
-    .question-time { font-size: 10px; padding: 2px 6px; }
+    .questioner, .answerer { font-size: 14px; }
+    .question-time { font-size: 12px; padding: 2px 6px; }
     
     .reading-toolbar {
         right: 10px;
@@ -858,9 +858,9 @@ body.dark-mode .qa-pair-bookmark:hover {
     h2 { font-size: 1.6rem; }
     h3 { font-size: 1.4rem; }
     
-    /* 極窄屏幕下仍保持名字時間同行，進一步縮小字體 */
-    .questioner, .answerer { font-size: 11px; }
-    .question-time { font-size: 9px; padding: 1px 4px; }
+    /* 極窄屏幕下仍保持名字時間同行，維持清晰字體 */
+    .questioner, .answerer { font-size: 14px; }
+    .question-time { font-size: 12px; padding: 1px 4px; }
     
     .reading-toolbar {
         position: relative;
