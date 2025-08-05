@@ -112,17 +112,365 @@ body.dark-mode .toggle-dark { background: #5a2d49; color: #fff; }
 .lang-switch { text-align: right; margin-bottom: 10px; }
 .lang-switch a { font-size: 0.9em; margin: 0 5px; }
 
+/* ============ UX 增強功能 ============ */
+
+/* 閱讀工具欄 */
+.reading-toolbar {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.reading-toolbar.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.toolbar-section {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.toolbar-section:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.toolbar-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.toolbar-controls {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+}
+
+.ctrl-btn {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    min-width: 30px;
+    text-align: center;
+}
+
+.ctrl-btn:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.ctrl-btn.active {
+    background: #e75480;
+    color: white;
+    border-color: #e75480;
+}
+
+/* 搜索功能已移除 */
+
+/* 閱讀進度條 */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(231, 84, 128, 0.2);
+    z-index: 9999;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #e75480, #ff69b4);
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* 浮動目錄 */
+.floating-toc {
+    position: fixed;
+    left: -250px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 240px;
+    max-height: 70vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    transition: left 0.3s ease;
+    overflow-y: auto;
+}
+
+.floating-toc.visible {
+    left: 20px;
+}
+
+.floating-toc-header {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+    color: #e75480;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.floating-toc-list {
+    padding: 10px;
+}
+
+.floating-toc-item {
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+}
+
+.floating-toc-item:hover {
+    background: rgba(231, 84, 128, 0.1);
+}
+
+.floating-toc-item.active {
+    background: rgba(231, 84, 128, 0.15);
+    border-left-color: #e75480;
+    font-weight: 500;
+}
+
+/* 操作按鈕組 */
+.action-buttons {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.action-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: #e75480;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(231, 84, 128, 0.3);
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
+}
+
+.action-btn.secondary {
+    background: #666;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-btn.secondary:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* 問答互動功能 */
+.qa-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.question:hover .qa-actions,
+.answer:hover .qa-actions {
+    opacity: 1;
+}
+
+.qa-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.qa-btn:hover {
+    background: #e75480;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* 通知消息 */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 9999;
+    transition: transform 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 暗色模式適配 */
+body.dark-mode .reading-toolbar,
+body.dark-mode .floating-toc {
+    background: rgba(59, 28, 50, 0.95);
+    border-color: #5a2d49;
+}
+
+body.dark-mode .ctrl-btn,
+body.dark-mode .qa-btn {
+    background: rgba(90, 45, 73, 0.9);
+    color: #fddde6;
+    border-color: #5a2d49;
+}
+
+body.dark-mode .ctrl-btn:hover,
+body.dark-mode .qa-btn:hover {
+    background: #ff69b4;
+}
+
 /* 響應式設計 */
 @media (max-width: 768px) {
-    .question-meta, .answer-meta { flex-direction: column; align-items: flex-start; gap: 5px; }
-    .question, .answer { padding: 12px; }
-    .questioner, .answerer { font-size: 13px; }
-    .question-time { font-size: 11px; }
+    /* 保持名字和時間在同一行，但調整字體大小 */
+    .question-meta, .answer-meta { 
+        flex-direction: row; 
+        align-items: center; 
+        gap: 8px; 
+        flex-wrap: wrap;
+    }
+    .question, .answer { padding: 12px; position: relative; }
+    .questioner, .answerer { font-size: 12px; }
+    .question-time { font-size: 10px; padding: 2px 6px; }
+    
+    .reading-toolbar {
+        right: 10px;
+        top: 60px;
+        width: 200px;
+        padding: 10px;
+    }
+    
+    .floating-toc {
+        width: 200px;
+    }
+    
+    .floating-toc.visible {
+        left: 10px;
+    }
+    
+    .action-buttons {
+        bottom: 20px;
+        right: 20px;
+    }
+    
+    .action-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 極窄屏幕下仍保持名字時間同行，進一步縮小字體 */
+    .questioner, .answerer { font-size: 11px; }
+    .question-time { font-size: 9px; padding: 1px 4px; }
+    
+    .reading-toolbar {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 10px;
+        width: auto;
+    }
+    
+    .floating-toc {
+        width: calc(100vw - 40px);
+        left: -100vw;
+    }
+    
+    .floating-toc.visible {
+        left: 20px;
+    }
+}
+
+/* 打印樣式 */
+@media print {
+    .reading-toolbar,
+    .floating-toc,
+    .action-buttons,
+    .toggle-dark,
+    .reading-progress,
+    .qa-actions {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+        font-size: 12pt;
+        line-height: 1.4;
+    }
+    
+    .question, .answer {
+        border: 1px solid #ccc;
+        break-inside: avoid;
+        margin-bottom: 10pt;
+    }
+    
+    h1, h2, h3 {
+        color: black !important;
+        break-after: avoid;
+    }
 }
 """
 
-JS_CONTENT = """\
-document.addEventListener('DOMContentLoaded', function() {
+JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
+  // ============ 基本設置 ============
+  
+  // 暗色模式切換
   const toggleBtn = document.createElement('button');
   toggleBtn.className = 'toggle-dark';
   toggleBtn.textContent = localStorage.getItem('darkMode') === 'true' ? '☀️ 日間模式' : '🌙 夜間模式';
@@ -137,6 +485,324 @@ document.addEventListener('DOMContentLoaded', function() {
     const isDark = document.body.classList.contains('dark-mode');
     localStorage.setItem('darkMode', isDark);
     toggleBtn.textContent = isDark ? '☀️ 日間模式' : '🌙 夜間模式';
+  });
+
+  // ============ UX 增強功能 ============
+  
+  // 搜索功能已移除
+
+  // 創建閱讀工具欄
+  function createReadingToolbar() {
+    const toolbar = document.createElement('div');
+    toolbar.className = 'reading-toolbar hidden';
+    toolbar.innerHTML = 
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">字體大小</div>' +
+        '<div class="toolbar-controls">' +
+          '<button class="ctrl-btn" data-action="font-decrease">A-</button>' +
+          '<button class="ctrl-btn active" data-action="font-normal">A</button>' +
+          '<button class="ctrl-btn" data-action="font-increase">A+</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">行距</div>' +
+        '<div class="toolbar-controls">' +
+          '<button class="ctrl-btn" data-action="line-tight">緊密</button>' +
+          '<button class="ctrl-btn active" data-action="line-normal">正常</button>' +
+          '<button class="ctrl-btn" data-action="line-loose">寬鬆</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">寬度</div>' +
+        '<div class="toolbar-controls">' +
+          '<button class="ctrl-btn" data-action="width-narrow">窄</button>' +
+          '<button class="ctrl-btn active" data-action="width-normal">中</button>' +
+          '<button class="ctrl-btn" data-action="width-wide">寬</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(toolbar);
+    return toolbar;
+  }
+
+  // 創建閱讀進度條
+  function createReadingProgress() {
+    const progress = document.createElement('div');
+    progress.className = 'reading-progress';
+    progress.innerHTML = '<div class="reading-progress-bar"></div>';
+    document.body.appendChild(progress);
+    return progress;
+  }
+
+  // 創建浮動目錄
+  function createFloatingTOC() {
+    const toc = document.createElement('div');
+    toc.className = 'floating-toc';
+    
+    // 收集所有標題
+    const headings = document.querySelectorAll('h2, h3');
+    let tocItems = '';
+    
+    headings.forEach((heading, index) => {
+      const text = heading.textContent;
+      const id = heading.id || ('heading-' + index);
+      if (!heading.id) heading.id = id;
+      
+      tocItems += '<div class="floating-toc-item" data-target="#' + id + '">' + text + '</div>';
+    });
+    
+    toc.innerHTML = 
+      '<div class="floating-toc-header">' +
+        '<span>📖 章節目錄</span>' +
+        '<button class="ctrl-btn" data-action="close-toc">✕</button>' +
+      '</div>' +
+      '<div class="floating-toc-list">' +
+        tocItems +
+      '</div>';
+    
+    document.body.appendChild(toc);
+    return toc;
+  }
+
+  // 創建操作按鈕組
+  function createActionButtons() {
+    const buttons = document.createElement('div');
+    buttons.className = 'action-buttons';
+    buttons.innerHTML = 
+      '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
+      '<button class="action-btn secondary" data-action="top" title="回到頂部">↑</button>' +
+      '<button class="action-btn secondary" data-action="settings" title="設置">⚙️</button>';
+    document.body.appendChild(buttons);
+    return buttons;
+  }
+
+  // 為問答添加互動按鈕
+  function addQAActions() {
+    const qaElements = document.querySelectorAll('.question, .answer');
+    qaElements.forEach((element) => {
+      element.style.position = 'relative';
+      const actions = document.createElement('div');
+      actions.className = 'qa-actions';
+      actions.innerHTML = 
+        '<button class="qa-btn" data-action="copy" title="複製">📋</button>' +
+        '<button class="qa-btn" data-action="share" title="分享">📤</button>';
+      element.appendChild(actions);
+    });
+  }
+
+  // ============ 功能實現 ============
+  
+  // 搜索功能已移除
+
+  // 閱讀設置功能
+  let fontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+  let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
+  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
+  
+  function applyReadingSettings() {
+    document.body.style.fontSize = fontSize + 'px';
+    document.body.style.lineHeight = lineHeight;
+    document.body.style.maxWidth = contentWidth + 'px';
+  }
+  
+  function updateFontSize(change) {
+    fontSize = Math.max(12, Math.min(24, fontSize + change));
+    localStorage.setItem('fontSize', fontSize);
+    applyReadingSettings();
+  }
+  
+  function updateLineHeight(value) {
+    lineHeight = value;
+    localStorage.setItem('lineHeight', lineHeight);
+    applyReadingSettings();
+  }
+  
+  function updateContentWidth(value) {
+    contentWidth = value;
+    localStorage.setItem('contentWidth', contentWidth);
+    applyReadingSettings();
+  }
+
+  // 閱讀進度功能
+  function updateReadingProgress() {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    
+    const progressBar = document.querySelector('.reading-progress-bar');
+    if (progressBar) {
+      progressBar.style.width = Math.max(0, Math.min(100, progress)) + '%';
+    }
+  }
+
+  // 顯示通知
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2000);
+  }
+
+  // 複製功能
+  function copyText(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('已複製到剪貼板');
+      });
+    } else {
+      // 降級處理
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('已複製到剪貼板');
+    }
+  }
+
+  // ============ 事件監聽 ============
+  
+  // 初始化所有組件
+  const toolbar = createReadingToolbar();
+  const progressBar = createReadingProgress();
+  const floatingTOC = createFloatingTOC();
+  const actionButtons = createActionButtons();
+  addQAActions();
+  applyReadingSettings();
+
+  document.addEventListener('click', (e) => {
+    const action = e.target.dataset.action;
+    if (!action) return;
+
+    switch (action) {
+      // 字體設置
+      case 'font-decrease':
+        updateFontSize(-2);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+      case 'font-normal':
+        fontSize = 16;
+        localStorage.setItem('fontSize', fontSize);
+        applyReadingSettings();
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+      case 'font-increase':
+        updateFontSize(2);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+
+      // 行距設置
+      case 'line-tight':
+        updateLineHeight(1.4);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+      case 'line-normal':
+        updateLineHeight(1.6);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+      case 'line-loose':
+        updateLineHeight(1.8);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+
+      // 寬度設置
+      case 'width-narrow':
+        updateContentWidth(600);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+      case 'width-normal':
+        updateContentWidth(800);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+      case 'width-wide':
+        updateContentWidth(1000);
+        updateActiveButton(e.target.parentElement, e.target);
+        break;
+
+      // 操作按鈕
+      case 'toc':
+        floatingTOC.classList.toggle('visible');
+        break;
+      case 'close-toc':
+        floatingTOC.classList.remove('visible');
+        break;
+      case 'top':
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        break;
+      case 'settings':
+        toolbar.classList.toggle('hidden');
+        break;
+
+      // 問答操作
+      case 'copy':
+        const qaElement = e.target.closest('.question, .answer');
+        const text = qaElement.textContent.trim();
+        copyText(text);
+        break;
+      case 'share':
+        if (navigator.share) {
+          navigator.share({
+            title: document.title,
+            url: window.location.href
+          });
+        } else {
+          copyText(window.location.href);
+          showToast('鏈接已複製');
+        }
+        break;
+    }
+  });
+
+  // 浮動目錄點擊
+  document.addEventListener('click', (e) => {
+    if (e.target.classList.contains('floating-toc-item')) {
+      const target = e.target.dataset.target;
+      const element = document.querySelector(target);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        floatingTOC.classList.remove('visible');
+      }
+    }
+  });
+
+  function updateActiveButton(container, activeBtn) {
+    container.querySelectorAll('.ctrl-btn').forEach(btn => btn.classList.remove('active'));
+    activeBtn.classList.add('active');
+  }
+
+  // 滾動事件
+  window.addEventListener('scroll', updateReadingProgress);
+  updateReadingProgress();
+
+  // 快捷鍵支持
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key) {
+        case 'k':
+          e.preventDefault();
+          floatingTOC.classList.toggle('visible');
+          break;
+        case '[':
+          e.preventDefault();
+          updateFontSize(-2);
+          break;
+        case ']':
+          e.preventDefault();
+          updateFontSize(2);
+          break;
+      }
+    }
+    
+    if (e.key === 'Escape') {
+      floatingTOC.classList.remove('visible');
+      toolbar.classList.add('hidden');
+    }
   });
 
   // 平滑滾動章節內 TOC 與回到頂部
