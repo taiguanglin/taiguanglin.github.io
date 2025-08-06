@@ -1177,52 +1177,112 @@ ${answerText}`;
     const bookmarksList = document.getElementById('bookmarks-list');
     if (!bookmarksList) return;
     
-    // 獲取所有書籤數據（使用統一的key）
-    const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
+    // 使用異步處理來避免阻塞UI
+    setTimeout(() => {
+      // 獲取所有書籤數據（使用統一的key）
+      const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
+      
+      if (allBookmarks.length === 0) {
+        bookmarksList.innerHTML = '<li class="bookmarks-empty">暫無書籤</li>';
+        return;
+      }
+      
+      // 如果書籤數量較多，顯示處理進度
+      if (allBookmarks.length > 50) {
+        showBookmarkProcessingIndicator(allBookmarks.length);
+      }
+      
+      processHomepageBookmarks(allBookmarks);
+    }, 10); // 短暫延遲讓載入動畫顯示
+  }
+  
+  // 顯示書籤處理指示器（針對大量書籤）
+  function showBookmarkProcessingIndicator(totalCount) {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
     
-    if (allBookmarks.length === 0) {
-      bookmarksList.innerHTML = '<li class="bookmarks-empty">暫無書籤</li>';
-      return;
+    const processingHTML = `
+      <div class="bookmark-loading-container">
+        <div class="bookmark-loading-spinner">
+          <div class="loading-progress-ring">
+            <svg width="40" height="40" viewBox="0 0 40 40">
+              <circle cx="20" cy="20" r="16" stroke="#f0f0f0" stroke-width="3" fill="none"/>
+              <circle cx="20" cy="20" r="16" stroke="#ff69b4" stroke-width="3" fill="none" 
+                      stroke-dasharray="100" stroke-dashoffset="100" class="progress-circle"/>
+            </svg>
+          </div>
+          <div class="loading-text">處理 ${totalCount} 個書籤...</div>
+        </div>
+      </div>
+    `;
+    
+    bookmarksList.innerHTML = processingHTML;
+  }
+  
+  // 處理首頁書籤數據（分批處理）
+  function processHomepageBookmarks(allBookmarks) {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
+    
+    // 使用requestAnimationFrame分批處理，避免阻塞UI
+    requestAnimationFrame(() => {
+      // 按章節分組書籤
+      const bookmarksByChapter = {};
+      allBookmarks.forEach(bookmark => {
+        const chapterTitle = bookmark.chapterTitle || '未知章節';
+        if (!bookmarksByChapter[chapterTitle]) {
+          bookmarksByChapter[chapterTitle] = [];
+        }
+        bookmarksByChapter[chapterTitle].push(bookmark);
+      });
+      
+      // 對章節標題進行排序（按照章節數字順序）
+      const sortedChapterTitles = Object.keys(bookmarksByChapter).sort((a, b) => {
+        // 提取章節數字，格式如：01自性与意识、06修福积功德等
+        const extractChapterNumber = (title) => {
+          // 嘗試匹配開頭的數字（2位數字）
+          const match = title.match(/^(\\d{1,2})/);
+          return match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
+        };
+        
+        const numA = extractChapterNumber(a);
+        const numB = extractChapterNumber(b);
+        return numA - numB;
+      });
+      
+      // 分批渲染章節
+      renderBookmarkChaptersBatch(sortedChapterTitles, bookmarksByChapter, 0);
+    });
+  }
+  
+  // 分批渲染書籤章節，避免大量DOM操作阻塞UI
+  function renderBookmarkChaptersBatch(chapterTitles, bookmarksByChapter, startIndex) {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
+    
+    const batchSize = 3; // 每批處理3個章節
+    const endIndex = Math.min(startIndex + batchSize, chapterTitles.length);
+    
+    // 如果是第一批，清空並創建容器
+    if (startIndex === 0) {
+      bookmarksList.innerHTML = '';
     }
     
-    // 按章節分組書籤
-    const bookmarksByChapter = {};
-    allBookmarks.forEach(bookmark => {
-      const chapterTitle = bookmark.chapterTitle || '未知章節';
-      if (!bookmarksByChapter[chapterTitle]) {
-        bookmarksByChapter[chapterTitle] = [];
-      }
-      bookmarksByChapter[chapterTitle].push(bookmark);
-    });
-    
-    // 生成書籤HTML
-    let bookmarksHTML = '';
-    
-    // 對章節標題進行排序（按照章節數字順序）
-    const sortedChapterTitles = Object.keys(bookmarksByChapter).sort((a, b) => {
-      // 提取章節數字，格式如：01自性与意识、06修福积功德等
-      const extractChapterNumber = (title) => {
-        // 嘗試匹配開頭的數字（2位數字）
-        const match = title.match(/^(\d{1,2})/);
-        return match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
-      };
-      
-      const numA = extractChapterNumber(a);
-      const numB = extractChapterNumber(b);
-      return numA - numB;
-    });
-    
-    sortedChapterTitles.forEach(chapterTitle => {
+    // 處理當前批次的章節
+    for (let i = startIndex; i < endIndex; i++) {
+      const chapterTitle = chapterTitles[i];
       const chapterBookmarks = bookmarksByChapter[chapterTitle];
       
-      bookmarksHTML += `
-        <li class="bookmark-chapter-group">
-          <div class="bookmark-chapter-title">${chapterTitle}</div>
-          <ul class="bookmark-chapter-list">
+      // 創建章節組容器
+      const chapterGroup = document.createElement('li');
+      chapterGroup.className = 'bookmark-chapter-group';
+      
+      let chapterHTML = `
+        <div class="bookmark-chapter-title">${chapterTitle}</div>
+        <ul class="bookmark-chapter-list">
       `;
       
       chapterBookmarks.forEach(bookmark => {
-        // 使用與章節書籤一致的格式
         const bookmarkQuestioner = bookmark.questioner || '匿名';
         const bookmarkTime = bookmark.time || '';
         const bookmarkPreview = bookmark.preview || '';
@@ -1232,10 +1292,9 @@ ${answerText}`;
         const typeIcon = isQAPair ? '💬' : '📝';
         const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
         
-        // 構建跳轉鏈接（如果有文件名和元素ID）
         const linkUrl = chapterFilename && elementId ? `${chapterFilename}#${elementId}` : '#';
         
-        bookmarksHTML += `
+        chapterHTML += `
           <li class="bookmark-item${typeClass}" data-bookmark-id="${bookmark.id}">
             <div class="bookmark-meta">
               <span class="bookmark-type">${typeIcon}</span>
@@ -1250,16 +1309,35 @@ ${answerText}`;
         `;
       });
       
-      bookmarksHTML += `
-          </ul>
-        </li>
-      `;
-    });
+      chapterHTML += '</ul>';
+      chapterGroup.innerHTML = chapterHTML;
+      bookmarksList.appendChild(chapterGroup);
+    }
     
-    bookmarksList.innerHTML = bookmarksHTML;
+    // 如果還有更多章節需要處理，繼續下一批
+    if (endIndex < chapterTitles.length) {
+      requestAnimationFrame(() => {
+        renderBookmarkChaptersBatch(chapterTitles, bookmarksByChapter, endIndex);
+      });
+    } else {
+      // 所有章節渲染完成，添加事件監聽器
+      addHomepageBookmarkEventListeners();
+    }
+  }
+  
+  // 添加首頁書籤事件監聽器
+  function addHomepageBookmarkEventListeners() {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
     
-    // 添加書籤點擊和刪除事件
-    bookmarksList.addEventListener('click', (e) => {
+    // 移除舊的事件監聽器，避免重複綁定
+    const existingHandler = bookmarksList.bookmarkClickHandler;
+    if (existingHandler) {
+      bookmarksList.removeEventListener('click', existingHandler);
+    }
+    
+    // 創建新的事件處理器
+    const newHandler = (e) => {
       if (e.target.classList.contains('bookmark-delete')) {
         e.stopPropagation();
         const bookmarkId = e.target.getAttribute('data-bookmark-id');
@@ -1267,10 +1345,8 @@ ${answerText}`;
         refreshHomepageBookmarks(); // 刷新顯示
         updateBookmarkCount(); // 更新書籤計數
       } else {
-        // 檢查是否點擊的是預覽鏈接，如果是則不執行跳轉（避免雙重跳轉）
         const clickedLink = e.target.closest('a');
         if (clickedLink) {
-          // 點擊的是 <a> 標籤，讓瀏覽器自行處理（target="_blank"）
           return;
         }
         
@@ -1280,7 +1356,11 @@ ${answerText}`;
           jumpToBookmark(bookmarkId);
         }
       }
-    });
+    };
+    
+    // 綁定新的事件監聽器
+    bookmarksList.addEventListener('click', newHandler);
+    bookmarksList.bookmarkClickHandler = newHandler; // 保存引用以便移除
   }
   
   // 跳轉到指定書籤
@@ -1708,6 +1788,94 @@ ${answerText}`;
     }
   }
   
+  // 顯示書籤載入指示器
+  function showBookmarkLoadingIndicator() {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
+    
+    // 創建載入動畫HTML
+    const loadingHTML = `
+      <div class="bookmark-loading-container">
+        <div class="bookmark-loading-spinner">
+          <div class="loading-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="loading-text">載入書籤中...</div>
+        </div>
+      </div>
+    `;
+    
+    bookmarksList.innerHTML = loadingHTML;
+    
+    // 動態添加載入動畫CSS（如果尚未添加）
+    if (!document.querySelector('#bookmark-loading-styles')) {
+      const style = document.createElement('style');
+      style.id = 'bookmark-loading-styles';
+      style.textContent = `
+        .bookmark-loading-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 40px 20px;
+          min-height: 120px;
+        }
+        
+        .bookmark-loading-spinner {
+          text-align: center;
+          color: #666;
+        }
+        
+        .loading-dots {
+          display: flex;
+          gap: 4px;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+        
+        .loading-dots .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #ff69b4;
+          animation: bookmarkDotPulse 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-dots .dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots .dot:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dots .dot:nth-child(3) { animation-delay: 0s; }
+        
+        .loading-text {
+          font-size: 14px;
+          color: #999;
+          font-weight: 500;
+        }
+        
+        @keyframes bookmarkDotPulse {
+          0%, 80%, 100% {
+            transform: scale(0.6);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        
+        /* 暗色模式支持 */
+        .dark-mode .bookmark-loading-spinner {
+          color: #ccc;
+        }
+        
+        .dark-mode .loading-text {
+          color: #aaa;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
   function renderBookmarks() {
     const bookmarksList = document.getElementById('bookmarks-list');
     
@@ -1721,47 +1889,50 @@ ${answerText}`;
       return;
     }
     
-    const chapterBookmarks = getCurrentChapterBookmarks();
-    
-    if (chapterBookmarks.length === 0) {
-      bookmarksList.innerHTML = 
-        '<div class="bookmarks-empty">' +
-          '<div>本文件暫無書籤</div>' +
-          '<div style="font-size: 12px; color: #999; margin-top: 8px;">當前文件：' + currentChapter.title + '</div>' +
-        '</div>';
-      return;
-    }
-    
-    let bookmarksHTML = '';
-    
-    // 添加當前文件標題和清空按鈕
-    bookmarksHTML += 
-      '<div class="current-chapter-info">' +
-        '<div class="chapter-header">' +
-          '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
-          '<button class="bookmark-clear-icon" data-action="clear-bookmarks" title="清空本文件所有書籤">🗑️</button>' +
-        '</div>' +
-      '</div>';
-    
-    // 直接顯示當前文件的書籤，不需要分組
-    chapterBookmarks.forEach(bookmark => {
-      const isQAPair = bookmark.type === 'qa-pair';
-      const typeIcon = isQAPair ? '💬' : '📝';
-      const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
+    // 對於章節頁面，也使用異步處理來改善UX
+    setTimeout(() => {
+      const chapterBookmarks = getCurrentChapterBookmarks();
       
+      if (chapterBookmarks.length === 0) {
+        bookmarksList.innerHTML = 
+          '<div class="bookmarks-empty">' +
+            '<div>本文件暫無書籤</div>' +
+            '<div style="font-size: 12px; color: #999; margin-top: 8px;">當前文件：' + currentChapter.title + '</div>' +
+          '</div>';
+        return;
+      }
+      
+      let bookmarksHTML = '';
+      
+      // 添加當前文件標題和清空按鈕
       bookmarksHTML += 
-        '<div class="bookmark-item' + typeClass + '" data-target="#' + bookmark.elementId + '">' +
-          '<div class="bookmark-meta">' +
-            '<span class="bookmark-type">' + typeIcon + '</span>' +
-            '<span class="bookmark-questioner">' + bookmark.questioner + '</span>' +
-            '<span class="bookmark-time">' + bookmark.time + '</span>' +
+        '<div class="current-chapter-info">' +
+          '<div class="chapter-header">' +
+            '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
+            '<button class="bookmark-clear-icon" data-action="clear-bookmarks" title="清空本文件所有書籤">🗑️</button>' +
           '</div>' +
-          '<div class="bookmark-preview">' + bookmark.preview + '</div>' +
-          '<button class="bookmark-delete" data-bookmark-id="' + bookmark.id + '" title="刪除書籤">✕</button>' +
         '</div>';
-    });
-    
-    bookmarksList.innerHTML = bookmarksHTML;
+      
+      // 直接顯示當前文件的書籤，不需要分組
+      chapterBookmarks.forEach(bookmark => {
+        const isQAPair = bookmark.type === 'qa-pair';
+        const typeIcon = isQAPair ? '💬' : '📝';
+        const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
+        
+        bookmarksHTML += 
+          '<div class="bookmark-item' + typeClass + '" data-target="#' + bookmark.elementId + '">' +
+            '<div class="bookmark-meta">' +
+              '<span class="bookmark-type">' + typeIcon + '</span>' +
+              '<span class="bookmark-questioner">' + bookmark.questioner + '</span>' +
+              '<span class="bookmark-time">' + bookmark.time + '</span>' +
+            '</div>' +
+            '<div class="bookmark-preview">' + bookmark.preview + '</div>' +
+            '<button class="bookmark-delete" data-bookmark-id="' + bookmark.id + '" title="刪除書籤">✕</button>' +
+          '</div>';
+      });
+      
+      bookmarksList.innerHTML = bookmarksHTML;
+    }, 10); // 短暫延遲讓載入動畫顯示
   }
   
   function updateBookmarkCount() {
@@ -2202,7 +2373,14 @@ ${answerText}`;
         if (tocList) tocList.style.display = 'none';
         if (bookmarksList) bookmarksList.style.display = 'block';
         if (tocTitle) tocTitle.textContent = '🔖 我的書籤';
-        renderBookmarks();
+        
+        // 立即顯示載入指示器，改善UX
+        showBookmarkLoadingIndicator();
+        
+        // 使用requestAnimationFrame延遲渲染，讓載入動畫先顯示
+        requestAnimationFrame(() => {
+          renderBookmarks();
+        });
       }
     }
     
