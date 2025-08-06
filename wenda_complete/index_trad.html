@@ -67,6 +67,7 @@ if (typeof MiniSearch === 'undefined') {
 </div>
 
 <h2 id="toc-header">Table of Contents</h2>
+<div class="toc">
 <ul>
 <li><a href="01-01zi-xing-yu-yi-shi_trad.html">01自性與意識</a>
 <ul>
@@ -527,5 +528,40 @@ if (typeof MiniSearch === 'undefined') {
 </ul>
 </ul></li>
 </ul>
+</div>
+
+<!-- 懸浮操作按鈕 -->
+<div class="action-buttons">
+  <div class="action-menu">
+    <button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>
+    <div class="action-menu-items">
+      <button class="action-btn" data-action="toc" title="目錄">📖</button>
+      <button class="action-btn" data-action="top" title="回到頂部">↑</button>
+      <button class="action-btn" data-action="settings" title="設置">⚙️</button>
+    </div>
+  </div>
+</div>
+
+<!-- 懸浮目錄 -->
+<div class="floating-toc" id="floating-toc">
+  <div class="floating-toc-header">
+    <div class="floating-toc-tabs">
+      <button class="floating-toc-tab active" data-tab="toc">📖 目錄</button>
+      <button class="floating-toc-tab" data-tab="bookmarks">🔖 書籤</button>
+    </div>
+    <button class="ctrl-btn" data-action="close-toc">✕</button>
+  </div>
+  
+  <div class="floating-toc-content">
+    <h3 id="toc-title">📖 章節目錄</h3>
+    <ul id="toc-list">
+      <!-- 動態生成的首頁TOC內容 -->
+    </ul>
+    <ul id="bookmarks-list" style="display: none;">
+      <!-- 動態生成的書籤內容 -->
+    </ul>
+  </div>
+</div>
+
 </body>
 </html>
