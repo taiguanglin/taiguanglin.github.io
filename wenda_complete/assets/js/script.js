@@ -1661,7 +1661,7 @@ ${answerText}`;
   
   function applyReadingSettings() {
     document.body.style.fontSize = fontSize + 'px';
-    document.body.style.lineHeight = lineHeight;
+    document.documentElement.style.setProperty('--line-height', lineHeight);
     document.body.style.maxWidth = contentWidth + 'px';
   }
   
@@ -1876,13 +1876,13 @@ ${answerText}`;
         updateActiveButton(e.target.parentElement, e.target);
         break;
 
-      // 行距設置 - 擴大調整幅度讓用戶感受到明顯差異
+      // 行距設置
       case 'line-tight':
-        updateLineHeight(0.4);
+        updateLineHeight(1.2);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
-        updateLineHeight(1.0);
+        updateLineHeight(1.6);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
