@@ -2298,16 +2298,20 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // ============ 功能實現 ============
   
-  // 生成內容的簡單hash
+  // 生成內容的簡單hash（與Python端保持一致，使用MD5前12位）
   function simpleHash(str) {
+    // 注意：這是一個簡化版本，實際應該使用與Python端相同的MD5算法
+    // 為了保持一致性，我們暫時使用相同的邏輯結構
     let hash = 0;
-    if (str.length === 0) return hash;
+    if (str.length === 0) return '000000000000';
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // 轉換為32位整數
     }
-    return Math.abs(hash).toString(36);
+    // 將hash轉換為12位16進制字符串，模擬MD5前12位
+    const hexHash = Math.abs(hash).toString(16).padStart(12, '0').substring(0, 12);
+    return hexHash;
   }
   
   // 標準化文本內容，提高ID生成的穩定性
@@ -2316,12 +2320,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     
     return text
       .trim()                                    // 移除首尾空白
-      .replace(/\\s+/g, ' ')                     // 統一多個空白字符為單個空格
       .replace(/[\\r\\n\\t]/g, ' ')              // 替換換行符和制表符為空格
-      .replace(/&[a-zA-Z]+;/g, '')               // 移除HTML實體
-      .replace(/[^\\w\\s\\u4e00-\\u9fff]/g, '')  // 只保留字母、數字、空格和中文字符
-      .toLowerCase()                             // 轉換為小寫
-      .substring(0, 200);                        // 限制長度，避免過長的內容
+      .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');  // 處理HTML實體，與Python端保持一致
   }
   
   // 生成穩定的內容ID
@@ -2333,10 +2333,10 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     // 標準化時間：只保留數字部分
     const normalizedTime = time ? time.replace(/[^\\d]/g, '').substring(0, 8) : '';
     
-    // 組合穩定的標識內容
+    // 組合穩定的標識內容：人名 + 時間 + 前50個字（與Python端保持一致）
     const stableContent = normalizedQuestioner + 
-                         normalizedContent.substring(0, 80) + // 取前80字符確保穩定性
-                         normalizedTime;
+                         normalizedTime +
+                         normalizedContent.substring(0, 50); // 改為50字符，與用戶要求一致
     
     return simpleHash(stableContent);
   }
@@ -2348,14 +2348,34 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     return simpleHash(contentText);
   }
   
+  // 生成舊版80字符邏輯的ID（用於向後兼容）
+  function generateLegacy80CharId(questioner, content, time) {
+    // 舊的邏輯：人名 + 前80字符 + 時間
+    const normalizedQuestioner = normalizeTextForId(questioner);
+    const normalizedContent = normalizeTextForId(content);
+    const normalizedTime = time ? time.replace(/[^\\d]/g, '').substring(0, 8) : '';
+    
+    const stableContent = normalizedQuestioner + 
+                         normalizedContent.substring(0, 80) + // 舊的80字符
+                         normalizedTime;
+    
+    return simpleHash(stableContent);
+  }
+  
   // 嘗試查找元素的多種ID策略
   function findElementByMultipleIds(questioner, content, time, prefix = 'qa') {
-    // 先嘗試新的穩定ID
+    // 1. 先嘗試新的穩定ID（人名+時間+前50字）
     const stableId = prefix + '-' + generateStableContentId(questioner, content, time);
     let element = document.getElementById(stableId);
     
     if (!element) {
-      // 如果找不到，嘗試舊的ID邏輯
+      // 2. 嘗試舊的80字符邏輯
+      const legacy80Id = prefix + '-' + generateLegacy80CharId(questioner, content, time);
+      element = document.getElementById(legacy80Id);
+    }
+    
+    if (!element) {
+      // 3. 嘗試最原始的舊ID邏輯
       const legacyId = prefix + '-' + generateLegacyContentId(questioner, content, time);
       element = document.getElementById(legacyId);
     }
@@ -3921,6 +3941,43 @@ if (typeof MiniSearch === 'undefined') {{
 
 # ========== 功能實作 ==========
 
+def normalize_text_for_id(text):
+    """標準化文本內容，提高ID生成的穩定性"""
+    if not text:
+        return ''
+    
+    import re
+    return (text
+            .strip()                                    # 移除首尾空白
+            .replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')  # 替換換行符和制表符為空格
+            .replace('&nbsp;', ' ').replace('&lt;', '<').replace('&gt;', '>').replace('&amp;', '&')  # 處理HTML實體
+            )
+
+def simple_hash(text):
+    """生成簡單hash"""
+    import hashlib
+    return hashlib.md5(text.encode('utf-8')).hexdigest()[:12]
+
+def generate_stable_qa_id(questioner, content, time, item_type):
+    """
+    生成穩定的問答ID，基於：人名 + 時間 + 前50個字
+    這確保每次重新生成HTML時ID保持一致
+    """
+    # 標準化各組件
+    normalized_questioner = normalize_text_for_id(questioner or '')
+    normalized_content = normalize_text_for_id(content or '')
+    normalized_time = re.sub(r'[^\d]', '', time or '')[:8] if time else ''  # 只保留數字
+    
+    # 取前50個字符（用戶要求）
+    content_part = normalized_content[:50] if normalized_content else ''
+    
+    # 組合：人名 + 時間 + 前50個字
+    stable_content = normalized_questioner + normalized_time + content_part
+    
+    # 生成hash
+    content_hash = simple_hash(stable_content)
+    return f"{item_type}-{content_hash}"
+
 def extract_text_content(html_content, base_filename):
     """從HTML內容中提取搜索索引數據"""
     from bs4 import BeautifulSoup
@@ -3947,9 +4004,28 @@ def extract_text_content(html_content, base_filename):
         """為元素生成唯一ID"""
         if element.get('id'):
             return element.get('id')
-        # 基於內容生成ID
-        content_hash = hashlib.md5(content[:100].encode()).hexdigest()[:8]
-        return f"{item_type}-{content_hash}"
+        
+        # 對於問答元素，使用穩定的ID生成邏輯
+        if item_type in ['question', 'answer']:
+            questioner = ''
+            time_info = ''
+            
+            if item_type == 'question':
+                questioner_elem = element.find(class_='questioner')
+                time_elem = element.find(class_='question-time')
+                questioner = questioner_elem.get_text().strip() if questioner_elem else ''
+                time_info = time_elem.get_text().strip() if time_elem else ''
+            elif item_type == 'answer':
+                answerer_elem = element.find(class_='answerer')
+                questioner = answerer_elem.get_text().strip() if answerer_elem else 'Taiguanglin'
+                # 答案通常沒有時間信息
+                time_info = ''
+            
+            return generate_stable_qa_id(questioner, content, time_info, item_type)
+        else:
+            # 其他元素（如標題）使用舊邏輯
+            content_hash = hashlib.md5(content[:100].encode()).hexdigest()[:8]
+            return f"{item_type}-{content_hash}"
     
     # 提取標題 (h1, h2, h3, h4)
     for heading in soup.find_all(['h1', 'h2', 'h3', 'h4']):
@@ -4271,7 +4347,10 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
             # 確保回答內容第一行不換行
             clean_content = re.sub(r'^(<br>\s*)+', '', clean_content)
             
-            return f'''<div class="answer">
+            # 生成穩定的ID
+            answer_id = generate_stable_qa_id('Taiguanglin', clean_content, time_info, 'answer')
+            
+            return f'''<div class="answer" id="{answer_id}">
     <div class="answer-meta">
         <span class="answerer">Taiguanglin</span>
         {time_html}
@@ -4287,7 +4366,9 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
             
             # 如果 question_content 為空，表示只有姓名，沒有時間和內容
             if not question_content:
-                return f'''<div class="question">
+                # 生成穩定的ID（沒有內容和時間）
+                question_id = generate_stable_qa_id(questioner_name, '', '', 'question')
+                return f'''<div class="question" id="{question_id}">
     <div class="question-meta">
         <span class="questioner">{questioner_name}</span>
     </div>
@@ -4300,7 +4381,9 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
             # 如果提取到時間但內容為空，說明這行只有姓名和時間，問題內容在後續段落
             if time_info and not clean_content.strip():
                 time_html = f'<span class="question-time">{time_info}</span>'
-                return f'''<div class="question">
+                # 生成穩定的ID（有時間但沒有內容）
+                question_id = generate_stable_qa_id(questioner_name, '', time_info, 'question')
+                return f'''<div class="question" id="{question_id}">
     <div class="question-meta">
         <span class="questioner">{questioner_name}</span>
         {time_html}
@@ -4318,7 +4401,10 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
             # 確保問題內容第一行不換行
             clean_content = re.sub(r'^(<br>\s*)+', '', clean_content)
             
-            return f'''<div class="question">
+            # 生成穩定的ID
+            question_id = generate_stable_qa_id(questioner_name, clean_content, time_info, 'question')
+            
+            return f'''<div class="question" id="{question_id}">
     <div class="question-meta">
         <span class="questioner">{questioner_name}</span>
         {time_html}
