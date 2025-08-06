@@ -24,7 +24,7 @@ if (typeof MiniSearch === 'undefined') {
     const searchInput = document.getElementById('search-input');
     const searchStatus = document.getElementById('search-status');
     if (searchInput) searchInput.disabled = true;
-    if (searchStatus) searchStatus.textContent = '搜索功能暂不可用（网络问题）';
+    if (searchStatus) searchStatus.textContent = getText('搜索功能暂不可用（网络问题）', '搜尋功能暫不可用（網路問題）');
   };
   document.head.appendChild(script);
 }
