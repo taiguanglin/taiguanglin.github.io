@@ -36,6 +36,39 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.4); 
     text-decoration: none; 
 }
+.top-nav {
+    margin: 20px 0 10px 0;
+}
+
+.top-nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.top-nav-buttons a {
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.2);
+    max-width: 45%;
+    text-align: center;
+    word-wrap: break-word;
+    flex: 1;
+}
+
+.top-nav-buttons a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(231, 84, 128, 0.3);
+    text-decoration: none;
+}
+
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
@@ -1269,6 +1302,17 @@ body.dark-mode .search-load-all:hover {
         max-width: 100%;
         font-size: 14px;
         padding: 10px 12px;
+    }
+    
+    .top-nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .top-nav-buttons a {
+        max-width: 100%;
+        font-size: 13px;
+        padding: 8px 10px;
     }
 
 }

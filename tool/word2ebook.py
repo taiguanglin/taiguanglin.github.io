@@ -48,6 +48,39 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.4); 
     text-decoration: none; 
 }
+.top-nav {
+    margin: 20px 0 10px 0;
+}
+
+.top-nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.top-nav-buttons a {
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.2);
+    max-width: 45%;
+    text-align: center;
+    word-wrap: break-word;
+    flex: 1;
+}
+
+.top-nav-buttons a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(231, 84, 128, 0.3);
+    text-decoration: none;
+}
+
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
@@ -1281,6 +1314,17 @@ body.dark-mode .search-load-all:hover {
         max-width: 100%;
         font-size: 14px;
         padding: 10px 12px;
+    }
+    
+    .top-nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .top-nav-buttons a {
+        max-width: 100%;
+        font-size: 13px;
+        padding: 8px 10px;
     }
 
 }
@@ -3147,6 +3191,10 @@ HTML_TEMPLATE = """\
 <a href="{home_link}">🏠 回首頁</a>
 </div>
 
+<div class="top-nav">
+{top_nav_links}
+</div>
+
 <div class="toc">
 <h3>本章目錄</h3>
 {chapter_toc}
@@ -3752,12 +3800,17 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
         # 簡體版的上下章導航
         prev_link = ""
         next_link = ""
+        top_nav_links = ""
         if i > 0:
             prev_title = re.sub(r"<.*?>", "", chapters[i-1]["title"])  # 清理HTML標籤
             prev_link = f'<a href="{chapters[i-1]["filename"]}">⬅️ 上一章：{prev_title}</a>'
         if i < len(chapters)-1:
             next_title = re.sub(r"<.*?>", "", chapters[i+1]["title"])  # 清理HTML標籤
             next_link = f'<a href="{chapters[i+1]["filename"]}">下一章：{next_title} ➡️</a>'
+        
+        # 生成頁首導航按鈕
+        if prev_link or next_link:
+            top_nav_links = f'<div class="top-nav-buttons">{prev_link}{next_link}</div>'
         
         # 簡體版的語言切換連結
         trad_filename = get_traditional_filename(ch["filename"])
@@ -3769,6 +3822,7 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
             content=ch["content"],
             prev_link=prev_link,
             next_link=next_link,
+            top_nav_links=top_nav_links,
             home_link="index.html",
             lang_switch_links=lang_switch_links
         )
@@ -3794,6 +3848,7 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
             # 繁體版的上下章導航
             prev_link = ""
             next_link = ""
+            top_nav_links = ""
             if i > 0:
                 prev_trad_filename = get_traditional_filename(chapters[i-1]["filename"])
                 prev_title = re.sub(r"<.*?>", "", chapters[i-1]["title"])  # 清理HTML標籤
@@ -3803,17 +3858,31 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
                 next_title = re.sub(r"<.*?>", "", chapters[i+1]["title"])  # 清理HTML標籤
                 next_link = f'<a href="{next_trad_filename}">下一章：{next_title} ➡️</a>'
             
+            # 生成頁首導航按鈕
+            if prev_link or next_link:
+                top_nav_links = f'<div class="top-nav-buttons">{prev_link}{next_link}</div>'
+            
             # 繁體版的語言切換連結
             lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
             
+            # 繁體轉換並修復特定字符
+            converted_title = cc.convert(ch["title"]).replace("喫", "吃")
+            converted_chapter_toc = cc.convert(ch["chapter_toc"]).replace("喫", "吃")
+            converted_content = cc.convert(ch["content"]).replace("喫", "吃")
+            converted_prev_link = cc.convert(prev_link).replace("喫", "吃")
+            converted_next_link = cc.convert(next_link).replace("喫", "吃")
+            converted_top_nav_links = cc.convert(top_nav_links).replace("喫", "吃")
+            converted_lang_switch_links = cc.convert(lang_switch_links).replace("喫", "吃")
+            
             html_page = HTML_TEMPLATE.format(
-                title=cc.convert(ch["title"]),
-                chapter_toc=cc.convert(ch["chapter_toc"]),
-                content=cc.convert(ch["content"]),
-                prev_link=cc.convert(prev_link),
-                next_link=cc.convert(next_link),
+                title=converted_title,
+                chapter_toc=converted_chapter_toc,
+                content=converted_content,
+                prev_link=converted_prev_link,
+                next_link=converted_next_link,
+                top_nav_links=converted_top_nav_links,
                 home_link="index_trad.html",
-                lang_switch_links=cc.convert(lang_switch_links)
+                lang_switch_links=converted_lang_switch_links
             )
             with open(os.path.join(output_folder, trad_filename), "w", encoding="utf-8") as f:
                 f.write(html_page)
