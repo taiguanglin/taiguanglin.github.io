@@ -21,7 +21,7 @@ a { color: #e75480; text-decoration: none; }
 a:hover { text-decoration: underline; color: #ff69b4; }
 hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc); margin: 30px 0; border-radius: 1px; }
 .nav { margin-bottom: 20px; }
-.nav-footer { display: flex; justify-content: space-between; margin-top: 50px; }
+.nav-footer { display: flex; justify-content: space-between; margin-top: 50px; margin-bottom: 80px; }
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
@@ -856,7 +856,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
     color: white;
     border: none;
-    padding: 15px 30px;
+    padding: 10px 30px;
     border-radius: 25px;
     font-size: 16px;
     font-weight: 600;
@@ -1054,10 +1054,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     border-left-color: #ff69b4;
 }
 
-.search-result-item:hover .search-result-newtab {
-    opacity: 1;
-    color: #e75480;
-}
+
 
 .search-result-title {
     font-weight: 600;
@@ -1069,14 +1066,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     gap: 8px;
 }
 
-.search-result-newtab {
-    color: #999;
-    font-size: 12px;
-    opacity: 0.7;
-    transition: opacity 0.3s ease;
-    margin-left: auto;
-    flex-shrink: 0;
-}
+
 
 .search-result-type {
     display: inline-block;
@@ -1166,13 +1156,7 @@ body.dark-mode .search-result-content {
     color: #ccc;
 }
 
-body.dark-mode .search-result-newtab {
-    color: #666;
-}
 
-body.dark-mode .search-result-item:hover .search-result-newtab {
-    color: #ff69b4;
-}
 
 body.dark-mode .search-clear, body.dark-mode .search-collapse, 
 body.dark-mode .search-load-more, body.dark-mode .search-load-all {
@@ -1262,11 +1246,7 @@ body.dark-mode .search-load-all:hover {
         gap: 4px;
     }
     
-    .search-result-newtab {
-        margin-left: 0;
-        align-self: flex-end;
-        margin-top: -20px;
-    }
+
 }
 
 """
@@ -1401,9 +1381,6 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       
       searchStatus.innerHTML = `
         搜索准备就绪 (共${searchIndex.length}条记录)
-        <span style="color: #999; font-size: 12px; margin-left: 10px;">
-          💡 点击结果将在新标签页打开
-        </span>
       `;
       searchInitialized = true;
       
@@ -1450,9 +1427,6 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         } else {
           searchStatus.innerHTML = `
             搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)
-            <span style="color: #999; font-size: 12px; margin-left: 10px;">
-              💡 点击结果将在新标签页打开
-            </span>
           `;
         }
         return;
@@ -1580,7 +1554,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
             <div class="search-result-title">
               <span class="search-result-type">${typeText}</span>
               ${escapeHtml(result.title)}
-              <span class="search-result-newtab">↗</span>
+
             </div>
             <div class="search-result-content">${highlightedContext}</div>
             <div class="search-result-url">${result.url}</div>
@@ -1609,7 +1583,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
             <div class="search-result-title">
               <span class="search-result-type">${typeText}</span>
               ${escapeHtml(result.title)}
-              <span class="search-result-newtab">↗</span>
+
             </div>
             <div class="search-result-content">${highlightedContext}</div>
             <div class="search-result-url">${result.url}</div>
@@ -1760,9 +1734,6 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       hideLoadMoreButtons();
       searchStatus.innerHTML = `
         搜索准备就绪 (共${searchIndex.length}条记录)
-        <span style="color: #999; font-size: 12px; margin-left: 10px;">
-          💡 点击结果将在新标签页打开
-        </span>
       `;
     }
     
@@ -3080,30 +3051,6 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   updateReadingProgress();
   updateCurrentSection(); // 初始化當前章節
 
-  // 快捷鍵支持
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      switch (e.key) {
-        case 'k':
-          e.preventDefault();
-          floatingTOC.classList.toggle('visible');
-          break;
-        case '[':
-          e.preventDefault();
-          updateFontSize(-2);
-          break;
-        case ']':
-          e.preventDefault();
-          updateFontSize(2);
-          break;
-      }
-    }
-    
-    if (e.key === 'Escape') {
-      floatingTOC.classList.remove('visible');
-      toolbar.classList.add('hidden');
-    }
-  });
 
   // 平滑滾動章節內 TOC 與回到頂部
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -3198,7 +3145,6 @@ if (typeof MiniSearch === 'undefined') {{
 <div class="search-activation">
   <button class="search-activate-btn" id="search-activate-btn">
     🔍 启用全文搜索
-    <span class="search-activate-hint">点击启用跨章节搜索功能</span>
   </button>
 </div>
 
