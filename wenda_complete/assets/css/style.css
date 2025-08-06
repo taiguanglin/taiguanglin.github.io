@@ -508,6 +508,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   transition: background-color 0.2s;
   line-height: 1.4 !important; /* 固定行距 */
   list-style: none;
+  position: relative; /* 為bookmark-delete按鈕定位 */
 }
 
 .bookmark-chapter-list .bookmark-item:hover {
