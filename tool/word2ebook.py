@@ -72,7 +72,6 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     max-width: 45%;
     text-align: center;
     word-wrap: break-word;
-    flex: 1;
 }
 
 .top-nav-buttons a:hover {
