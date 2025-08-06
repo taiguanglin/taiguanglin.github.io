@@ -3501,25 +3501,54 @@ def build_chapter_toc(toc_items, filename=None):
 
 def extract_time_from_text(text):
     """從文字中提取時間，支援多種格式，正確處理換行符"""
+    
+    def normalize_time_format(time_str):
+        """標準化時間格式為 YYYY-MM-DD HH:MM"""
+        # 處理無空格但有冒號的格式：2024-03-0310:57 -> 2024-03-03 10:57
+        time_str = re.sub(r'(\d{4}[-/]\d{1,2}[-/]\d{1,2})(\d{1,2}:\d{2})', r'\1 \2', time_str)
+        
+        # 處理無空格且無冒號的格式：2024-03-031057 -> 2024-03-03 10:57
+        time_str = re.sub(r'(\d{4}[-/]\d{1,2}[-/]\d{1,2})(\d{4})$', 
+                         lambda m: f"{m.group(1)} {m.group(2)[:2]}:{m.group(2)[2:]}", time_str)
+        
+        # 統一分隔符為 - 
+        time_str = re.sub(r'/', '-', time_str)
+        
+        return time_str
+    
     # 完整時間格式：2024-02-18 10:47 或 2024-2-23 15:45  
     time_pattern1 = r'(\d{4}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2})'
     match = re.search(time_pattern1, text)
     if match:
-        time_str = match.group(1)
-        # 提取時間後的剩餘內容，處理換行符
-        remaining = text.replace(time_str, '', 1).strip()
-        # 如果剩餘內容以換行符開始，去掉換行符並strip
+        time_str = normalize_time_format(match.group(1))
+        remaining = text.replace(match.group(1), '', 1).strip()
+        remaining = re.sub(r'^\s*\n\s*', '', remaining)
+        return time_str, remaining
+    
+    # 無空格但有冒號的格式：2024-03-0310:57
+    time_pattern2 = r'(\d{4}[-/]\d{1,2}[-/]\d{1,2}\d{1,2}:\d{2})'
+    match = re.search(time_pattern2, text)
+    if match:
+        time_str = normalize_time_format(match.group(1))
+        remaining = text.replace(match.group(1), '', 1).strip()
+        remaining = re.sub(r'^\s*\n\s*', '', remaining)
+        return time_str, remaining
+    
+    # 無空格且無冒號的格式：2024-03-031057
+    time_pattern3 = r'(\d{4}[-/]\d{1,2}[-/]\d{1,2}\d{4})\b'
+    match = re.search(time_pattern3, text)
+    if match:
+        time_str = normalize_time_format(match.group(1))
+        remaining = text.replace(match.group(1), '', 1).strip()
         remaining = re.sub(r'^\s*\n\s*', '', remaining)
         return time_str, remaining
     
     # 只有日期：2024/02/03 或 18/02/2024 或 2024-02-18
-    time_pattern2 = r'(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})'
-    match = re.search(time_pattern2, text)
+    time_pattern4 = r'(\d{1,4}[-/]\d{1,2}[-/]\d{1,4})'
+    match = re.search(time_pattern4, text)
     if match:
-        time_str = match.group(1)
-        # 提取時間後的剩餘內容，處理換行符
-        remaining = text.replace(time_str, '', 1).strip()
-        # 如果剩餘內容以換行符開始，去掉換行符並strip
+        time_str = normalize_time_format(match.group(1))
+        remaining = text.replace(match.group(1), '', 1).strip()
         remaining = re.sub(r'^\s*\n\s*', '', remaining)
         return time_str, remaining
     
