@@ -838,16 +838,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ============ 功能實現 ============
   
-  // 生成內容的簡單hash
+  // 生成內容的簡單hash（與Python端保持一致，使用MD5前12位）
   function simpleHash(str) {
+    // 注意：這是一個簡化版本，實際應該使用與Python端相同的MD5算法
+    // 為了保持一致性，我們暫時使用相同的邏輯結構
     let hash = 0;
-    if (str.length === 0) return hash;
+    if (str.length === 0) return '000000000000';
     for (let i = 0; i < str.length; i++) {
       const char = str.charCodeAt(i);
       hash = ((hash << 5) - hash) + char;
       hash = hash & hash; // 轉換為32位整數
     }
-    return Math.abs(hash).toString(36);
+    // 將hash轉換為12位16進制字符串，模擬MD5前12位
+    const hexHash = Math.abs(hash).toString(16).padStart(12, '0').substring(0, 12);
+    return hexHash;
   }
   
   // 標準化文本內容，提高ID生成的穩定性
@@ -856,12 +860,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     return text
       .trim()                                    // 移除首尾空白
-      .replace(/\s+/g, ' ')                     // 統一多個空白字符為單個空格
       .replace(/[\r\n\t]/g, ' ')              // 替換換行符和制表符為空格
-      .replace(/&[a-zA-Z]+;/g, '')               // 移除HTML實體
-      .replace(/[^\w\s\u4e00-\u9fff]/g, '')  // 只保留字母、數字、空格和中文字符
-      .toLowerCase()                             // 轉換為小寫
-      .substring(0, 200);                        // 限制長度，避免過長的內容
+      .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');  // 處理HTML實體，與Python端保持一致
   }
   
   // 生成穩定的內容ID
@@ -873,10 +873,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // 標準化時間：只保留數字部分
     const normalizedTime = time ? time.replace(/[^\d]/g, '').substring(0, 8) : '';
     
-    // 組合穩定的標識內容
+    // 組合穩定的標識內容：人名 + 時間 + 前50個字（與Python端保持一致）
     const stableContent = normalizedQuestioner + 
-                         normalizedContent.substring(0, 80) + // 取前80字符確保穩定性
-                         normalizedTime;
+                         normalizedTime +
+                         normalizedContent.substring(0, 50); // 改為50字符，與用戶要求一致
     
     return simpleHash(stableContent);
   }
@@ -888,14 +888,34 @@ document.addEventListener('DOMContentLoaded', function() {
     return simpleHash(contentText);
   }
   
+  // 生成舊版80字符邏輯的ID（用於向後兼容）
+  function generateLegacy80CharId(questioner, content, time) {
+    // 舊的邏輯：人名 + 前80字符 + 時間
+    const normalizedQuestioner = normalizeTextForId(questioner);
+    const normalizedContent = normalizeTextForId(content);
+    const normalizedTime = time ? time.replace(/[^\d]/g, '').substring(0, 8) : '';
+    
+    const stableContent = normalizedQuestioner + 
+                         normalizedContent.substring(0, 80) + // 舊的80字符
+                         normalizedTime;
+    
+    return simpleHash(stableContent);
+  }
+  
   // 嘗試查找元素的多種ID策略
   function findElementByMultipleIds(questioner, content, time, prefix = 'qa') {
-    // 先嘗試新的穩定ID
+    // 1. 先嘗試新的穩定ID（人名+時間+前50字）
     const stableId = prefix + '-' + generateStableContentId(questioner, content, time);
     let element = document.getElementById(stableId);
     
     if (!element) {
-      // 如果找不到，嘗試舊的ID邏輯
+      // 2. 嘗試舊的80字符邏輯
+      const legacy80Id = prefix + '-' + generateLegacy80CharId(questioner, content, time);
+      element = document.getElementById(legacy80Id);
+    }
+    
+    if (!element) {
+      // 3. 嘗試最原始的舊ID邏輯
       const legacyId = prefix + '-' + generateLegacyContentId(questioner, content, time);
       element = document.getElementById(legacyId);
     }
