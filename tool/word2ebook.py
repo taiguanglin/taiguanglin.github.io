@@ -2727,7 +2727,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     if (bookmark && bookmark.chapterFilename) {
       // 跳轉到對應章節頁面，並定位到書籤位置
       const targetUrl = `${bookmark.chapterFilename}#${bookmark.elementId}`;
-      window.location.href = targetUrl;
+      // 在新視窗打開，保持與文字鏈接一致的行為
+      window.open(targetUrl, '_blank');
     }
   }
   
