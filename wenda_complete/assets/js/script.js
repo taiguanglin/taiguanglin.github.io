@@ -807,17 +807,17 @@ document.addEventListener('DOMContentLoaded', function() {
       let actionsHtml = '';
       
       if (isQuestion) {
-        actionsHtml += '<button class="qa-btn" data-action="copy" title="複製問題">📋</button>';
+        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
         if (!currentChapter.isHomepage) {
-          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="加入書籤">🔖</button>';
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
         }
-        actionsHtml += '<button class="qa-btn" data-action="share" title="分享問題">📤</button>';
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
       } else if (isAnswer) {
-        actionsHtml += '<button class="qa-btn" data-action="copy-qa" title="複製問答">📋</button>';
+        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
         if (!currentChapter.isHomepage) {
-          actionsHtml += '<button class="qa-btn" data-action="bookmark-qa" title="加入書籤">🔖</button>';
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
         }
-        actionsHtml += '<button class="qa-btn" data-action="share" title="分享回答">📤</button>';
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
       }
       
       actions.innerHTML = actionsHtml;
@@ -901,12 +901,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // 獲取問答的完整文本
-  function getQAPairText(answerElement) {
-    const questionElement = findQuestionForAnswer(answerElement);
+  function getQAPairText(element) {
+    let questionElement, answerElement;
     let text = '';
     
+    // 判断传入的是问题还是答案元素
+    if (element.classList.contains('question')) {
+      questionElement = element;
+      answerElement = findAnswerForQuestion(element);
+    } else if (element.classList.contains('answer')) {
+      answerElement = element;
+      questionElement = findQuestionForAnswer(element);
+    }
+    
+    // 提取問題內容
     if (questionElement) {
-      // 提取問題內容
       const questioner = questionElement.querySelector('.questioner')?.textContent || '匿名';
       const questionTime = questionElement.querySelector('.question-time')?.textContent || '';
       const questionText = questionElement.querySelector('.question-text')?.textContent || '';
@@ -920,11 +929,13 @@ ${questionText}
     }
     
     // 提取回答內容
-    const answerer = answerElement.querySelector('.answerer')?.textContent || 'Taiguanglin';
-    const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
-    
-    text += `答：${answerer}
+    if (answerElement) {
+      const answerer = answerElement.querySelector('.answerer')?.textContent || 'Taiguanglin';
+      const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
+      
+      text += `答：${answerer}
 ${answerText}`;
+    }
     
     return text;
   }
@@ -1616,11 +1627,6 @@ ${answerText}`;
         break;
 
       // 問答操作
-      case 'copy':
-        const copyElement = e.target.closest('.question, .answer');
-        const text = copyElement.textContent.trim();
-        copyText(text);
-        break;
       case 'bookmark':
         const bookmarkElement = e.target.closest('.question, .answer');
         if (bookmarkElement) {
@@ -1628,9 +1634,9 @@ ${answerText}`;
         }
         break;
       case 'copy-qa':
-        const copyAnswerElement = e.target.closest('.answer');
-        if (copyAnswerElement) {
-          const qaPairText = getQAPairText(copyAnswerElement);
+        const copyQAElement = e.target.closest('.question, .answer');
+        if (copyQAElement) {
+          const qaPairText = getQAPairText(copyQAElement);
           copyText(qaPairText);
         }
         break;
