@@ -366,6 +366,7 @@ body.dark-mode .answerer { color: #ff69b4; }
 
 .floating-toc-list {
     padding: 10px;
+    list-style: none;
 }
 
 .floating-toc-item {
@@ -376,7 +377,7 @@ body.dark-mode .answerer { color: #ff69b4; }
     transition: all 0.3s ease;
     font-size: 13px;
     border-left: 3px solid transparent;
-    line-height: 1.0 !important; /* 固定行距 */
+    line-height: 0.4 !important; /* 固定行距 */
 }
 
 .floating-toc-item.level-h3 {
@@ -491,6 +492,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
   line-height: 1.4 !important; /* 固定行距 */
+  list-style: none;
 }
 
 .bookmark-chapter-title {
@@ -517,6 +519,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   cursor: pointer;
   transition: background-color 0.2s;
   line-height: 1.4 !important; /* 固定行距 */
+  list-style: none;
 }
 
 .bookmark-chapter-list .bookmark-item:hover {
@@ -2180,24 +2183,29 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     let contentHtml = '';
     
     if (currentChapter.isHomepage) {
-      // 首頁只顯示目錄
-      tabsHtml = '<button class="floating-toc-tab active" data-tab="toc">目錄</button>';
+      // 首頁顯示目錄和書籤
+      tabsHtml = 
+        '<button class="floating-toc-tab active" data-tab="toc">目錄</button>' +
+        '<button class="floating-toc-tab" data-tab="bookmarks">書籤 <span id="bookmark-count">(0)</span></button>';
       contentHtml = 
-        '<div class="floating-toc-list" id="toc-list">' +
+        '<ul id="toc-list" class="floating-toc-list">' +
           tocItems +
-        '</div>';
+        '</ul>' +
+        '<ul id="bookmarks-list" class="floating-toc-list" style="display: none;">' +
+          '<li class="bookmarks-empty">尚無書籤</li>' +
+        '</ul>';
     } else {
       // 其他頁面顯示目錄和書籤
       tabsHtml = 
         '<button class="floating-toc-tab active" data-tab="toc">目錄</button>' +
         '<button class="floating-toc-tab" data-tab="bookmarks">書籤 <span id="bookmark-count">(0)</span></button>';
       contentHtml = 
-        '<div class="floating-toc-list" id="toc-list">' +
+        '<ul id="toc-list" class="floating-toc-list">' +
           tocItems +
-        '</div>' +
-        '<div class="floating-toc-list" id="bookmarks-list" style="display: none;">' +
-          '<div class="bookmarks-empty">尚無書籤</div>' +
-        '</div>';
+        '</ul>' +
+        '<ul id="bookmarks-list" class="floating-toc-list" style="display: none;">' +
+          '<li class="bookmarks-empty">尚無書籤</li>' +
+        '</ul>';
     }
     
     toc.innerHTML = 
@@ -2212,7 +2220,13 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         contentHtml +
       '</div>';
     
-    document.body.appendChild(toc);
+    // 檢查是否已存在靜態TOC，如果有則替換，否則添加新的
+    const existingTOC = document.getElementById('floating-toc');
+    if (existingTOC) {
+      existingTOC.parentNode.replaceChild(toc, existingTOC);
+    } else {
+      document.body.appendChild(toc);
+    }
     return toc;
   }
 
@@ -2525,6 +2539,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     
     // 初始化書籤顯示
     refreshHomepageBookmarks();
+    updateBookmarkCount();
   }
   
   // 首頁專用：刷新所有章節的書籤顯示
@@ -2534,11 +2549,11 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     const bookmarksList = document.getElementById('bookmarks-list');
     if (!bookmarksList) return;
     
-    // 獲取所有書籤數據
-    const allBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    // 獲取所有書籤數據（使用統一的key）
+    const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
     
     if (allBookmarks.length === 0) {
-      bookmarksList.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">暫無書籤</li>';
+      bookmarksList.innerHTML = '<li class="bookmarks-empty">暫無書籤</li>';
       return;
     }
     
@@ -2564,19 +2579,27 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       `;
       
       chapterBookmarks.forEach(bookmark => {
-        const bookmarkTitle = bookmark.title || '未知書籤';
+        // 使用問答書籤的完整信息
+        const bookmarkQuestioner = bookmark.questioner || '匿名';
         const bookmarkTime = bookmark.time || '';
         const bookmarkPreview = bookmark.preview || '';
+        const chapterFilename = bookmark.chapterFilename || '';
+        const elementId = bookmark.elementId || '';
+        
+        // 構建跳轉鏈接（如果有文件名和元素ID）
+        const linkUrl = chapterFilename && elementId ? `${chapterFilename}#${elementId}` : '#';
         
         bookmarksHTML += `
           <li class="bookmark-item" data-bookmark-id="${bookmark.id}">
             <div class="bookmark-info">
-              <div class="bookmark-title">${bookmarkTitle}</div>
               <div class="bookmark-meta">
-                <span class="bookmark-time">${bookmarkTime}</span>
-                <button class="bookmark-remove" data-bookmark-id="${bookmark.id}">刪除</button>
+                <span class="bookmark-questioner">${bookmarkQuestioner}</span>
+                ${bookmarkTime ? `<span class="bookmark-time">${bookmarkTime}</span>` : ''}
+                <button class="bookmark-remove" data-bookmark-id="${bookmark.id}" title="刪除書籤">×</button>
               </div>
-              <div class="bookmark-preview">${bookmarkPreview}</div>
+              <div class="bookmark-preview">
+                <a href="${linkUrl}" target="_blank" title="點擊跳轉到原問答">${bookmarkPreview}</a>
+              </div>
             </div>
           </li>
         `;
@@ -2609,7 +2632,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   // 跳轉到指定書籤
   function jumpToBookmark(bookmarkId) {
-    const allBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
     const bookmark = allBookmarks.find(b => b.id === bookmarkId);
     
     if (bookmark && bookmark.chapterFilename) {
@@ -2621,9 +2644,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   // 根據ID刪除書籤
   function removeBookmarkById(bookmarkId) {
-    const allBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
     const updatedBookmarks = allBookmarks.filter(bookmark => bookmark.id !== bookmarkId);
-    localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
+    localStorage.setItem('ebook-bookmarks', JSON.stringify(updatedBookmarks));
     showToast('書籤已刪除');
   }
   
@@ -3034,8 +3057,13 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   function renderBookmarks() {
     const bookmarksList = document.getElementById('bookmarks-list');
     
-    // 首頁不顯示書籤
-    if (currentChapter.isHomepage || !bookmarksList) {
+    if (!bookmarksList) {
+      return;
+    }
+    
+    // 首頁使用專門的書籤顯示函數
+    if (currentChapter.isHomepage) {
+      refreshHomepageBookmarks();
       return;
     }
     
@@ -3083,13 +3111,20 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   }
   
   function updateBookmarkCount() {
-    // 首頁不顯示書籤計數
-    if (currentChapter.isHomepage) {
+    const countEl = document.getElementById('bookmark-count');
+    if (!countEl) {
       return;
     }
     
-    const count = getCurrentChapterBookmarks().length;
-    const countEl = document.getElementById('bookmark-count');
+    let count;
+    if (currentChapter.isHomepage) {
+      // 首頁顯示所有書籤的總數
+      const allBookmarks = getBookmarks();
+      count = allBookmarks.length;
+    } else {
+      // 章節頁面顯示當前章節的書籤數
+      count = getCurrentChapterBookmarks().length;
+    }
     if (countEl) {
       countEl.textContent = '(' + count + ')';
     }
@@ -3506,13 +3541,13 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       const tocTitle = document.getElementById('toc-title');
       
       if (tab === 'toc') {
-        tocList.style.display = 'block';
-        bookmarksList.style.display = 'none';
-        tocTitle.textContent = '📖 章節目錄';
+        if (tocList) tocList.style.display = 'block';
+        if (bookmarksList) bookmarksList.style.display = 'none';
+        if (tocTitle) tocTitle.textContent = '📖 章節目錄';
       } else if (tab === 'bookmarks') {
-        tocList.style.display = 'none';
-        bookmarksList.style.display = 'block';
-        tocTitle.textContent = '🔖 我的書籤';
+        if (tocList) tocList.style.display = 'none';
+        if (bookmarksList) bookmarksList.style.display = 'block';
+        if (tocTitle) tocTitle.textContent = '🔖 我的書籤';
         renderBookmarks();
       }
     }
