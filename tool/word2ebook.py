@@ -85,8 +85,46 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 
 .toc { margin: 20px 0; }
+
+/* 第一層：主章節 - 大字體粗體 */
+.toc > ul > li { 
+    font-size: 1.1em; 
+    font-weight: 600; 
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+.toc > ul > li > a { 
+    color: #d44d75; 
+    font-weight: 600;
+}
+
+/* 第二層：子章節 - 中等字體 */
+.toc ul ul > li { 
+    font-size: 1.0em; 
+    font-weight: 500; 
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+.toc ul ul > li > a { 
+    color: #b73c65; 
+    font-weight: 500;
+}
+
+/* 第三層：具體條目 - 小字體正常 */
+.toc ul ul ul > li { 
+    font-size: 0.95em; 
+    font-weight: 400; 
+    margin-bottom: 4px;
+    line-height: 1.2;
+}
+.toc ul ul ul > li > a { 
+    color: #c75483; 
+    font-weight: 400;
+}
+
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
+.toc ul ul ul { list-style: square; padding-left: 2.5em; }
 
 /* 問答樣式 */
 .question {
@@ -294,7 +332,8 @@ body.dark-mode .answerer { color: #ff69b4; }
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     transition: left 0.3s ease;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
 }
 
 .floating-toc.visible {
@@ -309,12 +348,16 @@ body.dark-mode .answerer { color: #ff69b4; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    z-index: 10;
     border-radius: 12px 12px 0 0;
+    flex-shrink: 0;
+}
+
+.floating-toc-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
 }
 
 .floating-toc-list {
@@ -371,8 +414,9 @@ body.dark-mode .answerer { color: #ff69b4; }
     background: none;
     border: none;
     border-bottom: 2px solid transparent;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     font-size: 12px;
+    transform-origin: center;
 }
 
 .floating-toc-tab.active {
@@ -434,6 +478,63 @@ body.dark-mode .answerer { color: #ff69b4; }
 .bookmark-time {
     font-size: 10px;
     flex-shrink: 0;
+}
+
+/* 首頁書籤樣式 */
+.bookmark-chapter-group {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+}
+
+.bookmark-chapter-title {
+  font-weight: 600;
+  color: #d44d75;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f8c8dc;
+}
+
+.bookmark-chapter-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.bookmark-chapter-list .bookmark-item {
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.bookmark-chapter-list .bookmark-item:hover {
+  background: #f0f0f0;
+}
+
+.bookmark-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.bookmark-remove {
+  background: none;
+  border: none;
+  color: #e75480;
+  cursor: pointer;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.bookmark-remove:hover {
+  background: #ffe0e6;
 }
 
 .bookmark-preview {
@@ -2113,7 +2214,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     buttons.className = 'action-buttons';
     buttons.innerHTML = 
       '<div class="action-menu">' +
-        '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">⋯</button>' +
+        '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>' +
         '<div class="action-menu-items">' +
           '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
           '<button class="action-btn" data-action="top" title="回到頂部">↑</button>' +
@@ -2387,8 +2488,274 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     };
   }
   
+  // 首頁專用：初始化浮動TOC功能
+  function initializeHomepageTOC() {
+    const tocList = document.getElementById('toc-list');
+    const mainTOC = document.querySelector('.toc ul');
+    
+    if (tocList && mainTOC) {
+      // 複製主TOC內容到浮動TOC
+      tocList.innerHTML = mainTOC.innerHTML;
+      
+      // 為TOC項目添加點擊事件（頁面內跳轉）
+      tocList.addEventListener('click', (e) => {
+        if (e.target.tagName === 'A') {
+          e.preventDefault();
+          const href = e.target.getAttribute('href');
+          if (href && href.startsWith('#')) {
+            const targetElement = document.querySelector(href);
+            if (targetElement) {
+              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+          } else if (href) {
+            // 跳轉到其他頁面
+            window.location.href = href;
+          }
+        }
+      });
+    }
+    
+    // 初始化書籤顯示
+    refreshHomepageBookmarks();
+  }
+  
+  // 首頁專用：刷新所有章節的書籤顯示
+  function refreshHomepageBookmarks() {
+    if (!currentChapter.isHomepage) return;
+    
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
+    
+    // 獲取所有書籤數據
+    const allBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    
+    if (allBookmarks.length === 0) {
+      bookmarksList.innerHTML = '<li style="text-align: center; color: #999; padding: 20px;">暫無書籤</li>';
+      return;
+    }
+    
+    // 按章節分組書籤
+    const bookmarksByChapter = {};
+    allBookmarks.forEach(bookmark => {
+      const chapterTitle = bookmark.chapterTitle || '未知章節';
+      if (!bookmarksByChapter[chapterTitle]) {
+        bookmarksByChapter[chapterTitle] = [];
+      }
+      bookmarksByChapter[chapterTitle].push(bookmark);
+    });
+    
+    // 生成書籤HTML
+    let bookmarksHTML = '';
+    Object.keys(bookmarksByChapter).forEach(chapterTitle => {
+      const chapterBookmarks = bookmarksByChapter[chapterTitle];
+      
+      bookmarksHTML += `
+        <li class="bookmark-chapter-group">
+          <div class="bookmark-chapter-title">${chapterTitle}</div>
+          <ul class="bookmark-chapter-list">
+      `;
+      
+      chapterBookmarks.forEach(bookmark => {
+        const bookmarkTitle = bookmark.title || '未知書籤';
+        const bookmarkTime = bookmark.time || '';
+        const bookmarkPreview = bookmark.preview || '';
+        
+        bookmarksHTML += `
+          <li class="bookmark-item" data-bookmark-id="${bookmark.id}">
+            <div class="bookmark-info">
+              <div class="bookmark-title">${bookmarkTitle}</div>
+              <div class="bookmark-meta">
+                <span class="bookmark-time">${bookmarkTime}</span>
+                <button class="bookmark-remove" data-bookmark-id="${bookmark.id}">刪除</button>
+              </div>
+              <div class="bookmark-preview">${bookmarkPreview}</div>
+            </div>
+          </li>
+        `;
+      });
+      
+      bookmarksHTML += `
+          </ul>
+        </li>
+      `;
+    });
+    
+    bookmarksList.innerHTML = bookmarksHTML;
+    
+    // 添加書籤點擊和刪除事件
+    bookmarksList.addEventListener('click', (e) => {
+      if (e.target.classList.contains('bookmark-remove')) {
+        e.stopPropagation();
+        const bookmarkId = e.target.getAttribute('data-bookmark-id');
+        removeBookmarkById(bookmarkId);
+        refreshHomepageBookmarks(); // 刷新顯示
+      } else {
+        const bookmarkItem = e.target.closest('.bookmark-item');
+        if (bookmarkItem) {
+          const bookmarkId = bookmarkItem.getAttribute('data-bookmark-id');
+          jumpToBookmark(bookmarkId);
+        }
+      }
+    });
+  }
+  
+  // 跳轉到指定書籤
+  function jumpToBookmark(bookmarkId) {
+    const allBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const bookmark = allBookmarks.find(b => b.id === bookmarkId);
+    
+    if (bookmark && bookmark.chapterFilename) {
+      // 跳轉到對應章節頁面，並定位到書籤位置
+      const targetUrl = `${bookmark.chapterFilename}#${bookmark.elementId}`;
+      window.location.href = targetUrl;
+    }
+  }
+  
+  // 根據ID刪除書籤
+  function removeBookmarkById(bookmarkId) {
+    const allBookmarks = JSON.parse(localStorage.getItem('bookmarks') || '[]');
+    const updatedBookmarks = allBookmarks.filter(bookmark => bookmark.id !== bookmarkId);
+    localStorage.setItem('bookmarks', JSON.stringify(updatedBookmarks));
+    showToast('書籤已刪除');
+  }
+  
+  // 書籤添加成功的視覺反饋
+  function showBookmarkAddedFeedback() {
+    // 首頁有floating-toc，章節頁面沒有，需要分別處理
+    if (currentChapter.isHomepage) {
+      // 首頁：顯示提示並引導到側邊欄
+      showToast('已添加到書籤，可在側邊欄查看');
+      
+      const floatingTOC = document.getElementById('floating-toc');
+      const bookmarkTab = document.querySelector('.floating-toc-tab[data-tab="bookmarks"]');
+      
+      if (floatingTOC && bookmarkTab) {
+        // 如果TOC未顯示，短暫顯示並高亮書籤tab
+        if (!floatingTOC.classList.contains('visible')) {
+          floatingTOC.classList.add('visible');
+          
+          // 高亮書籤tab
+          bookmarkTab.style.background = '#ff69b4';
+          bookmarkTab.style.color = 'white';
+          bookmarkTab.style.transform = 'scale(1.1)';
+          bookmarkTab.style.transition = 'all 0.3s ease';
+          bookmarkTab.style.boxShadow = '0 2px 8px rgba(255, 105, 180, 0.5)';
+          
+          setTimeout(() => {
+            bookmarkTab.style.background = '';
+            bookmarkTab.style.color = '';
+            bookmarkTab.style.transform = '';
+            bookmarkTab.style.boxShadow = '';
+            
+            setTimeout(() => {
+              floatingTOC.classList.remove('visible');
+            }, 1500);
+          }, 1200);
+        } else {
+          // TOC已顯示，只高亮書籤tab
+          bookmarkTab.style.background = '#ff69b4';
+          bookmarkTab.style.color = 'white';
+          bookmarkTab.style.transform = 'scale(1.1)';
+          bookmarkTab.style.transition = 'all 0.3s ease';
+          bookmarkTab.style.boxShadow = '0 2px 8px rgba(255, 105, 180, 0.5)';
+          
+          setTimeout(() => {
+            bookmarkTab.style.background = '';
+            bookmarkTab.style.color = '';
+            bookmarkTab.style.transform = '';
+            bookmarkTab.style.boxShadow = '';
+          }, 1500);
+        }
+      }
+    } else {
+      // 章節頁面：增強型Toast提示 + 特殊動畫效果
+      showEnhancedBookmarkToast();
+    }
+  }
+  
+  // 章節頁面專用的增強書籤提示
+  function showEnhancedBookmarkToast() {
+    // 創建特殊的toast元素
+    const toast = document.createElement('div');
+    toast.className = 'bookmark-success-toast';
+    toast.innerHTML = `
+      <div class="toast-icon">🔖</div>
+      <div class="toast-content">
+        <div class="toast-title">書籤已添加！</div>
+        <div class="toast-subtitle">點擊右下角 📖 查看所有書籤</div>
+      </div>
+    `;
+    
+    // 添加樣式
+    toast.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(135deg, #ff69b4, #e75480);
+      color: white;
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(231, 84, 128, 0.3);
+      z-index: 10000;
+      transform: translateX(400px);
+      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      max-width: 300px;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    `;
+    
+    toast.querySelector('.toast-icon').style.cssText = `
+      font-size: 24px;
+      animation: bounce 0.6s ease infinite alternate;
+    `;
+    
+    toast.querySelector('.toast-title').style.cssText = `
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 2px;
+    `;
+    
+    toast.querySelector('.toast-subtitle').style.cssText = `
+      font-size: 12px;
+      opacity: 0.9;
+    `;
+    
+    // 添加彈跳動畫CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes bounce {
+        0% { transform: translateY(0); }
+        100% { transform: translateY(-6px); }
+      }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(toast);
+    
+    // 動畫顯示
+    setTimeout(() => {
+      toast.style.transform = 'translateX(0)';
+    }, 100);
+    
+    // 3.5秒後淡出並移除
+    setTimeout(() => {
+      toast.style.transform = 'translateX(400px)';
+      toast.style.opacity = '0';
+      setTimeout(() => {
+        if (toast.parentNode) {
+          document.body.removeChild(toast);
+        }
+        if (style.parentNode) {
+          document.head.removeChild(style);
+        }
+      }, 400);
+    }, 3500);
+  }
+  
   // 初始化當前文件信息（文件級書籤，無需監聽滾動）
-  let currentChapter = getCurrentChapter();
+  let currentChapter;
 
   function toggleBookmark(element) {
     // 首頁不允許操作書籤
@@ -2450,6 +2817,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       time: time,
       preview: preview,
       chapter: chapter,
+      chapterTitle: currentChapter.title,
+      chapterFilename: currentChapter.filename,
       timestamp: new Date().toLocaleString()
     };
     
@@ -2457,7 +2826,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     saveBookmarks(bookmarks);
     addBookmarkVisualIndicator(element);
     renderBookmarks();
-    showToast('已添加到書籤');
+    showBookmarkAddedFeedback();
   }
   
   function toggleQAPairBookmark(answerElement) {
@@ -2525,6 +2894,8 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
       time: time,
       preview: preview,
       chapter: chapter,
+      chapterTitle: currentChapter.title,
+      chapterFilename: currentChapter.filename,
       timestamp: new Date().toLocaleString()
     };
     
@@ -2538,7 +2909,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     }
     
     renderBookmarks();
-    showToast('已添加問答到書籤');
+    showBookmarkAddedFeedback();
   }
   
   function removeBookmark(bookmarkId) {
@@ -2610,6 +2981,46 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     saveBookmarks(updatedBookmarks);
     renderBookmarks();
     showToast(`已清空本文件的 ${currentBookmarks.length} 個書籤`);
+  }
+  
+  // 渲染首頁動態TOC內容
+  function renderIndexTOC() {
+    const tocList = document.getElementById('toc-list');
+    const bookmarksList = document.getElementById('bookmarks-list');
+    
+    if (!tocList) return;
+    
+    // 獲取首頁的TOC鏈接
+    const mainTOC = document.querySelector('.toc');
+    if (!mainTOC) return;
+    
+    const tocLinks = mainTOC.querySelectorAll('a[href]');
+    let tocHTML = '';
+    
+    tocLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      const text = link.textContent.trim();
+      
+      // 只顯示主章節（不包含錨點的鏈接）
+      if (href && !href.includes('#') && text) {
+        tocHTML += `<div class="floating-toc-item" data-href="${href}">${text}</div>`;
+      }
+    });
+    
+    tocList.innerHTML = tocHTML;
+    
+    // 同時更新書籤列表為章節書籤功能說明
+    if (bookmarksList) {
+      bookmarksList.innerHTML = `
+        <div class="bookmarks-empty">
+          <p>📖 書籤功能說明</p>
+          <p>• 進入任意章節</p>
+          <p>• 找到感興趣的問答</p>
+          <p>• 點擊右上角書籤圖標</p>
+          <p>• 返回此處查看收藏</p>
+        </div>
+      `;
+    }
   }
   
   function renderBookmarks() {
@@ -2835,16 +3246,26 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
   // ============ 事件監聽 ============
   
+  // 首先初始化當前章節信息
+  currentChapter = getCurrentChapter();
+  
   // 初始化所有組件
   const toolbar = createReadingToolbar();
   const progressBar = createReadingProgress();
   const floatingTOC = createFloatingTOC();
-  const actionButtons = createActionButtons();
+  
+  // 只在章節頁面創建action-buttons，首頁已有靜態HTML
+  if (!currentChapter.isHomepage) {
+    const actionButtons = createActionButtons();
+  }
+  
   addQAActions();
   applyReadingSettings();
   
-  // 初始化當前章節
-  currentChapter = getCurrentChapter();
+  // 首頁專用：初始化浮動TOC
+  if (currentChapter.isHomepage) {
+    initializeHomepageTOC();
+  }
   
   updateBookmarkCount();
   updateThemeButtons();
@@ -2855,6 +3276,11 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   // 處理頁面加載時的錨點跳轉
   setTimeout(handleInitialAnchor, 200);
+  
+  // 如果是首頁，渲染動態TOC內容
+  if (isIndexPage()) {
+    renderIndexTOC();
+  }
 
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
@@ -2925,8 +3351,21 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
 
       // 操作按鈕
       case 'toggle-menu':
-        const actionMenu = e.target.closest('.action-menu');
-        actionMenu.classList.toggle('expanded');
+        // 兼容首頁和章節頁面的不同結構
+        const actionButtons = e.target.closest('.action-buttons');
+        let actionMenu = actionButtons.querySelector('.action-menu');
+        
+        // 如果沒找到.action-menu，可能是首頁結構，直接查找同級的.action-menu
+        if (!actionMenu) {
+          actionMenu = e.target.nextElementSibling;
+          if (actionMenu && !actionMenu.classList.contains('action-menu')) {
+            actionMenu = null;
+          }
+        }
+        
+        if (actionMenu) {
+          actionMenu.classList.toggle('expanded');
+        }
         e.target.classList.toggle('expanded');
         break;
       case 'toc':
@@ -2948,6 +3387,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.action-menu').classList.remove('expanded');
         document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
+
       case 'settings':
         toolbar.classList.toggle('hidden');
         // 關閉菜單
@@ -3305,7 +3745,43 @@ if (typeof MiniSearch === 'undefined') {{
 </div>
 
 <h2 id="toc-header">Table of Contents</h2>
+<div class="toc">
 {toc_items}
+</div>
+
+<!-- 懸浮操作按钮 -->
+<div class="action-buttons">
+  <div class="action-menu">
+    <button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>
+    <div class="action-menu-items">
+      <button class="action-btn" data-action="toc" title="目錄">📖</button>
+      <button class="action-btn" data-action="top" title="回到頂部">↑</button>
+      <button class="action-btn" data-action="settings" title="設置">⚙️</button>
+    </div>
+  </div>
+</div>
+
+<!-- 懸浮目錄 -->
+<div class="floating-toc" id="floating-toc">
+  <div class="floating-toc-header">
+    <div class="floating-toc-tabs">
+      <button class="floating-toc-tab active" data-tab="toc">📖 目錄</button>
+      <button class="floating-toc-tab" data-tab="bookmarks">🔖 書籤</button>
+    </div>
+    <button class="ctrl-btn" data-action="close-toc">✕</button>
+  </div>
+  
+  <div class="floating-toc-content">
+    <h3 id="toc-title">📖 章節目錄</h3>
+    <ul id="toc-list">
+      <!-- 動態生成的首頁TOC內容 -->
+    </ul>
+    <ul id="bookmarks-list" style="display: none;">
+      <!-- 動態生成的書籤內容 -->
+    </ul>
+  </div>
+</div>
+
 </body>
 </html>
 """
