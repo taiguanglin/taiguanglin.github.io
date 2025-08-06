@@ -10,7 +10,11 @@ from opencc import OpenCC
 
 # ========== 粉紅色主題 CSS & 平滑滾動 JS ==========
 CSS_CONTENT = """\
-body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
+:root {
+    --line-height: 1.6;
+}
+
+body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: #fff0f5; color: #333; transition: 0.3s; }
 
 h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
 h2 { color: #d44d75; margin-top: 40px; }
@@ -96,7 +100,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .question-meta {
     margin-bottom: 10px;
-    line-height: 1.6;
+    line-height: var(--line-height);
 }
 
 .question-meta .questioner {
@@ -120,7 +124,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .question-text {
     color: #333;
-    line-height: 1.6;
+    line-height: var(--line-height);
     margin: 0;
 }
 
@@ -135,7 +139,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .answer-meta {
     margin-bottom: 10px;
-    line-height: 1.6;
+    line-height: var(--line-height);
 }
 
 .answer-meta .answerer {
@@ -150,7 +154,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .answer-text {
     color: #333;
-    line-height: 1.7;
+    line-height: var(--line-height);
     margin: 0;
     font-weight: 500;
 }
@@ -171,7 +175,7 @@ body.dark-mode .answerer { color: #ff69b4; }
 .back-to-top { text-align: right; margin: 20px 0; }
 .back-to-top a { font-size: 0.9em; color: #d44d75; }
 .back-to-top a:hover { color: #ff69b4; }
-.lang-switch { text-align: right; margin-bottom: 10px; }
+.lang-switch { text-align: right; margin-top: 5px; }
 .lang-switch a { font-size: 0.9em; margin: 0 5px; }
 
 /* ============ UX 增強功能 ============ */
@@ -2679,7 +2683,7 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   
   function applyReadingSettings() {
     document.body.style.fontSize = fontSize + 'px';
-    document.body.style.lineHeight = lineHeight;
+    document.documentElement.style.setProperty('--line-height', lineHeight);
     document.body.style.maxWidth = contentWidth + 'px';
   }
   
@@ -2879,13 +2883,13 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         updateActiveButton(e.target.parentElement, e.target);
         break;
 
-      // 行距設置 - 擴大調整幅度讓用戶感受到明顯差異
+      // 行距設置
       case 'line-tight':
-        updateLineHeight(0.4);
+        updateLineHeight(1.2);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
-        updateLineHeight(1.0);
+        updateLineHeight(1.6);
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
