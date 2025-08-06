@@ -23,11 +23,23 @@ document.addEventListener('DOMContentLoaded', function() {
     return filename === 'index.html' || filename === 'index_trad.html';
   }
   
+  // 判断是否为繁体版
+  function isTraditionalChinesePage() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename.includes('_trad.html');
+  }
+  
   // 获取搜索索引文件名
   function getSearchIndexFile() {
     const pathname = window.location.pathname;
     const filename = pathname.split('/').pop() || 'index.html';
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
+  }
+  
+  // 获取本地化文本
+  function getText(simplifiedText, traditionalText) {
+    return isTraditionalChinesePage() ? traditionalText : simplifiedText;
   }
   
   // 激活搜索功能
@@ -62,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 立即禁用搜索输入框并显示加载状态
     if (searchInput) {
       searchInput.disabled = true;
-      searchInput.placeholder = '正在加载搜索功能，请稍候...';
+      searchInput.placeholder = getText('正在加载搜索功能，请稍候...', '正在載入搜尋功能，請稍候...');
     }
     
     await initSearch();
@@ -90,7 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (searchActivation) searchActivation.style.display = 'none';
       searchContainer.style.display = 'block';
       
-      searchStatus.textContent = '正在加载搜索索引...';
+      searchStatus.textContent = getText('正在加载搜索索引...', '正在載入搜尋索引...');
       
       // 检查MiniSearch是否可用
       if (typeof MiniSearch === 'undefined') {
@@ -102,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const response = await fetch(indexFile);
       
       if (!response.ok) {
-        throw new Error('无法加载搜索索引');
+        throw new Error(getText('无法加载搜索索引', '無法載入搜尋索引'));
       }
       
       searchIndex = await response.json();
@@ -127,13 +139,13 @@ document.addEventListener('DOMContentLoaded', function() {
       miniSearch.addAll(searchIndex);
       
       searchStatus.innerHTML = `
-        搜索准备就绪 (共${searchIndex.length}条记录)
+        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
       `;
       searchInitialized = true;
       
       // 启用搜索输入框
       searchInput.disabled = false;
-      searchInput.placeholder = '搜索全文内容...';
+      searchInput.placeholder = getText('搜索全文内容...', '搜尋全文內容...');
       
       // 重新启用激活按钮
       const searchActivateBtn = document.getElementById('search-activate-btn');
@@ -146,11 +158,11 @@ document.addEventListener('DOMContentLoaded', function() {
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
-      searchStatus.textContent = '搜索功能不可用：' + error.message;
+      searchStatus.textContent = getText('搜索功能不可用：', '搜尋功能不可用：') + error.message;
       
       // 即使失败也要启用输入框，让用户可以重试
       searchInput.disabled = false;
-      searchInput.placeholder = '搜索功能暂不可用';
+      searchInput.placeholder = getText('搜索功能暂不可用', '搜尋功能暫不可用');
       
       // 重新启用激活按钮，允许用户重试
       const searchActivateBtn = document.getElementById('search-activate-btn');
@@ -170,10 +182,10 @@ document.addEventListener('DOMContentLoaded', function() {
         displayedResultsCount = 0;
         hideLoadMoreButtons();
         if (query && query.trim().length > 0 && query.trim().length < 2) {
-          searchStatus.textContent = '请输入至少2个字符进行搜索';
+          searchStatus.textContent = getText('请输入至少2个字符进行搜索', '請輸入至少2個字元進行搜尋');
         } else {
           searchStatus.innerHTML = `
-            搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)
+            ${getText(`搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`, `搜尋準備就緒 (共${searchIndex ? searchIndex.length : 0}條記錄)`)}
           `;
         }
         return;
@@ -204,7 +216,7 @@ document.addEventListener('DOMContentLoaded', function() {
           displayPagedResults(trimmedQuery);
         } else {
           displayNoResults(trimmedQuery);
-          searchStatus.textContent = '未找到匹配结果';
+          searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
         }
         
         searchResults.style.display = 'block';
@@ -212,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
       } catch (error) {
         console.error('搜索出错:', error);
-        searchStatus.textContent = '搜索出现错误，请重试';
+        searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
         // 在出错时也隐藏搜索结果
         searchResults.style.display = 'none';
         tocHeader.style.display = 'block';
@@ -257,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 更新结果计数器
     function updateResultsCounter() {
       const totalResults = currentSearchResults.length;
-      searchResultsCount.textContent = `显示 ${displayedResultsCount} / ${totalResults} 条结果`;
+      searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
     }
     
     // 更新加载更多按钮的显示状态
@@ -287,11 +299,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const query = document.getElementById('search-input').value.trim();
       const additionalHTML = results.map(result => {
         const typeText = {
-          'heading': '标题',
-          'question': '问题', 
-          'answer': '回答',
-          'content': '内容'
-        }[result.type] || '内容';
+          'heading': getText('标题', '標題'),
+          'question': getText('问题', '問題'), 
+          'answer': getText('回答', '回答'),
+          'content': getText('内容', '內容')
+        }[result.type] || getText('内容', '內容');
         
         // 智能高亮搜索关键词
         const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
@@ -316,11 +328,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayResults(results, query) {
       searchResultsList.innerHTML = results.map(result => {
         const typeText = {
-          'heading': '标题',
-          'question': '问题', 
-          'answer': '回答',
-          'content': '内容'
-        }[result.type] || '内容';
+          'heading': getText('标题', '標題'),
+          'question': getText('问题', '問題'), 
+          'answer': getText('回答', '回答'),
+          'content': getText('内容', '內容')
+        }[result.type] || getText('内容', '內容');
         
         // 智能高亮搜索关键词
         const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
@@ -341,11 +353,11 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 显示无结果
     function displayNoResults(query) {
-      searchResultsCount.textContent = '未找到结果';
+      searchResultsCount.textContent = getText('未找到结果', '未找到結果');
       searchResultsList.innerHTML = `
         <li class="search-result-item" style="text-align: center; color: #999;">
-          <div>未找到包含"${escapeHtml(query)}"的内容</div>
-          <div style="font-size: 12px; margin-top: 8px;">尝试使用不同的关键词</div>
+          <div>${getText(`未找到包含"${escapeHtml(query)}"的内容`, `未找到包含"${escapeHtml(query)}"的內容`)}</div>
+          <div style="font-size: 12px; margin-top: 8px;">${getText('尝试使用不同的关键词', '嘗試使用不同的關鍵詞')}</div>
         </li>
       `;
     }
@@ -480,7 +492,7 @@ document.addEventListener('DOMContentLoaded', function() {
       displayedResultsCount = 0;
       hideLoadMoreButtons();
       searchStatus.innerHTML = `
-        搜索准备就绪 (共${searchIndex.length}条记录)
+        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
       `;
     }
     

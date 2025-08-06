@@ -7,24 +7,24 @@
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
 <script>
-// 备用CDN加载
+// 備用CDN加載
 if (typeof MiniSearch === 'undefined') {
-  console.log('主CDN失败，尝试备用CDN...');
+  console.log('主CDN失敗，嘗試備用CDN...');
   const script = document.createElement('script');
   script.src = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js';
   script.onload = function() {
-    console.log('备用CDN加载成功');
+    console.log('備用CDN加載成功');
     // 重新初始化搜索
     if (typeof initSearch === 'function') {
       initSearch();
     }
   };
   script.onerror = function() {
-    console.error('所有CDN都失败了，搜索功能不可用');
+    console.error('所有CDN都失敗了，搜索功能不可用');
     const searchInput = document.getElementById('search-input');
     const searchStatus = document.getElementById('search-status');
     if (searchInput) searchInput.disabled = true;
-    if (searchStatus) searchStatus.textContent = '搜索功能暂不可用（网络问题）';
+    if (searchStatus) searchStatus.textContent = getText('搜索功能暫不可用（網絡問題）', '搜尋功能暫不可用（網路問題）');
   };
   document.head.appendChild(script);
 }
@@ -33,31 +33,31 @@ if (typeof MiniSearch === 'undefined') {
 </head>
 <body>
 <div class="lang-switch">
-<a href="index.html">简体</a> | <a href="index_trad.html">繁體</a>
+<a href="index.html">簡體</a> | <a href="index_trad.html">繁體</a>
 </div>
 <h1>wenda2_250608_截止25年3月15日答疑_含圖版</h1>
 
-<!-- 搜索激活按钮 -->
+<!-- 搜索激活按鈕 -->
 <div class="search-activation">
   <button class="search-activate-btn" id="search-activate-btn">
-    🔍 启用全文搜索
+    🔍 啓用全文搜索
   </button>
 </div>
 
-<!-- 搜索功能（默认隐藏） -->
+<!-- 搜索功能（默認隱藏） -->
 <div class="search-container" id="search-container" style="display: none;">
   <div class="search-box">
-    <input type="text" id="search-input" placeholder="搜索全文内容..." autocomplete="off">
+    <input type="text" id="search-input" placeholder="搜索全文內容..." autocomplete="off">
     <div class="search-status" id="search-status">正在初始化搜索功能...</div>
   </div>
   
-  <!-- 搜索结果 -->
+  <!-- 搜索結果 -->
   <div class="search-results" id="search-results" style="display: none;">
     <div class="search-results-header">
       <span class="search-results-count" id="search-results-count"></span>
       <div class="search-results-actions">
-        <button class="search-load-more" id="search-load-more" style="display: none;">显示更多</button>
-        <button class="search-load-all" id="search-load-all" style="display: none;">显示全部</button>
+        <button class="search-load-more" id="search-load-more" style="display: none;">顯示更多</button>
+        <button class="search-load-all" id="search-load-all" style="display: none;">顯示全部</button>
         <button class="search-clear" id="search-clear">清除搜索</button>
         <button class="search-collapse" id="search-collapse">收起搜索</button>
       </div>
