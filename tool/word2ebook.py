@@ -2310,26 +2310,78 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
     return Math.abs(hash).toString(36);
   }
   
+  // 標準化文本內容，提高ID生成的穩定性
+  function normalizeTextForId(text) {
+    if (!text) return '';
+    
+    return text
+      .trim()                                    // 移除首尾空白
+      .replace(/\\s+/g, ' ')                     // 統一多個空白字符為單個空格
+      .replace(/[\\r\\n\\t]/g, ' ')              // 替換換行符和制表符為空格
+      .replace(/&[a-zA-Z]+;/g, '')               // 移除HTML實體
+      .replace(/[^\\w\\s\\u4e00-\\u9fff]/g, '')  // 只保留字母、數字、空格和中文字符
+      .toLowerCase()                             // 轉換為小寫
+      .substring(0, 200);                        // 限制長度，避免過長的內容
+  }
+  
+  // 生成穩定的內容ID
+  function generateStableContentId(questioner, content, time) {
+    // 標準化各個組件
+    const normalizedQuestioner = normalizeTextForId(questioner);
+    const normalizedContent = normalizeTextForId(content);
+    
+    // 標準化時間：只保留數字部分
+    const normalizedTime = time ? time.replace(/[^\\d]/g, '').substring(0, 8) : '';
+    
+    // 組合穩定的標識內容
+    const stableContent = normalizedQuestioner + 
+                         normalizedContent.substring(0, 80) + // 取前80字符確保穩定性
+                         normalizedTime;
+    
+    return simpleHash(stableContent);
+  }
+  
+  // 生成兼容性的舊版ID（用於遷移）
+  function generateLegacyContentId(questioner, content, time) {
+    // 使用舊的邏輯生成ID，用於查找現有書籤
+    const contentText = questioner + content + time;
+    return simpleHash(contentText);
+  }
+  
+  // 嘗試查找元素的多種ID策略
+  function findElementByMultipleIds(questioner, content, time, prefix = 'qa') {
+    // 先嘗試新的穩定ID
+    const stableId = prefix + '-' + generateStableContentId(questioner, content, time);
+    let element = document.getElementById(stableId);
+    
+    if (!element) {
+      // 如果找不到，嘗試舊的ID邏輯
+      const legacyId = prefix + '-' + generateLegacyContentId(questioner, content, time);
+      element = document.getElementById(legacyId);
+    }
+    
+    return element;
+  }
+  
   // 確保元素有唯一且穩定的ID
   function ensureElementId(element, prefix = 'qa') {
     if (!element.id) {
-      // 基於內容生成穩定的ID
-      let contentText = '';
+      let questioner = '', content = '', time = '';
       
       if (element.classList.contains('question')) {
-        const questioner = element.querySelector('.questioner')?.textContent || '';
-        const questionText = element.querySelector('.question-text')?.textContent || '';
-        const time = element.querySelector('.question-time')?.textContent || '';
-        contentText = questioner + questionText + time;
+        questioner = element.querySelector('.questioner')?.textContent || '';
+        content = element.querySelector('.question-text')?.textContent || '';
+        time = element.querySelector('.question-time')?.textContent || '';
       } else if (element.classList.contains('answer')) {
-        const answerer = element.querySelector('.answerer')?.textContent || '';
-        const answerText = element.querySelector('.answer-text')?.textContent || '';
-        contentText = answerer + answerText.substring(0, 100); // 只取前100字符
+        questioner = element.querySelector('.answerer')?.textContent || '';
+        content = element.querySelector('.answer-text')?.textContent || '';
+        // 答案通常沒有時間，使用空字符串
+        time = '';
       }
       
-      // 生成基於內容的穩定ID
-      const contentHash = simpleHash(contentText);
-      element.id = prefix + '-' + contentHash;
+      // 使用新的穩定ID生成邏輯
+      const stableHash = generateStableContentId(questioner, content, time);
+      element.id = prefix + '-' + stableHash;
     }
     return element.id;
   }
