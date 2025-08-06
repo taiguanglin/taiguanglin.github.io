@@ -1125,7 +1125,22 @@ ${answerText}`;
     
     // 生成書籤HTML
     let bookmarksHTML = '';
-    Object.keys(bookmarksByChapter).forEach(chapterTitle => {
+    
+    // 對章節標題進行排序（按照章節數字順序）
+    const sortedChapterTitles = Object.keys(bookmarksByChapter).sort((a, b) => {
+      // 提取章節數字，格式如：01自性与意识、06修福积功德等
+      const extractChapterNumber = (title) => {
+        // 嘗試匹配開頭的數字（2位數字）
+        const match = title.match(/^(\d{1,2})/);
+        return match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
+      };
+      
+      const numA = extractChapterNumber(a);
+      const numB = extractChapterNumber(b);
+      return numA - numB;
+    });
+    
+    sortedChapterTitles.forEach(chapterTitle => {
       const chapterBookmarks = bookmarksByChapter[chapterTitle];
       
       bookmarksHTML += `
@@ -1180,6 +1195,13 @@ ${answerText}`;
         refreshHomepageBookmarks(); // 刷新顯示
         updateBookmarkCount(); // 更新書籤計數
       } else {
+        // 檢查是否點擊的是預覽鏈接，如果是則不執行跳轉（避免雙重跳轉）
+        const clickedLink = e.target.closest('a');
+        if (clickedLink) {
+          // 點擊的是 <a> 標籤，讓瀏覽器自行處理（target="_blank"）
+          return;
+        }
+        
         const bookmarkItem = e.target.closest('.bookmark-item');
         if (bookmarkItem) {
           const bookmarkId = bookmarkItem.getAttribute('data-bookmark-id');

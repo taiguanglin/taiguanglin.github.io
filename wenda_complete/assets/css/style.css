@@ -491,6 +491,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   padding: 5px 0;
   border-bottom: 1px solid #f8c8dc;
   line-height: 1.4 !important; /* 固定行距 */
+  cursor: default !important; /* 確保不顯示為可點擊狀態 */
 }
 
 .bookmark-chapter-list {
@@ -546,6 +547,16 @@ body.dark-mode .answerer { color: #ff69b4; }
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+
+.bookmark-preview a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.bookmark-preview a:hover {
+    text-decoration: none;
+    color: #e75480;
 }
 
 .bookmark-delete {
