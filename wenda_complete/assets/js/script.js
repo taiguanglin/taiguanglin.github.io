@@ -1135,28 +1135,30 @@ ${answerText}`;
       `;
       
       chapterBookmarks.forEach(bookmark => {
-        // 使用問答書籤的完整信息
+        // 使用與章節書籤一致的格式
         const bookmarkQuestioner = bookmark.questioner || '匿名';
         const bookmarkTime = bookmark.time || '';
         const bookmarkPreview = bookmark.preview || '';
         const chapterFilename = bookmark.chapterFilename || '';
         const elementId = bookmark.elementId || '';
+        const isQAPair = bookmark.type === 'qa-pair';
+        const typeIcon = isQAPair ? '💬' : '📝';
+        const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
         
         // 構建跳轉鏈接（如果有文件名和元素ID）
         const linkUrl = chapterFilename && elementId ? `${chapterFilename}#${elementId}` : '#';
         
         bookmarksHTML += `
-          <li class="bookmark-item" data-bookmark-id="${bookmark.id}">
-            <div class="bookmark-info">
-              <div class="bookmark-meta">
-                <span class="bookmark-questioner">${bookmarkQuestioner}</span>
-                ${bookmarkTime ? `<span class="bookmark-time">${bookmarkTime}</span>` : ''}
-                <button class="bookmark-remove" data-bookmark-id="${bookmark.id}" title="刪除書籤">×</button>
-              </div>
-              <div class="bookmark-preview">
-                <a href="${linkUrl}" target="_blank" title="點擊跳轉到原問答">${bookmarkPreview}</a>
-              </div>
+          <li class="bookmark-item${typeClass}" data-bookmark-id="${bookmark.id}">
+            <div class="bookmark-meta">
+              <span class="bookmark-type">${typeIcon}</span>
+              <span class="bookmark-questioner">${bookmarkQuestioner}</span>
+              <span class="bookmark-time">${bookmarkTime}</span>
             </div>
+            <div class="bookmark-preview">
+              <a href="${linkUrl}" target="_blank" title="點擊跳轉到原問答">${bookmarkPreview}</a>
+            </div>
+            <button class="bookmark-delete" data-bookmark-id="${bookmark.id}" title="刪除書籤">✕</button>
           </li>
         `;
       });
@@ -1171,11 +1173,12 @@ ${answerText}`;
     
     // 添加書籤點擊和刪除事件
     bookmarksList.addEventListener('click', (e) => {
-      if (e.target.classList.contains('bookmark-remove')) {
+      if (e.target.classList.contains('bookmark-delete')) {
         e.stopPropagation();
         const bookmarkId = e.target.getAttribute('data-bookmark-id');
         removeBookmarkById(bookmarkId);
         refreshHomepageBookmarks(); // 刷新顯示
+        updateBookmarkCount(); // 更新書籤計數
       } else {
         const bookmarkItem = e.target.closest('.bookmark-item');
         if (bookmarkItem) {
