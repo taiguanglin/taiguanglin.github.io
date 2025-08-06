@@ -1504,13 +1504,9 @@ ${answerText}`;
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
     
-    // 點擊外部區域關閉菜單
-    if (!action && !e.target.closest('.action-menu')) {
-      const openMenu = document.querySelector('.action-menu.expanded');
-      if (openMenu) {
-        openMenu.classList.remove('expanded');
-        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
-      }
+    // 點擊外部區域關閉所有打開的sidebars
+    if (!action && !isClickInsideSidebar(e.target)) {
+      closeSidebars();
     }
     
     if (!action) return;
@@ -1786,6 +1782,35 @@ ${answerText}`;
   function updateActiveButton(container, activeBtn) {
     container.querySelectorAll('.ctrl-btn').forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
+  }
+
+  // 檢查點擊是否在sidebar內部
+  function isClickInsideSidebar(target) {
+    return target.closest('.action-menu') || 
+           target.closest('.floating-toc') || 
+           target.closest('.reading-toolbar');
+  }
+
+  // 關閉所有打開的sidebars
+  function closeSidebars() {
+    // 關閉操作菜單
+    const openMenu = document.querySelector('.action-menu.expanded');
+    if (openMenu) {
+      openMenu.classList.remove('expanded');
+      document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+    }
+    
+    // 關閉浮動目錄
+    const visibleTOC = document.querySelector('.floating-toc.visible');
+    if (visibleTOC) {
+      visibleTOC.classList.remove('visible');
+    }
+    
+    // 關閉閱讀工具栏
+    const visibleToolbar = document.querySelector('.reading-toolbar:not(.hidden)');
+    if (visibleToolbar) {
+      visibleToolbar.classList.add('hidden');
+    }
   }
 
   // 滾動事件（帶節流優化）

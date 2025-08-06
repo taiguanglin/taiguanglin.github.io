@@ -21,7 +21,33 @@ a { color: #e75480; text-decoration: none; }
 a:hover { text-decoration: underline; color: #ff69b4; }
 hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc); margin: 30px 0; border-radius: 1px; }
 .nav { margin-bottom: 20px; }
-.nav-footer { display: flex; justify-content: space-between; margin-top: 50px; margin-bottom: 80px; }
+.nav-footer { 
+    display: flex; 
+    justify-content: space-between; 
+    margin-top: 50px; 
+    margin-bottom: 80px; 
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.nav-footer a { 
+    padding: 12px 16px; 
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%); 
+    color: white; 
+    border-radius: 8px; 
+    text-decoration: none; 
+    transition: all 0.3s ease; 
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(231, 84, 128, 0.3);
+    max-width: 45%;
+    text-align: center;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+.nav-footer a:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 12px rgba(231, 84, 128, 0.4); 
+    text-decoration: none; 
+}
 .toc { margin: 20px 0; }
 .toc ul { list-style: disc; padding-left: 1.5em; }
 .toc ul ul { list-style: circle; padding-left: 2em; }
@@ -1246,6 +1272,16 @@ body.dark-mode .search-load-all:hover {
         gap: 4px;
     }
     
+    .nav-footer {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .nav-footer a {
+        max-width: 100%;
+        font-size: 14px;
+        padding: 10px 12px;
+    }
 
 }
 
@@ -2753,13 +2789,9 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', (e) => {
     const action = e.target.dataset.action;
     
-    // 點擊外部區域關閉菜單
-    if (!action && !e.target.closest('.action-menu')) {
-      const openMenu = document.querySelector('.action-menu.expanded');
-      if (openMenu) {
-        openMenu.classList.remove('expanded');
-        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
-      }
+    // 點擊外部區域關閉所有打開的sidebars
+    if (!action && !isClickInsideSidebar(e.target)) {
+      closeSidebars();
     }
     
     if (!action) return;
@@ -3035,6 +3067,35 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
   function updateActiveButton(container, activeBtn) {
     container.querySelectorAll('.ctrl-btn').forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
+  }
+
+  // 檢查點擊是否在sidebar內部
+  function isClickInsideSidebar(target) {
+    return target.closest('.action-menu') || 
+           target.closest('.floating-toc') || 
+           target.closest('.reading-toolbar');
+  }
+
+  // 關閉所有打開的sidebars
+  function closeSidebars() {
+    // 關閉操作菜單
+    const openMenu = document.querySelector('.action-menu.expanded');
+    if (openMenu) {
+      openMenu.classList.remove('expanded');
+      document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+    }
+    
+    // 關閉浮動目錄
+    const visibleTOC = document.querySelector('.floating-toc.visible');
+    if (visibleTOC) {
+      visibleTOC.classList.remove('visible');
+    }
+    
+    // 關閉閱讀工具栏
+    const visibleToolbar = document.querySelector('.reading-toolbar:not(.hidden)');
+    if (visibleToolbar) {
+      visibleToolbar.classList.add('hidden');
+    }
   }
 
   // 滾動事件（帶節流優化）
@@ -3689,8 +3750,14 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
     # ========== 生成簡體 HTML ==========
     for i, ch in enumerate(chapters):
         # 簡體版的上下章導航
-        prev_link = f'<a href="{chapters[i-1]["filename"]}">⬅️ 上一章</a>' if i > 0 else ""
-        next_link = f'<a href="{chapters[i+1]["filename"]}">下一章 ➡️</a>' if i < len(chapters)-1 else ""
+        prev_link = ""
+        next_link = ""
+        if i > 0:
+            prev_title = re.sub(r"<.*?>", "", chapters[i-1]["title"])  # 清理HTML標籤
+            prev_link = f'<a href="{chapters[i-1]["filename"]}">⬅️ 上一章：{prev_title}</a>'
+        if i < len(chapters)-1:
+            next_title = re.sub(r"<.*?>", "", chapters[i+1]["title"])  # 清理HTML標籤
+            next_link = f'<a href="{chapters[i+1]["filename"]}">下一章：{next_title} ➡️</a>'
         
         # 簡體版的語言切換連結
         trad_filename = get_traditional_filename(ch["filename"])
@@ -3729,10 +3796,12 @@ def convert_word_to_ebook(input_file, output_folder, generate_search=True, gener
             next_link = ""
             if i > 0:
                 prev_trad_filename = get_traditional_filename(chapters[i-1]["filename"])
-                prev_link = f'<a href="{prev_trad_filename}">⬅️ 上一章</a>'
+                prev_title = re.sub(r"<.*?>", "", chapters[i-1]["title"])  # 清理HTML標籤
+                prev_link = f'<a href="{prev_trad_filename}">⬅️ 上一章：{prev_title}</a>'
             if i < len(chapters)-1:
                 next_trad_filename = get_traditional_filename(chapters[i+1]["filename"])
-                next_link = f'<a href="{next_trad_filename}">下一章 ➡️</a>'
+                next_title = re.sub(r"<.*?>", "", chapters[i+1]["title"])  # 清理HTML標籤
+                next_link = f'<a href="{next_trad_filename}">下一章：{next_title} ➡️</a>'
             
             # 繁體版的語言切換連結
             lang_switch_links = f'<a href="{ch["filename"]}">简体</a> | <a href="{trad_filename}">繁體</a>'
