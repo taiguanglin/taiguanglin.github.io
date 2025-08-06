@@ -10,7 +10,7 @@ from opencc import OpenCC
 
 # ========== 粉紅色主題 CSS & 平滑滾動 JS ==========
 CSS_CONTENT = """\
-body { font-family: 'Helvetica', sans-serif; margin: 40px auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
+body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: 1.6; background: #fff0f5; color: #333; transition: 0.3s; }
 
 h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
 h2 { color: #d44d75; margin-top: 40px; }
