@@ -128,9 +128,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       searchStatus.innerHTML = `
         搜索准备就绪 (共${searchIndex.length}条记录)
-        <span style="color: #999; font-size: 12px; margin-left: 10px;">
-          💡 点击结果将在新标签页打开
-        </span>
       `;
       searchInitialized = true;
       
@@ -177,9 +174,6 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
           searchStatus.innerHTML = `
             搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)
-            <span style="color: #999; font-size: 12px; margin-left: 10px;">
-              💡 点击结果将在新标签页打开
-            </span>
           `;
         }
         return;
@@ -307,7 +301,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="search-result-title">
               <span class="search-result-type">${typeText}</span>
               ${escapeHtml(result.title)}
-              <span class="search-result-newtab">↗</span>
+
             </div>
             <div class="search-result-content">${highlightedContext}</div>
             <div class="search-result-url">${result.url}</div>
@@ -336,7 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="search-result-title">
               <span class="search-result-type">${typeText}</span>
               ${escapeHtml(result.title)}
-              <span class="search-result-newtab">↗</span>
+
             </div>
             <div class="search-result-content">${highlightedContext}</div>
             <div class="search-result-url">${result.url}</div>
@@ -487,9 +481,6 @@ document.addEventListener('DOMContentLoaded', function() {
       hideLoadMoreButtons();
       searchStatus.innerHTML = `
         搜索准备就绪 (共${searchIndex.length}条记录)
-        <span style="color: #999; font-size: 12px; margin-left: 10px;">
-          💡 点击结果将在新标签页打开
-        </span>
       `;
     }
     
@@ -1811,30 +1802,6 @@ ${answerText}`;
   updateReadingProgress();
   updateCurrentSection(); // 初始化當前章節
 
-  // 快捷鍵支持
-  document.addEventListener('keydown', (e) => {
-    if (e.ctrlKey || e.metaKey) {
-      switch (e.key) {
-        case 'k':
-          e.preventDefault();
-          floatingTOC.classList.toggle('visible');
-          break;
-        case '[':
-          e.preventDefault();
-          updateFontSize(-2);
-          break;
-        case ']':
-          e.preventDefault();
-          updateFontSize(2);
-          break;
-      }
-    }
-    
-    if (e.key === 'Escape') {
-      floatingTOC.classList.remove('visible');
-      toolbar.classList.add('hidden');
-    }
-  });
 
   // 平滑滾動章節內 TOC 與回到頂部
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
