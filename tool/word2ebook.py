@@ -84,14 +84,17 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     text-decoration: none;
 }
 
-.toc { margin: 20px 0; }
+.toc { 
+    margin: 20px 0; 
+    line-height: 1.4 !important; /* 固定行距，不受全局調整影響 */
+}
 
 /* 第一層：主章節 - 大字體粗體 */
 .toc > ul > li { 
     font-size: 1.1em; 
     font-weight: 600; 
     margin-bottom: 8px;
-    line-height: 1.4;
+    line-height: 1.4 !important; /* 固定行距 */
 }
 .toc > ul > li > a { 
     color: #d44d75; 
@@ -103,7 +106,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     font-size: 1.0em; 
     font-weight: 500; 
     margin-bottom: 6px;
-    line-height: 1.3;
+    line-height: 1.3 !important; /* 固定行距 */
 }
 .toc ul ul > li > a { 
     color: #b73c65; 
@@ -115,7 +118,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     font-size: 0.95em; 
     font-weight: 400; 
     margin-bottom: 4px;
-    line-height: 1.2;
+    line-height: 1.2 !important; /* 固定行距 */
 }
 .toc ul ul ul > li > a { 
     color: #c75483; 
@@ -358,6 +361,7 @@ body.dark-mode .answerer { color: #ff69b4; }
     flex: 1;
     overflow-y: auto;
     padding: 0;
+    line-height: 1.4 !important; /* 固定行距，不受全局調整影響 */
 }
 
 .floating-toc-list {
@@ -372,6 +376,7 @@ body.dark-mode .answerer { color: #ff69b4; }
     transition: all 0.3s ease;
     font-size: 13px;
     border-left: 3px solid transparent;
+    line-height: 1.0 !important; /* 固定行距 */
 }
 
 .floating-toc-item.level-h3 {
@@ -485,6 +490,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   margin-bottom: 15px;
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
+  line-height: 1.4 !important; /* 固定行距 */
 }
 
 .bookmark-chapter-title {
@@ -494,6 +500,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   margin-bottom: 8px;
   padding: 5px 0;
   border-bottom: 1px solid #f8c8dc;
+  line-height: 1.4 !important; /* 固定行距 */
 }
 
 .bookmark-chapter-list {
@@ -509,6 +516,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  line-height: 1.4 !important; /* 固定行距 */
 }
 
 .bookmark-chapter-list .bookmark-item:hover {
