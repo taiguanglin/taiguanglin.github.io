@@ -3987,6 +3987,32 @@ def build_chapter_toc(toc_items, filename=None):
     html += "</ul>"
     return html
 
+def process_line_breaks(text, preserve_first_line=True):
+    """處理文字中的換行符，將其轉換為HTML的<br>標籤
+    
+    Args:
+        text: 要處理的文字
+        preserve_first_line: 是否保持第一行不換行（預設True，適用於問答內容）
+    """
+    if not text:
+        return text
+    
+    # 將換行符轉換為<br>標籤
+    # 處理Windows(\r\n)、Unix(\n)、Mac(\r)的換行符
+    text = re.sub(r'\r\n|\r|\n', '<br>', text)
+    
+    # 清理多餘的連續<br>標籤（超過2個連續的<br>）
+    text = re.sub(r'(<br>\s*){3,}', '<br><br>', text)
+    
+    if preserve_first_line:
+        # 清理開頭和結尾的<br>標籤（問答內容第一行不換行）
+        text = re.sub(r'^(<br>\s*)+|(<br>\s*)+$', '', text)
+    else:
+        # 只清理結尾的<br>標籤（保留開頭換行，適用於一般段落）
+        text = re.sub(r'(<br>\s*)+$', '', text)
+    
+    return text
+
 def extract_time_from_text(text):
     """從文字中提取時間，支援多種格式，正確處理換行符"""
     
@@ -4054,7 +4080,38 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
                 if rId in image_map:
                     return f'<img src="{image_map[rId]}" alt="Image">'
 
-    text = paragraph.text.strip()
+    # 正確獲取包含換行的文字內容
+    text_parts = []
+    for run in paragraph.runs:
+        # 獲取run的文字內容
+        run_text = run.text
+        
+        # 檢查run的XML元素中是否包含換行標籤
+        run_xml = run.element
+        
+        # 重新構建包含換行的文字
+        current_text = ""
+        for child in run_xml:
+            if child.tag == qn('w:t'):
+                # 文字節點
+                current_text += child.text or ""
+            elif child.tag == qn('w:br'):
+                # 換行節點
+                current_text += '\n'
+            elif child.tag == qn('w:tab'):
+                # Tab節點
+                current_text += '\t'
+        
+        # 如果沒有特殊元素，使用原始文字
+        if not current_text and run_text:
+            current_text = run_text
+            
+        text_parts.append(current_text)
+    
+    text = ''.join(text_parts).strip()
+    
+    # 處理文字中的換行符，轉換為HTML
+    text = process_line_breaks(text)
     if not text:
         return ""
 
@@ -4085,6 +4142,9 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
             
             # 如果有時間則顯示，否則不顯示時間部分
             time_html = f'<span class="question-time">{time_info}</span>' if time_info else ''
+            
+            # 確保回答內容第一行不換行
+            clean_content = re.sub(r'^(<br>\s*)+', '', clean_content)
             
             return f'''<div class="answer">
     <div class="answer-meta">
@@ -4130,6 +4190,9 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
             else:
                 time_html = f'<span class="question-time">{time_info}</span>'
             
+            # 確保問題內容第一行不換行
+            clean_content = re.sub(r'^(<br>\s*)+', '', clean_content)
+            
             return f'''<div class="question">
     <div class="question-meta">
         <span class="questioner">{questioner_name}</span>
@@ -4141,7 +4204,9 @@ def paragraph_to_html(paragraph, image_map, toc_list, bold_mode_state):
         # 一般段落處理
         if bold_mode_state["bold_mode"]:
             # 在回答模式中，作為回答內容的延續
-            return f'<div class="answer-text">{text}</div>'
+            # 確保回答內容段落第一行不換行
+            text_content = re.sub(r'^(<br>\s*)+', '', text)
+            return f'<div class="answer-text">{text_content}</div>'
         else:
             return f"<p>{text}</p>"
 
