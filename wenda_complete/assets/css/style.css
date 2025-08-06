@@ -354,6 +354,7 @@ body.dark-mode .answerer { color: #ff69b4; }
 
 .floating-toc-list {
     padding: 10px;
+    list-style: none;
 }
 
 .floating-toc-item {
@@ -364,7 +365,7 @@ body.dark-mode .answerer { color: #ff69b4; }
     transition: all 0.3s ease;
     font-size: 13px;
     border-left: 3px solid transparent;
-    line-height: 1.0 !important; /* 固定行距 */
+    line-height: 0.4 !important; /* 固定行距 */
 }
 
 .floating-toc-item.level-h3 {
@@ -479,6 +480,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   border-bottom: 1px solid #eee;
   padding-bottom: 10px;
   line-height: 1.4 !important; /* 固定行距 */
+  list-style: none;
 }
 
 .bookmark-chapter-title {
@@ -505,6 +507,7 @@ body.dark-mode .answerer { color: #ff69b4; }
   cursor: pointer;
   transition: background-color 0.2s;
   line-height: 1.4 !important; /* 固定行距 */
+  list-style: none;
 }
 
 .bookmark-chapter-list .bookmark-item:hover {
