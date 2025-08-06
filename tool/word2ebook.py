@@ -2907,6 +2907,10 @@ JS_CONTENT = """document.addEventListener('DOMContentLoaded', function() {
         // 關閉菜單
         document.querySelector('.action-menu').classList.remove('expanded');
         document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+        // 如果TOC剛打開，立即定位當前章節
+        if (floatingTOC.classList.contains('visible')) {
+          setTimeout(updateCurrentSection, 100); // 等待CSS transition完成
+        }
         break;
       case 'close-toc':
         floatingTOC.classList.remove('visible');
