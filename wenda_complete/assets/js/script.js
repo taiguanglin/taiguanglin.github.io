@@ -2699,6 +2699,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!floatingControls || !tocControls) return;
     
+    // 调试模式：检查元素是否正确创建
+    const debugMode = window.location.hash.includes('debug');
+    if (debugMode) {
+      console.log('FloatingControls found:', floatingControls);
+      console.log('Screen size:', window.innerWidth, 'x', window.innerHeight);
+      console.log('Device pixel ratio:', window.devicePixelRatio);
+      console.log('User agent:', navigator.userAgent);
+    }
+    
     // 绑定浮动按钮事件
     bindFloatingLevelEvents();
     
@@ -2709,12 +2718,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleScroll() {
       const currentScrollY = window.scrollY;
-      // 简化逻辑：滚动超过200px就显示浮动控制
-      const shouldShowFloating = currentScrollY > 200;
+      // 检测移动端，降低显示门槛
+      const isMobile = window.innerWidth <= 600;
+      const scrollThreshold = isMobile ? 100 : 200; // 移动端更早显示
+      const shouldShowFloating = currentScrollY > scrollThreshold;
+      
+      // 调试输出
+      if (debugMode && currentScrollY > 50) {
+        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, Show: ${shouldShowFloating}`);
+      }
       
       if (shouldShowFloating) {
         // 滚动时显示浮动版本
         floatingControls.style.display = 'block';
+        // 强制样式确保在移动端可见
+        if (isMobile) {
+          floatingControls.style.zIndex = '10000';
+          floatingControls.style.position = 'fixed';
+          floatingControls.style.right = window.innerWidth <= 400 ? '3px' : '5px';
+          
+          // 调试输出移动端样式设置
+          if (debugMode) {
+            console.log('Mobile styles applied:', {
+              right: floatingControls.style.right,
+              zIndex: floatingControls.style.zIndex,
+              display: floatingControls.style.display
+            });
+          }
+        }
       } else {
         // 页面顶部时隐藏浮动版本
         floatingControls.style.display = 'none';
@@ -2725,6 +2756,23 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 添加滚动监听
     window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // 添加窗口大小变化监听（处理屏幕旋转）
+    window.addEventListener('resize', () => {
+      setTimeout(handleScroll, 100); // 延迟执行，确保resize完成
+    }, { passive: true });
+    
+    // 添加方向变化监听（移动端特有）
+    if (screen && screen.orientation) {
+      screen.orientation.addEventListener('change', () => {
+        setTimeout(handleScroll, 200); // 方向变化后重新检查
+      });
+    } else {
+      // 兼容旧浏览器的方向变化检测
+      window.addEventListener('orientationchange', () => {
+        setTimeout(handleScroll, 200);
+      });
+    }
     
     // 初始状态
     handleScroll();
