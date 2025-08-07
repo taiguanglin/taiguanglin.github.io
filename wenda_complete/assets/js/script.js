@@ -1025,9 +1025,68 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ============ 書籤功能 ============
   
+  // 獲取當前語言版本的書籤存儲鍵
+  function getBookmarkStorageKey() {
+    return isTraditionalChinesePage() ? 'ebook-bookmarks-traditional' : 'ebook-bookmarks-simplified';
+  }
+
+  // 遷移舊書籤數據到新的分離存儲結構
+  function migrateOldBookmarks() {
+    // 檢查是否已經完成遷移
+    if (localStorage.getItem('bookmarks-migrated')) {
+      return;
+    }
+    
+    const oldBookmarks = localStorage.getItem('ebook-bookmarks');
+    if (!oldBookmarks) {
+      // 沒有舊書籤，標記為已遷移
+      localStorage.setItem('bookmarks-migrated', 'true');
+      return;
+    }
+
+    try {
+      const bookmarks = JSON.parse(oldBookmarks);
+      const simplifiedBookmarks = [];
+      const traditionalBookmarks = [];
+
+      // 根據章節文件名分離書籤
+      bookmarks.forEach(bookmark => {
+        if (bookmark.chapterFilename && bookmark.chapterFilename.includes('_trad.html')) {
+          traditionalBookmarks.push(bookmark);
+        } else {
+          simplifiedBookmarks.push(bookmark);
+        }
+      });
+
+      // 存儲到新的分離結構
+      if (simplifiedBookmarks.length > 0) {
+        localStorage.setItem('ebook-bookmarks-simplified', JSON.stringify(simplifiedBookmarks));
+      }
+      if (traditionalBookmarks.length > 0) {
+        localStorage.setItem('ebook-bookmarks-traditional', JSON.stringify(traditionalBookmarks));
+      }
+
+      // 刪除舊的統一存儲
+      localStorage.removeItem('ebook-bookmarks');
+      
+      // 標記遷移完成
+      localStorage.setItem('bookmarks-migrated', 'true');
+      
+      console.log(`書籤遷移完成: 簡體 ${simplifiedBookmarks.length} 個, 繁體 ${traditionalBookmarks.length} 個`);
+    } catch (error) {
+      console.error('書籤遷移失敗:', error);
+      // 即使失敗也標記為已嘗試，避免無限重試
+      localStorage.setItem('bookmarks-migrated', 'true');
+    }
+  }
+
   // 書籤管理
   function getBookmarks(chapterId = null) {
-    const allBookmarks = localStorage.getItem('ebook-bookmarks');
+    // 檢查並遷移舊書籤數據
+    migrateOldBookmarks();
+    
+    const storageKey = getBookmarkStorageKey();
+    const allBookmarks = localStorage.getItem(storageKey);
     const bookmarks = allBookmarks ? JSON.parse(allBookmarks) : [];
     
     // 如果指定了章節ID，只返回該章節的書籤
@@ -1045,7 +1104,8 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function saveBookmarks(bookmarks) {
-    localStorage.setItem('ebook-bookmarks', JSON.stringify(bookmarks));
+    const storageKey = getBookmarkStorageKey();
+    localStorage.setItem(storageKey, JSON.stringify(bookmarks));
     updateBookmarkCount();
   }
   
@@ -1188,8 +1248,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 使用異步處理來避免阻塞UI
     setTimeout(() => {
-      // 獲取所有書籤數據（使用統一的key）
-      const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
+      // 獲取當前語言版本的所有書籤數據
+      const allBookmarks = getBookmarks();
       
       if (allBookmarks.length === 0) {
         bookmarksList.innerHTML = '<li class="bookmarks-empty">暫無書籤</li>';
@@ -1382,7 +1442,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 跳轉到指定書籤
   function jumpToBookmark(bookmarkId) {
-    const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
+    const allBookmarks = getBookmarks();
     const bookmark = allBookmarks.find(b => b.id === bookmarkId);
     
     if (bookmark && bookmark.chapterFilename) {
@@ -1395,9 +1455,9 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 根據ID刪除書籤
   function removeBookmarkById(bookmarkId) {
-    const allBookmarks = JSON.parse(localStorage.getItem('ebook-bookmarks') || '[]');
+    const allBookmarks = getBookmarks();
     const updatedBookmarks = allBookmarks.filter(bookmark => bookmark.id !== bookmarkId);
-    localStorage.setItem('ebook-bookmarks', JSON.stringify(updatedBookmarks));
+    saveBookmarks(updatedBookmarks);
     showToast('書籤已刪除');
   }
   
