@@ -2820,10 +2820,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const isSmallMobile = window.innerWidth <= 400;
       
       if (isMobile) {
-        // 只在移动端时才设置内联样式
+        // 移动端保持右側定位，設置必要的樣式
         floatingControls.style.zIndex = '10000';
         floatingControls.style.position = 'fixed';
-        floatingControls.style.right = isSmallMobile ? '3px' : '5px';
+        floatingControls.style.right = isSmallMobile ? '5px' : '8px';
+        // 移除 left 設定，確保右側定位
+        floatingControls.style.removeProperty('left');
       } else {
         // 桌面端时清除所有内联样式，让CSS媒体查询生效
         resetFloatingControlsStyles();
