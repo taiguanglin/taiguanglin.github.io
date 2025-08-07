@@ -785,11 +785,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function createActionButtons() {
     const buttons = document.createElement('div');
     buttons.className = 'action-buttons';
+    
+    // 根據頁面類型設置第一個按鈕的內容
+    const firstBtnIcon = currentChapter.isHomepage ? '🔖' : '📖';
+    const firstBtnTitle = currentChapter.isHomepage ? '書籤' : '目錄';
+    
     buttons.innerHTML = 
       '<div class="action-menu">' +
         '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>' +
         '<div class="action-menu-items">' +
-          '<button class="action-btn" data-action="toc" title="目錄">📖</button>' +
+          '<button class="action-btn" data-action="toc" title="' + firstBtnTitle + '">' + firstBtnIcon + '</button>' +
           '<button class="action-btn" data-action="top" title="回到頂部">↑</button>' +
           '<button class="action-btn" data-action="settings" title="設置">⚙️</button>' +
         '</div>' +

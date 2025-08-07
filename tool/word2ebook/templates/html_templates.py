@@ -148,7 +148,7 @@ if (typeof MiniSearch === 'undefined') {{
   <div class="action-menu">
     <button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>
     <div class="action-menu-items">
-      <button class="action-btn" data-action="toc" title="目錄">📖</button>
+      <button class="action-btn" data-action="toc" title="書籤">🔖</button>
       <button class="action-btn" data-action="top" title="回到頂部">↑</button>
       <button class="action-btn" data-action="settings" title="設置">⚙️</button>
     </div>
