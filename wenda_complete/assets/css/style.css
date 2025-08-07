@@ -1487,13 +1487,32 @@ body.dark-mode .search-load-all:hover {
 
 /* ========== 目录层级控制样式 ========== */
 
+/* TOC标题容器 - 水平布局 */
+.toc-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0;
+    gap: 20px;
+    flex-wrap: nowrap; /* 强制不换行，保持水平布局 */
+    min-height: 40px; /* 确保有足够高度 */
+}
+
+.toc-header-container h2 {
+    margin: 0;
+    flex: 1;
+}
+
 /* 目录层级控制容器 */
 .toc-level-controls {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 20px;
-    padding: 12px 0;
+    margin-bottom: 0; /* 移除底部margin，由container控制 */
+    padding: 0; /* 移除padding，由container控制 */
+    flex-shrink: 1; /* 允许适度收缩，但不完全消失 */
+    min-width: 180px; /* 设置最小宽度，确保按钮可见 */
 }
 
 .toc-level-label {
@@ -1544,17 +1563,19 @@ body.dark-mode .search-load-all:hover {
 /* 滚动时显示的浮动层级控制 */
 .floating-level-controls {
     position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
+    left: calc(50% + 400px - 50px); /* 大幅左移，显著覆盖内容区域 */
+    top: 120px; /* 固定在页面上方，避免遮挡内容 */
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
     border-radius: 25px;
     padding: 12px 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
+    backdrop-filter: blur(12px); /* 增强模糊效果 */
     border: 1px solid rgba(255, 105, 180, 0.3);
     transition: all 0.3s ease;
+    max-width: 120px; /* 限制最大宽度 */
+    transform: translateX(0); /* 确保定位基准点 */
+
 }
 
 .floating-level-label {
@@ -1723,6 +1744,10 @@ body.dark-mode .search-load-all:hover {
 }
 
 /* 暗色模式适配 */
+body.dark-mode .toc-header-container h2 {
+    color: #ff91af; /* 暗色模式下的标题颜色 */
+}
+
 body.dark-mode .toc-level-label {
     color: #ff91af;
 }
@@ -1835,13 +1860,57 @@ body.dark-mode .bookmark-item:hover {
     border-color: #ff69b4;
 }
 
-/* 移动端适配 */
-@media (max-width: 768px) {
-    .toc-level-controls {
+/* 平板和小屏幕适配 - 内容区域填满屏幕时 */
+@media (max-width: 850px) {
+    .floating-level-controls {
+        left: calc(50% + 300px - 30px); /* 调整calc适应较小屏幕内容区域 */
+        top: 100px;
+    }
+}
+
+/* 中等屏幕优化 - 保持TOC标题的水平布局 */
+@media (max-width: 768px) and (min-width: 601px) {
+    .toc-header-container {
+        /* 保持水平布局，但优化间距 */
+        gap: 15px;
+    }
+    
+    .toc-level-label {
+        font-size: 13px; /* 稍微减小字体 */
+    }
+    
+    .toc-level-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+}
+
+/* 小屏移动端适配 - 只在空间真正不足时换行 */
+@media (max-width: 600px) {
+    /* 移动端TOC标题容器调整 */
+    .toc-header-container {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 12px;
         margin-bottom: 15px;
+        flex-wrap: wrap; /* 小屏幕下允许换行 */
+    }
+    
+    .toc-level-controls {
+        min-width: auto; /* 小屏幕下取消最小宽度限制 */
+    }
+}
+    
+    .toc-header-container h2 {
+        margin-bottom: 0;
+        font-size: 1.3em; /* 移动端稍小的标题 */
+    }
+    
+    .toc-level-controls {
+        align-self: flex-start; /* 移动端左对齐 */
+        gap: 8px;
+        margin-bottom: 0;
     }
     
     .toc-level-label {
@@ -1881,6 +1950,11 @@ body.dark-mode .bookmark-item:hover {
     .floating-toc {
         width: 280px; /* 移动端稍微增加宽度 */
         max-height: 80vh; /* 增加最大高度 */
+        left: -290px; /* 确保移动端完全隐藏 */
+    }
+    
+    .floating-toc.visible {
+        left: 10px; /* 移动端显示时的位置 */
     }
     
     .floating-toc-item {
@@ -1901,8 +1975,10 @@ body.dark-mode .bookmark-item:hover {
     
     /* 移动端浮动控制 */
     .floating-level-controls {
-        right: 10px;
-        padding: 8px 6px;
+        left: calc(50% + 250px - 25px); /* 移动端calc定位，适应更小内容区域 */
+        top: 80px; /* 移动端位置稍微上移 */
+        padding: 10px 7px; /* 保持相对一致的padding */
+        max-width: 110px; /* 移动端适当减少最大宽度 */
     }
     
     .floating-level-label {
