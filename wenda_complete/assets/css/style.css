@@ -1572,10 +1572,11 @@ body.dark-mode .search-load-all:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
     backdrop-filter: blur(12px); /* 增强模糊效果 */
     border: 1px solid rgba(255, 105, 180, 0.3);
-    transition: all 0.3s ease;
+    transition: all 0.3s ease, left 0.3s ease, right 0.3s ease; /* 增加位置过渡 */
     max-width: 120px; /* 限制最大宽度 */
     transform: translateX(0); /* 确保定位基准点 */
-
+    /* 确保内联样式不会被意外覆盖 */
+    right: auto; /* 默认不使用right定位 */
 }
 
 .floating-level-label {
