@@ -2709,14 +2709,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function handleScroll() {
       const currentScrollY = window.scrollY;
-      const tocControlsVisible = currentScrollY < initialTop + tocControlsRect.height;
+      // 简化逻辑：滚动超过200px就显示浮动控制
+      const shouldShowFloating = currentScrollY > 200;
       
-      if (tocControlsVisible) {
-        // 顶部控制可见时隐藏浮动版本
-        floatingControls.style.display = 'none';
-      } else {
-        // 顶部控制不可见时显示浮动版本
+      if (shouldShowFloating) {
+        // 滚动时显示浮动版本
         floatingControls.style.display = 'block';
+      } else {
+        // 页面顶部时隐藏浮动版本
+        floatingControls.style.display = 'none';
       }
       
       lastScrollY = currentScrollY;
