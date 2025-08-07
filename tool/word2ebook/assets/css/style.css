@@ -1860,125 +1860,30 @@ body.dark-mode .bookmark-item:hover {
     border-color: #ff69b4;
 }
 
-/* 平板和小屏幕适配 - 内容区域填满屏幕时 */
-@media (max-width: 850px) {
+/* 响应式浮动层级控制定位 */
+/* 中等屏幕 - 过渡定位 */
+@media (max-width: 1200px) and (min-width: 901px) {
     .floating-level-controls {
-        left: calc(50% + 300px - 30px); /* 调整calc适应较小屏幕内容区域 */
-        top: 100px;
+        left: calc(50% + 350px - 40px); /* 中等屏幕调整calc */
     }
 }
 
-/* 中等屏幕优化 - 保持TOC标题的水平布局 */
-@media (max-width: 768px) and (min-width: 601px) {
-    .toc-header-container {
-        /* 保持水平布局，但优化间距 */
-        gap: 15px;
-    }
-    
-    .toc-level-label {
-        font-size: 13px; /* 稍微减小字体 */
-    }
-    
-    .toc-level-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
+/* 平板和小屏幕 - 改用right定位确保可见性 */
+@media (max-width: 900px) {
+    .floating-level-controls {
+        left: auto; /* 取消calc定位 */
+        right: 8px; /* 贴合右边缘，确保完全可见 */
+        top: 100px; /* 稍微调整位置 */
     }
 }
 
-/* 小屏移动端适配 - 只在空间真正不足时换行 */
+/* 移动端进一步优化 */
 @media (max-width: 600px) {
-    /* 移动端TOC标题容器调整 */
-    .toc-header-container {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-        margin-bottom: 15px;
-        flex-wrap: wrap; /* 小屏幕下允许换行 */
-    }
-    
-    .toc-level-controls {
-        min-width: auto; /* 小屏幕下取消最小宽度限制 */
-    }
-}
-    
-    .toc-header-container h2 {
-        margin-bottom: 0;
-        font-size: 1.3em; /* 移动端稍小的标题 */
-    }
-    
-    .toc-level-controls {
-        align-self: flex-start; /* 移动端左对齐 */
-        gap: 8px;
-        margin-bottom: 0;
-    }
-    
-    .toc-level-label {
-        font-size: 13px;
-    }
-    
-    .toc-level-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 12px;
-    }
-    
-    .toc-expand-icon {
-        width: 14px;
-        font-size: 10px;
-        margin-left: -18px;
-    }
-    
-    /* 移动端缩进调整 */
-    .toc-item.toc-level-1 > a {
-        margin-left: 18px;
-    }
-    
-    .toc-item.toc-level-2 > a {
-        margin-left: 32px;
-    }
-    
-    .toc-item.toc-level-3 > a {
-        margin-left: 48px;
-    }
-    
-    .toc-item.toc-level-4 > a {
-        margin-left: 64px;
-    }
-    
-    /* 移动端浮动TOC优化 */
-    .floating-toc {
-        width: 280px; /* 移动端稍微增加宽度 */
-        max-height: 80vh; /* 增加最大高度 */
-        left: -290px; /* 确保移动端完全隐藏 */
-    }
-    
-    .floating-toc.visible {
-        left: 10px; /* 移动端显示时的位置 */
-    }
-    
-    .floating-toc-item {
-        font-size: 12px; /* 移动端稍小字体 */
-        padding: 6px 10px; /* 稍微减少padding */
-        line-height: 1.4 !important; /* 移动端优化行距 */
-    }
-    
-    .floating-toc-item.level-h3 {
-        padding-left: 20px; /* 移动端减少缩进 */
-        font-size: 11px;
-    }
-    
-    .floating-toc-item.level-h4 {
-        padding-left: 30px; /* 移动端减少缩进 */
-        font-size: 10px;
-    }
-    
-    /* 移动端浮动控制 */
     .floating-level-controls {
-        left: calc(50% + 250px - 25px); /* 移动端calc定位，适应更小内容区域 */
-        top: 80px; /* 移动端位置稍微上移 */
-        padding: 10px 7px; /* 保持相对一致的padding */
-        max-width: 110px; /* 移动端适当减少最大宽度 */
+        right: 5px; /* 移动端更贴近边缘 */
+        top: 80px; /* 移动端位置上移 */
+        padding: 10px 7px; /* 适合触摸的padding */
+        max-width: 100px; /* 移动端减少宽度 */
     }
     
     .floating-level-label {
@@ -1987,8 +1892,9 @@ body.dark-mode .bookmark-item:hover {
     }
     
     .floating-level-btn {
-        width: 24px;
-        height: 24px;
+        width: 26px; /* 适合触摸的大小 */
+        height: 26px;
         font-size: 11px;
     }
 }
+
