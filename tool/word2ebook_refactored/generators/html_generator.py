@@ -119,7 +119,7 @@ class HTMLGenerator:
             nav_data = self._generate_navigation_data(chapters, i, is_traditional=True)
             
             # 语言切换链接
-            lang_switch_links = self._generate_lang_switch_links(chapter.filename, is_traditional=True)
+            lang_switch_links = self._generate_lang_switch_links(trad_filename, is_traditional=True)
             
             # 繁体转换
             converted_title = self.i18n_processor.to_traditional(chapter.title)
@@ -221,11 +221,18 @@ class HTMLGenerator:
             'top_nav_links': top_nav_links
         }
     
-    def _generate_lang_switch_links(self, filename: str, is_traditional: bool = False) -> str:
-        """生成语言切换链接"""
+    def _generate_lang_switch_links(self, current_filename: str, is_traditional: bool = False) -> str:
+        """生成语言切换链接
+        
+        Args:
+            current_filename: 当前页面的文件名
+            is_traditional: 当前是否为繁体页面
+        """
         if is_traditional:
-            simplified_filename = self.i18n_processor.get_simplified_filename(filename)
-            return f'<a href="{simplified_filename}">简体</a> | <a href="{filename}">繁體</a>'
+            # 繁体页面：简体链接指向对应简体版，繁体链接指向当前页面
+            simplified_filename = self.i18n_processor.get_simplified_filename(current_filename)
+            return f'<a href="{simplified_filename}">简体</a> | <a href="{current_filename}">繁體</a>'
         else:
-            traditional_filename = self.i18n_processor.get_traditional_filename(filename)
-            return f'<a href="{filename}">简体</a> | <a href="{traditional_filename}">繁體</a>'
+            # 简体页面：简体链接指向当前页面，繁体链接指向对应繁体版
+            traditional_filename = self.i18n_processor.get_traditional_filename(current_filename)
+            return f'<a href="{current_filename}">简体</a> | <a href="{traditional_filename}">繁體</a>'
