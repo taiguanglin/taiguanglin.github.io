@@ -1465,3 +1465,373 @@ body.dark-mode .search-load-all:hover {
     }
 
 }
+
+/* ========== 目录层级控制样式 ========== */
+
+/* 目录层级控制容器 */
+.toc-level-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px 0;
+}
+
+.toc-level-label {
+    font-size: 14px;
+    color: #d63384;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.toc-level-buttons-vertical {
+    display: flex;
+    gap: 6px;
+}
+
+.toc-level-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid #ff69b4;
+    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+    color: #d63384;
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.toc-level-btn:hover {
+    background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%);
+    transform: scale(1.1);
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.3);
+}
+
+.toc-level-btn.active {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.5);
+}
+
+.toc-level-btn.active:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.6);
+}
+
+/* 滚动时显示的浮动层级控制 */
+.floating-level-controls {
+    position: fixed;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 25px;
+    padding: 12px 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
+}
+
+.floating-level-label {
+    font-size: 11px;
+    color: #d63384;
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 8px;
+    white-space: nowrap;
+}
+
+.floating-level-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.floating-level-btn {
+    width: 28px;
+    height: 28px;
+    border: 2px solid #ff69b4;
+    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+    color: #d63384;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.floating-level-btn:hover {
+    background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%);
+    transform: scale(1.1);
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.4);
+}
+
+.floating-level-btn.active {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.6);
+}
+
+.floating-level-btn.active:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.7);
+}
+
+/* 隐藏list默认bullet点 */
+.toc ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.toc li {
+    list-style: none;
+    margin: 4px 0;
+}
+
+/* 目录展开/折叠图标 */
+.toc-expand-icon {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    margin-right: 6px;
+    margin-left: -22px; /* 精确调整负边距 */
+    transition: transform 0.3s ease;
+    color: #ff69b4;
+    font-size: 12px;
+    position: relative;
+}
+
+.toc-expand-icon:hover {
+    color: #d63384;
+    transform: scale(1.2);
+}
+
+.toc-expand-icon.collapsed {
+    transform: rotate(-90deg);
+}
+
+.toc-expand-icon.collapsed:hover {
+    transform: rotate(-90deg) scale(1.2);
+}
+
+/* 目录项样式 */
+.toc-item {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.toc-item.hidden {
+    display: none !important;
+}
+
+.toc-item a {
+    display: inline-block;
+    transition: all 0.2s ease;
+}
+
+/* 目录层级样式 */
+.toc-level-1 > .toc-item {
+    margin-bottom: 8px;
+}
+
+/* 第1层 - 章节标题 */
+.toc-item.toc-level-1 > a {
+    font-weight: 600;
+    color: #d63384;
+    font-size: 16px;
+    margin-left: 20px; /* 为展开图标预留空间 */
+}
+
+/* 第2层 - 主要小节 */
+.toc-item.toc-level-2 > a {
+    font-weight: 500;
+    color: #e85aad;
+    font-size: 15px;
+    margin-left: 40px; /* 增加缩进，保证对齐 */
+}
+
+/* 第3层 - 详细小节 */
+.toc-item.toc-level-3 > a {
+    font-weight: 400;
+    color: #f06bbf;
+    font-size: 14px;
+    margin-left: 60px; /* 增加到60px */
+}
+
+/* 第4层 - 更详细小节 */
+.toc-item.toc-level-4 > a {
+    font-weight: 400;
+    color: #f585cc;
+    font-size: 13px;
+    margin-left: 80px; /* 相应增加 */
+}
+
+/* 章节项特殊样式 */
+.toc-item.toc-chapter {
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #ffc4dd;
+}
+
+.toc-item.toc-chapter > a:hover {
+    color: #c1327a;
+}
+
+/* 折叠动画 */
+.toc-collapsible {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.toc-collapsible.collapsed {
+    max-height: 0;
+}
+
+.toc-collapsible.expanded {
+    max-height: 1000px; /* 足够大的值 */
+}
+
+/* 暗色模式适配 */
+body.dark-mode .toc-level-label {
+    color: #ff91af;
+}
+
+body.dark-mode .toc-level-btn {
+    border-color: #ff69b4;
+    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
+    color: #ff91af;
+}
+
+body.dark-mode .toc-level-btn:hover {
+    background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+}
+
+body.dark-mode .toc-level-btn.active {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+}
+
+/* 浮动控制暗色模式 */
+body.dark-mode .floating-level-controls {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .floating-level-label {
+    color: #ff91af;
+}
+
+body.dark-mode .floating-level-btn {
+    border-color: #ff69b4;
+    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
+    color: #ff91af;
+}
+
+body.dark-mode .floating-level-btn:hover {
+    background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+}
+
+body.dark-mode .floating-level-btn.active {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+}
+
+body.dark-mode .toc-expand-icon {
+    color: #ff91af;
+}
+
+body.dark-mode .toc-expand-icon:hover {
+    color: #ff69b4;
+}
+
+body.dark-mode .toc-item.toc-level-1 > a {
+    color: #ff91af;
+}
+
+body.dark-mode .toc-item.toc-level-2 > a {
+    color: #ffb3c6;
+}
+
+body.dark-mode .toc-item.toc-level-3 > a {
+    color: #ffc4d6;
+}
+
+body.dark-mode .toc-item.toc-level-4 > a {
+    color: #ffd1e0;
+}
+
+body.dark-mode .toc-item.toc-chapter {
+    border-bottom-color: #444;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .toc-level-controls {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 15px;
+    }
+    
+    .toc-level-label {
+        font-size: 13px;
+    }
+    
+    .toc-level-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 12px;
+    }
+    
+    .toc-expand-icon {
+        width: 14px;
+        font-size: 10px;
+        margin-left: -18px;
+    }
+    
+    /* 移动端缩进调整 */
+    .toc-item.toc-level-1 > a {
+        margin-left: 18px;
+    }
+    
+    .toc-item.toc-level-2 > a {
+        margin-left: 32px;
+    }
+    
+    .toc-item.toc-level-3 > a {
+        margin-left: 48px;
+    }
+    
+    .toc-item.toc-level-4 > a {
+        margin-left: 64px;
+    }
+    
+    /* 移动端浮动控制 */
+    .floating-level-controls {
+        right: 10px;
+        padding: 8px 6px;
+    }
+    
+    .floating-level-label {
+        font-size: 10px;
+        margin-bottom: 6px;
+    }
+    
+    .floating-level-btn {
+        width: 24px;
+        height: 24px;
+        font-size: 11px;
+    }
+}

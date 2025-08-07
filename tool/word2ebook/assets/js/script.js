@@ -2525,4 +2525,246 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+
+  // ========== 目录折叠控制功能 ==========
+  
+  // 初始化目录折叠控制（仅在首页）
+  if (currentChapter.isHomepage) {
+    initTocCollapseControl();
+    initFloatingLevelControls();
+  }
+  
+  function initTocCollapseControl() {
+    const tocContainer = document.getElementById('main-toc');
+    if (!tocContainer) return;
+    
+    // 获取用户保存的偏好，默认显示前2层
+    const savedLevel = localStorage.getItem('toc-display-level') || '2';
+    
+    // 初始化按钮状态
+    updateLevelButtonsActive(savedLevel);
+    
+    // 根据保存的偏好设置初始显示
+    setTocDisplayLevel(savedLevel);
+    
+    // 绑定层级切换按钮事件
+    bindLevelControlEvents();
+    
+    // 绑定展开/折叠图标事件
+    bindExpandCollapseEvents();
+    
+    // 绑定全部展开/折叠按钮事件
+    bindExpandAllEvents();
+  }
+  
+  function bindLevelControlEvents() {
+    const levelButtons = document.querySelectorAll('.toc-level-btn');
+    levelButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const level = this.getAttribute('data-level');
+        
+        // 更新所有按钮状态（包括浮动按钮）
+        updateAllLevelButtonsActive(level);
+        
+        // 设置显示层级
+        setTocDisplayLevel(level);
+        
+        // 保存用户偏好
+        localStorage.setItem('toc-display-level', level);
+      });
+    });
+  }
+  
+  function updateLevelButtonsActive(activeLevel) {
+    // 保持向后兼容，但现在使用统一的更新函数
+    updateAllLevelButtonsActive(activeLevel);
+  }
+  
+  function setTocDisplayLevel(level) {
+    const tocContainer = document.getElementById('main-toc');
+    if (!tocContainer) return;
+    
+    const allItems = tocContainer.querySelectorAll('.toc-item');
+    const targetLevel = parseInt(level);
+    
+    allItems.forEach(item => {
+      const itemLevel = parseInt(item.getAttribute('data-level'));
+      
+      if (itemLevel <= targetLevel) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+      
+      // 对于显示的层级，设置合适的展开/折叠状态
+      if (itemLevel <= targetLevel) {
+        const expandIcon = item.querySelector('.toc-expand-icon');
+        if (expandIcon && itemLevel < targetLevel) {
+          expandIcon.classList.remove('collapsed');
+          expandIcon.textContent = '▼';
+        } else if (expandIcon) {
+          expandIcon.classList.add('collapsed');
+          expandIcon.textContent = '▶';
+        }
+      }
+    });
+  }
+  
+  function bindExpandCollapseEvents() {
+    const tocContainer = document.getElementById('main-toc');
+    if (!tocContainer) return;
+    
+    // 使用事件委托处理所有展开/折叠图标
+    tocContainer.addEventListener('click', function(e) {
+      if (e.target.classList.contains('toc-expand-icon')) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const icon = e.target;
+        const parentLi = icon.closest('.toc-item');
+        const isCollapsed = icon.classList.contains('collapsed');
+        
+        if (isCollapsed) {
+          // 展开：显示直接子项
+          expandTocItem(parentLi);
+          icon.classList.remove('collapsed');
+          icon.textContent = '▼';
+        } else {
+          // 折叠：隐藏所有子项
+          collapseTocItem(parentLi);
+          icon.classList.add('collapsed');
+          icon.textContent = '▶';
+        }
+      }
+    });
+  }
+  
+  function expandTocItem(parentItem) {
+    const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    let nextSibling = parentItem.nextElementSibling;
+    
+    // 找到所有直接子项并显示
+    while (nextSibling && nextSibling.classList.contains('toc-item')) {
+      const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      
+      if (siblingLevel <= parentLevel) {
+        // 遇到同级或更高级别的项目，停止
+        break;
+      }
+      
+      if (siblingLevel === parentLevel + 1) {
+        // 这是直接子项，显示它
+        nextSibling.classList.remove('hidden');
+      }
+      
+      nextSibling = nextSibling.nextElementSibling;
+    }
+  }
+  
+  function collapseTocItem(parentItem) {
+    const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    let nextSibling = parentItem.nextElementSibling;
+    
+    // 隐藏所有子项
+    while (nextSibling && nextSibling.classList.contains('toc-item')) {
+      const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      
+      if (siblingLevel <= parentLevel) {
+        // 遇到同级或更高级别的项目，停止
+        break;
+      }
+      
+      // 这是子项，隐藏它，并同时折叠其展开状态
+      nextSibling.classList.add('hidden');
+      const childIcon = nextSibling.querySelector('.toc-expand-icon');
+      if (childIcon) {
+        childIcon.classList.add('collapsed');
+        childIcon.textContent = '▶';
+      }
+      
+      nextSibling = nextSibling.nextElementSibling;
+    }
+  }
+  
+  function bindExpandAllEvents() {
+    // 移除了全部展开/折叠按钮，因为现在只有3个层级按钮
+    // 功能已经整合到层级按钮中
+  }
+  
+  // ========== 浮动层级控制功能 ==========
+  
+  function initFloatingLevelControls() {
+    const floatingControls = document.getElementById('floating-level-controls');
+    const tocControls = document.querySelector('.toc-level-controls');
+    
+    if (!floatingControls || !tocControls) return;
+    
+    // 绑定浮动按钮事件
+    bindFloatingLevelEvents();
+    
+    // 监听滚动，控制浮动按钮显示
+    let lastScrollY = window.scrollY;
+    const tocControlsRect = tocControls.getBoundingClientRect();
+    const initialTop = tocControlsRect.top + window.scrollY;
+    
+    function handleScroll() {
+      const currentScrollY = window.scrollY;
+      const tocControlsVisible = currentScrollY < initialTop + tocControlsRect.height;
+      
+      if (tocControlsVisible) {
+        // 顶部控制可见时隐藏浮动版本
+        floatingControls.style.display = 'none';
+      } else {
+        // 顶部控制不可见时显示浮动版本
+        floatingControls.style.display = 'block';
+      }
+      
+      lastScrollY = currentScrollY;
+    }
+    
+    // 添加滚动监听
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // 初始状态
+    handleScroll();
+  }
+  
+  function bindFloatingLevelEvents() {
+    const floatingButtons = document.querySelectorAll('.floating-level-btn');
+    floatingButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const level = this.getAttribute('data-level');
+        
+        // 更新所有按钮状态（包括顶部和浮动）
+        updateAllLevelButtonsActive(level);
+        
+        // 设置显示层级
+        setTocDisplayLevel(level);
+        
+        // 保存用户偏好
+        localStorage.setItem('toc-display-level', level);
+      });
+    });
+  }
+  
+  function updateAllLevelButtonsActive(activeLevel) {
+    // 更新顶部按钮
+    const topButtons = document.querySelectorAll('.toc-level-btn');
+    topButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-level') === activeLevel) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // 更新浮动按钮
+    const floatingButtons = document.querySelectorAll('.floating-level-btn');
+    floatingButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-level') === activeLevel) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
 });
