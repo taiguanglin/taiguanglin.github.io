@@ -1094,11 +1094,20 @@ document.addEventListener('DOMContentLoaded', function() {
       if (element) {
         addBookmarkVisualIndicator(element);
         
-        // 如果是問答書籤，還需要為問題添加視覺標識
-        if (bookmark.type === 'qa-pair' && element.classList.contains('answer')) {
-          const questionElement = findQuestionForAnswer(element);
-          if (questionElement) {
-            addBookmarkVisualIndicator(questionElement);
+        // 如果是問答書籤，需要為問題和回答都添加視覺標識
+        if (bookmark.type === 'qa-pair') {
+          if (element.classList.contains('question')) {
+            // 元素是問題，需要找到對應的回答
+            const answerElement = findAnswerForQuestion(element);
+            if (answerElement) {
+              addBookmarkVisualIndicator(answerElement);
+            }
+          } else if (element.classList.contains('answer')) {
+            // 元素是回答，需要找到對應的問題
+            const questionElement = findQuestionForAnswer(element);
+            if (questionElement) {
+              addBookmarkVisualIndicator(questionElement);
+            }
           }
         }
       }
@@ -1612,12 +1621,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const bookmarks = getBookmarks();
     const questionElement = findQuestionForAnswer(answerElement);
     
-    // 生成唯一ID
-    const id = answerElement.id || ('qa-bookmark-' + Date.now());
-    answerElement.id = id;
+    // 決定要用作書籤定位的元素ID
+    let targetElement, targetId;
+    if (questionElement) {
+      // 如果有對應問題，使用問題元素作為書籤定位目標
+      targetElement = questionElement;
+      targetId = questionElement.id || ('qa-question-' + Date.now());
+      questionElement.id = targetId;
+    } else {
+      // 如果沒有對應問題，使用回答元素
+      targetElement = answerElement;
+      targetId = answerElement.id || ('qa-answer-' + Date.now());
+      answerElement.id = targetId;
+    }
     
-    // 檢查是否已存在書籤
-    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === id);
+    // 確保回答元素也有ID（用於視覺標識管理）
+    if (!answerElement.id) {
+      answerElement.id = 'qa-answer-' + Date.now();
+    }
+    
+    // 檢查是否已存在書籤（使用目標元素ID）
+    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === targetId);
     
     if (existingBookmark) {
       // 已存在，移除書籤
@@ -1625,7 +1649,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (questionElement) {
         removeBookmarkVisualIndicator(questionElement);
       }
-      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== id);
+      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== targetId);
       saveBookmarks(updatedBookmarks);
       renderBookmarks();
       showToast('已從書籤移除問答');
@@ -1661,7 +1685,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const bookmark = {
       id: 'qa-bookmark-' + Date.now(),
-      elementId: id,
+      elementId: targetId,
       type: 'qa-pair',
       questioner: questioner,
       time: time,
@@ -1695,11 +1719,20 @@ document.addEventListener('DOMContentLoaded', function() {
       if (element) {
         removeBookmarkVisualIndicator(element);
         
-        // 如果是問答書籤，還需要移除問題的視覺標識
-        if (bookmark.type === 'qa-pair' && element.classList.contains('answer')) {
-          const questionElement = findQuestionForAnswer(element);
-          if (questionElement) {
-            removeBookmarkVisualIndicator(questionElement);
+        // 如果是問答書籤，需要移除問題和回答的視覺標識
+        if (bookmark.type === 'qa-pair') {
+          if (element.classList.contains('question')) {
+            // 元素是問題，需要找到對應的回答
+            const answerElement = findAnswerForQuestion(element);
+            if (answerElement) {
+              removeBookmarkVisualIndicator(answerElement);
+            }
+          } else if (element.classList.contains('answer')) {
+            // 元素是回答，需要找到對應的問題
+            const questionElement = findQuestionForAnswer(element);
+            if (questionElement) {
+              removeBookmarkVisualIndicator(questionElement);
+            }
           }
         }
       }
