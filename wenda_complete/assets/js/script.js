@@ -2711,6 +2711,37 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定浮动按钮事件
     bindFloatingLevelEvents();
     
+    // 样式重置函数 - 清除JavaScript设置的内联样式
+    function resetFloatingControlsStyles() {
+      floatingControls.style.removeProperty('right');
+      floatingControls.style.removeProperty('zIndex');
+      floatingControls.style.removeProperty('position');
+      if (debugMode) {
+        console.log('Floating controls styles reset');
+      }
+    }
+    
+    // 重新应用正确的样式
+    function applyCorrectStyles() {
+      const isMobile = window.innerWidth <= 600;
+      const isSmallMobile = window.innerWidth <= 400;
+      
+      if (isMobile) {
+        // 只在移动端时才设置内联样式
+        floatingControls.style.zIndex = '10000';
+        floatingControls.style.position = 'fixed';
+        floatingControls.style.right = isSmallMobile ? '3px' : '5px';
+      } else {
+        // 桌面端时清除所有内联样式，让CSS媒体查询生效
+        resetFloatingControlsStyles();
+      }
+      
+      if (debugMode) {
+        console.log('Styles applied for:', isMobile ? 'mobile' : 'desktop', 
+                   `(${window.innerWidth}px)`);
+      }
+    }
+
     // 监听滚动，控制浮动按钮显示
     let lastScrollY = window.scrollY;
     const tocControlsRect = tocControls.getBoundingClientRect();
@@ -2731,21 +2762,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (shouldShowFloating) {
         // 滚动时显示浮动版本
         floatingControls.style.display = 'block';
-        // 强制样式确保在移动端可见
-        if (isMobile) {
-          floatingControls.style.zIndex = '10000';
-          floatingControls.style.position = 'fixed';
-          floatingControls.style.right = window.innerWidth <= 400 ? '3px' : '5px';
-          
-          // 调试输出移动端样式设置
-          if (debugMode) {
-            console.log('Mobile styles applied:', {
-              right: floatingControls.style.right,
-              zIndex: floatingControls.style.zIndex,
-              display: floatingControls.style.display
-            });
-          }
-        }
+        // 应用正确的样式（基于当前屏幕尺寸）
+        applyCorrectStyles();
       } else {
         // 页面顶部时隐藏浮动版本
         floatingControls.style.display = 'none';
@@ -2758,20 +2776,36 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('scroll', handleScroll, { passive: true });
     
     // 添加窗口大小变化监听（处理屏幕旋转）
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      setTimeout(handleScroll, 100); // 延迟执行，确保resize完成
+      // 去抖动处理，避免resize过程中频繁触发
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (debugMode) {
+          console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
+        }
+        // 重置所有内联样式，然后重新应用
+        resetFloatingControlsStyles();
+        handleScroll(); // 重新检查显示状态和应用样式
+      }, 150); // 增加延迟确保resize完全完成
     }, { passive: true });
     
     // 添加方向变化监听（移动端特有）
+    function handleOrientationChange() {
+      setTimeout(() => {
+        if (debugMode) {
+          console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
+        }
+        resetFloatingControlsStyles();
+        handleScroll();
+      }, 200);
+    }
+    
     if (screen && screen.orientation) {
-      screen.orientation.addEventListener('change', () => {
-        setTimeout(handleScroll, 200); // 方向变化后重新检查
-      });
+      screen.orientation.addEventListener('change', handleOrientationChange);
     } else {
       // 兼容旧浏览器的方向变化检测
-      window.addEventListener('orientationchange', () => {
-        setTimeout(handleScroll, 200);
-      });
+      window.addEventListener('orientationchange', handleOrientationChange);
     }
     
     // 初始状态
