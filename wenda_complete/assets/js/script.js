@@ -1236,14 +1236,19 @@ document.addEventListener('DOMContentLoaded', function() {
       const sortedChapterTitles = Object.keys(bookmarksByChapter).sort((a, b) => {
         // 提取章節數字，格式如：01自性与意识、06修福积功德等
         const extractChapterNumber = (title) => {
-          // 嘗試匹配開頭的數字（2位數字）
-          const match = title.match(/^(\\\\d{1,2})/);
-          return match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
+          // 嘗試匹配開頭的數字（1-2位數字）
+          const match = title.match(/^(\d{1,2})/);
+          const result = match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
+          // 調試信息（可選）
+          console.log(`Chapter "${title}" -> number: ${result}`);
+          return result;
         };
         
         const numA = extractChapterNumber(a);
         const numB = extractChapterNumber(b);
-        return numA - numB;
+        const result = numA - numB;
+        console.log(`Comparing "${a}" (${numA}) vs "${b}" (${numB}) = ${result}`);
+        return result;
       });
       
       // 分批渲染章節
@@ -1255,6 +1260,11 @@ document.addEventListener('DOMContentLoaded', function() {
   function renderBookmarkChaptersBatch(chapterTitles, bookmarksByChapter, startIndex) {
     const bookmarksList = document.getElementById('bookmarks-list');
     if (!bookmarksList) return;
+    
+    // 調試：顯示章節渲染順序
+    if (startIndex === 0) {
+      console.log('開始渲染書籤，章節順序：', chapterTitles);
+    }
     
     const batchSize = 3; // 每批處理3個章節
     const endIndex = Math.min(startIndex + batchSize, chapterTitles.length);
