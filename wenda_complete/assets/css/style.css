@@ -1563,8 +1563,9 @@ body.dark-mode .search-load-all:hover {
 /* 滚动时显示的浮动层级控制 */
 .floating-level-controls {
     position: fixed;
-    left: calc(50% + 400px - 50px); /* 大幅左移，显著覆盖内容区域 */
-    top: 120px; /* 固定在页面上方，避免遮挡内容 */
+    right: 20px; /* 水平靠右 */
+    top: 50%; /* 垂直居中 */
+    transform: translateY(-50%); /* 只垂直居中 */
     z-index: 1000;
     background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
     border-radius: 25px;
@@ -1572,11 +1573,8 @@ body.dark-mode .search-load-all:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
     backdrop-filter: blur(12px); /* 增强模糊效果 */
     border: 1px solid rgba(255, 105, 180, 0.3);
-    transition: all 0.3s ease, left 0.3s ease, right 0.3s ease; /* 增加位置过渡 */
+    transition: all 0.3s ease; /* 简化过渡效果 */
     max-width: 120px; /* 限制最大宽度 */
-    transform: translateX(0); /* 确保定位基准点 */
-    /* 确保内联样式不会被意外覆盖 */
-    right: auto; /* 默认不使用right定位 */
 }
 
 .floating-level-label {
@@ -1861,70 +1859,57 @@ body.dark-mode .bookmark-item:hover {
     border-color: #ff69b4;
 }
 
-/* 响应式浮动层级控制定位 */
-/* 中等屏幕 - 过渡定位 */
-@media (max-width: 1200px) and (min-width: 901px) {
-    .floating-level-controls {
-        left: calc(50% + 350px - 40px); /* 中等屏幕调整calc */
-    }
-}
-
-/* 平板和小屏幕 - 改用right定位确保可见性 */
-@media (max-width: 900px) {
-    .floating-level-controls {
-        left: auto; /* 取消calc定位 */
-        right: 8px; /* 贴合右边缘，确保完全可见 */
-        top: 100px; /* 稍微调整位置 */
-    }
-}
-
-/* 移动端进一步优化 */
+/* 响应式浮动层级控制定位 - 所有尺寸都居中 */
+/* 移动端优化觸摸體驗 */
 @media (max-width: 600px) {
     .floating-level-controls {
-        right: 5px; /* 移动端更贴近边缘 */
-        top: 80px; /* 移动端位置上移 */
-        padding: 10px 7px; /* 适合触摸的padding */
-        max-width: 100px; /* 移动端减少宽度 */
+        /* 保持居中，但優化觸摸體驗 */
+        padding: 15px 10px; /* 增加padding讓觸摸更容易 */
+        max-width: 100px; 
         z-index: 9999 !important; /* 强制最高层级 */
+        background: rgba(255, 255, 255, 0.95); /* 提高背景不透明度 */
+        border: 2px solid rgba(255, 105, 180, 0.6); /* 增强边框 */
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* 增强陰影 */
     }
     
     .floating-level-label {
-        font-size: 10px;
-        margin-bottom: 6px;
+        font-size: 12px; /* 增大字體便於閱讀 */
+        margin-bottom: 8px;
+        font-weight: bold;
     }
     
     .floating-level-btn {
-        width: 26px; /* 适合触摸的大小 */
-        height: 26px;
-        font-size: 11px;
+        width: 32px; /* 增大按鈕尺寸便於觸摸 */
+        height: 32px;
+        font-size: 13px;
+        margin: 3px 0; /* 增加間距 */
     }
 }
 
-/* 手机竖屏专用优化 - 针对更小的屏幕 */
+/* 小手機螢幕進一步優化 */
 @media (max-width: 400px) {
     .floating-level-controls {
-        right: 3px !important; /* 竖屏时更贴近边缘 */
-        top: 60px !important; /* 更靠上避免遮挡 */
-        padding: 8px 5px !important; /* 更紧凑的padding */
-        max-width: 80px !important; /* 竖屏减少宽度 */
-        z-index: 10000 !important; /* 最高优先级 */
-        background: rgba(255, 255, 255, 0.98) !important; /* 更高对比度 */
-        border: 2px solid rgba(255, 105, 180, 0.8) !important; /* 更明显的边框 */
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3) !important; /* 更强阴影 */
+        padding: 18px 12px; /* 更大的觸摸區域 */
+        max-width: 110px;
+        z-index: 10000 !important;
+        background: rgba(255, 255, 255, 0.98) !important;
+        border: 3px solid rgba(255, 105, 180, 0.8) !important; /* 更明顯的邊框 */
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
     }
     
     .floating-level-label {
-        font-size: 9px !important;
-        margin-bottom: 4px !important;
+        font-size: 13px !important; /* 更大的標籤字體 */
+        margin-bottom: 10px !important;
         font-weight: bold !important;
         color: #d63384 !important;
     }
     
     .floating-level-btn {
-        width: 24px !important; /* 竖屏按钮稍小 */
-        height: 24px !important;
-        font-size: 10px !important;
-        margin: 2px 0 !important;
+        width: 36px !important; /* 更大的按鈕 */
+        height: 36px !important;
+        font-size: 14px !important;
+        margin: 4px 0 !important;
+        border-width: 3px !important; /* 更粗的邊框 */
     }
 }
 
