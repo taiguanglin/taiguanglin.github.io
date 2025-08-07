@@ -735,15 +735,11 @@ document.addEventListener('DOMContentLoaded', function() {
     let contentHtml = '';
     
     if (currentChapter.isHomepage) {
-      // 首頁顯示目錄和書籤
+      // 首頁只顯示書籤，不顯示目錄標籤（因為首頁本身就是目錄）
       tabsHtml = 
-        '<button class="floating-toc-tab active" data-tab="toc">目錄</button>' +
-        '<button class="floating-toc-tab" data-tab="bookmarks">書籤 <span id="bookmark-count">(0)</span></button>';
+        '<button class="floating-toc-tab active" data-tab="bookmarks">📖 我的書籤 <span id="bookmark-count">(0)</span></button>';
       contentHtml = 
-        '<ul id="toc-list" class="floating-toc-list">' +
-          tocItems +
-        '</ul>' +
-        '<ul id="bookmarks-list" class="floating-toc-list" style="display: none;">' +
+        '<ul id="bookmarks-list" class="floating-toc-list" style="display: block;">' +
           '<li class="bookmarks-empty">尚無書籤</li>' +
         '</ul>';
     } else {
@@ -760,9 +756,12 @@ document.addEventListener('DOMContentLoaded', function() {
         '</ul>';
     }
     
+    // 根據頁面類型設定初始標題
+    const initialTitle = currentChapter.isHomepage ? '🔖 我的書籤' : '📖 章節目錄';
+    
     toc.innerHTML = 
       '<div class="floating-toc-header">' +
-        '<span id="toc-title">📖 章節目錄</span>' +
+        '<span id="toc-title">' + initialTitle + '</span>' +
         '<button class="ctrl-btn" data-action="close-toc">✕</button>' +
       '</div>' +
       '<div class="floating-toc-tabs">' +
@@ -1240,15 +1239,13 @@ document.addEventListener('DOMContentLoaded', function() {
           const match = title.match(/^(\d{1,2})/);
           const result = match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
           // 調試信息（可選）
-          console.log(`Chapter "${title}" -> number: ${result}`);
+          // console.log(`Chapter "${title}" -> number: ${result}`);
           return result;
         };
         
         const numA = extractChapterNumber(a);
         const numB = extractChapterNumber(b);
-        const result = numA - numB;
-        console.log(`Comparing "${a}" (${numA}) vs "${b}" (${numB}) = ${result}`);
-        return result;
+        return numA - numB;
       });
       
       // 分批渲染章節
@@ -1262,9 +1259,9 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!bookmarksList) return;
     
     // 調試：顯示章節渲染順序
-    if (startIndex === 0) {
-      console.log('開始渲染書籤，章節順序：', chapterTitles);
-    }
+    // if (startIndex === 0) {
+    //   console.log('開始渲染書籤，章節順序：', chapterTitles);
+    // }
     
     const batchSize = 3; // 每批處理3個章節
     const endIndex = Math.min(startIndex + batchSize, chapterTitles.length);
@@ -2372,13 +2369,21 @@ document.addEventListener('DOMContentLoaded', function() {
       const tocTitle = document.getElementById('toc-title');
       
       if (tab === 'toc') {
+        // 目录模式：显示目录，隐藏书签
         if (tocList) tocList.style.display = 'block';
         if (bookmarksList) bookmarksList.style.display = 'none';
-        if (tocTitle) tocTitle.textContent = '📖 章節目錄';
+        if (tocTitle) {
+          tocTitle.textContent = '📖 章節目錄';
+          tocTitle.style.display = 'block';
+        }
       } else if (tab === 'bookmarks') {
+        // 书签模式：隐藏目录，只显示书签内容
         if (tocList) tocList.style.display = 'none';
         if (bookmarksList) bookmarksList.style.display = 'block';
-        if (tocTitle) tocTitle.textContent = '🔖 我的書籤';
+        if (tocTitle) {
+          tocTitle.textContent = '🔖 我的書籤';
+          tocTitle.style.display = 'block';
+        }
         
         // 立即顯示載入指示器，改善UX
         showBookmarkLoadingIndicator();
