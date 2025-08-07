@@ -372,6 +372,7 @@ body.dark-mode .lang-switch a:hover { color: #ff69b4; }
     overflow-y: auto;
     padding: 0;
     line-height: 1.4 !important; /* 固定行距，不受全局調整影響 */
+    overflow-x: hidden; /* 防止水平滚动条 */
 }
 
 .floating-toc-list {
@@ -387,19 +388,30 @@ body.dark-mode .lang-switch a:hover { color: #ff69b4; }
     transition: all 0.3s ease;
     font-size: 13px;
     border-left: 3px solid transparent;
-    line-height: 0.4 !important; /* 固定行距 */
+    line-height: 1.3 !important; /* 修正行距，避免重叠 */
+    word-wrap: break-word; /* 自动换行 */
+    white-space: normal; /* 允许换行 */
+    overflow-wrap: break-word; /* 强制长单词换行 */
 }
 
 .floating-toc-item.level-h3 {
     padding-left: 24px;
     font-size: 12px;
     color: #666;
+    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .floating-toc-item.level-h4 {
     padding-left: 36px;
     font-size: 11px;
     color: #888;
+    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
 .floating-toc-item:hover {
@@ -455,6 +467,10 @@ body.dark-mode .lang-switch a:hover { color: #ff69b4; }
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
+    word-wrap: break-word; /* 书签文本自动换行 */
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.4; /* 合理的行距 */
 }
 
 .bookmark-item:hover {
@@ -514,6 +530,9 @@ body.dark-mode .lang-switch a:hover { color: #ff69b4; }
   border-bottom: 1px solid #f8c8dc;
   line-height: 1.4 !important; /* 固定行距 */
   cursor: default !important; /* 確保不顯示為可點擊狀態 */
+  word-wrap: break-word; /* 章节标题自动换行 */
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .bookmark-chapter-list {
@@ -1776,6 +1795,46 @@ body.dark-mode .toc-item.toc-chapter {
     border-bottom-color: #444;
 }
 
+/* 暗色模式下浮动TOC适配 */
+body.dark-mode .floating-toc {
+    background: rgba(40, 40, 40, 0.95);
+    border-color: rgba(255, 105, 180, 0.3);
+}
+
+body.dark-mode .floating-toc-header {
+    background: rgba(40, 40, 40, 0.95);
+    border-bottom-color: #444;
+    color: #ff91af;
+}
+
+body.dark-mode .floating-toc-content {
+    background: transparent;
+}
+
+body.dark-mode .floating-toc-item {
+    color: #e0e0e0;
+}
+
+body.dark-mode .floating-toc-item:hover {
+    background: rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .floating-toc-item.active {
+    background: rgba(255, 105, 180, 0.3);
+    color: #ff69b4;
+}
+
+body.dark-mode .bookmark-item {
+    background: rgba(60, 60, 60, 0.5);
+    border-color: #555;
+    color: #e0e0e0;
+}
+
+body.dark-mode .bookmark-item:hover {
+    background: rgba(255, 105, 180, 0.15);
+    border-color: #ff69b4;
+}
+
 /* 移动端适配 */
 @media (max-width: 768px) {
     .toc-level-controls {
@@ -1816,6 +1875,28 @@ body.dark-mode .toc-item.toc-chapter {
     
     .toc-item.toc-level-4 > a {
         margin-left: 64px;
+    }
+    
+    /* 移动端浮动TOC优化 */
+    .floating-toc {
+        width: 280px; /* 移动端稍微增加宽度 */
+        max-height: 80vh; /* 增加最大高度 */
+    }
+    
+    .floating-toc-item {
+        font-size: 12px; /* 移动端稍小字体 */
+        padding: 6px 10px; /* 稍微减少padding */
+        line-height: 1.4 !important; /* 移动端优化行距 */
+    }
+    
+    .floating-toc-item.level-h3 {
+        padding-left: 20px; /* 移动端减少缩进 */
+        font-size: 11px;
+    }
+    
+    .floating-toc-item.level-h4 {
+        padding-left: 30px; /* 移动端减少缩进 */
+        font-size: 10px;
     }
     
     /* 移动端浮动控制 */
