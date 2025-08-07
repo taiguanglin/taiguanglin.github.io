@@ -1884,6 +1884,7 @@ body.dark-mode .bookmark-item:hover {
         top: 80px; /* 移动端位置上移 */
         padding: 10px 7px; /* 适合触摸的padding */
         max-width: 100px; /* 移动端减少宽度 */
+        z-index: 9999 !important; /* 强制最高层级 */
     }
     
     .floating-level-label {
@@ -1895,6 +1896,34 @@ body.dark-mode .bookmark-item:hover {
         width: 26px; /* 适合触摸的大小 */
         height: 26px;
         font-size: 11px;
+    }
+}
+
+/* 手机竖屏专用优化 - 针对更小的屏幕 */
+@media (max-width: 400px) {
+    .floating-level-controls {
+        right: 3px !important; /* 竖屏时更贴近边缘 */
+        top: 60px !important; /* 更靠上避免遮挡 */
+        padding: 8px 5px !important; /* 更紧凑的padding */
+        max-width: 80px !important; /* 竖屏减少宽度 */
+        z-index: 10000 !important; /* 最高优先级 */
+        background: rgba(255, 255, 255, 0.98) !important; /* 更高对比度 */
+        border: 2px solid rgba(255, 105, 180, 0.8) !important; /* 更明显的边框 */
+        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3) !important; /* 更强阴影 */
+    }
+    
+    .floating-level-label {
+        font-size: 9px !important;
+        margin-bottom: 4px !important;
+        font-weight: bold !important;
+        color: #d63384 !important;
+    }
+    
+    .floating-level-btn {
+        width: 24px !important; /* 竖屏按钮稍小 */
+        height: 24px !important;
+        font-size: 10px !important;
+        margin: 2px 0 !important;
     }
 }
 
