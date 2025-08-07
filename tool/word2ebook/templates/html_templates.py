@@ -105,7 +105,7 @@ if (typeof MiniSearch === 'undefined') {{
 </head>
 <body>
 <div class="lang-switch">
-<a href="index.html">简体</a> | <a href="index_trad.html">繁體</a>
+{lang_switch_links}
 </div>
 <h1>{book_title}</h1>
 
@@ -139,7 +139,18 @@ if (typeof MiniSearch === 'undefined') {{
 </div>
 
 <h2 id="toc-header">Table of Contents</h2>
-<div class="toc">
+
+<!-- 目录层级控制按钮 -->
+<div class="toc-level-controls">
+  <div class="toc-level-label">显示层级</div>
+  <div class="toc-level-buttons-vertical">
+    <button class="toc-level-btn" data-level="1" title="显示第1层">1</button>
+    <button class="toc-level-btn active" data-level="2" title="显示前2层">2</button>
+    <button class="toc-level-btn" data-level="3" title="显示前3层">3</button>
+  </div>
+</div>
+
+<div class="toc" id="main-toc">
 {toc_items}
 </div>
 
@@ -173,6 +184,16 @@ if (typeof MiniSearch === 'undefined') {{
     <ul id="bookmarks-list" style="display: none;">
       <!-- 動態生成的書籤內容 -->
     </ul>
+  </div>
+</div>
+
+<!-- 滚动时显示的浮动层级控制按钮 -->
+<div class="floating-level-controls" id="floating-level-controls" style="display: none;">
+  <div class="floating-level-label">层级</div>
+  <div class="floating-level-buttons">
+    <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
+    <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
+    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
   </div>
 </div>
 
