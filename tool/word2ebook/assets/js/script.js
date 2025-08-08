@@ -2643,6 +2643,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定层级切换按钮事件
     bindLevelControlEvents();
     
+    // 为有展开图标的目录项添加 toc-expandable 类
+    initializeTocExpandableItems();
+    
     // 绑定展开/折叠图标事件
     bindExpandCollapseEvents();
     
@@ -2703,30 +2706,54 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  // 初始化可展开的目录项
+  function initializeTocExpandableItems() {
+    const tocContainer = document.getElementById('main-toc');
+    if (!tocContainer) return;
+    
+    // 为所有有展开图标的目录项添加 toc-expandable 类
+    const itemsWithIcons = tocContainer.querySelectorAll('.toc-item .toc-expand-icon');
+    itemsWithIcons.forEach(icon => {
+      const tocItem = icon.closest('.toc-item');
+      if (tocItem) {
+        tocItem.classList.add('toc-expandable');
+      }
+    });
+  }
+
   function bindExpandCollapseEvents() {
     const tocContainer = document.getElementById('main-toc');
     if (!tocContainer) return;
     
-    // 使用事件委托处理所有展开/折叠图标
+    // 使用事件委托处理展开/折叠
     tocContainer.addEventListener('click', function(e) {
-      if (e.target.classList.contains('toc-expand-icon')) {
+      // 检查是否点击了链接
+      if (e.target.tagName === 'A' || e.target.closest('a')) {
+        // 点击链接，允许默认行为（页面跳转）
+        return;
+      }
+      
+      // 查找是否点击了可展开的目录项
+      const expandableItem = e.target.closest('.toc-item.toc-expandable');
+      if (expandableItem) {
         e.preventDefault();
         e.stopPropagation();
         
-        const icon = e.target;
-        const parentLi = icon.closest('.toc-item');
-        const isCollapsed = icon.classList.contains('collapsed');
-        
-        if (isCollapsed) {
-          // 展开：显示直接子项
-          expandTocItem(parentLi);
-          icon.classList.remove('collapsed');
-          icon.textContent = '▼';
-        } else {
-          // 折叠：隐藏所有子项
-          collapseTocItem(parentLi);
-          icon.classList.add('collapsed');
-          icon.textContent = '▶';
+        const icon = expandableItem.querySelector('.toc-expand-icon');
+        if (icon) {
+          const isCollapsed = icon.classList.contains('collapsed');
+          
+          if (isCollapsed) {
+            // 展开：显示直接子项
+            expandTocItem(expandableItem);
+            icon.classList.remove('collapsed');
+            icon.textContent = '▼';
+          } else {
+            // 折叠：隐藏所有子项
+            collapseTocItem(expandableItem);
+            icon.classList.add('collapsed');
+            icon.textContent = '▶';
+          }
         }
       }
     });
