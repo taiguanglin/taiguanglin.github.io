@@ -2683,22 +2683,31 @@ document.addEventListener('DOMContentLoaded', function() {
     const allItems = tocContainer.querySelectorAll('.toc-item');
     const targetLevel = parseInt(level);
     
+    // 清除所有手動標記，讓層級控制重新接管
+    allItems.forEach(item => {
+      item.removeAttribute('data-user-toggled');
+      item.removeAttribute('data-manually-shown');
+    });
+    
     allItems.forEach(item => {
       const itemLevel = parseInt(item.getAttribute('data-level'));
       
+      // 根據層級控制顯示/隱藏
       if (itemLevel <= targetLevel) {
         item.classList.remove('hidden');
       } else {
         item.classList.add('hidden');
       }
       
-      // 对于显示的层级，设置合适的展开/折叠状态
-      if (itemLevel <= targetLevel) {
-        const expandIcon = item.querySelector('.toc-expand-icon');
-        if (expandIcon && itemLevel < targetLevel) {
+      // 重新設置圖標狀態
+      const expandIcon = item.querySelector('.toc-expand-icon');
+      if (expandIcon) {
+        if (itemLevel < targetLevel) {
+          // 小於目標層級的項目自動展開
           expandIcon.classList.remove('collapsed');
           expandIcon.textContent = '▼';
-        } else if (expandIcon) {
+        } else if (itemLevel === targetLevel) {
+          // 等於目標層級的項目設為折疊狀態
           expandIcon.classList.add('collapsed');
           expandIcon.textContent = '▶';
         }
@@ -2706,6 +2715,28 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
+  // 同步图标状态与实际展开状态
+  function syncIconStates() {
+    const tocContainer = document.getElementById('main-toc');
+    if (!tocContainer) return;
+    
+    const expandableItems = tocContainer.querySelectorAll('.toc-item.toc-expandable');
+    expandableItems.forEach(item => {
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon) {
+        const actuallyExpanded = hasVisibleDirectChildren(item);
+        
+        if (actuallyExpanded) {
+          icon.classList.remove('collapsed');
+          icon.textContent = '▼';
+        } else {
+          icon.classList.add('collapsed');
+          icon.textContent = '▶';
+        }
+      }
+    });
+  }
+
   // 初始化可展开的目录项
   function initializeTocExpandableItems() {
     const tocContainer = document.getElementById('main-toc');
@@ -2719,6 +2750,36 @@ document.addEventListener('DOMContentLoaded', function() {
         tocItem.classList.add('toc-expandable');
       }
     });
+    
+    // 同步图标状态
+    syncIconStates();
+  }
+
+  // 检查一个目录项是否有可见的直接子项
+  function hasVisibleDirectChildren(parentItem) {
+    const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    let nextSibling = parentItem.nextElementSibling;
+    
+    // 查找直接子项
+    while (nextSibling && nextSibling.classList.contains('toc-item')) {
+      const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      
+      if (siblingLevel <= parentLevel) {
+        // 遇到同级或更高级别的项目，停止
+        break;
+      }
+      
+      if (siblingLevel === parentLevel + 1) {
+        // 这是直接子项，检查是否可见
+        if (!nextSibling.classList.contains('hidden')) {
+          return true;
+        }
+      }
+      
+      nextSibling = nextSibling.nextElementSibling;
+    }
+    
+    return false;
   }
 
   function bindExpandCollapseEvents() {
@@ -2741,18 +2802,22 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const icon = expandableItem.querySelector('.toc-expand-icon');
         if (icon) {
-          const isCollapsed = icon.classList.contains('collapsed');
+          // 检查实际的展开状态：查看是否有可见的直接子项
+          const actuallyExpanded = hasVisibleDirectChildren(expandableItem);
           
-          if (isCollapsed) {
-            // 展开：显示直接子项
-            expandTocItem(expandableItem);
-            icon.classList.remove('collapsed');
-            icon.textContent = '▼';
-          } else {
-            // 折叠：隐藏所有子项
+          // 标记这个项目已经被用户手动操作
+          expandableItem.setAttribute('data-user-toggled', 'true');
+          
+          if (actuallyExpanded) {
+            // 当前已展开，执行折叠
             collapseTocItem(expandableItem);
             icon.classList.add('collapsed');
             icon.textContent = '▶';
+          } else {
+            // 当前已折叠，执行展开
+            expandTocItem(expandableItem);
+            icon.classList.remove('collapsed');
+            icon.textContent = '▼';
           }
         }
       }
@@ -2775,6 +2840,8 @@ document.addEventListener('DOMContentLoaded', function() {
       if (siblingLevel === parentLevel + 1) {
         // 这是直接子项，显示它
         nextSibling.classList.remove('hidden');
+        // 添加标记，表示这是用户手动展开的
+        nextSibling.setAttribute('data-manually-shown', 'true');
       }
       
       nextSibling = nextSibling.nextElementSibling;
@@ -2796,6 +2863,8 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 这是子项，隐藏它，并同时折叠其展开状态
       nextSibling.classList.add('hidden');
+      // 清除手动展开标记
+      nextSibling.removeAttribute('data-manually-shown');
       const childIcon = nextSibling.querySelector('.toc-expand-icon');
       if (childIcon) {
         childIcon.classList.add('collapsed');
