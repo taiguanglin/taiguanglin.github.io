@@ -1563,7 +1563,7 @@ body.dark-mode .search-load-all:hover {
 /* 滚动时显示的浮动层级控制 */
 .floating-level-controls {
     position: fixed;
-    right: 20px; /* 水平靠右 */
+    right: 25%; /* 水平靠右 */
     top: 50%; /* 垂直居中 */
     transform: translateY(-50%); /* 只垂直居中 */
     z-index: 1000;
