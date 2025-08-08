@@ -1665,6 +1665,19 @@ body.dark-mode .search-load-all:hover {
     transform: rotate(-90deg) scale(1.2);
 }
 
+/* 不同層級的展開圖標位置調整，確保圖標緊貼對應層級的文字 */
+.toc-item.toc-level-2 .toc-expand-icon {
+    left: 42px; /* 第2層 */
+}
+
+.toc-item.toc-level-3 .toc-expand-icon {
+    left: 62px; /* 第3層 */
+}
+
+.toc-item.toc-level-4 .toc-expand-icon {
+    left: 82px; /* 第4層： */
+}
+
 /* 目录项样式 */
 .toc-item {
     position: relative;
