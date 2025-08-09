@@ -131,3 +131,27 @@ class ConversionConfig:
         # 如果没有指定书名，从文件名获取
         if self.book_title is None:
             self.book_title = self.input_file.stem
+    
+    def get_book_title(self, is_traditional: bool = False) -> str:
+        """獲取電子書標題，優先使用配置文件中的設定
+        
+        Args:
+            is_traditional: 是否為繁體版
+            
+        Returns:
+            電子書標題
+        """
+        try:
+            # 導入配置管理器（延遲導入避免循環依賴）
+            from utils.config_utils import get_book_title
+            
+            # 優先使用配置文件中的標題，如果沒有則使用當前設定的書名
+            config_title = get_book_title(is_traditional, "")
+            if config_title:
+                return config_title
+            else:
+                return self.book_title or self.input_file.stem
+                
+        except ImportError:
+            # 如果配置工具不可用，使用默認邏輯
+            return self.book_title or self.input_file.stem

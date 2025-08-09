@@ -1,0 +1,125 @@
+# Word2EBook 配置文件
+# Configuration file for Word2EBook
+
+# 電子書標題設定
+# E-book title settings
+book_title:
+  # 簡體中文標題 (如果不設定，將使用檔案名)
+  # Simplified Chinese title (if not set, filename will be used)
+  simplified: "坐禅之问答录2"
+  
+  # 繁體中文標題 (如果不設定，將使用檔案名)
+  # Traditional Chinese title (if not set, filename will be used)
+  traditional: "坐禪之問答錄2"
+
+# 多語言文字設定
+# Multi-language text settings
+i18n:
+  # 目錄相關文字
+  table_of_contents:
+    simplified: "目录"
+    traditional: "目錄"
+  
+  # 導航相關文字
+  navigation:
+    home:
+      simplified: "回首页"
+      traditional: "回首頁"
+    
+    chapter_toc:
+      simplified: "本章目录"
+      traditional: "本章目錄"
+    
+    bookmarks:
+      simplified: "书签"
+      traditional: "書籤"
+    
+    my_bookmarks:
+      simplified: "我的书签"
+      traditional: "我的書籤"
+    
+    chapter_directory:
+      simplified: "章节目录"
+      traditional: "章節目錄"
+  
+  # 語言切換
+  language_switch:
+    simplified: "简体"
+    traditional: "繁體"
+  
+  # 搜索相關
+  search:
+    activate_search:
+      simplified: "启用全文搜索"
+      traditional: "啟用全文搜尋"
+    
+    search_placeholder:
+      simplified: "搜索全文内容..."
+      traditional: "搜尋全文內容..."
+    
+    search_initializing:
+      simplified: "正在初始化搜索功能..."
+      traditional: "正在初始化搜尋功能..."
+    
+    search_loading:
+      simplified: "正在加载搜索功能，请稍候..."
+      traditional: "正在載入搜尋功能，請稍候..."
+    
+    show_more:
+      simplified: "显示更多"
+      traditional: "顯示更多"
+    
+    show_all:
+      simplified: "显示全部"
+      traditional: "顯示全部"
+    
+    clear_search:
+      simplified: "清除搜索"
+      traditional: "清除搜尋"
+    
+    collapse_search:
+      simplified: "收起搜索"
+      traditional: "收起搜尋"
+  
+  # 層級控制
+  level_control:
+    show_level:
+      simplified: "显示层级"
+      traditional: "顯示層級"
+    
+    level:
+      simplified: "层级"
+      traditional: "層級"
+  
+  # 其他UI文字
+  ui:
+    previous_chapter:
+      simplified: "上一章"
+      traditional: "上一章"
+    
+    next_chapter:
+      simplified: "下一章"
+      traditional: "下一章"
+    
+    function_menu:
+      simplified: "功能菜单"
+      traditional: "功能選單"
+    
+    settings:
+      simplified: "设置"
+      traditional: "設置"
+    
+    back_to_top:
+      simplified: "回到顶部"
+      traditional: "回到頂部"
+
+# 其他設定
+# Other settings
+generation:
+  # 是否自動生成繁體版
+  # Whether to automatically generate traditional version
+  auto_traditional: true
+  
+  # 是否生成搜索索引
+  # Whether to generate search index
+  generate_search: true
