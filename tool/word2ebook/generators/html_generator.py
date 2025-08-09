@@ -6,8 +6,10 @@ from pathlib import Path
 
 from models.document_models import Chapter, TOCItem
 from templates.html_templates import TemplateManager
+from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
 from utils.i18n_utils import I18nProcessor
+from utils.config_utils import get_i18n_text
 from config.settings import Settings
 
 
@@ -99,6 +101,7 @@ class HTMLGenerator:
         self.settings = settings
         self.file_manager = file_manager
         self.template_manager = TemplateManager()
+        self.i18n_template_manager = I18nTemplateManager()
         self.toc_generator = TOCGenerator()
         self.i18n_processor = I18nProcessor()
     
@@ -111,15 +114,17 @@ class HTMLGenerator:
         if generate_traditional:
             self._generate_traditional_chapters(chapters)
     
-    def generate_index_pages(self, chapters: List[Chapter], book_title: str, 
+    def generate_index_pages(self, chapters: List[Chapter], config, 
                            generate_traditional: bool = True) -> None:
         """生成首页"""
         # 生成简体版首页
-        self._generate_simplified_index(chapters, book_title)
+        simplified_title = config.get_book_title(is_traditional=False)
+        self._generate_simplified_index(chapters, simplified_title)
         
         # 生成繁体版首页
         if generate_traditional:
-            self._generate_traditional_index(chapters, book_title)
+            traditional_title = config.get_book_title(is_traditional=True)
+            self._generate_traditional_index(chapters, traditional_title)
     
     def _generate_simplified_chapters(self, chapters: List[Chapter]) -> None:
         """生成简体版章节"""
@@ -131,7 +136,8 @@ class HTMLGenerator:
             lang_switch_links = self._generate_lang_switch_links(chapter.filename, is_traditional=False)
             
             # 渲染页面
-            html_content = self.template_manager.render_chapter(
+            html_content = self.i18n_template_manager.render_chapter(
+                is_traditional=False,
                 title=chapter.title,
                 chapter_toc=chapter.chapter_toc,
                 content=chapter.content,
@@ -167,9 +173,9 @@ class HTMLGenerator:
             converted_top_nav_links = self.i18n_processor.to_traditional(nav_data['top_nav_links'])
             converted_lang_switch_links = self.i18n_processor.to_traditional(lang_switch_links)
             
-            # 转换模板并渲染
-            template = self.i18n_processor.to_traditional(self.template_manager.get_template('chapter'))
-            html_content = template.format(
+            # 渲染繁體版頁面
+            html_content = self.i18n_template_manager.render_chapter(
+                is_traditional=True,
                 title=converted_title,
                 chapter_toc=converted_chapter_toc,
                 content=converted_content,
@@ -190,7 +196,8 @@ class HTMLGenerator:
         # 生成语言切换链接
         lang_switch_links = self._generate_lang_switch_links("index.html", is_traditional=False)
         
-        html_content = self.template_manager.render_index(
+        html_content = self.i18n_template_manager.render_index(
+            is_traditional=False,
             book_title=book_title,
             toc_items=toc_html,
             lang_switch_links=lang_switch_links
@@ -221,9 +228,9 @@ class HTMLGenerator:
         # 生成语言切换链接
         lang_switch_links = self._generate_lang_switch_links("index_trad.html", is_traditional=True)
         
-        # 转换模板并渲染
-        template = self.i18n_processor.to_traditional(self.template_manager.get_template('index'))
-        html_content = template.format(
+        # 渲染繁體版首頁
+        html_content = self.i18n_template_manager.render_index(
+            is_traditional=True,
             book_title=self.i18n_processor.to_traditional(book_title),
             toc_items=trad_toc_html,
             lang_switch_links=lang_switch_links
@@ -245,7 +252,8 @@ class HTMLGenerator:
             if is_traditional:
                 prev_filename = self.i18n_processor.get_traditional_filename(prev_filename)
             prev_title = re.sub(r"<.*?>", "", prev_chapter.title)  # 清理HTML标签
-            prev_link = f'<a href="{prev_filename}">⬅️ 上一章：{prev_title}</a>'
+            prev_text = get_i18n_text('ui.previous_chapter', is_traditional, '上一章')
+            prev_link = f'<a href="{prev_filename}">⬅️ {prev_text}：{prev_title}</a>'
         
         # 下一章链接
         if current_index < len(chapters) - 1:
@@ -254,7 +262,8 @@ class HTMLGenerator:
             if is_traditional:
                 next_filename = self.i18n_processor.get_traditional_filename(next_filename)
             next_title = re.sub(r"<.*?>", "", next_chapter.title)  # 清理HTML标签
-            next_link = f'<a href="{next_filename}">下一章：{next_title} ➡️</a>'
+            next_text = get_i18n_text('ui.next_chapter', is_traditional, '下一章')
+            next_link = f'<a href="{next_filename}">{next_text}：{next_title} ➡️</a>'
         
         # 顶部导航按钮
         if prev_link or next_link:
@@ -273,9 +282,9 @@ class HTMLGenerator:
             current_filename: 当前页面的文件名
             is_traditional: 当前是否为繁体页面
         """
-        # 使用固定的语言名称，不进行繁简转换
-        simplified_text = "简体"  # 始终使用简体字
-        traditional_text = "繁體"  # 始终使用繁体字
+        # 根據用戶需求：在繁體頁面中，"簡體"兩個字要使用簡體中文
+        simplified_text = get_i18n_text('language_switch.simplified', False, '简体')  # 始終使用簡體字
+        traditional_text = get_i18n_text('language_switch.traditional', True, '繁體')  # 始終使用繁體字
         
         if is_traditional:
             # 繁体页面：简体链接指向对应简体版，繁体链接指向当前页面

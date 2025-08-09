@@ -1,0 +1,168 @@
+/**
+ * 國際化文字配置
+ */
+
+// 定義所有需要國際化的文字
+window.I18N_TEXT = {
+  // 搜索相關
+  search: {
+    loading: {
+      simplified: '正在加载搜索功能，请稍候...',
+      traditional: '正在載入搜尋功能，請稍候...'
+    }
+  },
+  
+  // 書籤相關
+  bookmark: {
+    myBookmarks: {
+      simplified: '我的书签',
+      traditional: '我的書籤'
+    },
+    noBookmarks: {
+      simplified: '暂无书签',
+      traditional: '尚無書籤'
+    },
+    addToBookmark: {
+      simplified: '加入书签',
+      traditional: '加入書籤'
+    },
+    removeBookmark: {
+      simplified: '点击移除书签',
+      traditional: '點擊移除書籤'
+    },
+    processing: {
+      simplified: '处理 {count} 个书签...',
+      traditional: '處理 {count} 個書籤...'
+    },
+    deleteBookmark: {
+      simplified: '删除书签',
+      traditional: '刪除書籤'
+    },
+    bookmarkAdded: {
+      simplified: '已添加到书签，可在侧边栏查看',
+      traditional: '已添加到書籤，可在側邊欄查看'
+    }
+  },
+  
+  // 導航相關
+  navigation: {
+    tableOfContents: {
+      simplified: '目录',
+      traditional: '目錄'
+    },
+    chapterDirectory: {
+      simplified: '章节目录',
+      traditional: '章節目錄'
+    },
+    bookmarks: {
+      simplified: '书签',
+      traditional: '書籤'
+    },
+    unknownChapter: {
+      simplified: '未知章节',
+      traditional: '未知章節'
+    }
+  },
+  
+  // 操作相關
+  actions: {
+    copyQA: {
+      simplified: '复制问答',
+      traditional: '複製問答'
+    },
+    shareQuestion: {
+      simplified: '分享问题',
+      traditional: '分享問題'
+    },
+    shareAnswer: {
+      simplified: '分享回答',
+      traditional: '分享回答'
+    }
+  },
+  
+  // 功能說明
+  instructions: {
+    bookmarkHelp: {
+      simplified: '书签功能说明',
+      traditional: '書籤功能說明'
+    },
+    enterChapter: {
+      simplified: '• 进入任意章节',
+      traditional: '• 進入任意章節'
+    },
+    findInteresting: {
+      simplified: '• 找到感兴趣的问答',
+      traditional: '• 找到感興趣的問答'
+    },
+    clickBookmark: {
+      simplified: '• 点击右上角书签图标',
+      traditional: '• 點擊右上角書籤圖標'
+    },
+    returnToView: {
+      simplified: '• 返回此处查看收藏',
+      traditional: '• 返回此處查看收藏'
+    }
+  }
+};
+
+/**
+ * 獲取國際化文字
+ * @param {string} keyPath - 文字鍵值路徑，如 'bookmark.myBookmarks'
+ * @param {boolean} isTraditional - 是否為繁體版
+ * @param {string} defaultText - 默認文字
+ * @param {Object} params - 參數對象，用於替換文字中的佔位符
+ * @returns {string} 本地化文字
+ */
+function getI18nText(keyPath, isTraditional = false, defaultText = '', params = {}) {
+  if (!window.I18N_TEXT) {
+    return defaultText;
+  }
+  
+  // 解析嵌套鍵值路徑
+  const keys = keyPath.split('.');
+  let current = window.I18N_TEXT;
+  
+  try {
+    for (const key of keys) {
+      current = current[key];
+      if (!current) {
+        return defaultText;
+      }
+    }
+    
+    // 獲取對應語言版本
+    let text;
+    if (typeof current === 'object' && current !== null) {
+      text = isTraditional ? current.traditional : current.simplified;
+    } else {
+      text = current;
+    }
+    
+    if (!text) {
+      return defaultText;
+    }
+    
+    // 替換參數
+    Object.keys(params).forEach(key => {
+      text = text.replace(new RegExp(`\\{${key}\\}`, 'g'), params[key]);
+    });
+    
+    return text;
+    
+  } catch (error) {
+    console.warn('獲取國際化文字失敗:', keyPath, error);
+    return defaultText;
+  }
+}
+
+// 判斷是否為繁體版頁面
+function isTraditionalChinesePage() {
+  const pathname = window.location.pathname;
+  const filename = pathname.split('/').pop() || 'index.html';
+  return filename.includes('_trad.html');
+}
+
+// 便捷函數 - 獲取本地化文字
+function getText(simplifiedText, traditionalText, params = {}) {
+  return isTraditionalChinesePage() ? traditionalText : simplifiedText;
+}

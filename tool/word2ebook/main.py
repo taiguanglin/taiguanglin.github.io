@@ -54,7 +54,7 @@ class Word2EBookConverter:
         # 3. 生成HTML页面
         print("🔧 正在生成 HTML 页面...")
         self.html_generator.generate_chapter_pages(chapters, self.config.generate_traditional)
-        self.html_generator.generate_index_pages(chapters, self.config.book_title, self.config.generate_traditional)
+        self.html_generator.generate_index_pages(chapters, self.config, self.config.generate_traditional)
         print("✅ HTML 页面生成完成")
         
         # 4. 生成搜索索引
@@ -85,6 +85,13 @@ class Word2EBookConverter:
         # 写入 JavaScript
         js_content = self.assets_manager.get_full_js_content()
         self.file_manager.write_file("assets/js/script.js", js_content)
+        
+        # 写入 i18n JavaScript
+        i18n_js_path = Path(__file__).parent / "assets" / "js" / "i18n-text.js"
+        if i18n_js_path.exists():
+            with open(i18n_js_path, 'r', encoding='utf-8') as f:
+                i18n_js_content = f.read()
+            self.file_manager.write_file("assets/js/i18n-text.js", i18n_js_content)
     
     def _show_completion_info(self) -> None:
         """显示完成信息"""
