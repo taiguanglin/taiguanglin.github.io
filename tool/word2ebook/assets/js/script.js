@@ -143,11 +143,14 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 更新進度的函數
       const updateProgress = (percent, text) => {
+        // 確保進度永遠不超過100%
+        const safePercent = Math.min(Math.max(percent, 0), 100);
+        
         const progressFill = document.getElementById('search-progress-fill');
         const loadingText = document.getElementById('search-loading-text');
         
         if (progressFill) {
-          progressFill.style.width = `${percent}%`;
+          progressFill.style.width = `${safePercent}%`;
         }
         if (loadingText) {
           loadingText.textContent = text;
@@ -166,9 +169,16 @@ document.addEventListener('DOMContentLoaded', function() {
         loaded += value.length;
         
         if (total > 0) {
-          const percent = Math.round((loaded / total) * 80); // 80% 為下載完成
+          // 計算原始進度百分比
+          const rawPercent = (loaded / total) * 80; // 80% 為下載完成
+          // 限制在80%以內，避免超過100%
+          const percent = Math.min(Math.round(rawPercent), 80);
           const text = getI18nText('search.loadingProgress', isTraditionalChinesePage(), '正在下載搜尋資料 ({percent}%)', { percent });
           updateProgress(percent, text);
+        } else {
+          // 如果沒有 content-length，使用不確定進度模式
+          const text = getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...');
+          updateProgress(Math.min(loaded / 1024 / 1024 * 10, 60), text); // 粗略估計，每MB約10%進度，最大60%
         }
       }
       
