@@ -826,17 +826,7 @@ body.dark-mode .ctrl-btn.active {
     box-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
 }
 
-body.dark-mode .floating-toc-item {
-    color: #fddde6;
-}
 
-body.dark-mode .floating-toc-item.level-h3 {
-    color: #ff91af;
-}
-
-body.dark-mode .floating-toc-item.level-h4 {
-    color: #d44d75;
-}
 
 body.dark-mode .floating-toc-item:hover {
     background: rgba(255, 105, 180, 0.2);
@@ -1969,7 +1959,15 @@ body.dark-mode .floating-toc-content {
 }
 
 body.dark-mode .floating-toc-item {
-    color: #e0e0e0;
+    color: #ff91af; /* 統一使用主頁面目錄的第1層顏色 */
+}
+
+body.dark-mode .floating-toc-item.level-h3 {
+    color: #ffb3c6; /* 統一使用主頁面目錄的第2層顏色 */
+}
+
+body.dark-mode .floating-toc-item.level-h4 {
+    color: #ffc4d6; /* 統一使用主頁面目錄的第3層顏色 */
 }
 
 body.dark-mode .floating-toc-item:hover {
