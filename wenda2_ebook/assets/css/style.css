@@ -1425,6 +1425,44 @@ body.dark-mode .search-results-header {
     border-bottom-color: #4a2c4a;
 }
 
+/* 搜索加載狀態夜間模式 */
+body.dark-mode .search-loading {
+    background: #2d1e2e;
+    border-color: #4a2c4a;
+}
+
+body.dark-mode .search-loading-text {
+    color: #fddde6;
+}
+
+body.dark-mode .search-loading-spinner {
+    border-color: #4a2c4a;
+    border-top-color: #ff69b4;
+}
+
+/* 搜索錯誤狀態夜間模式 */
+body.dark-mode .search-error {
+    background: #4a2c3a;
+    border-color: #5a2d49;
+    color: #ff91af;
+}
+
+body.dark-mode .search-retry-btn {
+    background: #ff69b4;
+    color: #fff;
+}
+
+body.dark-mode .search-retry-btn:hover {
+    background: #ff91af;
+}
+
+/* 搜索成功狀態夜間模式 */
+body.dark-mode .search-status-success {
+    background: #2d4a2d;
+    border-color: #4a6b4a;
+    color: #a8d5aa;
+}
+
 body.dark-mode .search-result-item {
     background: #2d1e2e;
     border-left-color: #ff69b4;
