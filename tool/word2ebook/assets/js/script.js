@@ -3020,34 +3020,28 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ========== 浮动层级控制功能 ==========
   
-  // 检测目录区域是否在视窗中可见
-  function isTocVisibleInViewport() {
-    const mainToc = document.getElementById('main-toc');
-    const tocHeaderContainer = document.querySelector('.toc-header-container');
+  // 检测固定层级控制按钮是否在视窗中可见
+  function areTocControlsVisible() {
+    const tocControls = document.querySelector('.toc-level-controls');
+    if (!tocControls) return false;
     
-    if (!mainToc && !tocHeaderContainer) return false;
-    
-    // 获取视窗高度
+    const rect = tocControls.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
     
-    // 检查目录标题容器是否可见
-    if (tocHeaderContainer) {
-      const headerRect = tocHeaderContainer.getBoundingClientRect();
-      if (headerRect.bottom > 0 && headerRect.top < viewportHeight) {
-        return true; // 目录标题可见
-      }
-    }
+    // 检查控制按钮是否在视窗内可见
+    return rect.bottom > 0 && rect.top < viewportHeight;
+  }
+  
+  // 检测目录内容是否在视窗中可见（确保有目录需要控制）
+  function isTocContentVisible() {
+    const mainToc = document.getElementById('main-toc');
+    if (!mainToc) return false;
     
-    // 检查主目录内容是否可见
-    if (mainToc) {
-      const tocRect = mainToc.getBoundingClientRect();
-      // 目录区域的任何部分在视窗内都算可见
-      if (tocRect.bottom > 0 && tocRect.top < viewportHeight) {
-        return true; // 目录内容可见
-      }
-    }
+    const rect = mainToc.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
     
-    return false; // 目录完全不可见
+    // 目录内容的任何部分在视窗内都算可见
+    return rect.bottom > 0 && rect.top < viewportHeight;
   }
   
   // 更新浮动层级控制的显示状态（全局函数，供搜索功能调用）
@@ -3059,11 +3053,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const isMobile = window.innerWidth <= 600;
     const scrollThreshold = isMobile ? 100 : 200;
     
-    // 检查目录是否在视窗中可见
-    const isTocVisible = isTocVisibleInViewport();
+    // 检查固定控制按钮是否可见
+    const areControlsVisible = areTocControlsVisible();
+    // 检查目录内容是否可见（确保有内容需要控制）
+    const isTocContentAvailable = isTocContentVisible();
     
-    // 只有在达到滚动阈值且目录可见时才显示浮动控制
-    const shouldShow = currentScrollY > scrollThreshold && isTocVisible;
+    // 只有在达到滚动阈值、固定控制按钮不可见、但目录内容仍可见时才显示浮动控制
+    const shouldShow = currentScrollY > scrollThreshold && !areControlsVisible && isTocContentAvailable;
     
     if (shouldShow) {
       floatingControls.style.display = 'block';
@@ -3134,24 +3130,26 @@ document.addEventListener('DOMContentLoaded', function() {
       const isMobile = window.innerWidth <= 600;
       const scrollThreshold = isMobile ? 100 : 200; // 移动端更早显示
       
-      // 检查目录是否在视窗中可见
-      const isTocVisible = isTocVisibleInViewport();
+      // 检查固定控制按钮是否可见
+      const areControlsVisible = areTocControlsVisible();
+      // 检查目录内容是否可见
+      const isTocContentAvailable = isTocContentVisible();
       
-      // 只有在达到滚动阈值且目录可见时才显示浮动控制
-      const shouldShowFloating = currentScrollY > scrollThreshold && isTocVisible;
+      // 只有在达到滚动阈值、固定控制按钮不可见、但目录内容仍可见时才显示浮动控制
+      const shouldShowFloating = currentScrollY > scrollThreshold && !areControlsVisible && isTocContentAvailable;
       
       // 调试输出
       if (debugMode && currentScrollY > 50) {
-        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, TocVisible: ${isTocVisible}, Show: ${shouldShowFloating}`);
+        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
       }
       
       if (shouldShowFloating) {
-        // 滚动时显示浮动版本（仅在目录可见时）
+        // 滚动时显示浮动版本（仅当固定按钮不可见但目录内容可见时）
         floatingControls.style.display = 'block';
         // 应用正确的样式（基于当前屏幕尺寸）
         applyCorrectStyles();
       } else {
-        // 页面顶部时或目录不可见时隐藏浮动版本
+        // 页面顶部时、固定按钮可见时、或目录内容不可见时隐藏浮动版本
         floatingControls.style.display = 'none';
       }
       
