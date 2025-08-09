@@ -1370,11 +1370,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     font-weight: 600;
 }
 
-.search-result-url {
-    font-size: 12px;
-    color: #999;
-    text-decoration: none;
-}
+
 
 /* 暗色模式搜索样式 */
 body.dark-mode .search-activate-btn {
