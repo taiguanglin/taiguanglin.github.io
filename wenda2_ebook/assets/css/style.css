@@ -392,12 +392,13 @@ body.dark-mode .lang-switch a:hover { color: #ff69b4; }
     word-wrap: break-word; /* 自动换行 */
     white-space: normal; /* 允许换行 */
     overflow-wrap: break-word; /* 强制长单词换行 */
+    color: #e75480; /* 與章節頁面目錄第1層相同 */
 }
 
 .floating-toc-item.level-h3 {
     padding-left: 24px;
     font-size: 12px;
-    color: #666;
+    color: #e85aad; /* 與章節頁面目錄第2層相同 */
     line-height: 1.3 !important; /* 确保子级别也有正确行距 */
     word-wrap: break-word;
     white-space: normal;
@@ -407,7 +408,7 @@ body.dark-mode .lang-switch a:hover { color: #ff69b4; }
 .floating-toc-item.level-h4 {
     padding-left: 36px;
     font-size: 11px;
-    color: #888;
+    color: #f06bbf; /* 與章節頁面目錄第3層相同 */
     line-height: 1.3 !important; /* 确保子级别也有正确行距 */
     word-wrap: break-word;
     white-space: normal;
