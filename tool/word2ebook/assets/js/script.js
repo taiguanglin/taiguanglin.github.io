@@ -334,12 +334,18 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResults.style.display = 'block';
         tocHeader.style.display = 'none';
         
+        // 延迟更新浮动控制状态，让DOM变化完成
+        setTimeout(updateFloatingControlsState, 10);
+        
       } catch (error) {
         console.error('搜索出错:', error);
         searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
         // 在出错时也隐藏搜索结果
         searchResults.style.display = 'none';
         tocHeader.style.display = 'block';
+        
+        // 延迟更新浮动控制状态，让DOM变化完成
+        setTimeout(updateFloatingControlsState, 10);
       }
     }
     
@@ -700,6 +706,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // 隐藏搜索容器，显示激活按钮
       searchContainer.style.display = 'none';
       searchActivation.style.display = 'block';
+      
+      // 延迟更新浮动控制状态，让DOM变化完成
+      setTimeout(updateFloatingControlsState, 10);
     }
   }
   
@@ -3011,6 +3020,58 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ========== 浮动层级控制功能 ==========
   
+  // 检测目录区域是否在视窗中可见
+  function isTocVisibleInViewport() {
+    const mainToc = document.getElementById('main-toc');
+    const tocHeaderContainer = document.querySelector('.toc-header-container');
+    
+    if (!mainToc && !tocHeaderContainer) return false;
+    
+    // 获取视窗高度
+    const viewportHeight = window.innerHeight;
+    
+    // 检查目录标题容器是否可见
+    if (tocHeaderContainer) {
+      const headerRect = tocHeaderContainer.getBoundingClientRect();
+      if (headerRect.bottom > 0 && headerRect.top < viewportHeight) {
+        return true; // 目录标题可见
+      }
+    }
+    
+    // 检查主目录内容是否可见
+    if (mainToc) {
+      const tocRect = mainToc.getBoundingClientRect();
+      // 目录区域的任何部分在视窗内都算可见
+      if (tocRect.bottom > 0 && tocRect.top < viewportHeight) {
+        return true; // 目录内容可见
+      }
+    }
+    
+    return false; // 目录完全不可见
+  }
+  
+  // 更新浮动层级控制的显示状态（全局函数，供搜索功能调用）
+  function updateFloatingControlsState() {
+    const floatingControls = document.getElementById('floating-level-controls');
+    if (!floatingControls) return;
+    
+    const currentScrollY = window.scrollY;
+    const isMobile = window.innerWidth <= 600;
+    const scrollThreshold = isMobile ? 100 : 200;
+    
+    // 检查目录是否在视窗中可见
+    const isTocVisible = isTocVisibleInViewport();
+    
+    // 只有在达到滚动阈值且目录可见时才显示浮动控制
+    const shouldShow = currentScrollY > scrollThreshold && isTocVisible;
+    
+    if (shouldShow) {
+      floatingControls.style.display = 'block';
+    } else {
+      floatingControls.style.display = 'none';
+    }
+  }
+  
   function initFloatingLevelControls() {
     const floatingControls = document.getElementById('floating-level-controls');
     const tocControls = document.querySelector('.toc-level-controls');
@@ -3072,20 +3133,25 @@ document.addEventListener('DOMContentLoaded', function() {
       // 检测移动端，降低显示门槛
       const isMobile = window.innerWidth <= 600;
       const scrollThreshold = isMobile ? 100 : 200; // 移动端更早显示
-      const shouldShowFloating = currentScrollY > scrollThreshold;
+      
+      // 检查目录是否在视窗中可见
+      const isTocVisible = isTocVisibleInViewport();
+      
+      // 只有在达到滚动阈值且目录可见时才显示浮动控制
+      const shouldShowFloating = currentScrollY > scrollThreshold && isTocVisible;
       
       // 调试输出
       if (debugMode && currentScrollY > 50) {
-        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, Show: ${shouldShowFloating}`);
+        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, TocVisible: ${isTocVisible}, Show: ${shouldShowFloating}`);
       }
       
       if (shouldShowFloating) {
-        // 滚动时显示浮动版本
+        // 滚动时显示浮动版本（仅在目录可见时）
         floatingControls.style.display = 'block';
         // 应用正确的样式（基于当前屏幕尺寸）
         applyCorrectStyles();
       } else {
-        // 页面顶部时隐藏浮动版本
+        // 页面顶部时或目录不可见时隐藏浮动版本
         floatingControls.style.display = 'none';
       }
       
