@@ -428,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             </div>
             <div class="search-result-content">${highlightedContext}</div>
-            <div class="search-result-url">${result.url}</div>
+
           </li>
         `;
       }).join('');
@@ -457,7 +457,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             </div>
             <div class="search-result-content">${highlightedContext}</div>
-            <div class="search-result-url">${result.url}</div>
+
           </li>
         `;
       }).join('');
