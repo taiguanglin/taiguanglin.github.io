@@ -112,6 +112,10 @@ i18n:
     back_to_top:
       simplified: "回到顶部"
       traditional: "回到頂部"
+    
+    back_to_chapter_toc:
+      simplified: "回到本章目录"
+      traditional: "回到本章目錄"
 
 # 其他設定
 # Other settings

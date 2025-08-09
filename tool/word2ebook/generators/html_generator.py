@@ -125,6 +125,17 @@ class HTMLGenerator:
         if self.favicon_manager:
             self.favicon_manager.copy_favicon_to_output()
     
+    def _process_i18n_placeholders(self, content: str, is_traditional: bool) -> str:
+        """處理內容中的國際化佔位符"""
+        # 替換回到本章目錄的佔位符
+        back_to_chapter_toc = get_i18n_text('ui.back_to_chapter_toc', is_traditional, '回到本章目錄')
+        content = content.replace('{{back_to_chapter_toc}}', back_to_chapter_toc)
+        
+        # 可以在此添加其他佔位符的處理
+        # content = content.replace('{{other_placeholder}}', other_text)
+        
+        return content
+    
     def generate_chapter_pages(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
         """生成章节页面"""
         # 生成简体版
@@ -155,12 +166,15 @@ class HTMLGenerator:
             # 语言切换链接
             lang_switch_links = self._generate_lang_switch_links(chapter.filename, is_traditional=False)
             
+            # 處理內容中的國際化佔位符
+            processed_content = self._process_i18n_placeholders(chapter.content, is_traditional=False)
+            
             # 渲染页面
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=False,
                 title=chapter.title,
                 chapter_toc=chapter.chapter_toc,
-                content=chapter.content,
+                content=processed_content,
                 prev_link=nav_data['prev_link'],
                 next_link=nav_data['next_link'],
                 top_nav_links=nav_data['top_nav_links'],
@@ -185,10 +199,13 @@ class HTMLGenerator:
             # 语言切换链接
             lang_switch_links = self._generate_lang_switch_links(trad_filename, is_traditional=True)
             
+            # 處理內容中的國際化佔位符
+            processed_content = self._process_i18n_placeholders(chapter.content, is_traditional=True)
+            
             # 繁体转换
             converted_title = self.i18n_processor.to_traditional(chapter.title)
             converted_chapter_toc = self.i18n_processor.to_traditional(chapter.chapter_toc)
-            converted_content = self.i18n_processor.to_traditional(chapter.content)
+            converted_content = self.i18n_processor.to_traditional(processed_content)
             converted_prev_link = self.i18n_processor.to_traditional(nav_data['prev_link'])
             converted_next_link = self.i18n_processor.to_traditional(nav_data['next_link'])
             converted_top_nav_links = self.i18n_processor.to_traditional(nav_data['top_nav_links'])

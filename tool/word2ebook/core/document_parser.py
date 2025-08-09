@@ -389,17 +389,17 @@ class DocumentParser:
 
             if is_h3:
                 if last_heading_type == "h3":
-                    output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
+                    output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ {{back_to_chapter_toc}}</a></div>')
                 h3_count += 1
                 last_heading_type = "h3"
             elif is_h2 and h3_count == 0:  # 無 H3 時 H2 也加按鈕
                 if last_heading_type == "h2":
-                    output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
+                    output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ {{back_to_chapter_toc}}</a></div>')
                 h2_count += 1
                 last_heading_type = "h2"
 
             output_blocks.append(block)
 
         # 補最後一個小節的回到頂部
-        output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ 回到本章目錄</a></div>')
+        output_blocks.append('<div class="back-to-top"><a href="#top">⬆️ {{back_to_chapter_toc}}</a></div>')
         return output_blocks
