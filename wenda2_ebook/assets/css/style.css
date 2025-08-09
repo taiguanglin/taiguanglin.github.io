@@ -2039,12 +2039,29 @@ body.dark-mode .floating-toc-item.active {
 body.dark-mode .bookmark-item {
     background: rgba(60, 60, 60, 0.5);
     border-color: #555;
-    color: #e0e0e0;
+    color: #ff91af; /* 與首頁書籤粉色一致 */
 }
 
 body.dark-mode .bookmark-item:hover {
     background: rgba(255, 105, 180, 0.15);
     border-color: #ff69b4;
+}
+
+/* 夜間模式下書籤文字內容修正 */
+body.dark-mode .bookmark-preview {
+    color: #ff91af; /* 與首頁書籤粉色一致 */
+}
+
+body.dark-mode .bookmark-meta {
+    color: #ccc; /* 稍微淺一點的灰色，確保元資訊可讀性 */
+}
+
+body.dark-mode .bookmark-questioner {
+    color: #ff69b4; /* 與章節標題顏色一致 */
+}
+
+body.dark-mode .bookmark-time {
+    color: #ccc; /* 與元資訊相同的淺灰色 */
 }
 
 /* 响应式浮动层级控制定位 - 所有尺寸都居中 */
