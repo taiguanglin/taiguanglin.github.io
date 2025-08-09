@@ -5,8 +5,9 @@
 body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: #fff0f5; color: #333; transition: 0.3s; }
 
 h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
-h2 { color: #d44d75; margin-top: 40px; }
-h3 { color: #b73c65; margin-top: 25px; }
+h2 { color: #e75480; margin-top: 40px; } /* 與目錄第1層相同 */
+h3 { color: #e85aad; margin-top: 25px; } /* 與目錄第2層相同 */
+h4 { color: #f06bbf; margin-top: 20px; } /* 與目錄第3層相同 */
 p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
 a { color: #e75480; text-decoration: none; }
@@ -191,6 +192,10 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 /* 暗色模式 */
 body.dark-mode { background: #3b1c32; color: #fddde6; }
 body.dark-mode a { color: #ff91af; }
+body.dark-mode h1 { color: #ff91af; border-bottom-color: #5a2d49; }
+body.dark-mode h2 { color: #ff91af; } /* 與夜間模式目錄第1層相同 */
+body.dark-mode h3 { color: #ffb3c6; } /* 與夜間模式目錄第2層相同 */
+body.dark-mode h4 { color: #ffc4d6; } /* 與夜間模式目錄第3層相同 */
 body.dark-mode hr { background: linear-gradient(to right, #5a2d49, #ff91af, #5a2d49); }
 body.dark-mode .question { background: #4a2c3a; border-left-color: #ff91af; box-shadow: 0 2px 8px rgba(255, 145, 175, 0.1); }
 body.dark-mode .question-text { color: #fddde6; }
