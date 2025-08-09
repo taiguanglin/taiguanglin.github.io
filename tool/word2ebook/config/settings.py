@@ -1,7 +1,7 @@
 """配置管理"""
 
 from dataclasses import dataclass
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 
 @dataclass
@@ -33,6 +33,21 @@ class Settings:
     assets_css_path: str = "assets/css/style.css"
     assets_js_path: str = "assets/js/script.js"
     assets_images_path: str = "assets/images"
+    
+    # Favicon 配置
+    favicon_enabled: bool = True
+    favicon_search_patterns: List[str] = None
+    
+    def __post_init__(self):
+        if self.favicon_search_patterns is None:
+            # 嘗試從配置文件讀取
+            try:
+                from utils.config_utils import get_favicon_config
+                self.favicon_enabled = get_favicon_config('enabled', True)
+                self.favicon_search_patterns = get_favicon_config('search_patterns', ["favicon.ico", "favicon.png", "favicon.svg"])
+            except ImportError:
+                # 如果配置工具不可用，使用默認值
+                self.favicon_search_patterns = ["favicon.ico", "favicon.png", "favicon.svg"]
     
     @classmethod
     def from_dict(cls, config: Dict[str, Any]) -> 'Settings':

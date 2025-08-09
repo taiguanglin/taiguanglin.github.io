@@ -28,6 +28,11 @@ class I18nTemplateManager:
         # 獲取國際化文字
         i18n_kwargs = self._get_chapter_i18n_kwargs(is_traditional)
         i18n_kwargs.update(kwargs)
+        
+        # 設置favicon默認值
+        if 'favicon_tag' not in i18n_kwargs:
+            i18n_kwargs['favicon_tag'] = ''
+            
         return self.get_template('chapter').format(**i18n_kwargs)
     
     def render_index(self, is_traditional: bool = False, **kwargs) -> str:
@@ -35,6 +40,11 @@ class I18nTemplateManager:
         # 獲取國際化文字
         i18n_kwargs = self._get_index_i18n_kwargs(is_traditional)
         i18n_kwargs.update(kwargs)
+        
+        # 設置favicon默認值
+        if 'favicon_tag' not in i18n_kwargs:
+            i18n_kwargs['favicon_tag'] = ''
+            
         return self.get_template('index').format(**i18n_kwargs)
     
     def _get_chapter_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
@@ -75,6 +85,7 @@ class I18nTemplateManager:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{title}</title>
+{favicon_tag}
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="assets/js/i18n-text.js"></script>
 <script src="assets/js/script.js" defer></script>
@@ -114,6 +125,7 @@ class I18nTemplateManager:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{book_title}</title>
+{favicon_tag}
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
 <script>
