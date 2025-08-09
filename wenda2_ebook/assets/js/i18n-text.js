@@ -14,9 +14,9 @@ window.I18N_TEXT = {
       simplified: '正在加载搜索索引...',
       traditional: '正在載入搜尋索引...'
     },
-    loadingProgress: {
-      simplified: '正在下载搜索数据 ({percent}%)',
-      traditional: '正在下載搜尋資料 ({percent}%)'
+    loadingData: {
+      simplified: '正在下载搜索数据...',
+      traditional: '正在下載搜尋資料...'
     },
     processingIndex: {
       simplified: '正在处理搜索索引...',

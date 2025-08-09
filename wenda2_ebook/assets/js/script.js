@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     await initSearch();
   }
   
-  // 創建載入進度UI
+  // 創建載入UI
   function createLoadingUI(container) {
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'search-loading';
@@ -89,17 +89,11 @@ document.addEventListener('DOMContentLoaded', function() {
       <div class="search-loading-text" id="search-loading-text"></div>
     `;
     
-    const progressBar = document.createElement('div');
-    progressBar.className = 'search-progress-bar';
-    progressBar.innerHTML = '<div class="search-progress-fill" id="search-progress-fill"></div>';
-    
-    loadingDiv.appendChild(progressBar);
     container.appendChild(loadingDiv);
     
     return {
       loadingDiv,
-      textElement: loadingDiv.querySelector('#search-loading-text'),
-      progressFill: loadingDiv.querySelector('#search-progress-fill')
+      textElement: loadingDiv.querySelector('#search-loading-text')
     };
   }
   
@@ -141,24 +135,17 @@ document.addEventListener('DOMContentLoaded', function() {
       const reader = response.body.getReader();
       const chunks = [];
       
-      // 更新進度的函數
-      const updateProgress = (percent, text) => {
-        // 確保進度永遠不超過100%
-        const safePercent = Math.min(Math.max(percent, 0), 100);
-        
-        const progressFill = document.getElementById('search-progress-fill');
+      // 更新載入文字的函數
+      const updateLoadingText = (text) => {
         const loadingText = document.getElementById('search-loading-text');
         
-        if (progressFill) {
-          progressFill.style.width = `${safePercent}%`;
-        }
         if (loadingText) {
           loadingText.textContent = text;
         }
       };
       
       // 初始狀態
-      updateProgress(0, getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...'));
+      updateLoadingText(getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...'));
       
       while (true) {
         const { done, value } = await reader.read();
@@ -168,18 +155,8 @@ document.addEventListener('DOMContentLoaded', function() {
         chunks.push(value);
         loaded += value.length;
         
-        if (total > 0) {
-          // 計算原始進度百分比
-          const rawPercent = (loaded / total) * 80; // 80% 為下載完成
-          // 限制在80%以內，避免超過100%
-          const percent = Math.min(Math.round(rawPercent), 80);
-          const text = getI18nText('search.loadingProgress', isTraditionalChinesePage(), '正在下載搜尋資料 ({percent}%)', { percent });
-          updateProgress(percent, text);
-        } else {
-          // 如果沒有 content-length，使用不確定進度模式
-          const text = getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...');
-          updateProgress(Math.min(loaded / 1024 / 1024 * 10, 60), text); // 粗略估計，每MB約10%進度，最大60%
-        }
+        // 顯示下載中的提示
+        updateLoadingText(getI18nText('search.loadingData', isTraditionalChinesePage(), '正在下載搜尋資料...'));
       }
       
       // 組合所有chunks
@@ -191,13 +168,13 @@ document.addEventListener('DOMContentLoaded', function() {
       }
       
       // 更新到處理階段
-      updateProgress(85, getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理搜尋索引...'));
+      updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理搜尋索引...'));
       
       // 解析JSON
       const text = new TextDecoder().decode(allChunks);
       const searchIndex = JSON.parse(text);
       
-      updateProgress(100, getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length }));
+      updateLoadingText(getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length }));
       
       return searchIndex;
       
