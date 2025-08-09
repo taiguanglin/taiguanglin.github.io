@@ -133,3 +133,12 @@ def get_i18n_text(key_path: str, is_traditional: bool = False, default: str = ""
 def get_generation_config(key: str, default: Any = None) -> Any:
     """獲取生成配置的便捷函數"""
     return config_manager.get_generation_config(key, default)
+
+
+def get_favicon_config(key: str, default: Any = None) -> Any:
+    """獲取favicon配置的便捷函數"""
+    if not config_manager._config:
+        return default
+    
+    favicon_config = config_manager._config.get('favicon', {})
+    return favicon_config.get(key, default)

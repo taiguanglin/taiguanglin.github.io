@@ -29,7 +29,7 @@ class Word2EBookConverter:
         # 初始化组件
         self.file_manager = FileManager(config.output_folder)
         self.document_parser = DocumentParser(self.settings, self.file_manager)
-        self.html_generator = HTMLGenerator(self.settings, self.file_manager)
+        self.html_generator = HTMLGenerator(self.settings, self.file_manager, config.input_file)
         self.search_generator = SearchIndexGenerator(self.settings, self.file_manager)
         
         # 静态资源管理器（从原文件加载完整CSS/JS）
@@ -45,6 +45,9 @@ class Word2EBookConverter:
         
         # 1. 设置输出目录
         self._setup_output_directory()
+        
+        # 1.5. 複製favicon文件（如果有的話）
+        self.html_generator.copy_favicon_after_setup()
         
         # 2. 解析文档
         print("📖 正在解析 Word 文档...")

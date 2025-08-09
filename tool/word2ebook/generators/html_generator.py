@@ -10,6 +10,7 @@ from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
 from utils.i18n_utils import I18nProcessor
 from utils.config_utils import get_i18n_text
+from utils.favicon_utils import FaviconManager
 from config.settings import Settings
 
 
@@ -97,13 +98,32 @@ class TOCGenerator:
 class HTMLGenerator:
     """HTML 生成器"""
     
-    def __init__(self, settings: Settings, file_manager: FileManager):
+    def __init__(self, settings: Settings, file_manager: FileManager, input_file: Optional[Path] = None):
         self.settings = settings
         self.file_manager = file_manager
         self.template_manager = TemplateManager()
         self.i18n_template_manager = I18nTemplateManager()
         self.toc_generator = TOCGenerator()
         self.i18n_processor = I18nProcessor()
+        self.input_file = input_file
+        self.favicon_manager = None
+        self.favicon_tag = ""
+        
+        # 初始化favicon管理器（但先不處理，等目錄設置完成後）
+        if input_file and settings.favicon_enabled:
+            self.favicon_manager = FaviconManager(
+                input_file, 
+                file_manager.output_folder,
+                settings.favicon_search_patterns
+            )
+            # 只找文件，不複製
+            self.favicon_manager.find_favicon()
+            self.favicon_tag = self.favicon_manager.get_favicon_html_tag()
+    
+    def copy_favicon_after_setup(self) -> None:
+        """在目錄設置完成後複製favicon文件"""
+        if self.favicon_manager:
+            self.favicon_manager.copy_favicon_to_output()
     
     def generate_chapter_pages(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
         """生成章节页面"""
@@ -145,7 +165,8 @@ class HTMLGenerator:
                 next_link=nav_data['next_link'],
                 top_nav_links=nav_data['top_nav_links'],
                 home_link="index.html",
-                lang_switch_links=lang_switch_links
+                lang_switch_links=lang_switch_links,
+                favicon_tag=self.favicon_tag
             )
             
             # 写入文件
@@ -183,7 +204,8 @@ class HTMLGenerator:
                 next_link=converted_next_link,
                 top_nav_links=converted_top_nav_links,
                 home_link="index_trad.html",
-                lang_switch_links=converted_lang_switch_links
+                lang_switch_links=converted_lang_switch_links,
+                favicon_tag=self.favicon_tag
             )
             
             # 写入文件
@@ -200,7 +222,8 @@ class HTMLGenerator:
             is_traditional=False,
             book_title=book_title,
             toc_items=toc_html,
-            lang_switch_links=lang_switch_links
+            lang_switch_links=lang_switch_links,
+            favicon_tag=self.favicon_tag
         )
         
         self.file_manager.write_file("index.html", html_content)
@@ -233,7 +256,8 @@ class HTMLGenerator:
             is_traditional=True,
             book_title=self.i18n_processor.to_traditional(book_title),
             toc_items=trad_toc_html,
-            lang_switch_links=lang_switch_links
+            lang_switch_links=lang_switch_links,
+            favicon_tag=self.favicon_tag
         )
         
         self.file_manager.write_file("index_trad.html", html_content)

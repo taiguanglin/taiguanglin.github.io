@@ -123,3 +123,17 @@ generation:
   # 是否生成搜索索引
   # Whether to generate search index
   generate_search: true
+
+# Favicon 設定
+# Favicon settings
+favicon:
+  # 是否啟用 favicon 功能
+  # Whether to enable favicon functionality
+  enabled: true
+  
+  # 搜索 favicon 文件的模式（按優先級順序）
+  # Search patterns for favicon files (in priority order)
+  search_patterns:
+    - "favicon.ico"
+    - "favicon.png" 
+    - "favicon.svg"
