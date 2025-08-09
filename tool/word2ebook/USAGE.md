@@ -36,11 +36,11 @@ python3 run.py input.docx output_folder --skip-traditional
 ### 实际使用示例
 
 ```bash
-# 转换问答文档到 wenda_complete 目录
-python3 run.py ~/Downloads/wenda.docx ~/taiguanglin.github.io/wenda_complete
+# 转换问答文档到 wenda2_ebook 目录
+python3 run.py ~/Downloads/wenda.docx ~/taiguanglin.github.io/wenda2_ebook
 
 # 快速转换（测试用）
-python3 run.py ~/Downloads/wenda.docx ~/taiguanglin.github.io/wenda_complete --fast
+python3 run.py ~/Downloads/wenda.docx ~/taiguanglin.github.io/wenda2_ebook --fast
 ```
 
 ## 重构优势
