@@ -2,7 +2,7 @@
 
 ## 概述
 
-已成功將 `wenda_complete/` 目錄轉換為一個友好的跳轉頁面，引導用戶前往新版本的電子書 `wenda2_ebook/`。
+已成功將舊的 `wenda_complete/` 目錄轉換為一個友好的跳轉頁面，引導用戶前往新版本的電子書 `wenda2_ebook/`。
 
 ## 實現的功能
 
@@ -38,7 +38,7 @@
 ### 文件結構
 ```
 wenda_complete/
-└── index.html          # 跳轉頁面（唯一文件）
+└── index.html          # 跳轉頁面（引導到 wenda2_ebook）
 ```
 
 ### 跳轉機制

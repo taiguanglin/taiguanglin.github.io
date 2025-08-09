@@ -334,12 +334,18 @@ document.addEventListener('DOMContentLoaded', function() {
         searchResults.style.display = 'block';
         tocHeader.style.display = 'none';
         
+        // 延迟更新浮动控制状态，让DOM变化完成
+        setTimeout(updateFloatingControlsState, 10);
+        
       } catch (error) {
         console.error('搜索出错:', error);
         searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
         // 在出错时也隐藏搜索结果
         searchResults.style.display = 'none';
         tocHeader.style.display = 'block';
+        
+        // 延迟更新浮动控制状态，让DOM变化完成
+        setTimeout(updateFloatingControlsState, 10);
       }
     }
     
@@ -700,6 +706,9 @@ document.addEventListener('DOMContentLoaded', function() {
       // 隐藏搜索容器，显示激活按钮
       searchContainer.style.display = 'none';
       searchActivation.style.display = 'block';
+      
+      // 延迟更新浮动控制状态，让DOM变化完成
+      setTimeout(updateFloatingControlsState, 10);
     }
   }
   
@@ -3011,6 +3020,54 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // ========== 浮动层级控制功能 ==========
   
+  // 检测固定层级控制按钮是否在视窗中可见
+  function areTocControlsVisible() {
+    const tocControls = document.querySelector('.toc-level-controls');
+    if (!tocControls) return false;
+    
+    const rect = tocControls.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // 检查控制按钮是否在视窗内可见
+    return rect.bottom > 0 && rect.top < viewportHeight;
+  }
+  
+  // 检测目录内容是否在视窗中可见（确保有目录需要控制）
+  function isTocContentVisible() {
+    const mainToc = document.getElementById('main-toc');
+    if (!mainToc) return false;
+    
+    const rect = mainToc.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // 目录内容的任何部分在视窗内都算可见
+    return rect.bottom > 0 && rect.top < viewportHeight;
+  }
+  
+  // 更新浮动层级控制的显示状态（全局函数，供搜索功能调用）
+  function updateFloatingControlsState() {
+    const floatingControls = document.getElementById('floating-level-controls');
+    if (!floatingControls) return;
+    
+    const currentScrollY = window.scrollY;
+    const isMobile = window.innerWidth <= 600;
+    const scrollThreshold = isMobile ? 100 : 200;
+    
+    // 检查固定控制按钮是否可见
+    const areControlsVisible = areTocControlsVisible();
+    // 检查目录内容是否可见（确保有内容需要控制）
+    const isTocContentAvailable = isTocContentVisible();
+    
+    // 只有在达到滚动阈值、固定控制按钮不可见、但目录内容仍可见时才显示浮动控制
+    const shouldShow = currentScrollY > scrollThreshold && !areControlsVisible && isTocContentAvailable;
+    
+    if (shouldShow) {
+      floatingControls.style.display = 'block';
+    } else {
+      floatingControls.style.display = 'none';
+    }
+  }
+  
   function initFloatingLevelControls() {
     const floatingControls = document.getElementById('floating-level-controls');
     const tocControls = document.querySelector('.toc-level-controls');
@@ -3072,20 +3129,27 @@ document.addEventListener('DOMContentLoaded', function() {
       // 检测移动端，降低显示门槛
       const isMobile = window.innerWidth <= 600;
       const scrollThreshold = isMobile ? 100 : 200; // 移动端更早显示
-      const shouldShowFloating = currentScrollY > scrollThreshold;
+      
+      // 检查固定控制按钮是否可见
+      const areControlsVisible = areTocControlsVisible();
+      // 检查目录内容是否可见
+      const isTocContentAvailable = isTocContentVisible();
+      
+      // 只有在达到滚动阈值、固定控制按钮不可见、但目录内容仍可见时才显示浮动控制
+      const shouldShowFloating = currentScrollY > scrollThreshold && !areControlsVisible && isTocContentAvailable;
       
       // 调试输出
       if (debugMode && currentScrollY > 50) {
-        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, Show: ${shouldShowFloating}`);
+        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
       }
       
       if (shouldShowFloating) {
-        // 滚动时显示浮动版本
+        // 滚动时显示浮动版本（仅当固定按钮不可见但目录内容可见时）
         floatingControls.style.display = 'block';
         // 应用正确的样式（基于当前屏幕尺寸）
         applyCorrectStyles();
       } else {
-        // 页面顶部时隐藏浮动版本
+        // 页面顶部时、固定按钮可见时、或目录内容不可见时隐藏浮动版本
         floatingControls.style.display = 'none';
       }
       
