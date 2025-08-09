@@ -2900,16 +2900,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocContainer = document.getElementById('main-toc');
     if (!tocContainer) return;
     
-    // 使用事件委托处理展开/折叠
+    // 使用事件委托处理展开/折叠和跳转
     tocContainer.addEventListener('click', function(e) {
-      // 检查是否点击了链接
-      if (e.target.tagName === 'A' || e.target.closest('a')) {
-        // 点击链接，允许默认行为（页面跳转）
+      // 检查是否直接点击了链接文字
+      if (e.target.tagName === 'A') {
+        // 直接点击链接文字，允许默认行为（页面跳转）
         return;
       }
       
-      // 查找是否点击了可展开的目录项
-      const expandableItem = e.target.closest('.toc-item.toc-expandable');
+      // 查找最近的目录项
+      const tocItem = e.target.closest('.toc-item');
+      if (!tocItem) return;
+      
+      // 检查是否点击了可展开的目录项（有三角形图标的）
+      const expandableItem = tocItem.classList.contains('toc-expandable') ? tocItem : null;
       if (expandableItem) {
         e.preventDefault();
         e.stopPropagation();
@@ -2933,6 +2937,17 @@ document.addEventListener('DOMContentLoaded', function() {
             icon.classList.remove('collapsed');
             icon.textContent = '▼';
           }
+        }
+      } else {
+        // 这是没有展开图标的目录项（叶子节点），处理整行点击跳转
+        const link = tocItem.querySelector('a');
+        if (link && !e.target.closest('a')) {
+          // 点击的是目录项但不是链接本身，触发链接跳转
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // 模拟点击链接
+          link.click();
         }
       }
     });
