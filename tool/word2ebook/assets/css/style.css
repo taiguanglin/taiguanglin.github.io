@@ -1776,6 +1776,34 @@ body.dark-mode .toc-item.toc-expandable:hover {
     background-color: rgba(255, 105, 180, 0.15);
 }
 
+/* 为没有展开图标的目录项（叶子节点）添加可点击样式 */
+.toc-item:not(.toc-expandable) {
+    cursor: pointer;
+    padding: 2px 4px;
+    margin: 0 -4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* 鼠标悬停效果 - 为没有展开图标的目录项添加反白效果 */
+.toc-item:not(.toc-expandable):hover {
+    background-color: rgba(255, 105, 180, 0.06);
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+/* 确保链接在悬停时仍然显示为可点击 */
+.toc-item:not(.toc-expandable):hover a {
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+}
+
+/* 暗色模式下没有展开图标目录项的悬停效果 */
+body.dark-mode .toc-item:not(.toc-expandable):hover {
+    background-color: rgba(255, 105, 180, 0.12);
+}
+
 .toc-item.hidden {
     display: none !important;
 }
