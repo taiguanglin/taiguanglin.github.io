@@ -74,10 +74,127 @@ document.addEventListener('DOMContentLoaded', function() {
     // 立即禁用搜索输入框并显示加载状态
     if (searchInput) {
       searchInput.disabled = true;
-      searchInput.placeholder = getText('正在加载搜索功能，请稍候...', '正在載入搜尋功能，請稍候...');
+      searchInput.placeholder = getI18nText('search.loading', isTraditionalChinesePage(), '正在載入搜尋功能，請稍候...');
     }
     
     await initSearch();
+  }
+  
+  // 創建載入進度UI
+  function createLoadingUI(container) {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'search-loading';
+    loadingDiv.innerHTML = `
+      <div class="search-loading-spinner"></div>
+      <div class="search-loading-text" id="search-loading-text"></div>
+    `;
+    
+    const progressBar = document.createElement('div');
+    progressBar.className = 'search-progress-bar';
+    progressBar.innerHTML = '<div class="search-progress-fill" id="search-progress-fill"></div>';
+    
+    loadingDiv.appendChild(progressBar);
+    container.appendChild(loadingDiv);
+    
+    return {
+      loadingDiv,
+      textElement: loadingDiv.querySelector('#search-loading-text'),
+      progressFill: loadingDiv.querySelector('#search-progress-fill')
+    };
+  }
+  
+  // 創建錯誤UI
+  function createErrorUI(container, message, onRetry) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'search-error';
+    errorDiv.innerHTML = `
+      <span>⚠️ ${message}</span>
+      <button class="search-retry-btn" id="search-retry-btn">${getI18nText('search.retry', isTraditionalChinesePage(), '重試')}</button>
+    `;
+    
+    container.appendChild(errorDiv);
+    
+    const retryBtn = errorDiv.querySelector('#search-retry-btn');
+    retryBtn.addEventListener('click', () => {
+      container.removeChild(errorDiv);
+      onRetry();
+    });
+    
+    return errorDiv;
+  }
+  
+  // 載入搜索索引（支援進度追蹤）
+  async function loadSearchIndexWithProgress() {
+    const indexFile = getSearchIndexFile();
+    
+    try {
+      const response = await fetch(indexFile);
+      
+      if (!response.ok) {
+        throw new Error(getI18nText('search.networkError', isTraditionalChinesePage(), '網路連接失敗，請檢查網路後重試'));
+      }
+      
+      const contentLength = response.headers.get('content-length');
+      const total = parseInt(contentLength, 10);
+      let loaded = 0;
+      
+      const reader = response.body.getReader();
+      const chunks = [];
+      
+      // 更新進度的函數
+      const updateProgress = (percent, text) => {
+        const progressFill = document.getElementById('search-progress-fill');
+        const loadingText = document.getElementById('search-loading-text');
+        
+        if (progressFill) {
+          progressFill.style.width = `${percent}%`;
+        }
+        if (loadingText) {
+          loadingText.textContent = text;
+        }
+      };
+      
+      // 初始狀態
+      updateProgress(0, getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...'));
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+        
+        chunks.push(value);
+        loaded += value.length;
+        
+        if (total > 0) {
+          const percent = Math.round((loaded / total) * 80); // 80% 為下載完成
+          const text = getI18nText('search.loadingProgress', isTraditionalChinesePage(), '正在下載搜尋資料 ({percent}%)', { percent });
+          updateProgress(percent, text);
+        }
+      }
+      
+      // 組合所有chunks
+      const allChunks = new Uint8Array(loaded);
+      let position = 0;
+      for (const chunk of chunks) {
+        allChunks.set(chunk, position);
+        position += chunk.length;
+      }
+      
+      // 更新到處理階段
+      updateProgress(85, getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理搜尋索引...'));
+      
+      // 解析JSON
+      const text = new TextDecoder().decode(allChunks);
+      const searchIndex = JSON.parse(text);
+      
+      updateProgress(100, getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length }));
+      
+      return searchIndex;
+      
+    } catch (error) {
+      console.error('載入搜索索引失敗:', error);
+      throw error;
+    }
   }
   
   // 初始化搜索功能（内部函数）
@@ -102,22 +219,20 @@ document.addEventListener('DOMContentLoaded', function() {
       if (searchActivation) searchActivation.style.display = 'none';
       searchContainer.style.display = 'block';
       
-      searchStatus.textContent = getText('正在加载搜索索引...', '正在載入搜尋索引...');
+      // 清空當前狀態並創建載入UI
+      searchStatus.innerHTML = '';
+      const loadingUI = createLoadingUI(searchStatus);
       
       // 检查MiniSearch是否可用
       if (typeof MiniSearch === 'undefined') {
         throw new Error('MiniSearch库未加载');
       }
       
-      // 加载搜索索引
-      const indexFile = getSearchIndexFile();
-      const response = await fetch(indexFile);
+      // 加载搜索索引（帶進度）
+      searchIndex = await loadSearchIndexWithProgress();
       
-      if (!response.ok) {
-        throw new Error(getText('无法加载搜索索引', '無法載入搜尋索引'));
-      }
-      
-      searchIndex = await response.json();
+      // 載入完成，移除載入UI
+      searchStatus.removeChild(loadingUI.loadingDiv);
       
       // 初始化MiniSearch
       miniSearch = new MiniSearch({
@@ -138,14 +253,17 @@ document.addEventListener('DOMContentLoaded', function() {
       // 添加文档到索引
       miniSearch.addAll(searchIndex);
       
+      // 顯示完成狀態
       searchStatus.innerHTML = `
-        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
+        <div class="search-status-success">
+          ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
+        </div>
       `;
       searchInitialized = true;
       
       // 启用搜索输入框
       searchInput.disabled = false;
-      searchInput.placeholder = getText('搜索全文内容...', '搜尋全文內容...');
+      searchInput.placeholder = getI18nText('search.search_placeholder', isTraditionalChinesePage(), '搜尋全文內容...');
       
       // 重新启用激活按钮
       const searchActivateBtn = document.getElementById('search-activate-btn');
@@ -158,11 +276,18 @@ document.addEventListener('DOMContentLoaded', function() {
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
-      searchStatus.textContent = getText('搜索功能不可用：', '搜尋功能不可用：') + error.message;
+      
+      // 清空狀態並顯示錯誤
+      searchStatus.innerHTML = '';
+      
+      // 創建錯誤UI並提供重試功能
+      createErrorUI(searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
+        await initSearch();
+      });
       
       // 即使失败也要启用输入框，让用户可以重试
       searchInput.disabled = false;
-      searchInput.placeholder = getText('搜索功能暂不可用', '搜尋功能暫不可用');
+      searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
       
       // 重新启用激活按钮，允许用户重试
       const searchActivateBtn = document.getElementById('search-activate-btn');

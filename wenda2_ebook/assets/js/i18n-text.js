@@ -9,6 +9,42 @@ window.I18N_TEXT = {
     loading: {
       simplified: '正在加载搜索功能，请稍候...',
       traditional: '正在載入搜尋功能，請稍候...'
+    },
+    loadingIndex: {
+      simplified: '正在加载搜索索引...',
+      traditional: '正在載入搜尋索引...'
+    },
+    loadingProgress: {
+      simplified: '正在下载搜索数据 ({percent}%)',
+      traditional: '正在下載搜尋資料 ({percent}%)'
+    },
+    processingIndex: {
+      simplified: '正在处理搜索索引...',
+      traditional: '正在處理搜尋索引...'
+    },
+    indexReady: {
+      simplified: '搜索准备就绪 (共{count}条记录)',
+      traditional: '搜尋準備就緒 (共{count}條記錄)'
+    },
+    loadingFailed: {
+      simplified: '搜索索引加载失败',
+      traditional: '搜尋索引載入失敗'
+    },
+    retry: {
+      simplified: '重试',
+      traditional: '重試'
+    },
+    networkError: {
+      simplified: '网络连接失败，请检查网络后重试',
+      traditional: '網路連接失敗，請檢查網路後重試'
+    },
+    searchUnavailable: {
+      simplified: '搜索功能暂不可用',
+      traditional: '搜尋功能暫不可用'
+    },
+    search_placeholder: {
+      simplified: '搜索全文内容...',
+      traditional: '搜尋全文內容...'
     }
   },
   

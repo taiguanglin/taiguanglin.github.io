@@ -1172,6 +1172,88 @@ body.dark-mode .qa-pair-bookmark:hover {
     min-height: 20px;
 }
 
+/* 搜索載入進度樣式 */
+.search-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.search-loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #e75480;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.search-loading-text {
+    color: #666;
+    font-size: 14px;
+}
+
+.search-progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: #f0f0f0;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.search-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #e75480, #ff69b4);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+    width: 0%;
+}
+
+.search-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    color: #c53030;
+}
+
+.search-retry-btn {
+    background: #e75480;
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.search-retry-btn:hover {
+    background: #d63384;
+}
+
+.search-status-success {
+    color: #2d7d32;
+    font-weight: 500;
+    padding: 8px 12px;
+    background: #f1f8e9;
+    border: 1px solid #c8e6c9;
+    border-radius: 6px;
+}
+
 .search-results {
     margin-top: 20px;
 }
