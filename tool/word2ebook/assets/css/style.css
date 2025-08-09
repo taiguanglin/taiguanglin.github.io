@@ -1942,17 +1942,21 @@ body.dark-mode .toc-item.toc-chapter {
     border-bottom-color: #444;
 }
 
-/* 章節頁面目錄夜間模式適配 */
+/* 章節頁面目錄夜間模式適配 - 提高優先級 */
 body.dark-mode .toc > ul > li > a {
-    color: #ff91af; /* 與側邊欄第1層相同 */
+    color: #ff91af !important; /* 與側邊欄第1層相同 */
 }
 
 body.dark-mode .toc ul ul > li > a {
-    color: #ffb3c6; /* 與側邊欄第2層相同 */
+    color: #ffb3c6 !important; /* 與側邊欄第2層相同 */
 }
 
 body.dark-mode .toc ul ul ul > li > a {
-    color: #ffc4d6; /* 與側邊欄第3層相同 */
+    color: #ffc4d6 !important; /* 與側邊欄第3層相同 */
+}
+
+body.dark-mode .toc ul ul ul ul > li > a {
+    color: #ffd1e0 !important; /* 第4層顏色 */
 }
 
 /* 暗色模式下浮动TOC适配 */
