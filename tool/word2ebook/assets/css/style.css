@@ -4,10 +4,10 @@
 
 body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: #fff0f5; color: #333; transition: 0.3s; }
 
-h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; }
-h2 { color: #e75480; margin-top: 40px; } /* 與目錄第1層相同 */
-h3 { color: #e85aad; margin-top: 25px; } /* 與目錄第2層相同 */
-h4 { color: #f06bbf; margin-top: 20px; } /* 與目錄第3層相同 */
+h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; padding-left: 10px;}
+h2 { color: #e75480; margin-top: 40px; padding-left: 5px; } /* 與目錄第1層相同 */
+h3 { color: #e85aad; margin-top: 25px; padding-left: 5px; } /* 與目錄第2層相同 */
+h4 { color: #f06bbf; margin-top: 20px; padding-left: 5px; } /* 與目錄第3層相同 */
 p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
 a { color: #e75480; text-decoration: none; }
