@@ -1695,7 +1695,7 @@ body.dark-mode .search-load-all:hover {
 /* 隐藏list默认bullet点 */
 .toc ul {
     list-style: none;
-    padding-left: 0;
+    padding-left: 30px;
     margin: 0;
 }
 
