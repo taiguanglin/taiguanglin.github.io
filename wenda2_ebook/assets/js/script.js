@@ -2887,9 +2887,21 @@ document.addEventListener('DOMContentLoaded', function() {
   // 检查一个目录项是否有可见的直接子项
   function hasVisibleDirectChildren(parentItem) {
     const parentLevel = parseInt(parentItem.getAttribute('data-level'));
-    let nextSibling = parentItem.nextElementSibling;
     
-    // 查找直接子项
+    // 首先检查嵌套结构（首页TOC）：查找直接的ul子元素
+    const nestedUl = parentItem.querySelector(':scope > ul');
+    if (nestedUl) {
+      const directChildren = nestedUl.querySelectorAll(':scope > .toc-item');
+      for (let child of directChildren) {
+        if (!child.classList.contains('hidden')) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    // 然后检查扁平结构（章节页TOC）：查找兄弟元素
+    let nextSibling = parentItem.nextElementSibling;
     while (nextSibling && nextSibling.classList.contains('toc-item')) {
       const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
       
@@ -2970,9 +2982,23 @@ document.addEventListener('DOMContentLoaded', function() {
   
   function expandTocItem(parentItem) {
     const parentLevel = parseInt(parentItem.getAttribute('data-level'));
-    let nextSibling = parentItem.nextElementSibling;
     
-    // 找到所有直接子项并显示
+    // 首先检查嵌套结构（首页TOC）
+    const nestedUl = parentItem.querySelector(':scope > ul');
+    if (nestedUl) {
+      const directChildren = nestedUl.querySelectorAll(':scope > .toc-item');
+      directChildren.forEach(child => {
+        const childLevel = parseInt(child.getAttribute('data-level'));
+        if (childLevel === parentLevel + 1) {
+          child.classList.remove('hidden');
+          child.setAttribute('data-manually-shown', 'true');
+        }
+      });
+      return;
+    }
+    
+    // 处理扁平结构（章节页TOC）
+    let nextSibling = parentItem.nextElementSibling;
     while (nextSibling && nextSibling.classList.contains('toc-item')) {
       const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
       
@@ -2994,9 +3020,28 @@ document.addEventListener('DOMContentLoaded', function() {
   
   function collapseTocItem(parentItem) {
     const parentLevel = parseInt(parentItem.getAttribute('data-level'));
-    let nextSibling = parentItem.nextElementSibling;
     
-    // 隐藏所有子项
+    // 首先检查嵌套结构（首页TOC）
+    const nestedUl = parentItem.querySelector(':scope > ul');
+    if (nestedUl) {
+      const allChildren = nestedUl.querySelectorAll('.toc-item');
+      allChildren.forEach(child => {
+        const childLevel = parseInt(child.getAttribute('data-level'));
+        if (childLevel > parentLevel) {
+          child.classList.add('hidden');
+          child.removeAttribute('data-manually-shown');
+          const childIcon = child.querySelector('.toc-expand-icon');
+          if (childIcon) {
+            childIcon.classList.add('collapsed');
+            childIcon.textContent = '▶';
+          }
+        }
+      });
+      return;
+    }
+    
+    // 处理扁平结构（章节页TOC）
+    let nextSibling = parentItem.nextElementSibling;
     while (nextSibling && nextSibling.classList.contains('toc-item')) {
       const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
       
