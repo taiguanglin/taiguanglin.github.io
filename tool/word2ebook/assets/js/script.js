@@ -823,14 +823,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         // 根據層級添加對應的class (level=1是第一层，无缩进)
-        // 只顯示前兩層目錄，跳過第三層及以下
-        if (level >= 3) {
-          return; // 跳過第三層及以下的項目
+        // 顯示前四層目錄，跳過第五層及以下
+        if (level >= 5) {
+          return; // 跳過第五層及以下的項目
         }
         
         let levelClass = '';
         if (level === 2) {
           levelClass = ' level-h3';
+        } else if (level === 3) {
+          levelClass = ' level-h4';
+        } else if (level === 4) {
+          levelClass = ' level-h5';  // Note: this maps to what would be level 4 content
         }
         
         // 為首頁TOC項目使用特殊的data屬性
