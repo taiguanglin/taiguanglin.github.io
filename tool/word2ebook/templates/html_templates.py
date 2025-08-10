@@ -77,11 +77,14 @@ class TemplateManager:
 
 <!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
-  <div class="floating-level-label">层级</div>
-  <div class="floating-level-buttons">
-    <button class="floating-level-btn" data-level="2" title="显示第2层">2</button>
-    <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
-    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+  <button class="floating-level-toggle" id="floating-level-toggle" title="收縮/展開層級控制">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">层级</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="2" title="显示第2层">2</button>
+      <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
   </div>
 </div>
 
@@ -219,12 +222,15 @@ if (typeof MiniSearch === 'undefined') {{
 
 <!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
-  <div class="floating-level-label">层级</div>
-  <div class="floating-level-buttons">
-    <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
-    <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
-    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
-    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+  <button class="floating-level-toggle" id="floating-level-toggle" title="收縮/展開層級控制">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">层级</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
+      <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
+      <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
   </div>
 </div>
 

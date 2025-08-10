@@ -3286,6 +3286,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // 绑定浮动按钮事件
     bindFloatingLevelEvents();
     
+    // 绑定浮动层级控制的收縮/展開功能
+    initFloatingLevelToggle();
+    
     // 样式重置函数 - 清除JavaScript设置的内联样式
     function resetFloatingControlsStyles() {
       floatingControls.style.removeProperty('right');
@@ -3394,6 +3397,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始状态
     handleScroll();
+  }
+  
+  function initFloatingLevelToggle() {
+    const toggleBtn = document.getElementById('floating-level-toggle');
+    const floatingControls = document.getElementById('floating-level-controls');
+    
+    if (!toggleBtn || !floatingControls) return;
+    
+    // 獲取保存的收縮狀態
+    const isCollapsed = localStorage.getItem('floating-level-collapsed') === 'true';
+    
+    // 應用保存的狀態
+    if (isCollapsed) {
+      floatingControls.classList.add('collapsed');
+      toggleBtn.innerHTML = '↔';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    } else {
+      floatingControls.classList.remove('collapsed');
+      toggleBtn.innerHTML = '⇄';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    }
+    
+    // 綁定點擊事件
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      const isNowCollapsed = floatingControls.classList.contains('collapsed');
+      
+      if (isNowCollapsed) {
+        // 展開
+        floatingControls.classList.remove('collapsed');
+        toggleBtn.innerHTML = '⇄';
+        localStorage.setItem('floating-level-collapsed', 'false');
+      } else {
+        // 收縮
+        floatingControls.classList.add('collapsed');
+        toggleBtn.innerHTML = '↔';
+        localStorage.setItem('floating-level-collapsed', 'true');
+      }
+    });
   }
   
   function bindFloatingLevelEvents() {
