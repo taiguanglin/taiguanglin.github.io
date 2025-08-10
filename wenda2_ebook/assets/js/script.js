@@ -917,11 +917,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const firstBtnIcon = currentChapter.isHomepage ? '🔖' : '📖';
     const firstBtnTitle = currentChapter.isHomepage ? '書籤' : '目錄';
     
+    // 為章節頁面添加回首頁按鈕
+    const homeButton = currentChapter.isHomepage ? '' : 
+      '<button class="action-btn" data-action="home" title="回首頁">🏠</button>';
+    
     buttons.innerHTML = 
       '<div class="action-menu">' +
         '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>' +
         '<div class="action-menu-items">' +
           '<button class="action-btn" data-action="toc" title="' + firstBtnTitle + '">' + firstBtnIcon + '</button>' +
+          homeButton +
           '<button class="action-btn" data-action="top" title="回到頂部">↑</button>' +
           '<button class="action-btn" data-action="settings" title="設置">⚙️</button>' +
         '</div>' +
@@ -2204,15 +2209,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocStyle = document.createElement('style');
     tocStyle.id = 'dynamic-toc-styles';
     
-    // 計算相對於基礎字型大小的比例
-    const fontScale = fontSize / 16; // 16px是基礎字型大小
+    // 檢測螢幕大小，調整響應式基礎字型
+    const screenWidth = window.innerWidth;
+    let responsiveBaseFontSize = fontSize;
+    
+    // 根據螢幕寬度調整基礎字型大小（與CSS響應式設計配合）
+    if (screenWidth <= 400) {
+      responsiveBaseFontSize = Math.max(fontSize, 19); // 小手機最小19px
+    } else if (screenWidth <= 600) {
+      responsiveBaseFontSize = Math.max(fontSize, 18); // 手機最小18px
+    } else if (screenWidth <= 768) {
+      responsiveBaseFontSize = Math.max(fontSize, 17); // 平板最小17px
+    }
+    
+    // 計算相對於響應式基礎字型大小的比例
+    const fontScale = responsiveBaseFontSize / 16;
     const lineHeightValue = lineHeight;
     
-    // 各層級的字型大小比例（相對於用戶設定的基礎大小）
-    const level1Size = Math.round(fontSize * 1.1); // 第一層：稍大
-    const level2Size = fontSize; // 第二層：基礎大小  
-    const level3Size = Math.round(fontSize * 0.95); // 第三層：稍小
-    const level4Size = Math.round(fontSize * 0.9); // 第四層：更小
+    // 各層級的字型大小比例（相對於響應式基礎大小）
+    const level1Size = Math.round(responsiveBaseFontSize * 1.1); // 第一層：稍大
+    const level2Size = responsiveBaseFontSize; // 第二層：基礎大小  
+    const level3Size = Math.round(responsiveBaseFontSize * 0.95); // 第三層：稍小
+    const level4Size = Math.round(responsiveBaseFontSize * 0.9); // 第四層：更小
     
     // 間距調整（基於行距設置）
     const spacing1 = Math.round(8 * lineHeightValue / 1.6); // 第一層間距
@@ -2607,6 +2625,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // 關閉菜單
         document.querySelector('.action-menu').classList.remove('expanded');
         document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+        break;
+      case 'home':
+        // 回到首頁
+        window.location.href = 'index.html';
         break;
 
       case 'settings':
