@@ -1599,44 +1599,6 @@ body.dark-mode .search-load-all:hover {
         align-items: flex-start;
         gap: 4px;
     }
-    
-    .nav-footer {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .nav-footer a {
-        max-width: 100%;
-        font-size: 14px;
-        padding: 10px 12px;
-    }
-    
-    /* 移動設備上的頭部導航 */
-    .header-nav {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-    }
-    
-    .nav-home {
-        text-align: center;
-    }
-    
-    .lang-switch {
-        text-align: center;
-    }
-    
-    .top-nav-buttons {
-        flex-direction: column;
-        gap: 10px;
-    }
-    
-    .top-nav-buttons a {
-        max-width: 100%;
-        font-size: 13px;
-        padding: 8px 10px;
-    }
-
 }
 
 /* ========== 目录层级控制样式 ========== */
