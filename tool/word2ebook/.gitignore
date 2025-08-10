@@ -173,8 +173,37 @@ package-lock.json.bak
 coverage/
 .nyc_output/
 
+# Jest cache
+.jest/
+.jest-cache/
+jest-cache/
+
+# Test results and reports
+test-results/
+test-report.xml
+junit.xml
+coverage.xml
+
 # ESLint cache
 .eslintcache
+
+# Babel cache
+.babel-cache/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Parcel cache
+.parcel-cache/
+
+# Vite cache
+.vite/
+
+# Rollup cache
+.rollup.cache/
+
+# Webpack cache
+.webpack/
 
 # Build outputs
 dist/
