@@ -45,6 +45,28 @@ window.I18N_TEXT = {
     search_placeholder: {
       simplified: '搜索全文内容...',
       traditional: '搜尋全文內容...'
+    },
+    minCharWarning: {
+      simplified: '请输入至少2个字符进行搜索',
+      traditional: '請輸入至少2個字元進行搜尋'
+    },
+    resultTypes: {
+      heading: {
+        simplified: '标题',
+        traditional: '標題'
+      },
+      question: {
+        simplified: '问题',
+        traditional: '問題'
+      },
+      answer: {
+        simplified: '回答',
+        traditional: '回答'
+      },
+      content: {
+        simplified: '内容',
+        traditional: '內容'
+      }
     }
   },
   
@@ -56,6 +78,10 @@ window.I18N_TEXT = {
     },
     noBookmarks: {
       simplified: '暂无书签',
+      traditional: '尚無書籤'
+    },
+    empty: {
+      simplified: '尚无书签',
       traditional: '尚無書籤'
     },
     addToBookmark: {
@@ -75,6 +101,14 @@ window.I18N_TEXT = {
       traditional: '刪除書籤'
     },
     bookmarkAdded: {
+      simplified: '已添加到书签，可在侧边栏查看',
+      traditional: '已添加到書籤，可在側邊欄查看'
+    },
+    bookmarkDeleted: {
+      simplified: '书签已删除',
+      traditional: '書籤已刪除'
+    },
+    viewInSidebar: {
       simplified: '已添加到书签，可在侧边栏查看',
       traditional: '已添加到書籤，可在側邊欄查看'
     }
@@ -97,6 +131,10 @@ window.I18N_TEXT = {
     unknownChapter: {
       simplified: '未知章节',
       traditional: '未知章節'
+    },
+    homepage: {
+      simplified: '首页',
+      traditional: '首頁'
     }
   },
   
@@ -113,6 +151,102 @@ window.I18N_TEXT = {
     shareAnswer: {
       simplified: '分享回答',
       traditional: '分享回答'
+    }
+  },
+  
+  // UI相關
+  ui: {
+    home: {
+      simplified: '回首页',
+      traditional: '回首頁'
+    },
+    functionMenu: {
+      simplified: '功能菜单',
+      traditional: '功能選單'
+    },
+    settings: {
+      simplified: '设置',
+      traditional: '設置'
+    },
+    backToTop: {
+      simplified: '回到顶部',
+      traditional: '回到頂部'
+    },
+    directory: {
+      simplified: '目录',
+      traditional: '目錄'
+    },
+    tableOfContents: {
+      simplified: '目录',
+      traditional: '目錄'
+    }
+  },
+  
+  // 閱讀設置相關
+  readingSettings: {
+    title: {
+      simplified: '阅读设置',
+      traditional: '閱讀設置'
+    },
+    fontSize: {
+      simplified: '字体大小',
+      traditional: '字體大小'
+    },
+    lineHeight: {
+      simplified: '行距',
+      traditional: '行距'
+    },
+    width: {
+      simplified: '宽度',
+      traditional: '寬度'
+    },
+    theme: {
+      simplified: '主题',
+      traditional: '主題'
+    },
+    fontDecrease: {
+      simplified: 'A-',
+      traditional: 'A-'
+    },
+    fontNormal: {
+      simplified: 'A',
+      traditional: 'A'
+    },
+    fontIncrease: {
+      simplified: 'A+',
+      traditional: 'A+'
+    },
+    lineTight: {
+      simplified: '紧密',
+      traditional: '緊密'
+    },
+    lineNormal: {
+      simplified: '正常',
+      traditional: '正常'
+    },
+    lineLoose: {
+      simplified: '宽松',
+      traditional: '寬鬆'
+    },
+    widthNarrow: {
+      simplified: '窄',
+      traditional: '窄'
+    },
+    widthNormal: {
+      simplified: '中',
+      traditional: '中'
+    },
+    widthWide: {
+      simplified: '宽',
+      traditional: '寬'
+    },
+    themeLight: {
+      simplified: '☀️ 日间',
+      traditional: '☀️ 日間'
+    },
+    themeDark: {
+      simplified: '🌙 夜间',
+      traditional: '🌙 夜間'
     }
   },
   
