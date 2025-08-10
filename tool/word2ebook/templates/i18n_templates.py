@@ -111,8 +111,8 @@ class I18nTemplateManager:
   <div class="toc-level-controls">
     <div class="toc-level-label">{show_level}</div>
     <div class="toc-level-buttons-vertical">
-      <button class="toc-level-btn active" data-level="2" title="显示第2层">2</button>
-      <button class="toc-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn" data-level="2" title="显示第2层">2</button>
+      <button class="toc-level-btn active" data-level="3" title="显示前3层">3</button>
       <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
     </div>
   </div>
@@ -126,8 +126,8 @@ class I18nTemplateManager:
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
   <div class="floating-level-label">{level}</div>
   <div class="floating-level-buttons">
-    <button class="floating-level-btn active" data-level="2" title="显示第2层">2</button>
-    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+    <button class="floating-level-btn" data-level="2" title="显示第2层">2</button>
+    <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
     <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
   </div>
 </div>
