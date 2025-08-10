@@ -94,11 +94,13 @@ class I18nTemplateManager:
 </head>
 <body>
 <div id="top"></div>
-<div class="lang-switch">
-{lang_switch_links}
-</div>
-<div class="nav">
-<a href="{home_link}">{home_text}</a>
+<div class="header-nav">
+  <div class="nav-home">
+    <a href="{home_link}">{home_text}</a>
+  </div>
+  <div class="lang-switch">
+    {lang_switch_links}
+  </div>
 </div>
 
 <div class="top-nav">
@@ -181,8 +183,10 @@ if (typeof MiniSearch === 'undefined') {{
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
-<div class="lang-switch">
-{lang_switch_links}
+<div class="header-nav index-header">
+  <div class="lang-switch">
+    {lang_switch_links}
+  </div>
 </div>
 <h1>{book_title}</h1>
 

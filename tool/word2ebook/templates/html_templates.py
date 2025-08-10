@@ -43,11 +43,13 @@ class TemplateManager:
 </head>
 <body>
 <div id="top"></div>
-<div class="lang-switch">
-{lang_switch_links}
-</div>
-<div class="nav">
-<a href="{home_link}">🌸 回首頁</a>
+<div class="header-nav">
+  <div class="nav-home">
+    <a href="{home_link}">🌸 回首頁</a>
+  </div>
+  <div class="lang-switch">
+    {lang_switch_links}
+  </div>
 </div>
 
 <div class="top-nav">
@@ -128,8 +130,10 @@ if (typeof MiniSearch === 'undefined') {{
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
-<div class="lang-switch">
-{lang_switch_links}
+<div class="header-nav index-header">
+  <div class="lang-switch">
+    {lang_switch_links}
+  </div>
 </div>
 <h1>{book_title}</h1>
 

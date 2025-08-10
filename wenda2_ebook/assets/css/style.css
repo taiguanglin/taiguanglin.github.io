@@ -13,7 +13,29 @@ img { max-width: 100%; display: block; margin: 20px auto; }
 a { color: #e75480; text-decoration: none; }
 a:hover { text-decoration: underline; color: #ff69b4; }
 hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc); margin: 30px 0; border-radius: 1px; }
-.nav { margin-bottom: 20px; }
+/* 頭部導航容器 */
+.header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 5px;
+}
+
+.nav-home {
+    margin: 0;
+}
+
+.nav-home a {
+    font-size: 0.9em;
+    color: #e75480;
+    text-decoration: none;
+}
+
+.nav-home a:hover {
+    color: #ff69b4;
+    text-decoration: underline;
+}
 .nav-footer { 
     display: flex; 
     justify-content: space-between; 
@@ -115,7 +137,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 
 .toc ul { list-style: disc; padding-left: 1.5em; }
-.toc ul ul { list-style: circle; padding-left: 2em; }
+.toc ul ul { list-style: circle; padding-left: 0px; }
 .toc ul ul ul { list-style: square; padding-left: 2.5em; }
 
 /* 問答樣式 */
@@ -226,12 +248,22 @@ body.dark-mode .back-to-top a { color: #ff91af; }
 body.dark-mode .back-to-top a:hover { color: #ff69b4; }
 body.dark-mode .lang-switch a { color: #ff91af; }
 body.dark-mode .lang-switch a:hover { color: #ff69b4; }
+body.dark-mode .nav-home a { color: #ff91af; }
+body.dark-mode .nav-home a:hover { color: #ff69b4; }
+
+/* 首頁頭部樣式 */
+.index-header {
+    justify-content: flex-end;
+}
 
 /* 夜間模式按鈕已移至閱讀設置中 */
 .back-to-top { text-align: right; margin: 20px 0; }
 .back-to-top a { font-size: 0.9em; color: #d44d75; }
 .back-to-top a:hover { color: #ff69b4; }
-.lang-switch { text-align: right; margin-top: 5px; }
+.lang-switch { 
+    text-align: right; 
+    margin: 0;
+}
 .lang-switch a { font-size: 0.9em; margin: 0 5px; }
 
 /* ============ UX 增強功能 ============ */
@@ -1577,6 +1609,21 @@ body.dark-mode .search-load-all:hover {
         max-width: 100%;
         font-size: 14px;
         padding: 10px 12px;
+    }
+    
+    /* 移動設備上的頭部導航 */
+    .header-nav {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .nav-home {
+        text-align: center;
+    }
+    
+    .lang-switch {
+        text-align: center;
     }
     
     .top-nav-buttons {
