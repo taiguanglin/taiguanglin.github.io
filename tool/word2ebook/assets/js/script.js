@@ -2192,6 +2192,131 @@ document.addEventListener('DOMContentLoaded', function() {
     document.body.style.fontSize = fontSize + 'px';
     document.documentElement.style.setProperty('--line-height', lineHeight);
     document.body.style.maxWidth = contentWidth + 'px';
+    
+    // 動態調整TOC目錄的字型大小和間距
+    // 移除現有的動態TOC樣式
+    let existingTocStyle = document.getElementById('dynamic-toc-styles');
+    if (existingTocStyle) {
+      existingTocStyle.remove();
+    }
+    
+    // 創建新的動態樣式
+    const tocStyle = document.createElement('style');
+    tocStyle.id = 'dynamic-toc-styles';
+    
+    // 計算相對於基礎字型大小的比例
+    const fontScale = fontSize / 16; // 16px是基礎字型大小
+    const lineHeightValue = lineHeight;
+    
+    // 各層級的字型大小比例（相對於用戶設定的基礎大小）
+    const level1Size = Math.round(fontSize * 1.1); // 第一層：稍大
+    const level2Size = fontSize; // 第二層：基礎大小  
+    const level3Size = Math.round(fontSize * 0.95); // 第三層：稍小
+    const level4Size = Math.round(fontSize * 0.9); // 第四層：更小
+    
+    // 間距調整（基於行距設置）
+    const spacing1 = Math.round(8 * lineHeightValue / 1.6); // 第一層間距
+    const spacing2 = Math.round(6 * lineHeightValue / 1.6); // 第二層間距  
+    const spacing3 = Math.round(4 * lineHeightValue / 1.6); // 第三層間距
+    const spacing4 = Math.round(3 * lineHeightValue / 1.6); // 第四層間距
+    
+    tocStyle.textContent = `
+      /* 首頁TOC樣式調整 */
+      .toc > ul > li { 
+        font-size: ${level1Size}px !important; 
+        margin-bottom: ${spacing1}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .toc ul ul > li { 
+        font-size: ${level2Size}px !important; 
+        margin-bottom: ${spacing2}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .toc ul ul ul > li { 
+        font-size: ${level3Size}px !important; 
+        margin-bottom: ${spacing3}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .toc ul ul ul ul > li { 
+        font-size: ${level4Size}px !important; 
+        margin-bottom: ${spacing4}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      /* 章節頁TOC樣式調整 */
+      .toc-item.toc-level-1 > a {
+        font-size: ${level1Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .toc-item.toc-level-2 > a {
+        font-size: ${level2Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .toc-item.toc-level-3 > a {
+        font-size: ${level3Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .toc-item.toc-level-4 > a {
+        font-size: ${level4Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      /* TOC項目的間距調整 */
+      .toc-item.toc-level-1 {
+        margin-bottom: ${spacing1}px !important;
+      }
+      
+      .toc-item.toc-level-2 {
+        margin-bottom: ${spacing2}px !important;
+      }
+      
+      .toc-item.toc-level-3 {
+        margin-bottom: ${spacing3}px !important;
+      }
+      
+      .toc-item.toc-level-4 {
+        margin-bottom: ${spacing4}px !important;
+      }
+      
+      /* 浮動TOC樣式調整 */
+      .floating-toc-item {
+        font-size: ${Math.round(fontSize * 0.85)}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .floating-toc-item.level-h3 {
+        font-size: ${Math.round(fontSize * 0.8)}px !important;
+      }
+      
+      .floating-toc-item.level-h4 {
+        font-size: ${Math.round(fontSize * 0.75)}px !important;
+      }
+      
+      .floating-toc-item.level-h5 {
+        font-size: ${Math.round(fontSize * 0.7)}px !important;
+      }
+      
+      /* 層級控制按鈕樣式調整 */
+      .toc-level-label {
+        font-size: ${Math.round(fontSize * 0.9)}px !important;
+      }
+      
+      .toc-level-btn, .floating-level-btn {
+        font-size: ${Math.round(fontSize * 0.9)}px !important;
+      }
+      
+      .floating-level-label {
+        font-size: ${Math.round(fontSize * 0.7)}px !important;
+      }
+    `;
+    
+    document.head.appendChild(tocStyle);
   }
   
   function updateFontSize(change) {
