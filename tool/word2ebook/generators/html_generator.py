@@ -63,7 +63,7 @@ class TOCGenerator:
                 expand_icon = f'<span class="toc-expand-icon" data-level="{level}">▼</span>'
             
             # 生成扁平化的li元素，通过CSS和JavaScript控制层级显示
-            html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 2}">'
+            html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 3}">'
             html += f'{expand_icon}<a href="{link}">{text}</a></li>\n'
             
         return html

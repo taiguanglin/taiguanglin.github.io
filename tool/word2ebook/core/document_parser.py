@@ -172,6 +172,10 @@ class DocumentParser:
             anchor = self.id_generator.generate_heading_id(text)
             toc_list.append((3, text, anchor))
             return f'<h3 id="{anchor}">{text}</h3>'
+        elif "heading 4" in style:
+            anchor = self.id_generator.generate_heading_id(text)
+            toc_list.append((4, text, anchor))
+            return f'<h4 id="{anchor}">{text}</h4>'
         
         return None
     

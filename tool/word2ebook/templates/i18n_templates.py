@@ -196,8 +196,9 @@ if (typeof MiniSearch === 'undefined') {{
     <div class="toc-level-label">{show_level}</div>
     <div class="toc-level-buttons-vertical">
       <button class="toc-level-btn" data-level="1" title="显示第1层">1</button>
-      <button class="toc-level-btn active" data-level="2" title="显示前2层">2</button>
-      <button class="toc-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn" data-level="2" title="显示前2层">2</button>
+      <button class="toc-level-btn active" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
     </div>
   </div>
 </div>
@@ -244,8 +245,9 @@ if (typeof MiniSearch === 'undefined') {{
   <div class="floating-level-label">{level}</div>
   <div class="floating-level-buttons">
     <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
-    <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
-    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+    <button class="floating-level-btn" data-level="2" title="显示前2层">2</button>
+    <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
+    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
   </div>
 </div>
 
