@@ -170,12 +170,16 @@ class HTMLGenerator:
             # 處理內容中的國際化佔位符
             processed_content = self._process_i18n_placeholders(chapter.content, is_traditional=False)
             
+            # 分離章節標題和內容
+            chapter_title_html, content_without_title = self._extract_chapter_title(processed_content, chapter.title)
+            
             # 渲染页面
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=False,
                 title=chapter.title,
+                chapter_title=chapter_title_html,
                 chapter_toc=chapter.chapter_toc,
-                content=processed_content,
+                content=content_without_title,
                 prev_link=nav_data['prev_link'],
                 next_link=nav_data['next_link'],
                 top_nav_links=nav_data['top_nav_links'],
@@ -203,10 +207,14 @@ class HTMLGenerator:
             # 處理內容中的國際化佔位符
             processed_content = self._process_i18n_placeholders(chapter.content, is_traditional=True)
             
+            # 分離章節標題和內容
+            chapter_title_html, content_without_title = self._extract_chapter_title(processed_content, chapter.title)
+            
             # 繁体转换
             converted_title = self.i18n_processor.to_traditional(chapter.title)
+            converted_chapter_title = self.i18n_processor.to_traditional(chapter_title_html)
             converted_chapter_toc = self.i18n_processor.to_traditional(chapter.chapter_toc)
-            converted_content = self.i18n_processor.to_traditional(processed_content)
+            converted_content = self.i18n_processor.to_traditional(content_without_title)
             converted_prev_link = self.i18n_processor.to_traditional(nav_data['prev_link'])
             converted_next_link = self.i18n_processor.to_traditional(nav_data['next_link'])
             converted_top_nav_links = self.i18n_processor.to_traditional(nav_data['top_nav_links'])
@@ -216,6 +224,7 @@ class HTMLGenerator:
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=True,
                 title=converted_title,
+                chapter_title=converted_chapter_title,
                 chapter_toc=converted_chapter_toc,
                 content=converted_content,
                 prev_link=converted_prev_link,
@@ -336,3 +345,23 @@ class HTMLGenerator:
             # 简体页面：简体链接指向当前页面，繁体链接指向对应繁体版
             traditional_filename = self.i18n_processor.get_traditional_filename(current_filename)
             return f'<a href="{current_filename}">{simplified_text}</a> | <a href="{traditional_filename}">{traditional_text}</a>'
+    
+    def _extract_chapter_title(self, content: str, chapter_title: str) -> tuple[str, str]:
+        """從內容中提取並移除章節標題，返回標題HTML和剩餘內容"""
+        import re
+        
+        # 查找第一個 <h1> 標籤
+        h1_pattern = r'<h1[^>]*>.*?</h1>'
+        h1_match = re.search(h1_pattern, content, re.DOTALL)
+        
+        if h1_match:
+            # 提取 h1 標籤
+            chapter_title_html = h1_match.group(0)
+            # 從內容中移除 h1 標籤
+            content_without_title = content.replace(h1_match.group(0), '', 1)
+        else:
+            # 如果找不到 h1 標籤，就創建一個
+            chapter_title_html = f'<h1>{chapter_title}</h1>'
+            content_without_title = content
+        
+        return chapter_title_html, content_without_title

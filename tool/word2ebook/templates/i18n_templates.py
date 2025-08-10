@@ -50,7 +50,7 @@ class I18nTemplateManager:
     def _get_chapter_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
         """獲取章節頁面的國際化文字"""
         return {
-            'home_text': get_i18n_text('navigation.home', is_traditional, '🏠 回首頁'),
+            'home_text': get_i18n_text('navigation.home', is_traditional, '🌸 回首頁'),
             'chapter_toc_title': get_i18n_text('navigation.chapter_toc', is_traditional, '本章目錄'),
             'previous_chapter': get_i18n_text('ui.previous_chapter', is_traditional, '上一章'),
             'next_chapter': get_i18n_text('ui.next_chapter', is_traditional, '下一章'),
@@ -104,6 +104,8 @@ class I18nTemplateManager:
 <div class="top-nav">
 {top_nav_links}
 </div>
+
+{chapter_title}
 
 <!-- 章節TOC標題和層級控制的水平布局 -->
 <div class="toc-header-container">
