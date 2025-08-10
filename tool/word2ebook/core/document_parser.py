@@ -287,9 +287,9 @@ class DocumentParser:
         # 设置章节内容
         chapter.content = "\n".join(content_blocks)
         
-        # 生成目录
+        # 生成目录（使用可控制的折叠目录结构）
         toc_generator = TOCGenerator()
-        chapter.chapter_toc = toc_generator.build_chapter_toc(toc_items)
+        chapter.chapter_toc = toc_generator.build_collapsible_chapter_toc(toc_items)
         
         # 转换 toc_items 为 TOCItem 对象
         chapter.toc_items = [TOCItem(level=level, text=text, anchor=anchor) 

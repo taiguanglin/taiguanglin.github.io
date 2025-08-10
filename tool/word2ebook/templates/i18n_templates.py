@@ -54,6 +54,8 @@ class I18nTemplateManager:
             'chapter_toc_title': get_i18n_text('navigation.chapter_toc', is_traditional, '本章目錄'),
             'previous_chapter': get_i18n_text('ui.previous_chapter', is_traditional, '上一章'),
             'next_chapter': get_i18n_text('ui.next_chapter', is_traditional, '下一章'),
+            'show_level': get_i18n_text('level_control.show_level', is_traditional, '顯示層級'),
+            'level': get_i18n_text('level_control.level', is_traditional, '層級'),
         }
     
     def _get_index_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
@@ -103,9 +105,31 @@ class I18nTemplateManager:
 {top_nav_links}
 </div>
 
-<div class="toc">
-<h3>{chapter_toc_title}</h3>
+<!-- 章節TOC標題和層級控制的水平布局 -->
+<div class="toc-header-container">
+  <h3 id="chapter-toc-header">{chapter_toc_title}</h3>
+  <div class="toc-level-controls">
+    <div class="toc-level-label">{show_level}</div>
+    <div class="toc-level-buttons-vertical">
+      <button class="toc-level-btn active" data-level="2" title="显示第2层">2</button>
+      <button class="toc-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="chapter-toc">
 {chapter_toc}
+</div>
+
+<!-- 滚动时显示的浮动层级控制按钮 -->
+<div class="floating-level-controls" id="floating-level-controls" style="display: none;">
+  <div class="floating-level-label">{level}</div>
+  <div class="floating-level-buttons">
+    <button class="floating-level-btn active" data-level="2" title="显示第2层">2</button>
+    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+  </div>
 </div>
 
 {content}
@@ -196,8 +220,8 @@ if (typeof MiniSearch === 'undefined') {{
     <div class="toc-level-label">{show_level}</div>
     <div class="toc-level-buttons-vertical">
       <button class="toc-level-btn" data-level="1" title="显示第1层">1</button>
-      <button class="toc-level-btn" data-level="2" title="显示前2层">2</button>
-      <button class="toc-level-btn active" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn active" data-level="2" title="显示前2层">2</button>
+      <button class="toc-level-btn" data-level="3" title="显示前3层">3</button>
       <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
     </div>
   </div>
@@ -245,8 +269,8 @@ if (typeof MiniSearch === 'undefined') {{
   <div class="floating-level-label">{level}</div>
   <div class="floating-level-buttons">
     <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
-    <button class="floating-level-btn" data-level="2" title="显示前2层">2</button>
-    <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
+    <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
+    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
     <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
   </div>
 </div>

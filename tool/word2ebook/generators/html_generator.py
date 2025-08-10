@@ -43,7 +43,7 @@ class TOCGenerator:
     def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None) -> str:
         """构建可折叠的章节目录（扁平化结构，便于JavaScript控制）"""
         if not toc_items:
-            return ""
+            return "<ul></ul>"
             
         # 分析结构，找出每个项目是否有子项
         items_with_children = set()
@@ -52,7 +52,7 @@ class TOCGenerator:
             if i + 1 < len(toc_items) and toc_items[i + 1][0] > level:
                 items_with_children.add(i)
                 
-        html = ""
+        html = "<ul>\n"
         
         for i, (level, text, anchor) in enumerate(toc_items):
             link = f'{filename}#{anchor}' if filename else f'#{anchor}'
@@ -63,9 +63,10 @@ class TOCGenerator:
                 expand_icon = f'<span class="toc-expand-icon" data-level="{level}">▼</span>'
             
             # 生成扁平化的li元素，通过CSS和JavaScript控制层级显示
-            html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 3}">'
+            html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 2}">'
             html += f'{expand_icon}<a href="{link}">{text}</a></li>\n'
-            
+        
+        html += "</ul>"
         return html
     
     def build_index_toc(self, chapters: List[Chapter], is_traditional: bool = False) -> str:
