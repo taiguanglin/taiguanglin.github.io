@@ -2756,8 +2756,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
-    // 获取用户保存的偏好，默认显示前2层
-    const savedLevel = localStorage.getItem('toc-display-level') || '2';
+    // 根據頁面類型設定不同的默認值
+    const isChapterPage = document.getElementById('chapter-toc') !== null;
+    const defaultLevel = isChapterPage ? '3' : '2'; // 章節頁面默認第3層，首頁默認第2層
+    
+    // 获取用户保存的偏好，使用對應的默認值
+    const savedLevel = localStorage.getItem('toc-display-level') || defaultLevel;
     
     // 初始化按钮状态
     updateLevelButtonsActive(savedLevel);
