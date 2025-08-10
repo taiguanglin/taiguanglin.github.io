@@ -2748,14 +2748,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ========== 目录折叠控制功能 ==========
   
-  // 初始化目录折叠控制（仅在首页）
-  if (currentChapter.isHomepage) {
-    initTocCollapseControl();
-    initFloatingLevelControls();
-  }
+  // 初始化目录折叠控制（首页和章节页面都需要）
+  initTocCollapseControl();
+  initFloatingLevelControls();
   
   function initTocCollapseControl() {
-    const tocContainer = document.getElementById('main-toc');
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
     // 获取用户保存的偏好，默认显示前2层
@@ -2804,7 +2802,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   function setTocDisplayLevel(level) {
-    const tocContainer = document.getElementById('main-toc');
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
     const allItems = tocContainer.querySelectorAll('.toc-item');
@@ -2844,7 +2842,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 同步图标状态与实际展开状态
   function syncIconStates() {
-    const tocContainer = document.getElementById('main-toc');
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
     const expandableItems = tocContainer.querySelectorAll('.toc-item.toc-expandable');
@@ -2866,7 +2864,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 初始化可展开的目录项
   function initializeTocExpandableItems() {
-    const tocContainer = document.getElementById('main-toc');
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
     // 为所有有展开图标的目录项添加 toc-expandable 类
@@ -2910,7 +2908,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function bindExpandCollapseEvents() {
-    const tocContainer = document.getElementById('main-toc');
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
     // 使用事件委托处理展开/折叠和跳转
@@ -3038,7 +3036,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // 检测目录内容是否在视窗中可见（确保有目录需要控制）
   function isTocContentVisible() {
-    const mainToc = document.getElementById('main-toc');
+    const mainToc = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!mainToc) return false;
     
     const rect = mainToc.getBoundingClientRect();
