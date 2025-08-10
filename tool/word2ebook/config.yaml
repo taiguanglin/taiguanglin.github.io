@@ -23,8 +23,8 @@ i18n:
   # 導航相關文字
   navigation:
     home:
-      simplified: "回首页"
-      traditional: "回首頁"
+      simplified: "🌸 回首页"
+      traditional: "🌸 回首頁"
     
     chapter_toc:
       simplified: "本章目录"

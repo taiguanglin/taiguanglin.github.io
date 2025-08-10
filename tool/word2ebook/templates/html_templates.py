@@ -47,12 +47,14 @@ class TemplateManager:
 {lang_switch_links}
 </div>
 <div class="nav">
-<a href="{home_link}">🏠 回首頁</a>
+<a href="{home_link}">🌸 回首頁</a>
 </div>
 
 <div class="top-nav">
 {top_nav_links}
 </div>
+
+{chapter_title}
 
 <!-- 章節TOC標題和層級控制的水平布局 -->
 <div class="toc-header-container">
