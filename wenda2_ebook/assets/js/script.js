@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayedResultsCount = 0;
         hideLoadMoreButtons();
         if (query && query.trim().length > 0 && query.trim().length < 2) {
-          searchStatus.textContent = getText('请输入至少2个字符进行搜索', '請輸入至少2個字元進行搜尋');
+          searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
         } else {
           searchStatus.innerHTML = `
             ${getText(`搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`, `搜尋準備就緒 (共${searchIndex ? searchIndex.length : 0}條記錄)`)}
@@ -417,10 +417,10 @@ document.addEventListener('DOMContentLoaded', function() {
       const query = document.getElementById('search-input').value.trim();
       const additionalHTML = results.map(result => {
         const typeText = {
-          'heading': getText('标题', '標題'),
-          'question': getText('问题', '問題'), 
-          'answer': getText('回答', '回答'),
-          'content': getText('内容', '內容')
+          'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
+          'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
+          'answer': getI18nText('search.resultTypes.answer', isTraditionalChinesePage(), '回答'),
+          'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
         }[result.type] || getText('内容', '內容');
         
         // 智能高亮搜索关键词
@@ -446,10 +446,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayResults(results, query) {
       searchResultsList.innerHTML = results.map(result => {
         const typeText = {
-          'heading': getText('标题', '標題'),
-          'question': getText('问题', '問題'), 
-          'answer': getText('回答', '回答'),
-          'content': getText('内容', '內容')
+          'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
+          'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
+          'answer': getI18nText('search.resultTypes.answer', isTraditionalChinesePage(), '回答'),
+          'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
         }[result.type] || getText('内容', '內容');
         
         // 智能高亮搜索关键词
@@ -734,38 +734,38 @@ document.addEventListener('DOMContentLoaded', function() {
     toolbar.className = 'reading-toolbar hidden';
     toolbar.innerHTML = 
       '<div class="toolbar-header">' +
-        '<span>⚙️ 閱讀設置</span>' +
+        '<span>⚙️ ' + getI18nText('readingSettings.title', isTraditionalChinesePage(), '閱讀設置') + '</span>' +
         '<button class="ctrl-btn" data-action="close-toolbar">✕</button>' +
       '</div>' +
       '<div class="toolbar-section">' +
-        '<div class="toolbar-label">字體大小</div>' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + '</div>' +
         '<div class="toolbar-controls">' +
-          '<button class="ctrl-btn" data-action="font-decrease">A-</button>' +
-          '<button class="ctrl-btn active" data-action="font-normal">A</button>' +
-          '<button class="ctrl-btn" data-action="font-increase">A+</button>' +
+          '<button class="ctrl-btn" data-action="font-decrease">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
+          '<button class="ctrl-btn active" data-action="font-normal">' + getI18nText('readingSettings.fontNormal', isTraditionalChinesePage(), 'A') + '</button>' +
+          '<button class="ctrl-btn" data-action="font-increase">' + getI18nText('readingSettings.fontIncrease', isTraditionalChinesePage(), 'A+') + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="toolbar-section">' +
-        '<div class="toolbar-label">行距</div>' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.lineHeight', isTraditionalChinesePage(), '行距') + '</div>' +
         '<div class="toolbar-controls">' +
-          '<button class="ctrl-btn" data-action="line-tight">緊密</button>' +
-          '<button class="ctrl-btn active" data-action="line-normal">正常</button>' +
-          '<button class="ctrl-btn" data-action="line-loose">寬鬆</button>' +
+          '<button class="ctrl-btn" data-action="line-tight">' + getI18nText('readingSettings.lineTight', isTraditionalChinesePage(), '緊密') + '</button>' +
+          '<button class="ctrl-btn active" data-action="line-normal">' + getI18nText('readingSettings.lineNormal', isTraditionalChinesePage(), '正常') + '</button>' +
+          '<button class="ctrl-btn" data-action="line-loose">' + getI18nText('readingSettings.lineLoose', isTraditionalChinesePage(), '寬鬆') + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="toolbar-section">' +
-        '<div class="toolbar-label">寬度</div>' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.width', isTraditionalChinesePage(), '寬度') + '</div>' +
         '<div class="toolbar-controls">' +
-          '<button class="ctrl-btn" data-action="width-narrow">窄</button>' +
-          '<button class="ctrl-btn active" data-action="width-normal">中</button>' +
-          '<button class="ctrl-btn" data-action="width-wide">寬</button>' +
+          '<button class="ctrl-btn" data-action="width-narrow">' + getI18nText('readingSettings.widthNarrow', isTraditionalChinesePage(), '窄') + '</button>' +
+          '<button class="ctrl-btn active" data-action="width-normal">' + getI18nText('readingSettings.widthNormal', isTraditionalChinesePage(), '中') + '</button>' +
+          '<button class="ctrl-btn" data-action="width-wide">' + getI18nText('readingSettings.widthWide', isTraditionalChinesePage(), '寬') + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="toolbar-section">' +
-        '<div class="toolbar-label">主題</div>' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.theme', isTraditionalChinesePage(), '主題') + '</div>' +
         '<div class="toolbar-controls">' +
-          '<button class="ctrl-btn" data-action="theme-light">☀️ 日間</button>' +
-          '<button class="ctrl-btn" data-action="theme-dark">🌙 夜間</button>' +
+          '<button class="ctrl-btn" data-action="theme-light">' + getI18nText('readingSettings.themeLight', isTraditionalChinesePage(), '☀️ 日間') + '</button>' +
+          '<button class="ctrl-btn" data-action="theme-dark">' + getI18nText('readingSettings.themeDark', isTraditionalChinesePage(), '🌙 夜間') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(toolbar);
@@ -865,7 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
         '<button class="floating-toc-tab active" data-tab="bookmarks">📖 ' + getI18nText('bookmark.myBookmarks', isTraditionalChinesePage(), '我的書籤') + ' <span id="bookmark-count">(0)</span></button>';
       contentHtml = 
         '<ul id="bookmarks-list" class="floating-toc-list" style="display: block;">' +
-          '<li class="bookmarks-empty">尚無書籤</li>' +
+          '<li class="bookmarks-empty">' + getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>' +
         '</ul>';
     } else {
       // 其他頁面顯示目錄和書籤
@@ -877,7 +877,7 @@ document.addEventListener('DOMContentLoaded', function() {
           tocItems +
         '</ul>' +
         '<ul id="bookmarks-list" class="floating-toc-list" style="display: none;">' +
-          '<li class="bookmarks-empty">尚無書籤</li>' +
+          '<li class="bookmarks-empty">' + getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>' +
         '</ul>';
     }
     
@@ -915,20 +915,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 根據頁面類型設置第一個按鈕的內容
     const firstBtnIcon = currentChapter.isHomepage ? '🔖' : '📖';
-    const firstBtnTitle = currentChapter.isHomepage ? '書籤' : '目錄';
+    const firstBtnTitle = currentChapter.isHomepage ? 
+      getI18nText('navigation.bookmarks', isTraditionalChinesePage(), '書籤') : 
+      getI18nText('ui.tableOfContents', isTraditionalChinesePage(), '目錄');
     
     // 為章節頁面添加回首頁按鈕
     const homeButton = currentChapter.isHomepage ? '' : 
-      '<button class="action-btn" data-action="home" title="回首頁">🏠</button>';
+      '<button class="action-btn" data-action="home" title="' + getI18nText('ui.home', isTraditionalChinesePage(), '回首頁') + '">🏠</button>';
     
     buttons.innerHTML = 
       '<div class="action-menu">' +
-        '<button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>' +
+        '<button class="action-btn menu-btn" data-action="toggle-menu" title="' + getI18nText('ui.functionMenu', isTraditionalChinesePage(), '功能選單') + '">☰</button>' +
         '<div class="action-menu-items">' +
           '<button class="action-btn" data-action="toc" title="' + firstBtnTitle + '">' + firstBtnIcon + '</button>' +
           homeButton +
-          '<button class="action-btn" data-action="top" title="回到頂部">↑</button>' +
-          '<button class="action-btn" data-action="settings" title="設置">⚙️</button>' +
+          '<button class="action-btn" data-action="top" title="' + getI18nText('ui.backToTop', isTraditionalChinesePage(), '回到頂部') + '">↑</button>' +
+          '<button class="action-btn" data-action="settings" title="' + getI18nText('ui.settings', isTraditionalChinesePage(), '設置') + '">⚙️</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(buttons);
@@ -1261,7 +1263,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const indicator = document.createElement('span');
         indicator.className = 'bookmark-indicator';
         indicator.textContent = '🔖';
-        indicator.title = '點擊移除書籤';
+        indicator.title = getI18nText('bookmark.removeBookmark', isTraditionalChinesePage(), '點擊移除書籤');
         element.appendChild(indicator);
       }
     }
@@ -1322,7 +1324,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 如果是首頁，返回特殊標識
     if (filename === 'index.html' || filename === 'index_trad.html') {
       return {
-        title: '首頁',
+        title: getI18nText('navigation.homepage', isTraditionalChinesePage(), '首頁'),
         id: 'homepage',
         isHomepage: true
       };
@@ -1384,7 +1386,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const allBookmarks = getBookmarks();
       
       if (allBookmarks.length === 0) {
-        bookmarksList.innerHTML = '<li class="bookmarks-empty">暫無書籤</li>';
+        bookmarksList.innerHTML = '<li class="bookmarks-empty">' + getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>';
         return;
       }
       
@@ -1590,7 +1592,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const allBookmarks = getBookmarks();
     const updatedBookmarks = allBookmarks.filter(bookmark => bookmark.id !== bookmarkId);
     saveBookmarks(updatedBookmarks);
-    showToast('書籤已刪除');
+    showToast(getI18nText('bookmark.bookmarkDeleted', isTraditionalChinesePage(), '書籤已刪除'));
   }
   
   // 書籤添加成功的視覺反饋
@@ -1598,7 +1600,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 首頁有floating-toc，章節頁面沒有，需要分別處理
     if (currentChapter.isHomepage) {
       // 首頁：顯示提示並引導到側邊欄
-      showToast('已添加到書籤，可在側邊欄查看');
+      showToast(getI18nText('bookmark.viewInSidebar', isTraditionalChinesePage(), '已添加到書籤，可在側邊欄查看'));
       
       const floatingTOC = document.getElementById('floating-toc');
       const bookmarkTab = document.querySelector('.floating-toc-tab[data-tab="bookmarks"]');

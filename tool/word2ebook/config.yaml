@@ -42,6 +42,16 @@ i18n:
       simplified: "章节目录"
       traditional: "章節目錄"
   
+  # 書籤相關文字
+  bookmark:
+    myBookmarks:
+      simplified: "我的书签"
+      traditional: "我的書籤"
+    
+    empty:
+      simplified: "尚无书签"
+      traditional: "尚無書籤"
+  
   # 語言切換
   language_switch:
     simplified: "简体"
@@ -116,6 +126,88 @@ i18n:
     back_to_chapter_toc:
       simplified: "回到本章目录"
       traditional: "回到本章目錄"
+      
+    home:
+      simplified: "回首页"
+      traditional: "回首頁"
+      
+    directory:
+      simplified: "目录"
+      traditional: "目錄"
+      
+    table_of_contents:
+      simplified: "目录"
+      traditional: "目錄"
+  
+  # 閱讀設置相關文字
+  reading_settings:
+    title:
+      simplified: "阅读设置"
+      traditional: "閱讀設置"
+    
+    font_size:
+      simplified: "字体大小"
+      traditional: "字體大小"
+    
+    line_height:
+      simplified: "行距"
+      traditional: "行距"
+    
+    width:
+      simplified: "宽度"
+      traditional: "寬度"
+    
+    theme:
+      simplified: "主题"
+      traditional: "主題"
+    
+    # 字體大小選項
+    font_decrease:
+      simplified: "A-"
+      traditional: "A-"
+    
+    font_normal:
+      simplified: "A"
+      traditional: "A"
+    
+    font_increase:
+      simplified: "A+"
+      traditional: "A+"
+    
+    # 行距選項
+    line_tight:
+      simplified: "紧密"
+      traditional: "緊密"
+    
+    line_normal:
+      simplified: "正常"
+      traditional: "正常"
+    
+    line_loose:
+      simplified: "宽松"
+      traditional: "寬鬆"
+    
+    # 寬度選項
+    width_narrow:
+      simplified: "窄"
+      traditional: "窄"
+    
+    width_normal:
+      simplified: "中"
+      traditional: "中"
+    
+    width_wide:
+      simplified: "宽"
+      traditional: "寬"
+    
+    # 主題選項
+    theme_light:
+      simplified: "☀️ 日间"
+      traditional: "☀️ 日間"
+    
+    theme_dark:
+      simplified: "🌙 夜间"
+      traditional: "🌙 夜間"
 
 # 其他設定
 # Other settings
