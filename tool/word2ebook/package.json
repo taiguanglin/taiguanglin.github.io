@@ -1,0 +1,106 @@
+{
+  "name": "word2ebook",
+  "version": "2.0.0",
+  "description": "Word 轉電子書工具 - 模組化重構版本",
+  "main": "assets/js/app.js",
+  "type": "module",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:coverage:open": "jest --coverage && open coverage/lcov-report/index.html",
+    "lint": "eslint assets/js/**/*.js",
+    "lint:fix": "eslint assets/js/**/*.js --fix",
+    "build": "npm run lint && npm run test:coverage",
+    "dev": "python main.py",
+    "serve": "python -m http.server 8000",
+    "clean": "rm -rf coverage node_modules/.cache"
+  },
+  "keywords": [
+    "word",
+    "ebook",
+    "html",
+    "converter",
+    "chinese",
+    "search",
+    "bookmark"
+  ],
+  "author": "Assistant",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.23.0",
+    "@babel/preset-env": "^7.23.0",
+    "@testing-library/jest-dom": "^6.1.0",
+    "@testing-library/user-event": "^14.5.0",
+    "babel-jest": "^29.7.0",
+    "eslint": "^8.52.0",
+    "eslint-plugin-jest": "^27.6.0",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
+  },
+  "eslintConfig": {
+    "env": {
+      "browser": true,
+      "es2021": true,
+      "jest": true,
+      "node": true
+    },
+    "extends": [
+      "eslint:recommended"
+    ],
+    "plugins": [
+      "jest"
+    ],
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    },
+    "rules": {
+      "indent": ["error", 2],
+      "linebreak-style": ["error", "unix"],
+      "quotes": ["error", "single"],
+      "semi": ["error", "always"],
+      "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
+      "no-console": ["warn", { "allow": ["warn", "error"] }],
+      "eqeqeq": "error",
+      "no-trailing-spaces": "error",
+      "comma-dangle": ["error", "always-multiline"],
+      "object-curly-spacing": ["error", "always"],
+      "array-bracket-spacing": ["error", "never"],
+      "space-before-function-paren": ["error", "never"],
+      "keyword-spacing": "error",
+      "space-infix-ops": "error",
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error"
+    },
+    "globals": {
+      "window": "readonly",
+      "document": "readonly",
+      "localStorage": "readonly",
+      "sessionStorage": "readonly",
+      "fetch": "readonly",
+      "URL": "readonly",
+      "URLSearchParams": "readonly",
+      "CustomEvent": "readonly",
+      "Event": "readonly",
+      "MutationObserver": "readonly",
+      "IntersectionObserver": "readonly",
+      "ResizeObserver": "readonly"
+    }
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/word2ebook.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/word2ebook/issues"
+  },
+  "homepage": "https://github.com/your-username/word2ebook#readme"
+}

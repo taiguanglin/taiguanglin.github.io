@@ -1,0 +1,447 @@
+/**
+ * @fileoverview 主要 CSS 入口檔案
+ * @author Assistant
+ * @version 1.0.0
+ * 
+ * 這個檔案整合了所有模組化的 CSS，提供一個統一的入口點
+ */
+
+/* === 基礎樣式 === */
+@import url('./base/variables.css');
+@import url('./base/reset.css');
+@import url('./base/typography.css');
+
+/* === 佈局樣式 === */
+@import url('./layout/container.css');
+@import url('./layout/header.css');
+@import url('./layout/footer.css');
+@import url('./layout/sidebar.css');
+
+/* === 組件樣式 === */
+@import url('./components/buttons.css');
+@import url('./components/forms.css');
+@import url('./components/cards.css');
+@import url('./components/toc.css');
+@import url('./components/search.css');
+@import url('./components/bookmark.css');
+@import url('./components/navigation.css');
+@import url('./components/floating-elements.css');
+@import url('./components/modals.css');
+@import url('./components/tooltips.css');
+
+/* === 工具類別 === */
+@import url('./utilities/spacing.css');
+@import url('./utilities/display.css');
+@import url('./utilities/positioning.css');
+@import url('./utilities/colors.css');
+@import url('./utilities/animations.css');
+
+/* === 主題樣式 === */
+@import url('./themes/dark-mode.css');
+
+/* === 響應式樣式 === */
+@import url('./responsive/mobile.css');
+@import url('./responsive/tablet.css');
+@import url('./responsive/desktop.css');
+
+/* === 全域應用程式樣式 === */
+
+.word2ebook-app {
+  /* 確保應用程式佔滿整個視窗 */
+  min-height: 100vh;
+  
+  /* 建立堆疊上下文 */
+  position: relative;
+  z-index: 0;
+  
+  /* 設置主要容器 */
+  margin: auto;
+  max-width: var(--max-width-content);
+  padding: 0 var(--spacing-4);
+  
+  /* 改善字體渲染 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* 平滑滾動 */
+  scroll-behavior: smooth;
+  
+  /* 防止水平滾動 */
+  overflow-x: hidden;
+}
+
+/* === 頁面類型特定樣式 === */
+
+.page-index {
+  /* 首頁特定樣式 */
+}
+
+.page-chapter {
+  /* 章節頁特定樣式 */
+}
+
+/* === 語言特定樣式 === */
+
+.lang-simplified {
+  /* 簡體中文特定樣式 */
+}
+
+.lang-traditional {
+  /* 繁體中文特定樣式 */
+}
+
+/* === 內容區域 === */
+
+.main-content {
+  position: relative;
+  z-index: 1;
+  
+  /* 為浮動元素預留空間 */
+  margin-bottom: var(--spacing-20);
+}
+
+/* === 圖片樣式 === */
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: var(--spacing-5) auto;
+  border-radius: var(--radius-base);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-all);
+}
+
+img:hover {
+  box-shadow: var(--shadow-md);
+}
+
+/* === 內容組織樣式 === */
+
+.question {
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-base);
+  padding: var(--spacing-4);
+  margin: var(--spacing-6) 0;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: var(--transition-all);
+}
+
+.question:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.question-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.questioner {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  background-color: var(--color-primary-lighter);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-full);
+}
+
+.question-time {
+  background-color: var(--color-bg-tertiary);
+  color: var(--color-text-secondary);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-base);
+  font-size: var(--font-size-xs);
+}
+
+.question-text {
+  color: var(--color-text-primary);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--line-height-normal);
+}
+
+.answer {
+  background: linear-gradient(135deg, var(--color-bg-secondary) 0%, var(--color-bg-tertiary) 100%);
+  border-left: 4px solid var(--color-primary-light);
+  border-radius: var(--radius-base);
+  padding: var(--spacing-4);
+  margin: var(--spacing-4) 0 var(--spacing-8) 0;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  transition: var(--transition-all);
+}
+
+.answer:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.answer-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+  font-size: var(--font-size-sm);
+}
+
+.answerer {
+  color: var(--color-primary-light);
+  font-weight: var(--font-weight-semibold);
+  background-color: var(--color-primary-lighter);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-full);
+}
+
+.answer-text {
+  color: var(--color-text-primary);
+  line-height: var(--line-height-relaxed);
+}
+
+/* === 互動元素樣式 === */
+
+.qa-actions {
+  position: absolute;
+  top: var(--spacing-3);
+  right: var(--spacing-3);
+  display: flex;
+  gap: var(--spacing-2);
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: var(--transition-all);
+  z-index: 10;
+}
+
+.question:hover .qa-actions,
+.answer:hover .qa-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.qa-btn {
+  background-color: var(--color-bg-secondary);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-full);
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: var(--transition-all);
+  box-shadow: var(--shadow-xs);
+}
+
+.qa-btn:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+/* === 書籤相關樣式 === */
+
+.bookmarked {
+  border-left-color: var(--color-warning);
+  position: relative;
+}
+
+.bookmark-indicator {
+  position: absolute;
+  top: var(--spacing-2);
+  right: var(--spacing-2);
+  background-color: var(--color-warning);
+  color: white;
+  border-radius: var(--radius-full);
+  width: var(--bookmark-indicator-size);
+  height: var(--bookmark-indicator-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: var(--transition-all);
+  z-index: 15;
+}
+
+.bookmark-indicator:hover {
+  background-color: var(--color-error);
+  transform: scale(1.1);
+}
+
+/* === Toast 通知樣式 === */
+
+.toast {
+  position: fixed;
+  bottom: var(--spacing-6);
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  background-color: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  padding: var(--spacing-3) var(--spacing-5);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  box-shadow: var(--shadow-lg);
+  z-index: var(--z-toast);
+  transition: transform var(--transition-base);
+  max-width: 90vw;
+  word-wrap: break-word;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* === 載入狀態樣式 === */
+
+.loading {
+  position: relative;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin: -10px 0 0 -10px;
+  border: 2px solid var(--color-primary-lighter);
+  border-radius: 50%;
+  border-top-color: var(--color-primary);
+  animation: spin 1s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* === 動畫定義 === */
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+    transform: translate3d(0,0,0);
+  }
+  40%, 43% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+/* === 焦點與無障礙樣式 === */
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: var(--color-text-primary);
+  color: var(--color-text-inverse);
+  padding: 8px;
+  text-decoration: none;
+  border-radius: var(--radius-base);
+  z-index: var(--z-modal);
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* 高對比度模式支援 */
+@media (prefers-contrast: high) {
+  .question,
+  .answer {
+    border-width: 2px;
+    border-style: solid;
+  }
+  
+  .qa-btn {
+    border-width: 2px;
+  }
+}
+
+/* 減少動畫偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .question,
+  .answer,
+  .qa-btn,
+  .bookmark-indicator,
+  .toast {
+    transition: none;
+  }
+  
+  .question:hover,
+  .answer:hover {
+    transform: none;
+  }
+}
+
+/* === 印刷樣式 === */
+
+@media print {
+  .qa-actions,
+  .bookmark-indicator,
+  .floating-toc,
+  .action-buttons,
+  .reading-toolbar,
+  .toast {
+    display: none !important;
+  }
+  
+  .question,
+  .answer {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: 1px solid #000 !important;
+    page-break-inside: avoid;
+  }
+  
+  .question-meta,
+  .answer-meta {
+    font-size: 0.8em;
+  }
+}

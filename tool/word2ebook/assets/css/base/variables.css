@@ -1,0 +1,281 @@
+/**
+ * @fileoverview CSS 變數定義
+ * @author Assistant
+ * @version 1.0.0
+ */
+
+:root {
+  /* === 顏色系統 === */
+  
+  /* 主色調 - 粉紅色系 */
+  --color-primary: #e75480;
+  --color-primary-light: #ff69b4;
+  --color-primary-lighter: #f8c8dc;
+  --color-primary-dark: #d44d75;
+  --color-primary-darker: #c14369;
+  
+  /* 輔助色調 */
+  --color-secondary: #e85aad;
+  --color-tertiary: #f585cc;
+  
+  /* 背景色 */
+  --color-bg-primary: #fff0f5;
+  --color-bg-secondary: #ffffff;
+  --color-bg-tertiary: #fef7f0;
+  
+  /* 文字色 */
+  --color-text-primary: #333333;
+  --color-text-secondary: #666666;
+  --color-text-tertiary: #999999;
+  --color-text-inverse: #ffffff;
+  
+  /* 邊框色 */
+  --color-border-light: #f8c8dc;
+  --color-border-medium: #e75480;
+  --color-border-dark: #d44d75;
+  
+  /* 狀態色 */
+  --color-success: #28a745;
+  --color-warning: #ffc107;
+  --color-error: #dc3545;
+  --color-info: #17a2b8;
+  
+  /* 深色模式 */
+  --color-dark-bg-primary: #3b1c32;
+  --color-dark-bg-secondary: #4a2c3a;
+  --color-dark-bg-tertiary: #5a2d49;
+  --color-dark-text-primary: #fddde6;
+  --color-dark-text-secondary: #e6c7d0;
+  --color-dark-text-tertiary: #d1b3be;
+  --color-dark-primary: #ff91af;
+  --color-dark-secondary: #ffb3c6;
+  --color-dark-tertiary: #ffd1e0;
+  
+  /* === 字體系統 === */
+  
+  /* 字體家族 */
+  --font-family-primary: 'Helvetica', 'Arial', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-family-monospace: 'Monaco', 'Menlo', 'Consolas', monospace;
+  
+  /* 字體大小 */
+  --font-size-xs: 0.75rem;    /* 12px */
+  --font-size-sm: 0.875rem;   /* 14px */
+  --font-size-base: 1rem;     /* 16px */
+  --font-size-lg: 1.125rem;   /* 18px */
+  --font-size-xl: 1.25rem;    /* 20px */
+  --font-size-2xl: 1.5rem;    /* 24px */
+  --font-size-3xl: 1.875rem;  /* 30px */
+  --font-size-4xl: 2.25rem;   /* 36px */
+  
+  /* 標題字體大小 */
+  --font-size-h1: 1.625rem;   /* 26px */
+  --font-size-h2: 1.375rem;   /* 22px */
+  --font-size-h3: 1.25rem;    /* 20px */
+  --font-size-h4: 1.125rem;   /* 18px */
+  --font-size-h5: 1rem;       /* 16px */
+  --font-size-h6: 0.875rem;   /* 14px */
+  
+  /* 字體粗細 */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  
+  /* 行距 */
+  --line-height-tight: 1.2;
+  --line-height-normal: 1.6;
+  --line-height-relaxed: 1.8;
+  --line-height-loose: 2.0;
+  
+  /* === 間距系統 === */
+  
+  /* 基礎間距單位 */
+  --spacing-0: 0;
+  --spacing-1: 0.25rem;  /* 4px */
+  --spacing-2: 0.5rem;   /* 8px */
+  --spacing-3: 0.75rem;  /* 12px */
+  --spacing-4: 1rem;     /* 16px */
+  --spacing-5: 1.25rem;  /* 20px */
+  --spacing-6: 1.5rem;   /* 24px */
+  --spacing-8: 2rem;     /* 32px */
+  --spacing-10: 2.5rem;  /* 40px */
+  --spacing-12: 3rem;    /* 48px */
+  --spacing-16: 4rem;    /* 64px */
+  --spacing-20: 5rem;    /* 80px */
+  
+  /* 特殊間距 */
+  --spacing-xs: var(--spacing-1);
+  --spacing-sm: var(--spacing-2);
+  --spacing-md: var(--spacing-4);
+  --spacing-lg: var(--spacing-6);
+  --spacing-xl: var(--spacing-8);
+  --spacing-2xl: var(--spacing-12);
+  
+  /* === 尺寸系統 === */
+  
+  /* 內容寬度 */
+  --width-xs: 20rem;      /* 320px */
+  --width-sm: 24rem;      /* 384px */
+  --width-md: 28rem;      /* 448px */
+  --width-lg: 32rem;      /* 512px */
+  --width-xl: 36rem;      /* 576px */
+  --width-2xl: 42rem;     /* 672px */
+  --width-3xl: 48rem;     /* 768px */
+  --width-4xl: 56rem;     /* 896px */
+  --width-5xl: 64rem;     /* 1024px */
+  --width-6xl: 72rem;     /* 1152px */
+  --width-full: 100%;
+  
+  /* 最大內容寬度 */
+  --max-width-content: 50rem;  /* 800px */
+  --max-width-reading: 45rem;  /* 720px */
+  --max-width-sidebar: 20rem;  /* 320px */
+  
+  /* 高度 */
+  --height-header: 4rem;       /* 64px */
+  --height-footer: 3rem;       /* 48px */
+  --height-button: 2.5rem;     /* 40px */
+  --height-input: 2.5rem;      /* 40px */
+  
+  /* === 圓角系統 === */
+  --radius-none: 0;
+  --radius-sm: 0.125rem;    /* 2px */
+  --radius-base: 0.25rem;   /* 4px */
+  --radius-md: 0.375rem;    /* 6px */
+  --radius-lg: 0.5rem;      /* 8px */
+  --radius-xl: 0.75rem;     /* 12px */
+  --radius-2xl: 1rem;       /* 16px */
+  --radius-full: 9999px;
+  
+  /* === 陰影系統 === */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  /* 粉紅色陰影 */
+  --shadow-pink-sm: 0 2px 6px rgba(231, 84, 128, 0.1);
+  --shadow-pink-base: 0 4px 12px rgba(231, 84, 128, 0.15);
+  --shadow-pink-lg: 0 8px 24px rgba(231, 84, 128, 0.2);
+  
+  /* === 過渡動畫 === */
+  --transition-fast: 150ms ease-in-out;
+  --transition-base: 300ms ease-in-out;
+  --transition-slow: 500ms ease-in-out;
+  
+  /* 常用過渡屬性 */
+  --transition-all: all var(--transition-base);
+  --transition-colors: color var(--transition-base), background-color var(--transition-base), border-color var(--transition-base);
+  --transition-transform: transform var(--transition-base);
+  --transition-opacity: opacity var(--transition-base);
+  
+  /* === Z-index 層級 === */
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+  
+  /* === 響應式斷點 === */
+  --breakpoint-xs: 0;
+  --breakpoint-sm: 576px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 992px;
+  --breakpoint-xl: 1200px;
+  --breakpoint-2xl: 1400px;
+  
+  /* === 組件特定變數 === */
+  
+  /* 按鈕 */
+  --button-padding-y: var(--spacing-2);
+  --button-padding-x: var(--spacing-4);
+  --button-border-radius: var(--radius-md);
+  --button-font-weight: var(--font-weight-medium);
+  
+  /* 輸入框 */
+  --input-padding-y: var(--spacing-2);
+  --input-padding-x: var(--spacing-3);
+  --input-border-radius: var(--radius-base);
+  --input-border-width: 1px;
+  
+  /* 卡片 */
+  --card-padding: var(--spacing-6);
+  --card-border-radius: var(--radius-lg);
+  --card-shadow: var(--shadow-base);
+  
+  /* 側邊欄 */
+  --sidebar-width: 20rem;  /* 320px */
+  --sidebar-mobile-width: 16rem;  /* 256px */
+  
+  /* 導航 */
+  --nav-height: 4rem;  /* 64px */
+  --nav-mobile-height: 3.5rem;  /* 56px */
+  
+  /* TOC */
+  --toc-indent: 1.5rem;  /* 24px */
+  --toc-icon-size: 1rem;  /* 16px */
+  
+  /* 書籤 */
+  --bookmark-indicator-size: 1.2rem;  /* 19.2px */
+  
+  /* 搜索 */
+  --search-result-padding: var(--spacing-4);
+  --search-highlight-bg: #fff3cd;
+  --search-highlight-color: #856404;
+  
+  /* === 動畫關鍵幀 === */
+  --animation-duration-fast: 200ms;
+  --animation-duration-normal: 300ms;
+  --animation-duration-slow: 500ms;
+  
+  /* 緩動函數 */
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* === 深色模式變數覆蓋 === */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg-primary: var(--color-dark-bg-primary);
+    --color-bg-secondary: var(--color-dark-bg-secondary);
+    --color-bg-tertiary: var(--color-dark-bg-tertiary);
+    --color-text-primary: var(--color-dark-text-primary);
+    --color-text-secondary: var(--color-dark-text-secondary);
+    --color-text-tertiary: var(--color-dark-text-tertiary);
+    --color-primary: var(--color-dark-primary);
+    --color-secondary: var(--color-dark-secondary);
+    --color-tertiary: var(--color-dark-tertiary);
+  }
+}
+
+/* 強制深色模式 */
+.dark-mode {
+  --color-bg-primary: var(--color-dark-bg-primary);
+  --color-bg-secondary: var(--color-dark-bg-secondary);
+  --color-bg-tertiary: var(--color-dark-bg-tertiary);
+  --color-text-primary: var(--color-dark-text-primary);
+  --color-text-secondary: var(--color-dark-text-secondary);
+  --color-text-tertiary: var(--color-dark-text-tertiary);
+  --color-primary: var(--color-dark-primary);
+  --color-secondary: var(--color-dark-secondary);
+  --color-tertiary: var(--color-dark-tertiary);
+  
+  /* 深色模式特定陰影 */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.4), 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-base: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+  
+  /* 深色模式搜索高亮 */
+  --search-highlight-bg: #4a2c3a;
+  --search-highlight-color: #ff91af;
+}
