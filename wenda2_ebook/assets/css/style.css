@@ -288,6 +288,29 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     z-index: 980; /* 降低z-index，确保低于action-menu-items */
     transition: transform 0.3s ease, opacity 0.3s ease;
+    /* 添加滚动条支持，防止内容溢出 */
+    max-height: calc(100vh - 140px); /* 视窗高度 - 顶部偏移 - 底部安全距离 */
+    overflow-y: auto;
+}
+
+/* 閱讀工具欄滾動條樣式 */
+.reading-toolbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.reading-toolbar::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.3);
+    border-radius: 3px;
+}
+
+.reading-toolbar::-webkit-scrollbar-thumb {
+    background: rgba(231, 84, 128, 0.4);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.reading-toolbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(231, 84, 128, 0.6);
 }
 
 .reading-toolbar.hidden {
@@ -908,6 +931,19 @@ body.dark-mode .reading-toolbar,
 body.dark-mode .floating-toc {
     background: rgba(59, 28, 50, 0.95);
     border-color: #5a2d49;
+}
+
+/* 暗色模式滾動條樣式 */
+body.dark-mode .reading-toolbar::-webkit-scrollbar-track {
+    background: rgba(90, 45, 73, 0.3);
+}
+
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 105, 180, 0.6);
 }
 
 body.dark-mode .floating-toc-header {
@@ -1856,7 +1892,7 @@ body.dark-mode .search-load-all:hover {
 .floating-level-controls {
   position: fixed;
   right: 20px; /* 与阅读设置工具栏保持一致 */
-  top: 250px; /* 设置在阅读设置工具栏下方，留出足够空间 */
+  bottom: 120px; /* 设置在.action-menu上方不远处（30px + 50px + 40px间距） */
   z-index: 950; /* 设置比阅读设置工具栏(900)高一级，但低于action-menu-items(1000) */
   background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
   border-radius: 25px;
@@ -2373,14 +2409,28 @@ body.dark-mode .bookmark-time {
     color: #ccc; /* 與元資訊相同的淺灰色 */
 }
 
-/* 响应式浮动层级控制定位 - 所有尺寸都居中 */
+/* 响应式浮动层级控制定位 */
+
+/* 宽屏幕优化：将浮动层级控制按钮靠近内容区域并垂直置中 */
+@media (min-width: 800px) {
+  .floating-level-controls {
+    /* 在宽屏幕下，将按钮定位到内容区域右侧，避免用户鼠标移动距离过远 */
+    right: auto;
+    left: calc(75%); /* 屏幕中心偏右 */
+    /* 实现垂直置中 */
+    bottom: auto; /* 移除bottom定位 */
+    top: 50%; /* 垂直置中起点 */
+    transform: translateY(-50%); /* 完成垂直置中 */
+  }
+}
+
 /* 移动端优化觸摸體驗 */
 @media (max-width: 600px) {
   .floating-level-controls {
     /* 在移动端调整到右下角，避免与其他UI元素冲突 */
     right: 15px;
     top: auto;
-    bottom: 150px; /* 放置在操作按钮上方 */
+    bottom: 130px; /* 放置在操作按钮上方，与桌面端保持相对位置一致 */
     padding: 15px 10px; /* 增加padding讓觸摸更容易 */
     max-width: 100px; 
     z-index: 950 !important; /* 保持与桌面版一致的层级关系 */
@@ -2462,7 +2512,7 @@ body.dark-mode .bookmark-time {
 @media (max-width: 400px) {
   .floating-level-controls {
     right: 10px; /* 进一步靠近边缘 */
-    bottom: 140px; /* 稍微上移一点 */
+    bottom: 125px; /* 与桌面端和移动端保持相对位置一致 */
     padding: 18px 12px; /* 更大的觸摸區域 */
     max-width: 110px;
     z-index: 950 !important; /* 保持与其他设备一致的层级关系 */
@@ -2554,5 +2604,43 @@ body.dark-mode .bookmark-time {
     .top-nav-buttons a {
         font-size: 17px !important;
     }
+}
+
+/* ========== 屏幕高度优化 ========== */
+
+/* 当屏幕高度充足时，让閱讀設置工具栏底部靠近右下角操作菜单 */
+@media (min-height: 700px) {
+  .reading-toolbar {
+    top: auto; /* 移除top定位 */
+    bottom: 110px; /* 操作菜单(bottom: 30px + 50px按钮高度 + 30px安全间距) */
+    max-height: calc(100vh - 130px); /* 调整最大高度：视窗高度 - 底部偏移 - 顶部安全距离 */
+    /* 保持原有的滚动条和其他样式 */
+  }
+}
+
+/* 当屏幕高度不足时，优化閱讀設置工具栏位置 */
+@media (max-height: 600px) {
+  .reading-toolbar {
+    top: 10px; /* 贴近顶部，最大化可视空间 */
+    max-height: calc(100vh - 20px); /* 几乎占满整个视窗高度 */
+  }
+}
+
+/* 极小高度屏幕进一步优化 */
+@media (max-height: 400px) {
+  .reading-toolbar {
+    top: 5px; /* 更接近顶部 */
+    max-height: calc(100vh - 10px);
+    padding: 10px; /* 减少内边距以节省空间 */
+  }
+  
+  .toolbar-section {
+    margin-bottom: 10px; /* 减少间距 */
+    padding-bottom: 8px;
+  }
+  
+  .toolbar-label {
+    margin-bottom: 3px; /* 压缩标签间距 */
+  }
 }
 
