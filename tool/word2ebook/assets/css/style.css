@@ -1856,7 +1856,7 @@ body.dark-mode .search-load-all:hover {
 .floating-level-controls {
   position: fixed;
   right: 20px; /* 与阅读设置工具栏保持一致 */
-  top: 50px; /* 设置在阅读设置工具栏下方，留出足够空间 */
+  bottom: 120px; /* 设置在.action-menu上方不远处（30px + 50px + 40px间距） */
   z-index: 950; /* 设置比阅读设置工具栏(900)高一级，但低于action-menu-items(1000) */
   background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
   border-radius: 25px;
@@ -2380,7 +2380,7 @@ body.dark-mode .bookmark-time {
     /* 在移动端调整到右下角，避免与其他UI元素冲突 */
     right: 15px;
     top: auto;
-    bottom: 150px; /* 放置在操作按钮上方 */
+    bottom: 130px; /* 放置在操作按钮上方，与桌面端保持相对位置一致 */
     padding: 15px 10px; /* 增加padding讓觸摸更容易 */
     max-width: 100px; 
     z-index: 950 !important; /* 保持与桌面版一致的层级关系 */
@@ -2462,7 +2462,7 @@ body.dark-mode .bookmark-time {
 @media (max-width: 400px) {
   .floating-level-controls {
     right: 10px; /* 进一步靠近边缘 */
-    bottom: 140px; /* 稍微上移一点 */
+    bottom: 125px; /* 与桌面端和移动端保持相对位置一致 */
     padding: 18px 12px; /* 更大的觸摸區域 */
     max-width: 110px;
     z-index: 950 !important; /* 保持与其他设备一致的层级关系 */
