@@ -3103,20 +3103,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!tocContainer) return;
     
     // 检测实际的目录层级并隐藏不必要的按钮
-    detectAndHideLevelButtons(tocContainer);
+    const maxLevel = detectAndHideLevelButtons(tocContainer);
     
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
     const defaultLevel = isChapterPage ? '3' : '2'; // 章節頁面默認第3層，首頁默認第2層
     
     // 获取用户保存的偏好，使用對應的默認值
-    const savedLevel = localStorage.getItem('toc-display-level') || defaultLevel;
+    const rawSavedLevel = localStorage.getItem('toc-display-level') || defaultLevel;
+    
+    // 智能選擇可用的層級
+    const validLevel = selectValidLevel(rawSavedLevel, maxLevel, defaultLevel, tocContainer);
     
     // 初始化按钮状态
-    updateLevelButtonsActive(savedLevel);
+    updateLevelButtonsActive(validLevel);
     
-    // 根据保存的偏好设置初始显示
-    setTocDisplayLevel(savedLevel);
+    // 根据智能选择的层级设置初始显示
+    setTocDisplayLevel(validLevel);
     
     // 绑定层级切换按钮事件
     bindLevelControlEvents();
@@ -3131,6 +3134,69 @@ document.addEventListener('DOMContentLoaded', function() {
     bindExpandAllEvents();
   }
   
+  // 智能選擇可用的層級
+  function selectValidLevel(savedLevel, maxLevel, defaultLevel, tocContainer) {
+    const savedLevelNum = parseInt(savedLevel);
+    const maxLevelNum = parseInt(maxLevel);
+    const defaultLevelNum = parseInt(defaultLevel);
+    
+    // 檢查當前頁面實際存在的層級（有內容的層級）
+    const availableLevels = [];
+    
+    // 檢查每個層級是否有實際的目錄項目
+    for (let level = 1; level <= maxLevelNum; level++) {
+      const itemsAtLevel = tocContainer.querySelectorAll(`.toc-item[data-level="${level}"]`);
+      if (itemsAtLevel.length > 0) {
+        availableLevels.push(level);
+      }
+    }
+    
+    // 也檢查是否有對應的層級按鈕可見
+    const visibleButtons = [];
+    const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');
+    allLevelButtons.forEach(btn => {
+      const level = parseInt(btn.getAttribute('data-level'));
+      if (btn.style.display !== 'none' && !btn.hasAttribute('data-hidden-level')) {
+        if (!visibleButtons.includes(level)) {
+          visibleButtons.push(level);
+        }
+      }
+    });
+    
+    // 取交集：既有內容又有按鈕的層級
+    const validLevels = availableLevels.filter(level => visibleButtons.includes(level));
+    
+    console.log('有內容的層級:', availableLevels, '可見按鈕層級:', visibleButtons, '有效層級:', validLevels);
+    console.log('保存的層級:', savedLevelNum, '最大層級:', maxLevelNum);
+    
+    // 如果保存的層級在有效層級中，直接使用
+    if (validLevels.includes(savedLevelNum)) {
+      console.log('使用保存的層級:', savedLevelNum);
+      return savedLevel;
+    }
+    
+    // 如果保存的層級不可用，選擇最接近的有效層級
+    if (validLevels.length === 0) {
+      console.warn('沒有找到有效層級，使用默認值');
+      return defaultLevel;
+    }
+    
+    // 找到最接近保存層級的有效層級
+    let selectedLevel = validLevels[0];
+    let minDistance = Math.abs(validLevels[0] - savedLevelNum);
+    
+    for (const level of validLevels) {
+      const distance = Math.abs(level - savedLevelNum);
+      if (distance < minDistance) {
+        minDistance = distance;
+        selectedLevel = level;
+      }
+    }
+    
+    console.log('智能選擇的層級:', selectedLevel, '原因: 最接近保存的層級', savedLevelNum);
+    return selectedLevel.toString();
+  }
+
   // 检测目录实际层级并隐藏不必要的层级按钮
   function detectAndHideLevelButtons(tocContainer) {
     let maxLevel = 1; // 默认至少有第1层
