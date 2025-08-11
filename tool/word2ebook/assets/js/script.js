@@ -2931,6 +2931,12 @@ document.addEventListener('DOMContentLoaded', function() {
           tocTitle.textContent = '📖 章節目錄';
           tocTitle.style.display = 'block';
         }
+        
+        // 切換到目錄標籤頁時，自動定位到當前章節
+        // 添加小延遲確保DOM更新完成
+        setTimeout(() => {
+          updateCurrentSection();
+        }, 50);
       } else if (tab === 'bookmarks') {
         // 书签模式：隐藏目录，只显示书签内容
         if (tocList) tocList.style.display = 'none';
