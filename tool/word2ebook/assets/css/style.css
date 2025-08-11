@@ -1856,7 +1856,7 @@ body.dark-mode .search-load-all:hover {
 .floating-level-controls {
   position: fixed;
   right: 20px; /* 与阅读设置工具栏保持一致 */
-  top: 250px; /* 设置在阅读设置工具栏下方，留出足够空间 */
+  top: 50px; /* 设置在阅读设置工具栏下方，留出足够空间 */
   z-index: 950; /* 设置比阅读设置工具栏(900)高一级，但低于action-menu-items(1000) */
   background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
   border-radius: 25px;
