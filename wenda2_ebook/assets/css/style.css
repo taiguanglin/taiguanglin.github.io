@@ -387,7 +387,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    z-index: 800;
     transition: left 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -1615,49 +1615,51 @@ body.dark-mode .search-load-all:hover {
     }
     
     /* TOC目錄字型優化 - 平板 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     .toc > ul > li { 
-        font-size: 1.15em !important; /* 從1.1em增加到1.15em */
-        margin-bottom: 10px !important;
-        line-height: 1.5 !important;
+        margin-bottom: 10px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul > li { 
-        font-size: 1.05em !important; /* 從1.0em增加到1.05em */
-        margin-bottom: 8px !important;
-        line-height: 1.4 !important;
+        margin-bottom: 8px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul ul > li { 
-        font-size: 1.0em !important; /* 從0.95em增加到1.0em */
-        margin-bottom: 6px !important;
-        line-height: 1.4 !important;
+        margin-bottom: 6px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul ul ul > li { 
-        font-size: 0.98em !important; /* 從0.9em增加到0.98em */
-        margin-bottom: 5px !important;
-        line-height: 1.3 !important;
+        margin-bottom: 5px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     /* 章節頁TOC優化 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     .toc-item.toc-level-1 > a {
-        font-size: 19px !important;
-        line-height: 1.5 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     .toc-item.toc-level-2 > a {
-        font-size: 17px !important;
-        line-height: 1.4 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     .toc-item.toc-level-3 > a {
-        font-size: 16px !important;
-        line-height: 1.4 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     .toc-item.toc-level-4 > a {
-        font-size: 15px !important;
-        line-height: 1.3 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     /* 標題字型調整 */
