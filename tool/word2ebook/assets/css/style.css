@@ -251,8 +251,16 @@ body.dark-mode .top-nav-buttons a {
 body.dark-mode .top-nav-buttons a:hover {
     box-shadow: 0 3px 8px rgba(90, 45, 73, 0.5);
 }
-body.dark-mode .back-to-top a { color: #ff91af; }
-body.dark-mode .back-to-top a:hover { color: #ff69b4; }
+body.dark-mode .back-to-top a { 
+    color: #ff91af; 
+    /* 暗色模式下🔝符號的text-shadow效果 */
+    text-shadow: 0 0 3px rgba(255, 105, 180, 0.4), 0 0 6px rgba(255, 105, 180, 0.2);
+}
+body.dark-mode .back-to-top a:hover { 
+    color: #ff69b4; 
+    /* 暗色模式hover時增強text-shadow效果 */
+    text-shadow: 0 0 4px rgba(255, 105, 180, 0.6), 0 0 8px rgba(255, 105, 180, 0.4);
+}
 body.dark-mode .lang-switch a { color: #ff91af; }
 body.dark-mode .lang-switch a:hover { color: #ff69b4; }
 body.dark-mode .nav-home a { color: #ff91af; }
@@ -265,8 +273,17 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
 
 /* 夜間模式按鈕已移至閱讀設置中 */
 .back-to-top { text-align: right; margin: 20px 0; }
-.back-to-top a { font-size: 0.9em; color: #d44d75; }
-.back-to-top a:hover { color: #ff69b4; }
+.back-to-top a { 
+    font-size: 0.9em; 
+    color: #d44d75; 
+    /* 為🔝符號添加粉紅色text-shadow效果 */
+    text-shadow: 0 0 3px rgba(231, 84, 128, 0.3), 0 0 6px rgba(231, 84, 128, 0.2);
+}
+.back-to-top a:hover { 
+    color: #ff69b4; 
+    /* hover時增強text-shadow效果 */
+    text-shadow: 0 0 4px rgba(231, 84, 128, 0.5), 0 0 8px rgba(231, 84, 128, 0.3);
+}
 .lang-switch { 
     text-align: right; 
     margin: 0;
@@ -936,6 +953,26 @@ body.dark-mode .floating-toc {
     border-color: #5a2d49;
 }
 
+/* 浮動目錄滾動條樣式 */
+.floating-toc-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.floating-toc-content::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.3);
+    border-radius: 3px;
+}
+
+.floating-toc-content::-webkit-scrollbar-thumb {
+    background: rgba(231, 84, 128, 0.4);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.floating-toc-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(231, 84, 128, 0.6);
+}
+
 /* 暗色模式滾動條樣式 */
 body.dark-mode .reading-toolbar::-webkit-scrollbar-track {
     background: rgba(90, 45, 73, 0.3);
@@ -946,6 +983,19 @@ body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb {
 }
 
 body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 105, 180, 0.6);
+}
+
+/* 暗色模式浮動目錄滾動條樣式 */
+body.dark-mode .floating-toc-content::-webkit-scrollbar-track {
+    background: rgba(90, 45, 73, 0.3);
+}
+
+body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 105, 180, 0.6);
 }
 
