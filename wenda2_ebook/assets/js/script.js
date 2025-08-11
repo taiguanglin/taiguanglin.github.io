@@ -2229,14 +2229,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const screenWidth = window.innerWidth;
     let responsiveBaseFontSize = fontSize;
     
-    // 根據螢幕寬度調整基礎字型大小（與CSS響應式設計配合）
-    if (screenWidth <= 400) {
-      responsiveBaseFontSize = Math.max(fontSize, 19); // 小手機最小19px
-    } else if (screenWidth <= 600) {
-      responsiveBaseFontSize = Math.max(fontSize, 18); // 手機最小18px
-    } else if (screenWidth <= 768) {
-      responsiveBaseFontSize = Math.max(fontSize, 17); // 平板最小17px
-    }
+    // 根據螢幕寬度調整基礎字型大小，但允許用户自由调整
+    // 移除最小值限制，允许用户设置更小的字体
+    responsiveBaseFontSize = fontSize;
     
     // 計算相對於響應式基礎字型大小的比例
     const fontScale = responsiveBaseFontSize / 16;
@@ -2248,6 +2243,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const level3Size = Math.round(responsiveBaseFontSize * 0.95); // 第三層：稍小
     const level4Size = Math.round(responsiveBaseFontSize * 0.9); // 第四層：更小
     
+    // 調試信息
+    console.log('字體設置應用:', {
+      screenWidth,
+      fontSize,
+      responsiveBaseFontSize,
+      level1Size,
+      level2Size,
+      level3Size,
+      level4Size,
+      lineHeightValue
+    });
+    
     // 間距調整（基於行距設置）
     const spacing1 = Math.round(8 * lineHeightValue / 1.6); // 第一層間距
     const spacing2 = Math.round(6 * lineHeightValue / 1.6); // 第二層間距  
@@ -2255,47 +2262,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const spacing4 = Math.round(3 * lineHeightValue / 1.6); // 第四層間距
     
     tocStyle.textContent = `
-      /* 首頁TOC樣式調整 */
+      /* 首頁TOC樣式調整 - 使用更高的特定性確保生效 */
+      #main-toc .toc > ul > li,
       .toc > ul > li { 
         font-size: ${level1Size}px !important; 
         margin-bottom: ${spacing1}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #main-toc .toc ul ul > li,
       .toc ul ul > li { 
         font-size: ${level2Size}px !important; 
         margin-bottom: ${spacing2}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #main-toc .toc ul ul ul > li,
       .toc ul ul ul > li { 
         font-size: ${level3Size}px !important; 
         margin-bottom: ${spacing3}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #main-toc .toc ul ul ul ul > li,
       .toc ul ul ul ul > li { 
         font-size: ${level4Size}px !important; 
         margin-bottom: ${spacing4}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
-      /* 章節頁TOC樣式調整 */
+      /* 章節頁TOC樣式調整 - 使用更高的特定性確保生效 */
+      #chapter-toc .toc-item.toc-level-1 > a,
       .toc-item.toc-level-1 > a {
         font-size: ${level1Size}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #chapter-toc .toc-item.toc-level-2 > a,
       .toc-item.toc-level-2 > a {
         font-size: ${level2Size}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #chapter-toc .toc-item.toc-level-3 > a,
       .toc-item.toc-level-3 > a {
         font-size: ${level3Size}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #chapter-toc .toc-item.toc-level-4 > a,
       .toc-item.toc-level-4 > a {
         font-size: ${level4Size}px !important;
         line-height: ${lineHeightValue} !important;
