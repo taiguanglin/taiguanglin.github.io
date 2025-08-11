@@ -280,7 +280,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 980; /* 降低z-index，确保低于action-menu-items */
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -740,6 +740,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     visibility: hidden;
     transition: all 0.3s ease;
     pointer-events: none;
+    z-index: 1000; /* 确保action-menu-items高于reading-toolbar */
 }
 
 .action-menu.expanded .action-menu-items {
@@ -1766,19 +1767,18 @@ body.dark-mode .search-load-all:hover {
 
 /* 滚动时显示的浮动层级控制 */
 .floating-level-controls {
-    position: fixed;
-    right: 25%; /* 水平靠右 */
-    top: 50%; /* 垂直居中 */
-    transform: translateY(-50%); /* 只垂直居中 */
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
-    border-radius: 25px;
-    padding: 12px 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
-    backdrop-filter: blur(12px); /* 增强模糊效果 */
-    border: 1px solid rgba(255, 105, 180, 0.3);
-    transition: all 0.3s ease; /* 简化过渡效果 */
-    max-width: 120px; /* 限制最大宽度 */
+  position: fixed;
+  right: 20px; /* 与阅读设置工具栏保持一致 */
+  top: 250px; /* 设置在阅读设置工具栏下方，留出足够空间 */
+  z-index: 950; /* 设置比阅读设置工具栏(900)高一级，但低于action-menu-items(1000) */
+  background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
+  border-radius: 25px;
+  padding: 12px 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
+  backdrop-filter: blur(12px); /* 增强模糊效果 */
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  transition: all 0.3s ease; /* 简化过渡效果 */
+  max-width: 120px; /* 限制最大宽度 */
 }
 
 /* 浮動層級控制收縮狀態 */
@@ -1794,23 +1794,24 @@ body.dark-mode .search-load-all:hover {
 
 /* 浮動層級控制展開/收縮按鈕 */
 .floating-level-toggle {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 24px;
-    height: 24px;
-    border: 1px solid #ff69b4;
-    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
-    color: #d63384;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1001;
+  position: absolute;
+  top: -12px; /* 向上移動到容器外部，避免遮擋"层级"文字 */
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ff69b4;
+  background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+  color: #d63384;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 添加阴影增强可见性 */
 }
 
 .floating-level-toggle:hover {
@@ -1821,10 +1822,11 @@ body.dark-mode .search-load-all:hover {
 
 /* 收縮狀態時的切換按鈕位置調整 */
 .floating-level-controls.collapsed .floating-level-toggle {
-    position: relative;
-    top: auto;
-    right: auto;
-    margin: 0 auto;
+  position: relative;
+  top: auto;
+  right: auto;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* 保持阴影效果 */
 }
 
 .floating-level-label {
@@ -2115,8 +2117,12 @@ body.dark-mode .floating-level-toggle {
 }
 
 body.dark-mode .floating-level-toggle:hover {
-    background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
-    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4);
+  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .floating-level-toggle {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* 暗色模式下的阴影 */
 }
 
 body.dark-mode .toc-expand-icon {
@@ -2236,15 +2242,18 @@ body.dark-mode .bookmark-time {
 /* 响应式浮动层级控制定位 - 所有尺寸都居中 */
 /* 移动端优化觸摸體驗 */
 @media (max-width: 600px) {
-    .floating-level-controls {
-        /* 保持居中，但優化觸摸體驗 */
-        padding: 15px 10px; /* 增加padding讓觸摸更容易 */
-        max-width: 100px; 
-        z-index: 9999 !important; /* 强制最高层级 */
-        background: rgba(255, 255, 255, 0.95); /* 提高背景不透明度 */
-        border: 2px solid rgba(255, 105, 180, 0.6); /* 增强边框 */
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* 增强陰影 */
-    }
+  .floating-level-controls {
+    /* 在移动端调整到右下角，避免与其他UI元素冲突 */
+    right: 15px;
+    top: auto;
+    bottom: 150px; /* 放置在操作按钮上方 */
+    padding: 15px 10px; /* 增加padding讓觸摸更容易 */
+    max-width: 100px; 
+    z-index: 950 !important; /* 保持与桌面版一致的层级关系 */
+    background: rgba(255, 255, 255, 0.95); /* 提高背景不透明度 */
+    border: 2px solid rgba(255, 105, 180, 0.6); /* 增强边框 */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* 增强陰影 */
+  }
     
     .floating-level-label {
         font-size: 12px; /* 增大字體便於閱讀 */
@@ -2317,14 +2326,16 @@ body.dark-mode .bookmark-time {
 
 /* 小手機螢幕進一步優化 */
 @media (max-width: 400px) {
-    .floating-level-controls {
-        padding: 18px 12px; /* 更大的觸摸區域 */
-        max-width: 110px;
-        z-index: 10000 !important;
-        background: rgba(255, 255, 255, 0.98) !important;
-        border: 3px solid rgba(255, 105, 180, 0.8) !important; /* 更明顯的邊框 */
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
-    }
+  .floating-level-controls {
+    right: 10px; /* 进一步靠近边缘 */
+    bottom: 140px; /* 稍微上移一点 */
+    padding: 18px 12px; /* 更大的觸摸區域 */
+    max-width: 110px;
+    z-index: 950 !important; /* 保持与其他设备一致的层级关系 */
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 3px solid rgba(255, 105, 180, 0.8) !important; /* 更明顯的邊框 */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+  }
     
     .floating-level-label {
         font-size: 13px !important; /* 更大的標籤字體 */
