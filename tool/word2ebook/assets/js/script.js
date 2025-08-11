@@ -740,7 +740,6 @@ document.addEventListener('DOMContentLoaded', function() {
       '<div class="toolbar-section">' +
         '<div class="toolbar-label">' + 
           getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + 
-          '<span class="font-size-display" id="current-font-size">' + fontSize + 'px</span>' +
         '</div>' +
         '<div class="toolbar-controls">' +
           '<button class="ctrl-btn font-adjust" data-action="font-decrease" title="縮小字體">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
@@ -807,11 +806,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (normalBtn) normalBtn.classList.add('active');
     }
     
-    // 更新字體大小顯示
-    const fontSizeDisplay = document.getElementById('current-font-size');
-    if (fontSizeDisplay) {
-      fontSizeDisplay.textContent = fontSize + 'px';
-    }
     // A- 和 A+ 按鈕使用 font-adjust 類，不參與 active 狀態管理
   }
 
