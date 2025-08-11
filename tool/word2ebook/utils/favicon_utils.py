@@ -40,7 +40,12 @@ class FaviconManager:
                 self.favicon_relative_path = pattern
                 return favicon_path
         
-        print("ℹ️  未找到 favicon 文件，跳過favicon設置")
+        print("⚠️  【警告】未找到 favicon 文件！")
+        print("   已搜索以下文件：")
+        for pattern in self.search_patterns:
+            search_path = source_dir / pattern
+            print(f"   - {search_path}")
+        print("   程序將繼續運行，但網頁將沒有 favicon 圖標。")
         return None
     
     def copy_favicon_to_output(self) -> bool:
