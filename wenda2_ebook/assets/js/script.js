@@ -738,11 +738,14 @@ document.addEventListener('DOMContentLoaded', function() {
         '<button class="ctrl-btn" data-action="close-toolbar">✕</button>' +
       '</div>' +
       '<div class="toolbar-section">' +
-        '<div class="toolbar-label">' + getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + '</div>' +
+        '<div class="toolbar-label">' + 
+          getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + 
+          '<span class="font-size-display" id="current-font-size">' + fontSize + 'px</span>' +
+        '</div>' +
         '<div class="toolbar-controls">' +
-          '<button class="ctrl-btn" data-action="font-decrease">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
-          '<button class="ctrl-btn active" data-action="font-normal">' + getI18nText('readingSettings.fontNormal', isTraditionalChinesePage(), 'A') + '</button>' +
-          '<button class="ctrl-btn" data-action="font-increase">' + getI18nText('readingSettings.fontIncrease', isTraditionalChinesePage(), 'A+') + '</button>' +
+          '<button class="ctrl-btn font-adjust" data-action="font-decrease" title="縮小字體">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
+          '<button class="ctrl-btn font-option active" data-action="font-normal" title="重置為默認字體">' + getI18nText('readingSettings.fontNormal', isTraditionalChinesePage(), 'A') + '</button>' +
+          '<button class="ctrl-btn font-adjust" data-action="font-increase" title="放大字體">' + getI18nText('readingSettings.fontIncrease', isTraditionalChinesePage(), 'A+') + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="toolbar-section">' +
@@ -793,8 +796,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 更新字體大小按鈕狀態
   function updateFontSizeButtons() {
-    const fontBtns = document.querySelectorAll('[data-action^="font-"]');
-    fontBtns.forEach(btn => btn.classList.remove('active'));
+    // 只更新選項按鈕的狀態，不影響調整按鈕
+    const fontOptionBtns = document.querySelectorAll('[data-action^="font-"].font-option');
+    fontOptionBtns.forEach(btn => btn.classList.remove('active'));
     
     // 根據當前字體大小標記對應按鈕
     const defaultFontSize = getDefaultFontSize();
@@ -802,8 +806,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const normalBtn = document.querySelector('[data-action="font-normal"]');
       if (normalBtn) normalBtn.classList.add('active');
     }
-    // A- 和 A+ 按鈕代表動態調整，不需要持久的 active 狀態
-    // 但我們可以通過其他方式顯示當前是否為非標準字體大小
+    
+    // 更新字體大小顯示
+    const fontSizeDisplay = document.getElementById('current-font-size');
+    if (fontSizeDisplay) {
+      fontSizeDisplay.textContent = fontSize + 'px';
+    }
+    // A- 和 A+ 按鈕使用 font-adjust 類，不參與 active 狀態管理
   }
 
   // 更新行距按鈕狀態
@@ -2630,7 +2639,7 @@ document.addEventListener('DOMContentLoaded', function() {
       // 字體設置
       case 'font-decrease':
         updateFontSize(-2);
-        updateActiveButton(e.target.parentElement, e.target);
+        addFontAdjustFeedback(e.target);
         break;
       case 'font-normal':
         fontSize = getDefaultFontSize();
@@ -2640,7 +2649,7 @@ document.addEventListener('DOMContentLoaded', function() {
         break;
       case 'font-increase':
         updateFontSize(2);
-        updateActiveButton(e.target.parentElement, e.target);
+        addFontAdjustFeedback(e.target);
         break;
 
       // 行距設置
@@ -2923,6 +2932,16 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateActiveButton(container, activeBtn) {
     container.querySelectorAll('.ctrl-btn').forEach(btn => btn.classList.remove('active'));
     activeBtn.classList.add('active');
+  }
+
+  // 為字體調整按鈕添加點擊反饋效果
+  function addFontAdjustFeedback(button) {
+    if (button.classList.contains('font-adjust')) {
+      button.classList.add('clicked');
+      setTimeout(() => {
+        button.classList.remove('clicked');
+      }, 150); // 150ms後移除反饋效果
+    }
   }
 
   // 檢查點擊是否在sidebar內部
