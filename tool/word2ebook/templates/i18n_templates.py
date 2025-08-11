@@ -56,6 +56,7 @@ class I18nTemplateManager:
             'next_chapter': get_i18n_text('ui.next_chapter', is_traditional, '下一章'),
             'show_level': get_i18n_text('level_control.show_level', is_traditional, '顯示層級'),
             'level': get_i18n_text('level_control.level', is_traditional, '層級'),
+            'collapse_expand_level_control': get_i18n_text('level_control.collapse_expand', is_traditional, '收縮/展開層級控制'),
         }
     
     def _get_index_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
@@ -71,6 +72,7 @@ class I18nTemplateManager:
             'collapse_search': get_i18n_text('search.collapse_search', is_traditional, '收起搜尋'),
             'show_level': get_i18n_text('level_control.show_level', is_traditional, '顯示層級'),
             'level': get_i18n_text('level_control.level', is_traditional, '層級'),
+            'collapse_expand_level_control': get_i18n_text('level_control.collapse_expand', is_traditional, '收縮/展開層級控制'),
             'bookmarks': get_i18n_text('navigation.bookmarks', is_traditional, '書籤'),
             'my_bookmarks': get_i18n_text('navigation.my_bookmarks', is_traditional, '我的書籤'),
             'chapter_directory': get_i18n_text('navigation.chapter_directory', is_traditional, '章節目錄'),
@@ -128,11 +130,14 @@ class I18nTemplateManager:
 
 <!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
-  <div class="floating-level-label">{level}</div>
-  <div class="floating-level-buttons">
-    <button class="floating-level-btn" data-level="2" title="显示第2层">2</button>
-    <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
-    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+  <button class="floating-level-toggle" id="floating-level-toggle" title="{collapse_expand_level_control}">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">{level}</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="2" title="显示第2层">2</button>
+      <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
   </div>
 </div>
 
@@ -272,12 +277,15 @@ if (typeof MiniSearch === 'undefined') {{
 
 <!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
-  <div class="floating-level-label">{level}</div>
-  <div class="floating-level-buttons">
-    <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
-    <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
-    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
-    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+  <button class="floating-level-toggle" id="floating-level-toggle" title="{collapse_expand_level_control}">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">{level}</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
+      <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
+      <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
   </div>
 </div>
 

@@ -738,11 +738,13 @@ document.addEventListener('DOMContentLoaded', function() {
         '<button class="ctrl-btn" data-action="close-toolbar">✕</button>' +
       '</div>' +
       '<div class="toolbar-section">' +
-        '<div class="toolbar-label">' + getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + '</div>' +
+        '<div class="toolbar-label">' + 
+          getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + 
+        '</div>' +
         '<div class="toolbar-controls">' +
-          '<button class="ctrl-btn" data-action="font-decrease">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
-          '<button class="ctrl-btn active" data-action="font-normal">' + getI18nText('readingSettings.fontNormal', isTraditionalChinesePage(), 'A') + '</button>' +
-          '<button class="ctrl-btn" data-action="font-increase">' + getI18nText('readingSettings.fontIncrease', isTraditionalChinesePage(), 'A+') + '</button>' +
+          '<button class="ctrl-btn font-adjust" data-action="font-decrease" title="縮小字體">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
+          '<button class="ctrl-btn font-option active" data-action="font-normal" title="重置為默認字體">' + getI18nText('readingSettings.fontNormal', isTraditionalChinesePage(), 'A') + '</button>' +
+          '<button class="ctrl-btn font-adjust" data-action="font-increase" title="放大字體">' + getI18nText('readingSettings.fontIncrease', isTraditionalChinesePage(), 'A+') + '</button>' +
         '</div>' +
       '</div>' +
       '<div class="toolbar-section">' +
@@ -781,6 +783,67 @@ document.addEventListener('DOMContentLoaded', function() {
     if (lightBtn && darkBtn) {
       lightBtn.classList.toggle('active', !isDark);
       darkBtn.classList.toggle('active', isDark);
+    }
+  }
+
+  // 更新閱讀設置按鈕狀態
+  function updateReadingSettingsButtons() {
+    updateFontSizeButtons();
+    updateLineHeightButtons();
+    updateContentWidthButtons();
+  }
+
+  // 更新字體大小按鈕狀態
+  function updateFontSizeButtons() {
+    // 只更新選項按鈕的狀態，不影響調整按鈕
+    const fontOptionBtns = document.querySelectorAll('[data-action^="font-"].font-option');
+    fontOptionBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // 根據當前字體大小標記對應按鈕
+    const defaultFontSize = getDefaultFontSize();
+    if (fontSize === defaultFontSize || fontSize === 16) {
+      const normalBtn = document.querySelector('[data-action="font-normal"]');
+      if (normalBtn) normalBtn.classList.add('active');
+    }
+    
+    // A- 和 A+ 按鈕使用 font-adjust 類，不參與 active 狀態管理
+  }
+
+  // 更新行距按鈕狀態
+  function updateLineHeightButtons() {
+    const lineHeightBtns = document.querySelectorAll('[data-action^="line-"]');
+    lineHeightBtns.forEach(btn => btn.classList.remove('active'));
+    
+    let activeLineHeightBtn = null;
+    if (lineHeight === 1.2) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-tight"]');
+    } else if (lineHeight === 1.6) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-normal"]');
+    } else if (lineHeight === 2.0) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-loose"]');
+    }
+    
+    if (activeLineHeightBtn) {
+      activeLineHeightBtn.classList.add('active');
+    }
+  }
+
+  // 更新內容寬度按鈕狀態
+  function updateContentWidthButtons() {
+    const widthBtns = document.querySelectorAll('[data-action^="width-"]');
+    widthBtns.forEach(btn => btn.classList.remove('active'));
+    
+    let activeWidthBtn = null;
+    if (contentWidth === 600) {
+      activeWidthBtn = document.querySelector('[data-action="width-narrow"]');
+    } else if (contentWidth === 800) {
+      activeWidthBtn = document.querySelector('[data-action="width-normal"]');
+    } else if (contentWidth === 1000) {
+      activeWidthBtn = document.querySelector('[data-action="width-wide"]');
+    }
+    
+    if (activeWidthBtn) {
+      activeWidthBtn.classList.add('active');
     }
   }
 
@@ -2191,12 +2254,26 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // 閱讀設置功能
-  let fontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+  // 根据屏幕尺寸设置默认字体大小
+  function getDefaultFontSize() {
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 400) {
+      return 19; // 小手机默认19px
+    } else if (screenWidth <= 600) {
+      return 18; // 手机默认18px
+    } else if (screenWidth <= 768) {
+      return 17; // 平板默认17px
+    }
+    return 16; // 桌面默认16px
+  }
+  
+  let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
   let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
   
   function applyReadingSettings() {
-    document.body.style.fontSize = fontSize + 'px';
+    // 使用!important确保字体大小设置在移动设备上生效
+    document.body.style.setProperty('font-size', fontSize + 'px', 'important');
     document.documentElement.style.setProperty('--line-height', lineHeight);
     document.body.style.maxWidth = contentWidth + 'px';
     
@@ -2215,14 +2292,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const screenWidth = window.innerWidth;
     let responsiveBaseFontSize = fontSize;
     
-    // 根據螢幕寬度調整基礎字型大小（與CSS響應式設計配合）
-    if (screenWidth <= 400) {
-      responsiveBaseFontSize = Math.max(fontSize, 19); // 小手機最小19px
-    } else if (screenWidth <= 600) {
-      responsiveBaseFontSize = Math.max(fontSize, 18); // 手機最小18px
-    } else if (screenWidth <= 768) {
-      responsiveBaseFontSize = Math.max(fontSize, 17); // 平板最小17px
-    }
+    // 根據螢幕寬度調整基礎字型大小，但允許用户自由调整
+    // 移除最小值限制，允许用户设置更小的字体
+    responsiveBaseFontSize = fontSize;
     
     // 計算相對於響應式基礎字型大小的比例
     const fontScale = responsiveBaseFontSize / 16;
@@ -2234,6 +2306,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const level3Size = Math.round(responsiveBaseFontSize * 0.95); // 第三層：稍小
     const level4Size = Math.round(responsiveBaseFontSize * 0.9); // 第四層：更小
     
+    // 調試信息
+    console.log('字體設置應用:', {
+      screenWidth,
+      fontSize,
+      responsiveBaseFontSize,
+      level1Size,
+      level2Size,
+      level3Size,
+      level4Size,
+      lineHeightValue
+    });
+    
     // 間距調整（基於行距設置）
     const spacing1 = Math.round(8 * lineHeightValue / 1.6); // 第一層間距
     const spacing2 = Math.round(6 * lineHeightValue / 1.6); // 第二層間距  
@@ -2241,47 +2325,55 @@ document.addEventListener('DOMContentLoaded', function() {
     const spacing4 = Math.round(3 * lineHeightValue / 1.6); // 第四層間距
     
     tocStyle.textContent = `
-      /* 首頁TOC樣式調整 */
+      /* 首頁TOC樣式調整 - 使用更高的特定性確保生效 */
+      #main-toc .toc > ul > li,
       .toc > ul > li { 
         font-size: ${level1Size}px !important; 
         margin-bottom: ${spacing1}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #main-toc .toc ul ul > li,
       .toc ul ul > li { 
         font-size: ${level2Size}px !important; 
         margin-bottom: ${spacing2}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #main-toc .toc ul ul ul > li,
       .toc ul ul ul > li { 
         font-size: ${level3Size}px !important; 
         margin-bottom: ${spacing3}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #main-toc .toc ul ul ul ul > li,
       .toc ul ul ul ul > li { 
         font-size: ${level4Size}px !important; 
         margin-bottom: ${spacing4}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
-      /* 章節頁TOC樣式調整 */
+      /* 章節頁TOC樣式調整 - 使用更高的特定性確保生效 */
+      #chapter-toc .toc-item.toc-level-1 > a,
       .toc-item.toc-level-1 > a {
         font-size: ${level1Size}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #chapter-toc .toc-item.toc-level-2 > a,
       .toc-item.toc-level-2 > a {
         font-size: ${level2Size}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #chapter-toc .toc-item.toc-level-3 > a,
       .toc-item.toc-level-3 > a {
         font-size: ${level3Size}px !important;
         line-height: ${lineHeightValue} !important;
       }
       
+      #chapter-toc .toc-item.toc-level-4 > a,
       .toc-item.toc-level-4 > a {
         font-size: ${level4Size}px !important;
         line-height: ${lineHeightValue} !important;
@@ -2337,24 +2429,118 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     
     document.head.appendChild(tocStyle);
+    
+    // 動態調整搜索功能的字型大小
+    applySearchFontStyles();
+  }
+  
+  // 應用搜索功能字體樣式
+  function applySearchFontStyles() {
+    // 移除現有的動態搜索樣式
+    let existingSearchStyle = document.getElementById('dynamic-search-styles');
+    if (existingSearchStyle) {
+      existingSearchStyle.remove();
+    }
+    
+    // 創建新的動態搜索樣式
+    const searchStyle = document.createElement('style');
+    searchStyle.id = 'dynamic-search-styles';
+    
+    // 計算搜索相關元素的字體大小
+    const baseFontSize = fontSize;
+    const inputFontSize = Math.max(14, Math.min(20, baseFontSize)); // 輸入框：14-20px範圍
+    const contentFontSize = Math.max(12, Math.round(baseFontSize * 0.9)); // 搜索結果內容稍小，最小12px
+    const titleFontSize = Math.max(12, Math.round(baseFontSize * 0.85)); // 標題更小，最小12px
+    const controlFontSize = Math.max(10, Math.round(baseFontSize * 0.75)); // 控制按鈕最小10px
+    const statusFontSize = Math.max(11, Math.round(baseFontSize * 0.8)); // 狀態文字最小11px
+    const activateBtnFontSize = Math.max(13, Math.round(baseFontSize * 0.9)); // 激活按鈕最小13px
+    
+    // 調試信息
+    console.log('搜索字體設置應用:', {
+      baseFontSize,
+      inputFontSize,
+      contentFontSize,
+      titleFontSize,
+      controlFontSize,
+      statusFontSize,
+      activateBtnFontSize
+    });
+    
+    searchStyle.textContent = `
+      /* 搜索輸入框字體 */
+      #search-input {
+        font-size: ${inputFontSize}px !important;
+      }
+      
+      /* 搜索輸入框占位符字體 */
+      #search-input::placeholder {
+        font-size: ${inputFontSize}px !important;
+      }
+      
+      /* 搜索結果內容字體 */
+      .search-result-content {
+        font-size: ${contentFontSize}px !important;
+        line-height: ${lineHeight} !important;
+      }
+      
+      /* 搜索結果標題字體 */
+      .search-result-title {
+        font-size: ${titleFontSize}px !important;
+      }
+      
+      /* 搜索狀態文字 */
+      .search-status,
+      .search-loading-text {
+        font-size: ${statusFontSize}px !important;
+      }
+      
+      /* 搜索控制按鈕 */
+      .search-clear,
+      .search-collapse,
+      .search-load-more,
+      .search-load-all,
+      .search-retry-btn {
+        font-size: ${controlFontSize}px !important;
+      }
+      
+      /* 搜索激活按鈕 */
+      .search-activate-btn {
+        font-size: ${activateBtnFontSize}px !important;
+      }
+      
+      /* 搜索結果類型標籤 */
+      .search-result-type {
+        font-size: ${Math.round(controlFontSize * 0.9)}px !important;
+      }
+      
+      /* 搜索結果統計 */
+      .search-results-count {
+        font-size: ${statusFontSize}px !important;
+      }
+    `;
+    
+    document.head.appendChild(searchStyle);
   }
   
   function updateFontSize(change) {
     fontSize = Math.max(12, Math.min(24, fontSize + change));
     localStorage.setItem('fontSize', fontSize);
     applyReadingSettings();
+    updateFontSizeButtons();
   }
   
   function updateLineHeight(value) {
     lineHeight = value;
     localStorage.setItem('lineHeight', lineHeight);
     applyReadingSettings();
+    updateLineHeightButtons();
   }
   
   function updateContentWidth(value) {
     contentWidth = value;
     localStorage.setItem('contentWidth', contentWidth);
     applyReadingSettings();
+    updateContentWidthButtons();
   }
 
   // 閱讀進度功能
@@ -2510,6 +2696,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   updateBookmarkCount();
   updateThemeButtons();
+  updateReadingSettingsButtons();
   restoreBookmarkVisualStates();
   
   // 延遲執行章節跟踪，確保頁面完全渲染
@@ -2537,45 +2724,39 @@ document.addEventListener('DOMContentLoaded', function() {
       // 字體設置
       case 'font-decrease':
         updateFontSize(-2);
-        updateActiveButton(e.target.parentElement, e.target);
+        addFontAdjustFeedback(e.target);
         break;
       case 'font-normal':
-        fontSize = 16;
+        fontSize = getDefaultFontSize();
         localStorage.setItem('fontSize', fontSize);
         applyReadingSettings();
-        updateActiveButton(e.target.parentElement, e.target);
+        updateFontSizeButtons();
         break;
       case 'font-increase':
         updateFontSize(2);
-        updateActiveButton(e.target.parentElement, e.target);
+        addFontAdjustFeedback(e.target);
         break;
 
       // 行距設置
       case 'line-tight':
         updateLineHeight(1.2);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
         updateLineHeight(1.6);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
         updateLineHeight(2.0);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
 
       // 寬度設置
       case 'width-narrow':
         updateContentWidth(600);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'width-normal':
         updateContentWidth(800);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'width-wide':
         updateContentWidth(1000);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
 
       // 主題切換
@@ -2838,6 +3019,16 @@ document.addEventListener('DOMContentLoaded', function() {
     activeBtn.classList.add('active');
   }
 
+  // 為字體調整按鈕添加點擊反饋效果
+  function addFontAdjustFeedback(button) {
+    if (button.classList.contains('font-adjust')) {
+      button.classList.add('clicked');
+      setTimeout(() => {
+        button.classList.remove('clicked');
+      }, 150); // 150ms後移除反饋效果
+    }
+  }
+
   // 檢查點擊是否在sidebar內部
   function isClickInsideSidebar(target) {
     return target.closest('.action-menu') || 
@@ -2905,6 +3096,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
+    // 检测实际的目录层级并隐藏不必要的按钮
+    detectAndHideLevelButtons(tocContainer);
+    
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
     const defaultLevel = isChapterPage ? '3' : '2'; // 章節頁面默認第3層，首頁默認第2層
@@ -2929,6 +3123,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 绑定全部展开/折叠按钮事件
     bindExpandAllEvents();
+  }
+  
+  // 检测目录实际层级并隐藏不必要的层级按钮
+  function detectAndHideLevelButtons(tocContainer) {
+    let maxLevel = 1; // 默认至少有第1层
+    
+    // 检测所有目录项的层级
+    const tocItems = tocContainer.querySelectorAll('.toc-item[data-level]');
+    tocItems.forEach(item => {
+      const level = parseInt(item.getAttribute('data-level'));
+      if (level > maxLevel) {
+        maxLevel = level;
+      }
+    });
+    
+    // 也检查传统的嵌套结构（ul > li）
+    const nestedItems = tocContainer.querySelectorAll('ul li');
+    if (nestedItems.length > 0) {
+      // 计算嵌套深度
+      nestedItems.forEach(item => {
+        let depth = 1;
+        let parent = item.parentElement;
+        while (parent && parent !== tocContainer) {
+          if (parent.tagName === 'UL') {
+            depth++;
+          }
+          parent = parent.parentElement;
+        }
+        if (depth > maxLevel) {
+          maxLevel = depth;
+        }
+      });
+    }
+    
+    console.log('检测到的最大目录层级:', maxLevel);
+    
+    // 隐藏超出实际层级的按钮
+    const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');
+    allLevelButtons.forEach(btn => {
+      const buttonLevel = parseInt(btn.getAttribute('data-level'));
+      if (buttonLevel > maxLevel) {
+        btn.style.display = 'none';
+        // 同时为其父容器添加一个属性，表示这个按钮被隐藏了
+        btn.setAttribute('data-hidden-level', 'true');
+      } else {
+        btn.style.display = '';
+        btn.removeAttribute('data-hidden-level');
+      }
+    });
+    
+    // 返回检测到的最大层级，供其他函数使用
+    return maxLevel;
   }
   
   function bindLevelControlEvents() {
@@ -3274,6 +3520,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!floatingControls || !tocControls) return;
     
+    // 确保浮动控制也应用层级检测（以防在初始化时有时序问题）
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (tocContainer) {
+      detectAndHideLevelButtons(tocContainer);
+    }
+    
     // 调试模式：检查元素是否正确创建
     const debugMode = window.location.hash.includes('debug');
     if (debugMode) {
@@ -3285,6 +3537,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 绑定浮动按钮事件
     bindFloatingLevelEvents();
+    
+    // 绑定浮动层级控制的收縮/展開功能
+    initFloatingLevelToggle();
     
     // 样式重置函数 - 清除JavaScript设置的内联样式
     function resetFloatingControlsStyles() {
@@ -3368,6 +3623,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (debugMode) {
           console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
         }
+        // 重新应用字体设置，确保在屏幕尺寸变化时字体调整依然有效
+        applyReadingSettings();
         // 重置所有内联样式，然后重新应用
         resetFloatingControlsStyles();
         handleScroll(); // 重新检查显示状态和应用样式
@@ -3380,6 +3637,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (debugMode) {
           console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
         }
+        // 重新应用字体设置，确保方向变化后字体调整依然有效
+        applyReadingSettings();
         resetFloatingControlsStyles();
         handleScroll();
       }, 200);
@@ -3394,6 +3653,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始状态
     handleScroll();
+  }
+  
+  function initFloatingLevelToggle() {
+    const toggleBtn = document.getElementById('floating-level-toggle');
+    const floatingControls = document.getElementById('floating-level-controls');
+    
+    if (!toggleBtn || !floatingControls) return;
+    
+    // 獲取保存的收縮狀態，默認為展開（false）
+    const savedState = localStorage.getItem('floating-level-collapsed');
+    const isCollapsed = savedState === 'true'; // 只有明確設置為 'true' 才收縮，其他情況（包括 null）都展開
+    
+    // 應用保存的狀態
+    if (isCollapsed) {
+      floatingControls.classList.add('collapsed');
+      toggleBtn.innerHTML = '↔';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    } else {
+      floatingControls.classList.remove('collapsed');
+      toggleBtn.innerHTML = '⇄';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    }
+    
+    // 綁定點擊事件
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      const isNowCollapsed = floatingControls.classList.contains('collapsed');
+      
+      if (isNowCollapsed) {
+        // 展開
+        floatingControls.classList.remove('collapsed');
+        toggleBtn.innerHTML = '⇄';
+        localStorage.setItem('floating-level-collapsed', 'false');
+      } else {
+        // 收縮
+        floatingControls.classList.add('collapsed');
+        toggleBtn.innerHTML = '↔';
+        localStorage.setItem('floating-level-collapsed', 'true');
+      }
+    });
   }
   
   function bindFloatingLevelEvents() {

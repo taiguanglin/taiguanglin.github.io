@@ -137,9 +137,15 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     font-weight: 400;
 }
 
-.toc ul { list-style: disc; padding-left: 1.5em; }
-.toc ul ul { list-style: circle; padding-left: 0px; }
-.toc ul ul ul { list-style: square; padding-left: 2.5em; }
+/* 首页目录样式 - 保持原始缩进以确保展开图标显示正常 */
+#main-toc ul { list-style: disc; padding-left: 1.5em; }
+#main-toc ul ul { list-style: circle; padding-left: 0px; }
+#main-toc ul ul ul { list-style: square; padding-left: 2.5em; }
+
+/* 章节页目录样式 - 减少缩进让内容更靠左 */
+#chapter-toc ul { list-style: disc; padding-left: 0.8em; }
+#chapter-toc ul ul { list-style: circle; padding-left: 0px; }
+#chapter-toc ul ul ul { list-style: square; padding-left: 1.8em; }
 
 /* 問答樣式 */
 .question {
@@ -280,7 +286,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    z-index: 980; /* 降低z-index，确保低于action-menu-items */
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -317,7 +323,12 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     color: #666;
     margin-bottom: 5px;
     font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
+
+
 
 .toolbar-controls {
     display: flex;
@@ -346,6 +357,53 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     background: #e75480;
     color: white;
     border-color: #e75480;
+}
+
+/* 字體調整按鈕特殊樣式 - 區別於選項按鈕 */
+.ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #ced4da;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ctrl-btn.font-adjust:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    color: #212529;
+}
+
+.ctrl-btn.font-adjust:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
+}
+
+/* 字體調整按鈕的短暫反馈效果 */
+.ctrl-btn.font-adjust.clicked {
+    background: linear-gradient(135deg, #e75480 0%, #c73650 100%);
+    color: white;
+    border-color: #e75480;
+    transform: scale(0.95);
+}
+
+/* 字體大小選項按鈕保持原有樣式 */
+.ctrl-btn.font-option {
+    /* 保持原有的 ctrl-btn 樣式，此類用於標識選項按鈕 */
+    position: relative;
 }
 
 /* 搜索功能已移除 */
@@ -381,7 +439,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     border: 1px solid #e0e0e0;
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
+    z-index: 800;
     transition: left 0.3s ease;
     display: flex;
     flex-direction: column;
@@ -740,6 +798,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     visibility: hidden;
     transition: all 0.3s ease;
     pointer-events: none;
+    z-index: 1000; /* 确保action-menu-items高于reading-toolbar */
 }
 
 .action-menu.expanded .action-menu-items {
@@ -874,6 +933,33 @@ body.dark-mode .ctrl-btn.active {
     border-color: #ff69b4;
     box-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
 }
+
+/* 暗色模式下的字體調整按鈕 */
+body.dark-mode .ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    border: 1px solid #555;
+    color: #fddde6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .ctrl-btn.font-adjust:hover {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+    border-color: #777;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .ctrl-btn.font-adjust:active {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+body.dark-mode .ctrl-btn.font-adjust.clicked {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+    border-color: #ff69b4;
+}
+
+
 
 
 
@@ -1602,55 +1688,57 @@ body.dark-mode .search-load-all:hover {
     }
     
     /* 基礎字型大小調整 - 平板 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     body {
-        font-size: 17px !important; /* 略大於桌面版的16px */
         line-height: 1.7;
     }
     
     /* TOC目錄字型優化 - 平板 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     .toc > ul > li { 
-        font-size: 1.15em !important; /* 從1.1em增加到1.15em */
-        margin-bottom: 10px !important;
-        line-height: 1.5 !important;
+        margin-bottom: 10px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul > li { 
-        font-size: 1.05em !important; /* 從1.0em增加到1.05em */
-        margin-bottom: 8px !important;
-        line-height: 1.4 !important;
+        margin-bottom: 8px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul ul > li { 
-        font-size: 1.0em !important; /* 從0.95em增加到1.0em */
-        margin-bottom: 6px !important;
-        line-height: 1.4 !important;
+        margin-bottom: 6px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul ul ul > li { 
-        font-size: 0.98em !important; /* 從0.9em增加到0.98em */
-        margin-bottom: 5px !important;
-        line-height: 1.3 !important;
+        margin-bottom: 5px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     /* 章節頁TOC優化 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     .toc-item.toc-level-1 > a {
-        font-size: 19px !important;
-        line-height: 1.5 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     .toc-item.toc-level-2 > a {
-        font-size: 17px !important;
-        line-height: 1.4 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     .toc-item.toc-level-3 > a {
-        font-size: 16px !important;
-        line-height: 1.4 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     .toc-item.toc-level-4 > a {
-        font-size: 15px !important;
-        line-height: 1.3 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
     }
     
     /* 標題字型調整 */
@@ -1766,19 +1854,66 @@ body.dark-mode .search-load-all:hover {
 
 /* 滚动时显示的浮动层级控制 */
 .floating-level-controls {
-    position: fixed;
-    right: 25%; /* 水平靠右 */
-    top: 50%; /* 垂直居中 */
-    transform: translateY(-50%); /* 只垂直居中 */
-    z-index: 1000;
-    background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
-    border-radius: 25px;
-    padding: 12px 8px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
-    backdrop-filter: blur(12px); /* 增强模糊效果 */
-    border: 1px solid rgba(255, 105, 180, 0.3);
-    transition: all 0.3s ease; /* 简化过渡效果 */
-    max-width: 120px; /* 限制最大宽度 */
+  position: fixed;
+  right: 20px; /* 与阅读设置工具栏保持一致 */
+  top: 250px; /* 设置在阅读设置工具栏下方，留出足够空间 */
+  z-index: 950; /* 设置比阅读设置工具栏(900)高一级，但低于action-menu-items(1000) */
+  background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
+  border-radius: 25px;
+  padding: 12px 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
+  backdrop-filter: blur(12px); /* 增强模糊效果 */
+  border: 1px solid rgba(255, 105, 180, 0.3);
+  transition: all 0.3s ease; /* 简化过渡效果 */
+  max-width: 120px; /* 限制最大宽度 */
+}
+
+/* 浮動層級控制收縮狀態 */
+.floating-level-controls.collapsed {
+    padding: 8px;
+    max-width: 50px;
+    background: rgba(255, 255, 255, 0.95);
+}
+
+.floating-level-controls.collapsed .floating-level-content {
+    display: none;
+}
+
+/* 浮動層級控制展開/收縮按鈕 */
+.floating-level-toggle {
+  position: absolute;
+  top: -12px; /* 向上移動到容器外部，避免遮擋"层级"文字 */
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #ff69b4;
+  background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+  color: #d63384;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 添加阴影增强可见性 */
+}
+
+.floating-level-toggle:hover {
+    background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%);
+    transform: scale(1.1);
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+}
+
+/* 收縮狀態時的切換按鈕位置調整 */
+.floating-level-controls.collapsed .floating-level-toggle {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* 保持阴影效果 */
 }
 
 .floating-level-label {
@@ -1830,9 +1965,17 @@ body.dark-mode .search-load-all:hover {
 }
 
 /* 隐藏list默认bullet点 */
-.toc ul {
+/* 首页目录 - 保持原始padding确保展开图标正常显示 */
+#main-toc ul {
     list-style: none;
     padding-left: 30px;
+    margin: 0;
+}
+
+/* 章节页目录 - 减少padding让内容更靠左 */
+#chapter-toc ul {
+    list-style: none;
+    padding-left: 15px;
     margin: 0;
 }
 
@@ -1869,17 +2012,30 @@ body.dark-mode .search-load-all:hover {
     transform: rotate(-90deg) scale(1.2);
 }
 
-/* 不同層級的展開圖標位置調整，確保圖標緊貼對應層級的文字 */
-.toc-item.toc-level-2 .toc-expand-icon {
-    left: 42px; /* 第2層 */
+/* 首页目录展开图标位置 - 保持原始位置确保正常显示 */
+#main-toc .toc-item.toc-level-2 .toc-expand-icon {
+  left: 42px; /* 第2層，配合首页的 margin-left: 40px */
 }
 
-.toc-item.toc-level-3 .toc-expand-icon {
-    left: 62px; /* 第3層 */
+#main-toc .toc-item.toc-level-3 .toc-expand-icon {
+  left: 62px; /* 第3層，配合首页的 margin-left: 60px */
 }
 
-.toc-item.toc-level-4 .toc-expand-icon {
-    left: 82px; /* 第4層： */
+#main-toc .toc-item.toc-level-4 .toc-expand-icon {
+  left: 82px; /* 第4層，配合首页的 margin-left: 80px */
+}
+
+/* 章节页目录展开图标位置 - 调整以配合更靠左的布局 */
+#chapter-toc .toc-item.toc-level-2 .toc-expand-icon {
+  left: 12px; /* 第2層，配合章节页的 margin-left: 10px */
+}
+
+#chapter-toc .toc-item.toc-level-3 .toc-expand-icon {
+  left: 32px; /* 第3層，配合章节页的 margin-left: 30px */
+}
+
+#chapter-toc .toc-item.toc-level-4 .toc-expand-icon {
+  left: 52px; /* 第4層，配合章节页的 margin-left: 50px */
 }
 
 /* 目录项样式 */
@@ -1955,36 +2111,62 @@ body.dark-mode .toc-item:not(.toc-expandable):hover {
     margin-bottom: 8px;
 }
 
-/* 第1层 - 章节标题 */
-.toc-item.toc-level-1 > a {
-    font-weight: 600;
-    color: #d63384;
-    font-size: 16px;
-    margin-left: 20px; /* 为展开图标预留空间 */
+/* 首页目录层级样式 - 保持原始间距确保展开图标正常显示 */
+#main-toc .toc-item.toc-level-1 > a {
+  font-weight: 600;
+  color: #d63384;
+  font-size: 16px;
+  margin-left: 20px; /* 为展开图标预留空间 */
 }
 
-/* 第2层 - 主要小节 */
-.toc-item.toc-level-2 > a {
-    font-weight: 500;
-    color: #e85aad;
-    font-size: 15px;
-    margin-left: 40px; /* 增加缩进，保证对齐 */
+#main-toc .toc-item.toc-level-2 > a {
+  font-weight: 500;
+  color: #e85aad;
+  font-size: 15px;
+  margin-left: 40px; /* 保持原始间距 */
 }
 
-/* 第3层 - 详细小节 */
-.toc-item.toc-level-3 > a {
-    font-weight: 400;
-    color: #f06bbf;
-    font-size: 14px;
-    margin-left: 60px; /* 增加到60px */
+#main-toc .toc-item.toc-level-3 > a {
+  font-weight: 400;
+  color: #f06bbf;
+  font-size: 14px;
+  margin-left: 60px; /* 保持原始间距 */
 }
 
-/* 第4层 - 更详细小节 */
-.toc-item.toc-level-4 > a {
-    font-weight: 400;
-    color: #f585cc;
-    font-size: 13px;
-    margin-left: 80px; /* 相应增加 */
+#main-toc .toc-item.toc-level-4 > a {
+  font-weight: 400;
+  color: #f585cc;
+  font-size: 13px;
+  margin-left: 80px; /* 保持原始间距 */
+}
+
+/* 章节页目录层级样式 - 减少间距让内容更靠左 */
+#chapter-toc .toc-item.toc-level-1 > a {
+  font-weight: 600;
+  color: #d63384;
+  font-size: 16px;
+  margin-left: 20px; /* 为展开图标预留空间 */
+}
+
+#chapter-toc .toc-item.toc-level-2 > a {
+  font-weight: 500;
+  color: #e85aad;
+  font-size: 15px;
+  margin-left: 10px; /* 章节页更靠左 */
+}
+
+#chapter-toc .toc-item.toc-level-3 > a {
+  font-weight: 400;
+  color: #f06bbf;
+  font-size: 14px;
+  margin-left: 30px; /* 章节页更靠左 */
+}
+
+#chapter-toc .toc-item.toc-level-4 > a {
+  font-weight: 400;
+  color: #f585cc;
+  font-size: 13px;
+  margin-left: 50px; /* 章节页更靠左 */
 }
 
 /* 章节项特殊样式 */
@@ -2059,6 +2241,22 @@ body.dark-mode .floating-level-btn:hover {
 body.dark-mode .floating-level-btn.active {
     background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
     color: white;
+}
+
+/* 浮動層級切換按鈕暗色模式 */
+body.dark-mode .floating-level-toggle {
+    border-color: #ff69b4;
+    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
+    color: #ff91af;
+}
+
+body.dark-mode .floating-level-toggle:hover {
+  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .floating-level-toggle {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* 暗色模式下的阴影 */
 }
 
 body.dark-mode .toc-expand-icon {
@@ -2178,15 +2376,18 @@ body.dark-mode .bookmark-time {
 /* 响应式浮动层级控制定位 - 所有尺寸都居中 */
 /* 移动端优化觸摸體驗 */
 @media (max-width: 600px) {
-    .floating-level-controls {
-        /* 保持居中，但優化觸摸體驗 */
-        padding: 15px 10px; /* 增加padding讓觸摸更容易 */
-        max-width: 100px; 
-        z-index: 9999 !important; /* 强制最高层级 */
-        background: rgba(255, 255, 255, 0.95); /* 提高背景不透明度 */
-        border: 2px solid rgba(255, 105, 180, 0.6); /* 增强边框 */
-        box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* 增强陰影 */
-    }
+  .floating-level-controls {
+    /* 在移动端调整到右下角，避免与其他UI元素冲突 */
+    right: 15px;
+    top: auto;
+    bottom: 150px; /* 放置在操作按钮上方 */
+    padding: 15px 10px; /* 增加padding讓觸摸更容易 */
+    max-width: 100px; 
+    z-index: 950 !important; /* 保持与桌面版一致的层级关系 */
+    background: rgba(255, 255, 255, 0.95); /* 提高背景不透明度 */
+    border: 2px solid rgba(255, 105, 180, 0.6); /* 增强边框 */
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* 增强陰影 */
+  }
     
     .floating-level-label {
         font-size: 12px; /* 增大字體便於閱讀 */
@@ -2201,57 +2402,43 @@ body.dark-mode .bookmark-time {
         margin: 3px 0; /* 增加間距 */
     }
     
+    /* 手機端浮動層級切換按鈕優化 */
+    .floating-level-toggle {
+        width: 28px !important;
+        height: 28px !important;
+        font-size: 14px !important;
+        border-width: 2px !important;
+    }
+    
     /* 手機端基礎字型大小調整 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     body {
-        font-size: 18px !important; /* 手機端增加到18px */
         line-height: 1.8;
     }
     
-    /* 手機端TOC目錄字型進一步優化 */
+    /* 手機端TOC目錄字型優化 - 移除 !important 讓JavaScript動態調整生效 */
     .toc > ul > li { 
-        font-size: 1.2em !important; /* 進一步增大 */
-        margin-bottom: 12px !important;
-        line-height: 1.6 !important;
+        margin-bottom: 12px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul > li { 
-        font-size: 1.1em !important;
-        margin-bottom: 10px !important;
-        line-height: 1.5 !important;
+        margin-bottom: 10px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul ul > li { 
-        font-size: 1.05em !important;
-        margin-bottom: 8px !important;
-        line-height: 1.5 !important;
+        margin-bottom: 8px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
     .toc ul ul ul ul > li { 
-        font-size: 1.0em !important;
-        margin-bottom: 6px !important;
-        line-height: 1.4 !important;
+        margin-bottom: 6px;
+        /* 字體大小和行距由JavaScript動態設置 */
     }
     
-    /* 手機端章節頁TOC優化 */
-    .toc-item.toc-level-1 > a {
-        font-size: 21px !important;
-        line-height: 1.6 !important;
-    }
-    
-    .toc-item.toc-level-2 > a {
-        font-size: 19px !important;
-        line-height: 1.5 !important;
-    }
-    
-    .toc-item.toc-level-3 > a {
-        font-size: 18px !important;
-        line-height: 1.5 !important;
-    }
-    
-    .toc-item.toc-level-4 > a {
-        font-size: 17px !important;
-        line-height: 1.4 !important;
-    }
+    /* 手機端章節頁TOC優化 - 移除 !important 讓JavaScript動態調整生效 */
+    /* 字體大小和行距由JavaScript動態設置，保留以下空選擇器作為CSS結構標記 */
     
     /* 手機端標題字型調整 */
     h1 { font-size: 28px !important; line-height: 1.3; }
@@ -2273,14 +2460,16 @@ body.dark-mode .bookmark-time {
 
 /* 小手機螢幕進一步優化 */
 @media (max-width: 400px) {
-    .floating-level-controls {
-        padding: 18px 12px; /* 更大的觸摸區域 */
-        max-width: 110px;
-        z-index: 10000 !important;
-        background: rgba(255, 255, 255, 0.98) !important;
-        border: 3px solid rgba(255, 105, 180, 0.8) !important; /* 更明顯的邊框 */
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
-    }
+  .floating-level-controls {
+    right: 10px; /* 进一步靠近边缘 */
+    bottom: 140px; /* 稍微上移一点 */
+    padding: 18px 12px; /* 更大的觸摸區域 */
+    max-width: 110px;
+    z-index: 950 !important; /* 保持与其他设备一致的层级关系 */
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 3px solid rgba(255, 105, 180, 0.8) !important; /* 更明顯的邊框 */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+  }
     
     .floating-level-label {
         font-size: 13px !important; /* 更大的標籤字體 */
@@ -2297,57 +2486,43 @@ body.dark-mode .bookmark-time {
         border-width: 3px !important; /* 更粗的邊框 */
     }
     
+    /* 小手機端浮動層級切換按鈕進一步優化 */
+    .floating-level-toggle {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 16px !important;
+        border-width: 3px !important;
+    }
+    
     /* 小手機端進一步文字優化 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     body {
-        font-size: 19px !important; /* 小手機端增加到19px */
         line-height: 1.9;
     }
     
-    /* 小手機端TOC目錄字型最大化優化 */
+    /* 小手機端TOC目錄字型最大化優化 - 移除 !important 讓JavaScript動態調整生效 */
     .toc > ul > li { 
-        font-size: 1.25em !important; /* 最大化增大 */
-        margin-bottom: 14px !important;
-        line-height: 1.7 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        margin-bottom: 14px;
     }
     
     .toc ul ul > li { 
-        font-size: 1.15em !important;
-        margin-bottom: 12px !important;
-        line-height: 1.6 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        margin-bottom: 12px;
     }
     
     .toc ul ul ul > li { 
-        font-size: 1.1em !important;
-        margin-bottom: 10px !important;
-        line-height: 1.6 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        margin-bottom: 10px;
     }
     
     .toc ul ul ul ul > li { 
-        font-size: 1.05em !important;
-        margin-bottom: 8px !important;
-        line-height: 1.5 !important;
+        /* 字體大小和行距由JavaScript動態設置 */
+        margin-bottom: 8px;
     }
     
-    /* 小手機端章節頁TOC最大化優化 */
-    .toc-item.toc-level-1 > a {
-        font-size: 23px !important;
-        line-height: 1.7 !important;
-    }
-    
-    .toc-item.toc-level-2 > a {
-        font-size: 21px !important;
-        line-height: 1.6 !important;
-    }
-    
-    .toc-item.toc-level-3 > a {
-        font-size: 20px !important;
-        line-height: 1.6 !important;
-    }
-    
-    .toc-item.toc-level-4 > a {
-        font-size: 19px !important;
-        line-height: 1.5 !important;
-    }
+    /* 小手機端章節頁TOC最大化優化 - 移除 !important 讓JavaScript動態調整生效 */
+    /* 字體大小和行距由JavaScript動態設置，保留以下空選擇器作為CSS結構標記 */
     
     /* 小手機端標題字型最大化調整 */
     h1 { font-size: 30px !important; line-height: 1.3; }
