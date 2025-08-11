@@ -1609,8 +1609,8 @@ body.dark-mode .search-load-all:hover {
     }
     
     /* 基礎字型大小調整 - 平板 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     body {
-        font-size: 17px !important; /* 略大於桌面版的16px */
         line-height: 1.7;
     }
     
@@ -2330,8 +2330,8 @@ body.dark-mode .bookmark-time {
     }
     
     /* 手機端基礎字型大小調整 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     body {
-        font-size: 18px !important; /* 手機端增加到18px */
         line-height: 1.8;
     }
     
@@ -2414,8 +2414,8 @@ body.dark-mode .bookmark-time {
     }
     
     /* 小手機端進一步文字優化 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
     body {
-        font-size: 19px !important; /* 小手機端增加到19px */
         line-height: 1.9;
     }
     

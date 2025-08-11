@@ -2191,12 +2191,26 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // 閱讀設置功能
-  let fontSize = parseInt(localStorage.getItem('fontSize')) || 16;
+  // 根据屏幕尺寸设置默认字体大小
+  function getDefaultFontSize() {
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 400) {
+      return 19; // 小手机默认19px
+    } else if (screenWidth <= 600) {
+      return 18; // 手机默认18px
+    } else if (screenWidth <= 768) {
+      return 17; // 平板默认17px
+    }
+    return 16; // 桌面默认16px
+  }
+  
+  let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
   let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
   
   function applyReadingSettings() {
-    document.body.style.fontSize = fontSize + 'px';
+    // 使用!important确保字体大小设置在移动设备上生效
+    document.body.style.setProperty('font-size', fontSize + 'px', 'important');
     document.documentElement.style.setProperty('--line-height', lineHeight);
     document.body.style.maxWidth = contentWidth + 'px';
     
@@ -3432,6 +3446,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (debugMode) {
           console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
         }
+        // 重新应用字体设置，确保在屏幕尺寸变化时字体调整依然有效
+        applyReadingSettings();
         // 重置所有内联样式，然后重新应用
         resetFloatingControlsStyles();
         handleScroll(); // 重新检查显示状态和应用样式
@@ -3444,6 +3460,8 @@ document.addEventListener('DOMContentLoaded', function() {
         if (debugMode) {
           console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
         }
+        // 重新应用字体设置，确保方向变化后字体调整依然有效
+        applyReadingSettings();
         resetFloatingControlsStyles();
         handleScroll();
       }, 200);
