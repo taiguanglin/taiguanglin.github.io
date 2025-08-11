@@ -2,7 +2,7 @@
     --line-height: 1.6;
 }
 
-body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: #fff0f5; color: #333; transition: 0.3s; }
+body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: #fff0f5; color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
 
 h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; padding-left: 10px;}
 h2 { color: #e75480; margin-top: 40px; padding-left: 5px; } /* 與目錄第1層相同 */
@@ -155,6 +155,8 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     border-left: 4px solid #e75480;
     margin-bottom: 15px;
     box-shadow: 0 2px 8px rgba(231, 84, 128, 0.1);
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .question-meta {
@@ -185,6 +187,11 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     color: #333;
     line-height: var(--line-height);
     margin: 0;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
 }
 
 .answer {
@@ -194,6 +201,8 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     border-left: 4px solid #ff69b4;
     margin-bottom: 15px;
     box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
+    max-width: 100%;
+    overflow-wrap: break-word;
 }
 
 .answer-meta {
@@ -216,6 +225,11 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     line-height: var(--line-height);
     margin: 0;
     font-weight: 500;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow-wrap: break-word;
+    white-space: normal;
+    max-width: 100%;
 }
 
 /* 暗色模式 */
