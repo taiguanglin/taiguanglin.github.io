@@ -2905,6 +2905,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
     
+    // 检测实际的目录层级并隐藏不必要的按钮
+    detectAndHideLevelButtons(tocContainer);
+    
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
     const defaultLevel = isChapterPage ? '3' : '2'; // 章節頁面默認第3層，首頁默認第2層
@@ -2929,6 +2932,58 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 绑定全部展开/折叠按钮事件
     bindExpandAllEvents();
+  }
+  
+  // 检测目录实际层级并隐藏不必要的层级按钮
+  function detectAndHideLevelButtons(tocContainer) {
+    let maxLevel = 1; // 默认至少有第1层
+    
+    // 检测所有目录项的层级
+    const tocItems = tocContainer.querySelectorAll('.toc-item[data-level]');
+    tocItems.forEach(item => {
+      const level = parseInt(item.getAttribute('data-level'));
+      if (level > maxLevel) {
+        maxLevel = level;
+      }
+    });
+    
+    // 也检查传统的嵌套结构（ul > li）
+    const nestedItems = tocContainer.querySelectorAll('ul li');
+    if (nestedItems.length > 0) {
+      // 计算嵌套深度
+      nestedItems.forEach(item => {
+        let depth = 1;
+        let parent = item.parentElement;
+        while (parent && parent !== tocContainer) {
+          if (parent.tagName === 'UL') {
+            depth++;
+          }
+          parent = parent.parentElement;
+        }
+        if (depth > maxLevel) {
+          maxLevel = depth;
+        }
+      });
+    }
+    
+    console.log('检测到的最大目录层级:', maxLevel);
+    
+    // 隐藏超出实际层级的按钮
+    const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');
+    allLevelButtons.forEach(btn => {
+      const buttonLevel = parseInt(btn.getAttribute('data-level'));
+      if (buttonLevel > maxLevel) {
+        btn.style.display = 'none';
+        // 同时为其父容器添加一个属性，表示这个按钮被隐藏了
+        btn.setAttribute('data-hidden-level', 'true');
+      } else {
+        btn.style.display = '';
+        btn.removeAttribute('data-hidden-level');
+      }
+    });
+    
+    // 返回检测到的最大层级，供其他函数使用
+    return maxLevel;
   }
   
   function bindLevelControlEvents() {
@@ -3274,6 +3329,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (!floatingControls || !tocControls) return;
     
+    // 确保浮动控制也应用层级检测（以防在初始化时有时序问题）
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (tocContainer) {
+      detectAndHideLevelButtons(tocContainer);
+    }
+    
     // 调试模式：检查元素是否正确创建
     const debugMode = window.location.hash.includes('debug');
     if (debugMode) {
@@ -3285,6 +3346,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 绑定浮动按钮事件
     bindFloatingLevelEvents();
+    
+    // 绑定浮动层级控制的收縮/展開功能
+    initFloatingLevelToggle();
     
     // 样式重置函数 - 清除JavaScript设置的内联样式
     function resetFloatingControlsStyles() {
@@ -3394,6 +3458,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始状态
     handleScroll();
+  }
+  
+  function initFloatingLevelToggle() {
+    const toggleBtn = document.getElementById('floating-level-toggle');
+    const floatingControls = document.getElementById('floating-level-controls');
+    
+    if (!toggleBtn || !floatingControls) return;
+    
+    // 獲取保存的收縮狀態，默認為展開（false）
+    const savedState = localStorage.getItem('floating-level-collapsed');
+    const isCollapsed = savedState === 'true'; // 只有明確設置為 'true' 才收縮，其他情況（包括 null）都展開
+    
+    // 應用保存的狀態
+    if (isCollapsed) {
+      floatingControls.classList.add('collapsed');
+      toggleBtn.innerHTML = '↔';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    } else {
+      floatingControls.classList.remove('collapsed');
+      toggleBtn.innerHTML = '⇄';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    }
+    
+    // 綁定點擊事件
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      const isNowCollapsed = floatingControls.classList.contains('collapsed');
+      
+      if (isNowCollapsed) {
+        // 展開
+        floatingControls.classList.remove('collapsed');
+        toggleBtn.innerHTML = '⇄';
+        localStorage.setItem('floating-level-collapsed', 'false');
+      } else {
+        // 收縮
+        floatingControls.classList.add('collapsed');
+        toggleBtn.innerHTML = '↔';
+        localStorage.setItem('floating-level-collapsed', 'true');
+      }
+    });
   }
   
   function bindFloatingLevelEvents() {
