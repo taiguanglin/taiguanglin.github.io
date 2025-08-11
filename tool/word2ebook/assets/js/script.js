@@ -784,6 +784,66 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  // 更新閱讀設置按鈕狀態
+  function updateReadingSettingsButtons() {
+    updateFontSizeButtons();
+    updateLineHeightButtons();
+    updateContentWidthButtons();
+  }
+
+  // 更新字體大小按鈕狀態
+  function updateFontSizeButtons() {
+    const fontBtns = document.querySelectorAll('[data-action^="font-"]');
+    fontBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // 根據當前字體大小標記對應按鈕
+    const defaultFontSize = getDefaultFontSize();
+    if (fontSize === defaultFontSize || fontSize === 16) {
+      const normalBtn = document.querySelector('[data-action="font-normal"]');
+      if (normalBtn) normalBtn.classList.add('active');
+    }
+    // A- 和 A+ 按鈕代表動態調整，不需要持久的 active 狀態
+    // 但我們可以通過其他方式顯示當前是否為非標準字體大小
+  }
+
+  // 更新行距按鈕狀態
+  function updateLineHeightButtons() {
+    const lineHeightBtns = document.querySelectorAll('[data-action^="line-"]');
+    lineHeightBtns.forEach(btn => btn.classList.remove('active'));
+    
+    let activeLineHeightBtn = null;
+    if (lineHeight === 1.2) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-tight"]');
+    } else if (lineHeight === 1.6) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-normal"]');
+    } else if (lineHeight === 2.0) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-loose"]');
+    }
+    
+    if (activeLineHeightBtn) {
+      activeLineHeightBtn.classList.add('active');
+    }
+  }
+
+  // 更新內容寬度按鈕狀態
+  function updateContentWidthButtons() {
+    const widthBtns = document.querySelectorAll('[data-action^="width-"]');
+    widthBtns.forEach(btn => btn.classList.remove('active'));
+    
+    let activeWidthBtn = null;
+    if (contentWidth === 600) {
+      activeWidthBtn = document.querySelector('[data-action="width-narrow"]');
+    } else if (contentWidth === 800) {
+      activeWidthBtn = document.querySelector('[data-action="width-normal"]');
+    } else if (contentWidth === 1000) {
+      activeWidthBtn = document.querySelector('[data-action="width-wide"]');
+    }
+    
+    if (activeWidthBtn) {
+      activeWidthBtn.classList.add('active');
+    }
+  }
+
   // 創建閱讀進度條
   function createReadingProgress() {
     const progress = document.createElement('div');
@@ -2372,18 +2432,21 @@ document.addEventListener('DOMContentLoaded', function() {
     fontSize = Math.max(12, Math.min(24, fontSize + change));
     localStorage.setItem('fontSize', fontSize);
     applyReadingSettings();
+    updateFontSizeButtons();
   }
   
   function updateLineHeight(value) {
     lineHeight = value;
     localStorage.setItem('lineHeight', lineHeight);
     applyReadingSettings();
+    updateLineHeightButtons();
   }
   
   function updateContentWidth(value) {
     contentWidth = value;
     localStorage.setItem('contentWidth', contentWidth);
     applyReadingSettings();
+    updateContentWidthButtons();
   }
 
   // 閱讀進度功能
@@ -2539,6 +2602,7 @@ document.addEventListener('DOMContentLoaded', function() {
   
   updateBookmarkCount();
   updateThemeButtons();
+  updateReadingSettingsButtons();
   restoreBookmarkVisualStates();
   
   // 延遲執行章節跟踪，確保頁面完全渲染
@@ -2569,10 +2633,10 @@ document.addEventListener('DOMContentLoaded', function() {
         updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'font-normal':
-        fontSize = 16;
+        fontSize = getDefaultFontSize();
         localStorage.setItem('fontSize', fontSize);
         applyReadingSettings();
-        updateActiveButton(e.target.parentElement, e.target);
+        updateFontSizeButtons();
         break;
       case 'font-increase':
         updateFontSize(2);
@@ -2582,29 +2646,23 @@ document.addEventListener('DOMContentLoaded', function() {
       // 行距設置
       case 'line-tight':
         updateLineHeight(1.2);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-normal':
         updateLineHeight(1.6);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'line-loose':
         updateLineHeight(2.0);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
 
       // 寬度設置
       case 'width-narrow':
         updateContentWidth(600);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'width-normal':
         updateContentWidth(800);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
       case 'width-wide':
         updateContentWidth(1000);
-        updateActiveButton(e.target.parentElement, e.target);
         break;
 
       // 主題切換
