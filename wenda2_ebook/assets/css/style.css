@@ -137,9 +137,15 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     font-weight: 400;
 }
 
-.toc ul { list-style: disc; padding-left: 1.5em; }
-.toc ul ul { list-style: circle; padding-left: 0px; }
-.toc ul ul ul { list-style: square; padding-left: 2.5em; }
+/* 首页目录样式 - 保持原始缩进以确保展开图标显示正常 */
+#main-toc ul { list-style: disc; padding-left: 1.5em; }
+#main-toc ul ul { list-style: circle; padding-left: 0px; }
+#main-toc ul ul ul { list-style: square; padding-left: 2.5em; }
+
+/* 章节页目录样式 - 减少缩进让内容更靠左 */
+#chapter-toc ul { list-style: disc; padding-left: 0.8em; }
+#chapter-toc ul ul { list-style: circle; padding-left: 0px; }
+#chapter-toc ul ul ul { list-style: square; padding-left: 1.8em; }
 
 /* 問答樣式 */
 .question {
@@ -280,7 +286,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     border-radius: 12px;
     padding: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 900; /* 降低z-index，确保低于action-menu-items */
+    z-index: 980; /* 降低z-index，确保低于action-menu-items */
     transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
@@ -1878,9 +1884,17 @@ body.dark-mode .search-load-all:hover {
 }
 
 /* 隐藏list默认bullet点 */
-.toc ul {
+/* 首页目录 - 保持原始padding确保展开图标正常显示 */
+#main-toc ul {
     list-style: none;
     padding-left: 30px;
+    margin: 0;
+}
+
+/* 章节页目录 - 减少padding让内容更靠左 */
+#chapter-toc ul {
+    list-style: none;
+    padding-left: 15px;
     margin: 0;
 }
 
@@ -1917,17 +1931,30 @@ body.dark-mode .search-load-all:hover {
     transform: rotate(-90deg) scale(1.2);
 }
 
-/* 不同層級的展開圖標位置調整，確保圖標緊貼對應層級的文字 */
-.toc-item.toc-level-2 .toc-expand-icon {
-    left: 22px; /* 第2層，配合新的 margin-left: 20px */
+/* 首页目录展开图标位置 - 保持原始位置确保正常显示 */
+#main-toc .toc-item.toc-level-2 .toc-expand-icon {
+  left: 42px; /* 第2層，配合首页的 margin-left: 40px */
 }
 
-.toc-item.toc-level-3 .toc-expand-icon {
-    left: 42px; /* 第3層，配合新的 margin-left: 40px */
+#main-toc .toc-item.toc-level-3 .toc-expand-icon {
+  left: 62px; /* 第3層，配合首页的 margin-left: 60px */
 }
 
-.toc-item.toc-level-4 .toc-expand-icon {
-    left: 62px; /* 第4層，配合新的 margin-left: 60px */
+#main-toc .toc-item.toc-level-4 .toc-expand-icon {
+  left: 82px; /* 第4層，配合首页的 margin-left: 80px */
+}
+
+/* 章节页目录展开图标位置 - 调整以配合更靠左的布局 */
+#chapter-toc .toc-item.toc-level-2 .toc-expand-icon {
+  left: 12px; /* 第2層，配合章节页的 margin-left: 10px */
+}
+
+#chapter-toc .toc-item.toc-level-3 .toc-expand-icon {
+  left: 32px; /* 第3層，配合章节页的 margin-left: 30px */
+}
+
+#chapter-toc .toc-item.toc-level-4 .toc-expand-icon {
+  left: 52px; /* 第4層，配合章节页的 margin-left: 50px */
 }
 
 /* 目录项样式 */
@@ -2003,36 +2030,62 @@ body.dark-mode .toc-item:not(.toc-expandable):hover {
     margin-bottom: 8px;
 }
 
-/* 第1层 - 章节标题 */
-.toc-item.toc-level-1 > a {
-    font-weight: 600;
-    color: #d63384;
-    font-size: 16px;
-    margin-left: 20px; /* 为展开图标预留空间 */
+/* 首页目录层级样式 - 保持原始间距确保展开图标正常显示 */
+#main-toc .toc-item.toc-level-1 > a {
+  font-weight: 600;
+  color: #d63384;
+  font-size: 16px;
+  margin-left: 20px; /* 为展开图标预留空间 */
 }
 
-/* 第2层 - 主要小节 (調整到原第1層位置) */
-.toc-item.toc-level-2 > a {
-    font-weight: 500;
-    color: #e85aad;
-    font-size: 15px;
-    margin-left: 20px; /* 從 40px 調整到 20px */
+#main-toc .toc-item.toc-level-2 > a {
+  font-weight: 500;
+  color: #e85aad;
+  font-size: 15px;
+  margin-left: 40px; /* 保持原始间距 */
 }
 
-/* 第3层 - 详细小节 (調整到原第2層位置) */
-.toc-item.toc-level-3 > a {
-    font-weight: 400;
-    color: #f06bbf;
-    font-size: 14px;
-    margin-left: 40px; /* 從 60px 調整到 40px */
+#main-toc .toc-item.toc-level-3 > a {
+  font-weight: 400;
+  color: #f06bbf;
+  font-size: 14px;
+  margin-left: 60px; /* 保持原始间距 */
 }
 
-/* 第4层 - 更详细小节 (調整到原第3層位置) */
-.toc-item.toc-level-4 > a {
-    font-weight: 400;
-    color: #f585cc;
-    font-size: 13px;
-    margin-left: 60px; /* 從 80px 調整到 60px */
+#main-toc .toc-item.toc-level-4 > a {
+  font-weight: 400;
+  color: #f585cc;
+  font-size: 13px;
+  margin-left: 80px; /* 保持原始间距 */
+}
+
+/* 章节页目录层级样式 - 减少间距让内容更靠左 */
+#chapter-toc .toc-item.toc-level-1 > a {
+  font-weight: 600;
+  color: #d63384;
+  font-size: 16px;
+  margin-left: 20px; /* 为展开图标预留空间 */
+}
+
+#chapter-toc .toc-item.toc-level-2 > a {
+  font-weight: 500;
+  color: #e85aad;
+  font-size: 15px;
+  margin-left: 10px; /* 章节页更靠左 */
+}
+
+#chapter-toc .toc-item.toc-level-3 > a {
+  font-weight: 400;
+  color: #f06bbf;
+  font-size: 14px;
+  margin-left: 30px; /* 章节页更靠左 */
+}
+
+#chapter-toc .toc-item.toc-level-4 > a {
+  font-weight: 400;
+  color: #f585cc;
+  font-size: 13px;
+  margin-left: 50px; /* 章节页更靠左 */
 }
 
 /* 章节项特殊样式 */
