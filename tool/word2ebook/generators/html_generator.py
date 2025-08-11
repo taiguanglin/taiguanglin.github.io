@@ -218,7 +218,8 @@ class HTMLGenerator:
             converted_prev_link = self.i18n_processor.to_traditional(nav_data['prev_link'])
             converted_next_link = self.i18n_processor.to_traditional(nav_data['next_link'])
             converted_top_nav_links = self.i18n_processor.to_traditional(nav_data['top_nav_links'])
-            converted_lang_switch_links = self.i18n_processor.to_traditional(lang_switch_links)
+            # 特別處理：語言切換鏈接不需要轉換，因為已經包含正確的簡體字"简体"
+            converted_lang_switch_links = lang_switch_links
             
             # 渲染繁體版頁面
             html_content = self.i18n_template_manager.render_chapter(
@@ -303,8 +304,7 @@ class HTMLGenerator:
             if is_traditional:
                 prev_filename = self.i18n_processor.get_traditional_filename(prev_filename)
             prev_title = re.sub(r"<.*?>", "", prev_chapter.title)  # 清理HTML标签
-            prev_text = get_i18n_text('ui.previous_chapter', is_traditional, '上一章')
-            prev_link = f'<a href="{prev_filename}">⬅️ {prev_text}：{prev_title}</a>'
+            prev_link = f'<a href="{prev_filename}">⬅️ {prev_title}</a>'
         
         # 下一章链接
         if current_index < len(chapters) - 1:
@@ -313,8 +313,7 @@ class HTMLGenerator:
             if is_traditional:
                 next_filename = self.i18n_processor.get_traditional_filename(next_filename)
             next_title = re.sub(r"<.*?>", "", next_chapter.title)  # 清理HTML标签
-            next_text = get_i18n_text('ui.next_chapter', is_traditional, '下一章')
-            next_link = f'<a href="{next_filename}">{next_text}：{next_title} ➡️</a>'
+            next_link = f'<a href="{next_filename}">{next_title} ➡️</a>'
         
         # 顶部导航按钮
         if prev_link or next_link:
@@ -339,6 +338,7 @@ class HTMLGenerator:
         
         if is_traditional:
             # 繁体页面：简体链接指向对应简体版，繁体链接指向当前页面
+            # 特別處理：在繁體版頁面中，簡體文字保持為簡體字形式（不被轉換）
             simplified_filename = self.i18n_processor.get_simplified_filename(current_filename)
             return f'<a href="{simplified_filename}">{simplified_text}</a> | <a href="{current_filename}">{traditional_text}</a>'
         else:
