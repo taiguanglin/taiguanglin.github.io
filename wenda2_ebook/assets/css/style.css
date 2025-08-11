@@ -323,6 +323,21 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     color: #666;
     margin-bottom: 5px;
     font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 字體大小數值顯示 */
+.font-size-display {
+    font-size: 11px;
+    color: #e75480;
+    background: rgba(231, 84, 128, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    min-width: 35px;
+    text-align: center;
 }
 
 .toolbar-controls {
@@ -352,6 +367,53 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     background: #e75480;
     color: white;
     border-color: #e75480;
+}
+
+/* 字體調整按鈕特殊樣式 - 區別於選項按鈕 */
+.ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #ced4da;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ctrl-btn.font-adjust:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    color: #212529;
+}
+
+.ctrl-btn.font-adjust:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
+}
+
+/* 字體調整按鈕的短暫反馈效果 */
+.ctrl-btn.font-adjust.clicked {
+    background: linear-gradient(135deg, #e75480 0%, #c73650 100%);
+    color: white;
+    border-color: #e75480;
+    transform: scale(0.95);
+}
+
+/* 字體大小選項按鈕保持原有樣式 */
+.ctrl-btn.font-option {
+    /* 保持原有的 ctrl-btn 樣式，此類用於標識選項按鈕 */
+    position: relative;
 }
 
 /* 搜索功能已移除 */
@@ -880,6 +942,37 @@ body.dark-mode .ctrl-btn.active {
     color: #fff;
     border-color: #ff69b4;
     box-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
+}
+
+/* 暗色模式下的字體調整按鈕 */
+body.dark-mode .ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    border: 1px solid #555;
+    color: #fddde6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .ctrl-btn.font-adjust:hover {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+    border-color: #777;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .ctrl-btn.font-adjust:active {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+body.dark-mode .ctrl-btn.font-adjust.clicked {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+    border-color: #ff69b4;
+}
+
+/* 暗色模式下的字體大小顯示 */
+body.dark-mode .font-size-display {
+    color: #ff69b4;
+    background: rgba(255, 105, 180, 0.15);
 }
 
 
