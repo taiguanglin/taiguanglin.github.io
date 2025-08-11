@@ -355,7 +355,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
 
 .toolbar-controls {
     display: flex;
-    gap: 5px;
+    gap: 8px; /* 增加按钮间距，防止误点 */
     align-items: center;
 }
 
@@ -423,10 +423,13 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     transform: scale(0.95);
 }
 
-/* 字體大小選項按鈕保持原有樣式 */
+/* 字體大小選項按鈕優化樣式 */
 .ctrl-btn.font-option {
-    /* 保持原有的 ctrl-btn 樣式，此類用於標識選項按鈕 */
+    /* 為"預設"按鈕增加更多padding，確保舒適的點擊區域 */
+    padding: 6px 16px; /* 左右增加padding */
+    min-width: 50px; /* 設置最小寬度確保視覺平衡 */
     position: relative;
+    white-space: nowrap; /* 防止文字換行 */
 }
 
 /* 搜索功能已移除 */
@@ -1729,6 +1732,16 @@ body.dark-mode .search-load-all:hover {
         line-height: 1.7;
     }
     
+    /* 平板端字體控制按鈕優化 */
+    .toolbar-controls {
+        gap: 10px; /* 平板端增加更多間距 */
+    }
+    
+    .ctrl-btn.font-option {
+        padding: 8px 18px; /* 平板端增加更多padding */
+        min-width: 55px;
+    }
+    
     /* TOC目錄字型優化 - 平板 */
     /* 移除!important，让JavaScript动态字体调整生效 */
     .toc > ul > li { 
@@ -2464,6 +2477,17 @@ body.dark-mode .bookmark-time {
     /* 移除!important，让JavaScript动态字体调整生效 */
     body {
         line-height: 1.8;
+    }
+    
+    /* 手機端字體控制按鈕優化 */
+    .toolbar-controls {
+        gap: 12px; /* 手機端增加最多間距以防誤觸 */
+    }
+    
+    .ctrl-btn.font-option {
+        padding: 10px 20px; /* 手機端增加最多padding便於觸摸 */
+        min-width: 60px;
+        font-size: 13px; /* 稍微增大字體便於閱讀 */
     }
     
     /* 手機端TOC目錄字型優化 - 移除 !important 讓JavaScript動態調整生效 */
