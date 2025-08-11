@@ -2411,13 +2411,16 @@ body.dark-mode .bookmark-time {
 
 /* 响应式浮动层级控制定位 */
 
-/* 宽屏幕优化：将浮动层级控制按钮靠近内容区域 */
+/* 宽屏幕优化：将浮动层级控制按钮靠近内容区域并垂直置中 */
 @media (min-width: 800px) {
   .floating-level-controls {
     /* 在宽屏幕下，将按钮定位到内容区域右侧，避免用户鼠标移动距离过远 */
     right: auto;
     left: calc(75%); /* 屏幕中心偏右 */
-    /* 保持其他属性不变 */
+    /* 实现垂直置中 */
+    bottom: auto; /* 移除bottom定位 */
+    top: 50%; /* 垂直置中起点 */
+    transform: translateY(-50%); /* 完成垂直置中 */
   }
 }
 
