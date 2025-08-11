@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>坐禪之問答錄2</title>
-<link rel="icon" type="image/x-icon" href="favicon.ico">
+
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
 <script>
@@ -635,12 +635,15 @@ if (typeof MiniSearch === 'undefined') {
 
 <!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
-  <div class="floating-level-label">層級</div>
-  <div class="floating-level-buttons">
-    <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
-    <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
-    <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
-    <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+  <button class="floating-level-toggle" id="floating-level-toggle" title="收縮/展開層級控制">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">層級</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
+      <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
+      <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
   </div>
 </div>
 
