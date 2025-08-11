@@ -2435,6 +2435,97 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     
     document.head.appendChild(tocStyle);
+    
+    // 動態調整搜索功能的字型大小
+    applySearchFontStyles();
+  }
+  
+  // 應用搜索功能字體樣式
+  function applySearchFontStyles() {
+    // 移除現有的動態搜索樣式
+    let existingSearchStyle = document.getElementById('dynamic-search-styles');
+    if (existingSearchStyle) {
+      existingSearchStyle.remove();
+    }
+    
+    // 創建新的動態搜索樣式
+    const searchStyle = document.createElement('style');
+    searchStyle.id = 'dynamic-search-styles';
+    
+    // 計算搜索相關元素的字體大小
+    const baseFontSize = fontSize;
+    const inputFontSize = Math.max(14, Math.min(20, baseFontSize)); // 輸入框：14-20px範圍
+    const contentFontSize = Math.max(12, Math.round(baseFontSize * 0.9)); // 搜索結果內容稍小，最小12px
+    const titleFontSize = Math.max(12, Math.round(baseFontSize * 0.85)); // 標題更小，最小12px
+    const controlFontSize = Math.max(10, Math.round(baseFontSize * 0.75)); // 控制按鈕最小10px
+    const statusFontSize = Math.max(11, Math.round(baseFontSize * 0.8)); // 狀態文字最小11px
+    const activateBtnFontSize = Math.max(13, Math.round(baseFontSize * 0.9)); // 激活按鈕最小13px
+    
+    // 調試信息
+    console.log('搜索字體設置應用:', {
+      baseFontSize,
+      inputFontSize,
+      contentFontSize,
+      titleFontSize,
+      controlFontSize,
+      statusFontSize,
+      activateBtnFontSize
+    });
+    
+    searchStyle.textContent = `
+      /* 搜索輸入框字體 */
+      #search-input {
+        font-size: ${inputFontSize}px !important;
+      }
+      
+      /* 搜索輸入框占位符字體 */
+      #search-input::placeholder {
+        font-size: ${inputFontSize}px !important;
+      }
+      
+      /* 搜索結果內容字體 */
+      .search-result-content {
+        font-size: ${contentFontSize}px !important;
+        line-height: ${lineHeight} !important;
+      }
+      
+      /* 搜索結果標題字體 */
+      .search-result-title {
+        font-size: ${titleFontSize}px !important;
+      }
+      
+      /* 搜索狀態文字 */
+      .search-status,
+      .search-loading-text {
+        font-size: ${statusFontSize}px !important;
+      }
+      
+      /* 搜索控制按鈕 */
+      .search-clear,
+      .search-collapse,
+      .search-load-more,
+      .search-load-all,
+      .search-retry-btn {
+        font-size: ${controlFontSize}px !important;
+      }
+      
+      /* 搜索激活按鈕 */
+      .search-activate-btn {
+        font-size: ${activateBtnFontSize}px !important;
+      }
+      
+      /* 搜索結果類型標籤 */
+      .search-result-type {
+        font-size: ${Math.round(controlFontSize * 0.9)}px !important;
+      }
+      
+      /* 搜索結果統計 */
+      .search-results-count {
+        font-size: ${statusFontSize}px !important;
+      }
+    `;
+    
+    document.head.appendChild(searchStyle);
   }
   
   function updateFontSize(change) {
