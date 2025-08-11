@@ -209,15 +209,15 @@ window.I18N_TEXT = {
       traditional: 'A-'
     },
     fontNormal: {
-      simplified: 'A',
-      traditional: 'A'
+      simplified: '默认',
+      traditional: '預設'
     },
     fontIncrease: {
       simplified: 'A+',
       traditional: 'A+'
     },
     lineTight: {
-      simplified: '紧密',
+      simplified: '紧凑',
       traditional: '緊密'
     },
     lineNormal: {
@@ -225,7 +225,7 @@ window.I18N_TEXT = {
       traditional: '正常'
     },
     lineLoose: {
-      simplified: '宽松',
+      simplified: '松散',
       traditional: '寬鬆'
     },
     widthNarrow: {
