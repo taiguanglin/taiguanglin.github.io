@@ -200,31 +200,8 @@ class ContentProcessor:
             return self.id_generator.generate_content_id(content, item_type)
     
     def _get_context(self, element, length: int = 50) -> str:
-        """获取元素的上下文，排除重複的meta信息"""
-        # 嘗試只提取內容文本，排除姓名、時間等meta信息
-        content_element = element.find(class_='question-text') or element.find(class_='answer-text')
-        
-        if content_element:
-            # 如果找到純內容元素，使用它
-            text = content_element.get_text()
-        else:
-            # 否則使用整個元素，但嘗試移除常見的meta信息
-            text = element.get_text()
-            
-            # 移除常見的時間戳模式 (YYYY-MM-DD HH:MM 格式)
-            import re
-            text = re.sub(r'\d{4}-\d{1,2}-\d{1,2}\s+\d{1,2}:\d{2}', '', text)
-            
-            # 移除開頭可能的提問者/回答者標記（如果text開始就是姓名）
-            # 這是一個簡單的啟發式方法
-            lines = text.strip().split('\n')
-            if len(lines) > 1:
-                # 如果第一行很短且第二行較長，可能第一行是姓名，使用後續內容
-                first_line = lines[0].strip()
-                if len(first_line) < 20 and len(lines[1].strip()) > len(first_line):
-                    text = '\n'.join(lines[1:])
-        
-        text = text.strip()
+        """获取元素的上下文"""
+        text = element.get_text()
         if len(text) <= length * 2:
             return self.text_processor.clean_text(text)
         # 简单截取，避免截断词语
