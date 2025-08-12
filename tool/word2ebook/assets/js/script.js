@@ -2959,6 +2959,25 @@ function hideLoadMoreButtons() {
       .search-results-count {
         font-size: ${statusFontSize}px !important;
       }
+      
+      /* 響應式設計：窄螢幕下的搜索結果佈局 */
+      @media (max-width: 340px) {
+        .search-result-header {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+          gap: 2px !important;
+        }
+        
+        .search-result-number {
+          align-self: flex-start !important;
+          margin-bottom: 2px !important;
+        }
+        
+        .search-result-title {
+          width: 100% !important;
+          margin-left: 0 !important;
+        }
+      }
     `;
     
     document.head.appendChild(searchStyle);
