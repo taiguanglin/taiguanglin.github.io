@@ -1785,7 +1785,6 @@ body.dark-mode .search-load-all:hover {
     }
     
     .search-result-title {
-        flex-direction: column;
         align-items: flex-start;
         gap: 4px;
     }
