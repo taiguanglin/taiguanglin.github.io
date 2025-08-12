@@ -269,11 +269,44 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
     
-    // 降级方案：传统处理（保持现有行为）
-    return text;
-  }
+      // 降级方案：传统处理（保持现有行为）
+  return text;
+}
 
-  // 初始化搜索功能（内部函数）
+// 更新加载更多按钮的显示状态（全局函数）
+function updateLoadMoreButtons() {
+  if (typeof displayedResultsCount === 'undefined' || typeof currentSearchResults === 'undefined') return;
+  
+  const loadMoreBtn = document.getElementById('search-load-more');
+  const loadAllBtn = document.getElementById('search-load-all');
+  const loadMoreBtnBottom = document.getElementById('search-load-more-bottom');
+  const loadAllBtnBottom = document.getElementById('search-load-all-bottom');
+  
+  const shouldShow = displayedResultsCount < currentSearchResults.length;
+  
+  // 更新頂部按鈕
+  if (loadMoreBtn) loadMoreBtn.style.display = shouldShow ? 'inline-block' : 'none';
+  if (loadAllBtn) loadAllBtn.style.display = shouldShow ? 'inline-block' : 'none';
+  
+  // 更新底部按鈕
+  if (loadMoreBtnBottom) loadMoreBtnBottom.style.display = shouldShow ? 'inline-block' : 'none';
+  if (loadAllBtnBottom) loadAllBtnBottom.style.display = shouldShow ? 'inline-block' : 'none';
+}
+
+// 隐藏加载更多按钮（全局函数）
+function hideLoadMoreButtons() {
+  const loadMoreBtn = document.getElementById('search-load-more');
+  const loadAllBtn = document.getElementById('search-load-all');
+  const loadMoreBtnBottom = document.getElementById('search-load-more-bottom');
+  const loadAllBtnBottom = document.getElementById('search-load-all-bottom');
+  
+  if (loadMoreBtn) loadMoreBtn.style.display = 'none';
+  if (loadAllBtn) loadAllBtn.style.display = 'none';
+  if (loadMoreBtnBottom) loadMoreBtnBottom.style.display = 'none';
+  if (loadAllBtnBottom) loadAllBtnBottom.style.display = 'none';
+}
+
+// 初始化搜索功能（内部函数）
   async function initSearch() {
     if (!isIndexPage()) return;
     
@@ -592,6 +625,8 @@ document.addEventListener('DOMContentLoaded', function() {
         displayedResultsCount = 0;
         
         if (results.length > 0) {
+          // 重置搜索結果容器高度（新搜索時恢復分頁模式）
+          resetSearchResultsHeight();
           displayPagedResults(trimmedQuery);
         } else {
           displayNoResults(trimmedQuery);
@@ -657,9 +692,44 @@ document.addEventListener('DOMContentLoaded', function() {
         updateResultsCounter();
         updateLoadMoreButtons();
         
+        // 顯示全部時自動調整搜索結果容器高度
+        adjustSearchResultsHeight();
+        
         // 更新搜索状态
         const totalResults = currentSearchResults.length;
         searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+      }
+    }
+    
+    // 調整搜索結果容器高度
+    function adjustSearchResultsHeight() {
+      const searchResultsList = document.getElementById('search-results-list');
+      const searchResults = document.getElementById('search-results');
+      
+      if (searchResultsList && searchResults) {
+        // 當顯示全部結果時，移除固定高度限制，讓容器自適應內容
+        searchResultsList.style.maxHeight = 'none';
+        searchResultsList.style.overflowY = 'visible';
+        
+        // 確保搜索結果容器也能完全顯示
+        searchResults.style.maxHeight = 'none';
+        
+        console.log('🔧 已調整搜索結果容器為自適應高度');
+      }
+    }
+    
+    // 重置搜索結果容器高度（當需要分頁顯示時）
+    function resetSearchResultsHeight() {
+      const searchResultsList = document.getElementById('search-results-list');
+      const searchResults = document.getElementById('search-results');
+      
+      if (searchResultsList && searchResults) {
+        // 恢復分頁模式的固定高度
+        searchResultsList.style.maxHeight = '';
+        searchResultsList.style.overflowY = '';
+        searchResults.style.maxHeight = '';
+        
+        console.log('🔧 已重置搜索結果容器為分頁模式');
       }
     }
     
@@ -669,32 +739,16 @@ document.addEventListener('DOMContentLoaded', function() {
       searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
     }
     
-    // 更新加载更多按钮的显示状态
-    function updateLoadMoreButtons() {
-      const loadMoreBtn = document.getElementById('search-load-more');
-      const loadAllBtn = document.getElementById('search-load-all');
-      
-      if (displayedResultsCount < currentSearchResults.length) {
-        loadMoreBtn.style.display = 'inline-block';
-        loadAllBtn.style.display = 'inline-block';
-      } else {
-        loadMoreBtn.style.display = 'none';
-        loadAllBtn.style.display = 'none';
-      }
-    }
+
     
-    // 隐藏加载更多按钮
-    function hideLoadMoreButtons() {
-      const loadMoreBtn = document.getElementById('search-load-more');
-      const loadAllBtn = document.getElementById('search-load-all');
-      if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-      if (loadAllBtn) loadAllBtn.style.display = 'none';
-    }
+
     
     // 追加搜索结果到列表
     function appendResults(results) {
       const query = document.getElementById('search-input').value.trim();
-      const additionalHTML = results.map(result => {
+      const startIndex = displayedResultsCount - results.length; // 計算當前批次的起始序號
+      
+      const additionalHTML = results.map((result, index) => {
         const typeText = {
           'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
           'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
@@ -705,15 +759,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // 智能高亮搜索关键词
         const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
         
+        // 計算全局序號
+        const globalIndex = startIndex + index + 1;
+        const totalResults = currentSearchResults.length;
+        
         return `
           <li class="search-result-item" data-url="${result.url}">
-            <div class="search-result-title">
-              <span class="search-result-type">${typeText}</span>
-              ${escapeHtml(result.title)}
-
+            <div class="search-result-header">
+              <span class="search-result-number">${globalIndex}/${totalResults}</span>
+              <div class="search-result-title">
+                <span class="search-result-type">${typeText}</span>
+                ${escapeHtml(result.title)}
+              </div>
             </div>
             <div class="search-result-content">${highlightedContext}</div>
-
           </li>
         `;
       }).join('');
@@ -723,7 +782,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 显示搜索结果（原函数，现在用于内部调用）
     function displayResults(results, query) {
-      searchResultsList.innerHTML = results.map(result => {
+      searchResultsList.innerHTML = results.map((result, index) => {
         const typeText = {
           'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
           'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
@@ -734,15 +793,20 @@ document.addEventListener('DOMContentLoaded', function() {
         // 智能高亮搜索关键词
         const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
         
+        // 計算全局序號
+        const globalIndex = index + 1;
+        const totalResults = currentSearchResults.length;
+        
         return `
           <li class="search-result-item" data-url="${result.url}">
-            <div class="search-result-title">
-              <span class="search-result-type">${typeText}</span>
-              ${escapeHtml(result.title)}
-
+            <div class="search-result-header">
+              <span class="search-result-number">${globalIndex}/${totalResults}</span>
+              <div class="search-result-title">
+                <span class="search-result-type">${typeText}</span>
+                ${escapeHtml(result.title)}
+              </div>
             </div>
             <div class="search-result-content">${highlightedContext}</div>
-
           </li>
         `;
       }).join('');
@@ -888,6 +952,10 @@ document.addEventListener('DOMContentLoaded', function() {
       currentSearchResults = [];
       displayedResultsCount = 0;
       hideLoadMoreButtons();
+      
+      // 重置搜索結果容器高度
+      resetSearchResultsHeight();
+      
       searchStatus.innerHTML = `
         ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
       `;
@@ -911,9 +979,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // 收起搜索按钮
     searchCollapse.addEventListener('click', collapseSearch);
     
-    // 显示更多按钮
+    // 顯示更多按鈕（頂部和底部）
     const loadMoreBtn = document.getElementById('search-load-more');
     const loadAllBtn = document.getElementById('search-load-all');
+    const loadMoreBtnBottom = document.getElementById('search-load-more-bottom');
+    const loadAllBtnBottom = document.getElementById('search-load-all-bottom');
     
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener('click', loadMoreResults);
@@ -921,6 +991,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (loadAllBtn) {
       loadAllBtn.addEventListener('click', loadAllResults);
+    }
+    
+    // 底部按鈕事件監聽器
+    if (loadMoreBtnBottom) {
+      loadMoreBtnBottom.addEventListener('click', loadMoreResults);
+    }
+    
+    if (loadAllBtnBottom) {
+      loadAllBtnBottom.addEventListener('click', loadAllResults);
+    }
+    
+    // 底部清除和收起按鈕
+    const searchClearBottom = document.getElementById('search-clear-bottom');
+    const searchCollapseBottom = document.getElementById('search-collapse-bottom');
+    
+    if (searchClearBottom) {
+      searchClearBottom.addEventListener('click', clearSearch);
+    }
+    
+    if (searchCollapseBottom) {
+      searchCollapseBottom.addEventListener('click', collapseSearch);
     }
     
     // 搜索结果点击
@@ -981,6 +1072,29 @@ document.addEventListener('DOMContentLoaded', function() {
       currentSearchResults = [];
       displayedResultsCount = 0;
       hideLoadMoreButtons();
+      
+      // 清空搜索狀態和結果顯示
+      const searchStatus = document.getElementById('search-status');
+      const searchResultsList = document.getElementById('search-results-list');
+      const searchResultsCount = document.getElementById('search-results-count');
+      
+      if (searchStatus) {
+        searchStatus.innerHTML = '';
+      }
+      if (searchResultsList) {
+        searchResultsList.innerHTML = '';
+      }
+      if (searchResultsCount) {
+        searchResultsCount.textContent = '';
+      }
+      
+      // 重置搜索結果容器高度
+      // 重用已聲明的 searchResultsList 和 searchResults 變數
+      if (searchResultsList && searchResults) {
+        searchResultsList.style.maxHeight = '';
+        searchResultsList.style.overflowY = '';
+        searchResults.style.maxHeight = '';
+      }
       
       // 隐藏搜索容器，显示激活按钮
       searchContainer.style.display = 'none';
@@ -2780,6 +2894,46 @@ document.addEventListener('DOMContentLoaded', function() {
       .search-load-all,
       .search-retry-btn {
         font-size: ${controlFontSize}px !important;
+      }
+      
+      /* 搜索結果底部控制按鈕 */
+      .search-results-footer {
+        padding: 10px;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-color);
+        position: sticky;
+        bottom: 0;
+      }
+      
+      .search-results-footer .search-results-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+      
+      /* 搜索結果編號 */
+      .search-result-header {
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+      
+      .search-result-number {
+        background: var(--accent-color);
+        color: white;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-size: 11px;
+        font-weight: bold;
+        flex-shrink: 0;
+        min-width: fit-content;
+      }
+      
+      .search-result-title {
+        flex: 1;
+        min-width: 0;
       }
       
       /* 搜索激活按鈕 */
