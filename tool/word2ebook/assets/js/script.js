@@ -639,6 +639,9 @@ function hideLoadMoreButtons() {
         // 延迟更新浮动控制状态，让DOM变化完成
         setTimeout(updateFloatingControlsState, 10);
         
+        // 更新搜索按鈕顯示狀態
+        setTimeout(updateBottomSearchButtonsVisibility, 10);
+        
       } catch (error) {
         console.error('搜索出错:', error);
         searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
@@ -2908,7 +2911,7 @@ function hideLoadMoreButtons() {
       .search-results-footer .search-results-actions {
         display: flex;
         gap: 8px;
-        justify-content: center;
+        justify-content: flex-end;
         flex-wrap: wrap;
       }
       
@@ -2921,7 +2924,7 @@ function hideLoadMoreButtons() {
       }
       
       .search-result-number {
-        background: var(--accent-color);
+        background: #e75480;
         color: white;
         padding: 2px 6px;
         border-radius: 4px;
@@ -2929,6 +2932,7 @@ function hideLoadMoreButtons() {
         font-weight: bold;
         flex-shrink: 0;
         min-width: fit-content;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
       }
       
       .search-result-title {
@@ -3498,6 +3502,35 @@ function hideLoadMoreButtons() {
     }
   }
 
+  // ========== 搜索按鈕智能顯示功能 ==========
+  
+  // 檢測頂部搜索控制按鈕是否在視窗中可見
+  function areTopSearchControlsVisible() {
+    const searchHeader = document.querySelector('.search-results-header');
+    if (!searchHeader) return false;
+    
+    const rect = searchHeader.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // 檢查頂部控制按鈕是否在視窗內可見
+    return rect.bottom > 0 && rect.top < viewportHeight;
+  }
+  
+  // 更新底部搜索按鈕的顯示狀態
+  function updateBottomSearchButtonsVisibility() {
+    const bottomFooter = document.querySelector('.search-results-footer');
+    if (!bottomFooter) return;
+    
+    const areTopControlsVisible = areTopSearchControlsVisible();
+    
+    // 當頂部按鈕可見時隱藏底部按鈕，否則顯示底部按鈕
+    if (areTopControlsVisible) {
+      bottomFooter.style.display = 'none';
+    } else {
+      bottomFooter.style.display = 'block';
+    }
+  }
+
   // 滾動事件（帶節流優化）
   let scrollTimeout;
   function handleScroll() {
@@ -3506,9 +3539,18 @@ function hideLoadMoreButtons() {
     // 節流處理章節跟踪，避免過度頻繁更新
     clearTimeout(scrollTimeout);
     scrollTimeout = setTimeout(updateCurrentSection, 50);
+    
+    // 更新搜索按鈕顯示狀態
+    updateBottomSearchButtonsVisibility();
   }
   
   window.addEventListener('scroll', handleScroll);
+  
+  // 窗口大小變化時更新搜索按鈕狀態
+  window.addEventListener('resize', () => {
+    setTimeout(updateBottomSearchButtonsVisibility, 100);
+  });
+  
   updateReadingProgress();
   updateCurrentSection(); // 初始化當前章節
 
