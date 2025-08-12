@@ -2917,7 +2917,7 @@ function hideLoadMoreButtons() {
       
       /* 搜索結果編號 */
       .search-result-header {
-        display: flex;
+        display: inline-block;
         align-items: center;
         gap: 4px;
         margin-bottom: 4px;
@@ -2939,6 +2939,7 @@ function hideLoadMoreButtons() {
       }
       
       .search-result-title {
+        display: inline-block;
         flex: 1;
         min-width: 0;
         margin: 0;
@@ -2960,24 +2961,6 @@ function hideLoadMoreButtons() {
         font-size: ${statusFontSize}px !important;
       }
       
-      /* 響應式設計：窄螢幕下的搜索結果佈局 */
-      @media (max-width: 400px) {
-        .search-result-header {
-          flex-direction: column !important;
-          align-items: flex-start !important;
-          gap: 2px !important;
-        }
-        
-        .search-result-number {
-          align-self: flex-start !important;
-          margin-bottom: 2px !important;
-        }
-        
-        .search-result-title {
-          width: 100% !important;
-          margin-left: 0 !important;
-        }
-      }
     `;
     
     document.head.appendChild(searchStyle);
