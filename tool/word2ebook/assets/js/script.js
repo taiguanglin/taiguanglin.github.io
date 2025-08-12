@@ -2918,26 +2918,31 @@ function hideLoadMoreButtons() {
       /* 搜索結果編號 */
       .search-result-header {
         display: flex;
-        align-items: flex-start;
-        gap: 8px;
+        align-items: center;
+        gap: 4px;
         margin-bottom: 4px;
+        flex-wrap: nowrap;
+        min-height: fit-content;
       }
       
       .search-result-number {
         background: #e75480;
         color: white;
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 11px;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-size: ${Math.max(9, Math.round(titleFontSize * 0.8))}px !important;
         font-weight: bold;
         flex-shrink: 0;
-        min-width: fit-content;
+        white-space: nowrap;
+        line-height: 1.2;
         box-shadow: 0 1px 2px rgba(0,0,0,0.1);
       }
       
       .search-result-title {
         flex: 1;
         min-width: 0;
+        margin: 0;
+        padding: 0;
       }
       
       /* 搜索激活按鈕 */
