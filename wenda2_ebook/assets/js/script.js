@@ -215,6 +215,11 @@ document.addEventListener('DOMContentLoaded', function() {
     segmentationStats.calls++;
     const startTime = performance.now();
     
+    // 調試：記錄關鍵信息（前20次）
+    if (segmentationStats.calls <= 20) {
+      console.log(`🔤 分詞調用 #${segmentationStats.calls}: "${text.substring(0, 30)}..."`);
+    }
+    
     // 如果支持Intl.Segmenter，使用智能分词
     if (chineseSegmenter) {
       try {
@@ -323,20 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
           fuzzy: segmenterEnabled ? 0.1 : 0.2, // 智能分词时降低模糊度
           prefix: true, // 前缀匹配
           combineWith: 'AND' // 默认AND组合，提高精确度
-        },
-        extractField: (document, fieldName) => {
-          // 增强的中文文本处理 - 智能字段分詞策略
-          const text = document[fieldName] || '';
-          
-          // 只對純內容字段進行分詞處理，提升搜索精度
-          if (fieldName === 'content') {
-            return processChineseText(text);
-          }
-          
-          // title字段包含人名、時間等信息，不進行分詞以保持完整性
-          // context、url等顯示字段保持原文
-          return text;
-        },
+                },
         processTerm: (term) => {
           // 搜索词预处理
           if (chineseSegmenter && term.length > 1) {
@@ -361,14 +353,70 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       console.timeEnd('🏗️ MiniSearch對象創建');
       
-      // 分批添加文档到索引（改善用戶體驗）
+      // 預處理分詞結果（避免重複調用）
+      console.time('🔤 分詞預處理時間');
+      console.log(`🔄 開始預處理分詞 ${searchIndex.length} 條記錄...`);
+      
+      const processedIndex = searchIndex.map((doc, index) => {
+        if (index % 1000 === 0) {
+          console.log(`🔄 預處理進度: ${index}/${searchIndex.length}`);
+        }
+        
+        // 創建處理後的文檔副本
+        const processedDoc = { ...doc };
+        
+        // 預先進行分詞處理
+        if (segmenterEnabled && doc.content) {
+          processedDoc.processedContent = processChineseText(doc.content);
+        } else {
+          processedDoc.processedContent = doc.content;
+        }
+        
+        return processedDoc;
+      });
+      
+      console.timeEnd('🔤 分詞預處理時間');
+      console.log(`✅ 分詞預處理完成！處理了 ${segmentationStats.calls} 次調用`);
+      
+      // 更新 MiniSearch 配置以使用預處理結果
+      miniSearch = new MiniSearch({
+        fields: ['title', 'processedContent'], // 使用預處理的內容
+        storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
+        searchOptions: {
+          boost: { title: 3, processedContent: 1 },
+          fuzzy: segmenterEnabled ? 0.1 : 0.2,
+          prefix: true,
+          combineWith: 'AND'
+        },
+        // 不需要 extractField，因為已經預處理
+        processTerm: (term) => {
+          if (chineseSegmenter && term.length > 1) {
+            try {
+              const segments = chineseSegmenter.segment(term);
+              const words = [];
+              for (const segment of segments) {
+                if (segment.isWordLike && segment.segment.trim().length > 0) {
+                  words.push(segment.segment.trim());
+                }
+              }
+              return words.length > 0 ? words : [term];
+            } catch (error) {
+              console.warn('搜索词分词处理出错:', error);
+              return [term];
+            }
+          }
+          return [term];
+        }
+      });
+      
+      // 分批添加預處理的文档到索引（改善用戶體驗）
       console.time('📇 索引建立時間 (分批處理)');
-      console.log(`🔄 開始分批處理 ${searchIndex.length} 條記錄...`);
+      console.log(`🔄 開始分批處理 ${processedIndex.length} 條預處理記錄...`);
       
       // 分批配置
       const BATCH_SIZE = 500;
-      const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
-      const estimatedTime = Math.ceil(totalBatches * 0.5); // 估計每批0.5秒
+      const totalBatches = Math.ceil(processedIndex.length / BATCH_SIZE);
+      const estimatedTime = Math.ceil(totalBatches * 0.1); // 預處理後更快
       
       // 創建進度顯示
       const progressDiv = document.createElement('div');
@@ -385,8 +433,8 @@ document.addEventListener('DOMContentLoaded', function() {
       // 分批處理函數
       async function processBatch(batchIndex) {
         const startIdx = batchIndex * BATCH_SIZE;
-        const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
-        const batch = searchIndex.slice(startIdx, endIdx);
+        const endIdx = Math.min(startIdx + BATCH_SIZE, processedIndex.length);
+        const batch = processedIndex.slice(startIdx, endIdx);
         
         // 更新進度顯示
         const progress = Math.round(((batchIndex + 1) / totalBatches) * 100);
@@ -395,7 +443,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const timeText = remainingTime > 0 ? ` (預計還需 ${remainingTime} 秒)` : '';
         
         progressDiv.innerHTML = `
-          📊 正在建立智能搜索索引... ${progress}% (${endIdx}/${searchIndex.length})${timeText}
+          📊 正在建立搜索索引... ${progress}% (${endIdx}/${processedIndex.length})${timeText}
           <div style="background: #e0e0e0; height: 4px; border-radius: 2px; margin: 4px 0;">
             <div style="background: #007acc; height: 100%; width: ${progress}%; border-radius: 2px; transition: width 0.3s;"></div>
           </div>
