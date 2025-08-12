@@ -2810,8 +2810,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
         break;
       case 'home':
-        // 回到首頁
-        window.location.href = 'index.html';
+        // 回到首頁 - 根據當前頁面語言版本決定目標首頁
+        const homePageUrl = isTraditionalChinesePage() ? 'index_trad.html' : 'index.html';
+        window.location.href = homePageUrl;
         break;
 
       case 'settings':
