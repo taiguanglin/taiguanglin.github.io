@@ -184,6 +184,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
+  // 中文分词器（支持Intl.Segmenter）
+  let chineseSegmenter = null;
+  
+  // 初始化中文分词器
+  function initChineseSegmenter() {
+    try {
+      // 检查Intl.Segmenter支持
+      if (typeof Intl !== 'undefined' && Intl.Segmenter) {
+        chineseSegmenter = new Intl.Segmenter(['zh-CN', 'zh-TW'], { 
+          granularity: 'word' 
+        });
+        console.log('✅ Intl.Segmenter 已启用，支持智能中文分词');
+        return true;
+      }
+    } catch (error) {
+      console.log('⚠️ Intl.Segmenter 不可用，使用传统中文搜索:', error.message);
+    }
+    return false;
+  }
+  
+  // 智能中文文本处理
+  function processChineseText(text) {
+    if (!text || typeof text !== 'string') return '';
+    
+    // 如果支持Intl.Segmenter，使用智能分词
+    if (chineseSegmenter) {
+      try {
+        const segments = chineseSegmenter.segment(text);
+        const words = [];
+        
+        for (const segment of segments) {
+          const word = segment.segment.trim();
+          // 只保留有意义的词汇（过滤标点符号和单字符）
+          if (word.length > 0 && segment.isWordLike) {
+            words.push(word);
+          }
+        }
+        
+        // 返回分词结果，同时保留原文以支持字符级搜索
+        return words.join(' ') + ' ' + text;
+      } catch (error) {
+        console.warn('分词处理出错，使用原文本:', error);
+        return text;
+      }
+    }
+    
+    // 降级方案：传统处理（保持现有行为）
+    return text;
+  }
+
   // 初始化搜索功能（内部函数）
   async function initSearch() {
     if (!isIndexPage()) return;
@@ -215,35 +265,65 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error('MiniSearch库未加载');
       }
       
+      // 初始化中文分词器
+      const segmenterEnabled = initChineseSegmenter();
+      
       // 加载搜索索引（帶進度）
       searchIndex = await loadSearchIndexWithProgress();
       
       // 載入完成，移除載入UI
       searchStatus.removeChild(loadingUI.loadingDiv);
       
-      // 初始化MiniSearch
+      // 初始化MiniSearch with 增强的中文支持
       miniSearch = new MiniSearch({
         fields: ['title', 'content'], // 搜索字段
         storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'], // 存储字段
         searchOptions: {
           boost: { title: 3, content: 1 }, // 标题权重更高
-          fuzzy: 0.2, // 模糊搜索
-          prefix: true // 前缀匹配
+          fuzzy: segmenterEnabled ? 0.1 : 0.2, // 智能分词时降低模糊度
+          prefix: true, // 前缀匹配
+          combineWith: 'AND' // 默认AND组合，提高精确度
         },
         extractField: (document, fieldName) => {
-          // 为中文优化：简单字符分割
+          // 增强的中文文本处理
           const text = document[fieldName] || '';
-          return text;
+          return processChineseText(text);
+        },
+        processTerm: (term) => {
+          // 搜索词预处理
+          if (chineseSegmenter && term.length > 1) {
+            try {
+              // 对搜索词也进行分词处理
+              const segments = chineseSegmenter.segment(term);
+              const words = [];
+              for (const segment of segments) {
+                if (segment.isWordLike && segment.segment.trim().length > 0) {
+                  words.push(segment.segment.trim());
+                }
+              }
+              // 如果分词有结果，使用分词；否则使用原词
+              return words.length > 0 ? words : [term];
+            } catch (error) {
+              console.warn('搜索词分词处理出错:', error);
+              return [term];
+            }
+          }
+          return [term]; // 单字符或分词器不可用时，使用原词
         }
       });
       
       // 添加文档到索引
       miniSearch.addAll(searchIndex);
       
-      // 顯示完成狀態
+      // 顯示完成狀態和分词功能状态
+      const segmenterStatus = segmenterEnabled ? 
+        (isTraditionalChinesePage() ? '智能中文分词已启用' : '智能中文分詞已啟用') : 
+        (isTraditionalChinesePage() ? '使用传统搜索模式' : '使用傳統搜尋模式');
+      
       searchStatus.innerHTML = `
         <div class="search-status-success">
           ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
+          <br><small>🔧 ${segmenterStatus}</small>
         </div>
       `;
       searchInitialized = true;
