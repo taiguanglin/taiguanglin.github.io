@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
       const text = new TextDecoder().decode(allChunks);
       const searchIndex = JSON.parse(text);
       
-      updateLoadingText(getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length }));
+      updateLoadingText(getI18nText('search.preparingIndex', isTraditionalChinesePage(), '準備智能搜索索引... 即將完成', '準備智能搜尋索引... 即將完成'));
       
       return searchIndex;
       
@@ -205,8 +205,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
   
   // 智能中文文本处理
+  // 分詞統計變數（調試用）
+  let segmentationStats = { calls: 0, totalTime: 0 };
+  
   function processChineseText(text) {
     if (!text || typeof text !== 'string') return '';
+    
+    // 統計調用次數和性能
+    segmentationStats.calls++;
+    const startTime = performance.now();
     
     // 如果支持Intl.Segmenter，使用智能分词
     if (chineseSegmenter) {
@@ -232,6 +239,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // 只返回分词结果，包含词汇和重要的非词汇片段
         // 这样避免了内容重复，同时保持搜索的完整性
         const allSegments = [...words, ...nonWordSegments];
+        
+        // 記錄處理時間
+        const endTime = performance.now();
+        segmentationStats.totalTime += (endTime - startTime);
+        
+        // 每1000次調用輸出一次統計（避免日誌過多）
+        if (segmentationStats.calls % 1000 === 0) {
+          console.log(`🔤 分詞統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
+        }
+        
         return allSegments.join(' ');
       } catch (error) {
         console.warn('分词处理出错，使用原文本:', error);
@@ -247,6 +264,9 @@ document.addEventListener('DOMContentLoaded', function() {
   async function initSearch() {
     if (!isIndexPage()) return;
     
+    console.time('🚀 搜索初始化總時間');
+    console.log('📊 開始搜索初始化流程...');
+    
     const searchContainer = document.getElementById('search-container');
     const searchActivation = document.querySelector('.search-activation');
     const searchInput = document.getElementById('search-input');
@@ -261,6 +281,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!searchInput || !searchContainer) return;
     
     try {
+      console.time('🎨 UI初始化');
       // 显示搜索容器，隐藏激活按钮
       if (searchActivation) searchActivation.style.display = 'none';
       searchContainer.style.display = 'block';
@@ -268,22 +289,32 @@ document.addEventListener('DOMContentLoaded', function() {
       // 清空當前狀態並創建載入UI
       searchStatus.innerHTML = '';
       const loadingUI = createLoadingUI(searchStatus);
+      console.timeEnd('🎨 UI初始化');
       
       // 检查MiniSearch是否可用
+      console.time('📚 MiniSearch檢查');
       if (typeof MiniSearch === 'undefined') {
         throw new Error('MiniSearch库未加载');
       }
+      console.timeEnd('📚 MiniSearch檢查');
       
       // 初始化中文分词器
+      console.time('🔧 分詞器初始化');
       const segmenterEnabled = initChineseSegmenter();
+      console.timeEnd('🔧 分詞器初始化');
+      console.log(`📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}`);
       
       // 加载搜索索引（帶進度）
+      console.time('📥 JSON載入時間');
       searchIndex = await loadSearchIndexWithProgress();
+      console.timeEnd('📥 JSON載入時間');
+      console.log(`📋 索引記錄數: ${searchIndex.length}`);
       
       // 載入完成，移除載入UI
       searchStatus.removeChild(loadingUI.loadingDiv);
       
       // 初始化MiniSearch with 增强的中文支持
+      console.time('🏗️ MiniSearch對象創建');
       miniSearch = new MiniSearch({
         fields: ['title', 'content'], // 搜索字段
         storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'], // 存储字段
@@ -328,14 +359,73 @@ document.addEventListener('DOMContentLoaded', function() {
           return [term]; // 单字符或分词器不可用时，使用原词
         }
       });
+      console.timeEnd('🏗️ MiniSearch對象創建');
       
-      // 添加文档到索引
-      miniSearch.addAll(searchIndex);
+      // 分批添加文档到索引（改善用戶體驗）
+      console.time('📇 索引建立時間 (分批處理)');
+      console.log(`🔄 開始分批處理 ${searchIndex.length} 條記錄...`);
+      
+      // 分批配置
+      const BATCH_SIZE = 500;
+      const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
+      const estimatedTime = Math.ceil(totalBatches * 0.5); // 估計每批0.5秒
+      
+      // 創建進度顯示
+      const progressDiv = document.createElement('div');
+      progressDiv.style.cssText = `
+        margin: 10px 0;
+        padding: 8px;
+        background: #f0f8ff;
+        border-radius: 4px;
+        font-size: 12px;
+        text-align: center;
+      `;
+      searchStatus.appendChild(progressDiv);
+      
+      // 分批處理函數
+      async function processBatch(batchIndex) {
+        const startIdx = batchIndex * BATCH_SIZE;
+        const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
+        const batch = searchIndex.slice(startIdx, endIdx);
+        
+        // 更新進度顯示
+        const progress = Math.round(((batchIndex + 1) / totalBatches) * 100);
+        const remainingBatches = totalBatches - (batchIndex + 1);
+        const remainingTime = Math.ceil(remainingBatches * 0.5);
+        const timeText = remainingTime > 0 ? ` (預計還需 ${remainingTime} 秒)` : '';
+        
+        progressDiv.innerHTML = `
+          📊 正在建立智能搜索索引... ${progress}% (${endIdx}/${searchIndex.length})${timeText}
+          <div style="background: #e0e0e0; height: 4px; border-radius: 2px; margin: 4px 0;">
+            <div style="background: #007acc; height: 100%; width: ${progress}%; border-radius: 2px; transition: width 0.3s;"></div>
+          </div>
+        `;
+        
+        // 添加當前批次到索引
+        miniSearch.addAll(batch);
+        
+        // 讓瀏覽器有時間更新UI
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+      
+      // 逐批處理
+      for (let i = 0; i < totalBatches; i++) {
+        await processBatch(i);
+      }
+      
+      // 移除進度顯示
+      searchStatus.removeChild(progressDiv);
+      
+      console.timeEnd('📇 索引建立時間 (分批處理)');
+      console.log('✅ 索引建立完成！');
       
       // 顯示完成狀態和分词功能状态
       const segmenterStatus = segmenterEnabled ? 
         (isTraditionalChinesePage() ? '智能中文分词已启用' : '智能中文分詞已啟用') : 
         (isTraditionalChinesePage() ? '使用传统搜索模式' : '使用傳統搜尋模式');
+      
+      console.timeEnd('🚀 搜索初始化總時間');
+      console.log('🎉 搜索初始化流程完成！');
       
       searchStatus.innerHTML = `
         <div class="search-status-success">
