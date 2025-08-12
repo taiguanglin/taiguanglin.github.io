@@ -1579,6 +1579,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 
 
 .search-result-type {
+    white-space: nowrap;
     display: inline-block;
     background: #f8c8dc;
     color: #b73c65;
