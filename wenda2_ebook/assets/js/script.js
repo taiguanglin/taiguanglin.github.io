@@ -213,17 +213,26 @@ document.addEventListener('DOMContentLoaded', function() {
       try {
         const segments = chineseSegmenter.segment(text);
         const words = [];
+        const nonWordSegments = []; // 保存非词汇片段（如标点、数字等）
         
         for (const segment of segments) {
           const word = segment.segment.trim();
-          // 只保留有意义的词汇（过滤标点符号和单字符）
-          if (word.length > 0 && segment.isWordLike) {
-            words.push(word);
+          if (word.length > 0) {
+            if (segment.isWordLike) {
+              words.push(word);
+            } else {
+              // 保留重要的非词汇片段（数字、英文字母等）
+              if (/[\d\w]/.test(word)) {
+                nonWordSegments.push(word);
+              }
+            }
           }
         }
         
-        // 返回分词结果，同时保留原文以支持字符级搜索
-        return words.join(' ') + ' ' + text;
+        // 只返回分词结果，包含词汇和重要的非词汇片段
+        // 这样避免了内容重复，同时保持搜索的完整性
+        const allSegments = [...words, ...nonWordSegments];
+        return allSegments.join(' ');
       } catch (error) {
         console.warn('分词处理出错，使用原文本:', error);
         return text;
@@ -285,9 +294,17 @@ document.addEventListener('DOMContentLoaded', function() {
           combineWith: 'AND' // 默认AND组合，提高精确度
         },
         extractField: (document, fieldName) => {
-          // 增强的中文文本处理
+          // 增强的中文文本处理 - 智能字段分詞策略
           const text = document[fieldName] || '';
-          return processChineseText(text);
+          
+          // 只對純內容字段進行分詞處理，提升搜索精度
+          if (fieldName === 'content') {
+            return processChineseText(text);
+          }
+          
+          // title字段包含人名、時間等信息，不進行分詞以保持完整性
+          // context、url等顯示字段保持原文
+          return text;
         },
         processTerm: (term) => {
           // 搜索词预处理
