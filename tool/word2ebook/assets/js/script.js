@@ -747,72 +747,52 @@ function hideLoadMoreButtons() {
 
     
     // 追加搜索结果到列表
+    // 生成單個搜索結果項目的HTML
+    function generateSearchResultItem(result, index, indexOffset = 0, query = '') {
+      const typeText = {
+        'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
+        'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
+        'answer': getI18nText('search.resultTypes.answer', isTraditionalChinesePage(), '回答'),
+        'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
+      }[result.type] || getText('内容', '內容');
+      
+      // 智能高亮搜索关键词
+      const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
+      
+      // 計算全局序號
+      const globalIndex = indexOffset + index + 1;
+      const totalResults = currentSearchResults.length;
+      
+      return `
+        <li class="search-result-item" data-url="${result.url}">
+          <div class="search-result-header">
+            <span class="search-result-number">${globalIndex}/${totalResults}</span>
+            <span class="search-result-type">${typeText}</span>
+            <div class="search-result-title">
+              ${escapeHtml(result.title)}
+            </div>
+          </div>
+          <div class="search-result-content">${highlightedContext}</div>
+        </li>
+      `;
+    }
+
     function appendResults(results) {
       const query = document.getElementById('search-input').value.trim();
       const startIndex = displayedResultsCount - results.length; // 計算當前批次的起始序號
       
-      const additionalHTML = results.map((result, index) => {
-        const typeText = {
-          'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
-          'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
-          'answer': getI18nText('search.resultTypes.answer', isTraditionalChinesePage(), '回答'),
-          'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
-        }[result.type] || getText('内容', '內容');
-        
-        // 智能高亮搜索关键词
-        const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
-        
-        // 計算全局序號
-        const globalIndex = startIndex + index + 1;
-        const totalResults = currentSearchResults.length;
-        
-        return `
-          <li class="search-result-item" data-url="${result.url}">
-            <div class="search-result-header">
-              <span class="search-result-number">${globalIndex}/${totalResults}</span>
-              <div class="search-result-title">
-                <span class="search-result-type">${typeText}</span>
-                ${escapeHtml(result.title)}
-              </div>
-            </div>
-            <div class="search-result-content">${highlightedContext}</div>
-          </li>
-        `;
-      }).join('');
+      const additionalHTML = results.map((result, index) => 
+        generateSearchResultItem(result, index, startIndex, query)
+      ).join('');
       
       searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
     }
     
     // 显示搜索结果（原函数，现在用于内部调用）
     function displayResults(results, query) {
-      searchResultsList.innerHTML = results.map((result, index) => {
-        const typeText = {
-          'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
-          'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
-          'answer': getI18nText('search.resultTypes.answer', isTraditionalChinesePage(), '回答'),
-          'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
-        }[result.type] || getText('内容', '內容');
-        
-        // 智能高亮搜索关键词
-        const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
-        
-        // 計算全局序號
-        const globalIndex = index + 1;
-        const totalResults = currentSearchResults.length;
-        
-        return `
-          <li class="search-result-item" data-url="${result.url}">
-            <div class="search-result-header">
-              <span class="search-result-number">${globalIndex}/${totalResults}</span>
-              <div class="search-result-title">
-                <span class="search-result-type">${typeText}</span>
-                ${escapeHtml(result.title)}
-              </div>
-            </div>
-            <div class="search-result-content">${highlightedContext}</div>
-          </li>
-        `;
-      }).join('');
+      searchResultsList.innerHTML = results.map((result, index) => 
+        generateSearchResultItem(result, index, 0, query)
+      ).join('');
     }
     
     // 显示无结果
