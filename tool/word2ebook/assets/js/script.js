@@ -454,6 +454,10 @@ document.addEventListener('DOMContentLoaded', function() {
       displayResults(resultsToShow, query);
       updateResultsCounter();
       updateLoadMoreButtons();
+      
+      // 更新搜索状态为成功状态
+      const totalResults = currentSearchResults.length;
+      searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
     }
     
     // 加载更多结果
@@ -467,6 +471,10 @@ document.addEventListener('DOMContentLoaded', function() {
         appendResults(additionalResults);
         updateResultsCounter();
         updateLoadMoreButtons();
+        
+        // 更新搜索状态
+        const totalResults = currentSearchResults.length;
+        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
       }
     }
     
@@ -478,6 +486,10 @@ document.addEventListener('DOMContentLoaded', function() {
         appendResults(remainingResults);
         updateResultsCounter();
         updateLoadMoreButtons();
+        
+        // 更新搜索状态
+        const totalResults = currentSearchResults.length;
+        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
       }
     }
     
