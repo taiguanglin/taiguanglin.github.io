@@ -221,6 +221,16 @@ if (typeof MiniSearch === 'undefined') {{
       </div>
     </div>
     <ul class="search-results-list" id="search-results-list"></ul>
+    
+    <!-- 底部控制按鈕 -->
+    <div class="search-results-footer">
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more-bottom" style="display: none;">{show_more}</button>
+        <button class="search-load-all" id="search-load-all-bottom" style="display: none;">{show_all}</button>
+        <button class="search-clear" id="search-clear-bottom">{clear_search}</button>
+        <button class="search-collapse" id="search-collapse-bottom">{collapse_search}</button>
+      </div>
+    </div>
   </div>
 </div>
 
