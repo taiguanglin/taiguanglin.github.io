@@ -3511,7 +3511,7 @@ function hideLoadMoreButtons() {
 
   // ========== 搜索按鈕智能顯示功能 ==========
   
-  // 檢測頂部搜索控制按鈕是否在視窗中可見
+  // 檢測頂部搜索控制按鈕是否在視窗中完全可見
   function areTopSearchControlsVisible() {
     const searchHeader = document.querySelector('.search-results-header');
     if (!searchHeader) return false;
@@ -3519,8 +3519,13 @@ function hideLoadMoreButtons() {
     const rect = searchHeader.getBoundingClientRect();
     const viewportHeight = window.innerHeight;
     
-    // 檢查頂部控制按鈕是否在視窗內可見
-    return rect.bottom > 0 && rect.top < viewportHeight;
+    // 設置觸發閾值：當頂部按鈕開始被遮住時就顯示底部按鈕
+    // 使用50px的緩衝區，確保用戶體驗的連續性
+    const threshold = 50;
+    
+    // 檢查頂部控制按鈕是否有足夠的可見區域
+    // 當按鈕開始被遮住超過閾值時，就認為不完全可見
+    return rect.bottom > threshold && rect.top < (viewportHeight - threshold);
   }
   
   // 更新底部搜索按鈕的顯示狀態
