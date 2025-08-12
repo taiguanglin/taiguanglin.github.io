@@ -195,11 +195,15 @@ document.addEventListener('DOMContentLoaded', function() {
         chineseSegmenter = new Intl.Segmenter(['zh-CN', 'zh-TW'], { 
           granularity: 'word' 
         });
-        console.log('✅ Intl.Segmenter 已启用，支持智能中文分词');
+        console.log(isTraditionalChinesePage() ? 
+          '✅ Intl.Segmenter 已啟用，支持智能中文分詞' : 
+          '✅ Intl.Segmenter 已启用，支持智能中文分词');
         return true;
       }
     } catch (error) {
-      console.log('⚠️ Intl.Segmenter 不可用，使用传统中文搜索:', error.message);
+      console.log(isTraditionalChinesePage() ? 
+        '⚠️ Intl.Segmenter 不可用，使用傳統中文搜尋:' : 
+        '⚠️ Intl.Segmenter 不可用，使用传统中文搜索:', error.message);
     }
     return false;
   }
@@ -251,12 +255,16 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // 每1000次調用輸出一次統計（避免日誌過多）
         if (segmentationStats.calls % 1000 === 0) {
-          console.log(`🔤 分詞統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
+          console.log(isTraditionalChinesePage() ? 
+            `🔤 分詞統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
+            `🔤 分词统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
         }
         
         return allSegments.join(' ');
       } catch (error) {
-        console.warn('分词处理出错，使用原文本:', error);
+        console.warn(isTraditionalChinesePage() ? 
+          '分詞處理出錯，使用原文本:' : 
+          '分词处理出错，使用原文本:', error);
         return text;
       }
     }
@@ -307,7 +315,9 @@ document.addEventListener('DOMContentLoaded', function() {
       console.time('🔧 分詞器初始化');
       const segmenterEnabled = initChineseSegmenter();
       console.timeEnd('🔧 分詞器初始化');
-      console.log(`📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}`);
+      console.log(isTraditionalChinesePage() ? 
+        `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
+        `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
       
       // 加载搜索索引（帶進度）
       console.time('📥 JSON載入時間');
@@ -344,7 +354,9 @@ document.addEventListener('DOMContentLoaded', function() {
               // 如果分词有结果，使用分词；否则使用原词
               return words.length > 0 ? words : [term];
             } catch (error) {
-              console.warn('搜索词分词处理出错:', error);
+              console.warn(isTraditionalChinesePage() ? 
+                '搜尋詞分詞處理出錯:' : 
+                '搜索词分词处理出错:', error);
               return [term];
             }
           }
@@ -355,11 +367,15 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 預處理分詞結果（避免重複調用）
       console.time('🔤 分詞預處理時間');
-      console.log(`🔄 開始預處理分詞 ${searchIndex.length} 條記錄...`);
+      console.log(isTraditionalChinesePage() ? 
+        `🔄 開始預處理分詞 ${searchIndex.length} 條記錄...` :
+        `🔄 开始预处理分词 ${searchIndex.length} 条记录...`);
       
       const processedIndex = searchIndex.map((doc, index) => {
         if (index % 1000 === 0) {
-          console.log(`🔄 預處理進度: ${index}/${searchIndex.length}`);
+          console.log(isTraditionalChinesePage() ? 
+            `🔄 預處理進度: ${index}/${searchIndex.length}` :
+            `🔄 预处理进度: ${index}/${searchIndex.length}`);
         }
         
         // 創建處理後的文檔副本
@@ -376,7 +392,9 @@ document.addEventListener('DOMContentLoaded', function() {
       });
       
       console.timeEnd('🔤 分詞預處理時間');
-      console.log(`✅ 分詞預處理完成！處理了 ${segmentationStats.calls} 次調用`);
+      console.log(isTraditionalChinesePage() ? 
+        `✅ 分詞預處理完成！處理了 ${segmentationStats.calls} 次調用` :
+        `✅ 分词预处理完成！处理了 ${segmentationStats.calls} 次调用`);
       
       // 更新 MiniSearch 配置以使用預處理結果
       miniSearch = new MiniSearch({
@@ -401,7 +419,9 @@ document.addEventListener('DOMContentLoaded', function() {
               }
               return words.length > 0 ? words : [term];
             } catch (error) {
-              console.warn('搜索词分词处理出错:', error);
+              console.warn(isTraditionalChinesePage() ? 
+                '搜尋詞分詞處理出錯:' : 
+                '搜索词分词处理出错:', error);
               return [term];
             }
           }
@@ -411,7 +431,9 @@ document.addEventListener('DOMContentLoaded', function() {
       
       // 分批添加預處理的文档到索引（改善用戶體驗）
       console.time('📇 索引建立時間 (分批處理)');
-      console.log(`🔄 開始分批處理 ${processedIndex.length} 條預處理記錄...`);
+      console.log(isTraditionalChinesePage() ? 
+        `🔄 開始分批處理 ${processedIndex.length} 條預處理記錄...` :
+        `🔄 开始分批处理 ${processedIndex.length} 条预处理记录...`);
       
       // 分批配置
       const BATCH_SIZE = 500;
@@ -440,10 +462,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const progress = Math.round(((batchIndex + 1) / totalBatches) * 100);
         const remainingBatches = totalBatches - (batchIndex + 1);
         const remainingTime = Math.ceil(remainingBatches * 0.5);
-        const timeText = remainingTime > 0 ? ` (預計還需 ${remainingTime} 秒)` : '';
+        const timeText = remainingTime > 0 ? 
+          (isTraditionalChinesePage() ? ` (預計還需 ${remainingTime} 秒)` : ` (预计还需 ${remainingTime} 秒)`) : 
+          '';
         
+        const progressText = isTraditionalChinesePage() ? 
+          `📊 正在建立搜尋索引... ${progress}% (${endIdx}/${processedIndex.length})${timeText}` :
+          `📊 正在建立搜索索引... ${progress}% (${endIdx}/${processedIndex.length})${timeText}`;
+          
         progressDiv.innerHTML = `
-          📊 正在建立搜索索引... ${progress}% (${endIdx}/${processedIndex.length})${timeText}
+          ${progressText}
           <div style="background: #e0e0e0; height: 4px; border-radius: 2px; margin: 4px 0;">
             <div style="background: #007acc; height: 100%; width: ${progress}%; border-radius: 2px; transition: width 0.3s;"></div>
           </div>
@@ -465,15 +493,19 @@ document.addEventListener('DOMContentLoaded', function() {
       searchStatus.removeChild(progressDiv);
       
       console.timeEnd('📇 索引建立時間 (分批處理)');
-      console.log('✅ 索引建立完成！');
+      console.log(isTraditionalChinesePage() ? 
+        '✅ 索引建立完成！' : 
+        '✅ 索引建立完成！');
       
       // 顯示完成狀態和分词功能状态
       const segmenterStatus = segmenterEnabled ? 
-        (isTraditionalChinesePage() ? '智能中文分词已启用' : '智能中文分詞已啟用') : 
-        (isTraditionalChinesePage() ? '使用传统搜索模式' : '使用傳統搜尋模式');
+        (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
+        (isTraditionalChinesePage() ? '使用傳統搜尋模式' : '使用传统搜索模式');
       
       console.timeEnd('🚀 搜索初始化總時間');
-      console.log('🎉 搜索初始化流程完成！');
+      console.log(isTraditionalChinesePage() ? 
+        '🎉 搜尋初始化流程完成！' : 
+        '🎉 搜索初始化流程完成！');
       
       searchStatus.innerHTML = `
         <div class="search-status-success">
