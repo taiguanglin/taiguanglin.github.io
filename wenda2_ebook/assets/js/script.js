@@ -2961,7 +2961,7 @@ function hideLoadMoreButtons() {
       }
       
       /* 響應式設計：窄螢幕下的搜索結果佈局 */
-      @media (max-width: 340px) {
+      @media (max-width: 400px) {
         .search-result-header {
           flex-direction: column !important;
           align-items: flex-start !important;
