@@ -77,7 +77,11 @@ class Word2EBookConverter:
     def _setup_output_directory(self) -> None:
         """设置输出目录"""
         print("📁 正在设置输出目录...")
-        self.file_manager.setup_output_directory()
+        # 根據是否生成完整版本決定是否清空目錄
+        # 如果生成搜索索引，表示是完整版本，需要清空
+        # 如果跳過搜索索引，表示是部分更新，保留現有內容
+        clean_existing = self.config.generate_search
+        self.file_manager.setup_output_directory(clean_existing)
     
     def _generate_static_assets(self) -> None:
         """生成静态资源"""
