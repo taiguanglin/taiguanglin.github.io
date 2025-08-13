@@ -285,8 +285,6 @@ function updateLoadMoreButtons() {
   // 判斷是否還有更多內容可以加載
   const shouldShow = displayedResultsCount < currentSearchResults.length;
   
-  // 按鈕顯示邏輯：只要還有內容沒有加載，就顯示按鈕
-  // 不論畫面是否已經展開，按鈕都按照內容加載情況顯示
   if (loadMoreBtn) loadMoreBtn.style.display = shouldShow ? 'inline-block' : 'none';
   if (loadAllBtn) loadAllBtn.style.display = shouldShow ? 'inline-block' : 'none';
   if (loadMoreBtnBottom) loadMoreBtnBottom.style.display = shouldShow ? 'inline-block' : 'none';
@@ -626,7 +624,7 @@ function hideLoadMoreButtons() {
         displayedResultsCount = 0;
         
         if (results.length > 0) {
-          // 重置搜索結果容器高度（新搜索時恢復分頁模式）
+          // 重置搜索結果容器高度（移除滾動條，保持分頁）
           resetSearchResultsHeight();
           displayPagedResults(trimmedQuery);
         } else {
@@ -657,29 +655,30 @@ function hideLoadMoreButtons() {
     
     // 显示分页搜索结果
     function displayPagedResults(query) {
+      // 初始顯示第一頁結果（20條）
       displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
       const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
       
       displayResults(resultsToShow, query);
       updateResultsCounter();
-      updateLoadMoreButtons();
+      updateLoadMoreButtons(); // 根據是否有更多結果顯示按鈕
       
       // 更新搜索状态为成功状态
       const totalResults = currentSearchResults.length;
       searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
     }
     
-    // 初始化搜索結果欄位高度
+    // 初始化搜索結果欄位高度 - 移除高度限制
     function initializeSearchResultsHeight() {
       const searchResultsList = document.querySelector('.search-results-list');
       if (searchResultsList) {
-        // 設定初始高度為800px
-        searchResultsList.style.maxHeight = '800px';
-        searchResultsList.style.transition = 'max-height 0.3s ease-out';
+        // 移除高度限制，顯示所有搜尋結果
+        searchResultsList.style.maxHeight = 'none';
+        searchResultsList.style.overflowY = 'visible';
       }
     }
 
-    // 動態擴大搜索結果欄位高度 - 直接展開到最大
+    // 動態擴大搜索結果欄位高度 - 已預設無限制，此函數保留以維持兼容性
     function expandSearchResultsHeight() {
       const searchResultsList = document.querySelector('.search-results-list');
       
@@ -687,14 +686,15 @@ function hideLoadMoreButtons() {
         return;
       }
       
-      // 直接移除高度限制，讓所有搜索結果完全顯示
+      // 確保無高度限制（預設已是如此）
       searchResultsList.style.maxHeight = 'none';
+      searchResultsList.style.overflowY = 'visible';
       
       // 添加標記，表示已經展開
       searchResultsList.setAttribute('data-expanded', 'true');
     }
     
-    // 新增：收縮搜索結果欄位高度
+    // 收縮搜索結果欄位高度 - 已移除收縮功能，此函數保留以維持兼容性
     function collapseSearchResultsHeight() {
       const searchResultsList = document.querySelector('.search-results-list');
       
@@ -702,19 +702,22 @@ function hideLoadMoreButtons() {
         return;
       }
       
-      // 重新設置固定高度
-      searchResultsList.style.maxHeight = '800px';
+      // 保持無高度限制（不再提供收縮功能）
+      searchResultsList.style.maxHeight = 'none';
+      searchResultsList.style.overflowY = 'visible';
       
       // 移除展開標記
       searchResultsList.removeAttribute('data-expanded');
     }
 
-    // 重置搜索結果欄位高度（新搜索時調用）
+    // 重置搜索結果欄位高度（新搜索時調用） - 移除高度限制
     function resetSearchResultsHeight() {
       const searchResultsList = document.querySelector('.search-results-list');
       if (searchResultsList) {
-        searchResultsList.style.maxHeight = '800px';
-        // 移除展開標記，重置為分頁模式
+        // 移除高度限制，顯示所有搜尋結果
+        searchResultsList.style.maxHeight = 'none';
+        searchResultsList.style.overflowY = 'visible';
+        // 移除展開標記，因為預設就是展開狀態
         searchResultsList.removeAttribute('data-expanded');
       }
     }
@@ -760,13 +763,13 @@ function hideLoadMoreButtons() {
       }
     }
     
-    // 調整搜索結果容器高度
+    // 調整搜索結果容器高度 - 已預設無限制，此函數保留以維持兼容性
     function adjustSearchResultsHeight() {
       const searchResultsList = document.getElementById('search-results-list');
       const searchResults = document.getElementById('search-results');
       
       if (searchResultsList && searchResults) {
-        // 當顯示全部結果時，移除固定高度限制，讓容器自適應內容
+        // 確保無高度限制（預設已是如此）
         searchResultsList.style.maxHeight = 'none';
         searchResultsList.style.overflowY = 'visible';
         
