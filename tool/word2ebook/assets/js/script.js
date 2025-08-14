@@ -930,7 +930,6 @@ function hideLoadMoreButtons() {
       
       // 智能分词：将搜索词拆分为多个关键词
       const keywords = extractKeywords(searchTerm);
-      console.log('🔍 分词结果:', keywords);
       
       if (keywords.length <= 1) {
         // 单个关键词，使用原有逻辑
@@ -955,8 +954,6 @@ function hideLoadMoreButtons() {
       if (keywordPositions.length === 0) {
         return result.context;
       }
-      
-      console.log('📍 找到关键词位置:', keywordPositions);
       
       // 生成包含所有关键词的最佳context
       return generateMultiKeywordContext(content, keywordPositions, 150);
