@@ -58,11 +58,7 @@ class ContentProcessor:
         
         return search_items, str(soup)
     
-    def _generate_tokens(self, text: str) -> str:
-        """生成文本的分词tokens"""
-        if self.segmenter and self.segmenter.is_available():
-            return self.segmenter.segment_text(text)
-        return ""  # 如果分词器不可用，返回空字符串
+
     
     def _extract_headings(self, soup: BeautifulSoup, base_filename: str, start_id: int) -> List[SearchItem]:
         """提取标题"""
@@ -86,8 +82,7 @@ class ContentProcessor:
                 content=content,
                 context=content,
                 url=f"{base_filename}#{element_id}",
-                weight=weight,
-                tokens=self._generate_tokens(content)
+                weight=weight
             ))
             item_id += 1
             
@@ -123,8 +118,7 @@ class ContentProcessor:
                 content=content,
                 context=self._get_context(question, self.settings.search_context_length),
                 url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['question'],
-                tokens=self._generate_tokens(content)
+                weight=Constants.SEARCH_WEIGHTS['question']
             ))
             item_id += 1
             
@@ -154,8 +148,7 @@ class ContentProcessor:
                 content=content,
                 context=self._get_context(answer, self.settings.search_context_length),
                 url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['answer'],
-                tokens=self._generate_tokens(content)
+                weight=Constants.SEARCH_WEIGHTS['answer']
             ))
             item_id += 1
             
@@ -184,8 +177,7 @@ class ContentProcessor:
                 content=content,
                 context=self._get_context(para, 60),
                 url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['content'],
-                tokens=self._generate_tokens(content)
+                weight=Constants.SEARCH_WEIGHTS['content']
             ))
             item_id += 1
             
