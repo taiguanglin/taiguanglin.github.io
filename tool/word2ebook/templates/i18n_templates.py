@@ -185,7 +185,12 @@ if (typeof MiniSearch === 'undefined') {{
 }}
 </script>
 <script src="assets/js/i18n-text.js"></script>
-<script src="assets/js/script.js" defer></script>
+<script type="module">
+// 預載入 brotli-wasm 模組供搜索功能使用
+import brotliPromise from "https://unpkg.com/brotli-wasm@3.0.0/index.web.js";
+window.brotliPromise = brotliPromise;
+</script>
+<script src="assets/js/script.js"></script>
 </head>
 <body>
 <div class="header-nav index-header">
