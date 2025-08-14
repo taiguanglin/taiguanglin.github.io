@@ -2157,7 +2157,8 @@ body.dark-mode .search-load-all:hover {
 /* 目录项样式 */
 .toc-item {
     position: relative;
-    transition: all 0.3s ease;
+    /* 只對背景色和邊框進行動畫，避免展開/收縮時的閃爍 */
+    transition: background-color 0.2s ease, border-radius 0.2s ease;
 }
 
 /* 为有展开图标的目录项添加可点击样式和稳定的内边距 */

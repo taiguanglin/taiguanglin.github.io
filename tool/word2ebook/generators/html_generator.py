@@ -40,8 +40,8 @@ class TOCGenerator:
         html += "</ul>"
         return html
     
-    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None) -> str:
-        """构建可折叠的章节目录（扁平化结构，便于JavaScript控制）"""
+    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None) -> str:
+        """构建可折叠的章节目录（扁平化结构，但確保層級正確）"""
         if not toc_items:
             return "<ul></ul>"
             
@@ -63,7 +63,9 @@ class TOCGenerator:
                 expand_icon = f'<span class="toc-expand-icon" data-level="{level}">▼</span>'
             
             # 生成扁平化的li元素，通过CSS和JavaScript控制层级显示
-            html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 2}">'
+            # 添加 data-chapter 屬性來區分不同章節的子目錄
+            chapter_attr = f' data-chapter="{chapter_index}"' if chapter_index is not None else ''
+            html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 2}"{chapter_attr}>'
             html += f'{expand_icon}<a href="{link}">{text}</a></li>\n'
         
         html += "</ul>"
@@ -73,7 +75,7 @@ class TOCGenerator:
         """建立首页目录"""
         html = "<ul class='toc-level-1'>\n"
         
-        for ch in chapters:
+        for ch_index, ch in enumerate(chapters):
             filename = ch.filename
             if is_traditional:
                 filename = filename.replace(".html", "_trad.html")
@@ -84,13 +86,13 @@ class TOCGenerator:
             if has_children:
                 expand_icon = '<span class="toc-expand-icon" data-level="1">▼</span>'
             
-            html += f'<li class="toc-item toc-chapter" data-level="1" data-default-visible="true">'
+            html += f'<li class="toc-item toc-chapter" data-level="1" data-chapter="{ch_index}" data-default-visible="true">'
             html += f'{expand_icon}<a href="{filename}">{ch.title}</a>\n'
             
             if ch.toc_items:
-                # 转换 TOCItem 对象为元组
+                # 转换 TOCItem 对象为元组，並添加章節標識
                 toc_tuples = [(item.level, item.text, item.anchor) for item in ch.toc_items]
-                html += self.build_collapsible_chapter_toc(toc_tuples, filename)
+                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index)
             html += "</li>\n"
         html += "</ul>"
         return html
