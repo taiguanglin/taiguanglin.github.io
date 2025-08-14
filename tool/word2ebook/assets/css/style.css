@@ -1400,6 +1400,24 @@ body.dark-mode .qa-pair-bookmark:hover {
     min-height: 20px;
 }
 
+/* Spinner 動畫 */
+.loading-spinner {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #d63384;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* 搜索載入進度樣式 */
 .search-loading {
     display: flex;
@@ -1693,6 +1711,12 @@ body.dark-mode .search-status-success {
     background: #2d4a2d;
     border-color: #4a6b4a;
     color: #a8d5aa;
+}
+
+/* 暗色模式下的 Spinner */
+body.dark-mode .loading-spinner {
+    border: 2px solid #444;
+    border-top: 2px solid #ff91af;
 }
 
 body.dark-mode .search-result-item {

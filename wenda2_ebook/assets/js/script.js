@@ -142,12 +142,21 @@ document.addEventListener('DOMContentLoaded', function() {
     return errorDiv;
   }
   
+  // 創建帶 spinner 的加載文字
+  function createSpinnerText(text) {
+    return `<span class="loading-spinner"></span>${text}`;
+  }
+
   // 加载预建的 MiniSearch 索引（支持 Brotli 压缩）
   async function loadPrebuiltMiniSearchIndex() {
-    const updateLoadingText = (text) => {
+    const updateLoadingText = (text, withSpinner = false) => {
       const searchStatus = document.getElementById('search-status');
       if (searchStatus) {
-        searchStatus.textContent = text;
+        if (withSpinner) {
+          searchStatus.innerHTML = createSpinnerText(text);
+        } else {
+          searchStatus.textContent = text;
+        }
       }
     };
 
@@ -155,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (supportsBrotli()) {
       try {
         const compressedFile = getCompressedMiniSearchIndexFile();
-        updateLoadingText(getI18nText('search.loadingCompressed', isTraditionalChinesePage(), '正在載入壓縮 MiniSearch 索引...'));
+        updateLoadingText(getI18nText('search.loadingCompressed', isTraditionalChinesePage(), '正在載入壓縮 MiniSearch 索引...'), true);
         
         const response = await fetch(compressedFile);
         if (response.ok) {
@@ -165,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const brotli = await window.brotliPromise;
           
           // 讀取壓縮的二進制數據
-          updateLoadingText(getI18nText('search.decompressing', isTraditionalChinesePage(), '正在解壓縮 MiniSearch 索引...'));
+          updateLoadingText(getI18nText('search.decompressing', isTraditionalChinesePage(), '正在解壓縮 MiniSearch 索引...'), true);
           const buffer = await response.arrayBuffer();
           const uint8Array = new Uint8Array(buffer);
           
@@ -173,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const decompressed = brotli.decompress(uint8Array);
           
           // 轉成字串並解析 JSON
-          updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理 MiniSearch 索引...'));
+          updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理 MiniSearch 索引...'), true);
           const text = new TextDecoder().decode(decompressed);
           const indexData = JSON.parse(text);
           
@@ -194,14 +203,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const indexFile = getMiniSearchIndexFile();
     
     try {
-      updateLoadingText(getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入 MiniSearch 索引...'));
+      updateLoadingText(getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入 MiniSearch 索引...'), true);
       const response = await fetch(indexFile);
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
       
-      updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理 MiniSearch 索引...'));
+      updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理 MiniSearch 索引...'), true);
       const indexData = await response.json();
       
       console.log(`📄 MiniSearch 索引加載成功`);
