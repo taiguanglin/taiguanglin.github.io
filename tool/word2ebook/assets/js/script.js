@@ -37,6 +37,19 @@ document.addEventListener('DOMContentLoaded', function() {
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
   }
   
+  // 获取压缩的搜索索引文件名
+  function getCompressedSearchIndexFile() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index_trad.html' ? 'search_index_trad.br' : 'search_index.br';
+  }
+  
+  // 检查是否可以使用 Brotli 解压缩（通过 brotli-wasm）
+  function supportsBrotli() {
+    // 检查 brotli-wasm 是否已加载
+    return typeof window.brotliPromise !== 'undefined';
+  }
+  
   // 获取本地化文本
   function getText(simplifiedText, traditionalText) {
     return isTraditionalChinesePage() ? traditionalText : simplifiedText;
@@ -117,8 +130,56 @@ document.addEventListener('DOMContentLoaded', function() {
     return errorDiv;
   }
   
-  // 載入搜索索引（支援進度追蹤）
+  // 載入搜索索引（支援進度追蹤和 Brotli 壓縮）
   async function loadSearchIndexWithProgress() {
+    // 更新載入文字的函數
+    const updateLoadingText = (text) => {
+      const loadingText = document.getElementById('search-loading-text');
+      if (loadingText) {
+        loadingText.textContent = text;
+      }
+    };
+    
+    // 優先嘗試加載壓縮文件
+    if (supportsBrotli()) {
+      try {
+        const compressedFile = getCompressedSearchIndexFile();
+        updateLoadingText(getI18nText('search.loadingCompressed', isTraditionalChinesePage(), '正在載入壓縮搜尋索引...'));
+        
+        const response = await fetch(compressedFile);
+        if (response.ok) {
+          console.log('📦 使用 Brotli 壓縮索引文件');
+          
+          // 初始化 brotli-wasm 模組
+          const brotli = await window.brotliPromise;
+          
+          // 讀取壓縮的二進制數據
+          updateLoadingText(getI18nText('search.decompressing', isTraditionalChinesePage(), '正在解壓縮索引文件...'));
+          const buffer = await response.arrayBuffer();
+          const uint8Array = new Uint8Array(buffer);
+          
+          // 使用 brotli-wasm 解壓縮
+          const decompressed = brotli.decompress(uint8Array);
+          
+          // 轉成字串並解析 JSON
+          updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理搜尋索引...'));
+          const text = new TextDecoder().decode(decompressed);
+          const searchIndex = JSON.parse(text);
+          
+          console.log(`📦 Brotli 解壓縮成功，索引大小: ${searchIndex.length} 條記錄`);
+          updateLoadingText(getI18nText('search.preparingIndex', isTraditionalChinesePage(), '準備智能搜索索引... 即將完成', '準備智能搜尋索引... 即將完成'));
+          
+          return searchIndex;
+        }
+      } catch (error) {
+        console.log('⚠️ 壓縮索引加載失敗，降級到未壓縮版本:', error.message);
+      }
+    } else {
+      console.log('⚠️ brotli-wasm 未加載，使用未壓縮索引');
+    }
+    
+    // 降級到未壓縮的 JSON 文件
+    console.log('📄 使用未壓縮索引文件');
     const indexFile = getSearchIndexFile();
     
     try {
@@ -134,15 +195,6 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const reader = response.body.getReader();
       const chunks = [];
-      
-      // 更新載入文字的函數
-      const updateLoadingText = (text) => {
-        const loadingText = document.getElementById('search-loading-text');
-        
-        if (loadingText) {
-          loadingText.textContent = text;
-        }
-      };
       
       // 初始狀態
       updateLoadingText(getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...'));

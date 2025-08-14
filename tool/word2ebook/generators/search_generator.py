@@ -1,6 +1,7 @@
 """搜索索引生成器"""
 
 import json
+import brotli
 from typing import List, Dict, Any
 from pathlib import Path
 
@@ -92,13 +93,35 @@ class SearchIndexGenerator:
         print(f"✅ 繁体搜索索引已生成：{Constants.SEARCH_INDEX_TRADITIONAL} (共 {len(all_search_items)} 条记录)")
     
     def _write_search_index(self, search_items: List[SearchItem], filename: str) -> None:
-        """写入搜索索引文件"""
+        """写入搜索索引文件（支持 Brotli 壓縮）"""
         # 转换为字典格式
         index_data = [item.to_dict() for item in search_items]
         
-        # 写入JSON文件
-        index_content = json.dumps(index_data, ensure_ascii=False, indent=2)
+        # 生成 JSON 内容（不使用缩进以减少文件大小）
+        index_content = json.dumps(index_data, ensure_ascii=False, separators=(',', ':'))
+        
+        # 写入原始 JSON 文件（用于调试和兼容性）
         self.file_manager.write_file(filename, index_content)
+        
+        # 使用 Brotli 压缩并写入压缩文件
+        try:
+            compressed_data = brotli.compress(index_content.encode('utf-8'), quality=11)
+            compressed_filename = filename.replace('.json', '.br')
+            self.file_manager.write_binary_file(compressed_filename, compressed_data)
+            
+            # 计算压缩率
+            original_size = len(index_content.encode('utf-8'))
+            compressed_size = len(compressed_data)
+            compression_ratio = (1 - compressed_size / original_size) * 100
+            
+            print(f"📦 Brotli 壓縮完成：{filename}")
+            print(f"   原始大小: {original_size:,} bytes")
+            print(f"   壓縮大小: {compressed_size:,} bytes")
+            print(f"   壓縮率: {compression_ratio:.1f}%")
+            
+        except Exception as e:
+            print(f"⚠️ Brotli 壓縮失敗 {filename}: {e}")
+            print("   將繼續使用未壓縮的 JSON 文件")
     
     def ensure_search_index_files(self, generate_traditional: bool = True) -> None:
         """确保搜索索引文件存在，如果不存在则创建空的索引文件
