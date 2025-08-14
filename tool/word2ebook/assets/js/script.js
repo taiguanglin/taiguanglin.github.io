@@ -59,6 +59,23 @@ document.addEventListener('DOMContentLoaded', function() {
       if (searchContainer && searchActivation) {
         searchActivation.style.display = 'none';
         searchContainer.style.display = 'block';
+        
+        // 恢復搜索準備就緒狀態信息
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus && searchIndex && searchIndex.length > 0) {
+          const isSegmenterEnabled = chineseSegmenter && chineseSegmenter.cut;
+          const segmenterStatus = isSegmenterEnabled ? 
+            (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
+            (isTraditionalChinesePage() ? '使用傳統搜尋模式' : '使用传统搜索模式');
+          
+          searchStatus.innerHTML = `
+            <div class="search-status-success">
+              ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
+              <br><small>🔧 ${segmenterStatus}</small>
+            </div>
+          `;
+        }
+        
         // 聚焦搜索框
         if (searchInput) {
           setTimeout(() => searchInput.focus(), 100);
@@ -1390,10 +1407,7 @@ function hideLoadMoreButtons() {
         }
       }
       
-      // ESC 收起搜索
-      if (e.key === 'Escape' && document.activeElement === searchInput) {
-        collapseSearch();
-      }
+
     });
   }
   
