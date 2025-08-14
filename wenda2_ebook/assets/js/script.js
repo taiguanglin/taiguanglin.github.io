@@ -619,9 +619,7 @@ function hideLoadMoreButtons() {
         
         // 调试信息：显示前5个结果的score值
         if (results.length > 0) {
-          console.log('🔍 搜索结果按score排序（前5个）:');
           results.slice(0, 5).forEach((result, index) => {
-            console.log(`  ${index + 1}. Score: ${result.score.toFixed(4)}, Title: ${result.title}`);
           });
         }
         
@@ -914,46 +912,183 @@ function hideLoadMoreButtons() {
         return result.context;
       }
       
-      const searchTerm = query.trim().toLowerCase();
-      const content = result.content.toLowerCase();
-      const originalContent = result.content;
+      const searchTerm = query.trim();
+      const content = result.content;
+      const lowerContent = content.toLowerCase();
+      const lowerSearchTerm = searchTerm.toLowerCase();
       
-      // 如果原context包含搜索词，直接使用
-      if (result.context.toLowerCase().includes(searchTerm)) {
+      // 如果原context包含完整搜索词，直接使用
+      if (result.context.toLowerCase().includes(lowerSearchTerm)) {
         return result.context;
       }
       
-      // 在content中查找包含搜索词的位置
-      const searchIndex = content.indexOf(searchTerm);
-      if (searchIndex === -1) {
-        // 尝试分词搜索（中文常见情况）
-        const chars = searchTerm.split('');
-        let bestMatch = -1;
-        let maxMatches = 0;
-        
-        for (let i = 0; i < content.length - searchTerm.length; i++) {
-          let matches = 0;
-          for (const char of chars) {
-            if (content.substr(i, 50).includes(char)) {
-              matches++;
-            }
-          }
-          if (matches > maxMatches) {
-            maxMatches = matches;
-            bestMatch = i;
-          }
-        }
-        
-        if (bestMatch !== -1) {
-          return extractContextAroundPosition(originalContent, bestMatch, 100);
-        }
-        
-        // 如果都找不到，返回原context
+      // 尝试完整匹配
+      const exactIndex = lowerContent.indexOf(lowerSearchTerm);
+      if (exactIndex !== -1) {
+        return extractContextAroundPosition(content, exactIndex, 120);
+      }
+      
+      // 智能分词：将搜索词拆分为多个关键词
+      const keywords = extractKeywords(searchTerm);
+      console.log('🔍 分词结果:', keywords);
+      
+      if (keywords.length <= 1) {
+        // 单个关键词，使用原有逻辑
         return result.context;
       }
       
-      // 提取包含搜索词的context片段
-      return extractContextAroundPosition(originalContent, searchIndex, 100);
+      // 多关键词处理：找到所有关键词的位置
+      const keywordPositions = [];
+      keywords.forEach(keyword => {
+        const lowerKeyword = keyword.toLowerCase();
+        let index = lowerContent.indexOf(lowerKeyword);
+        while (index !== -1) {
+          keywordPositions.push({
+            keyword: keyword,
+            position: index,
+            length: keyword.length
+          });
+          index = lowerContent.indexOf(lowerKeyword, index + 1);
+        }
+      });
+      
+      if (keywordPositions.length === 0) {
+        return result.context;
+      }
+      
+      console.log('📍 找到关键词位置:', keywordPositions);
+      
+      // 生成包含所有关键词的最佳context
+      return generateMultiKeywordContext(content, keywordPositions, 150);
+    }
+    
+    // 提取关键词（简单的中文分词）
+    function extractKeywords(searchTerm) {
+      // 移除多余空格
+      const cleaned = searchTerm.trim().replace(/\s+/g, ' ');
+      
+      // 按空格分割
+      const spaceWords = cleaned.split(' ').filter(word => word.length > 0);
+      
+      // 如果有空格分割的结果，使用它们
+      if (spaceWords.length > 1) {
+        return spaceWords;
+      }
+      
+      // 中文智能分词（简单版本）
+      const keywords = [];
+      const text = cleaned;
+      
+      // 2-4字的常见词组模式
+      const commonPatterns = [
+        /[\u4e00-\u9fff]{2,4}/g  // 2-4个中文字符的组合
+      ];
+      
+      // 如果输入较短（<=4字符），尝试按2字符分割
+      if (text.length <= 4) {
+        for (let i = 0; i < text.length; i += 2) {
+          const word = text.substr(i, 2);
+          if (word.length >= 2) {
+            keywords.push(word);
+          }
+        }
+      } else {
+        // 较长输入，尝试更智能的分割
+        // 先尝试按常见的2字词分割
+        for (let i = 0; i < text.length - 1; i++) {
+          const word2 = text.substr(i, 2);
+          const word3 = text.substr(i, 3);
+          
+          // 优先选择3字词，然后是2字词
+          if (i < text.length - 2 && isLikelyWord(word3)) {
+            keywords.push(word3);
+            i += 2; // 跳过下一个字符
+          } else if (isLikelyWord(word2)) {
+            keywords.push(word2);
+            i += 1; // 跳过下一个字符
+          }
+        }
+      }
+      
+      // 如果没有找到合适的分词，返回原始输入
+      return keywords.length > 0 ? keywords : [text];
+    }
+    
+    // 简单判断是否像一个词（可以扩展更复杂的逻辑）
+    function isLikelyWord(word) {
+      // 基本的中文词汇判断
+      return /^[\u4e00-\u9fff]+$/.test(word) && word.length >= 2;
+    }
+    
+    // 生成包含多个关键词的context
+    function generateMultiKeywordContext(content, keywordPositions, maxLength = 150) {
+      if (keywordPositions.length === 0) {
+        return content.substring(0, maxLength);
+      }
+      
+      // 按位置排序
+      keywordPositions.sort((a, b) => a.position - b.position);
+      
+      // 计算覆盖范围
+      const firstPos = keywordPositions[0].position;
+      const lastPos = keywordPositions[keywordPositions.length - 1];
+      const lastEnd = lastPos.position + lastPos.length;
+      const totalSpan = lastEnd - firstPos;
+      
+      // 如果所有关键词都在合理范围内，生成包含所有的context
+      if (totalSpan <= maxLength * 0.8) {
+        const contextStart = Math.max(0, firstPos - Math.floor((maxLength - totalSpan) / 2));
+        const contextEnd = Math.min(content.length, contextStart + maxLength);
+        
+        let context = content.substring(contextStart, contextEnd);
+        
+        // 添加省略号
+        if (contextStart > 0) context = '...' + context;
+        if (contextEnd < content.length) context = context + '...';
+        
+        return context;
+      }
+      
+      // 如果关键词分布太散，选择最重要的几个
+      const importantPositions = selectImportantPositions(keywordPositions, maxLength);
+      
+      // 为每个重要位置生成小段context，然后合并
+      const contextParts = [];
+      importantPositions.forEach(pos => {
+        const partLength = Math.floor(maxLength / importantPositions.length);
+        const start = Math.max(0, pos.position - Math.floor(partLength / 2));
+        const end = Math.min(content.length, start + partLength);
+        
+        let part = content.substring(start, end);
+        if (start > 0) part = '...' + part;
+        if (end < content.length) part = part + '...';
+        
+        contextParts.push(part);
+      });
+      
+      return contextParts.join(' ');
+    }
+    
+    // 选择最重要的关键词位置
+    function selectImportantPositions(positions, maxLength) {
+      // 简单策略：选择前几个不重叠的位置
+      const selected = [];
+      const minDistance = 20; // 最小距离
+      
+      for (const pos of positions) {
+        const tooClose = selected.some(sel => 
+          Math.abs(sel.position - pos.position) < minDistance
+        );
+        
+        if (!tooClose) {
+          selected.push(pos);
+        }
+        
+        // 限制数量
+        if (selected.length >= 3) break;
+      }
+      
+      return selected.length > 0 ? selected : [positions[0]];
     }
     
     // 从指定位置提取上下文
@@ -1000,7 +1135,7 @@ function hideLoadMoreButtons() {
       return context;
     }
 
-    // 智能高亮搜索关键词
+    // 智能高亮搜索关键词（支持多关键词）
     function highlightSearchTerm(text, searchTerm) {
       if (!text || !searchTerm || typeof text !== 'string' || typeof searchTerm !== 'string') {
         return text;
@@ -1010,35 +1145,75 @@ function hideLoadMoreButtons() {
       if (!term) return text;
       
       try {
-        // 策略1: 精确匹配（最常见情况）
+        // 首先尝试完整匹配
         const exactRegex = new RegExp(`(${escapeRegex(term)})`, 'gi');
         let result = text.replace(exactRegex, '<span class="search-result-highlight">$1</span>');
         
-        // 检查是否有匹配
         if (result !== text) {
           return result;
         }
         
-        // 策略2: 忽略标点符号的模糊匹配
-        // 定义中文和英文标点符号（更全面的范围）
+        // 如果完整匹配失败，尝试多关键词高亮
+        const keywords = extractKeywords(term);
+      
+        if (keywords.length > 1) {
+          // 多关键词高亮
+          result = highlightMultipleKeywords(text, keywords);
+          if (result !== text) {
+            return result;
+          }
+        }
+        
+        // 回退到原有的模糊匹配逻辑
+        return highlightWithFuzzyMatching(text, term);
+        
+      } catch (e) {
+        console.warn('智能高亮处理失败:', e, '搜索词:', term);
+        return highlightWithFuzzyMatching(text, term);
+      }
+    }
+    
+    // 多关键词高亮
+    function highlightMultipleKeywords(text, keywords) {
+      let result = text;
+      let hasMatch = false;
+      
+      // 按长度排序，先处理长的关键词，避免短词覆盖长词
+      const sortedKeywords = keywords.sort((a, b) => b.length - a.length);
+      
+      sortedKeywords.forEach(keyword => {
+        const keywordRegex = new RegExp(`(${escapeRegex(keyword)})`, 'gi');
+        const beforeReplace = result;
+        result = result.replace(keywordRegex, '<span class="search-result-highlight">$1</span>');
+        
+        if (result !== beforeReplace) {
+          hasMatch = true;
+        }
+      });
+      
+      return hasMatch ? result : text;
+    }
+    
+    // 模糊匹配高亮（原有逻辑）
+    function highlightWithFuzzyMatching(text, term) {
+      try {
+        // 策略1: 忽略标点符号的模糊匹配
         const punctuation = '[\\s\\u3000-\\u303F\\uFF00-\\uFFEF\\u2000-\\u206F\\u0020-\\u002F\\u003A-\\u0040\\u005B-\\u0060\\u007B-\\u007E\\u2010-\\u2027\\u2030-\\u205F\\u3001-\\u3003\\u3008-\\u3011\\u3014-\\u301F\\uFE10-\\uFE19\\uFE30-\\uFE6F]';
         
-        // 为搜索词的每个字符之间添加可选的标点符号匹配
         const flexiblePattern = term.split('').map(char => {
           return escapeRegex(char);
         }).join(`${punctuation}*`);
         
         const flexibleRegex = new RegExp(`(${flexiblePattern})`, 'gi');
-        result = text.replace(flexibleRegex, '<span class="search-result-highlight">$1</span>');
+        let result = text.replace(flexibleRegex, '<span class="search-result-highlight">$1</span>');
         
         if (result !== text) {
           return result;
         }
         
-        // 策略3: 字符级模糊匹配（最后的保险）
+        // 策略2: 字符级模糊匹配
         const chars = term.split('');
         if (chars.length > 1) {
-          // 构建一个匹配所有字符但允许标点符号间隔的正则
           const charPattern = chars.map(char => escapeRegex(char)).join(`${punctuation}*`);
           const charRegex = new RegExp(`(${charPattern})`, 'gi');
           
@@ -1048,7 +1223,7 @@ function hideLoadMoreButtons() {
           }
         }
         
-        // 策略4: 单字符逐个匹配（中文常见情况）
+        // 策略3: 单字符逐个匹配
         chars.forEach(char => {
           if (char.trim()) {
             const singleCharRegex = new RegExp(`(${escapeRegex(char)})`, 'gi');
@@ -1059,8 +1234,8 @@ function hideLoadMoreButtons() {
         return result;
         
       } catch (e) {
-        console.warn('智能高亮处理失败:', e, '搜索词:', term);
-        // 安全降级：尝试最简单的匹配
+        console.warn('模糊高亮处理失败:', e);
+        // 最后的安全降级
         try {
           const simpleRegex = new RegExp(term.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&'), 'gi');
           return text.replace(simpleRegex, '<span class="search-result-highlight">$&</span>');
