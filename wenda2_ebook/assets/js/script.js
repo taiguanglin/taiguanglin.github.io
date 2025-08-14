@@ -84,6 +84,31 @@ document.addEventListener('DOMContentLoaded', function() {
       if (searchContainer && searchActivation) {
         searchActivation.style.display = 'none';
         searchContainer.style.display = 'block';
+        
+        // 恢復搜索狀態顯示
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus && searchStatus.innerHTML.trim() === '') {
+          // 獲取正確的索引數量
+          const indexCount = miniSearch ? 
+            (miniSearch.documentCount || 0) : 
+            (searchIndex ? searchIndex.length : 0);
+          
+          const segmenterStatus = chineseSegmenter && chineseSegmenter.cut ?
+            (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') :
+            (isTraditionalChinesePage() ? '使用傳統搜尋模式' : '使用传统搜索模式');
+
+          const indexType = miniSearch && miniSearch.documentCount ?
+            (isTraditionalChinesePage() ? '預建索引' : '预建索引') :
+            (isTraditionalChinesePage() ? '動態索引' : '动态索引');
+
+          searchStatus.innerHTML = `
+            <div class="search-status-success">
+              ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: indexCount })}
+              <br><small>🔧 ${segmenterStatus} | 📊 ${indexType}</small>
+            </div>
+          `;
+        }
+        
         // 聚焦搜索框
         if (searchInput) {
           setTimeout(() => searchInput.focus(), 100);
@@ -1487,8 +1512,13 @@ function hideLoadMoreButtons() {
       // 重置搜索結果容器高度
       resetSearchResultsHeight();
       
+      // 獲取正確的索引數量
+      const indexCount = miniSearch ? 
+        (miniSearch.documentCount || 0) : 
+        (searchIndex ? searchIndex.length : 0);
+      
       searchStatus.innerHTML = `
-        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
+        ${getText(`搜索准备就绪 (共${indexCount}条记录)`, `搜尋準備就緒 (共${indexCount}條記錄)`)}
       `;
     }
     
