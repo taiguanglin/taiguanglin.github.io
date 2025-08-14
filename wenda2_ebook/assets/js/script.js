@@ -612,12 +612,18 @@ function hideLoadMoreButtons() {
           prefix: true
         });
         
-        // 按权重和评分排序
+        // 按MiniSearch的score由高到低排序
         results.sort((a, b) => {
-          const scoreA = a.score * (a.weight || 1);
-          const scoreB = b.score * (b.weight || 1);
-          return scoreB - scoreA;
+          return b.score - a.score;
         });
+        
+        // 调试信息：显示前5个结果的score值
+        if (results.length > 0) {
+          console.log('🔍 搜索结果按score排序（前5个）:');
+          results.slice(0, 5).forEach((result, index) => {
+            console.log(`  ${index + 1}. Score: ${result.score.toFixed(4)}, Title: ${result.title}`);
+          });
+        }
         
         // 保存所有结果
         currentSearchResults = results;
