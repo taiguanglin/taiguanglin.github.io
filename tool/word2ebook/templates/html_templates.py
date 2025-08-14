@@ -130,7 +130,8 @@ if (typeof MiniSearch === 'undefined') {{
   document.head.appendChild(script);
 }}
 </script>
-<script src="assets/js/script.js" defer></script>
+<script src="assets/js/i18n-text.js"></script>
+<script src="assets/js/script.js"></script>
 </head>
 <body>
 <div class="header-nav index-header">
