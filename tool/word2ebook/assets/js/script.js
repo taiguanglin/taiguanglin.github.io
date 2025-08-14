@@ -44,9 +44,9 @@ document.addEventListener('DOMContentLoaded', function() {
     return filename === 'index_trad.html' ? 'search_index_trad.br' : 'search_index.br';
   }
   
-  // 检查是否可以使用 Brotli 解压缩（通过 brotli-wasm）
+  // 检查是否可以使用 Brotli 解压缩（通过 brotli-dec-wasm）
   function supportsBrotli() {
-    // 检查 brotli-wasm 是否已加载
+    // 检查 brotli-dec-wasm 是否已加载
     return typeof window.brotliPromise !== 'undefined';
   }
   
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (response.ok) {
           console.log('📦 使用 Brotli 壓縮索引文件');
           
-          // 初始化 brotli-wasm 模組
+          // 初始化 brotli-dec-wasm 模組
           const brotli = await window.brotliPromise;
           
           // 讀取壓縮的二進制數據
@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const buffer = await response.arrayBuffer();
           const uint8Array = new Uint8Array(buffer);
           
-          // 使用 brotli-wasm 解壓縮
+          // 使用 brotli-dec-wasm 解壓縮
           const decompressed = brotli.decompress(uint8Array);
           
           // 轉成字串並解析 JSON
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('⚠️ 壓縮索引加載失敗，降級到未壓縮版本:', error.message);
       }
     } else {
-      console.log('⚠️ brotli-wasm 未加載，使用未壓縮索引');
+      console.log('⚠️ brotli-dec-wasm 未加載，使用未壓縮索引');
     }
     
     // 降級到未壓縮的 JSON 文件
