@@ -44,6 +44,11 @@ class Word2EBookConverter:
         print(f"📋 开始转换：{self.config.input_file} -> {self.config.output_folder}")
         print(f"   生成繁体版: {'✅' if self.config.generate_traditional else '❌'}")
         print(f"   生成搜索索引: {'✅' if self.config.generate_search else '❌'}")
+        
+        # 壓縮狀態邏輯：如果不生成索引，自動跳過壓縮
+        will_compress = self.config.generate_search and not self.skip_compress
+        print(f"   壓縮索引文件: {'✅' if will_compress else '❌'}")
+        
         print(f"   更新模式: {'🔄 增量更新' if not self.config.generate_search else '🆕 完整重建'}")
         print()
         
@@ -140,10 +145,13 @@ def create_argument_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 示例:
-  python main.py input.docx output_folder                    # 生成完整版本
-  python main.py input.docx output_folder --fast            # 快速模式
-  python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
+  python main.py input.docx output_folder                     # 生成完整版本（包含壓縮）
+  python main.py input.docx output_folder --fast             # 快速模式（跳過索引和繁體版）
+  python main.py input.docx output_folder --skip-index       # 跳过搜索索引生成
+  python main.py input.docx output_folder --skip-compress    # 跳过壓縮（推薦用於快速更新）
   python main.py input.docx output_folder --skip-traditional # 跳过繁体版
+
+💡 提示：大部分時候使用 --skip-compress 可以大幅加快生成速度，除非需要部署到生產環境
         """
     )
     
@@ -167,9 +175,12 @@ def main() -> None:
     parser = create_argument_parser()
     args = parser.parse_args()
     
-    # 处理快速模式
+    # 处理快速模式和参数逻辑
     generate_search_index = not (args.skip_index or args.fast)
     generate_traditional = not (args.skip_traditional or args.fast)
+    
+    # 壓縮邏輯：如果不生成索引或明確跳過壓縮，則跳過壓縮
+    skip_compress = args.skip_compress or not generate_search_index
     
     # 创建转换配置
     config = ConversionConfig(
@@ -190,7 +201,7 @@ def main() -> None:
     
     try:
         # 创建转换器并执行转换
-        converter = Word2EBookConverter(config, DEFAULT_SETTINGS, args.skip_compress)
+        converter = Word2EBookConverter(config, DEFAULT_SETTINGS, skip_compress)
         converter.convert()
         
     except Exception as e:
