@@ -37,6 +37,18 @@ document.addEventListener('DOMContentLoaded', function() {
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
   }
   
+  function getMiniSearchIndexFile() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index_trad.html' ? 'minisearch_index_trad.json' : 'minisearch_index.json';
+  }
+  
+  function getCompressedMiniSearchIndexFile() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index_trad.html' ? 'minisearch_index_trad.br' : 'minisearch_index.br';
+  }
+  
   // 获取压缩的搜索索引文件名
   function getCompressedSearchIndexFile() {
     const pathname = window.location.pathname;
@@ -130,6 +142,79 @@ document.addEventListener('DOMContentLoaded', function() {
     return errorDiv;
   }
   
+  // 加载预建的 MiniSearch 索引（支持 Brotli 压缩）
+  async function loadPrebuiltMiniSearchIndex() {
+    const updateLoadingText = (text) => {
+      const searchStatus = document.getElementById('search-status');
+      if (searchStatus) {
+        searchStatus.textContent = text;
+      }
+    };
+
+    // 尝试加载压缩的 MiniSearch 索引
+    if (supportsBrotli()) {
+      try {
+        const compressedFile = getCompressedMiniSearchIndexFile();
+        updateLoadingText(getI18nText('search.loadingCompressed', isTraditionalChinesePage(), '正在載入壓縮 MiniSearch 索引...'));
+        
+        const response = await fetch(compressedFile);
+        if (response.ok) {
+          console.log('📦 使用 Brotli 壓縮 MiniSearch 索引文件');
+          
+          // 初始化 brotli-dec-wasm 模組
+          const brotli = await window.brotliPromise;
+          
+          // 讀取壓縮的二進制數據
+          updateLoadingText(getI18nText('search.decompressing', isTraditionalChinesePage(), '正在解壓縮 MiniSearch 索引...'));
+          const buffer = await response.arrayBuffer();
+          const uint8Array = new Uint8Array(buffer);
+          
+          // 使用 brotli-dec-wasm 解壓縮
+          const decompressed = brotli.decompress(uint8Array);
+          
+          // 轉成字串並解析 JSON
+          updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理 MiniSearch 索引...'));
+          const text = new TextDecoder().decode(decompressed);
+          const indexData = JSON.parse(text);
+          
+          console.log(`📦 Brotli MiniSearch 索引解壓縮成功`);
+          updateLoadingText(getI18nText('search.preparingIndex', isTraditionalChinesePage(), '準備智能搜索... 即將完成', '準備智能搜尋... 即將完成'));
+          
+          return indexData;
+        }
+      } catch (error) {
+        console.log('⚠️ 壓縮 MiniSearch 索引加載失敗，降級到未壓縮版本:', error.message);
+      }
+    } else {
+      console.log('⚠️ brotli-dec-wasm 未加載，使用未壓縮 MiniSearch 索引');
+    }
+    
+    // 降級到未壓縮的 MiniSearch 索引文件
+    console.log('📄 使用未壓縮 MiniSearch 索引文件');
+    const indexFile = getMiniSearchIndexFile();
+    
+    try {
+      updateLoadingText(getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入 MiniSearch 索引...'));
+      const response = await fetch(indexFile);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理 MiniSearch 索引...'));
+      const indexData = await response.json();
+      
+      console.log(`📄 MiniSearch 索引加載成功`);
+      updateLoadingText(getI18nText('search.preparingIndex', isTraditionalChinesePage(), '準備智能搜索... 即將完成', '準備智能搜尋... 即將完成'));
+      
+      return indexData;
+      
+    } catch (error) {
+      console.error('❌ MiniSearch 索引加載失敗:', error);
+      throw error;
+    }
+  }
+
   // 載入搜索索引（支援進度追蹤和 Brotli 壓縮）
   async function loadSearchIndexWithProgress() {
     // 更新載入文字的函數
@@ -420,16 +505,38 @@ function hideLoadMoreButtons() {
         `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
         `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
       
-      // 加载搜索索引（帶進度）
-      console.time('📥 JSON載入時間');
-      searchIndex = await loadSearchIndexWithProgress();
-      console.timeEnd('📥 JSON載入時間');
-      console.log(`📋 索引記錄數: ${searchIndex.length}`);
+      // 優先嘗試加載預建的 MiniSearch 索引
+      let prebuiltIndexLoaded = false;
+      try {
+        console.time('📥 預建索引載入時間');
+        const prebuiltIndex = await loadPrebuiltMiniSearchIndex();
+        console.timeEnd('📥 預建索引載入時間');
+        
+        // 從預建索引創建 MiniSearch 實例
+        console.time('🏗️ 預建 MiniSearch 恢復');
+        miniSearch = MiniSearch.loadJSON(JSON.stringify(prebuiltIndex), {
+          fields: ['title', 'content', 'tokens'],
+          storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight', 'tokens']
+        });
+        console.timeEnd('🏗️ 預建 MiniSearch 恢復');
+        
+        console.log('🚀 使用預建 MiniSearch 索引，跳過索引建立過程');
+        prebuiltIndexLoaded = true;
+        
+      } catch (error) {
+        console.log('⚠️ 預建 MiniSearch 索引加載失敗，降級到傳統模式:', error.message);
+        prebuiltIndexLoaded = false;
+      }
       
-      // 載入完成，移除載入UI
-      searchStatus.removeChild(loadingUI.loadingDiv);
-      
-      // 初始化MiniSearch with 增强的中文支持
+      // 如果預建索引加載失敗，使用傳統方式
+      if (!prebuiltIndexLoaded) {
+        // 加载搜索索引（帶進度）
+        console.time('📥 JSON載入時間');
+        searchIndex = await loadSearchIndexWithProgress();
+        console.timeEnd('📥 JSON載入時間');
+        console.log(`📋 索引記錄數: ${searchIndex.length}`);
+        
+        // 初始化MiniSearch with 增强的中文支持
       console.time('🏗️ MiniSearch對象創建');
       miniSearch = new MiniSearch({
         fields: ['title', 'content'], // 搜索字段
@@ -614,12 +721,18 @@ function hideLoadMoreButtons() {
       // 移除進度顯示
       searchStatus.removeChild(progressDiv);
       
-      console.timeEnd('📇 索引建立時間 (分批處理)');
-      console.log(isTraditionalChinesePage() ? 
-        '✅ 索引建立完成！' : 
-        '✅ 索引建立完成！');
+        console.timeEnd('📇 索引建立時間 (分批處理)');
+        console.log(isTraditionalChinesePage() ? 
+          '✅ 索引建立完成！' : 
+          '✅ 索引建立完成！');
+      }
       
-      // 顯示完成狀態和分词功能状态
+      // 移除載入UI（統一處理）
+      if (loadingUI && loadingUI.loadingDiv && searchStatus.contains(loadingUI.loadingDiv)) {
+        searchStatus.removeChild(loadingUI.loadingDiv);
+      }
+      
+      // 顯示完成狀態和分词功能状态（適用於預建和傳統模式）
       const segmenterStatus = segmenterEnabled ? 
         (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
         (isTraditionalChinesePage() ? '使用傳統搜尋模式' : '使用传统搜索模式');
@@ -629,10 +742,19 @@ function hideLoadMoreButtons() {
         '🎉 搜尋初始化流程完成！' : 
         '🎉 搜索初始化流程完成！');
       
+      // 根據索引類型顯示不同的狀態信息
+      const indexCount = prebuiltIndexLoaded ? 
+        (miniSearch.documentCount || 0) : 
+        (searchIndex ? searchIndex.length : 0);
+      
+      const indexType = prebuiltIndexLoaded ? 
+        (isTraditionalChinesePage() ? '預建索引' : '预建索引') : 
+        (isTraditionalChinesePage() ? '動態索引' : '动态索引');
+      
       searchStatus.innerHTML = `
         <div class="search-status-success">
-          ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
-          <br><small>🔧 ${segmenterStatus}</small>
+          ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: indexCount })}
+          <br><small>🔧 ${segmenterStatus} | 📊 ${indexType}</small>
         </div>
       `;
       searchInitialized = true;
@@ -655,6 +777,11 @@ function hideLoadMoreButtons() {
       
     } catch (error) {
       console.error('搜索初始化失败:', error);
+      
+      // 移除載入UI（如果存在）
+      if (loadingUI && loadingUI.loadingDiv && searchStatus.contains(loadingUI.loadingDiv)) {
+        searchStatus.removeChild(loadingUI.loadingDiv);
+      }
       
       // 清空狀態並顯示錯誤
       searchStatus.innerHTML = '';
@@ -1004,8 +1131,8 @@ function hideLoadMoreButtons() {
     
     // 智能获取最佳context用于高亮显示
     function getBestContextForHighlight(result, query) {
-      if (!query || !result.content) {
-        return result.context;
+      if (!query || !result || !result.content) {
+        return result && result.context ? result.context : '';
       }
       
       const searchTerm = query.trim();
@@ -1014,7 +1141,7 @@ function hideLoadMoreButtons() {
       const lowerSearchTerm = searchTerm.toLowerCase();
       
       // 如果原context包含完整搜索词，直接使用
-      if (result.context.toLowerCase().includes(lowerSearchTerm)) {
+      if (result.context && result.context.toLowerCase().includes(lowerSearchTerm)) {
         return result.context;
       }
       

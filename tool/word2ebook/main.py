@@ -16,21 +16,24 @@ from utils.file_utils import FileManager
 from core.document_parser import DocumentParser
 from generators.html_generator import HTMLGenerator
 from generators.search_generator import SearchIndexGenerator
+from generators.minisearch_generator import MiniSearchIndexGenerator
 from templates.static_assets import StaticAssetsManager
 
 
 class Word2EBookConverter:
     """Word 转 EBook 转换器主类"""
     
-    def __init__(self, config: ConversionConfig, settings: Optional[Settings] = None):
+    def __init__(self, config: ConversionConfig, settings: Optional[Settings] = None, skip_compress: bool = False):
         self.config = config
         self.settings = settings or DEFAULT_SETTINGS
+        self.skip_compress = skip_compress
         
         # 初始化组件
         self.file_manager = FileManager(config.output_folder)
         self.document_parser = DocumentParser(self.settings, self.file_manager)
         self.html_generator = HTMLGenerator(self.settings, self.file_manager, config.input_file)
         self.search_generator = SearchIndexGenerator(self.settings, self.file_manager)
+        self.minisearch_generator = MiniSearchIndexGenerator(self.file_manager)
         
         # 静态资源管理器（从原文件加载完整CSS/JS）
         original_file = Path(__file__).parent.parent / "word2ebook.py"
@@ -64,7 +67,11 @@ class Word2EBookConverter:
         # 4. 处理搜索索引
         if self.config.generate_search:
             print("🔍 正在生成搜索索引...")
-            self.search_generator.generate_search_indexes(chapters, self.config.generate_traditional)
+            self.search_generator.generate_search_indexes(chapters, self.config.generate_traditional, self.skip_compress)
+            
+            # 5. 生成 MiniSearch 索引（依赖于搜索索引）
+            print("🔍 正在生成 MiniSearch 索引...")
+            self.minisearch_generator.generate_minisearch_indexes(self.config.generate_traditional, self.skip_compress)
         else:
             print("⏭️  跳过搜索索引生成，确保索引文件存在...")
             self.search_generator.ensure_search_index_files(self.config.generate_traditional)
@@ -145,6 +152,8 @@ def create_argument_parser() -> argparse.ArgumentParser:
     
     parser.add_argument('--skip-index', action='store_true', 
                        help='跳过搜索索引生成，保留现有索引文件（增量更新模式）')
+    parser.add_argument('--skip-compress', action='store_true',
+                       help='跳过索引文件的 Brotli 压缩（加快生成速度）')
     parser.add_argument('--skip-traditional', action='store_true',
                        help='跳过繁体版生成（加快转换速度）')
     parser.add_argument('--fast', action='store_true',
@@ -181,7 +190,7 @@ def main() -> None:
     
     try:
         # 创建转换器并执行转换
-        converter = Word2EBookConverter(config, DEFAULT_SETTINGS)
+        converter = Word2EBookConverter(config, DEFAULT_SETTINGS, args.skip_compress)
         converter.convert()
         
     except Exception as e:

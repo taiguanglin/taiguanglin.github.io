@@ -1,0 +1,20 @@
+{
+  "name": "word2ebook",
+  "version": "1.0.0",
+  "description": "Word to eBook converter with search functionality",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "minisearch": "^6.3.0"
+  },
+  "keywords": [
+    "word",
+    "ebook",
+    "search",
+    "minisearch"
+  ],
+  "author": "",
+  "license": "MIT"
+}

@@ -21,18 +21,18 @@ class SearchIndexGenerator:
         self.content_processor = ContentProcessor(settings)
         self.i18n_processor = I18nProcessor()
     
-    def generate_search_indexes(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
+    def generate_search_indexes(self, chapters: List[Chapter], generate_traditional: bool = True, skip_compress: bool = False) -> None:
         """生成搜索索引文件"""
         print("🔍 正在生成搜索索引...")
         
         # 生成简体版搜索索引
-        self._generate_simplified_index(chapters)
+        self._generate_simplified_index(chapters, skip_compress)
         
         # 生成繁体版搜索索引
         if generate_traditional:
-            self._generate_traditional_index(chapters)
+            self._generate_traditional_index(chapters, skip_compress)
     
-    def _generate_simplified_index(self, chapters: List[Chapter]) -> None:
+    def _generate_simplified_index(self, chapters: List[Chapter], skip_compress: bool = False) -> None:
         """生成简体版搜索索引"""
         all_search_items = []
         
@@ -57,11 +57,11 @@ class SearchIndexGenerator:
         all_search_items.sort(key=lambda x: x.weight, reverse=True)
         
         # 生成索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED)
+        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED, skip_compress)
         
         print(f"✅ 简体搜索索引已生成：{Constants.SEARCH_INDEX_SIMPLIFIED} (共 {len(all_search_items)} 条记录)")
     
-    def _generate_traditional_index(self, chapters: List[Chapter]) -> None:
+    def _generate_traditional_index(self, chapters: List[Chapter], skip_compress: bool = False) -> None:
         """生成繁体版搜索索引"""
         all_search_items = []
         
@@ -88,11 +88,11 @@ class SearchIndexGenerator:
         all_search_items.sort(key=lambda x: x.weight, reverse=True)
         
         # 生成繁体版索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL)
+        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL, skip_compress)
         
         print(f"✅ 繁体搜索索引已生成：{Constants.SEARCH_INDEX_TRADITIONAL} (共 {len(all_search_items)} 条记录)")
     
-    def _write_search_index(self, search_items: List[SearchItem], filename: str) -> None:
+    def _write_search_index(self, search_items: List[SearchItem], filename: str, skip_compress: bool = False) -> None:
         """写入搜索索引文件（支持 Brotli 壓縮）"""
         # 转换为字典格式
         index_data = [item.to_dict() for item in search_items]
@@ -100,28 +100,31 @@ class SearchIndexGenerator:
         # 生成 JSON 内容（不使用缩进以减少文件大小）
         index_content = json.dumps(index_data, ensure_ascii=False, separators=(',', ':'))
         
-        # 写入原始 JSON 文件（用于调试和兼容性）
+        # 写入原始 JSON 文件
         self.file_manager.write_file(filename, index_content)
         
-        # 使用 Brotli 压缩并写入压缩文件
-        try:
-            compressed_data = brotli.compress(index_content.encode('utf-8'), quality=11)
-            compressed_filename = filename.replace('.json', '.br')
-            self.file_manager.write_binary_file(compressed_filename, compressed_data)
-            
-            # 计算压缩率
-            original_size = len(index_content.encode('utf-8'))
-            compressed_size = len(compressed_data)
-            compression_ratio = (1 - compressed_size / original_size) * 100
-            
-            print(f"📦 Brotli 壓縮完成：{filename}")
-            print(f"   原始大小: {original_size:,} bytes")
-            print(f"   壓縮大小: {compressed_size:,} bytes")
-            print(f"   壓縮率: {compression_ratio:.1f}%")
-            
-        except Exception as e:
-            print(f"⚠️ Brotli 壓縮失敗 {filename}: {e}")
-            print("   將繼續使用未壓縮的 JSON 文件")
+        # 如果不跳过压缩，则进行 Brotli 压缩
+        if not skip_compress:
+            try:
+                compressed_data = brotli.compress(index_content.encode('utf-8'), quality=11)
+                compressed_filename = filename.replace('.json', '.br')
+                self.file_manager.write_binary_file(compressed_filename, compressed_data)
+                
+                # 计算压缩率
+                original_size = len(index_content.encode('utf-8'))
+                compressed_size = len(compressed_data)
+                compression_ratio = (1 - compressed_size / original_size) * 100
+                
+                print(f"📦 Brotli 壓縮完成：{filename}")
+                print(f"   原始大小: {original_size:,} bytes")
+                print(f"   壓縮大小: {compressed_size:,} bytes")
+                print(f"   壓縮率: {compression_ratio:.1f}%")
+                
+            except Exception as e:
+                print(f"⚠️ Brotli 壓縮失敗 {filename}: {e}")
+                print("   將繼續使用未壓縮的 JSON 文件")
+        else:
+            print(f"⏭️  跳过 Brotli 压缩：{filename}")
     
     def ensure_search_index_files(self, generate_traditional: bool = True) -> None:
         """确保搜索索引文件存在，如果不存在则创建空的索引文件
@@ -178,7 +181,7 @@ class SearchIndexGenerator:
         all_search_items.sort(key=lambda x: x.weight, reverse=True)
         
         # 生成索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED)
+        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED, skip_compress)
         
         print(f"✅ 简体搜索索引已生成：{Constants.SEARCH_INDEX_SIMPLIFIED} (共 {len(all_search_items)} 条记录)")
     
@@ -206,7 +209,7 @@ class SearchIndexGenerator:
         all_search_items.sort(key=lambda x: x.weight, reverse=True)
         
         # 生成繁体版索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL)
+        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL, skip_compress)
         
         print(f"✅ 繁体搜索索引已生成：{Constants.SEARCH_INDEX_TRADITIONAL} (共 {len(all_search_items)} 条记录)")
     

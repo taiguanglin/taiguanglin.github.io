@@ -93,6 +93,10 @@ class Constants:
     SEARCH_INDEX_SIMPLIFIED = 'search_index.json'
     SEARCH_INDEX_TRADITIONAL = 'search_index_trad.json'
     
+    # MiniSearch 索引文件名
+    MINISEARCH_INDEX_SIMPLIFIED = 'minisearch_index.json'
+    MINISEARCH_INDEX_TRADITIONAL = 'minisearch_index_trad.json'
+    
     # CDN 配置
     MINISEARCH_CDN_PRIMARY = 'https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js'
     MINISEARCH_CDN_BACKUP = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js'
