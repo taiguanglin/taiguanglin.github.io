@@ -4277,6 +4277,7 @@ function hideLoadMoreButtons() {
   
   function expandTocItem(parentItem) {
     const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    const parentChapter = parentItem.getAttribute('data-chapter');
     
     // 首先检查嵌套结构（首页TOC）
     const nestedUl = parentItem.querySelector(':scope > ul');
@@ -4284,7 +4285,10 @@ function hideLoadMoreButtons() {
       const directChildren = nestedUl.querySelectorAll(':scope > .toc-item');
       directChildren.forEach(child => {
         const childLevel = parseInt(child.getAttribute('data-level'));
-        if (childLevel === parentLevel + 1) {
+        const childChapter = child.getAttribute('data-chapter');
+        
+        // 只展開同一章節且是直接子項的項目
+        if (childLevel === parentLevel + 1 && childChapter === parentChapter) {
           child.classList.remove('hidden');
           child.setAttribute('data-manually-shown', 'true');
         }
@@ -4296,13 +4300,15 @@ function hideLoadMoreButtons() {
     let nextSibling = parentItem.nextElementSibling;
     while (nextSibling && nextSibling.classList.contains('toc-item')) {
       const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      const siblingChapter = nextSibling.getAttribute('data-chapter');
       
       if (siblingLevel <= parentLevel) {
         // 遇到同级或更高级别的项目，停止
         break;
       }
       
-      if (siblingLevel === parentLevel + 1) {
+      // 只處理同一章節的子項目
+      if (siblingLevel === parentLevel + 1 && siblingChapter === parentChapter) {
         // 这是直接子项，显示它
         nextSibling.classList.remove('hidden');
         // 添加标记，表示这是用户手动展开的
@@ -4315,6 +4321,7 @@ function hideLoadMoreButtons() {
   
   function collapseTocItem(parentItem) {
     const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    const parentChapter = parentItem.getAttribute('data-chapter');
     
     // 首先检查嵌套结构（首页TOC）
     const nestedUl = parentItem.querySelector(':scope > ul');
@@ -4322,7 +4329,10 @@ function hideLoadMoreButtons() {
       const allChildren = nestedUl.querySelectorAll('.toc-item');
       allChildren.forEach(child => {
         const childLevel = parseInt(child.getAttribute('data-level'));
-        if (childLevel > parentLevel) {
+        const childChapter = child.getAttribute('data-chapter');
+        
+        // 只收縮同一章節且層級更深的項目
+        if (childLevel > parentLevel && childChapter === parentChapter) {
           child.classList.add('hidden');
           child.removeAttribute('data-manually-shown');
           const childIcon = child.querySelector('.toc-expand-icon');
@@ -4339,20 +4349,24 @@ function hideLoadMoreButtons() {
     let nextSibling = parentItem.nextElementSibling;
     while (nextSibling && nextSibling.classList.contains('toc-item')) {
       const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      const siblingChapter = nextSibling.getAttribute('data-chapter');
       
       if (siblingLevel <= parentLevel) {
         // 遇到同级或更高级别的项目，停止
         break;
       }
       
-      // 这是子项，隐藏它，并同时折叠其展开状态
-      nextSibling.classList.add('hidden');
-      // 清除手动展开标记
-      nextSibling.removeAttribute('data-manually-shown');
-      const childIcon = nextSibling.querySelector('.toc-expand-icon');
-      if (childIcon) {
-        childIcon.classList.add('collapsed');
-        childIcon.textContent = '▶';
+      // 只處理同一章節的子項目
+      if (siblingChapter === parentChapter) {
+        // 这是子项，隐藏它，并同时折叠其展开状态
+        nextSibling.classList.add('hidden');
+        // 清除手动展开标记
+        nextSibling.removeAttribute('data-manually-shown');
+        const childIcon = nextSibling.querySelector('.toc-expand-icon');
+        if (childIcon) {
+          childIcon.classList.add('collapsed');
+          childIcon.textContent = '▶';
+        }
       }
       
       nextSibling = nextSibling.nextElementSibling;

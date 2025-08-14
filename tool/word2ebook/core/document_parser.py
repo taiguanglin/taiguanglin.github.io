@@ -164,7 +164,8 @@ class DocumentParser:
         
         if "heading 1" in style:
             anchor = self.id_generator.generate_heading_id(text)
-            toc_list.append((1, text, anchor))
+            # heading 1 不添加到當前章節的 toc_list，因為它應該是新章節的開始
+            # toc_list.append((1, text, anchor))  # 註釋掉這行
             return f'<h1 id="{anchor}">{text}</h1>'
         elif "heading 2" in style:
             anchor = self.id_generator.generate_heading_id(text)
