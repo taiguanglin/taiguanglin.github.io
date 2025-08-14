@@ -102,6 +102,21 @@ class Word2EBookConverter:
             with open(i18n_js_path, 'r', encoding='utf-8') as f:
                 i18n_js_content = f.read()
             self.file_manager.write_file("assets/js/i18n-text.js", i18n_js_content)
+        
+        # 复制 jieba-wasm 文件
+        jieba_js_path = Path(__file__).parent / "assets" / "js" / "jieba_rs_wasm.js"
+        jieba_wasm_path = Path(__file__).parent / "assets" / "js" / "jieba_rs_wasm_bg.wasm"
+        
+        if jieba_js_path.exists():
+            with open(jieba_js_path, 'r', encoding='utf-8') as f:
+                jieba_js_content = f.read()
+            self.file_manager.write_file("assets/js/jieba_rs_wasm.js", jieba_js_content)
+        
+        if jieba_wasm_path.exists():
+            # WASM 文件需要以二进制模式复制
+            with open(jieba_wasm_path, 'rb') as f:
+                jieba_wasm_content = f.read()
+            self.file_manager.write_binary_file("assets/js/jieba_rs_wasm_bg.wasm", jieba_wasm_content)
     
     def _show_completion_info(self) -> None:
         """显示完成信息"""

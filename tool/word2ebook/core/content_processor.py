@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 
 from models.document_models import Chapter, SearchItem
 from utils.text_utils import TextProcessor, IDGenerator
+from utils.text_segmentation import get_segmenter, is_segmenter_available
 from config.settings import Settings, Constants
 
 
@@ -15,6 +16,13 @@ class ContentProcessor:
         self.settings = settings
         self.text_processor = TextProcessor(settings)
         self.id_generator = IDGenerator(settings)
+        self.segmenter = get_segmenter() if is_segmenter_available() else None
+        
+        # 输出分词器状态
+        if self.segmenter and self.segmenter.is_available():
+            print("✅ jieba 分词器已启用，将生成预分词索引")
+        else:
+            print("⚠️ jieba 分词器不可用，将使用原始文本索引")
     
     def extract_search_content(self, html_content: str, base_filename: str) -> Tuple[List[SearchItem], str]:
         """从HTML内容中提取搜索索引数据
@@ -50,6 +58,12 @@ class ContentProcessor:
         
         return search_items, str(soup)
     
+    def _generate_tokens(self, text: str) -> str:
+        """生成文本的分词tokens"""
+        if self.segmenter and self.segmenter.is_available():
+            return self.segmenter.segment_text(text)
+        return ""  # 如果分词器不可用，返回空字符串
+    
     def _extract_headings(self, soup: BeautifulSoup, base_filename: str, start_id: int) -> List[SearchItem]:
         """提取标题"""
         items = []
@@ -72,7 +86,8 @@ class ContentProcessor:
                 content=content,
                 context=content,
                 url=f"{base_filename}#{element_id}",
-                weight=weight
+                weight=weight,
+                tokens=self._generate_tokens(content)
             ))
             item_id += 1
             
@@ -108,7 +123,8 @@ class ContentProcessor:
                 content=content,
                 context=self._get_context(question, self.settings.search_context_length),
                 url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['question']
+                weight=Constants.SEARCH_WEIGHTS['question'],
+                tokens=self._generate_tokens(content)
             ))
             item_id += 1
             
@@ -138,7 +154,8 @@ class ContentProcessor:
                 content=content,
                 context=self._get_context(answer, self.settings.search_context_length),
                 url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['answer']
+                weight=Constants.SEARCH_WEIGHTS['answer'],
+                tokens=self._generate_tokens(content)
             ))
             item_id += 1
             
@@ -167,7 +184,8 @@ class ContentProcessor:
                 content=content,
                 context=self._get_context(para, 60),
                 url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['content']
+                weight=Constants.SEARCH_WEIGHTS['content'],
+                tokens=self._generate_tokens(content)
             ))
             item_id += 1
             

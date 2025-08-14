@@ -62,6 +62,7 @@ class SearchItem:
     context: str
     url: str
     weight: float = 1.0
+    tokens: str = ""  # jieba 预分词结果，用空格分隔的词汇列表
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式（用于 JSON 序列化）"""
@@ -72,7 +73,8 @@ class SearchItem:
             'content': self.content,
             'context': self.context,
             'url': self.url,
-            'weight': self.weight
+            'weight': self.weight,
+            'tokens': self.tokens
         }
 
 
