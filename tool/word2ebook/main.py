@@ -41,6 +41,7 @@ class Word2EBookConverter:
         print(f"📋 开始转换：{self.config.input_file} -> {self.config.output_folder}")
         print(f"   生成繁体版: {'✅' if self.config.generate_traditional else '❌'}")
         print(f"   生成搜索索引: {'✅' if self.config.generate_search else '❌'}")
+        print(f"   更新模式: {'🔄 增量更新' if not self.config.generate_search else '🆕 完整重建'}")
         print()
         
         # 1. 设置输出目录
@@ -60,11 +61,13 @@ class Word2EBookConverter:
         self.html_generator.generate_index_pages(chapters, self.config, self.config.generate_traditional)
         print("✅ HTML 页面生成完成")
         
-        # 4. 生成搜索索引
+        # 4. 处理搜索索引
         if self.config.generate_search:
+            print("🔍 正在生成搜索索引...")
             self.search_generator.generate_search_indexes(chapters, self.config.generate_traditional)
         else:
-            print("⏭️  跳过搜索索引生成")
+            print("⏭️  跳过搜索索引生成，确保索引文件存在...")
+            self.search_generator.ensure_search_index_files(self.config.generate_traditional)
         
         # 5. 生成静态资源
         print("🎨 正在生成静态资源...")
@@ -77,9 +80,9 @@ class Word2EBookConverter:
     def _setup_output_directory(self) -> None:
         """设置输出目录"""
         print("📁 正在设置输出目录...")
-        # 根據是否生成完整版本決定是否清空目錄
-        # 如果生成搜索索引，表示是完整版本，需要清空
-        # 如果跳過搜索索引，表示是部分更新，保留現有內容
+        # 根據是否生成搜索索引決定是否清空目錄
+        # 如果生成搜索索引，表示是完整重建，需要清空
+        # 如果跳過搜索索引，表示是增量更新，保留現有內容
         clean_existing = self.config.generate_search
         self.file_manager.setup_output_directory(clean_existing)
     
@@ -117,7 +120,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
 示例:
   python main.py input.docx output_folder                    # 生成完整版本
   python main.py input.docx output_folder --fast            # 快速模式
-  python main.py input.docx output_folder --skip-search     # 跳过搜索索引
+  python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
   python main.py input.docx output_folder --skip-traditional # 跳过繁体版
         """
     )
@@ -125,12 +128,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument('input_file', help='输入的Word文档路径')
     parser.add_argument('output_folder', help='输出HTML电子书的目录')
     
-    parser.add_argument('--skip-search', action='store_true', 
-                       help='跳过搜索索引生成（加快转换速度）')
+    parser.add_argument('--skip-index', action='store_true', 
+                       help='跳过搜索索引生成，保留现有索引文件（增量更新模式）')
     parser.add_argument('--skip-traditional', action='store_true',
                        help='跳过繁体版生成（加快转换速度）')
     parser.add_argument('--fast', action='store_true',
-                       help='快速模式：跳过搜索索引和繁体版生成')
+                       help='快速模式：跳过搜索索引生成和繁体版生成')
     
     return parser
 
@@ -141,14 +144,14 @@ def main() -> None:
     args = parser.parse_args()
     
     # 处理快速模式
-    generate_search = not (args.skip_search or args.fast)
+    generate_search_index = not (args.skip_index or args.fast)
     generate_traditional = not (args.skip_traditional or args.fast)
     
     # 创建转换配置
     config = ConversionConfig(
         input_file=Path(args.input_file),
         output_folder=Path(args.output_folder),
-        generate_search=generate_search,
+        generate_search=generate_search_index,
         generate_traditional=generate_traditional
     )
     

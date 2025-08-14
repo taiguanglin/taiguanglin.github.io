@@ -56,7 +56,7 @@ class DocumentParser:
             if not html:
                 continue
             
-            if html.startswith("<h1>"):  # 新章节
+            if html.startswith("<h1"):  # 新章节（支持带ID的h1标签）
                 if current_chapter:
                     # 完成上一章节
                     current_chapter = self._finalize_chapter(current_chapter, content_blocks, toc_items)
@@ -163,7 +163,9 @@ class DocumentParser:
         style = paragraph.style.name.lower()
         
         if "heading 1" in style:
-            return f"<h1>{text}</h1>"
+            anchor = self.id_generator.generate_heading_id(text)
+            toc_list.append((1, text, anchor))
+            return f'<h1 id="{anchor}">{text}</h1>'
         elif "heading 2" in style:
             anchor = self.id_generator.generate_heading_id(text)
             toc_list.append((2, text, anchor))
@@ -318,7 +320,7 @@ class DocumentParser:
                     # 如果遇到新的问题、回答或标题，停止收集
                     if (next_block.startswith('<div class="question">') or 
                         next_block.startswith('<div class="answer">') or
-                        next_block.startswith('<h1>') or 
+                        next_block.startswith('<h1') or 
                         next_block.startswith('<h2>') or 
                         next_block.startswith('<h3>') or
                         next_block.startswith('<hr>')):
@@ -351,7 +353,7 @@ class DocumentParser:
                     # 如果遇到新的问题、回答或标题，停止收集
                     if (next_block.startswith('<div class="question">') or 
                         next_block.startswith('<div class="answer">') or
-                        next_block.startswith('<h1>') or 
+                        next_block.startswith('<h1') or 
                         next_block.startswith('<h2>') or 
                         next_block.startswith('<h3>') or
                         next_block.startswith('<hr>')):

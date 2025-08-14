@@ -59,7 +59,7 @@ python main.py input.docx output_folder
 python main.py input.docx output_folder --fast
 
 # 跳过搜索索引
-python main.py input.docx output_folder --skip-search
+python main.py input.docx output_folder --skip-index
 
 # 跳过繁体版
 python main.py input.docx output_folder --skip-traditional
