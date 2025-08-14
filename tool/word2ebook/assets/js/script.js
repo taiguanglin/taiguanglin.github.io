@@ -807,8 +807,9 @@ function hideLoadMoreButtons() {
         'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
       }[result.type] || getText('内容', '內容');
       
-      // 智能高亮搜索关键词
-      const highlightedContext = query ? highlightSearchTerm(result.context, query) : result.context;
+      // 智能获取最佳context并高亮搜索关键词
+      const bestContext = query ? getBestContextForHighlight(result, query) : result.context;
+      const highlightedContext = query ? highlightSearchTerm(bestContext, query) : bestContext;
       
       // 計算全局序號
       const globalIndex = indexOffset + index + 1;
@@ -907,6 +908,98 @@ function hideLoadMoreButtons() {
       }
     }
     
+    // 智能获取最佳context用于高亮显示
+    function getBestContextForHighlight(result, query) {
+      if (!query || !result.content) {
+        return result.context;
+      }
+      
+      const searchTerm = query.trim().toLowerCase();
+      const content = result.content.toLowerCase();
+      const originalContent = result.content;
+      
+      // 如果原context包含搜索词，直接使用
+      if (result.context.toLowerCase().includes(searchTerm)) {
+        return result.context;
+      }
+      
+      // 在content中查找包含搜索词的位置
+      const searchIndex = content.indexOf(searchTerm);
+      if (searchIndex === -1) {
+        // 尝试分词搜索（中文常见情况）
+        const chars = searchTerm.split('');
+        let bestMatch = -1;
+        let maxMatches = 0;
+        
+        for (let i = 0; i < content.length - searchTerm.length; i++) {
+          let matches = 0;
+          for (const char of chars) {
+            if (content.substr(i, 50).includes(char)) {
+              matches++;
+            }
+          }
+          if (matches > maxMatches) {
+            maxMatches = matches;
+            bestMatch = i;
+          }
+        }
+        
+        if (bestMatch !== -1) {
+          return extractContextAroundPosition(originalContent, bestMatch, 100);
+        }
+        
+        // 如果都找不到，返回原context
+        return result.context;
+      }
+      
+      // 提取包含搜索词的context片段
+      return extractContextAroundPosition(originalContent, searchIndex, 100);
+    }
+    
+    // 从指定位置提取上下文
+    function extractContextAroundPosition(text, position, maxLength = 100) {
+      const halfLength = Math.floor(maxLength / 2);
+      let start = Math.max(0, position - halfLength);
+      let end = Math.min(text.length, position + halfLength);
+      
+      // 尝试在词边界处截断，避免截断词语
+      if (start > 0) {
+        const beforeText = text.substring(start - 10, start);
+        const spaceIndex = beforeText.lastIndexOf(' ');
+        const punctIndex = Math.max(
+          beforeText.lastIndexOf('。'),
+          beforeText.lastIndexOf('，'),
+          beforeText.lastIndexOf('！'),
+          beforeText.lastIndexOf('？')
+        );
+        if (spaceIndex !== -1 || punctIndex !== -1) {
+          start = start - 10 + Math.max(spaceIndex, punctIndex) + 1;
+        }
+      }
+      
+      if (end < text.length) {
+        const afterText = text.substring(end, end + 10);
+        const spaceIndex = afterText.indexOf(' ');
+        const punctIndex = Math.min(
+          afterText.indexOf('。') !== -1 ? afterText.indexOf('。') : Infinity,
+          afterText.indexOf('，') !== -1 ? afterText.indexOf('，') : Infinity,
+          afterText.indexOf('！') !== -1 ? afterText.indexOf('！') : Infinity,
+          afterText.indexOf('？') !== -1 ? afterText.indexOf('？') : Infinity
+        );
+        if (spaceIndex !== -1 || punctIndex !== Infinity) {
+          end = end + Math.min(spaceIndex !== -1 ? spaceIndex : Infinity, punctIndex);
+        }
+      }
+      
+      let context = text.substring(start, end);
+      
+      // 添加省略号
+      if (start > 0) context = '...' + context;
+      if (end < text.length) context = context + '...';
+      
+      return context;
+    }
+
     // 智能高亮搜索关键词
     function highlightSearchTerm(text, searchTerm) {
       if (!text || !searchTerm || typeof text !== 'string' || typeof searchTerm !== 'string') {
@@ -1062,7 +1155,7 @@ function hideLoadMoreButtons() {
             // Shift+Click：在新窗口打开
             window.open(url, '_blank', 'noopener,noreferrer,width=1200,height=800');
           } else {
-            // 默认：在新标签页打开，保持搜索状态
+            // 默认：在新标签页打开
             window.open(url, '_blank', 'noopener,noreferrer');
           }
         }
@@ -4325,4 +4418,6 @@ function hideLoadMoreButtons() {
     });
   }
 
+
+  
 });
