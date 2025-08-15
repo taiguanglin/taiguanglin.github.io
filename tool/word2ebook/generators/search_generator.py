@@ -22,8 +22,6 @@ class SearchIndexGenerator:
     
     def generate_search_indexes(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
         """生成搜索索引文件"""
-        print("🔍 正在生成搜索索引...")
-        
         # 生成简体版搜索索引
         self._generate_simplified_index(chapters)
         
