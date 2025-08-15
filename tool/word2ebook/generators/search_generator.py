@@ -1,6 +1,7 @@
 """搜索索引生成器"""
 
 import json
+import hashlib
 from typing import List, Dict, Any
 from pathlib import Path
 
@@ -100,6 +101,9 @@ class SearchIndexGenerator:
         # 写入JSON文件
         index_content = json.dumps(index_data, ensure_ascii=False, indent=2)
         self.file_manager.write_file(filename, index_content)
+        
+        # 生成并写入哈希文件
+        self._generate_hash_file(filename, index_content)
     
     def ensure_search_index_files(self, generate_traditional: bool = True, generate_simplified: bool = True) -> None:
         """确保搜索索引文件存在，如果不存在则创建空的索引文件
@@ -224,3 +228,31 @@ class SearchIndexGenerator:
         # 写回文件
         with open(html_file_path, 'w', encoding='utf-8') as f:
             f.write(updated_html)
+    
+    def _generate_hash_file(self, json_filename: str, content: str) -> None:
+        """为JSON文件生成对应的哈希文件"""
+        try:
+            # 计算MD5哈希
+            content_bytes = content.encode('utf-8')
+            md5_hash = hashlib.md5(content_bytes).hexdigest()
+            
+            # 创建哈希文件内容
+            hash_data = {
+                "hash": md5_hash,
+                "algorithm": "md5",
+                "timestamp": __import__('time').time(),
+                "size": len(content_bytes)
+            }
+            
+            # 生成哈希文件名
+            hash_filename = f"{json_filename}.hash"
+            
+            # 写入哈希文件
+            hash_content = json.dumps(hash_data, ensure_ascii=False, indent=2)
+            self.file_manager.write_file(hash_filename, hash_content)
+            
+            print(f"📝 已生成哈希文件: {hash_filename} (MD5: {md5_hash[:8]}...)")
+            
+        except Exception as e:
+            print(f"⚠️ 生成哈希文件失败: {e}")
+            # 哈希文件生成失败不应该影响主流程
