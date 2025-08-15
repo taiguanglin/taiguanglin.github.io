@@ -73,16 +73,13 @@ class ContentProcessor:
             element_id = self._generate_or_get_id(heading, 'heading', content)
             heading['id'] = element_id  # 确保HTML中有ID
             
-            weight = Constants.SEARCH_WEIGHTS.get(heading.name, 1.0)
-            
             items.append(SearchItem(
                 id=f"{base_filename}-{item_id}",
                 title=content,
                 type=Constants.SEARCH_TYPES['heading'],
                 content=content,
                 context=content,
-                url=f"{base_filename}#{element_id}",
-                weight=weight
+                url=f"{base_filename}#{element_id}"
             ))
             item_id += 1
             
@@ -117,8 +114,7 @@ class ContentProcessor:
                 type=Constants.SEARCH_TYPES['question'],
                 content=content,
                 context=self._get_context(question, self.settings.search_context_length),
-                url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['question']
+                url=f"{base_filename}#{element_id}"
             ))
             item_id += 1
             
@@ -147,8 +143,7 @@ class ContentProcessor:
                 type=Constants.SEARCH_TYPES['answer'],
                 content=content,
                 context=self._get_context(answer, self.settings.search_context_length),
-                url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['answer']
+                url=f"{base_filename}#{element_id}"
             ))
             item_id += 1
             
@@ -176,8 +171,7 @@ class ContentProcessor:
                 type=Constants.SEARCH_TYPES['content'],
                 content=content,
                 context=self._get_context(para, 60),
-                url=f"{base_filename}#{element_id}",
-                weight=Constants.SEARCH_WEIGHTS['content']
+                url=f"{base_filename}#{element_id}"
             ))
             item_id += 1
             

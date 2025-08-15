@@ -280,8 +280,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const endTime = performance.now();
         segmentationStats.totalTime += (endTime - startTime);
         
-        // 每10000次調用輸出一次統計（避免日誌過多）
-        if (segmentationStats.calls % 10000 === 0) {
+        // 每2000次調用輸出一次統計（避免日誌過多）
+        if (segmentationStats.calls % 2000 === 0) {
           console.log(isTraditionalChinesePage() ? 
             `🔤 jieba-wasm 統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
             `🔤 jieba-wasm 统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
@@ -340,7 +340,7 @@ function createSearchConfig(segmenterEnabled) {
     // 啟用分詞時：只索引 processedContent，title 不參與搜索
     return {
       fields: ['processedContent'], // 移除 title，只索引實際內容
-      storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
+      storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url'],
       searchOptions: {
         boost: { processedContent: 1 },
         combineWith: 'AND'
@@ -352,7 +352,7 @@ function createSearchConfig(segmenterEnabled) {
     // 未啟用分詞時：只索引 content，title 不參與搜索
     return {
       fields: ['content'], // 移除 title，只索引實際內容
-      storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'],
+      storeFields: ['id', 'title', 'type', 'content', 'context', 'url'],
       searchOptions: {
         boost: { content: 1 },
         combineWith: 'AND'
@@ -466,7 +466,7 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
       // 移除進度顯示
       searchStatus.removeChild(progressDiv);
       
-      console.timeEnd('📇 索引建立時間 (分批處理)');
+      console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
       console.log(isTraditionalChinesePage() ? 
         '✅ 索引建立完成！' : 
         '✅ 索引建立完成！');
@@ -946,13 +946,18 @@ async function initSearch() {
     // 智能获取最佳context用于高亮显示
     function getBestContextForHighlight(result, query) {
       if (!query || !result.content) {
-        return result.context;
+        return result.context || result.content;
       }
       
       const searchTerm = query.trim();
       const content = result.content;
       const lowerContent = content.toLowerCase();
       const lowerSearchTerm = searchTerm.toLowerCase();
+      
+      // 如果沒有 context 或 context 為空，使用 content
+      if (!result.context) {
+        return content;
+      }
       
       // 如果原context包含完整搜索词，直接使用
       if (result.context.toLowerCase().includes(lowerSearchTerm)) {
@@ -970,7 +975,7 @@ async function initSearch() {
       
       if (keywords.length <= 1) {
         // 单个关键词，使用原有逻辑
-        return result.context;
+        return result.context || result.content;
       }
       
       // 多关键词处理：找到所有关键词的位置
@@ -989,7 +994,7 @@ async function initSearch() {
       });
       
       if (keywordPositions.length === 0) {
-        return result.context;
+        return result.context || result.content;
       }
       
       // 生成包含所有关键词的最佳context
