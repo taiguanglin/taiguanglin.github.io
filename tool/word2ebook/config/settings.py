@@ -24,7 +24,7 @@ class Settings:
     enable_floating_toc: bool = True
     
     # 多语言配置
-    default_answerer: str = "Taiguanglin"
+    default_answerer: str = "Tai師父"
     
     # ID 生成配置
     id_content_length: int = 50  # 用于生成稳定ID的内容长度
