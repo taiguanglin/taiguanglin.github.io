@@ -39,6 +39,7 @@ class Word2EBookConverter:
     def convert(self) -> None:
         """执行转换"""
         print(f"📋 开始转换：{self.config.input_file} -> {self.config.output_folder}")
+        print(f"   生成简体版: {'✅' if self.config.generate_simplified else '❌'}")
         print(f"   生成繁体版: {'✅' if self.config.generate_traditional else '❌'}")
         print(f"   生成搜索索引: {'✅' if self.config.generate_search else '❌'}")
         print(f"   更新模式: {'🔄 增量更新' if not self.config.generate_search else '🆕 完整重建'}")
@@ -57,17 +58,17 @@ class Word2EBookConverter:
         
         # 3. 生成HTML页面
         print("🔧 正在生成 HTML 页面...")
-        self.html_generator.generate_chapter_pages(chapters, self.config.generate_traditional)
-        self.html_generator.generate_index_pages(chapters, self.config, self.config.generate_traditional)
+        self.html_generator.generate_chapter_pages(chapters, self.config.generate_traditional, self.config.generate_simplified)
+        self.html_generator.generate_index_pages(chapters, self.config, self.config.generate_traditional, self.config.generate_simplified)
         print("✅ HTML 页面生成完成")
         
         # 4. 处理搜索索引
         if self.config.generate_search:
             print("🔍 正在生成搜索索引...")
-            self.search_generator.generate_search_indexes(chapters, self.config.generate_traditional)
+            self.search_generator.generate_search_indexes(chapters, self.config.generate_traditional, self.config.generate_simplified)
         else:
             print("⏭️  跳过搜索索引生成，确保索引文件存在...")
-            self.search_generator.ensure_search_index_files(self.config.generate_traditional)
+            self.search_generator.ensure_search_index_files(self.config.generate_traditional, self.config.generate_simplified)
         
         # 5. 生成静态资源
         print("🎨 正在生成静态资源...")
@@ -121,7 +122,8 @@ class Word2EBookConverter:
     def _show_completion_info(self) -> None:
         """显示完成信息"""
         print(f"✅ 转换完成！HTML 电子书已输出到 {self.config.output_folder}")
-        print(f"📖 简体版首页: {self.config.output_folder}/index.html")
+        if self.config.generate_simplified:
+            print(f"📖 简体版首页: {self.config.output_folder}/index.html")
         if self.config.generate_traditional:
             print(f"📖 繁体版首页: {self.config.output_folder}/index_trad.html")
 
@@ -137,6 +139,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
   python main.py input.docx output_folder --fast            # 快速模式
   python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
   python main.py input.docx output_folder --skip-traditional # 跳过繁体版
+  python main.py input.docx output_folder --skip-simplified  # 跳过简体版
         """
     )
     
@@ -147,6 +150,8 @@ def create_argument_parser() -> argparse.ArgumentParser:
                        help='跳过搜索索引生成，保留现有索引文件（增量更新模式）')
     parser.add_argument('--skip-traditional', action='store_true',
                        help='跳过繁体版生成（加快转换速度）')
+    parser.add_argument('--skip-simplified', action='store_true',
+                       help='跳过简体版生成（只生成繁体版）')
     parser.add_argument('--fast', action='store_true',
                        help='快速模式：跳过搜索索引生成和繁体版生成')
     
@@ -158,16 +163,24 @@ def main() -> None:
     parser = create_argument_parser()
     args = parser.parse_args()
     
-    # 处理快速模式
+    # 检查参数冲突
+    if args.skip_traditional and args.skip_simplified:
+        print("❌ 错误：不能同时跳过简体版和繁体版生成")
+        print("   请选择生成至少一种版本")
+        sys.exit(1)
+    
+    # 处理快速模式和生成选项
     generate_search_index = not (args.skip_index or args.fast)
     generate_traditional = not (args.skip_traditional or args.fast)
+    generate_simplified = not (args.skip_simplified or args.fast)
     
     # 创建转换配置
     config = ConversionConfig(
         input_file=Path(args.input_file),
         output_folder=Path(args.output_folder),
         generate_search=generate_search_index,
-        generate_traditional=generate_traditional
+        generate_traditional=generate_traditional,
+        generate_simplified=generate_simplified
     )
     
     # 验证输入文件

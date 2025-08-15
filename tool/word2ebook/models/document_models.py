@@ -121,6 +121,7 @@ class ConversionConfig:
     output_folder: Path
     generate_search: bool = True
     generate_traditional: bool = True
+    generate_simplified: bool = True
     book_title: Optional[str] = None
     
     def __post_init__(self):

@@ -139,21 +139,23 @@ class HTMLGenerator:
         
         return content
     
-    def generate_chapter_pages(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
+    def generate_chapter_pages(self, chapters: List[Chapter], generate_traditional: bool = True, generate_simplified: bool = True) -> None:
         """生成章节页面"""
         # 生成简体版
-        self._generate_simplified_chapters(chapters)
+        if generate_simplified:
+            self._generate_simplified_chapters(chapters)
         
         # 生成繁体版
         if generate_traditional:
             self._generate_traditional_chapters(chapters)
     
     def generate_index_pages(self, chapters: List[Chapter], config, 
-                           generate_traditional: bool = True) -> None:
+                           generate_traditional: bool = True, generate_simplified: bool = True) -> None:
         """生成首页"""
         # 生成简体版首页
-        simplified_title = config.get_book_title(is_traditional=False)
-        self._generate_simplified_index(chapters, simplified_title)
+        if generate_simplified:
+            simplified_title = config.get_book_title(is_traditional=False)
+            self._generate_simplified_index(chapters, simplified_title)
         
         # 生成繁体版首页
         if generate_traditional:
