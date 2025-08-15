@@ -137,6 +137,10 @@ class ContentProcessor:
             answerer = answer.find(class_='answerer')
             title = answerer.get_text().strip() if answerer else self.settings.default_answerer
             
+            # 將 "Taiguanglin" 替換為更親切的稱呼
+            if title == "Taiguanglin":
+                title = "Tai師父"
+            
             items.append(SearchItem(
                 id=f"{base_filename}-{item_id}",
                 title=f"{title}的回答",
