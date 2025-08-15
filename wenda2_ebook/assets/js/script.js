@@ -208,33 +208,20 @@ document.addEventListener('DOMContentLoaded', function() {
   async function initChineseSegmenter() {
     try {
       // 檢查是否已經初始化
-      if (window.jiebaWasmCut) {
-        chineseSegmenter = {
-          cut: function(text) {
-            try {
-              return window.jiebaWasmCut(text, true);
-            } catch (error) {
-              console.error('jieba-wasm 分詞錯誤:', error);
-              return [];
-            }
-          }
-        };
+      if (chineseSegmenter) {
         console.log(isTraditionalChinesePage() ? 
-          '✅ jieba-wasm 已啟用，支持高性能中文分詞' : 
-          '✅ jieba-wasm 已启用，支持高性能中文分词');
+          '✅ jieba-wasm 已初始化，跳過重複初始化' : 
+          '✅ jieba-wasm 已初始化，跳过重复初始化');
         return true;
       }
 
-      // 動態加載 jieba-wasm
+      // 引入 jieba_rs_wasm.js 模塊
       console.log(isTraditionalChinesePage() ? 
-        '⏳ 正在加載 jieba-wasm...' : 
-        '⏳ 正在加载 jieba-wasm...');
+        '⏳ 正在載入 jieba_rs_wasm.js...' : 
+        '⏳ 正在载入 jieba_rs_wasm.js...');
       
-      const { default: init, cut } = await import('./jieba_rs_wasm.js');
-      await init();
-      
-      // 將 cut 函數存儲到全局變量
-      window.jiebaWasmCut = cut;
+      const { default: jiebaInit, cut } = await import('./jieba_rs_wasm.js');
+      await jiebaInit();
       
       chineseSegmenter = {
         cut: function(text) {
@@ -260,12 +247,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // 智能中文文本处理
+  // jieba-wasm 統一分詞功能
   // 分詞統計變數（調試用）
   let segmentationStats = { calls: 0, totalTime: 0 };
   
-  function processChineseText(text) {
-    if (!text || typeof text !== 'string') return '';
+  /**
+   * 使用 jieba-wasm 進行文本分詞
+   * @param {string} text - 要分詞的文本
+   * @param {boolean} returnArray - 是否返回數組格式（默認返回空格分隔的字符串）
+   * @returns {string|Array} 分詞結果
+   */
+  function segmentWithJieba(text, returnArray = false) {
+    if (!text || typeof text !== 'string') {
+      return returnArray ? [] : '';
+    }
     
     // 統計調用次數和性能
     segmentationStats.calls++;
@@ -273,39 +268,39 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 調試：記錄關鍵信息（前20次）
     if (segmentationStats.calls <= 20) {
-      console.log(`🔤 分詞調用 #${segmentationStats.calls}: "${text.substring(0, 30)}..."`);
+      console.log(`🔤 jieba-wasm 分詞調用 #${segmentationStats.calls}: "${text.substring(0, 30)}..."`);
     }
     
     if (chineseSegmenter && chineseSegmenter.cut) {
       try {
-        // 只使用 jieba-wasm 分詞
+        // 使用 jieba-wasm 分詞
         const words = chineseSegmenter.cut(text);
         
         // 記錄處理時間
         const endTime = performance.now();
         segmentationStats.totalTime += (endTime - startTime);
         
-        // 每1000次調用輸出一次統計（避免日誌過多）
-        if (segmentationStats.calls % 1000 === 0) {
+        // 每2000次調用輸出一次統計（避免日誌過多）
+        if (segmentationStats.calls % 2000 === 0) {
           console.log(isTraditionalChinesePage() ? 
-            `🔤 分詞統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
-            `🔤 分词统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
+            `🔤 jieba-wasm 統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
+            `🔤 jieba-wasm 统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
         }
         
-        return words.join(' ');
+        return returnArray ? words : words.join(' ');
       } catch (error) {
         console.error(isTraditionalChinesePage() ? 
           '❌ jieba-wasm 分詞失敗:' : 
           '❌ jieba-wasm 分词失败:', error);
-        return '';
+        return returnArray ? [] : '';
       }
     }
     
-    // jieba-wasm 不可用
-    console.error(isTraditionalChinesePage() ? 
-      '❌ jieba-wasm 不可用，無法處理文本' : 
-      '❌ jieba-wasm 不可用，无法处理文本');
-    return '';
+    // jieba-wasm 不可用時的降級處理
+    console.warn(isTraditionalChinesePage() ? 
+      '⚠️ jieba-wasm 不可用，返回原文本' : 
+      '⚠️ jieba-wasm 不可用，返回原文本');
+    return returnArray ? [text] : text;
   }
 
 // 更新加载更多按钮的显示状态（全局函数）
@@ -339,162 +334,76 @@ function hideLoadMoreButtons() {
   if (loadAllBtnBottom) loadAllBtnBottom.style.display = 'none';
 }
 
-// 初始化搜索功能（内部函数）
-  async function initSearch() {
-    if (!isIndexPage()) return;
-    
-    console.time('🚀 搜索初始化總時間');
-    console.log('📊 開始搜索初始化流程...');
-    
-    const searchContainer = document.getElementById('search-container');
-    const searchActivation = document.querySelector('.search-activation');
-    const searchInput = document.getElementById('search-input');
-    const searchStatus = document.getElementById('search-status');
-    const searchResults = document.getElementById('search-results');
-    const searchResultsList = document.getElementById('search-results-list');
-    const searchResultsCount = document.getElementById('search-results-count');
-    const searchClear = document.getElementById('search-clear');
-    const searchCollapse = document.getElementById('search-collapse');
-    const tocHeader = document.getElementById('toc-header');
-    
-    if (!searchInput || !searchContainer) return;
-    
-    try {
-      console.time('🎨 UI初始化');
-      // 显示搜索容器，隐藏激活按钮
-      if (searchActivation) searchActivation.style.display = 'none';
-      searchContainer.style.display = 'block';
-      
-      // 清空當前狀態並創建載入UI
-      searchStatus.innerHTML = '';
-      const loadingUI = createLoadingUI(searchStatus);
-      console.timeEnd('🎨 UI初始化');
-      
-      // 检查MiniSearch是否可用
-      console.time('📚 MiniSearch檢查');
-      if (typeof MiniSearch === 'undefined') {
-        throw new Error('MiniSearch库未加载');
+// 創建搜索配置
+function createSearchConfig(segmenterEnabled) {
+  if (segmenterEnabled) {
+    // 啟用分詞時：只索引 processedContent，title 不參與搜索
+    return {
+      fields: ['processedContent'], // 移除 title，只索引實際內容
+      storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url'],
+      searchOptions: {
+        boost: { processedContent: 1 },
+        combineWith: 'AND'
+      },
+      // 關鍵優化：不使用 processTerm，避免對已分詞內容重複處理
+      // 用戶查詢的分詞在搜索時單獨處理
+    };
+  } else {
+    // 未啟用分詞時：只索引 content，title 不參與搜索
+    return {
+      fields: ['content'], // 移除 title，只索引實際內容
+      storeFields: ['id', 'title', 'type', 'content', 'context', 'url'],
+      searchOptions: {
+        boost: { content: 1 },
+        combineWith: 'AND'
       }
-      console.timeEnd('📚 MiniSearch檢查');
+    };
+  }
+}
       
-      // 初始化中文分词器 (異步)
-      console.time('🔧 分詞器初始化');
-      const segmenterEnabled = await initChineseSegmenter();
-      console.timeEnd('🔧 分詞器初始化');
+
+// 獲取搜索相關的 DOM 元素
+function getSearchElements() {
+  return {
+    searchContainer: document.getElementById('search-container'),
+    searchActivation: document.querySelector('.search-activation'),
+    searchInput: document.getElementById('search-input'),
+    searchStatus: document.getElementById('search-status'),
+    searchResults: document.getElementById('search-results'),
+    searchResultsList: document.getElementById('search-results-list'),
+    searchResultsCount: document.getElementById('search-results-count'),
+    searchClear: document.getElementById('search-clear'),
+    searchCollapse: document.getElementById('search-collapse'),
+    tocHeader: document.getElementById('toc-header')
+  };
+}
+
+// 初始化搜索 UI
+function initializeSearchUI(elements) {
+  console.time('🎨 UI初始化');
+  
+  // 显示搜索容器，隐藏激活按钮
+  if (elements.searchActivation) elements.searchActivation.style.display = 'none';
+  elements.searchContainer.style.display = 'block';
+  
+  // 清空當前狀態並創建載入UI
+  elements.searchStatus.innerHTML = '';
+  const loadingUI = createLoadingUI(elements.searchStatus);
+  
+  console.timeEnd('🎨 UI初始化');
+  return loadingUI;
+}
+
+// 分批建立搜索索引（包含即時分詞）
+async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
+      console.time('📇 分詞+索引建立時間 (分批處理)');
       console.log(isTraditionalChinesePage() ? 
-        `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
-        `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
-      
-      // 加载搜索索引（帶進度）
-      console.time('📥 JSON載入時間');
-      searchIndex = await loadSearchIndexWithProgress();
-      console.timeEnd('📥 JSON載入時間');
-      console.log(`📋 索引記錄數: ${searchIndex.length}`);
-      
-      // 載入完成，移除載入UI
-      searchStatus.removeChild(loadingUI.loadingDiv);
-      
-      // 初始化MiniSearch with 增强的中文支持
-      console.time('🏗️ MiniSearch對象創建');
-      miniSearch = new MiniSearch({
-        fields: ['title', 'content'], // 搜索字段
-        storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'], // 存储字段
-        searchOptions: {
-          boost: { title: 3, content: 1 }, // 标题权重更高
-          fuzzy: segmenterEnabled ? 0.1 : 0.2, // 智能分词时降低模糊度
-          prefix: true, // 前缀匹配
-          combineWith: 'AND' // 默认AND组合，提高精确度
-                },
-        processTerm: (term) => {
-          // 只使用 jieba-wasm 進行搜索詞預處理
-          if (chineseSegmenter && chineseSegmenter.cut && term.length > 1) {
-            try {
-              const words = chineseSegmenter.cut(term);
-              return words.length > 0 ? words : [term];
-            } catch (error) {
-              console.error(isTraditionalChinesePage() ? 
-                '❌ jieba-wasm 搜尋詞分詞失敗:' : 
-                '❌ jieba-wasm 搜索词分词失败:', error);
-              return [term];
-            }
-          }
-          return [term];
-        }
-      });
-      console.timeEnd('🏗️ MiniSearch對象創建');
-      
-      // 預處理分詞結果（避免重複調用）
-      console.time('🔤 分詞預處理時間');
-      console.log(isTraditionalChinesePage() ? 
-        `🔄 開始預處理分詞 ${searchIndex.length} 條記錄...` :
-        `🔄 开始预处理分词 ${searchIndex.length} 条记录...`);
-      
-      const processedIndex = searchIndex.map((doc, index) => {
-        if (index % 1000 === 0) {
-          console.log(isTraditionalChinesePage() ? 
-            `🔄 預處理進度: ${index}/${searchIndex.length}` :
-            `🔄 预处理进度: ${index}/${searchIndex.length}`);
-        }
-        
-        // 創建處理後的文檔副本
-        const processedDoc = { ...doc };
-        
-        // 預先進行分詞處理
-        if (segmenterEnabled && doc.content) {
-          processedDoc.processedContent = processChineseText(doc.content);
-        } else {
-          processedDoc.processedContent = doc.content;
-        }
-        
-        return processedDoc;
-      });
-      
-      console.timeEnd('🔤 分詞預處理時間');
-      console.log(isTraditionalChinesePage() ? 
-        `✅ 分詞預處理完成！處理了 ${segmentationStats.calls} 次調用` :
-        `✅ 分词预处理完成！处理了 ${segmentationStats.calls} 次调用`);
-      
-      // 使用統一的搜索配置，直接搜索 content 字段
-      console.log(isTraditionalChinesePage() ? 
-        '✅ 使用內容直接搜索模式' : 
-        '✅ 使用内容直接搜索模式');
-      
-      miniSearch = new MiniSearch({
-        fields: ['title', 'processedContent'], // 搜索標題和處理後的內容
-        storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
-        searchOptions: {
-          boost: { title: 3, processedContent: 1 },
-          fuzzy: segmenterEnabled ? 0.1 : 0.2,
-          prefix: true,
-          combineWith: 'AND'
-        },
-        // 對搜索詞進行分詞處理
-        processTerm: (term) => {
-          if (chineseSegmenter && chineseSegmenter.cut && term.length > 1) {
-            try {
-              const words = chineseSegmenter.cut(term);
-              return words.length > 0 ? words : [term];
-            } catch (error) {
-              console.warn(isTraditionalChinesePage() ? 
-                '搜尋詞分詞處理出錯:' : 
-                '搜索词分词处理出错:', error);
-              return [term];
-            }
-          }
-          return [term];
-        }
-      });
-      
-      // 分批添加預處理的文档到索引（改善用戶體驗）
-      console.time('📇 索引建立時間 (分批處理)');
-      console.log(isTraditionalChinesePage() ? 
-        `🔄 開始分批處理 ${processedIndex.length} 條預處理記錄...` :
-        `🔄 开始分批处理 ${processedIndex.length} 条预处理记录...`);
+        `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...` :
+        `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
       
       // 分批配置
-      const BATCH_SIZE = 500;
-      const totalBatches = Math.ceil(processedIndex.length / BATCH_SIZE);
-      const estimatedTime = Math.ceil(totalBatches * 0.1); // 預處理後更快
+      const BATCH_SIZE = 300; // 減小批次大小以保持響應性
+      const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
       
       // 創建進度顯示
       const progressDiv = document.createElement('div');
@@ -508,18 +417,18 @@ function hideLoadMoreButtons() {
       `;
       searchStatus.appendChild(progressDiv);
       
-      // 分批處理函數
+      // 分批處理函數（包含即時分詞）
       async function processBatch(batchIndex) {
         const startIdx = batchIndex * BATCH_SIZE;
-        const endIdx = Math.min(startIdx + BATCH_SIZE, processedIndex.length);
-        const batch = processedIndex.slice(startIdx, endIdx);
+        const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
+        const batch = searchIndex.slice(startIdx, endIdx);
         
         // 更新進度顯示
         const progress = Math.round(((batchIndex + 1) / totalBatches) * 100);
         
         const progressText = isTraditionalChinesePage() ? 
-          `📊 正在建立搜尋索引... ${progress}% (${endIdx}/${processedIndex.length})` :
-          `📊 正在建立搜索索引... ${progress}% (${endIdx}/${processedIndex.length})`;
+          `📊 正在分詞並建立搜尋索引... ${progress}% (${endIdx}/${searchIndex.length})` :
+          `📊 正在分词并建立搜索索引... ${progress}% (${endIdx}/${searchIndex.length})`;
           
         progressDiv.innerHTML = `
           ${progressText}
@@ -528,11 +437,25 @@ function hideLoadMoreButtons() {
           </div>
         `;
         
+        // 對批次進行即時分詞處理
+        const processedBatch = batch.map(doc => {
+          const processedDoc = { ...doc };
+          
+          // 如果啟用分詞且有內容，進行分詞處理
+          if (segmenterEnabled && doc.content) {
+            processedDoc.processedContent = segmentWithJieba(doc.content);
+          } else {
+            processedDoc.processedContent = doc.content;
+          }
+          
+          return processedDoc;
+        });
+        
         // 添加當前批次到索引
-        miniSearch.addAll(batch);
+        miniSearch.addAll(processedBatch);
         
         // 讓瀏覽器有時間更新UI
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise(resolve => setTimeout(resolve, 15)); // 稍微增加延遲以保持響應性
       }
       
       // 逐批處理
@@ -543,11 +466,14 @@ function hideLoadMoreButtons() {
       // 移除進度顯示
       searchStatus.removeChild(progressDiv);
       
-      console.timeEnd('📇 索引建立時間 (分批處理)');
+      console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
       console.log(isTraditionalChinesePage() ? 
         '✅ 索引建立完成！' : 
         '✅ 索引建立完成！');
+}
       
+// 完成搜索初始化設置
+function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
       // 顯示完成狀態和分词功能状态
       const segmenterStatus = segmenterEnabled ? 
         (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
@@ -558,9 +484,9 @@ function hideLoadMoreButtons() {
         '🎉 搜尋初始化流程完成！' : 
         '🎉 搜索初始化流程完成！');
       
-      searchStatus.innerHTML = `
+  elements.searchStatus.innerHTML = `
         <div class="search-status-success">
-          ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
+      ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: indexLength })}
           <br><small>🔧 ${segmenterStatus}</small>
         </div>
       `;
@@ -570,8 +496,8 @@ function hideLoadMoreButtons() {
       initializeSearchResultsHeight();
       
       // 启用搜索输入框
-      searchInput.disabled = false;
-      searchInput.placeholder = getI18nText('search.search_placeholder', isTraditionalChinesePage(), '搜尋全文內容...');
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.search_placeholder', isTraditionalChinesePage(), '搜尋全文內容...');
       
       // 重新启用激活按钮
       const searchActivateBtn = document.getElementById('search-activate-btn');
@@ -580,29 +506,125 @@ function hideLoadMoreButtons() {
       }
       
       // 聚焦搜索框
-      setTimeout(() => searchInput.focus(), 100);
+  setTimeout(() => elements.searchInput.focus(), 100);
+}
       
-    } catch (error) {
+// 處理搜索初始化錯誤
+function handleSearchInitError(elements, error) {
       console.error('搜索初始化失败:', error);
       
       // 清空狀態並顯示錯誤
-      searchStatus.innerHTML = '';
+  elements.searchStatus.innerHTML = '';
       
       // 創建錯誤UI並提供重試功能
-      createErrorUI(searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
+  createErrorUI(elements.searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
         await initSearch();
       });
       
       // 即使失败也要启用输入框，让用户可以重试
-      searchInput.disabled = false;
-      searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
       
       // 重新启用激活按钮，允许用户重试
       const searchActivateBtn = document.getElementById('search-activate-btn');
       if (searchActivateBtn) {
         searchActivateBtn.disabled = false;
-      }
+  }
+}
+
+// 初始化搜索結果欄位高度 - 移除高度限制
+function initializeSearchResultsHeight() {
+  const searchResultsList = document.querySelector('.search-results-list');
+  if (searchResultsList) {
+    // 移除高度限制，顯示所有搜尋結果
+    searchResultsList.style.maxHeight = 'none';
+    searchResultsList.style.overflowY = 'visible';
+  }
+}
+
+// 動態擴大搜索結果欄位高度 - 已預設無限制，此函數保留以維持兼容性
+function expandSearchResultsHeight() {
+  const searchResultsList = document.querySelector('.search-results-list');
+  
+  if (!searchResultsList) {
+    return;
+  }
+  
+  // 確保無高度限制（預設已是如此）
+  searchResultsList.style.maxHeight = 'none';
+  searchResultsList.style.overflowY = 'visible';
+  
+  // 添加標記，表示已經展開
+  searchResultsList.setAttribute('data-expanded', 'true');
+}
+
+// 重置搜索結果欄位高度（新搜索時調用） - 移除高度限制
+function resetSearchResultsHeight() {
+  const searchResultsList = document.querySelector('.search-results-list');
+  if (searchResultsList) {
+    // 移除高度限制，顯示所有搜尋結果
+    searchResultsList.style.maxHeight = 'none';
+    searchResultsList.style.overflowY = 'visible';
+    // 移除展開標記，因為預設就是展開狀態
+    searchResultsList.removeAttribute('data-expanded');
+  }
+}
+
+// 初始化搜索功能（内部函数）
+async function initSearch() {
+  if (!isIndexPage()) return;
+  
+  console.time('🚀 搜索初始化總時間');
+  console.log('📊 開始搜索初始化流程...');
+  
+  const elements = getSearchElements();
+  if (!elements.searchInput || !elements.searchContainer) return;
+  
+  try {
+    const loadingUI = initializeSearchUI(elements);
+    
+    // 检查MiniSearch是否可用
+    console.time('📚 MiniSearch檢查');
+    if (typeof MiniSearch === 'undefined') {
+      throw new Error('MiniSearch库未加载');
+    }
+    console.timeEnd('📚 MiniSearch檢查');
+    
+    // 初始化中文分词器
+    console.time('🔧 分詞器初始化');
+    const segmenterEnabled = await initChineseSegmenter();
+    console.timeEnd('🔧 分詞器初始化');
+    console.log(isTraditionalChinesePage() ? 
+      `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
+      `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
+    
+    // 加载搜索索引
+    console.time('📥 JSON載入時間');
+    searchIndex = await loadSearchIndexWithProgress();
+    console.timeEnd('📥 JSON載入時間');
+    console.log(`📋 索引記錄數: ${searchIndex.length}`);
+    
+    // 載入完成，移除載入UI
+    elements.searchStatus.removeChild(loadingUI.loadingDiv);
+    
+    // 創建並配置 MiniSearch 實例
+    console.time('🏗️ MiniSearch對象創建');
+    const searchConfig = createSearchConfig(segmenterEnabled);
+    miniSearch = new MiniSearch(searchConfig);
+    console.timeEnd('🏗️ MiniSearch對象創建');
+    
+    console.log(isTraditionalChinesePage() ? 
+      '✅ 使用統一搜索配置' : 
+      '✅ 使用统一搜索配置');
       
+    // 分批分詞並建立搜索索引（統一處理）
+    await buildSearchIndexInBatches(miniSearch, searchIndex, elements.searchStatus, segmenterEnabled);
+      
+    // 完成搜索初始化設置
+    finalizeSearchSetup(elements, segmenterEnabled, searchIndex.length);
+      
+    } catch (error) {
+      handleSearchInitError(elements, error);
       return;
     }
     
@@ -612,15 +634,15 @@ function hideLoadMoreButtons() {
       resetSearchResultsHeight();
       
       if (!miniSearch || !query || query.trim().length < 2) {
-        searchResults.style.display = 'none';
-        tocHeader.style.display = 'block';
+        elements.searchResults.style.display = 'none';
+        elements.tocHeader.style.display = 'block';
         currentSearchResults = [];
         displayedResultsCount = 0;
         hideLoadMoreButtons();
         if (query && query.trim().length > 0 && query.trim().length < 2) {
-          searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
+          elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
         } else {
-          searchStatus.innerHTML = `
+          elements.searchStatus.innerHTML = `
             ${getText(`搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`, `搜尋準備就緒 (共${searchIndex ? searchIndex.length : 0}條記錄)`)}
           `;
         }
@@ -630,12 +652,22 @@ function hideLoadMoreButtons() {
       const trimmedQuery = query.trim();
       
       try {
+        let searchQuery = trimmedQuery;
+        let searchOptions = {
+          boost: { processedContent: 1 } // 只對 processedContent 進行搜索
+        };
+        
+        // 如果啟用了分詞，對用戶查詢進行分詞處理
+        if (chineseSegmenter && trimmedQuery.length > 1) {
+          const queryWords = segmentWithJieba(trimmedQuery, true);
+          if (queryWords.length > 0) {
+            // 使用分詞後的詞語進行搜索，用空格連接
+            searchQuery = queryWords.join(' ');
+          }
+        }
+        
         // 执行搜索
-        const results = miniSearch.search(trimmedQuery, {
-          boost: { title: 3, content: 1 },
-          fuzzy: 0.2,
-          prefix: true
-        });
+        const results = miniSearch.search(searchQuery, searchOptions);
         
         // 按MiniSearch的score由高到低排序
         results.sort((a, b) => {
@@ -658,11 +690,11 @@ function hideLoadMoreButtons() {
           displayPagedResults(trimmedQuery);
         } else {
           displayNoResults(trimmedQuery);
-          searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
+          elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
         }
         
-        searchResults.style.display = 'block';
-        tocHeader.style.display = 'none';
+        elements.searchResults.style.display = 'block';
+        elements.tocHeader.style.display = 'none';
         
         // 延迟更新浮动控制状态，让DOM变化完成
         setTimeout(updateFloatingControlsState, 10);
@@ -672,10 +704,10 @@ function hideLoadMoreButtons() {
         
       } catch (error) {
         console.error('搜索出错:', error);
-        searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
+        elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
         // 在出错时也隐藏搜索结果
-        searchResults.style.display = 'none';
-        tocHeader.style.display = 'block';
+        elements.searchResults.style.display = 'none';
+        elements.tocHeader.style.display = 'block';
         
         // 延迟更新浮动控制状态，让DOM变化完成
         setTimeout(updateFloatingControlsState, 10);
@@ -694,34 +726,15 @@ function hideLoadMoreButtons() {
       
       // 更新搜索状态为成功状态
       const totalResults = currentSearchResults.length;
+      const searchStatus = document.getElementById('search-status');
+      if (searchStatus) {
       searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+      }
     }
     
-    // 初始化搜索結果欄位高度 - 移除高度限制
-    function initializeSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      if (searchResultsList) {
-        // 移除高度限制，顯示所有搜尋結果
-        searchResultsList.style.maxHeight = 'none';
-        searchResultsList.style.overflowY = 'visible';
-      }
-    }
 
-    // 動態擴大搜索結果欄位高度 - 已預設無限制，此函數保留以維持兼容性
-    function expandSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      
-      if (!searchResultsList) {
-        return;
-      }
-      
-      // 確保無高度限制（預設已是如此）
-      searchResultsList.style.maxHeight = 'none';
-      searchResultsList.style.overflowY = 'visible';
-      
-      // 添加標記，表示已經展開
-      searchResultsList.setAttribute('data-expanded', 'true');
-    }
+
+
     
     // 收縮搜索結果欄位高度 - 已移除收縮功能，此函數保留以維持兼容性
     function collapseSearchResultsHeight() {
@@ -739,17 +752,7 @@ function hideLoadMoreButtons() {
       searchResultsList.removeAttribute('data-expanded');
     }
 
-    // 重置搜索結果欄位高度（新搜索時調用） - 移除高度限制
-    function resetSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      if (searchResultsList) {
-        // 移除高度限制，顯示所有搜尋結果
-        searchResultsList.style.maxHeight = 'none';
-        searchResultsList.style.overflowY = 'visible';
-        // 移除展開標記，因為預設就是展開狀態
-        searchResultsList.removeAttribute('data-expanded');
-      }
-    }
+
 
     // 加载更多结果 - 修正邏輯：只加載20條但展開畫面
     function loadMoreResults() {
@@ -769,7 +772,10 @@ function hideLoadMoreButtons() {
         
         // 更新搜索状态
         const totalResults = currentSearchResults.length;
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus) {
         searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        }
       }
     }
     
@@ -788,7 +794,10 @@ function hideLoadMoreButtons() {
         
         // 更新搜索状态
         const totalResults = currentSearchResults.length;
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus) {
         searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        }
       }
     }
     
@@ -803,7 +812,10 @@ function hideLoadMoreButtons() {
         searchResultsList.style.overflowY = 'visible';
         
         // 確保搜索結果容器也能完全顯示
+        const searchResults = document.getElementById('search-results');
+        if (searchResults) {
         searchResults.style.maxHeight = 'none';
+        }
         
         console.log('🔧 已調整搜索結果容器為自適應高度');
       }
@@ -813,7 +825,7 @@ function hideLoadMoreButtons() {
     // 更新结果计数器
     function updateResultsCounter() {
       const totalResults = currentSearchResults.length;
-      searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
+      elements.searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
     }
     
 
@@ -860,20 +872,20 @@ function hideLoadMoreButtons() {
         generateSearchResultItem(result, index, startIndex, query)
       ).join('');
       
-      searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+      elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
     }
     
     // 显示搜索结果（原函数，现在用于内部调用）
     function displayResults(results, query) {
-      searchResultsList.innerHTML = results.map((result, index) => 
+      elements.searchResultsList.innerHTML = results.map((result, index) => 
         generateSearchResultItem(result, index, 0, query)
       ).join('');
     }
     
     // 显示无结果
     function displayNoResults(query) {
-      searchResultsCount.textContent = getText('未找到结果', '未找到結果');
-      searchResultsList.innerHTML = `
+      elements.searchResultsCount.textContent = getText('未找到结果', '未找到結果');
+      elements.searchResultsList.innerHTML = `
         <li class="search-result-item" style="text-align: center; color: #999;">
           <div>${getText(`未找到包含"${escapeHtml(query)}"的内容`, `未找到包含"${escapeHtml(query)}"的內容`)}</div>
           <div style="font-size: 12px; margin-top: 8px;">${getText('尝试使用不同的关键词', '嘗試使用不同的關鍵詞')}</div>
@@ -934,13 +946,18 @@ function hideLoadMoreButtons() {
     // 智能获取最佳context用于高亮显示
     function getBestContextForHighlight(result, query) {
       if (!query || !result.content) {
-        return result.context;
+        return result.context || result.content;
       }
       
       const searchTerm = query.trim();
       const content = result.content;
       const lowerContent = content.toLowerCase();
       const lowerSearchTerm = searchTerm.toLowerCase();
+      
+      // 如果沒有 context 或 context 為空，使用 content
+      if (!result.context) {
+        return content;
+      }
       
       // 如果原context包含完整搜索词，直接使用
       if (result.context.toLowerCase().includes(lowerSearchTerm)) {
@@ -958,7 +975,7 @@ function hideLoadMoreButtons() {
       
       if (keywords.length <= 1) {
         // 单个关键词，使用原有逻辑
-        return result.context;
+        return result.context || result.content;
       }
       
       // 多关键词处理：找到所有关键词的位置
@@ -977,7 +994,7 @@ function hideLoadMoreButtons() {
       });
       
       if (keywordPositions.length === 0) {
-        return result.context;
+        return result.context || result.content;
       }
       
       // 生成包含所有关键词的最佳context
@@ -1270,9 +1287,14 @@ function hideLoadMoreButtons() {
     
     // 清除搜索
     function clearSearch() {
-      searchInput.value = '';
-      searchResults.style.display = 'none';
-      tocHeader.style.display = 'block';
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+      const tocHeader = document.getElementById('toc-header');
+      const searchStatus = document.getElementById('search-status');
+      
+      if (searchInput) searchInput.value = '';
+      if (searchResults) searchResults.style.display = 'none';
+      if (tocHeader) tocHeader.style.display = 'block';
       currentSearchResults = [];
       displayedResultsCount = 0;
       hideLoadMoreButtons();
@@ -1280,14 +1302,16 @@ function hideLoadMoreButtons() {
       // 重置搜索結果容器高度
       resetSearchResultsHeight();
       
-      searchStatus.innerHTML = `
-        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
-      `;
+      if (searchStatus) {
+        searchStatus.innerHTML = `
+          ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
+        `;
+      }
     }
     
     // 事件监听
     let searchTimeout;
-    searchInput.addEventListener('input', (e) => {
+    elements.searchInput.addEventListener('input', (e) => {
       clearTimeout(searchTimeout);
       const query = e.target.value.trim();
       
@@ -1298,10 +1322,10 @@ function hideLoadMoreButtons() {
     });
     
     // 清除搜索按钮
-    searchClear.addEventListener('click', clearSearch);
+    elements.searchClear.addEventListener('click', clearSearch);
     
     // 收起搜索按钮
-    searchCollapse.addEventListener('click', collapseSearch);
+    elements.searchCollapse.addEventListener('click', collapseSearch);
     
     // 顯示更多按鈕（頂部和底部）
     const loadMoreBtn = document.getElementById('search-load-more');
@@ -1339,7 +1363,7 @@ function hideLoadMoreButtons() {
     }
     
     // 搜索结果点击
-    searchResultsList.addEventListener('click', (e) => {
+    elements.searchResultsList.addEventListener('click', (e) => {
       const item = e.target.closest('.search-result-item');
       if (item) {
         const url = item.dataset.url;
