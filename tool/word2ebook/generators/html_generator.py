@@ -248,12 +248,16 @@ class HTMLGenerator:
         # 生成语言切换链接
         lang_switch_links = self._generate_lang_switch_links("index.html", is_traditional=False)
         
+        # 獲取原始文件名（只要文件名，不要路徑）
+        source_filename = self.input_file.name if self.input_file else ""
+        
         html_content = self.i18n_template_manager.render_index(
             is_traditional=False,
             book_title=book_title,
             toc_items=toc_html,
             lang_switch_links=lang_switch_links,
-            favicon_tag=self.favicon_tag
+            favicon_tag=self.favicon_tag,
+            source_filename=source_filename
         )
         
         self.file_manager.write_file("index.html", html_content)
@@ -281,13 +285,17 @@ class HTMLGenerator:
         # 生成语言切换链接
         lang_switch_links = self._generate_lang_switch_links("index_trad.html", is_traditional=True)
         
+        # 獲取原始文件名（只要文件名，不要路徑）
+        source_filename = self.input_file.name if self.input_file else ""
+        
         # 渲染繁體版首頁
         html_content = self.i18n_template_manager.render_index(
             is_traditional=True,
             book_title=self.i18n_processor.to_traditional(book_title),
             toc_items=trad_toc_html,
             lang_switch_links=lang_switch_links,
-            favicon_tag=self.favicon_tag
+            favicon_tag=self.favicon_tag,
+            source_filename=source_filename
         )
         
         self.file_manager.write_file("index_trad.html", html_content)
