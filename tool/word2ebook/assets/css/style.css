@@ -2783,7 +2783,7 @@ p.source-filename {
   opacity: 0.7;
   user-select: text; /* 確保可以選取 */
   cursor: text;
-  padding-left: 30px;
+  padding-left: 25px;
   line-height: 1.2;
 }
 
