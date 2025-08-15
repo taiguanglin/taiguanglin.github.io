@@ -266,11 +266,6 @@ document.addEventListener('DOMContentLoaded', function() {
     segmentationStats.calls++;
     const startTime = performance.now();
     
-    // 調試：記錄關鍵信息（前20次）
-    if (segmentationStats.calls <= 20) {
-      console.log(`🔤 jieba-wasm 分詞調用 #${segmentationStats.calls}: "${text.substring(0, 30)}..."`);
-    }
-    
     if (chineseSegmenter && chineseSegmenter.cut) {
       try {
         // 使用 jieba-wasm 分詞
@@ -405,17 +400,23 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
       const BATCH_SIZE = 300; // 減小批次大小以保持響應性
       const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
       
-      // 創建進度顯示
-      const progressDiv = document.createElement('div');
-      progressDiv.style.cssText = `
-        margin: 10px 0;
-        padding: 8px;
-        background: #f0f8ff;
-        border-radius: 4px;
-        font-size: 12px;
-        text-align: center;
+      // 創建統一的進度條UI
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'search-progress-container';
+      const initialText = isTraditionalChinesePage() ? 
+        `📊 正在分詞並建立搜尋索引...0/${searchIndex.length}` : 
+        `📊 正在分词并建立搜索索引...0/${searchIndex.length}`;
+      progressContainer.innerHTML = `
+        <div class="search-loading-text">${initialText}</div>
+        <div class="search-progress-bar">
+          <div class="search-progress-fill" style="width: 0%"></div>
+        </div>
       `;
-      searchStatus.appendChild(progressDiv);
+      searchStatus.innerHTML = '';
+      searchStatus.appendChild(progressContainer);
+      
+      const progressFill = progressContainer.querySelector('.search-progress-fill');
+      const loadingText = progressContainer.querySelector('.search-loading-text');
       
       // 分批處理函數（包含即時分詞）
       async function processBatch(batchIndex) {
@@ -423,19 +424,15 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
         const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
         const batch = searchIndex.slice(startIdx, endIdx);
         
-        // 更新進度顯示
-        const progress = Math.round(((batchIndex + 1) / totalBatches) * 100);
+        // 更新進度條
+        const percentage = Math.round((endIdx / searchIndex.length) * 100);
         
         const progressText = isTraditionalChinesePage() ? 
-          `📊 正在分詞並建立搜尋索引... ${progress}% (${endIdx}/${searchIndex.length})` :
-          `📊 正在分词并建立搜索索引... ${progress}% (${endIdx}/${searchIndex.length})`;
-          
-        progressDiv.innerHTML = `
-          ${progressText}
-          <div style="background: #e0e0e0; height: 4px; border-radius: 2px; margin: 4px 0;">
-            <div style="background: #007acc; height: 100%; width: ${progress}%; border-radius: 2px; transition: width 0.3s;"></div>
-          </div>
-        `;
+          `📊 正在分詞並建立搜尋索引...${endIdx}/${searchIndex.length}` :
+          `📊 正在分词并建立搜索索引...${endIdx}/${searchIndex.length}`;
+        
+        progressFill.style.width = `${percentage}%`;
+        loadingText.textContent = progressText;
         
         // 對批次進行即時分詞處理
         const processedBatch = batch.map(doc => {
@@ -464,7 +461,7 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
       }
       
       // 移除進度顯示
-      searchStatus.removeChild(progressDiv);
+      searchStatus.removeChild(progressContainer);
       
       console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
       console.log(isTraditionalChinesePage() ? 
@@ -474,10 +471,18 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
 
 // 支持緩存的分批索引建立函數
 async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, cacheManager, isTraditional) {
-  // 嘗試從緩存加載處理後的數據
-  let processedData = null;
+  // 獲取當前的哈希值
+  let currentHash = null;
   if (cacheManager) {
-    processedData = await cacheManager.getCachedProcessedIndex(isTraditional, segmenterEnabled);
+    const hashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
+    const hashData = await cacheManager.getMetadata(hashKey);
+    currentHash = hashData ? hashData.hash : null;
+  }
+  
+  // 嘗試從緩存加載處理後的數據（使用哈希值）
+  let processedData = null;
+  if (cacheManager && currentHash) {
+    processedData = await cacheManager.getCachedProcessedIndex(isTraditional, segmenterEnabled, currentHash);
   }
   
   if (processedData) {
@@ -486,6 +491,24 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
     console.log('⚡ 從緩存恢復處理後的搜索索引...');
     
     try {
+      // 創建進度條UI
+      const progressContainer = document.createElement('div');
+      progressContainer.className = 'search-progress-container';
+      const initialText = isTraditionalChinesePage() ? 
+        `⚡ 從緩存恢復處理後的搜索索引...0/${processedData.length}` :
+        `⚡ 从缓存恢复处理后的搜索索引...0/${processedData.length}`;
+      progressContainer.innerHTML = `
+        <div class="search-loading-text">${initialText}</div>
+        <div class="search-progress-bar">
+          <div class="search-progress-fill" style="width: 0%"></div>
+        </div>
+      `;
+      searchStatus.innerHTML = '';
+      searchStatus.appendChild(progressContainer);
+      
+      const progressFill = progressContainer.querySelector('.search-progress-fill');
+      const loadingText = progressContainer.querySelector('.search-loading-text');
+      
       // 批量添加到 MiniSearch
       const BATCH_SIZE = 1000;
       const totalItems = processedData.length;
@@ -496,13 +519,17 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
         
         // 更新進度
         const progress = Math.min(i + BATCH_SIZE, totalItems);
+        const percentage = Math.round((progress / totalItems) * 100);
+        
         const progressText = isTraditionalChinesePage() ? 
-          `⚡ 從緩存恢復索引: ${progress}/${totalItems}` :
-          `⚡ 从缓存恢复索引: ${progress}/${totalItems}`;
-        searchStatus.innerHTML = `<div class="search-loading-text">${progressText}</div>`;
+          `⚡ 從緩存恢復處理後的搜索索引...${progress}/${totalItems}` :
+          `⚡ 从缓存恢复处理后的搜索索引...${progress}/${totalItems}`;
+        
+        progressFill.style.width = `${percentage}%`;
+        loadingText.textContent = progressText;
         
         // 讓 UI 有機會更新
-        await new Promise(resolve => setTimeout(resolve, 5));
+        await new Promise(resolve => setTimeout(resolve, 10));
       }
       
       console.timeEnd('📇 從緩存恢復索引');
@@ -527,7 +554,7 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
     // 保存處理後的數據到緩存
     if (cacheManager && processedItems.length > 0) {
       console.log('💾 保存處理後的索引到緩存...');
-      await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled);
+      await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled, currentHash);
     }
   }
 }
@@ -541,6 +568,24 @@ async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, search
 
   const BATCH_SIZE = 300;
   const totalItems = searchIndex.length;
+  
+  // 創建進度條UI
+  const progressContainer = document.createElement('div');
+  progressContainer.className = 'search-progress-container';
+  const initialText = isTraditionalChinesePage() ? 
+    `📊 正在分詞並建立搜尋索引...0/${totalItems}` : 
+    `📊 正在分词并建立搜索索引...0/${totalItems}`;
+  progressContainer.innerHTML = `
+    <div class="search-loading-text">${initialText}</div>
+    <div class="search-progress-bar">
+      <div class="search-progress-fill" style="width: 0%"></div>
+    </div>
+  `;
+  searchStatus.innerHTML = '';
+  searchStatus.appendChild(progressContainer);
+  
+  const progressFill = progressContainer.querySelector('.search-progress-fill');
+  const loadingText = progressContainer.querySelector('.search-loading-text');
   
   for (let i = 0; i < totalItems; i += BATCH_SIZE) {
     const batch = searchIndex.slice(i, i + BATCH_SIZE);
@@ -562,12 +607,16 @@ async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, search
     // 添加到 MiniSearch
     miniSearch.addAll(processedBatch);
     
-    // 更新進度
+    // 更新進度條
     const progress = Math.min(i + BATCH_SIZE, totalItems);
+    const percentage = Math.round((progress / totalItems) * 100);
+    
     const progressText = isTraditionalChinesePage() ? 
-      `📊 正在分詞並建立搜尋索引: ${progress}/${totalItems}` :
-      `📊 正在分词并建立搜索索引: ${progress}/${totalItems}`;
-    searchStatus.innerHTML = `<div class="search-loading-text">${progressText}</div>`;
+      `📊 正在分詞並建立搜尋索引...${progress}/${totalItems}` :
+      `📊 正在分词并建立搜索索引...${progress}/${totalItems}`;
+    
+    progressFill.style.width = `${percentage}%`;
+    loadingText.textContent = progressText;
     
     // 讓 UI 有機會更新
     await new Promise(resolve => setTimeout(resolve, 15));
@@ -721,24 +770,44 @@ async function initSearch() {
     console.time('📥 JSON載入時間');
     const isTraditional = isTraditionalChinesePage();
     
-    // 嘗試從緩存加載
-    let searchIndex = null;
+    // 檢查是否需要更新緩存（基於哈希）
+    let needsUpdate = true;
     if (cacheManager) {
-      searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
+      needsUpdate = await cacheManager.needsUpdate(isTraditional);
     }
     
-    // 如果緩存未命中，從網絡加載
-    if (!searchIndex) {
+    if (!needsUpdate) {
+      // 從緩存加載
+      searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
+      if (searchIndex) {
+        console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
+      } else {
+        console.log('📡 緩存數據丟失，重新下載...');
+        needsUpdate = true;
+      }
+    }
+    
+    if (needsUpdate) {
+      // 從網絡加載
       console.log('📡 從網絡加載搜索索引...');
       searchIndex = await loadSearchIndexWithProgress();
       
-      // 保存到緩存
+      // 保存到緩存並更新哈希
       if (cacheManager && searchIndex) {
         await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
-        await cacheManager.setMetadata('lastUpdate', Date.now());
+        
+        // 獲取並保存哈希值
+        const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
+        const hashFileName = `${indexFileName}.hash`;
+        const hashData = await cacheManager.fetchHashFile(hashFileName);
+        if (hashData) {
+          await cacheManager.saveHashMetadata(hashData, isTraditional);
+          
+          // 清除舊的處理後索引緩存（因為原始索引已更新）
+          console.log('🗑️ 清除舊的處理後索引緩存...');
+          await cacheManager.clearOldProcessedIndexes(isTraditional, hashData.hash);
+        }
       }
-    } else {
-      console.log('⚡ 從緩存加載搜索索引');
     }
     
     console.timeEnd('📥 JSON載入時間');
@@ -1443,8 +1512,9 @@ async function initSearch() {
       resetSearchResultsHeight();
       
       if (searchStatus) {
+        const recordCount = searchIndex ? searchIndex.length : 0;
       searchStatus.innerHTML = `
-        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
+          ${getText(`搜索准备就绪 (共${recordCount}条记录)`, `搜尋準備就緒 (共${recordCount}條記錄)`)}
       `;
       }
     }

@@ -76,10 +76,11 @@ class SearchCacheManager {
   /**
    * 獲取處理後索引的緩存鍵
    */
-  getProcessedIndexKey(isTraditional = false, segmenterEnabled = false) {
+  getProcessedIndexKey(isTraditional = false, segmenterEnabled = false, hashPrefix = null) {
     const lang = isTraditional ? 'trad' : 'simp';
     const seg = segmenterEnabled ? 'seg' : 'noseg';
-    return `processed_index_${lang}_${seg}`;
+    const hash = hashPrefix ? `_${hashPrefix}` : '';
+    return `processed_index_${lang}_${seg}${hash}`;
   }
 
   /**
@@ -136,15 +137,17 @@ class SearchCacheManager {
   /**
    * 緩存處理後的索引數據
    */
-  async cacheProcessedIndex(processedData, isTraditional = false, segmenterEnabled = false) {
+  async cacheProcessedIndex(processedData, isTraditional = false, segmenterEnabled = false, sourceHash = null) {
     if (!this.isAvailable()) return false;
     
-    const key = this.getProcessedIndexKey(isTraditional, segmenterEnabled);
+    const hashPrefix = sourceHash ? sourceHash.substring(0, 8) : null;
+    const key = this.getProcessedIndexKey(isTraditional, segmenterEnabled, hashPrefix);
     const cacheData = {
       key: key,
       data: processedData,
       timestamp: Date.now(),
       segmenterEnabled: segmenterEnabled,
+      sourceHash: sourceHash,
       size: JSON.stringify(processedData).length
     };
     
@@ -164,10 +167,11 @@ class SearchCacheManager {
   /**
    * 獲取緩存的處理後索引
    */
-  async getCachedProcessedIndex(isTraditional = false, segmenterEnabled = false) {
+  async getCachedProcessedIndex(isTraditional = false, segmenterEnabled = false, sourceHash = null) {
     if (!this.isAvailable()) return null;
     
-    const key = this.getProcessedIndexKey(isTraditional, segmenterEnabled);
+    const hashPrefix = sourceHash ? sourceHash.substring(0, 8) : null;
+    const key = this.getProcessedIndexKey(isTraditional, segmenterEnabled, hashPrefix);
     
     try {
       const transaction = this.db.transaction([this.stores.processedIndex], 'readonly');
@@ -226,16 +230,114 @@ class SearchCacheManager {
   }
 
   /**
-   * 檢查緩存是否需要更新
+   * 檢查緩存是否需要更新（基於哈希值）
    */
   async needsUpdate(isTraditional = false) {
-    // 簡單的時間基礎檢查，可以後續改為基於文件哈希
-    const lastUpdate = await this.getMetadata('lastUpdate');
-    if (!lastUpdate) return true;
+    try {
+      // 獲取搜索索引文件名
+      const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
+      const hashFileName = `${indexFileName}.hash`;
+      
+      // 下載哈希文件
+      const remoteHashData = await this.fetchHashFile(hashFileName);
+      if (!remoteHashData) {
+        console.log('📡 無法獲取遠程哈希文件，將重新下載索引');
+        return true;
+      }
+      
+      // 獲取本地緩存的哈希值
+      const localHashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
+      const localHashData = await this.getMetadata(localHashKey);
+      
+      if (!localHashData) {
+        console.log('💾 本地無哈希記錄，需要下載');
+        return true;
+      }
+      
+      // 比較哈希值
+      const needsUpdate = localHashData.hash !== remoteHashData.hash;
+      if (needsUpdate) {
+        console.log(`🔄 檢測到內容更新 (${localHashData.hash.substring(0,8)} → ${remoteHashData.hash.substring(0,8)})`);
+      } else {
+        console.log(`✅ 內容未變更 (${remoteHashData.hash.substring(0,8)})`);
+      }
+      
+      return needsUpdate;
+    } catch (error) {
+      console.warn('哈希檢查失敗，將重新下載:', error);
+      return true;
+    }
+  }
+
+  /**
+   * 下載哈希文件
+   */
+  async fetchHashFile(hashFileName) {
+    try {
+      const response = await fetch(hashFileName);
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+      return await response.json();
+    } catch (error) {
+      console.warn(`無法下載哈希文件 ${hashFileName}:`, error);
+      return null;
+    }
+  }
+
+  /**
+   * 保存哈希值到元數據
+   */
+  async saveHashMetadata(hashData, isTraditional = false) {
+    const hashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
+    await this.setMetadata(hashKey, hashData);
+  }
+
+  /**
+   * 清除舊的處理後索引緩存（當原始索引更新時）
+   */
+  async clearOldProcessedIndexes(isTraditional = false, currentHash = null) {
+    if (!this.isAvailable()) return;
     
-    // 24小時過期
-    const maxAge = 24 * 60 * 60 * 1000;
-    return (Date.now() - lastUpdate) > maxAge;
+    try {
+      const transaction = this.db.transaction([this.stores.processedIndex], 'readwrite');
+      const store = transaction.objectStore(this.stores.processedIndex);
+      const request = store.openCursor();
+      
+      const lang = isTraditional ? 'trad' : 'simp';
+      let deletedCount = 0;
+      
+      return new Promise((resolve, reject) => {
+        request.onsuccess = (event) => {
+          const cursor = event.target.result;
+          if (cursor) {
+            const key = cursor.value.key;
+            // 檢查是否是相同語言的處理後索引
+            if (key.includes(`processed_index_${lang}_`)) {
+              console.log(`🗑️ 清除處理後索引緩存: ${key}`);
+              cursor.delete();
+              deletedCount++;
+            }
+            cursor.continue();
+          } else {
+            // 遍歷完成
+            if (deletedCount > 0) {
+              console.log(`✅ 已清除 ${deletedCount} 個舊的處理後索引緩存`);
+            } else {
+              console.log(`ℹ️ 沒有找到需要清除的處理後索引緩存`);
+            }
+            resolve();
+          }
+        };
+        
+        request.onerror = () => {
+          console.warn('清除舊處理後索引失敗:', request.error);
+          reject(request.error);
+        };
+      });
+    } catch (error) {
+      console.warn('清除舊處理後索引失敗:', error);
+    }
   }
 
   /**
