@@ -181,6 +181,14 @@ def main() -> None:
     generate_traditional = not (args.skip_traditional or args.fast)
     generate_simplified = not (args.skip_simplified or args.fast)
     
+    # 測試優化：如果沒有明確指定，默認只生成繁體版（用於開發測試）
+    if not args.skip_traditional and not args.skip_simplified and not args.fast:
+        # 檢查是否在開發環境（可以通過環境變量或其他方式判斷）
+        import os
+        if os.environ.get('WORD2EBOOK_TEST_MODE', '').lower() == 'true':
+            print("🧪 測試模式：只生成繁體版以加快測試速度")
+            generate_simplified = False
+    
     # 创建转换配置
     config = ConversionConfig(
         input_file=Path(args.input_file),

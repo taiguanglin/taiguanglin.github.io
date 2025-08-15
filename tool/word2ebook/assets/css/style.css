@@ -1430,6 +1430,34 @@ body.dark-mode .qa-pair-bookmark:hover {
     font-size: 14px;
 }
 
+/* 搜索進度條 */
+.search-progress-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.search-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.search-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.search-progress-text {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
 
 
 .search-error {
@@ -1665,6 +1693,15 @@ body.dark-mode .search-loading {
 
 body.dark-mode .search-loading-text {
     color: #fddde6;
+}
+
+/* 暗色模式下的搜索進度條 */
+body.dark-mode .search-progress-bar {
+    background-color: #444;
+}
+
+body.dark-mode .search-progress-text {
+    color: #ccc;
 }
 
 body.dark-mode .search-loading-spinner {
