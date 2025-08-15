@@ -400,8 +400,8 @@ function hideLoadMoreButtons() {
         fields: ['title', 'content'], // 搜索字段
         storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'], // 存储字段
         searchOptions: {
-          boost: { title: 3, content: 1 }, // 标题权重更高
-          fuzzy: segmenterEnabled ? 0.1 : 0.2, // 智能分词时降低模糊度
+          boost: { title: 1, content: 1 }, // 标题权重更高
+          // fuzzy: segmenterEnabled ? 0.1 : 0.2, // 智能分词时降低模糊度
           prefix: true, // 前缀匹配
           combineWith: 'AND' // 默认AND组合，提高精确度
                 },
@@ -463,8 +463,8 @@ function hideLoadMoreButtons() {
         fields: ['title', 'processedContent'], // 搜索標題和處理後的內容
         storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
         searchOptions: {
-          boost: { title: 3, processedContent: 1 },
-          fuzzy: segmenterEnabled ? 0.1 : 0.2,
+          boost: { title: 1, processedContent: 1 },
+          // fuzzy: segmenterEnabled ? 0.1 : 0.2,
           prefix: true,
           combineWith: 'AND'
         },
@@ -632,8 +632,8 @@ function hideLoadMoreButtons() {
       try {
         // 执行搜索
         const results = miniSearch.search(trimmedQuery, {
-          boost: { title: 3, content: 1 },
-          fuzzy: 0.2,
+          boost: { title: 1, content: 1 },
+          // fuzzy: 0.2,
           prefix: true
         });
         
