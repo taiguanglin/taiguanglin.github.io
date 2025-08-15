@@ -361,39 +361,6 @@ function createSearchConfig(segmenterEnabled) {
   }
 }
       
-// 預處理搜索索引數據
-function preprocessSearchIndex(searchIndex, segmenterEnabled) {
-  console.time('🔤 內容預處理時間');
-      console.log(isTraditionalChinesePage() ? 
-    `🔄 開始預處理 ${searchIndex.length} 條記錄...` :
-    `🔄 开始预处理 ${searchIndex.length} 条记录...`);
-      
-      const processedIndex = searchIndex.map((doc, index) => {
-        if (index % 1000 === 0) {
-          console.log(isTraditionalChinesePage() ? 
-            `🔄 預處理進度: ${index}/${searchIndex.length}` :
-            `🔄 预处理进度: ${index}/${searchIndex.length}`);
-        }
-        
-        const processedDoc = { ...doc };
-        
-    // 統一使用 processedContent 字段，使用 jieba-wasm 分詞
-        if (segmenterEnabled && doc.content) {
-      processedDoc.processedContent = segmentWithJieba(doc.content); // 返回字符串格式
-        } else {
-          processedDoc.processedContent = doc.content;
-        }
-        
-        return processedDoc;
-      });
-      
-  console.timeEnd('🔤 內容預處理時間');
-      console.log(isTraditionalChinesePage() ? 
-    `✅ 預處理完成！處理了 ${segmentationStats.calls} 次調用` :
-    `✅ 预处理完成！处理了 ${segmentationStats.calls} 次调用`);
-  
-  return processedIndex;
-}
 
 // 獲取搜索相關的 DOM 元素
 function getSearchElements() {
@@ -427,16 +394,16 @@ function initializeSearchUI(elements) {
   return loadingUI;
 }
 
-// 分批建立搜索索引
-async function buildSearchIndexInBatches(miniSearch, processedIndex, searchStatus) {
-      console.time('📇 索引建立時間 (分批處理)');
+// 分批建立搜索索引（包含即時分詞）
+async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
+      console.time('📇 分詞+索引建立時間 (分批處理)');
       console.log(isTraditionalChinesePage() ? 
-        `🔄 開始分批處理 ${processedIndex.length} 條預處理記錄...` :
-        `🔄 开始分批处理 ${processedIndex.length} 条预处理记录...`);
+        `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...` :
+        `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
       
       // 分批配置
-      const BATCH_SIZE = 500;
-      const totalBatches = Math.ceil(processedIndex.length / BATCH_SIZE);
+      const BATCH_SIZE = 300; // 減小批次大小以保持響應性
+      const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
       
       // 創建進度顯示
       const progressDiv = document.createElement('div');
@@ -450,18 +417,18 @@ async function buildSearchIndexInBatches(miniSearch, processedIndex, searchStatu
       `;
       searchStatus.appendChild(progressDiv);
       
-      // 分批處理函數
+      // 分批處理函數（包含即時分詞）
       async function processBatch(batchIndex) {
         const startIdx = batchIndex * BATCH_SIZE;
-        const endIdx = Math.min(startIdx + BATCH_SIZE, processedIndex.length);
-        const batch = processedIndex.slice(startIdx, endIdx);
+        const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
+        const batch = searchIndex.slice(startIdx, endIdx);
         
         // 更新進度顯示
         const progress = Math.round(((batchIndex + 1) / totalBatches) * 100);
         
         const progressText = isTraditionalChinesePage() ? 
-          `📊 正在建立搜尋索引... ${progress}% (${endIdx}/${processedIndex.length})` :
-          `📊 正在建立搜索索引... ${progress}% (${endIdx}/${processedIndex.length})`;
+          `📊 正在分詞並建立搜尋索引... ${progress}% (${endIdx}/${searchIndex.length})` :
+          `📊 正在分词并建立搜索索引... ${progress}% (${endIdx}/${searchIndex.length})`;
           
         progressDiv.innerHTML = `
           ${progressText}
@@ -470,11 +437,25 @@ async function buildSearchIndexInBatches(miniSearch, processedIndex, searchStatu
           </div>
         `;
         
+        // 對批次進行即時分詞處理
+        const processedBatch = batch.map(doc => {
+          const processedDoc = { ...doc };
+          
+          // 如果啟用分詞且有內容，進行分詞處理
+          if (segmenterEnabled && doc.content) {
+            processedDoc.processedContent = segmentWithJieba(doc.content);
+          } else {
+            processedDoc.processedContent = doc.content;
+          }
+          
+          return processedDoc;
+        });
+        
         // 添加當前批次到索引
-        miniSearch.addAll(batch);
+        miniSearch.addAll(processedBatch);
         
         // 讓瀏覽器有時間更新UI
-        await new Promise(resolve => setTimeout(resolve, 10));
+        await new Promise(resolve => setTimeout(resolve, 15)); // 稍微增加延遲以保持響應性
       }
       
       // 逐批處理
@@ -626,9 +607,6 @@ async function initSearch() {
     // 載入完成，移除載入UI
     elements.searchStatus.removeChild(loadingUI.loadingDiv);
     
-    // 預處理搜索數據
-    const processedIndex = preprocessSearchIndex(searchIndex, segmenterEnabled);
-    
     // 創建並配置 MiniSearch 實例
     console.time('🏗️ MiniSearch對象創建');
     const searchConfig = createSearchConfig(segmenterEnabled);
@@ -639,8 +617,8 @@ async function initSearch() {
       '✅ 使用統一搜索配置' : 
       '✅ 使用统一搜索配置');
       
-    // 分批建立搜索索引
-    await buildSearchIndexInBatches(miniSearch, processedIndex, elements.searchStatus);
+    // 分批分詞並建立搜索索引（統一處理）
+    await buildSearchIndexInBatches(miniSearch, searchIndex, elements.searchStatus, segmenterEnabled);
       
     // 完成搜索初始化設置
     finalizeSearchSetup(elements, segmenterEnabled, searchIndex.length);
