@@ -52,8 +52,9 @@ class SearchIndexGenerator:
                 with open(html_file_path, 'w', encoding='utf-8') as f:
                     f.write(updated_html)
         
-        # 按权重和相关性排序
-        all_search_items.sort(key=lambda x: x.weight, reverse=True)
+        # 按類型和ID排序（保持一致的順序）
+        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
+        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
         
         # 生成索引文件
         self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED)
@@ -83,8 +84,9 @@ class SearchIndexGenerator:
                 with open(html_file_path, 'w', encoding='utf-8') as f:
                     f.write(updated_html)
         
-        # 按权重排序
-        all_search_items.sort(key=lambda x: x.weight, reverse=True)
+        # 按類型和ID排序（保持一致的順序）
+        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
+        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
         
         # 生成繁体版索引文件
         self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL)
@@ -151,8 +153,9 @@ class SearchIndexGenerator:
                 all_search_items.extend(search_items)
                 # 注意：这里不写回HTML文件
         
-        # 按权重和相关性排序
-        all_search_items.sort(key=lambda x: x.weight, reverse=True)
+        # 按類型和ID排序（保持一致的順序）
+        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
+        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
         
         # 生成索引文件
         self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED)
@@ -179,8 +182,9 @@ class SearchIndexGenerator:
                 all_search_items.extend(search_items)
                 # 注意：这里不写回HTML文件
         
-        # 按权重排序
-        all_search_items.sort(key=lambda x: x.weight, reverse=True)
+        # 按類型和ID排序（保持一致的順序）
+        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
+        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
         
         # 生成繁体版索引文件
         self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL)

@@ -61,19 +61,22 @@ class SearchItem:
     content: str
     context: str
     url: str
-    weight: float = 1.0
     
     def to_dict(self) -> Dict[str, Any]:
         """转换为字典格式（用于 JSON 序列化）"""
-        return {
+        result = {
             'id': self.id,
             'title': self.title,
             'type': self.type,
             'content': self.content,
-            'context': self.context,
-            'url': self.url,
-            'weight': self.weight
+            'url': self.url
         }
+        
+        # 只有當 context 與 content 不同時才添加 context 字段
+        if self.context != self.content:
+            result['context'] = self.context
+            
+        return result
 
 
 @dataclass
