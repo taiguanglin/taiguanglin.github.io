@@ -20,10 +20,11 @@ class SearchIndexGenerator:
         self.content_processor = ContentProcessor(settings)
         self.i18n_processor = I18nProcessor()
     
-    def generate_search_indexes(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
+    def generate_search_indexes(self, chapters: List[Chapter], generate_traditional: bool = True, generate_simplified: bool = True) -> None:
         """生成搜索索引文件"""
         # 生成简体版搜索索引
-        self._generate_simplified_index(chapters)
+        if generate_simplified:
+            self._generate_simplified_index(chapters)
         
         # 生成繁体版搜索索引
         if generate_traditional:
@@ -100,18 +101,19 @@ class SearchIndexGenerator:
         index_content = json.dumps(index_data, ensure_ascii=False, indent=2)
         self.file_manager.write_file(filename, index_content)
     
-    def ensure_search_index_files(self, generate_traditional: bool = True) -> None:
+    def ensure_search_index_files(self, generate_traditional: bool = True, generate_simplified: bool = True) -> None:
         """确保搜索索引文件存在，如果不存在则创建空的索引文件
         
         注意：此方法不会修改HTML文件，保持增量更新模式的文件稳定性
         """
         # 检查简体版索引文件
-        if not self.file_manager.file_exists(Constants.SEARCH_INDEX_SIMPLIFIED):
-            print(f"📝 创建空的简体搜索索引：{Constants.SEARCH_INDEX_SIMPLIFIED}")
-            empty_index = json.dumps([], ensure_ascii=False, indent=2)
-            self.file_manager.write_file(Constants.SEARCH_INDEX_SIMPLIFIED, empty_index)
-        else:
-            print(f"✅ 简体搜索索引已存在：{Constants.SEARCH_INDEX_SIMPLIFIED}")
+        if generate_simplified:
+            if not self.file_manager.file_exists(Constants.SEARCH_INDEX_SIMPLIFIED):
+                print(f"📝 创建空的简体搜索索引：{Constants.SEARCH_INDEX_SIMPLIFIED}")
+                empty_index = json.dumps([], ensure_ascii=False, indent=2)
+                self.file_manager.write_file(Constants.SEARCH_INDEX_SIMPLIFIED, empty_index)
+            else:
+                print(f"✅ 简体搜索索引已存在：{Constants.SEARCH_INDEX_SIMPLIFIED}")
         
         # 检查繁体版索引文件
         if generate_traditional:
@@ -122,12 +124,13 @@ class SearchIndexGenerator:
             else:
                 print(f"✅ 繁体搜索索引已存在：{Constants.SEARCH_INDEX_TRADITIONAL}")
     
-    def generate_search_indexes_without_html_modification(self, chapters: List[Chapter], generate_traditional: bool = True) -> None:
+    def generate_search_indexes_without_html_modification(self, chapters: List[Chapter], generate_traditional: bool = True, generate_simplified: bool = True) -> None:
         """生成搜索索引但不修改HTML文件（用于增量更新模式）"""
         print("🔍 正在生成搜索索引（不修改HTML文件）...")
         
         # 生成简体版搜索索引
-        self._generate_simplified_index_readonly(chapters)
+        if generate_simplified:
+            self._generate_simplified_index_readonly(chapters)
         
         # 生成繁体版搜索索引
         if generate_traditional:
