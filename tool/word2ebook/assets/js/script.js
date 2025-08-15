@@ -208,33 +208,20 @@ document.addEventListener('DOMContentLoaded', function() {
   async function initChineseSegmenter() {
     try {
       // 檢查是否已經初始化
-      if (window.jiebaWasmCut) {
-        chineseSegmenter = {
-          cut: function(text) {
-            try {
-              return window.jiebaWasmCut(text, true);
-            } catch (error) {
-              console.error('jieba-wasm 分詞錯誤:', error);
-              return [];
-            }
-          }
-        };
+      if (chineseSegmenter) {
         console.log(isTraditionalChinesePage() ? 
-          '✅ jieba-wasm 已啟用，支持高性能中文分詞' : 
-          '✅ jieba-wasm 已启用，支持高性能中文分词');
+          '✅ jieba-wasm 已初始化，跳過重複初始化' : 
+          '✅ jieba-wasm 已初始化，跳过重复初始化');
         return true;
       }
 
-      // 動態加載 jieba-wasm
+      // 引入 jieba_rs_wasm.js 模塊
       console.log(isTraditionalChinesePage() ? 
-        '⏳ 正在加載 jieba-wasm...' : 
-        '⏳ 正在加载 jieba-wasm...');
+        '⏳ 正在載入 jieba_rs_wasm.js...' : 
+        '⏳ 正在载入 jieba_rs_wasm.js...');
       
-      const { default: init, cut } = await import('./jieba_rs_wasm.js');
-      await init();
-      
-      // 將 cut 函數存儲到全局變量
-      window.jiebaWasmCut = cut;
+      const { default: jiebaInit, cut } = await import('./jieba_rs_wasm.js');
+      await jiebaInit();
       
       chineseSegmenter = {
         cut: function(text) {
@@ -260,12 +247,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // 智能中文文本处理
+  // jieba-wasm 統一分詞功能
   // 分詞統計變數（調試用）
   let segmentationStats = { calls: 0, totalTime: 0 };
   
-  function processChineseText(text) {
-    if (!text || typeof text !== 'string') return '';
+  /**
+   * 使用 jieba-wasm 進行文本分詞
+   * @param {string} text - 要分詞的文本
+   * @param {boolean} returnArray - 是否返回數組格式（默認返回空格分隔的字符串）
+   * @returns {string|Array} 分詞結果
+   */
+  function segmentWithJieba(text, returnArray = false) {
+    if (!text || typeof text !== 'string') {
+      return returnArray ? [] : '';
+    }
     
     // 統計調用次數和性能
     segmentationStats.calls++;
@@ -273,39 +268,39 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 調試：記錄關鍵信息（前20次）
     if (segmentationStats.calls <= 20) {
-      console.log(`🔤 分詞調用 #${segmentationStats.calls}: "${text.substring(0, 30)}..."`);
+      console.log(`🔤 jieba-wasm 分詞調用 #${segmentationStats.calls}: "${text.substring(0, 30)}..."`);
     }
     
     if (chineseSegmenter && chineseSegmenter.cut) {
       try {
-        // 只使用 jieba-wasm 分詞
+        // 使用 jieba-wasm 分詞
         const words = chineseSegmenter.cut(text);
         
         // 記錄處理時間
         const endTime = performance.now();
         segmentationStats.totalTime += (endTime - startTime);
         
-        // 每1000次調用輸出一次統計（避免日誌過多）
-        if (segmentationStats.calls % 1000 === 0) {
+        // 每10000次調用輸出一次統計（避免日誌過多）
+        if (segmentationStats.calls % 10000 === 0) {
           console.log(isTraditionalChinesePage() ? 
-            `🔤 分詞統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
-            `🔤 分词统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
+            `🔤 jieba-wasm 統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
+            `🔤 jieba-wasm 统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
         }
         
-        return words.join(' ');
+        return returnArray ? words : words.join(' ');
       } catch (error) {
         console.error(isTraditionalChinesePage() ? 
           '❌ jieba-wasm 分詞失敗:' : 
           '❌ jieba-wasm 分词失败:', error);
-        return '';
+        return returnArray ? [] : '';
       }
     }
     
-    // jieba-wasm 不可用
-    console.error(isTraditionalChinesePage() ? 
-      '❌ jieba-wasm 不可用，無法處理文本' : 
-      '❌ jieba-wasm 不可用，无法处理文本');
-    return '';
+    // jieba-wasm 不可用時的降級處理
+    console.warn(isTraditionalChinesePage() ? 
+      '⚠️ jieba-wasm 不可用，返回原文本' : 
+      '⚠️ jieba-wasm 不可用，返回原文本');
+    return returnArray ? [text] : text;
   }
 
 // 更新加载更多按钮的显示状态（全局函数）
@@ -344,131 +339,90 @@ function createSearchConfig(segmenterEnabled) {
   return {
     fields: ['title', 'processedContent'],
     storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
-    searchOptions: {
-      boost: { title: 1, processedContent: 1 },
-      prefix: true,
+        searchOptions: {
+      boost: { processedContent: 1 },
+      // prefix: true,
       combineWith: 'AND'
-    },
-    processTerm: (term) => {
-      if (chineseSegmenter && chineseSegmenter.cut && term.length > 1) {
-        try {
-          const words = chineseSegmenter.cut(term);
-          return words.length > 0 ? words : [term];
-        } catch (error) {
-          console.warn(isTraditionalChinesePage() ? 
-            '搜尋詞分詞處理出錯:' : 
-            '搜索词分词处理出错:', error);
+                },
+        processTerm: (term) => {
+      if (term.length > 1) {
+        // 使用統一的 jieba-wasm 分詞函數
+        const words = segmentWithJieba(term, true); // 返回數組格式
+              return words.length > 0 ? words : [term];
+          }
           return [term];
         }
-      }
-      return [term];
-    }
   };
 }
-
+      
 // 預處理搜索索引數據
 function preprocessSearchIndex(searchIndex, segmenterEnabled) {
   console.time('🔤 內容預處理時間');
-  console.log(isTraditionalChinesePage() ? 
+      console.log(isTraditionalChinesePage() ? 
     `🔄 開始預處理 ${searchIndex.length} 條記錄...` :
     `🔄 开始预处理 ${searchIndex.length} 条记录...`);
-  
-  const processedIndex = searchIndex.map((doc, index) => {
-    if (index % 1000 === 0) {
-      console.log(isTraditionalChinesePage() ? 
-        `🔄 預處理進度: ${index}/${searchIndex.length}` :
-        `🔄 预处理进度: ${index}/${searchIndex.length}`);
-    }
-    
-    const processedDoc = { ...doc };
-    
-    // 統一使用 processedContent 字段
-    if (segmenterEnabled && doc.content) {
-      processedDoc.processedContent = processChineseText(doc.content);
-    } else {
-      processedDoc.processedContent = doc.content;
-    }
-    
-    return processedDoc;
-  });
-  
+      
+      const processedIndex = searchIndex.map((doc, index) => {
+        if (index % 1000 === 0) {
+          console.log(isTraditionalChinesePage() ? 
+            `🔄 預處理進度: ${index}/${searchIndex.length}` :
+            `🔄 预处理进度: ${index}/${searchIndex.length}`);
+        }
+        
+        const processedDoc = { ...doc };
+        
+    // 統一使用 processedContent 字段，使用 jieba-wasm 分詞
+        if (segmenterEnabled && doc.content) {
+      processedDoc.processedContent = segmentWithJieba(doc.content); // 返回字符串格式
+        } else {
+          processedDoc.processedContent = doc.content;
+        }
+        
+        return processedDoc;
+      });
+      
   console.timeEnd('🔤 內容預處理時間');
-  console.log(isTraditionalChinesePage() ? 
+      console.log(isTraditionalChinesePage() ? 
     `✅ 預處理完成！處理了 ${segmentationStats.calls} 次調用` :
     `✅ 预处理完成！处理了 ${segmentationStats.calls} 次调用`);
   
   return processedIndex;
 }
 
-// 初始化搜索功能（内部函数）
-async function initSearch() {
-  if (!isIndexPage()) return;
+// 獲取搜索相關的 DOM 元素
+function getSearchElements() {
+  return {
+    searchContainer: document.getElementById('search-container'),
+    searchActivation: document.querySelector('.search-activation'),
+    searchInput: document.getElementById('search-input'),
+    searchStatus: document.getElementById('search-status'),
+    searchResults: document.getElementById('search-results'),
+    searchResultsList: document.getElementById('search-results-list'),
+    searchResultsCount: document.getElementById('search-results-count'),
+    searchClear: document.getElementById('search-clear'),
+    searchCollapse: document.getElementById('search-collapse'),
+    tocHeader: document.getElementById('toc-header')
+  };
+}
+
+// 初始化搜索 UI
+function initializeSearchUI(elements) {
+  console.time('🎨 UI初始化');
   
-  console.time('🚀 搜索初始化總時間');
-  console.log('📊 開始搜索初始化流程...');
+  // 显示搜索容器，隐藏激活按钮
+  if (elements.searchActivation) elements.searchActivation.style.display = 'none';
+  elements.searchContainer.style.display = 'block';
   
-  const searchContainer = document.getElementById('search-container');
-  const searchActivation = document.querySelector('.search-activation');
-  const searchInput = document.getElementById('search-input');
-  const searchStatus = document.getElementById('search-status');
-  const searchResults = document.getElementById('search-results');
-  const searchResultsList = document.getElementById('search-results-list');
-  const searchResultsCount = document.getElementById('search-results-count');
-  const searchClear = document.getElementById('search-clear');
-  const searchCollapse = document.getElementById('search-collapse');
-  const tocHeader = document.getElementById('toc-header');
+  // 清空當前狀態並創建載入UI
+  elements.searchStatus.innerHTML = '';
+  const loadingUI = createLoadingUI(elements.searchStatus);
   
-  if (!searchInput || !searchContainer) return;
-  
-  try {
-    console.time('🎨 UI初始化');
-    // 显示搜索容器，隐藏激活按钮
-    if (searchActivation) searchActivation.style.display = 'none';
-    searchContainer.style.display = 'block';
-    
-    // 清空當前狀態並創建載入UI
-    searchStatus.innerHTML = '';
-    const loadingUI = createLoadingUI(searchStatus);
-    console.timeEnd('🎨 UI初始化');
-    
-    // 检查MiniSearch是否可用
-    console.time('📚 MiniSearch檢查');
-    if (typeof MiniSearch === 'undefined') {
-      throw new Error('MiniSearch库未加载');
-    }
-    console.timeEnd('📚 MiniSearch檢查');
-    
-    // 初始化中文分词器
-    console.time('🔧 分詞器初始化');
-    const segmenterEnabled = await initChineseSegmenter();
-    console.timeEnd('🔧 分詞器初始化');
-    console.log(isTraditionalChinesePage() ? 
-      `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
-      `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
-    
-    // 加载搜索索引
-    console.time('📥 JSON載入時間');
-    searchIndex = await loadSearchIndexWithProgress();
-    console.timeEnd('📥 JSON載入時間');
-    console.log(`📋 索引記錄數: ${searchIndex.length}`);
-    
-    // 載入完成，移除載入UI
-    searchStatus.removeChild(loadingUI.loadingDiv);
-    
-    // 預處理搜索數據
-    const processedIndex = preprocessSearchIndex(searchIndex, segmenterEnabled);
-    
-    // 創建並配置 MiniSearch 實例
-    console.time('🏗️ MiniSearch對象創建');
-    const searchConfig = createSearchConfig(segmenterEnabled);
-    miniSearch = new MiniSearch(searchConfig);
-    console.timeEnd('🏗️ MiniSearch對象創建');
-    
-    console.log(isTraditionalChinesePage() ? 
-      '✅ 使用統一搜索配置' : 
-      '✅ 使用统一搜索配置');
-      
-      // 分批添加預處理的文档到索引（改善用戶體驗）
+  console.timeEnd('🎨 UI初始化');
+  return loadingUI;
+}
+
+// 分批建立搜索索引
+async function buildSearchIndexInBatches(miniSearch, processedIndex, searchStatus) {
       console.time('📇 索引建立時間 (分批處理)');
       console.log(isTraditionalChinesePage() ? 
         `🔄 開始分批處理 ${processedIndex.length} 條預處理記錄...` :
@@ -477,7 +431,6 @@ async function initSearch() {
       // 分批配置
       const BATCH_SIZE = 500;
       const totalBatches = Math.ceil(processedIndex.length / BATCH_SIZE);
-      const estimatedTime = Math.ceil(totalBatches * 0.1); // 預處理後更快
       
       // 創建進度顯示
       const progressDiv = document.createElement('div');
@@ -530,7 +483,10 @@ async function initSearch() {
       console.log(isTraditionalChinesePage() ? 
         '✅ 索引建立完成！' : 
         '✅ 索引建立完成！');
+}
       
+// 完成搜索初始化設置
+function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
       // 顯示完成狀態和分词功能状态
       const segmenterStatus = segmenterEnabled ? 
         (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
@@ -541,9 +497,9 @@ async function initSearch() {
         '🎉 搜尋初始化流程完成！' : 
         '🎉 搜索初始化流程完成！');
       
-      searchStatus.innerHTML = `
+  elements.searchStatus.innerHTML = `
         <div class="search-status-success">
-          ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
+      ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: indexLength })}
           <br><small>🔧 ${segmenterStatus}</small>
         </div>
       `;
@@ -553,8 +509,8 @@ async function initSearch() {
       initializeSearchResultsHeight();
       
       // 启用搜索输入框
-      searchInput.disabled = false;
-      searchInput.placeholder = getI18nText('search.search_placeholder', isTraditionalChinesePage(), '搜尋全文內容...');
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.search_placeholder', isTraditionalChinesePage(), '搜尋全文內容...');
       
       // 重新启用激活按钮
       const searchActivateBtn = document.getElementById('search-activate-btn');
@@ -563,29 +519,128 @@ async function initSearch() {
       }
       
       // 聚焦搜索框
-      setTimeout(() => searchInput.focus(), 100);
+  setTimeout(() => elements.searchInput.focus(), 100);
+}
+      
+// 處理搜索初始化錯誤
+function handleSearchInitError(elements, error) {
+  console.error('搜索初始化失败:', error);
+  
+  // 清空狀態並顯示錯誤
+  elements.searchStatus.innerHTML = '';
+  
+  // 創建錯誤UI並提供重試功能
+  createErrorUI(elements.searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
+    await initSearch();
+  });
+  
+  // 即使失败也要启用输入框，让用户可以重试
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
+  
+  // 重新启用激活按钮，允许用户重试
+  const searchActivateBtn = document.getElementById('search-activate-btn');
+  if (searchActivateBtn) {
+    searchActivateBtn.disabled = false;
+  }
+}
+
+// 初始化搜索結果欄位高度 - 移除高度限制
+function initializeSearchResultsHeight() {
+  const searchResultsList = document.querySelector('.search-results-list');
+  if (searchResultsList) {
+    // 移除高度限制，顯示所有搜尋結果
+    searchResultsList.style.maxHeight = 'none';
+    searchResultsList.style.overflowY = 'visible';
+  }
+}
+
+// 動態擴大搜索結果欄位高度 - 已預設無限制，此函數保留以維持兼容性
+function expandSearchResultsHeight() {
+  const searchResultsList = document.querySelector('.search-results-list');
+  
+  if (!searchResultsList) {
+    return;
+  }
+  
+  // 確保無高度限制（預設已是如此）
+  searchResultsList.style.maxHeight = 'none';
+  searchResultsList.style.overflowY = 'visible';
+  
+  // 添加標記，表示已經展開
+  searchResultsList.setAttribute('data-expanded', 'true');
+}
+
+// 重置搜索結果欄位高度（新搜索時調用） - 移除高度限制
+function resetSearchResultsHeight() {
+  const searchResultsList = document.querySelector('.search-results-list');
+  if (searchResultsList) {
+    // 移除高度限制，顯示所有搜尋結果
+    searchResultsList.style.maxHeight = 'none';
+    searchResultsList.style.overflowY = 'visible';
+    // 移除展開標記，因為預設就是展開狀態
+    searchResultsList.removeAttribute('data-expanded');
+  }
+}
+
+// 初始化搜索功能（内部函数）
+async function initSearch() {
+  if (!isIndexPage()) return;
+  
+  console.time('🚀 搜索初始化總時間');
+  console.log('📊 開始搜索初始化流程...');
+  
+  const elements = getSearchElements();
+  if (!elements.searchInput || !elements.searchContainer) return;
+  
+  try {
+    const loadingUI = initializeSearchUI(elements);
+    
+    // 检查MiniSearch是否可用
+    console.time('📚 MiniSearch檢查');
+    if (typeof MiniSearch === 'undefined') {
+      throw new Error('MiniSearch库未加载');
+    }
+    console.timeEnd('📚 MiniSearch檢查');
+    
+    // 初始化中文分词器
+    console.time('🔧 分詞器初始化');
+    const segmenterEnabled = await initChineseSegmenter();
+    console.timeEnd('🔧 分詞器初始化');
+    console.log(isTraditionalChinesePage() ? 
+      `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
+      `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
+    
+    // 加载搜索索引
+    console.time('📥 JSON載入時間');
+    searchIndex = await loadSearchIndexWithProgress();
+    console.timeEnd('📥 JSON載入時間');
+    console.log(`📋 索引記錄數: ${searchIndex.length}`);
+    
+    // 載入完成，移除載入UI
+    elements.searchStatus.removeChild(loadingUI.loadingDiv);
+    
+    // 預處理搜索數據
+    const processedIndex = preprocessSearchIndex(searchIndex, segmenterEnabled);
+    
+    // 創建並配置 MiniSearch 實例
+    console.time('🏗️ MiniSearch對象創建');
+    const searchConfig = createSearchConfig(segmenterEnabled);
+    miniSearch = new MiniSearch(searchConfig);
+    console.timeEnd('🏗️ MiniSearch對象創建');
+    
+    console.log(isTraditionalChinesePage() ? 
+      '✅ 使用統一搜索配置' : 
+      '✅ 使用统一搜索配置');
+      
+    // 分批建立搜索索引
+    await buildSearchIndexInBatches(miniSearch, processedIndex, elements.searchStatus);
+      
+    // 完成搜索初始化設置
+    finalizeSearchSetup(elements, segmenterEnabled, searchIndex.length);
       
     } catch (error) {
-      console.error('搜索初始化失败:', error);
-      
-      // 清空狀態並顯示錯誤
-      searchStatus.innerHTML = '';
-      
-      // 創建錯誤UI並提供重試功能
-      createErrorUI(searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
-        await initSearch();
-      });
-      
-      // 即使失败也要启用输入框，让用户可以重试
-      searchInput.disabled = false;
-      searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
-      
-      // 重新启用激活按钮，允许用户重试
-      const searchActivateBtn = document.getElementById('search-activate-btn');
-      if (searchActivateBtn) {
-        searchActivateBtn.disabled = false;
-      }
-      
+      handleSearchInitError(elements, error);
       return;
     }
     
@@ -595,15 +650,15 @@ async function initSearch() {
       resetSearchResultsHeight();
       
       if (!miniSearch || !query || query.trim().length < 2) {
-        searchResults.style.display = 'none';
-        tocHeader.style.display = 'block';
+        elements.searchResults.style.display = 'none';
+        elements.tocHeader.style.display = 'block';
         currentSearchResults = [];
         displayedResultsCount = 0;
         hideLoadMoreButtons();
         if (query && query.trim().length > 0 && query.trim().length < 2) {
-          searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
+          elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
         } else {
-          searchStatus.innerHTML = `
+          elements.searchStatus.innerHTML = `
             ${getText(`搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`, `搜尋準備就緒 (共${searchIndex ? searchIndex.length : 0}條記錄)`)}
           `;
         }
@@ -615,8 +670,8 @@ async function initSearch() {
       try {
         // 执行搜索
         const results = miniSearch.search(trimmedQuery, {
-          boost: { title: 1, processedContent: 1 },
-          prefix: true
+          boost: { processedContent: 1 }
+          // prefix: true
         });
         
         // 按MiniSearch的score由高到低排序
@@ -640,11 +695,11 @@ async function initSearch() {
           displayPagedResults(trimmedQuery);
         } else {
           displayNoResults(trimmedQuery);
-          searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
+          elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
         }
         
-        searchResults.style.display = 'block';
-        tocHeader.style.display = 'none';
+        elements.searchResults.style.display = 'block';
+        elements.tocHeader.style.display = 'none';
         
         // 延迟更新浮动控制状态，让DOM变化完成
         setTimeout(updateFloatingControlsState, 10);
@@ -654,10 +709,10 @@ async function initSearch() {
         
       } catch (error) {
         console.error('搜索出错:', error);
-        searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
+        elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
         // 在出错时也隐藏搜索结果
-        searchResults.style.display = 'none';
-        tocHeader.style.display = 'block';
+        elements.searchResults.style.display = 'none';
+        elements.tocHeader.style.display = 'block';
         
         // 延迟更新浮动控制状态，让DOM变化完成
         setTimeout(updateFloatingControlsState, 10);
@@ -676,34 +731,15 @@ async function initSearch() {
       
       // 更新搜索状态为成功状态
       const totalResults = currentSearchResults.length;
-      searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+      const searchStatus = document.getElementById('search-status');
+      if (searchStatus) {
+        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+      }
     }
     
-    // 初始化搜索結果欄位高度 - 移除高度限制
-    function initializeSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      if (searchResultsList) {
-        // 移除高度限制，顯示所有搜尋結果
-        searchResultsList.style.maxHeight = 'none';
-        searchResultsList.style.overflowY = 'visible';
-      }
-    }
 
-    // 動態擴大搜索結果欄位高度 - 已預設無限制，此函數保留以維持兼容性
-    function expandSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      
-      if (!searchResultsList) {
-        return;
-      }
-      
-      // 確保無高度限制（預設已是如此）
-      searchResultsList.style.maxHeight = 'none';
-      searchResultsList.style.overflowY = 'visible';
-      
-      // 添加標記，表示已經展開
-      searchResultsList.setAttribute('data-expanded', 'true');
-    }
+
+
     
     // 收縮搜索結果欄位高度 - 已移除收縮功能，此函數保留以維持兼容性
     function collapseSearchResultsHeight() {
@@ -721,17 +757,7 @@ async function initSearch() {
       searchResultsList.removeAttribute('data-expanded');
     }
 
-    // 重置搜索結果欄位高度（新搜索時調用） - 移除高度限制
-    function resetSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      if (searchResultsList) {
-        // 移除高度限制，顯示所有搜尋結果
-        searchResultsList.style.maxHeight = 'none';
-        searchResultsList.style.overflowY = 'visible';
-        // 移除展開標記，因為預設就是展開狀態
-        searchResultsList.removeAttribute('data-expanded');
-      }
-    }
+
 
     // 加载更多结果 - 修正邏輯：只加載20條但展開畫面
     function loadMoreResults() {
@@ -751,7 +777,10 @@ async function initSearch() {
         
         // 更新搜索状态
         const totalResults = currentSearchResults.length;
-        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus) {
+          searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        }
       }
     }
     
@@ -770,7 +799,10 @@ async function initSearch() {
         
         // 更新搜索状态
         const totalResults = currentSearchResults.length;
-        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus) {
+          searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        }
       }
     }
     
@@ -785,7 +817,10 @@ async function initSearch() {
         searchResultsList.style.overflowY = 'visible';
         
         // 確保搜索結果容器也能完全顯示
-        searchResults.style.maxHeight = 'none';
+        const searchResults = document.getElementById('search-results');
+        if (searchResults) {
+          searchResults.style.maxHeight = 'none';
+        }
         
         console.log('🔧 已調整搜索結果容器為自適應高度');
       }
@@ -795,7 +830,7 @@ async function initSearch() {
     // 更新结果计数器
     function updateResultsCounter() {
       const totalResults = currentSearchResults.length;
-      searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
+      elements.searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
     }
     
 
@@ -842,20 +877,20 @@ async function initSearch() {
         generateSearchResultItem(result, index, startIndex, query)
       ).join('');
       
-      searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+      elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
     }
     
     // 显示搜索结果（原函数，现在用于内部调用）
     function displayResults(results, query) {
-      searchResultsList.innerHTML = results.map((result, index) => 
+      elements.searchResultsList.innerHTML = results.map((result, index) => 
         generateSearchResultItem(result, index, 0, query)
       ).join('');
     }
     
     // 显示无结果
     function displayNoResults(query) {
-      searchResultsCount.textContent = getText('未找到结果', '未找到結果');
-      searchResultsList.innerHTML = `
+      elements.searchResultsCount.textContent = getText('未找到结果', '未找到結果');
+      elements.searchResultsList.innerHTML = `
         <li class="search-result-item" style="text-align: center; color: #999;">
           <div>${getText(`未找到包含"${escapeHtml(query)}"的内容`, `未找到包含"${escapeHtml(query)}"的內容`)}</div>
           <div style="font-size: 12px; margin-top: 8px;">${getText('尝试使用不同的关键词', '嘗試使用不同的關鍵詞')}</div>
@@ -1252,9 +1287,13 @@ async function initSearch() {
     
     // 清除搜索
     function clearSearch() {
-      searchInput.value = '';
-      searchResults.style.display = 'none';
-      tocHeader.style.display = 'block';
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+      const tocHeader = document.getElementById('toc-header');
+      
+      if (searchInput) searchInput.value = '';
+      if (searchResults) searchResults.style.display = 'none';
+      if (tocHeader) tocHeader.style.display = 'block';
       currentSearchResults = [];
       displayedResultsCount = 0;
       hideLoadMoreButtons();
@@ -1269,7 +1308,7 @@ async function initSearch() {
     
     // 事件监听
     let searchTimeout;
-    searchInput.addEventListener('input', (e) => {
+    elements.searchInput.addEventListener('input', (e) => {
       clearTimeout(searchTimeout);
       const query = e.target.value.trim();
       
@@ -1280,10 +1319,10 @@ async function initSearch() {
     });
     
     // 清除搜索按钮
-    searchClear.addEventListener('click', clearSearch);
+    elements.searchClear.addEventListener('click', clearSearch);
     
     // 收起搜索按钮
-    searchCollapse.addEventListener('click', collapseSearch);
+    elements.searchCollapse.addEventListener('click', collapseSearch);
     
     // 顯示更多按鈕（頂部和底部）
     const loadMoreBtn = document.getElementById('search-load-more');
@@ -1321,7 +1360,7 @@ async function initSearch() {
     }
     
     // 搜索结果点击
-    searchResultsList.addEventListener('click', (e) => {
+    elements.searchResultsList.addEventListener('click', (e) => {
       const item = e.target.closest('.search-result-item');
       if (item) {
         const url = item.dataset.url;
