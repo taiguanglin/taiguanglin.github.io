@@ -2736,3 +2736,30 @@ body.dark-mode .bookmark-time {
   }
 }
 
+/* 原始文件名顯示（供編輯人員和管理人員參考） */
+p.source-filename {
+  color: #ccc;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  font-weight: normal;
+  margin: 5px 0 15px 0;
+  opacity: 0.7;
+  user-select: text; /* 確保可以選取 */
+  cursor: text;
+  padding-left: 30px;
+  line-height: 1.2;
+}
+
+/* 當滑鼠懸停時稍微增加可見性 */
+p.source-filename:hover {
+  opacity: 0.9;
+}
+
+/* 響應式設計：在小螢幕上調整 */
+@media (max-width: 768px) {
+  p.source-filename {
+    font-size: 10px;
+    margin: 3px 0 10px 0;
+  }
+}
+

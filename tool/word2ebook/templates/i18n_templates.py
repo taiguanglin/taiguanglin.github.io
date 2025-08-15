@@ -285,6 +285,8 @@ if (typeof MiniSearch === 'undefined') {{
   </div>
 </div>
 
+<p class="source-filename" id="source-filename">Source: {source_filename}</p>
+
 <!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
   <button class="floating-level-toggle" id="floating-level-toggle" title="{collapse_expand_level_control}">⇄</button>
