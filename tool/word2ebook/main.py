@@ -104,6 +104,13 @@ class Word2EBookConverter:
                 i18n_js_content = f.read()
             self.file_manager.write_file("assets/js/i18n-text.js", i18n_js_content)
         
+        # 写入搜索缓存管理器 JavaScript
+        cache_js_path = Path(__file__).parent / "assets" / "js" / "search-cache.js"
+        if cache_js_path.exists():
+            with open(cache_js_path, 'r', encoding='utf-8') as f:
+                cache_js_content = f.read()
+            self.file_manager.write_file("assets/js/search-cache.js", cache_js_content)
+        
         # 复制 jieba-wasm 文件
         jieba_js_path = Path(__file__).parent / "assets" / "js" / "jieba_rs_wasm.js"
         jieba_wasm_path = Path(__file__).parent / "assets" / "js" / "jieba_rs_wasm_bg.wasm"
@@ -173,6 +180,14 @@ def main() -> None:
     generate_search_index = not (args.skip_index or args.fast)
     generate_traditional = not (args.skip_traditional or args.fast)
     generate_simplified = not (args.skip_simplified or args.fast)
+    
+    # 測試優化：如果沒有明確指定，默認只生成繁體版（用於開發測試）
+    if not args.skip_traditional and not args.skip_simplified and not args.fast:
+        # 檢查是否在開發環境（可以通過環境變量或其他方式判斷）
+        import os
+        if os.environ.get('WORD2EBOOK_TEST_MODE', '').lower() == 'true':
+            print("🧪 測試模式：只生成繁體版以加快測試速度")
+            generate_simplified = False
     
     # 创建转换配置
     config = ConversionConfig(

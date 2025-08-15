@@ -185,6 +185,7 @@ if (typeof MiniSearch === 'undefined') {{
 }}
 </script>
 <script src="assets/js/i18n-text.js"></script>
+<script src="assets/js/search-cache.js"></script>
 <script src="assets/js/script.js" defer></script>
 </head>
 <body>
