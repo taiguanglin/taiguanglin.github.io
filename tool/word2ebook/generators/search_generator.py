@@ -46,6 +46,14 @@ class SearchIndexGenerator:
                 search_items, updated_html = self.content_processor.extract_search_content(
                     html_content, chapter.filename
                 )
+                
+                # 強制確保搜索項目內容都是簡體字
+                for item in search_items:
+                    item.title = self.i18n_processor.ensure_simplified(item.title)
+                    item.content = self.i18n_processor.ensure_simplified(item.content)
+                    if hasattr(item, 'context') and item.context:
+                        item.context = self.i18n_processor.ensure_simplified(item.context)
+                
                 all_search_items.extend(search_items)
                 
                 # 更新HTML文件，确保所有元素都有ID

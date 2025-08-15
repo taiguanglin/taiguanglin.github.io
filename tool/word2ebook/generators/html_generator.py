@@ -177,16 +177,25 @@ class HTMLGenerator:
             # 分離章節標題和內容
             chapter_title_html, content_without_title = self._extract_chapter_title(processed_content, chapter.title)
             
+            # 強制確保所有內容都是簡體字
+            simplified_title = self.i18n_processor.ensure_simplified(chapter.title)
+            simplified_chapter_title = self.i18n_processor.ensure_simplified(chapter_title_html)
+            simplified_chapter_toc = self.i18n_processor.ensure_simplified(chapter.chapter_toc)
+            simplified_content = self.i18n_processor.ensure_simplified(content_without_title)
+            simplified_prev_link = self.i18n_processor.ensure_simplified(nav_data['prev_link'])
+            simplified_next_link = self.i18n_processor.ensure_simplified(nav_data['next_link'])
+            simplified_top_nav_links = self.i18n_processor.ensure_simplified(nav_data['top_nav_links'])
+            
             # 渲染页面
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=False,
-                title=chapter.title,
-                chapter_title=chapter_title_html,
-                chapter_toc=chapter.chapter_toc,
-                content=content_without_title,
-                prev_link=nav_data['prev_link'],
-                next_link=nav_data['next_link'],
-                top_nav_links=nav_data['top_nav_links'],
+                title=simplified_title,
+                chapter_title=simplified_chapter_title,
+                chapter_toc=simplified_chapter_toc,
+                content=simplified_content,
+                prev_link=simplified_prev_link,
+                next_link=simplified_next_link,
+                top_nav_links=simplified_top_nav_links,
                 home_link="index.html",
                 lang_switch_links=lang_switch_links,
                 favicon_tag=self.favicon_tag
@@ -253,13 +262,18 @@ class HTMLGenerator:
         # 獲取原始文件名（只要文件名，不要路徑）
         source_filename = self.input_file.name if self.input_file else ""
         
+        # 強制確保所有內容都是簡體字
+        simplified_book_title = self.i18n_processor.ensure_simplified(book_title)
+        simplified_toc_html = self.i18n_processor.ensure_simplified(toc_html)
+        simplified_source_filename = self.i18n_processor.ensure_simplified(source_filename)
+        
         html_content = self.i18n_template_manager.render_index(
             is_traditional=False,
-            book_title=book_title,
-            toc_items=toc_html,
+            book_title=simplified_book_title,
+            toc_items=simplified_toc_html,
             lang_switch_links=lang_switch_links,
             favicon_tag=self.favicon_tag,
-            source_filename=source_filename
+            source_filename=simplified_source_filename
         )
         
         self.file_manager.write_file("index.html", html_content)
