@@ -104,6 +104,13 @@ class Word2EBookConverter:
                 i18n_js_content = f.read()
             self.file_manager.write_file("assets/js/i18n-text.js", i18n_js_content)
         
+        # 写入搜索缓存管理器 JavaScript
+        cache_js_path = Path(__file__).parent / "assets" / "js" / "search-cache.js"
+        if cache_js_path.exists():
+            with open(cache_js_path, 'r', encoding='utf-8') as f:
+                cache_js_content = f.read()
+            self.file_manager.write_file("assets/js/search-cache.js", cache_js_content)
+        
         # 复制 jieba-wasm 文件
         jieba_js_path = Path(__file__).parent / "assets" / "js" / "jieba_rs_wasm.js"
         jieba_wasm_path = Path(__file__).parent / "assets" / "js" / "jieba_rs_wasm_bg.wasm"

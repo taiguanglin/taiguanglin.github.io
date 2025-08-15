@@ -341,7 +341,7 @@ function createSearchConfig(segmenterEnabled) {
     return {
       fields: ['processedContent'], // 移除 title，只索引實際內容
       storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url'],
-      searchOptions: {
+        searchOptions: {
         boost: { processedContent: 1 },
         combineWith: 'AND'
       },
@@ -471,6 +471,113 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
         '✅ 索引建立完成！' : 
         '✅ 索引建立完成！');
 }
+
+// 支持緩存的分批索引建立函數
+async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, cacheManager, isTraditional) {
+  // 嘗試從緩存加載處理後的數據
+  let processedData = null;
+  if (cacheManager) {
+    processedData = await cacheManager.getCachedProcessedIndex(isTraditional, segmenterEnabled);
+  }
+  
+  if (processedData) {
+    // 從緩存恢復 MiniSearch 索引
+    console.time('📇 從緩存恢復索引');
+    console.log('⚡ 從緩存恢復處理後的搜索索引...');
+    
+    try {
+      // 批量添加到 MiniSearch
+      const BATCH_SIZE = 1000;
+      const totalItems = processedData.length;
+      
+      for (let i = 0; i < totalItems; i += BATCH_SIZE) {
+        const batch = processedData.slice(i, i + BATCH_SIZE);
+        miniSearch.addAll(batch);
+        
+        // 更新進度
+        const progress = Math.min(i + BATCH_SIZE, totalItems);
+        const progressText = isTraditionalChinesePage() ? 
+          `⚡ 從緩存恢復索引: ${progress}/${totalItems}` :
+          `⚡ 从缓存恢复索引: ${progress}/${totalItems}`;
+        searchStatus.innerHTML = `<div class="search-loading-text">${progressText}</div>`;
+        
+        // 讓 UI 有機會更新
+        await new Promise(resolve => setTimeout(resolve, 5));
+      }
+      
+      console.timeEnd('📇 從緩存恢復索引');
+      console.log(isTraditionalChinesePage() ? 
+        '⚡ 從緩存快速恢復索引完成！' : 
+        '⚡ 从缓存快速恢复索引完成！');
+    } catch (error) {
+      console.warn('從緩存恢復失敗，將重新建立索引:', error);
+      // 如果緩存恢復失敗，回退到標準流程
+      await buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled);
+    }
+  } else {
+    // 標準流程：分詞並建立索引
+    console.log('🔄 執行完整的分詞和索引建立流程...');
+    
+    // 收集處理後的數據以便緩存
+    const processedItems = [];
+    
+    // 修改原始函數以收集處理後的數據
+    await buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems);
+    
+    // 保存處理後的數據到緩存
+    if (cacheManager && processedItems.length > 0) {
+      console.log('💾 保存處理後的索引到緩存...');
+      await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled);
+    }
+  }
+}
+
+// 修改版的索引建立函數，收集處理後的數據
+async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems) {
+  console.time('📇 分詞+索引建立時間 (分批處理)');
+  console.log(isTraditionalChinesePage() ? 
+    `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...` :
+    `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
+
+  const BATCH_SIZE = 300;
+  const totalItems = searchIndex.length;
+  
+  for (let i = 0; i < totalItems; i += BATCH_SIZE) {
+    const batch = searchIndex.slice(i, i + BATCH_SIZE);
+    const processedBatch = [];
+    
+    // 處理批次中的每個項目
+    for (const doc of batch) {
+      let processedDoc = { ...doc };
+      
+      // 如果啟用分詞，對內容進行分詞
+      if (segmenterEnabled && doc.content) {
+        processedDoc.processedContent = segmentWithJieba(doc.content);
+      }
+      
+      processedBatch.push(processedDoc);
+      processedItems.push(processedDoc); // 收集到緩存數組
+    }
+    
+    // 添加到 MiniSearch
+    miniSearch.addAll(processedBatch);
+    
+    // 更新進度
+    const progress = Math.min(i + BATCH_SIZE, totalItems);
+    const progressText = isTraditionalChinesePage() ? 
+      `📊 正在分詞並建立搜尋索引: ${progress}/${totalItems}` :
+      `📊 正在分词并建立搜索索引: ${progress}/${totalItems}`;
+    searchStatus.innerHTML = `<div class="search-loading-text">${progressText}</div>`;
+    
+    // 讓 UI 有機會更新
+    await new Promise(resolve => setTimeout(resolve, 15));
+  }
+  
+  console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
+  console.log(isTraditionalChinesePage() ? 
+    '✅ 索引建立完成！' : 
+    '✅ 索引建立完成！');
+}
       
 // 完成搜索初始化設置
 function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
@@ -580,6 +687,18 @@ async function initSearch() {
   const elements = getSearchElements();
   if (!elements.searchInput || !elements.searchContainer) return;
   
+  // 初始化緩存管理器
+  let cacheManager = null;
+  try {
+    if (window.searchCacheManager) {
+      await window.searchCacheManager.init();
+      cacheManager = window.searchCacheManager;
+      console.log('💾 緩存管理器初始化成功');
+    }
+  } catch (error) {
+    console.warn('緩存管理器初始化失敗，將使用標準流程:', error);
+  }
+  
   try {
     const loadingUI = initializeSearchUI(elements);
     
@@ -598,9 +717,30 @@ async function initSearch() {
       `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
       `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
     
-    // 加载搜索索引
+    // 加载搜索索引（優先從緩存）
     console.time('📥 JSON載入時間');
-    searchIndex = await loadSearchIndexWithProgress();
+    const isTraditional = isTraditionalChinesePage();
+    
+    // 嘗試從緩存加載
+    let searchIndex = null;
+    if (cacheManager) {
+      searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
+    }
+    
+    // 如果緩存未命中，從網絡加載
+    if (!searchIndex) {
+      console.log('📡 從網絡加載搜索索引...');
+      searchIndex = await loadSearchIndexWithProgress();
+      
+      // 保存到緩存
+      if (cacheManager && searchIndex) {
+        await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
+        await cacheManager.setMetadata('lastUpdate', Date.now());
+      }
+    } else {
+      console.log('⚡ 從緩存加載搜索索引');
+    }
+    
     console.timeEnd('📥 JSON載入時間');
     console.log(`📋 索引記錄數: ${searchIndex.length}`);
     
@@ -617,8 +757,8 @@ async function initSearch() {
       '✅ 使用統一搜索配置' : 
       '✅ 使用统一搜索配置');
       
-    // 分批分詞並建立搜索索引（統一處理）
-    await buildSearchIndexInBatches(miniSearch, searchIndex, elements.searchStatus, segmenterEnabled);
+    // 分批分詞並建立搜索索引（統一處理，支持緩存）
+    await buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, elements.searchStatus, segmenterEnabled, cacheManager, isTraditional);
       
     // 完成搜索初始化設置
     finalizeSearchSetup(elements, segmenterEnabled, searchIndex.length);
@@ -1303,9 +1443,9 @@ async function initSearch() {
       resetSearchResultsHeight();
       
       if (searchStatus) {
-        searchStatus.innerHTML = `
-          ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
-        `;
+      searchStatus.innerHTML = `
+        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
+      `;
       }
     }
     
