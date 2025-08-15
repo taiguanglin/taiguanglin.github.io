@@ -336,23 +336,29 @@ function hideLoadMoreButtons() {
 
 // 創建搜索配置
 function createSearchConfig(segmenterEnabled) {
-  return {
-    fields: ['title', 'processedContent'],
-    storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
-        searchOptions: {
-      boost: { processedContent: 1 },
-      // prefix: true,
-      combineWith: 'AND'
-                },
-        processTerm: (term) => {
-      if (term.length > 1) {
-        // 使用統一的 jieba-wasm 分詞函數
-        const words = segmentWithJieba(term, true); // 返回數組格式
-              return words.length > 0 ? words : [term];
-          }
-          return [term];
-        }
-  };
+  if (segmenterEnabled) {
+    // 啟用分詞時：只索引 processedContent，title 不參與搜索
+    return {
+      fields: ['processedContent'], // 移除 title，只索引實際內容
+      storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url', 'weight'],
+      searchOptions: {
+        boost: { processedContent: 1 },
+        combineWith: 'AND'
+      },
+      // 關鍵優化：不使用 processTerm，避免對已分詞內容重複處理
+      // 用戶查詢的分詞在搜索時單獨處理
+    };
+  } else {
+    // 未啟用分詞時：只索引 content，title 不參與搜索
+    return {
+      fields: ['content'], // 移除 title，只索引實際內容
+      storeFields: ['id', 'title', 'type', 'content', 'context', 'url', 'weight'],
+      searchOptions: {
+        boost: { content: 1 },
+        combineWith: 'AND'
+      }
+    };
+  }
 }
       
 // 預處理搜索索引數據
@@ -524,24 +530,24 @@ function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
       
 // 處理搜索初始化錯誤
 function handleSearchInitError(elements, error) {
-  console.error('搜索初始化失败:', error);
-  
-  // 清空狀態並顯示錯誤
+      console.error('搜索初始化失败:', error);
+      
+      // 清空狀態並顯示錯誤
   elements.searchStatus.innerHTML = '';
-  
-  // 創建錯誤UI並提供重試功能
+      
+      // 創建錯誤UI並提供重試功能
   createErrorUI(elements.searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
-    await initSearch();
-  });
-  
-  // 即使失败也要启用输入框，让用户可以重试
+        await initSearch();
+      });
+      
+      // 即使失败也要启用输入框，让用户可以重试
   elements.searchInput.disabled = false;
   elements.searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
-  
-  // 重新启用激活按钮，允许用户重试
-  const searchActivateBtn = document.getElementById('search-activate-btn');
-  if (searchActivateBtn) {
-    searchActivateBtn.disabled = false;
+      
+      // 重新启用激活按钮，允许用户重试
+      const searchActivateBtn = document.getElementById('search-activate-btn');
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
   }
 }
 
@@ -668,11 +674,22 @@ async function initSearch() {
       const trimmedQuery = query.trim();
       
       try {
+        let searchQuery = trimmedQuery;
+        let searchOptions = {
+          boost: { processedContent: 1 } // 只對 processedContent 進行搜索
+        };
+        
+        // 如果啟用了分詞，對用戶查詢進行分詞處理
+        if (chineseSegmenter && trimmedQuery.length > 1) {
+          const queryWords = segmentWithJieba(trimmedQuery, true);
+          if (queryWords.length > 0) {
+            // 使用分詞後的詞語進行搜索，用空格連接
+            searchQuery = queryWords.join(' ');
+          }
+        }
+        
         // 执行搜索
-        const results = miniSearch.search(trimmedQuery, {
-          boost: { processedContent: 1 }
-          // prefix: true
-        });
+        const results = miniSearch.search(searchQuery, searchOptions);
         
         // 按MiniSearch的score由高到低排序
         results.sort((a, b) => {
@@ -733,7 +750,7 @@ async function initSearch() {
       const totalResults = currentSearchResults.length;
       const searchStatus = document.getElementById('search-status');
       if (searchStatus) {
-        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+      searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
       }
     }
     
@@ -779,7 +796,7 @@ async function initSearch() {
         const totalResults = currentSearchResults.length;
         const searchStatus = document.getElementById('search-status');
         if (searchStatus) {
-          searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
         }
       }
     }
@@ -801,7 +818,7 @@ async function initSearch() {
         const totalResults = currentSearchResults.length;
         const searchStatus = document.getElementById('search-status');
         if (searchStatus) {
-          searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
+        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
         }
       }
     }
@@ -819,7 +836,7 @@ async function initSearch() {
         // 確保搜索結果容器也能完全顯示
         const searchResults = document.getElementById('search-results');
         if (searchResults) {
-          searchResults.style.maxHeight = 'none';
+        searchResults.style.maxHeight = 'none';
         }
         
         console.log('🔧 已調整搜索結果容器為自適應高度');
@@ -1290,6 +1307,7 @@ async function initSearch() {
       const searchInput = document.getElementById('search-input');
       const searchResults = document.getElementById('search-results');
       const tocHeader = document.getElementById('toc-header');
+      const searchStatus = document.getElementById('search-status');
       
       if (searchInput) searchInput.value = '';
       if (searchResults) searchResults.style.display = 'none';
@@ -1301,9 +1319,11 @@ async function initSearch() {
       // 重置搜索結果容器高度
       resetSearchResultsHeight();
       
-      searchStatus.innerHTML = `
-        ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
-      `;
+      if (searchStatus) {
+        searchStatus.innerHTML = `
+          ${getText(`搜索准备就绪 (共${searchIndex.length}条记录)`, `搜尋準備就緒 (共${searchIndex.length}條記錄)`)}
+        `;
+      }
     }
     
     // 事件监听
