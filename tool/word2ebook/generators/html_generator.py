@@ -259,7 +259,7 @@ class TOCGenerator:
         html += "</ul>"
         return html
     
-    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None, qa_metadata: Optional[QACountMetadata] = None) -> str:
+    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None, qa_metadata: Optional[QACountMetadata] = None, is_index_page: bool = False) -> str:
         """构建可折叠的章节目录（扁平化结构，但確保層級正確）"""
         if not toc_items:
             return "<ul></ul>"
@@ -296,11 +296,16 @@ class TOCGenerator:
             if i in items_with_children:
                 expand_icon = f'<span class="toc-expand-icon" data-level="{level}">▼</span>'
             
+            # 根据是否在首页决定链接属性
+            link_attrs = ""
+            if is_index_page:
+                link_attrs = ' target="_blank" rel="noopener noreferrer"'
+            
             # 生成扁平化的li元素，通过CSS和JavaScript控制层级显示
             # 添加 data-chapter 屬性來區分不同章節的子目錄
             chapter_attr = f' data-chapter="{chapter_index}"' if chapter_index is not None else ''
             html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 2}"{chapter_attr}>'
-            html += f'{expand_icon}<a href="{link}">{text}</a>{count_display}</li>\n'
+            html += f'{expand_icon}<a href="{link}"{link_attrs}>{text}</a>{count_display}</li>\n'
         
         html += "</ul>"
         return html
@@ -335,12 +340,12 @@ class TOCGenerator:
                 chapter_count_display = f'<span class="toc-count">({total_qa_count})</span>'
             
             html += f'<li class="toc-item toc-chapter" data-level="1" data-chapter="{ch_index}" data-default-visible="true">'
-            html += f'{expand_icon}<a href="{filename}">{ch.title}</a>{chapter_count_display}\n'
+            html += f'{expand_icon}<a href="{filename}" target="_blank" rel="noopener noreferrer">{ch.title}</a>{chapter_count_display}\n'
             
             if ch.toc_items:
                 # 转换 TOCItem 对象为元组，並添加章節標識
                 toc_tuples = [(item.level, item.text, item.anchor) for item in ch.toc_items]
-                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content, ch.qa_count_metadata)
+                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content, ch.qa_count_metadata, is_index_page=True)
             html += "</li>\n"
         html += "</ul>"
         return html
