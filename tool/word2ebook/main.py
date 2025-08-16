@@ -81,10 +81,12 @@ class Word2EBookConverter:
     def _setup_output_directory(self) -> None:
         """设置输出目录"""
         print("📁 正在设置输出目录...")
-        # 根據是否生成搜索索引決定是否清空目錄
-        # 如果生成搜索索引，表示是完整重建，需要清空
-        # 如果跳過搜索索引，表示是增量更新，保留現有內容
-        clean_existing = self.config.generate_search
+        # 决定是否清空目录的逻辑：
+        # 1. 如果跳过任何版本生成（简体或繁体），则保留现有内容
+        # 2. 如果跳过搜索索引生成，则保留现有内容  
+        # 3. 只有在完整重建时（生成所有内容）才清空目录
+        skip_any_version = not self.config.generate_simplified or not self.config.generate_traditional
+        clean_existing = self.config.generate_search and not skip_any_version
         self.file_manager.setup_output_directory(clean_existing)
     
     def _generate_static_assets(self) -> None:
