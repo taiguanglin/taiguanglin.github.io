@@ -2225,6 +2225,7 @@ body.dark-mode .toc-item.toc-expandable:hover {
 
 /* 为没有展开图标的目录项（叶子节点）添加可点击样式 */
 .toc-item:not(.toc-expandable) {
+    display: inline-flex;
     cursor: pointer;
     padding: 2px 4px;
     margin: 0 -4px;
