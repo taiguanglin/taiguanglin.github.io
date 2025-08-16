@@ -4,7 +4,7 @@ import re
 from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 
-from models.document_models import Chapter, TOCItem, QACountMetadata
+from models.document_models import Chapter, TOCItem, QACountMetadata, QAPosition
 from templates.html_templates import TemplateManager
 from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
@@ -109,37 +109,70 @@ class TOCGenerator:
         except Exception as e:
             return 0
     
-    def _generate_qa_count_metadata(self, html_content: str, toc_items: List[Tuple[int, str, str]], filename: str) -> QACountMetadata:
-        """生成問答計數元數據，只計算葉子節點"""
+    def _generate_qa_count_metadata_optimized(self, html_content: str, toc_items: List[Tuple[int, str, str]], filename: str) -> QACountMetadata:
+        """優化版本：一次性解析HTML並生成問答計數元數據"""
+        import re
+        
         metadata = QACountMetadata(chapter_filename=filename)
         metadata.toc_structure = toc_items.copy()
         
-        # 找出所有葉子節點
-        leaf_anchors = set()
-        for i, (level, text, anchor) in enumerate(toc_items):
-            # 檢查是否有子節點
-            has_children = False
-            for j in range(i + 1, len(toc_items)):
-                next_level = toc_items[j][0]
-                if next_level <= level:
-                    break
-                if next_level > level:
-                    has_children = True
-                    break
+        try:
+            # 1. 使用正則表達式找到所有標題的位置
+            for level, text, anchor in toc_items:
+                # 查找標題元素的位置
+                pattern = f'<[hH][2-4][^>]*id="{re.escape(anchor)}"[^>]*>'
+                match = re.search(pattern, html_content)
+                if match:
+                    metadata.heading_positions[anchor] = match.start()
             
-            if not has_children:
-                leaf_anchors.add(anchor)
-        
-        # 只對葉子節點計算問答數量
-        for i, (level, text, anchor) in enumerate(toc_items):
-            if anchor in leaf_anchors:
-                qa_count = self._get_qa_count_for_section(html_content, anchor, toc_items, i)
-                metadata.add_leaf_count(anchor, level, qa_count)
-        
-        # 計算父節點的計數
-        metadata.calculate_parent_counts()
-        
-        return metadata
+            # 2. 使用正則表達式找到所有問答的位置
+            question_pattern = r'<div[^>]*class="question"[^>]*>'
+            question_matches = list(re.finditer(question_pattern, html_content))
+
+            
+            for match in question_matches:
+                metadata.qa_positions.append(QAPosition(match.start(), match.end()))
+            
+            # 3. 將問答歸屬到對應的標題下
+            for level, text, anchor in toc_items:
+                if anchor not in metadata.heading_positions:
+                    continue
+                    
+                heading_pos = metadata.heading_positions[anchor]
+                
+                # 找到下一個同級或更高級標題的位置作為邊界
+                next_boundary = len(html_content)  # 默認到文檔末尾
+                current_level = level
+                
+                # 在toc_items中找到當前項目的索引
+                current_index = -1
+                for i, (toc_level, toc_text, toc_anchor) in enumerate(toc_items):
+                    if toc_anchor == anchor:
+                        current_index = i
+                        break
+                
+                # 從當前項目之後開始查找邊界
+                if current_index != -1:
+                    for i in range(current_index + 1, len(toc_items)):
+                        next_level, next_text, next_anchor = toc_items[i]
+                        if next_level <= current_level and next_anchor in metadata.heading_positions:
+                            next_boundary = metadata.heading_positions[next_anchor]
+                            break
+                
+                # 計算在這個範圍內的問答數量
+                qa_count = 0
+                for qa_pos in metadata.qa_positions:
+                    if heading_pos <= qa_pos.question_start < next_boundary:
+                        qa_count += 1
+                
+                metadata.anchor_counts[anchor] = qa_count
+            
+            return metadata
+            
+        except Exception as e:
+            print(f"Warning: Failed to generate optimized QA count metadata: {e}")
+            # 回退到空的元數據
+            return metadata
     
     def _insert_qa_counts_to_html(self, html_content: str, qa_metadata: QACountMetadata) -> str:
         """將問答計數插入到HTML中"""
@@ -292,7 +325,7 @@ class TOCGenerator:
             if enable_qa_count:
                 if hasattr(ch, 'qa_count_metadata') and ch.qa_count_metadata:
                     # 使用新的元數據方式，計算所有問答總數
-                    total_qa_count = sum(item.total_qa_count for item in ch.qa_count_metadata.counts.values())
+                    total_qa_count = sum(ch.qa_count_metadata.anchor_counts.values())
                 elif hasattr(ch, 'content') and ch.content:
                     # 回退到舊的方式
                     total_qa_count = self._get_total_qa_count_for_chapter(ch.content)
