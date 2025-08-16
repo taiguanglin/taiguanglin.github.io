@@ -328,8 +328,8 @@ class TOCGenerator:
             # 计算章节的问答数量
             chapter_count_display = ""
             if hasattr(ch, 'qa_count_metadata') and ch.qa_count_metadata:
-                # 使用新的元數據方式，計算所有問答總數
-                total_qa_count = sum(ch.qa_count_metadata.anchor_counts.values())
+                # 计算章节级别的问答数量（只包含第二层标题的问答数量总和）
+                total_qa_count = self._get_chapter_level_qa_count(ch)
             elif hasattr(ch, 'content') and ch.content:
                 # 回退到舊的方式
                 total_qa_count = self._get_total_qa_count_for_chapter(ch.content)
@@ -349,6 +349,22 @@ class TOCGenerator:
             html += "</li>\n"
         html += "</ul>"
         return html
+    
+    def _get_chapter_level_qa_count(self, chapter: Chapter) -> int:
+        """计算章节级别的问答数量（只包含第二层标题的问答数量总和）"""
+        if not chapter.qa_count_metadata or not chapter.toc_items:
+            return 0
+        
+        total_count = 0
+        
+        # 遍历章节的目录项，只计算第二层标题的问答数量
+        for toc_item in chapter.toc_items:
+            # 只计算第二层（level=2）的问答数量
+            if toc_item.level == 2:
+                count = chapter.qa_count_metadata.get_count_for_anchor(toc_item.anchor)
+                total_count += count
+        
+        return total_count
 
 
 class HTMLGenerator:
@@ -442,8 +458,8 @@ class HTMLGenerator:
             # 计算章节问答数量
             chapter_qa_count_display = ""
             if hasattr(chapter, 'qa_count_metadata') and chapter.qa_count_metadata:
-                # 使用新的元数据方式，计算所有问答总数
-                total_qa_count = sum(chapter.qa_count_metadata.anchor_counts.values())
+                # 计算章节级别的问答数量（只包含第二层标题的问答数量总和）
+                total_qa_count = self.toc_generator._get_chapter_level_qa_count(chapter)
             elif hasattr(chapter, 'content') and chapter.content:
                 # 回退到旧的方式
                 total_qa_count = self._get_total_qa_count_for_chapter(chapter.content)
@@ -513,8 +529,8 @@ class HTMLGenerator:
             # 计算章节问答数量（繁体版）
             chapter_qa_count_display = ""
             if hasattr(chapter, 'qa_count_metadata') and chapter.qa_count_metadata:
-                # 使用新的元数据方式，计算所有问答总数
-                total_qa_count = sum(chapter.qa_count_metadata.anchor_counts.values())
+                # 计算章节级别的问答数量（只包含第二层标题的问答数量总和）
+                total_qa_count = self.toc_generator._get_chapter_level_qa_count(chapter)
             elif hasattr(chapter, 'content') and chapter.content:
                 # 回退到旧的方式
                 total_qa_count = self._get_total_qa_count_for_chapter(chapter.content)
