@@ -321,22 +321,25 @@ class DocumentParser:
             # 检查是否为问题开始
             if current_block.startswith('<div class="question">'):
                 # 收集所有连续的问题内容
+                current_block = current_block.rstrip()
+                if current_block.endswith('</div>'):
+                    current_block = current_block[:current_block.rfind('</div>')].rstrip()
                 question_parts = [current_block]
                 i += 1
-                
+
                 # 收集后续的普通段落作为问题内容的延续
                 while i < len(content_blocks):
                     next_block = content_blocks[i]
-                    
+
                     # 如果遇到新的问题、回答或标题，停止收集
-                    if (next_block.startswith('<div class="question">') or 
+                    if (next_block.startswith('<div class="question">') or
                         next_block.startswith('<div class="answer">') or
-                        next_block.startswith('<h1') or 
-                        next_block.startswith('<h2>') or 
+                        next_block.startswith('<h1') or
+                        next_block.startswith('<h2>') or
                         next_block.startswith('<h3>') or
                         next_block.startswith('<hr>')):
                         break
-                    
+
                     # 如果是普通段落，添加为问题内容
                     if next_block.startswith('<p>'):
                         content = next_block.replace('<p>', '').replace('</p>', '')
@@ -344,11 +347,10 @@ class DocumentParser:
                         i += 1
                     else:
                         break
-                
-                # 确保问题区块正确结束
-                if not question_parts[-1].endswith('</div>'):
-                    question_parts.append('</div>')
-                    
+
+                # 添加关闭标签，确保所有问题内容在同一个区块内
+                question_parts.append('</div>')
+
                 merged_blocks.append('\n'.join(question_parts))
                 
             # 检查是否为回答开始
