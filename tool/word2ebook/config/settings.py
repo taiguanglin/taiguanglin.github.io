@@ -22,6 +22,7 @@ class Settings:
     enable_back_to_top: bool = True
     enable_reading_toolbar: bool = True
     enable_floating_toc: bool = True
+    enable_qa_count: bool = True
     
     # 多语言配置
     default_answerer: str = "Tai師父"

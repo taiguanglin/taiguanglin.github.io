@@ -292,7 +292,7 @@ class DocumentParser:
         
         # 生成目录（使用可控制的折叠目录结构，传入完整的HTML内容）
         toc_generator = TOCGenerator()
-        chapter.chapter_toc = toc_generator.build_collapsible_chapter_toc(toc_items, html_content=chapter.content)
+        chapter.chapter_toc = toc_generator.build_collapsible_chapter_toc(toc_items, html_content=chapter.content, enable_qa_count=self.settings.enable_qa_count)
         
         # 转换 toc_items 为 TOCItem 对象
         chapter.toc_items = [TOCItem(level=level, text=text, anchor=anchor) 
