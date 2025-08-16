@@ -14,7 +14,7 @@
 ## 项目结构
 
 ```
-word2ebook_/
+word2ebook/
 ├── core/                   # 核心解析模块
 │   ├── document_parser.py  # Word 文档解析器
 │   └── content_processor.py # 内容处理器
