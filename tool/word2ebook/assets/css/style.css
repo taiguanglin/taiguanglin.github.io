@@ -2225,6 +2225,7 @@ body.dark-mode .toc-item.toc-expandable:hover {
 
 /* 为没有展开图标的目录项（叶子节点）添加可点击样式 */
 .toc-item:not(.toc-expandable) {
+    display: inline-flex;
     cursor: pointer;
     padding: 2px 4px;
     margin: 0 -4px;
@@ -2292,6 +2293,23 @@ body.dark-mode .toc-item:not(.toc-expandable):hover {
   color: #f585cc;
   font-size: 13px;
   margin-left: 80px; /* 保持原始间距 */
+}
+
+/* 目录计数样式 */
+.toc-count {
+  color: #999999; /* 淡灰色 */
+  font-weight: 300; /* 更细的字体 */
+  font-size: 0.85em; /* 稍小的字体 */
+  margin-left: 6px; /* 与标题保持一定距离 */
+  pointer-events: none; /* 不可点击 */
+  user-select: none; /* 不可选择 */
+  opacity: 0.7; /* 半透明效果 */
+}
+
+/* 暗色模式下的计数样式 */
+body.dark-mode .toc-count {
+  color: #666666; /* 暗色模式下稍亮一些 */
+  opacity: 0.8; /* 暗色模式下稍微明显一些 */
 }
 
 /* 章节页目录层级样式 - 减少间距让内容更靠左 */

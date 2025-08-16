@@ -17,6 +17,120 @@ from config.settings import Settings
 class TOCGenerator:
     """目录生成器"""
     
+    def _count_children_at_levels(self, toc_items: List[Tuple[int, str, str]], parent_index: int, max_level: int = 4) -> Dict[int, int]:
+        """计算指定父项目在各个层级的子项目数量
+        
+        Args:
+            toc_items: 目录项目列表 (level, text, anchor)
+            parent_index: 父项目在列表中的索引
+            max_level: 最大计算层级
+            
+        Returns:
+            Dict[int, int]: {level: count} 各层级的子项目数量
+        """
+        if parent_index >= len(toc_items):
+            return {}
+            
+        parent_level = toc_items[parent_index][0]
+        level_counts = {}
+        
+        # 初始化计数器
+        for level in range(parent_level + 1, max_level + 1):
+            level_counts[level] = 0
+        
+        # 从父项目的下一个开始计算
+        for i in range(parent_index + 1, len(toc_items)):
+            current_level = toc_items[i][0]
+            
+            # 如果遇到同级或更高级别的项目，停止计算
+            if current_level <= parent_level:
+                break
+                
+            # 只计算在指定范围内的层级
+            if current_level <= max_level:
+                level_counts[current_level] += 1
+        
+        return level_counts
+    
+    def _get_qa_count_for_section(self, html_content: str, section_anchor: str, toc_items: List[Tuple[int, str, str]], current_index: int) -> int:
+        """计算指定目录项目下的问答数量"""
+        from bs4 import BeautifulSoup
+        import re
+        
+        try:
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # 找到当前目录项目对应的标题元素
+            current_heading = soup.find(id=section_anchor)
+            if not current_heading:
+                return 0
+            
+            # 确定下一个同级或更高级别标题的anchor（作为结束边界）
+            current_level = toc_items[current_index][0]
+            next_boundary_anchor = None
+            
+            for i in range(current_index + 1, len(toc_items)):
+                next_level = toc_items[i][0]
+                if next_level <= current_level:
+                    next_boundary_anchor = toc_items[i][2]
+                    break
+            
+            # 使用正则表达式来查找section内容
+            # 构建正则表达式来匹配从当前标题到下一个标题之间的内容
+            if next_boundary_anchor:
+                pattern = f'<[hH][2-4][^>]*id="{re.escape(section_anchor)}"[^>]*>.*?<[hH][2-4][^>]*id="{re.escape(next_boundary_anchor)}"[^>]*>'
+            else:
+                pattern = f'<[hH][2-4][^>]*id="{re.escape(section_anchor)}"[^>]*>.*$'
+            
+            match = re.search(pattern, html_content, re.DOTALL)
+            if match:
+                section_content = match.group(0)
+                # 在section内容中计算问题数量
+                question_pattern = r'<div[^>]*class="question"[^>]*>'
+                questions = re.findall(question_pattern, section_content)
+                qa_count = len(questions)
+                return qa_count
+            else:
+                return 0
+            
+        except Exception as e:
+            # 如果解析失败，返回0
+            print(f"Warning: Failed to parse QA count for {section_anchor}: {e}")
+            return 0
+    
+    def _get_total_qa_count_for_chapter(self, html_content: str) -> int:
+        """计算整个章节的问答总数量"""
+        from bs4 import BeautifulSoup
+        
+        try:
+            soup = BeautifulSoup(html_content, 'html.parser')
+            questions = soup.find_all('div', class_='question')
+            return len(questions)
+        except Exception as e:
+            return 0
+    
+    def _get_direct_children_count(self, toc_items: List[Tuple[int, str, str]], parent_index: int) -> int:
+        """获取指定父项目的直接子项目数量（已弃用，保留用于兼容性）"""
+        if parent_index >= len(toc_items):
+            return 0
+            
+        parent_level = toc_items[parent_index][0]
+        direct_children_count = 0
+        
+        # 从父项目的下一个开始计算
+        for i in range(parent_index + 1, len(toc_items)):
+            current_level = toc_items[i][0]
+            
+            # 如果遇到同级或更高级别的项目，停止计算
+            if current_level <= parent_level:
+                break
+                
+            # 只计算直接子项目（父级别+1）
+            if current_level == parent_level + 1:
+                direct_children_count += 1
+        
+        return direct_children_count
+    
     def build_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None) -> str:
         """将 (level, text, anchor) 结构转成巢状 <ul>"""
         if not toc_items:
@@ -40,7 +154,7 @@ class TOCGenerator:
         html += "</ul>"
         return html
     
-    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None) -> str:
+    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None) -> str:
         """构建可折叠的章节目录（扁平化结构，但確保層級正確）"""
         if not toc_items:
             return "<ul></ul>"
@@ -57,6 +171,13 @@ class TOCGenerator:
         for i, (level, text, anchor) in enumerate(toc_items):
             link = f'{filename}#{anchor}' if filename else f'#{anchor}'
             
+            # 计算问答数量（只对前4层显示计数）
+            count_display = ""
+            if level <= 4 and html_content:
+                qa_count = self._get_qa_count_for_section(html_content, anchor, toc_items, i)
+                if qa_count > 0:
+                    count_display = f'<span class="toc-count">({qa_count})</span>'
+            
             # 添加折叠控制图标
             expand_icon = ""
             if i in items_with_children:
@@ -66,7 +187,7 @@ class TOCGenerator:
             # 添加 data-chapter 屬性來區分不同章節的子目錄
             chapter_attr = f' data-chapter="{chapter_index}"' if chapter_index is not None else ''
             html += f'<li class="toc-item toc-level-{level}" data-level="{level}" data-default-visible="{level <= 2}"{chapter_attr}>'
-            html += f'{expand_icon}<a href="{link}">{text}</a></li>\n'
+            html += f'{expand_icon}<a href="{link}">{text}</a>{count_display}</li>\n'
         
         html += "</ul>"
         return html
@@ -86,13 +207,20 @@ class TOCGenerator:
             if has_children:
                 expand_icon = '<span class="toc-expand-icon" data-level="1">▼</span>'
             
+            # 计算章节的问答数量
+            chapter_count_display = ""
+            if hasattr(ch, 'content') and ch.content:
+                total_qa_count = self._get_total_qa_count_for_chapter(ch.content)
+                if total_qa_count > 0:
+                    chapter_count_display = f'<span class="toc-count">({total_qa_count})</span>'
+            
             html += f'<li class="toc-item toc-chapter" data-level="1" data-chapter="{ch_index}" data-default-visible="true">'
-            html += f'{expand_icon}<a href="{filename}">{ch.title}</a>\n'
+            html += f'{expand_icon}<a href="{filename}">{ch.title}</a>{chapter_count_display}\n'
             
             if ch.toc_items:
                 # 转换 TOCItem 对象为元组，並添加章節標識
                 toc_tuples = [(item.level, item.text, item.anchor) for item in ch.toc_items]
-                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index)
+                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content)
             html += "</li>\n"
         html += "</ul>"
         return html
