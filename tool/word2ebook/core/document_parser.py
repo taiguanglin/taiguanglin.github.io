@@ -293,16 +293,14 @@ class DocumentParser:
         # 生成目录（使用可控制的折叠目录结构，传入完整的HTML内容）
         toc_generator = TOCGenerator()
         
-        # 如果啟用問答計數，生成元數據（使用優化版本）
-        if self.settings.enable_qa_count:
-            chapter.qa_count_metadata = toc_generator._generate_qa_count_metadata_optimized(
-                chapter.content, toc_items, chapter.filename
-            )
+        # 生成問答計數元數據（使用優化版本）
+        chapter.qa_count_metadata = toc_generator._generate_qa_count_metadata_optimized(
+            chapter.content, toc_items, chapter.filename
+        )
         
         chapter.chapter_toc = toc_generator.build_collapsible_chapter_toc(
             toc_items, 
             html_content=chapter.content, 
-            enable_qa_count=self.settings.enable_qa_count,
             qa_metadata=chapter.qa_count_metadata
         )
         

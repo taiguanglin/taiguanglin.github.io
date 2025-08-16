@@ -144,7 +144,7 @@ class ConversionConfig:
     generate_search: bool = True
     generate_traditional: bool = True
     generate_simplified: bool = True
-    enable_qa_count: bool = True
+
     book_title: Optional[str] = None
     
     def __post_init__(self):
