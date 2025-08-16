@@ -154,7 +154,7 @@ class TOCGenerator:
         html += "</ul>"
         return html
     
-    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None) -> str:
+    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None, enable_qa_count: bool = True) -> str:
         """构建可折叠的章节目录（扁平化结构，但確保層級正確）"""
         if not toc_items:
             return "<ul></ul>"
@@ -173,7 +173,7 @@ class TOCGenerator:
             
             # 计算问答数量（只对前4层显示计数）
             count_display = ""
-            if level <= 4 and html_content:
+            if enable_qa_count and level <= 4 and html_content:
                 qa_count = self._get_qa_count_for_section(html_content, anchor, toc_items, i)
                 if qa_count > 0:
                     count_display = f'<span class="toc-count">({qa_count})</span>'
@@ -192,7 +192,7 @@ class TOCGenerator:
         html += "</ul>"
         return html
     
-    def build_index_toc(self, chapters: List[Chapter], is_traditional: bool = False) -> str:
+    def build_index_toc(self, chapters: List[Chapter], is_traditional: bool = False, enable_qa_count: bool = True) -> str:
         """建立首页目录"""
         html = "<ul class='toc-level-1'>\n"
         
@@ -209,7 +209,7 @@ class TOCGenerator:
             
             # 计算章节的问答数量
             chapter_count_display = ""
-            if hasattr(ch, 'content') and ch.content:
+            if enable_qa_count and hasattr(ch, 'content') and ch.content:
                 total_qa_count = self._get_total_qa_count_for_chapter(ch.content)
                 if total_qa_count > 0:
                     chapter_count_display = f'<span class="toc-count">({total_qa_count})</span>'
@@ -220,7 +220,7 @@ class TOCGenerator:
             if ch.toc_items:
                 # 转换 TOCItem 对象为元组，並添加章節標識
                 toc_tuples = [(item.level, item.text, item.anchor) for item in ch.toc_items]
-                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content)
+                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content, enable_qa_count)
             html += "</li>\n"
         html += "</ul>"
         return html
@@ -283,12 +283,12 @@ class HTMLGenerator:
         # 生成简体版首页
         if generate_simplified:
             simplified_title = config.get_book_title(is_traditional=False)
-            self._generate_simplified_index(chapters, simplified_title)
+            self._generate_simplified_index(chapters, simplified_title, self.settings.enable_qa_count)
         
         # 生成繁体版首页
         if generate_traditional:
             traditional_title = config.get_book_title(is_traditional=True)
-            self._generate_traditional_index(chapters, traditional_title)
+            self._generate_traditional_index(chapters, traditional_title, self.settings.enable_qa_count)
     
     def _generate_simplified_chapters(self, chapters: List[Chapter]) -> None:
         """生成简体版章节"""
@@ -380,9 +380,9 @@ class HTMLGenerator:
             # 写入文件
             self.file_manager.write_file(trad_filename, html_content)
     
-    def _generate_simplified_index(self, chapters: List[Chapter], book_title: str) -> None:
+    def _generate_simplified_index(self, chapters: List[Chapter], book_title: str, enable_qa_count: bool = True) -> None:
         """生成简体版首页"""
-        toc_html = self.toc_generator.build_index_toc(chapters, is_traditional=False)
+        toc_html = self.toc_generator.build_index_toc(chapters, is_traditional=False, enable_qa_count=enable_qa_count)
         
         # 生成语言切换链接
         lang_switch_links = self._generate_lang_switch_links("index.html", is_traditional=False)
@@ -406,7 +406,7 @@ class HTMLGenerator:
         
         self.file_manager.write_file("index.html", html_content)
     
-    def _generate_traditional_index(self, chapters: List[Chapter], book_title: str) -> None:
+    def _generate_traditional_index(self, chapters: List[Chapter], book_title: str, enable_qa_count: bool = True) -> None:
         """生成繁体版首页"""
         # 转换章节数据为繁体
         trad_chapters = []
@@ -424,7 +424,7 @@ class HTMLGenerator:
             ]
             trad_chapters.append(trad_ch)
         
-        trad_toc_html = self.toc_generator.build_index_toc(trad_chapters, is_traditional=True)
+        trad_toc_html = self.toc_generator.build_index_toc(trad_chapters, is_traditional=True, enable_qa_count=enable_qa_count)
         
         # 生成语言切换链接
         lang_switch_links = self._generate_lang_switch_links("index_trad.html", is_traditional=True)
