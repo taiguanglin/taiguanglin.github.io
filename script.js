@@ -4,14 +4,6 @@ const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('nav-menu');
 const navLinks = document.querySelectorAll('.nav-link');
 
-// Navbar scroll effect
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 100) {
-        navbar.classList.add('scrolled');
-    } else {
-        navbar.classList.remove('scrolled');
-    }
-});
 
 // Mobile menu toggle
 hamburger.addEventListener('click', () => {
@@ -81,15 +73,6 @@ animateElements.forEach(element => {
     observer.observe(element);
 });
 
-// Parallax effect for hero background
-window.addEventListener('scroll', () => {
-    const scrolled = window.pageYOffset;
-    const heroBackground = document.querySelector('.hero-background');
-    if (heroBackground) {
-        const speed = scrolled * 0.5;
-        heroBackground.style.transform = `translateY(${speed}px)`;
-    }
-});
 
 // Button interactions
 document.addEventListener('DOMContentLoaded', () => {
@@ -293,25 +276,31 @@ function throttle(func, limit) {
         if (!inThrottle) {
             func.apply(context, args);
             inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+            setTimeout(() => (inThrottle = false), limit);
         }
-    }
+    };
 }
 
-// Apply throttling to scroll events
-window.addEventListener('scroll', throttle(() => {
-    // Navbar scroll effect (throttled)
+// Handle scroll-related effects
+function handleScroll() {
+    // Navbar scroll effect
     if (window.scrollY > 100) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
-    
-    // Parallax effect (throttled)
+
+    // Parallax effect
     const scrolled = window.pageYOffset;
     const heroBackground = document.querySelector('.hero-background');
     if (heroBackground) {
         const speed = scrolled * 0.3;
         heroBackground.style.transform = `translateY(${speed}px)`;
     }
-}, 16)); // ~60fps
+}
+
+// Apply throttled scroll handler
+const throttledScroll = throttle(handleScroll, 16); // ~60fps
+window.addEventListener('scroll', throttledScroll);
+// Initialize state on load
+handleScroll();
