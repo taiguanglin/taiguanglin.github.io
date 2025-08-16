@@ -56,7 +56,7 @@ class TemplateManager:
 {top_nav_links}
 </div>
 
-{chapter_title}
+{chapter_title}{chapter_qa_count}
 
 <!-- 章節TOC標題和層級控制的水平布局 -->
 <div class="toc-header-container">

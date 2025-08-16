@@ -434,11 +434,34 @@ class HTMLGenerator:
             simplified_next_link = self.i18n_processor.ensure_simplified(nav_data['next_link'])
             simplified_top_nav_links = self.i18n_processor.ensure_simplified(nav_data['top_nav_links'])
             
+            # 计算章节问答数量
+            chapter_qa_count_display = ""
+            if hasattr(chapter, 'qa_count_metadata') and chapter.qa_count_metadata:
+                # 使用新的元数据方式，计算所有问答总数
+                total_qa_count = sum(chapter.qa_count_metadata.anchor_counts.values())
+            elif hasattr(chapter, 'content') and chapter.content:
+                # 回退到旧的方式
+                total_qa_count = self._get_total_qa_count_for_chapter(chapter.content)
+            else:
+                total_qa_count = 0
+            
+            if total_qa_count > 0:
+                chapter_qa_count_display = f'<span class="chapter-qa-count">({total_qa_count})</span>'
+                
+                # 将问答数量插入到h1标签内部
+                import re
+                if '</h1>' in simplified_chapter_title:
+                    simplified_chapter_title = simplified_chapter_title.replace('</h1>', f'{chapter_qa_count_display}</h1>')
+            
+            # 为章节内容中的所有子标题添加问答数量
+            simplified_content = self._add_qa_counts_to_content_headings(simplified_content, chapter.qa_count_metadata)
+            
             # 渲染页面
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=False,
                 title=simplified_title,
                 chapter_title=simplified_chapter_title,
+                chapter_qa_count="",  # 已经插入到chapter_title中了
                 chapter_toc=simplified_chapter_toc,
                 content=simplified_content,
                 prev_link=simplified_prev_link,
@@ -482,11 +505,36 @@ class HTMLGenerator:
             # 特別處理：語言切換鏈接不需要轉換，因為已經包含正確的簡體字"简体"
             converted_lang_switch_links = lang_switch_links
             
+            # 计算章节问答数量（繁体版）
+            chapter_qa_count_display = ""
+            if hasattr(chapter, 'qa_count_metadata') and chapter.qa_count_metadata:
+                # 使用新的元数据方式，计算所有问答总数
+                total_qa_count = sum(chapter.qa_count_metadata.anchor_counts.values())
+            elif hasattr(chapter, 'content') and chapter.content:
+                # 回退到旧的方式
+                total_qa_count = self._get_total_qa_count_for_chapter(chapter.content)
+            else:
+                total_qa_count = 0
+            
+            if total_qa_count > 0:
+                chapter_qa_count_display = f'<span class="chapter-qa-count">({total_qa_count})</span>'
+                # 转换为繁体
+                chapter_qa_count_display = self.i18n_processor.to_traditional(chapter_qa_count_display)
+                
+                # 将问答数量插入到h1标签内部
+                import re
+                if '</h1>' in converted_chapter_title:
+                    converted_chapter_title = converted_chapter_title.replace('</h1>', f'{chapter_qa_count_display}</h1>')
+            
+            # 为章节内容中的所有子标题添加问答数量（繁体版）
+            converted_content = self._add_qa_counts_to_content_headings(converted_content, chapter.qa_count_metadata, is_traditional=True)
+            
             # 渲染繁體版頁面
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=True,
                 title=converted_title,
                 chapter_title=converted_chapter_title,
+                chapter_qa_count="",  # 已经插入到chapter_title中了
                 chapter_toc=converted_chapter_toc,
                 content=converted_content,
                 prev_link=converted_prev_link,
@@ -641,3 +689,40 @@ class HTMLGenerator:
             content_without_title = content
         
         return chapter_title_html, content_without_title
+    
+    def _add_qa_counts_to_content_headings(self, content: str, qa_metadata: Optional[QACountMetadata], is_traditional: bool = False) -> str:
+        """为章节内容中的所有子标题添加问答数量显示"""
+        if not qa_metadata or not qa_metadata.anchor_counts:
+            return content
+        
+        import re
+        
+        # 查找所有h2-h4标题
+        heading_pattern = r'<(h[2-4])[^>]*id="([^"]+)"[^>]*>(.*?)</\1>'
+        
+        def replace_heading(match):
+            tag = match.group(1)  # h2, h3, h4
+            anchor = match.group(2)  # id属性值
+            title_content = match.group(3)  # 标题内容
+            
+            # 获取该标题的问答数量
+            qa_count = qa_metadata.get_count_for_anchor(anchor)
+            
+            if qa_count > 0:
+                # 创建问答数量显示
+                count_display = f'<span class="chapter-qa-count">({qa_count})</span>'
+                
+                # 如果是繁体版，转换数量显示
+                if is_traditional:
+                    count_display = self.i18n_processor.to_traditional(count_display)
+                
+                # 将问答数量添加到标题内容后面
+                new_title_content = f'{title_content}{count_display}'
+                return f'<{tag} id="{anchor}">{new_title_content}</{tag}>'
+            else:
+                # 没有问答数量，返回原标题
+                return match.group(0)
+        
+        # 替换所有匹配的标题
+        updated_content = re.sub(heading_pattern, replace_heading, content)
+        return updated_content
