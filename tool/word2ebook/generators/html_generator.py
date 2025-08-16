@@ -4,7 +4,7 @@ import re
 from typing import List, Tuple, Optional, Dict, Any
 from pathlib import Path
 
-from models.document_models import Chapter, TOCItem
+from models.document_models import Chapter, TOCItem, QACountMetadata
 from templates.html_templates import TemplateManager
 from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
@@ -109,6 +109,78 @@ class TOCGenerator:
         except Exception as e:
             return 0
     
+    def _generate_qa_count_metadata(self, html_content: str, toc_items: List[Tuple[int, str, str]], filename: str) -> QACountMetadata:
+        """生成問答計數元數據，只計算葉子節點"""
+        metadata = QACountMetadata(chapter_filename=filename)
+        metadata.toc_structure = toc_items.copy()
+        
+        # 找出所有葉子節點
+        leaf_anchors = set()
+        for i, (level, text, anchor) in enumerate(toc_items):
+            # 檢查是否有子節點
+            has_children = False
+            for j in range(i + 1, len(toc_items)):
+                next_level = toc_items[j][0]
+                if next_level <= level:
+                    break
+                if next_level > level:
+                    has_children = True
+                    break
+            
+            if not has_children:
+                leaf_anchors.add(anchor)
+        
+        # 只對葉子節點計算問答數量
+        for i, (level, text, anchor) in enumerate(toc_items):
+            if anchor in leaf_anchors:
+                qa_count = self._get_qa_count_for_section(html_content, anchor, toc_items, i)
+                metadata.add_leaf_count(anchor, level, qa_count)
+        
+        # 計算父節點的計數
+        metadata.calculate_parent_counts()
+        
+        return metadata
+    
+    def _insert_qa_counts_to_html(self, html_content: str, qa_metadata: QACountMetadata) -> str:
+        """將問答計數插入到HTML中"""
+        from bs4 import BeautifulSoup
+        
+        try:
+            soup = BeautifulSoup(html_content, 'html.parser')
+            
+            # 找到所有目錄項目的a標籤
+            toc_links = soup.find_all('a', href=True)
+            
+            for link in toc_links:
+                href = link.get('href', '')
+                # 提取anchor（去掉#前綴）
+                if href.startswith('#'):
+                    anchor = href[1:]
+                elif '#' in href:
+                    anchor = href.split('#')[1]
+                else:
+                    continue
+                
+                # 獲取該anchor的問答計數
+                qa_count = qa_metadata.get_count_for_anchor(anchor)
+                
+                if qa_count > 0:
+                    # 檢查是否已經有計數span
+                    parent_li = link.find_parent('li')
+                    if parent_li and not parent_li.find('span', class_='toc-count'):
+                        # 創建計數span
+                        count_span = soup.new_tag('span', **{'class': 'toc-count'})
+                        count_span.string = f'({qa_count})'
+                        
+                        # 插入到a標籤後面
+                        link.insert_after(count_span)
+            
+            return str(soup)
+            
+        except Exception as e:
+            print(f"Warning: Failed to insert QA counts to HTML: {e}")
+            return html_content
+    
     def _get_direct_children_count(self, toc_items: List[Tuple[int, str, str]], parent_index: int) -> int:
         """获取指定父项目的直接子项目数量（已弃用，保留用于兼容性）"""
         if parent_index >= len(toc_items):
@@ -154,7 +226,7 @@ class TOCGenerator:
         html += "</ul>"
         return html
     
-    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None, enable_qa_count: bool = True) -> str:
+    def build_collapsible_chapter_toc(self, toc_items: List[Tuple[int, str, str]], filename: Optional[str] = None, chapter_index: Optional[int] = None, html_content: Optional[str] = None, enable_qa_count: bool = True, qa_metadata: Optional[QACountMetadata] = None) -> str:
         """构建可折叠的章节目录（扁平化结构，但確保層級正確）"""
         if not toc_items:
             return "<ul></ul>"
@@ -173,8 +245,16 @@ class TOCGenerator:
             
             # 计算问答数量（只对前4层显示计数）
             count_display = ""
-            if enable_qa_count and level <= 4 and html_content:
-                qa_count = self._get_qa_count_for_section(html_content, anchor, toc_items, i)
+            if enable_qa_count and level <= 4:
+                if qa_metadata:
+                    # 使用新的元數據方式
+                    qa_count = qa_metadata.get_count_for_anchor(anchor)
+                elif html_content:
+                    # 回退到舊的方式
+                    qa_count = self._get_qa_count_for_section(html_content, anchor, toc_items, i)
+                else:
+                    qa_count = 0
+                
                 if qa_count > 0:
                     count_display = f'<span class="toc-count">({qa_count})</span>'
             
@@ -209,8 +289,16 @@ class TOCGenerator:
             
             # 计算章节的问答数量
             chapter_count_display = ""
-            if enable_qa_count and hasattr(ch, 'content') and ch.content:
-                total_qa_count = self._get_total_qa_count_for_chapter(ch.content)
+            if enable_qa_count:
+                if hasattr(ch, 'qa_count_metadata') and ch.qa_count_metadata:
+                    # 使用新的元數據方式，計算所有問答總數
+                    total_qa_count = sum(item.total_qa_count for item in ch.qa_count_metadata.counts.values())
+                elif hasattr(ch, 'content') and ch.content:
+                    # 回退到舊的方式
+                    total_qa_count = self._get_total_qa_count_for_chapter(ch.content)
+                else:
+                    total_qa_count = 0
+                
                 if total_qa_count > 0:
                     chapter_count_display = f'<span class="toc-count">({total_qa_count})</span>'
             
@@ -220,7 +308,7 @@ class TOCGenerator:
             if ch.toc_items:
                 # 转换 TOCItem 对象为元组，並添加章節標識
                 toc_tuples = [(item.level, item.text, item.anchor) for item in ch.toc_items]
-                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content, enable_qa_count)
+                html += self.build_collapsible_chapter_toc(toc_tuples, filename, ch_index, ch.content, enable_qa_count, ch.qa_count_metadata)
             html += "</li>\n"
         html += "</ul>"
         return html
@@ -422,6 +510,8 @@ class HTMLGenerator:
                     anchor=item.anchor
                 ) for item in ch.toc_items
             ]
+            # 複製問答計數元數據
+            trad_ch.qa_count_metadata = ch.qa_count_metadata
             trad_chapters.append(trad_ch)
         
         trad_toc_html = self.toc_generator.build_index_toc(trad_chapters, is_traditional=True, enable_qa_count=enable_qa_count)

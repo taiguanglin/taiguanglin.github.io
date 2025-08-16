@@ -1,7 +1,7 @@
 """文档数据模型定义"""
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from pathlib import Path
 
 
@@ -80,6 +80,78 @@ class SearchItem:
 
 
 @dataclass
+class QACountItem:
+    """問答計數項目"""
+    anchor: str
+    level: int
+    direct_qa_count: int  # 直接問答數量（葉子節點）
+    total_qa_count: int = 0  # 總問答數量（包含子節點）
+    is_leaf: bool = True  # 是否為葉子節點
+
+
+@dataclass
+class QACountMetadata:
+    """問答計數元數據"""
+    chapter_filename: str
+    counts: Dict[str, QACountItem] = field(default_factory=dict)  # anchor -> QACountItem
+    toc_structure: List[Tuple[int, str, str]] = field(default_factory=list)  # (level, text, anchor)
+    
+    def add_leaf_count(self, anchor: str, level: int, qa_count: int) -> None:
+        """添加葉子節點的問答計數"""
+        self.counts[anchor] = QACountItem(
+            anchor=anchor,
+            level=level,
+            direct_qa_count=qa_count,
+            total_qa_count=qa_count,
+            is_leaf=True
+        )
+    
+    def calculate_parent_counts(self) -> None:
+        """計算父節點的問答計數"""
+        # 首先標記所有非葉子節點
+        for i, (level, text, anchor) in enumerate(self.toc_structure):
+            # 檢查是否有子節點
+            has_children = False
+            for j in range(i + 1, len(self.toc_structure)):
+                next_level = self.toc_structure[j][0]
+                if next_level <= level:
+                    break
+                if next_level == level + 1:
+                    has_children = True
+                    break
+            
+            if has_children and anchor not in self.counts:
+                # 這是一個父節點，需要計算其總計數
+                self.counts[anchor] = QACountItem(
+                    anchor=anchor,
+                    level=level,
+                    direct_qa_count=0,
+                    total_qa_count=0,
+                    is_leaf=False
+                )
+        
+        # 計算每個父節點的總計數
+        for i, (level, text, anchor) in enumerate(self.toc_structure):
+            if anchor in self.counts and not self.counts[anchor].is_leaf:
+                total_count = 0
+                # 找到所有直接子節點
+                for j in range(i + 1, len(self.toc_structure)):
+                    child_level, child_text, child_anchor = self.toc_structure[j]
+                    if child_level <= level:
+                        break
+                    if child_level == level + 1 and child_anchor in self.counts:
+                        total_count += self.counts[child_anchor].total_qa_count
+                
+                self.counts[anchor].total_qa_count = total_count
+    
+    def get_count_for_anchor(self, anchor: str) -> int:
+        """獲取指定anchor的問答計數"""
+        if anchor in self.counts:
+            return self.counts[anchor].total_qa_count
+        return 0
+
+
+@dataclass
 class Chapter:
     """章节数据模型"""
     title: str
@@ -89,6 +161,7 @@ class Chapter:
     toc_items: List[TOCItem] = field(default_factory=list)
     qa_pairs: List[QAPair] = field(default_factory=list)
     search_items: List[SearchItem] = field(default_factory=list)
+    qa_count_metadata: Optional[QACountMetadata] = None
     
     @property
     def safe_title(self) -> str:
