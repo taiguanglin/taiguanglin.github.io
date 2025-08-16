@@ -248,7 +248,6 @@ class SearchIndexGenerator:
             hash_data = {
                 "hash": md5_hash,
                 "algorithm": "md5",
-                "timestamp": __import__('time').time(),
                 "size": len(content_bytes)
             }
             

@@ -1,7 +1,7 @@
 """文档数据模型定义"""
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from pathlib import Path
 
 
@@ -80,6 +80,27 @@ class SearchItem:
 
 
 @dataclass
+class QAPosition:
+    """問答位置信息"""
+    question_start: int  # 問答在HTML中的起始位置
+    question_end: int    # 問答在HTML中的結束位置
+    
+
+@dataclass
+class QACountMetadata:
+    """問答計數元數據 - 優化版本"""
+    chapter_filename: str
+    anchor_counts: Dict[str, int] = field(default_factory=dict)  # anchor -> 問答數量
+    qa_positions: List[QAPosition] = field(default_factory=list)  # 所有問答的位置
+    heading_positions: Dict[str, int] = field(default_factory=dict)  # anchor -> 標題在HTML中的位置
+    toc_structure: List[Tuple[int, str, str]] = field(default_factory=list)  # (level, text, anchor)
+    
+    def get_count_for_anchor(self, anchor: str) -> int:
+        """獲取指定anchor的問答計數"""
+        return self.anchor_counts.get(anchor, 0)
+
+
+@dataclass
 class Chapter:
     """章节数据模型"""
     title: str
@@ -89,6 +110,7 @@ class Chapter:
     toc_items: List[TOCItem] = field(default_factory=list)
     qa_pairs: List[QAPair] = field(default_factory=list)
     search_items: List[SearchItem] = field(default_factory=list)
+    qa_count_metadata: Optional[QACountMetadata] = None
     
     @property
     def safe_title(self) -> str:
@@ -122,6 +144,7 @@ class ConversionConfig:
     generate_search: bool = True
     generate_traditional: bool = True
     generate_simplified: bool = True
+
     book_title: Optional[str] = None
     
     def __post_init__(self):

@@ -147,6 +147,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
   python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
   python main.py input.docx output_folder --skip-traditional # 跳过繁体版
   python main.py input.docx output_folder --skip-simplified  # 跳过简体版
+
         """
     )
     
@@ -159,6 +160,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
                        help='跳过繁体版生成（加快转换速度）')
     parser.add_argument('--skip-simplified', action='store_true',
                        help='跳过简体版生成（只生成繁体版）')
+
     parser.add_argument('--fast', action='store_true',
                        help='快速模式：跳过搜索索引生成和繁体版生成')
     
@@ -180,6 +182,7 @@ def main() -> None:
     generate_search_index = not (args.skip_index or args.fast)
     generate_traditional = not (args.skip_traditional or args.fast)
     generate_simplified = not (args.skip_simplified or args.fast)
+
     
     # 測試優化：如果沒有明確指定，默認只生成繁體版（用於開發測試）
     if not args.skip_traditional and not args.skip_simplified and not args.fast:
@@ -195,7 +198,8 @@ def main() -> None:
         output_folder=Path(args.output_folder),
         generate_search=generate_search_index,
         generate_traditional=generate_traditional,
-        generate_simplified=generate_simplified
+        generate_simplified=generate_simplified,
+
     )
     
     # 验证输入文件
@@ -208,8 +212,11 @@ def main() -> None:
         return
     
     try:
+        # 创建设置副本并应用配置
+        settings = DEFAULT_SETTINGS
+        
         # 创建转换器并执行转换
-        converter = Word2EBookConverter(config, DEFAULT_SETTINGS)
+        converter = Word2EBookConverter(config, settings)
         converter.convert()
         
     except Exception as e:
