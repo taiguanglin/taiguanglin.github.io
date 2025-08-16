@@ -2,6 +2,18 @@
 
 這是一個現代靜態佛法傳法與禪修介紹網頁，採用簡潔的粉紅色主題設計，專業又充滿靈性。
 
+## 📂 專案結構與關鍵功能
+
+- `/index.html`, `style.css`, `script.js` — 主站首頁與互動效果
+- `/images/` — 網站使用的靜態圖片資源
+- `/wenda/` — 「坐禪之問答錄」各章節頁面
+- `/wenda.html` — 問答錄導覽頁
+- `/wenda_complete/index.html` — 問答錄完整合輯
+- `/wenda2_ebook/` — 問答錄網頁版電子書，含 `assets/` 與搜尋索引
+- `/stories/` 與 `stories.html` — 修行故事檔案與索引頁
+- `/tool/word2ebook/` — 將 Word 檔轉換成網頁電子書的 Python 工具
+- 其他：`CNAME`、`robots.txt`、`sitemap.xml` 等站點設定
+
 ## 特色功能
 
 ### 🎨 設計特點
