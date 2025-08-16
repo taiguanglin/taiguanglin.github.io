@@ -2297,7 +2297,7 @@ body.dark-mode .toc-item:not(.toc-expandable):hover {
 
 /* 目录计数样式 */
 .toc-count {
-  color: #666666; /* 灰色 */
+  color: #555555; /* 灰色 */
   font-weight: 300; /* 更细的字体 */
   font-size: 0.85em; /* 稍小的字体 */
   margin-left: 6px; /* 与标题保持一定距离 */
