@@ -2312,6 +2312,23 @@ body.dark-mode .toc-count {
   opacity: 0.8; /* 暗色模式下稍微明显一些 */
 }
 
+/* 章节标题问答数量样式 */
+.chapter-qa-count {
+  color: #555555; /* 与目录计数相同的灰色 */
+  font-weight: 300; /* 更细的字体 */
+  font-size: 0.85em; /* 稍小的字体 */
+  margin-left: 6px; /* 与标题保持一定距离 */
+  pointer-events: none; /* 不可点击 */
+  user-select: none; /* 不可选择 */
+  opacity: 0.7; /* 半透明效果 */
+}
+
+/* 暗色模式下的章节标题问答数量样式 */
+body.dark-mode .chapter-qa-count {
+  color: #999999; /* 暗色模式下亮一些 */
+  opacity: 0.8; /* 暗色模式下稍微明显一些 */
+}
+
 /* 章节页目录层级样式 - 减少间距让内容更靠左 */
 #chapter-toc .toc-item.toc-level-1 > a {
   font-weight: 600;
