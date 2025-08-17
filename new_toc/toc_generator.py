@@ -323,7 +323,7 @@ class HtmlGenerator:
             'level_3': '第 3 层' if self.use_simplified else '第 3 層',
             'level_4': '第 4 层' if self.use_simplified else '第 4 層',
             'level_5': '第 5 层' if self.use_simplified else '第 5 層',
-            'toggle_old': '切换旧目录显示' if self.use_simplified else '切換舊目錄顯示',
+            'toggle_old': '隐藏原始目录' if self.use_simplified else '隐藏原始目录',
             'import': '📁 汇入' if self.use_simplified else '📁 匯入',
             'export': '📄 汇出' if self.use_simplified else '📄 匯出'
         }
