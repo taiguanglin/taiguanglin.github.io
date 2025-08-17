@@ -29,10 +29,43 @@ class TocItem:
     is_old_structure: bool  # 是否为旧结构（包含箭头的结构）
     children: List['TocItem']
     number_path: str  # 数字路径，如 "I.II.III" 或 "1.2.3"
+    original_count: Optional[int] = None  # 原始计数（从文本中提取）
+    calculated_count: Optional[int] = None  # 计算得出的计数
     
     def __post_init__(self):
         if self.children is None:
             self.children = []
+    
+    @property
+    def is_leaf(self) -> bool:
+        """判断是否为末端节点（叶子节点）"""
+        return len(self.children) == 0
+    
+    @property
+    def display_count(self) -> Optional[int]:
+        """获取用于显示的计数值"""
+        if self.is_leaf:
+            # 末端节点使用原始计数
+            return self.original_count
+        else:
+            # 非末端节点使用计算得出的计数
+            return self.calculated_count
+    
+    @property
+    def text_without_count(self) -> str:
+        """获取去除计数的文本内容"""
+        # 移除文本末尾的 (数字) 格式
+        count_pattern = r'\s*\(\d+\)\s*$'
+        return re.sub(count_pattern, '', self.text).strip()
+    
+    @property
+    def display_text(self) -> str:
+        """获取用于显示的文本（包含重新计算的计数）"""
+        base_text = self.text_without_count
+        count = self.display_count
+        if count is not None and count > 0:
+            return f"{base_text} ({count})"
+        return base_text
 
 
 class TocParser:
@@ -46,7 +79,8 @@ class TocParser:
     }
     
     # 罗马数字模式：匹配 I., I.I, I.II.III 等
-    ROMAN_PATTERN = re.compile(r'^((?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V)(?:\.(?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V))*)\.?\s*(.+)$')
+    # 注意：需要按长度从长到短排列，避免部分匹配（如XIV被匹配成XI）
+    ROMAN_PATTERN = re.compile(r'^((?:XIII|XIV|XII|XV|VIII|VII|VI|IX|IV|III|II|XI|X|V|I)(?:\.(?:XIII|XIV|XII|XV|VIII|VII|VI|IX|IV|III|II|XI|X|V|I))*)\.?\s*(.+)$')
     
     # 阿拉伯数字模式：匹配 1., 1.1, 1.2.3 等（可选的结尾点号）
     ARABIC_PATTERN = re.compile(r'^(\d+(?:\.\d+)*)\.?\s+(.+)$')
@@ -56,6 +90,14 @@ class TocParser:
     
     def __init__(self):
         self.items = []
+    
+    def _extract_count_from_text(self, text: str) -> Optional[int]:
+        """从文本中提取括号内的数字"""
+        count_pattern = r'\((\d+)\)\s*$'
+        match = re.search(count_pattern, text)
+        if match:
+            return int(match.group(1))
+        return None
     
     def parse_file(self, file_path: str) -> List[TocItem]:
         """解析 TOC 文件"""
@@ -78,12 +120,20 @@ class TocParser:
                 self.items.append(item)
         
         # 构建层次结构
-        return self._build_hierarchy()
+        hierarchy = self._build_hierarchy()
+        
+        # 计算各项目的计数
+        self._calculate_counts(hierarchy)
+        
+        return hierarchy
     
     def _parse_line(self, line: str, line_num: int) -> Optional[TocItem]:
         """解析单行内容"""
         # 去除前导空格（忽略缩排）
         clean_line = line.lstrip()
+        
+        # 提取原始计数
+        original_count = self._extract_count_from_text(clean_line)
         
         # 检查是否为旧结构（包含箭头）
         is_old_structure = bool(self.OLD_STRUCTURE_PATTERN.search(clean_line))
@@ -105,7 +155,8 @@ class TocParser:
                 is_arabic=False,
                 is_old_structure=is_old_structure,
                 children=[],
-                number_path=number_path
+                number_path=number_path,
+                original_count=original_count
             )
         
         # 尝试匹配阿拉伯数字模式
@@ -122,7 +173,8 @@ class TocParser:
                 is_arabic=True,
                 is_old_structure=is_old_structure,
                 children=[],
-                number_path=number_path
+                number_path=number_path,
+                original_count=original_count
             )
         
         # 非数字结构
@@ -133,7 +185,8 @@ class TocParser:
             is_arabic=False,
             is_old_structure=is_old_structure,
             children=[],
-            number_path=""
+            number_path="",
+            original_count=original_count
         )
     
     def _build_hierarchy(self) -> List[TocItem]:
@@ -162,6 +215,31 @@ class TocParser:
                     root_items.append(item)
         
         return root_items
+    
+    def _calculate_counts(self, items: List[TocItem]) -> None:
+        """计算所有项目的计数（自底向上）"""
+        for item in items:
+            self._calculate_item_count(item)
+    
+    def _calculate_item_count(self, item: TocItem) -> int:
+        """递归计算单个项目的计数"""
+        if item.is_leaf:
+            # 末端节点使用原始计数
+            if item.original_count is not None:
+                return item.original_count
+            else:
+                # 如果没有原始计数，默认为0
+                return 0
+        else:
+            # 非末端节点：先递归计算所有子项目，然后求和
+            total_count = 0
+            for child in item.children:
+                child_count = self._calculate_item_count(child)
+                total_count += child_count
+            
+            # 设置计算得出的计数
+            item.calculated_count = total_count
+            return total_count
 
 
 class HtmlGenerator:
@@ -247,14 +325,14 @@ class HtmlGenerator:
             if item.children:
                 # 有子项目的项目
                 children_html = self._generate_tree_html(item.children, indent_level + 1)
-                html_parts.append(f'{"  " * indent_level}<li{class_attr}><span class="label">{self._escape_html(item.text)}</span>')
+                html_parts.append(f'{"  " * indent_level}<li{class_attr}><span class="label">{self._escape_html(item.display_text)}</span>')
                 html_parts.append(f'{"  " * (indent_level + 1)}<ul>')
                 html_parts.append(children_html)
                 html_parts.append(f'{"  " * (indent_level + 1)}</ul>')
                 html_parts.append(f'{"  " * indent_level}</li>')
             else:
                 # 叶子项目
-                html_parts.append(f'{"  " * indent_level}<li{class_attr}><span class="label">{self._escape_html(item.text)}</span></li>')
+                html_parts.append(f'{"  " * indent_level}<li{class_attr}><span class="label">{self._escape_html(item.display_text)}</span></li>')
         
         return '\n'.join(html_parts)
     
@@ -272,7 +350,7 @@ def main():
     import argparse
     
     parser = argparse.ArgumentParser(description='从 toc_full.txt 生成可折叠的 HTML 目录（支持汇入/汇出）')
-    parser.add_argument('input_file', nargs='?', default='toc_full.txt', help='输入的 toc_full.txt 文件路径（默认：toc_full.txt）')
+    parser.add_argument('input_file', help='输入的 toc_full.txt 文件路径（必须提供）')
     parser.add_argument('-o', '--output', default='.', help='输出目录（默认：当前目录）')
     parser.add_argument('--html-name', default='index.html', help='HTML 文件名（默认：index.html）')
     
@@ -322,9 +400,10 @@ def main():
     print("- 🔄 罗马数字自动重新编号")
     print("- 👆 双击编辑、多选支持、视觉反馈")
     print("\n💡 使用方式：")
-    print("- 直接运行：python toc_generator.py")
-    print("- 指定文件：python toc_generator.py my_toc.txt")
-    print("- 指定输出：python toc_generator.py -o output_dir")
+    print("- 指定文件：python toc_generator.py toc_full.txt")
+    print("- 指定其他文件：python toc_generator.py my_toc.txt")
+    print("- 指定输出目录：python toc_generator.py toc_full.txt -o output_dir")
+    print("- 指定HTML文件名：python toc_generator.py toc_full.txt --html-name custom.html")
 
 
 if __name__ == '__main__':
