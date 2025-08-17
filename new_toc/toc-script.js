@@ -499,19 +499,15 @@
     fileInput.value = '';
   });
 
-  // export functionality
+  // export functionality - exports ALL levels regardless of display state
   function exportToc() {
-    const visibleItems = [];
+    const allItems = [];
     
-    function collectVisibleItems(element, indent = '') {
+    function collectAllItems(element, indent = '') {
       const items = element.querySelectorAll(':scope > li');
       items.forEach(item => {
         const label = item.querySelector('.label');
         if (!label) return;
-        
-        // Check if item is visible (not hidden by CSS)
-        const computedStyle = window.getComputedStyle(item);
-        if (computedStyle.display === 'none') return;
         
         // Add current item (remove clipboard icons and extra whitespace)
         let text = label.textContent.trim();
@@ -524,31 +520,29 @@
         if (!hasChildren) {
           // Leaf node: keep the count in parentheses
           if (text) {
-            visibleItems.push(indent + text);
+            allItems.push(indent + text);
           }
         } else {
           // Non-leaf node: remove count in parentheses
           const textWithoutCount = text.replace(/\s*\(\d+\)\s*$/, '').trim();
           if (textWithoutCount) {
-            visibleItems.push(indent + textWithoutCount);
+            allItems.push(indent + textWithoutCount);
           }
         }
         
-        // If item is expanded, collect its children
-        if (item.classList.contains('open')) {
-          const childUl = item.querySelector(':scope > ul');
-          if (childUl) {
-            collectVisibleItems(childUl, indent + '  ');
-          }
+        // Always collect children regardless of open/closed state
+        const childUl = item.querySelector(':scope > ul');
+        if (childUl) {
+          collectAllItems(childUl, indent + '  ');
         }
       });
     }
     
-    // Collect all visible items starting from the tree root
-    collectVisibleItems(tree);
+    // Collect ALL items starting from the tree root
+    collectAllItems(tree);
     
     // Create text content (filter out empty lines)
-    const filteredItems = visibleItems.filter(item => item.trim() !== '');
+    const filteredItems = allItems.filter(item => item.trim() !== '');
     const textContent = filteredItems.join('\n');
     
     // Create and download file
