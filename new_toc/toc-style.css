@@ -1,5 +1,5 @@
 :root{--indent:1.0rem;--border:#e5e7eb;--text:#111827;--muted:#6b7280;}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";margin:24px;color:var(--text)}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";margin:24px;color:var(--text);padding-bottom:100px}
 h1{font-size:1.1rem;margin:0 0 .5rem 0}
 .controls{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem 0}
 .controls button{padding:.4rem .7rem;border:1px solid var(--border);background:#fff;border-radius:.4rem;cursor:pointer}
