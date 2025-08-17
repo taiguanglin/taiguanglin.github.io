@@ -421,8 +421,13 @@
         const computedStyle = window.getComputedStyle(item);
         if (computedStyle.display === 'none') return;
         
-        // Add current item
-        visibleItems.push(indent + label.textContent.trim());
+        // Add current item (remove clipboard icons and extra whitespace)
+        let text = label.textContent.trim();
+        // Remove clipboard icons (📋) and other unwanted symbols
+        text = text.replace(/📋/g, '').trim();
+        if (text) {  // Only add non-empty items
+          visibleItems.push(indent + text);
+        }
         
         // If item is expanded, collect its children
         if (item.classList.contains('open')) {
@@ -437,8 +442,9 @@
     // Collect all visible items starting from the tree root
     collectVisibleItems(tree);
     
-    // Create text content
-    const textContent = visibleItems.join('\n');
+    // Create text content (filter out empty lines)
+    const filteredItems = visibleItems.filter(item => item.trim() !== '');
+    const textContent = filteredItems.join('\n');
     
     // Create and download file
     const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
