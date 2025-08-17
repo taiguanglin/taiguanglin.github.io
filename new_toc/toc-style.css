@@ -1,0 +1,54 @@
+:root{--indent:1.0rem;--border:#e5e7eb;--text:#111827;--muted:#6b7280;}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,"Noto Sans","Apple Color Emoji","Segoe UI Emoji";margin:24px;color:var(--text)}
+h1{font-size:1.1rem;margin:0 0 .5rem 0}
+.controls{display:flex;flex-wrap:wrap;gap:.5rem;margin:0 0 1rem 0}
+.controls button{padding:.4rem .7rem;border:1px solid var(--border);background:#fff;border-radius:.4rem;cursor:pointer}
+.controls button:hover{background:#f9fafb}
+#tree, #tree ul{list-style:none;margin:0;padding:0}
+#tree>li{border:1px solid var(--border);border-radius:.6rem;padding:.4rem .6rem;margin:.4rem 0}
+#tree li{position:relative}
+#tree li .label{display:block;cursor:pointer;padding:.2rem .1rem;border-radius:.3rem;width:100%;box-sizing:border-box}
+#tree li.has-children{cursor:pointer}
+#tree li.has-children .label{margin:0}
+#tree li .label:hover{background:#f3f4f6}
+#tree li .meta{color:var(--muted)}
+#tree li.has-children>ul{display:none;margin-left:var(--indent);padding-left:.4rem;border-left:1px dashed var(--border)}
+#tree li.has-children.open>ul{display:block}
+/* caret */
+#tree li.has-children>.label::before{content:"▶";display:inline-block;margin-right:.35rem;transform:translateY(-1px)}
+#tree li.has-children.open>.label::before{content:"▼"}
+/* small depth hint (optional, hidden by default) */
+#tree li::after{content:attr(data-depth);display:none;position:absolute;left:-.9rem;top:.25rem;font-size:.7rem;color:#9ca3af}
+/* toggle button active state */
+.controls button.active {
+  background: #3b82f6;
+  color: white;
+}
+/* hide old directory structure and non-numeric items (keep Roman and Arabic numerals) */
+.hide-old-structure .old-structure,
+.hide-old-structure .non-roman:not(.arabic-numeric) {
+  display: none;
+}
+/* style for numbers in parentheses */
+.number-badge {
+  background-color: rgba(59, 130, 246, 0.1);
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 0.9em;
+  color: #3b82f6;
+  font-weight: 500;
+}
+/* style for arabic numeric items */
+.arabic-numeric .label {
+  color: #059669;
+  font-weight: 500;
+}
+/* import button special styling */
+#importToc {
+  background: #10b981;
+  color: white;
+  border-color: #10b981;
+}
+#importToc:hover {
+  background: #059669;
+}
