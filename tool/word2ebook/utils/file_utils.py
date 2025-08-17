@@ -4,15 +4,13 @@ import os
 import shutil
 from pathlib import Path
 from typing import Dict, Any
-from slugify import slugify
+# slugify 導入已移除，改為簡單數字命名
 
 
 def safe_filename(title: str, index: int) -> str:
     """生成安全的文件名"""
-    slug = slugify(title)
-    if not slug:
-        slug = f"chapter{index}"
-    return f"{index:02d}-{slug}.html"
+    # 簡化命名格式：只使用數字編號
+    return f"{index:02d}.html"
 
 
 class FileManager:
