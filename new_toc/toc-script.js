@@ -212,7 +212,19 @@
         const text = label.textContent;
         // Replace numbers in parentheses with styled spans
         const styledText = text.replace(/\((\d+)\)/g, '<span class="number-badge">($1)</span>');
-        if (styledText !== text) {
+        
+        // Add copy button for non-Roman numeral items
+        const shouldAddCopyBtn = !isRoman && (isArabic || isOldStructure || (!isArabic && !isOldStructure));
+        
+        if (shouldAddCopyBtn) {
+          // Restructure label content with copy button
+          label.innerHTML = `
+            <span class="label-text">${styledText}</span>
+            <span class="label-actions">
+              <button class="copy-btn" title="复制此行">📋</button>
+            </span>
+          `;
+        } else if (styledText !== text) {
           label.innerHTML = styledText;
         }
       }
@@ -221,6 +233,69 @@
 
   // Initial tree setup
   initializeTreeFunctionality();
+  
+  // 复制功能
+  function copyToClipboard(text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      // 现代浏览器的 Clipboard API
+      return navigator.clipboard.writeText(text).then(() => {
+        showMessage('已复制到剪贴板', 'success');
+      }).catch(err => {
+        console.error('复制失败:', err);
+        fallbackCopyTextToClipboard(text);
+      });
+    } else {
+      // 降级方案
+      fallbackCopyTextToClipboard(text);
+    }
+  }
+  
+  function fallbackCopyTextToClipboard(text) {
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.top = "0";
+    textArea.style.left = "0";
+    textArea.style.position = "fixed";
+    textArea.style.opacity = "0";
+    
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+      const successful = document.execCommand('copy');
+      if (successful) {
+        showMessage('已复制到剪贴板', 'success');
+      } else {
+        showMessage('复制失败，请手动复制', 'error');
+      }
+    } catch (err) {
+      console.error('降级复制失败:', err);
+      showMessage('复制失败，请手动复制', 'error');
+    }
+    
+    document.body.removeChild(textArea);
+  }
+  
+  // 绑定复制按钮事件
+  function bindCopyEvents() {
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('copy-btn')) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // 获取要复制的文本
+        const labelText = e.target.closest('.label').querySelector('.label-text');
+        if (labelText) {
+          const textToCopy = labelText.textContent.trim();
+          copyToClipboard(textToCopy);
+        }
+      }
+    });
+  }
+  
+  // 初始化复制功能
+  bindCopyEvents();
 
   // toggle on li click (anywhere in the item)
   tree.addEventListener('click', e=>{
