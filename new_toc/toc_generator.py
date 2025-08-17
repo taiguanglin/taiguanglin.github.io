@@ -46,7 +46,7 @@ class TocParser:
     }
     
     # 羅馬數字模式：匹配 I., I.I, I.II.III 等
-    ROMAN_PATTERN = re.compile(r'^((?:I{1,3}|IV|V|VI{0,3}|IX|X|XI{0,3})(?:\.(?:I{1,3}|IV|V|VI{0,3}|IX|X|XI{0,3}))*)\.?\s+(.+)$')
+    ROMAN_PATTERN = re.compile(r'^((?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V)(?:\.(?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V))*)\.?\s*(.+)$')
     
     # 阿拉伯數字模式：匹配 1., 1.1, 1.2.3 等（可選的結尾點號）
     ARABIC_PATTERN = re.compile(r'^(\d+(?:\.\d+)*)\.?\s+(.+)$')

@@ -5,7 +5,7 @@
   class ClientTOCParser {
     constructor() {
       // Roman numeral pattern
-      this.romanPattern = /^((?:I{1,3}|IV|V|VI{0,3}|IX|X|XI{0,3})(?:\.(?:I{1,3}|IV|V|VI{0,3}|IX|X|XI{0,3}))*)\.?\s+(.+)$/;
+      this.romanPattern = /^((?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V)(?:\.(?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V))*)\.?\s*(.+)$/;
       // Arabic numeral pattern
       this.arabicPattern = /^(\d+(?:\.\d+)*)\.?\s+(.+)$/;
       // Old structure pattern (contains arrows)
@@ -186,7 +186,7 @@
       // Mark structure types FIRST
       
       // Check for Roman numeral pattern
-      const romanPattern = /^(I{1,3}|IV|V|VI{0,3}|IX|X|XI{0,3})(\.((I{1,3}|IV|V|VI{0,3}|IX|X|XI{0,3})))*\./;
+      const romanPattern = /^(XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V)(\.((XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V)))*\.?\s*/;
       const isRoman = labelText.match(romanPattern);
       
       // Check for Arabic numeral pattern
