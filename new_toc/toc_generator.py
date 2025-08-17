@@ -54,8 +54,8 @@ class TocItem:
     @property
     def text_without_count(self) -> str:
         """获取去除计数的文本内容"""
-        # 移除文本末尾的 (数字) 格式
-        count_pattern = r'\s*\(\d+\)\s*$'
+        # 移除文本中的 (数字) 格式，可能后面还有其他符号
+        count_pattern = r'\s*\(\d+\)'
         return re.sub(count_pattern, '', self.text).strip()
     
     @property
@@ -63,8 +63,16 @@ class TocItem:
         """获取用于显示的文本（包含重新计算的计数）"""
         base_text = self.text_without_count
         count = self.display_count
-        if count is not None and count > 0:
-            return f"{base_text} ({count})"
+        
+        if self.is_leaf:
+            # 末端节点：只有当原始计数存在且大于0时才显示
+            if count is not None and count > 0:
+                return f"{base_text} ({count})"
+        else:
+            # 非末端节点：显示计算出的计数，包括0
+            if count is not None:
+                return f"{base_text} ({count})"
+        
         return base_text
 
 
@@ -93,7 +101,8 @@ class TocParser:
     
     def _extract_count_from_text(self, text: str) -> Optional[int]:
         """从文本中提取括号内的数字"""
-        count_pattern = r'\((\d+)\)\s*$'
+        # 匹配 (数字)，可能后面有空格、📋或其他符号
+        count_pattern = r'\((\d+)\)'
         match = re.search(count_pattern, text)
         if match:
             return int(match.group(1))
@@ -251,11 +260,11 @@ class HtmlGenerator:
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>可折叠目录</title>
+<title>{page_title}</title>
 <link rel="stylesheet" href="toc-style.css">
 </head>
 <body>
-<h1>可折叠式目录</h1>
+<h1>{header_title}</h1>
 <div class="controls">
   <button data-level="1">第 1 层</button>
   <button data-level="2">第 2 层</button>
@@ -286,7 +295,7 @@ class HtmlGenerator:
     <button data-level="5" class="level-btn">第 5 层</button>
     <button id="floatingExpandAll" class="action-btn">🔽</button>
     <button id="floatingCollapseAll" class="action-btn">🔼</button>
-    <button id="floatingToggleNumbers" class="action-btn">切换旧目录显示</button>
+    <button id="floatingToggleNumbers" class="action-btn">隐藏原始目录</button>
   </div>
 </div>
 
@@ -294,11 +303,26 @@ class HtmlGenerator:
 </body>
 </html>"""
     
-    def generate_html(self, items: List[TocItem], output_path: str):
+    def generate_html(self, items: List[TocItem], output_path: str, input_filename: str = ""):
         """生成 HTML 文件"""
         tree_content = self._generate_tree_html(items)
         
-        html_content = self.html_template.format(tree_content=tree_content)
+        # 生成页面标题：使用输入文件名（去除扩展名）
+        if input_filename:
+            # 去除路径和扩展名，只保留文件名
+            import os
+            base_name = os.path.splitext(os.path.basename(input_filename))[0]
+            page_title = f"{base_name} - 可折叠目录"
+            header_title = base_name
+        else:
+            page_title = "可折叠目录"
+            header_title = "可折叠式目录"
+        
+        html_content = self.html_template.format(
+            tree_content=tree_content,
+            page_title=page_title,
+            header_title=header_title
+        )
         
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(html_content)
@@ -382,7 +406,7 @@ def main():
     
     print(f"正在生成 HTML 文件：{html_path}")
     generator = HtmlGenerator()
-    generator.generate_html(items, html_path)
+    generator.generate_html(items, html_path, args.input_file)
     
     # 显示结果
     if args.output == '.':
