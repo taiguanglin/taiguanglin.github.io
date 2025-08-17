@@ -354,13 +354,13 @@
     if (!oldStructureHidden) {
       // Hide old structure
       body.classList.add('hide-old-structure');
-      toggleBtn.textContent = '切换旧目录显示';
+      toggleBtn.textContent = '隐藏原始目录';
       toggleBtn.classList.add('active');
       oldStructureHidden = true;
     } else {
       // Show old structure
       body.classList.remove('hide-old-structure');
-      toggleBtn.textContent = '切换旧目录显示';
+      toggleBtn.textContent = '隐藏原始目录';
       toggleBtn.classList.remove('active');
       oldStructureHidden = false;
     }
