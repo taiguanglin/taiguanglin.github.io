@@ -4,8 +4,8 @@
   // TOC Parser for client-side import functionality
   class ClientTOCParser {
     constructor() {
-      // Roman numeral pattern
-      this.romanPattern = /^((?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V)(?:\.(?:XI{0,3}|IX|VI{0,3}|IV|I{1,3}|X|V))*)\.?\s*(.+)$/;
+      // Roman numeral pattern - fixed order to prevent XIV being parsed as XI.V
+      this.romanPattern = /^((?:XIII|XIV|XII|XV|VIII|VII|VI|IX|IV|III|II|XI|X|V|I)(?:\.(?:XIII|XIV|XII|XV|VIII|VII|VI|IX|IV|III|II|XI|X|V|I))*)\.?\s*(.+)$/;
       // Arabic numeral pattern
       this.arabicPattern = /^(\d+(?:\.\d+)*)\.?\s+(.+)$/;
       // Old structure pattern (contains arrows)
@@ -425,8 +425,21 @@
         let text = label.textContent.trim();
         // Remove clipboard icons (📋) and other unwanted symbols
         text = text.replace(/📋/g, '').trim();
-        if (text) {  // Only add non-empty items
-          visibleItems.push(indent + text);
+        
+        // Check if this is a leaf node (no child ul elements)
+        const hasChildren = item.classList.contains('has-children');
+        
+        if (!hasChildren) {
+          // Leaf node: keep the count in parentheses
+          if (text) {
+            visibleItems.push(indent + text);
+          }
+        } else {
+          // Non-leaf node: remove count in parentheses
+          const textWithoutCount = text.replace(/\s*\(\d+\)\s*$/, '').trim();
+          if (textWithoutCount) {
+            visibleItems.push(indent + textWithoutCount);
+          }
         }
         
         // If item is expanded, collect its children
