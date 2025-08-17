@@ -459,8 +459,7 @@ def main():
     parser.add_argument('input_file', help='输入的 toc_full.txt 文件路径（必须提供）')
     parser.add_argument('-o', '--output', default='.', help='输出目录（默认：当前目录）')
     parser.add_argument('--html-name', default='index.html', help='HTML 文件名（默认：index.html）')
-    parser.add_argument('--simplified', action='store_true', default=True, help='转换所有内容为简体中文（默认：启用）')
-    parser.add_argument('--no-simplified', dest='simplified', action='store_false', help='不转换内容，保持原始语言')
+# 移除简繁转换参数，强制转换为简体中文
     
     args = parser.parse_args()
     
@@ -476,8 +475,8 @@ def main():
     
     # 解析 TOC 文件
     print(f"正在解析 {args.input_file}...")
-    print(f"简体转换: {'启用' if args.simplified else '禁用'}")
-    toc_parser = TocParser(convert_to_simplified=args.simplified)
+    print("简体转换: 强制启用")
+    toc_parser = TocParser(convert_to_simplified=True)
     items = toc_parser.parse_file(args.input_file)
     
     print(f"解析完成，共找到 {len(items)} 个根项目")
@@ -490,7 +489,7 @@ def main():
         print(f"⚠️  文件 {html_path} 已存在，将被覆盖")
     
     print(f"正在生成 HTML 文件：{html_path}")
-    generator = HtmlGenerator(use_simplified=args.simplified)
+    generator = HtmlGenerator(use_simplified=True)
     generator.generate_html(items, html_path, args.input_file)
     
     # 显示结果
