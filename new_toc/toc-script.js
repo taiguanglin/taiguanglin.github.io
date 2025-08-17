@@ -12,6 +12,19 @@
       this.oldStructurePattern = /.*->.*/;
     }
 
+    extractCountFromText(text) {
+      // Extract number from parentheses (could have symbols like 📋 after)
+      const countPattern = /\((\d+)\)/;
+      const match = text.match(countPattern);
+      return match ? parseInt(match[1]) : null;
+    }
+
+    textWithoutCount(text) {
+      // Remove count format (number) that might have other symbols after
+      const countPattern = /\s*\(\d+\)/;
+      return text.replace(countPattern, '').trim();
+    }
+
     parseLines(lines) {
       const items = [];
       
@@ -25,12 +38,20 @@
         }
       }
       
-      return this.buildHierarchy(items);
+      const hierarchy = this.buildHierarchy(items);
+      
+      // Calculate counts for all items
+      this.calculateCounts(hierarchy);
+      
+      return hierarchy;
     }
 
     parseLine(line) {
       const cleanLine = line.trim();
       const isOldStructure = this.oldStructurePattern.test(cleanLine);
+      
+      // Extract original count from text
+      const originalCount = this.extractCountFromText(cleanLine);
       
       // Try Roman numeral pattern
       const romanMatch = cleanLine.match(this.romanPattern);
@@ -49,7 +70,9 @@
           isArabic: false,
           isOldStructure: isOldStructure,
           children: [],
-          numberPath: numberPath
+          numberPath: numberPath,
+          originalCount: originalCount,
+          calculatedCount: null
         };
       }
       
@@ -67,7 +90,9 @@
           isArabic: true,
           isOldStructure: isOldStructure,
           children: [],
-          numberPath: numberPath
+          numberPath: numberPath,
+          originalCount: originalCount,
+          calculatedCount: null
         };
       }
       
@@ -79,7 +104,9 @@
         isArabic: false,
         isOldStructure: isOldStructure,
         children: [],
-        numberPath: ""
+        numberPath: "",
+        originalCount: originalCount,
+        calculatedCount: null
       };
     }
 
@@ -114,10 +141,72 @@
       
       return rootItems;
     }
+
+    calculateCounts(items) {
+      // Calculate counts for all items (bottom-up)
+      for (const item of items) {
+        this.calculateItemCount(item);
+      }
+    }
+
+    calculateItemCount(item) {
+      // Recursive count calculation for a single item
+      if (this.isLeaf(item)) {
+        // Leaf node: use original count
+        return item.originalCount || 0;
+      } else {
+        // Non-leaf node: calculate sum of all children first, then set calculated count
+        let totalCount = 0;
+        for (const child of item.children) {
+          const childCount = this.calculateItemCount(child);
+          totalCount += childCount;
+        }
+        
+        // Set the calculated count
+        item.calculatedCount = totalCount;
+        return totalCount;
+      }
+    }
+
+    isLeaf(item) {
+      // Check if item is a leaf node (no children)
+      return item.children.length === 0;
+    }
+
+    getDisplayCount(item) {
+      // Get the count value for display
+      if (this.isLeaf(item)) {
+        // Leaf node: use original count
+        return item.originalCount;
+      } else {
+        // Non-leaf node: use calculated count
+        return item.calculatedCount;
+      }
+    }
+
+    getDisplayText(item) {
+      // Get display text with recalculated count
+      const baseText = this.textWithoutCount(item.text);
+      const count = this.getDisplayCount(item);
+      
+      if (this.isLeaf(item)) {
+        // Leaf node: only show count if it exists and > 0
+        if (count != null && count > 0) {
+          return `${baseText} (${count})`;
+        }
+      } else {
+        // Non-leaf node: show calculated count, including 0
+        if (count != null) {
+          return `${baseText} (${count})`;
+        }
+      }
+      
+      return baseText;
+    }
   }
 
   // Generate HTML from parsed items
-  function generateTreeHTML(items, indentLevel = 1) {
+  function generateTreeHTML(items, indentLevel = 1, parser = null) {
     let html = '';
     
     for (const item of items) {
@@ -138,14 +227,17 @@
       const classAttr = cssClasses.length > 0 ? ' class="' + cssClasses.join(' ') + '"' : '';
       const indent = '  '.repeat(indentLevel);
       
+      // Use display text with recalculated counts if parser is available
+      const displayText = parser ? parser.getDisplayText(item) : item.text;
+      
       if (item.children.length > 0) {
-        html += indent + '<li' + classAttr + '><span class="label">' + escapeHtml(item.text) + '</span>\n';
+        html += indent + '<li' + classAttr + '><span class="label">' + escapeHtml(displayText) + '</span>\n';
         html += indent + '  <ul>\n';
-        html += generateTreeHTML(item.children, indentLevel + 2);
+        html += generateTreeHTML(item.children, indentLevel + 2, parser);
         html += indent + '  </ul>\n';
         html += indent + '</li>\n';
       } else {
-        html += indent + '<li' + classAttr + '><span class="label">' + escapeHtml(item.text) + '</span></li>\n';
+        html += indent + '<li' + classAttr + '><span class="label">' + escapeHtml(displayText) + '</span></li>\n';
       }
     }
     
@@ -389,7 +481,7 @@
         const parser = new ClientTOCParser();
         const parsedItems = parser.parseLines(lines);
         
-        const newHTML = generateTreeHTML(parsedItems);
+        const newHTML = generateTreeHTML(parsedItems, 1, parser);
         rebuildTree(newHTML);
         
         // Show success message
