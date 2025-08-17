@@ -19,6 +19,36 @@ from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 
 
+class SimplifiedChineseConverter:
+    """簡繁轉換器"""
+    
+    def __init__(self):
+        self._opencc_t2s = None
+    
+    @property
+    def opencc_t2s(self):
+        """懒加载 OpenCC 繁体转简体"""
+        if self._opencc_t2s is None:
+            try:
+                import opencc
+                self._opencc_t2s = opencc.OpenCC('t2s')  # 繁体转简体
+            except ImportError:
+                print("警告: OpenCC 未安装，无法进行简繁转换")
+                self._opencc_t2s = None
+        return self._opencc_t2s
+    
+    def to_simplified(self, text: str) -> str:
+        """转换为简体中文"""
+        if not text or not self.opencc_t2s:
+            return text
+        
+        try:
+            return self.opencc_t2s.convert(text)
+        except Exception as e:
+            print(f"警告: 转换文本时发生错误: {e}")
+            return text
+
+
 @dataclass
 class TocItem:
     """目录项目数据结构"""
@@ -96,8 +126,15 @@ class TocParser:
     # 旧结构模式：包含箭头的结构
     OLD_STRUCTURE_PATTERN = re.compile(r'.*->.*')
     
-    def __init__(self):
-        self.items = []
+    def __init__(self, convert_to_simplified: bool = True):
+        """初始化解析器
+        
+        Args:
+            convert_to_simplified: 是否将所有内容转换为简体中文
+        """
+        self.items: List[TocItem] = []
+        self.convert_to_simplified = convert_to_simplified
+        self.converter = SimplifiedChineseConverter() if convert_to_simplified else None
     
     def _extract_count_from_text(self, text: str) -> Optional[int]:
         """从文本中提取括号内的数字"""
@@ -157,6 +194,10 @@ class TocParser:
             # 确保格式一致性：如果原本没有点号，添加点号
             formatted_text = f"{number_path}. {text}" if not clean_line.startswith(f"{number_path}.") else clean_line
             
+            # 转换为简体中文（如果启用）
+            if self.convert_to_simplified and self.converter:
+                formatted_text = self.converter.to_simplified(formatted_text)
+            
             return TocItem(
                 text=formatted_text,
                 level=level,
@@ -175,8 +216,13 @@ class TocParser:
             text = arabic_match.group(2)
             level = len(number_path.split('.'))
             
+            # 转换为简体中文（如果启用）
+            converted_text = clean_line
+            if self.convert_to_simplified and self.converter:
+                converted_text = self.converter.to_simplified(clean_line)
+            
             return TocItem(
-                text=clean_line,
+                text=converted_text,
                 level=level,
                 is_roman=False,
                 is_arabic=True,
@@ -187,8 +233,13 @@ class TocParser:
             )
         
         # 非数字结构
+        # 转换为简体中文（如果启用）
+        converted_text = clean_line
+        if self.convert_to_simplified and self.converter:
+            converted_text = self.converter.to_simplified(clean_line)
+        
         return TocItem(
-            text=clean_line,
+            text=converted_text,
             level=0,  # 非数字项目暂时设为 0
             is_roman=False,
             is_arabic=False,
@@ -254,45 +305,70 @@ class TocParser:
 class HtmlGenerator:
     """HTML 生成器"""
     
-    def __init__(self):
-        self.html_template = """<!doctype html>
-<html lang="zh-Hant">
+    def __init__(self, use_simplified: bool = True):
+        """初始化HTML生成器
+        
+        Args:
+            use_simplified: 是否使用简体中文界面
+        """
+        self.use_simplified = use_simplified
+        self.converter = SimplifiedChineseConverter() if use_simplified else None
+    
+    def _get_ui_text(self, key: str) -> str:
+        """获取界面文字"""
+        texts = {
+            'lang': 'zh-Hans' if self.use_simplified else 'zh-Hant',
+            'level_1': '第 1 层' if self.use_simplified else '第 1 層',
+            'level_2': '第 2 层' if self.use_simplified else '第 2 層',
+            'level_3': '第 3 层' if self.use_simplified else '第 3 層',
+            'level_4': '第 4 层' if self.use_simplified else '第 4 層',
+            'level_5': '第 5 层' if self.use_simplified else '第 5 層',
+            'toggle_old': '切换旧目录显示' if self.use_simplified else '切換舊目錄顯示',
+            'import': '📁 汇入' if self.use_simplified else '📁 匯入',
+            'export': '📄 汇出' if self.use_simplified else '📄 匯出'
+        }
+        return texts.get(key, key)
+    
+    def _generate_html_template(self) -> str:
+        """生成HTML模板"""
+        return f"""<!doctype html>
+<html lang="{self._get_ui_text('lang')}">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>{page_title}</title>
+<title>{{page_title}}</title>
 <link rel="stylesheet" href="toc-style.css">
 </head>
 <body>
-<h1>{header_title}</h1>
+<h1>{{header_title}}</h1>
 <div class="controls">
-  <button data-level="1">第 1 层</button>
-  <button data-level="2">第 2 层</button>
-  <button data-level="3">第 3 层</button>
-  <button data-level="4">第 4 层</button>
-  <button data-level="5">第 5 层</button>
+  <button data-level="1">{self._get_ui_text('level_1')}</button>
+  <button data-level="2">{self._get_ui_text('level_2')}</button>
+  <button data-level="3">{self._get_ui_text('level_3')}</button>
+  <button data-level="4">{self._get_ui_text('level_4')}</button>
+  <button data-level="5">{self._get_ui_text('level_5')}</button>
   <button id="expandAll">🔽</button>
   <button id="collapseAll">🔼</button>
-  <button id="toggleNumbers">切换旧目录显示</button>
-  <button id="importToc">📁 汇入</button>
-  <button id="exportToc">📄 汇出</button>
+  <button id="toggleNumbers">{self._get_ui_text('toggle_old')}</button>
+  <button id="importToc">{self._get_ui_text('import')}</button>
+  <button id="exportToc">{self._get_ui_text('export')}</button>
 </div>
 
 <!-- 隐藏的文件输入元素 -->
 <input type="file" id="fileInput" accept=".txt" style="display: none;">
 
 <ul id="tree">
-{tree_content}
+{{tree_content}}
 </ul>
 
 <!-- 浮动控制栏 -->
 <div id="floatingControls" class="floating-controls">
   <div class="floating-controls-content">
-    <button data-level="1" class="level-btn">第 1 层</button>
-    <button data-level="2" class="level-btn">第 2 层</button>
-    <button data-level="3" class="level-btn">第 3 层</button>
-    <button data-level="4" class="level-btn">第 4 层</button>
-    <button data-level="5" class="level-btn">第 5 层</button>
+    <button data-level="1" class="level-btn">{self._get_ui_text('level_1')}</button>
+    <button data-level="2" class="level-btn">{self._get_ui_text('level_2')}</button>
+    <button data-level="3" class="level-btn">{self._get_ui_text('level_3')}</button>
+    <button data-level="4" class="level-btn">{self._get_ui_text('level_4')}</button>
+    <button data-level="5" class="level-btn">{self._get_ui_text('level_5')}</button>
     <button id="floatingExpandAll" class="action-btn">🔽</button>
     <button id="floatingCollapseAll" class="action-btn">🔼</button>
     <button id="floatingToggleNumbers" class="action-btn">隐藏原始目录</button>
@@ -312,13 +388,19 @@ class HtmlGenerator:
             # 去除路径和扩展名，只保留文件名
             import os
             base_name = os.path.splitext(os.path.basename(input_filename))[0]
-            page_title = f"{base_name} - 可折叠目录"
+            page_title = f"{base_name} - {'可折叠目录' if self.use_simplified else '可摺疊目錄'}"
             header_title = base_name
         else:
-            page_title = "可折叠目录"
-            header_title = "可折叠式目录"
+            page_title = "可折叠目录" if self.use_simplified else "可摺疊目錄"
+            header_title = "可折叠式目录" if self.use_simplified else "可摺疊式目錄"
         
-        html_content = self.html_template.format(
+        # 转换标题为简体（如果启用且有转换器）
+        if self.use_simplified and self.converter:
+            header_title = self.converter.to_simplified(header_title)
+        
+        # 生成HTML模板并填充内容
+        html_template = self._generate_html_template()
+        html_content = html_template.format(
             tree_content=tree_content,
             page_title=page_title,
             header_title=header_title
@@ -377,6 +459,8 @@ def main():
     parser.add_argument('input_file', help='输入的 toc_full.txt 文件路径（必须提供）')
     parser.add_argument('-o', '--output', default='.', help='输出目录（默认：当前目录）')
     parser.add_argument('--html-name', default='index.html', help='HTML 文件名（默认：index.html）')
+    parser.add_argument('--simplified', action='store_true', default=True, help='转换所有内容为简体中文（默认：启用）')
+    parser.add_argument('--no-simplified', dest='simplified', action='store_false', help='不转换内容，保持原始语言')
     
     args = parser.parse_args()
     
@@ -392,7 +476,8 @@ def main():
     
     # 解析 TOC 文件
     print(f"正在解析 {args.input_file}...")
-    toc_parser = TocParser()
+    print(f"简体转换: {'启用' if args.simplified else '禁用'}")
+    toc_parser = TocParser(convert_to_simplified=args.simplified)
     items = toc_parser.parse_file(args.input_file)
     
     print(f"解析完成，共找到 {len(items)} 个根项目")
@@ -405,7 +490,7 @@ def main():
         print(f"⚠️  文件 {html_path} 已存在，将被覆盖")
     
     print(f"正在生成 HTML 文件：{html_path}")
-    generator = HtmlGenerator()
+    generator = HtmlGenerator(use_simplified=args.simplified)
     generator.generate_html(items, html_path, args.input_file)
     
     # 显示结果
