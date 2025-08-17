@@ -1595,15 +1595,8 @@ async function initSearch() {
     
     // 键盘快捷键
     document.addEventListener('keydown', (e) => {
-      // Ctrl+F 或 Cmd+F 激活搜索
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
-        e.preventDefault();
-        if (searchInitialized) {
-          searchInput.focus();
-        } else {
-          activateSearch();
-        }
-      }
+      // Ctrl+F 快捷键已禁用，不再激活搜索功能
+      // 用户可以使用浏览器原生的 Ctrl+F 进行页面内搜索
       
 
     });
@@ -1667,13 +1660,8 @@ async function initSearch() {
       searchActivateBtn.addEventListener('click', activateSearch);
     }
     
-    // Ctrl+F 快捷键激活搜索
-    document.addEventListener('keydown', (e) => {
-      if ((e.ctrlKey || e.metaKey) && e.key === 'f' && !searchInitialized) {
-        e.preventDefault();
-        activateSearch();
-      }
-    });
+    // Ctrl+F 快捷键已禁用，不再激活搜索功能
+    // 用户可以使用浏览器原生的 Ctrl+F 进行页面内搜索
   }
 
   // 創建閱讀工具欄
