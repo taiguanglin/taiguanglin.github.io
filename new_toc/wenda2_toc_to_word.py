@@ -62,29 +62,22 @@ class WendaTocConverter:
         # 二级章节判断 (I.I. I.II. 等)
         elif re.match(r'^[IVX]+\.[IVX]+\.\s+', title):
             level = 1
-        # 數字開頭的項目（如 "1 自性与意识" 或 "4 世界起源与轮转"）
-        elif re.match(r'^\d+\s+', title):
-            # 基於縮排確定層級，但數字開頭項目通常是2級
-            if indent_count <= 4:
-                level = 2
-            else:
-                level = 3
-        # 三级及以下基于缩进和箭头
-        elif '->' in title:
-            # 计算箭头数量来确定层级
-            arrow_count = title.count('->')
-            level = 2 + arrow_count - 1
         else:
-            # 基于缩进计算层级
-            if indent_count <= 2:
-                level = 2
+            # 基於縮排確定層級（這是最關鍵的判斷標準）
+            if indent_count == 0:
+                level = 0
+            elif indent_count <= 2:
+                level = 1  
             elif indent_count <= 4:
-                level = 3
+                level = 2  # 所有4個空格縮排的項目（包括數字開頭和箭頭項目）
             elif indent_count <= 6:
+                level = 3
+            elif indent_count <= 8:
                 level = 4
             else:
                 level = 5
         
+
         return {
             'level': level,
             'title': title,
@@ -115,8 +108,8 @@ class WendaTocConverter:
             run.font.size = Pt(16)
             run.font.name = '微软雅黑'
             
-        elif level == 1:  # 二级章节 (I.I, I.II...)
-            p.paragraph_format.left_indent = Cm(0.8)
+        elif level == 1:  # 二级章节 (I.I, I.II...) - 與主章節對齊
+            p.paragraph_format.left_indent = Cm(0)  # 修正：不縮排
             p.paragraph_format.space_before = Pt(8)
             p.paragraph_format.space_after = Pt(4)
             run = p.add_run(f"{title}")
@@ -124,41 +117,39 @@ class WendaTocConverter:
             run.font.size = Pt(14)
             run.font.name = '微软雅黑'
             
-        elif level == 2:  # 三级章节
-            p.paragraph_format.left_indent = Cm(1.6)
+        elif level == 2:  # 三级章节 - 適度縮排
+            p.paragraph_format.left_indent = Cm(0.8)  # 輕微縮排
             p.paragraph_format.space_after = Pt(3)
             run = p.add_run(f"{title}")
             run.font.size = Pt(12)
             run.font.name = '宋体'
             
         elif level == 3:  # 四级章节
-            p.paragraph_format.left_indent = Cm(2.4)
+            p.paragraph_format.left_indent = Cm(1.6)
             p.paragraph_format.space_after = Pt(2)
             run = p.add_run(f"{title}")
             run.font.size = Pt(11)
             run.font.name = '宋体'
             
         else:  # 更深层级
-            indent_cm = 3.2 + (level - 4) * 0.8
+            indent_cm = 2.4 + (level - 4) * 0.8
             p.paragraph_format.left_indent = Cm(indent_cm)
             p.paragraph_format.space_after = Pt(1)
             run = p.add_run(f"{title}")
             run.font.size = Pt(10)
             run.font.name = '宋体'
         
-        # 添加條目數（而非頁碼）
+        # 添加條目數（簡潔格式，無點點點）
+        count_run = p.add_run(f" ({item_count}條)")
+        
+        # 根據層級設定條目數的字體大小
         if level <= 1:
-            # 对于主要章节，條目數更突出
-            count_run = p.add_run(f" .......... ({item_count}條)")
             count_run.font.size = Pt(12)
-            count_run.font.name = '宋体'
-            count_run.italic = True
         else:
-            # 对于子章节，條目數相对小一些
-            count_run = p.add_run(f" ...... ({item_count}條)")
-            count_run.font.size = Pt(9)
-            count_run.font.name = '宋体'
-            count_run.italic = True
+            count_run.font.size = Pt(10)
+            
+        count_run.font.name = '宋体'
+        count_run.italic = True
     
     def convert_file(self, input_file, output_file):
         """转换目录文件为Word文档"""
