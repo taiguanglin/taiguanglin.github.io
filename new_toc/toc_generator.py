@@ -323,7 +323,7 @@ class HtmlGenerator:
             'level_3': '第 3 层' if self.use_simplified else '第 3 層',
             'level_4': '第 4 层' if self.use_simplified else '第 4 層',
             'level_5': '第 5 层' if self.use_simplified else '第 5 層',
-            'toggle_old': '隐藏原始目录' if self.use_simplified else '隐藏原始目录',
+            'toggle_old': '隐藏绿色字原始目录' if self.use_simplified else '隐藏绿色字原始目录',
             'import': '📁 汇入' if self.use_simplified else '📁 匯入',
             'export': '📄 汇出' if self.use_simplified else '📄 匯出'
         }
@@ -347,8 +347,8 @@ class HtmlGenerator:
   <button data-level="3">{self._get_ui_text('level_3')}</button>
   <button data-level="4">{self._get_ui_text('level_4')}</button>
   <button data-level="5">{self._get_ui_text('level_5')}</button>
-  <button id="expandAll">🔽</button>
-  <button id="collapseAll">🔼</button>
+  <button id="expandAll">⏬</button>
+  <button id="collapseAll">⏫</button>
   <button id="toggleNumbers">{self._get_ui_text('toggle_old')}</button>
   <button id="importToc">{self._get_ui_text('import')}</button>
   <button id="exportToc">{self._get_ui_text('export')}</button>
@@ -371,7 +371,7 @@ class HtmlGenerator:
     <button data-level="5" class="level-btn">{self._get_ui_text('level_5')}</button>
     <button id="floatingExpandAll" class="action-btn">🔽</button>
     <button id="floatingCollapseAll" class="action-btn">🔼</button>
-    <button id="floatingToggleNumbers" class="action-btn">隐藏原始目录</button>
+    <button id="floatingToggleNumbers" class="action-btn">隐藏绿色字原始目录</button>
   </div>
 </div>
 

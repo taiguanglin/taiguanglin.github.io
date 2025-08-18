@@ -256,6 +256,9 @@
     
     // Re-initialize tree functionality
     initializeTreeFunctionality();
+    
+    // 重新初始化展開按鈕
+    updateExpandChildrenButtons();
   }
 
   // Initialize tree functionality
@@ -326,6 +329,9 @@
   // Initial tree setup
   initializeTreeFunctionality();
   
+  // 初始化展開按鈕
+  updateExpandChildrenButtons();
+  
   // 复制功能
   function copyToClipboard(text) {
     if (navigator.clipboard && window.isSecureContext) {
@@ -389,8 +395,132 @@
   // 初始化复制功能
   bindCopyEvents();
 
+  // 檢測子節點是否還有未展開的項目（深度檢查）
+  function hasCollapsedChildren(li) {
+    const childUl = li.querySelector(':scope > ul');
+    if (!childUl) return false;
+    
+    // 檢查所有子孫節點中是否有 has-children 但沒有 open 的項目
+    const allDescendants = childUl.querySelectorAll('li.has-children');
+    return Array.from(allDescendants).some(child => !child.classList.contains('open'));
+  }
+
+  // 獲取節點的展開狀態
+  function getExpansionState(li) {
+    if (!li.classList.contains('has-children')) {
+      return 'no-children'; // 沒有子節點
+    }
+    
+    if (!li.classList.contains('open')) {
+      return 'collapsed'; // 未展開
+    }
+    
+    // 已展開，檢查是否還有未展開的子項
+    if (hasCollapsedChildren(li)) {
+      return 'partially-expanded'; // 部分展開
+    } else {
+      return 'fully-expanded'; // 完全展開
+    }
+  }
+
+  // 展開指定節點下的所有子樹
+  function expandAllChildren(li) {
+    // 先確保父節點本身是展開的
+    if (!li.classList.contains('open')) {
+      li.classList.add('open');
+    }
+    
+    const childUl = li.querySelector(':scope > ul');
+    if (!childUl) return;
+    
+    // 遞歸展開所有子樹
+    function expandRecursively(ul) {
+      const directChildren = ul.querySelectorAll(':scope > li.has-children');
+      directChildren.forEach(child => {
+        // 展開該節點
+        child.classList.add('open');
+        
+        // 遞歸展開該子節點的子樹
+        const nestedUl = child.querySelector(':scope > ul');
+        if (nestedUl) {
+          expandRecursively(nestedUl);
+        }
+      });
+    }
+    
+    expandRecursively(childUl);
+    
+    // 強制瀏覽器重排重繪
+    tree.offsetHeight;
+    
+    // 使用 requestAnimationFrame 確保DOM更新後再更新按鈕狀態
+    requestAnimationFrame(() => {
+      updateExpandChildrenButtons();
+    });
+  }
+
+  // 更新展開子樹按鈕的顯示狀態
+  function updateExpandChildrenButtons() {
+    const allItems = tree.querySelectorAll('li.has-children');
+    
+    allItems.forEach(li => {
+      const label = li.querySelector(':scope > .label');
+      if (!label) return;
+      
+      // 移除舊的按鈕和狀態類
+      const existingBtn = label.querySelector('.expand-children-btn');
+      if (existingBtn) {
+        existingBtn.remove();
+      }
+      
+      // 移除舊的狀態類
+      li.classList.remove('expansion-collapsed', 'expansion-partially', 'expansion-fully');
+      
+      // 獲取當前展開狀態
+      const state = getExpansionState(li);
+      
+      // 根據狀態添加CSS類和按鈕
+      if (state === 'collapsed') {
+        li.classList.add('expansion-collapsed');
+        // 創建按鈕（hover時顯示）
+        createExpandButton(li, label);
+      } else if (state === 'partially-expanded') {
+        li.classList.add('expansion-partially');
+        // 創建按鈕（恆常顯示）
+        createExpandButton(li, label);
+      } else if (state === 'fully-expanded') {
+        li.classList.add('expansion-fully');
+        // 不創建按鈕
+      }
+    });
+  }
+  
+  // 創建展開按鈕
+  function createExpandButton(li, label) {
+    const expandBtn = document.createElement('span');
+    expandBtn.className = 'expand-children-btn';
+    expandBtn.textContent = '⏬';
+    expandBtn.title = '展开所有子项';
+    
+    // 添加點擊事件
+    expandBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      expandAllChildren(li);
+    });
+    
+    // 添加到label末尾
+    label.appendChild(expandBtn);
+  }
+
   // toggle on li click (anywhere in the item)
   tree.addEventListener('click', e=>{
+    // 排除按鈕點擊
+    if (e.target.classList.contains('expand-children-btn') || 
+        e.target.classList.contains('copy-btn')) {
+      return;
+    }
+    
     // Find the closest li element
     let targetLi = e.target.closest('li');
     if (!targetLi) return;
@@ -402,6 +532,9 @@
     e.stopPropagation();
     
     targetLi.classList.toggle('open');
+    
+    // 更新展開按鈕狀態
+    updateExpandChildrenButtons();
   });
 
   // keyboard (Enter/Space)
@@ -411,7 +544,11 @@
     if(e.key === 'Enter' || e.key === ' '){
       e.preventDefault();
       const li = label.parentElement;
-      if(li.classList.contains('has-children')) li.classList.toggle('open');
+      if(li.classList.contains('has-children')) {
+        li.classList.toggle('open');
+        // 更新展開按鈕狀態
+        updateExpandChildrenButtons();
+      }
     }
   });
 
@@ -421,12 +558,18 @@
       const depth = Number(li.dataset.depth);
       li.classList.toggle('open', depth < n);
     });
+    // 更新展開按鈕狀態
+    updateExpandChildrenButtons();
   }
   function expandAll(){
     tree.querySelectorAll('li.has-children').forEach(li=>li.classList.add('open'));
+    // 更新展開按鈕狀態
+    updateExpandChildrenButtons();
   }
   function collapseAll(){
     tree.querySelectorAll('li.has-children').forEach(li=>li.classList.remove('open'));
+    // 更新展開按鈕狀態
+    updateExpandChildrenButtons();
   }
 
   // control buttons
@@ -446,13 +589,13 @@
     if (!oldStructureHidden) {
       // Hide old structure
       body.classList.add('hide-old-structure');
-      toggleBtn.textContent = '隐藏原始目录';
+      toggleBtn.textContent = '隐藏绿色字原始目录';
       toggleBtn.classList.add('active');
       oldStructureHidden = true;
     } else {
       // Show old structure
       body.classList.remove('hide-old-structure');
-      toggleBtn.textContent = '隐藏原始目录';
+      toggleBtn.textContent = '隐藏绿色字原始目录';
       toggleBtn.classList.remove('active');
       oldStructureHidden = false;
     }
