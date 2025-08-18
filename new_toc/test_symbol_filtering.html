@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>符号过滤测试</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .before-after { display: flex; gap: 20px; }
+        .before, .after { flex: 1; background: #f9f9f9; padding: 10px; }
+        .before { border-left: 3px solid #ff6b6b; }
+        .after { border-left: 3px solid #51cf66; }
+        pre { background: #f5f5f5; padding: 10px; font-size: 12px; }
+        .symbol { color: #ff6b6b; font-weight: bold; }
+        .clean { color: #51cf66; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🧹 符号过滤测试验证</h1>
+    
+    <div class="test-section">
+        <h2>问题分析</h2>
+        <p>用户发现匯出时包含了 <span class="symbol">⏬</span> 符号，这是展开按钮的图标。</p>
+        <p><strong>问题影响</strong>：导致匯出的文本包含不必要的UI控制符号，影响文件的可读性和重用性。</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>修复前后对比</h2>
+        <div class="before-after">
+            <div class="before">
+                <h3>修复前 ❌</h3>
+                <pre>I. 真相、意识、羯磨（业） (471) <span class="symbol">⏬</span>
+  I.I. 自性与真相 (74) <span class="symbol">⏬</span>
+    1 自性与意识 -> 1.2.4 自性遍虚空 (6) <span class="symbol">📋</span></pre>
+                <p>包含UI控制符号，影响匯出质量</p>
+            </div>
+            <div class="after">
+                <h3>修复后 ✅</h3>
+                <pre>I. 真相、意识、羯磨（业） (471)
+  I.I. 自性与真相 (74)
+    1 自性与意识 -> 1.2.4 自性遍虚空 (6)</pre>
+                <p class="clean">干净的文本，无多余符号</p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="test-section">
+        <h2>技术修改详情</h2>
+        <h3>修改的代码：</h3>
+        <pre><code>// 修改前
+text = text.replace(/📋/g, '').trim();
+
+// 修改后
+text = text.replace(/[📋⏬🔽🔼⏫📁📄]/g, '').trim();</code></pre>
+        
+        <h3>过滤的符号：</h3>
+        <ul>
+            <li><span class="symbol">📋</span> - 复制按钮</li>
+            <li><span class="symbol">⏬</span> - 展开子项按钮</li>
+            <li><span class="symbol">🔽🔼⏫</span> - 展开/收起按钮（预防性过滤）</li>
+            <li><span class="symbol">📁📄</span> - 匯入/匯出按钮（预防性过滤）</li>
+        </ul>
+    </div>
+    
+    <div class="test-section">
+        <h2>测试步骤</h2>
+        <ol>
+            <li>打开 <a href="index.html" target="_blank">index.html</a></li>
+            <li>展开一些有子项的节点（应该看到 ⏬ 按钮）</li>
+            <li>点击 "📄 汇出" 按钮</li>
+            <li>检查下载的文件是否不再包含 ⏬ 等UI符号</li>
+            <li>验证所有括号数字仍然正确保留</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>预期结果</h2>
+        <div class="clean">
+            <p>✅ 匯出文件应该完全没有UI控制符号</p>
+            <p>✅ 所有节点的括号数字应该保留</p>
+            <p>✅ 层次缩进应该正确</p>
+            <p>✅ 文件应该可以重新匯入</p>
+        </div>
+    </div>
+</body>
+</html>
