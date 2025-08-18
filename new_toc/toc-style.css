@@ -43,13 +43,13 @@ h1{font-size:1.1rem;margin:0 0 .5rem 0}
   color: #059669;
   font-weight: 500;
 }
-/* import button special styling */
-#importToc {
+/* import and export button special styling */
+#importToc, #exportToc {
   background: #10b981;
   color: white;
   border-color: #10b981;
 }
-#importToc:hover {
+#importToc:hover, #exportToc:hover {
   background: #059669;
 }
 
