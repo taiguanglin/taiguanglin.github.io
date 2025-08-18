@@ -175,11 +175,12 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 
 .question-time {
-    background: #f8c8dc;
+    background: rgba(248, 200, 220, 0.3); /* 降低不透明度，更柔和 */
     padding: 3px 8px;
     border-radius: 12px;
-    font-size: 14px;
-    color: #b73c65;
+    font-size: 13px; /* 稍微縮小字體 */
+    color: #fd7b7b; /* 更柔和的粉紅色 */
+    border: 1px solid rgba(255, 142, 142, 0.15); /* 添加淡邊框增加層次 */
     font-weight: 500;
 }
 
@@ -243,7 +244,11 @@ body.dark-mode hr { background: linear-gradient(to right, #5a2d49, #ff91af, #5a2
 body.dark-mode .question { background: #4a2c3a; border-left-color: #ff91af; box-shadow: 0 2px 8px rgba(255, 145, 175, 0.1); }
 body.dark-mode .question-text { color: #fddde6; }
 body.dark-mode .questioner { color: #ff91af; }
-body.dark-mode .question-time { background: #5a2d49; color: #ff91af; }
+body.dark-mode .question-time { 
+    background: rgba(90, 45, 73, 0.4); /* 降低不透明度 */
+    color: #d4a5b8; /* 更柔和的粉紅色，減少螢光感 */
+    border: 1px solid rgba(255, 105, 180, 0.2); /* 淡邊框 */
+}
 body.dark-mode .answer { background: linear-gradient(135deg, #4a2c3a 0%, #3b1c32 100%); border-left-color: #ff69b4; }
 body.dark-mode .answer-text { color: #fddde6; }
 body.dark-mode .answerer { color: #ff69b4; }
@@ -674,6 +679,8 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
 .bookmark-time {
     font-size: 10px;
     flex-shrink: 0;
+    color: #b18a9e; /* 柔和的粉紅灰色，與主題協調 */
+    opacity: 0.8; /* 稍微降低顯眼度 */
 }
 
 /* 首頁書籤樣式 */
@@ -2559,7 +2566,8 @@ body.dark-mode .bookmark-questioner {
 }
 
 body.dark-mode .bookmark-time {
-    color: #ccc; /* 與元資訊相同的淺灰色 */
+    color: #a99; /* 更柔和的粉紅灰色 */
+    opacity: 0.7; /* 夜間模式下更低調 */
 }
 
 /* 响应式浮动层级控制定位 */
