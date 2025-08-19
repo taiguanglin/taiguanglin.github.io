@@ -117,10 +117,44 @@ class QAClassifierV2:
         # 創建OpenAI客戶端實例
         self.client = OpenAI(api_key=api_key)
         self.model = self.config.get('openai', 'model', fallback='gpt-4')
-        self.temperature = self.config.getfloat('openai', 'temperature', fallback=0.3)
-        self.max_tokens = self.config.getint('openai', 'max_tokens', fallback=1000)
+        
+        # 根據模型類型自動選擇參數配置
+        self.temperature, self.max_tokens = self._get_model_specific_params()
         
         logger.info(f"OpenAI設置完成 - 模型: {self.model}")
+    
+    def _get_model_specific_params(self) -> tuple:
+        """根據模型類型獲取對應的參數配置"""
+        try:
+            if self.model.startswith('gpt-5'):
+                # GPT-5系列模型參數
+                
+                # GPT-5不支持自定義temperature，使用默認值1
+                temperature = 1.0
+                
+                # 嘗試讀取max_completion_tokens，但不強制要求
+                try:
+                    max_tokens = self.config.getint('gpt5_models', 'max_completion_tokens', fallback=None)
+                    if max_tokens is not None:
+                        logger.warning("檢測到max_completion_tokens設置，但建議不設置以避免空回應")
+                except:
+                    max_tokens = None
+                
+                logger.info(f"使用GPT-5專用參數配置")
+                
+            else:
+                # GPT-4系列模型參數
+                logger.info("使用GPT-4專用參數配置")
+                
+                temperature = self.config.getfloat('gpt4_models', 'temperature', fallback=0.3)
+                max_tokens = self.config.getint('gpt4_models', 'max_tokens', fallback=1000)
+            
+            return temperature, max_tokens
+            
+        except Exception as e:
+            logger.error(f"獲取模型特定參數失敗: {e}")
+            logger.warning("使用默認參數配置")
+            return 0.3, 1000
     
     def load_category_system(self) -> str:
         """載入新目錄分類體系"""
@@ -160,11 +194,15 @@ class QAClassifierV2:
     
     def load_prompt_template(self) -> str:
         """載入prompt模板"""
-        prompt_file = 'prompt_template.txt'
+        # 优先使用简化的prompt模板
+        prompt_file = 'prompt_template_simple.txt'
         
         if not os.path.exists(prompt_file):
-            logger.warning(f"Prompt文件不存在: {prompt_file}")
-            return self.get_default_prompt()
+            # 如果简化模板不存在，使用原始模板
+            prompt_file = 'prompt_template.txt'
+            if not os.path.exists(prompt_file):
+                logger.warning(f"Prompt文件不存在: {prompt_file}")
+                return self.get_default_prompt()
         
         try:
             with open(prompt_file, 'r', encoding='utf-8') as f:
@@ -244,20 +282,46 @@ class QAClassifierV2:
             qa_content=content[:3000]  # 限制內容長度
         )
         
+        # 记录发送给LLM的完整prompt（调试时使用）
+        # logger.info(f"发送给LLM的完整prompt: {prompt}")
+        
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
+            # 根据模型类型选择正确的参数
+            api_params = {
+                "model": self.model,
+                "messages": [
                     {"role": "system", "content": "你是一個專業的佛學問答分類專家。"},
                     {"role": "user", "content": prompt}
                 ],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
+                "temperature": self.temperature
+            }
+            
+            # 根据模型类型添加正确的参数
+            if self.model.startswith('gpt-5'):
+                # GPT-5模型不支持自定义temperature，也不设置max_completion_tokens
+                # 移除temperature参数，使用默认值
+                if "temperature" in api_params:
+                    del api_params["temperature"]
+                # 不设置max_completion_tokens，让模型使用默认限制
+                # logger.debug("GPT-5模型：使用默认temperature和token限制")
+            else:
+                # 其他模型使用max_tokens和temperature
+                api_params["max_tokens"] = self.max_tokens
+                # logger.debug(f"GPT-4模型：使用temperature={self.temperature}, max_tokens={self.max_tokens}")
+            
+            response = self.client.chat.completions.create(**api_params)
             
             result_text = response.choices[0].message.content.strip()
+            
+            # 保存原始响应用于调试（调试时使用）
+            # logger.info(f"原始API响应: {result_text}")
+            
             parsed_result = self.parse_classification_result(result_text)
             parsed_result['status'] = 'success'
+            
+            # 保存原始响应到结果中
+            parsed_result['raw_response'] = result_text
+            
             return parsed_result
             
         except Exception as e:
