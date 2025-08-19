@@ -58,30 +58,103 @@ class ResultsToExcel:
             sheet_name = self.config.get('excel', 'sheet_name')
             worksheet = workbook[sheet_name]
             
+            # 清理工作表，只保留指定的工作表
+            self._clean_worksheets(workbook, sheet_name)
+            
             logger.info(f"成功載入源Excel文件: {source_file}")
             return workbook, worksheet
         except Exception as e:
             logger.error(f"創建輸出Excel失敗: {e}")
             raise
     
+    def _clean_worksheets(self, workbook, keep_sheet_name: str):
+        """清理工作表，只保留指定的工作表"""
+        try:
+            sheets_to_remove = []
+            for sheet_name in workbook.sheetnames:
+                if sheet_name != keep_sheet_name:
+                    sheets_to_remove.append(sheet_name)
+            
+            if sheets_to_remove:
+                logger.info(f"將刪除 {len(sheets_to_remove)} 個工作表: {', '.join(sheets_to_remove)}")
+                for sheet_name in sheets_to_remove:
+                    del workbook[sheet_name]
+                logger.info(f"只保留工作表: {keep_sheet_name}")
+            else:
+                logger.info(f"工作表 {keep_sheet_name} 已是最後一個工作表")
+                
+        except Exception as e:
+            logger.error(f"清理工作表失敗: {e}")
+            # 不拋出異常，讓程序繼續執行
+    
     def write_classification_result(self, worksheet, row: int, result: Dict[str, Any]):
         """寫入分類結果到指定行"""
         try:
-            # 獲取輸出列配置
+            # 獲取列配置
             classification_col = self.config.getint('output', 'classification_column')
             reason_col = self.config.getint('output', 'reason_column')
-            question_summary_col = self.config.getint('output', 'question_summary_column')
-            answer_summary_col = self.config.getint('output', 'answer_summary_column')
+            question_col = self.config.getint('excel', 'question_column')
+            answer_col = self.config.getint('excel', 'answer_column')
             
-            # 寫入分類結果
-            worksheet.cell(row=row, column=classification_col).value = result.get('classification', '')
-            worksheet.cell(row=row, column=reason_col).value = result.get('reason', '')
-            worksheet.cell(row=row, column=question_summary_col).value = result.get('question_summary', '')
-            worksheet.cell(row=row, column=answer_summary_col).value = result.get('answer_summary', '')
+            # 寫入分類結果到輸出列
+            self._write_cell_with_format(worksheet, row, classification_col, result.get('classification', ''))
+            self._write_cell_with_format(worksheet, row, reason_col, result.get('reason', ''))
+            
+            # 設置問題和答案的comment
+            self._set_cell_comment(worksheet, row, question_col, result.get('question_summary', ''), '問題重點摘要')
+            self._set_cell_comment(worksheet, row, answer_col, result.get('answer_summary', ''), '回答重點摘要')
             
         except Exception as e:
             logger.error(f"寫入第 {row} 行結果失敗: {e}")
             raise
+    
+    def _write_cell_with_format(self, worksheet, row: int, col: int, value: str):
+        """寫入單元格並設置自動換行格式"""
+        try:
+            cell = worksheet.cell(row=row, column=col)
+            cell.value = value
+            
+            # 設置自動換行
+            cell.alignment = openpyxl.styles.Alignment(
+                wrap_text=True,
+                vertical='top',
+                horizontal='left'
+            )
+            
+            # 設置邊框樣式
+            cell.border = openpyxl.styles.Border(
+                left=openpyxl.styles.Side(style='thin'),
+                right=openpyxl.styles.Side(style='thin'),
+                top=openpyxl.styles.Side(style='thin'),
+                bottom=openpyxl.styles.Side(style='thin')
+            )
+            
+        except Exception as e:
+            logger.error(f"設置單元格格式失敗 (行{row}, 列{col}): {e}")
+            raise
+    
+    def _set_cell_comment(self, worksheet, row: int, col: int, comment_text: str, author: str):
+        """設置單元格comment"""
+        try:
+            if comment_text and comment_text.strip():
+                cell = worksheet.cell(row=row, column=col)
+                
+                # 創建comment對象
+                comment = openpyxl.comments.Comment(
+                    text=comment_text,
+                    author=author
+                )
+                
+                # 設置comment樣式
+                comment.width = 300  # 設置comment寬度
+                comment.height = 150  # 設置comment高度
+                
+                # 將comment添加到單元格
+                cell.comment = comment
+                
+        except Exception as e:
+            logger.error(f"設置comment失敗 (行{row}, 列{col}): {e}")
+            # 不拋出異常，讓程序繼續執行
     
     def process_results(self, results_file: str, output_file: str = None):
         """處理分類結果並寫入Excel"""
@@ -100,7 +173,22 @@ class ResultsToExcel:
             output_file = f"classified_results_{timestamp}.xlsx"
         
         # 創建輸出Excel
-        source_file = metadata.get('source_file', self.config.get('excel', 'file_path'))
+        # 優先使用元數據中的源文件，如果不存在則使用配置文件中的文件
+        metadata_source_file = metadata.get('source_file')
+        config_source_file = self.config.get('excel', 'file_path')
+        
+        # 檢查元數據中的源文件是否存在
+        if metadata_source_file and os.path.exists(metadata_source_file):
+            source_file = metadata_source_file
+            logger.info(f"使用元數據中的源文件: {source_file}")
+        else:
+            source_file = config_source_file
+            if metadata_source_file:
+                logger.warning(f"元數據中的源文件不存在: {metadata_source_file}")
+                logger.info(f"使用配置文件中的源文件: {source_file}")
+            else:
+                logger.info(f"使用配置文件中的源文件: {source_file}")
+        
         workbook, worksheet = self.create_output_excel(source_file, output_file)
         
         logger.info(f"開始寫入 {len(results)} 條分類結果")
@@ -115,6 +203,11 @@ class ResultsToExcel:
         for row_key, result in sorted_results:
             try:
                 row_number = int(row_key)
+                
+                # 跳過標題行（第6行），從第7行開始寫入數據
+                if row_number == 6:
+                    logger.info(f"跳過標題行 {row_number}")
+                    continue
                 
                 # 寫入結果
                 self.write_classification_result(worksheet, row_number, result)
@@ -131,6 +224,9 @@ class ResultsToExcel:
                 logger.error(f"處理行 {row_key} 時發生錯誤: {e}")
                 failed_count += 1
                 continue
+        
+        # 自動調整列寬和行高
+        self._auto_adjust_columns_and_rows(worksheet)
         
         # 保存Excel文件
         try:
@@ -151,6 +247,60 @@ class ResultsToExcel:
         except Exception as e:
             logger.error(f"保存Excel文件失敗: {e}")
             raise
+    
+    def _auto_adjust_columns_and_rows(self, worksheet):
+        """自動調整列寬和行高以適應內容"""
+        try:
+            # 獲取輸出列配置
+            classification_col = self.config.getint('output', 'classification_column')
+            reason_col = self.config.getint('output', 'reason_column')
+            
+            # 設置列寬（根據內容長度自動調整）
+            max_width = 50  # 最大列寬
+            min_width = 15  # 最小列寬
+            
+            # 調整分類列寬
+            self._adjust_column_width(worksheet, classification_col, max_width, min_width)
+            # 調整原因列寬
+            self._adjust_column_width(worksheet, reason_col, max_width, min_width)
+            
+            logger.info("列寬自動調整完成")
+            
+        except Exception as e:
+            logger.error(f"自動調整列寬失敗: {e}")
+            # 不拋出異常，讓程序繼續執行
+    
+    def _adjust_column_width(self, worksheet, col: int, max_width: int, min_width: int):
+        """調整單列寬度"""
+        try:
+            # 計算該列的最大內容長度
+            max_length = min_width
+            
+            for row in range(1, worksheet.max_row + 1):
+                cell = worksheet.cell(row=row, column=col)
+                if cell.value:
+                    # 計算文本長度（中文字符算2個字符寬度）
+                    text_length = self._calculate_text_width(str(cell.value))
+                    max_length = max(max_length, text_length)
+            
+            # 限制最大寬度
+            adjusted_width = min(max_length + 2, max_width)  # +2 為邊距
+            
+            # 設置列寬
+            worksheet.column_dimensions[openpyxl.utils.get_column_letter(col)].width = adjusted_width
+            
+        except Exception as e:
+            logger.error(f"調整列 {col} 寬度失敗: {e}")
+    
+    def _calculate_text_width(self, text: str) -> int:
+        """計算文本寬度（中文字符算2個字符寬度）"""
+        width = 0
+        for char in text:
+            if ord(char) > 127:  # 中文字符
+                width += 2
+            else:  # 英文字符
+                width += 1
+        return width
 
 def main():
     """主函數"""
