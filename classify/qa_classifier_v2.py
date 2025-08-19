@@ -278,8 +278,7 @@ class QAClassifierV2:
         # 構建prompt
         prompt = self.prompt_template.format(
             category_system=self.category_system,
-            title=title,
-            qa_content=content[:3000]  # 限制內容長度
+            title=title
         )
         
         # 记录发送给LLM的完整prompt（调试时使用）

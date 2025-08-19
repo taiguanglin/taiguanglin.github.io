@@ -14,6 +14,7 @@ from datetime import datetime
 import os
 import argparse
 from typing import Dict, Any
+from copy import copy
 try:
     from tqdm import tqdm
     TQDM_AVAILABLE = True
@@ -56,27 +57,89 @@ class ResultsToExcel:
             logger.error(f"載入結果文件失敗: {e}")
             raise
     
-    def create_output_excel(self, source_file: str, output_file: str) -> tuple:
-        """創建輸出Excel文件"""
+    def create_output_excel(self, source_file: str, output_file: str, required_rows: set = None) -> tuple:
+        """創建輸出Excel文件，只包含需要的行"""
         try:
             print("📁 正在載入Excel文件...")
             
-            # 複製原始文件
-            workbook = load_workbook(source_file)
+            # 載入原始文件
+            source_workbook = load_workbook(source_file)
             sheet_name = self.config.get('excel', 'sheet_name')
-            worksheet = workbook[sheet_name]
+            source_worksheet = source_workbook[sheet_name]
             
             print("✅ Excel文件載入完成")
-            print("🧹 正在清理工作表...")
+            print("🧹 正在創建精簡工作表...")
+            
+            # 創建新的工作簿，只包含需要的行
+            workbook, worksheet = self._create_minimal_excel(source_worksheet, required_rows)
             
             # 清理工作表，只保留指定的工作表
             self._clean_worksheets(workbook, sheet_name)
             
-            logger.info(f"成功載入源Excel文件: {source_file}")
+            logger.info(f"成功創建精簡Excel文件，包含 {len(required_rows) + 1 if required_rows else 0} 行")
             return workbook, worksheet
         except Exception as e:
             logger.error(f"創建輸出Excel失敗: {e}")
             raise
+    
+    def _create_minimal_excel(self, source_worksheet, required_rows: set):
+        """創建只包含需要行的新Excel工作簿"""
+        from openpyxl import Workbook
+        
+        # 創建新工作簿
+        workbook = Workbook()
+        worksheet = workbook.active
+        worksheet.title = source_worksheet.title
+        
+        # 總是包含標題行(第6行)
+        rows_to_copy = {6}
+        if required_rows:
+            rows_to_copy.update(required_rows)
+        
+        # 記錄標題行的新位置
+        self.title_row_new = None
+        
+        # 獲取源工作表的最大列數
+        max_col = source_worksheet.max_column
+        
+        # 創建行號映射（新行號 -> 原行號）
+        self.row_mapping = {}
+        new_row = 1
+        
+        # 按順序復制行
+        for original_row in sorted(rows_to_copy):
+            try:
+                # 復制整行數據
+                for col in range(1, max_col + 1):
+                    source_cell = source_worksheet.cell(row=original_row, column=col)
+                    target_cell = worksheet.cell(row=new_row, column=col)
+                    
+                    # 復制值
+                    target_cell.value = source_cell.value
+                    
+                    # 復制格式（如果有的話）
+                    if source_cell.has_style:
+                        target_cell.font = copy(source_cell.font)
+                        target_cell.border = copy(source_cell.border)
+                        target_cell.fill = copy(source_cell.fill)
+                        target_cell.number_format = source_cell.number_format
+                        target_cell.protection = copy(source_cell.protection)
+                        target_cell.alignment = copy(source_cell.alignment)
+                
+                # 記錄行號映射
+                self.row_mapping[original_row] = new_row
+                
+                # 記錄標題行的新位置
+                if original_row == 6:
+                    self.title_row_new = new_row
+                
+                new_row += 1
+                
+            except Exception as e:
+                logger.warning(f"復制第 {original_row} 行時出錯: {e}")
+        
+        logger.info(f"成功創建精簡工作表，從 {len(rows_to_copy)} 行復制")
+        return workbook, worksheet
     
     def _clean_worksheets(self, workbook, keep_sheet_name: str):
         """清理工作表，只保留指定的工作表"""
@@ -99,7 +162,7 @@ class ResultsToExcel:
             # 不拋出異常，讓程序繼續執行
     
     def _add_column_headers(self, worksheet):
-        """在第6行添加新列的標題"""
+        """在標題行添加新列的標題"""
         try:
             # 獲取輸出列配置
             classification_col = self.config.getint('output', 'classification_column')
@@ -108,16 +171,18 @@ class ResultsToExcel:
             directory2_col = self.config.getint('output', 'directory2_column')
             directory3_col = self.config.getint('output', 'directory3_column')
             
-            # 在第6行添加標題
-            worksheet.cell(row=6, column=classification_col).value = "LLM分類"
-            worksheet.cell(row=6, column=reason_col).value = "LLM分析原因"
-            worksheet.cell(row=6, column=directory1_col).value = "第一層目錄"
-            worksheet.cell(row=6, column=directory2_col).value = "第二層目錄"
-            worksheet.cell(row=6, column=directory3_col).value = "第三層目錄"
+            # 使用正確的標題行號
+            title_row = getattr(self, 'title_row_new', 6)
+            worksheet.cell(row=title_row, column=classification_col).value = "LLM分類"
+            worksheet.cell(row=title_row, column=reason_col).value = "LLM分析原因"
+            worksheet.cell(row=title_row, column=directory1_col).value = "第一層目錄"
+            worksheet.cell(row=title_row, column=directory2_col).value = "第二層目錄"
+            worksheet.cell(row=title_row, column=directory3_col).value = "第三層目錄"
             
             # 設置標題格式
+            title_row = getattr(self, 'title_row_new', 6)
             for col in [classification_col, reason_col, directory1_col, directory2_col, directory3_col]:
-                cell = worksheet.cell(row=6, column=col)
+                cell = worksheet.cell(row=title_row, column=col)
                 cell.font = openpyxl.styles.Font(bold=True)
                 cell.alignment = openpyxl.styles.Alignment(
                     horizontal='center',
@@ -271,6 +336,12 @@ class ResultsToExcel:
     def write_classification_result(self, worksheet, row: int, result: Dict[str, Any]):
         """寫入分類結果到指定行"""
         try:
+            # 使用行號映射獲取新的行號
+            if hasattr(self, 'row_mapping') and row in self.row_mapping:
+                actual_row = self.row_mapping[row]
+            else:
+                actual_row = row
+            
             # 獲取列配置
             classification_col = self.config.getint('output', 'classification_column')
             reason_col = self.config.getint('output', 'reason_column')
@@ -284,17 +355,24 @@ class ResultsToExcel:
             directory_info = self._parse_directory_from_classification(result.get('classification', ''))
             
             # 寫入分類結果到輸出列
-            self._write_cell_with_format(worksheet, row, classification_col, result.get('classification', ''))
-            self._write_cell_with_format(worksheet, row, reason_col, result.get('reason', ''))
+            self._write_cell_with_format(worksheet, actual_row, classification_col, result.get('classification', ''))
+            self._write_cell_with_format(worksheet, actual_row, reason_col, result.get('reason', ''))
             
             # 寫入解析出的目錄信息
-            self._write_cell_with_format(worksheet, row, directory1_col, directory_info.get('directory1', ''))
-            self._write_cell_with_format(worksheet, row, directory2_col, directory_info.get('directory2', ''))
-            self._write_cell_with_format(worksheet, row, directory3_col, directory_info.get('directory3', ''))
+            self._write_cell_with_format(worksheet, actual_row, directory1_col, directory_info.get('directory1', ''))
+            self._write_cell_with_format(worksheet, actual_row, directory2_col, directory_info.get('directory2', ''))
+            self._write_cell_with_format(worksheet, actual_row, directory3_col, directory_info.get('directory3', ''))
             
             # 設置問題和答案的comment
-            self._set_cell_comment(worksheet, row, question_col, result.get('question_summary', ''), '問題重點摘要')
-            self._set_cell_comment(worksheet, row, answer_col, result.get('answer_summary', ''), '回答重點摘要')
+            question_summary = result.get('question_summary', '')
+            answer_summary = result.get('answer_summary', '')
+            
+            # 只在有摘要時才添加註釋
+            if question_summary and question_summary.strip():
+                self._set_cell_comment(worksheet, actual_row, question_col, question_summary, '問題重點摘要')
+            
+            if answer_summary and answer_summary.strip() and answer_summary != "僅基於問題分類，無法提供回答摘要":
+                self._set_cell_comment(worksheet, actual_row, answer_col, answer_summary, '回答重點摘要')
             
         except Exception as e:
             logger.error(f"寫入第 {row} 行結果失敗: {e}")
@@ -384,7 +462,10 @@ class ResultsToExcel:
             else:
                 logger.info(f"使用配置文件中的源文件: {source_file}")
         
-        workbook, worksheet = self.create_output_excel(source_file, output_file)
+        # 獲取需要的行號
+        required_rows = set(int(row_key) for row_key in results.keys())
+        
+        workbook, worksheet = self.create_output_excel(source_file, output_file, required_rows)
         
         # 載入目錄體系
         self.directory_system = self._load_directory_system()
@@ -458,9 +539,9 @@ class ResultsToExcel:
         print("📏 正在調整列寬...")
         self._auto_adjust_columns_and_rows(worksheet)
         
-        # 隱藏第7行到第539行
-        print("👁️ 正在隱藏行...")
-        self._hide_rows_7_to_539(worksheet)
+        # 由於已經只輸出需要的行，不再需要隱藏行
+        print("👁️ 輸出文件已經只包含需要的行，無需隱藏行...")
+        logger.info("輸出文件已經只包含需要的行，無需隱藏行")
         
         # 保存Excel文件
         print("💾 正在保存Excel文件...")
