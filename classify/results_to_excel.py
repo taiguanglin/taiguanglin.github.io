@@ -231,7 +231,7 @@ class ResultsToExcel:
                     if match:
                         level1_roman = match.group(1)
                         level2_roman = f"{match.group(1)}.{match.group(2)}"
-                        level3_name = match.group(3).strip()
+                        level2_name = match.group(3).strip()
                         
                         # 使用目錄體系獲取完整名稱
                         if level1_roman in self.directory_system:
@@ -241,9 +241,12 @@ class ResultsToExcel:
                             # 第二層：IV.II. 工作
                             if level2_roman in self.directory_system[level1_roman]['subcategories']:
                                 directory_info['directory2'] = self.directory_system[level1_roman]['subcategories'][level2_roman]['full_name']
+                            else:
+                                # 如果目錄體系中沒有找到對應的第二層，使用解析出的名稱
+                                directory_info['directory2'] = f"{level2_roman}. {level2_name}"
                             
-                            # 第三層：預留擴展空間
-                            directory_info['directory3'] = level3_name
+                            # 第三層：目前不存在，預留為空，為未來擴展做準備
+                            directory_info['directory3'] = ''
                 
                 elif '【' in first_classification and '】' in first_classification:
                     # 只有大分類的情況，如"【义理】（85%）"
