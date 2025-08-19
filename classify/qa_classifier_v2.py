@@ -16,6 +16,7 @@ import logging
 from datetime import datetime
 import os
 import json
+import argparse
 from typing import Dict, List, Tuple, Optional
 # 設置日誌函數
 def setup_logging():
@@ -62,10 +63,13 @@ logger = setup_logging()
 class QAClassifierV2:
     """問答分類器 v2.0 - JSON輸出版本"""
     
-    def __init__(self, config_file: str = 'config.ini'):
+    def __init__(self, config_file: str = 'config.ini', api_key: str = None):
         """初始化分類器"""
         self.config = configparser.ConfigParser()
         self.config.read(config_file, encoding='utf-8')
+        
+        # 保存API key
+        self.api_key = api_key
         
         # 初始化OpenAI
         self.setup_openai()
@@ -92,9 +96,23 @@ class QAClassifierV2:
     
     def setup_openai(self):
         """設置OpenAI API"""
-        api_key = self.config.get('openai', 'api_key')
-        if api_key == 'YOUR_OPENAI_API_KEY_HERE':
-            raise ValueError("請在config.ini中設置您的OpenAI API Key")
+        # 優先使用傳入的API key
+        if self.api_key:
+            api_key = self.api_key
+        else:
+            # 嘗試從環境變量獲取
+            api_key = os.getenv('OPENAI_API_KEY')
+            if not api_key:
+                # 最後嘗試從配置文件獲取（向後兼容）
+                api_key = self.config.get('openai', 'api_key', fallback=None)
+        
+        if not api_key or api_key == 'YOUR_OPENAI_API_KEY_HERE':
+            raise ValueError(
+                "請通過以下方式之一設置OpenAI API Key:\n"
+                "1. 命令行參數: --api-key YOUR_API_KEY\n"
+                "2. 環境變量: export OPENAI_API_KEY=YOUR_API_KEY\n"
+                "3. 配置文件: 在config.ini中設置api_key（不推薦）"
+            )
         
         # 創建OpenAI客戶端實例
         self.client = OpenAI(api_key=api_key)
@@ -400,11 +418,46 @@ class QAClassifierV2:
 
 def main():
     """主函數"""
+    parser = argparse.ArgumentParser(
+        description="問答分類自動化系統 v2.0",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用示例:
+  # 使用命令行參數（推薦）
+  python3 qa_classifier_v2.py --api-key YOUR_API_KEY
+  
+  # 使用環境變量
+  export OPENAI_API_KEY=YOUR_API_KEY
+  python3 qa_classifier_v2.py
+  
+  # 使用配置文件（不推薦，會產生commit警告）
+  python3 qa_classifier_v2.py
+        """
+    )
+    
+    parser.add_argument(
+        '--api-key',
+        type=str,
+        help='OpenAI API Key（推薦使用此方式）'
+    )
+    
+    parser.add_argument(
+        '--config',
+        type=str,
+        default='config.ini',
+        help='配置文件路徑（默認: config.ini）'
+    )
+    
+    args = parser.parse_args()
+    
     print("問答分類自動化系統 v2.0")
     print("=" * 50)
     
     try:
-        classifier = QAClassifierV2()
+        classifier = QAClassifierV2(
+            config_file=args.config,
+            api_key=args.api_key
+        )
         
         # 處理指定範圍
         results_file = classifier.process_batch()
