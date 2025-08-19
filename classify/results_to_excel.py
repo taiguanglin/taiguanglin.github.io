@@ -572,14 +572,35 @@ class ResultsToExcel:
             classification_col = self.config.getint('output', 'classification_column')
             reason_col = self.config.getint('output', 'reason_column')
             
-            # 設置列寬（根據內容長度自動調整）
-            max_width = 50  # 最大列寬
-            min_width = 15  # 最小列寬
+            # 定義所有需要調整的列及其寬度範圍
+            columns_to_adjust = [
+                # 列G（答疑日期）- 需要足夠寬度顯示日期
+                {'col': 7, 'min_width': 20, 'max_width': 25, 'name': '答疑日期'},
+                # 列H（问题）- 適中寬度，避免過寬
+                {'col': 8, 'min_width': 30, 'max_width': 60, 'name': '问题'},
+                # 列I（答案）- 適中寬度，避免過寬
+                {'col': 9, 'min_width': 30, 'max_width': 60, 'name': '答案'},
+                # LLM分類列
+                {'col': classification_col, 'min_width': 15, 'max_width': 50, 'name': 'LLM分類'},
+                # LLM分析原因列
+                {'col': reason_col, 'min_width': 15, 'max_width': 50, 'name': 'LLM分析原因'},
+                # 第一層目錄
+                {'col': 14, 'min_width': 15, 'max_width': 30, 'name': '第一層目錄'},
+                # 第二層目錄
+                {'col': 15, 'min_width': 15, 'max_width': 30, 'name': '第二層目錄'},
+                # 第三層目錄
+                {'col': 16, 'min_width': 15, 'max_width': 30, 'name': '第三層目錄'},
+            ]
             
-            # 調整分類列寬
-            self._adjust_column_width(worksheet, classification_col, max_width, min_width)
-            # 調整原因列寬
-            self._adjust_column_width(worksheet, reason_col, max_width, min_width)
+            # 調整所有列的寬度
+            for col_config in columns_to_adjust:
+                self._adjust_column_width(
+                    worksheet, 
+                    col_config['col'], 
+                    col_config['max_width'], 
+                    col_config['min_width'],
+                    col_config['name']
+                )
             
             logger.info("列寬自動調整完成")
             
@@ -587,7 +608,7 @@ class ResultsToExcel:
             logger.error(f"自動調整列寬失敗: {e}")
             # 不拋出異常，讓程序繼續執行
     
-    def _adjust_column_width(self, worksheet, col: int, max_width: int, min_width: int):
+    def _adjust_column_width(self, worksheet, col: int, max_width: int, min_width: int, col_name: str = None):
         """調整單列寬度"""
         try:
             # 計算該列的最大內容長度
@@ -596,7 +617,7 @@ class ResultsToExcel:
             
             # 使用進度條處理大量行
             if TQDM_AVAILABLE and total_rows > 1000:
-                row_range = tqdm(range(1, total_rows + 1), desc=f"調整列{openpyxl.utils.get_column_letter(col)}", leave=False)
+                row_range = tqdm(range(1, total_rows + 1), desc=f"調整{col_name or f'列{openpyxl.utils.get_column_letter(col)}'}", leave=False)
             else:
                 row_range = range(1, total_rows + 1)
             
@@ -613,8 +634,10 @@ class ResultsToExcel:
             # 設置列寬
             worksheet.column_dimensions[openpyxl.utils.get_column_letter(col)].width = adjusted_width
             
+            logger.debug(f"列 {col_name or openpyxl.utils.get_column_letter(col)} 寬度調整為: {adjusted_width}")
+            
         except Exception as e:
-            logger.error(f"調整列 {col} 寬度失敗: {e}")
+            logger.error(f"調整列 {col_name or col} 寬度失敗: {e}")
     
     def _calculate_text_width(self, text: str) -> int:
         """計算文本寬度（中文字符算2個字符寬度）"""
