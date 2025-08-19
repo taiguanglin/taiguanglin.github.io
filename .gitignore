@@ -5,4 +5,3 @@ classify/*classified_results_*.xlsx
 classify/config.ini
 classify/qa_classification_results*.json
 classify/qa_classification.log
-classify/qa_classification.log

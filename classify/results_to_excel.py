@@ -14,6 +14,12 @@ from datetime import datetime
 import os
 import argparse
 from typing import Dict, Any
+try:
+    from tqdm import tqdm
+    TQDM_AVAILABLE = True
+except ImportError:
+    TQDM_AVAILABLE = False
+    print("警告: tqdm库未安装，将使用简单进度显示。建议安装: pip install tqdm")
 
 # 設置日誌
 logging.basicConfig(
@@ -53,10 +59,15 @@ class ResultsToExcel:
     def create_output_excel(self, source_file: str, output_file: str) -> tuple:
         """創建輸出Excel文件"""
         try:
+            print("📁 正在載入Excel文件...")
+            
             # 複製原始文件
             workbook = load_workbook(source_file)
             sheet_name = self.config.get('excel', 'sheet_name')
             worksheet = workbook[sheet_name]
+            
+            print("✅ Excel文件載入完成")
+            print("🧹 正在清理工作表...")
             
             # 清理工作表，只保留指定的工作表
             self._clean_worksheets(workbook, sheet_name)
@@ -378,7 +389,9 @@ class ResultsToExcel:
         # 添加新列的標題
         self._add_column_headers(worksheet)
         
-        logger.info(f"開始寫入 {len(results)} 條分類結果")
+        total_items = len(results)
+        logger.info(f"開始寫入 {total_items} 條分類結果")
+        print(f"📊 開始處理 {total_items} 條分類結果...")
         
         # 統計信息
         success_count = 0
@@ -387,13 +400,21 @@ class ResultsToExcel:
         # 按行號排序處理
         sorted_results = sorted(results.items(), key=lambda x: int(x[0]))
         
-        for row_key, result in sorted_results:
+        # 使用進度條
+        if TQDM_AVAILABLE:
+            pbar = tqdm(sorted_results, desc="寫入分類結果", unit="條")
+        else:
+            pbar = sorted_results
+            print("進度: [", end="")
+        
+        for i, (row_key, result) in enumerate(pbar):
             try:
                 row_number = int(row_key)
                 
                 # 跳過標題行（第6行），從第7行開始寫入數據
                 if row_number == 6:
-                    logger.info(f"跳過標題行 {row_number}")
+                    if not TQDM_AVAILABLE:
+                        print("=", end="", flush=True)
                     continue
                 
                 # 寫入結果
@@ -404,23 +425,45 @@ class ResultsToExcel:
                 else:
                     failed_count += 1
                 
-                if (success_count + failed_count) % 50 == 0:
-                    logger.info(f"已處理 {success_count + failed_count} 條結果")
+                # 更新進度條
+                if not TQDM_AVAILABLE:
+                    print("=", end="", flush=True)
+                
+                # 每處理10條記錄顯示進度
+                if (success_count + failed_count) % 10 == 0:
+                    current_progress = success_count + failed_count
+                    if TQDM_AVAILABLE:
+                        pbar.set_postfix({
+                            '成功': success_count,
+                            '失敗': failed_count,
+                            '進度': f"{current_progress}/{total_items}"
+                        })
+                    else:
+                        print(f"\n進度: {current_progress}/{total_items} (成功: {success_count}, 失敗: {failed_count})", end="")
                 
             except Exception as e:
                 logger.error(f"處理行 {row_key} 時發生錯誤: {e}")
                 failed_count += 1
                 continue
         
+        if not TQDM_AVAILABLE:
+            print("] 完成!")
+        
+        print(f"✅ 數據寫入完成: 成功 {success_count} 條，失敗 {failed_count} 條")
+        
         # 自動調整列寬和行高
+        print("📏 正在調整列寬...")
         self._auto_adjust_columns_and_rows(worksheet)
         
         # 隱藏第7行到第539行
+        print("👁️ 正在隱藏行...")
         self._hide_rows_7_to_539(worksheet)
         
         # 保存Excel文件
+        print("💾 正在保存Excel文件...")
         try:
             workbook.save(output_file)
+            print("✅ Excel文件保存完成!")
             logger.info(f"✅ Excel文件已保存: {output_file}")
             logger.info(f"📊 統計: 成功寫入 {success_count} 條，失敗 {failed_count} 條")
             
@@ -465,8 +508,15 @@ class ResultsToExcel:
         try:
             # 計算該列的最大內容長度
             max_length = min_width
+            total_rows = worksheet.max_row
             
-            for row in range(1, worksheet.max_row + 1):
+            # 使用進度條處理大量行
+            if TQDM_AVAILABLE and total_rows > 1000:
+                row_range = tqdm(range(1, total_rows + 1), desc=f"調整列{openpyxl.utils.get_column_letter(col)}", leave=False)
+            else:
+                row_range = range(1, total_rows + 1)
+            
+            for row in row_range:
                 cell = worksheet.cell(row=row, column=col)
                 if cell.value:
                     # 計算文本長度（中文字符算2個字符寬度）
