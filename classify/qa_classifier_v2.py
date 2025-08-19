@@ -81,6 +81,7 @@ class QAClassifierV2:
         self.metadata = {
             "source_file": self.config.get('excel', 'file_path'),
             "sheet_name": self.config.get('excel', 'sheet_name'),
+            "llm_model": self.config.get('openai', 'model', fallback='gpt-4'),
             "processing_start_time": datetime.now().isoformat(),
             "total_processed": 0,
             "total_success": 0,

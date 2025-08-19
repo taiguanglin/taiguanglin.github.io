@@ -87,6 +87,173 @@ class ResultsToExcel:
             logger.error(f"清理工作表失敗: {e}")
             # 不拋出異常，讓程序繼續執行
     
+    def _add_column_headers(self, worksheet):
+        """在第6行添加新列的標題"""
+        try:
+            # 獲取輸出列配置
+            classification_col = self.config.getint('output', 'classification_column')
+            reason_col = self.config.getint('output', 'reason_column')
+            directory1_col = self.config.getint('output', 'directory1_column')
+            directory2_col = self.config.getint('output', 'directory2_column')
+            directory3_col = self.config.getint('output', 'directory3_column')
+            
+            # 在第6行添加標題
+            worksheet.cell(row=6, column=classification_col).value = "LLM分類"
+            worksheet.cell(row=6, column=reason_col).value = "LLM分析原因"
+            worksheet.cell(row=6, column=directory1_col).value = "第一層目錄"
+            worksheet.cell(row=6, column=directory2_col).value = "第二層目錄"
+            worksheet.cell(row=6, column=directory3_col).value = "第三層目錄"
+            
+            # 設置標題格式
+            for col in [classification_col, reason_col, directory1_col, directory2_col, directory3_col]:
+                cell = worksheet.cell(row=6, column=col)
+                cell.font = openpyxl.styles.Font(bold=True)
+                cell.alignment = openpyxl.styles.Alignment(
+                    horizontal='center',
+                    vertical='center'
+                )
+                cell.border = openpyxl.styles.Border(
+                    left=openpyxl.styles.Side(style='thin'),
+                    right=openpyxl.styles.Side(style='thin'),
+                    top=openpyxl.styles.Side(style='thin'),
+                    bottom=openpyxl.styles.Side(style='thin')
+                )
+            
+            logger.info(f"已添加列標題: 第{classification_col}列(LLM分類), 第{reason_col}列(LLM分析原因), 第{directory1_col}列(第一層目錄), 第{directory2_col}列(第二層目錄), 第{directory3_col}列(第三層目錄)")
+            
+        except Exception as e:
+            logger.error(f"添加列標題失敗: {e}")
+            # 不拋出異常，讓程序繼續執行
+    
+    def _load_directory_system(self) -> Dict[str, Dict[str, str]]:
+        """載入目錄體系"""
+        try:
+            directory_system = {}
+            
+            # 讀取prompt_template.txt文件
+            prompt_file = 'prompt_template.txt'
+            if not os.path.exists(prompt_file):
+                logger.warning(f"Prompt文件不存在: {prompt_file}")
+                return {}
+            
+            with open(prompt_file, 'r', encoding='utf-8') as f:
+                content = f.read()
+            
+            # 解析目錄體系
+            import re
+            
+            # 匹配第一層目錄：I. 【义理】、II. 【修心】等
+            level1_pattern = r'^([IV]+)\.\s*【([^】]+)】'
+            
+            # 匹配第二層目錄：I.I. 真相、II.II. 打坐等
+            level2_pattern = r'^\s*([IV]+\.[IV]+)\.\s*([^：]+)'
+            
+            lines = content.split('\n')
+            current_level1 = None
+            
+            for line in lines:
+                line = line.strip()
+                
+                # 檢查第一層目錄
+                level1_match = re.match(level1_pattern, line)
+                if level1_match:
+                    roman_num = level1_match.group(1)
+                    chinese_name = level1_match.group(2)
+                    current_level1 = roman_num
+                    
+                    directory_system[roman_num] = {
+                        'name': chinese_name,
+                        'full_name': f"{roman_num}.【{chinese_name}】",
+                        'subcategories': {}
+                    }
+                
+                # 檢查第二層目錄
+                elif current_level1:
+                    level2_match = re.match(level2_pattern, line)
+                    if level2_match:
+                        roman_sub = level2_match.group(1)
+                        chinese_sub = level2_match.group(2)
+                        
+                        if current_level1 in directory_system:
+                            directory_system[current_level1]['subcategories'][roman_sub] = {
+                                'name': chinese_sub,
+                                'full_name': f"{roman_sub}. {chinese_sub}"
+                            }
+            
+            logger.info(f"成功載入目錄體系，包含 {len(directory_system)} 個第一層分類")
+            return directory_system
+            
+        except Exception as e:
+            logger.error(f"載入目錄體系失敗: {e}")
+            return {}
+    
+    def _parse_directory_from_classification(self, classification_text: str) -> Dict[str, str]:
+        """從LLM分類結果中解析目錄信息"""
+        try:
+            directory_info = {
+                'directory1': '',
+                'directory2': '',
+                'directory3': ''
+            }
+            
+            if not classification_text:
+                return directory_info
+            
+            # 分割分類結果（按換行符分割）
+            lines = classification_text.strip().split('\n')
+            
+            # 取第一個分類（信心度最高的）
+            if lines:
+                first_classification = lines[0].strip()
+                
+                # 解析目錄結構
+                # 例如："I.I. 真相（80%）" 或 "II.II. 打坐（信心度95%）"
+                if '.' in first_classification:
+                    # 有子分類的情況
+                    # 使用正則表達式提取羅馬數字和分類名稱
+                    import re
+                    
+                    # 匹配模式：I.I. 真相（80%）或 II.II. 打坐（信心度95%）
+                    pattern = r'^([IV]+)\.([IV]+)\.\s*([^（]+)'
+                    match = re.match(pattern, first_classification)
+                    
+                    if match:
+                        level1_roman = match.group(1)
+                        level2_roman = f"{match.group(1)}.{match.group(2)}"
+                        level3_name = match.group(3).strip()
+                        
+                        # 使用目錄體系獲取完整名稱
+                        if level1_roman in self.directory_system:
+                            # 第一層：IV.【生活】
+                            directory_info['directory1'] = self.directory_system[level1_roman]['full_name']
+                            
+                            # 第二層：IV.II. 工作
+                            if level2_roman in self.directory_system[level1_roman]['subcategories']:
+                                directory_info['directory2'] = self.directory_system[level1_roman]['subcategories'][level2_roman]['full_name']
+                            
+                            # 第三層：預留擴展空間
+                            directory_info['directory3'] = level3_name
+                
+                elif '【' in first_classification and '】' in first_classification:
+                    # 只有大分類的情況，如"【义理】（85%）"
+                    # 提取分類名稱
+                    start = first_classification.find('【') + 1
+                    end = first_classification.find('】')
+                    if start > 0 and end > start:
+                        category_name = first_classification[start:end].strip()
+                        # 查找對應的羅馬數字
+                        for roman, info in self.directory_system.items():
+                            if info['name'] == category_name:
+                                directory_info['directory1'] = info['full_name']
+                                break
+            
+            logger.debug(f"解析目錄信息: {directory_info}")
+            return directory_info
+            
+        except Exception as e:
+            logger.error(f"解析目錄信息失敗: {e}")
+            return {'directory1': '', 'directory2': '', 'directory3': ''}
+    
     def write_classification_result(self, worksheet, row: int, result: Dict[str, Any]):
         """寫入分類結果到指定行"""
         try:
@@ -95,10 +262,21 @@ class ResultsToExcel:
             reason_col = self.config.getint('output', 'reason_column')
             question_col = self.config.getint('excel', 'question_column')
             answer_col = self.config.getint('excel', 'answer_column')
+            directory1_col = self.config.getint('output', 'directory1_column')
+            directory2_col = self.config.getint('output', 'directory2_column')
+            directory3_col = self.config.getint('output', 'directory3_column')
+            
+            # 從LLM分類結果中解析目錄信息
+            directory_info = self._parse_directory_from_classification(result.get('classification', ''))
             
             # 寫入分類結果到輸出列
             self._write_cell_with_format(worksheet, row, classification_col, result.get('classification', ''))
             self._write_cell_with_format(worksheet, row, reason_col, result.get('reason', ''))
+            
+            # 寫入解析出的目錄信息
+            self._write_cell_with_format(worksheet, row, directory1_col, directory_info.get('directory1', ''))
+            self._write_cell_with_format(worksheet, row, directory2_col, directory_info.get('directory2', ''))
+            self._write_cell_with_format(worksheet, row, directory3_col, directory_info.get('directory3', ''))
             
             # 設置問題和答案的comment
             self._set_cell_comment(worksheet, row, question_col, result.get('question_summary', ''), '問題重點摘要')
@@ -139,9 +317,12 @@ class ResultsToExcel:
             if comment_text and comment_text.strip():
                 cell = worksheet.cell(row=row, column=col)
                 
+                # 添加"LLM摘要:"前缀
+                formatted_text = f"LLM摘要:\n{comment_text}"
+                
                 # 創建comment對象
                 comment = openpyxl.comments.Comment(
-                    text=comment_text,
+                    text=formatted_text,
                     author=author
                 )
                 
@@ -191,6 +372,12 @@ class ResultsToExcel:
         
         workbook, worksheet = self.create_output_excel(source_file, output_file)
         
+        # 載入目錄體系
+        self.directory_system = self._load_directory_system()
+        
+        # 添加新列的標題
+        self._add_column_headers(worksheet)
+        
         logger.info(f"開始寫入 {len(results)} 條分類結果")
         
         # 統計信息
@@ -227,6 +414,9 @@ class ResultsToExcel:
         
         # 自動調整列寬和行高
         self._auto_adjust_columns_and_rows(worksheet)
+        
+        # 隱藏第7行到第539行
+        self._hide_rows_7_to_539(worksheet)
         
         # 保存Excel文件
         try:
@@ -301,6 +491,19 @@ class ResultsToExcel:
             else:  # 英文字符
                 width += 1
         return width
+    
+    def _hide_rows_7_to_539(self, worksheet):
+        """隱藏第7行到第539行"""
+        try:
+            # 隱藏從第7行到第539行
+            for row_num in range(7, 540):
+                worksheet.row_dimensions[row_num].hidden = True
+            
+            logger.info(f"已隱藏第7行到第539行（共{539-7+1}行）")
+            
+        except Exception as e:
+            logger.error(f"隱藏行失敗: {e}")
+            # 不拋出異常，讓程序繼續執行
 
 def main():
     """主函數"""
