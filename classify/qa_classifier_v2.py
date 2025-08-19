@@ -16,7 +16,9 @@ import logging
 from datetime import datetime
 import os
 import json
+import argparse
 from typing import Dict, List, Tuple, Optional
+
 # 設置日誌函數
 def setup_logging():
     """設置日誌配置"""
@@ -62,10 +64,15 @@ logger = setup_logging()
 class QAClassifierV2:
     """問答分類器 v2.0 - JSON輸出版本"""
     
-    def __init__(self, config_file: str = 'config.ini'):
+    def __init__(self, config_file: str = 'config.ini', api_key: str = None, api_type: str = None, chatmock_url: str = None):
         """初始化分類器"""
         self.config = configparser.ConfigParser()
         self.config.read(config_file, encoding='utf-8')
+        
+        # 保存参数
+        self.api_key = api_key
+        self.api_type = api_type
+        self.chatmock_url = chatmock_url
         
         # 初始化OpenAI
         self.setup_openai()
@@ -81,6 +88,7 @@ class QAClassifierV2:
         self.metadata = {
             "source_file": self.config.get('excel', 'file_path'),
             "sheet_name": self.config.get('excel', 'sheet_name'),
+            "llm_model": self._get_llm_model_display_name(),  # 动态获取模型显示名称
             "processing_start_time": datetime.now().isoformat(),
             "total_processed": 0,
             "total_success": 0,
@@ -90,18 +98,134 @@ class QAClassifierV2:
         logger.info("QA分類器 v2.0 初始化完成")
     
     def setup_openai(self):
-        """設置OpenAI API"""
-        api_key = self.config.get('openai', 'api_key')
-        if api_key == 'YOUR_OPENAI_API_KEY_HERE':
-            raise ValueError("請在config.ini中設置您的OpenAI API Key")
+        """設置OpenAI API或ChatMock"""
+        # 優先使用命令行參數，其次使用配置文件
+        if self.api_type:
+            api_type = self.api_type.lower()
+        else:
+            api_type = self.config.get('api', 'type', fallback='openai').lower()
+        
+        logger.info(f"使用API類型: {api_type}")
+        
+        if api_type == 'chatmock':
+            self._setup_chatmock()
+        else:
+            self._setup_openai_api()
+    
+    def _setup_chatmock(self):
+        """設置ChatMock本地服務器"""
+        try:
+            # 優先使用命令行參數，其次使用配置文件
+            if self.chatmock_url:
+                base_url = self.chatmock_url
+            else:
+                base_url = self.config.get('chatmock', 'base_url', fallback='http://127.0.0.1:8000/v1')
+            
+            model = self.config.get('chatmock', 'model', fallback='gpt-5')
+            
+            # 創建OpenAI客戶端實例，指向ChatMock服務器
+            self.client = OpenAI(
+                base_url=base_url,
+                api_key="chatmock"  # ChatMock忽略此值
+            )
+            self.model = model
+            
+            # ChatMock使用GPT-5參數
+            self.temperature, self.max_tokens = self._get_model_specific_params()
+            
+            logger.info(f"ChatMock設置完成 - 服務器: {base_url}")
+            logger.info(f"使用模型: {self.model}")
+            logger.info(f"使用參數 - 溫度: {self.temperature}, 最大Token: {self.max_tokens}")
+            
+        except Exception as e:
+            logger.error(f"ChatMock設置失敗: {e}")
+            raise ValueError(f"ChatMock設置失敗: {e}")
+    
+    def _setup_openai_api(self):
+        """設置OpenAI官方API"""
+        # 優先使用傳入的API key
+        if self.api_key:
+            api_key = self.api_key
+        else:
+            # 嘗試從環境變量獲取
+            api_key = os.getenv('OPENAI_API_KEY')
+            if not api_key:
+                # 最後嘗試從配置文件獲取（向後兼容）
+                api_key = self.config.get('openai', 'api_key', fallback=None)
+        
+        if not api_key or api_key == 'YOUR_OPENAI_API_KEY_HERE':
+            raise ValueError(
+                "請通過以下方式之一設置OpenAI API Key:\n"
+                "1. 命令行參數: --api-key YOUR_API_KEY\n"
+                "2. 環境變量: export OPENAI_API_KEY=YOUR_API_KEY\n"
+                "3. 配置文件: 在config.ini中設置api_key（不推薦）"
+            )
         
         # 創建OpenAI客戶端實例
         self.client = OpenAI(api_key=api_key)
         self.model = self.config.get('openai', 'model', fallback='gpt-4')
-        self.temperature = self.config.getfloat('openai', 'temperature', fallback=0.3)
-        self.max_tokens = self.config.getint('openai', 'max_tokens', fallback=1000)
+        
+        # 根據模型類型自動選擇參數配置
+        self.temperature, self.max_tokens = self._get_model_specific_params()
         
         logger.info(f"OpenAI設置完成 - 模型: {self.model}")
+        logger.info(f"使用參數 - 溫度: {self.temperature}, 最大Token: {self.max_tokens}")
+    
+    def _get_model_specific_params(self) -> tuple:
+        """根據模型類型獲取對應的參數配置"""
+        try:
+            if self.model.startswith('gpt-5'):
+                # GPT-5系列模型參數
+                
+                # GPT-5不支持自定義temperature，使用默認值1
+                temperature = 1.0
+                
+                # 嘗試讀取max_completion_tokens，但不強制要求
+                try:
+                    max_tokens = self.config.getint('gpt5_models', 'max_completion_tokens', fallback=None)
+                    if max_tokens is not None:
+                        logger.warning("檢測到max_completion_tokens設置，但建議不設置以避免空回應")
+                except:
+                    max_tokens = None
+                
+                logger.info(f"使用GPT-5專用參數配置")
+                
+            else:
+                # GPT-4系列模型參數
+                logger.info("使用GPT-4專用參數配置")
+                
+                temperature = self.config.getfloat('gpt4_models', 'temperature', fallback=0.3)
+                max_tokens = self.config.getint('gpt4_models', 'max_tokens', fallback=1000)
+            
+            return temperature, max_tokens
+            
+        except Exception as e:
+            logger.error(f"獲取模型特定參數失敗: {e}")
+            logger.warning("使用默認參數配置")
+            return 0.3, 1000
+    
+    def _get_llm_model_display_name(self) -> str:
+        """獲取LLM模型的顯示名稱，根據API類型動態設置"""
+        try:
+            # 獲取當前API類型
+            if self.api_type:
+                api_type = self.api_type.lower()
+            else:
+                api_type = self.config.get('api', 'type', fallback='openai').lower()
+            
+            if api_type == 'chatmock':
+                # ChatMock模式：使用ChatMock配置的模型名稱
+                model = self.config.get('chatmock', 'model', fallback='gpt-5')
+                return f"chat-{model}"  # 例如：chat-gpt-5
+            else:
+                # OpenAI模式：使用OpenAI配置的模型名稱
+                model = self.config.get('openai', 'model', fallback='gpt-4')
+                return model  # 例如：gpt-5-nano
+            
+        except Exception as e:
+            logger.error(f"獲取模型顯示名稱失敗: {e}")
+            # 返回默認值
+            return "gpt-4"
     
     def load_category_system(self) -> str:
         """載入新目錄分類體系"""
@@ -141,11 +265,15 @@ class QAClassifierV2:
     
     def load_prompt_template(self) -> str:
         """載入prompt模板"""
-        prompt_file = 'prompt_template.txt'
+        # 优先使用简化的prompt模板
+        prompt_file = 'prompt_template_simple.txt'
         
         if not os.path.exists(prompt_file):
-            logger.warning(f"Prompt文件不存在: {prompt_file}")
-            return self.get_default_prompt()
+            # 如果简化模板不存在，使用原始模板
+            prompt_file = 'prompt_template.txt'
+            if not os.path.exists(prompt_file):
+                logger.warning(f"Prompt文件不存在: {prompt_file}")
+                return self.get_default_prompt()
         
         try:
             with open(prompt_file, 'r', encoding='utf-8') as f:
@@ -221,24 +349,65 @@ class QAClassifierV2:
         # 構建prompt
         prompt = self.prompt_template.format(
             category_system=self.category_system,
-            title=title,
-            qa_content=content[:3000]  # 限制內容長度
+            title=title
         )
         
+        # 记录发送给LLM的完整prompt（调试时使用）
+        # logger.info(f"发送给LLM的完整prompt: {prompt}")
+        
         try:
-            response = self.client.chat.completions.create(
-                model=self.model,
-                messages=[
+            # 根据模型类型选择正确的参数
+            api_params = {
+                "model": self.model,
+                "messages": [
                     {"role": "system", "content": "你是一個專業的佛學問答分類專家。"},
                     {"role": "user", "content": prompt}
-                ],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens
-            )
+                ]
+            }
+            
+            # 检查是否使用ChatMock（与初始化时保持一致）
+            if self.api_type:
+                api_type = self.api_type.lower()
+            else:
+                api_type = self.config.get('api', 'type', fallback='openai').lower()
+            
+            if api_type == 'chatmock':
+                # ChatMock特有的参数
+                reasoning_effort = self.config.get('chatmock', 'reasoning_effort', fallback='medium')
+                reasoning_summary = self.config.get('chatmock', 'reasoning_summary', fallback='auto')
+                
+                if reasoning_effort and reasoning_effort != 'medium':
+                    api_params["reasoning_effort"] = reasoning_effort
+                if reasoning_summary and reasoning_summary != 'auto':
+                    api_params["reasoning_summary"] = reasoning_summary
+                
+                logger.debug(f"ChatMock参数 - 推理努力: {reasoning_effort}, 推理摘要: {reasoning_summary}")
+            else:
+                # OpenAI API参数
+                if self.model.startswith('gpt-5'):
+                    # GPT-5模型不支持自定义temperature，也不设置max_completion_tokens
+                    # 不设置temperature参数，使用默认值
+                    # 不设置max_completion_tokens，让模型使用默认限制
+                    logger.debug("GPT-5模型：使用默认temperature和token限制")
+                else:
+                    # 其他模型使用max_tokens和temperature
+                    api_params["temperature"] = self.temperature
+                    api_params["max_tokens"] = self.max_tokens
+                    logger.debug(f"GPT-4模型：使用temperature={self.temperature}, max_tokens={self.max_tokens}")
+            
+            response = self.client.chat.completions.create(**api_params)
             
             result_text = response.choices[0].message.content.strip()
+            
+            # 保存原始响应用于调试（调试时使用）
+            # logger.info(f"原始API响应: {result_text}")
+            
             parsed_result = self.parse_classification_result(result_text)
             parsed_result['status'] = 'success'
+            
+            # 保存原始响应到结果中
+            parsed_result['raw_response'] = result_text
+            
             return parsed_result
             
         except Exception as e:
@@ -399,11 +568,64 @@ class QAClassifierV2:
 
 def main():
     """主函數"""
+    parser = argparse.ArgumentParser(
+        description="問答分類自動化系統 v2.0",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+使用示例:
+  # 使用OpenAI API（推薦）
+  python3 qa_classifier_v2.py --api-key YOUR_API_KEY --api-type openai
+  
+  # 使用ChatMock
+  python3 qa_classifier_v2.py --api-type chatmock
+  
+  # 使用環境變量
+  export OPENAI_API_KEY=YOUR_API_KEY
+  python3 qa_classifier_v2.py --api-type openai
+  
+  # 使用配置文件（不推薦，會產生commit警告）
+  python3 qa_classifier_v2.py
+        """
+    )
+    
+    parser.add_argument(
+        '--api-key',
+        type=str,
+        help='OpenAI API Key（推薦使用此方式）'
+    )
+    
+    parser.add_argument(
+        '--api-type',
+        type=str,
+        choices=['openai', 'chatmock'],
+        help='API類型選擇：openai 或 chatmock（覆蓋配置文件設置）'
+    )
+    
+    parser.add_argument(
+        '--chatmock-url',
+        type=str,
+        help='ChatMock服務器地址（覆蓋配置文件設置）'
+    )
+    
+    parser.add_argument(
+        '--config',
+        type=str,
+        default='config.ini',
+        help='配置文件路徑（默認: config.ini）'
+    )
+    
+    args = parser.parse_args()
+    
     print("問答分類自動化系統 v2.0")
     print("=" * 50)
     
     try:
-        classifier = QAClassifierV2()
+        classifier = QAClassifierV2(
+            config_file=args.config,
+            api_key=args.api_key,
+            api_type=args.api_type,
+            chatmock_url=args.chatmock_url
+        )
         
         # 處理指定範圍
         results_file = classifier.process_batch()
