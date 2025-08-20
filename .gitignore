@@ -1,7 +1,5 @@
 *.pyc
 *.DS_Store
 classify/*classified_results_*.xlsx
-.DS_Store
-classify/config.ini
 classify/qa_classification_results*.json
 classify/qa_classification.log
