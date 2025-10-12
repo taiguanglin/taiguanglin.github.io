@@ -1,3 +1,5 @@
 *.pyc
 *.DS_Store
-.DS_Store
+classify/*classified_results_*.xlsx
+classify/qa_classification_results*.json
+classify/qa_classification.log
