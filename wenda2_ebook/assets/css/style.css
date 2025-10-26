@@ -2818,12 +2818,12 @@ body.dark-mode .bookmark-time {
 
 /* 原始文件名顯示（供編輯人員和管理人員參考） */
 p.source-filename {
-  color: #ccc;
+  color: #888;
   font-size: 12px;
   font-family: 'Courier New', monospace;
   font-weight: normal;
   margin: 5px 0 15px 0;
-  opacity: 0.7;
+  opacity: 0.85;
   user-select: text; /* 確保可以選取 */
   cursor: text;
   padding-left: 25px;
@@ -2832,7 +2832,7 @@ p.source-filename {
 
 /* 當滑鼠懸停時稍微增加可見性 */
 p.source-filename:hover {
-  opacity: 0.9;
+  opacity: 1.0;
 }
 
 /* 響應式設計：在小螢幕上調整 */
