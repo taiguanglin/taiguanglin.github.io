@@ -64,6 +64,10 @@ class TextProcessor:
             # 处理无空格但有冒号的格式：2024-03-0310:57 -> 2024-03-03 10:57
             time_str = re.sub(r'(\d{4}[-/]\d{1,2}[-/]\d{1,2})(\d{1,2}:\d{2})', r'\1 \2', time_str)
             
+            # 处理有空格但无冒号的格式：2024-03-22 1717 -> 2024-03-22 17:17
+            time_str = re.sub(r'(\d{4}[-/]\d{1,2}[-/]\d{1,2})\s+(\d{4})$', 
+                             lambda m: f"{m.group(1)} {m.group(2)[:2]}:{m.group(2)[2:]}", time_str)
+            
             # 处理无空格且无冒号的格式：2024-03-031057 -> 2024-03-03 10:57
             time_str = re.sub(r'(\d{4}[-/]\d{1,2}[-/]\d{1,2})(\d{4})$', 
                              lambda m: f"{m.group(1)} {m.group(2)[:2]}:{m.group(2)[2:]}", time_str)
@@ -76,6 +80,15 @@ class TextProcessor:
         # 完整时间格式：2024-02-18 10:47 或 2024-2-23 15:45  
         time_pattern1 = r'(\d{4}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2})'
         match = re.search(time_pattern1, text)
+        if match:
+            time_str = normalize_time_format(match.group(1))
+            remaining = text.replace(match.group(1), '', 1).strip()
+            remaining = re.sub(r'^\s*\n\s*', '', remaining)
+            return time_str, remaining
+        
+        # 有空格但无冒号的格式：2024-03-22 1717
+        time_pattern1b = r'(\d{4}[-/]\d{1,2}[-/]\d{1,2}\s+\d{4})\b'
+        match = re.search(time_pattern1b, text)
         if match:
             time_str = normalize_time_format(match.group(1))
             remaining = text.replace(match.group(1), '', 1).strip()
