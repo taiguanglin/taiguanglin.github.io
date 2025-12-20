@@ -1865,6 +1865,38 @@ html {
    Infographic Page Styles
    ================================ */
 
+/* Infographic Disclaimer */
+.infographic-disclaimer {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border: 1px solid #ffc107;
+    border-left: 4px solid #ffc107;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-md);
+    margin-top: var(--spacing-lg);
+    color: #856404;
+    font-size: 0.95rem;
+}
+
+.infographic-disclaimer i {
+    font-size: 1.2rem;
+    color: #ffc107;
+    flex-shrink: 0;
+}
+
+.infographic-disclaimer span {
+    line-height: 1.5;
+}
+
+@media (max-width: 480px) {
+    .infographic-disclaimer {
+        font-size: 0.85rem;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+}
+
 /* Category Navigation */
 .infographic-nav-section {
     padding-top: var(--spacing-lg);
