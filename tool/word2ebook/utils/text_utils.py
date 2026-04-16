@@ -134,10 +134,11 @@ class TextProcessor:
     
     def extract_answerer_info(self, text: str) -> Tuple[Optional[str], str]:
         """提取回答者信息"""
-        answerer_match = re.match(r'^(Taiguanglin|taiguanglin)[:：]\s*(.*)', text, re.IGNORECASE | re.DOTALL)
+        from config.settings import Constants
+        answerer_match = re.match(Constants.ANSWERER_REGEX, text, re.IGNORECASE | re.DOTALL)
         if answerer_match:
             answer_content = answerer_match.group(2)
-            return "Taiguanglin", answer_content
+            return Constants.ANSWERER_RAW_NAME, answer_content
         return None, text
 
 

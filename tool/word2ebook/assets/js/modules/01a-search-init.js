@@ -1,35 +1,18 @@
   // ============ 搜索功能（延迟加载） ============
+  // isIndexPage / isTraditionalChinesePage / getText 由 00-base.js 提供
+
   let searchIndex = null;
   let miniSearch = null;
   let searchInitialized = false;
   let currentSearchResults = [];
   let displayedResultsCount = 0;
   const RESULTS_PER_PAGE = 20;
-  
-  // 检测当前页面类型
-  function isIndexPage() {
-    const pathname = window.location.pathname;
-    const filename = pathname.split('/').pop() || 'index.html';
-    return filename === 'index.html' || filename === 'index_trad.html';
-  }
-  
-  // 判断是否为繁体版
-  function isTraditionalChinesePage() {
-    const pathname = window.location.pathname;
-    const filename = pathname.split('/').pop() || 'index.html';
-    return filename.includes('_trad.html');
-  }
-  
+
   // 获取搜索索引文件名
   function getSearchIndexFile() {
     const pathname = window.location.pathname;
     const filename = pathname.split('/').pop() || 'index.html';
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
-  }
-  
-  // 获取本地化文本
-  function getText(simplifiedText, traditionalText) {
-    return isTraditionalChinesePage() ? traditionalText : simplifiedText;
   }
   
   // 激活搜索功能

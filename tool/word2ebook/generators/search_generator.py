@@ -2,8 +2,7 @@
 
 import json
 import hashlib
-from typing import List, Dict, Any
-from pathlib import Path
+from typing import List
 
 from models.document_models import Chapter, SearchItem
 from core.content_processor import ContentProcessor
@@ -11,255 +10,167 @@ from utils.file_utils import FileManager
 from utils.i18n_utils import I18nProcessor
 from config.settings import Settings, Constants
 
+# 搜索结果排序规则（type -> sort key）
+_TYPE_ORDER = {"heading": 0, "question": 1, "answer": 2, "content": 3}
+
 
 class SearchIndexGenerator:
-    """搜索索引生成器"""
-    
+    """搜索索引生成器
+
+    Public API:
+        generate_search_indexes(chapters, ...)          → 生成 search_index*.json
+        generate_search_indexes_without_html_modification(...)  → 只读模式
+        ensure_search_index_files(...)                  → 确保索引文件存在（增量模式）
+        update_html_with_ids(chapters)                  → 补全 HTML 元素 ID
+    """
+
     def __init__(self, settings: Settings, file_manager: FileManager):
         self.settings = settings
         self.file_manager = file_manager
         self.content_processor = ContentProcessor(settings)
         self.i18n_processor = I18nProcessor()
-    
-    def generate_search_indexes(self, chapters: List[Chapter], generate_traditional: bool = True, generate_simplified: bool = True) -> None:
-        """生成搜索索引文件"""
-        # 生成简体版搜索索引
+
+    # ------------------------------------------------------------------ #
+    # Public API                                                           #
+    # ------------------------------------------------------------------ #
+
+    def generate_search_indexes(
+        self,
+        chapters: List[Chapter],
+        generate_traditional: bool = True,
+        generate_simplified: bool = True,
+    ) -> None:
+        """生成搜索索引文件（同时更新 HTML 以确保元素 ID 存在）。"""
         if generate_simplified:
-            self._generate_simplified_index(chapters)
-        
-        # 生成繁体版搜索索引
+            self._generate_index(chapters, is_traditional=False, update_html=True)
         if generate_traditional:
-            self._generate_traditional_index(chapters)
-    
-    def _generate_simplified_index(self, chapters: List[Chapter]) -> None:
-        """生成简体版搜索索引"""
-        all_search_items = []
-        
+            self._generate_index(chapters, is_traditional=True, update_html=True)
+
+    def generate_search_indexes_without_html_modification(
+        self,
+        chapters: List[Chapter],
+        generate_traditional: bool = True,
+        generate_simplified: bool = True,
+    ) -> None:
+        """生成搜索索引但不修改 HTML 文件（增量更新模式）。"""
+        print("🔍 正在生成搜索索引（不修改HTML文件）...")
+        if generate_simplified:
+            self._generate_index(chapters, is_traditional=False, update_html=False)
+        if generate_traditional:
+            self._generate_index(chapters, is_traditional=True, update_html=False)
+
+    def ensure_search_index_files(
+        self,
+        generate_traditional: bool = True,
+        generate_simplified: bool = True,
+    ) -> None:
+        """确保索引文件存在；不存在时写入空 JSON（不修改 HTML）。"""
+        pairs = []
+        if generate_simplified:
+            pairs.append(Constants.SEARCH_INDEX_SIMPLIFIED)
+        if generate_traditional:
+            pairs.append(Constants.SEARCH_INDEX_TRADITIONAL)
+
+        for filename in pairs:
+            if not self.file_manager.file_exists(filename):
+                print(f"📝 创建空的搜索索引：{filename}")
+                empty_index = json.dumps([], ensure_ascii=False, indent=2)
+                self.file_manager.write_file(filename, empty_index)
+            else:
+                print(f"✅ 搜索索引已存在：{filename}")
+
+    def update_html_with_ids(self, chapters: List[Chapter]) -> None:
+        """更新 HTML 文件，确保所有元素都有 ID。"""
         for chapter in chapters:
-            # 从已生成的HTML文件中读取内容
-            html_file_path = self.file_manager.get_file_path(chapter.filename)
-            if html_file_path.exists():
-                with open(html_file_path, 'r', encoding='utf-8') as f:
-                    html_content = f.read()
-                
-                # 提取搜索项
-                search_items, updated_html = self.content_processor.extract_search_content(
-                    html_content, chapter.filename
-                )
-                
-                # 強制確保搜索項目內容都是簡體字
+            self._update_chapter_html_ids(chapter.filename)
+            trad_fn = self.i18n_processor.get_traditional_filename(chapter.filename)
+            if self.file_manager.file_exists(trad_fn):
+                self._update_chapter_html_ids(trad_fn)
+
+    # ------------------------------------------------------------------ #
+    # Core: unified index generation                                      #
+    # ------------------------------------------------------------------ #
+
+    def _generate_index(
+        self, chapters: List[Chapter], is_traditional: bool, update_html: bool
+    ) -> None:
+        """统一的索引生成实现，is_traditional 控制简/繁分支。"""
+        all_items: List[SearchItem] = []
+
+        for chapter in chapters:
+            filename = (
+                self.i18n_processor.get_traditional_filename(chapter.filename)
+                if is_traditional
+                else chapter.filename
+            )
+            html_file_path = self.file_manager.get_file_path(filename)
+            if not html_file_path.exists():
+                continue
+
+            with open(html_file_path, "r", encoding="utf-8") as f:
+                html_content = f.read()
+
+            search_items, updated_html = self.content_processor.extract_search_content(
+                html_content, filename
+            )
+
+            # 简体版：确保内容都是简体字
+            if not is_traditional:
                 for item in search_items:
                     item.title = self.i18n_processor.ensure_simplified(item.title)
                     item.content = self.i18n_processor.ensure_simplified(item.content)
-                    if hasattr(item, 'context') and item.context:
+                    if hasattr(item, "context") and item.context:
                         item.context = self.i18n_processor.ensure_simplified(item.context)
-                
-                all_search_items.extend(search_items)
-                
-                # 更新HTML文件，确保所有元素都有ID
-                with open(html_file_path, 'w', encoding='utf-8') as f:
+
+            all_items.extend(search_items)
+
+            if update_html:
+                with open(html_file_path, "w", encoding="utf-8") as f:
                     f.write(updated_html)
-        
-        # 按類型和ID排序（保持一致的順序）
-        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
-        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
-        
-        # 生成索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED)
-        
-        print(f"✅ 简体搜索索引已生成：{Constants.SEARCH_INDEX_SIMPLIFIED} (共 {len(all_search_items)} 条记录)")
-    
-    def _generate_traditional_index(self, chapters: List[Chapter]) -> None:
-        """生成繁体版搜索索引"""
-        all_search_items = []
-        
-        for chapter in chapters:
-            # 获取繁体版文件名
-            trad_filename = self.i18n_processor.get_traditional_filename(chapter.filename)
-            html_file_path = self.file_manager.get_file_path(trad_filename)
-            
-            if html_file_path.exists():
-                with open(html_file_path, 'r', encoding='utf-8') as f:
-                    html_content = f.read()
-                
-                # 提取搜索项
-                search_items, updated_html = self.content_processor.extract_search_content(
-                    html_content, trad_filename
-                )
-                all_search_items.extend(search_items)
-                
-                # 更新HTML文件
-                with open(html_file_path, 'w', encoding='utf-8') as f:
-                    f.write(updated_html)
-        
-        # 按類型和ID排序（保持一致的順序）
-        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
-        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
-        
-        # 生成繁体版索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL)
-        
-        print(f"✅ 繁体搜索索引已生成：{Constants.SEARCH_INDEX_TRADITIONAL} (共 {len(all_search_items)} 条记录)")
-    
-    def _write_search_index(self, search_items: List[SearchItem], filename: str) -> None:
-        """写入搜索索引文件"""
-        # 转换为字典格式
-        index_data = [item.to_dict() for item in search_items]
-        
-        # 写入JSON文件
-        index_content = json.dumps(index_data, ensure_ascii=False, indent=2)
-        self.file_manager.write_file(filename, index_content)
-        
-        # 生成并写入哈希文件
-        self._generate_hash_file(filename, index_content)
-    
-    def ensure_search_index_files(self, generate_traditional: bool = True, generate_simplified: bool = True) -> None:
-        """确保搜索索引文件存在，如果不存在则创建空的索引文件
-        
-        注意：此方法不会修改HTML文件，保持增量更新模式的文件稳定性
-        """
-        # 检查简体版索引文件
-        if generate_simplified:
-            if not self.file_manager.file_exists(Constants.SEARCH_INDEX_SIMPLIFIED):
-                print(f"📝 创建空的简体搜索索引：{Constants.SEARCH_INDEX_SIMPLIFIED}")
-                empty_index = json.dumps([], ensure_ascii=False, indent=2)
-                self.file_manager.write_file(Constants.SEARCH_INDEX_SIMPLIFIED, empty_index)
-            else:
-                print(f"✅ 简体搜索索引已存在：{Constants.SEARCH_INDEX_SIMPLIFIED}")
-        
-        # 检查繁体版索引文件
-        if generate_traditional:
-            if not self.file_manager.file_exists(Constants.SEARCH_INDEX_TRADITIONAL):
-                print(f"📝 创建空的繁体搜索索引：{Constants.SEARCH_INDEX_TRADITIONAL}")
-                empty_index = json.dumps([], ensure_ascii=False, indent=2)
-                self.file_manager.write_file(Constants.SEARCH_INDEX_TRADITIONAL, empty_index)
-            else:
-                print(f"✅ 繁体搜索索引已存在：{Constants.SEARCH_INDEX_TRADITIONAL}")
-    
-    def generate_search_indexes_without_html_modification(self, chapters: List[Chapter], generate_traditional: bool = True, generate_simplified: bool = True) -> None:
-        """生成搜索索引但不修改HTML文件（用于增量更新模式）"""
-        print("🔍 正在生成搜索索引（不修改HTML文件）...")
-        
-        # 生成简体版搜索索引
-        if generate_simplified:
-            self._generate_simplified_index_readonly(chapters)
-        
-        # 生成繁体版搜索索引
-        if generate_traditional:
-            self._generate_traditional_index_readonly(chapters)
-    
-    def _generate_simplified_index_readonly(self, chapters: List[Chapter]) -> None:
-        """生成简体版搜索索引（只读模式，不修改HTML）"""
-        all_search_items = []
-        
-        for chapter in chapters:
-            # 从已生成的HTML文件中读取内容
-            html_file_path = self.file_manager.get_file_path(chapter.filename)
-            if html_file_path.exists():
-                with open(html_file_path, 'r', encoding='utf-8') as f:
-                    html_content = f.read()
-                
-                # 提取搜索项，但不更新HTML
-                search_items, _ = self.content_processor.extract_search_content(
-                    html_content, chapter.filename
-                )
-                all_search_items.extend(search_items)
-                # 注意：这里不写回HTML文件
-        
-        # 按類型和ID排序（保持一致的順序）
-        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
-        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
-        
-        # 生成索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_SIMPLIFIED)
-        
-        print(f"✅ 简体搜索索引已生成：{Constants.SEARCH_INDEX_SIMPLIFIED} (共 {len(all_search_items)} 条记录)")
-    
-    def _generate_traditional_index_readonly(self, chapters: List[Chapter]) -> None:
-        """生成繁体版搜索索引（只读模式，不修改HTML）"""
-        all_search_items = []
-        
-        for chapter in chapters:
-            # 获取繁体版文件名
-            trad_filename = self.i18n_processor.get_traditional_filename(chapter.filename)
-            html_file_path = self.file_manager.get_file_path(trad_filename)
-            
-            if html_file_path.exists():
-                with open(html_file_path, 'r', encoding='utf-8') as f:
-                    html_content = f.read()
-                
-                # 提取搜索项，但不更新HTML
-                search_items, _ = self.content_processor.extract_search_content(
-                    html_content, trad_filename
-                )
-                all_search_items.extend(search_items)
-                # 注意：这里不写回HTML文件
-        
-        # 按類型和ID排序（保持一致的順序）
-        type_order = {'heading': 0, 'question': 1, 'answer': 2, 'content': 3}
-        all_search_items.sort(key=lambda x: (type_order.get(x.type, 4), x.id))
-        
-        # 生成繁体版索引文件
-        self._write_search_index(all_search_items, Constants.SEARCH_INDEX_TRADITIONAL)
-        
-        print(f"✅ 繁体搜索索引已生成：{Constants.SEARCH_INDEX_TRADITIONAL} (共 {len(all_search_items)} 条记录)")
-    
-    def update_html_with_ids(self, chapters: List[Chapter]) -> None:
-        """更新HTML文件，确保所有元素都有ID"""
-        for chapter in chapters:
-            self._update_chapter_html_ids(chapter, is_traditional=False)
-            
-            # 如果存在繁体版，也更新
-            trad_filename = self.i18n_processor.get_traditional_filename(chapter.filename)
-            if self.file_manager.file_exists(trad_filename):
-                # 创建繁体版chapter对象
-                trad_chapter = Chapter(
-                    title=chapter.title,
-                    filename=trad_filename
-                )
-                self._update_chapter_html_ids(trad_chapter, is_traditional=True)
-    
-    def _update_chapter_html_ids(self, chapter: Chapter, is_traditional: bool = False) -> None:
-        """更新单个章节的HTML文件ID"""
-        html_file_path = self.file_manager.get_file_path(chapter.filename)
-        if not html_file_path.exists():
-            return
-        
-        with open(html_file_path, 'r', encoding='utf-8') as f:
-            html_content = f.read()
-        
-        # 提取搜索项并更新HTML
-        _, updated_html = self.content_processor.extract_search_content(
-            html_content, chapter.filename
+
+        all_items.sort(key=lambda x: (_TYPE_ORDER.get(x.type, 4), x.id))
+
+        index_filename = (
+            Constants.SEARCH_INDEX_TRADITIONAL if is_traditional
+            else Constants.SEARCH_INDEX_SIMPLIFIED
         )
-        
-        # 写回文件
-        with open(html_file_path, 'w', encoding='utf-8') as f:
-            f.write(updated_html)
-    
+        self._write_search_index(all_items, index_filename)
+
+        variant = "繁体" if is_traditional else "简体"
+        print(f"✅ {variant}搜索索引已生成：{index_filename} (共 {len(all_items)} 条记录)")
+
+    # ------------------------------------------------------------------ #
+    # Helpers                                                              #
+    # ------------------------------------------------------------------ #
+
+    def _write_search_index(self, search_items: List[SearchItem], filename: str) -> None:
+        """序列化搜索项并写入 JSON 文件，同时生成 .hash 文件。"""
+        index_content = json.dumps(
+            [item.to_dict() for item in search_items], ensure_ascii=False, indent=2
+        )
+        self.file_manager.write_file(filename, index_content)
+        self._generate_hash_file(filename, index_content)
+
     def _generate_hash_file(self, json_filename: str, content: str) -> None:
-        """为JSON文件生成对应的哈希文件"""
+        """为 JSON 文件生成 MD5 哈希文件。"""
         try:
-            # 计算MD5哈希
-            content_bytes = content.encode('utf-8')
+            content_bytes = content.encode("utf-8")
             md5_hash = hashlib.md5(content_bytes).hexdigest()
-            
-            # 创建哈希文件内容
-            hash_data = {
-                "hash": md5_hash,
-                "algorithm": "md5",
-                "size": len(content_bytes)
-            }
-            
-            # 生成哈希文件名
-            hash_filename = f"{json_filename}.hash"
-            
-            # 写入哈希文件
+            hash_data = {"hash": md5_hash, "algorithm": "md5", "size": len(content_bytes)}
             hash_content = json.dumps(hash_data, ensure_ascii=False, indent=2)
+            hash_filename = f"{json_filename}.hash"
             self.file_manager.write_file(hash_filename, hash_content)
-            
             print(f"📝 已生成哈希文件: {hash_filename} (MD5: {md5_hash[:8]}...)")
-            
         except Exception as e:
             print(f"⚠️ 生成哈希文件失败: {e}")
-            # 哈希文件生成失败不应该影响主流程
+
+    def _update_chapter_html_ids(self, filename: str) -> None:
+        """更新单个 HTML 文件，确保所有可搜索元素都有 ID。"""
+        html_file_path = self.file_manager.get_file_path(filename)
+        if not html_file_path.exists():
+            return
+        with open(html_file_path, "r", encoding="utf-8") as f:
+            html_content = f.read()
+        _, updated_html = self.content_processor.extract_search_content(html_content, filename)
+        with open(html_file_path, "w", encoding="utf-8") as f:
+            f.write(updated_html)

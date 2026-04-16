@@ -64,23 +64,23 @@ def generator(settings, output_with_html):
 
 class TestSearchIndexGenerator:
     def test_generate_simplified_creates_json(self, generator, chapters, output_with_html):
-        generator._generate_simplified_index(chapters)
+        generator.generate_search_indexes(chapters, generate_traditional=False, generate_simplified=True)
         index_file = output_with_html / Constants.SEARCH_INDEX_SIMPLIFIED
         assert index_file.exists()
 
     def test_generate_simplified_json_is_valid(self, generator, chapters, output_with_html):
-        generator._generate_simplified_index(chapters)
+        generator.generate_search_indexes(chapters, generate_traditional=False, generate_simplified=True)
         index_file = output_with_html / Constants.SEARCH_INDEX_SIMPLIFIED
         data = json.loads(index_file.read_text(encoding="utf-8"))
         assert isinstance(data, list)
 
     def test_generate_traditional_creates_json(self, generator, chapters, output_with_html):
-        generator._generate_traditional_index(chapters)
+        generator.generate_search_indexes(chapters, generate_traditional=True, generate_simplified=False)
         index_file = output_with_html / Constants.SEARCH_INDEX_TRADITIONAL
         assert index_file.exists()
 
     def test_generate_simplified_contains_items(self, generator, chapters, output_with_html):
-        generator._generate_simplified_index(chapters)
+        generator.generate_search_indexes(chapters, generate_traditional=False, generate_simplified=True)
         data = json.loads(
             (output_with_html / Constants.SEARCH_INDEX_SIMPLIFIED).read_text(encoding="utf-8")
         )
@@ -107,14 +107,13 @@ class TestSearchIndexGenerator:
         fm = FileManager(out)
         gen = SearchIndexGenerator(settings, fm)
         gen.ensure_search_index_files(generate_traditional=True, generate_simplified=True)
-        # Files should exist (possibly empty JSON arrays)
         simplified = out / Constants.SEARCH_INDEX_SIMPLIFIED
         traditional = out / Constants.SEARCH_INDEX_TRADITIONAL
         assert simplified.exists()
         assert traditional.exists()
 
     def test_search_items_have_required_fields(self, generator, chapters, output_with_html):
-        generator._generate_simplified_index(chapters)
+        generator.generate_search_indexes(chapters, generate_traditional=False, generate_simplified=True)
         data = json.loads(
             (output_with_html / Constants.SEARCH_INDEX_SIMPLIFIED).read_text(encoding="utf-8")
         )

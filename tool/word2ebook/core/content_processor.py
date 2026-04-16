@@ -106,7 +106,7 @@ class ContentProcessor:
                 title_parts.append(questioner.get_text().strip())
             if time_elem:
                 title_parts.append(time_elem.get_text().strip())
-            title = ' | '.join(title_parts) if title_parts else '問題'
+            title = ' | '.join(title_parts) if title_parts else Constants.DEFAULT_QUESTION_TITLE
             
             items.append(SearchItem(
                 id=f"{base_filename}-{item_id}",
@@ -137,9 +137,8 @@ class ContentProcessor:
             answerer = answer.find(class_='answerer')
             title = answerer.get_text().strip() if answerer else self.settings.default_answerer
             
-            # 將 "Taiguanglin" 替換為更親切的稱呼
-            if title == "Taiguanglin":
-                title = "Tai師父"
+            if title == Constants.ANSWERER_RAW_NAME:
+                title = Constants.ANSWERER_DISPLAY_NAME
             
             items.append(SearchItem(
                 id=f"{base_filename}-{item_id}",

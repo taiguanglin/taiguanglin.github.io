@@ -278,26 +278,26 @@ class DocumentParser:
     def _finalize_chapter(self, chapter: Chapter, content_blocks: List[str], 
                          toc_items: List[Tuple[int, str, str]]) -> Chapter:
         """完成章节处理"""
-        from generators.html_generator import TOCGenerator
-        
+        from generators.toc_generator import TOCGenerator
+
         # 处理内容块
         if self.settings.merge_qa_blocks:
             content_blocks = self._merge_qa_blocks(content_blocks)
-        
+
         if self.settings.enable_back_to_top:
             content_blocks = self._insert_back_to_top(content_blocks)
-        
+
         # 设置章节内容
         chapter.content = "\n".join(content_blocks)
-        
+
         # 生成目录（使用可控制的折叠目录结构，传入完整的HTML内容）
         toc_generator = TOCGenerator()
-        
-        # 生成問答計數元數據（使用優化版本）
-        chapter.qa_count_metadata = toc_generator._generate_qa_count_metadata_optimized(
+
+        # 生成问答计数元数据
+        chapter.qa_count_metadata = toc_generator.generate_qa_count_metadata(
             chapter.content, toc_items, chapter.filename
         )
-        
+
         chapter.chapter_toc = toc_generator.build_collapsible_chapter_toc(
             toc_items, 
             html_content=chapter.content, 

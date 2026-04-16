@@ -5,7 +5,8 @@ from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 from models.document_models import Chapter, TOCItem, QAPair, ConversionConfig
-from generators.html_generator import HTMLGenerator, TOCGenerator
+from generators.html_generator import HTMLGenerator
+from generators.toc_generator import TOCGenerator
 from utils.file_utils import FileManager
 from config.settings import Settings
 
@@ -55,22 +56,24 @@ def sample_chapters():
 # ---------------------------------------------------------------------------
 
 class TestTOCGenerator:
-    def test_count_children_at_levels(self):
+    def test_build_chapter_toc_structure(self):
         gen = TOCGenerator()
         toc_items = [
-            (1, "A", "a"), (2, "A1", "a1"), (2, "A2", "a2"), (1, "B", "b")
+            (2, "A", "a"), (3, "A1", "a1"), (3, "A2", "a2"), (2, "B", "b")
         ]
-        counts = gen._count_children_at_levels(toc_items, 0, max_level=4)
-        assert counts[2] == 2  # two level-2 children under level-1 item 0
+        html = gen.build_chapter_toc(toc_items)
+        assert '<a href="#a">A</a>' in html
+        assert '<a href="#a1">A1</a>' in html
 
-    def test_count_children_stops_at_same_level(self):
+    def test_build_chapter_toc_stops_nesting(self):
         gen = TOCGenerator()
         toc_items = [
-            (1, "A", "a"), (2, "A1", "a1"), (1, "B", "b"), (2, "B1", "b1")
+            (2, "A", "a"), (3, "A1", "a1"), (2, "B", "b"), (3, "B1", "b1")
         ]
-        counts = gen._count_children_at_levels(toc_items, 0, max_level=4)
-        # A only has 1 level-2 child (B is same level, stops counting)
-        assert counts[2] == 1
+        html = gen.build_chapter_toc(toc_items)
+        # both A1 and B1 should appear
+        assert '<a href="#a1">A1</a>' in html
+        assert '<a href="#b1">B1</a>' in html
 
 
 # ---------------------------------------------------------------------------

@@ -1,0 +1,65 @@
+/* ============================================================
+   04b-toc-dark.css — 目錄相關元素的暗色模式適配
+   ============================================================ */
+
+/* ---- 目錄層級控制 --------------------------------------- */
+body.dark-mode .toc-header-container h2 { color: #ff91af; }
+body.dark-mode .toc-level-label { color: #ff91af; }
+body.dark-mode .toc-level-btn { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: #ff91af; }
+body.dark-mode .toc-level-btn:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); }
+body.dark-mode .toc-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; }
+
+/* ---- 浮動層級控制 --------------------------------------- */
+body.dark-mode .floating-level-controls { background: rgba(40, 40, 40, 0.95); border-color: rgba(255, 105, 180, 0.3); }
+body.dark-mode .floating-level-label { color: #ff91af; }
+body.dark-mode .floating-level-btn { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: #ff91af; }
+body.dark-mode .floating-level-btn:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); }
+body.dark-mode .floating-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; }
+body.dark-mode .floating-level-toggle { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: #ff91af; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+body.dark-mode .floating-level-toggle:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4); }
+
+/* ---- 展開圖標 ------------------------------------------ */
+body.dark-mode .toc-expand-icon { color: #ff91af; }
+body.dark-mode .toc-expand-icon:hover { color: var(--color-primary-light); }
+
+/* ---- TOC 項目懸停 --------------------------------------- */
+body.dark-mode .toc-item.toc-expandable:hover { background-color: rgba(255, 105, 180, 0.15); }
+body.dark-mode .toc-item:not(.toc-expandable):hover { background-color: rgba(255, 105, 180, 0.12); }
+
+/* ---- TOC 層級鏈接顏色 ---------------------------------- */
+body.dark-mode .toc-item.toc-level-1 > a { color: #ff91af; }
+body.dark-mode .toc-item.toc-level-2 > a { color: #ffb3c6; }
+body.dark-mode .toc-item.toc-level-3 > a { color: #ffc4d6; }
+body.dark-mode .toc-item.toc-level-4 > a { color: #ffd1e0; }
+
+/* 章節頁面目錄（提高優先級，使用 ul 結構選擇器）*/
+body.dark-mode .toc > ul > li > a { color: #ff91af !important; }
+body.dark-mode .toc ul ul > li > a { color: #ffb3c6 !important; }
+body.dark-mode .toc ul ul ul > li > a { color: #ffc4d6 !important; }
+body.dark-mode .toc ul ul ul ul > li > a { color: #ffd1e0 !important; }
+
+/* ---- 章節特殊項 ----------------------------------------- */
+body.dark-mode .toc-item.toc-chapter { border-bottom-color: #444; }
+
+/* ---- 計數標記 ------------------------------------------ */
+body.dark-mode .toc-count { color: #999; opacity: 0.8; }
+body.dark-mode .chapter-qa-count { color: #999; opacity: 0.8; }
+
+/* ---- 浮動 TOC 面板 ------------------------------------- */
+body.dark-mode .floating-toc { background: rgba(40, 40, 40, 0.95); border-color: rgba(255, 105, 180, 0.3); }
+body.dark-mode .floating-toc-header { background: rgba(40, 40, 40, 0.95); border-bottom-color: #444; color: #ff91af; }
+body.dark-mode .floating-toc-content { background: transparent; }
+body.dark-mode .floating-toc-item { color: #ff91af; }
+body.dark-mode .floating-toc-item.level-h3 { color: #ffb3c6; }
+body.dark-mode .floating-toc-item.level-h4 { color: #ffd1e0; }
+body.dark-mode .floating-toc-item.level-h5 { color: #ffd1e0; }
+body.dark-mode .floating-toc-item:hover { background: rgba(255, 105, 180, 0.2); }
+body.dark-mode .floating-toc-item.active { background: rgba(255, 105, 180, 0.3); color: var(--color-primary-light); }
+
+/* ---- 書籤相關（TOC 面板內）----------------------------- */
+body.dark-mode .bookmark-item { background: rgba(60, 60, 60, 0.5); border-color: #555; color: #ff91af; }
+body.dark-mode .bookmark-item:hover { background: rgba(255, 105, 180, 0.15); border-color: var(--color-primary-light); }
+body.dark-mode .bookmark-preview { color: #ff91af; }
+body.dark-mode .bookmark-meta { color: #ccc; }
+body.dark-mode .bookmark-questioner { color: var(--color-primary-light); }
+body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }

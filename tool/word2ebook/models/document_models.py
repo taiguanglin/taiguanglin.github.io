@@ -4,6 +4,8 @@ from dataclasses import dataclass, field
 from typing import List, Optional, Dict, Any, Tuple
 from pathlib import Path
 
+from config.settings import Constants
+
 
 @dataclass
 class TOCItem:
@@ -19,7 +21,7 @@ class QAPair:
     question_id: str
     answer_id: str
     questioner: str
-    answerer: str = "Taiguanglin"
+    answerer: str = Constants.ANSWERER_RAW_NAME
     question_text: str = ""
     answer_text: str = ""
     time_info: Optional[str] = None

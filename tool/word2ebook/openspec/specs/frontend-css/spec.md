@@ -15,12 +15,15 @@ cascade order.
 
 | File | Responsibility |
 |---|---|
-| `00-base.css` | `:root` variables, `body`, headings `h1–h4`, `p`, `img`, `a`, `hr`, `.toc`, `.question`, `.answer`, Q&A meta elements, dark-mode base |
-| `01-ux.css` | Reading toolbar, scrollbar, font/line-height controls, reading progress bar, floating TOC, chapter/homepage bookmarks, action buttons, Q&A interaction overlays, toast notifications |
+| `00-base.css` | `:root` design tokens (colors, radii, shadows), `body`, headings `h1–h4`, `p`, `img`, `a`, `hr`, `.toc`, `.question`, `.answer`, Q&A meta elements, dark-mode base |
+| `01a-layout.css` | Reading toolbar, scrollbar, font/line-height controls, reading progress bar, action buttons, Q&A interaction overlays, toast notifications |
+| `01b-floating-toc.css` | Floating TOC panel, TOC header, content area, items, tabs; dark-mode floating-TOC variants |
+| `01c-bookmarks.css` | Bookmark list items, homepage bookmark groups, visual bookmark indicators, current-chapter info bar; dark-mode bookmark variants |
 | `02-search-btn.css` | Search activation button styles (top and bottom) |
 | `03-search.css` | Search panel, loading/progress/error/success states, search results, dark-mode search variants |
-| `04-toc-controls.css` | TOC level-display buttons, expand/collapse icons, TOC animations, dark-mode TOC variants, responsive breakpoints |
-| `05-responsive.css` | Screen-height media queries, final overrides |
+| `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, TOC item hover, level-specific link colours, collapse animations |
+| `04b-toc-dark.css` | Dark-mode overrides for all TOC, floating-TOC, and bookmark elements inside the TOC panel |
+| `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px), small-phone (≤400px) |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.css` files (sorted by
@@ -53,3 +56,5 @@ and `400px` viewport widths to support mobile reading.
 - Source modules: `assets/css/modules/`
 - Build step: `StaticAssetsManager.get_full_css_content()` in `templates/static_assets.py`
 - Theme colours: primary pink `#e75480`, accent `#ff69b4`
+- Design tokens are defined as CSS custom properties in `00-base.css` `:root` — always use `var(--color-primary)` etc. rather than raw hex values in new CSS
+- All `@media` rules MUST live in `05-responsive.css`; component files contain no `@media` blocks

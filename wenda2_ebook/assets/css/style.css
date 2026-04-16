@@ -1,18 +1,50 @@
+/* ============================================================
+   Design tokens — single source of truth for all colors.
+   Change a value here and it propagates everywhere.
+   ============================================================ */
 :root {
-    --line-height: 1.6;
+    /* Pink palette */
+    --color-primary:      #e75480;
+    --color-primary-light:#ff69b4;
+    --color-primary-deep: #c73650;
+    --color-h3:           #e85aad;
+    --color-h4:           #f585cc;
+    --color-accent-pale:  #f8c8dc;
+    --color-bg-page:      #fff0f5;
+
+    /* Functional aliases */
+    --color-link:         var(--color-primary);
+    --color-link-hover:   var(--color-primary-light);
+
+    /* Gradients */
+    --gradient-primary:   linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    --gradient-hr:        linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc);
+
+    /* Shadows */
+    --shadow-sm:          0 2px 6px rgba(231, 84, 128, 0.2);
+    --shadow-md:          0 3px 8px rgba(231, 84, 128, 0.3);
+    --shadow-lg:          0 4px 12px rgba(231, 84, 128, 0.4);
+
+    /* Radii */
+    --radius-sm:          6px;
+    --radius-md:          8px;
+    --radius-lg:          12px;
+
+    /* Typography */
+    --line-height:        1.6;
 }
 
-body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: #fff0f5; color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
+body { font-family: 'Helvetica', sans-serif; margin: auto; max-width: 800px; line-height: var(--line-height); background: var(--color-bg-page); color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
 
-h1 { color: #e75480; border-bottom: 2px solid #f8c8dc; padding-bottom: 10px; padding-left: 10px;}
-h2 { color: #e75480; margin-top: 40px; padding-left: 5px; } /* 與目錄第1層相同 */
-h3 { color: #e85aad; margin-top: 25px; padding-left: 5px; } /* 與目錄第2層相同 */
-h4 { color: #f585cc; margin-top: 15px; padding-left: 5px; } /* 與目錄第4層相同 */
+h1 { color: var(--color-primary); border-bottom: 2px solid var(--color-accent-pale); padding-bottom: 10px; padding-left: 10px;}
+h2 { color: var(--color-primary); margin-top: 40px; padding-left: 5px; } /* 與目錄第1層相同 */
+h3 { color: var(--color-h3); margin-top: 25px; padding-left: 5px; } /* 與目錄第2層相同 */
+h4 { color: var(--color-h4); margin-top: 15px; padding-left: 5px; } /* 與目錄第4層相同 */
 p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
-a { color: #e75480; text-decoration: none; }
-a:hover { text-decoration: underline; color: #ff69b4; }
-hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc); margin: 30px 0; border-radius: 1px; }
+a { color: var(--color-primary); text-decoration: none; }
+a:hover { text-decoration: underline; color: var(--color-primary-light); }
+hr { border: none; height: 2px; background: var(--gradient-hr); margin: 30px 0; border-radius: 1px; }
 /* 頭部導航容器 */
 .header-nav {
     display: flex;
@@ -28,12 +60,12 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .nav-home a {
     font-size: 0.9em;
-    color: #e75480;
+    color: var(--color-primary);
     text-decoration: none;
 }
 
 .nav-home a:hover {
-    color: #ff69b4;
+    color: var(--color-primary-light);
     text-decoration: underline;
 }
 .nav-footer { 
@@ -46,14 +78,14 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 .nav-footer a { 
     padding: 8px 12px; 
-    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%); 
+    background: var(--gradient-primary); 
     color: white; 
     border-radius: 6px; 
     text-decoration: none; 
     font-size: 16px;
     font-weight: 500;
     transition: all 0.3s ease; 
-    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.2);
+    box-shadow: var(--shadow-sm);
     max-width: 45%;
     text-align: center;
     word-wrap: break-word;
@@ -61,7 +93,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 }
 .nav-footer a:hover { 
     transform: translateY(-1px); 
-    box-shadow: 0 3px 8px rgba(231, 84, 128, 0.3); 
+    box-shadow: var(--shadow-md); 
     text-decoration: none; 
 }
 .top-nav {
@@ -77,14 +109,14 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .top-nav-buttons a {
     padding: 8px 12px;
-    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    background: var(--gradient-primary);
     color: white;
     border-radius: 6px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.2);
+    box-shadow: var(--shadow-sm);
     max-width: 45%;
     text-align: center;
     word-wrap: break-word;
@@ -92,7 +124,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .top-nav-buttons a:hover {
     transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(231, 84, 128, 0.3);
+    box-shadow: var(--shadow-md);
     text-decoration: none;
 }
 
@@ -109,7 +141,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     line-height: 1.4 !important; /* 固定行距 */
 }
 .toc > ul > li > a { 
-    color: #e75480; /* 與側邊欄風格統一 */
+    color: var(--color-primary); /* 與側邊欄風格統一 */
     font-weight: 600;
 }
 
@@ -121,7 +153,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     line-height: 1.3 !important; /* 固定行距 */
 }
 .toc ul ul > li > a { 
-    color: #e85aad; /* 與側邊欄風格統一 */
+    color: var(--color-h3); /* 與側邊欄風格統一 */
     font-weight: 500;
 }
 
@@ -152,7 +184,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     padding: 15px;
     background: #fff;
     border-radius: 8px;
-    border-left: 4px solid #e75480;
+    border-left: 4px solid var(--color-primary);
     margin-bottom: 15px;
     box-shadow: 0 2px 8px rgba(231, 84, 128, 0.1);
     max-width: 100%;
@@ -170,7 +202,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .questioner {
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
     font-size: 16px;
 }
 
@@ -199,7 +231,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
     padding: 15px;
     background: linear-gradient(135deg, #fff8f0 0%, #ffffff 100%);
     border-radius: 8px;
-    border-left: 4px solid #ff69b4;
+    border-left: 4px solid var(--color-primary-light);
     margin-bottom: 15px;
     box-shadow: 0 2px 8px rgba(255, 105, 180, 0.1);
     max-width: 100%;
@@ -217,7 +249,7 @@ hr { border: none; height: 2px; background: linear-gradient(to right, #f8c8dc, #
 
 .answerer {
     font-weight: 700;
-    color: #ff69b4;
+    color: var(--color-primary-light);
     font-size: 16px;
 }
 
@@ -249,13 +281,13 @@ body.dark-mode .question-time {
     color: #d4a5b8; /* 更柔和的粉紅色，減少螢光感 */
     border: 1px solid rgba(255, 105, 180, 0.2); /* 淡邊框 */
 }
-body.dark-mode .answer { background: linear-gradient(135deg, #4a2c3a 0%, #3b1c32 100%); border-left-color: #ff69b4; }
+body.dark-mode .answer { background: linear-gradient(135deg, #4a2c3a 0%, #3b1c32 100%); border-left-color: var(--color-primary-light); }
 body.dark-mode .answer-text { color: #fddde6; }
-body.dark-mode .answerer { color: #ff69b4; }
+body.dark-mode .answerer { color: var(--color-primary-light); }
 
 /* 暗色模式下的导航按钮 */
 body.dark-mode .nav-footer a { 
-    background: linear-gradient(135deg, #5a2d49 0%, #ff69b4 100%); 
+    background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%); 
     color: #fddde6;
     box-shadow: 0 2px 6px rgba(90, 45, 73, 0.3);
 }
@@ -263,7 +295,7 @@ body.dark-mode .nav-footer a:hover {
     box-shadow: 0 3px 8px rgba(90, 45, 73, 0.5); 
 }
 body.dark-mode .top-nav-buttons a {
-    background: linear-gradient(135deg, #5a2d49 0%, #ff69b4 100%);
+    background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
     color: #fddde6;
     box-shadow: 0 2px 6px rgba(90, 45, 73, 0.3);
 }
@@ -276,14 +308,14 @@ body.dark-mode .back-to-top a {
     text-shadow: 0 0 3px rgba(255, 105, 180, 0.4), 0 0 6px rgba(255, 105, 180, 0.2);
 }
 body.dark-mode .back-to-top a:hover { 
-    color: #ff69b4; 
+    color: var(--color-primary-light); 
     /* 暗色模式hover時增強text-shadow效果 */
     text-shadow: 0 0 4px rgba(255, 105, 180, 0.6), 0 0 8px rgba(255, 105, 180, 0.4);
 }
 body.dark-mode .lang-switch a { color: #ff91af; }
-body.dark-mode .lang-switch a:hover { color: #ff69b4; }
+body.dark-mode .lang-switch a:hover { color: var(--color-primary-light); }
 body.dark-mode .nav-home a { color: #ff91af; }
-body.dark-mode .nav-home a:hover { color: #ff69b4; }
+body.dark-mode .nav-home a:hover { color: var(--color-primary-light); }
 
 /* 首頁頭部樣式 */
 .index-header {
@@ -299,7 +331,7 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     text-shadow: 0 0 3px rgba(231, 84, 128, 0.3), 0 0 6px rgba(231, 84, 128, 0.2);
 }
 .back-to-top a:hover { 
-    color: #ff69b4; 
+    color: var(--color-primary-light); 
     /* hover時增強text-shadow效果 */
     text-shadow: 0 0 4px rgba(231, 84, 128, 0.5), 0 0 8px rgba(231, 84, 128, 0.3);
 }
@@ -309,9 +341,11 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
 }
 .lang-switch a { font-size: 0.9em; margin: 0 5px; }
 
-/* ============ UX 增強功能 ============ */
+/* ============================================================
+   01a-layout.css — 閱讀工具欄、閱讀進度條、操作按鈕、Toast
+   ============================================================ */
 
-/* 閱讀工具欄 */
+/* ---- 閱讀工具欄 ----------------------------------------- */
 .reading-toolbar {
     position: fixed;
     top: 70px;
@@ -319,40 +353,21 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     padding: 15px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    z-index: 980; /* 降低z-index，确保低于action-menu-items */
+    z-index: 980;
     transition: transform 0.3s ease, opacity 0.3s ease;
-    /* 添加滚动条支持，防止内容溢出 */
-    max-height: calc(100vh - 140px); /* 视窗高度 - 顶部偏移 - 底部安全距离 */
+    max-height: calc(100vh - 140px);
     overflow-y: auto;
 }
 
-/* 閱讀工具欄滾動條樣式 */
-.reading-toolbar::-webkit-scrollbar {
-    width: 6px;
-}
+.reading-toolbar::-webkit-scrollbar { width: 6px; }
+.reading-toolbar::-webkit-scrollbar-track { background: rgba(240, 240, 240, 0.3); border-radius: 3px; }
+.reading-toolbar::-webkit-scrollbar-thumb { background: rgba(231, 84, 128, 0.4); border-radius: 3px; transition: background 0.2s ease; }
+.reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(231, 84, 128, 0.6); }
 
-.reading-toolbar::-webkit-scrollbar-track {
-    background: rgba(240, 240, 240, 0.3);
-    border-radius: 3px;
-}
-
-.reading-toolbar::-webkit-scrollbar-thumb {
-    background: rgba(231, 84, 128, 0.4);
-    border-radius: 3px;
-    transition: background 0.2s ease;
-}
-
-.reading-toolbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(231, 84, 128, 0.6);
-}
-
-.reading-toolbar.hidden {
-    transform: translateX(100%);
-    opacity: 0;
-}
+.reading-toolbar.hidden { transform: translateX(100%); opacity: 0; }
 
 .toolbar-header {
     display: flex;
@@ -363,132 +378,111 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     border-bottom: 1px solid #f0f0f0;
     font-size: 14px;
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
 }
 
-.toolbar-section {
-    margin-bottom: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #f0f0f0;
-}
+.toolbar-section { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.toolbar-section:last-child { margin-bottom: 0; border-bottom: none; }
+.toolbar-label { font-size: 12px; color: #666; margin-bottom: 5px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+.toolbar-controls { display: flex; gap: 8px; align-items: center; }
 
-.toolbar-section:last-child {
-    margin-bottom: 0;
-    border-bottom: none;
-}
-
-.toolbar-label {
-    font-size: 12px;
-    color: #666;
-    margin-bottom: 5px;
-    font-weight: 500;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-
-
-.toolbar-controls {
-    display: flex;
-    gap: 8px; /* 增加按钮间距，防止误点 */
-    align-items: center;
-}
-
+/* ---- 通用控制按鈕 --------------------------------------- */
 .ctrl-btn {
     padding: 6px 10px;
     border: 1px solid #ddd;
     background: #fff;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     font-size: 12px;
     transition: all 0.2s ease;
     min-width: 30px;
     text-align: center;
 }
+.ctrl-btn:hover { background: #f5f5f5; border-color: #ccc; }
+.ctrl-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
 
-.ctrl-btn:hover {
-    background: #f5f5f5;
-    border-color: #ccc;
-}
-
-.ctrl-btn.active {
-    background: #e75480;
-    color: white;
-    border-color: #e75480;
-}
-
-/* 字體調整按鈕特殊樣式 - 區別於選項按鈕 */
 .ctrl-btn.font-adjust {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border: 1px solid #ced4da;
     border-radius: 50%;
-    width: 32px;
-    height: 32px;
-    min-width: 32px;
+    width: 32px; height: 32px; min-width: 32px;
     padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 600;
-    color: #495057;
-    transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: #495057;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+.ctrl-btn.font-adjust:hover { background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border-color: #adb5bd; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); color: #212529; }
+.ctrl-btn.font-adjust:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%); }
+.ctrl-btn.font-adjust.clicked { background: linear-gradient(135deg, var(--color-primary) 0%, #c73650 100%); color: white; border-color: var(--color-primary); transform: scale(0.95); }
+.ctrl-btn.font-option { padding: 6px 16px; min-width: 50px; position: relative; white-space: nowrap; }
 
-.ctrl-btn.font-adjust:hover {
-    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-    border-color: #adb5bd;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-    color: #212529;
+/* ---- 閱讀進度條 ----------------------------------------- */
+.reading-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: rgba(231, 84, 128, 0.2); z-index: 9999; }
+.reading-progress-bar { height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); width: 0%; transition: width 0.1s ease; }
+
+/* ---- 操作按鈕組（懸浮菜單） ----------------------------- */
+.action-buttons { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 1000; }
+.action-menu { position: relative; }
+
+.action-btn {
+    width: 50px; height: 50px;
+    border-radius: 50%; border: none;
+    background: var(--color-primary-light);
+    color: white; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
 }
+.action-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4); }
+.action-btn.menu-btn { background: var(--color-primary-light); z-index: 1001; }
+.action-btn.menu-btn.expanded { transform: rotate(90deg); background: var(--color-primary); }
 
-.ctrl-btn.font-adjust:active {
-    transform: translateY(0);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
+.action-menu-items {
+    position: absolute; bottom: 60px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 10px;
+    opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    pointer-events: none; z-index: 1000;
 }
+.action-menu.expanded .action-menu-items { opacity: 1; visibility: visible; pointer-events: all; }
+.action-menu-items .action-btn { width: 45px; height: 45px; font-size: 16px; background: var(--color-primary-light); transform: scale(0.8); }
+.action-menu.expanded .action-menu-items .action-btn { transform: scale(1); }
+.action-menu-items .action-btn:hover { background: var(--color-primary); transform: scale(1.05); }
 
-/* 字體調整按鈕的短暫反馈效果 */
-.ctrl-btn.font-adjust.clicked {
-    background: linear-gradient(135deg, #e75480 0%, #c73650 100%);
-    color: white;
-    border-color: #e75480;
-    transform: scale(0.95);
-}
+/* ---- 問答互動按鈕 --------------------------------------- */
+.qa-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; opacity: 0; transition: opacity 0.2s ease; }
+.question:hover .qa-actions, .answer:hover .qa-actions { opacity: 1; }
+.qa-btn { width: 28px; height: 28px; border: none; background: rgba(255, 255, 255, 0.9); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #666; transition: all 0.2s ease; }
+.qa-btn:hover { background: var(--color-primary); color: white; transform: scale(1.1); }
 
-/* 字體大小選項按鈕優化樣式 */
-.ctrl-btn.font-option {
-    /* 為"預設"按鈕增加更多padding，確保舒適的點擊區域 */
-    padding: 6px 16px; /* 左右增加padding */
-    min-width: 50px; /* 設置最小寬度確保視覺平衡 */
-    position: relative;
-    white-space: nowrap; /* 防止文字換行 */
-}
+/* ---- Toast 通知 ----------------------------------------- */
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 20px; border-radius: 25px; font-size: 14px; z-index: 9999; transition: transform 0.3s ease; }
+.toast.show { transform: translateX(-50%) translateY(0); }
 
-/* 搜索功能已移除 */
+/* ---- 暗色模式適配 --------------------------------------- */
+body.dark-mode .reading-toolbar { background: rgba(59, 28, 50, 0.95); border-color: #5a2d49; }
+body.dark-mode .reading-toolbar::-webkit-scrollbar-track { background: rgba(90, 45, 73, 0.3); }
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.4); }
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 105, 180, 0.6); }
 
-/* 閱讀進度條 */
-.reading-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background: rgba(231, 84, 128, 0.2);
-    z-index: 9999;
-}
+body.dark-mode .ctrl-btn, body.dark-mode .qa-btn { background: rgba(90, 45, 73, 0.9); color: #fddde6; border-color: #5a2d49; }
+body.dark-mode .ctrl-btn:hover, body.dark-mode .qa-btn:hover { background: var(--color-primary-light); }
+body.dark-mode .ctrl-btn.active { background: var(--color-primary-light); color: #fff; border-color: var(--color-primary-light); box-shadow: 0 0 8px rgba(255, 105, 180, 0.5); }
+body.dark-mode .ctrl-btn.font-adjust { background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%); border: 1px solid #555; color: #fddde6; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+body.dark-mode .ctrl-btn.font-adjust:hover { background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%); border-color: #777; color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+body.dark-mode .ctrl-btn.font-adjust:active { background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%); }
+body.dark-mode .ctrl-btn.font-adjust.clicked { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; border-color: var(--color-primary-light); }
 
-.reading-progress-bar {
-    height: 100%;
-    background: linear-gradient(90deg, #e75480, #ff69b4);
-    width: 0%;
-    transition: width 0.1s ease;
-}
+body.dark-mode .action-btn { background: var(--color-primary-light); box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4); }
+body.dark-mode .action-btn:hover { background: var(--color-primary); box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5); }
+body.dark-mode .action-btn.menu-btn.expanded { background: var(--color-primary); }
+body.dark-mode .action-menu-items .action-btn { background: var(--color-primary-light); }
+body.dark-mode .action-menu-items .action-btn:hover { background: var(--color-primary); }
+/* ============================================================
+   01b-floating-toc.css — 浮動目錄面板（panel、tabs、items）
+   ============================================================ */
 
-/* 浮動目錄 */
 .floating-toc {
     position: fixed;
     left: -250px;
@@ -499,29 +493,26 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
     border: 1px solid #e0e0e0;
-    border-radius: 12px;
+    border-radius: var(--radius-lg);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     z-index: 800;
     transition: left 0.3s ease;
     display: flex;
     flex-direction: column;
 }
-
-.floating-toc.visible {
-    left: 20px;
-}
+.floating-toc.visible { left: 20px; }
 
 .floating-toc-header {
     padding: 15px;
     border-bottom: 1px solid #f0f0f0;
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
-    border-radius: 12px 12px 0 0;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
     flex-shrink: 0;
 }
 
@@ -529,129 +520,78 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     flex: 1;
     overflow-y: auto;
     padding: 0;
-    line-height: 1.4 !important; /* 固定行距，不受全局調整影響 */
-    overflow-x: hidden; /* 防止水平滚动条 */
+    line-height: 1.4 !important;
+    overflow-x: hidden;
 }
+.floating-toc-content::-webkit-scrollbar { width: 6px; }
+.floating-toc-content::-webkit-scrollbar-track { background: rgba(240, 240, 240, 0.3); border-radius: 3px; }
+.floating-toc-content::-webkit-scrollbar-thumb { background: rgba(231, 84, 128, 0.4); border-radius: 3px; transition: background 0.2s ease; }
+.floating-toc-content::-webkit-scrollbar-thumb:hover { background: rgba(231, 84, 128, 0.6); }
 
-.floating-toc-list {
-    padding: 10px;
-    list-style: none;
-}
+.floating-toc-list { padding: 10px; list-style: none; }
 
 .floating-toc-item {
     padding: 8px 12px;
     margin: 2px 0;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
     transition: all 0.3s ease;
     font-size: 13px;
     border-left: 3px solid transparent;
-    line-height: 1.3 !important; /* 修正行距，避免重叠 */
-    word-wrap: break-word; /* 自动换行 */
-    white-space: normal; /* 允许换行 */
-    overflow-wrap: break-word; /* 强制长单词换行 */
-    color: #e75480; /* 與章節頁面目錄第1層相同 */
-}
-
-.floating-toc-item.level-h3 {
-    padding-left: 24px;
-    font-size: 12px;
-    color: #e85aad; /* 與章節頁面目錄第2層相同 */
-    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
+    line-height: 1.3 !important;
     word-wrap: break-word;
     white-space: normal;
     overflow-wrap: break-word;
+    color: var(--color-primary);
 }
+.floating-toc-item.level-h3 { padding-left: 24px; font-size: 12px; color: var(--color-h3); line-height: 1.3 !important; word-wrap: break-word; white-space: normal; overflow-wrap: break-word; }
+.floating-toc-item.level-h4 { padding-left: 36px; font-size: 11px; color: var(--color-h4); line-height: 1.3 !important; word-wrap: break-word; white-space: normal; overflow-wrap: break-word; }
+.floating-toc-item.level-h5 { padding-left: 48px; font-size: 10px; color: var(--color-h4); line-height: 1.3 !important; word-wrap: break-word; white-space: normal; overflow-wrap: break-word; }
+.floating-toc-item:hover { background: rgba(231, 84, 128, 0.1); }
+.floating-toc-item.active { background: rgba(231, 84, 128, 0.2); border-left-color: var(--color-primary); font-weight: 600; color: var(--color-primary); border-radius: 4px; transform: translateX(2px); box-shadow: 0 1px 4px rgba(231, 84, 128, 0.3); }
 
-.floating-toc-item.level-h4 {
-    padding-left: 36px;
-    font-size: 11px;
-    color: #f585cc; /* 與章節頁面目錄第4層相同 */
-    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
-    word-wrap: break-word;
-    white-space: normal;
-    overflow-wrap: break-word;
-}
+/* ---- Tabs ------------------------------------------------ */
+.floating-toc-tabs { display: flex; border-bottom: 1px solid #f0f0f0; }
+.floating-toc-tab { flex: 1; padding: 10px; text-align: center; cursor: pointer; background: none; border: none; border-bottom: 2px solid transparent; transition: all 0.3s ease; font-size: 12px; transform-origin: center; }
+.floating-toc-tab.active { color: var(--color-primary); border-bottom-color: var(--color-primary); font-weight: 600; }
+.floating-toc-tab:hover { background: rgba(231, 84, 128, 0.05); }
 
-.floating-toc-item.level-h5 {
-    padding-left: 48px;
-    font-size: 10px;
-    color: #f585cc; /* 與章節頁面目錄第4層相同 */
-    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
-    word-wrap: break-word;
-    white-space: normal;
-    overflow-wrap: break-word;
-}
+/* ---- 暗色模式 ------------------------------------------- */
+body.dark-mode .floating-toc { background: rgba(59, 28, 50, 0.95); border-color: #5a2d49; }
+body.dark-mode .floating-toc-header { background: rgba(59, 28, 50, 0.95); border-bottom: 1px solid #5a2d49; }
+body.dark-mode .floating-toc-content::-webkit-scrollbar-track { background: rgba(90, 45, 73, 0.3); }
+body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.4); }
+body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb:hover { background: rgba(255, 105, 180, 0.6); }
+body.dark-mode .floating-toc-item:hover { background: rgba(255, 105, 180, 0.2); }
+body.dark-mode .floating-toc-item.active { background: rgba(255, 105, 180, 0.25); border-left-color: var(--color-primary-light); color: var(--color-primary-light); box-shadow: 0 1px 4px rgba(255, 105, 180, 0.4); }
+body.dark-mode .floating-toc-tab { color: #fddde6; border-bottom: 1px solid #5a2d49; }
+body.dark-mode .floating-toc-tab.active { color: var(--color-primary-light); border-bottom-color: var(--color-primary-light); }
+body.dark-mode .floating-toc-tab:hover { background: rgba(255, 105, 180, 0.1); }
+/* ============================================================
+   01c-bookmarks.css — 書籤面板、書籤標識、書籤分組、章節信息
+   ============================================================ */
 
-.floating-toc-item:hover {
-    background: rgba(231, 84, 128, 0.1);
-}
-
-.floating-toc-item.active {
-    background: rgba(231, 84, 128, 0.2);
-    border-left-color: #e75480;
-    font-weight: 600;
-    color: #e75480;
-    border-radius: 4px;
-    transform: translateX(2px);
-    box-shadow: 0 1px 4px rgba(231, 84, 128, 0.3);
-}
-
-/* 浮動目錄標籤頁 */
-.floating-toc-tabs {
-    display: flex;
-    border-bottom: 1px solid #f0f0f0;
-}
-
-.floating-toc-tab {
-    flex: 1;
-    padding: 10px;
-    text-align: center;
-    cursor: pointer;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    transition: all 0.3s ease;
-    font-size: 12px;
-    transform-origin: center;
-}
-
-.floating-toc-tab.active {
-    color: #e75480;
-    border-bottom-color: #e75480;
-    font-weight: 600;
-}
-
-.floating-toc-tab:hover {
-    background: rgba(231, 84, 128, 0.05);
-}
-
-/* 書籤樣式 */
+/* ---- 書籤列表項 ------------------------------------------ */
 .bookmark-item {
     padding: 10px 12px;
     margin: 4px 0;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     border: 1px solid #f0f0f0;
     background: rgba(255, 255, 255, 0.5);
     cursor: pointer;
     transition: all 0.2s ease;
     position: relative;
-    word-wrap: break-word; /* 书签文本自动换行 */
+    word-wrap: break-word;
     white-space: normal;
     overflow-wrap: break-word;
-    line-height: 1.4; /* 合理的行距 */
+    line-height: 1.4;
 }
-
-.bookmark-item:hover {
-    background: rgba(231, 84, 128, 0.05);
-    border-color: #e75480;
-}
+.bookmark-item:hover { background: rgba(231, 84, 128, 0.05); border-color: var(--color-primary); }
 
 .qa-pair-bookmark {
-    border-left: 3px solid #ff69b4;
+    border-left: 3px solid var(--color-primary-light);
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
 }
-
 .qa-pair-bookmark:hover {
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.12) 0%, rgba(231, 84, 128, 0.05) 100%);
 }
@@ -664,91 +604,64 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     color: #666;
     gap: 6px;
 }
-
-.bookmark-type {
-    font-size: 12px;
-    flex-shrink: 0;
+/* second usage of .bookmark-meta (homepage variant with justify-content) */
+.bookmark-chapter-list .bookmark-meta {
+    justify-content: space-between;
+    margin: 4px 0;
 }
 
-.bookmark-questioner {
-    font-weight: 600;
-    color: #e75480;
-    flex: 1;
-}
+.bookmark-type { font-size: 12px; flex-shrink: 0; }
+.bookmark-questioner { font-weight: 600; color: var(--color-primary); flex: 1; }
+.bookmark-time { font-size: 10px; flex-shrink: 0; color: #b18a9e; opacity: 0.8; }
 
-.bookmark-time {
-    font-size: 10px;
-    flex-shrink: 0;
-    color: #b18a9e; /* 柔和的粉紅灰色，與主題協調 */
-    opacity: 0.8; /* 稍微降低顯眼度 */
-}
-
-/* 首頁書籤樣式 */
+/* ---- 首頁書籤分組 ---------------------------------------- */
 .bookmark-chapter-group {
-  margin-bottom: 15px;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 10px;
-  line-height: 1.4 !important; /* 固定行距 */
-  list-style: none;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    line-height: 1.4 !important;
+    list-style: none;
 }
 
 .bookmark-chapter-title {
-  font-weight: 600;
-  color: #d44d75;
-  font-size: 0.95em;
-  margin-bottom: 8px;
-  padding: 5px 0;
-  border-bottom: 1px solid #f8c8dc;
-  line-height: 1.4 !important; /* 固定行距 */
-  cursor: default !important; /* 確保不顯示為可點擊狀態 */
-  word-wrap: break-word; /* 章节标题自动换行 */
-  white-space: normal;
-  overflow-wrap: break-word;
+    font-weight: 600;
+    color: #d44d75;
+    font-size: 0.95em;
+    margin-bottom: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--color-accent-pale);
+    line-height: 1.4 !important;
+    cursor: default !important;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 
-.bookmark-chapter-list {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
+.bookmark-chapter-list { list-style: none; padding-left: 0; margin: 0; }
 .bookmark-chapter-list .bookmark-item {
-  margin-bottom: 8px;
-  padding: 8px;
-  background: #fafafa;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  line-height: 1.4 !important; /* 固定行距 */
-  list-style: none;
-  position: relative; /* 為bookmark-delete按鈕定位 */
+    margin-bottom: 8px;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    line-height: 1.4 !important;
+    list-style: none;
+    position: relative;
 }
-
-.bookmark-chapter-list .bookmark-item:hover {
-  background: #f0f0f0;
-}
-
-.bookmark-meta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 4px 0;
-}
+.bookmark-chapter-list .bookmark-item:hover { background: #f0f0f0; }
 
 .bookmark-remove {
-  background: none;
-  border: none;
-  color: #e75480;
-  cursor: pointer;
-  font-size: 0.8em;
-  padding: 2px 6px;
-  border-radius: 3px;
-  transition: background-color 0.2s;
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
 }
-
-.bookmark-remove:hover {
-  background: #ffe0e6;
-}
+.bookmark-remove:hover { background: #ffe0e6; }
 
 .bookmark-preview {
     font-size: 12px;
@@ -760,16 +673,8 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
-
-.bookmark-preview a {
-    text-decoration: none;
-    color: inherit;
-}
-
-.bookmark-preview a:hover {
-    text-decoration: none;
-    color: #e75480;
-}
+.bookmark-preview a { text-decoration: none; color: inherit; }
+.bookmark-preview a:hover { text-decoration: none; color: var(--color-primary); }
 
 .bookmark-delete {
     position: absolute;
@@ -786,312 +691,18 @@ body.dark-mode .nav-home a:hover { color: #ff69b4; }
     opacity: 0;
     transition: opacity 0.2s ease;
 }
+.bookmark-item:hover .bookmark-delete { opacity: 1; }
+.bookmark-delete:hover { background: #ff4757; color: white; }
 
-.bookmark-item:hover .bookmark-delete {
-    opacity: 1;
-}
+.bookmarks-empty { text-align: center; padding: 20px; color: #999; font-size: 12px; }
 
-.bookmark-delete:hover {
-    background: #ff4757;
-    color: white;
-}
-
-.bookmarks-empty {
-    text-align: center;
-    padding: 20px;
-    color: #999;
-    font-size: 12px;
-}
-
-/* 操作按鈕組 - 可展開菜單 */
-.action-buttons {
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    z-index: 1000;
-}
-
-.action-menu {
-    position: relative;
-}
-
-.action-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: none;
-    background: #ff69b4;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
-    transition: all 0.3s ease;
-}
-
-.action-btn:hover {
-    transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
-}
-
-.action-btn.menu-btn {
-    background: #ff69b4;
-    z-index: 1001;
-}
-
-.action-btn.menu-btn.expanded {
-    transform: rotate(90deg);
-    background: #e75480;
-}
-
-.action-menu-items {
-    position: absolute;
-    bottom: 60px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    pointer-events: none;
-    z-index: 1000; /* 确保action-menu-items高于reading-toolbar */
-}
-
-.action-menu.expanded .action-menu-items {
-    opacity: 1;
-    visibility: visible;
-    pointer-events: all;
-}
-
-.action-menu-items .action-btn {
-    width: 45px;
-    height: 45px;
-    font-size: 16px;
-    background: #ff69b4;
-    transform: scale(0.8);
-}
-
-.action-menu.expanded .action-menu-items .action-btn {
-    transform: scale(1);
-}
-
-.action-menu-items .action-btn:hover {
-    background: #e75480;
-    transform: scale(1.05);
-}
-
-/* 暗色模式適配 */
-body.dark-mode .action-btn {
-    background: #ff69b4;
-    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
-}
-
-body.dark-mode .action-btn:hover {
-    background: #e75480;
-    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
-}
-
-body.dark-mode .action-btn.menu-btn.expanded {
-    background: #e75480;
-}
-
-body.dark-mode .action-menu-items .action-btn {
-    background: #ff69b4;
-}
-
-body.dark-mode .action-menu-items .action-btn:hover {
-    background: #e75480;
-}
-
-/* 問答互動功能 */
-.qa-actions {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    display: flex;
-    gap: 8px;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-}
-
-.question:hover .qa-actions,
-.answer:hover .qa-actions {
-    opacity: 1;
-}
-
-.qa-btn {
-    width: 28px;
-    height: 28px;
-    border: none;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 14px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    color: #666;
-    transition: all 0.2s ease;
-}
-
-.qa-btn:hover {
-    background: #e75480;
-    color: white;
-    transform: scale(1.1);
-}
-
-/* 通知消息 */
-.toast {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: #333;
-    color: white;
-    padding: 12px 20px;
-    border-radius: 25px;
-    font-size: 14px;
-    z-index: 9999;
-    transition: transform 0.3s ease;
-}
-
-.toast.show {
-    transform: translateX(-50%) translateY(0);
-}
-
-/* 暗色模式適配 */
-body.dark-mode .reading-toolbar,
-body.dark-mode .floating-toc {
-    background: rgba(59, 28, 50, 0.95);
-    border-color: #5a2d49;
-}
-
-/* 浮動目錄滾動條樣式 */
-.floating-toc-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.floating-toc-content::-webkit-scrollbar-track {
-    background: rgba(240, 240, 240, 0.3);
-    border-radius: 3px;
-}
-
-.floating-toc-content::-webkit-scrollbar-thumb {
-    background: rgba(231, 84, 128, 0.4);
-    border-radius: 3px;
-    transition: background 0.2s ease;
-}
-
-.floating-toc-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(231, 84, 128, 0.6);
-}
-
-/* 暗色模式滾動條樣式 */
-body.dark-mode .reading-toolbar::-webkit-scrollbar-track {
-    background: rgba(90, 45, 73, 0.3);
-}
-
-body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 105, 180, 0.4);
-}
-
-body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 105, 180, 0.6);
-}
-
-/* 暗色模式浮動目錄滾動條樣式 */
-body.dark-mode .floating-toc-content::-webkit-scrollbar-track {
-    background: rgba(90, 45, 73, 0.3);
-}
-
-body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 105, 180, 0.4);
-}
-
-body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 105, 180, 0.6);
-}
-
-body.dark-mode .floating-toc-header {
-    background: rgba(59, 28, 50, 0.95);
-    border-bottom: 1px solid #5a2d49;
-}
-
-body.dark-mode .ctrl-btn,
-body.dark-mode .qa-btn {
-    background: rgba(90, 45, 73, 0.9);
-    color: #fddde6;
-    border-color: #5a2d49;
-}
-
-body.dark-mode .ctrl-btn:hover,
-body.dark-mode .qa-btn:hover {
-    background: #ff69b4;
-}
-
-body.dark-mode .ctrl-btn.active {
-    background: #ff69b4;
-    color: #fff;
-    border-color: #ff69b4;
-    box-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
-}
-
-/* 暗色模式下的字體調整按鈕 */
-body.dark-mode .ctrl-btn.font-adjust {
-    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
-    border: 1px solid #555;
-    color: #fddde6;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-}
-
-body.dark-mode .ctrl-btn.font-adjust:hover {
-    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
-    border-color: #777;
-    color: #fff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
-}
-
-body.dark-mode .ctrl-btn.font-adjust:active {
-    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
-}
-
-body.dark-mode .ctrl-btn.font-adjust.clicked {
-    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
-    color: white;
-    border-color: #ff69b4;
-}
-
-
-
-
-
-body.dark-mode .floating-toc-item:hover {
-    background: rgba(255, 105, 180, 0.2);
-}
-
-body.dark-mode .floating-toc-item.active {
-    background: rgba(255, 105, 180, 0.25);
-    border-left-color: #ff69b4;
-    color: #ff69b4;
-    box-shadow: 0 1px 4px rgba(255, 105, 180, 0.4);
-}
-
-/* 書籤視覺標識 */
+/* ---- 書籤視覺標識 (bookmarked 元素) -------------------- */
 .bookmarked {
     position: relative;
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 182, 193, 0.1) 100%);
-    border-left: 4px solid #ff69b4;
+    border-left: 4px solid var(--color-primary-light);
     box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
 }
-
 .bookmark-indicator {
     position: absolute;
     bottom: 8px;
@@ -1103,122 +714,50 @@ body.dark-mode .floating-toc-item.active {
     transition: all 0.2s ease;
     user-select: none;
 }
+.bookmark-indicator:hover { opacity: 1; transform: scale(1.1); }
 
-.bookmark-indicator:hover {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-body.dark-mode .bookmarked {
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(139, 69, 19, 0.1) 100%);
-    border-left-color: #ff69b4;
-    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
-}
-
-/* 書籤分組樣式 */
+/* ---- 書籤分組（面板內折疊組） -------------------------- */
 .bookmark-chapter {
     margin: 12px 0 8px 0;
     padding: 8px 12px;
     background: rgba(231, 84, 128, 0.1);
-    border-radius: 6px;
-    border-left: 4px solid #e75480;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--color-primary);
 }
-
-.bookmark-chapter-title {
-    font-weight: 600;
-    color: #e75480;
+/* .bookmark-chapter-title already defined above; extend for panel usage */
+.bookmark-chapter > .bookmark-chapter-title {
     font-size: 14px;
-    margin: 0;
+    color: var(--color-primary);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+.bookmark-chapter-toggle { font-size: 12px; transition: transform 0.2s ease; }
+.bookmark-chapter.collapsed .bookmark-chapter-toggle { transform: rotate(-90deg); }
 
-.bookmark-chapter-toggle {
-    font-size: 12px;
-    transition: transform 0.2s ease;
-}
-
-.bookmark-chapter.collapsed .bookmark-chapter-toggle {
-    transform: rotate(-90deg);
-}
-
-.bookmark-chapter-items {
-    margin-top: 8px;
-    transition: max-height 0.2s ease;
-    overflow: hidden;
-}
-
-.bookmark-chapter.collapsed .bookmark-chapter-items {
-    max-height: 0;
-    margin-top: 0;
-}
+.bookmark-chapter-items { margin-top: 8px; transition: max-height 0.2s ease; overflow: hidden; }
+.bookmark-chapter.collapsed .bookmark-chapter-items { max-height: 0; margin-top: 0; }
 
 .bookmark-chapter-count {
     font-size: 12px;
     background: rgba(231, 84, 128, 0.2);
     padding: 2px 6px;
     border-radius: 10px;
-    color: #e75480;
+    color: var(--color-primary);
 }
 
-body.dark-mode .bookmark-chapter {
-    background: rgba(255, 105, 180, 0.15);
-    border-left-color: #ff69b4;
-}
-
-body.dark-mode .bookmark-chapter-title {
-    color: #ff69b4;
-}
-
-body.dark-mode .bookmark-chapter-count {
-    background: rgba(255, 105, 180, 0.3);
-    color: #ff69b4;
-}
-
-/* 夜間模式下標籤頁樣式 */
-body.dark-mode .floating-toc-tab {
-    color: #fddde6;
-    border-bottom: 1px solid #5a2d49;
-}
-
-body.dark-mode .floating-toc-tab.active {
-    color: #ff69b4;
-    border-bottom-color: #ff69b4;
-}
-
-body.dark-mode .floating-toc-tab:hover {
-    background: rgba(255, 105, 180, 0.1);
-}
-
-/* 當前章節信息樣式 */
+/* ---- 當前章節信息條 ------------------------------------- */
 .current-chapter-info {
     padding: 8px 12px;
     margin-bottom: 12px;
     background: rgba(231, 84, 128, 0.1);
-    border-radius: 6px;
-    border-left: 4px solid #e75480;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--color-primary);
 }
-
-.chapter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0;
-}
-
-.current-chapter-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: #e75480;
-    flex: 1;
-}
-
-.current-chapter-count {
-    font-size: 12px;
-    color: #666;
-}
+.chapter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; }
+.current-chapter-title { font-size: 14px; font-weight: 600; color: var(--color-primary); flex: 1; }
+.current-chapter-count { font-size: 12px; color: #666; }
 
 .bookmark-clear-icon {
     background: none;
@@ -1231,17 +770,8 @@ body.dark-mode .floating-toc-tab:hover {
     border-radius: 3px;
     position: relative;
 }
-
-.current-chapter-info:hover .bookmark-clear-icon {
-    opacity: 0.7;
-}
-
-.bookmark-clear-icon:hover {
-    opacity: 1 !important;
-    background: rgba(255, 71, 87, 0.1);
-    transform: scale(1.05);
-}
-
+.current-chapter-info:hover .bookmark-clear-icon { opacity: 0.7; }
+.bookmark-clear-icon:hover { opacity: 1 !important; background: rgba(255, 71, 87, 0.1); transform: scale(1.05); }
 .bookmark-clear-icon:hover::after {
     content: '清空書籤';
     position: absolute;
@@ -1255,47 +785,30 @@ body.dark-mode .floating-toc-tab:hover {
     white-space: nowrap;
     z-index: 1000;
 }
+.bookmark-clear-icon:active { transform: scale(0.95); }
 
-.bookmark-clear-icon:active {
-    transform: scale(0.95);
+/* ---- 暗色模式 ------------------------------------------- */
+body.dark-mode .bookmarked {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(139, 69, 19, 0.1) 100%);
+    border-left-color: var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
 }
-
-body.dark-mode .current-chapter-info {
-    background: rgba(255, 105, 180, 0.15);
-    border-left-color: #ff69b4;
-}
-
-body.dark-mode .current-chapter-title {
-    color: #ff69b4;
-}
-
-body.dark-mode .current-chapter-count {
-    color: #fddde6;
-}
-
-body.dark-mode .current-chapter-info:hover .bookmark-clear-icon {
-    opacity: 0.7;
-}
-
-body.dark-mode .bookmark-clear-icon:hover {
-    background: rgba(255, 105, 180, 0.2) !important;
-    opacity: 1 !important;
-}
-
-body.dark-mode .bookmark-clear-icon:hover::after {
-    background: #5a2d49;
-    color: #fddde6;
-}
-
+body.dark-mode .bookmark-chapter { background: rgba(255, 105, 180, 0.15); border-left-color: var(--color-primary-light); }
+body.dark-mode .bookmark-chapter > .bookmark-chapter-title { color: var(--color-primary-light); }
+body.dark-mode .bookmark-chapter-count { background: rgba(255, 105, 180, 0.3); color: var(--color-primary-light); }
+body.dark-mode .current-chapter-info { background: rgba(255, 105, 180, 0.15); border-left-color: var(--color-primary-light); }
+body.dark-mode .current-chapter-title { color: var(--color-primary-light); }
+body.dark-mode .current-chapter-count { color: #fddde6; }
+body.dark-mode .current-chapter-info:hover .bookmark-clear-icon { opacity: 0.7; }
+body.dark-mode .bookmark-clear-icon:hover { background: rgba(255, 105, 180, 0.2) !important; opacity: 1 !important; }
+body.dark-mode .bookmark-clear-icon:hover::after { background: #5a2d49; color: #fddde6; }
 body.dark-mode .qa-pair-bookmark {
-    border-left-color: #ff69b4;
+    border-left-color: var(--color-primary-light);
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(59, 28, 50, 0.5) 100%);
 }
-
 body.dark-mode .qa-pair-bookmark:hover {
     background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
 }
-
 /* ============ 搜索激活按钮样式 ============ */
 .search-activation {
     margin: 30px 0;
@@ -1303,7 +816,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 .search-activate-btn {
-    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    background: var(--gradient-primary);
     color: white;
     border: none;
     padding: 10px 30px;
@@ -1320,7 +833,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 .search-activate-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
-    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
 }
 
 .search-activate-btn:active {
@@ -1349,7 +862,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     padding: 20px;
     background: linear-gradient(135deg, #fff8f5 0%, #ffffff 100%);
     border-radius: 12px;
-    border: 1px solid #f8c8dc;
+    border: 1px solid var(--color-accent-pale);
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.1);
     animation: slideIn 0.3s ease-out;
 }
@@ -1374,7 +887,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     width: 100%;
     padding: 12px 20px;
     font-size: 16px;
-    border: 2px solid #f8c8dc;
+    border: 2px solid var(--color-accent-pale);
     border-radius: 25px;
     background: #fff;
     color: #333;
@@ -1384,7 +897,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 #search-input:focus {
-    border-color: #e75480;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1);
 }
 
@@ -1422,7 +935,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     width: 20px;
     height: 20px;
     border: 2px solid #f3f3f3;
-    border-top: 2px solid #e75480;
+    border-top: 2px solid var(--color-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -1479,7 +992,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 .search-retry-btn {
-    background: #e75480;
+    background: var(--color-primary);
     color: white;
     border: none;
     padding: 4px 12px;
@@ -1490,7 +1003,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 .search-retry-btn:hover {
-    background: #d63384;
+    background: var(--color-primary-deep);
 }
 
 .search-status-success {
@@ -1512,7 +1025,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f8c8dc;
+    border-bottom: 1px solid var(--color-accent-pale);
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -1525,11 +1038,11 @@ body.dark-mode .qa-pair-bookmark:hover {
 
 .search-results-count {
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
 }
 
 .search-clear, .search-collapse, .search-load-more, .search-load-all {
-    background: #f8c8dc;
+    background: var(--color-accent-pale);
     color: #b73c65;
     border: none;
     padding: 6px 12px;
@@ -1540,7 +1053,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 }
 
 .search-clear:hover, .search-collapse:hover, .search-load-more:hover, .search-load-all:hover {
-    background: #e75480;
+    background: var(--color-primary);
     color: white;
 }
 
@@ -1588,7 +1101,7 @@ body.dark-mode .qa-pair-bookmark:hover {
     padding: 15px;
     background: #fff;
     border-radius: 8px;
-    border-left: 3px solid #e75480;
+    border-left: 3px solid var(--color-primary);
     box-shadow: 0 2px 6px rgba(231, 84, 128, 0.1);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1597,14 +1110,14 @@ body.dark-mode .qa-pair-bookmark:hover {
 .search-result-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.15);
-    border-left-color: #ff69b4;
+    border-left-color: var(--color-primary-light);
 }
 
 
 
 .search-result-title {
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
     margin-bottom: 8px;
     font-size: 14px;
     display: flex;
@@ -1617,7 +1130,7 @@ body.dark-mode .qa-pair-bookmark:hover {
 .search-result-type {
     white-space: nowrap;
     display: inline-block;
-    background: #f8c8dc;
+    background: var(--color-accent-pale);
     color: #b73c65;
     padding: 2px 8px;
     border-radius: 10px;
@@ -1645,12 +1158,12 @@ body.dark-mode .qa-pair-bookmark:hover {
 
 /* 暗色模式搜索样式 */
 body.dark-mode .search-activate-btn {
-    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
     box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
 }
 
 body.dark-mode .search-activate-btn:hover {
-    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    background: var(--gradient-primary);
     box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
 }
 
@@ -1684,7 +1197,7 @@ body.dark-mode #search-input::placeholder {
 }
 
 body.dark-mode #search-input:focus {
-    border-color: #ff69b4;
+    border-color: var(--color-primary-light);
     box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
 }
 
@@ -1713,7 +1226,7 @@ body.dark-mode .search-progress-text {
 
 body.dark-mode .search-loading-spinner {
     border-color: #4a2c4a;
-    border-top-color: #ff69b4;
+    border-top-color: var(--color-primary-light);
 }
 
 /* 搜索錯誤狀態夜間模式 */
@@ -1724,7 +1237,7 @@ body.dark-mode .search-error {
 }
 
 body.dark-mode .search-retry-btn {
-    background: #ff69b4;
+    background: var(--color-primary-light);
     color: #fff;
 }
 
@@ -1741,7 +1254,7 @@ body.dark-mode .search-status-success {
 
 body.dark-mode .search-result-item {
     background: #2d1e2e;
-    border-left-color: #ff69b4;
+    border-left-color: var(--color-primary-light);
 }
 
 body.dark-mode .search-result-content {
@@ -1753,12 +1266,12 @@ body.dark-mode .search-result-content {
 body.dark-mode .search-clear, body.dark-mode .search-collapse, 
 body.dark-mode .search-load-more, body.dark-mode .search-load-all {
     background: #4a2c4a;
-    color: #ff69b4;
+    color: var(--color-primary-light);
 }
 
 body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover,
 body.dark-mode .search-load-more:hover, body.dark-mode .search-load-all:hover {
-    background: #ff69b4;
+    background: var(--color-primary-light);
     color: #1a1a1a;
 }
 
@@ -1792,154 +1305,12 @@ body.dark-mode .search-load-all:hover {
     color: #1a1a1a;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .search-activate-btn {
-        padding: 12px 24px;
-        font-size: 14px;
-    }
-    
-    .search-activate-hint {
-        font-size: 11px;
-    }
-    
-    .search-container {
-        margin: 20px 0;
-        padding: 15px;
-    }
-    
-    #search-input {
-        font-size: 16px; /* 防止iOS缩放 */
-    }
-    
-    .search-results-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .search-results-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    
-    .search-clear, .search-collapse, .search-load-more, .search-load-all {
-        font-size: 11px;
-        padding: 5px 10px;
-    }
-    
-    .search-result-item {
-        padding: 12px;
-    }
-    
-    .search-result-title {
-        align-items: flex-start;
-        gap: 4px;
-    }
-    
-    /* 基礎字型大小調整 - 平板 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    body {
-        line-height: 1.7;
-    }
-    
-    /* 平板端字體控制按鈕優化 */
-    .toolbar-controls {
-        gap: 10px; /* 平板端增加更多間距 */
-    }
-    
-    .ctrl-btn.font-option {
-        padding: 8px 18px; /* 平板端增加更多padding */
-        min-width: 55px;
-    }
-    
-    /* TOC目錄字型優化 - 平板 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    .toc > ul > li { 
-        margin-bottom: 10px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul > li { 
-        margin-bottom: 8px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul ul > li { 
-        margin-bottom: 6px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul ul ul > li { 
-        margin-bottom: 5px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    /* 章節頁TOC優化 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    .toc-item.toc-level-1 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    .toc-item.toc-level-2 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    .toc-item.toc-level-3 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    .toc-item.toc-level-4 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    /* 標題字型調整 */
-    h1 { font-size: 26px !important; line-height: 1.3; }
-    h2 { font-size: 22px !important; line-height: 1.4; }
-    h3 { font-size: 20px !important; line-height: 1.4; }
-    h4 { font-size: 18px !important; line-height: 1.4; }
-    
-    /* 按鈕和控制元素 */
-    .toc-level-btn, .floating-level-btn {
-        font-size: 15px !important;
-        min-width: 35px;
-        min-height: 35px;
-    }
-    
-    .toc-level-label {
-        font-size: 15px !important;
-    }
-    
-    /* 導航元素優化 */
-    .nav-footer a {
-        font-size: 16px !important;
-        padding: 10px 14px !important;
-    }
-    
-    .nav-home a {
-        font-size: 1.0em !important;
-    }
-    
-    .lang-switch a {
-        font-size: 1.0em !important;
-    }
-    
-    .top-nav-buttons a {
-        font-size: 16px !important;
-    }
-}
 
-/* ========== 目录层级控制样式 ========== */
+/* ============================================================
+   04a-toc-levels.css — 目錄層級控制、浮動層級面板、TOC 項目樣式
+   ============================================================ */
 
-/* TOC标题容器 - 水平布局 */
+/* ---- 目錄標題容器 --------------------------------------- */
 .toc-header-container {
     display: flex;
     justify-content: space-between;
@@ -1947,44 +1318,30 @@ body.dark-mode .search-load-all:hover {
     margin-bottom: 20px;
     padding: 0;
     gap: 20px;
-    flex-wrap: nowrap; /* 强制不换行，保持水平布局 */
-    min-height: 40px; /* 确保有足够高度 */
+    flex-wrap: nowrap;
+    min-height: 40px;
 }
+.toc-header-container h2 { margin: 0; flex: 1; }
 
-.toc-header-container h2 {
-    margin: 0;
-    flex: 1;
-}
-
-/* 目录层级控制容器 */
+/* ---- 目錄層級控制（固定在頁面頂部）--------------------- */
 .toc-level-controls {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 0; /* 移除底部margin，由container控制 */
-    padding: 0; /* 移除padding，由container控制 */
-    flex-shrink: 1; /* 允许适度收缩，但不完全消失 */
-    min-width: 180px; /* 设置最小宽度，确保按钮可见 */
+    margin-bottom: 0;
+    padding: 0;
+    flex-shrink: 1;
+    min-width: 180px;
 }
-
-.toc-level-label {
-    font-size: 14px;
-    color: #d63384;
-    font-weight: 500;
-    white-space: nowrap;
-}
-
-.toc-level-buttons-vertical {
-    display: flex;
-    gap: 6px;
-}
+.toc-level-label { font-size: 14px; color: var(--color-primary-deep); font-weight: 500; white-space: nowrap; }
+.toc-level-buttons-vertical { display: flex; gap: 6px; }
 
 .toc-level-btn {
     width: 32px;
     height: 32px;
-    border: 2px solid #ff69b4;
+    border: 2px solid var(--color-primary-light);
     background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
-    color: #d63384;
+    color: var(--color-primary-deep);
     border-radius: 50%;
     font-size: 14px;
     font-weight: 600;
@@ -1994,109 +1351,60 @@ body.dark-mode .search-load-all:hover {
     align-items: center;
     justify-content: center;
 }
+.toc-level-btn:hover { background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%); transform: scale(1.1); box-shadow: 0 3px 12px rgba(255, 105, 180, 0.3); }
+.toc-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; box-shadow: 0 3px 12px rgba(255, 105, 180, 0.5); }
+.toc-level-btn.active:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(255, 105, 180, 0.6); }
 
-.toc-level-btn:hover {
-    background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%);
-    transform: scale(1.1);
-    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.3);
-}
-
-.toc-level-btn.active {
-    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
-    color: white;
-    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.5);
-}
-
-.toc-level-btn.active:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.6);
-}
-
-/* 滚动时显示的浮动层级控制 */
+/* ---- 浮動層級控制（捲動後出現）------------------------- */
 .floating-level-controls {
-  position: fixed;
-  right: 20px; /* 与阅读设置工具栏保持一致 */
-  bottom: 120px; /* 设置在.action-menu上方不远处（30px + 50px + 40px间距） */
-  z-index: 950; /* 设置比阅读设置工具栏(900)高一级，但低于action-menu-items(1000) */
-  background: rgba(255, 255, 255, 0.92); /* 稍微降低不透明度 */
-  border-radius: 25px;
-  padding: 12px 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12); /* 稍微减轻阴影 */
-  backdrop-filter: blur(12px); /* 增强模糊效果 */
-  border: 1px solid rgba(255, 105, 180, 0.3);
-  transition: all 0.3s ease; /* 简化过渡效果 */
-  max-width: 120px; /* 限制最大宽度 */
+    position: fixed;
+    right: 20px;
+    bottom: 120px;
+    z-index: 950;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 25px;
+    padding: 12px 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
+    max-width: 120px;
 }
+.floating-level-controls.collapsed { padding: 8px; max-width: 50px; background: rgba(255, 255, 255, 0.95); }
+.floating-level-controls.collapsed .floating-level-content { display: none; }
 
-/* 浮動層級控制收縮狀態 */
-.floating-level-controls.collapsed {
-    padding: 8px;
-    max-width: 50px;
-    background: rgba(255, 255, 255, 0.95);
-}
-
-.floating-level-controls.collapsed .floating-level-content {
-    display: none;
-}
-
-/* 浮動層級控制展開/收縮按鈕 */
 .floating-level-toggle {
-  position: absolute;
-  top: -12px; /* 向上移動到容器外部，避免遮擋"层级"文字 */
-  right: 8px;
-  width: 24px;
-  height: 24px;
-  border: 1px solid #ff69b4;
-  background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
-  color: #d63384;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1001;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15); /* 添加阴影增强可见性 */
-}
-
-.floating-level-toggle:hover {
-    background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%);
-    transform: scale(1.1);
-    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
-}
-
-/* 收縮狀態時的切換按鈕位置調整 */
-.floating-level-controls.collapsed .floating-level-toggle {
-  position: relative;
-  top: auto;
-  right: auto;
-  margin: 0 auto;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* 保持阴影效果 */
-}
-
-.floating-level-label {
-    font-size: 11px;
-    color: #d63384;
-    font-weight: 500;
-    text-align: center;
-    margin-bottom: 8px;
-    white-space: nowrap;
-}
-
-.floating-level-buttons {
+    position: absolute;
+    top: -12px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--color-primary-light);
+    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+    color: var(--color-primary-deep);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
     display: flex;
-    flex-direction: column;
-    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
+.floating-level-toggle:hover { background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%); transform: scale(1.1); box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3); }
+.floating-level-controls.collapsed .floating-level-toggle { position: relative; top: auto; right: auto; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+
+.floating-level-label { font-size: 11px; color: var(--color-primary-deep); font-weight: 500; text-align: center; margin-bottom: 8px; white-space: nowrap; }
+.floating-level-buttons { display: flex; flex-direction: column; gap: 6px; }
 
 .floating-level-btn {
     width: 28px;
     height: 28px;
-    border: 2px solid #ff69b4;
+    border: 2px solid var(--color-primary-light);
     background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
-    color: #d63384;
+    color: var(--color-primary-deep);
     border-radius: 50%;
     font-size: 12px;
     font-weight: 600;
@@ -2106,45 +1414,16 @@ body.dark-mode .search-load-all:hover {
     align-items: center;
     justify-content: center;
 }
+.floating-level-btn:hover { background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%); transform: scale(1.1); box-shadow: 0 3px 12px rgba(255, 105, 180, 0.4); }
+.floating-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; box-shadow: 0 3px 12px rgba(255, 105, 180, 0.6); }
+.floating-level-btn.active:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(255, 105, 180, 0.7); }
 
-.floating-level-btn:hover {
-    background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%);
-    transform: scale(1.1);
-    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.4);
-}
+/* ---- TOC 列表基礎 -------------------------------------- */
+#main-toc ul { list-style: none; padding-left: 30px; margin: 0; }
+#chapter-toc ul { list-style: none; padding-left: 15px; margin: 0; }
+.toc li { list-style: none; margin: 4px 0; }
 
-.floating-level-btn.active {
-    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
-    color: white;
-    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.6);
-}
-
-.floating-level-btn.active:hover {
-    transform: scale(1.1);
-    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.7);
-}
-
-/* 隐藏list默认bullet点 */
-/* 首页目录 - 保持原始padding确保展开图标正常显示 */
-#main-toc ul {
-    list-style: none;
-    padding-left: 30px;
-    margin: 0;
-}
-
-/* 章节页目录 - 减少padding让内容更靠左 */
-#chapter-toc ul {
-    list-style: none;
-    padding-left: 15px;
-    margin: 0;
-}
-
-.toc li {
-    list-style: none;
-    margin: 4px 0;
-}
-
-/* 目录展开/折叠图标 */
+/* ---- 展開/收縮圖標 ------------------------------------- */
 .toc-expand-icon {
     display: inline-block;
     width: 16px;
@@ -2152,632 +1431,129 @@ body.dark-mode .search-load-all:hover {
     cursor: pointer;
     user-select: none;
     margin-right: 6px;
-    margin-left: -22px; /* 精确调整负边距 */
+    margin-left: -22px;
     transition: transform 0.3s ease;
-    color: #ff69b4;
+    color: var(--color-primary-light);
     font-size: 12px;
     position: relative;
 }
-
-.toc-expand-icon:hover {
-    color: #d63384;
-    transform: scale(1.2);
-}
-
-.toc-expand-icon.collapsed {
-    transform: rotate(-90deg);
-}
-
-.toc-expand-icon.collapsed:hover {
-    transform: rotate(-90deg) scale(1.2);
-}
-
-/* 首页目录展开图标位置 - 保持原始位置确保正常显示 */
-#main-toc .toc-item.toc-level-2 .toc-expand-icon {
-  left: 42px; /* 第2層，配合首页的 margin-left: 40px */
-}
-
-#main-toc .toc-item.toc-level-3 .toc-expand-icon {
-  left: 62px; /* 第3層，配合首页的 margin-left: 60px */
-}
-
-#main-toc .toc-item.toc-level-4 .toc-expand-icon {
-  left: 82px; /* 第4層，配合首页的 margin-left: 80px */
-}
-
-/* 章节页目录展开图标位置 - 调整以配合更靠左的布局 */
-#chapter-toc .toc-item.toc-level-2 .toc-expand-icon {
-  left: 12px; /* 第2層，配合章节页的 margin-left: 10px */
-}
-
-#chapter-toc .toc-item.toc-level-3 .toc-expand-icon {
-  left: 32px; /* 第3層，配合章节页的 margin-left: 30px */
-}
-
-#chapter-toc .toc-item.toc-level-4 .toc-expand-icon {
-  left: 52px; /* 第4層，配合章节页的 margin-left: 50px */
-}
-
-/* 目录项样式 */
-.toc-item {
-    position: relative;
-    /* 只對背景色和邊框進行動畫，避免展開/收縮時的閃爍 */
-    transition: background-color 0.2s ease, border-radius 0.2s ease;
-}
-
-/* 为有展开图标的目录项添加可点击样式和稳定的内边距 */
-.toc-item.toc-expandable {
-    cursor: pointer;
-    padding: 2px 4px;
-    margin: 0 -4px;
-}
-
-/* 鼠标悬停效果 - 为有展开图标的目录项添加反白效果 */
-.toc-item.toc-expandable:hover {
-    background-color: rgba(255, 105, 180, 0.08);
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-/* 确保链接在悬停时仍然显示为可点击 */
-.toc-item.toc-expandable:hover a {
-    position: relative;
-    z-index: 1;
-}
-
-/* 暗色模式下的悬停效果 */
-body.dark-mode .toc-item.toc-expandable:hover {
-    background-color: rgba(255, 105, 180, 0.15);
-}
-
-/* 为没有展开图标的目录项（叶子节点）添加可点击样式 */
-.toc-item:not(.toc-expandable) {
-    display: flex;
-    cursor: pointer;
-    padding: 2px 4px;
-    margin: 0 -4px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-/* 鼠标悬停效果 - 为没有展开图标的目录项添加反白效果 */
-.toc-item:not(.toc-expandable):hover {
-    background-color: rgba(255, 105, 180, 0.06);
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-}
-
-/* 确保链接在悬停时仍然显示为可点击 */
-.toc-item:not(.toc-expandable):hover a {
-    position: relative;
-    z-index: 1;
-    text-decoration: none;
-}
-
-/* 暗色模式下没有展开图标目录项的悬停效果 */
-body.dark-mode .toc-item:not(.toc-expandable):hover {
-    background-color: rgba(255, 105, 180, 0.12);
-}
-
-.toc-item.hidden {
-    display: none !important;
-}
-
-.toc-item a {
-    display: inline-block;
-    transition: all 0.2s ease;
-}
-
-/* 目录层级样式 */
-.toc-level-1 > .toc-item {
-    margin-bottom: 8px;
-}
-
-/* 首页目录层级样式 - 保持原始间距确保展开图标正常显示 */
-#main-toc .toc-item.toc-level-1 > a {
-  font-weight: 600;
-  color: #d63384;
-  font-size: 16px;
-  margin-left: 20px; /* 为展开图标预留空间 */
-}
-
-#main-toc .toc-item.toc-level-2 > a {
-  font-weight: 500;
-  color: #e85aad;
-  font-size: 15px;
-  margin-left: 40px; /* 保持原始间距 */
-}
-
-#main-toc .toc-item.toc-level-3 > a {
-  font-weight: 400;
-  color: #f06bbf;
-  font-size: 14px;
-  margin-left: 60px; /* 保持原始间距 */
-}
-
-#main-toc .toc-item.toc-level-4 > a {
-  font-weight: 400;
-  color: #f585cc;
-  font-size: 13px;
-  margin-left: 80px; /* 保持原始间距 */
-}
-
-/* 目录计数样式 */
-.toc-count {
-  color: #555555; /* 灰色 */
-  font-weight: 300; /* 更细的字体 */
-  font-size: 0.85em; /* 稍小的字体 */
-  margin-left: 6px; /* 与标题保持一定距离 */
-  pointer-events: none; /* 不可点击 */
-  user-select: none; /* 不可选择 */
-  opacity: 0.7; /* 半透明效果 */
-}
-
-/* 暗色模式下的计数样式 */
-body.dark-mode .toc-count {
-  color: #999999; /* 暗色模式下亮一些 */
-  opacity: 0.8; /* 暗色模式下稍微明显一些 */
-}
-
-/* 章节标题问答数量样式 */
-.chapter-qa-count {
-  color: #555555; /* 与目录计数相同的灰色 */
-  font-weight: 300; /* 更细的字体 */
-  font-size: 0.85em; /* 稍小的字体 */
-  margin-left: 6px; /* 与标题保持一定距离 */
-  pointer-events: none; /* 不可点击 */
-  user-select: none; /* 不可选择 */
-  opacity: 0.7; /* 半透明效果 */
-}
-
-/* 暗色模式下的章节标题问答数量样式 */
-body.dark-mode .chapter-qa-count {
-  color: #999999; /* 暗色模式下亮一些 */
-  opacity: 0.8; /* 暗色模式下稍微明显一些 */
-}
-
-/* 章节页目录层级样式 - 减少间距让内容更靠左 */
-#chapter-toc .toc-item.toc-level-1 > a {
-  font-weight: 600;
-  color: #d63384;
-  font-size: 16px;
-  margin-left: 20px; /* 为展开图标预留空间 */
-}
-
-#chapter-toc .toc-item.toc-level-2 > a {
-  font-weight: 500;
-  color: #e85aad;
-  font-size: 15px;
-  margin-left: 10px; /* 章节页更靠左 */
-}
-
-#chapter-toc .toc-item.toc-level-3 > a {
-  font-weight: 400;
-  color: #f06bbf;
-  font-size: 14px;
-  margin-left: 30px; /* 章节页更靠左 */
-}
-
-#chapter-toc .toc-item.toc-level-4 > a {
-  font-weight: 400;
-  color: #f585cc;
-  font-size: 13px;
-  margin-left: 50px; /* 章节页更靠左 */
-}
-
-/* 章节项特殊样式 */
-.toc-item.toc-chapter {
-    margin-bottom: 12px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid #ffc4dd;
-}
-
-.toc-item.toc-chapter > a:hover {
-    color: #c1327a;
-}
-
-/* 折叠动画 */
-.toc-collapsible {
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-}
-
-.toc-collapsible.collapsed {
-    max-height: 0;
-}
-
-.toc-collapsible.expanded {
-    max-height: 1000px; /* 足够大的值 */
-}
-
-/* 暗色模式适配 */
-body.dark-mode .toc-header-container h2 {
-    color: #ff91af; /* 暗色模式下的标题颜色 */
-}
-
-body.dark-mode .toc-level-label {
-    color: #ff91af;
-}
-
-body.dark-mode .toc-level-btn {
-    border-color: #ff69b4;
-    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
-    color: #ff91af;
-}
-
-body.dark-mode .toc-level-btn:hover {
-    background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
-}
-
-body.dark-mode .toc-level-btn.active {
-    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
-    color: white;
-}
-
-/* 浮动控制暗色模式 */
-body.dark-mode .floating-level-controls {
-    background: rgba(40, 40, 40, 0.95);
-    border-color: rgba(255, 105, 180, 0.3);
-}
-
-body.dark-mode .floating-level-label {
-    color: #ff91af;
-}
-
-body.dark-mode .floating-level-btn {
-    border-color: #ff69b4;
-    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
-    color: #ff91af;
-}
-
-body.dark-mode .floating-level-btn:hover {
-    background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
-}
-
-body.dark-mode .floating-level-btn.active {
-    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
-    color: white;
-}
-
-/* 浮動層級切換按鈕暗色模式 */
-body.dark-mode .floating-level-toggle {
-    border-color: #ff69b4;
-    background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%);
-    color: #ff91af;
-}
-
-body.dark-mode .floating-level-toggle:hover {
-  background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%);
-  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4);
-}
-
-body.dark-mode .floating-level-toggle {
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* 暗色模式下的阴影 */
-}
-
-body.dark-mode .toc-expand-icon {
-    color: #ff91af;
-}
-
-body.dark-mode .toc-expand-icon:hover {
-    color: #ff69b4;
-}
-
-body.dark-mode .toc-item.toc-level-1 > a {
-    color: #ff91af;
-}
-
-body.dark-mode .toc-item.toc-level-2 > a {
-    color: #ffb3c6;
-}
-
-body.dark-mode .toc-item.toc-level-3 > a {
-    color: #ffc4d6;
-}
-
-body.dark-mode .toc-item.toc-level-4 > a {
-    color: #ffd1e0;
-}
-
-body.dark-mode .toc-item.toc-chapter {
-    border-bottom-color: #444;
-}
-
-/* 章節頁面目錄夜間模式適配 - 提高優先級 */
-body.dark-mode .toc > ul > li > a {
-    color: #ff91af !important; /* 與側邊欄第1層相同 */
-}
-
-body.dark-mode .toc ul ul > li > a {
-    color: #ffb3c6 !important; /* 與側邊欄第2層相同 */
-}
-
-body.dark-mode .toc ul ul ul > li > a {
-    color: #ffc4d6 !important; /* 與側邊欄第3層相同 */
-}
-
-body.dark-mode .toc ul ul ul ul > li > a {
-    color: #ffd1e0 !important; /* 第4層顏色 */
-}
-
-/* 暗色模式下浮动TOC适配 */
-body.dark-mode .floating-toc {
-    background: rgba(40, 40, 40, 0.95);
-    border-color: rgba(255, 105, 180, 0.3);
-}
-
-body.dark-mode .floating-toc-header {
-    background: rgba(40, 40, 40, 0.95);
-    border-bottom-color: #444;
-    color: #ff91af;
-}
-
-body.dark-mode .floating-toc-content {
-    background: transparent;
-}
-
-body.dark-mode .floating-toc-item {
-    color: #ff91af; /* 統一使用主頁面目錄的第1層顏色 */
-}
-
-body.dark-mode .floating-toc-item.level-h3 {
-    color: #ffb3c6; /* 統一使用主頁面目錄的第2層顏色 */
-}
-
-body.dark-mode .floating-toc-item.level-h4 {
-    color: #ffd1e0; /* 統一使用主頁面目錄的第4層顏色 */
-}
-
-body.dark-mode .floating-toc-item.level-h5 {
-    color: #ffd1e0; /* 統一使用主頁面目錄的第4層顏色 */
-}
-
-body.dark-mode .floating-toc-item:hover {
-    background: rgba(255, 105, 180, 0.2);
-}
-
-body.dark-mode .floating-toc-item.active {
-    background: rgba(255, 105, 180, 0.3);
-    color: #ff69b4;
-}
-
-body.dark-mode .bookmark-item {
-    background: rgba(60, 60, 60, 0.5);
-    border-color: #555;
-    color: #ff91af; /* 與首頁書籤粉色一致 */
-}
-
-body.dark-mode .bookmark-item:hover {
-    background: rgba(255, 105, 180, 0.15);
-    border-color: #ff69b4;
-}
-
-/* 夜間模式下書籤文字內容修正 */
-body.dark-mode .bookmark-preview {
-    color: #ff91af; /* 與首頁書籤粉色一致 */
-}
-
-body.dark-mode .bookmark-meta {
-    color: #ccc; /* 稍微淺一點的灰色，確保元資訊可讀性 */
-}
-
-body.dark-mode .bookmark-questioner {
-    color: #ff69b4; /* 與章節標題顏色一致 */
-}
-
-body.dark-mode .bookmark-time {
-    color: #a99; /* 更柔和的粉紅灰色 */
-    opacity: 0.7; /* 夜間模式下更低調 */
-}
-
-/* 响应式浮动层级控制定位 */
-
-/* 宽屏幕优化：将浮动层级控制按钮靠近内容区域并垂直置中 */
-@media (min-width: 800px) {
-  .floating-level-controls {
-    /* 在宽屏幕下，将按钮定位到内容区域右侧，避免用户鼠标移动距离过远 */
-    right: auto;
-    left: calc(75%); /* 屏幕中心偏右 */
-    /* 实现垂直置中 */
-    bottom: auto; /* 移除bottom定位 */
-    top: 50%; /* 垂直置中起点 */
-    transform: translateY(-50%); /* 完成垂直置中 */
-  }
-}
-
-/* 移动端优化觸摸體驗 */
-@media (max-width: 600px) {
-  .floating-level-controls {
-    /* 在移动端调整到右下角，避免与其他UI元素冲突 */
-    right: 15px;
-    top: auto;
-    bottom: 130px; /* 放置在操作按钮上方，与桌面端保持相对位置一致 */
-    padding: 15px 10px; /* 增加padding讓觸摸更容易 */
-    max-width: 100px; 
-    z-index: 950 !important; /* 保持与桌面版一致的层级关系 */
-    background: rgba(255, 255, 255, 0.95); /* 提高背景不透明度 */
-    border: 2px solid rgba(255, 105, 180, 0.6); /* 增强边框 */
-    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2); /* 增强陰影 */
-  }
-    
-    .floating-level-label {
-        font-size: 12px; /* 增大字體便於閱讀 */
-        margin-bottom: 8px;
-        font-weight: bold;
-    }
-    
-    .floating-level-btn {
-        width: 32px; /* 增大按鈕尺寸便於觸摸 */
-        height: 32px;
-        font-size: 13px;
-        margin: 3px 0; /* 增加間距 */
-    }
-    
-    /* 手機端浮動層級切換按鈕優化 */
-    .floating-level-toggle {
-        width: 28px !important;
-        height: 28px !important;
-        font-size: 14px !important;
-        border-width: 2px !important;
-    }
-    
-    /* 手機端基礎字型大小調整 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    body {
-        line-height: 1.8;
-    }
-    
-    /* 手機端字體控制按鈕優化 */
-    .toolbar-controls {
-        gap: 12px; /* 手機端增加最多間距以防誤觸 */
-    }
-    
-    .ctrl-btn.font-option {
-        padding: 10px 20px; /* 手機端增加最多padding便於觸摸 */
-        min-width: 60px;
-        font-size: 13px; /* 稍微增大字體便於閱讀 */
-    }
-    
-    /* 手機端TOC目錄字型優化 - 移除 !important 讓JavaScript動態調整生效 */
-    .toc > ul > li { 
-        margin-bottom: 12px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul > li { 
-        margin-bottom: 10px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul ul > li { 
-        margin-bottom: 8px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul ul ul > li { 
-        margin-bottom: 6px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    /* 手機端章節頁TOC優化 - 移除 !important 讓JavaScript動態調整生效 */
-    /* 字體大小和行距由JavaScript動態設置，保留以下空選擇器作為CSS結構標記 */
-    
-    /* 手機端標題字型調整 */
-    h1 { font-size: 28px !important; line-height: 1.3; }
-    h2 { font-size: 24px !important; line-height: 1.4; }
-    h3 { font-size: 22px !important; line-height: 1.4; }
-    h4 { font-size: 20px !important; line-height: 1.4; }
-    
-    /* 手機端按鈕優化 */
-    .toc-level-btn, .floating-level-btn {
-        font-size: 16px !important;
-        min-width: 38px;
-        min-height: 38px;
-    }
-    
-    .toc-level-label {
-        font-size: 16px !important;
-    }
-}
-
-/* 小手機螢幕進一步優化 */
-@media (max-width: 400px) {
-  .floating-level-controls {
-    right: 10px; /* 进一步靠近边缘 */
-    bottom: 125px; /* 与桌面端和移动端保持相对位置一致 */
-    padding: 18px 12px; /* 更大的觸摸區域 */
-    max-width: 110px;
-    z-index: 950 !important; /* 保持与其他设备一致的层级关系 */
-    background: rgba(255, 255, 255, 0.98) !important;
-    border: 3px solid rgba(255, 105, 180, 0.8) !important; /* 更明顯的邊框 */
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
-  }
-    
-    .floating-level-label {
-        font-size: 13px !important; /* 更大的標籤字體 */
-        margin-bottom: 10px !important;
-        font-weight: bold !important;
-        color: #d63384 !important;
-    }
-    
-    .floating-level-btn {
-        width: 36px !important; /* 更大的按鈕 */
-        height: 36px !important;
-        font-size: 14px !important;
-        margin: 4px 0 !important;
-        border-width: 3px !important; /* 更粗的邊框 */
-    }
-    
-    /* 小手機端浮動層級切換按鈕進一步優化 */
-    .floating-level-toggle {
-        width: 32px !important;
-        height: 32px !important;
-        font-size: 16px !important;
-        border-width: 3px !important;
-    }
-    
-    /* 小手機端進一步文字優化 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    body {
-        line-height: 1.9;
-    }
-    
-    /* 小手機端TOC目錄字型最大化優化 - 移除 !important 讓JavaScript動態調整生效 */
-    .toc > ul > li { 
-        /* 字體大小和行距由JavaScript動態設置 */
-        margin-bottom: 14px;
-    }
-    
-    .toc ul ul > li { 
-        /* 字體大小和行距由JavaScript動態設置 */
-        margin-bottom: 12px;
-    }
-    
-    .toc ul ul ul > li { 
-        /* 字體大小和行距由JavaScript動態設置 */
-        margin-bottom: 10px;
-    }
-    
-    .toc ul ul ul ul > li { 
-        /* 字體大小和行距由JavaScript動態設置 */
-        margin-bottom: 8px;
-    }
-    
-    /* 小手機端章節頁TOC最大化優化 - 移除 !important 讓JavaScript動態調整生效 */
-    /* 字體大小和行距由JavaScript動態設置，保留以下空選擇器作為CSS結構標記 */
-    
-    /* 小手機端標題字型最大化調整 */
-    h1 { font-size: 30px !important; line-height: 1.3; }
-    h2 { font-size: 26px !important; line-height: 1.4; }
-    h3 { font-size: 24px !important; line-height: 1.4; }
-    h4 { font-size: 22px !important; line-height: 1.4; }
-    
-    /* 小手機端按鈕進一步優化 */
-    .toc-level-btn, .floating-level-btn {
-        font-size: 17px !important;
-        min-width: 40px !important;
-        min-height: 40px !important;
-    }
-    
-    .toc-level-label {
-        font-size: 17px !important;
-    }
-    
-    /* 小手機端導航和其他元素 */
-    .nav-footer a {
-        font-size: 17px !important;
-        padding: 12px 16px !important;
-    }
-    
-    .nav-home a, .lang-switch a {
-        font-size: 1.1em !important;
-    }
-    
-    .top-nav-buttons a {
-        font-size: 17px !important;
-    }
-}
-
+.toc-expand-icon:hover { color: var(--color-primary-deep); transform: scale(1.2); }
+.toc-expand-icon.collapsed { transform: rotate(-90deg); }
+.toc-expand-icon.collapsed:hover { transform: rotate(-90deg) scale(1.2); }
+
+/* 首頁目錄展開圖標位置 */
+#main-toc .toc-item.toc-level-2 .toc-expand-icon { left: 42px; }
+#main-toc .toc-item.toc-level-3 .toc-expand-icon { left: 62px; }
+#main-toc .toc-item.toc-level-4 .toc-expand-icon { left: 82px; }
+
+/* 章節頁目錄展開圖標位置 */
+#chapter-toc .toc-item.toc-level-2 .toc-expand-icon { left: 12px; }
+#chapter-toc .toc-item.toc-level-3 .toc-expand-icon { left: 32px; }
+#chapter-toc .toc-item.toc-level-4 .toc-expand-icon { left: 52px; }
+
+/* ---- TOC 項目行為 --------------------------------------- */
+.toc-item { position: relative; transition: background-color 0.2s ease, border-radius 0.2s ease; }
+.toc-item.toc-expandable { cursor: pointer; padding: 2px 4px; margin: 0 -4px; }
+.toc-item.toc-expandable:hover { background-color: rgba(255, 105, 180, 0.08); border-radius: 4px; transition: background-color 0.2s ease; }
+.toc-item.toc-expandable:hover a { position: relative; z-index: 1; }
+.toc-item:not(.toc-expandable) { display: flex; cursor: pointer; padding: 2px 4px; margin: 0 -4px; border-radius: 4px; transition: all 0.2s ease; }
+.toc-item:not(.toc-expandable):hover { background-color: rgba(255, 105, 180, 0.06); border-radius: 4px; transition: background-color 0.2s ease; }
+.toc-item:not(.toc-expandable):hover a { position: relative; z-index: 1; text-decoration: none; }
+.toc-item.hidden { display: none !important; }
+.toc-item a { display: inline-block; transition: all 0.2s ease; }
+
+/* ---- TOC 層級樣式 --------------------------------------- */
+.toc-level-1 > .toc-item { margin-bottom: 8px; }
+
+/* 首頁目錄 */
+#main-toc .toc-item.toc-level-1 > a { font-weight: 600; color: var(--color-primary-deep); font-size: 16px; margin-left: 20px; }
+#main-toc .toc-item.toc-level-2 > a { font-weight: 500; color: var(--color-h3); font-size: 15px; margin-left: 40px; }
+#main-toc .toc-item.toc-level-3 > a { font-weight: 400; color: #f06bbf; font-size: 14px; margin-left: 60px; }
+#main-toc .toc-item.toc-level-4 > a { font-weight: 400; color: var(--color-h4); font-size: 13px; margin-left: 80px; }
+
+/* 章節頁目錄 */
+#chapter-toc .toc-item.toc-level-1 > a { font-weight: 600; color: var(--color-primary-deep); font-size: 16px; margin-left: 20px; }
+#chapter-toc .toc-item.toc-level-2 > a { font-weight: 500; color: var(--color-h3); font-size: 15px; margin-left: 10px; }
+#chapter-toc .toc-item.toc-level-3 > a { font-weight: 400; color: #f06bbf; font-size: 14px; margin-left: 30px; }
+#chapter-toc .toc-item.toc-level-4 > a { font-weight: 400; color: var(--color-h4); font-size: 13px; margin-left: 50px; }
+
+/* ---- 計數標記 ------------------------------------------ */
+.toc-count { color: #555; font-weight: 300; font-size: 0.85em; margin-left: 6px; pointer-events: none; user-select: none; opacity: 0.7; }
+.chapter-qa-count { color: #555; font-weight: 300; font-size: 0.85em; margin-left: 6px; pointer-events: none; user-select: none; opacity: 0.7; }
+
+/* ---- 特殊章節項 ----------------------------------------- */
+.toc-item.toc-chapter { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #ffc4dd; }
+.toc-item.toc-chapter > a:hover { color: #c1327a; }
+
+/* ---- 折疊動畫 ------------------------------------------- */
+.toc-collapsible { overflow: hidden; transition: max-height 0.3s ease-out; }
+.toc-collapsible.collapsed { max-height: 0; }
+.toc-collapsible.expanded { max-height: 1000px; }
+/* ============================================================
+   04b-toc-dark.css — 目錄相關元素的暗色模式適配
+   ============================================================ */
+
+/* ---- 目錄層級控制 --------------------------------------- */
+body.dark-mode .toc-header-container h2 { color: #ff91af; }
+body.dark-mode .toc-level-label { color: #ff91af; }
+body.dark-mode .toc-level-btn { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: #ff91af; }
+body.dark-mode .toc-level-btn:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); }
+body.dark-mode .toc-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; }
+
+/* ---- 浮動層級控制 --------------------------------------- */
+body.dark-mode .floating-level-controls { background: rgba(40, 40, 40, 0.95); border-color: rgba(255, 105, 180, 0.3); }
+body.dark-mode .floating-level-label { color: #ff91af; }
+body.dark-mode .floating-level-btn { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: #ff91af; }
+body.dark-mode .floating-level-btn:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); }
+body.dark-mode .floating-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; }
+body.dark-mode .floating-level-toggle { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: #ff91af; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+body.dark-mode .floating-level-toggle:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); box-shadow: 0 2px 8px rgba(255, 105, 180, 0.4); }
+
+/* ---- 展開圖標 ------------------------------------------ */
+body.dark-mode .toc-expand-icon { color: #ff91af; }
+body.dark-mode .toc-expand-icon:hover { color: var(--color-primary-light); }
+
+/* ---- TOC 項目懸停 --------------------------------------- */
+body.dark-mode .toc-item.toc-expandable:hover { background-color: rgba(255, 105, 180, 0.15); }
+body.dark-mode .toc-item:not(.toc-expandable):hover { background-color: rgba(255, 105, 180, 0.12); }
+
+/* ---- TOC 層級鏈接顏色 ---------------------------------- */
+body.dark-mode .toc-item.toc-level-1 > a { color: #ff91af; }
+body.dark-mode .toc-item.toc-level-2 > a { color: #ffb3c6; }
+body.dark-mode .toc-item.toc-level-3 > a { color: #ffc4d6; }
+body.dark-mode .toc-item.toc-level-4 > a { color: #ffd1e0; }
+
+/* 章節頁面目錄（提高優先級，使用 ul 結構選擇器）*/
+body.dark-mode .toc > ul > li > a { color: #ff91af !important; }
+body.dark-mode .toc ul ul > li > a { color: #ffb3c6 !important; }
+body.dark-mode .toc ul ul ul > li > a { color: #ffc4d6 !important; }
+body.dark-mode .toc ul ul ul ul > li > a { color: #ffd1e0 !important; }
+
+/* ---- 章節特殊項 ----------------------------------------- */
+body.dark-mode .toc-item.toc-chapter { border-bottom-color: #444; }
+
+/* ---- 計數標記 ------------------------------------------ */
+body.dark-mode .toc-count { color: #999; opacity: 0.8; }
+body.dark-mode .chapter-qa-count { color: #999; opacity: 0.8; }
+
+/* ---- 浮動 TOC 面板 ------------------------------------- */
+body.dark-mode .floating-toc { background: rgba(40, 40, 40, 0.95); border-color: rgba(255, 105, 180, 0.3); }
+body.dark-mode .floating-toc-header { background: rgba(40, 40, 40, 0.95); border-bottom-color: #444; color: #ff91af; }
+body.dark-mode .floating-toc-content { background: transparent; }
+body.dark-mode .floating-toc-item { color: #ff91af; }
+body.dark-mode .floating-toc-item.level-h3 { color: #ffb3c6; }
+body.dark-mode .floating-toc-item.level-h4 { color: #ffd1e0; }
+body.dark-mode .floating-toc-item.level-h5 { color: #ffd1e0; }
+body.dark-mode .floating-toc-item:hover { background: rgba(255, 105, 180, 0.2); }
+body.dark-mode .floating-toc-item.active { background: rgba(255, 105, 180, 0.3); color: var(--color-primary-light); }
+
+/* ---- 書籤相關（TOC 面板內）----------------------------- */
+body.dark-mode .bookmark-item { background: rgba(60, 60, 60, 0.5); border-color: #555; color: #ff91af; }
+body.dark-mode .bookmark-item:hover { background: rgba(255, 105, 180, 0.15); border-color: var(--color-primary-light); }
+body.dark-mode .bookmark-preview { color: #ff91af; }
+body.dark-mode .bookmark-meta { color: #ccc; }
+body.dark-mode .bookmark-questioner { color: var(--color-primary-light); }
+body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
 /* ========== 屏幕高度优化 ========== */
 
 /* 当屏幕高度充足时，让閱讀設置工具栏底部靠近右下角操作菜单 */
@@ -2841,5 +1617,135 @@ p.source-filename:hover {
     font-size: 10px;
     margin: 3px 0 10px 0;
   }
+}
+
+/* ============================================================
+   搜尋 & 目錄 — 平板（≤768px）
+   ============================================================ */
+@media (max-width: 768px) {
+    .search-activate-btn { padding: 12px 24px; font-size: 14px; }
+    .search-activate-hint { font-size: 11px; }
+    .search-container { margin: 20px 0; padding: 15px; }
+    #search-input { font-size: 16px; }
+    .search-results-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .search-results-actions { width: 100%; justify-content: flex-start; }
+    .search-clear, .search-collapse, .search-load-more, .search-load-all { font-size: 11px; padding: 5px 10px; }
+    .search-result-item { padding: 12px; }
+    .search-result-title { align-items: flex-start; gap: 4px; }
+
+    body { line-height: 1.7; }
+
+    .toolbar-controls { gap: 10px; }
+    .ctrl-btn.font-option { padding: 8px 18px; min-width: 55px; }
+
+    .toc > ul > li { margin-bottom: 10px; }
+    .toc ul ul > li { margin-bottom: 8px; }
+    .toc ul ul ul > li { margin-bottom: 6px; }
+    .toc ul ul ul ul > li { margin-bottom: 5px; }
+
+    .toc-item.toc-level-1 > a { position: relative; }
+    .toc-item.toc-level-2 > a { position: relative; }
+    .toc-item.toc-level-3 > a { position: relative; }
+    .toc-item.toc-level-4 > a { position: relative; }
+
+    h1 { font-size: 26px !important; line-height: 1.3; }
+    h2 { font-size: 22px !important; line-height: 1.4; }
+    h3 { font-size: 20px !important; line-height: 1.4; }
+    h4 { font-size: 18px !important; line-height: 1.4; }
+
+    .toc-level-btn, .floating-level-btn { font-size: 15px !important; min-width: 35px; min-height: 35px; }
+    .toc-level-label { font-size: 15px !important; }
+
+    .nav-footer a { font-size: 16px !important; padding: 10px 14px !important; }
+    .nav-home a { font-size: 1.0em !important; }
+    .lang-switch a { font-size: 1.0em !important; }
+    .top-nav-buttons a { font-size: 16px !important; }
+}
+
+/* ============================================================
+   浮動層級控制 — 寬屏（≥800px）垂直置中
+   ============================================================ */
+@media (min-width: 800px) {
+  .floating-level-controls {
+    right: auto;
+    left: calc(75%);
+    bottom: auto;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+/* ============================================================
+   手機（≤600px）
+   ============================================================ */
+@media (max-width: 600px) {
+  .floating-level-controls {
+    right: 15px;
+    top: auto;
+    bottom: 130px;
+    padding: 15px 10px;
+    max-width: 100px;
+    z-index: 950 !important;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid rgba(255, 105, 180, 0.6);
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.2);
+  }
+  .floating-level-label { font-size: 12px; margin-bottom: 8px; font-weight: bold; }
+  .floating-level-btn { width: 32px; height: 32px; font-size: 13px; margin: 3px 0; }
+  .floating-level-toggle { width: 28px !important; height: 28px !important; font-size: 14px !important; border-width: 2px !important; }
+
+  body { line-height: 1.8; }
+  .toolbar-controls { gap: 12px; }
+  .ctrl-btn.font-option { padding: 10px 20px; min-width: 60px; font-size: 13px; }
+
+  .toc > ul > li { margin-bottom: 12px; }
+  .toc ul ul > li { margin-bottom: 10px; }
+  .toc ul ul ul > li { margin-bottom: 8px; }
+  .toc ul ul ul ul > li { margin-bottom: 6px; }
+
+  h1 { font-size: 28px !important; line-height: 1.3; }
+  h2 { font-size: 24px !important; line-height: 1.4; }
+  h3 { font-size: 22px !important; line-height: 1.4; }
+  h4 { font-size: 20px !important; line-height: 1.4; }
+
+  .toc-level-btn, .floating-level-btn { font-size: 16px !important; min-width: 38px; min-height: 38px; }
+  .toc-level-label { font-size: 16px !important; }
+}
+
+/* ============================================================
+   小手機（≤400px）
+   ============================================================ */
+@media (max-width: 400px) {
+  .floating-level-controls {
+    right: 10px;
+    bottom: 125px;
+    padding: 18px 12px;
+    max-width: 110px;
+    z-index: 950 !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    border: 3px solid rgba(255, 105, 180, 0.8) !important;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+  }
+  .floating-level-label { font-size: 13px !important; margin-bottom: 10px !important; font-weight: bold !important; color: var(--color-primary-deep) !important; }
+  .floating-level-btn { width: 36px !important; height: 36px !important; font-size: 14px !important; margin: 4px 0 !important; border-width: 3px !important; }
+  .floating-level-toggle { width: 32px !important; height: 32px !important; font-size: 16px !important; border-width: 3px !important; }
+
+  body { line-height: 1.9; }
+  .toc > ul > li { margin-bottom: 14px; }
+  .toc ul ul > li { margin-bottom: 12px; }
+  .toc ul ul ul > li { margin-bottom: 10px; }
+  .toc ul ul ul ul > li { margin-bottom: 8px; }
+
+  h1 { font-size: 30px !important; line-height: 1.3; }
+  h2 { font-size: 26px !important; line-height: 1.4; }
+  h3 { font-size: 24px !important; line-height: 1.4; }
+  h4 { font-size: 22px !important; line-height: 1.4; }
+
+  .toc-level-btn, .floating-level-btn { font-size: 17px !important; min-width: 40px !important; min-height: 40px !important; }
+  .toc-level-label { font-size: 17px !important; }
+
+  .nav-footer a { font-size: 17px !important; padding: 12px 16px !important; }
+  .nav-home a, .lang-switch a { font-size: 1.1em !important; }
+  .top-nav-buttons a { font-size: 17px !important; }
 }
 

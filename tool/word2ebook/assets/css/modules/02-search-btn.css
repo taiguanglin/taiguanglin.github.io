@@ -5,7 +5,7 @@
 }
 
 .search-activate-btn {
-    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    background: var(--gradient-primary);
     color: white;
     border: none;
     padding: 10px 30px;
@@ -22,7 +22,7 @@
 .search-activate-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
-    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
 }
 
 .search-activate-btn:active {

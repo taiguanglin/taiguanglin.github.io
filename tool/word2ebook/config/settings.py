@@ -123,3 +123,15 @@ class Constants:
         'answer': 2.0,
         'content': 1.0
     }
+
+    # 问答作者相关
+    ANSWERER_RAW_NAME = "Taiguanglin"        # 文档中出现的原始名称
+    ANSWERER_DISPLAY_NAME = "Tai師父"        # 渲染到 HTML 时使用的显示名称
+    ANSWERER_REGEX = r'^(Taiguanglin|taiguanglin)[:：]\s*(.*)'  # 识别答复者的正则
+
+    # 内容默认值
+    DEFAULT_QUESTION_TITLE = "問題"          # 无法提取标题时的回退标题
+
+    # HTML 标题层级范围（TOC 识别和 QA 计数使用的 h 标签范围）
+    TOC_MIN_HEADING_LEVEL = 2
+    TOC_MAX_HEADING_LEVEL = 4

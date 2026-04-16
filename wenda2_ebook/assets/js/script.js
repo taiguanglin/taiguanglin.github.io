@@ -1,45 +1,72 @@
 document.addEventListener('DOMContentLoaded', function() {
-  // ============ 基本設置 ============
-  
-  // 暗色模式初始化
-  if(localStorage.getItem('darkMode') === 'true') {
-    document.body.classList.add('dark-mode');
-  }
+// ============================================================
+// 00-base.js — 全局命名空间、页面类型检测、暗色模式初始化
+//
+// 规则：所有跨模块共享的工具函数都应在此定义。
+// 其他模块通过 W2E.* 命名空间或直接调用这里定义的全局函数。
+// ============================================================
 
-  // ============ UX 增強功能 ============
-  
+// 全局命名空间：用于模块间显式通信（减少裸全局变量）
+const W2E = window.W2E = {};
+
+// ------------------------------------------------------------------ //
+// 页面类型检测（在所有模块中共享）                                    //
+// ------------------------------------------------------------------ //
+
+function _getPageFilename() {
+  return window.location.pathname.split('/').pop() || 'index.html';
+}
+
+function isIndexPage() {
+  const f = _getPageFilename();
+  return f === 'index.html' || f === 'index_trad.html';
+}
+
+function isTraditionalChinesePage() {
+  return _getPageFilename().includes('_trad.html');
+}
+
+// 简体/繁体文本选择（当 I18N_TEXT 不可用时的降级）
+function getText(simplifiedText, traditionalText) {
+  return isTraditionalChinesePage() ? traditionalText : simplifiedText;
+}
+
+// ------------------------------------------------------------------ //
+// 暗色模式初始化（在 DOM 解析时立即执行，避免闪烁）                   //
+// ------------------------------------------------------------------ //
+
+if (localStorage.getItem('darkMode') === 'true') {
+  document.body.classList.add('dark-mode');
+}
+
+// #region agent log
+(function(){
+  var root = getComputedStyle(document.documentElement);
+  var vars = {
+    colorPrimary: root.getPropertyValue('--color-primary').trim(),
+    colorPrimaryLight: root.getPropertyValue('--color-primary-light').trim(),
+    colorBgPage: root.getPropertyValue('--color-bg-page').trim(),
+    radiusSm: root.getPropertyValue('--radius-sm').trim(),
+    lineHeight: root.getPropertyValue('--line-height').trim()
+  };
+  fetch('http://127.0.0.1:7618/ingest/29c0cb97-0ee5-4d63-80f1-c39c24c9f364',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1e1df3'},body:JSON.stringify({sessionId:'1e1df3',hypothesisId:'H-A',location:'00-base.js:runtime',message:'CSS var resolved values',data:vars,timestamp:Date.now()})}).catch(function(){});
+})();
+// #endregion
   // ============ 搜索功能（延迟加载） ============
+  // isIndexPage / isTraditionalChinesePage / getText 由 00-base.js 提供
+
   let searchIndex = null;
   let miniSearch = null;
   let searchInitialized = false;
   let currentSearchResults = [];
   let displayedResultsCount = 0;
   const RESULTS_PER_PAGE = 20;
-  
-  // 检测当前页面类型
-  function isIndexPage() {
-    const pathname = window.location.pathname;
-    const filename = pathname.split('/').pop() || 'index.html';
-    return filename === 'index.html' || filename === 'index_trad.html';
-  }
-  
-  // 判断是否为繁体版
-  function isTraditionalChinesePage() {
-    const pathname = window.location.pathname;
-    const filename = pathname.split('/').pop() || 'index.html';
-    return filename.includes('_trad.html');
-  }
-  
+
   // 获取搜索索引文件名
   function getSearchIndexFile() {
     const pathname = window.location.pathname;
     const filename = pathname.split('/').pop() || 'index.html';
     return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
-  }
-  
-  // 获取本地化文本
-  function getText(simplifiedText, traditionalText) {
-    return isTraditionalChinesePage() ? traditionalText : simplifiedText;
   }
   
   // 激活搜索功能
@@ -297,55 +324,24 @@ document.addEventListener('DOMContentLoaded', function() {
       '⚠️ jieba-wasm 不可用，返回原文本');
     return returnArray ? [text] : text;
   }
-// 更新加载更多按钮的显示状态（全局函数）
-function updateLoadMoreButtons() {
-  if (typeof displayedResultsCount === 'undefined' || typeof currentSearchResults === 'undefined') return;
-  
-  const loadMoreBtn = document.getElementById('search-load-more');
-  const loadAllBtn = document.getElementById('search-load-all');
-  const loadMoreBtnBottom = document.getElementById('search-load-more-bottom');
-  const loadAllBtnBottom = document.getElementById('search-load-all-bottom');
-  
-  // 判斷是否還有更多內容可以加載
-  const shouldShow = displayedResultsCount < currentSearchResults.length;
-  
-  if (loadMoreBtn) loadMoreBtn.style.display = shouldShow ? 'inline-block' : 'none';
-  if (loadAllBtn) loadAllBtn.style.display = shouldShow ? 'inline-block' : 'none';
-  if (loadMoreBtnBottom) loadMoreBtnBottom.style.display = shouldShow ? 'inline-block' : 'none';
-  if (loadAllBtnBottom) loadAllBtnBottom.style.display = shouldShow ? 'inline-block' : 'none';
-}
-
-// 隐藏加载更多按钮（全局函数）
-function hideLoadMoreButtons() {
-  const loadMoreBtn = document.getElementById('search-load-more');
-  const loadAllBtn = document.getElementById('search-load-all');
-  const loadMoreBtnBottom = document.getElementById('search-load-more-bottom');
-  const loadAllBtnBottom = document.getElementById('search-load-all-bottom');
-  
-  if (loadMoreBtn) loadMoreBtn.style.display = 'none';
-  if (loadAllBtn) loadAllBtn.style.display = 'none';
-  if (loadMoreBtnBottom) loadMoreBtnBottom.style.display = 'none';
-  if (loadAllBtnBottom) loadAllBtnBottom.style.display = 'none';
-}
+// ============================================================
+// 01b-search-index.js — 搜索索引构建（分批分词、缓存集成）
+// ============================================================
 
 // 創建搜索配置
 function createSearchConfig(segmenterEnabled) {
   if (segmenterEnabled) {
-    // 啟用分詞時：只索引 processedContent，title 不參與搜索
     return {
-      fields: ['processedContent'], // 移除 title，只索引實際內容
+      fields: ['processedContent'],
       storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'context', 'url'],
-        searchOptions: {
+      searchOptions: {
         boost: { processedContent: 1 },
         combineWith: 'AND'
       },
-      // 關鍵優化：不使用 processTerm，避免對已分詞內容重複處理
-      // 用戶查詢的分詞在搜索時單獨處理
     };
   } else {
-    // 未啟用分詞時：只索引 content，title 不參與搜索
     return {
-      fields: ['content'], // 移除 title，只索引實際內容
+      fields: ['content'],
       storeFields: ['id', 'title', 'type', 'content', 'context', 'url'],
       searchOptions: {
         boost: { content: 1 },
@@ -354,388 +350,729 @@ function createSearchConfig(segmenterEnabled) {
     };
   }
 }
-      
 
-// 獲取搜索相關的 DOM 元素
-function getSearchElements() {
-  return {
-    searchContainer: document.getElementById('search-container'),
-    searchActivation: document.querySelector('.search-activation'),
-    searchInput: document.getElementById('search-input'),
-    searchStatus: document.getElementById('search-status'),
-    searchResults: document.getElementById('search-results'),
-    searchResultsList: document.getElementById('search-results-list'),
-    searchResultsCount: document.getElementById('search-results-count'),
-    searchClear: document.getElementById('search-clear'),
-    searchCollapse: document.getElementById('search-collapse'),
-    tocHeader: document.getElementById('toc-header')
-  };
-}
-
-// 初始化搜索 UI
-function initializeSearchUI(elements) {
-  console.time('🎨 UI初始化');
-  
-  // 显示搜索容器，隐藏激活按钮
-  if (elements.searchActivation) elements.searchActivation.style.display = 'none';
-  elements.searchContainer.style.display = 'block';
-  
-  // 清空當前狀態並創建載入UI
-  elements.searchStatus.innerHTML = '';
-  const loadingUI = createLoadingUI(elements.searchStatus);
-  
-  console.timeEnd('🎨 UI初始化');
-  return loadingUI;
-}
-
-// 分批建立搜索索引（包含即時分詞）
-async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
-      console.time('📇 分詞+索引建立時間 (分批處理)');
-      console.log(isTraditionalChinesePage() ? 
-        `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...` :
-        `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
-      
-      // 分批配置
-      const BATCH_SIZE = 300; // 減小批次大小以保持響應性
-      const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
-      
-      // 創建統一的進度條UI
-      const progressContainer = document.createElement('div');
-      progressContainer.className = 'search-progress-container';
-      const initialText = isTraditionalChinesePage() ? 
-        `📊 正在分詞並建立搜尋索引...0/${searchIndex.length}` : 
-        `📊 正在分词并建立搜索索引...0/${searchIndex.length}`;
-      progressContainer.innerHTML = `
-        <div class="search-loading-text">${initialText}</div>
-        <div class="search-progress-bar">
-          <div class="search-progress-fill" style="width: 0%"></div>
-        </div>
-      `;
-      searchStatus.innerHTML = '';
-      searchStatus.appendChild(progressContainer);
-      
-      const progressFill = progressContainer.querySelector('.search-progress-fill');
-      const loadingText = progressContainer.querySelector('.search-loading-text');
-      
-      // 分批處理函數（包含即時分詞）
-      async function processBatch(batchIndex) {
-        const startIdx = batchIndex * BATCH_SIZE;
-        const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
-        const batch = searchIndex.slice(startIdx, endIdx);
-        
-        // 更新進度條
-        const percentage = Math.round((endIdx / searchIndex.length) * 100);
-        
-        const progressText = isTraditionalChinesePage() ? 
-          `📊 正在分詞並建立搜尋索引...${endIdx}/${searchIndex.length}` :
-          `📊 正在分词并建立搜索索引...${endIdx}/${searchIndex.length}`;
-        
-        progressFill.style.width = `${percentage}%`;
-        loadingText.textContent = progressText;
-        
-        // 對批次進行即時分詞處理
-        const processedBatch = batch.map(doc => {
-          const processedDoc = { ...doc };
-          
-          // 如果啟用分詞且有內容，進行分詞處理
-          if (segmenterEnabled && doc.content) {
-            processedDoc.processedContent = segmentWithJieba(doc.content);
-          } else {
-            processedDoc.processedContent = doc.content;
-          }
-          
-          return processedDoc;
-        });
-        
-        // 添加當前批次到索引
-        miniSearch.addAll(processedBatch);
-        
-        // 讓瀏覽器有時間更新UI
-        await new Promise(resolve => setTimeout(resolve, 15)); // 稍微增加延遲以保持響應性
-      }
-      
-      // 逐批處理
-      for (let i = 0; i < totalBatches; i++) {
-        await processBatch(i);
-      }
-      
-      // 移除進度顯示
-      searchStatus.removeChild(progressContainer);
-      
-      console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
-      console.log(isTraditionalChinesePage() ? 
-        '✅ 索引建立完成！' : 
-        '✅ 索引建立完成！');
-}
-
-// 支持緩存的分批索引建立函數
-async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, cacheManager, isTraditional) {
-  // 獲取當前的哈希值
-  let currentHash = null;
-  if (cacheManager) {
-    const hashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
-    const hashData = await cacheManager.getMetadata(hashKey);
-    currentHash = hashData ? hashData.hash : null;
-  }
-  
-  // 嘗試從緩存加載處理後的數據（使用哈希值）
-  let processedData = null;
-  if (cacheManager && currentHash) {
-    processedData = await cacheManager.getCachedProcessedIndex(isTraditional, segmenterEnabled, currentHash);
-  }
-  
-  if (processedData) {
-    // 從緩存恢復 MiniSearch 索引
-    console.time('📇 從緩存恢復索引');
-    console.log('⚡ 從緩存恢復處理後的搜索索引...');
-    
-    try {
-      // 創建進度條UI
-      const progressContainer = document.createElement('div');
-      progressContainer.className = 'search-progress-container';
-      const initialText = isTraditionalChinesePage() ? 
-        `⚡ 從緩存恢復處理後的搜索索引...0/${processedData.length}` :
-        `⚡ 从缓存恢复处理后的搜索索引...0/${processedData.length}`;
-      progressContainer.innerHTML = `
-        <div class="search-loading-text">${initialText}</div>
-        <div class="search-progress-bar">
-          <div class="search-progress-fill" style="width: 0%"></div>
-        </div>
-      `;
-      searchStatus.innerHTML = '';
-      searchStatus.appendChild(progressContainer);
-      
-      const progressFill = progressContainer.querySelector('.search-progress-fill');
-      const loadingText = progressContainer.querySelector('.search-loading-text');
-      
-      // 批量添加到 MiniSearch
-      const BATCH_SIZE = 1000;
-      const totalItems = processedData.length;
-      
-      for (let i = 0; i < totalItems; i += BATCH_SIZE) {
-        const batch = processedData.slice(i, i + BATCH_SIZE);
-        miniSearch.addAll(batch);
-        
-        // 更新進度
-        const progress = Math.min(i + BATCH_SIZE, totalItems);
-        const percentage = Math.round((progress / totalItems) * 100);
-        
-        const progressText = isTraditionalChinesePage() ? 
-          `⚡ 從緩存恢復處理後的搜索索引...${progress}/${totalItems}` :
-          `⚡ 从缓存恢复处理后的搜索索引...${progress}/${totalItems}`;
-        
-        progressFill.style.width = `${percentage}%`;
-        loadingText.textContent = progressText;
-        
-        // 讓 UI 有機會更新
-        await new Promise(resolve => setTimeout(resolve, 10));
-      }
-      
-      console.timeEnd('📇 從緩存恢復索引');
-      console.log(isTraditionalChinesePage() ? 
-        '⚡ 從緩存快速恢復索引完成！' : 
-        '⚡ 从缓存快速恢复索引完成！');
-    } catch (error) {
-      console.warn('從緩存恢復失敗，將重新建立索引:', error);
-      // 如果緩存恢復失敗，回退到標準流程
-      await buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled);
-    }
-  } else {
-    // 標準流程：分詞並建立索引
-    console.log('🔄 執行完整的分詞和索引建立流程...');
-    
-    // 收集處理後的數據以便緩存
-    const processedItems = [];
-    
-    // 修改原始函數以收集處理後的數據
-    await buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems);
-    
-    // 保存處理後的數據到緩存
-    if (cacheManager && processedItems.length > 0) {
-      console.log('💾 保存處理後的索引到緩存...');
-      await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled, currentHash);
-    }
-  }
-}
-
-// 修改版的索引建立函數，收集處理後的數據
-async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems) {
-  console.time('📇 分詞+索引建立時間 (分批處理)');
-  console.log(isTraditionalChinesePage() ? 
-    `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...` :
-    `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
-
-  const BATCH_SIZE = 300;
-  const totalItems = searchIndex.length;
-  
-  // 創建進度條UI
-  const progressContainer = document.createElement('div');
-  progressContainer.className = 'search-progress-container';
-  const initialText = isTraditionalChinesePage() ? 
-    `📊 正在分詞並建立搜尋索引...0/${totalItems}` : 
-    `📊 正在分词并建立搜索索引...0/${totalItems}`;
-  progressContainer.innerHTML = `
+// 创建统一的进度条 UI（返回 { container, fill, text }）
+function createProgressUI(searchStatus, initialText) {
+  const container = document.createElement('div');
+  container.className = 'search-progress-container';
+  container.innerHTML = `
     <div class="search-loading-text">${initialText}</div>
     <div class="search-progress-bar">
       <div class="search-progress-fill" style="width: 0%"></div>
     </div>
   `;
   searchStatus.innerHTML = '';
-  searchStatus.appendChild(progressContainer);
-  
-  const progressFill = progressContainer.querySelector('.search-progress-fill');
-  const loadingText = progressContainer.querySelector('.search-loading-text');
-  
+  searchStatus.appendChild(container);
+  return {
+    container,
+    fill: container.querySelector('.search-progress-fill'),
+    text: container.querySelector('.search-loading-text'),
+  };
+}
+
+// 分批建立搜索索引（含即時分詞）
+async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
+  console.time('📇 分詞+索引建立時間 (分批處理)');
+  const isTrad = isTraditionalChinesePage();
+  console.log(isTrad
+    ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
+    : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
+
+  const BATCH_SIZE = 300;
+  const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
+  const initialText = isTrad
+    ? `📊 正在分詞並建立搜尋索引...0/${searchIndex.length}`
+    : `📊 正在分词并建立搜索索引...0/${searchIndex.length}`;
+  const progress = createProgressUI(searchStatus, initialText);
+
+  for (let i = 0; i < totalBatches; i++) {
+    const startIdx = i * BATCH_SIZE;
+    const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
+    const batch = searchIndex.slice(startIdx, endIdx).map(doc => {
+      const processed = { ...doc };
+      if (segmenterEnabled && doc.content) {
+        processed.processedContent = segmentWithJieba(doc.content);
+      } else {
+        processed.processedContent = doc.content;
+      }
+      return processed;
+    });
+
+    miniSearch.addAll(batch);
+
+    const pct = Math.round((endIdx / searchIndex.length) * 100);
+    progress.fill.style.width = `${pct}%`;
+    progress.text.textContent = isTrad
+      ? `📊 正在分詞並建立搜尋索引...${endIdx}/${searchIndex.length}`
+      : `📊 正在分词并建立搜索索引...${endIdx}/${searchIndex.length}`;
+
+    await new Promise(resolve => setTimeout(resolve, 15));
+  }
+
+  searchStatus.removeChild(progress.container);
+  console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
+  console.log('✅ 索引建立完成！');
+}
+
+// 分批建立索引並收集處理後數據（供緩存使用）
+async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems) {
+  console.time('📇 分詞+索引建立時間 (分批處理)');
+  const isTrad = isTraditionalChinesePage();
+  console.log(isTrad
+    ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
+    : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
+
+  const BATCH_SIZE = 300;
+  const totalItems = searchIndex.length;
+  const initialText = isTrad
+    ? `📊 正在分詞並建立搜尋索引...0/${totalItems}`
+    : `📊 正在分词并建立搜索索引...0/${totalItems}`;
+  const progress = createProgressUI(searchStatus, initialText);
+
   for (let i = 0; i < totalItems; i += BATCH_SIZE) {
     const batch = searchIndex.slice(i, i + BATCH_SIZE);
     const processedBatch = [];
-    
-    // 處理批次中的每個項目
+
     for (const doc of batch) {
-      let processedDoc = { ...doc };
-      
-      // 如果啟用分詞，對內容進行分詞
+      const processed = { ...doc };
       if (segmenterEnabled && doc.content) {
-        processedDoc.processedContent = segmentWithJieba(doc.content);
+        processed.processedContent = segmentWithJieba(doc.content);
       }
-      
-      processedBatch.push(processedDoc);
-      processedItems.push(processedDoc); // 收集到緩存數組
+      processedBatch.push(processed);
+      processedItems.push(processed);
     }
-    
-    // 添加到 MiniSearch
+
     miniSearch.addAll(processedBatch);
-    
-    // 更新進度條
-    const progress = Math.min(i + BATCH_SIZE, totalItems);
-    const percentage = Math.round((progress / totalItems) * 100);
-    
-    const progressText = isTraditionalChinesePage() ? 
-      `📊 正在分詞並建立搜尋索引...${progress}/${totalItems}` :
-      `📊 正在分词并建立搜索索引...${progress}/${totalItems}`;
-    
-    progressFill.style.width = `${percentage}%`;
-    loadingText.textContent = progressText;
-    
-    // 讓 UI 有機會更新
+
+    const prog = Math.min(i + BATCH_SIZE, totalItems);
+    const pct = Math.round((prog / totalItems) * 100);
+    progress.fill.style.width = `${pct}%`;
+    progress.text.textContent = isTrad
+      ? `📊 正在分詞並建立搜尋索引...${prog}/${totalItems}`
+      : `📊 正在分词并建立搜索索引...${prog}/${totalItems}`;
+
     await new Promise(resolve => setTimeout(resolve, 15));
   }
-  
+
   console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
-  console.log(isTraditionalChinesePage() ? 
-    '✅ 索引建立完成！' : 
-    '✅ 索引建立完成！');
+  console.log('✅ 索引建立完成！');
 }
-      
-// 完成搜索初始化設置
-function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
-      // 顯示完成狀態和分词功能状态
-      const segmenterStatus = segmenterEnabled ? 
-        (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
-        (isTraditionalChinesePage() ? '使用傳統搜尋模式' : '使用传统搜索模式');
-      
-      console.timeEnd('🚀 搜索初始化總時間');
-      console.log(isTraditionalChinesePage() ? 
-        '🎉 搜尋初始化流程完成！' : 
-        '🎉 搜索初始化流程完成！');
-      
-  elements.searchStatus.innerHTML = `
-        <div class="search-status-success">
-      ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: indexLength })}
-          <br><small>🔧 ${segmenterStatus}</small>
-        </div>
-      `;
-      searchInitialized = true;
-      
-      // 初始化搜索結果欄位高度
-      initializeSearchResultsHeight();
-      
-      // 启用搜索输入框
-  elements.searchInput.disabled = false;
-  elements.searchInput.placeholder = getI18nText('search.search_placeholder', isTraditionalChinesePage(), '搜尋全文內容...');
-      
-      // 重新启用激活按钮
-      const searchActivateBtn = document.getElementById('search-activate-btn');
-      if (searchActivateBtn) {
-        searchActivateBtn.disabled = false;
+
+// 支持緩存的索引建立（優先嘗試從緩存恢復）
+async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, cacheManager, isTraditional) {
+  const isTrad = isTraditionalChinesePage();
+
+  let currentHash = null;
+  if (cacheManager) {
+    const hashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
+    const hashData = await cacheManager.getMetadata(hashKey);
+    currentHash = hashData ? hashData.hash : null;
+  }
+
+  let processedData = null;
+  if (cacheManager && currentHash) {
+    processedData = await cacheManager.getCachedProcessedIndex(isTraditional, segmenterEnabled, currentHash);
+  }
+
+  if (processedData) {
+    console.time('📇 從緩存恢復索引');
+    console.log('⚡ 從緩存恢復處理後的搜索索引...');
+    try {
+      const BATCH_SIZE = 1000;
+      const totalItems = processedData.length;
+      const initialText = isTrad
+        ? `⚡ 從緩存恢復處理後的搜索索引...0/${totalItems}`
+        : `⚡ 从缓存恢复处理后的搜索索引...0/${totalItems}`;
+      const progress = createProgressUI(searchStatus, initialText);
+
+      for (let i = 0; i < totalItems; i += BATCH_SIZE) {
+        miniSearch.addAll(processedData.slice(i, i + BATCH_SIZE));
+        const prog = Math.min(i + BATCH_SIZE, totalItems);
+        const pct = Math.round((prog / totalItems) * 100);
+        progress.fill.style.width = `${pct}%`;
+        progress.text.textContent = isTrad
+          ? `⚡ 從緩存恢復處理後的搜索索引...${prog}/${totalItems}`
+          : `⚡ 从缓存恢复处理后的搜索索引...${prog}/${totalItems}`;
+        await new Promise(resolve => setTimeout(resolve, 10));
       }
-      
-      // 聚焦搜索框
-  setTimeout(() => elements.searchInput.focus(), 100);
+
+      console.timeEnd('📇 從緩存恢復索引');
+      console.log(isTrad ? '⚡ 從緩存快速恢復索引完成！' : '⚡ 从缓存快速恢复索引完成！');
+    } catch (error) {
+      console.warn('從緩存恢復失敗，將重新建立索引:', error);
+      await buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled);
+    }
+  } else {
+    console.log('🔄 執行完整的分詞和索引建立流程...');
+    const processedItems = [];
+    await buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems);
+    if (cacheManager && processedItems.length > 0) {
+      console.log('💾 保存處理後的索引到緩存...');
+      await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled, currentHash);
+    }
+  }
 }
-      
-// 處理搜索初始化錯誤
-function handleSearchInitError(elements, error) {
-      console.error('搜索初始化失败:', error);
-      
-      // 清空狀態並顯示錯誤
-  elements.searchStatus.innerHTML = '';
-      
-      // 創建錯誤UI並提供重試功能
-  createErrorUI(elements.searchStatus, error.message || getI18nText('search.loadingFailed', isTraditionalChinesePage(), '搜尋索引載入失敗'), async () => {
-        await initSearch();
-      });
-      
-      // 即使失败也要启用输入框，让用户可以重试
-  elements.searchInput.disabled = false;
-  elements.searchInput.placeholder = getI18nText('search.searchUnavailable', isTraditionalChinesePage(), '搜尋功能暫不可用');
-      
-      // 重新启用激活按钮，允许用户重试
-      const searchActivateBtn = document.getElementById('search-activate-btn');
-      if (searchActivateBtn) {
-        searchActivateBtn.disabled = false;
+// ============================================================
+// 01c-search-highlight.js — 搜索结果高亮 & 上下文提取
+// ============================================================
+
+// 转义 HTML 特殊字符
+function escapeHtml(str) {
+  if (!str || typeof str !== 'string') return '';
+  try {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  } catch (e) {
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;');
   }
 }
 
-// 初始化搜索結果欄位高度 - 移除高度限制
-function initializeSearchResultsHeight() {
-  const searchResultsList = document.querySelector('.search-results-list');
-  if (searchResultsList) {
-    // 移除高度限制，顯示所有搜尋結果
-    searchResultsList.style.maxHeight = 'none';
-    searchResultsList.style.overflowY = 'visible';
+// 转义正则表达式特殊字符
+function escapeRegex(str) {
+  if (!str || typeof str !== 'string') return '';
+  const chars = {
+    '\\': '\\\\', '.': '\\.', '*': '\\*', '+': '\\+', '?': '\\?',
+    '^': '\\^', '$': '\\$', '{': '\\{', '}': '\\}', '(': '\\(',
+    ')': '\\)', '|': '\\|', '[': '\\[', ']': '\\]', '/': '\\/'
+  };
+  let result = str;
+  Object.keys(chars).forEach(c => { result = result.split(c).join(chars[c]); });
+  return result;
+}
+
+// 智能获取最佳 context 用于高亮显示
+function getBestContextForHighlight(result, query) {
+  if (!query || !result.content) return result.context || result.content;
+
+  const term = query.trim();
+  const content = result.content;
+  const lowerContent = content.toLowerCase();
+  const lowerTerm = term.toLowerCase();
+
+  if (!result.context) return content;
+  if (result.context.toLowerCase().includes(lowerTerm)) return result.context;
+
+  const exactIndex = lowerContent.indexOf(lowerTerm);
+  if (exactIndex !== -1) return extractContextAroundPosition(content, exactIndex, 120);
+
+  const keywords = extractKeywords(term);
+  if (keywords.length > 1) return generateMultiKeywordContext(content, buildKeywordPositions(content, keywords), 150);
+
+  return result.context || result.content;
+}
+
+function buildKeywordPositions(content, keywords) {
+  const lowerContent = content.toLowerCase();
+  const positions = [];
+  keywords.forEach(kw => {
+    const lw = kw.toLowerCase();
+    let idx = lowerContent.indexOf(lw);
+    while (idx !== -1) {
+      positions.push({ keyword: kw, position: idx, length: kw.length });
+      idx = lowerContent.indexOf(lw, idx + 1);
+    }
+  });
+  return positions;
+}
+
+// 提取关键词（支持空格分割和中文简单分词）
+function extractKeywords(searchTerm) {
+  const cleaned = searchTerm.trim().replace(/\s+/g, ' ');
+  const spaceWords = cleaned.split(' ').filter(w => w.length > 0);
+  if (spaceWords.length > 1) return spaceWords;
+
+  const keywords = [];
+  const text = cleaned;
+  if (text.length <= 4) {
+    for (let i = 0; i < text.length; i += 2) {
+      const w = text.substr(i, 2);
+      if (w.length >= 2) keywords.push(w);
+    }
+  } else {
+    for (let i = 0; i < text.length - 1; i++) {
+      const w3 = text.substr(i, 3);
+      const w2 = text.substr(i, 2);
+      if (i < text.length - 2 && isLikelyWord(w3)) {
+        keywords.push(w3); i += 2;
+      } else if (isLikelyWord(w2)) {
+        keywords.push(w2); i += 1;
+      }
+    }
+  }
+  return keywords.length > 0 ? keywords : [text];
+}
+
+function isLikelyWord(word) {
+  return /^[\u4e00-\u9fff]+$/.test(word) && word.length >= 2;
+}
+
+// 生成包含多个关键词的 context 段落
+function generateMultiKeywordContext(content, keywordPositions, maxLength) {
+  if (!keywordPositions.length) return content.substring(0, maxLength);
+
+  keywordPositions.sort((a, b) => a.position - b.position);
+  const firstPos = keywordPositions[0].position;
+  const last = keywordPositions[keywordPositions.length - 1];
+  const totalSpan = last.position + last.length - firstPos;
+
+  if (totalSpan <= maxLength * 0.8) {
+    const start = Math.max(0, firstPos - Math.floor((maxLength - totalSpan) / 2));
+    const end = Math.min(content.length, start + maxLength);
+    let ctx = content.substring(start, end);
+    if (start > 0) ctx = '...' + ctx;
+    if (end < content.length) ctx += '...';
+    return ctx;
+  }
+
+  const important = selectImportantPositions(keywordPositions, maxLength);
+  return important.map(pos => {
+    const partLen = Math.floor(maxLength / important.length);
+    const s = Math.max(0, pos.position - Math.floor(partLen / 2));
+    const e = Math.min(content.length, s + partLen);
+    let part = content.substring(s, e);
+    if (s > 0) part = '...' + part;
+    if (e < content.length) part += '...';
+    return part;
+  }).join(' ');
+}
+
+function selectImportantPositions(positions, maxLength) {
+  const selected = [];
+  for (const pos of positions) {
+    if (!selected.some(s => Math.abs(s.position - pos.position) < 20)) {
+      selected.push(pos);
+    }
+    if (selected.length >= 3) break;
+  }
+  return selected.length > 0 ? selected : [positions[0]];
+}
+
+// 从指定位置提取上下文（智能裁剪到词边界）
+function extractContextAroundPosition(text, position, maxLength) {
+  const half = Math.floor(maxLength / 2);
+  let start = Math.max(0, position - half);
+  let end = Math.min(text.length, position + half);
+
+  if (start > 0) {
+    const before = text.substring(start - 10, start);
+    const si = before.lastIndexOf(' ');
+    const pi = Math.max(before.lastIndexOf('。'), before.lastIndexOf('，'), before.lastIndexOf('！'), before.lastIndexOf('？'));
+    if (si !== -1 || pi !== -1) start = start - 10 + Math.max(si, pi) + 1;
+  }
+  if (end < text.length) {
+    const after = text.substring(end, end + 10);
+    const si = after.indexOf(' ');
+    const pi = Math.min(
+      after.indexOf('。') !== -1 ? after.indexOf('。') : Infinity,
+      after.indexOf('，') !== -1 ? after.indexOf('，') : Infinity,
+      after.indexOf('！') !== -1 ? after.indexOf('！') : Infinity,
+      after.indexOf('？') !== -1 ? after.indexOf('？') : Infinity
+    );
+    if (si !== -1 || pi !== Infinity) end += Math.min(si !== -1 ? si : Infinity, pi);
+  }
+
+  let ctx = text.substring(start, end);
+  if (start > 0) ctx = '...' + ctx;
+  if (end < text.length) ctx += '...';
+  return ctx;
+}
+
+// 智能高亮搜索词（支持精确 / 多关键词 / 模糊降级）
+function highlightSearchTerm(text, searchTerm) {
+  if (!text || !searchTerm || typeof text !== 'string' || typeof searchTerm !== 'string') return text;
+  const term = searchTerm.trim();
+  if (!term) return text;
+
+  try {
+    const exactRegex = new RegExp(`(${escapeRegex(term)})`, 'gi');
+    const exact = text.replace(exactRegex, '<span class="search-result-highlight">$1</span>');
+    if (exact !== text) return exact;
+
+    const keywords = extractKeywords(term);
+    if (keywords.length > 1) {
+      const multi = highlightMultipleKeywords(text, keywords);
+      if (multi !== text) return multi;
+    }
+
+    return highlightWithFuzzyMatching(text, term);
+  } catch (e) {
+    console.warn('智能高亮处理失败:', e);
+    return highlightWithFuzzyMatching(text, term);
   }
 }
 
-// 動態擴大搜索結果欄位高度 - 已預設無限制，此函數保留以維持兼容性
-function expandSearchResultsHeight() {
-  const searchResultsList = document.querySelector('.search-results-list');
-  
-  if (!searchResultsList) {
+function highlightMultipleKeywords(text, keywords) {
+  let result = text;
+  let hasMatch = false;
+  const sorted = keywords.slice().sort((a, b) => b.length - a.length);
+  sorted.forEach(kw => {
+    const r = new RegExp(`(${escapeRegex(kw)})`, 'gi');
+    const before = result;
+    result = result.replace(r, '<span class="search-result-highlight">$1</span>');
+    if (result !== before) hasMatch = true;
+  });
+  return hasMatch ? result : text;
+}
+
+function highlightWithFuzzyMatching(text, term) {
+  try {
+    const punct = '[\\s\\u3000-\\u303F\\uFF00-\\uFFEF\\u2000-\\u206F\\u0020-\\u002F\\u003A-\\u0040\\u005B-\\u0060\\u007B-\\u007E\\u2010-\\u2027\\u2030-\\u205F\\u3001-\\u3003\\u3008-\\u3011\\u3014-\\u301F\\uFE10-\\uFE19\\uFE30-\\uFE6F]';
+    const flexPattern = term.split('').map(c => escapeRegex(c)).join(`${punct}*`);
+    const flex = text.replace(new RegExp(`(${flexPattern})`, 'gi'), '<span class="search-result-highlight">$1</span>');
+    if (flex !== text) return flex;
+
+    const chars = term.split('');
+    if (chars.length > 1) {
+      const charPat = chars.map(c => escapeRegex(c)).join(`${punct}*`);
+      const charResult = text.replace(new RegExp(`(${charPat})`, 'gi'), '<span class="search-result-highlight">$1</span>');
+      if (charResult !== text) return charResult;
+    }
+
+    let result = text;
+    chars.forEach(c => {
+      if (c.trim()) result = result.replace(new RegExp(`(${escapeRegex(c)})`, 'gi'), '<span class="search-result-highlight">$1</span>');
+    });
+    return result;
+  } catch (e) {
+    console.warn('模糊高亮处理失败:', e);
+    try {
+      return text.replace(new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '<span class="search-result-highlight">$&</span>');
+    } catch (e2) {
+      return text;
+    }
+  }
+}
+// ============================================================
+// 01d-search-perform.js — 搜索执行、结果展示、分页
+// ============================================================
+
+// 生成单个搜索结果 item 的 HTML
+function generateSearchResultItem(result, index, indexOffset, query) {
+  const typeText = {
+    heading:  getI18nText('search.resultTypes.heading',  isTraditionalChinesePage(), '標題'),
+    question: getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'),
+    answer:   getI18nText('search.resultTypes.answer',   isTraditionalChinesePage(), '回答'),
+    content:  getI18nText('search.resultTypes.content',  isTraditionalChinesePage(), '內容'),
+  }[result.type] || getText('内容', '內容');
+
+  const bestContext = query ? getBestContextForHighlight(result, query) : result.context;
+  const highlightedContext = query ? highlightSearchTerm(bestContext, query) : bestContext;
+  const globalIndex = (indexOffset || 0) + index + 1;
+  const total = currentSearchResults.length;
+
+  return `
+    <li class="search-result-item" data-url="${result.url}">
+      <div class="search-result-header">
+        <span class="search-result-number">${globalIndex}/${total}</span>
+        <span class="search-result-type">${typeText}</span>
+        <div class="search-result-title">${escapeHtml(result.title)}</div>
+      </div>
+      <div class="search-result-content">${highlightedContext}</div>
+    </li>
+  `;
+}
+
+// 执行搜索
+function performSearch(query) {
+  const elements = getSearchElements();
+  resetSearchResultsHeight();
+
+  if (!miniSearch || !query || query.trim().length < 2) {
+    elements.searchResults.style.display = 'none';
+    elements.tocHeader.style.display = 'block';
+    currentSearchResults = [];
+    displayedResultsCount = 0;
+    hideLoadMoreButtons();
+    if (query && query.trim().length > 0 && query.trim().length < 2) {
+      elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
+    } else {
+      const count = searchIndex ? searchIndex.length : 0;
+      elements.searchStatus.innerHTML = getText(`搜索准备就绪 (共${count}条记录)`, `搜尋準備就緒 (共${count}條記錄)`);
+    }
     return;
   }
-  
-  // 確保無高度限制（預設已是如此）
-  searchResultsList.style.maxHeight = 'none';
-  searchResultsList.style.overflowY = 'visible';
-  
-  // 添加標記，表示已經展開
-  searchResultsList.setAttribute('data-expanded', 'true');
-}
 
-// 重置搜索結果欄位高度（新搜索時調用） - 移除高度限制
-function resetSearchResultsHeight() {
-  const searchResultsList = document.querySelector('.search-results-list');
-  if (searchResultsList) {
-    // 移除高度限制，顯示所有搜尋結果
-    searchResultsList.style.maxHeight = 'none';
-    searchResultsList.style.overflowY = 'visible';
-    // 移除展開標記，因為預設就是展開狀態
-    searchResultsList.removeAttribute('data-expanded');
+  const trimmedQuery = query.trim();
+  try {
+    let searchQuery = trimmedQuery;
+    const searchOptions = { boost: { processedContent: 1 } };
+
+    if (chineseSegmenter && trimmedQuery.length > 1) {
+      const words = segmentWithJieba(trimmedQuery, true);
+      if (words.length > 0) searchQuery = words.join(' ');
+    }
+
+    const results = miniSearch.search(searchQuery, searchOptions);
+    results.sort((a, b) => b.score - a.score);
+
+    currentSearchResults = results;
+    displayedResultsCount = 0;
+
+    if (results.length > 0) {
+      resetSearchResultsHeight();
+      displayPagedResults(trimmedQuery);
+    } else {
+      displayNoResults(trimmedQuery, elements);
+      elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
+    }
+
+    elements.searchResults.style.display = 'block';
+    elements.tocHeader.style.display = 'none';
+    setTimeout(updateFloatingControlsState, 10);
+    setTimeout(updateBottomSearchButtonsVisibility, 10);
+
+  } catch (error) {
+    console.error('搜索出错:', error);
+    elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
+    elements.searchResults.style.display = 'none';
+    elements.tocHeader.style.display = 'block';
+    setTimeout(updateFloatingControlsState, 10);
   }
 }
 
-// 初始化搜索功能（内部函数）
+// 展示第一页结果（分页）
+function displayPagedResults(query) {
+  const elements = getSearchElements();
+  displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
+  elements.searchResultsList.innerHTML = resultsToShow.map((r, i) =>
+    generateSearchResultItem(r, i, 0, query)
+  ).join('');
+  updateResultsCounter();
+  updateLoadMoreButtons();
+  const total = currentSearchResults.length;
+  const el = document.getElementById('search-status');
+  if (el) el.textContent = getText(`找到 ${total} 条匹配结果`, `找到 ${total} 條匹配結果`);
+}
+
+// 加载更多结果（每次追加 RESULTS_PER_PAGE 条）
+function loadMoreResults() {
+  const elements = getSearchElements();
+  const startIndex = displayedResultsCount;
+  const endIndex = Math.min(startIndex + RESULTS_PER_PAGE, currentSearchResults.length);
+  const batch = currentSearchResults.slice(startIndex, endIndex);
+  if (!batch.length) return;
+
+  displayedResultsCount = endIndex;
+  const query = document.getElementById('search-input').value.trim();
+  const additionalHTML = batch.map((r, i) =>
+    generateSearchResultItem(r, i, startIndex, query)
+  ).join('');
+  elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+
+  expandSearchResultsHeight();
+  updateResultsCounter();
+  updateLoadMoreButtons();
+  const el = document.getElementById('search-status');
+  if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
+}
+
+// 加载所有剩余结果
+function loadAllResults() {
+  const elements = getSearchElements();
+  const remaining = currentSearchResults.slice(displayedResultsCount);
+  if (!remaining.length) return;
+
+  const startIndex = displayedResultsCount;
+  displayedResultsCount = currentSearchResults.length;
+  const query = document.getElementById('search-input').value.trim();
+  const additionalHTML = remaining.map((r, i) =>
+    generateSearchResultItem(r, i, startIndex, query)
+  ).join('');
+  elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+
+  expandSearchResultsHeight();
+  updateResultsCounter();
+  updateLoadMoreButtons();
+  const el = document.getElementById('search-status');
+  if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
+}
+
+// 显示无结果占位符
+function displayNoResults(query, elements) {
+  const el = elements || getSearchElements();
+  el.searchResultsCount.textContent = getText('未找到结果', '未找到結果');
+  el.searchResultsList.innerHTML = `
+    <li class="search-result-item" style="text-align: center; color: #999;">
+      <div>${getText(`未找到包含"${escapeHtml(query)}"的内容`, `未找到包含"${escapeHtml(query)}"的內容`)}</div>
+      <div style="font-size: 12px; margin-top: 8px;">${getText('尝试使用不同的关键词', '嘗試使用不同的關鍵詞')}</div>
+    </li>
+  `;
+}
+
+// 更新结果计数器文本
+function updateResultsCounter() {
+  const elements = getSearchElements();
+  if (elements.searchResultsCount) {
+    elements.searchResultsCount.textContent = getText(
+      `显示 ${displayedResultsCount} / ${currentSearchResults.length} 条结果`,
+      `顯示 ${displayedResultsCount} / ${currentSearchResults.length} 條結果`
+    );
+  }
+}
+// ============================================================
+// 01e-search-ui.js — 搜索 UI 状态管理、initSearch、事件绑定
+// ============================================================
+
+// 获取搜索相关的 DOM 元素
+function getSearchElements() {
+  return {
+    searchContainer:    document.getElementById('search-container'),
+    searchActivation:   document.querySelector('.search-activation'),
+    searchInput:        document.getElementById('search-input'),
+    searchStatus:       document.getElementById('search-status'),
+    searchResults:      document.getElementById('search-results'),
+    searchResultsList:  document.getElementById('search-results-list'),
+    searchResultsCount: document.getElementById('search-results-count'),
+    searchClear:        document.getElementById('search-clear'),
+    searchCollapse:     document.getElementById('search-collapse'),
+    tocHeader:          document.getElementById('toc-header'),
+  };
+}
+
+// 初始化搜索 UI（显示容器、创建加载中状态）
+function initializeSearchUI(elements) {
+  if (elements.searchActivation) elements.searchActivation.style.display = 'none';
+  elements.searchContainer.style.display = 'block';
+  elements.searchStatus.innerHTML = '';
+  return createLoadingUI(elements.searchStatus);
+}
+
+// 更新「显示更多」按钮的显示状态
+function updateLoadMoreButtons() {
+  if (typeof displayedResultsCount === 'undefined' || typeof currentSearchResults === 'undefined') return;
+  const shouldShow = displayedResultsCount < currentSearchResults.length;
+  ['search-load-more', 'search-load-all', 'search-load-more-bottom', 'search-load-all-bottom'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = shouldShow ? 'inline-block' : 'none';
+  });
+}
+
+// 隐藏所有「显示更多」按钮
+function hideLoadMoreButtons() {
+  ['search-load-more', 'search-load-all', 'search-load-more-bottom', 'search-load-all-bottom'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = 'none';
+  });
+}
+
+// 搜索结果列表高度工具函数（预设无限制，保留兼容性）
+function initializeSearchResultsHeight() {
+  const list = document.querySelector('.search-results-list');
+  if (list) { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; }
+}
+function expandSearchResultsHeight() {
+  const list = document.querySelector('.search-results-list');
+  if (list) { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; list.setAttribute('data-expanded', 'true'); }
+}
+function resetSearchResultsHeight() {
+  const list = document.querySelector('.search-results-list');
+  if (list) { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; list.removeAttribute('data-expanded'); }
+}
+
+// 完成搜索初始化设置（更新状态、启用输入框）
+function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
+  const isTrad = isTraditionalChinesePage();
+  const segStatus = segmenterEnabled
+    ? (isTrad ? '智能中文分詞已啟用' : '智能中文分词已启用')
+    : (isTrad ? '使用傳統搜尋模式' : '使用传统搜索模式');
+
+  console.timeEnd('🚀 搜索初始化總時間');
+  console.log(isTrad ? '🎉 搜尋初始化流程完成！' : '🎉 搜索初始化流程完成！');
+
+  elements.searchStatus.innerHTML = `
+    <div class="search-status-success">
+      ✅ ${getI18nText('search.indexReady', isTrad, '搜尋準備就緒 (共{count}條記錄)', { count: indexLength })}
+      <br><small>🔧 ${segStatus}</small>
+    </div>
+  `;
+  searchInitialized = true;
+  initializeSearchResultsHeight();
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.search_placeholder', isTrad, '搜尋全文內容...');
+  const activateBtn = document.getElementById('search-activate-btn');
+  if (activateBtn) activateBtn.disabled = false;
+  setTimeout(() => elements.searchInput.focus(), 100);
+}
+
+// 处理搜索初始化错误
+function handleSearchInitError(elements, error) {
+  const isTrad = isTraditionalChinesePage();
+  console.error('搜索初始化失败:', error);
+  elements.searchStatus.innerHTML = '';
+  createErrorUI(elements.searchStatus, error.message || getI18nText('search.loadingFailed', isTrad, '搜尋索引載入失敗'), async () => {
+    await initSearch();
+  });
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.searchUnavailable', isTrad, '搜尋功能暫不可用');
+  const activateBtn = document.getElementById('search-activate-btn');
+  if (activateBtn) activateBtn.disabled = false;
+}
+
+// 清除搜索状态（重置输入框、结果、计数）
+function clearSearch() {
+  const elements = getSearchElements();
+  if (elements.searchInput) elements.searchInput.value = '';
+  if (elements.searchResults) elements.searchResults.style.display = 'none';
+  if (elements.tocHeader) elements.tocHeader.style.display = 'block';
+  currentSearchResults = [];
+  displayedResultsCount = 0;
+  hideLoadMoreButtons();
+  resetSearchResultsHeight();
+  if (elements.searchStatus) {
+    const count = searchIndex ? searchIndex.length : 0;
+    elements.searchStatus.innerHTML = getText(`搜索准备就绪 (共${count}条记录)`, `搜尋準備就緒 (共${count}條記錄)`);
+  }
+}
+
+// 收起搜索面板
+function collapseSearch() {
+  const searchContainer  = document.getElementById('search-container');
+  const searchActivation = document.querySelector('.search-activation');
+  if (!searchContainer || !searchActivation) return;
+
+  const searchInput        = document.getElementById('search-input');
+  const searchResults      = document.getElementById('search-results');
+  const tocHeader          = document.getElementById('toc-header');
+  const searchStatus       = document.getElementById('search-status');
+  const searchResultsList  = document.getElementById('search-results-list');
+  const searchResultsCount = document.getElementById('search-results-count');
+
+  if (searchInput) searchInput.value = '';
+  if (searchResults) searchResults.style.display = 'none';
+  if (tocHeader) tocHeader.style.display = 'block';
+  currentSearchResults = [];
+  displayedResultsCount = 0;
+  hideLoadMoreButtons();
+
+  if (searchStatus) searchStatus.innerHTML = '';
+  if (searchResultsList) { searchResultsList.innerHTML = ''; searchResultsList.style.maxHeight = ''; searchResultsList.style.overflowY = ''; }
+  if (searchResultsCount) searchResultsCount.textContent = '';
+  if (searchResults) searchResults.style.maxHeight = '';
+
+  searchContainer.style.display = 'none';
+  searchActivation.style.display = 'block';
+  setTimeout(updateFloatingControlsState, 10);
+}
+
+// ============================================================
+// initSearch — 搜索功能主入口（async）
+// ============================================================
 async function initSearch() {
   if (!isIndexPage()) return;
-  
+
   console.time('🚀 搜索初始化總時間');
   console.log('📊 開始搜索初始化流程...');
-  
+
   const elements = getSearchElements();
   if (!elements.searchInput || !elements.searchContainer) return;
-  
-  // 初始化緩存管理器
+
+  // 初始化缓存管理器
   let cacheManager = null;
   try {
     if (window.searchCacheManager) {
@@ -743,926 +1080,100 @@ async function initSearch() {
       cacheManager = window.searchCacheManager;
       console.log('💾 緩存管理器初始化成功');
     }
-  } catch (error) {
-    console.warn('緩存管理器初始化失敗，將使用標準流程:', error);
+  } catch (err) {
+    console.warn('緩存管理器初始化失敗，將使用標準流程:', err);
   }
-  
+
   try {
     const loadingUI = initializeSearchUI(elements);
-    
-    // 检查MiniSearch是否可用
-    console.time('📚 MiniSearch檢查');
-    if (typeof MiniSearch === 'undefined') {
-      throw new Error('MiniSearch库未加载');
-    }
-    console.timeEnd('📚 MiniSearch檢查');
-    
-    // 初始化中文分词器
-    console.time('🔧 分詞器初始化');
+
+    if (typeof MiniSearch === 'undefined') throw new Error('MiniSearch库未加载');
+
     const segmenterEnabled = await initChineseSegmenter();
-    console.timeEnd('🔧 分詞器初始化');
-    console.log(isTraditionalChinesePage() ? 
-      `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}` :
-      `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
-    
-    // 加载搜索索引（優先從緩存）
-    console.time('📥 JSON載入時間');
+    console.log(isTraditionalChinesePage()
+      ? `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}`
+      : `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
+
     const isTraditional = isTraditionalChinesePage();
-    
-    // 檢查是否需要更新緩存（基於哈希）
+
+    // 检查是否需要从网络更新
     let needsUpdate = true;
-    if (cacheManager) {
-      needsUpdate = await cacheManager.needsUpdate(isTraditional);
-    }
-    
+    if (cacheManager) needsUpdate = await cacheManager.needsUpdate(isTraditional);
+
     if (!needsUpdate) {
-      // 從緩存加載
       searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
-      if (searchIndex) {
-        console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
-      } else {
-        console.log('📡 緩存數據丟失，重新下載...');
-        needsUpdate = true;
-      }
+      if (!searchIndex) { console.log('📡 緩存數據丟失，重新下載...'); needsUpdate = true; }
+      else console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
     }
-    
+
     if (needsUpdate) {
-      // 從網絡加載
       console.log('📡 從網絡加載搜索索引...');
       searchIndex = await loadSearchIndexWithProgress();
-      
-      // 保存到緩存並更新哈希
       if (cacheManager && searchIndex) {
         await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
-        
-        // 獲取並保存哈希值
         const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
-        const hashFileName = `${indexFileName}.hash`;
-        const hashData = await cacheManager.fetchHashFile(hashFileName);
+        const hashData = await cacheManager.fetchHashFile(`${indexFileName}.hash`);
         if (hashData) {
           await cacheManager.saveHashMetadata(hashData, isTraditional);
-          
-          // 清除舊的處理後索引緩存（因為原始索引已更新）
           console.log('🗑️ 清除舊的處理後索引緩存...');
           await cacheManager.clearOldProcessedIndexes(isTraditional, hashData.hash);
         }
       }
     }
-    
-    console.timeEnd('📥 JSON載入時間');
-    console.log(`📋 索引記錄數: ${searchIndex.length}`);
-    
-    // 載入完成，移除載入UI
+
     elements.searchStatus.removeChild(loadingUI.loadingDiv);
-    
-    // 創建並配置 MiniSearch 實例
-    console.time('🏗️ MiniSearch對象創建');
+    console.log(`📋 索引記錄數: ${searchIndex.length}`);
+
     const searchConfig = createSearchConfig(segmenterEnabled);
     miniSearch = new MiniSearch(searchConfig);
-    console.timeEnd('🏗️ MiniSearch對象創建');
-    
-    console.log(isTraditionalChinesePage() ? 
-      '✅ 使用統一搜索配置' : 
-      '✅ 使用统一搜索配置');
-      
-    // 分批分詞並建立搜索索引（統一處理，支持緩存）
+
     await buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, elements.searchStatus, segmenterEnabled, cacheManager, isTraditional);
-      
-    // 完成搜索初始化設置
     finalizeSearchSetup(elements, segmenterEnabled, searchIndex.length);
-      
-    } catch (error) {
-      handleSearchInitError(elements, error);
-      return;
-    }
-    
-    // 搜索功能处理
-    function performSearch(query) {
-      // 重置搜索結果欄位高度（新搜索開始時）
-      resetSearchResultsHeight();
-      
-      if (!miniSearch || !query || query.trim().length < 2) {
-        elements.searchResults.style.display = 'none';
-        elements.tocHeader.style.display = 'block';
-        currentSearchResults = [];
-        displayedResultsCount = 0;
-        hideLoadMoreButtons();
-        if (query && query.trim().length > 0 && query.trim().length < 2) {
-          elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
-        } else {
-          elements.searchStatus.innerHTML = `
-            ${getText(`搜索准备就绪 (共${searchIndex ? searchIndex.length : 0}条记录)`, `搜尋準備就緒 (共${searchIndex ? searchIndex.length : 0}條記錄)`)}
-          `;
-        }
-        return;
-      }
-      
-      const trimmedQuery = query.trim();
-      
-      try {
-        let searchQuery = trimmedQuery;
-        let searchOptions = {
-          boost: { processedContent: 1 } // 只對 processedContent 進行搜索
-        };
-        
-        // 如果啟用了分詞，對用戶查詢進行分詞處理
-        if (chineseSegmenter && trimmedQuery.length > 1) {
-          const queryWords = segmentWithJieba(trimmedQuery, true);
-          if (queryWords.length > 0) {
-            // 使用分詞後的詞語進行搜索，用空格連接
-            searchQuery = queryWords.join(' ');
-          }
-        }
-        
-        // 执行搜索
-        const results = miniSearch.search(searchQuery, searchOptions);
-        
-        // 按MiniSearch的score由高到低排序
-        results.sort((a, b) => {
-          return b.score - a.score;
-        });
-        
-        // 调试信息：显示前5个结果的score值
-        if (results.length > 0) {
-          results.slice(0, 5).forEach((result, index) => {
-          });
-        }
-        
-        // 保存所有结果
-        currentSearchResults = results;
-        displayedResultsCount = 0;
-        
-        if (results.length > 0) {
-          // 重置搜索結果容器高度（移除滾動條，保持分頁）
-          resetSearchResultsHeight();
-          displayPagedResults(trimmedQuery);
-        } else {
-          displayNoResults(trimmedQuery);
-          elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
-        }
-        
-        elements.searchResults.style.display = 'block';
-        elements.tocHeader.style.display = 'none';
-        
-        // 延迟更新浮动控制状态，让DOM变化完成
-        setTimeout(updateFloatingControlsState, 10);
-        
-        // 更新搜索按鈕顯示狀態
-        setTimeout(updateBottomSearchButtonsVisibility, 10);
-        
-      } catch (error) {
-        console.error('搜索出错:', error);
-        elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
-        // 在出错时也隐藏搜索结果
-        elements.searchResults.style.display = 'none';
-        elements.tocHeader.style.display = 'block';
-        
-        // 延迟更新浮动控制状态，让DOM变化完成
-        setTimeout(updateFloatingControlsState, 10);
-      }
-    }
-    
-    // 显示分页搜索结果
-    function displayPagedResults(query) {
-      // 初始顯示第一頁結果（20條）
-      displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
-      const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
-      
-      displayResults(resultsToShow, query);
-      updateResultsCounter();
-      updateLoadMoreButtons(); // 根據是否有更多結果顯示按鈕
-      
-      // 更新搜索状态为成功状态
-      const totalResults = currentSearchResults.length;
-      const searchStatus = document.getElementById('search-status');
-      if (searchStatus) {
-      searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
-      }
-    }
-    
 
-
-
-    
-    // 收縮搜索結果欄位高度 - 已移除收縮功能，此函數保留以維持兼容性
-    function collapseSearchResultsHeight() {
-      const searchResultsList = document.querySelector('.search-results-list');
-      
-      if (!searchResultsList) {
-        return;
-      }
-      
-      // 保持無高度限制（不再提供收縮功能）
-      searchResultsList.style.maxHeight = 'none';
-      searchResultsList.style.overflowY = 'visible';
-      
-      // 移除展開標記
-      searchResultsList.removeAttribute('data-expanded');
-    }
-
-
-
-    // 加载更多结果 - 修正邏輯：只加載20條但展開畫面
-    function loadMoreResults() {
-      const startIndex = displayedResultsCount;
-      const endIndex = Math.min(startIndex + RESULTS_PER_PAGE, currentSearchResults.length);
-      const additionalResults = currentSearchResults.slice(startIndex, endIndex);
-      
-      if (additionalResults.length > 0) {
-        // 1. 加載下一批20條結果
-        displayedResultsCount = endIndex;
-        appendResults(additionalResults);
-        updateResultsCounter();
-        
-        // 2. 展開搜索結果畫面到最大，移除滾動條
-        expandSearchResultsHeight();
-        updateLoadMoreButtons();
-        
-        // 更新搜索状态
-        const totalResults = currentSearchResults.length;
-        const searchStatus = document.getElementById('search-status');
-        if (searchStatus) {
-        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
-        }
-      }
-    }
-    
-    // 加载所有结果
-    function loadAllResults() {
-      if (displayedResultsCount < currentSearchResults.length) {
-        // 1. 加載所有剩餘結果
-        const remainingResults = currentSearchResults.slice(displayedResultsCount);
-        displayedResultsCount = currentSearchResults.length;
-        appendResults(remainingResults);
-        updateResultsCounter();
-        
-        // 2. 展開搜索結果畫面到最大，移除滾動條
-        expandSearchResultsHeight();
-        updateLoadMoreButtons();
-        
-        // 更新搜索状态
-        const totalResults = currentSearchResults.length;
-        const searchStatus = document.getElementById('search-status');
-        if (searchStatus) {
-        searchStatus.textContent = getText(`找到 ${totalResults} 条匹配结果`, `找到 ${totalResults} 條匹配結果`);
-        }
-      }
-    }
-    
-    // 調整搜索結果容器高度 - 已預設無限制，此函數保留以維持兼容性
-    function adjustSearchResultsHeight() {
-      const searchResultsList = document.getElementById('search-results-list');
-      const searchResults = document.getElementById('search-results');
-      
-      if (searchResultsList && searchResults) {
-        // 確保無高度限制（預設已是如此）
-        searchResultsList.style.maxHeight = 'none';
-        searchResultsList.style.overflowY = 'visible';
-        
-        // 確保搜索結果容器也能完全顯示
-        const searchResults = document.getElementById('search-results');
-        if (searchResults) {
-        searchResults.style.maxHeight = 'none';
-        }
-        
-        console.log('🔧 已調整搜索結果容器為自適應高度');
-      }
-    }
-
-    
-    // 更新结果计数器
-    function updateResultsCounter() {
-      const totalResults = currentSearchResults.length;
-      elements.searchResultsCount.textContent = getText(`显示 ${displayedResultsCount} / ${totalResults} 条结果`, `顯示 ${displayedResultsCount} / ${totalResults} 條結果`);
-    }
-    
-
-    
-
-    
-    // 追加搜索结果到列表
-    // 生成單個搜索結果項目的HTML
-    function generateSearchResultItem(result, index, indexOffset = 0, query = '') {
-      const typeText = {
-        'heading': getI18nText('search.resultTypes.heading', isTraditionalChinesePage(), '標題'),
-        'question': getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'), 
-        'answer': getI18nText('search.resultTypes.answer', isTraditionalChinesePage(), '回答'),
-        'content': getI18nText('search.resultTypes.content', isTraditionalChinesePage(), '內容')
-      }[result.type] || getText('内容', '內容');
-      
-      // 智能获取最佳context并高亮搜索关键词
-      const bestContext = query ? getBestContextForHighlight(result, query) : result.context;
-      const highlightedContext = query ? highlightSearchTerm(bestContext, query) : bestContext;
-      
-      // 計算全局序號
-      const globalIndex = indexOffset + index + 1;
-      const totalResults = currentSearchResults.length;
-      
-      return `
-        <li class="search-result-item" data-url="${result.url}">
-          <div class="search-result-header">
-            <span class="search-result-number">${globalIndex}/${totalResults}</span>
-            <span class="search-result-type">${typeText}</span>
-            <div class="search-result-title">
-              ${escapeHtml(result.title)}
-            </div>
-          </div>
-          <div class="search-result-content">${highlightedContext}</div>
-        </li>
-      `;
-    }
-
-    function appendResults(results) {
-      const query = document.getElementById('search-input').value.trim();
-      const startIndex = displayedResultsCount - results.length; // 計算當前批次的起始序號
-      
-      const additionalHTML = results.map((result, index) => 
-        generateSearchResultItem(result, index, startIndex, query)
-      ).join('');
-      
-      elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
-    }
-    
-    // 显示搜索结果（原函数，现在用于内部调用）
-    function displayResults(results, query) {
-      elements.searchResultsList.innerHTML = results.map((result, index) => 
-        generateSearchResultItem(result, index, 0, query)
-      ).join('');
-    }
-    
-    // 显示无结果
-    function displayNoResults(query) {
-      elements.searchResultsCount.textContent = getText('未找到结果', '未找到結果');
-      elements.searchResultsList.innerHTML = `
-        <li class="search-result-item" style="text-align: center; color: #999;">
-          <div>${getText(`未找到包含"${escapeHtml(query)}"的内容`, `未找到包含"${escapeHtml(query)}"的內容`)}</div>
-          <div style="font-size: 12px; margin-top: 8px;">${getText('尝试使用不同的关键词', '嘗試使用不同的關鍵詞')}</div>
-        </li>
-      `;
-    }
-    
-    // 转义正则表达式特殊字符
-    function escapeRegex(str) {
-      if (!str || typeof str !== 'string') {
-        return '';
-      }
-      // 简单的字符串替换，避免复杂的正则表达式
-      const chars = {
-        '\\\\': '\\\\\\\\',
-        '.': '\\\\.',
-        '*': '\\\\*',
-        '+': '\\\\+',
-        '?': '\\\\?',
-        '^': '\\\\^',
-        '$': '\\\\$',
-        '{': '\\\\{',
-        '}': '\\\\}',
-        '(': '\\\\(',
-        ')': '\\\\)',
-        '|': '\\\\|',
-        '[': '\\\\[',
-        ']': '\\\\]',
-        '/': '\\\\/'
-      };
-      let result = str;
-      Object.keys(chars).forEach(char => {
-        result = result.split(char).join(chars[char]);
-      });
-      return result;
-    }
-    
-    // 转义HTML特殊字符
-    function escapeHtml(str) {
-      if (!str || typeof str !== 'string') {
-        return '';
-      }
-      try {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-      } catch (e) {
-        console.warn('HTML转义失败:', e);
-        // 降级处理：手动替换基本的HTML字符
-        return str.replace(/&/g, '&amp;')
-                  .replace(/</g, '&lt;')
-                  .replace(/>/g, '&gt;')
-                  .replace(/"/g, '&quot;')
-                  .replace(/'/g, '&#39;');
-      }
-    }
-    
-    // 智能获取最佳context用于高亮显示
-    function getBestContextForHighlight(result, query) {
-      if (!query || !result.content) {
-        return result.context || result.content;
-      }
-      
-      const searchTerm = query.trim();
-      const content = result.content;
-      const lowerContent = content.toLowerCase();
-      const lowerSearchTerm = searchTerm.toLowerCase();
-      
-      // 如果沒有 context 或 context 為空，使用 content
-      if (!result.context) {
-        return content;
-      }
-      
-      // 如果原context包含完整搜索词，直接使用
-      if (result.context.toLowerCase().includes(lowerSearchTerm)) {
-        return result.context;
-      }
-      
-      // 尝试完整匹配
-      const exactIndex = lowerContent.indexOf(lowerSearchTerm);
-      if (exactIndex !== -1) {
-        return extractContextAroundPosition(content, exactIndex, 120);
-      }
-      
-      // 智能分词：将搜索词拆分为多个关键词
-      const keywords = extractKeywords(searchTerm);
-      
-      if (keywords.length <= 1) {
-        // 单个关键词，使用原有逻辑
-        return result.context || result.content;
-      }
-      
-      // 多关键词处理：找到所有关键词的位置
-      const keywordPositions = [];
-      keywords.forEach(keyword => {
-        const lowerKeyword = keyword.toLowerCase();
-        let index = lowerContent.indexOf(lowerKeyword);
-        while (index !== -1) {
-          keywordPositions.push({
-            keyword: keyword,
-            position: index,
-            length: keyword.length
-          });
-          index = lowerContent.indexOf(lowerKeyword, index + 1);
-        }
-      });
-      
-      if (keywordPositions.length === 0) {
-        return result.context || result.content;
-      }
-      
-      // 生成包含所有关键词的最佳context
-      return generateMultiKeywordContext(content, keywordPositions, 150);
-    }
-    
-    // 提取关键词（简单的中文分词）
-    function extractKeywords(searchTerm) {
-      // 移除多余空格
-      const cleaned = searchTerm.trim().replace(/\s+/g, ' ');
-      
-      // 按空格分割
-      const spaceWords = cleaned.split(' ').filter(word => word.length > 0);
-      
-      // 如果有空格分割的结果，使用它们
-      if (spaceWords.length > 1) {
-        return spaceWords;
-      }
-      
-      // 中文智能分词（简单版本）
-      const keywords = [];
-      const text = cleaned;
-      
-      // 2-4字的常见词组模式
-      const commonPatterns = [
-        /[\u4e00-\u9fff]{2,4}/g  // 2-4个中文字符的组合
-      ];
-      
-      // 如果输入较短（<=4字符），尝试按2字符分割
-      if (text.length <= 4) {
-        for (let i = 0; i < text.length; i += 2) {
-          const word = text.substr(i, 2);
-          if (word.length >= 2) {
-            keywords.push(word);
-          }
-        }
-      } else {
-        // 较长输入，尝试更智能的分割
-        // 先尝试按常见的2字词分割
-        for (let i = 0; i < text.length - 1; i++) {
-          const word2 = text.substr(i, 2);
-          const word3 = text.substr(i, 3);
-          
-          // 优先选择3字词，然后是2字词
-          if (i < text.length - 2 && isLikelyWord(word3)) {
-            keywords.push(word3);
-            i += 2; // 跳过下一个字符
-          } else if (isLikelyWord(word2)) {
-            keywords.push(word2);
-            i += 1; // 跳过下一个字符
-          }
-        }
-      }
-      
-      // 如果没有找到合适的分词，返回原始输入
-      return keywords.length > 0 ? keywords : [text];
-    }
-    
-    // 简单判断是否像一个词（可以扩展更复杂的逻辑）
-    function isLikelyWord(word) {
-      // 基本的中文词汇判断
-      return /^[\u4e00-\u9fff]+$/.test(word) && word.length >= 2;
-    }
-    
-    // 生成包含多个关键词的context
-    function generateMultiKeywordContext(content, keywordPositions, maxLength = 150) {
-      if (keywordPositions.length === 0) {
-        return content.substring(0, maxLength);
-      }
-      
-      // 按位置排序
-      keywordPositions.sort((a, b) => a.position - b.position);
-      
-      // 计算覆盖范围
-      const firstPos = keywordPositions[0].position;
-      const lastPos = keywordPositions[keywordPositions.length - 1];
-      const lastEnd = lastPos.position + lastPos.length;
-      const totalSpan = lastEnd - firstPos;
-      
-      // 如果所有关键词都在合理范围内，生成包含所有的context
-      if (totalSpan <= maxLength * 0.8) {
-        const contextStart = Math.max(0, firstPos - Math.floor((maxLength - totalSpan) / 2));
-        const contextEnd = Math.min(content.length, contextStart + maxLength);
-        
-        let context = content.substring(contextStart, contextEnd);
-        
-        // 添加省略号
-        if (contextStart > 0) context = '...' + context;
-        if (contextEnd < content.length) context = context + '...';
-        
-        return context;
-      }
-      
-      // 如果关键词分布太散，选择最重要的几个
-      const importantPositions = selectImportantPositions(keywordPositions, maxLength);
-      
-      // 为每个重要位置生成小段context，然后合并
-      const contextParts = [];
-      importantPositions.forEach(pos => {
-        const partLength = Math.floor(maxLength / importantPositions.length);
-        const start = Math.max(0, pos.position - Math.floor(partLength / 2));
-        const end = Math.min(content.length, start + partLength);
-        
-        let part = content.substring(start, end);
-        if (start > 0) part = '...' + part;
-        if (end < content.length) part = part + '...';
-        
-        contextParts.push(part);
-      });
-      
-      return contextParts.join(' ');
-    }
-    
-    // 选择最重要的关键词位置
-    function selectImportantPositions(positions, maxLength) {
-      // 简单策略：选择前几个不重叠的位置
-      const selected = [];
-      const minDistance = 20; // 最小距离
-      
-      for (const pos of positions) {
-        const tooClose = selected.some(sel => 
-          Math.abs(sel.position - pos.position) < minDistance
-        );
-        
-        if (!tooClose) {
-          selected.push(pos);
-        }
-        
-        // 限制数量
-        if (selected.length >= 3) break;
-      }
-      
-      return selected.length > 0 ? selected : [positions[0]];
-    }
-    
-    // 从指定位置提取上下文
-    function extractContextAroundPosition(text, position, maxLength = 100) {
-      const halfLength = Math.floor(maxLength / 2);
-      let start = Math.max(0, position - halfLength);
-      let end = Math.min(text.length, position + halfLength);
-      
-      // 尝试在词边界处截断，避免截断词语
-      if (start > 0) {
-        const beforeText = text.substring(start - 10, start);
-        const spaceIndex = beforeText.lastIndexOf(' ');
-        const punctIndex = Math.max(
-          beforeText.lastIndexOf('。'),
-          beforeText.lastIndexOf('，'),
-          beforeText.lastIndexOf('！'),
-          beforeText.lastIndexOf('？')
-        );
-        if (spaceIndex !== -1 || punctIndex !== -1) {
-          start = start - 10 + Math.max(spaceIndex, punctIndex) + 1;
-        }
-      }
-      
-      if (end < text.length) {
-        const afterText = text.substring(end, end + 10);
-        const spaceIndex = afterText.indexOf(' ');
-        const punctIndex = Math.min(
-          afterText.indexOf('。') !== -1 ? afterText.indexOf('。') : Infinity,
-          afterText.indexOf('，') !== -1 ? afterText.indexOf('，') : Infinity,
-          afterText.indexOf('！') !== -1 ? afterText.indexOf('！') : Infinity,
-          afterText.indexOf('？') !== -1 ? afterText.indexOf('？') : Infinity
-        );
-        if (spaceIndex !== -1 || punctIndex !== Infinity) {
-          end = end + Math.min(spaceIndex !== -1 ? spaceIndex : Infinity, punctIndex);
-        }
-      }
-      
-      let context = text.substring(start, end);
-      
-      // 添加省略号
-      if (start > 0) context = '...' + context;
-      if (end < text.length) context = context + '...';
-      
-      return context;
-    }
-
-    // 智能高亮搜索关键词（支持多关键词）
-    function highlightSearchTerm(text, searchTerm) {
-      if (!text || !searchTerm || typeof text !== 'string' || typeof searchTerm !== 'string') {
-        return text;
-      }
-      
-      const term = searchTerm.trim();
-      if (!term) return text;
-      
-      try {
-        // 首先尝试完整匹配
-        const exactRegex = new RegExp(`(${escapeRegex(term)})`, 'gi');
-        let result = text.replace(exactRegex, '<span class="search-result-highlight">$1</span>');
-        
-        if (result !== text) {
-          return result;
-        }
-        
-        // 如果完整匹配失败，尝试多关键词高亮
-        const keywords = extractKeywords(term);
-      
-        if (keywords.length > 1) {
-          // 多关键词高亮
-          result = highlightMultipleKeywords(text, keywords);
-          if (result !== text) {
-            return result;
-          }
-        }
-        
-        // 回退到原有的模糊匹配逻辑
-        return highlightWithFuzzyMatching(text, term);
-        
-      } catch (e) {
-        console.warn('智能高亮处理失败:', e, '搜索词:', term);
-        return highlightWithFuzzyMatching(text, term);
-      }
-    }
-    
-    // 多关键词高亮
-    function highlightMultipleKeywords(text, keywords) {
-      let result = text;
-      let hasMatch = false;
-      
-      // 按长度排序，先处理长的关键词，避免短词覆盖长词
-      const sortedKeywords = keywords.sort((a, b) => b.length - a.length);
-      
-      sortedKeywords.forEach(keyword => {
-        const keywordRegex = new RegExp(`(${escapeRegex(keyword)})`, 'gi');
-        const beforeReplace = result;
-        result = result.replace(keywordRegex, '<span class="search-result-highlight">$1</span>');
-        
-        if (result !== beforeReplace) {
-          hasMatch = true;
-        }
-      });
-      
-      return hasMatch ? result : text;
-    }
-    
-    // 模糊匹配高亮（原有逻辑）
-    function highlightWithFuzzyMatching(text, term) {
-      try {
-        // 策略1: 忽略标点符号的模糊匹配
-        const punctuation = '[\\s\\u3000-\\u303F\\uFF00-\\uFFEF\\u2000-\\u206F\\u0020-\\u002F\\u003A-\\u0040\\u005B-\\u0060\\u007B-\\u007E\\u2010-\\u2027\\u2030-\\u205F\\u3001-\\u3003\\u3008-\\u3011\\u3014-\\u301F\\uFE10-\\uFE19\\uFE30-\\uFE6F]';
-        
-        const flexiblePattern = term.split('').map(char => {
-          return escapeRegex(char);
-        }).join(`${punctuation}*`);
-        
-        const flexibleRegex = new RegExp(`(${flexiblePattern})`, 'gi');
-        let result = text.replace(flexibleRegex, '<span class="search-result-highlight">$1</span>');
-        
-        if (result !== text) {
-          return result;
-        }
-        
-        // 策略2: 字符级模糊匹配
-        const chars = term.split('');
-        if (chars.length > 1) {
-          const charPattern = chars.map(char => escapeRegex(char)).join(`${punctuation}*`);
-          const charRegex = new RegExp(`(${charPattern})`, 'gi');
-          
-          result = text.replace(charRegex, '<span class="search-result-highlight">$1</span>');
-          if (result !== text) {
-            return result;
-          }
-        }
-        
-        // 策略3: 单字符逐个匹配
-        chars.forEach(char => {
-          if (char.trim()) {
-            const singleCharRegex = new RegExp(`(${escapeRegex(char)})`, 'gi');
-            result = result.replace(singleCharRegex, '<span class="search-result-highlight">$1</span>');
-          }
-        });
-        
-        return result;
-        
-      } catch (e) {
-        console.warn('模糊高亮处理失败:', e);
-        // 最后的安全降级
-        try {
-          const simpleRegex = new RegExp(term.replace(/[.*+?^${{}}()|[\\]\\\\]/g, '\\\\$&'), 'gi');
-          return text.replace(simpleRegex, '<span class="search-result-highlight">$&</span>');
-        } catch (e2) {
-          console.warn('简单高亮也失败:', e2);
-          return text;
-        }
-      }
-    }
-    
-    // 清除搜索
-    function clearSearch() {
-      const searchInput = document.getElementById('search-input');
-      const searchResults = document.getElementById('search-results');
-      const tocHeader = document.getElementById('toc-header');
-      const searchStatus = document.getElementById('search-status');
-      
-      if (searchInput) searchInput.value = '';
-      if (searchResults) searchResults.style.display = 'none';
-      if (tocHeader) tocHeader.style.display = 'block';
-      currentSearchResults = [];
-      displayedResultsCount = 0;
-      hideLoadMoreButtons();
-      
-      // 重置搜索結果容器高度
-      resetSearchResultsHeight();
-      
-      if (searchStatus) {
-        const recordCount = searchIndex ? searchIndex.length : 0;
-      searchStatus.innerHTML = `
-          ${getText(`搜索准备就绪 (共${recordCount}条记录)`, `搜尋準備就緒 (共${recordCount}條記錄)`)}
-      `;
-      }
-    }
-    
-    // 事件监听
-    let searchTimeout;
-    elements.searchInput.addEventListener('input', (e) => {
-      clearTimeout(searchTimeout);
-      const query = e.target.value.trim();
-      
-      // 防抖处理
-      searchTimeout = setTimeout(() => {
-        performSearch(query);
-      }, 300);
-    });
-    
-    // 清除搜索按钮
-    elements.searchClear.addEventListener('click', clearSearch);
-    
-    // 收起搜索按钮
-    elements.searchCollapse.addEventListener('click', collapseSearch);
-    
-    // 顯示更多按鈕（頂部和底部）
-    const loadMoreBtn = document.getElementById('search-load-more');
-    const loadAllBtn = document.getElementById('search-load-all');
-    const loadMoreBtnBottom = document.getElementById('search-load-more-bottom');
-    const loadAllBtnBottom = document.getElementById('search-load-all-bottom');
-    
-    if (loadMoreBtn) {
-      loadMoreBtn.addEventListener('click', loadMoreResults);
-    }
-    
-    if (loadAllBtn) {
-      loadAllBtn.addEventListener('click', loadAllResults);
-    }
-    
-    // 底部按鈕事件監聽器
-    if (loadMoreBtnBottom) {
-      loadMoreBtnBottom.addEventListener('click', loadMoreResults);
-    }
-    
-    if (loadAllBtnBottom) {
-      loadAllBtnBottom.addEventListener('click', loadAllResults);
-    }
-    
-    // 底部清除和收起按鈕
-    const searchClearBottom = document.getElementById('search-clear-bottom');
-    const searchCollapseBottom = document.getElementById('search-collapse-bottom');
-    
-    if (searchClearBottom) {
-      searchClearBottom.addEventListener('click', clearSearch);
-    }
-    
-    if (searchCollapseBottom) {
-      searchCollapseBottom.addEventListener('click', collapseSearch);
-    }
-    
-    // 搜索结果点击
-    elements.searchResultsList.addEventListener('click', (e) => {
-      const item = e.target.closest('.search-result-item');
-      if (item) {
-        const url = item.dataset.url;
-        if (url) {
-          // 检查是否按住修饰键
-          if (e.ctrlKey || e.metaKey) {
-            // Ctrl/Cmd+Click：在新标签页打开（静默）
-            window.open(url, '_blank', 'noopener,noreferrer');
-          } else if (e.shiftKey) {
-            // Shift+Click：在新窗口打开
-            window.open(url, '_blank', 'noopener,noreferrer,width=1200,height=800');
-          } else {
-            // 默认：在新标签页打开
-            window.open(url, '_blank', 'noopener,noreferrer');
-          }
-        }
-      }
-    });
-    
-    // 键盘快捷键
-    document.addEventListener('keydown', (e) => {
-      // Ctrl+F 快捷键已禁用，不再激活搜索功能
-      // 用户可以使用浏览器原生的 Ctrl+F 进行页面内搜索
-      
-
-    });
-  }
-  
-  // 收起搜索功能
-  function collapseSearch() {
-    const searchContainer = document.getElementById('search-container');
-    const searchActivation = document.querySelector('.search-activation');
-    const searchInput = document.getElementById('search-input');
-    const searchResults = document.getElementById('search-results');
-    const tocHeader = document.getElementById('toc-header');
-    
-    if (searchContainer && searchActivation) {
-      // 清除搜索内容和重置分页状态
-      if (searchInput) searchInput.value = '';
-      if (searchResults) searchResults.style.display = 'none';
-      if (tocHeader) tocHeader.style.display = 'block';
-      
-      // 重置分页状态
-      currentSearchResults = [];
-      displayedResultsCount = 0;
-      hideLoadMoreButtons();
-      
-      // 清空搜索狀態和結果顯示
-      const searchStatus = document.getElementById('search-status');
-      const searchResultsList = document.getElementById('search-results-list');
-      const searchResultsCount = document.getElementById('search-results-count');
-      
-      if (searchStatus) {
-        searchStatus.innerHTML = '';
-      }
-      if (searchResultsList) {
-        searchResultsList.innerHTML = '';
-      }
-      if (searchResultsCount) {
-        searchResultsCount.textContent = '';
-      }
-      
-      // 重置搜索結果容器高度
-      // 重用已聲明的 searchResultsList 和 searchResults 變數
-      if (searchResultsList && searchResults) {
-        searchResultsList.style.maxHeight = '';
-        searchResultsList.style.overflowY = '';
-        searchResults.style.maxHeight = '';
-      }
-      
-      // 隐藏搜索容器，显示激活按钮
-      searchContainer.style.display = 'none';
-      searchActivation.style.display = 'block';
-      
-      // 延迟更新浮动控制状态，让DOM变化完成
-      setTimeout(updateFloatingControlsState, 10);
-    }
-  }
-  
-  // 如果是首页，添加搜索激活事件监听
-  if (isIndexPage()) {
-    const searchActivateBtn = document.getElementById('search-activate-btn');
-    if (searchActivateBtn) {
-      searchActivateBtn.addEventListener('click', activateSearch);
-    }
-    
-    // Ctrl+F 快捷键已禁用，不再激活搜索功能
-    // 用户可以使用浏览器原生的 Ctrl+F 进行页面内搜索
+  } catch (error) {
+    handleSearchInitError(elements, error);
+    return;
   }
 
+  // 搜索输入防抖
+  let searchTimeout;
+  elements.searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    searchTimeout = setTimeout(() => performSearch(query), 300);
+  });
+
+  // 清除 / 收起按钮
+  if (elements.searchClear) elements.searchClear.addEventListener('click', clearSearch);
+  if (elements.searchCollapse) elements.searchCollapse.addEventListener('click', collapseSearch);
+
+  // 显示更多 / 全部按钮（顶部 + 底部）
+  [['search-load-more', loadMoreResults], ['search-load-all', loadAllResults],
+   ['search-load-more-bottom', loadMoreResults], ['search-load-all-bottom', loadAllResults],
+   ['search-clear-bottom', clearSearch], ['search-collapse-bottom', collapseSearch]
+  ].forEach(([id, fn]) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', fn);
+  });
+
+  // 结果列表点击（在新标签打开）
+  elements.searchResultsList.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (item && item.dataset.url) {
+      window.open(item.dataset.url, '_blank', 'noopener,noreferrer');
+    }
+  });
+}
+
+// ============================================================
+// 首页搜索激活按钮监听（模块加载后绑定）
+// ============================================================
+if (isIndexPage()) {
+  const searchActivateBtn = document.getElementById('search-activate-btn');
+  if (searchActivateBtn) {
+    searchActivateBtn.addEventListener('click', activateSearch);
+  }
+}
   // ============ 功能實現 ============
   
   // 生成內容的簡單hash（與Python端保持一致，使用MD5前12位）
@@ -2155,832 +1666,484 @@ async function initSearch() {
     });
   }
 
-  // ============ 書籤功能 ============
-  
-  // 獲取當前語言版本的書籤存儲鍵
-  function getBookmarkStorageKey() {
-    return isTraditionalChinesePage() ? 'ebook-bookmarks-traditional' : 'ebook-bookmarks-simplified';
+// ============================================================
+// 03a-bookmark-data.js — 书签存储、CRUD、章节检测、视觉标识
+// ============================================================
+
+// 当前文件章节信息（在 DOMContentLoaded 后设置）
+let currentChapter;
+
+// 获取当前语言版本的 localStorage 键
+function getBookmarkStorageKey() {
+  return isTraditionalChinesePage() ? 'ebook-bookmarks-traditional' : 'ebook-bookmarks-simplified';
+}
+
+// 迁移旧版统一书签到按语言分离的结构（只执行一次）
+function migrateOldBookmarks() {
+  if (localStorage.getItem('bookmarks-migrated')) return;
+
+  const oldData = localStorage.getItem('ebook-bookmarks');
+  if (!oldData) { localStorage.setItem('bookmarks-migrated', 'true'); return; }
+
+  try {
+    const all = JSON.parse(oldData);
+    const simplified = all.filter(b => !(b.chapterFilename && b.chapterFilename.includes('_trad.html')));
+    const traditional = all.filter(b => b.chapterFilename && b.chapterFilename.includes('_trad.html'));
+    if (simplified.length) localStorage.setItem('ebook-bookmarks-simplified', JSON.stringify(simplified));
+    if (traditional.length) localStorage.setItem('ebook-bookmarks-traditional', JSON.stringify(traditional));
+    localStorage.removeItem('ebook-bookmarks');
+    localStorage.setItem('bookmarks-migrated', 'true');
+    console.log(`书签迁移完成: 简体 ${simplified.length} 个, 繁体 ${traditional.length} 个`);
+  } catch (e) {
+    console.error('书签迁移失败:', e);
+    localStorage.setItem('bookmarks-migrated', 'true');
   }
+}
 
-  // 遷移舊書籤數據到新的分離存儲結構
-  function migrateOldBookmarks() {
-    // 檢查是否已經完成遷移
-    if (localStorage.getItem('bookmarks-migrated')) {
-      return;
-    }
-    
-    const oldBookmarks = localStorage.getItem('ebook-bookmarks');
-    if (!oldBookmarks) {
-      // 沒有舊書籤，標記為已遷移
-      localStorage.setItem('bookmarks-migrated', 'true');
-      return;
-    }
+// 读取书签列表（可选按章节 ID 过滤）
+function getBookmarks(chapterId = null) {
+  migrateOldBookmarks();
+  const raw = localStorage.getItem(getBookmarkStorageKey());
+  const all = raw ? JSON.parse(raw) : [];
+  return chapterId ? all.filter(b => b.chapter && b.chapter.id === chapterId) : all;
+}
 
-    try {
-      const bookmarks = JSON.parse(oldBookmarks);
-      const simplifiedBookmarks = [];
-      const traditionalBookmarks = [];
+function getCurrentChapterBookmarks() {
+  return getBookmarks(currentChapter.id);
+}
 
-      // 根據章節文件名分離書籤
-      bookmarks.forEach(bookmark => {
-        if (bookmark.chapterFilename && bookmark.chapterFilename.includes('_trad.html')) {
-          traditionalBookmarks.push(bookmark);
-        } else {
-          simplifiedBookmarks.push(bookmark);
-        }
-      });
+// 持久化书签列表并更新计数显示
+function saveBookmarks(bookmarks) {
+  localStorage.setItem(getBookmarkStorageKey(), JSON.stringify(bookmarks));
+  updateBookmarkCount();
+}
 
-      // 存儲到新的分離結構
-      if (simplifiedBookmarks.length > 0) {
-        localStorage.setItem('ebook-bookmarks-simplified', JSON.stringify(simplifiedBookmarks));
-      }
-      if (traditionalBookmarks.length > 0) {
-        localStorage.setItem('ebook-bookmarks-traditional', JSON.stringify(traditionalBookmarks));
-      }
-
-      // 刪除舊的統一存儲
-      localStorage.removeItem('ebook-bookmarks');
-      
-      // 標記遷移完成
-      localStorage.setItem('bookmarks-migrated', 'true');
-      
-      console.log(`書籤遷移完成: 簡體 ${simplifiedBookmarks.length} 個, 繁體 ${traditionalBookmarks.length} 個`);
-    } catch (error) {
-      console.error('書籤遷移失敗:', error);
-      // 即使失敗也標記為已嘗試，避免無限重試
-      localStorage.setItem('bookmarks-migrated', 'true');
-    }
-  }
-
-  // 書籤管理
-  function getBookmarks(chapterId = null) {
-    // 檢查並遷移舊書籤數據
-    migrateOldBookmarks();
-    
-    const storageKey = getBookmarkStorageKey();
-    const allBookmarks = localStorage.getItem(storageKey);
-    const bookmarks = allBookmarks ? JSON.parse(allBookmarks) : [];
-    
-    // 如果指定了章節ID，只返回該章節的書籤
-    if (chapterId) {
-      return bookmarks.filter(bookmark => 
-        bookmark.chapter && bookmark.chapter.id === chapterId
-      );
-    }
-    
-    return bookmarks;
-  }
-  
-  function getCurrentChapterBookmarks() {
-    return getBookmarks(currentChapter.id);
-  }
-  
-  function saveBookmarks(bookmarks) {
-    const storageKey = getBookmarkStorageKey();
-    localStorage.setItem(storageKey, JSON.stringify(bookmarks));
-    updateBookmarkCount();
-  }
-  
-  // 為元素獲取文件級章節信息（文件級書籤）
-  function findChapterForElement(element) {
-    // 直接返回當前文件的章節信息
+// 根据当前页面 URL 和 h1 构建章节信息对象
+function getCurrentChapter() {
+  const filename = (window.location.pathname.split('/').pop()) || 'index.html';
+  if (filename === 'index.html' || filename === 'index_trad.html') {
     return {
-      title: currentChapter.title,
-      id: currentChapter.id,
-      filename: currentChapter.filename
+      title: getI18nText('navigation.homepage', isTraditionalChinesePage(), '首頁'),
+      id: 'homepage',
+      isHomepage: true,
     };
   }
+  const h1 = document.querySelector('h1');
+  const title = (h1 ? h1.textContent.trim() : document.title) || '未知章節';
+  return { title, id: filename.replace('.html', ''), filename, isHomepage: false };
+}
 
-  // 添加書籤視覺標識
-  function addBookmarkVisualIndicator(element) {
-    if (!element.classList.contains('bookmarked')) {
-      element.classList.add('bookmarked');
-      
-      // 添加可點擊的書籤標記
-      if (!element.querySelector('.bookmark-indicator')) {
-        const indicator = document.createElement('span');
-        indicator.className = 'bookmark-indicator';
-        indicator.textContent = '🔖';
-        indicator.title = getI18nText('bookmark.removeBookmark', isTraditionalChinesePage(), '點擊移除書籤');
-        element.appendChild(indicator);
-      }
-    }
-  }
-  
-  // 移除書籤視覺標識
-  function removeBookmarkVisualIndicator(element) {
-    element.classList.remove('bookmarked');
-    
-    // 移除書籤標記元素
-    const indicator = element.querySelector('.bookmark-indicator');
-    if (indicator) {
-      element.removeChild(indicator);
-    }
-  }
-  
-  // 恢復所有書籤的視覺狀態
-  function restoreBookmarkVisualStates() {
-    const bookmarks = getBookmarks();
-    bookmarks.forEach(bookmark => {
-      const element = document.getElementById(bookmark.elementId);
-      if (element) {
-        addBookmarkVisualIndicator(element);
-        
-        // 如果是問答書籤，需要為問題和回答都添加視覺標識
-        if (bookmark.type === 'qa-pair') {
-          if (element.classList.contains('question')) {
-            // 元素是問題，需要找到對應的回答
-            const answerElement = findAnswerForQuestion(element);
-            if (answerElement) {
-              addBookmarkVisualIndicator(answerElement);
-            }
-          } else if (element.classList.contains('answer')) {
-            // 元素是回答，需要找到對應的問題
-            const questionElement = findQuestionForAnswer(element);
-            if (questionElement) {
-              addBookmarkVisualIndicator(questionElement);
-            }
-          }
-        }
-      }
-    });
-  }
-  
-  // 檢測當前文件信息（文件級書籤）
-  function getCurrentChapter() {
-    // 獲取當前頁面的文件名
-    const pathname = window.location.pathname;
-    const filename = pathname.split('/').pop() || 'index.html';
-    
-    // 從頁面標題或第一個H1獲取章節名稱
-    let chapterTitle = document.title;
-    const firstH1 = document.querySelector('h1');
-    if (firstH1) {
-      chapterTitle = firstH1.textContent.trim();
-    }
-    
-    // 如果是首頁，返回特殊標識
-    if (filename === 'index.html' || filename === 'index_trad.html') {
-      return {
-        title: getI18nText('navigation.homepage', isTraditionalChinesePage(), '首頁'),
-        id: 'homepage',
-        isHomepage: true
-      };
-    }
-    
-    // 為其他頁面生成章節信息
-    const chapterId = filename.replace('.html', '');
-    
-    return {
-      title: chapterTitle || '未知章節',
-      id: chapterId,
-      filename: filename,
-      isHomepage: false
-    };
-  }
-  
-  // 首頁專用：初始化浮動TOC功能
-  function initializeHomepageTOC() {
-    const tocList = document.getElementById('toc-list');
-    const mainTOC = document.querySelector('.toc ul');
-    
-    if (tocList && mainTOC) {
-      // 複製主TOC內容到浮動TOC
-      tocList.innerHTML = mainTOC.innerHTML;
-      
-      // 為TOC項目添加點擊事件（頁面內跳轉）
-      tocList.addEventListener('click', (e) => {
-        if (e.target.tagName === 'A') {
-          e.preventDefault();
-          const href = e.target.getAttribute('href');
-          if (href && href.startsWith('#')) {
-            const targetElement = document.querySelector(href);
-            if (targetElement) {
-              targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          } else if (href) {
-            // 跳轉到其他頁面
-            window.location.href = href;
-          }
-        }
-      });
-    }
-    
-    // 初始化書籤顯示
-    refreshHomepageBookmarks();
-    updateBookmarkCount();
-  }
-  
-  // 首頁專用：刷新所有章節的書籤顯示
-  function refreshHomepageBookmarks() {
-    if (!currentChapter.isHomepage) return;
-    
-    const bookmarksList = document.getElementById('bookmarks-list');
-    if (!bookmarksList) return;
-    
-    // 使用異步處理來避免阻塞UI
-    setTimeout(() => {
-      // 獲取當前語言版本的所有書籤數據
-      const allBookmarks = getBookmarks();
-      
-      if (allBookmarks.length === 0) {
-        bookmarksList.innerHTML = '<li class="bookmarks-empty">' + getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>';
-        return;
-      }
-      
-      // 如果書籤數量較多，顯示處理進度
-      if (allBookmarks.length > 50) {
-        showBookmarkProcessingIndicator(allBookmarks.length);
-      }
-      
-      processHomepageBookmarks(allBookmarks);
-    }, 10); // 短暫延遲讓載入動畫顯示
-  }
-  
-  // 顯示書籤處理指示器（針對大量書籤）
-  function showBookmarkProcessingIndicator(totalCount) {
-    const bookmarksList = document.getElementById('bookmarks-list');
-    if (!bookmarksList) return;
-    
-    const processingHTML = `
-      <div class="bookmark-loading-container">
-        <div class="bookmark-loading-spinner">
-          <div class="loading-progress-ring">
-            <svg width="40" height="40" viewBox="0 0 40 40">
-              <circle cx="20" cy="20" r="16" stroke="#f0f0f0" stroke-width="3" fill="none"/>
-              <circle cx="20" cy="20" r="16" stroke="#ff69b4" stroke-width="3" fill="none" 
-                      stroke-dasharray="100" stroke-dashoffset="100" class="progress-circle"/>
-            </svg>
-          </div>
-          <div class="loading-text">處理 ${totalCount} 個書籤...</div>
-        </div>
-      </div>
-    `;
-    
-    bookmarksList.innerHTML = processingHTML;
-  }
-  
-  // 處理首頁書籤數據（分批處理）
-  function processHomepageBookmarks(allBookmarks) {
-    const bookmarksList = document.getElementById('bookmarks-list');
-    if (!bookmarksList) return;
-    
-    // 使用requestAnimationFrame分批處理，避免阻塞UI
-    requestAnimationFrame(() => {
-      // 按章節分組書籤
-      const bookmarksByChapter = {};
-      allBookmarks.forEach(bookmark => {
-        const chapterTitle = bookmark.chapterTitle || '未知章節';
-        if (!bookmarksByChapter[chapterTitle]) {
-          bookmarksByChapter[chapterTitle] = [];
-        }
-        bookmarksByChapter[chapterTitle].push(bookmark);
-      });
-      
-      // 對章節標題進行排序（按照章節數字順序）
-      const sortedChapterTitles = Object.keys(bookmarksByChapter).sort((a, b) => {
-        // 提取章節數字，格式如：01自性与意识、06修福积功德等
-        const extractChapterNumber = (title) => {
-          // 嘗試匹配開頭的數字（1-2位數字）
-          const match = title.match(/^(\d{1,2})/);
-          const result = match ? parseInt(match[1], 10) : 999; // 未匹配的放在最後
-          // 調試信息（可選）
-          // console.log(`Chapter "${title}" -> number: ${result}`);
-          return result;
-        };
-        
-        const numA = extractChapterNumber(a);
-        const numB = extractChapterNumber(b);
-        return numA - numB;
-      });
-      
-      // 分批渲染章節
-      renderBookmarkChaptersBatch(sortedChapterTitles, bookmarksByChapter, 0);
-    });
-  }
-  
-  // 分批渲染書籤章節，避免大量DOM操作阻塞UI
-  function renderBookmarkChaptersBatch(chapterTitles, bookmarksByChapter, startIndex) {
-    const bookmarksList = document.getElementById('bookmarks-list');
-    if (!bookmarksList) return;
-    
-    // 調試：顯示章節渲染順序
-    // if (startIndex === 0) {
-    //   console.log('開始渲染書籤，章節順序：', chapterTitles);
-    // }
-    
-    const batchSize = 3; // 每批處理3個章節
-    const endIndex = Math.min(startIndex + batchSize, chapterTitles.length);
-    
-    // 如果是第一批，清空並創建容器
-    if (startIndex === 0) {
-      bookmarksList.innerHTML = '';
-    }
-    
-    // 處理當前批次的章節
-    for (let i = startIndex; i < endIndex; i++) {
-      const chapterTitle = chapterTitles[i];
-      const chapterBookmarks = bookmarksByChapter[chapterTitle];
-      
-      // 創建章節組容器
-      const chapterGroup = document.createElement('li');
-      chapterGroup.className = 'bookmark-chapter-group';
-      
-      let chapterHTML = `
-        <div class="bookmark-chapter-title">${chapterTitle}</div>
-        <ul class="bookmark-chapter-list">
-      `;
-      
-      chapterBookmarks.forEach(bookmark => {
-        const bookmarkQuestioner = bookmark.questioner || '匿名';
-        const bookmarkTime = bookmark.time || '';
-        const bookmarkPreview = bookmark.preview || '';
-        const chapterFilename = bookmark.chapterFilename || '';
-        const elementId = bookmark.elementId || '';
-        const isQAPair = bookmark.type === 'qa-pair';
-        const typeIcon = isQAPair ? '💬' : '📝';
-        const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
-        
-        const linkUrl = chapterFilename && elementId ? `${chapterFilename}#${elementId}` : '#';
-        
-        chapterHTML += `
-          <li class="bookmark-item${typeClass}" data-bookmark-id="${bookmark.id}">
-            <div class="bookmark-meta">
-              <span class="bookmark-type">${typeIcon}</span>
-              <span class="bookmark-questioner">${bookmarkQuestioner}</span>
-              <span class="bookmark-time">${bookmarkTime}</span>
-            </div>
-            <div class="bookmark-preview">
-              <a href="${linkUrl}" target="_blank" title="點擊跳轉到原問答">${bookmarkPreview}</a>
-            </div>
-            <button class="bookmark-delete" data-bookmark-id="${bookmark.id}" title="刪除書籤">✕</button>
-          </li>
-        `;
-      });
-      
-      chapterHTML += '</ul>';
-      chapterGroup.innerHTML = chapterHTML;
-      bookmarksList.appendChild(chapterGroup);
-    }
-    
-    // 如果還有更多章節需要處理，繼續下一批
-    if (endIndex < chapterTitles.length) {
-      requestAnimationFrame(() => {
-        renderBookmarkChaptersBatch(chapterTitles, bookmarksByChapter, endIndex);
-      });
-    } else {
-      // 所有章節渲染完成，添加事件監聽器
-      addHomepageBookmarkEventListeners();
-    }
-  }
-  
-  // 添加首頁書籤事件監聽器
-  function addHomepageBookmarkEventListeners() {
-    const bookmarksList = document.getElementById('bookmarks-list');
-    if (!bookmarksList) return;
-    
-    // 移除舊的事件監聽器，避免重複綁定
-    const existingHandler = bookmarksList.bookmarkClickHandler;
-    if (existingHandler) {
-      bookmarksList.removeEventListener('click', existingHandler);
-    }
-    
-    // 創建新的事件處理器
-    const newHandler = (e) => {
-      if (e.target.classList.contains('bookmark-delete')) {
-        e.stopPropagation();
-        const bookmarkId = e.target.getAttribute('data-bookmark-id');
-        removeBookmarkById(bookmarkId);
-        refreshHomepageBookmarks(); // 刷新顯示
-        updateBookmarkCount(); // 更新書籤計數
-      } else {
-        const clickedLink = e.target.closest('a');
-        if (clickedLink) {
-          return;
-        }
-        
-        const bookmarkItem = e.target.closest('.bookmark-item');
-        if (bookmarkItem) {
-          const bookmarkId = bookmarkItem.getAttribute('data-bookmark-id');
-          jumpToBookmark(bookmarkId);
-        }
-      }
-    };
-    
-    // 綁定新的事件監聽器
-    bookmarksList.addEventListener('click', newHandler);
-    bookmarksList.bookmarkClickHandler = newHandler; // 保存引用以便移除
-  }
-  
-  // 跳轉到指定書籤
-  function jumpToBookmark(bookmarkId) {
-    const allBookmarks = getBookmarks();
-    const bookmark = allBookmarks.find(b => b.id === bookmarkId);
-    
-    if (bookmark && bookmark.chapterFilename) {
-      // 跳轉到對應章節頁面，並定位到書籤位置
-      const targetUrl = `${bookmark.chapterFilename}#${bookmark.elementId}`;
-      // 在新視窗打開，保持與文字鏈接一致的行為
-      window.open(targetUrl, '_blank');
-    }
-  }
-  
-  // 根據ID刪除書籤
-  function removeBookmarkById(bookmarkId) {
-    const allBookmarks = getBookmarks();
-    const updatedBookmarks = allBookmarks.filter(bookmark => bookmark.id !== bookmarkId);
-    saveBookmarks(updatedBookmarks);
-    showToast(getI18nText('bookmark.bookmarkDeleted', isTraditionalChinesePage(), '書籤已刪除'));
-  }
-  
-  // 書籤添加成功的視覺反饋
-  function showBookmarkAddedFeedback() {
-    // 首頁有floating-toc，章節頁面沒有，需要分別處理
-    if (currentChapter.isHomepage) {
-      // 首頁：顯示提示並引導到側邊欄
-      showToast(getI18nText('bookmark.viewInSidebar', isTraditionalChinesePage(), '已添加到書籤，可在側邊欄查看'));
-      
-      const floatingTOC = document.getElementById('floating-toc');
-      const bookmarkTab = document.querySelector('.floating-toc-tab[data-tab="bookmarks"]');
-      
-      if (floatingTOC && bookmarkTab) {
-        // 如果TOC未顯示，短暫顯示並高亮書籤tab
-        if (!floatingTOC.classList.contains('visible')) {
-          floatingTOC.classList.add('visible');
-          
-          // 高亮書籤tab
-          bookmarkTab.style.background = '#ff69b4';
-          bookmarkTab.style.color = 'white';
-          bookmarkTab.style.transform = 'scale(1.1)';
-          bookmarkTab.style.transition = 'all 0.3s ease';
-          bookmarkTab.style.boxShadow = '0 2px 8px rgba(255, 105, 180, 0.5)';
-          
-          setTimeout(() => {
-            bookmarkTab.style.background = '';
-            bookmarkTab.style.color = '';
-            bookmarkTab.style.transform = '';
-            bookmarkTab.style.boxShadow = '';
-            
-            setTimeout(() => {
-              floatingTOC.classList.remove('visible');
-            }, 1500);
-          }, 1200);
-        } else {
-          // TOC已顯示，只高亮書籤tab
-          bookmarkTab.style.background = '#ff69b4';
-          bookmarkTab.style.color = 'white';
-          bookmarkTab.style.transform = 'scale(1.1)';
-          bookmarkTab.style.transition = 'all 0.3s ease';
-          bookmarkTab.style.boxShadow = '0 2px 8px rgba(255, 105, 180, 0.5)';
-          
-          setTimeout(() => {
-            bookmarkTab.style.background = '';
-            bookmarkTab.style.color = '';
-            bookmarkTab.style.transform = '';
-            bookmarkTab.style.boxShadow = '';
-          }, 1500);
-        }
-      }
-    } else {
-      // 章節頁面：增強型Toast提示 + 特殊動畫效果
-      showEnhancedBookmarkToast();
-    }
-  }
-  
-  // 章節頁面專用的增強書籤提示
-  function showEnhancedBookmarkToast() {
-    // 創建特殊的toast元素
-    const toast = document.createElement('div');
-    toast.className = 'bookmark-success-toast';
-    toast.innerHTML = `
-      <div class="toast-icon">🔖</div>
-      <div class="toast-content">
-        <div class="toast-title">書籤已添加！</div>
-        <div class="toast-subtitle">點擊右下角 📖 查看所有書籤</div>
-      </div>
-    `;
-    
-    // 添加樣式
-    toast.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: linear-gradient(135deg, #ff69b4, #e75480);
-      color: white;
-      padding: 16px 20px;
-      border-radius: 12px;
-      box-shadow: 0 8px 25px rgba(231, 84, 128, 0.3);
-      z-index: 10000;
-      transform: translateX(400px);
-      transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      max-width: 300px;
-      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-    `;
-    
-    toast.querySelector('.toast-icon').style.cssText = `
-      font-size: 24px;
-      animation: bounce 0.6s ease infinite alternate;
-    `;
-    
-    toast.querySelector('.toast-title').style.cssText = `
-      font-weight: 600;
-      font-size: 14px;
-      margin-bottom: 2px;
-    `;
-    
-    toast.querySelector('.toast-subtitle').style.cssText = `
-      font-size: 12px;
-      opacity: 0.9;
-    `;
-    
-    // 添加彈跳動畫CSS
-    const style = document.createElement('style');
-    style.textContent = `
-      @keyframes bounce {
-        0% { transform: translateY(0); }
-        100% { transform: translateY(-6px); }
-      }
-    `;
-    document.head.appendChild(style);
-    
-    document.body.appendChild(toast);
-    
-    // 動畫顯示
-    setTimeout(() => {
-      toast.style.transform = 'translateX(0)';
-    }, 100);
-    
-    // 3.5秒後淡出並移除
-    setTimeout(() => {
-      toast.style.transform = 'translateX(400px)';
-      toast.style.opacity = '0';
-      setTimeout(() => {
-        if (toast.parentNode) {
-          document.body.removeChild(toast);
-        }
-        if (style.parentNode) {
-          document.head.removeChild(style);
-        }
-      }, 400);
-    }, 3500);
-  }
-  
-  // 初始化當前文件信息（文件級書籤，無需監聽滾動）
-  let currentChapter;
+// 为元素查找所属章节（直接使用 currentChapter）
+function findChapterForElement(_element) {
+  return { title: currentChapter.title, id: currentChapter.id, filename: currentChapter.filename };
+}
 
-  function toggleBookmark(element) {
-    // 首頁不允許操作書籤
-    if (currentChapter.isHomepage) {
-      showToast('首頁不支持書籤功能');
-      return;
-    }
-    
-    const bookmarks = getBookmarks();
-    const isQuestion = element.classList.contains('question');
-    const isAnswer = element.classList.contains('answer');
-    
-    if (!isQuestion && !isAnswer) return;
-    
-    // 生成唯一ID
-    const id = element.id || ('bookmark-' + Date.now());
-    element.id = id;
-    
-    // 檢查是否已存在書籤
-    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === id);
-    
-    if (existingBookmark) {
-      // 已存在，移除書籤
-      removeBookmarkVisualIndicator(element);
-      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== id);
-      saveBookmarks(updatedBookmarks);
-      renderBookmarks();
-      showToast('已從書籤移除');
-      return;
-    }
-    
-    // 不存在，添加書籤
-    const chapter = findChapterForElement(element);
-    
-    // 提取內容
-    let questioner = '', time = '', preview = '';
-    
-    if (isQuestion) {
-      const questionerEl = element.querySelector('.questioner');
-      const timeEl = element.querySelector('.question-time');
-      const textEl = element.querySelector('.question-text');
-      
-      questioner = questionerEl ? questionerEl.textContent : '匿名';
-      time = timeEl ? timeEl.textContent : '';
-      preview = textEl ? textEl.textContent.substring(0, 100) + '...' : '';
-    } else if (isAnswer) {
-      const answererEl = element.querySelector('.answerer');
-      const textEl = element.querySelector('.answer-text');
-      
-      questioner = answererEl ? answererEl.textContent : 'Taiguanglin';
-      preview = textEl ? textEl.textContent.substring(0, 100) + '...' : '';
-    }
-    
-    const bookmark = {
-      id: 'bookmark-' + Date.now(),
-      elementId: id,
-      type: isQuestion ? 'question' : 'answer',
-      questioner: questioner,
-      time: time,
-      preview: preview,
-      chapter: chapter,
-      chapterTitle: currentChapter.title,
-      chapterFilename: currentChapter.filename,
-      timestamp: new Date().toLocaleString()
-    };
-    
-    bookmarks.push(bookmark);
-    saveBookmarks(bookmarks);
-    addBookmarkVisualIndicator(element);
-    renderBookmarks();
-    showBookmarkAddedFeedback();
+// ------------------------------------------------------------------ //
+// 视觉标识                                                            //
+// ------------------------------------------------------------------ //
+
+function addBookmarkVisualIndicator(element) {
+  if (element.classList.contains('bookmarked')) return;
+  element.classList.add('bookmarked');
+  if (!element.querySelector('.bookmark-indicator')) {
+    const span = document.createElement('span');
+    span.className = 'bookmark-indicator';
+    span.textContent = '🔖';
+    span.title = getI18nText('bookmark.removeBookmark', isTraditionalChinesePage(), '點擊移除書籤');
+    element.appendChild(span);
   }
-  
-  function toggleQAPairBookmark(answerElement) {
-    // 首頁不允許操作書籤
-    if (currentChapter.isHomepage) {
-      showToast('首頁不支持書籤功能');
-      return;
-    }
-    
-    const bookmarks = getBookmarks();
-    const questionElement = findQuestionForAnswer(answerElement);
-    
-    // 決定要用作書籤定位的元素ID
-    let targetElement, targetId;
-    if (questionElement) {
-      // 如果有對應問題，使用問題元素作為書籤定位目標
-      targetElement = questionElement;
-      targetId = questionElement.id || ('qa-question-' + Date.now());
-      questionElement.id = targetId;
-    } else {
-      // 如果沒有對應問題，使用回答元素
-      targetElement = answerElement;
-      targetId = answerElement.id || ('qa-answer-' + Date.now());
-      answerElement.id = targetId;
-    }
-    
-    // 確保回答元素也有ID（用於視覺標識管理）
-    if (!answerElement.id) {
-      answerElement.id = 'qa-answer-' + Date.now();
-    }
-    
-    // 檢查是否已存在書籤（使用目標元素ID）
-    const existingBookmark = bookmarks.find(bookmark => bookmark.elementId === targetId);
-    
-    if (existingBookmark) {
-      // 已存在，移除書籤
-      removeBookmarkVisualIndicator(answerElement);
-      if (questionElement) {
-        removeBookmarkVisualIndicator(questionElement);
-      }
-      const updatedBookmarks = bookmarks.filter(bookmark => bookmark.elementId !== targetId);
-      saveBookmarks(updatedBookmarks);
-      renderBookmarks();
-      showToast('已從書籤移除問答');
-      return;
-    }
-    
-    // 不存在，添加問答書籤
-    const chapter = findChapterForElement(answerElement);
-    
-    // 提取問答信息
-    let questioner = '匿名', time = '', preview = '';
-    
-    if (questionElement) {
-      const questionerEl = questionElement.querySelector('.questioner');
-      const timeEl = questionElement.querySelector('.question-time');
-      const questionTextEl = questionElement.querySelector('.question-text');
-      
-      questioner = questionerEl ? questionerEl.textContent : '匿名';
-      time = timeEl ? timeEl.textContent : '';
-      
-      // 構建預覽：問題開頭 + 回答開頭
-      const questionText = questionTextEl ? questionTextEl.textContent : '';
-      const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
-      preview = `問：${questionText.substring(0, 50)}... 答：${answerText.substring(0, 50)}...`;
-    } else {
-      // 只有回答的情況
-      const answererEl = answerElement.querySelector('.answerer');
-      const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
-      
-      questioner = answererEl ? answererEl.textContent : 'Taiguanglin';
-      preview = `答：${answerText.substring(0, 100)}...`;
-    }
-    
-    const bookmark = {
-      id: 'qa-bookmark-' + Date.now(),
-      elementId: targetId,
-      type: 'qa-pair',
-      questioner: questioner,
-      time: time,
-      preview: preview,
-      chapter: chapter,
-      chapterTitle: currentChapter.title,
-      chapterFilename: currentChapter.filename,
-      timestamp: new Date().toLocaleString()
-    };
-    
-    bookmarks.push(bookmark);
-    saveBookmarks(bookmarks);
-    
-    // 為問答添加視覺標識
-    addBookmarkVisualIndicator(answerElement);
-    if (questionElement) {
-      addBookmarkVisualIndicator(questionElement);
-    }
-    
-    renderBookmarks();
-    showBookmarkAddedFeedback();
-  }
-  
-  function removeBookmark(bookmarkId) {
-    const bookmarks = getBookmarks();
-    const bookmark = bookmarks.find(b => b.id === bookmarkId);
-    
-    // 移除視覺標識
-    if (bookmark) {
-      const element = document.getElementById(bookmark.elementId);
-      if (element) {
-        removeBookmarkVisualIndicator(element);
-        
-        // 如果是問答書籤，需要移除問題和回答的視覺標識
-        if (bookmark.type === 'qa-pair') {
-          if (element.classList.contains('question')) {
-            // 元素是問題，需要找到對應的回答
-            const answerElement = findAnswerForQuestion(element);
-            if (answerElement) {
-              removeBookmarkVisualIndicator(answerElement);
-            }
-          } else if (element.classList.contains('answer')) {
-            // 元素是回答，需要找到對應的問題
-            const questionElement = findQuestionForAnswer(element);
-            if (questionElement) {
-              removeBookmarkVisualIndicator(questionElement);
-            }
-          }
-        }
+}
+
+function removeBookmarkVisualIndicator(element) {
+  element.classList.remove('bookmarked');
+  const indicator = element.querySelector('.bookmark-indicator');
+  if (indicator) element.removeChild(indicator);
+}
+
+function restoreBookmarkVisualStates() {
+  getBookmarks().forEach(bookmark => {
+    const el = document.getElementById(bookmark.elementId);
+    if (!el) return;
+    addBookmarkVisualIndicator(el);
+    if (bookmark.type === 'qa-pair') {
+      if (el.classList.contains('question')) {
+        const ans = findAnswerForQuestion(el);
+        if (ans) addBookmarkVisualIndicator(ans);
+      } else if (el.classList.contains('answer')) {
+        const q = findQuestionForAnswer(el);
+        if (q) addBookmarkVisualIndicator(q);
       }
     }
-    
-    const updatedBookmarks = bookmarks.filter(bookmark => bookmark.id !== bookmarkId);
-    saveBookmarks(updatedBookmarks);
+  });
+}
+
+// ------------------------------------------------------------------ //
+// CRUD 操作                                                           //
+// ------------------------------------------------------------------ //
+
+function toggleBookmark(element) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  const isQuestion = element.classList.contains('question');
+  const isAnswer = element.classList.contains('answer');
+  if (!isQuestion && !isAnswer) return;
+
+  element.id = element.id || ('bookmark-' + Date.now());
+  const id = element.id;
+  const existing = bookmarks.find(b => b.elementId === id);
+
+  if (existing) {
+    removeBookmarkVisualIndicator(element);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== id));
     renderBookmarks();
     showToast('已從書籤移除');
+    return;
   }
-  
-  function clearCurrentChapterBookmarks() {
-    // 首頁不允許清空書籤
-    if (currentChapter.isHomepage) {
-      showToast('首頁不支持書籤功能');
-      return;
+
+  let questioner = '', time = '', preview = '';
+  if (isQuestion) {
+    questioner = element.querySelector('.questioner')?.textContent || '匿名';
+    time = element.querySelector('.question-time')?.textContent || '';
+    preview = (element.querySelector('.question-text')?.textContent || '').substring(0, 100) + '...';
+  } else {
+    questioner = element.querySelector('.answerer')?.textContent || 'Taiguanglin';
+    preview = (element.querySelector('.answer-text')?.textContent || '').substring(0, 100) + '...';
+  }
+
+  bookmarks.push({
+    id: 'bookmark-' + Date.now(),
+    elementId: id,
+    type: isQuestion ? 'question' : 'answer',
+    questioner, time, preview,
+    chapter: findChapterForElement(element),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(element);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
+function toggleQAPairBookmark(answerElement) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  const questionElement = findQuestionForAnswer(answerElement);
+
+  const targetEl = questionElement || answerElement;
+  targetEl.id = targetEl.id || ('qa-question-' + Date.now());
+  if (!answerElement.id) answerElement.id = 'qa-answer-' + Date.now();
+  const targetId = targetEl.id;
+
+  const existing = bookmarks.find(b => b.elementId === targetId);
+  if (existing) {
+    removeBookmarkVisualIndicator(answerElement);
+    if (questionElement) removeBookmarkVisualIndicator(questionElement);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== targetId));
+    renderBookmarks();
+    showToast('已從書籤移除問答');
+    return;
+  }
+
+  let questioner = '匿名', time = '', preview = '';
+  if (questionElement) {
+    questioner = questionElement.querySelector('.questioner')?.textContent || '匿名';
+    time = questionElement.querySelector('.question-time')?.textContent || '';
+    const qText = questionElement.querySelector('.question-text')?.textContent || '';
+    const aText = answerElement.querySelector('.answer-text')?.textContent || '';
+    preview = `問：${qText.substring(0, 50)}... 答：${aText.substring(0, 50)}...`;
+  } else {
+    questioner = answerElement.querySelector('.answerer')?.textContent || 'Taiguanglin';
+    const aText = answerElement.querySelector('.answer-text')?.textContent || '';
+    preview = `答：${aText.substring(0, 100)}...`;
+  }
+
+  bookmarks.push({
+    id: 'qa-bookmark-' + Date.now(),
+    elementId: targetId,
+    type: 'qa-pair',
+    questioner, time, preview,
+    chapter: findChapterForElement(answerElement),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(answerElement);
+  if (questionElement) addBookmarkVisualIndicator(questionElement);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
+function removeBookmark(bookmarkId) {
+  const bookmarks = getBookmarks();
+  const bookmark = bookmarks.find(b => b.id === bookmarkId);
+  if (bookmark) {
+    const el = document.getElementById(bookmark.elementId);
+    if (el) {
+      removeBookmarkVisualIndicator(el);
+      if (bookmark.type === 'qa-pair') {
+        const other = el.classList.contains('question')
+          ? findAnswerForQuestion(el)
+          : findQuestionForAnswer(el);
+        if (other) removeBookmarkVisualIndicator(other);
+      }
     }
-    
-    const currentBookmarks = getCurrentChapterBookmarks();
-    if (currentBookmarks.length === 0) {
-      showToast('本文件暫無書籤');
-      return;
+  }
+  saveBookmarks(bookmarks.filter(b => b.id !== bookmarkId));
+  renderBookmarks();
+  showToast('已從書籤移除');
+}
+
+function removeBookmarkById(bookmarkId) {
+  saveBookmarks(getBookmarks().filter(b => b.id !== bookmarkId));
+  showToast(getI18nText('bookmark.bookmarkDeleted', isTraditionalChinesePage(), '書籤已刪除'));
+}
+
+function clearCurrentChapterBookmarks() {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+  const current = getCurrentChapterBookmarks();
+  if (!current.length) { showToast('本文件暫無書籤'); return; }
+  if (!confirm(`確定要清空本文件的所有 ${current.length} 個書籤嗎？此操作無法撤銷。`)) return;
+
+  current.forEach(b => {
+    const el = document.getElementById(b.elementId);
+    if (el) {
+      removeBookmarkVisualIndicator(el);
+      if (b.type === 'qa-pair' && el.classList.contains('answer')) {
+        const q = findQuestionForAnswer(el);
+        if (q) removeBookmarkVisualIndicator(q);
+      }
     }
-    
-    // 確認對話框
-    if (!confirm(`確定要清空本文件的所有 ${currentBookmarks.length} 個書籤嗎？此操作無法撤銷。`)) {
-      return;
-    }
-    
-    // 移除當前文件所有書籤的視覺標識
-    currentBookmarks.forEach(bookmark => {
-      const element = document.getElementById(bookmark.elementId);
-      if (element) {
-        removeBookmarkVisualIndicator(element);
-        
-        // 如果是問答書籤，還需要移除問題的視覺標識
-        if (bookmark.type === 'qa-pair' && element.classList.contains('answer')) {
-          const questionElement = findQuestionForAnswer(element);
-          if (questionElement) {
-            removeBookmarkVisualIndicator(questionElement);
-          }
-        }
+  });
+
+  const all = getBookmarks();
+  saveBookmarks(all.filter(b => !b.chapter || b.chapter.id !== currentChapter.id));
+  renderBookmarks();
+  showToast(`已清空本文件的 ${current.length} 個書籤`);
+}
+
+// 跳转到指定书签（新标签页）
+function jumpToBookmark(bookmarkId) {
+  const bm = getBookmarks().find(b => b.id === bookmarkId);
+  if (bm && bm.chapterFilename) {
+    window.open(`${bm.chapterFilename}#${bm.elementId}`, '_blank');
+  }
+}
+// ============================================================
+// 03b-bookmark-render.js — 书签渲染、首页书签、Toast 反馈
+// ============================================================
+
+// ------------------------------------------------------------------ //
+// 书签添加反馈                                                        //
+// ------------------------------------------------------------------ //
+
+function showBookmarkAddedFeedback() {
+  if (currentChapter.isHomepage) {
+    showToast(getI18nText('bookmark.viewInSidebar', isTraditionalChinesePage(), '已添加到書籤，可在側邊欄查看'));
+    _highlightBookmarkTab();
+  } else {
+    showEnhancedBookmarkToast();
+  }
+}
+
+function _highlightBookmarkTab() {
+  const floatingTOC = document.getElementById('floating-toc');
+  const bookmarkTab = document.querySelector('.floating-toc-tab[data-tab="bookmarks"]');
+  if (!floatingTOC || !bookmarkTab) return;
+
+  const wasHidden = !floatingTOC.classList.contains('visible');
+  if (wasHidden) floatingTOC.classList.add('visible');
+
+  Object.assign(bookmarkTab.style, {
+    background: '#ff69b4', color: 'white',
+    transform: 'scale(1.1)', transition: 'all 0.3s ease',
+    boxShadow: '0 2px 8px rgba(255, 105, 180, 0.5)',
+  });
+  setTimeout(() => {
+    Object.assign(bookmarkTab.style, { background: '', color: '', transform: '', boxShadow: '' });
+    if (wasHidden) setTimeout(() => floatingTOC.classList.remove('visible'), 1500);
+  }, 1200);
+}
+
+// 章节页专用的增强 Toast
+function showEnhancedBookmarkToast() {
+  const toast = document.createElement('div');
+  toast.className = 'bookmark-success-toast';
+  toast.innerHTML = `
+    <div class="toast-icon">🔖</div>
+    <div class="toast-content">
+      <div class="toast-title">書籤已添加！</div>
+      <div class="toast-subtitle">點擊右下角 📖 查看所有書籤</div>
+    </div>
+  `;
+  Object.assign(toast.style, {
+    position: 'fixed', top: '20px', right: '20px',
+    background: 'linear-gradient(135deg, #ff69b4, #e75480)',
+    color: 'white', padding: '16px 20px', borderRadius: '12px',
+    boxShadow: '0 8px 25px rgba(231, 84, 128, 0.3)',
+    zIndex: '10000', transform: 'translateX(400px)',
+    transition: 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    display: 'flex', alignItems: 'center', gap: '12px',
+    maxWidth: '300px', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+  });
+
+  const style = document.createElement('style');
+  style.textContent = `@keyframes bounce { 0% { transform:translateY(0); } 100% { transform:translateY(-6px); } }`;
+  document.head.appendChild(style);
+  document.body.appendChild(toast);
+
+  setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 100);
+  setTimeout(() => {
+    toast.style.transform = 'translateX(400px)';
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      if (toast.parentNode) document.body.removeChild(toast);
+      if (style.parentNode) document.head.removeChild(style);
+    }, 400);
+  }, 3500);
+}
+
+// ------------------------------------------------------------------ //
+// 首页书签渲染                                                        //
+// ------------------------------------------------------------------ //
+
+function initializeHomepageTOC() {
+  const tocList = document.getElementById('toc-list');
+  const mainTOC = document.querySelector('.toc ul');
+  if (tocList && mainTOC) {
+    tocList.innerHTML = mainTOC.innerHTML;
+    tocList.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'A') return;
+      e.preventDefault();
+      const href = e.target.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (href) {
+        window.location.href = href;
       }
     });
-    
-    // 從總書籤列表中移除當前文件的書籤
-    const allBookmarks = getBookmarks();
-    const updatedBookmarks = allBookmarks.filter(bookmark => 
-      !bookmark.chapter || bookmark.chapter.id !== currentChapter.id
-    );
-    
-    saveBookmarks(updatedBookmarks);
-    renderBookmarks();
-    showToast(`已清空本文件的 ${currentBookmarks.length} 個書籤`);
   }
-  
+  refreshHomepageBookmarks();
+  updateBookmarkCount();
+}
+
+function refreshHomepageBookmarks() {
+  if (!currentChapter.isHomepage) return;
+  const bookmarksList = document.getElementById('bookmarks-list');
+  if (!bookmarksList) return;
+
+  setTimeout(() => {
+    const all = getBookmarks();
+    if (!all.length) {
+      bookmarksList.innerHTML = '<li class="bookmarks-empty">' +
+        getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>';
+      return;
+    }
+    if (all.length > 50) showBookmarkProcessingIndicator(all.length);
+    processHomepageBookmarks(all);
+  }, 10);
+}
+
+function showBookmarkProcessingIndicator(totalCount) {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="bookmark-loading-container">
+      <div class="bookmark-loading-spinner">
+        <div class="loading-text">處理 ${totalCount} 個書籤...</div>
+      </div>
+    </div>
+  `;
+}
+
+function processHomepageBookmarks(allBookmarks) {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+  requestAnimationFrame(() => {
+    const byChapter = {};
+    allBookmarks.forEach(b => {
+      const key = b.chapterTitle || '未知章節';
+      (byChapter[key] = byChapter[key] || []).push(b);
+    });
+    const sorted = Object.keys(byChapter).sort((a, b) => {
+      const num = t => { const m = t.match(/^(\d{1,2})/); return m ? parseInt(m[1], 10) : 999; };
+      return num(a) - num(b);
+    });
+    renderBookmarkChaptersBatch(sorted, byChapter, 0);
+  });
+}
+
+function renderBookmarkChaptersBatch(titles, byChapter, startIndex) {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+
+  const BATCH = 3;
+  const end = Math.min(startIndex + BATCH, titles.length);
+  if (startIndex === 0) el.innerHTML = '';
+
+  for (let i = startIndex; i < end; i++) {
+    const title = titles[i];
+    const bookmarks = byChapter[title];
+    const group = document.createElement('li');
+    group.className = 'bookmark-chapter-group';
+
+    let html = `<div class="bookmark-chapter-title">${title}</div><ul class="bookmark-chapter-list">`;
+    bookmarks.forEach(b => {
+      const isQA = b.type === 'qa-pair';
+      const icon = isQA ? '💬' : '📝';
+      const cls = isQA ? ' qa-pair-bookmark' : '';
+      const link = (b.chapterFilename && b.elementId) ? `${b.chapterFilename}#${b.elementId}` : '#';
+      html += `
+        <li class="bookmark-item${cls}" data-bookmark-id="${b.id}">
+          <div class="bookmark-meta">
+            <span class="bookmark-type">${icon}</span>
+            <span class="bookmark-questioner">${b.questioner || '匿名'}</span>
+            <span class="bookmark-time">${b.time || ''}</span>
+          </div>
+          <div class="bookmark-preview">
+            <a href="${link}" target="_blank" title="點擊跳轉到原問答">${b.preview || ''}</a>
+          </div>
+          <button class="bookmark-delete" data-bookmark-id="${b.id}" title="刪除書籤">✕</button>
+        </li>
+      `;
+    });
+    html += '</ul>';
+    group.innerHTML = html;
+    el.appendChild(group);
+  }
+
+  if (end < titles.length) {
+    requestAnimationFrame(() => renderBookmarkChaptersBatch(titles, byChapter, end));
+  } else {
+    addHomepageBookmarkEventListeners();
+  }
+}
+
+function addHomepageBookmarkEventListeners() {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+
+  if (el.bookmarkClickHandler) el.removeEventListener('click', el.bookmarkClickHandler);
+
+  const handler = (e) => {
+    if (e.target.classList.contains('bookmark-delete')) {
+      e.stopPropagation();
+      removeBookmarkById(e.target.getAttribute('data-bookmark-id'));
+      refreshHomepageBookmarks();
+      updateBookmarkCount();
+    } else if (!e.target.closest('a')) {
+      const item = e.target.closest('.bookmark-item');
+      if (item) jumpToBookmark(item.getAttribute('data-bookmark-id'));
+    }
+  };
+
+  el.addEventListener('click', handler);
+  el.bookmarkClickHandler = handler;
+}
   // 渲染首頁動態TOC內容
   function renderIndexTOC() {
     const tocList = document.getElementById('toc-list');

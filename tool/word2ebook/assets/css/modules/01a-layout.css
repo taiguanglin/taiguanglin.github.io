@@ -1,0 +1,138 @@
+/* ============================================================
+   01a-layout.css — 閱讀工具欄、閱讀進度條、操作按鈕、Toast
+   ============================================================ */
+
+/* ---- 閱讀工具欄 ----------------------------------------- */
+.reading-toolbar {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #e0e0e0;
+    border-radius: var(--radius-lg);
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 980;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+}
+
+.reading-toolbar::-webkit-scrollbar { width: 6px; }
+.reading-toolbar::-webkit-scrollbar-track { background: rgba(240, 240, 240, 0.3); border-radius: 3px; }
+.reading-toolbar::-webkit-scrollbar-thumb { background: rgba(231, 84, 128, 0.4); border-radius: 3px; transition: background 0.2s ease; }
+.reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(231, 84, 128, 0.6); }
+
+.reading-toolbar.hidden { transform: translateX(100%); opacity: 0; }
+
+.toolbar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+.toolbar-section { margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px solid #f0f0f0; }
+.toolbar-section:last-child { margin-bottom: 0; border-bottom: none; }
+.toolbar-label { font-size: 12px; color: #666; margin-bottom: 5px; font-weight: 500; display: flex; justify-content: space-between; align-items: center; }
+.toolbar-controls { display: flex; gap: 8px; align-items: center; }
+
+/* ---- 通用控制按鈕 --------------------------------------- */
+.ctrl-btn {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    min-width: 30px;
+    text-align: center;
+}
+.ctrl-btn:hover { background: #f5f5f5; border-color: #ccc; }
+.ctrl-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+.ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #ced4da;
+    border-radius: 50%;
+    width: 32px; height: 32px; min-width: 32px;
+    padding: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; color: #495057;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.ctrl-btn.font-adjust:hover { background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); border-color: #adb5bd; transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); color: #212529; }
+.ctrl-btn.font-adjust:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%); }
+.ctrl-btn.font-adjust.clicked { background: linear-gradient(135deg, var(--color-primary) 0%, #c73650 100%); color: white; border-color: var(--color-primary); transform: scale(0.95); }
+.ctrl-btn.font-option { padding: 6px 16px; min-width: 50px; position: relative; white-space: nowrap; }
+
+/* ---- 閱讀進度條 ----------------------------------------- */
+.reading-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; background: rgba(231, 84, 128, 0.2); z-index: 9999; }
+.reading-progress-bar { height: 100%; background: linear-gradient(90deg, var(--color-primary), var(--color-primary-light)); width: 0%; transition: width 0.1s ease; }
+
+/* ---- 操作按鈕組（懸浮菜單） ----------------------------- */
+.action-buttons { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 1000; }
+.action-menu { position: relative; }
+
+.action-btn {
+    width: 50px; height: 50px;
+    border-radius: 50%; border: none;
+    background: var(--color-primary-light);
+    color: white; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
+}
+.action-btn:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4); }
+.action-btn.menu-btn { background: var(--color-primary-light); z-index: 1001; }
+.action-btn.menu-btn.expanded { transform: rotate(90deg); background: var(--color-primary); }
+
+.action-menu-items {
+    position: absolute; bottom: 60px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; gap: 10px;
+    opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    pointer-events: none; z-index: 1000;
+}
+.action-menu.expanded .action-menu-items { opacity: 1; visibility: visible; pointer-events: all; }
+.action-menu-items .action-btn { width: 45px; height: 45px; font-size: 16px; background: var(--color-primary-light); transform: scale(0.8); }
+.action-menu.expanded .action-menu-items .action-btn { transform: scale(1); }
+.action-menu-items .action-btn:hover { background: var(--color-primary); transform: scale(1.05); }
+
+/* ---- 問答互動按鈕 --------------------------------------- */
+.qa-actions { position: absolute; top: 10px; right: 10px; display: flex; gap: 8px; opacity: 0; transition: opacity 0.2s ease; }
+.question:hover .qa-actions, .answer:hover .qa-actions { opacity: 1; }
+.qa-btn { width: 28px; height: 28px; border: none; background: rgba(255, 255, 255, 0.9); border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; color: #666; transition: all 0.2s ease; }
+.qa-btn:hover { background: var(--color-primary); color: white; transform: scale(1.1); }
+
+/* ---- Toast 通知 ----------------------------------------- */
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 20px; border-radius: 25px; font-size: 14px; z-index: 9999; transition: transform 0.3s ease; }
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ---- 暗色模式適配 --------------------------------------- */
+body.dark-mode .reading-toolbar { background: rgba(59, 28, 50, 0.95); border-color: #5a2d49; }
+body.dark-mode .reading-toolbar::-webkit-scrollbar-track { background: rgba(90, 45, 73, 0.3); }
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb { background: rgba(255, 105, 180, 0.4); }
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(255, 105, 180, 0.6); }
+
+body.dark-mode .ctrl-btn, body.dark-mode .qa-btn { background: rgba(90, 45, 73, 0.9); color: #fddde6; border-color: #5a2d49; }
+body.dark-mode .ctrl-btn:hover, body.dark-mode .qa-btn:hover { background: var(--color-primary-light); }
+body.dark-mode .ctrl-btn.active { background: var(--color-primary-light); color: #fff; border-color: var(--color-primary-light); box-shadow: 0 0 8px rgba(255, 105, 180, 0.5); }
+body.dark-mode .ctrl-btn.font-adjust { background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%); border: 1px solid #555; color: #fddde6; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+body.dark-mode .ctrl-btn.font-adjust:hover { background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%); border-color: #777; color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+body.dark-mode .ctrl-btn.font-adjust:active { background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%); }
+body.dark-mode .ctrl-btn.font-adjust.clicked { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; border-color: var(--color-primary-light); }
+
+body.dark-mode .action-btn { background: var(--color-primary-light); box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4); }
+body.dark-mode .action-btn:hover { background: var(--color-primary); box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5); }
+body.dark-mode .action-btn.menu-btn.expanded { background: var(--color-primary); }
+body.dark-mode .action-menu-items .action-btn { background: var(--color-primary-light); }
+body.dark-mode .action-menu-items .action-btn:hover { background: var(--color-primary); }

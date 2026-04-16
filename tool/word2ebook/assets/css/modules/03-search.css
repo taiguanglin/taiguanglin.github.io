@@ -4,7 +4,7 @@
     padding: 20px;
     background: linear-gradient(135deg, #fff8f5 0%, #ffffff 100%);
     border-radius: 12px;
-    border: 1px solid #f8c8dc;
+    border: 1px solid var(--color-accent-pale);
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.1);
     animation: slideIn 0.3s ease-out;
 }
@@ -29,7 +29,7 @@
     width: 100%;
     padding: 12px 20px;
     font-size: 16px;
-    border: 2px solid #f8c8dc;
+    border: 2px solid var(--color-accent-pale);
     border-radius: 25px;
     background: #fff;
     color: #333;
@@ -39,7 +39,7 @@
 }
 
 #search-input:focus {
-    border-color: #e75480;
+    border-color: var(--color-primary);
     box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1);
 }
 
@@ -77,7 +77,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid #f3f3f3;
-    border-top: 2px solid #e75480;
+    border-top: 2px solid var(--color-primary);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -134,7 +134,7 @@
 }
 
 .search-retry-btn {
-    background: #e75480;
+    background: var(--color-primary);
     color: white;
     border: none;
     padding: 4px 12px;
@@ -145,7 +145,7 @@
 }
 
 .search-retry-btn:hover {
-    background: #d63384;
+    background: var(--color-primary-deep);
 }
 
 .search-status-success {
@@ -167,7 +167,7 @@
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #f8c8dc;
+    border-bottom: 1px solid var(--color-accent-pale);
     flex-wrap: wrap;
     gap: 10px;
 }
@@ -180,11 +180,11 @@
 
 .search-results-count {
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
 }
 
 .search-clear, .search-collapse, .search-load-more, .search-load-all {
-    background: #f8c8dc;
+    background: var(--color-accent-pale);
     color: #b73c65;
     border: none;
     padding: 6px 12px;
@@ -195,7 +195,7 @@
 }
 
 .search-clear:hover, .search-collapse:hover, .search-load-more:hover, .search-load-all:hover {
-    background: #e75480;
+    background: var(--color-primary);
     color: white;
 }
 
@@ -243,7 +243,7 @@
     padding: 15px;
     background: #fff;
     border-radius: 8px;
-    border-left: 3px solid #e75480;
+    border-left: 3px solid var(--color-primary);
     box-shadow: 0 2px 6px rgba(231, 84, 128, 0.1);
     cursor: pointer;
     transition: all 0.3s ease;
@@ -252,14 +252,14 @@
 .search-result-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(231, 84, 128, 0.15);
-    border-left-color: #ff69b4;
+    border-left-color: var(--color-primary-light);
 }
 
 
 
 .search-result-title {
     font-weight: 600;
-    color: #e75480;
+    color: var(--color-primary);
     margin-bottom: 8px;
     font-size: 14px;
     display: flex;
@@ -272,7 +272,7 @@
 .search-result-type {
     white-space: nowrap;
     display: inline-block;
-    background: #f8c8dc;
+    background: var(--color-accent-pale);
     color: #b73c65;
     padding: 2px 8px;
     border-radius: 10px;
@@ -300,12 +300,12 @@
 
 /* 暗色模式搜索样式 */
 body.dark-mode .search-activate-btn {
-    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
     box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
 }
 
 body.dark-mode .search-activate-btn:hover {
-    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    background: var(--gradient-primary);
     box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
 }
 
@@ -339,7 +339,7 @@ body.dark-mode #search-input::placeholder {
 }
 
 body.dark-mode #search-input:focus {
-    border-color: #ff69b4;
+    border-color: var(--color-primary-light);
     box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
 }
 
@@ -368,7 +368,7 @@ body.dark-mode .search-progress-text {
 
 body.dark-mode .search-loading-spinner {
     border-color: #4a2c4a;
-    border-top-color: #ff69b4;
+    border-top-color: var(--color-primary-light);
 }
 
 /* 搜索錯誤狀態夜間模式 */
@@ -379,7 +379,7 @@ body.dark-mode .search-error {
 }
 
 body.dark-mode .search-retry-btn {
-    background: #ff69b4;
+    background: var(--color-primary-light);
     color: #fff;
 }
 
@@ -396,7 +396,7 @@ body.dark-mode .search-status-success {
 
 body.dark-mode .search-result-item {
     background: #2d1e2e;
-    border-left-color: #ff69b4;
+    border-left-color: var(--color-primary-light);
 }
 
 body.dark-mode .search-result-content {
@@ -408,12 +408,12 @@ body.dark-mode .search-result-content {
 body.dark-mode .search-clear, body.dark-mode .search-collapse, 
 body.dark-mode .search-load-more, body.dark-mode .search-load-all {
     background: #4a2c4a;
-    color: #ff69b4;
+    color: var(--color-primary-light);
 }
 
 body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover,
 body.dark-mode .search-load-more:hover, body.dark-mode .search-load-all:hover {
-    background: #ff69b4;
+    background: var(--color-primary-light);
     color: #1a1a1a;
 }
 
@@ -447,148 +447,4 @@ body.dark-mode .search-load-all:hover {
     color: #1a1a1a;
 }
 
-/* 响应式设计 */
-@media (max-width: 768px) {
-    .search-activate-btn {
-        padding: 12px 24px;
-        font-size: 14px;
-    }
-    
-    .search-activate-hint {
-        font-size: 11px;
-    }
-    
-    .search-container {
-        margin: 20px 0;
-        padding: 15px;
-    }
-    
-    #search-input {
-        font-size: 16px; /* 防止iOS缩放 */
-    }
-    
-    .search-results-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    
-    .search-results-actions {
-        width: 100%;
-        justify-content: flex-start;
-    }
-    
-    .search-clear, .search-collapse, .search-load-more, .search-load-all {
-        font-size: 11px;
-        padding: 5px 10px;
-    }
-    
-    .search-result-item {
-        padding: 12px;
-    }
-    
-    .search-result-title {
-        align-items: flex-start;
-        gap: 4px;
-    }
-    
-    /* 基礎字型大小調整 - 平板 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    body {
-        line-height: 1.7;
-    }
-    
-    /* 平板端字體控制按鈕優化 */
-    .toolbar-controls {
-        gap: 10px; /* 平板端增加更多間距 */
-    }
-    
-    .ctrl-btn.font-option {
-        padding: 8px 18px; /* 平板端增加更多padding */
-        min-width: 55px;
-    }
-    
-    /* TOC目錄字型優化 - 平板 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    .toc > ul > li { 
-        margin-bottom: 10px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul > li { 
-        margin-bottom: 8px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul ul > li { 
-        margin-bottom: 6px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    .toc ul ul ul ul > li { 
-        margin-bottom: 5px;
-        /* 字體大小和行距由JavaScript動態設置 */
-    }
-    
-    /* 章節頁TOC優化 */
-    /* 移除!important，让JavaScript动态字体调整生效 */
-    .toc-item.toc-level-1 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    .toc-item.toc-level-2 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    .toc-item.toc-level-3 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    .toc-item.toc-level-4 > a {
-        /* 字體大小和行距由JavaScript動態設置 */
-        /* 保留此規則作為CSS結構標記 */
-        position: relative;
-    }
-    
-    /* 標題字型調整 */
-    h1 { font-size: 26px !important; line-height: 1.3; }
-    h2 { font-size: 22px !important; line-height: 1.4; }
-    h3 { font-size: 20px !important; line-height: 1.4; }
-    h4 { font-size: 18px !important; line-height: 1.4; }
-    
-    /* 按鈕和控制元素 */
-    .toc-level-btn, .floating-level-btn {
-        font-size: 15px !important;
-        min-width: 35px;
-        min-height: 35px;
-    }
-    
-    .toc-level-label {
-        font-size: 15px !important;
-    }
-    
-    /* 導航元素優化 */
-    .nav-footer a {
-        font-size: 16px !important;
-        padding: 10px 14px !important;
-    }
-    
-    .nav-home a {
-        font-size: 1.0em !important;
-    }
-    
-    .lang-switch a {
-        font-size: 1.0em !important;
-    }
-    
-    .top-nav-buttons a {
-        font-size: 16px !important;
-    }
-}
 

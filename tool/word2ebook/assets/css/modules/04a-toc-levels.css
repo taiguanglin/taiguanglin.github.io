@@ -1,0 +1,183 @@
+/* ============================================================
+   04a-toc-levels.css — 目錄層級控制、浮動層級面板、TOC 項目樣式
+   ============================================================ */
+
+/* ---- 目錄標題容器 --------------------------------------- */
+.toc-header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0;
+    gap: 20px;
+    flex-wrap: nowrap;
+    min-height: 40px;
+}
+.toc-header-container h2 { margin: 0; flex: 1; }
+
+/* ---- 目錄層級控制（固定在頁面頂部）--------------------- */
+.toc-level-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 0;
+    padding: 0;
+    flex-shrink: 1;
+    min-width: 180px;
+}
+.toc-level-label { font-size: 14px; color: var(--color-primary-deep); font-weight: 500; white-space: nowrap; }
+.toc-level-buttons-vertical { display: flex; gap: 6px; }
+
+.toc-level-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--color-primary-light);
+    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+    color: var(--color-primary-deep);
+    border-radius: 50%;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.toc-level-btn:hover { background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%); transform: scale(1.1); box-shadow: 0 3px 12px rgba(255, 105, 180, 0.3); }
+.toc-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; box-shadow: 0 3px 12px rgba(255, 105, 180, 0.5); }
+.toc-level-btn.active:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(255, 105, 180, 0.6); }
+
+/* ---- 浮動層級控制（捲動後出現）------------------------- */
+.floating-level-controls {
+    position: fixed;
+    right: 20px;
+    bottom: 120px;
+    z-index: 950;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 25px;
+    padding: 12px 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
+    max-width: 120px;
+}
+.floating-level-controls.collapsed { padding: 8px; max-width: 50px; background: rgba(255, 255, 255, 0.95); }
+.floating-level-controls.collapsed .floating-level-content { display: none; }
+
+.floating-level-toggle {
+    position: absolute;
+    top: -12px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--color-primary-light);
+    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+    color: var(--color-primary-deep);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.floating-level-toggle:hover { background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%); transform: scale(1.1); box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3); }
+.floating-level-controls.collapsed .floating-level-toggle { position: relative; top: auto; right: auto; margin: 0 auto; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
+
+.floating-level-label { font-size: 11px; color: var(--color-primary-deep); font-weight: 500; text-align: center; margin-bottom: 8px; white-space: nowrap; }
+.floating-level-buttons { display: flex; flex-direction: column; gap: 6px; }
+
+.floating-level-btn {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--color-primary-light);
+    background: linear-gradient(135deg, #ffffff 0%, #ffeef0 100%);
+    color: var(--color-primary-deep);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.floating-level-btn:hover { background: linear-gradient(135deg, #ffeef0 0%, #ffe4e6 100%); transform: scale(1.1); box-shadow: 0 3px 12px rgba(255, 105, 180, 0.4); }
+.floating-level-btn.active { background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%); color: white; box-shadow: 0 3px 12px rgba(255, 105, 180, 0.6); }
+.floating-level-btn.active:hover { transform: scale(1.1); box-shadow: 0 4px 15px rgba(255, 105, 180, 0.7); }
+
+/* ---- TOC 列表基礎 -------------------------------------- */
+#main-toc ul { list-style: none; padding-left: 30px; margin: 0; }
+#chapter-toc ul { list-style: none; padding-left: 15px; margin: 0; }
+.toc li { list-style: none; margin: 4px 0; }
+
+/* ---- 展開/收縮圖標 ------------------------------------- */
+.toc-expand-icon {
+    display: inline-block;
+    width: 16px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    margin-right: 6px;
+    margin-left: -22px;
+    transition: transform 0.3s ease;
+    color: var(--color-primary-light);
+    font-size: 12px;
+    position: relative;
+}
+.toc-expand-icon:hover { color: var(--color-primary-deep); transform: scale(1.2); }
+.toc-expand-icon.collapsed { transform: rotate(-90deg); }
+.toc-expand-icon.collapsed:hover { transform: rotate(-90deg) scale(1.2); }
+
+/* 首頁目錄展開圖標位置 */
+#main-toc .toc-item.toc-level-2 .toc-expand-icon { left: 42px; }
+#main-toc .toc-item.toc-level-3 .toc-expand-icon { left: 62px; }
+#main-toc .toc-item.toc-level-4 .toc-expand-icon { left: 82px; }
+
+/* 章節頁目錄展開圖標位置 */
+#chapter-toc .toc-item.toc-level-2 .toc-expand-icon { left: 12px; }
+#chapter-toc .toc-item.toc-level-3 .toc-expand-icon { left: 32px; }
+#chapter-toc .toc-item.toc-level-4 .toc-expand-icon { left: 52px; }
+
+/* ---- TOC 項目行為 --------------------------------------- */
+.toc-item { position: relative; transition: background-color 0.2s ease, border-radius 0.2s ease; }
+.toc-item.toc-expandable { cursor: pointer; padding: 2px 4px; margin: 0 -4px; }
+.toc-item.toc-expandable:hover { background-color: rgba(255, 105, 180, 0.08); border-radius: 4px; transition: background-color 0.2s ease; }
+.toc-item.toc-expandable:hover a { position: relative; z-index: 1; }
+.toc-item:not(.toc-expandable) { display: flex; cursor: pointer; padding: 2px 4px; margin: 0 -4px; border-radius: 4px; transition: all 0.2s ease; }
+.toc-item:not(.toc-expandable):hover { background-color: rgba(255, 105, 180, 0.06); border-radius: 4px; transition: background-color 0.2s ease; }
+.toc-item:not(.toc-expandable):hover a { position: relative; z-index: 1; text-decoration: none; }
+.toc-item.hidden { display: none !important; }
+.toc-item a { display: inline-block; transition: all 0.2s ease; }
+
+/* ---- TOC 層級樣式 --------------------------------------- */
+.toc-level-1 > .toc-item { margin-bottom: 8px; }
+
+/* 首頁目錄 */
+#main-toc .toc-item.toc-level-1 > a { font-weight: 600; color: var(--color-primary-deep); font-size: 16px; margin-left: 20px; }
+#main-toc .toc-item.toc-level-2 > a { font-weight: 500; color: var(--color-h3); font-size: 15px; margin-left: 40px; }
+#main-toc .toc-item.toc-level-3 > a { font-weight: 400; color: #f06bbf; font-size: 14px; margin-left: 60px; }
+#main-toc .toc-item.toc-level-4 > a { font-weight: 400; color: var(--color-h4); font-size: 13px; margin-left: 80px; }
+
+/* 章節頁目錄 */
+#chapter-toc .toc-item.toc-level-1 > a { font-weight: 600; color: var(--color-primary-deep); font-size: 16px; margin-left: 20px; }
+#chapter-toc .toc-item.toc-level-2 > a { font-weight: 500; color: var(--color-h3); font-size: 15px; margin-left: 10px; }
+#chapter-toc .toc-item.toc-level-3 > a { font-weight: 400; color: #f06bbf; font-size: 14px; margin-left: 30px; }
+#chapter-toc .toc-item.toc-level-4 > a { font-weight: 400; color: var(--color-h4); font-size: 13px; margin-left: 50px; }
+
+/* ---- 計數標記 ------------------------------------------ */
+.toc-count { color: #555; font-weight: 300; font-size: 0.85em; margin-left: 6px; pointer-events: none; user-select: none; opacity: 0.7; }
+.chapter-qa-count { color: #555; font-weight: 300; font-size: 0.85em; margin-left: 6px; pointer-events: none; user-select: none; opacity: 0.7; }
+
+/* ---- 特殊章節項 ----------------------------------------- */
+.toc-item.toc-chapter { margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #ffc4dd; }
+.toc-item.toc-chapter > a:hover { color: #c1327a; }
+
+/* ---- 折疊動畫 ------------------------------------------- */
+.toc-collapsible { overflow: hidden; transition: max-height 0.3s ease-out; }
+.toc-collapsible.collapsed { max-height: 0; }
+.toc-collapsible.expanded { max-height: 1000px; }
