@@ -1,0 +1,242 @@
+/* ============================================================
+   01c-bookmarks.css — 書籤面板、書籤標識、書籤分組、章節信息
+   ============================================================ */
+
+/* ---- 書籤列表項 ------------------------------------------ */
+.bookmark-item {
+    padding: 10px 12px;
+    margin: 4px 0;
+    border-radius: var(--radius-sm);
+    border: 1px solid #f0f0f0;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+}
+.bookmark-item:hover { background: rgba(231, 84, 128, 0.05); border-color: var(--color-primary); }
+
+.qa-pair-bookmark {
+    border-left: 3px solid var(--color-primary-light);
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+.qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.12) 0%, rgba(231, 84, 128, 0.05) 100%);
+}
+
+.bookmark-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 11px;
+    color: #666;
+    gap: 6px;
+}
+/* second usage of .bookmark-meta (homepage variant with justify-content) */
+.bookmark-chapter-list .bookmark-meta {
+    justify-content: space-between;
+    margin: 4px 0;
+}
+
+.bookmark-type { font-size: 12px; flex-shrink: 0; }
+.bookmark-questioner { font-weight: 600; color: var(--color-primary); flex: 1; }
+.bookmark-time { font-size: 10px; flex-shrink: 0; color: #b18a9e; opacity: 0.8; }
+
+/* ---- 首頁書籤分組 ---------------------------------------- */
+.bookmark-chapter-group {
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    line-height: 1.4 !important;
+    list-style: none;
+}
+
+.bookmark-chapter-title {
+    font-weight: 600;
+    color: #d44d75;
+    font-size: 0.95em;
+    margin-bottom: 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--color-accent-pale);
+    line-height: 1.4 !important;
+    cursor: default !important;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.bookmark-chapter-list { list-style: none; padding-left: 0; margin: 0; }
+.bookmark-chapter-list .bookmark-item {
+    margin-bottom: 8px;
+    padding: 8px;
+    background: #fafafa;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    line-height: 1.4 !important;
+    list-style: none;
+    position: relative;
+}
+.bookmark-chapter-list .bookmark-item:hover { background: #f0f0f0; }
+
+.bookmark-remove {
+    background: none;
+    border: none;
+    color: var(--color-primary);
+    cursor: pointer;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    transition: background-color 0.2s;
+}
+.bookmark-remove:hover { background: #ffe0e6; }
+
+.bookmark-preview {
+    font-size: 12px;
+    color: #333;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+.bookmark-preview a { text-decoration: none; color: inherit; }
+.bookmark-preview a:hover { text-decoration: none; color: var(--color-primary); }
+
+.bookmark-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 10px;
+    color: #999;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.bookmark-item:hover .bookmark-delete { opacity: 1; }
+.bookmark-delete:hover { background: #ff4757; color: white; }
+
+.bookmarks-empty { text-align: center; padding: 20px; color: #999; font-size: 12px; }
+
+/* ---- 書籤視覺標識 (bookmarked 元素) -------------------- */
+.bookmarked {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 182, 193, 0.1) 100%);
+    border-left: 4px solid var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
+}
+.bookmark-indicator {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 16px;
+    opacity: 0.8;
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+.bookmark-indicator:hover { opacity: 1; transform: scale(1.1); }
+
+/* ---- 書籤分組（面板內折疊組） -------------------------- */
+.bookmark-chapter {
+    margin: 12px 0 8px 0;
+    padding: 8px 12px;
+    background: rgba(231, 84, 128, 0.1);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--color-primary);
+}
+/* .bookmark-chapter-title already defined above; extend for panel usage */
+.bookmark-chapter > .bookmark-chapter-title {
+    font-size: 14px;
+    color: var(--color-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.bookmark-chapter-toggle { font-size: 12px; transition: transform 0.2s ease; }
+.bookmark-chapter.collapsed .bookmark-chapter-toggle { transform: rotate(-90deg); }
+
+.bookmark-chapter-items { margin-top: 8px; transition: max-height 0.2s ease; overflow: hidden; }
+.bookmark-chapter.collapsed .bookmark-chapter-items { max-height: 0; margin-top: 0; }
+
+.bookmark-chapter-count {
+    font-size: 12px;
+    background: rgba(231, 84, 128, 0.2);
+    padding: 2px 6px;
+    border-radius: 10px;
+    color: var(--color-primary);
+}
+
+/* ---- 當前章節信息條 ------------------------------------- */
+.current-chapter-info {
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: rgba(231, 84, 128, 0.1);
+    border-radius: var(--radius-sm);
+    border-left: 4px solid var(--color-primary);
+}
+.chapter-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0; }
+.current-chapter-title { font-size: 14px; font-weight: 600; color: var(--color-primary); flex: 1; }
+.current-chapter-count { font-size: 12px; color: #666; }
+
+.bookmark-clear-icon {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 3px;
+    border-radius: 3px;
+    position: relative;
+}
+.current-chapter-info:hover .bookmark-clear-icon { opacity: 0.7; }
+.bookmark-clear-icon:hover { opacity: 1 !important; background: rgba(255, 71, 87, 0.1); transform: scale(1.05); }
+.bookmark-clear-icon:hover::after {
+    content: '清空書籤';
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+.bookmark-clear-icon:active { transform: scale(0.95); }
+
+/* ---- 暗色模式 ------------------------------------------- */
+body.dark-mode .bookmarked {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(139, 69, 19, 0.1) 100%);
+    border-left-color: var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+}
+body.dark-mode .bookmark-chapter { background: rgba(255, 105, 180, 0.15); border-left-color: var(--color-primary-light); }
+body.dark-mode .bookmark-chapter > .bookmark-chapter-title { color: var(--color-primary-light); }
+body.dark-mode .bookmark-chapter-count { background: rgba(255, 105, 180, 0.3); color: var(--color-primary-light); }
+body.dark-mode .current-chapter-info { background: rgba(255, 105, 180, 0.15); border-left-color: var(--color-primary-light); }
+body.dark-mode .current-chapter-title { color: var(--color-primary-light); }
+body.dark-mode .current-chapter-count { color: #fddde6; }
+body.dark-mode .current-chapter-info:hover .bookmark-clear-icon { opacity: 0.7; }
+body.dark-mode .bookmark-clear-icon:hover { background: rgba(255, 105, 180, 0.2) !important; opacity: 1 !important; }
+body.dark-mode .bookmark-clear-icon:hover::after { background: #5a2d49; color: #fddde6; }
+body.dark-mode .qa-pair-bookmark {
+    border-left-color: var(--color-primary-light);
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(59, 28, 50, 0.5) 100%);
+}
+body.dark-mode .qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
+}
