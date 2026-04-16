@@ -1,0 +1,12 @@
+[run]
+omit =
+    tests/*
+    run.py
+    */site-packages/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise NotImplementedError
+    if TYPE_CHECKING:

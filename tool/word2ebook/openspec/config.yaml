@@ -1,0 +1,9 @@
+name: word2ebook
+version: "1.0"
+description: >
+  word2ebook converts Microsoft Word (.docx) documents into multi-page HTML
+  ebooks with search, bookmarks, traditional/simplified Chinese support,
+  and a responsive reading UI.
+language: python
+entrypoint: main.py
+spec_dir: openspec/specs
