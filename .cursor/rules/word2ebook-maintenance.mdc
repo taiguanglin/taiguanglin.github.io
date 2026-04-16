@@ -1,0 +1,56 @@
+---
+description: Maintenance rules for the word2ebook tool — keep OpenSpec and unit tests in sync with every code change
+globs: tool/word2ebook/**
+alwaysApply: false
+---
+
+# word2ebook Maintenance Rules
+
+## After Every Code Change
+
+### 1. Update OpenSpec specs
+
+When you modify behaviour in any Python module or JS/CSS module, update the
+corresponding `openspec/specs/<domain>/spec.md`:
+
+| Changed area | Spec to update |
+|---|---|
+| `main.py`, `Word2EBookConverter` | `overview/spec.md` |
+| `core/document_parser.py` | `document-parsing/spec.md` |
+| `generators/html_generator.py`, `templates/` | `html-generation/spec.md` |
+| `generators/search_generator.py`, `core/content_processor.py` | `search/spec.md` |
+| `assets/js/modules/*.js` | `frontend-js/spec.md` |
+| `assets/css/modules/*.css` | `frontend-css/spec.md` |
+| `templates/static_assets.py` | `static-assets/spec.md` |
+| `utils/i18n_utils.py`, `utils/config_utils.py`, `config.yaml` | `i18n/spec.md` |
+
+### 2. Keep unit tests passing
+
+Run the test suite after every change:
+
+```bash
+cd tool/word2ebook
+python3 -m pytest tests/
+```
+
+- If you add a new function or class, add a corresponding test in `tests/test_<module>.py`
+- If you change existing behaviour, update the affected test
+- Target: maintain ≥ 80% coverage on all non-parser modules
+
+### 3. JS/CSS module changes
+
+The monolithic `script.js` and `style.css` have been **deleted**. The source of
+truth is the module files:
+
+- JS modules: `assets/js/modules/00-base.js` … `07-floating-controls.js`
+- CSS modules: `assets/css/modules/00-base.css` … `05-responsive.css`
+
+`StaticAssetsManager` concatenates them automatically. Never re-create the
+monolithic files — edit the appropriate module file instead.
+
+### 4. Adding a new JS or CSS module
+
+1. Create the file with the correct numeric prefix in `assets/{js,css}/modules/`
+2. Verify `StaticAssetsManager.get_full_{js,css}_content()` picks it up
+3. Add/update the `static-assets/spec.md` module table
+4. Add a test in `tests/test_static_assets.py` confirming the new content appears in output

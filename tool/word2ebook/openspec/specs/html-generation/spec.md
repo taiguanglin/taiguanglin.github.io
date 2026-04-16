@@ -1,0 +1,59 @@
+# HTML Generation Specification
+
+## Purpose
+
+The HTML generation domain converts `Chapter` objects into navigable HTML pages,
+producing one simplified and one traditional Chinese variant of each chapter page
+and two index pages (`index.html`, `index_trad.html`).
+
+## Requirements
+
+### Requirement: Chapter Page Generation
+The system SHALL generate one HTML file per chapter (e.g. `01.html`, `02.html`)
+for the simplified Chinese version and one `*_trad.html` file for traditional Chinese.
+
+#### Scenario: Simplified chapter page
+- GIVEN a list of `Chapter` objects and `generate_simplified=True`
+- WHEN `HTMLGenerator.generate_chapter_pages` is called
+- THEN files `01.html`, `02.html`, … SHALL exist in the output folder
+
+#### Scenario: Traditional chapter page
+- GIVEN `generate_traditional=True`
+- WHEN `HTMLGenerator.generate_chapter_pages` is called
+- THEN files `01_trad.html`, `02_trad.html`, … SHALL exist
+
+### Requirement: Navigation Links
+Each chapter page SHALL include:
+- A link to the previous chapter (or none if it is the first chapter)
+- A link to the next chapter (or none if it is the last chapter)
+- A link back to the index page
+- A language-switch link to the other variant (simplified ↔ traditional)
+
+### Requirement: Index Page Generation
+The system SHALL generate `index.html` (simplified) and `index_trad.html` (traditional)
+containing the full table of contents with chapter links.
+
+#### Scenario: Index TOC contains all chapters
+- GIVEN N chapters
+- WHEN `HTMLGenerator.generate_index_pages` is called
+- THEN `index.html` SHALL contain links to all N chapter files
+
+### Requirement: Asset References
+Every generated HTML page SHALL reference:
+- `assets/css/style.css` via a `<link>` tag
+- `assets/js/script.js` via a `<script>` tag
+- `assets/js/i18n-text.js`, `assets/js/search-cache.js` via `<script>` tags
+- Favicon via a `<link rel="icon">` tag if a favicon was found
+
+### Requirement: Favicon Handling
+The system SHALL search for a favicon file in the same directory as the input
+`.docx` file (patterns: `favicon.ico`, `favicon.png`, `favicon.svg`) and copy it
+to the output root. If not found the system SHOULD continue without a favicon and
+print a warning.
+
+## Technical Notes
+
+- Implementation: `generators/html_generator.py::HTMLGenerator`
+- Templates: `templates/html_templates.py`, `templates/i18n_templates.py`
+- Chapter file naming: zero-padded index (`utils/file_utils.py::safe_filename`)
+- Traditional conversion: `utils/i18n_utils.py::I18nProcessor.to_traditional`

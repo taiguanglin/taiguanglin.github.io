@@ -1,0 +1,65 @@
+/* ========== 屏幕高度优化 ========== */
+
+/* 当屏幕高度充足时，让閱讀設置工具栏底部靠近右下角操作菜单 */
+@media (min-height: 700px) {
+  .reading-toolbar {
+    top: auto; /* 移除top定位 */
+    bottom: 110px; /* 操作菜单(bottom: 30px + 50px按钮高度 + 30px安全间距) */
+    max-height: calc(100vh - 130px); /* 调整最大高度：视窗高度 - 底部偏移 - 顶部安全距离 */
+    /* 保持原有的滚动条和其他样式 */
+  }
+}
+
+/* 当屏幕高度不足时，优化閱讀設置工具栏位置 */
+@media (max-height: 600px) {
+  .reading-toolbar {
+    top: 10px; /* 贴近顶部，最大化可视空间 */
+    max-height: calc(100vh - 20px); /* 几乎占满整个视窗高度 */
+  }
+}
+
+/* 极小高度屏幕进一步优化 */
+@media (max-height: 400px) {
+  .reading-toolbar {
+    top: 5px; /* 更接近顶部 */
+    max-height: calc(100vh - 10px);
+    padding: 10px; /* 减少内边距以节省空间 */
+  }
+  
+  .toolbar-section {
+    margin-bottom: 10px; /* 减少间距 */
+    padding-bottom: 8px;
+  }
+  
+  .toolbar-label {
+    margin-bottom: 3px; /* 压缩标签间距 */
+  }
+}
+
+/* 原始文件名顯示（供編輯人員和管理人員參考） */
+p.source-filename {
+  color: #888;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  font-weight: normal;
+  margin: 5px 0 15px 0;
+  opacity: 0.85;
+  user-select: text; /* 確保可以選取 */
+  cursor: text;
+  padding-left: 25px;
+  line-height: 1.2;
+}
+
+/* 當滑鼠懸停時稍微增加可見性 */
+p.source-filename:hover {
+  opacity: 1.0;
+}
+
+/* 響應式設計：在小螢幕上調整 */
+@media (max-width: 768px) {
+  p.source-filename {
+    font-size: 10px;
+    margin: 3px 0 10px 0;
+  }
+}
+

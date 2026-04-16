@@ -1,0 +1,47 @@
+/* ============ 搜索激活按钮样式 ============ */
+.search-activation {
+    margin: 30px 0;
+    text-align: center;
+}
+
+.search-activate-btn {
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(231, 84, 128, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.search-activate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(231, 84, 128, 0.4);
+    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+}
+
+.search-activate-btn:active {
+    transform: translateY(0);
+}
+
+.search-activate-btn:disabled {
+    background: #ddd !important;
+    color: #999 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+.search-activate-hint {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    opacity: 0.9;
+    margin-top: 4px;
+}
+

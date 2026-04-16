@@ -1,0 +1,987 @@
+/* ============ UX 增強功能 ============ */
+
+/* 閱讀工具欄 */
+.reading-toolbar {
+    position: fixed;
+    top: 70px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    z-index: 980; /* 降低z-index，确保低于action-menu-items */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    /* 添加滚动条支持，防止内容溢出 */
+    max-height: calc(100vh - 140px); /* 视窗高度 - 顶部偏移 - 底部安全距离 */
+    overflow-y: auto;
+}
+
+/* 閱讀工具欄滾動條樣式 */
+.reading-toolbar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.reading-toolbar::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.3);
+    border-radius: 3px;
+}
+
+.reading-toolbar::-webkit-scrollbar-thumb {
+    background: rgba(231, 84, 128, 0.4);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.reading-toolbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(231, 84, 128, 0.6);
+}
+
+.reading-toolbar.hidden {
+    transform: translateX(100%);
+    opacity: 0;
+}
+
+.toolbar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e75480;
+}
+
+.toolbar-section {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.toolbar-section:last-child {
+    margin-bottom: 0;
+    border-bottom: none;
+}
+
+.toolbar-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+    font-weight: 500;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+
+
+.toolbar-controls {
+    display: flex;
+    gap: 8px; /* 增加按钮间距，防止误点 */
+    align-items: center;
+}
+
+.ctrl-btn {
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.2s ease;
+    min-width: 30px;
+    text-align: center;
+}
+
+.ctrl-btn:hover {
+    background: #f5f5f5;
+    border-color: #ccc;
+}
+
+.ctrl-btn.active {
+    background: #e75480;
+    color: white;
+    border-color: #e75480;
+}
+
+/* 字體調整按鈕特殊樣式 - 區別於選項按鈕 */
+.ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #ced4da;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #495057;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ctrl-btn.font-adjust:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    border-color: #adb5bd;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    color: #212529;
+}
+
+.ctrl-btn.font-adjust:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(135deg, #dee2e6 0%, #ced4da 100%);
+}
+
+/* 字體調整按鈕的短暫反馈效果 */
+.ctrl-btn.font-adjust.clicked {
+    background: linear-gradient(135deg, #e75480 0%, #c73650 100%);
+    color: white;
+    border-color: #e75480;
+    transform: scale(0.95);
+}
+
+/* 字體大小選項按鈕優化樣式 */
+.ctrl-btn.font-option {
+    /* 為"預設"按鈕增加更多padding，確保舒適的點擊區域 */
+    padding: 6px 16px; /* 左右增加padding */
+    min-width: 50px; /* 設置最小寬度確保視覺平衡 */
+    position: relative;
+    white-space: nowrap; /* 防止文字換行 */
+}
+
+/* 搜索功能已移除 */
+
+/* 閱讀進度條 */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: rgba(231, 84, 128, 0.2);
+    z-index: 9999;
+}
+
+.reading-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #e75480, #ff69b4);
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+/* 浮動目錄 */
+.floating-toc {
+    position: fixed;
+    left: -250px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 240px;
+    max-height: 70vh;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 800;
+    transition: left 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.floating-toc.visible {
+    left: 20px;
+}
+
+.floating-toc-header {
+    padding: 15px;
+    border-bottom: 1px solid #f0f0f0;
+    font-weight: 600;
+    color: #e75480;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px 12px 0 0;
+    flex-shrink: 0;
+}
+
+.floating-toc-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0;
+    line-height: 1.4 !important; /* 固定行距，不受全局調整影響 */
+    overflow-x: hidden; /* 防止水平滚动条 */
+}
+
+.floating-toc-list {
+    padding: 10px;
+    list-style: none;
+}
+
+.floating-toc-item {
+    padding: 8px 12px;
+    margin: 2px 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    line-height: 1.3 !important; /* 修正行距，避免重叠 */
+    word-wrap: break-word; /* 自动换行 */
+    white-space: normal; /* 允许换行 */
+    overflow-wrap: break-word; /* 强制长单词换行 */
+    color: #e75480; /* 與章節頁面目錄第1層相同 */
+}
+
+.floating-toc-item.level-h3 {
+    padding-left: 24px;
+    font-size: 12px;
+    color: #e85aad; /* 與章節頁面目錄第2層相同 */
+    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.floating-toc-item.level-h4 {
+    padding-left: 36px;
+    font-size: 11px;
+    color: #f585cc; /* 與章節頁面目錄第4層相同 */
+    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.floating-toc-item.level-h5 {
+    padding-left: 48px;
+    font-size: 10px;
+    color: #f585cc; /* 與章節頁面目錄第4層相同 */
+    line-height: 1.3 !important; /* 确保子级别也有正确行距 */
+    word-wrap: break-word;
+    white-space: normal;
+    overflow-wrap: break-word;
+}
+
+.floating-toc-item:hover {
+    background: rgba(231, 84, 128, 0.1);
+}
+
+.floating-toc-item.active {
+    background: rgba(231, 84, 128, 0.2);
+    border-left-color: #e75480;
+    font-weight: 600;
+    color: #e75480;
+    border-radius: 4px;
+    transform: translateX(2px);
+    box-shadow: 0 1px 4px rgba(231, 84, 128, 0.3);
+}
+
+/* 浮動目錄標籤頁 */
+.floating-toc-tabs {
+    display: flex;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.floating-toc-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s ease;
+    font-size: 12px;
+    transform-origin: center;
+}
+
+.floating-toc-tab.active {
+    color: #e75480;
+    border-bottom-color: #e75480;
+    font-weight: 600;
+}
+
+.floating-toc-tab:hover {
+    background: rgba(231, 84, 128, 0.05);
+}
+
+/* 書籤樣式 */
+.bookmark-item {
+    padding: 10px 12px;
+    margin: 4px 0;
+    border-radius: 6px;
+    border: 1px solid #f0f0f0;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    word-wrap: break-word; /* 书签文本自动换行 */
+    white-space: normal;
+    overflow-wrap: break-word;
+    line-height: 1.4; /* 合理的行距 */
+}
+
+.bookmark-item:hover {
+    background: rgba(231, 84, 128, 0.05);
+    border-color: #e75480;
+}
+
+.qa-pair-bookmark {
+    border-left: 3px solid #ff69b4;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.08) 0%, rgba(255, 255, 255, 0.5) 100%);
+}
+
+.qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.12) 0%, rgba(231, 84, 128, 0.05) 100%);
+}
+
+.bookmark-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 11px;
+    color: #666;
+    gap: 6px;
+}
+
+.bookmark-type {
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.bookmark-questioner {
+    font-weight: 600;
+    color: #e75480;
+    flex: 1;
+}
+
+.bookmark-time {
+    font-size: 10px;
+    flex-shrink: 0;
+    color: #b18a9e; /* 柔和的粉紅灰色，與主題協調 */
+    opacity: 0.8; /* 稍微降低顯眼度 */
+}
+
+/* 首頁書籤樣式 */
+.bookmark-chapter-group {
+  margin-bottom: 15px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  line-height: 1.4 !important; /* 固定行距 */
+  list-style: none;
+}
+
+.bookmark-chapter-title {
+  font-weight: 600;
+  color: #d44d75;
+  font-size: 0.95em;
+  margin-bottom: 8px;
+  padding: 5px 0;
+  border-bottom: 1px solid #f8c8dc;
+  line-height: 1.4 !important; /* 固定行距 */
+  cursor: default !important; /* 確保不顯示為可點擊狀態 */
+  word-wrap: break-word; /* 章节标题自动换行 */
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+
+.bookmark-chapter-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.bookmark-chapter-list .bookmark-item {
+  margin-bottom: 8px;
+  padding: 8px;
+  background: #fafafa;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  line-height: 1.4 !important; /* 固定行距 */
+  list-style: none;
+  position: relative; /* 為bookmark-delete按鈕定位 */
+}
+
+.bookmark-chapter-list .bookmark-item:hover {
+  background: #f0f0f0;
+}
+
+.bookmark-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px 0;
+}
+
+.bookmark-remove {
+  background: none;
+  border: none;
+  color: #e75480;
+  cursor: pointer;
+  font-size: 0.8em;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.bookmark-remove:hover {
+  background: #ffe0e6;
+}
+
+.bookmark-preview {
+    font-size: 12px;
+    color: #333;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.bookmark-preview a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.bookmark-preview a:hover {
+    text-decoration: none;
+    color: #e75480;
+}
+
+.bookmark-delete {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: rgba(255, 255, 255, 0.9);
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 10px;
+    color: #999;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.bookmark-item:hover .bookmark-delete {
+    opacity: 1;
+}
+
+.bookmark-delete:hover {
+    background: #ff4757;
+    color: white;
+}
+
+.bookmarks-empty {
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-size: 12px;
+}
+
+/* 操作按鈕組 - 可展開菜單 */
+.action-buttons {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+}
+
+.action-menu {
+    position: relative;
+}
+
+.action-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: #ff69b4;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.3);
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+.action-btn.menu-btn {
+    background: #ff69b4;
+    z-index: 1001;
+}
+
+.action-btn.menu-btn.expanded {
+    transform: rotate(90deg);
+    background: #e75480;
+}
+
+.action-menu-items {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: none;
+    z-index: 1000; /* 确保action-menu-items高于reading-toolbar */
+}
+
+.action-menu.expanded .action-menu-items {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+.action-menu-items .action-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 16px;
+    background: #ff69b4;
+    transform: scale(0.8);
+}
+
+.action-menu.expanded .action-menu-items .action-btn {
+    transform: scale(1);
+}
+
+.action-menu-items .action-btn:hover {
+    background: #e75480;
+    transform: scale(1.05);
+}
+
+/* 暗色模式適配 */
+body.dark-mode .action-btn {
+    background: #ff69b4;
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .action-btn:hover {
+    background: #e75480;
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .action-btn.menu-btn.expanded {
+    background: #e75480;
+}
+
+body.dark-mode .action-menu-items .action-btn {
+    background: #ff69b4;
+}
+
+body.dark-mode .action-menu-items .action-btn:hover {
+    background: #e75480;
+}
+
+/* 問答互動功能 */
+.qa-actions {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.question:hover .qa-actions,
+.answer:hover .qa-actions {
+    opacity: 1;
+}
+
+.qa-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+.qa-btn:hover {
+    background: #e75480;
+    color: white;
+    transform: scale(1.1);
+}
+
+/* 通知消息 */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #333;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    z-index: 9999;
+    transition: transform 0.3s ease;
+}
+
+.toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 暗色模式適配 */
+body.dark-mode .reading-toolbar,
+body.dark-mode .floating-toc {
+    background: rgba(59, 28, 50, 0.95);
+    border-color: #5a2d49;
+}
+
+/* 浮動目錄滾動條樣式 */
+.floating-toc-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.floating-toc-content::-webkit-scrollbar-track {
+    background: rgba(240, 240, 240, 0.3);
+    border-radius: 3px;
+}
+
+.floating-toc-content::-webkit-scrollbar-thumb {
+    background: rgba(231, 84, 128, 0.4);
+    border-radius: 3px;
+    transition: background 0.2s ease;
+}
+
+.floating-toc-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(231, 84, 128, 0.6);
+}
+
+/* 暗色模式滾動條樣式 */
+body.dark-mode .reading-toolbar::-webkit-scrollbar-track {
+    background: rgba(90, 45, 73, 0.3);
+}
+
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .reading-toolbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 105, 180, 0.6);
+}
+
+/* 暗色模式浮動目錄滾動條樣式 */
+body.dark-mode .floating-toc-content::-webkit-scrollbar-track {
+    background: rgba(90, 45, 73, 0.3);
+}
+
+body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .floating-toc-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 105, 180, 0.6);
+}
+
+body.dark-mode .floating-toc-header {
+    background: rgba(59, 28, 50, 0.95);
+    border-bottom: 1px solid #5a2d49;
+}
+
+body.dark-mode .ctrl-btn,
+body.dark-mode .qa-btn {
+    background: rgba(90, 45, 73, 0.9);
+    color: #fddde6;
+    border-color: #5a2d49;
+}
+
+body.dark-mode .ctrl-btn:hover,
+body.dark-mode .qa-btn:hover {
+    background: #ff69b4;
+}
+
+body.dark-mode .ctrl-btn.active {
+    background: #ff69b4;
+    color: #fff;
+    border-color: #ff69b4;
+    box-shadow: 0 0 8px rgba(255, 105, 180, 0.5);
+}
+
+/* 暗色模式下的字體調整按鈕 */
+body.dark-mode .ctrl-btn.font-adjust {
+    background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%);
+    border: 1px solid #555;
+    color: #fddde6;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode .ctrl-btn.font-adjust:hover {
+    background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%);
+    border-color: #777;
+    color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .ctrl-btn.font-adjust:active {
+    background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+}
+
+body.dark-mode .ctrl-btn.font-adjust.clicked {
+    background: linear-gradient(135deg, #ff69b4 0%, #d63384 100%);
+    color: white;
+    border-color: #ff69b4;
+}
+
+
+
+
+
+body.dark-mode .floating-toc-item:hover {
+    background: rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .floating-toc-item.active {
+    background: rgba(255, 105, 180, 0.25);
+    border-left-color: #ff69b4;
+    color: #ff69b4;
+    box-shadow: 0 1px 4px rgba(255, 105, 180, 0.4);
+}
+
+/* 書籤視覺標識 */
+.bookmarked {
+    position: relative;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 182, 193, 0.1) 100%);
+    border-left: 4px solid #ff69b4;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.2);
+}
+
+.bookmark-indicator {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-size: 16px;
+    opacity: 0.8;
+    z-index: 10;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+}
+
+.bookmark-indicator:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+body.dark-mode .bookmarked {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(139, 69, 19, 0.1) 100%);
+    border-left-color: #ff69b4;
+    box-shadow: 0 2px 8px rgba(255, 105, 180, 0.3);
+}
+
+/* 書籤分組樣式 */
+.bookmark-chapter {
+    margin: 12px 0 8px 0;
+    padding: 8px 12px;
+    background: rgba(231, 84, 128, 0.1);
+    border-radius: 6px;
+    border-left: 4px solid #e75480;
+}
+
+.bookmark-chapter-title {
+    font-weight: 600;
+    color: #e75480;
+    font-size: 14px;
+    margin: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.bookmark-chapter-toggle {
+    font-size: 12px;
+    transition: transform 0.2s ease;
+}
+
+.bookmark-chapter.collapsed .bookmark-chapter-toggle {
+    transform: rotate(-90deg);
+}
+
+.bookmark-chapter-items {
+    margin-top: 8px;
+    transition: max-height 0.2s ease;
+    overflow: hidden;
+}
+
+.bookmark-chapter.collapsed .bookmark-chapter-items {
+    max-height: 0;
+    margin-top: 0;
+}
+
+.bookmark-chapter-count {
+    font-size: 12px;
+    background: rgba(231, 84, 128, 0.2);
+    padding: 2px 6px;
+    border-radius: 10px;
+    color: #e75480;
+}
+
+body.dark-mode .bookmark-chapter {
+    background: rgba(255, 105, 180, 0.15);
+    border-left-color: #ff69b4;
+}
+
+body.dark-mode .bookmark-chapter-title {
+    color: #ff69b4;
+}
+
+body.dark-mode .bookmark-chapter-count {
+    background: rgba(255, 105, 180, 0.3);
+    color: #ff69b4;
+}
+
+/* 夜間模式下標籤頁樣式 */
+body.dark-mode .floating-toc-tab {
+    color: #fddde6;
+    border-bottom: 1px solid #5a2d49;
+}
+
+body.dark-mode .floating-toc-tab.active {
+    color: #ff69b4;
+    border-bottom-color: #ff69b4;
+}
+
+body.dark-mode .floating-toc-tab:hover {
+    background: rgba(255, 105, 180, 0.1);
+}
+
+/* 當前章節信息樣式 */
+.current-chapter-info {
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    background: rgba(231, 84, 128, 0.1);
+    border-radius: 6px;
+    border-left: 4px solid #e75480;
+}
+
+.chapter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0;
+}
+
+.current-chapter-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e75480;
+    flex: 1;
+}
+
+.current-chapter-count {
+    font-size: 12px;
+    color: #666;
+}
+
+.bookmark-clear-icon {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    padding: 3px;
+    border-radius: 3px;
+    position: relative;
+}
+
+.current-chapter-info:hover .bookmark-clear-icon {
+    opacity: 0.7;
+}
+
+.bookmark-clear-icon:hover {
+    opacity: 1 !important;
+    background: rgba(255, 71, 87, 0.1);
+    transform: scale(1.05);
+}
+
+.bookmark-clear-icon:hover::after {
+    content: '清空書籤';
+    position: absolute;
+    top: -30px;
+    right: 0;
+    background: #333;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    white-space: nowrap;
+    z-index: 1000;
+}
+
+.bookmark-clear-icon:active {
+    transform: scale(0.95);
+}
+
+body.dark-mode .current-chapter-info {
+    background: rgba(255, 105, 180, 0.15);
+    border-left-color: #ff69b4;
+}
+
+body.dark-mode .current-chapter-title {
+    color: #ff69b4;
+}
+
+body.dark-mode .current-chapter-count {
+    color: #fddde6;
+}
+
+body.dark-mode .current-chapter-info:hover .bookmark-clear-icon {
+    opacity: 0.7;
+}
+
+body.dark-mode .bookmark-clear-icon:hover {
+    background: rgba(255, 105, 180, 0.2) !important;
+    opacity: 1 !important;
+}
+
+body.dark-mode .bookmark-clear-icon:hover::after {
+    background: #5a2d49;
+    color: #fddde6;
+}
+
+body.dark-mode .qa-pair-bookmark {
+    border-left-color: #ff69b4;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15) 0%, rgba(59, 28, 50, 0.5) 100%);
+}
+
+body.dark-mode .qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.2) 0%, rgba(255, 105, 180, 0.1) 100%);
+}
+

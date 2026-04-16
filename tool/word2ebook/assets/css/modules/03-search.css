@@ -1,0 +1,594 @@
+/* ============ 搜索功能样式 ============ */
+.search-container {
+    margin: 30px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #fff8f5 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 1px solid #f8c8dc;
+    box-shadow: 0 4px 12px rgba(231, 84, 128, 0.1);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.search-box {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+#search-input {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: 2px solid #f8c8dc;
+    border-radius: 25px;
+    background: #fff;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+#search-input:focus {
+    border-color: #e75480;
+    box-shadow: 0 0 0 3px rgba(231, 84, 128, 0.1);
+}
+
+#search-input:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+    box-shadow: none;
+}
+
+#search-input::placeholder {
+    color: #999;
+}
+
+.search-status {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #666;
+    min-height: 20px;
+}
+
+/* 搜索載入進度樣式 */
+.search-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+}
+
+.search-loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #e75480;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.search-loading-text {
+    color: #666;
+    font-size: 14px;
+}
+
+/* 搜索進度條 */
+.search-progress-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.search-progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.search-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50, #45a049);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.search-progress-text {
+    font-size: 12px;
+    color: #888;
+    margin-top: 5px;
+}
+
+
+
+.search-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background: #fff5f5;
+    border: 1px solid #fed7d7;
+    border-radius: 6px;
+    color: #c53030;
+}
+
+.search-retry-btn {
+    background: #e75480;
+    color: white;
+    border: none;
+    padding: 4px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.2s;
+}
+
+.search-retry-btn:hover {
+    background: #d63384;
+}
+
+.search-status-success {
+    color: #2d7d32;
+    font-weight: 500;
+    padding: 8px 12px;
+    background: #f1f8e9;
+    border: 1px solid #c8e6c9;
+    border-radius: 6px;
+}
+
+.search-results {
+    margin-top: 20px;
+}
+
+.search-results-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f8c8dc;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.search-results-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.search-results-count {
+    font-weight: 600;
+    color: #e75480;
+}
+
+.search-clear, .search-collapse, .search-load-more, .search-load-all {
+    background: #f8c8dc;
+    color: #b73c65;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: all 0.3s ease;
+}
+
+.search-clear:hover, .search-collapse:hover, .search-load-more:hover, .search-load-all:hover {
+    background: #e75480;
+    color: white;
+}
+
+.search-collapse {
+    background: #e0e0e0;
+    color: #666;
+}
+
+.search-collapse:hover {
+    background: #999;
+    color: white;
+}
+
+.search-load-more {
+    background: #e6f3ff;
+    color: #0066cc;
+}
+
+.search-load-more:hover {
+    background: #0066cc;
+    color: white;
+}
+
+.search-load-all {
+    background: #e8f5e8;
+    color: #006600;
+}
+
+.search-load-all:hover {
+    background: #006600;
+    color: white;
+}
+
+.search-results-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: visible;
+    /* 移除高度限制，顯示所有搜尋結果 */
+    max-height: none;
+}
+
+.search-result-item {
+    margin-bottom: 12px;
+    padding: 15px;
+    background: #fff;
+    border-radius: 8px;
+    border-left: 3px solid #e75480;
+    box-shadow: 0 2px 6px rgba(231, 84, 128, 0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.search-result-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 84, 128, 0.15);
+    border-left-color: #ff69b4;
+}
+
+
+
+.search-result-title {
+    font-weight: 600;
+    color: #e75480;
+    margin-bottom: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+
+
+.search-result-type {
+    white-space: nowrap;
+    display: inline-block;
+    background: #f8c8dc;
+    color: #b73c65;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    margin-right: 8px;
+}
+
+.search-result-content {
+    color: #555;
+    font-size: 14px;
+    line-height: 1.5;
+    margin: 8px 0;
+}
+
+.search-result-highlight {
+    background: linear-gradient(120deg, #ffeb3b 0%, #ffc107 100%);
+    padding: 1px 2px;
+    border-radius: 2px;
+    font-weight: 600;
+}
+
+
+
+
+
+/* 暗色模式搜索样式 */
+body.dark-mode .search-activate-btn {
+    background: linear-gradient(135deg, #ff69b4 0%, #e75480 100%);
+    box-shadow: 0 4px 15px rgba(255, 105, 180, 0.4);
+}
+
+body.dark-mode .search-activate-btn:hover {
+    background: linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.5);
+}
+
+body.dark-mode .search-activate-btn:disabled {
+    background: #444 !important;
+    color: #666 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+}
+
+body.dark-mode #search-input:disabled {
+    background-color: #333;
+    color: #666;
+    border-color: #555;
+}
+
+body.dark-mode .search-container {
+    background: linear-gradient(135deg, #2d1e2e 0%, #1a1a1a 100%);
+    border-color: #4a2c4a;
+}
+
+body.dark-mode #search-input {
+    background: #2d1e2e;
+    color: #fff;
+    border-color: #4a2c4a;
+}
+
+body.dark-mode #search-input::placeholder {
+    color: #ccc;
+}
+
+body.dark-mode #search-input:focus {
+    border-color: #ff69b4;
+    box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+}
+
+body.dark-mode .search-results-header {
+    border-bottom-color: #4a2c4a;
+}
+
+/* 搜索加載狀態夜間模式 */
+body.dark-mode .search-loading {
+    background: #2d1e2e;
+    border-color: #4a2c4a;
+}
+
+body.dark-mode .search-loading-text {
+    color: #fddde6;
+}
+
+/* 暗色模式下的搜索進度條 */
+body.dark-mode .search-progress-bar {
+    background-color: #444;
+}
+
+body.dark-mode .search-progress-text {
+    color: #ccc;
+}
+
+body.dark-mode .search-loading-spinner {
+    border-color: #4a2c4a;
+    border-top-color: #ff69b4;
+}
+
+/* 搜索錯誤狀態夜間模式 */
+body.dark-mode .search-error {
+    background: #4a2c3a;
+    border-color: #5a2d49;
+    color: #ff91af;
+}
+
+body.dark-mode .search-retry-btn {
+    background: #ff69b4;
+    color: #fff;
+}
+
+body.dark-mode .search-retry-btn:hover {
+    background: #ff91af;
+}
+
+/* 搜索成功狀態夜間模式 */
+body.dark-mode .search-status-success {
+    background: #2d4a2d;
+    border-color: #4a6b4a;
+    color: #a8d5aa;
+}
+
+body.dark-mode .search-result-item {
+    background: #2d1e2e;
+    border-left-color: #ff69b4;
+}
+
+body.dark-mode .search-result-content {
+    color: #ccc;
+}
+
+
+
+body.dark-mode .search-clear, body.dark-mode .search-collapse, 
+body.dark-mode .search-load-more, body.dark-mode .search-load-all {
+    background: #4a2c4a;
+    color: #ff69b4;
+}
+
+body.dark-mode .search-clear:hover, body.dark-mode .search-collapse:hover,
+body.dark-mode .search-load-more:hover, body.dark-mode .search-load-all:hover {
+    background: #ff69b4;
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-collapse {
+    background: #333;
+    color: #ccc;
+}
+
+body.dark-mode .search-collapse:hover {
+    background: #555;
+    color: #fff;
+}
+
+body.dark-mode .search-load-more {
+    background: #1a2a3a;
+    color: #66ccff;
+}
+
+body.dark-mode .search-load-more:hover {
+    background: #66ccff;
+    color: #1a1a1a;
+}
+
+body.dark-mode .search-load-all {
+    background: #1a3a1a;
+    color: #66ff66;
+}
+
+body.dark-mode .search-load-all:hover {
+    background: #66ff66;
+    color: #1a1a1a;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .search-activate-btn {
+        padding: 12px 24px;
+        font-size: 14px;
+    }
+    
+    .search-activate-hint {
+        font-size: 11px;
+    }
+    
+    .search-container {
+        margin: 20px 0;
+        padding: 15px;
+    }
+    
+    #search-input {
+        font-size: 16px; /* 防止iOS缩放 */
+    }
+    
+    .search-results-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .search-results-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+    
+    .search-clear, .search-collapse, .search-load-more, .search-load-all {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+    
+    .search-result-item {
+        padding: 12px;
+    }
+    
+    .search-result-title {
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    /* 基礎字型大小調整 - 平板 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
+    body {
+        line-height: 1.7;
+    }
+    
+    /* 平板端字體控制按鈕優化 */
+    .toolbar-controls {
+        gap: 10px; /* 平板端增加更多間距 */
+    }
+    
+    .ctrl-btn.font-option {
+        padding: 8px 18px; /* 平板端增加更多padding */
+        min-width: 55px;
+    }
+    
+    /* TOC目錄字型優化 - 平板 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
+    .toc > ul > li { 
+        margin-bottom: 10px;
+        /* 字體大小和行距由JavaScript動態設置 */
+    }
+    
+    .toc ul ul > li { 
+        margin-bottom: 8px;
+        /* 字體大小和行距由JavaScript動態設置 */
+    }
+    
+    .toc ul ul ul > li { 
+        margin-bottom: 6px;
+        /* 字體大小和行距由JavaScript動態設置 */
+    }
+    
+    .toc ul ul ul ul > li { 
+        margin-bottom: 5px;
+        /* 字體大小和行距由JavaScript動態設置 */
+    }
+    
+    /* 章節頁TOC優化 */
+    /* 移除!important，让JavaScript动态字体调整生效 */
+    .toc-item.toc-level-1 > a {
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
+    }
+    
+    .toc-item.toc-level-2 > a {
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
+    }
+    
+    .toc-item.toc-level-3 > a {
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
+    }
+    
+    .toc-item.toc-level-4 > a {
+        /* 字體大小和行距由JavaScript動態設置 */
+        /* 保留此規則作為CSS結構標記 */
+        position: relative;
+    }
+    
+    /* 標題字型調整 */
+    h1 { font-size: 26px !important; line-height: 1.3; }
+    h2 { font-size: 22px !important; line-height: 1.4; }
+    h3 { font-size: 20px !important; line-height: 1.4; }
+    h4 { font-size: 18px !important; line-height: 1.4; }
+    
+    /* 按鈕和控制元素 */
+    .toc-level-btn, .floating-level-btn {
+        font-size: 15px !important;
+        min-width: 35px;
+        min-height: 35px;
+    }
+    
+    .toc-level-label {
+        font-size: 15px !important;
+    }
+    
+    /* 導航元素優化 */
+    .nav-footer a {
+        font-size: 16px !important;
+        padding: 10px 14px !important;
+    }
+    
+    .nav-home a {
+        font-size: 1.0em !important;
+    }
+    
+    .lang-switch a {
+        font-size: 1.0em !important;
+    }
+    
+    .top-nav-buttons a {
+        font-size: 16px !important;
+    }
+}
+
