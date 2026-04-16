@@ -218,7 +218,57 @@ class TestStaticAssetsManagerRealModules:
 
     def test_real_js_module_order_base_before_search(self):
         js = StaticAssetsManager().get_full_js_content()
-        # 00-base.js content (darkMode init) comes before 01-search.js content
+        # 00-base.js content (darkMode init) comes before 01-search-init.js content
         pos_darkmode = js.find("darkMode")
         pos_minisearch = js.find("searchIndex")
         assert pos_darkmode < pos_minisearch, "base module should come before search module"
+
+    def test_real_js_has_search_init_content(self):
+        js = StaticAssetsManager().get_full_js_content()
+        assert "activateSearch" in js
+        assert "loadSearchIndexWithProgress" in js
+        assert "segmentWithJieba" in js
+
+    def test_real_js_has_search_core_content(self):
+        js = StaticAssetsManager().get_full_js_content()
+        assert "initSearch" in js
+        assert "updateLoadMoreButtons" in js
+
+    def test_real_js_has_reader_ux_content(self):
+        js = StaticAssetsManager().get_full_js_content()
+        assert "createReadingToolbar" in js
+        assert "createFloatingTOC" in js
+        assert "addQAActions" in js
+
+    def test_real_js_has_bookmark_ui_content(self):
+        js = StaticAssetsManager().get_full_js_content()
+        assert "renderBookmarks" in js
+        assert "updateBookmarkCount" in js
+        assert "showBookmarkLoadingIndicator" in js
+
+    def test_real_js_has_reading_settings_content(self):
+        js = StaticAssetsManager().get_full_js_content()
+        assert "getDefaultFontSize" in js
+        assert "applyReadingSettings" in js
+        assert "handleInitialAnchor" in js
+
+    def test_real_js_module_order_search_init_before_core(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # Use function definitions to verify 01a-search-init.js < 01b-search-core.js
+        pos_activate = js.find("async function activateSearch")
+        pos_update_load_more = js.find("function updateLoadMoreButtons")
+        assert pos_activate < pos_update_load_more, "01a-search-init.js should come before 01b-search-core.js"
+
+    def test_real_js_module_order_bookmarks_before_bookmark_ui(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # Use function definitions to verify 03a-bookmarks.js < 03b-bookmark-ui.js
+        pos_migrate = js.find("function migrateOldBookmarks")
+        pos_render_index = js.find("function renderIndexTOC")
+        assert pos_migrate < pos_render_index, "03a-bookmarks.js should come before 03b-bookmark-ui.js"
+
+    def test_real_js_module_order_bookmark_ui_before_reading_settings(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # Use function definitions to verify 03b-bookmark-ui.js < 03c-reading-settings.js
+        pos_render_index = js.find("function renderIndexTOC")
+        pos_font = js.find("function getDefaultFontSize")
+        assert pos_render_index < pos_font, "03b-bookmark-ui.js should come before 03c-reading-settings.js"

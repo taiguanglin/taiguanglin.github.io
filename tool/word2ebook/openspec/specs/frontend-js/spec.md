@@ -17,9 +17,12 @@ Source JavaScript SHALL be split into ordered module files under
 | File | Responsibility |
 |---|---|
 | `00-base.js` | Dark mode init, page-type detection helpers |
-| `01-search.js` | MiniSearch integration, Jieba WASM, index loading, result paging, highlighting |
-| `02-reader-ux.js` | Reading toolbar, floating TOC creation, action buttons, Q&A action overlays |
-| `03-bookmarks.js` | Bookmark storage/migration, chapter + homepage bookmark UI, toast notifications |
+| `01a-search-init.js` | Search state variables, `activateSearch`, loading/error UI, `loadSearchIndexWithProgress`, Jieba WASM init, `segmentWithJieba` |
+| `01b-search-core.js` | `initSearch` and all inner closures: MiniSearch setup, query handler, result rendering, paging, highlighting, `collapseSearch`, search event listener |
+| `02-reader-ux.js` | Q&A ID generation, reading toolbar, floating TOC creation, action buttons, Q&A action overlays |
+| `03a-bookmarks.js` | Bookmark storage/migration, CRUD, visual indicators, homepage bookmarks, toggle, clear |
+| `03b-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
+| `03c-reading-settings.js` | `getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
