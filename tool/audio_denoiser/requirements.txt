@@ -1,0 +1,8 @@
+# Facebook Denoiser (dns64) needs PyTorch + torchaudio; use Python 3.10–3.12.
+torch>=2.1,<2.6
+torchaudio>=2.1,<2.6
+denoiser==0.1.5
+soundfile>=0.12
+numpy>=1.22,<2.0
+tqdm>=4.66
+certifi>=2024.0.0
