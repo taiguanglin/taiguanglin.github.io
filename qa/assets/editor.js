@@ -52,6 +52,13 @@ const els = {
     playbackRate: document.querySelector('#playbackRate'),
     stopAtRangeEnd: document.querySelector('#stopAtRangeEnd'),
     segmentTemplate: document.querySelector('#segmentTemplate'),
+    miniPlayer: document.querySelector('#miniPlayer'),
+    miniPlayerHandle: document.querySelector('#miniPlayerHandle'),
+    miniPlayerTitle: document.querySelector('#miniPlayerTitle'),
+    miniPlayerToggle: document.querySelector('#miniPlayerToggle'),
+    miniPlayerHide: document.querySelector('#miniPlayerHide'),
+    miniPlayerCurrent: document.querySelector('#miniPlayerCurrent'),
+    miniPlayerDuration: document.querySelector('#miniPlayerDuration'),
 };
 
 const audio = createAudioController({
@@ -66,6 +73,7 @@ bootstrap();
 
 async function bootstrap() {
     bindEvents();
+    setupMiniPlayer();
     applyPrefs();
     await loadFileList();
 }
@@ -81,7 +89,7 @@ function bindEvents() {
         renderFileList();
     });
     els.saveButton.addEventListener('click', () => saveCurrentFile());
-    els.settingsButton.addEventListener('click', openSettings);
+    els.settingsButton.addEventListener('click', () => openSettings());
     els.saveSettingsButton.addEventListener('click', () => {
         setPat(els.patInput.value);
         setPrefs({ showReports: els.showReportsSetting.checked });
@@ -175,7 +183,7 @@ function renderFileList() {
             button.classList.toggle('active', state.currentFile?.path === file.path);
             button.innerHTML = `
                 <span class="draft-dot ${state.draftPaths.has(file.path) ? '' : 'hidden'}"></span>
-                <span>${escapeHtml(file.name.replace(/\.txt$/i, ''))}</span>
+                <span class="file-name">${escapeHtml(file.name.replace(/\.txt$/i, ''))}</span>
             `;
             button.addEventListener('click', () => loadDocument(file));
             section.append(button);
@@ -338,7 +346,10 @@ function renderPlayButton(range, label) {
     button.textContent = `▶ ${range.label}`;
     button.addEventListener('click', async () => {
         try {
+            state.miniPlayerHidden = false;
+            setPrefs({ miniPlayerHidden: false });
             await audio.playRange(state.currentFile.path, range, label);
+            showMiniPlayer();
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
@@ -460,7 +471,7 @@ function setStatus(message, type = 'ok') {
 function openSettings(message = '') {
     els.patInput.value = getPat();
     els.showReportsSetting.checked = els.showReports.checked;
-    els.settingsMessage.textContent = message;
+    els.settingsMessage.textContent = typeof message === 'string' ? message : '';
     els.settingsDialog.showModal();
 }
 
@@ -541,4 +552,152 @@ function escapeHtml(value) {
         '"': '&quot;',
         "'": '&#39;',
     }[char]));
+}
+
+function setupMiniPlayer() {
+    const player = els.audioPlayer;
+    const mini = els.miniPlayer;
+    const handle = els.miniPlayerHandle;
+    const toggle = els.miniPlayerToggle;
+    const hide = els.miniPlayerHide;
+    const titleEl = els.miniPlayerTitle;
+    const currentEl = els.miniPlayerCurrent;
+    const durationEl = els.miniPlayerDuration;
+
+    state.miniPlayerHidden = state.prefs.miniPlayerHidden === true;
+    let dragging = false;
+    let dragOffset = { x: 0, y: 0 };
+
+    restoreMiniPlayerPosition();
+
+    toggle.addEventListener('click', async () => {
+        if (!player.src) return;
+        if (player.paused) {
+            try {
+                await player.play();
+            } catch (error) {
+                setStatus(`播放失敗：${error.message}`, 'error');
+            }
+        } else {
+            player.pause();
+        }
+    });
+
+    hide.addEventListener('click', () => {
+        state.miniPlayerHidden = true;
+        mini.classList.add('hidden');
+        setPrefs({ miniPlayerHidden: true });
+    });
+
+    for (const button of mini.querySelectorAll('[data-seek]')) {
+        button.addEventListener('click', () => {
+            const delta = Number(button.dataset.seek);
+            if (!Number.isFinite(delta) || !player.src) return;
+            const duration = Number.isFinite(player.duration) ? player.duration : Infinity;
+            const next = Math.min(Math.max(player.currentTime + delta, 0), duration);
+            player.currentTime = next;
+        });
+    }
+
+    handle.addEventListener('pointerdown', (event) => {
+        if (event.target.closest('button')) return;
+        dragging = true;
+        dragOffset = {
+            x: event.clientX - mini.offsetLeft,
+            y: event.clientY - mini.offsetTop,
+        };
+        handle.classList.add('dragging');
+        handle.setPointerCapture(event.pointerId);
+    });
+
+    handle.addEventListener('pointermove', (event) => {
+        if (!dragging) return;
+        const nextLeft = clamp(event.clientX - dragOffset.x, 8, window.innerWidth - mini.offsetWidth - 8);
+        const nextTop = clamp(event.clientY - dragOffset.y, 8, window.innerHeight - mini.offsetHeight - 8);
+        mini.style.left = `${nextLeft}px`;
+        mini.style.top = `${nextTop}px`;
+        mini.style.right = 'auto';
+        mini.style.bottom = 'auto';
+    });
+
+    const stopDrag = (event) => {
+        if (!dragging) return;
+        dragging = false;
+        handle.classList.remove('dragging');
+        try {
+            handle.releasePointerCapture(event.pointerId);
+        } catch {
+            // pointer was already released
+        }
+        setPrefs({
+            miniPlayerPos: {
+                left: parseFloat(mini.style.left) || 0,
+                top: parseFloat(mini.style.top) || 0,
+            },
+        });
+    };
+    handle.addEventListener('pointerup', stopDrag);
+    handle.addEventListener('pointercancel', stopDrag);
+
+    player.addEventListener('play', () => {
+        toggle.textContent = '⏸';
+        if (!state.miniPlayerHidden) showMiniPlayer();
+    });
+    player.addEventListener('pause', () => {
+        toggle.textContent = '▶';
+    });
+    player.addEventListener('ended', () => {
+        toggle.textContent = '▶';
+    });
+    player.addEventListener('loadedmetadata', () => {
+        durationEl.textContent = formatClock(player.duration);
+    });
+    player.addEventListener('durationchange', () => {
+        durationEl.textContent = formatClock(player.duration);
+    });
+    player.addEventListener('timeupdate', () => {
+        currentEl.textContent = formatClock(player.currentTime);
+    });
+    player.addEventListener('emptied', () => {
+        currentEl.textContent = '00:00';
+        durationEl.textContent = '00:00';
+    });
+    new MutationObserver(() => {
+        titleEl.textContent = els.audioTitle.textContent;
+    }).observe(els.audioTitle, { childList: true, characterData: true, subtree: true });
+    titleEl.textContent = els.audioTitle.textContent;
+}
+
+function showMiniPlayer() {
+    els.miniPlayer.classList.remove('hidden');
+}
+
+function restoreMiniPlayerPosition() {
+    const pos = state.prefs.miniPlayerPos;
+    if (!pos || typeof pos !== 'object') return;
+    const mini = els.miniPlayer;
+    if (Number.isFinite(pos.left)) {
+        mini.style.left = `${pos.left}px`;
+        mini.style.right = 'auto';
+    }
+    if (Number.isFinite(pos.top)) {
+        mini.style.top = `${pos.top}px`;
+        mini.style.bottom = 'auto';
+    }
+}
+
+function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+}
+
+function formatClock(seconds) {
+    if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+    const total = Math.floor(seconds);
+    const minutes = Math.floor(total / 60);
+    const secs = total % 60;
+    if (minutes >= 60) {
+        const hours = Math.floor(minutes / 60);
+        return `${String(hours).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+    return `${String(minutes).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
 }
