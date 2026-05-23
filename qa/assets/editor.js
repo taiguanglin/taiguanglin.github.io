@@ -1,13 +1,18 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, listQaFiles, putFile, testToken } from './github.js';
-import { cloneDocument, fileTitleFromPath, parseDocument, parseRanges, serializeDocument } from './parser.js';
+import { cloneDocument, extractMeta, fileTitleFromPath, injectMeta, parseDocument, parseRanges, serializeDocument } from './parser.js';
 import { clearDraft, clearPat, getDraft, getPat, getPrefs, listDraftPaths, setDraft, setPat, setPrefs } from './storage.js';
+
+const EMPTY_META = { lastPlayed: '', lastEdited: '' };
 
 const state = {
     files: [],
     currentFile: null,
     currentSha: '',
     originalText: '',
+    originalStripped: '',
+    originalMeta: { ...EMPTY_META },
+    meta: { ...EMPTY_META },
     document: null,
     originalDocument: null,
     dirty: false,
@@ -19,14 +24,14 @@ const state = {
 const els = {
     fileList: document.querySelector('#fileList'),
     fileSearch: document.querySelector('#fileSearch'),
-    showReports: document.querySelector('#showReports'),
-    dirtyOnly: document.querySelector('#dirtyOnly'),
     welcomePanel: document.querySelector('#welcomePanel'),
     documentPanel: document.querySelector('#documentPanel'),
     documentPath: document.querySelector('#documentPath'),
     documentTitle: document.querySelector('#documentTitle'),
     segmentCount: document.querySelector('#segmentCount'),
     draftBadge: document.querySelector('#draftBadge'),
+    metaLastPlayed: document.querySelector('#metaLastPlayed'),
+    metaLastEdited: document.querySelector('#metaLastEdited'),
     editorRoot: document.querySelector('#editorRoot'),
     saveButton: document.querySelector('#saveButton'),
     saveStatus: document.querySelector('#saveStatus'),
@@ -54,11 +59,10 @@ const els = {
     segmentTemplate: document.querySelector('#segmentTemplate'),
     miniPlayer: document.querySelector('#miniPlayer'),
     miniPlayerHandle: document.querySelector('#miniPlayerHandle'),
-    miniPlayerTitle: document.querySelector('#miniPlayerTitle'),
     miniPlayerToggle: document.querySelector('#miniPlayerToggle'),
-    miniPlayerHide: document.querySelector('#miniPlayerHide'),
     miniPlayerCurrent: document.querySelector('#miniPlayerCurrent'),
     miniPlayerDuration: document.querySelector('#miniPlayerDuration'),
+    seekBar: document.querySelector('#seekBar'),
 };
 
 const audio = createAudioController({
@@ -80,20 +84,13 @@ async function bootstrap() {
 
 function bindEvents() {
     els.fileSearch.addEventListener('input', renderFileList);
-    els.showReports.addEventListener('change', async () => {
-        setPrefs({ showReports: els.showReports.checked });
-        await loadFileList();
-    });
-    els.dirtyOnly.addEventListener('change', () => {
-        setPrefs({ dirtyOnly: els.dirtyOnly.checked });
-        renderFileList();
-    });
     els.saveButton.addEventListener('click', () => saveCurrentFile());
     els.settingsButton.addEventListener('click', () => openSettings());
     els.saveSettingsButton.addEventListener('click', () => {
         setPat(els.patInput.value);
-        setPrefs({ showReports: els.showReportsSetting.checked });
-        els.showReports.checked = els.showReportsSetting.checked;
+        const showReports = els.showReportsSetting.checked;
+        setPrefs({ showReports });
+        state.prefs.showReports = showReports;
         loadFileList();
     });
     els.clearPatButton.addEventListener('click', () => {
@@ -135,9 +132,7 @@ function bindEvents() {
 }
 
 function applyPrefs() {
-    els.showReports.checked = state.prefs.showReports;
-    els.showReportsSetting.checked = state.prefs.showReports;
-    els.dirtyOnly.checked = state.prefs.dirtyOnly;
+    els.showReportsSetting.checked = state.prefs.showReports === true;
     audio.setPlaybackRate(state.prefs.playbackRate);
     audio.setStopAtRangeEnd(state.prefs.stopAtRangeEnd);
     els.opusWarning.classList.toggle('hidden', audio.supportsOpus);
@@ -146,7 +141,7 @@ function applyPrefs() {
 async function loadFileList() {
     setStatus('正在載入檔案列表...', 'loading');
     try {
-        state.files = await listQaFiles({ showReports: els.showReports.checked });
+        state.files = await listQaFiles({ showReports: state.prefs.showReports === true });
         state.draftPaths = listDraftPaths();
         renderFileList();
         setStatus(`已載入 ${state.files.length} 個檔案`, 'ok');
@@ -158,12 +153,7 @@ async function loadFileList() {
 
 function renderFileList() {
     const query = els.fileSearch.value.trim().toLowerCase();
-    const dirtyOnly = els.dirtyOnly.checked;
-    const files = state.files.filter((file) => {
-        const matchesQuery = !query || file.name.toLowerCase().includes(query);
-        const hasDraft = state.draftPaths.has(file.path);
-        return matchesQuery && (!dirtyOnly || hasDraft);
-    });
+    const files = state.files.filter((file) => !query || file.name.toLowerCase().includes(query));
 
     if (files.length === 0) {
         els.fileList.innerHTML = '<div class="empty-state">沒有符合條件的檔案。</div>';
@@ -200,8 +190,10 @@ async function loadDocument(file, { preferDraft = null } = {}) {
     setStatus(`正在載入 ${file.name}...`, 'loading');
     try {
         const remote = await getFile(file.path);
+        const { meta: remoteMeta, stripped: remoteStripped } = extractMeta(remote.text);
         const draft = getDraft(file.path);
-        let text = remote.text;
+        let workingText = remoteStripped;
+        let workingMeta = { ...remoteMeta };
         let useDraft = false;
 
         if (draft && preferDraft === null) {
@@ -212,13 +204,20 @@ async function loadDocument(file, { preferDraft = null } = {}) {
             useDraft = true;
         }
 
-        if (useDraft) text = draft.text;
+        if (useDraft) {
+            workingText = typeof draft.text === 'string' ? draft.text : workingText;
+            workingMeta = draft.meta ? { ...EMPTY_META, ...draft.meta } : workingMeta;
+        }
+
         state.currentFile = file;
         state.currentSha = remote.sha;
         state.originalText = remote.text;
-        state.originalDocument = parseDocument(remote.text, file.path);
-        state.document = parseDocument(text, file.path);
-        state.dirty = text !== remote.text;
+        state.originalStripped = remoteStripped;
+        state.originalMeta = { ...remoteMeta };
+        state.meta = { ...workingMeta };
+        state.originalDocument = parseDocument(remoteStripped, file.path);
+        state.document = parseDocument(workingText, file.path);
+        state.dirty = useDraft && (workingText !== remoteStripped || metaDiffers(workingMeta, remoteMeta));
         state.draftPaths = listDraftPaths();
         renderFileList();
         renderDocument();
@@ -226,6 +225,10 @@ async function loadDocument(file, { preferDraft = null } = {}) {
     } catch (error) {
         setStatus(`載入失敗：${error.message}`, 'error');
     }
+}
+
+function metaDiffers(a, b) {
+    return (a?.lastPlayed || '') !== (b?.lastPlayed || '') || (a?.lastEdited || '') !== (b?.lastEdited || '');
 }
 
 function renderDocument() {
@@ -238,6 +241,7 @@ function renderDocument() {
     els.segmentCount.textContent = `${state.document.segments.length} 段`;
     els.draftBadge.classList.toggle('hidden', !state.draftPaths.has(state.currentFile.path));
     els.saveButton.disabled = !state.dirty;
+    refreshMetaStrip();
     els.editorRoot.innerHTML = '';
 
     if (state.document.header) {
@@ -409,10 +413,8 @@ function updatePlayButton(button, markerText, segment) {
     button.textContent = `▶ ${range.label}`;
     button.onclick = async () => {
         try {
-            state.miniPlayerHidden = false;
-            setPrefs({ miniPlayerHidden: false });
             await audio.playRange(state.currentFile.path, range, `${segment.number}. ${segment.title}`);
-            showMiniPlayer();
+            recordPlayback();
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
@@ -436,15 +438,19 @@ function renderPlayButton(range, label) {
     button.textContent = `▶ ${range.label}`;
     button.addEventListener('click', async () => {
         try {
-            state.miniPlayerHidden = false;
-            setPrefs({ miniPlayerHidden: false });
             await audio.playRange(state.currentFile.path, range, label);
-            showMiniPlayer();
+            recordPlayback();
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
     });
     return button;
+}
+
+function recordPlayback() {
+    if (!state.currentFile) return;
+    state.meta.lastPlayed = formatTimestamp();
+    markDirty();
 }
 
 function resetSegment(segmentIndex) {
@@ -456,14 +462,24 @@ function resetSegment(segmentIndex) {
 }
 
 function markDirty() {
+    if (!state.document) return;
+
     const text = serializeDocument(state.document);
-    state.dirty = text !== state.originalText;
+    const textChanged = text !== state.originalStripped;
+    state.meta.lastEdited = textChanged
+        ? formatTimestamp()
+        : (state.originalMeta.lastEdited || '');
+
+    const metaChanged = metaDiffers(state.meta, state.originalMeta);
+    state.dirty = textChanged || metaChanged;
+
     if (state.dirty && state.currentFile) {
         scheduleDraftSave(text);
     } else if (state.currentFile) {
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
     }
+    refreshMetaStrip();
     refreshDirtyUI();
 }
 
@@ -471,18 +487,38 @@ function scheduleDraftSave(text) {
     clearTimeout(state.draftTimer);
     state.draftTimer = setTimeout(() => {
         if (!state.currentFile) return;
-        setDraft(state.currentFile.path, text, state.currentSha);
+        setDraft(state.currentFile.path, text, state.currentSha, state.meta);
         state.draftPaths = listDraftPaths();
         els.draftBadge.classList.remove('hidden');
         renderFileList();
     }, 500);
 }
 
+function refreshMetaStrip() {
+    if (els.metaLastPlayed) {
+        els.metaLastPlayed.textContent = state.meta.lastPlayed || '—';
+    }
+    if (els.metaLastEdited) {
+        els.metaLastEdited.textContent = state.meta.lastEdited || '—';
+    }
+}
+
+function formatTimestamp(date = new Date()) {
+    const pad = (value) => String(value).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 async function saveCurrentFile({ force = false } = {}) {
     if (!state.currentFile || !state.document) return;
 
-    const text = serializeDocument(state.document);
-    if (!force && text === state.originalText) {
+    const strippedText = serializeDocument(state.document);
+    const metaForSave = { ...state.meta };
+    if (metaDiffers(state.meta, state.originalMeta) && !metaForSave.lastEdited) {
+        metaForSave.lastEdited = formatTimestamp();
+    }
+    const finalText = injectMeta(strippedText, metaForSave);
+
+    if (!force && finalText === state.originalText) {
         setStatus('沒有需要儲存的修改', 'ok');
         state.dirty = false;
         refreshDirtyUI();
@@ -498,11 +534,14 @@ async function saveCurrentFile({ force = false } = {}) {
     setStatus('正在儲存到 GitHub...', 'loading');
     try {
         const message = `qa: edit ${state.currentFile.name} via web editor (${new Date().toLocaleString('zh-TW')})`;
-        const result = await putFile(state.currentFile.path, text, state.currentSha, message, { force });
+        const result = await putFile(state.currentFile.path, finalText, state.currentSha, message, { force });
         state.currentSha = result.content.sha;
-        state.originalText = text;
-        state.originalDocument = parseDocument(text, state.currentFile.path);
-        state.document = parseDocument(text, state.currentFile.path);
+        state.originalText = finalText;
+        state.originalStripped = strippedText;
+        state.originalMeta = { ...metaForSave };
+        state.meta = { ...metaForSave };
+        state.originalDocument = parseDocument(strippedText, state.currentFile.path);
+        state.document = parseDocument(strippedText, state.currentFile.path);
         state.dirty = false;
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
@@ -511,7 +550,7 @@ async function saveCurrentFile({ force = false } = {}) {
         setStatus('已儲存並建立 GitHub commit', 'ok');
     } catch (error) {
         if (isConflict(error)) {
-            await handleConflict(text);
+            await handleConflict(finalText);
         } else {
             setStatus(`儲存失敗：${error.message}`, 'error');
             els.saveButton.disabled = false;
@@ -560,7 +599,7 @@ function setStatus(message, type = 'ok') {
 
 function openSettings(message = '') {
     els.patInput.value = getPat();
-    els.showReportsSetting.checked = els.showReports.checked;
+    els.showReportsSetting.checked = state.prefs.showReports === true;
     els.settingsMessage.textContent = typeof message === 'string' ? message : '';
     els.settingsDialog.showModal();
 }
@@ -649,14 +688,13 @@ function setupMiniPlayer() {
     const mini = els.miniPlayer;
     const handle = els.miniPlayerHandle;
     const toggle = els.miniPlayerToggle;
-    const hide = els.miniPlayerHide;
-    const titleEl = els.miniPlayerTitle;
     const currentEl = els.miniPlayerCurrent;
     const durationEl = els.miniPlayerDuration;
+    const seekBar = els.seekBar;
 
-    state.miniPlayerHidden = state.prefs.miniPlayerHidden === true;
     let dragging = false;
     let dragOffset = { x: 0, y: 0 };
+    let seeking = false;
 
     restoreMiniPlayerPosition();
 
@@ -673,12 +711,6 @@ function setupMiniPlayer() {
         }
     });
 
-    hide.addEventListener('click', () => {
-        state.miniPlayerHidden = true;
-        mini.classList.add('hidden');
-        setPrefs({ miniPlayerHidden: true });
-    });
-
     for (const button of mini.querySelectorAll('[data-seek]')) {
         button.addEventListener('click', () => {
             const delta = Number(button.dataset.seek);
@@ -689,8 +721,22 @@ function setupMiniPlayer() {
         });
     }
 
+    seekBar.addEventListener('pointerdown', () => {
+        seeking = true;
+    });
+    seekBar.addEventListener('pointerup', () => {
+        seeking = false;
+    });
+    seekBar.addEventListener('input', () => {
+        if (!player.src) return;
+        const next = Number(seekBar.value);
+        if (Number.isFinite(next)) {
+            player.currentTime = next;
+        }
+    });
+
     handle.addEventListener('pointerdown', (event) => {
-        if (event.target.closest('button')) return;
+        if (event.target.closest('button, input, select, label, a')) return;
         dragging = true;
         dragOffset = {
             x: event.clientX - mini.offsetLeft,
@@ -731,7 +777,6 @@ function setupMiniPlayer() {
 
     player.addEventListener('play', () => {
         toggle.textContent = '⏸';
-        if (!state.miniPlayerHidden) showMiniPlayer();
     });
     player.addEventListener('pause', () => {
         toggle.textContent = '▶';
@@ -741,25 +786,28 @@ function setupMiniPlayer() {
     });
     player.addEventListener('loadedmetadata', () => {
         durationEl.textContent = formatClock(player.duration);
+        if (Number.isFinite(player.duration)) {
+            seekBar.max = String(player.duration);
+        }
     });
     player.addEventListener('durationchange', () => {
         durationEl.textContent = formatClock(player.duration);
+        if (Number.isFinite(player.duration)) {
+            seekBar.max = String(player.duration);
+        }
     });
     player.addEventListener('timeupdate', () => {
         currentEl.textContent = formatClock(player.currentTime);
+        if (!seeking) {
+            seekBar.value = String(player.currentTime);
+        }
     });
     player.addEventListener('emptied', () => {
         currentEl.textContent = '00:00';
         durationEl.textContent = '00:00';
+        seekBar.value = '0';
+        seekBar.max = '0';
     });
-    new MutationObserver(() => {
-        titleEl.textContent = els.audioTitle.textContent;
-    }).observe(els.audioTitle, { childList: true, characterData: true, subtree: true });
-    titleEl.textContent = els.audioTitle.textContent;
-}
-
-function showMiniPlayer() {
-    els.miniPlayer.classList.remove('hidden');
 }
 
 function restoreMiniPlayerPosition() {

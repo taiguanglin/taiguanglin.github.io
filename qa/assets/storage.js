@@ -7,7 +7,6 @@ const DEFAULT_PREFS = {
     playbackRate: 1,
     stopAtRangeEnd: true,
     showReports: false,
-    dirtyOnly: false,
 };
 
 export function getPat() {
@@ -50,11 +49,12 @@ export function getDraft(path) {
     }
 }
 
-export function setDraft(path, text, sha) {
+export function setDraft(path, text, sha, meta = null) {
     localStorage.setItem(draftKey(path), JSON.stringify({
         path,
         text,
         sha,
+        meta,
         savedAt: new Date().toISOString(),
     }));
 }

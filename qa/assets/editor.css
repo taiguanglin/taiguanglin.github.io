@@ -52,7 +52,7 @@ body {
 .app-shell {
     display: grid;
     grid-template-columns: 320px minmax(0, 1fr);
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto 1fr;
     min-height: 100vh;
 }
 
@@ -87,11 +87,31 @@ body {
 .topbar-actions,
 .document-meta,
 .segment-actions,
-.dialog-actions,
-.audio-dock {
+.dialog-actions {
     align-items: center;
     display: flex;
     gap: 0.75rem;
+}
+
+.meta-strip {
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+    margin-top: 0.4rem;
+}
+
+.meta-chip {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+}
+
+.meta-chip strong {
+    color: var(--text);
+    font-weight: 500;
 }
 
 .sidebar {
@@ -390,35 +410,14 @@ textarea {
     padding: 0.8rem 1rem;
 }
 
-.audio-dock {
-    background: var(--panel-strong);
-    border-top: 1px solid var(--border);
-    grid-column: 1 / -1;
-    padding: 0.75rem 1rem;
-    position: sticky;
-    bottom: 0;
-    z-index: 20;
-}
-
-.audio-dock audio {
-    flex: 1;
-    min-width: 240px;
-}
-
-.now-playing {
-    display: grid;
-    min-width: 220px;
-}
-
-.now-playing span {
-    color: var(--muted);
-    font-size: 0.85rem;
-}
-
 .speed-control {
     align-items: center;
     display: flex;
     gap: 0.5rem;
+}
+
+#audioPlayer {
+    display: none;
 }
 
 .dialog {
@@ -486,9 +485,9 @@ textarea {
     border-radius: 1rem;
     box-shadow: var(--shadow);
     display: grid;
-    gap: 0.5rem;
+    gap: 0.55rem;
     left: auto;
-    max-width: min(420px, 90vw);
+    max-width: min(420px, 95vw);
     min-width: 320px;
     padding: 0.6rem 0.75rem 0.75rem;
     position: fixed;
@@ -500,12 +499,13 @@ textarea {
 }
 
 .mini-player-header {
-    align-items: center;
-    color: var(--muted);
+    align-items: baseline;
+    color: var(--text);
     cursor: grab;
     display: flex;
-    font-size: 0.82rem;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    font-size: 0.92rem;
+    gap: 0.4rem;
     justify-content: space-between;
 }
 
@@ -514,11 +514,23 @@ textarea {
 }
 
 .mini-player-title {
-    flex: 1;
+    flex: 1 1 auto;
+    font-weight: 600;
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.mini-player-range {
+    color: var(--muted);
+    font-size: 0.78rem;
+}
+
+.mini-player-progress input[type="range"] {
+    accent-color: var(--accent);
+    margin: 0;
+    width: 100%;
 }
 
 .mini-player-time {
@@ -532,7 +544,7 @@ textarea {
 .mini-player-controls {
     display: grid;
     gap: 0.3rem;
-    grid-template-columns: repeat(9, minmax(0, 1fr));
+    grid-template-columns: repeat(7, minmax(0, 1fr));
 }
 
 .mini-player-controls button {
@@ -562,6 +574,16 @@ textarea {
     background: var(--accent-strong);
 }
 
+.mini-player-settings {
+    align-items: center;
+    color: var(--muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    gap: 0.6rem;
+    justify-content: space-between;
+}
+
 @media (max-width: 900px) {
     .app-shell {
         grid-template-columns: 1fr;
@@ -575,16 +597,9 @@ textarea {
 
     .topbar,
     .document-header,
-    .segment-header,
-    .audio-dock {
+    .segment-header {
         align-items: stretch;
         flex-direction: column;
-    }
-
-    .audio-dock audio,
-    .now-playing {
-        min-width: 0;
-        width: 100%;
     }
 
     .mini-player {
@@ -593,6 +608,6 @@ textarea {
         min-width: 0;
         right: 12px;
         top: auto;
-        bottom: 200px;
+        bottom: 12px;
     }
 }

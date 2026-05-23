@@ -27,14 +27,6 @@
                     <span>搜尋檔案</span>
                     <input id="fileSearch" type="search" placeholder="日期、來源、關鍵字">
                 </label>
-                <label class="checkbox-row">
-                    <input id="showReports" type="checkbox">
-                    <span>顯示報告檔</span>
-                </label>
-                <label class="checkbox-row">
-                    <input id="dirtyOnly" type="checkbox">
-                    <span>只看本機草稿</span>
-                </label>
             </div>
             <nav id="fileList" class="file-list" aria-label="答疑檔案列表">
                 <div class="empty-state">正在載入檔案列表...</div>
@@ -53,6 +45,10 @@
                     <div>
                         <p id="documentPath" class="document-path"></p>
                         <h2 id="documentTitle"></h2>
+                        <div id="metaStrip" class="meta-strip">
+                            <span class="meta-chip" data-key="lastPlayed">最後播放：<strong id="metaLastPlayed">—</strong></span>
+                            <span class="meta-chip" data-key="lastEdited">最後編輯：<strong id="metaLastEdited">—</strong></span>
+                        </div>
                     </div>
                     <div class="document-meta">
                         <span id="segmentCount"></span>
@@ -68,31 +64,6 @@
                 <div id="editorRoot" class="segments"></div>
             </section>
         </main>
-
-        <footer class="audio-dock">
-            <div class="now-playing">
-                <strong id="audioTitle">尚未播放</strong>
-                <span id="audioRange"></span>
-            </div>
-            <audio id="audioPlayer" controls preload="metadata"></audio>
-            <label class="speed-control">
-                <span>倍速</span>
-                <select id="playbackRate">
-                    <option value="0.75">0.75x</option>
-                    <option value="1">1.0x</option>
-                    <option value="1.25">1.25x</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="1.75">1.75x</option>
-                    <option value="2">2.0x</option>
-                    <option value="2.5">2.5x</option>
-                    <option value="3">3.0x</option>
-                </select>
-            </label>
-            <label class="checkbox-row compact">
-                <input id="stopAtRangeEnd" type="checkbox" checked>
-                <span>段尾自停</span>
-            </label>
-        </footer>
     </div>
 
     <dialog id="settingsDialog" class="dialog">
@@ -150,11 +121,14 @@
         </form>
     </dialog>
 
-    <aside id="miniPlayer" class="mini-player hidden" aria-label="浮動播放控制">
+    <aside id="miniPlayer" class="mini-player" aria-label="浮動播放控制">
         <header class="mini-player-header" id="miniPlayerHandle">
-            <span class="mini-player-title" id="miniPlayerTitle">浮動播放控制</span>
-            <button id="miniPlayerHide" class="icon-button" type="button" aria-label="隱藏控制器">×</button>
+            <span class="mini-player-title" id="audioTitle">尚未播放</span>
+            <span class="mini-player-range" id="audioRange"></span>
         </header>
+        <div class="mini-player-progress">
+            <input id="seekBar" type="range" min="0" max="0" step="0.1" value="0" aria-label="播放進度">
+        </div>
         <div class="mini-player-time">
             <span id="miniPlayerCurrent">00:00</span>
             <span>/</span>
@@ -163,14 +137,32 @@
         <div class="mini-player-controls">
             <button type="button" data-seek="-30">-30s</button>
             <button type="button" data-seek="-15">-15s</button>
-            <button type="button" data-seek="-10">-10s</button>
             <button type="button" data-seek="-5">-5s</button>
             <button id="miniPlayerToggle" type="button" class="primary" aria-label="播放/暫停">▶</button>
             <button type="button" data-seek="5">+5s</button>
-            <button type="button" data-seek="10">+10s</button>
             <button type="button" data-seek="15">+15s</button>
             <button type="button" data-seek="30">+30s</button>
         </div>
+        <div class="mini-player-settings">
+            <label class="speed-control">
+                <span>倍速</span>
+                <select id="playbackRate">
+                    <option value="0.75">0.75x</option>
+                    <option value="1">1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="1.75">1.75x</option>
+                    <option value="2">2.0x</option>
+                    <option value="2.5">2.5x</option>
+                    <option value="3">3.0x</option>
+                </select>
+            </label>
+            <label class="checkbox-row compact">
+                <input id="stopAtRangeEnd" type="checkbox" checked>
+                <span>段尾自停</span>
+            </label>
+        </div>
+        <audio id="audioPlayer" preload="metadata"></audio>
     </aside>
 
     <template id="segmentTemplate">

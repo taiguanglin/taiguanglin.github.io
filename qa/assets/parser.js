@@ -82,6 +82,42 @@ export function fileTitleFromPath(path) {
     return path.split('/').pop()?.replace(/\.txt$/i, '') || '未命名檔案';
 }
 
+const META_LINE_RE = /^(最後播放|最後編輯)：[ \t]*([^\r\n]*?)[ \t]*(?:\r?\n|$)/gm;
+
+export function extractMeta(text) {
+    const meta = { lastPlayed: '', lastEdited: '' };
+    const stripped = text.replace(META_LINE_RE, (_match, key, value) => {
+        const target = key === '最後播放' ? 'lastPlayed' : 'lastEdited';
+        if (!meta[target] || meta[target] < value) {
+            meta[target] = value;
+        }
+        return '';
+    });
+    return { meta, stripped };
+}
+
+export function injectMeta(text, meta) {
+    const { stripped } = extractMeta(text);
+    const lines = [];
+    if (meta?.lastPlayed) lines.push(`最後播放：${meta.lastPlayed}`);
+    if (meta?.lastEdited) lines.push(`最後編輯：${meta.lastEdited}`);
+    if (!lines.length) return stripped;
+
+    const block = `${lines.join('\n')}\n`;
+    const anchor = stripped.match(/^(開場時間：|時間：|###\s+\d)/m);
+
+    if (anchor && anchor.index !== undefined) {
+        const insertAt = anchor.index;
+        return `${stripped.slice(0, insertAt)}${block}${stripped.slice(insertAt)}`;
+    }
+
+    const firstBreak = stripped.indexOf('\n');
+    if (firstBreak === -1) {
+        return `${stripped}${stripped.endsWith('\n') ? '' : '\n'}${block}`;
+    }
+    return `${stripped.slice(0, firstBreak + 1)}${block}${stripped.slice(firstBreak + 1)}`;
+}
+
 function parseSegment(raw, index) {
     const lines = raw.match(/[^\n]*\n|[^\n]+$/g) || [''];
     const firstLine = lines[0]?.replace(/\r?\n$/, '') || '';
