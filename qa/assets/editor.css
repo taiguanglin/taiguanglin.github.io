@@ -1,0 +1,479 @@
+:root {
+    color-scheme: light dark;
+    --bg: #f5f1e8;
+    --panel: #fffaf0;
+    --panel-strong: #ffffff;
+    --text: #1f1a14;
+    --muted: #6d6258;
+    --border: #ddd0bf;
+    --accent: #8b4f22;
+    --accent-strong: #6b3612;
+    --danger: #b42318;
+    --warning: #fff2cc;
+    --shadow: 0 16px 40px rgba(49, 35, 20, 0.12);
+    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #161310;
+        --panel: #211c18;
+        --panel-strong: #2b241f;
+        --text: #f3e9dc;
+        --muted: #b9a999;
+        --border: #44372e;
+        --accent: #d89a5b;
+        --accent-strong: #f0b36d;
+        --danger: #ff8a80;
+        --warning: #372b12;
+        --shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.app-shell {
+    display: grid;
+    grid-template-columns: minmax(260px, 340px) 1fr;
+    grid-template-rows: auto 1fr auto;
+    min-height: 100vh;
+}
+
+.topbar {
+    align-items: center;
+    background: var(--panel-strong);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    grid-column: 1 / -1;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.brand h1 {
+    font-size: clamp(1.25rem, 2vw, 1.8rem);
+    line-height: 1.1;
+    margin: 0;
+}
+
+.brand-kicker,
+.document-path,
+.segment-number,
+.hint {
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.topbar-actions,
+.document-meta,
+.segment-actions,
+.dialog-actions,
+.audio-dock {
+    align-items: center;
+    display: flex;
+    gap: 0.75rem;
+}
+
+.sidebar {
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    min-height: 0;
+    overflow: auto;
+    padding: 1rem;
+}
+
+.sidebar-toolbar {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.field {
+    display: grid;
+    gap: 0.35rem;
+}
+
+.field span,
+.checkbox-row {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+input,
+select,
+textarea {
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    color: var(--text);
+    font: inherit;
+}
+
+input,
+select {
+    padding: 0.65rem 0.75rem;
+}
+
+textarea {
+    line-height: 1.8;
+    min-height: 90px;
+    padding: 0.8rem 0.95rem;
+    resize: vertical;
+    width: 100%;
+}
+
+.checkbox-row {
+    align-items: center;
+    display: flex;
+    gap: 0.45rem;
+}
+
+.checkbox-row.compact {
+    white-space: nowrap;
+}
+
+.workspace {
+    min-width: 0;
+    overflow: auto;
+    padding: 1.25rem;
+}
+
+.welcome-panel,
+.document-panel {
+    margin: 0 auto;
+    max-width: 1100px;
+}
+
+.welcome-panel,
+.segment-card,
+.warning {
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+}
+
+.welcome-panel {
+    padding: 2rem;
+}
+
+.document-header {
+    align-items: flex-start;
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.document-header h2 {
+    margin: 0.25rem 0 0;
+}
+
+.segments {
+    display: grid;
+    gap: 1rem;
+}
+
+.segment-card {
+    overflow: hidden;
+}
+
+.segment-header {
+    align-items: flex-start;
+    background: color-mix(in srgb, var(--panel) 75%, transparent);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 1rem;
+}
+
+.segment-header h3 {
+    margin: 0.2rem 0 0;
+}
+
+.segment-body,
+.intro-card > textarea,
+.range-buttons {
+    padding: 1rem;
+}
+
+.segment-body {
+    display: grid;
+    gap: 0.8rem;
+}
+
+.marker-line {
+    align-items: center;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px dashed var(--border);
+    border-radius: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: space-between;
+    padding: 0.6rem 0.75rem;
+}
+
+.marker-line code {
+    color: var(--muted);
+    white-space: pre-wrap;
+}
+
+.range-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.file-list,
+.file-group {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.file-group {
+    margin-bottom: 1rem;
+}
+
+.file-group h3 {
+    color: var(--muted);
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0.25rem;
+}
+
+.file-item {
+    align-items: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.75rem;
+    color: var(--text);
+    cursor: pointer;
+    display: grid;
+    gap: 0.45rem;
+    grid-template-columns: 0.6rem 1fr;
+    padding: 0.6rem;
+    text-align: left;
+}
+
+.file-item:hover,
+.file-item.active {
+    background: var(--panel-strong);
+    border-color: var(--border);
+}
+
+.draft-dot {
+    background: var(--accent);
+    border-radius: 50%;
+    height: 0.55rem;
+    width: 0.55rem;
+}
+
+.button,
+.icon-button {
+    border: 1px solid transparent;
+    border-radius: 999px;
+    cursor: pointer;
+    font: inherit;
+    padding: 0.62rem 0.9rem;
+}
+
+.button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.button-primary {
+    background: var(--accent);
+    color: #fff;
+}
+
+.button-primary:hover:not(:disabled) {
+    background: var(--accent-strong);
+}
+
+.button-secondary {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--text);
+}
+
+.button-danger {
+    background: var(--danger);
+    color: #fff;
+}
+
+.icon-button {
+    background: transparent;
+    color: var(--text);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.status-pill,
+.draft-badge,
+.segment-dirty {
+    border-radius: 999px;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.6rem;
+}
+
+.status-pill {
+    background: color-mix(in srgb, var(--border) 45%, transparent);
+    color: var(--muted);
+}
+
+.status-pill[data-type="dirty"],
+.draft-badge,
+.segment-dirty {
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    color: var(--accent-strong);
+}
+
+.status-pill[data-type="error"],
+.empty-state.error {
+    color: var(--danger);
+}
+
+.warning {
+    background: var(--warning);
+    box-shadow: none;
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+}
+
+.audio-dock {
+    background: var(--panel-strong);
+    border-top: 1px solid var(--border);
+    grid-column: 1 / -1;
+    padding: 0.75rem 1rem;
+    position: sticky;
+    bottom: 0;
+    z-index: 20;
+}
+
+.audio-dock audio {
+    flex: 1;
+    min-width: 240px;
+}
+
+.now-playing {
+    display: grid;
+    min-width: 220px;
+}
+
+.now-playing span {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.speed-control {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.dialog {
+    border: 0;
+    border-radius: 1rem;
+    padding: 0;
+}
+
+.dialog::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.dialog-card {
+    background: var(--panel-strong);
+    color: var(--text);
+    display: grid;
+    gap: 1rem;
+    max-width: 560px;
+    padding: 1.25rem;
+}
+
+.dialog-card.wide {
+    max-width: 900px;
+}
+
+.dialog-card header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+.dialog-card h2 {
+    margin: 0;
+}
+
+.dialog-actions {
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+}
+
+.settings-message {
+    color: var(--muted);
+    margin: 0;
+}
+
+.diff-preview {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    max-height: 45vh;
+    overflow: auto;
+    padding: 1rem;
+    white-space: pre-wrap;
+}
+
+.empty-state {
+    color: var(--muted);
+    padding: 1rem;
+}
+
+@media (max-width: 900px) {
+    .app-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .sidebar {
+        border-bottom: 1px solid var(--border);
+        border-right: 0;
+        max-height: 35vh;
+    }
+
+    .topbar,
+    .document-header,
+    .segment-header,
+    .audio-dock {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .audio-dock audio,
+    .now-playing {
+        min-width: 0;
+        width: 100%;
+    }
+}

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tai 師父答疑線上校稿</title>
+    <meta name="description" content="Tai 師父答疑整理稿線上校稿工具，可對照音檔、倍速播放並直接儲存回 GitHub。">
+    <link rel="stylesheet" href="assets/editor.css">
+</head>
+<body>
+    <div id="app" class="app-shell">
+        <header class="topbar">
+            <div class="brand">
+                <span class="brand-kicker">QA Editor</span>
+                <h1>Tai 師父答疑線上校稿</h1>
+            </div>
+            <div class="topbar-actions">
+                <span id="saveStatus" class="status-pill">尚未載入</span>
+                <button id="settingsButton" class="button button-secondary" type="button">設定</button>
+                <button id="saveButton" class="button button-primary" type="button" disabled>儲存到 GitHub</button>
+            </div>
+        </header>
+
+        <aside class="sidebar">
+            <div class="sidebar-toolbar">
+                <label class="field">
+                    <span>搜尋檔案</span>
+                    <input id="fileSearch" type="search" placeholder="日期、來源、關鍵字">
+                </label>
+                <label class="checkbox-row">
+                    <input id="showReports" type="checkbox">
+                    <span>顯示報告檔</span>
+                </label>
+                <label class="checkbox-row">
+                    <input id="dirtyOnly" type="checkbox">
+                    <span>只看本機草稿</span>
+                </label>
+            </div>
+            <nav id="fileList" class="file-list" aria-label="答疑檔案列表">
+                <div class="empty-state">正在載入檔案列表...</div>
+            </nav>
+        </aside>
+
+        <main class="workspace">
+            <section id="welcomePanel" class="welcome-panel">
+                <h2>選擇左側檔案開始校稿</h2>
+                <p>每段答疑會依時間標記切成卡片。播放按鈕會串流 `lectures/QnA/*.opus`，並在段落結束時間自動暫停。</p>
+                <p>首次儲存前請在「設定」中填入 GitHub Fine-grained PAT，權限只需要此 repo 的 `Contents: Read and write`。</p>
+            </section>
+
+            <section id="documentPanel" class="document-panel hidden">
+                <div class="document-header">
+                    <div>
+                        <p id="documentPath" class="document-path"></p>
+                        <h2 id="documentTitle"></h2>
+                    </div>
+                    <div class="document-meta">
+                        <span id="segmentCount"></span>
+                        <span id="draftBadge" class="draft-badge hidden">本機草稿</span>
+                    </div>
+                </div>
+
+                <div id="opusWarning" class="warning hidden">
+                    目前瀏覽器可能無法播放 `.opus` 音檔，建議使用 Chrome、Edge 或 Firefox。
+                </div>
+
+                <div id="conflictBanner" class="warning hidden"></div>
+                <div id="editorRoot" class="segments"></div>
+            </section>
+        </main>
+
+        <footer class="audio-dock">
+            <div class="now-playing">
+                <strong id="audioTitle">尚未播放</strong>
+                <span id="audioRange"></span>
+            </div>
+            <audio id="audioPlayer" controls preload="metadata"></audio>
+            <label class="speed-control">
+                <span>倍速</span>
+                <select id="playbackRate">
+                    <option value="0.75">0.75x</option>
+                    <option value="1">1.0x</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                    <option value="1.75">1.75x</option>
+                    <option value="2">2.0x</option>
+                    <option value="2.5">2.5x</option>
+                    <option value="3">3.0x</option>
+                </select>
+            </label>
+            <label class="checkbox-row compact">
+                <input id="stopAtRangeEnd" type="checkbox" checked>
+                <span>段尾自停</span>
+            </label>
+        </footer>
+    </div>
+
+    <dialog id="settingsDialog" class="dialog">
+        <form method="dialog" class="dialog-card">
+            <header>
+                <h2>設定</h2>
+                <button class="icon-button" value="cancel" aria-label="關閉" type="submit">×</button>
+            </header>
+            <label class="field">
+                <span>GitHub Fine-grained PAT</span>
+                <input id="patInput" type="password" autocomplete="off" placeholder="github_pat_...">
+            </label>
+            <p class="hint">
+                建議建立 Fine-grained token，只授權 `taiguanglin.github.io`，權限選 `Contents: Read and write`。
+                Token 會存在此瀏覽器的 localStorage。
+            </p>
+            <label class="checkbox-row">
+                <input id="showReportsSetting" type="checkbox">
+                <span>顯示 `_` 開頭的報告檔</span>
+            </label>
+            <menu class="dialog-actions">
+                <button id="clearPatButton" class="button button-secondary" type="button">移除 PAT</button>
+                <button id="testPatButton" class="button button-secondary" type="button">測試 PAT</button>
+                <button id="saveSettingsButton" class="button button-primary" value="default" type="submit">儲存設定</button>
+            </menu>
+            <p id="settingsMessage" class="settings-message"></p>
+        </form>
+    </dialog>
+
+    <dialog id="draftDialog" class="dialog">
+        <form method="dialog" class="dialog-card">
+            <header>
+                <h2>找到本機草稿</h2>
+            </header>
+            <p id="draftMessage"></p>
+            <menu class="dialog-actions">
+                <button id="discardDraftButton" class="button button-secondary" value="discard" type="submit">丟棄草稿</button>
+                <button id="loadRemoteButton" class="button button-secondary" value="remote" type="submit">先看遠端</button>
+                <button id="loadDraftButton" class="button button-primary" value="draft" type="submit">載入草稿</button>
+            </menu>
+        </form>
+    </dialog>
+
+    <dialog id="conflictDialog" class="dialog">
+        <form method="dialog" class="dialog-card wide">
+            <header>
+                <h2>遠端檔案已更新</h2>
+            </header>
+            <p>GitHub 上的檔案版本已經和你開始編輯時不同。可以重新拉取遠端，或用目前內容覆蓋遠端最新版。</p>
+            <pre id="conflictPreview" class="diff-preview"></pre>
+            <menu class="dialog-actions">
+                <button id="reloadRemoteButton" class="button button-secondary" value="reload" type="submit">重新拉取遠端</button>
+                <button id="forceSaveButton" class="button button-danger" value="force" type="submit">以本地覆蓋</button>
+            </menu>
+        </form>
+    </dialog>
+
+    <template id="segmentTemplate">
+        <article class="segment-card">
+            <header class="segment-header">
+                <div>
+                    <p class="segment-number"></p>
+                    <h3 class="segment-title"></h3>
+                </div>
+                <div class="segment-actions">
+                    <span class="segment-dirty hidden">未存</span>
+                    <button class="button button-secondary copy-segment" type="button">複製原文</button>
+                    <button class="button button-secondary reset-segment" type="button">回復原樣</button>
+                </div>
+            </header>
+            <div class="segment-body"></div>
+        </article>
+    </template>
+
+    <script type="module" src="assets/editor.js"></script>
+</body>
+</html>
