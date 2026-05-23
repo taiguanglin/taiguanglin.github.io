@@ -6,7 +6,6 @@ const DRAFT_PREFIX = `${PREFIX}draft:`;
 const DEFAULT_PREFS = {
     playbackRate: 1,
     stopAtRangeEnd: true,
-    showReports: false,
 };
 
 export function getPat() {

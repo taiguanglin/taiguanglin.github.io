@@ -34,7 +34,6 @@ const els = {
     settingsButton: document.querySelector('#settingsButton'),
     settingsDialog: document.querySelector('#settingsDialog'),
     patInput: document.querySelector('#patInput'),
-    showReportsSetting: document.querySelector('#showReportsSetting'),
     settingsMessage: document.querySelector('#settingsMessage'),
     clearPatButton: document.querySelector('#clearPatButton'),
     testPatButton: document.querySelector('#testPatButton'),
@@ -84,10 +83,6 @@ function bindEvents() {
     els.settingsButton.addEventListener('click', () => openSettings());
     els.saveSettingsButton.addEventListener('click', () => {
         setPat(els.patInput.value);
-        const showReports = els.showReportsSetting.checked;
-        setPrefs({ showReports });
-        state.prefs.showReports = showReports;
-        loadFileList();
     });
     els.clearPatButton.addEventListener('click', () => {
         clearPat();
@@ -128,7 +123,6 @@ function bindEvents() {
 }
 
 function applyPrefs() {
-    els.showReportsSetting.checked = state.prefs.showReports === true;
     audio.setPlaybackRate(state.prefs.playbackRate);
     audio.setStopAtRangeEnd(state.prefs.stopAtRangeEnd);
     els.opusWarning.classList.toggle('hidden', audio.supportsOpus);
@@ -137,7 +131,7 @@ function applyPrefs() {
 async function loadFileList() {
     setStatus('正在載入檔案列表...', 'loading');
     try {
-        state.files = await listQaFiles({ showReports: state.prefs.showReports === true });
+        state.files = await listQaFiles();
         state.draftPaths = listDraftPaths();
         renderFileList();
         setStatus(`已載入 ${state.files.length} 個檔案`, 'ok');
@@ -618,7 +612,6 @@ function setStatus(message, type = 'ok') {
 
 function openSettings(message = '') {
     els.patInput.value = getPat();
-    els.showReportsSetting.checked = state.prefs.showReports === true;
     els.settingsMessage.textContent = typeof message === 'string' ? message : '';
     els.settingsDialog.showModal();
 }
