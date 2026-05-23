@@ -49,12 +49,11 @@ export function getDraft(path) {
     }
 }
 
-export function setDraft(path, text, sha, meta = null) {
+export function setDraft(path, text, sha) {
     localStorage.setItem(draftKey(path), JSON.stringify({
         path,
         text,
         sha,
-        meta,
         savedAt: new Date().toISOString(),
     }));
 }

@@ -1,6 +1,7 @@
 const SEGMENT_HEADING_RE = /^###\s+(\d+)\.\s*(.*)$/;
 const MARKER_LINE_RE = /^(###\s+\d+\..*|時間：\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-\s*\d{2}:\d{2}:\d{2}[.,]\d{3})\r?\n?$/;
 const TIME_RANGE_RE = /(?:開場時間|時間)：\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})/g;
+const SEGMENT_META_RE = /^(最後播放|最後編輯)：[ \t]*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})[ \t]*\r?\n?$/;
 
 export function parseDocument(text, path = '') {
     const headingMatches = [...text.matchAll(/^###\s+(\d+)\.\s*(.*)$/gm)];
@@ -82,50 +83,26 @@ export function fileTitleFromPath(path) {
     return path.split('/').pop()?.replace(/\.txt$/i, '') || '未命名檔案';
 }
 
-const META_LINE_RE = /^(最後播放|最後編輯)：[ \t]*([^\r\n]*?)[ \t]*(?:\r?\n|$)/gm;
-
-export function extractMeta(text) {
-    const meta = { lastPlayed: '', lastEdited: '' };
-    const stripped = text.replace(META_LINE_RE, (_match, key, value) => {
-        const target = key === '最後播放' ? 'lastPlayed' : 'lastEdited';
-        if (!meta[target] || meta[target] < value) {
-            meta[target] = value;
-        }
-        return '';
-    });
-    return { meta, stripped };
-}
-
-export function injectMeta(text, meta) {
-    const { stripped } = extractMeta(text);
-    const lines = [];
-    if (meta?.lastPlayed) lines.push(`最後播放：${meta.lastPlayed}`);
-    if (meta?.lastEdited) lines.push(`最後編輯：${meta.lastEdited}`);
-    if (!lines.length) return stripped;
-
-    const block = `${lines.join('\n')}\n`;
-    const anchor = stripped.match(/^(開場時間：|時間：|###\s+\d)/m);
-
-    if (anchor && anchor.index !== undefined) {
-        const insertAt = anchor.index;
-        return `${stripped.slice(0, insertAt)}${block}${stripped.slice(insertAt)}`;
-    }
-
-    const firstBreak = stripped.indexOf('\n');
-    if (firstBreak === -1) {
-        return `${stripped}${stripped.endsWith('\n') ? '' : '\n'}${block}`;
-    }
-    return `${stripped.slice(0, firstBreak + 1)}${block}${stripped.slice(firstBreak + 1)}`;
-}
-
 function parseSegment(raw, index) {
     const lines = raw.match(/[^\n]*\n|[^\n]+$/g) || [''];
     const firstLine = lines[0]?.replace(/\r?\n$/, '') || '';
     const heading = firstLine.match(SEGMENT_HEADING_RE);
     const parts = [];
     let chunk = '';
+    const meta = { lastPlayed: '', lastEdited: '' };
 
     for (const line of lines) {
+        const metaMatch = line.match(SEGMENT_META_RE);
+        if (metaMatch) {
+            if (chunk) {
+                parts.push({ type: 'chunk', text: chunk });
+                chunk = '';
+            }
+            const key = metaMatch[1] === '最後播放' ? 'lastPlayed' : 'lastEdited';
+            meta[key] = metaMatch[2];
+            continue;
+        }
+
         if (MARKER_LINE_RE.test(line)) {
             if (chunk) {
                 parts.push({ type: 'chunk', text: chunk });
@@ -149,11 +126,33 @@ function parseSegment(raw, index) {
         raw,
         ranges: parseRanges(raw),
         parts,
+        meta,
     };
 }
 
 function serializeSegment(segment) {
-    return segment.parts.map((part) => part.text).join('');
+    const meta = segment.meta || { lastPlayed: '', lastEdited: '' };
+    const hasMeta = Boolean(meta.lastPlayed || meta.lastEdited);
+
+    if (!hasMeta) {
+        return segment.parts.map((part) => part.text).join('');
+    }
+
+    let anchorIdx = -1;
+    for (let i = 0; i < segment.parts.length; i += 1) {
+        const part = segment.parts[i];
+        if (part.type !== 'marker') break;
+        if (!/^###\s+|^(時間|開場時間)：/.test(part.text)) break;
+        anchorIdx = i;
+    }
+
+    const metaLines = [];
+    if (meta.lastPlayed) metaLines.push(`最後播放：${meta.lastPlayed}\n`);
+    if (meta.lastEdited) metaLines.push(`最後編輯：${meta.lastEdited}\n`);
+
+    const before = segment.parts.slice(0, anchorIdx + 1).map((part) => part.text).join('');
+    const after = segment.parts.slice(anchorIdx + 1).map((part) => part.text).join('');
+    return `${before}${metaLines.join('')}${after}`;
 }
 
 function createFallbackSegment(text) {

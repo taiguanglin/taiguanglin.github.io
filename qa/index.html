@@ -46,8 +46,7 @@
                         <p id="documentPath" class="document-path"></p>
                         <h2 id="documentTitle"></h2>
                         <div id="metaStrip" class="meta-strip">
-                            <span class="meta-chip" data-key="lastPlayed">最後播放：<strong id="metaLastPlayed">—</strong></span>
-                            <span class="meta-chip" data-key="lastEdited">最後編輯：<strong id="metaLastEdited">—</strong></span>
+                            <span class="meta-chip">已聽 <strong id="metaPlayedCount">0</strong>／已校 <strong id="metaEditedCount">0</strong>／共 <strong id="metaTotalCount">0</strong> 段</span>
                         </div>
                     </div>
                     <div class="document-meta">
@@ -168,9 +167,13 @@
     <template id="segmentTemplate">
         <article class="segment-card">
             <header class="segment-header">
-                <div>
+                <div class="segment-heading">
                     <p class="segment-number"></p>
                     <h3 class="segment-title"></h3>
+                    <div class="segment-meta">
+                        <span class="seg-meta-chip">最後播放：<strong class="seg-meta-played">—</strong></span>
+                        <span class="seg-meta-chip">最後編輯：<strong class="seg-meta-edited">—</strong></span>
+                    </div>
                 </div>
                 <div class="segment-actions">
                     <span class="segment-dirty hidden">未存</span>

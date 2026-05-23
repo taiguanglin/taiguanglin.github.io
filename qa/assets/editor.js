@@ -1,18 +1,13 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, listQaFiles, putFile, testToken } from './github.js';
-import { cloneDocument, extractMeta, fileTitleFromPath, injectMeta, parseDocument, parseRanges, serializeDocument } from './parser.js';
+import { cloneDocument, fileTitleFromPath, parseDocument, parseRanges, serializeDocument } from './parser.js';
 import { clearDraft, clearPat, getDraft, getPat, getPrefs, listDraftPaths, setDraft, setPat, setPrefs } from './storage.js';
-
-const EMPTY_META = { lastPlayed: '', lastEdited: '' };
 
 const state = {
     files: [],
     currentFile: null,
     currentSha: '',
     originalText: '',
-    originalStripped: '',
-    originalMeta: { ...EMPTY_META },
-    meta: { ...EMPTY_META },
     document: null,
     originalDocument: null,
     dirty: false,
@@ -30,8 +25,9 @@ const els = {
     documentTitle: document.querySelector('#documentTitle'),
     segmentCount: document.querySelector('#segmentCount'),
     draftBadge: document.querySelector('#draftBadge'),
-    metaLastPlayed: document.querySelector('#metaLastPlayed'),
-    metaLastEdited: document.querySelector('#metaLastEdited'),
+    metaPlayedCount: document.querySelector('#metaPlayedCount'),
+    metaEditedCount: document.querySelector('#metaEditedCount'),
+    metaTotalCount: document.querySelector('#metaTotalCount'),
     editorRoot: document.querySelector('#editorRoot'),
     saveButton: document.querySelector('#saveButton'),
     saveStatus: document.querySelector('#saveStatus'),
@@ -190,10 +186,8 @@ async function loadDocument(file, { preferDraft = null } = {}) {
     setStatus(`正在載入 ${file.name}...`, 'loading');
     try {
         const remote = await getFile(file.path);
-        const { meta: remoteMeta, stripped: remoteStripped } = extractMeta(remote.text);
         const draft = getDraft(file.path);
-        let workingText = remoteStripped;
-        let workingMeta = { ...remoteMeta };
+        let workingText = remote.text;
         let useDraft = false;
 
         if (draft && preferDraft === null) {
@@ -204,20 +198,16 @@ async function loadDocument(file, { preferDraft = null } = {}) {
             useDraft = true;
         }
 
-        if (useDraft) {
-            workingText = typeof draft.text === 'string' ? draft.text : workingText;
-            workingMeta = draft.meta ? { ...EMPTY_META, ...draft.meta } : workingMeta;
+        if (useDraft && typeof draft.text === 'string') {
+            workingText = draft.text;
         }
 
         state.currentFile = file;
         state.currentSha = remote.sha;
         state.originalText = remote.text;
-        state.originalStripped = remoteStripped;
-        state.originalMeta = { ...remoteMeta };
-        state.meta = { ...workingMeta };
-        state.originalDocument = parseDocument(remoteStripped, file.path);
+        state.originalDocument = parseDocument(remote.text, file.path);
         state.document = parseDocument(workingText, file.path);
-        state.dirty = useDraft && (workingText !== remoteStripped || metaDiffers(workingMeta, remoteMeta));
+        state.dirty = serializeDocument(state.document) !== remote.text;
         state.draftPaths = listDraftPaths();
         renderFileList();
         renderDocument();
@@ -225,10 +215,6 @@ async function loadDocument(file, { preferDraft = null } = {}) {
     } catch (error) {
         setStatus(`載入失敗：${error.message}`, 'error');
     }
-}
-
-function metaDiffers(a, b) {
-    return (a?.lastPlayed || '') !== (b?.lastPlayed || '') || (a?.lastEdited || '') !== (b?.lastEdited || '');
 }
 
 function renderDocument() {
@@ -241,7 +227,7 @@ function renderDocument() {
     els.segmentCount.textContent = `${state.document.segments.length} 段`;
     els.draftBadge.classList.toggle('hidden', !state.draftPaths.has(state.currentFile.path));
     els.saveButton.disabled = !state.dirty;
-    refreshMetaStrip();
+    refreshMetaSummary();
     els.editorRoot.innerHTML = '';
 
     if (state.document.header) {
@@ -278,7 +264,7 @@ function renderIntroCard() {
         state.document.headerRanges = parseRanges(textarea.value);
         rangeContainer.innerHTML = '';
         rangeContainer.append(...renderRangeButtons(state.document.headerRanges, '開場'));
-        markDirty();
+        recomputeDirty();
         autoGrow(textarea);
     });
     queueMicrotask(() => autoGrow(textarea));
@@ -290,6 +276,7 @@ function renderSegmentCard(segment, segmentIndex) {
     node.dataset.segmentIndex = String(segmentIndex);
     node.querySelector('.segment-number').textContent = segment.number ? `第 ${segment.number} 段` : '全文';
     node.querySelector('.segment-title').textContent = segment.title;
+    updateSegmentMetaChips(node, segment);
     node.querySelector('.copy-segment').addEventListener('click', () => {
         navigator.clipboard.writeText(segment.raw);
         setStatus('已複製原始段落', 'ok');
@@ -309,7 +296,7 @@ function renderSegmentCard(segment, segmentIndex) {
             textarea.dataset.partIndex = String(partIndex);
             textarea.addEventListener('input', () => {
                 state.document.segments[segmentIndex].parts[partIndex].text = textarea.value;
-                markDirty();
+                onSegmentEdit(segmentIndex);
                 autoGrow(textarea);
             });
             body.append(textarea);
@@ -318,6 +305,19 @@ function renderSegmentCard(segment, segmentIndex) {
     }
 
     return node;
+}
+
+function updateSegmentMetaChips(card, segment) {
+    const played = card.querySelector('.seg-meta-played');
+    const edited = card.querySelector('.seg-meta-edited');
+    if (played) played.textContent = segment?.meta?.lastPlayed || '—';
+    if (edited) edited.textContent = segment?.meta?.lastEdited || '—';
+}
+
+function refreshSegmentMetaChips(segmentIndex) {
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
+    if (!card) return;
+    updateSegmentMetaChips(card, state.document?.segments?.[segmentIndex]);
 }
 
 function renderMarker(text, segment, segmentIndex, partIndex, card) {
@@ -376,7 +376,7 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
         }
 
         segment.ranges = collectSegmentRanges(state.document.segments[segmentIndex]);
-        markDirty();
+        onSegmentEdit(segmentIndex);
     });
 
     return marker;
@@ -414,7 +414,7 @@ function updatePlayButton(button, markerText, segment) {
     button.onclick = async () => {
         try {
             await audio.playRange(state.currentFile.path, range, `${segment.number}. ${segment.title}`);
-            recordPlayback();
+            onSegmentPlayed(segment.index);
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
@@ -439,7 +439,6 @@ function renderPlayButton(range, label) {
     button.addEventListener('click', async () => {
         try {
             await audio.playRange(state.currentFile.path, range, label);
-            recordPlayback();
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
@@ -447,39 +446,54 @@ function renderPlayButton(range, label) {
     return button;
 }
 
-function recordPlayback() {
-    if (!state.currentFile) return;
-    state.meta.lastPlayed = formatTimestamp();
-    markDirty();
+function onSegmentEdit(segmentIndex) {
+    const segment = state.document?.segments?.[segmentIndex];
+    if (!segment) {
+        recomputeDirty();
+        return;
+    }
+    const original = state.originalDocument?.segments?.[segmentIndex];
+    const bodyNow = segmentBodyText(segment);
+    const bodyOriginal = segmentBodyText(original);
+    segment.meta = segment.meta || { lastPlayed: '', lastEdited: '' };
+    if (bodyNow !== bodyOriginal) {
+        segment.meta.lastEdited = formatTimestamp();
+    } else {
+        segment.meta.lastEdited = original?.meta?.lastEdited || '';
+    }
+    refreshSegmentMetaChips(segmentIndex);
+    recomputeDirty();
+}
+
+function onSegmentPlayed(segmentIndex) {
+    const segment = state.document?.segments?.[segmentIndex];
+    if (!segment) return;
+    segment.meta = segment.meta || { lastPlayed: '', lastEdited: '' };
+    segment.meta.lastPlayed = formatTimestamp();
+    refreshSegmentMetaChips(segmentIndex);
+    recomputeDirty();
 }
 
 function resetSegment(segmentIndex) {
     const original = state.originalDocument?.segments?.[segmentIndex];
     if (!original) return;
     state.document.segments[segmentIndex] = cloneDocument({ segments: [original] }).segments[0];
-    markDirty();
+    recomputeDirty();
     renderDocument();
 }
 
-function markDirty() {
+function recomputeDirty() {
     if (!state.document) return;
-
     const text = serializeDocument(state.document);
-    const textChanged = text !== state.originalStripped;
-    state.meta.lastEdited = textChanged
-        ? formatTimestamp()
-        : (state.originalMeta.lastEdited || '');
-
-    const metaChanged = metaDiffers(state.meta, state.originalMeta);
-    state.dirty = textChanged || metaChanged;
-
+    state.dirty = text !== state.originalText;
     if (state.dirty && state.currentFile) {
         scheduleDraftSave(text);
     } else if (state.currentFile) {
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
+        els.draftBadge.classList.add('hidden');
     }
-    refreshMetaStrip();
+    refreshMetaSummary();
     refreshDirtyUI();
 }
 
@@ -487,20 +501,25 @@ function scheduleDraftSave(text) {
     clearTimeout(state.draftTimer);
     state.draftTimer = setTimeout(() => {
         if (!state.currentFile) return;
-        setDraft(state.currentFile.path, text, state.currentSha, state.meta);
+        setDraft(state.currentFile.path, text, state.currentSha);
         state.draftPaths = listDraftPaths();
         els.draftBadge.classList.remove('hidden');
         renderFileList();
     }, 500);
 }
 
-function refreshMetaStrip() {
-    if (els.metaLastPlayed) {
-        els.metaLastPlayed.textContent = state.meta.lastPlayed || '—';
-    }
-    if (els.metaLastEdited) {
-        els.metaLastEdited.textContent = state.meta.lastEdited || '—';
-    }
+function refreshMetaSummary() {
+    const segments = state.document?.segments || [];
+    const total = segments.length;
+    const played = segments.filter((segment) => segment?.meta?.lastPlayed).length;
+    const edited = segments.filter((segment) => segment?.meta?.lastEdited).length;
+    if (els.metaPlayedCount) els.metaPlayedCount.textContent = String(played);
+    if (els.metaEditedCount) els.metaEditedCount.textContent = String(edited);
+    if (els.metaTotalCount) els.metaTotalCount.textContent = String(total);
+}
+
+function segmentBodyText(segment) {
+    return segment?.parts?.map((part) => part.text).join('') || '';
 }
 
 function formatTimestamp(date = new Date()) {
@@ -511,12 +530,7 @@ function formatTimestamp(date = new Date()) {
 async function saveCurrentFile({ force = false } = {}) {
     if (!state.currentFile || !state.document) return;
 
-    const strippedText = serializeDocument(state.document);
-    const metaForSave = { ...state.meta };
-    if (metaDiffers(state.meta, state.originalMeta) && !metaForSave.lastEdited) {
-        metaForSave.lastEdited = formatTimestamp();
-    }
-    const finalText = injectMeta(strippedText, metaForSave);
+    const finalText = serializeDocument(state.document);
 
     if (!force && finalText === state.originalText) {
         setStatus('沒有需要儲存的修改', 'ok');
@@ -537,11 +551,8 @@ async function saveCurrentFile({ force = false } = {}) {
         const result = await putFile(state.currentFile.path, finalText, state.currentSha, message, { force });
         state.currentSha = result.content.sha;
         state.originalText = finalText;
-        state.originalStripped = strippedText;
-        state.originalMeta = { ...metaForSave };
-        state.meta = { ...metaForSave };
-        state.originalDocument = parseDocument(strippedText, state.currentFile.path);
-        state.document = parseDocument(strippedText, state.currentFile.path);
+        state.originalDocument = parseDocument(finalText, state.currentFile.path);
+        state.document = parseDocument(finalText, state.currentFile.path);
         state.dirty = false;
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
@@ -586,10 +597,18 @@ function refreshDirtyUI() {
     const originalSegments = state.originalDocument?.segments || [];
     for (const card of els.editorRoot.querySelectorAll('.segment-card[data-segment-index]')) {
         const index = Number(card.dataset.segmentIndex);
-        const current = segmentText(state.document.segments[index]);
-        const original = segmentText(originalSegments[index]);
+        const current = segmentSnapshot(state.document.segments[index]);
+        const original = segmentSnapshot(originalSegments[index]);
         card.querySelector('.segment-dirty')?.classList.toggle('hidden', current === original);
     }
+}
+
+function segmentSnapshot(segment) {
+    return JSON.stringify({
+        body: segmentBodyText(segment),
+        lastPlayed: segment?.meta?.lastPlayed || '',
+        lastEdited: segment?.meta?.lastEdited || '',
+    });
 }
 
 function setStatus(message, type = 'ok') {
@@ -635,10 +654,6 @@ function groupFiles(files) {
 function autoGrow(textarea) {
     textarea.style.height = 'auto';
     textarea.style.height = `${Math.max(80, textarea.scrollHeight + 2)}px`;
-}
-
-function segmentText(segment) {
-    return segment?.parts?.map((part) => part.text).join('') || '';
 }
 
 function buildConflictPreview(remoteText, localText) {
