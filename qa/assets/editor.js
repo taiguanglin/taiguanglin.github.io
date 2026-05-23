@@ -259,17 +259,21 @@ function renderIntroCard() {
         <header class="segment-header">
             <div>
                 <p class="segment-number">開場</p>
-                <h3 class="segment-title">檔案開頭與說明</h3>
+                <h3 class="segment-title">檔案開頭與說明（含「開場時間」等可編輯標記）</h3>
             </div>
         </header>
         <div class="range-buttons"></div>
         <textarea class="editor-textarea" data-header="true" spellcheck="false"></textarea>
     `;
-    card.querySelector('.range-buttons').append(...renderRangeButtons(ranges, '開場'));
+    const rangeContainer = card.querySelector('.range-buttons');
+    rangeContainer.append(...renderRangeButtons(ranges, '開場'));
     const textarea = card.querySelector('textarea');
     textarea.value = state.document.header;
     textarea.addEventListener('input', () => {
         state.document.header = textarea.value;
+        state.document.headerRanges = parseRanges(textarea.value);
+        rangeContainer.innerHTML = '';
+        rangeContainer.append(...renderRangeButtons(state.document.headerRanges, '開場'));
         markDirty();
         autoGrow(textarea);
     });
@@ -291,7 +295,7 @@ function renderSegmentCard(segment, segmentIndex) {
     const body = node.querySelector('.segment-body');
     for (const [partIndex, part] of segment.parts.entries()) {
         if (part.type === 'marker') {
-            body.append(renderMarker(part.text, segment, segmentIndex));
+            body.append(renderMarker(part.text, segment, segmentIndex, partIndex, node));
         } else {
             const textarea = document.createElement('textarea');
             textarea.className = 'editor-textarea';
@@ -312,21 +316,107 @@ function renderSegmentCard(segment, segmentIndex) {
     return node;
 }
 
-function renderMarker(text, segment, segmentIndex) {
+function renderMarker(text, segment, segmentIndex, partIndex, card) {
     const marker = document.createElement('div');
     marker.className = 'marker-line';
-    const clean = text.replace(/\r?\n$/, '');
-    marker.append(document.createElement('code'));
-    marker.querySelector('code').textContent = clean;
 
-    const rangeMatch = clean.match(/^時間：\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})/);
-    if (rangeMatch) {
-        const range = parseRanges(clean)[0];
-        const button = renderPlayButton(range, `${segment.number}. ${segment.title}`);
-        button.dataset.segmentIndex = String(segmentIndex);
-        marker.append(button);
+    const endsWithNewline = /\n$/.test(text);
+    const displayValue = endsWithNewline ? text.slice(0, -1) : text;
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.className = 'marker-input';
+    input.value = displayValue;
+    input.spellcheck = false;
+    input.dataset.segmentIndex = String(segmentIndex);
+    input.dataset.partIndex = String(partIndex);
+    const kind = detectMarkerKind(displayValue);
+    if (kind === 'heading') {
+        input.setAttribute('aria-label', '段落標題（格式：### N. 標題）');
+        input.title = '格式：### N. 標題';
+    } else if (kind === 'time') {
+        input.setAttribute('aria-label', '段落時間（格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm）');
+        input.title = '格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm';
     }
+    marker.append(input);
+
+    let playButton = null;
+    if (kind === 'time') {
+        playButton = document.createElement('button');
+        playButton.type = 'button';
+        playButton.className = 'button button-secondary play-range';
+        playButton.dataset.segmentIndex = String(segmentIndex);
+        marker.append(playButton);
+        updatePlayButton(playButton, displayValue, segment);
+    }
+
+    input.addEventListener('input', () => {
+        const newValue = input.value;
+        const newText = endsWithNewline ? `${newValue}\n` : newValue;
+        state.document.segments[segmentIndex].parts[partIndex].text = newText;
+
+        if (kind === 'heading') {
+            const match = newValue.match(/^###\s+(\d+)\.\s*(.*)$/);
+            if (match) {
+                segment.number = match[1];
+                segment.title = match[2];
+            } else {
+                segment.number = '';
+                segment.title = newValue.trim();
+            }
+            updateSegmentCardHeader(card, segment);
+        }
+
+        if (playButton) {
+            updatePlayButton(playButton, newValue, segment);
+        }
+
+        segment.ranges = collectSegmentRanges(state.document.segments[segmentIndex]);
+        markDirty();
+    });
+
     return marker;
+}
+
+function detectMarkerKind(line) {
+    if (/^###\s+/.test(line)) return 'heading';
+    if (/^(時間|開場時間)：/.test(line)) return 'time';
+    return 'other';
+}
+
+function updateSegmentCardHeader(card, segment) {
+    const number = card.querySelector('.segment-number');
+    const title = card.querySelector('.segment-title');
+    if (number) number.textContent = segment.number ? `第 ${segment.number} 段` : '段落';
+    if (title) title.textContent = segment.title || '（未命名）';
+}
+
+function collectSegmentRanges(segment) {
+    return segment.parts
+        .filter((part) => part.type === 'marker')
+        .flatMap((part) => parseRanges(part.text));
+}
+
+function updatePlayButton(button, markerText, segment) {
+    const range = parseRanges(markerText)[0];
+    if (!range) {
+        button.textContent = '▶ 時間格式無效';
+        button.disabled = true;
+        button.onclick = null;
+        return;
+    }
+    button.disabled = false;
+    button.textContent = `▶ ${range.label}`;
+    button.onclick = async () => {
+        try {
+            state.miniPlayerHidden = false;
+            setPrefs({ miniPlayerHidden: false });
+            await audio.playRange(state.currentFile.path, range, `${segment.number}. ${segment.title}`);
+            showMiniPlayer();
+        } catch (error) {
+            setStatus(`播放失敗：${error.message}`, 'error');
+        }
+    };
 }
 
 function renderRangeButtons(ranges, label) {
