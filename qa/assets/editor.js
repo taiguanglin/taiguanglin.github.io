@@ -899,7 +899,7 @@ function setupMiniPlayer() {
 
     restoreMiniPlayerPosition();
 
-    toggle.addEventListener('click', async () => {
+    const togglePlay = async () => {
         if (!player.src) return;
         if (player.paused) {
             try {
@@ -910,17 +910,41 @@ function setupMiniPlayer() {
         } else {
             player.pause();
         }
-    });
+    };
+
+    const seekBy = (delta) => {
+        if (!Number.isFinite(delta) || !player.src) return;
+        const duration = Number.isFinite(player.duration) ? player.duration : Infinity;
+        player.currentTime = Math.min(Math.max(player.currentTime + delta, 0), duration);
+    };
+
+    toggle.addEventListener('click', togglePlay);
 
     for (const button of mini.querySelectorAll('[data-seek]')) {
         button.addEventListener('click', () => {
-            const delta = Number(button.dataset.seek);
-            if (!Number.isFinite(delta) || !player.src) return;
-            const duration = Number.isFinite(player.duration) ? player.duration : Infinity;
-            const next = Math.min(Math.max(player.currentTime + delta, 0), duration);
-            player.currentTime = next;
+            seekBy(Number(button.dataset.seek));
         });
     }
+
+    document.addEventListener('keydown', (event) => {
+        if (!event.altKey) return;
+        if (event.metaKey || event.ctrlKey || event.shiftKey) return;
+        if (!player.src) return;
+        switch (event.code) {
+            case 'KeyP':
+                event.preventDefault();
+                togglePlay();
+                break;
+            case 'ArrowLeft':
+                event.preventDefault();
+                seekBy(-5);
+                break;
+            case 'ArrowRight':
+                event.preventDefault();
+                seekBy(5);
+                break;
+        }
+    }, true);
 
     seekBar.addEventListener('pointerdown', () => {
         seeking = true;
