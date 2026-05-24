@@ -53,15 +53,18 @@ body {
     --sidebar-width: 320px;
     display: grid;
     grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    min-height: 100vh;
+    grid-template-rows: auto minmax(0, 1fr);
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
 }
 
 .app-shell.sidebar-collapsed {
-    grid-template-columns: 0 minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
 }
 
-.app-shell.sidebar-collapsed .sidebar {
+.app-shell.sidebar-collapsed .sidebar,
+.app-shell.sidebar-collapsed .sidebar-resizer {
     display: none;
 }
 
@@ -74,8 +77,6 @@ body {
     grid-column: 1 / -1;
     justify-content: space-between;
     padding: 1rem 1.25rem;
-    position: sticky;
-    top: 0;
     z-index: 20;
 }
 
@@ -149,7 +150,9 @@ body {
     border-right: 1px solid var(--border);
     min-height: 0;
     min-width: 0;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 1rem 1.25rem 1rem 1rem;
     position: relative;
 }
@@ -228,8 +231,11 @@ textarea {
 }
 
 .workspace {
+    min-height: 0;
     min-width: 0;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
     padding: 1.25rem;
 }
 
@@ -672,11 +678,13 @@ textarea {
 
 @media (max-width: 900px) {
     .app-shell {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto minmax(0, 1fr);
     }
 
     .app-shell.sidebar-collapsed {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto minmax(0, 1fr);
     }
 
     .sidebar {
