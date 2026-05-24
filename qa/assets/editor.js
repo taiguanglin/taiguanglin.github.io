@@ -919,18 +919,25 @@ function setupMiniPlayer() {
         }
     });
 
-    handle.addEventListener('pointerdown', (event) => {
-        if (event.target.closest('button, input, select, label, a')) return;
+    mini.addEventListener('pointerdown', (event) => {
+        if (event.button !== undefined && event.button !== 0) return;
+        if (event.target.closest('button, input, select, textarea, label, a')) return;
         dragging = true;
         dragOffset = {
             x: event.clientX - mini.offsetLeft,
             y: event.clientY - mini.offsetTop,
         };
+        mini.classList.add('dragging');
         handle.classList.add('dragging');
-        handle.setPointerCapture(event.pointerId);
+        try {
+            mini.setPointerCapture(event.pointerId);
+        } catch {
+            // pointer capture may fail on some elements; drag still works via listeners
+        }
+        event.preventDefault();
     });
 
-    handle.addEventListener('pointermove', (event) => {
+    mini.addEventListener('pointermove', (event) => {
         if (!dragging) return;
         const nextLeft = clamp(event.clientX - dragOffset.x, 8, window.innerWidth - mini.offsetWidth - 8);
         const nextTop = clamp(event.clientY - dragOffset.y, 8, window.innerHeight - mini.offsetHeight - 8);
@@ -943,9 +950,10 @@ function setupMiniPlayer() {
     const stopDrag = (event) => {
         if (!dragging) return;
         dragging = false;
+        mini.classList.remove('dragging');
         handle.classList.remove('dragging');
         try {
-            handle.releasePointerCapture(event.pointerId);
+            mini.releasePointerCapture(event.pointerId);
         } catch {
             // pointer was already released
         }
@@ -956,8 +964,8 @@ function setupMiniPlayer() {
             },
         });
     };
-    handle.addEventListener('pointerup', stopDrag);
-    handle.addEventListener('pointercancel', stopDrag);
+    mini.addEventListener('pointerup', stopDrag);
+    mini.addEventListener('pointercancel', stopDrag);
 
     player.addEventListener('play', () => {
         toggle.textContent = '⏸';

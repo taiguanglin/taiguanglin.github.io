@@ -576,6 +576,7 @@ textarea {
     border: 1px solid var(--border);
     border-radius: 1rem;
     box-shadow: var(--shadow);
+    cursor: grab;
     display: grid;
     gap: 0.55rem;
     left: auto;
@@ -590,19 +591,40 @@ textarea {
     z-index: 60;
 }
 
+.mini-player.dragging,
+.mini-player.dragging * {
+    cursor: grabbing !important;
+}
+
+.mini-player button,
+.mini-player input,
+.mini-player select,
+.mini-player label {
+    cursor: auto;
+}
+
+.mini-player button,
+.mini-player select {
+    cursor: pointer;
+}
+
+.mini-player input[type="range"] {
+    cursor: ew-resize;
+}
+
+.mini-player input[type="checkbox"],
+.mini-player .checkbox-row {
+    cursor: pointer;
+}
+
 .mini-player-header {
     align-items: baseline;
     color: var(--text);
-    cursor: grab;
     display: flex;
     flex-wrap: wrap;
     font-size: 0.92rem;
     gap: 0.4rem;
     justify-content: space-between;
-}
-
-.mini-player-header.dragging {
-    cursor: grabbing;
 }
 
 .mini-player-title {
