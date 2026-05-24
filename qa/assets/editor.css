@@ -50,10 +50,19 @@ body {
 }
 
 .app-shell {
+    --sidebar-width: 320px;
     display: grid;
-    grid-template-columns: 320px minmax(0, 1fr);
+    grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
     grid-template-rows: auto 1fr;
     min-height: 100vh;
+}
+
+.app-shell.sidebar-collapsed {
+    grid-template-columns: 0 minmax(0, 1fr);
+}
+
+.app-shell.sidebar-collapsed .sidebar {
+    display: none;
 }
 
 .topbar {
@@ -70,13 +79,17 @@ body {
     z-index: 20;
 }
 
-.brand h1 {
-    font-size: clamp(1.25rem, 2vw, 1.8rem);
-    line-height: 1.1;
-    margin: 0;
+.topbar-left {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
 }
 
-.brand-kicker,
+.sidebar-toggle {
+    font-size: 1.25rem;
+    padding: 0.35rem 0.6rem;
+}
+
 .document-path,
 .segment-number,
 .hint {
@@ -137,7 +150,31 @@ body {
     min-height: 0;
     min-width: 0;
     overflow: auto;
-    padding: 1rem;
+    padding: 1rem 1.25rem 1rem 1rem;
+    position: relative;
+}
+
+.sidebar-resizer {
+    background: transparent;
+    bottom: 0;
+    cursor: col-resize;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transition: background 0.15s ease;
+    width: 6px;
+    z-index: 5;
+}
+
+.sidebar-resizer:hover,
+.sidebar-resizer.dragging {
+    background: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+body.resizing-sidebar,
+body.resizing-sidebar * {
+    cursor: col-resize !important;
+    user-select: none !important;
 }
 
 .sidebar-toolbar {
@@ -338,12 +375,44 @@ textarea {
     border-color: var(--border);
 }
 
-.file-item .file-name {
+.file-item-body {
+    display: flex;
     flex: 1;
-    line-height: 1.5;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+}
+
+.file-item .file-name {
+    line-height: 1.4;
     min-width: 0;
     overflow-wrap: anywhere;
     word-break: break-word;
+}
+
+.file-stats {
+    color: var(--muted);
+    font-size: 0.75rem;
+    line-height: 1.2;
+}
+
+.file-item[data-status="all"] .file-stats {
+    color: #2f9e44;
+    font-weight: 600;
+}
+
+@media (prefers-color-scheme: dark) {
+    .file-item[data-status="all"] .file-stats {
+        color: #8ce99a;
+    }
+}
+
+.file-item[data-status="partial"] .file-stats {
+    color: var(--accent-strong);
+}
+
+.file-item[data-status="loading"] .file-stats {
+    opacity: 0.6;
 }
 
 .draft-dot {
@@ -606,10 +675,18 @@ textarea {
         grid-template-columns: 1fr;
     }
 
+    .app-shell.sidebar-collapsed {
+        grid-template-columns: 1fr;
+    }
+
     .sidebar {
         border-bottom: 1px solid var(--border);
         border-right: 0;
         max-height: 35vh;
+    }
+
+    .sidebar-resizer {
+        display: none;
     }
 
     .topbar,

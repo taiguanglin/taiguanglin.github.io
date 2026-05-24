@@ -10,9 +10,8 @@
 <body>
     <div id="app" class="app-shell">
         <header class="topbar">
-            <div class="brand">
-                <span class="brand-kicker">QA Editor</span>
-                <h1>Tai 師父答疑線上校稿</h1>
+            <div class="topbar-left">
+                <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄">☰</button>
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
@@ -21,7 +20,7 @@
             </div>
         </header>
 
-        <aside class="sidebar">
+        <aside id="sidebar" class="sidebar">
             <div class="sidebar-toolbar">
                 <label class="field">
                     <span>搜尋檔案</span>
@@ -31,6 +30,7 @@
             <nav id="fileList" class="file-list" aria-label="答疑檔案列表">
                 <div class="empty-state">正在載入檔案列表...</div>
             </nav>
+            <div id="sidebarResizer" class="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側邊欄寬度" title="拖曳調整寬度"></div>
         </aside>
 
         <main class="workspace">

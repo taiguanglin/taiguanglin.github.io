@@ -14,9 +14,15 @@ const state = {
     prefs: getPrefs(),
     draftPaths: listDraftPaths(),
     draftTimer: null,
+    fileStats: new Map(),
+    statsFetched: false,
 };
 
 const els = {
+    app: document.querySelector('#app'),
+    sidebar: document.querySelector('#sidebar'),
+    sidebarToggle: document.querySelector('#sidebarToggle'),
+    sidebarResizer: document.querySelector('#sidebarResizer'),
     fileList: document.querySelector('#fileList'),
     fileSearch: document.querySelector('#fileSearch'),
     welcomePanel: document.querySelector('#welcomePanel'),
@@ -73,6 +79,7 @@ bootstrap();
 async function bootstrap() {
     bindEvents();
     setupMiniPlayer();
+    setupSidebarControls();
     applyPrefs();
     await loadFileList();
 }
@@ -126,6 +133,82 @@ function applyPrefs() {
     audio.setPlaybackRate(state.prefs.playbackRate);
     audio.setStopAtRangeEnd(state.prefs.stopAtRangeEnd);
     els.opusWarning.classList.toggle('hidden', audio.supportsOpus);
+    applySidebarPrefs();
+}
+
+function applySidebarPrefs() {
+    const width = clamp(Number(state.prefs.sidebarWidth) || 320, 200, sidebarMaxWidth());
+    els.app.style.setProperty('--sidebar-width', `${width}px`);
+    els.app.classList.toggle('sidebar-collapsed', state.prefs.sidebarCollapsed === true);
+    updateSidebarToggleLabel();
+}
+
+function sidebarMaxWidth() {
+    return Math.min(600, Math.max(280, Math.floor(window.innerWidth * 0.6)));
+}
+
+function updateSidebarToggleLabel() {
+    if (!els.sidebarToggle) return;
+    const collapsed = els.app.classList.contains('sidebar-collapsed');
+    els.sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
+    els.sidebarToggle.textContent = collapsed ? '☰' : '⟨';
+    els.sidebarToggle.title = collapsed ? '展開側邊欄' : '收起側邊欄';
+}
+
+function setupSidebarControls() {
+    els.sidebarToggle.addEventListener('click', () => {
+        const collapsed = !els.app.classList.contains('sidebar-collapsed');
+        els.app.classList.toggle('sidebar-collapsed', collapsed);
+        state.prefs.sidebarCollapsed = collapsed;
+        setPrefs({ sidebarCollapsed: collapsed });
+        updateSidebarToggleLabel();
+    });
+
+    let resizing = false;
+    let startX = 0;
+    let startWidth = 0;
+
+    els.sidebarResizer.addEventListener('pointerdown', (event) => {
+        if (els.app.classList.contains('sidebar-collapsed')) return;
+        resizing = true;
+        startX = event.clientX;
+        startWidth = els.sidebar.getBoundingClientRect().width;
+        els.sidebarResizer.setPointerCapture(event.pointerId);
+        els.sidebarResizer.classList.add('dragging');
+        document.body.classList.add('resizing-sidebar');
+        event.preventDefault();
+    });
+
+    els.sidebarResizer.addEventListener('pointermove', (event) => {
+        if (!resizing) return;
+        const next = clamp(startWidth + (event.clientX - startX), 200, sidebarMaxWidth());
+        els.app.style.setProperty('--sidebar-width', `${next}px`);
+    });
+
+    const stopResize = (event) => {
+        if (!resizing) return;
+        resizing = false;
+        els.sidebarResizer.classList.remove('dragging');
+        document.body.classList.remove('resizing-sidebar');
+        try { els.sidebarResizer.releasePointerCapture(event.pointerId); } catch { /* ignore */ }
+        const raw = els.app.style.getPropertyValue('--sidebar-width');
+        const width = parseInt(raw, 10);
+        if (Number.isFinite(width)) {
+            state.prefs.sidebarWidth = width;
+            setPrefs({ sidebarWidth: width });
+        }
+    };
+
+    els.sidebarResizer.addEventListener('pointerup', stopResize);
+    els.sidebarResizer.addEventListener('pointercancel', stopResize);
+
+    window.addEventListener('resize', () => {
+        const current = parseInt(els.app.style.getPropertyValue('--sidebar-width'), 10) || 320;
+        const max = sidebarMaxWidth();
+        if (current > max) {
+            els.app.style.setProperty('--sidebar-width', `${max}px`);
+        }
+    });
 }
 
 async function loadFileList() {
@@ -135,6 +218,10 @@ async function loadFileList() {
         state.draftPaths = listDraftPaths();
         renderFileList();
         setStatus(`已載入 ${state.files.length} 個檔案`, 'ok');
+        if (!state.statsFetched) {
+            state.statsFetched = true;
+            fetchAllFileStats(state.files);
+        }
     } catch (error) {
         els.fileList.innerHTML = `<div class="empty-state error">載入失敗：${escapeHtml(error.message)}</div>`;
         setStatus('檔案列表載入失敗', 'error');
@@ -160,16 +247,100 @@ function renderFileList() {
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'file-item';
+            button.dataset.path = file.path;
             button.classList.toggle('active', state.currentFile?.path === file.path);
             button.innerHTML = `
                 <span class="draft-dot ${state.draftPaths.has(file.path) ? '' : 'hidden'}"></span>
-                <span class="file-name">${escapeHtml(file.name.replace(/\.txt$/i, ''))}</span>
+                <div class="file-item-body">
+                    <span class="file-name">${escapeHtml(file.name.replace(/\.txt$/i, ''))}</span>
+                    <span class="file-stats">計算中…</span>
+                </div>
             `;
+            button.dataset.status = state.fileStats.has(file.path) ? '' : 'loading';
             button.addEventListener('click', () => loadDocument(file));
             section.append(button);
+            updateFileStatsDom(file.path);
         }
         els.fileList.append(section);
     }
+}
+
+function computeFileStats(doc) {
+    const segments = doc?.segments || [];
+    const total = segments.length;
+    const played = segments.filter((segment) => segment?.meta?.lastPlayed).length;
+    const edited = segments.filter((segment) => segment?.meta?.lastEdited).length;
+    return { played, edited, total };
+}
+
+function updateFileStatsDom(path) {
+    if (!els.fileList) return;
+    const item = els.fileList.querySelector(`.file-item[data-path="${CSS.escape(path)}"]`);
+    if (!item) return;
+    const statsEl = item.querySelector('.file-stats');
+    if (!statsEl) return;
+    const stats = state.fileStats.get(path);
+    if (!stats) {
+        statsEl.textContent = '計算中…';
+        item.dataset.status = 'loading';
+        return;
+    }
+    if (stats.error) {
+        statsEl.textContent = '讀取失敗';
+        item.dataset.status = 'error';
+        return;
+    }
+    statsEl.textContent = `聽 ${stats.played}／校 ${stats.edited}／共 ${stats.total} 段`;
+    if (stats.total === 0) {
+        item.dataset.status = 'empty';
+    } else if (stats.edited >= stats.total && stats.played >= stats.total) {
+        item.dataset.status = 'all';
+    } else if (stats.played > 0 || stats.edited > 0) {
+        item.dataset.status = 'partial';
+    } else {
+        item.dataset.status = 'none';
+    }
+}
+
+async function fetchAllFileStats(files) {
+    const queue = files.map((file) => file.path).filter((path) => !state.fileStats.has(path));
+    const worker = async () => {
+        while (queue.length) {
+            const path = queue.shift();
+            try {
+                state.fileStats.set(path, await fetchFileStats(path));
+            } catch (error) {
+                state.fileStats.set(path, { error: true });
+            }
+            updateFileStatsDom(path);
+        }
+    };
+    const concurrency = Math.min(8, queue.length);
+    await Promise.all(Array.from({ length: concurrency }, worker));
+}
+
+async function fetchFileStats(path) {
+    if (state.currentFile?.path === path && state.document) {
+        return computeFileStats(state.document);
+    }
+    const draft = getDraft(path);
+    if (draft?.text) {
+        try {
+            return computeFileStats(parseDocument(draft.text, path));
+        } catch { /* fall through to remote fetch */ }
+    }
+    const filename = path.replace(/^qa\//, '');
+    const url = `./${encodeURIComponent(filename)}`;
+    const response = await fetch(url, { cache: 'no-cache' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const text = await response.text();
+    return computeFileStats(parseDocument(text, path));
+}
+
+function refreshCurrentFileStats() {
+    if (!state.currentFile || !state.document) return;
+    state.fileStats.set(state.currentFile.path, computeFileStats(state.document));
+    updateFileStatsDom(state.currentFile.path);
 }
 
 async function loadDocument(file, { preferDraft = null } = {}) {
@@ -205,6 +376,7 @@ async function loadDocument(file, { preferDraft = null } = {}) {
         state.draftPaths = listDraftPaths();
         renderFileList();
         renderDocument();
+        refreshCurrentFileStats();
         setStatus(state.dirty ? '已載入本機草稿' : '已載入遠端最新版', state.dirty ? 'dirty' : 'ok');
     } catch (error) {
         setStatus(`載入失敗：${error.message}`, 'error');
@@ -488,6 +660,7 @@ function recomputeDirty() {
         els.draftBadge.classList.add('hidden');
     }
     refreshMetaSummary();
+    refreshCurrentFileStats();
     refreshDirtyUI();
 }
 
@@ -552,6 +725,7 @@ async function saveCurrentFile({ force = false } = {}) {
         state.draftPaths = listDraftPaths();
         renderFileList();
         renderDocument();
+        refreshCurrentFileStats();
         setStatus('已儲存並建立 GitHub commit', 'ok');
     } catch (error) {
         if (isConflict(error)) {
