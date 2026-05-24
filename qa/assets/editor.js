@@ -119,7 +119,6 @@ function bindEvents() {
             event.preventDefault();
             renderDocument();
         }
-        if (handleAudioShortcut(event)) return;
     });
     window.addEventListener('beforeunload', (event) => {
         if (!state.dirty) return;
@@ -883,31 +882,6 @@ function escapeHtml(value) {
         '"': '&quot;',
         "'": '&#39;',
     }[char]));
-}
-
-function handleAudioShortcut(event) {
-    if (!(event.metaKey || event.ctrlKey)) return false;
-    if (event.altKey || event.shiftKey) return false;
-    const key = event.key;
-    if (key === 'p' || key === 'P') {
-        event.preventDefault();
-        event.stopPropagation();
-        els.miniPlayerToggle?.click();
-        return true;
-    }
-    if (key === 'ArrowLeft') {
-        event.preventDefault();
-        event.stopPropagation();
-        els.miniPlayer?.querySelector('[data-seek="-5"]')?.click();
-        return true;
-    }
-    if (key === 'ArrowRight') {
-        event.preventDefault();
-        event.stopPropagation();
-        els.miniPlayer?.querySelector('[data-seek="5"]')?.click();
-        return true;
-    }
-    return false;
 }
 
 function setupMiniPlayer() {
