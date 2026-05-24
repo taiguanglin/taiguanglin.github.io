@@ -115,10 +115,6 @@ function bindEvents() {
         setPrefs({ stopAtRangeEnd: els.stopAtRangeEnd.checked });
     });
     document.addEventListener('keydown', (event) => {
-        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 's') {
-            event.preventDefault();
-            saveCurrentFile();
-        }
         if (event.key === 'Escape' && state.dirty) {
             event.preventDefault();
             renderDocument();
