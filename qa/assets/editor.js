@@ -253,33 +253,20 @@ function renderFileList() {
                 <span class="draft-dot ${state.draftPaths.has(file.path) ? '' : 'hidden'}"></span>
                 <div class="file-item-body">
                     <span class="file-name">${escapeHtml(file.name.replace(/\.txt$/i, ''))}</span>
-                    <span class="file-stats">計算中…</span>
+                    <span class="file-stats"></span>
                 </div>
             `;
-            button.dataset.status = state.fileStats.has(file.path) ? '' : 'loading';
+            applyFileStats(button, state.fileStats.get(file.path));
             button.addEventListener('click', () => loadDocument(file));
             section.append(button);
-            updateFileStatsDom(file.path);
         }
         els.fileList.append(section);
     }
 }
 
-function computeFileStats(doc) {
-    const segments = doc?.segments || [];
-    const total = segments.length;
-    const played = segments.filter((segment) => segment?.meta?.lastPlayed).length;
-    const edited = segments.filter((segment) => segment?.meta?.lastEdited).length;
-    return { played, edited, total };
-}
-
-function updateFileStatsDom(path) {
-    if (!els.fileList) return;
-    const item = els.fileList.querySelector(`.file-item[data-path="${CSS.escape(path)}"]`);
-    if (!item) return;
+function applyFileStats(item, stats) {
     const statsEl = item.querySelector('.file-stats');
     if (!statsEl) return;
-    const stats = state.fileStats.get(path);
     if (!stats) {
         statsEl.textContent = '計算中…';
         item.dataset.status = 'loading';
@@ -300,6 +287,21 @@ function updateFileStatsDom(path) {
     } else {
         item.dataset.status = 'none';
     }
+}
+
+function computeFileStats(doc) {
+    const segments = doc?.segments || [];
+    const total = segments.length;
+    const played = segments.filter((segment) => segment?.meta?.lastPlayed).length;
+    const edited = segments.filter((segment) => segment?.meta?.lastEdited).length;
+    return { played, edited, total };
+}
+
+function updateFileStatsDom(path) {
+    if (!els.fileList) return;
+    const item = els.fileList.querySelector(`.file-item[data-path="${CSS.escape(path)}"]`);
+    if (!item) return;
+    applyFileStats(item, state.fileStats.get(path));
 }
 
 async function fetchAllFileStats(files) {
