@@ -11,6 +11,9 @@
     --danger: #b42318;
     --warning: #fff2cc;
     --shadow: 0 16px 40px rgba(49, 35, 20, 0.12);
+    --status-played: #2f74c0;
+    --status-edited: #c97a1f;
+    --status-both: #2f9e44;
     font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
 }
 
@@ -27,6 +30,9 @@
         --danger: #ff8a80;
         --warning: #372b12;
         --shadow: 0 16px 40px rgba(0, 0, 0, 0.28);
+        --status-played: #74c0fc;
+        --status-edited: #ffc078;
+        --status-both: #8ce99a;
     }
 }
 
@@ -129,6 +135,37 @@ body {
 .seg-meta-chip strong {
     color: var(--text);
     font-weight: 500;
+}
+
+.status-chip[data-status="played"] {
+    background: color-mix(in srgb, var(--status-played) 14%, transparent);
+    border-color: color-mix(in srgb, var(--status-played) 45%, var(--border));
+}
+
+.status-chip[data-status="played"] strong {
+    color: var(--status-played);
+}
+
+.status-chip[data-status="edited"] {
+    background: color-mix(in srgb, var(--status-edited) 16%, transparent);
+    border-color: color-mix(in srgb, var(--status-edited) 45%, var(--border));
+}
+
+.status-chip[data-status="edited"] strong {
+    color: var(--status-edited);
+}
+
+.status-chip[data-status="both"] {
+    background: color-mix(in srgb, var(--status-both) 16%, transparent);
+    border-color: color-mix(in srgb, var(--status-both) 45%, var(--border));
+}
+
+.status-chip[data-status="both"] strong {
+    color: var(--status-both);
+}
+
+.status-chip[data-status="none"] {
+    background: color-mix(in srgb, var(--border) 25%, transparent);
 }
 
 .segment-meta {
@@ -276,7 +313,28 @@ textarea {
 }
 
 .segment-card {
+    border-left-width: 4px;
     overflow: hidden;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.segment-card[data-status="none"] {
+    border-left-color: var(--border);
+}
+
+.segment-card[data-status="played"] {
+    background: color-mix(in srgb, var(--status-played) 6%, var(--panel-strong));
+    border-left-color: var(--status-played);
+}
+
+.segment-card[data-status="edited"] {
+    background: color-mix(in srgb, var(--status-edited) 7%, var(--panel-strong));
+    border-left-color: var(--status-edited);
+}
+
+.segment-card[data-status="both"] {
+    background: color-mix(in srgb, var(--status-both) 7%, var(--panel-strong));
+    border-left-color: var(--status-both);
 }
 
 .segment-header {
@@ -287,6 +345,35 @@ textarea {
     gap: 1rem;
     justify-content: space-between;
     padding: 1rem;
+}
+
+.segment-card[data-status="played"] .segment-header {
+    background: color-mix(in srgb, var(--status-played) 14%, var(--panel));
+}
+
+.segment-card[data-status="edited"] .segment-header {
+    background: color-mix(in srgb, var(--status-edited) 15%, var(--panel));
+}
+
+.segment-card[data-status="both"] .segment-header {
+    background: color-mix(in srgb, var(--status-both) 15%, var(--panel));
+}
+
+.segment-card[data-status="played"] .seg-meta-played strong,
+.segment-card[data-status="both"] .seg-meta-played strong {
+    color: var(--status-played);
+    font-weight: 600;
+}
+
+.segment-card[data-status="edited"] .seg-meta-edited strong,
+.segment-card[data-status="both"] .seg-meta-edited strong {
+    color: var(--status-edited);
+    font-weight: 600;
+}
+
+.segment-card[data-status="both"] .seg-meta-played strong,
+.segment-card[data-status="both"] .seg-meta-edited strong {
+    color: var(--status-both);
 }
 
 .segment-header h3 {

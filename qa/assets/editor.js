@@ -31,9 +31,11 @@ const els = {
     documentTitle: document.querySelector('#documentTitle'),
     segmentCount: document.querySelector('#segmentCount'),
     draftBadge: document.querySelector('#draftBadge'),
-    metaPlayedCount: document.querySelector('#metaPlayedCount'),
-    metaEditedCount: document.querySelector('#metaEditedCount'),
     metaTotalCount: document.querySelector('#metaTotalCount'),
+    metaBothCount: document.querySelector('#metaBothCount'),
+    metaPlayedOnlyCount: document.querySelector('#metaPlayedOnlyCount'),
+    metaEditedOnlyCount: document.querySelector('#metaEditedOnlyCount'),
+    metaNoneCount: document.querySelector('#metaNoneCount'),
     editorRoot: document.querySelector('#editorRoot'),
     saveButton: document.querySelector('#saveButton'),
     saveStatus: document.querySelector('#saveStatus'),
@@ -478,8 +480,15 @@ function renderSegmentCard(segment, segmentIndex) {
 function updateSegmentMetaChips(card, segment) {
     const played = card.querySelector('.seg-meta-played');
     const edited = card.querySelector('.seg-meta-edited');
+    const hasPlayed = Boolean(segment?.meta?.lastPlayed);
+    const hasEdited = Boolean(segment?.meta?.lastEdited);
     if (played) played.textContent = segment?.meta?.lastPlayed || '—';
     if (edited) edited.textContent = segment?.meta?.lastEdited || '—';
+    let status = 'none';
+    if (hasPlayed && hasEdited) status = 'both';
+    else if (hasPlayed) status = 'played';
+    else if (hasEdited) status = 'edited';
+    card.dataset.status = status;
 }
 
 function refreshSegmentMetaChips(segmentIndex) {
@@ -680,11 +689,23 @@ function scheduleDraftSave(text) {
 function refreshMetaSummary() {
     const segments = state.document?.segments || [];
     const total = segments.length;
-    const played = segments.filter((segment) => segment?.meta?.lastPlayed).length;
-    const edited = segments.filter((segment) => segment?.meta?.lastEdited).length;
-    if (els.metaPlayedCount) els.metaPlayedCount.textContent = String(played);
-    if (els.metaEditedCount) els.metaEditedCount.textContent = String(edited);
+    let both = 0;
+    let playedOnly = 0;
+    let editedOnly = 0;
+    let none = 0;
+    for (const segment of segments) {
+        const p = Boolean(segment?.meta?.lastPlayed);
+        const e = Boolean(segment?.meta?.lastEdited);
+        if (p && e) both += 1;
+        else if (p) playedOnly += 1;
+        else if (e) editedOnly += 1;
+        else none += 1;
+    }
     if (els.metaTotalCount) els.metaTotalCount.textContent = String(total);
+    if (els.metaBothCount) els.metaBothCount.textContent = String(both);
+    if (els.metaPlayedOnlyCount) els.metaPlayedOnlyCount.textContent = String(playedOnly);
+    if (els.metaEditedOnlyCount) els.metaEditedOnlyCount.textContent = String(editedOnly);
+    if (els.metaNoneCount) els.metaNoneCount.textContent = String(none);
 }
 
 function segmentBodyText(segment) {

@@ -46,7 +46,11 @@
                         <p id="documentPath" class="document-path"></p>
                         <h2 id="documentTitle"></h2>
                         <div id="metaStrip" class="meta-strip">
-                            <span class="meta-chip">已聽 <strong id="metaPlayedCount">0</strong>／已校 <strong id="metaEditedCount">0</strong>／共 <strong id="metaTotalCount">0</strong> 段</span>
+                            <span class="meta-chip">共 <strong id="metaTotalCount">0</strong> 段</span>
+                            <span class="meta-chip status-chip" data-status="both" title="已聽且已校">完成 <strong id="metaBothCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="played" title="只聽過、尚未校過">已聽 <strong id="metaPlayedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="edited" title="只校過、尚未聽過">已校 <strong id="metaEditedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="none" title="未聽且未校">未處理 <strong id="metaNoneCount">0</strong></span>
                         </div>
                     </div>
                     <div class="document-meta">
