@@ -448,6 +448,9 @@ function renderSegmentCard(segment, segmentIndex) {
         setStatus('已複製原始段落', 'ok');
     });
     node.querySelector('.reset-segment').addEventListener('click', () => resetSegment(segmentIndex));
+    for (const button of node.querySelectorAll('.seg-meta-clear')) {
+        button.addEventListener('click', () => clearSegmentMeta(segmentIndex, button.dataset.field));
+    }
 
     const body = node.querySelector('.segment-body');
     for (const [partIndex, part] of segment.parts.entries()) {
@@ -480,6 +483,10 @@ function updateSegmentMetaChips(card, segment) {
     const hasEdited = Boolean(segment?.meta?.lastEdited);
     if (played) played.textContent = segment?.meta?.lastPlayed || '—';
     if (edited) edited.textContent = segment?.meta?.lastEdited || '—';
+    const clearPlayed = card.querySelector('.seg-meta-clear[data-field="played"]');
+    const clearEdited = card.querySelector('.seg-meta-clear[data-field="edited"]');
+    if (clearPlayed) clearPlayed.classList.toggle('hidden', !hasPlayed);
+    if (clearEdited) clearEdited.classList.toggle('hidden', !hasEdited);
     let status = 'none';
     if (hasPlayed && hasEdited) status = 'both';
     else if (hasPlayed) status = 'played';
@@ -643,6 +650,25 @@ function onSegmentPlayed(segmentIndex) {
     if (!segment) return;
     segment.meta = segment.meta || { lastPlayed: '', lastEdited: '' };
     segment.meta.lastPlayed = formatTimestamp();
+    refreshSegmentMetaChips(segmentIndex);
+    recomputeDirty();
+}
+
+function clearSegmentMeta(segmentIndex, field) {
+    const segment = state.document?.segments?.[segmentIndex];
+    if (!segment) return;
+    segment.meta = segment.meta || { lastPlayed: '', lastEdited: '' };
+    if (field === 'played') {
+        if (!segment.meta.lastPlayed) return;
+        segment.meta.lastPlayed = '';
+        setStatus('已清除最後播放時間', 'ok');
+    } else if (field === 'edited') {
+        if (!segment.meta.lastEdited) return;
+        segment.meta.lastEdited = '';
+        setStatus('已清除最後編輯時間', 'ok');
+    } else {
+        return;
+    }
     refreshSegmentMetaChips(segmentIndex);
     recomputeDirty();
 }

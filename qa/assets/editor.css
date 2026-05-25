@@ -178,8 +178,32 @@ body {
 }
 
 .seg-meta-chip {
+    align-items: center;
+    display: inline-flex;
     font-size: 0.78rem;
-    padding: 0.12rem 0.5rem;
+    gap: 0.3rem;
+    padding: 0.12rem 0.4rem 0.12rem 0.5rem;
+}
+
+.seg-meta-clear {
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    color: var(--muted);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.85rem;
+    height: 1.2rem;
+    line-height: 1;
+    padding: 0;
+    width: 1.2rem;
+}
+
+.seg-meta-clear:hover,
+.seg-meta-clear:focus-visible {
+    background: color-mix(in srgb, var(--danger) 18%, transparent);
+    color: var(--danger);
+    outline: none;
 }
 
 .sidebar {
