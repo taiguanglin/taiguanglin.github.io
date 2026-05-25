@@ -927,19 +927,23 @@ function setupMiniPlayer() {
     }
 
     document.addEventListener('keydown', (event) => {
-        if (!event.altKey && !event.metaKey) return;
         if (event.ctrlKey || event.shiftKey) return;
         if (!player.src) return;
+        const alt = event.altKey && !event.metaKey;
+        const meta = event.metaKey && !event.altKey;
+        if (!alt && !meta) return;
         switch (event.code) {
             case 'KeyP':
                 event.preventDefault();
                 togglePlay();
                 break;
             case 'ArrowLeft':
+                if (!alt) return;
                 event.preventDefault();
                 seekBy(-5);
                 break;
             case 'ArrowRight':
+                if (!alt) return;
                 event.preventDefault();
                 seekBy(5);
                 break;
