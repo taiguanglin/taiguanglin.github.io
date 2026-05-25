@@ -927,8 +927,8 @@ function setupMiniPlayer() {
     }
 
     document.addEventListener('keydown', (event) => {
-        if (!event.altKey) return;
-        if (event.metaKey || event.ctrlKey || event.shiftKey) return;
+        if (!event.altKey && !event.metaKey) return;
+        if (event.ctrlKey || event.shiftKey) return;
         if (!player.src) return;
         switch (event.code) {
             case 'KeyP':
