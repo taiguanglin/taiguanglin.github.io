@@ -15,6 +15,7 @@
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
+                <button id="playerToggle" class="button button-secondary" type="button" aria-pressed="true" title="隱藏／顯示播放器">隱藏播放器</button>
                 <button id="settingsButton" class="button button-secondary" type="button">設定</button>
                 <button id="saveButton" class="button button-primary" type="button" disabled>儲存到 GitHub</button>
             </div>
@@ -124,6 +125,7 @@
         <header class="mini-player-header" id="miniPlayerHandle">
             <span class="mini-player-title" id="audioTitle">尚未播放</span>
             <span class="mini-player-range" id="audioRange"></span>
+            <button id="miniPlayerHide" class="icon-button mini-player-hide" type="button" aria-label="隱藏播放器" title="隱藏播放器">×</button>
         </header>
         <div class="mini-player-progress">
             <input id="seekBar" type="range" min="0" max="0" step="0.1" value="0" aria-label="播放進度">

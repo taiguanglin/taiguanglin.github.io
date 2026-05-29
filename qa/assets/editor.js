@@ -62,9 +62,11 @@ const els = {
     segmentTemplate: document.querySelector('#segmentTemplate'),
     miniPlayer: document.querySelector('#miniPlayer'),
     miniPlayerHandle: document.querySelector('#miniPlayerHandle'),
+    miniPlayerHide: document.querySelector('#miniPlayerHide'),
     miniPlayerToggle: document.querySelector('#miniPlayerToggle'),
     miniPlayerCurrent: document.querySelector('#miniPlayerCurrent'),
     miniPlayerDuration: document.querySelector('#miniPlayerDuration'),
+    playerToggle: document.querySelector('#playerToggle'),
     seekBar: document.querySelector('#seekBar'),
 };
 
@@ -114,6 +116,12 @@ function bindEvents() {
     els.stopAtRangeEnd.addEventListener('change', () => {
         setPrefs({ stopAtRangeEnd: els.stopAtRangeEnd.checked });
     });
+    els.playerToggle?.addEventListener('click', () => {
+        setMiniPlayerHidden(!state.prefs.miniPlayerHidden);
+    });
+    els.miniPlayerHide?.addEventListener('click', () => {
+        setMiniPlayerHidden(true);
+    });
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && state.dirty) {
             event.preventDefault();
@@ -131,6 +139,7 @@ function applyPrefs() {
     audio.setPlaybackRate(state.prefs.playbackRate);
     audio.setStopAtRangeEnd(state.prefs.stopAtRangeEnd);
     els.opusWarning.classList.toggle('hidden', audio.supportsOpus);
+    applyMiniPlayerVisibility();
     applySidebarPrefs();
 }
 
@@ -151,6 +160,23 @@ function updateSidebarToggleLabel() {
     els.sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
     els.sidebarToggle.textContent = collapsed ? '☰' : '⟨';
     els.sidebarToggle.title = collapsed ? '展開側邊欄' : '收起側邊欄';
+}
+
+function applyMiniPlayerVisibility() {
+    const hidden = state.prefs.miniPlayerHidden === true;
+    els.miniPlayer?.classList.toggle('hidden', hidden);
+    if (els.playerToggle) {
+        els.playerToggle.textContent = hidden ? '顯示播放器' : '隱藏播放器';
+        els.playerToggle.setAttribute('aria-pressed', String(!hidden));
+    }
+}
+
+function setMiniPlayerHidden(hidden) {
+    const next = Boolean(hidden);
+    if (state.prefs.miniPlayerHidden === next) return;
+    state.prefs.miniPlayerHidden = next;
+    setPrefs({ miniPlayerHidden: next });
+    applyMiniPlayerVisibility();
 }
 
 function setupSidebarControls() {
@@ -433,7 +459,8 @@ function renderIntroCard() {
         recomputeDirty();
         autoGrow(textarea);
     });
-    queueMicrotask(() => autoGrow(textarea));
+    attachTextareaIME(textarea);
+    queueMicrotask(() => autoGrow(textarea, { allowShrink: true }));
     return card;
 }
 
@@ -468,8 +495,9 @@ function renderSegmentCard(segment, segmentIndex) {
                 onSegmentEdit(segmentIndex);
                 autoGrow(textarea);
             });
+            attachTextareaIME(textarea);
             body.append(textarea);
-            queueMicrotask(() => autoGrow(textarea));
+            queueMicrotask(() => autoGrow(textarea, { allowShrink: true }));
         }
     }
 
@@ -593,6 +621,7 @@ function updatePlayButton(button, markerText, segment) {
     button.textContent = `▶ ${range.label}`;
     button.onclick = async () => {
         try {
+            setMiniPlayerHidden(false);
             await audio.playRange(state.currentFile.path, range, `${segment.number}. ${segment.title}`);
             onSegmentPlayed(segment.index);
         } catch (error) {
@@ -618,6 +647,7 @@ function renderPlayButton(range, label) {
     button.textContent = `▶ ${range.label}`;
     button.addEventListener('click', async () => {
         try {
+            setMiniPlayerHidden(false);
             await audio.playRange(state.currentFile.path, range, label);
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
@@ -863,9 +893,39 @@ function groupFiles(files) {
     return groups;
 }
 
-function autoGrow(textarea) {
-    textarea.style.height = 'auto';
-    textarea.style.height = `${Math.max(80, textarea.scrollHeight + 2)}px`;
+const composingTextareas = new WeakSet();
+const MIN_TEXTAREA_HEIGHT = 80;
+
+function autoGrow(textarea, { allowShrink = false } = {}) {
+    if (composingTextareas.has(textarea)) return;
+    const scroller = textarea.closest('.workspace');
+    const savedScrollTop = scroller?.scrollTop ?? null;
+    if (allowShrink) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${Math.max(MIN_TEXTAREA_HEIGHT, textarea.scrollHeight + 2)}px`;
+    } else {
+        const needed = Math.max(MIN_TEXTAREA_HEIGHT, textarea.scrollHeight + 2);
+        if (needed > textarea.clientHeight) {
+            textarea.style.height = `${needed}px`;
+        }
+    }
+    if (scroller && savedScrollTop !== null && scroller.scrollTop !== savedScrollTop) {
+        scroller.scrollTop = savedScrollTop;
+    }
+}
+
+function attachTextareaIME(textarea) {
+    textarea.addEventListener('compositionstart', () => {
+        composingTextareas.add(textarea);
+    });
+    textarea.addEventListener('compositionend', () => {
+        composingTextareas.delete(textarea);
+        autoGrow(textarea);
+    });
+    textarea.addEventListener('blur', () => {
+        composingTextareas.delete(textarea);
+        autoGrow(textarea, { allowShrink: true });
+    });
 }
 
 function buildConflictPreview(remoteText, localText) {

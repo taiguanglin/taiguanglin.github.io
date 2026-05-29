@@ -8,6 +8,7 @@ const DEFAULT_PREFS = {
     stopAtRangeEnd: true,
     sidebarWidth: 320,
     sidebarCollapsed: false,
+    miniPlayerHidden: false,
 };
 
 export function getPat() {

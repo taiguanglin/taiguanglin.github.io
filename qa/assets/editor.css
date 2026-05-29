@@ -729,7 +729,7 @@ textarea {
 }
 
 .mini-player-header {
-    align-items: baseline;
+    align-items: center;
     color: var(--text);
     display: flex;
     flex-wrap: wrap;
@@ -750,6 +750,22 @@ textarea {
 .mini-player-range {
     color: var(--muted);
     font-size: 0.78rem;
+}
+
+.mini-player-hide {
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 1.1rem;
+    line-height: 1;
+    margin-left: auto;
+    padding: 0.15rem 0.45rem;
+}
+
+.mini-player-hide:hover,
+.mini-player-hide:focus-visible {
+    background: color-mix(in srgb, var(--danger) 18%, transparent);
+    color: var(--danger);
+    outline: none;
 }
 
 .mini-player-progress input[type="range"] {
