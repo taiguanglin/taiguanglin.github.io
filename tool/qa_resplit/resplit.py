@@ -407,17 +407,16 @@ def make_monotonic(starts: list[float], lo: float, hi: float) -> list[float]:
 def serialize(header: str, segments: list[NewSegment]) -> str:
     parts = [clean_header(header)]
     for idx, segment in enumerate(segments, 1):
-        question_line = f"提問： {segment.question}".rstrip()
+        # Format A: the question is the heading; no standalone 提問 line.
+        heading_text = (segment.question or segment.title or "").strip()
         parts.append(
             "\n".join(
                 [
-                    f"### {idx}. {segment.title}",
+                    f"### {idx}. {heading_text}",
                     f"時間：{format_timecode(segment.start)} - {format_timecode(segment.end)}",
                     "最後播放：",
                     "最後編輯：",
-                    question_line,
                     ANSWER_LABEL,
-                    "",
                     segment.answer.strip(),
                     "",
                 ]
@@ -476,9 +475,13 @@ def validate_file(path: Path) -> list[str]:
         raw = text[start:end]
         if raw.count(ANSWER_LABEL) != 1:
             errors.append(f"{path.name}: segment {i + 1} answer_marker_count={raw.count(ANSWER_LABEL)}")
+        # Format A: the question lives in the heading; the old standalone 提問
+        # line must be gone, and the heading text must be non-empty.
         question_lines = QUESTION_LINE_RE.findall(raw)
-        if len(question_lines) != 1:
-            errors.append(f"{path.name}: segment {i + 1} question_line_count={len(question_lines)}")
+        if len(question_lines) != 0:
+            errors.append(f"{path.name}: segment {i + 1} stray_提問_line={len(question_lines)}")
+        if not heading.group(2).strip():
+            errors.append(f"{path.name}: segment {i + 1} empty_heading_question")
         last_played_lines = len(re.findall(r"^最後播放：.*$", raw, flags=re.M))
         last_edited_lines = len(re.findall(r"^最後編輯：.*$", raw, flags=re.M))
         if last_played_lines != 1:
