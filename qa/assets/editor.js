@@ -18,6 +18,7 @@ const state = {
     fileStats: new Map(),
     statsFetched: false,
     bodyCaret: null,
+    activeSegmentIndex: null,
 };
 
 const els = {
@@ -70,6 +71,8 @@ const els = {
     miniPlayerDuration: document.querySelector('#miniPlayerDuration'),
     playerToggle: document.querySelector('#playerToggle'),
     seekBar: document.querySelector('#seekBar'),
+    setStartButton: document.querySelector('#setStartButton'),
+    setEndButton: document.querySelector('#setEndButton'),
 };
 
 const audio = createAudioController({
@@ -414,6 +417,8 @@ async function loadDocument(file, { preferDraft = null } = {}) {
 function renderDocument() {
     if (!state.document || !state.currentFile) return;
 
+    // Play buttons are re-created here, so any previously active segment is gone.
+    setActiveSegment(null);
     els.welcomePanel.classList.add('hidden');
     els.documentPanel.classList.remove('hidden');
     els.documentPath.textContent = state.currentFile.path;
@@ -601,55 +606,6 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
             field.dataset.endTc = initRange.endLabel;
         }
 
-        // Decide whether the caret sits on the start or end timecode so a
-        // single button can target the right edge.
-        let lastCaret = null;
-        const edgeFromCaret = () => {
-            const value = field.value;
-            const caret = lastCaret ?? field.selectionStart ?? value.length;
-            const codes = [...value.matchAll(/\d{2}:\d{2}:\d{2}[.,]\d{3}/g)];
-            if (codes.length < 2) {
-                const dash = value.search(/-/);
-                return dash < 0 || caret <= dash ? 'start' : 'end';
-            }
-            const startEnd = codes[0].index + codes[0][0].length;
-            const endStart = codes[1].index;
-            if (caret <= startEnd) return 'start';
-            if (caret >= endStart) return 'end';
-            return caret - startEnd <= endStart - caret ? 'start' : 'end';
-        };
-
-        const setTimeButton = document.createElement('button');
-        setTimeButton.type = 'button';
-        setTimeButton.className = 'button button-secondary set-time';
-        marker.append(setTimeButton);
-
-        const refreshSetTimeLabel = () => {
-            const edge = edgeFromCaret();
-            setTimeButton.textContent = edge === 'start' ? '⏱ 設起始' : '⏱ 設結束';
-            setTimeButton.title = edge === 'start'
-                ? '把播放器目前時間套用為此段「起始」時間（同步上一段結束時間）'
-                : '把播放器目前時間套用為此段「結束」時間（同步下一段起始時間）';
-        };
-        const trackCaret = () => {
-            lastCaret = field.selectionStart;
-            refreshSetTimeLabel();
-        };
-        field.addEventListener('focus', trackCaret);
-        field.addEventListener('click', trackCaret);
-        field.addEventListener('keyup', trackCaret);
-        field.addEventListener('select', trackCaret);
-        refreshSetTimeLabel();
-
-        setTimeButton.addEventListener('click', () => {
-            const now = playerCurrentTime();
-            if (now === null) {
-                setStatus('請先用播放器播放此檔案，才有可套用的時間', 'error');
-                return;
-            }
-            applyPlayerTime(segmentIndex, edgeFromCaret(), now);
-        });
-
         // Keep the shared boundary with the neighbour in sync when the time is
         // edited by hand (committed on blur), so it only needs editing once.
         field.addEventListener('change', () => {
@@ -744,10 +700,20 @@ function updatePlayButton(button, markerText, segment) {
             setMiniPlayerHidden(false);
             await audio.playRange(state.currentFile.path, range, `${segment.number}. ${segment.title}`);
             onSegmentPlayed(segment.index);
+            setActiveSegment(segment.index);
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
     };
+}
+
+// Remember which segment the player is working on so the floating「設起始／設結束」
+// buttons know which segment's time to update. null disables those buttons.
+function setActiveSegment(index) {
+    state.activeSegmentIndex = index == null ? null : index;
+    const disabled = state.activeSegmentIndex == null;
+    if (els.setStartButton) els.setStartButton.disabled = disabled;
+    if (els.setEndButton) els.setEndButton.disabled = disabled;
 }
 
 // Current playhead position of the floating player, in seconds, or null when
@@ -828,6 +794,8 @@ function renderPlayButton(range, label) {
         try {
             setMiniPlayerHidden(false);
             await audio.playRange(state.currentFile.path, range, label);
+            // Header / generic ranges are not tied to a segment edge.
+            setActiveSegment(null);
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
@@ -1266,6 +1234,22 @@ function setupMiniPlayer() {
             seekBy(Number(button.dataset.seek));
         });
     }
+
+    const applySetTime = (edge) => {
+        const now = playerCurrentTime();
+        if (now === null) {
+            setStatus('請先播放音檔，才有可套用的時間', 'error');
+            return;
+        }
+        const idx = state.activeSegmentIndex;
+        if (idx == null || !state.document?.segments?.[idx]) {
+            setStatus('請先播放某一段的音檔，才知道要設定哪一段的時間', 'error');
+            return;
+        }
+        applyPlayerTime(idx, edge, now);
+    };
+    els.setStartButton?.addEventListener('click', () => applySetTime('start'));
+    els.setEndButton?.addEventListener('click', () => applySetTime('end'));
 
     document.addEventListener('keydown', (event) => {
         if (event.ctrlKey || event.shiftKey) return;
