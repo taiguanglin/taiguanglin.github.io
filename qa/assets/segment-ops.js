@@ -179,6 +179,14 @@ export function mergeWithNext(document, segmentIndex) {
     return renumber(document);
 }
 
+// Delete a whole segment and renumber the rest so the headings stay sequential.
+// Returns the same document object.
+export function removeSegment(document, segmentIndex) {
+    if (segmentIndex < 0 || segmentIndex >= document.segments.length) return document;
+    document.segments.splice(segmentIndex, 1);
+    return renumber(document);
+}
+
 // Locate the start of the 2nd 提問 line in a segment body, used as a fallback
 // split point when no caret position is available.
 export function findSecondQuestion(segment) {

@@ -1,7 +1,7 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, listQaFiles, putFile, testToken } from './github.js';
 import { cloneDocument, fileTitleFromPath, parseDocument, parseRanges, secondsToTimecode, serializeDocument } from './parser.js';
-import { findSecondQuestion, mergeWithNext, splitSegment } from './segment-ops.js';
+import { findSecondQuestion, mergeWithNext, removeSegment, splitSegment } from './segment-ops.js';
 import { clearDraft, clearPat, getDraft, getPat, getPrefs, listDraftPaths, setDraft, setPat, setPrefs } from './storage.js';
 
 const state = {
@@ -472,10 +472,6 @@ function renderSegmentCard(segment, segmentIndex) {
     node.querySelector('.segment-number').textContent = segment.number ? `第 ${segment.number} 段` : '全文';
     node.querySelector('.segment-title').textContent = segment.title;
     updateSegmentMetaChips(node, segment);
-    node.querySelector('.copy-segment').addEventListener('click', () => {
-        navigator.clipboard.writeText(segment.raw);
-        setStatus('已複製原始段落', 'ok');
-    });
     node.querySelector('.reset-segment').addEventListener('click', () => resetSegment(segmentIndex));
     for (const button of node.querySelectorAll('.seg-meta-clear')) {
         button.addEventListener('click', () => clearSegmentMeta(segmentIndex, button.dataset.field));
@@ -484,9 +480,10 @@ function renderSegmentCard(segment, segmentIndex) {
     const mergeUpButton = node.querySelector('.merge-up');
     const mergeDownButton = node.querySelector('.merge-down');
     const splitButton = node.querySelector('.split-segment');
+    const deleteButton = node.querySelector('.delete-segment');
     const structuralEnabled = state.document.mode === 'segments';
     if (!structuralEnabled) {
-        for (const button of [mergeUpButton, mergeDownButton, splitButton]) {
+        for (const button of [mergeUpButton, mergeDownButton, splitButton, deleteButton]) {
             button?.classList.add('hidden');
         }
     } else {
@@ -499,6 +496,10 @@ function renderSegmentCard(segment, segmentIndex) {
             mergeDownButton.addEventListener('click', () => mergeSegmentWithNext(segmentIndex));
         }
         splitButton?.addEventListener('click', () => splitSegmentHere(segmentIndex));
+        if (deleteButton) {
+            deleteButton.disabled = state.document.segments.length <= 1;
+            deleteButton.addEventListener('click', () => deleteSegmentAt(segmentIndex));
+        }
     }
 
     const body = node.querySelector('.segment-body');
@@ -909,6 +910,22 @@ function mergeSegmentWithNext(firstIndex) {
     if (firstIndex < 0 || firstIndex >= segments.length - 1) return;
     mergeWithNext(state.document, firstIndex);
     afterStructuralChange(`已合併第 ${firstIndex + 1}、${firstIndex + 2} 段，請確認時間與內容`);
+}
+
+function deleteSegmentAt(segmentIndex) {
+    const segments = state.document?.segments || [];
+    if (segmentIndex < 0 || segmentIndex >= segments.length) return;
+    if (segments.length <= 1) {
+        setStatus('至少要保留一段，無法刪除最後一段', 'error');
+        return;
+    }
+    const segment = segments[segmentIndex];
+    const name = segment?.title ? `第 ${segmentIndex + 1} 段「${segment.title}」` : `第 ${segmentIndex + 1} 段`;
+    if (!window.confirm(`確定要刪除${name}嗎？刪除後其餘段落會重新編號，需按「儲存到 GitHub」才會真正寫回。`)) {
+        return;
+    }
+    removeSegment(state.document, segmentIndex);
+    afterStructuralChange(`已刪除${name}，後面的段落已重新編號`);
 }
 
 function splitSegmentHere(segmentIndex) {
