@@ -164,7 +164,7 @@ export function mergeWithNext(document, segmentIndex) {
         const q2 = (secondHeadingPart.text.match(HEADING_TITLE_RE)?.[1] || '').trim();
         const isPlaceholder = (q) => !q || /^（(新段落|待填提問)）$/.test(q);
         let combined = q1;
-        if (!isPlaceholder(q2) && q2 !== q1) combined = q1 ? `${q1}／${q2}` : q2;
+        if (!isPlaceholder(q2) && q2 !== q1) combined = q1 ? `${q1}${q2}` : q2;
         firstHeading.text = `### 0. ${combined}\n`;
     }
 
