@@ -1,6 +1,7 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, listQaFiles, putFile, testToken } from './github.js';
 import { cloneDocument, fileTitleFromPath, parseDocument, parseRanges, serializeDocument } from './parser.js';
+import { findSecondQuestion, mergeWithNext, splitSegment } from './segment-ops.js';
 import { clearDraft, clearPat, getDraft, getPat, getPrefs, listDraftPaths, setDraft, setPat, setPrefs } from './storage.js';
 
 const state = {
@@ -16,6 +17,7 @@ const state = {
     draftTimer: null,
     fileStats: new Map(),
     statsFetched: false,
+    bodyCaret: null,
 };
 
 const els = {
@@ -479,6 +481,26 @@ function renderSegmentCard(segment, segmentIndex) {
         button.addEventListener('click', () => clearSegmentMeta(segmentIndex, button.dataset.field));
     }
 
+    const mergeUpButton = node.querySelector('.merge-up');
+    const mergeDownButton = node.querySelector('.merge-down');
+    const splitButton = node.querySelector('.split-segment');
+    const structuralEnabled = state.document.mode === 'segments';
+    if (!structuralEnabled) {
+        for (const button of [mergeUpButton, mergeDownButton, splitButton]) {
+            button?.classList.add('hidden');
+        }
+    } else {
+        if (mergeUpButton) {
+            mergeUpButton.disabled = segmentIndex === 0;
+            mergeUpButton.addEventListener('click', () => mergeSegmentWithNext(segmentIndex - 1));
+        }
+        if (mergeDownButton) {
+            mergeDownButton.disabled = segmentIndex >= state.document.segments.length - 1;
+            mergeDownButton.addEventListener('click', () => mergeSegmentWithNext(segmentIndex));
+        }
+        splitButton?.addEventListener('click', () => splitSegmentHere(segmentIndex));
+    }
+
     const body = node.querySelector('.segment-body');
     for (const [partIndex, part] of segment.parts.entries()) {
         if (part.type === 'marker') {
@@ -492,9 +514,15 @@ function renderSegmentCard(segment, segmentIndex) {
             textarea.dataset.partIndex = String(partIndex);
             textarea.addEventListener('input', () => {
                 state.document.segments[segmentIndex].parts[partIndex].text = textarea.value;
+                recordBodyCaret(segmentIndex, partIndex, textarea);
                 onSegmentEdit(segmentIndex);
                 autoGrow(textarea);
             });
+            const trackCaret = () => recordBodyCaret(segmentIndex, partIndex, textarea);
+            textarea.addEventListener('focus', trackCaret);
+            textarea.addEventListener('click', trackCaret);
+            textarea.addEventListener('keyup', trackCaret);
+            textarea.addEventListener('select', trackCaret);
             attachTextareaIME(textarea);
             body.append(textarea);
             queueMicrotask(() => autoGrow(textarea, { allowShrink: true }));
@@ -709,6 +737,62 @@ function resetSegment(segmentIndex) {
     state.document.segments[segmentIndex] = cloneDocument({ segments: [original] }).segments[0];
     recomputeDirty();
     renderDocument();
+}
+
+function recordBodyCaret(segmentIndex, partIndex, textarea) {
+    state.bodyCaret = {
+        segmentIndex,
+        partIndex,
+        offset: textarea.selectionStart ?? textarea.value.length,
+    };
+}
+
+function afterStructuralChange(message) {
+    state.bodyCaret = null;
+    recomputeDirty();
+    renderDocument();
+    setStatus(message, 'ok');
+}
+
+function mergeSegmentWithNext(firstIndex) {
+    const segments = state.document?.segments || [];
+    if (firstIndex < 0 || firstIndex >= segments.length - 1) return;
+    mergeWithNext(state.document, firstIndex);
+    afterStructuralChange(`已合併第 ${firstIndex + 1}、${firstIndex + 2} 段，請確認時間與內容`);
+}
+
+function splitSegmentHere(segmentIndex) {
+    const segment = state.document?.segments?.[segmentIndex];
+    if (!segment) return;
+
+    let partIndex;
+    let offset;
+    const caret = state.bodyCaret;
+    if (caret && caret.segmentIndex === segmentIndex) {
+        ({ partIndex, offset } = caret);
+    } else {
+        const fallback = findSecondQuestion(segment);
+        if (!fallback) {
+            setStatus('請先把游標點在這一段裡要拆分的位置，再按「從游標拆分」', 'error');
+            return;
+        }
+        ({ partIndex, offset } = fallback);
+    }
+
+    const part = segment.parts[partIndex];
+    if (!part || part.type !== 'chunk') {
+        setStatus('請把游標停在段落內文（不是標題或時間列）再拆分', 'error');
+        return;
+    }
+    const before = part.text.slice(0, offset);
+    const after = part.text.slice(offset);
+    if (!before.trim() || !after.trim()) {
+        setStatus('拆分點在段落最前或最後，沒有可分出的內容', 'error');
+        return;
+    }
+
+    splitSegment(state.document, segmentIndex, partIndex, offset);
+    afterStructuralChange(`已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段標題並校正時間`);
 }
 
 function recomputeDirty() {
