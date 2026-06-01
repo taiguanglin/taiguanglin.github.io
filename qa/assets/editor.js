@@ -562,23 +562,27 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
 
     const endsWithNewline = /\n$/.test(text);
     const displayValue = endsWithNewline ? text.slice(0, -1) : text;
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.className = 'marker-input';
-    input.value = displayValue;
-    input.spellcheck = false;
-    input.dataset.segmentIndex = String(segmentIndex);
-    input.dataset.partIndex = String(partIndex);
     const kind = detectMarkerKind(displayValue);
-    if (kind === 'heading') {
-        input.setAttribute('aria-label', '段落標題（格式：### N. 標題）');
-        input.title = '格式：### N. 標題';
+    const isHeading = kind === 'heading';
+
+    // Format A: the heading carries the (possibly long) question, so render it
+    // as a wrapping, auto-growing textarea. Time/other markers stay single-line.
+    const field = document.createElement(isHeading ? 'textarea' : 'input');
+    if (!isHeading) field.type = 'text';
+    field.className = isHeading ? 'marker-input marker-heading' : 'marker-input';
+    field.value = displayValue;
+    field.spellcheck = false;
+    field.dataset.segmentIndex = String(segmentIndex);
+    field.dataset.partIndex = String(partIndex);
+    if (isHeading) {
+        field.rows = 1;
+        field.setAttribute('aria-label', '段落提問（格式：### N. 提問內容）');
+        field.title = '段落提問（格式：### N. 提問內容）';
     } else if (kind === 'time') {
-        input.setAttribute('aria-label', '段落時間（格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm）');
-        input.title = '格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm';
+        field.setAttribute('aria-label', '段落時間（格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm）');
+        field.title = '格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm';
     }
-    marker.append(input);
+    marker.append(field);
 
     let playButton = null;
     if (kind === 'time') {
@@ -590,12 +594,24 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
         updatePlayButton(playButton, displayValue, segment);
     }
 
-    input.addEventListener('input', () => {
-        const newValue = input.value;
+    if (isHeading) {
+        // Keep the heading on one logical line.
+        field.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') event.preventDefault();
+        });
+    }
+
+    field.addEventListener('input', () => {
+        if (isHeading && field.value.includes('\n')) {
+            const caret = field.selectionStart;
+            field.value = field.value.replace(/\n+/g, ' ');
+            try { field.setSelectionRange(caret, caret); } catch (_) { /* noop */ }
+        }
+        const newValue = field.value;
         const newText = endsWithNewline ? `${newValue}\n` : newValue;
         state.document.segments[segmentIndex].parts[partIndex].text = newText;
 
-        if (kind === 'heading') {
+        if (isHeading) {
             const match = newValue.match(/^###\s+(\d+)\.\s*(.*)$/);
             if (match) {
                 segment.number = match[1];
@@ -605,6 +621,7 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
                 segment.title = newValue.trim();
             }
             updateSegmentCardHeader(card, segment);
+            autoGrow(field);
         }
 
         if (playButton) {
@@ -614,6 +631,11 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
         segment.ranges = collectSegmentRanges(state.document.segments[segmentIndex]);
         onSegmentEdit(segmentIndex);
     });
+
+    if (isHeading) {
+        attachTextareaIME(field);
+        queueMicrotask(() => autoGrow(field, { allowShrink: true }));
+    }
 
     return marker;
 }
@@ -792,7 +814,7 @@ function splitSegmentHere(segmentIndex) {
     }
 
     splitSegment(state.document, segmentIndex, partIndex, offset);
-    afterStructuralChange(`已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段標題並校正時間`);
+    afterStructuralChange(`已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段提問並校正時間`);
 }
 
 function recomputeDirty() {

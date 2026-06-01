@@ -119,7 +119,7 @@ export function splitSegment(document, segmentIndex, partIndex, offset) {
         .slice(partIndex + 1)
         .filter((p) => !isStructuralMarker(p))
         .map(clonePart);
-    const secondHeading = { type: 'marker', text: '### 0. （新段落）\n' };
+    const secondHeading = { type: 'marker', text: '### 0. （待填提問）\n' };
     const secondTime = {
         type: 'marker',
         text: range
@@ -149,6 +149,19 @@ export function mergeWithNext(document, segmentIndex) {
         if (firstTime) setTimeRange(firstTime, firstRange.start, secondRange.end);
     }
 
+    // Format A: the question lives in the heading. Fold the second segment's
+    // question into the kept heading so it is not lost on merge.
+    const firstHeading = firstParts.find(isHeadingMarker);
+    const secondHeadingPart = second.parts.find(isHeadingMarker);
+    if (firstHeading && secondHeadingPart) {
+        const q1 = (firstHeading.text.match(HEADING_TITLE_RE)?.[1] || '').trim();
+        const q2 = (secondHeadingPart.text.match(HEADING_TITLE_RE)?.[1] || '').trim();
+        const isPlaceholder = (q) => !q || /^（(新段落|待填提問)）$/.test(q);
+        let combined = q1;
+        if (!isPlaceholder(q2) && q2 !== q1) combined = q1 ? `${q1}／${q2}` : q2;
+        firstHeading.text = `### 0. ${combined}\n`;
+    }
+
     if (firstParts.length && firstParts[firstParts.length - 1].type === 'chunk') {
         const last = firstParts[firstParts.length - 1];
         last.text = ensureBlockEnd(last.text);
@@ -157,6 +170,11 @@ export function mergeWithNext(document, segmentIndex) {
     }
 
     const secondBody = second.parts.filter((part) => !isStructuralMarker(part)).map(clonePart);
+    // Drop a duplicate leading answer marker so the merged segment keeps exactly
+    // one「Taiguanglin：」; the two answers concatenate under it.
+    if (secondBody.length && secondBody[0].type === 'chunk') {
+        secondBody[0].text = secondBody[0].text.replace(/^\s*Taiguanglin[:：][ \t]*\r?\n?/, '');
+    }
     document.segments.splice(segmentIndex, 2, makeSegment([...firstParts, ...secondBody]));
     return renumber(document);
 }

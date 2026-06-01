@@ -1,6 +1,8 @@
 # QA 線上校稿編輯器
 
-`https://taiguanglin.github.io/qa/` 是純前端校稿工具，會讀取此資料夾中的 `*.txt`，依 `### N. 標題` 與 `時間：HH:MM:SS.mmm - HH:MM:SS.mmm` 分段，並串流播放 `https://taiguanglin.github.io/lectures/QnA/<同名>.opus`。
+`https://taiguanglin.github.io/qa/` 是純前端校稿工具，會讀取此資料夾中的 `*.txt`，依 `### N. 提問內容` 與 `時間：HH:MM:SS.mmm - HH:MM:SS.mmm` 分段，並串流播放 `https://taiguanglin.github.io/lectures/QnA/<同名>.opus`。
+
+段落格式（格式 A）：`### N.` 這一行直接放「提問內容」（不另立標題，也不寫第幾樓或誰提問）；接著是 `時間：`、`最後播放：`、`最後編輯：`，最後是 `Taiguanglin：` 與回答內容。
 
 ## GitHub PAT 權限
 
