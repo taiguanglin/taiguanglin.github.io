@@ -1,6 +1,6 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, listQaFiles, putFile, testToken } from './github.js';
-import { cloneDocument, fileTitleFromPath, parseDocument, parseRanges, serializeDocument } from './parser.js';
+import { cloneDocument, fileTitleFromPath, parseDocument, parseRanges, secondsToTimecode, serializeDocument } from './parser.js';
 import { findSecondQuestion, mergeWithNext, splitSegment } from './segment-ops.js';
 import { clearDraft, clearPat, getDraft, getPat, getPrefs, listDraftPaths, setDraft, setPat, setPrefs } from './storage.js';
 
@@ -592,6 +592,75 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
         playButton.dataset.segmentIndex = String(segmentIndex);
         marker.append(playButton);
         updatePlayButton(playButton, displayValue, segment);
+
+        // Baseline for detecting which edge the user changed on manual edits.
+        const initRange = parseRanges(displayValue)[0];
+        if (initRange) {
+            field.dataset.startTc = initRange.startLabel;
+            field.dataset.endTc = initRange.endLabel;
+        }
+
+        // Decide whether the caret sits on the start or end timecode so a
+        // single button can target the right edge.
+        let lastCaret = null;
+        const edgeFromCaret = () => {
+            const value = field.value;
+            const caret = lastCaret ?? field.selectionStart ?? value.length;
+            const codes = [...value.matchAll(/\d{2}:\d{2}:\d{2}[.,]\d{3}/g)];
+            if (codes.length < 2) {
+                const dash = value.search(/-/);
+                return dash < 0 || caret <= dash ? 'start' : 'end';
+            }
+            const startEnd = codes[0].index + codes[0][0].length;
+            const endStart = codes[1].index;
+            if (caret <= startEnd) return 'start';
+            if (caret >= endStart) return 'end';
+            return caret - startEnd <= endStart - caret ? 'start' : 'end';
+        };
+
+        const setTimeButton = document.createElement('button');
+        setTimeButton.type = 'button';
+        setTimeButton.className = 'button button-secondary set-time';
+        marker.append(setTimeButton);
+
+        const refreshSetTimeLabel = () => {
+            const edge = edgeFromCaret();
+            setTimeButton.textContent = edge === 'start' ? '⏱ 設起始' : '⏱ 設結束';
+            setTimeButton.title = edge === 'start'
+                ? '把播放器目前時間套用為此段「起始」時間（同步上一段結束時間）'
+                : '把播放器目前時間套用為此段「結束」時間（同步下一段起始時間）';
+        };
+        const trackCaret = () => {
+            lastCaret = field.selectionStart;
+            refreshSetTimeLabel();
+        };
+        field.addEventListener('focus', trackCaret);
+        field.addEventListener('click', trackCaret);
+        field.addEventListener('keyup', trackCaret);
+        field.addEventListener('select', trackCaret);
+        refreshSetTimeLabel();
+
+        setTimeButton.addEventListener('click', () => {
+            const now = playerCurrentTime();
+            if (now === null) {
+                setStatus('請先用播放器播放此檔案，才有可套用的時間', 'error');
+                return;
+            }
+            applyPlayerTime(segmentIndex, edgeFromCaret(), now);
+        });
+
+        // Keep the shared boundary with the neighbour in sync when the time is
+        // edited by hand (committed on blur), so it only needs editing once.
+        field.addEventListener('change', () => {
+            const range = parseRanges(field.value)[0];
+            if (!range) return;
+            const startChanged = range.startLabel !== field.dataset.startTc;
+            const endChanged = range.endLabel !== field.dataset.endTc;
+            field.dataset.startTc = range.startLabel;
+            field.dataset.endTc = range.endLabel;
+            if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start);
+            if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end);
+        });
     }
 
     if (isHeading) {
@@ -678,6 +747,65 @@ function updatePlayButton(button, markerText, segment) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
     };
+}
+
+// Current playhead position of the floating player, in seconds, or null when
+// no audio file has been loaded yet.
+function playerCurrentTime() {
+    const player = els.audioPlayer;
+    if (!player || !player.src) return null;
+    const t = player.currentTime;
+    return Number.isFinite(t) ? t : null;
+}
+
+// Set one edge (start/end) of a segment's 時間 marker to `seconds`, keeping the
+// other edge. Updates the data model, the rendered field and its play button.
+// Returns false when the segment has no time marker (e.g. out of range).
+function setSegmentEdge(segmentIndex, edge, seconds) {
+    const segment = state.document?.segments?.[segmentIndex];
+    if (!segment) return false;
+    const partIndex = segment.parts.findIndex(
+        (part) => part.type === 'marker' && /^(時間|開場時間)：/.test(part.text)
+    );
+    if (partIndex < 0) return false;
+    const range = parseRanges(segment.parts[partIndex].text)[0] || { start: 0, end: 0 };
+    const start = edge === 'start' ? seconds : range.start;
+    const end = edge === 'end' ? seconds : range.end;
+    writeSegmentRange(segment, segmentIndex, partIndex, start, end);
+    return true;
+}
+
+function writeSegmentRange(segment, segmentIndex, partIndex, startSeconds, endSeconds) {
+    const part = segment.parts[partIndex];
+    const endsWithNewline = /\n$/.test(part.text);
+    const prefix = /^開場時間/.test(part.text) ? '開場時間' : '時間';
+    const startTc = secondsToTimecode(Math.max(0, startSeconds));
+    const endTc = secondsToTimecode(Math.max(0, endSeconds));
+    const display = `${prefix}：${startTc} - ${endTc}`;
+    part.text = endsWithNewline ? `${display}\n` : display;
+    segment.ranges = collectSegmentRanges(segment);
+
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
+    const input = card?.querySelector(`.marker-input[data-part-index="${partIndex}"]`);
+    if (input) {
+        input.value = display;
+        input.dataset.startTc = startTc;
+        input.dataset.endTc = endTc;
+        const playButton = input.closest('.marker-line')?.querySelector('.play-range');
+        if (playButton) updatePlayButton(playButton, display, segment);
+    }
+    onSegmentEdit(segmentIndex);
+}
+
+// Apply the player's current time to one edge of a segment, then propagate the
+// shared boundary to the neighbour so it does not have to be edited twice.
+function applyPlayerTime(segmentIndex, edge, seconds) {
+    if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
+    if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds);
+    else setSegmentEdge(segmentIndex + 1, 'start', seconds);
+    const segment = state.document.segments[segmentIndex];
+    const label = edge === 'start' ? '起始' : '結束';
+    setStatus(`已將第 ${segment.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
 }
 
 function renderRangeButtons(ranges, label) {

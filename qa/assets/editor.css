@@ -461,6 +461,11 @@ textarea {
     outline: none;
 }
 
+.marker-line .set-time {
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
 /* Format A: the heading holds the question. It starts at a single line and
    only grows when a question is long enough to wrap (rare). */
 textarea.marker-heading {
