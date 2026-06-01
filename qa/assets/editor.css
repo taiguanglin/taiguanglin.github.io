@@ -718,6 +718,9 @@ textarea.marker-heading {
     left: auto;
     max-width: min(420px, 95vw);
     min-width: 320px;
+    /* Definite width so a long title clips with an ellipsis instead of
+       stretching this shrink-to-fit fixed box past its max-width. */
+    width: min(420px, 95vw);
     padding: 0.6rem 0.75rem 0.75rem;
     position: fixed;
     right: 24px;
@@ -882,6 +885,8 @@ textarea.marker-heading {
         left: 12px;
         max-width: none;
         min-width: 0;
+        /* On small screens left+right define the width; let it stretch. */
+        width: auto;
         right: 12px;
         top: auto;
         bottom: 12px;
