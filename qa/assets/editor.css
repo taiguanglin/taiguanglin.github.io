@@ -848,20 +848,19 @@ textarea.marker-heading {
 }
 
 .mini-player-settime {
-    display: grid;
+    display: flex;
     gap: 0.3rem;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .mini-player-settime button {
     background: color-mix(in srgb, var(--accent) 12%, transparent);
     border: 1px solid var(--accent);
-    border-radius: 0.55rem;
+    border-radius: 0.5rem;
     color: var(--text);
     cursor: pointer;
     font: inherit;
-    font-size: 0.82rem;
-    padding: 0.5rem 0.3rem;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.5rem;
     white-space: nowrap;
 }
 
