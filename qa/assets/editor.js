@@ -621,7 +621,7 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
                 segment.title = newValue.trim();
             }
             updateSegmentCardHeader(card, segment);
-            autoGrow(field);
+            autoGrow(field, { allowShrink: true });
         }
 
         if (playButton) {
@@ -1001,16 +1001,20 @@ function groupFiles(files) {
 
 const composingTextareas = new WeakSet();
 const MIN_TEXTAREA_HEIGHT = 80;
+// Headings hold a single-line question, so they start at one line and only grow
+// when the text actually wraps (the body answer boxes keep the taller floor).
+const MIN_HEADING_HEIGHT = 34;
 
 function autoGrow(textarea, { allowShrink = false } = {}) {
     if (composingTextareas.has(textarea)) return;
     const scroller = textarea.closest('.workspace');
     const savedScrollTop = scroller?.scrollTop ?? null;
+    const floor = textarea.classList.contains('marker-heading') ? MIN_HEADING_HEIGHT : MIN_TEXTAREA_HEIGHT;
     if (allowShrink) {
         textarea.style.height = 'auto';
-        textarea.style.height = `${Math.max(MIN_TEXTAREA_HEIGHT, textarea.scrollHeight + 2)}px`;
+        textarea.style.height = `${Math.max(floor, textarea.scrollHeight + 2)}px`;
     } else {
-        const needed = Math.max(MIN_TEXTAREA_HEIGHT, textarea.scrollHeight + 2);
+        const needed = Math.max(floor, textarea.scrollHeight + 2);
         if (needed > textarea.clientHeight) {
             textarea.style.height = `${needed}px`;
         }
