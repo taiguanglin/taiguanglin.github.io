@@ -51,6 +51,7 @@ export function createAudioController({ audio, titleEl, rangeEl, rateSelect, sto
                 stopAtEnd: stopCheckbox.checked,
             };
             titleEl.textContent = label || baseName;
+            titleEl.title = label || baseName;
             rangeEl.textContent = range.label ? ` ${range.label}` : '';
             audio.playbackRate = Number(rateSelect.value) || 1;
             audio.currentTime = range.start;

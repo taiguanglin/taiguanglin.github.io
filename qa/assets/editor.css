@@ -764,6 +764,10 @@ textarea.marker-heading {
     font-size: 0.92rem;
     gap: 0.4rem;
     justify-content: space-between;
+    /* Grid items default to min-width:auto, which would let the nowrap title
+       stretch this header past the player's fixed width. Allow it to shrink so
+       the title clips with an ellipsis instead. */
+    min-width: 0;
 }
 
 .mini-player-title {
