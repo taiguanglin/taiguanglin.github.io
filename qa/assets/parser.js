@@ -1,7 +1,7 @@
 const SEGMENT_HEADING_RE = /^###\s+(\d+)\.\s*(.*)$/;
 const MARKER_LINE_RE = /^(###\s+\d+\..*|時間：\d{2}:\d{2}:\d{2}[.,]\d{3}\s*-\s*\d{2}:\d{2}:\d{2}[.,]\d{3})\r?\n?$/;
 const TIME_RANGE_RE = /(?:開場時間|時間)：\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})/g;
-const SEGMENT_META_RE = /^(最後播放|最後編輯)：[ \t]*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})[ \t]*\r?\n?$/;
+const SEGMENT_META_RE = /^(最後播放|最後編輯)：[ \t]*(\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})?[ \t]*\r?\n?$/;
 
 export function parseDocument(text, path = '') {
     const headingMatches = [...text.matchAll(/^###\s+(\d+)\.\s*(.*)$/gm)];
@@ -89,7 +89,12 @@ function parseSegment(raw, index) {
     const heading = firstLine.match(SEGMENT_HEADING_RE);
     const parts = [];
     let chunk = '';
-    const meta = { lastPlayed: '', lastEdited: '' };
+    const meta = {
+        lastPlayed: '',
+        lastEdited: '',
+        hasLastPlayedLine: false,
+        hasLastEditedLine: false,
+    };
 
     for (const line of lines) {
         const metaMatch = line.match(SEGMENT_META_RE);
@@ -99,7 +104,9 @@ function parseSegment(raw, index) {
                 chunk = '';
             }
             const key = metaMatch[1] === '最後播放' ? 'lastPlayed' : 'lastEdited';
-            meta[key] = metaMatch[2];
+            const lineKey = metaMatch[1] === '最後播放' ? 'hasLastPlayedLine' : 'hasLastEditedLine';
+            meta[key] = metaMatch[2] || '';
+            meta[lineKey] = true;
             continue;
         }
 
@@ -132,7 +139,12 @@ function parseSegment(raw, index) {
 
 function serializeSegment(segment) {
     const meta = segment.meta || { lastPlayed: '', lastEdited: '' };
-    const hasMeta = Boolean(meta.lastPlayed || meta.lastEdited);
+    const hasMeta = Boolean(
+        meta.lastPlayed
+        || meta.lastEdited
+        || meta.hasLastPlayedLine
+        || meta.hasLastEditedLine
+    );
 
     if (!hasMeta) {
         return segment.parts.map((part) => part.text).join('');
@@ -147,8 +159,8 @@ function serializeSegment(segment) {
     }
 
     const metaLines = [];
-    if (meta.lastPlayed) metaLines.push(`最後播放：${meta.lastPlayed}\n`);
-    if (meta.lastEdited) metaLines.push(`最後編輯：${meta.lastEdited}\n`);
+    if (meta.hasLastPlayedLine || meta.lastPlayed) metaLines.push(`最後播放：${meta.lastPlayed || ''}\n`);
+    if (meta.hasLastEditedLine || meta.lastEdited) metaLines.push(`最後編輯：${meta.lastEdited || ''}\n`);
 
     const before = segment.parts.slice(0, anchorIdx + 1).map((part) => part.text).join('');
     const after = segment.parts.slice(anchorIdx + 1).map((part) => part.text).join('');
