@@ -126,7 +126,13 @@ export function splitSegment(document, segmentIndex, partIndex, offset) {
             ? `時間：${secondsToTimecode(mid)} - ${secondsToTimecode(range.end)}\n`
             : '時間：00:00:00.000 - 00:00:00.000\n',
     };
-    const secondBody = { type: 'chunk', text: ensureBlockEnd(stripLeadingBlank(after)) };
+    // Keep the split-off segment valid for format A: its body must start with a
+    // single「Taiguanglin：」answer marker.
+    let afterText = stripLeadingBlank(after);
+    if (!/^\s*Taiguanglin[:：]/.test(afterText)) {
+        afterText = `Taiguanglin：\n${afterText}`;
+    }
+    const secondBody = { type: 'chunk', text: ensureBlockEnd(afterText) };
     const secondParts = [secondHeading, secondTime, secondBody, ...tailParts];
 
     document.segments.splice(segmentIndex, 1, makeSegment(firstParts), makeSegment(secondParts));
@@ -162,20 +168,14 @@ export function mergeWithNext(document, segmentIndex) {
         firstHeading.text = `### 0. ${combined}\n`;
     }
 
-    if (firstParts.length && firstParts[firstParts.length - 1].type === 'chunk') {
-        const last = firstParts[firstParts.length - 1];
-        last.text = ensureBlockEnd(last.text);
-    } else {
-        firstParts.push({ type: 'chunk', text: '' });
-    }
-
-    const secondBody = second.parts.filter((part) => !isStructuralMarker(part)).map(clonePart);
-    // Drop a duplicate leading answer marker so the merged segment keeps exactly
-    // one「Taiguanglin：」; the two answers concatenate under it.
-    if (secondBody.length && secondBody[0].type === 'chunk') {
-        secondBody[0].text = secondBody[0].text.replace(/^\s*Taiguanglin[:：][ \t]*\r?\n?/, '');
-    }
-    document.segments.splice(segmentIndex, 2, makeSegment([...firstParts, ...secondBody]));
+    // The two answers must share ONE text box, so merge all body text into a
+    // single chunk and keep only the top「Taiguanglin：」(drop the second one).
+    const structural = firstParts.filter(isStructuralMarker);
+    const firstBody = firstParts.filter((part) => part.type === 'chunk').map((part) => part.text).join('');
+    const secondBody = second.parts.filter((part) => !isStructuralMarker(part)).map((part) => part.text).join('');
+    const secondNoMarker = secondBody.replace(/^\s*Taiguanglin[:：][ \t]*\r?\n?/, '');
+    const mergedBody = ensureBlockEnd(firstBody) + stripLeadingBlank(secondNoMarker);
+    document.segments.splice(segmentIndex, 2, makeSegment([...structural, { type: 'chunk', text: mergedBody }]));
     return renumber(document);
 }
 
