@@ -419,7 +419,7 @@ async function loadDocument(file, { preferDraft = null } = {}) {
         state.originalText = remote.text;
         state.originalDocument = parseDocument(remote.text, file.path);
         state.document = parseDocument(workingText, file.path);
-        state.dirty = serializeDocument(state.document) !== remote.text;
+        state.dirty = contentText(serializeDocument(state.document)) !== contentText(remote.text);
         state.draftPaths = listDraftPaths();
         renderFileList();
         renderDocument();
@@ -981,13 +981,21 @@ function splitSegmentHere(segmentIndex) {
     afterStructuralChange(`已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段提問並校正時間`);
 }
 
+// 比較內文時忽略「最後播放」時間：單純聽過不算修改。只有真正改到內文／結構／
+// 時間／最後編輯時，文件才會被視為有未存修改，也才會自動存成本機草稿。
+function contentText(text) {
+    return String(text).replace(/^最後播放：[ \t]*(?:\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2})?[ \t]*\r?\n?/gm, '');
+}
+
 function recomputeDirty() {
     if (!state.document) return;
     const text = serializeDocument(state.document);
-    state.dirty = text !== state.originalText;
+    state.dirty = contentText(text) !== contentText(state.originalText);
     if (state.dirty && state.currentFile) {
         scheduleDraftSave(text);
     } else if (state.currentFile) {
+        // 還原成原樣（或只是聽過）時，取消尚未寫入的草稿暫存並清掉既有草稿。
+        clearTimeout(state.draftTimer);
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
         els.draftBadge.classList.add('hidden');
@@ -1117,9 +1125,9 @@ function refreshDirtyUI() {
 }
 
 function segmentSnapshot(segment) {
+    // 「最後播放」不列入比較：單純聽過不算修改，段落不會被標成「未存」。
     return JSON.stringify({
         body: segmentBodyText(segment),
-        lastPlayed: segment?.meta?.lastPlayed || '',
         lastEdited: segment?.meta?.lastEdited || '',
     });
 }
