@@ -528,7 +528,7 @@ function renderSegmentCard(segment, segmentIndex) {
     const node = els.segmentTemplate.content.firstElementChild.cloneNode(true);
     node.dataset.segmentIndex = String(segmentIndex);
     node.querySelector('.segment-number').textContent = segment.number ? `第 ${segment.number} 段` : '全文';
-    node.querySelector('.segment-title').textContent = segment.title;
+    setupSegmentTitle(node, segment, segmentIndex);
     updateSegmentMetaChips(node, segment);
     node.querySelector('.reset-segment').addEventListener('click', () => resetSegment(segmentIndex));
     for (const button of node.querySelectorAll('.seg-meta-clear')) {
@@ -563,6 +563,8 @@ function renderSegmentCard(segment, segmentIndex) {
     const body = node.querySelector('.segment-body');
     for (const [partIndex, part] of segment.parts.entries()) {
         if (part.type === 'marker') {
+            // 「### N.」標題已併入卡片上方的可編輯大標題，不再於內文重複顯示。
+            if (/^###\s+/.test(part.text)) continue;
             body.append(renderMarker(part.text, segment, segmentIndex, partIndex, node));
         } else {
             const textarea = document.createElement('textarea');
@@ -589,6 +591,46 @@ function renderSegmentCard(segment, segmentIndex) {
     }
 
     return node;
+}
+
+// 卡片上方的大標題就是該段的「### N. 提問」，可直接編輯。編輯時只改提問文字，
+// 段號（N）維持不變並寫回對應的標題列，避免內文再重複顯示一次標題。
+function setupSegmentTitle(node, segment, segmentIndex) {
+    const field = node.querySelector('.segment-title');
+    if (!field) return;
+    field.value = segment.title || '';
+
+    const headingPartIndex = segment.parts.findIndex(
+        (part) => part.type === 'marker' && /^###\s+/.test(part.text)
+    );
+    if (headingPartIndex < 0) {
+        // 沒有「### N.」標題的段落（例如全文模式）：標題僅供顯示，不可編輯。
+        field.readOnly = true;
+        queueMicrotask(() => autoGrow(field, { allowShrink: true }));
+        return;
+    }
+
+    // 標題維持單行：按 Enter 不換行。
+    field.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') event.preventDefault();
+    });
+    field.addEventListener('input', () => {
+        if (field.value.includes('\n')) {
+            const caret = field.selectionStart;
+            field.value = field.value.replace(/\n+/g, ' ');
+            try { field.setSelectionRange(caret, caret); } catch (_) { /* noop */ }
+        }
+        const title = field.value;
+        segment.title = title;
+        const headingPart = segment.parts[headingPartIndex];
+        const endsWithNewline = /\n$/.test(headingPart.text);
+        const heading = segment.number ? `### ${segment.number}. ${title}` : `### ${title}`;
+        headingPart.text = endsWithNewline ? `${heading}\n` : heading;
+        onSegmentEdit(segmentIndex);
+        autoGrow(field, { allowShrink: true });
+    });
+    attachTextareaIME(field);
+    queueMicrotask(() => autoGrow(field, { allowShrink: true }));
 }
 
 function updateSegmentMetaChips(card, segment) {
@@ -1205,7 +1247,8 @@ function autoGrow(textarea, { allowShrink = false } = {}) {
     if (composingTextareas.has(textarea)) return;
     const scroller = textarea.closest('.workspace');
     const savedScrollTop = scroller?.scrollTop ?? null;
-    const floor = textarea.classList.contains('marker-heading') ? MIN_HEADING_HEIGHT : MIN_TEXTAREA_HEIGHT;
+    const headingLike = textarea.classList.contains('marker-heading') || textarea.classList.contains('segment-title');
+    const floor = headingLike ? MIN_HEADING_HEIGHT : MIN_TEXTAREA_HEIGHT;
     if (allowShrink) {
         textarea.style.height = 'auto';
         textarea.style.height = `${Math.max(floor, textarea.scrollHeight + 2)}px`;

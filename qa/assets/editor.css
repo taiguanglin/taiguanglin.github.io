@@ -415,6 +415,45 @@ textarea {
     margin: 0.2rem 0 0;
 }
 
+.segment-heading {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 大標題就是該段提問，可直接編輯，外觀維持像標題（粗體、較大字）。 */
+textarea.segment-title {
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    color: var(--text);
+    display: block;
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 0.2rem 0 0;
+    overflow: hidden;
+    padding: 0.25rem 0.45rem;
+    resize: none;
+    white-space: pre-wrap;
+    width: 100%;
+    word-break: break-word;
+}
+
+textarea.segment-title:hover:not([readonly]) {
+    border-color: color-mix(in srgb, var(--border) 70%, transparent);
+}
+
+textarea.segment-title:focus {
+    background: var(--panel-strong);
+    border-color: var(--accent);
+    outline: none;
+}
+
+textarea.segment-title[readonly] {
+    cursor: default;
+}
+
 .segment-body,
 .intro-card > textarea,
 .range-buttons {
