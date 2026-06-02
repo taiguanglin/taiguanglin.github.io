@@ -273,13 +273,17 @@ function renderFileList() {
         section.className = 'file-group';
         section.innerHTML = `<h3>${escapeHtml(group)}</h3>`;
         for (const file of groupFilesForMonth) {
+            const hasDraft = state.draftPaths.has(file.path);
+            const row = document.createElement('div');
+            row.className = 'file-row';
+
             const button = document.createElement('button');
             button.type = 'button';
             button.className = 'file-item';
             button.dataset.path = file.path;
             button.classList.toggle('active', state.currentFile?.path === file.path);
             button.innerHTML = `
-                <span class="draft-dot ${state.draftPaths.has(file.path) ? '' : 'hidden'}"></span>
+                <span class="draft-dot ${hasDraft ? '' : 'hidden'}"></span>
                 <div class="file-item-body">
                     <span class="file-name">${escapeHtml(file.name.replace(/\.txt$/i, ''))}</span>
                     <span class="file-stats"></span>
@@ -287,7 +291,19 @@ function renderFileList() {
             `;
             applyFileStats(button, state.fileStats.get(file.path));
             button.addEventListener('click', () => loadDocument(file));
-            section.append(button);
+            row.append(button);
+
+            // 有本機草稿時才顯示「恢復原樣」按鈕，一鍵捨棄草稿（例如只是點進去聽一下而誤產生的草稿）。
+            const discardButton = document.createElement('button');
+            discardButton.type = 'button';
+            discardButton.className = `file-discard${hasDraft ? '' : ' hidden'}`;
+            discardButton.textContent = '↺';
+            discardButton.setAttribute('aria-label', `捨棄草稿並恢復原樣：${file.name.replace(/\.txt$/i, '')}`);
+            discardButton.title = '捨棄本機草稿，恢復成上次儲存（遠端）的內容';
+            discardButton.addEventListener('click', () => discardDraftFor(file));
+            row.append(discardButton);
+
+            section.append(row);
         }
         els.fileList.append(section);
     }
@@ -412,6 +428,41 @@ async function loadDocument(file, { preferDraft = null } = {}) {
     } catch (error) {
         setStatus(`載入失敗：${error.message}`, 'error');
     }
+}
+
+// 從側邊欄直接捨棄某個檔案的本機草稿，恢復成上次儲存（遠端）的內容。
+// 主要用來清掉「只是點進去聽一下」誤產生、其實沒有真正校稿的草稿。
+function discardDraftFor(file) {
+    if (!file || !state.draftPaths.has(file.path)) return;
+    const displayName = file.name.replace(/\.txt$/i, '');
+    if (!window.confirm(`確定捨棄「${displayName}」的本機草稿，恢復成上次儲存（遠端）的內容嗎？`)) {
+        return;
+    }
+
+    clearDraft(file.path);
+    state.draftPaths = listDraftPaths();
+
+    if (state.currentFile?.path === file.path) {
+        // 正在開啟的就是這個檔案：直接還原成遠端原樣，並取消尚未寫入的草稿暫存。
+        clearTimeout(state.draftTimer);
+        state.document = parseDocument(state.originalText, file.path);
+        state.originalDocument = parseDocument(state.originalText, file.path);
+        state.dirty = false;
+        renderDocument();
+        renderFileList();
+        refreshCurrentFileStats();
+        setStatus('已捨棄草稿，恢復成遠端原樣', 'ok');
+        return;
+    }
+
+    // 其他檔案：移除草稿標記，再用遠端內容重新計算「聽／校」統計。
+    state.fileStats.delete(file.path);
+    renderFileList();
+    fetchFileStats(file.path)
+        .then((stats) => state.fileStats.set(file.path, stats))
+        .catch(() => state.fileStats.set(file.path, { error: true }))
+        .finally(() => updateFileStatsDom(file.path));
+    setStatus(`已捨棄「${displayName}」的本機草稿`, 'ok');
 }
 
 function renderDocument() {

@@ -497,6 +497,47 @@ textarea.marker-heading {
     margin: 0.5rem 0 0.25rem;
 }
 
+.file-row {
+    align-items: stretch;
+    display: flex;
+    gap: 0.2rem;
+}
+
+.file-row .file-item {
+    flex: 1;
+    min-width: 0;
+}
+
+.file-discard {
+    align-items: center;
+    align-self: center;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.6rem;
+    color: var(--muted);
+    cursor: pointer;
+    display: flex;
+    flex-shrink: 0;
+    font: inherit;
+    font-size: 1.05rem;
+    justify-content: center;
+    line-height: 1;
+    opacity: 0.55;
+    padding: 0.3rem 0.45rem;
+    transition: opacity 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+
+.file-row:hover .file-discard,
+.file-discard:focus-visible {
+    opacity: 1;
+}
+
+.file-discard:hover {
+    background: var(--panel-strong);
+    border-color: var(--border);
+    color: var(--danger);
+}
+
 .file-item {
     align-items: center;
     background: transparent;
