@@ -185,7 +185,8 @@ body {
     flex-wrap: wrap;
     font-size: 0.78rem;
     gap: 0.35rem;
-    margin: 0 0 0.35rem;
+    margin: 0;
+    min-width: 0;
 }
 
 /* 「第 N 段」與最後播放／最後編輯同列，前面用一條細分隔線區隔。 */
@@ -383,13 +384,21 @@ textarea {
 }
 
 .segment-header {
-    align-items: flex-start;
     background: color-mix(in srgb, var(--panel) 75%, transparent);
     border-bottom: 1px solid var(--border);
     display: flex;
-    gap: 1rem;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0.5rem;
     padding: 1rem;
+}
+
+/* 上排：左邊「第 N 段＋最後播放／最後編輯」，右邊各式操作按鈕，同一行。 */
+.segment-topline {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    justify-content: space-between;
 }
 
 .segment-card[data-status="played"] .segment-header {
@@ -423,11 +432,6 @@ textarea {
 
 .segment-header h3 {
     margin: 0.2rem 0 0;
-}
-
-.segment-heading {
-    flex: 1;
-    min-width: 0;
 }
 
 /* 大標題就是該段提問，可直接編輯，外觀維持像標題（粗體、較大字）。

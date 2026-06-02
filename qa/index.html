@@ -174,7 +174,7 @@
     <template id="segmentTemplate">
         <article class="segment-card">
             <header class="segment-header">
-                <div class="segment-heading">
+                <div class="segment-topline">
                     <div class="segment-meta">
                         <span class="segment-number"></span>
                         <span class="seg-meta-chip">
@@ -186,16 +186,16 @@
                             <button class="seg-meta-clear hidden" type="button" data-field="edited" aria-label="清除最後編輯時間" title="清除最後編輯時間">×</button>
                         </span>
                     </div>
-                    <textarea class="segment-title" rows="1" spellcheck="false" aria-label="段落提問（標題）" title="段落提問（標題），可直接編輯"></textarea>
+                    <div class="segment-actions">
+                        <span class="segment-dirty hidden">未存</span>
+                        <button class="button button-secondary segment-op merge-up" type="button" title="與上一段合併（音檔時間會合併成一段）">⬆ 併上段</button>
+                        <button class="button button-secondary segment-op merge-down" type="button" title="與下一段合併（音檔時間會合併成一段）">⬇ 併下段</button>
+                        <button class="button button-secondary segment-op split-segment" type="button" title="把游標停留處之後的內容拆成新的一段">✂ 從游標拆分</button>
+                        <button class="button button-secondary reset-segment" type="button">回復原樣</button>
+                        <button class="button button-danger segment-op delete-segment" type="button" aria-label="刪除此段" title="刪除整個段落（之後的段落會自動重新編號）">🗑</button>
+                    </div>
                 </div>
-                <div class="segment-actions">
-                    <span class="segment-dirty hidden">未存</span>
-                    <button class="button button-secondary segment-op merge-up" type="button" title="與上一段合併（音檔時間會合併成一段）">⬆ 併上段</button>
-                    <button class="button button-secondary segment-op merge-down" type="button" title="與下一段合併（音檔時間會合併成一段）">⬇ 併下段</button>
-                    <button class="button button-secondary segment-op split-segment" type="button" title="把游標停留處之後的內容拆成新的一段">✂ 從游標拆分</button>
-                    <button class="button button-secondary reset-segment" type="button">回復原樣</button>
-                    <button class="button button-danger segment-op delete-segment" type="button" aria-label="刪除此段" title="刪除整個段落（之後的段落會自動重新編號）">🗑</button>
-                </div>
+                <textarea class="segment-title" rows="1" spellcheck="false" aria-label="段落提問（標題）" title="段落提問（標題），可直接編輯"></textarea>
             </header>
             <div class="segment-body"></div>
         </article>
