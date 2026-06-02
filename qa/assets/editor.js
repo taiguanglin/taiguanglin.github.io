@@ -510,10 +510,12 @@ function renderIntroCard() {
     const rangeContainer = card.querySelector('.range-buttons');
     rangeContainer.append(...renderRangeButtons(ranges, '開場'));
     const textarea = card.querySelector('textarea');
-    textarea.value = state.document.header;
+    // 開頭與第一段之間同樣靠結尾空白行分隔，編輯框不顯示這些尾端空行，儲存時補回。
+    const headerTrailing = state.document.header.match(/\s*$/)[0];
+    textarea.value = state.document.header.slice(0, state.document.header.length - headerTrailing.length);
     textarea.addEventListener('input', () => {
-        state.document.header = textarea.value;
-        state.document.headerRanges = parseRanges(textarea.value);
+        state.document.header = textarea.value + headerTrailing;
+        state.document.headerRanges = parseRanges(state.document.header);
         rangeContainer.innerHTML = '';
         rangeContainer.append(...renderRangeButtons(state.document.headerRanges, '開場'));
         recomputeDirty();
@@ -570,11 +572,14 @@ function renderSegmentCard(segment, segmentIndex) {
             const textarea = document.createElement('textarea');
             textarea.className = 'editor-textarea';
             textarea.spellcheck = false;
-            textarea.value = part.text;
+            // 段落之間靠結尾的空白行分隔（屬於檔案格式）。編輯框只顯示實際文字、
+            // 結尾不放這些空白行，避免框尾多出空行；儲存時再原樣補回，內容不變。
+            const trailing = part.text.match(/\s*$/)[0];
+            textarea.value = part.text.slice(0, part.text.length - trailing.length);
             textarea.dataset.segmentIndex = String(segmentIndex);
             textarea.dataset.partIndex = String(partIndex);
             textarea.addEventListener('input', () => {
-                state.document.segments[segmentIndex].parts[partIndex].text = textarea.value;
+                state.document.segments[segmentIndex].parts[partIndex].text = textarea.value + trailing;
                 recordBodyCaret(segmentIndex, partIndex, textarea);
                 onSegmentEdit(segmentIndex);
                 autoGrow(textarea);
