@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+# 模型快取若不小心放到此資料夾
+models/
+.cache/
+# 測試輸出
+*.txt
+!requirements.txt

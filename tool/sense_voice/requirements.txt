@@ -1,0 +1,30 @@
+# FunASR (Paraformer-zh + VAD + ct-punc) 中文語音辨識 → SRT/TXT
+# 建議使用 Python 3.10–3.12（本 repo 以 3.11 測試）
+#
+# 安裝指令（在 Intel macOS 上 llvmlite 需要 prebuilt wheel）：
+#   pip install --prefer-binary -r requirements.txt
+# 若 llvmlite 仍嘗試從原始碼編譯：
+#   pip install --only-binary=llvmlite,numba "llvmlite>=0.43" "numba>=0.60"
+#   pip install --prefer-binary -r requirements.txt
+
+# 數值/編譯：torch 2.2 是用 numpy 1.x 編譯，必須 <2.0
+numpy>=1.22,<2.0
+# Intel macOS 上 llvmlite/numba 需要新版才有 prebuilt wheel
+llvmlite>=0.43
+numba>=0.60
+
+# Speech / Model
+funasr>=1.1.0
+modelscope>=1.18.0
+huggingface_hub>=0.24.0
+
+# PyTorch (CPU 版即可；如需 CUDA 請先到 pytorch.org 取得對應指令)
+torch>=2.1,<2.6
+torchaudio>=2.1,<2.6
+
+# 音檔 IO / 其他
+soundfile>=0.12
+tqdm>=4.66
+
+# 讓 Python 使用系統 keychain 的 CA（在公司網路 TLS MITM 情境必要）
+truststore>=0.9

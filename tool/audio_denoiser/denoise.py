@@ -93,14 +93,15 @@ def load_state_dict_from_url_or_curl(url: str, map_location) -> dict:
 
 
 def ffmpeg_run(ffmpeg: str, args: list[str]) -> None:
-    cmd = [ffmpeg, "-hide_banner", "-loglevel", "error", "-y", *args]
+    # -stats 強制顯示進度（frame=/time=/speed=）即使 -loglevel error
+    # stderr 直接傳到終端機讓使用者看到進度；stdout 丟掉（ffmpeg 沒寫到 stdout）
+    cmd = [ffmpeg, "-hide_banner", "-loglevel", "error", "-stats", "-y", *args]
     try:
-        subprocess.run(cmd, check=True, capture_output=True, text=True)
+        subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=None)
     except FileNotFoundError:
         die(f"無法執行 ffmpeg：{ffmpeg}")
     except subprocess.CalledProcessError as e:
-        err = (e.stderr or e.stdout or "").strip()
-        die(f"ffmpeg 失敗（exit {e.returncode}）\n{err}")
+        die(f"ffmpeg 失敗（exit {e.returncode}）；錯誤訊息見上方 ffmpeg 輸出。")
 
 
 def decode_to_16k_mono_wav(ffmpeg: str, src: Path, dst_wav: Path) -> None:
