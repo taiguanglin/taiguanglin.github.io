@@ -185,7 +185,7 @@ body {
     flex-wrap: wrap;
     font-size: 0.78rem;
     gap: 0.35rem;
-    margin-top: 0.4rem;
+    margin: 0 0 0.35rem;
 }
 
 /* 「第 N 段」與最後播放／最後編輯同列，前面用一條細分隔線區隔。 */
