@@ -635,6 +635,11 @@ textarea.marker-heading {
     color: var(--text);
 }
 
+.save-played {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.7rem;
+}
+
 .button-danger {
     background: var(--danger);
     color: #fff;

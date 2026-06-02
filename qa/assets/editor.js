@@ -41,6 +41,7 @@ const els = {
     metaNoneCount: document.querySelector('#metaNoneCount'),
     editorRoot: document.querySelector('#editorRoot'),
     saveButton: document.querySelector('#saveButton'),
+    savePlayedButton: document.querySelector('#savePlayedButton'),
     saveStatus: document.querySelector('#saveStatus'),
     settingsButton: document.querySelector('#settingsButton'),
     settingsDialog: document.querySelector('#settingsDialog'),
@@ -96,6 +97,7 @@ async function bootstrap() {
 function bindEvents() {
     els.fileSearch.addEventListener('input', renderFileList);
     els.saveButton.addEventListener('click', () => saveCurrentFile());
+    els.savePlayedButton?.addEventListener('click', () => saveCurrentFile({ reason: 'played' }));
     els.settingsButton.addEventListener('click', () => openSettings());
     els.saveSettingsButton.addEventListener('click', () => {
         setPat(els.patInput.value);
@@ -1047,13 +1049,14 @@ function formatTimestamp(date = new Date()) {
     return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
-async function saveCurrentFile({ force = false } = {}) {
+async function saveCurrentFile({ force = false, reason = 'edit' } = {}) {
     if (!state.currentFile || !state.document) return;
 
+    const playedOnly = reason === 'played';
     const finalText = serializeDocument(state.document);
 
     if (!force && finalText === state.originalText) {
-        setStatus('沒有需要儲存的修改', 'ok');
+        setStatus(playedOnly ? '沒有可儲存的收聽進度' : '沒有需要儲存的修改', 'ok');
         state.dirty = false;
         refreshDirtyUI();
         return;
@@ -1065,9 +1068,11 @@ async function saveCurrentFile({ force = false } = {}) {
     }
 
     els.saveButton.disabled = true;
-    setStatus('正在儲存到 GitHub...', 'loading');
+    if (els.savePlayedButton) els.savePlayedButton.disabled = true;
+    setStatus(playedOnly ? '正在儲存收聽進度...' : '正在儲存到 GitHub...', 'loading');
     try {
-        const message = `qa: edit ${state.currentFile.name} via web editor (${new Date().toLocaleString('zh-TW')})`;
+        const action = playedOnly ? 'update listen progress' : 'edit';
+        const message = `qa: ${action} ${state.currentFile.name} via web editor (${new Date().toLocaleString('zh-TW')})`;
         const result = await putFile(state.currentFile.path, finalText, state.currentSha, message, { force });
         state.currentSha = result.content.sha;
         state.originalText = finalText;
@@ -1079,13 +1084,14 @@ async function saveCurrentFile({ force = false } = {}) {
         renderFileList();
         renderDocument();
         refreshCurrentFileStats();
-        setStatus('已儲存並建立 GitHub commit', 'ok');
+        setStatus(playedOnly ? '已將收聽進度儲存到 GitHub' : '已儲存並建立 GitHub commit', 'ok');
     } catch (error) {
         if (isConflict(error)) {
             await handleConflict(finalText);
         } else {
             setStatus(`儲存失敗：${error.message}`, 'error');
-            els.saveButton.disabled = false;
+            els.saveButton.disabled = !state.dirty;
+            updateSavePlayedButton();
         }
     }
 }
@@ -1110,8 +1116,26 @@ async function handleConflict(localText) {
     }
 }
 
+// 是否有「只聽過、沒有任何內文編輯」的收聽進度尚未存回 GitHub。
+// 條件：完整內容與遠端不同，但忽略「最後播放」後的內文相同（差異只在收聽進度）。
+function hasUnsavedPlayProgress() {
+    if (!state.document || !state.currentFile) return false;
+    const full = serializeDocument(state.document);
+    return full !== state.originalText && contentText(full) === contentText(state.originalText);
+}
+
+// 只有在「單純聽過、沒有校稿編輯」時才顯示「存收聽進度」按鈕；有內文修改時
+// 交給主要的「儲存到 GitHub」按鈕處理（它本來就會一併存入收聽進度）。
+function updateSavePlayedButton() {
+    if (!els.savePlayedButton) return;
+    const show = hasUnsavedPlayProgress();
+    els.savePlayedButton.classList.toggle('hidden', !show);
+    els.savePlayedButton.disabled = !show;
+}
+
 function refreshDirtyUI() {
     els.saveButton.disabled = !state.dirty;
+    updateSavePlayedButton();
     els.draftBadge.classList.toggle('hidden', !(state.currentFile && state.draftPaths.has(state.currentFile.path)));
     setStatus(state.dirty ? '有未儲存修改' : '已同步', state.dirty ? 'dirty' : 'ok');
 
