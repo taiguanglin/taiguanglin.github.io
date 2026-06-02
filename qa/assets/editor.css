@@ -185,7 +185,17 @@ body {
     flex-wrap: wrap;
     font-size: 0.78rem;
     gap: 0.35rem;
-    margin-top: 0.35rem;
+    margin-top: 0.4rem;
+}
+
+/* 「第 N 段」與最後播放／最後編輯同列，前面用一條細分隔線區隔。 */
+.segment-meta .segment-number {
+    border-right: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-right: 0.15rem;
+    padding-right: 0.5rem;
 }
 
 .seg-meta-chip {
@@ -420,7 +430,8 @@ textarea {
     min-width: 0;
 }
 
-/* 大標題就是該段提問，可直接編輯，外觀維持像標題（粗體、較大字）。 */
+/* 大標題就是該段提問，可直接編輯，外觀維持像標題（粗體、較大字）。
+   預設貼齊單行高度，文字變多再隨內容自動增高（覆蓋全域 textarea 的 min-height）。 */
 textarea.segment-title {
     background: transparent;
     border: 1px solid transparent;
@@ -431,7 +442,8 @@ textarea.segment-title {
     font-size: 1.15rem;
     font-weight: 700;
     line-height: 1.4;
-    margin: 0.2rem 0 0;
+    margin: 0;
+    min-height: 0;
     overflow: hidden;
     padding: 0.25rem 0.45rem;
     resize: none;
