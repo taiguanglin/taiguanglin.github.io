@@ -599,6 +599,22 @@ textarea.marker-heading {
     color: #fff;
 }
 
+.delete-segment {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1;
+    padding: 0.45rem 0.55rem;
+}
+
+.delete-segment:hover:not(:disabled),
+.delete-segment:focus-visible {
+    background: var(--danger);
+    border-color: transparent;
+    color: #fff;
+}
+
 .icon-button {
     background: transparent;
     color: var(--text);
