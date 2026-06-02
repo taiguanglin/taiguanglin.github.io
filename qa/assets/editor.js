@@ -710,8 +710,8 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
             const endChanged = range.endLabel !== field.dataset.endTc;
             field.dataset.startTc = range.startLabel;
             field.dataset.endTc = range.endLabel;
-            if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start);
-            if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end);
+            if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
+            if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
         });
     }
 
@@ -823,7 +823,7 @@ function playerCurrentTime() {
 // Set one edge (start/end) of a segment's 時間 marker to `seconds`, keeping the
 // other edge. Updates the data model, the rendered field and its play button.
 // Returns false when the segment has no time marker (e.g. out of range).
-function setSegmentEdge(segmentIndex, edge, seconds) {
+function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {}) {
     const segment = state.document?.segments?.[segmentIndex];
     if (!segment) return false;
     const partIndex = segment.parts.findIndex(
@@ -833,11 +833,11 @@ function setSegmentEdge(segmentIndex, edge, seconds) {
     const range = parseRanges(segment.parts[partIndex].text)[0] || { start: 0, end: 0 };
     const start = edge === 'start' ? seconds : range.start;
     const end = edge === 'end' ? seconds : range.end;
-    writeSegmentRange(segment, segmentIndex, partIndex, start, end);
+    writeSegmentRange(segment, segmentIndex, partIndex, start, end, { markEdited });
     return true;
 }
 
-function writeSegmentRange(segment, segmentIndex, partIndex, startSeconds, endSeconds) {
+function writeSegmentRange(segment, segmentIndex, partIndex, startSeconds, endSeconds, { markEdited = true } = {}) {
     const part = segment.parts[partIndex];
     const endsWithNewline = /\n$/.test(part.text);
     const prefix = /^開場時間/.test(part.text) ? '開場時間' : '時間';
@@ -856,15 +856,21 @@ function writeSegmentRange(segment, segmentIndex, partIndex, startSeconds, endSe
         const playButton = input.closest('.marker-line')?.querySelector('.play-range');
         if (playButton) updatePlayButton(playButton, display, segment);
     }
-    onSegmentEdit(segmentIndex);
+    if (markEdited) {
+        onSegmentEdit(segmentIndex);
+    } else {
+        // 共用邊界連動：鄰段時間被自動跟著調整，不算使用者手動編輯，
+        // 所以不更新該段「最後編輯」時間（仍會標記未存、需要儲存）。
+        recomputeDirty();
+    }
 }
 
 // Apply the player's current time to one edge of a segment, then propagate the
 // shared boundary to the neighbour so it does not have to be edited twice.
 function applyPlayerTime(segmentIndex, edge, seconds) {
     if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
-    if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds);
-    else setSegmentEdge(segmentIndex + 1, 'start', seconds);
+    if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds, { markEdited: false });
+    else setSegmentEdge(segmentIndex + 1, 'start', seconds, { markEdited: false });
     const segment = state.document.segments[segmentIndex];
     const label = edge === 'start' ? '起始' : '結束';
     setStatus(`已將第 ${segment.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
