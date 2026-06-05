@@ -97,6 +97,62 @@ body {
     padding: 0.35rem 0.6rem;
 }
 
+.history-controls {
+    align-items: center;
+    border-left: 1px solid var(--border);
+    display: flex;
+    gap: 0.15rem;
+    margin-left: 0.35rem;
+    padding-left: 0.5rem;
+}
+
+.history-button {
+    font-size: 1.2rem;
+    padding: 0.3rem 0.55rem;
+}
+
+.history-button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.history-button:disabled {
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.context-menu {
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-radius: 0.6rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 200px;
+    padding: 0.3rem;
+    position: fixed;
+    z-index: 80;
+}
+
+.context-menu-item {
+    background: transparent;
+    border: 0;
+    border-radius: 0.4rem;
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.88rem;
+    padding: 0.5rem 0.65rem;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.context-menu-item:hover,
+.context-menu-item:focus-visible {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    outline: none;
+}
+
 .document-path,
 .segment-number,
 .hint {

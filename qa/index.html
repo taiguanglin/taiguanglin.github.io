@@ -12,6 +12,10 @@
         <header class="topbar">
             <div class="topbar-left">
                 <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄">☰</button>
+                <div class="history-controls">
+                    <button id="undoButton" class="icon-button history-button" type="button" aria-label="復原上一步" title="復原上一步（⌘Z／Ctrl+Z）" disabled>↶</button>
+                    <button id="redoButton" class="icon-button history-button" type="button" aria-label="重做下一步" title="重做下一步（⌘⇧Z／Ctrl+Shift+Z）" disabled>↷</button>
+                </div>
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
@@ -160,8 +164,8 @@
                 </select>
             </label>
             <div class="mini-player-settime">
-                <button id="setStartButton" type="button" disabled title="把目前播放時間設為這一段的「起始」時間（同步上一段結束時間）">設起始</button>
-                <button id="setEndButton" type="button" disabled title="把目前播放時間設為這一段的「結束」時間（同步下一段起始時間）">設結束</button>
+                <button id="setStartButton" type="button" disabled title="把目前播放時間設為這一段的「起始」時間（同步上一段結束時間）。右鍵：只改這一段起始">設起始</button>
+                <button id="setEndButton" type="button" disabled title="把目前播放時間設為這一段的「結束」時間（同步下一段起始時間）。右鍵：只改這一段結束">設結束</button>
             </div>
             <label class="checkbox-row compact">
                 <input id="stopAtRangeEnd" type="checkbox" checked>

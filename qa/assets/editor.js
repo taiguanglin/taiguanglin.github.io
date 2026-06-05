@@ -18,7 +18,18 @@ const state = {
     fileStats: new Map(),
     statsFetched: false,
     bodyCaret: null,
+    editorCaret: null,
     activeSegmentIndex: null,
+};
+
+// 編輯歷史：以「整份文件序列化後的文字」為單位做快照，支援上一步／下一步。
+// 連續打字會在停頓後合併成一步，結構性操作（合併、拆分、刪除、設時間…）各算一步。
+const HISTORY_LIMIT = 50;
+const history = {
+    undo: [],
+    redo: [],
+    committed: null,
+    timer: null,
 };
 
 const els = {
@@ -74,6 +85,8 @@ const els = {
     seekBar: document.querySelector('#seekBar'),
     setStartButton: document.querySelector('#setStartButton'),
     setEndButton: document.querySelector('#setEndButton'),
+    undoButton: document.querySelector('#undoButton'),
+    redoButton: document.querySelector('#redoButton'),
 };
 
 const audio = createAudioController({
@@ -129,11 +142,27 @@ function bindEvents() {
     els.miniPlayerHide?.addEventListener('click', () => {
         setMiniPlayerHidden(true);
     });
+    els.undoButton?.addEventListener('click', () => undoEdit());
+    els.redoButton?.addEventListener('click', () => redoEdit());
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && state.dirty) {
             event.preventDefault();
             renderDocument();
         }
+    });
+    // 整體編輯的上一步／下一步：⌘Z／Ctrl+Z 復原，⌘⇧Z／Ctrl+Shift+Z（或 Ctrl+Y）重做。
+    document.addEventListener('keydown', (event) => {
+        const mod = event.metaKey || event.ctrlKey;
+        if (!mod) return;
+        const key = event.key.toLowerCase();
+        if (key !== 'z' && key !== 'y') return;
+        // 對話框（例如設定 PAT）內維持瀏覽器原生復原，不攔截。
+        if (event.target.closest?.('dialog')) return;
+        if (!state.document) return;
+        const redo = key === 'y' || (key === 'z' && event.shiftKey);
+        event.preventDefault();
+        if (redo) redoEdit();
+        else undoEdit();
     });
     window.addEventListener('beforeunload', (event) => {
         if (!state.dirty) return;
@@ -426,6 +455,7 @@ async function loadDocument(file, { preferDraft = null } = {}) {
         renderFileList();
         renderDocument();
         refreshCurrentFileStats();
+        historyReset(serializeDocument(state.document));
         setStatus(state.dirty ? '已載入本機草稿' : '已載入遠端最新版', state.dirty ? 'dirty' : 'ok');
     } catch (error) {
         setStatus(`載入失敗：${error.message}`, 'error');
@@ -453,6 +483,7 @@ function discardDraftFor(file) {
         renderDocument();
         renderFileList();
         refreshCurrentFileStats();
+        historyReset(serializeDocument(state.document));
         setStatus('已捨棄草稿，恢復成遠端原樣', 'ok');
         return;
     }
@@ -513,14 +544,26 @@ function renderIntroCard() {
     // 開頭與第一段之間同樣靠結尾空白行分隔，編輯框不顯示這些尾端空行，儲存時補回。
     const headerTrailing = state.document.header.match(/\s*$/)[0];
     textarea.value = state.document.header.slice(0, state.document.header.length - headerTrailing.length);
+    const trackHeaderCaret = () => {
+        state.editorCaret = {
+            kind: 'header',
+            offset: textarea.selectionStart ?? textarea.value.length,
+            end: textarea.selectionEnd ?? undefined,
+        };
+    };
     textarea.addEventListener('input', () => {
         state.document.header = textarea.value + headerTrailing;
         state.document.headerRanges = parseRanges(state.document.header);
         rangeContainer.innerHTML = '';
         rangeContainer.append(...renderRangeButtons(state.document.headerRanges, '開場'));
+        trackHeaderCaret();
+        scheduleHistoryCommit();
         recomputeDirty();
         autoGrow(textarea);
     });
+    textarea.addEventListener('focus', trackHeaderCaret);
+    textarea.addEventListener('click', trackHeaderCaret);
+    textarea.addEventListener('keyup', trackHeaderCaret);
     attachTextareaIME(textarea);
     queueMicrotask(() => autoGrow(textarea, { allowShrink: true }));
     return card;
@@ -581,6 +624,7 @@ function renderSegmentCard(segment, segmentIndex) {
             textarea.addEventListener('input', () => {
                 state.document.segments[segmentIndex].parts[partIndex].text = textarea.value + trailing;
                 recordBodyCaret(segmentIndex, partIndex, textarea);
+                scheduleHistoryCommit();
                 onSegmentEdit(segmentIndex);
                 autoGrow(textarea);
             });
@@ -615,6 +659,14 @@ function setupSegmentTitle(node, segment, segmentIndex) {
         return;
     }
 
+    const trackTitleCaret = () => {
+        state.editorCaret = {
+            kind: 'title',
+            segmentIndex,
+            offset: field.selectionStart ?? field.value.length,
+            end: field.selectionEnd ?? undefined,
+        };
+    };
     // 標題維持單行：按 Enter 不換行。
     field.addEventListener('keydown', (event) => {
         if (event.key === 'Enter') event.preventDefault();
@@ -631,9 +683,14 @@ function setupSegmentTitle(node, segment, segmentIndex) {
         const endsWithNewline = /\n$/.test(headingPart.text);
         const heading = segment.number ? `### ${segment.number}. ${title}` : `### ${title}`;
         headingPart.text = endsWithNewline ? `${heading}\n` : heading;
+        trackTitleCaret();
+        scheduleHistoryCommit();
         onSegmentEdit(segmentIndex);
         autoGrow(field, { allowShrink: true });
     });
+    field.addEventListener('focus', trackTitleCaret);
+    field.addEventListener('click', trackTitleCaret);
+    field.addEventListener('keyup', trackTitleCaret);
     attachTextareaIME(field);
     queueMicrotask(() => autoGrow(field, { allowShrink: true }));
 }
@@ -717,8 +774,22 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
             field.dataset.endTc = range.endLabel;
             if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
             if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
+            commitHistory();
         });
     }
+
+    const trackMarkerCaret = () => {
+        state.editorCaret = {
+            kind: 'marker',
+            segmentIndex,
+            partIndex,
+            offset: field.selectionStart ?? field.value.length,
+            end: field.selectionEnd ?? undefined,
+        };
+    };
+    field.addEventListener('focus', trackMarkerCaret);
+    field.addEventListener('click', trackMarkerCaret);
+    field.addEventListener('keyup', trackMarkerCaret);
 
     if (isHeading) {
         // Keep the heading on one logical line.
@@ -755,6 +826,8 @@ function renderMarker(text, segment, segmentIndex, partIndex, card) {
         }
 
         segment.ranges = collectSegmentRanges(state.document.segments[segmentIndex]);
+        trackMarkerCaret();
+        scheduleHistoryCommit();
         onSegmentEdit(segmentIndex);
     });
 
@@ -873,12 +946,26 @@ function writeSegmentRange(segment, segmentIndex, partIndex, startSeconds, endSe
 // Apply the player's current time to one edge of a segment, then propagate the
 // shared boundary to the neighbour so it does not have to be edited twice.
 function applyPlayerTime(segmentIndex, edge, seconds) {
+    commitHistory();
     if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
     if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds, { markEdited: false });
     else setSegmentEdge(segmentIndex + 1, 'start', seconds, { markEdited: false });
     const segment = state.document.segments[segmentIndex];
     const label = edge === 'start' ? '起始' : '結束';
     setStatus(`已將第 ${segment.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
+    commitHistory();
+}
+
+// 只設定這一段的起始／結束時間，不連動相鄰段落的共用邊界（「設起始／設結束」
+// 按鈕的右鍵選單會走這條路）。
+function applyPlayerTimeSingle(segmentIndex, edge, seconds) {
+    commitHistory();
+    if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
+    const segment = state.document.segments[segmentIndex];
+    const label = edge === 'start' ? '起始' : '結束';
+    const note = edge === 'start' ? '（未連動上一段結束）' : '（未連動下一段起始）';
+    setStatus(`已將第 ${segment.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}${note}`, 'ok');
+    commitHistory();
 }
 
 function renderRangeButtons(ranges, label) {
@@ -931,16 +1018,21 @@ function onSegmentEdit(segmentIndex) {
 function onSegmentPlayed(segmentIndex) {
     const segment = state.document?.segments?.[segmentIndex];
     if (!segment) return;
+    // 先把尚未收尾的打字收成一步，避免播放標記把它一起吃掉。
+    commitHistory();
     segment.meta = segment.meta || { lastPlayed: '', lastEdited: '' };
     segment.meta.lastPlayed = formatTimestamp();
     refreshSegmentMetaChips(segmentIndex);
     recomputeDirty();
+    // 「最後播放」只是收聽進度，不列入可復原的編輯步驟。
+    syncHistoryBaseline();
 }
 
 function clearSegmentMeta(segmentIndex, field) {
     const segment = state.document?.segments?.[segmentIndex];
     if (!segment) return;
     segment.meta = segment.meta || { lastPlayed: '', lastEdited: '' };
+    commitHistory();
     if (field === 'played') {
         if (!segment.meta.lastPlayed) return;
         segment.meta.lastPlayed = '';
@@ -954,21 +1046,28 @@ function clearSegmentMeta(segmentIndex, field) {
     }
     refreshSegmentMetaChips(segmentIndex);
     recomputeDirty();
+    commitHistory();
 }
 
 function resetSegment(segmentIndex) {
     const original = state.originalDocument?.segments?.[segmentIndex];
     if (!original) return;
+    commitHistory();
     state.document.segments[segmentIndex] = cloneDocument({ segments: [original] }).segments[0];
     recomputeDirty();
     renderDocument();
+    commitHistory();
 }
 
 function recordBodyCaret(segmentIndex, partIndex, textarea) {
-    state.bodyCaret = {
+    const offset = textarea.selectionStart ?? textarea.value.length;
+    state.bodyCaret = { segmentIndex, partIndex, offset };
+    state.editorCaret = {
+        kind: 'body',
         segmentIndex,
         partIndex,
-        offset: textarea.selectionStart ?? textarea.value.length,
+        offset,
+        end: textarea.selectionEnd ?? undefined,
     };
 }
 
@@ -977,11 +1076,13 @@ function afterStructuralChange(message) {
     recomputeDirty();
     renderDocument();
     setStatus(message, 'ok');
+    commitHistory();
 }
 
 function mergeSegmentWithNext(firstIndex) {
     const segments = state.document?.segments || [];
     if (firstIndex < 0 || firstIndex >= segments.length - 1) return;
+    commitHistory();
     mergeWithNext(state.document, firstIndex);
     afterStructuralChange(`已合併第 ${firstIndex + 1}、${firstIndex + 2} 段，請確認時間與內容`);
 }
@@ -998,6 +1099,7 @@ function deleteSegmentAt(segmentIndex) {
     if (!window.confirm(`確定要刪除${name}嗎？刪除後其餘段落會重新編號，需按「儲存到 GitHub」才會真正寫回。`)) {
         return;
     }
+    commitHistory();
     removeSegment(state.document, segmentIndex);
     afterStructuralChange(`已刪除${name}，後面的段落已重新編號`);
 }
@@ -1032,6 +1134,7 @@ function splitSegmentHere(segmentIndex) {
         return;
     }
 
+    commitHistory();
     splitSegment(state.document, segmentIndex, partIndex, offset);
     afterStructuralChange(`已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段提問並校正時間`);
 }
@@ -1071,6 +1174,125 @@ function scheduleDraftSave(text) {
     }, 500);
 }
 
+// ---- 編輯歷史（上一步／下一步） ----------------------------------------
+// 載入或儲存檔案時呼叫，把目前文件設成歷史基準並清空上一步／下一步堆疊。
+function historyReset(text) {
+    history.undo = [];
+    history.redo = [];
+    history.committed = { text, caret: null };
+    clearTimeout(history.timer);
+    history.timer = null;
+    state.editorCaret = null;
+    updateHistoryButtons();
+}
+
+function currentEditorCaret() {
+    return state.editorCaret ? { ...state.editorCaret } : null;
+}
+
+// 把目前文件狀態收成一步歷史；若內容與上一個基準相同則略過（避免空步）。
+function commitHistory() {
+    clearTimeout(history.timer);
+    history.timer = null;
+    if (!state.document) return;
+    const text = serializeDocument(state.document);
+    if (!history.committed) {
+        history.committed = { text, caret: currentEditorCaret() };
+        updateHistoryButtons();
+        return;
+    }
+    if (text === history.committed.text) return;
+    history.undo.push(history.committed);
+    if (history.undo.length > HISTORY_LIMIT) history.undo.shift();
+    history.redo = [];
+    history.committed = { text, caret: currentEditorCaret() };
+    updateHistoryButtons();
+}
+
+// 連續打字：停頓一段時間後才合併成一步，避免每個字都變成一步。
+function scheduleHistoryCommit() {
+    clearTimeout(history.timer);
+    history.timer = setTimeout(commitHistory, 600);
+}
+
+// 純聽過所產生的「最後播放」更新不該變成可復原的一步：直接併入基準。
+function syncHistoryBaseline() {
+    if (!state.document) return;
+    const text = serializeDocument(state.document);
+    if (!history.committed) {
+        history.committed = { text, caret: currentEditorCaret() };
+    } else {
+        history.committed.text = text;
+    }
+}
+
+function undoEdit() {
+    commitHistory();
+    if (!history.undo.length) {
+        setStatus('沒有可復原的步驟', 'ok');
+        return;
+    }
+    history.redo.push(history.committed);
+    history.committed = history.undo.pop();
+    restoreHistorySnapshot(history.committed);
+    setStatus('已復原上一步', 'ok');
+}
+
+function redoEdit() {
+    commitHistory();
+    if (!history.redo.length) {
+        setStatus('沒有可重做的步驟', 'ok');
+        return;
+    }
+    history.undo.push(history.committed);
+    history.committed = history.redo.pop();
+    restoreHistorySnapshot(history.committed);
+    setStatus('已重做下一步', 'ok');
+}
+
+function restoreHistorySnapshot(snapshot) {
+    if (!snapshot || !state.currentFile) return;
+    state.document = parseDocument(snapshot.text, state.currentFile.path);
+    state.bodyCaret = null;
+    recomputeDirty();
+    renderDocument();
+    restoreEditorCaret(snapshot.caret);
+    updateHistoryButtons();
+}
+
+// 復原／重做後，盡量把游標放回原本編輯的欄位與位置。
+function restoreEditorCaret(caret) {
+    if (!caret) return;
+    let field = null;
+    if (caret.kind === 'header') {
+        field = els.editorRoot.querySelector('textarea[data-header="true"]');
+    } else {
+        const card = els.editorRoot.querySelector(
+            `.segment-card[data-segment-index="${caret.segmentIndex}"]`
+        );
+        if (!card) return;
+        if (caret.kind === 'title') {
+            field = card.querySelector('.segment-title');
+        } else if (caret.partIndex != null) {
+            field = card.querySelector(`[data-part-index="${caret.partIndex}"]`);
+        }
+    }
+    if (!field) return;
+    try {
+        field.focus({ preventScroll: true });
+        const len = field.value.length;
+        const start = Math.min(caret.offset ?? len, len);
+        const end = Math.min(caret.end ?? start, len);
+        field.setSelectionRange(start, end);
+    } catch (_) { /* 某些欄位不支援選取範圍，略過 */ }
+    field.scrollIntoView({ block: 'center' });
+}
+
+function updateHistoryButtons() {
+    if (els.undoButton) els.undoButton.disabled = history.undo.length === 0;
+    if (els.redoButton) els.redoButton.disabled = history.redo.length === 0;
+}
+
 function refreshMetaSummary() {
     const segments = state.document?.segments || [];
     const total = segments.length;
@@ -1105,6 +1327,8 @@ function formatTimestamp(date = new Date()) {
 async function saveCurrentFile({ force = false, reason = 'edit' } = {}) {
     if (!state.currentFile || !state.document) return;
 
+    // 把尚未收尾的打字先收成一步歷史，存檔後仍可往回復原。
+    commitHistory();
     const playedOnly = reason === 'played';
     const finalText = serializeDocument(state.document);
 
@@ -1330,6 +1554,70 @@ function escapeHtml(value) {
     }[char]));
 }
 
+// ---- 通用右鍵選單 -------------------------------------------------------
+let activeContextMenu = null;
+
+function closeContextMenu() {
+    if (!activeContextMenu) return;
+    activeContextMenu.remove();
+    activeContextMenu = null;
+    document.removeEventListener('pointerdown', onContextMenuPointerDown, true);
+    document.removeEventListener('keydown', onContextMenuKeyDown, true);
+    document.removeEventListener('scroll', closeContextMenu, true);
+    window.removeEventListener('blur', closeContextMenu);
+    window.removeEventListener('resize', closeContextMenu);
+}
+
+function onContextMenuPointerDown(event) {
+    if (activeContextMenu && !activeContextMenu.contains(event.target)) {
+        closeContextMenu();
+    }
+}
+
+function onContextMenuKeyDown(event) {
+    if (event.key === 'Escape') {
+        event.preventDefault();
+        closeContextMenu();
+    }
+}
+
+function showContextMenu(x, y, items) {
+    closeContextMenu();
+    const menu = document.createElement('div');
+    menu.className = 'context-menu';
+    menu.setAttribute('role', 'menu');
+    for (const item of items) {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'context-menu-item';
+        button.setAttribute('role', 'menuitem');
+        button.textContent = item.label;
+        button.addEventListener('click', () => {
+            closeContextMenu();
+            item.onSelect?.();
+        });
+        menu.append(button);
+    }
+    // 先隱藏量測尺寸，再夾到視窗範圍內定位。
+    menu.style.visibility = 'hidden';
+    document.body.append(menu);
+    const rect = menu.getBoundingClientRect();
+    const left = clamp(x, 8, Math.max(8, window.innerWidth - rect.width - 8));
+    const top = clamp(y, 8, Math.max(8, window.innerHeight - rect.height - 8));
+    menu.style.left = `${left}px`;
+    menu.style.top = `${top}px`;
+    menu.style.visibility = 'visible';
+    activeContextMenu = menu;
+    // 延後掛上關閉監聽，避免開啟當下的事件立刻把它關掉。
+    setTimeout(() => {
+        document.addEventListener('pointerdown', onContextMenuPointerDown, true);
+        document.addEventListener('keydown', onContextMenuKeyDown, true);
+        document.addEventListener('scroll', closeContextMenu, true);
+        window.addEventListener('blur', closeContextMenu);
+        window.addEventListener('resize', closeContextMenu);
+    }, 0);
+}
+
 function setupMiniPlayer() {
     const player = els.audioPlayer;
     const mini = els.miniPlayer;
@@ -1372,7 +1660,7 @@ function setupMiniPlayer() {
         });
     }
 
-    const applySetTime = (edge) => {
+    const applySetTime = (edge, { single = false } = {}) => {
         const now = playerCurrentTime();
         if (now === null) {
             setStatus('請先播放音檔，才有可套用的時間', 'error');
@@ -1383,10 +1671,24 @@ function setupMiniPlayer() {
             setStatus('請先播放某一段的音檔，才知道要設定哪一段的時間', 'error');
             return;
         }
-        applyPlayerTime(idx, edge, now);
+        if (single) applyPlayerTimeSingle(idx, edge, now);
+        else applyPlayerTime(idx, edge, now);
     };
     els.setStartButton?.addEventListener('click', () => applySetTime('start'));
     els.setEndButton?.addEventListener('click', () => applySetTime('end'));
+
+    // 右鍵選單：只改這一段的起始／結束，不連動相鄰段落的共用邊界。
+    const openSetTimeMenu = (event, edge) => {
+        event.preventDefault();
+        const label = edge === 'start'
+            ? '只設這一段的起始（不連動上一段結束）'
+            : '只設這一段的結束（不連動下一段起始）';
+        showContextMenu(event.clientX, event.clientY, [
+            { label, onSelect: () => applySetTime(edge, { single: true }) },
+        ]);
+    };
+    els.setStartButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'start'));
+    els.setEndButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'end'));
 
     document.addEventListener('keydown', (event) => {
         if (event.ctrlKey || event.shiftKey) return;
