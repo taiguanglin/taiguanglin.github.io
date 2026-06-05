@@ -953,6 +953,7 @@ function applyPlayerTime(segmentIndex, edge, seconds) {
     const segment = state.document.segments[segmentIndex];
     const label = edge === 'start' ? '起始' : '結束';
     setStatus(`已將第 ${segment.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
+    state.editorCaret = { kind: 'title', segmentIndex };
     commitHistory();
 }
 
@@ -965,6 +966,7 @@ function applyPlayerTimeSingle(segmentIndex, edge, seconds) {
     const label = edge === 'start' ? '起始' : '結束';
     const note = edge === 'start' ? '（未連動上一段結束）' : '（未連動下一段起始）';
     setStatus(`已將第 ${segment.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}${note}`, 'ok');
+    state.editorCaret = { kind: 'title', segmentIndex };
     commitHistory();
 }
 
@@ -1046,6 +1048,7 @@ function clearSegmentMeta(segmentIndex, field) {
     }
     refreshSegmentMetaChips(segmentIndex);
     recomputeDirty();
+    state.editorCaret = { kind: 'title', segmentIndex };
     commitHistory();
 }
 
@@ -1056,6 +1059,7 @@ function resetSegment(segmentIndex) {
     state.document.segments[segmentIndex] = cloneDocument({ segments: [original] }).segments[0];
     recomputeDirty();
     renderDocument();
+    state.editorCaret = { kind: 'title', segmentIndex };
     commitHistory();
 }
 
@@ -1071,8 +1075,10 @@ function recordBodyCaret(segmentIndex, partIndex, textarea) {
     };
 }
 
-function afterStructuralChange(message) {
+function afterStructuralChange(message, caret = null) {
     state.bodyCaret = null;
+    // 讓復原／重做能捲回這次結構變更影響的段落。
+    if (caret) state.editorCaret = caret;
     recomputeDirty();
     renderDocument();
     setStatus(message, 'ok');
@@ -1084,7 +1090,10 @@ function mergeSegmentWithNext(firstIndex) {
     if (firstIndex < 0 || firstIndex >= segments.length - 1) return;
     commitHistory();
     mergeWithNext(state.document, firstIndex);
-    afterStructuralChange(`已合併第 ${firstIndex + 1}、${firstIndex + 2} 段，請確認時間與內容`);
+    afterStructuralChange(
+        `已合併第 ${firstIndex + 1}、${firstIndex + 2} 段，請確認時間與內容`,
+        { kind: 'title', segmentIndex: firstIndex }
+    );
 }
 
 function deleteSegmentAt(segmentIndex) {
@@ -1101,7 +1110,11 @@ function deleteSegmentAt(segmentIndex) {
     }
     commitHistory();
     removeSegment(state.document, segmentIndex);
-    afterStructuralChange(`已刪除${name}，後面的段落已重新編號`);
+    const focusIndex = Math.min(segmentIndex, state.document.segments.length - 1);
+    afterStructuralChange(
+        `已刪除${name}，後面的段落已重新編號`,
+        { kind: 'title', segmentIndex: Math.max(0, focusIndex) }
+    );
 }
 
 function splitSegmentHere(segmentIndex) {
@@ -1136,7 +1149,10 @@ function splitSegmentHere(segmentIndex) {
 
     commitHistory();
     splitSegment(state.document, segmentIndex, partIndex, offset);
-    afterStructuralChange(`已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段提問並校正時間`);
+    afterStructuralChange(
+        `已將第 ${segmentIndex + 1} 段拆成兩段，請補上新段提問並校正時間`,
+        { kind: 'title', segmentIndex: segmentIndex + 1 }
+    );
 }
 
 // 比較內文時忽略「最後播放」時間：單純聽過不算修改。只有真正改到內文／結構／
@@ -1232,9 +1248,12 @@ function undoEdit() {
         setStatus('沒有可復原的步驟', 'ok');
         return;
     }
-    history.redo.push(history.committed);
+    // 被「撤銷」的那一步，其變更位置記在我們正要離開的快照上（它的 caret 是
+    // 產生這一步時的游標處），所以復原後要捲到這個位置，才會對到改變處。
+    const leaving = history.committed;
+    history.redo.push(leaving);
     history.committed = history.undo.pop();
-    restoreHistorySnapshot(history.committed);
+    restoreHistorySnapshot(history.committed, leaving.caret);
     setStatus('已復原上一步', 'ok');
 }
 
@@ -1245,18 +1264,20 @@ function redoEdit() {
         return;
     }
     history.undo.push(history.committed);
-    history.committed = history.redo.pop();
-    restoreHistorySnapshot(history.committed);
+    // 被「重做」的那一步，其變更位置就記在要還原的目標快照上。
+    const target = history.redo.pop();
+    history.committed = target;
+    restoreHistorySnapshot(target, target.caret);
     setStatus('已重做下一步', 'ok');
 }
 
-function restoreHistorySnapshot(snapshot) {
+function restoreHistorySnapshot(snapshot, caret) {
     if (!snapshot || !state.currentFile) return;
     state.document = parseDocument(snapshot.text, state.currentFile.path);
     state.bodyCaret = null;
     recomputeDirty();
     renderDocument();
-    restoreEditorCaret(snapshot.caret);
+    restoreEditorCaret(caret === undefined ? snapshot.caret : caret);
     updateHistoryButtons();
 }
 
@@ -1285,7 +1306,11 @@ function restoreEditorCaret(caret) {
         const end = Math.min(caret.end ?? start, len);
         field.setSelectionRange(start, end);
     } catch (_) { /* 某些欄位不支援選取範圍，略過 */ }
-    field.scrollIntoView({ block: 'center' });
+    // 重繪後各文字框會以 microtask 自動調整高度，會改變版面位置；等下一個
+    // 動畫影格、版面定案後再捲動，捲到的位置才會精準對到改變處。
+    requestAnimationFrame(() => {
+        field.scrollIntoView({ block: 'center' });
+    });
 }
 
 function updateHistoryButtons() {
