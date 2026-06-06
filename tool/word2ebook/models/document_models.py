@@ -148,6 +148,14 @@ class ConversionConfig:
     generate_simplified: bool = True
 
     book_title: Optional[str] = None
+
+    # PDF 來源（可選）：把 PDF 答疑附加為新的月份章節
+    pdf_file: Optional[Path] = None
+    # 開發用部分模式：只重生 Word 或只重生 PDF 的章節頁（略過首頁與搜尋索引重建）
+    only_word: bool = False
+    only_pdf: bool = False
+    # 只跑 PDF 時，章節編號從此值 + 1 開始（預設 12 → 第一個月份章節為 13）
+    pdf_start_index: int = 12
     
     def __post_init__(self):
         """初始化后处理"""
@@ -156,6 +164,8 @@ class ConversionConfig:
             self.input_file = Path(self.input_file)
         if not isinstance(self.output_folder, Path):
             self.output_folder = Path(self.output_folder)
+        if self.pdf_file is not None and not isinstance(self.pdf_file, Path):
+            self.pdf_file = Path(self.pdf_file)
         
         # 如果没有指定书名，从文件名获取
         if self.book_title is None:

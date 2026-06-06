@@ -166,3 +166,28 @@ class TestHTMLGeneratorIndexPages:
         )
         content = (output_dir / "index.html").read_text(encoding="utf-8")
         assert "01.html" in content or "第一章" in content
+
+
+# ---------------------------------------------------------------------------
+# Source filename (homepage footer) — Word + extra PDF sources
+# ---------------------------------------------------------------------------
+
+class TestSourceFilename:
+    def test_word_only_source(self, settings, file_manager, fake_input):
+        gen = HTMLGenerator(settings, file_manager, fake_input)
+        assert gen._build_source_filename() == "book.docx"
+
+    def test_word_plus_pdf_source(self, settings, file_manager, fake_input, tmp_path):
+        pdf = tmp_path / "answers.pdf"
+        gen = HTMLGenerator(settings, file_manager, fake_input, extra_source_files=[pdf])
+        assert gen._build_source_filename() == "book.docx、answers.pdf"
+
+    def test_index_shows_both_sources(self, settings, file_manager, fake_input, output_dir, tmp_path):
+        pdf = tmp_path / "answers.pdf"
+        gen = HTMLGenerator(settings, file_manager, fake_input, extra_source_files=[pdf])
+        cfg = ConversionConfig(input_file=fake_input, output_folder=output_dir)
+        ch = Chapter(title="第一章", filename="01.html")
+        ch.add_toc_item(1, "第一章", "ch1")
+        gen.generate_index_pages([ch], cfg, generate_traditional=False, generate_simplified=True)
+        content = (output_dir / "index.html").read_text(encoding="utf-8")
+        assert "book.docx、answers.pdf" in content

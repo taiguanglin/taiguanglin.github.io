@@ -28,6 +28,7 @@ class HTMLGenerator:
         settings: Settings,
         file_manager: FileManager,
         input_file: Optional[Path] = None,
+        extra_source_files: Optional[List[Path]] = None,
     ):
         self.settings = settings
         self.file_manager = file_manager
@@ -35,6 +36,8 @@ class HTMLGenerator:
         self.toc_generator = TOCGenerator()
         self.i18n_processor = I18nProcessor()
         self.input_file = input_file
+        # 額外的來源檔（例如附加的 PDF）；會與 input_file 一起顯示在首頁底部的 Source
+        self.extra_source_files = [Path(p) for p in (extra_source_files or [])]
         self.favicon_manager = None
         self.favicon_tag = ""
 
@@ -158,7 +161,7 @@ class HTMLGenerator:
             toc_html = self.toc_generator.build_index_toc(trad_chapters, is_traditional=True)
             index_filename = "index_trad.html"
             lang_switch_links = self._build_lang_switch_links(index_filename, is_traditional=True)
-            source_filename = self.input_file.name if self.input_file else ""
+            source_filename = self._build_source_filename()
             html_content = self.i18n_template_manager.render_index(
                 is_traditional=True,
                 book_title=self.i18n_processor.to_traditional(book_title),
@@ -171,7 +174,7 @@ class HTMLGenerator:
             toc_html = self.toc_generator.build_index_toc(chapters, is_traditional=False)
             index_filename = "index.html"
             lang_switch_links = self._build_lang_switch_links(index_filename, is_traditional=False)
-            source_filename = self.input_file.name if self.input_file else ""
+            source_filename = self._build_source_filename()
             html_content = self.i18n_template_manager.render_index(
                 is_traditional=False,
                 book_title=self.i18n_processor.ensure_simplified(book_title),
@@ -237,6 +240,14 @@ class HTMLGenerator:
             top_nav_links = f'<div class="top-nav-buttons">{prev_link}{next_link}</div>'
 
         return {"prev_link": prev_link, "next_link": next_link, "top_nav_links": top_nav_links}
+
+    def _build_source_filename(self) -> str:
+        """組合首頁底部的來源檔名（Word + 任何附加 PDF）。"""
+        names = []
+        if self.input_file:
+            names.append(self.input_file.name)
+        names.extend(p.name for p in self.extra_source_files)
+        return "、".join(names)
 
     def _build_lang_switch_links(self, current_filename: str, is_traditional: bool) -> str:
         """生成语言切换 HTML 片段。"""

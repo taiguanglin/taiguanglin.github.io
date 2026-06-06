@@ -53,9 +53,17 @@ The system SHALL extract inline images from the `.docx` and save them as
 For each chapter the system SHALL populate `Chapter.toc_items` with `TOCItem`
 records for all Heading 2, 3, and 4 paragraphs found within that chapter.
 
+### Requirement: Shared Chapter Finalize
+The parser SHALL finalize each chapter through
+`core.chapter_finalizer.finalize_chapter` (QA-block merging, back-to-top
+insertion, Q&A count metadata, and collapsible chapter TOC), which is the same
+function used by `core/pdf_parser.py`. This keeps Word and PDF chapter output
+byte-for-byte consistent in structure.
+
 ## Technical Notes
 
 - Implementation: `core/document_parser.py::DocumentParser`
+- Shared finalize: `core/chapter_finalizer.py` (`finalize_chapter`, `merge_qa_blocks`, `insert_back_to_top`)
 - Uses: `python-docx` for DOCX reading
 - ID generation: `utils/text_utils.py::IDGenerator.generate_stable_qa_id`
 - Heading level mapping: DOCX `heading 1` → `<h1>`, `heading 2` → `<h2>`, etc.

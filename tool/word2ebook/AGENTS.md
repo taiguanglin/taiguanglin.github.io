@@ -7,13 +7,17 @@
 
 ## What this project does
 
-Converts a `.docx` file into a static HTML ebook with:
+Converts a `.docx` file (and, optionally, a monthly-Q&A `.pdf`) into a static HTML ebook with:
 - Bilingual output (Simplified + Traditional Chinese)
 - Full-text search via [MiniSearch](https://lucaong.github.io/minisearch/) + jieba WASM
 - Collapsible TOC, bookmarks, reading settings, floating controls
 - All output files are plain HTML/CSS/JS — no runtime server needed
 
-Entry point: `python main.py <input.docx> <output_dir>`
+Entry point: `python main.py <input.docx> <output_dir> [--pdf <answers.pdf>]`
+
+A `--pdf` source is parsed into month-based chapters (date + source sub-headings)
+and appended after the Word chapters. Dev-only `--only-word` / `--only-pdf` modes
+regenerate just one source's chapter pages (skipping index + search rebuild).
 
 ---
 
@@ -24,12 +28,16 @@ main.py
   Word2EBookConverter.convert()
     1. _setup_output_directory()          → FileManager cleans/creates output dir
     2. copy_favicon_after_setup()         → FaviconManager copies favicon
-    3. DocumentParser.parse_document()    → .docx → List[Chapter]
+    3. _parse_chapters()                  → DocumentParser (.docx) + PDFParser (.pdf) → List[Chapter]
     4. HTMLGenerator.generate_chapter_pages()   → writes chapter .html files
-    5. HTMLGenerator.generate_index_pages()     → writes index.html / index_trad.html
-    6. SearchIndexGenerator.generate_search_indexes()  → writes search_index*.json
+    5. HTMLGenerator.generate_index_pages()     → writes index.html / index_trad.html  (skipped in partial mode)
+    6. SearchIndexGenerator.generate_search_indexes()  → writes search_index*.json     (skipped in partial mode)
     7. _generate_static_assets()          → copies CSS/JS bundle to output/assets/
 ```
+
+Both `DocumentParser` and `PDFParser` build their chapters through the shared
+`core/chapter_finalizer.py` (`finalize_chapter`), so Word and PDF chapters have
+identical markup, TOC, Q&A counts, and search behaviour.
 
 ---
 
@@ -37,10 +45,12 @@ main.py
 
 | File | Responsibility | Lines |
 |------|---------------|-------|
-| `main.py` | CLI entry, `Word2EBookConverter` orchestrator | 230 |
-| `models/document_models.py` | Dataclasses: `Chapter`, `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` | 183 |
+| `main.py` | CLI entry, `Word2EBookConverter` orchestrator; `_parse_chapters` concatenates Word + PDF; `--pdf`/`--only-word`/`--only-pdf` flags | ~300 |
+| `models/document_models.py` | Dataclasses: `Chapter`, `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` (incl. `pdf_file`, `only_word`, `only_pdf`, `pdf_start_index`) | ~195 |
 | `config/settings.py` | `Settings` dataclass, `Constants` (CDN URLs, filenames, search weights, answerer names, heading ranges) | 124 |
-| `core/document_parser.py` | Parses `.docx` → `List[Chapter]`; builds HTML content, merges QA blocks | 423 |
+| `core/document_parser.py` | Parses `.docx` → `List[Chapter]`; builds HTML content; delegates chapter finalize to `chapter_finalizer` | ~300 |
+| `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` sections); x0-indent paragraph reflow; shares `chapter_finalizer` | ~330 |
+| `core/chapter_finalizer.py` | Shared block→`Chapter` finalize (QA merge, back-to-top, QA counts, chapter TOC) used by both Word and PDF parsers | ~190 |
 | `core/content_processor.py` | Extracts search items from HTML; assigns element IDs | 216 |
 | `generators/html_generator.py` | `HTMLGenerator` — renders chapter/index pages via `I18nTemplateManager`; simplified/traditional variants are unified via `_generate_chapters`/`_generate_index` | ~220 |
 | `generators/toc_generator.py` | `TOCGenerator` — builds TOC HTML; public `generate_qa_count_metadata()` API | ~260 |
@@ -115,8 +125,9 @@ Behavioral specs live in `openspec/specs/<domain>/spec.md`. They define **what t
 
 | Spec | Covers |
 |------|--------|
-| `overview/spec.md` | CLI args, pipeline order, fast/skip modes |
+| `overview/spec.md` | CLI args, pipeline order, fast/skip modes, PDF append, partial dev modes |
 | `document-parsing/spec.md` | `.docx` parsing rules, QA merging |
+| `pdf-parsing/spec.md` | `.pdf` → month chapters, date+source headings, reflow, source switching |
 | `html-generation/spec.md` | Chapter/index HTML structure |
 | `search/spec.md` | Search index generation, content extraction |
 | `frontend-js/spec.md` | JS module responsibilities |

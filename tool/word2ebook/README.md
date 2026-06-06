@@ -60,7 +60,18 @@ python main.py input.docx output_folder --skip-index
 
 # 跳过繁体版
 python main.py input.docx output_folder --skip-traditional
+
+# Word + 附加 PDF 答疑（依月份分章，接在 Word 章節之後）
+python main.py input.docx output_folder --pdf answers.pdf
+
+# 開發用部分模式（略過首頁與搜尋索引，快速預覽版型）
+python main.py input.docx output_folder --pdf answers.pdf --only-pdf  # 只重生 PDF 章節
+python main.py input.docx output_folder --only-word                   # 只重生 Word 章節
 ```
+
+> `--pdf` 會把「每月答疑合併 PDF」解析成月份章節（章節標題如 `13二〇二五年六月`），
+> 章節內以「日期 + 來源」（例如 `2025年6月9日 貼吧`）作為第二層目錄，版型、計數與
+> 全文搜尋皆與 Word 章節一致。部分模式僅供開發快速預覽，最終發佈請執行一次完整建置。
 
 ### 程序化使用
 

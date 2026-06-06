@@ -14,6 +14,7 @@ from models.document_models import ConversionConfig
 from config.settings import Settings, DEFAULT_SETTINGS
 from utils.file_utils import FileManager
 from core.document_parser import DocumentParser
+from core.pdf_parser import PDFParser
 from generators.html_generator import HTMLGenerator
 from generators.search_generator import SearchIndexGenerator
 from templates.static_assets import StaticAssetsManager
@@ -29,16 +30,31 @@ class Word2EBookConverter:
         # 初始化组件
         self.file_manager = FileManager(config.output_folder)
         self.document_parser = DocumentParser(self.settings, self.file_manager)
-        self.html_generator = HTMLGenerator(self.settings, self.file_manager, config.input_file)
+        self.pdf_parser = PDFParser(self.settings)
+        extra_sources = [config.pdf_file] if config.pdf_file else []
+        self.html_generator = HTMLGenerator(
+            self.settings, self.file_manager, config.input_file,
+            extra_source_files=extra_sources,
+        )
         self.search_generator = SearchIndexGenerator(self.settings, self.file_manager)
         
         # 静态资源管理器（从原文件加载完整CSS/JS）
         original_file = Path(__file__).parent.parent / "word2ebook.py"
         self.assets_manager = StaticAssetsManager(original_file)
-    
+
+    @property
+    def _is_partial(self) -> bool:
+        """開發用部分模式：只重生 Word 或只重生 PDF 的章節頁。"""
+        return self.config.only_word or self.config.only_pdf
+
     def convert(self) -> None:
         """执行转换"""
         print(f"📋 开始转换：{self.config.input_file} -> {self.config.output_folder}")
+        if self.config.pdf_file:
+            print(f"   附加 PDF 來源: {self.config.pdf_file}")
+        if self._is_partial:
+            mode = "只重生 Word 章節" if self.config.only_word else "只重生 PDF 章節"
+            print(f"   ⚡ 部分模式: {mode}（略過首頁與搜尋索引）")
         print(f"   生成简体版: {'✅' if self.config.generate_simplified else '❌'}")
         print(f"   生成繁体版: {'✅' if self.config.generate_traditional else '❌'}")
         print(f"   生成搜索索引: {'✅' if self.config.generate_search else '❌'}")
@@ -51,19 +67,23 @@ class Word2EBookConverter:
         # 1.5. 複製favicon文件（如果有的話）
         self.html_generator.copy_favicon_after_setup()
         
-        # 2. 解析文档
-        print("📖 正在解析 Word 文档...")
-        chapters, image_map = self.document_parser.parse_document(self.config.input_file)
-        print(f"✅ 解析完成，共找到 {len(chapters)} 个章节")
+        # 2. 解析來源（Word + 可選的 PDF）
+        chapters = self._parse_chapters()
+        print(f"✅ 解析完成，共 {len(chapters)} 个章节")
         
         # 3. 生成HTML页面
         print("🔧 正在生成 HTML 页面...")
         self.html_generator.generate_chapter_pages(chapters, self.config.generate_traditional, self.config.generate_simplified)
-        self.html_generator.generate_index_pages(chapters, self.config, self.config.generate_traditional, self.config.generate_simplified)
+        if self._is_partial:
+            print("⏭️  部分模式：保留現有首頁與搜尋索引（不重建）")
+        else:
+            self.html_generator.generate_index_pages(chapters, self.config, self.config.generate_traditional, self.config.generate_simplified)
         print("✅ HTML 页面生成完成")
         
-        # 4. 处理搜索索引
-        if self.config.generate_search:
+        # 4. 处理搜索索引（部分模式下不重建）
+        if self._is_partial:
+            pass
+        elif self.config.generate_search:
             print("🔍 正在生成搜索索引...")
             self.search_generator.generate_search_indexes(chapters, self.config.generate_traditional, self.config.generate_simplified)
         else:
@@ -77,16 +97,41 @@ class Word2EBookConverter:
         
         # 6. 显示完成信息
         self._show_completion_info()
+
+    def _parse_chapters(self) -> list:
+        """解析 Word 與 PDF 來源並串接成單一章節清單。"""
+        chapters: list = []
+
+        if not self.config.only_pdf:
+            print("📖 正在解析 Word 文档...")
+            word_chapters, _image_map = self.document_parser.parse_document(self.config.input_file)
+            print(f"   Word 章節: {len(word_chapters)}")
+            chapters.extend(word_chapters)
+
+        if self.config.pdf_file and not self.config.only_word:
+            # 完整執行時 PDF 章節接在 Word 章節之後；只跑 PDF 時用設定的起始編號
+            start_index = self.config.pdf_start_index if self.config.only_pdf else len(chapters)
+            print(f"📕 正在解析 PDF 答疑（章節編號從 {start_index + 1} 開始）...")
+            pdf_chapters = self.pdf_parser.parse(self.config.pdf_file, start_index=start_index)
+            print(f"   PDF 章節: {len(pdf_chapters)}")
+            chapters.extend(pdf_chapters)
+
+        return chapters
     
     def _setup_output_directory(self) -> None:
         """设置输出目录"""
         print("📁 正在设置输出目录...")
         # 决定是否清空目录的逻辑：
-        # 1. 如果跳过任何版本生成（简体或繁体），则保留现有内容
-        # 2. 如果跳过搜索索引生成，则保留现有内容  
-        # 3. 只有在完整重建时（生成所有内容）才清空目录
+        # 1. 部分模式（只重生 Word/PDF）一定保留現有內容
+        # 2. 如果跳过任何版本生成（简体或繁体），则保留现有内容
+        # 3. 如果跳过搜索索引生成，则保留现有内容
+        # 4. 只有在完整重建时（生成所有内容）才清空目录
         skip_any_version = not self.config.generate_simplified or not self.config.generate_traditional
-        clean_existing = self.config.generate_search and not skip_any_version
+        clean_existing = (
+            self.config.generate_search
+            and not skip_any_version
+            and not self._is_partial
+        )
         self.file_manager.setup_output_directory(clean_existing)
     
     def _generate_static_assets(self) -> None:
@@ -145,10 +190,15 @@ def create_argument_parser() -> argparse.ArgumentParser:
         epilog="""
 示例:
   python main.py input.docx output_folder                    # 生成完整版本
+  python main.py input.docx output_folder --pdf answers.pdf  # Word + PDF 月份章節（完整重建）
   python main.py input.docx output_folder --fast            # 快速模式
   python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
   python main.py input.docx output_folder --skip-traditional # 跳过繁体版
   python main.py input.docx output_folder --skip-simplified  # 跳过简体版
+
+  # 開發用部分模式（略過首頁與搜尋索引，快速預覽版型）：
+  python main.py input.docx output_folder --pdf answers.pdf --only-pdf   # 只重生 PDF 章節
+  python main.py input.docx output_folder --only-word                    # 只重生 Word 章節
 
         """
     )
@@ -165,6 +215,18 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
     parser.add_argument('--fast', action='store_true',
                        help='快速模式：跳过搜索索引生成和繁体版生成')
+
+    parser.add_argument('--pdf', dest='pdf_file', default=None,
+                       help='附加的 PDF 答疑來源，會以月份分章接在 Word 章節之後')
+
+    mode_group = parser.add_mutually_exclusive_group()
+    mode_group.add_argument('--only-word', action='store_true',
+                       help='開發用：只重生 Word 章節頁（保留 PDF 章節、首頁、搜尋索引）')
+    mode_group.add_argument('--only-pdf', action='store_true',
+                       help='開發用：只重生 PDF 章節頁（保留 Word 章節、首頁、搜尋索引）')
+
+    parser.add_argument('--pdf-start-index', type=int, default=12,
+                       help='只跑 --only-pdf 時，PDF 章節編號的起始基準（預設 12 → 從 13 開始）')
     
     return parser
 
@@ -179,11 +241,23 @@ def main() -> None:
         print("❌ 错误：不能同时跳过简体版和繁体版生成")
         print("   请选择生成至少一种版本")
         sys.exit(1)
-    
+
+    if args.only_pdf and not args.pdf_file:
+        print("❌ 错误：--only-pdf 需要同時提供 --pdf <PDF 路徑>")
+        sys.exit(1)
+
+    only_word = args.only_word
+    only_pdf = args.only_pdf
+    is_partial = only_word or only_pdf
+
     # 处理快速模式和生成选项
     generate_search_index = not (args.skip_index or args.fast)
     generate_traditional = not (args.skip_traditional or args.fast)
     generate_simplified = not (args.skip_simplified or args.fast)
+
+    # 部分模式：略過搜尋索引重建（保留現有索引），加速開發迭代
+    if is_partial:
+        generate_search_index = False
 
     
     # 測試優化：如果沒有明確指定，默認只生成繁體版（用於開發測試）
@@ -201,7 +275,10 @@ def main() -> None:
         generate_search=generate_search_index,
         generate_traditional=generate_traditional,
         generate_simplified=generate_simplified,
-
+        pdf_file=Path(args.pdf_file) if args.pdf_file else None,
+        only_word=only_word,
+        only_pdf=only_pdf,
+        pdf_start_index=args.pdf_start_index,
     )
     
     # 验证输入文件
@@ -212,6 +289,15 @@ def main() -> None:
     if not config.input_file.suffix.lower() in ['.docx', '.doc']:
         print(f"❌ 错误：不支持的文件格式 - {config.input_file.suffix}")
         return
+
+    # 验证 PDF 来源
+    if config.pdf_file is not None:
+        if not config.pdf_file.exists():
+            print(f"❌ 错误：PDF 文件不存在 - {config.pdf_file}")
+            return
+        if config.pdf_file.suffix.lower() != '.pdf':
+            print(f"❌ 错误：不支持的 PDF 文件格式 - {config.pdf_file.suffix}")
+            return
     
     try:
         # 创建设置副本并应用配置

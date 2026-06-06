@@ -49,6 +49,30 @@ class TestCreateArgumentParser:
         assert args.skip_simplified is False
         assert args.fast is False
 
+    def test_pdf_arg(self):
+        parser = create_argument_parser()
+        args = parser.parse_args(["in.docx", "out/", "--pdf", "answers.pdf"])
+        assert args.pdf_file == "answers.pdf"
+
+    def test_only_word_and_only_pdf_flags(self):
+        parser = create_argument_parser()
+        args = parser.parse_args(["in.docx", "out/", "--only-word"])
+        assert args.only_word is True
+        assert args.only_pdf is False
+        args2 = parser.parse_args(["in.docx", "out/", "--pdf", "a.pdf", "--only-pdf"])
+        assert args2.only_pdf is True
+
+    def test_only_word_and_only_pdf_mutually_exclusive(self):
+        parser = create_argument_parser()
+        with pytest.raises(SystemExit):
+            parser.parse_args(["in.docx", "out/", "--only-word", "--only-pdf"])
+
+    def test_pdf_start_index_default_and_custom(self):
+        parser = create_argument_parser()
+        assert parser.parse_args(["in.docx", "out/"]).pdf_start_index == 12
+        args = parser.parse_args(["in.docx", "out/", "--pdf-start-index", "5"])
+        assert args.pdf_start_index == 5
+
 
 # ---------------------------------------------------------------------------
 # Word2EBookConverter
@@ -154,6 +178,66 @@ class TestWord2EBookConverter:
         mock_gen.assert_not_called()
         mock_ensure.assert_called_once()
 
+    def test_parse_chapters_concatenates_word_and_pdf(self, mock_input_file, tmp_path):
+        pdf = tmp_path / "answers.pdf"
+        pdf.touch()
+        cfg = ConversionConfig(
+            input_file=mock_input_file,
+            output_folder=tmp_path / "output",
+            pdf_file=pdf,
+        )
+        converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
+        word_chs = [Chapter(title=f"{i:02d}", filename=f"{i:02d}.html") for i in range(1, 13)]
+        pdf_chs = [Chapter(title="13六月", filename="13.html")]
+
+        with (
+            patch.object(converter.document_parser, "parse_document",
+                         return_value=(word_chs, {})),
+            patch.object(converter.pdf_parser, "parse", return_value=pdf_chs) as mock_pdf,
+        ):
+            chapters = converter._parse_chapters()
+
+        # PDF parser invoked with start_index == number of word chapters (12)
+        mock_pdf.assert_called_once()
+        assert mock_pdf.call_args.kwargs.get("start_index") == 12
+        assert len(chapters) == 13
+
+    def test_only_pdf_partial_skips_index_and_search(self, mock_input_file, tmp_path):
+        pdf = tmp_path / "answers.pdf"
+        pdf.touch()
+        cfg = ConversionConfig(
+            input_file=mock_input_file,
+            output_folder=tmp_path / "output",
+            pdf_file=pdf,
+            only_pdf=True,
+            generate_search=False,
+            pdf_start_index=12,
+        )
+        converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
+        pdf_chs = [Chapter(title="13六月", filename="13.html")]
+
+        with (
+            patch.object(converter, "_setup_output_directory"),
+            patch.object(converter.html_generator, "copy_favicon_after_setup"),
+            patch.object(converter.document_parser, "parse_document") as mock_word,
+            patch.object(converter.pdf_parser, "parse", return_value=pdf_chs) as mock_pdf,
+            patch.object(converter.html_generator, "generate_chapter_pages") as mock_pages,
+            patch.object(converter.html_generator, "generate_index_pages") as mock_index,
+            patch.object(converter.search_generator, "generate_search_indexes") as mock_search,
+            patch.object(converter.search_generator, "ensure_search_index_files") as mock_ensure,
+            patch.object(converter, "_generate_static_assets"),
+            patch.object(converter, "_show_completion_info"),
+        ):
+            converter.convert()
+
+        mock_word.assert_not_called()          # only-pdf does not parse docx
+        mock_pdf.assert_called_once()
+        assert mock_pdf.call_args.kwargs.get("start_index") == 12
+        mock_pages.assert_called_once()
+        mock_index.assert_not_called()         # partial mode: index preserved
+        mock_search.assert_not_called()        # partial mode: search preserved
+        mock_ensure.assert_not_called()
+
     def test_generate_static_assets_writes_css_and_js(self, conversion_config):
         converter = Word2EBookConverter(conversion_config, DEFAULT_SETTINGS)
         conversion_config.output_folder.mkdir(parents=True, exist_ok=True)
@@ -198,3 +282,19 @@ class TestMainFunction:
         with patch("sys.argv", ["main.py", "in.docx", "out/", "--skip-traditional", "--skip-simplified"]):
             with pytest.raises(SystemExit):
                 main()
+
+    def test_main_only_pdf_without_pdf_exits(self):
+        from main import main
+        with patch("sys.argv", ["main.py", "in.docx", "out/", "--only-pdf"]):
+            with pytest.raises(SystemExit):
+                main()
+
+    def test_main_missing_pdf_file_returns(self, tmp_path, capsys):
+        from main import main
+        docx = tmp_path / "book.docx"
+        docx.touch()
+        with patch("sys.argv", ["main.py", str(docx), str(tmp_path / "out"),
+                                "--pdf", str(tmp_path / "nope.pdf")]):
+            main()
+        captured = capsys.readouterr()
+        assert "PDF" in captured.out and "不存在" in captured.out
