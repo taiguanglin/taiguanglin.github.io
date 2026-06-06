@@ -110,6 +110,33 @@ The parser SHALL handle a questioner whose name is glued to a leading separator
 line (`———…———名字：`) followed by a bare time line, splitting the separator off
 and merging the name with the time into a single questioner.
 
+### Requirement: Wrapped (Line-Broken) Questioner Names
+A questioner header pushed onto the trailing edge of a separator line can break
+across two lines, leaving the **first part of the name** glued after the
+separator and the **rest of the name (plus optional time)** on the next line
+(e.g. `———…———白瀑` then `印龙：2025-08-05 10:34`, or `———…———西瓜` then `柿：`).
+The parser SHALL rejoin the two halves into a single questioner header
+(`白瀑印龙：2025-08-05 10:34`, `西瓜柿：`) so neither half leaks as a stray
+paragraph or a separate questioner. A genuine short name that occupies its own
+line after the separator (e.g. `西瓜：`) SHALL remain its own questioner and SHALL
+NOT be merged.
+
+#### Scenario: Name with time broken across the separator
+- GIVEN `———…———白瀑` immediately followed by `印龙：2025-08-05 10:34`
+- WHEN parsed
+- THEN a single questioner `白瀑印龙` with time `2025-08-05 10:34` SHALL be
+  produced, and neither `白瀑` nor `印龙` SHALL appear as its own questioner
+
+#### Scenario: Name without time broken across the separator
+- GIVEN `———…———西瓜` immediately followed by `柿：` (no time)
+- WHEN parsed
+- THEN a single questioner `西瓜柿` SHALL be produced
+
+#### Scenario: Genuine short name is not over-merged
+- GIVEN a clean separator line followed by `西瓜：` on its own line
+- WHEN parsed
+- THEN `西瓜` SHALL remain its own questioner
+
 ### Requirement: Source Switching
 A new day SHALL reset the current source to `贴吧`. A `师父说` line mentioning
 `公众号` or `微信` SHALL switch the current source to `微信公众号`. Closing lines

@@ -76,6 +76,31 @@ def _normalize_spaces(text: str) -> str:
     return text.strip()
 
 
+def _is_name_tail(s: str) -> bool:
+    """``s`` 是否為「被折行的提問者名字」後半段（以冒號收尾，可帶時間）。
+
+    例如分隔線上黏著「白瀑」、下一行是「印龙：2025-08-05 10:34」或「柿：」，
+    後半段即為 name tail，應與前半段合併成完整提問者。排除 ``Taiguanglin：``、
+    ``师父说：`` 這類標記行。
+    """
+    if not s or ANSWER_RE.match(s) or s.startswith("师父说"):
+        return False
+    return bool(QTIME_RE.match(s) or NAMECOLON_RE.match(s))
+
+
+def _plausible_lone_name(s: str) -> bool:
+    """黏在分隔線後、且下一行非 name tail 時，``s`` 是否像「無冒號的提問者名」。
+
+    分隔線之後必為提問者，但少數名字抽取時遺失了冒號（例如「洋」後面直接接
+    問題內容）。此時補上冒號當成無時間提問者。以長度與標點排除句子/標記。
+    """
+    if not s or len(s) > 16:
+        return False
+    if ANSWER_RE.match(s) or s.startswith("师父说") or NUM_RE.match(s):
+        return False
+    return not re.search(r"[。？！，；,.?!;：:]", s)
+
+
 class PDFParser:
     """PDF 答疑解析器。"""
 
@@ -141,26 +166,54 @@ class PDFParser:
     # ------------------------------------------------------------------ #
 
     def _preclean(self, lines: List[Tuple[float, str]]) -> List[Tuple[float, str]]:
-        stage1: List[Tuple[float, str]] = []
+        # 階段 0：移除頁碼／頁尾／空行
+        clean: List[Tuple[float, str]] = []
         for x0, raw in lines:
             t = raw.strip()
-            if not t:
+            if not t or PAGE_RE.match(t) or FOOTER_TEXT in t:
                 continue
-            if PAGE_RE.match(t):
-                continue
-            if FOOTER_TEXT in t:
-                continue
-            # 拆出黏在行首的長分隔線（例如「———…———紫蘇：」）
-            m = LEAD_DASH_RE.match(t)
-            if m:
-                stage1.append((x0, m.group(1)))
-                rest = m.group(2).strip()
-                if rest:
-                    stage1.append((x0, rest))
-                continue
-            stage1.append((x0, t))
+            clean.append((x0, t))
 
-        # 合併「人名：」（單獨一行、無時間）+ 下一行純時間
+        # 階段 1：拆出黏在行首的長分隔線（例如「———…———紫蘇：」），並把
+        # 「被分隔線擠到上一行」的提問者名字重新接回來。版面上分隔線之後一定
+        # 是提問者，名字較長時會折行成「———…———白瀑」+「印龙：2025-…」或
+        # 「———…———西瓜」+「柿：」，必須合併成完整提問者，否則前半段會變成
+        # 孤立段落、後半段被誤判成另一個提問者。
+        stage1: List[Tuple[float, str]] = []
+        i = 0
+        n = len(clean)
+        while i < n:
+            x0, t = clean[i]
+            m = LEAD_DASH_RE.match(t)
+            if not m:
+                stage1.append((x0, t))
+                i += 1
+                continue
+            stage1.append((x0, m.group(1)))  # 分隔線本身
+            rest = m.group(2).strip()
+            if not rest:
+                i += 1
+                continue
+            if rest.endswith(("：", ":")):
+                # 完整「人名：」黏在分隔線上 → 原樣保留（stage2 可能再併純時間）
+                stage1.append((x0, rest))
+                i += 1
+                continue
+            nxt = clean[i + 1][1].strip() if i + 1 < n else ""
+            if _is_name_tail(nxt):
+                # 折行名字前半段 + 後半段（白瀑 + 印龙：time → 白瀑印龙：time）
+                stage1.append((x0, rest + nxt))
+                i += 2
+                continue
+            if _plausible_lone_name(rest):
+                # 名字遺失冒號（洋 → 洋：）→ 當成無時間提問者
+                stage1.append((x0, rest + "："))
+                i += 1
+                continue
+            stage1.append((x0, rest))
+            i += 1
+
+        # 階段 2：合併「人名：」（單獨一行、無時間）+ 下一行純時間
         merged: List[Tuple[float, str]] = []
         i = 0
         while i < len(stage1):

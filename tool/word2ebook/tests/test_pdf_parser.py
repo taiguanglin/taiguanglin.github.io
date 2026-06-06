@@ -297,6 +297,69 @@ class TestNoTimeQuestioners:
         assert "感恩师父" in first
         assert "1、第一个泰国佛牌问题？" in first
 
+    def test_wrapped_name_with_time_rejoined(self, parser):
+        """A long name pushed onto the separator line ('———白瀑') with the rest
+        ('印龙：time') on the next line must rejoin into one questioner."""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月5 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月5 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-08-05 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————白瀑"),
+            (CONT, "印龙：2025-08-05 10:34"),
+            (IND,  "Tai 师好，平安吉祥。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "白瀑印龙，这是回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">白瀑印龙</span>' in ch.content
+        assert '<span class="question-time">2025-08-05 10:34</span>' in ch.content
+        # neither half leaks as its own questioner / paragraph
+        assert '<span class="questioner">白瀑</span>' not in ch.content
+        assert '<span class="questioner">印龙</span>' not in ch.content
+        assert "<p>白瀑" not in ch.content
+
+    def test_wrapped_name_without_time_rejoined(self, parser):
+        """'———西瓜' + '柿：' (no time) rejoins into questioner 西瓜柿."""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月7 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-08-07 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "——————————————————————————— 西瓜"),
+            (CONT, "柿："),
+            (IND,  "顶礼师父，请问一个问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "西瓜柿，这是回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">西瓜柿</span>' in ch.content
+        assert '<span class="questioner">西瓜</span>' not in ch.content
+        assert '<span class="questioner">柿</span>' not in ch.content
+
+    def test_standalone_short_name_questioner_unaffected(self, parser):
+        """A genuine short name ('西瓜：') on its own line stays its own
+        questioner and is NOT merged with the wrapped-name logic."""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月7 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-08-07 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "西瓜："),
+            (IND,  "师父，请问一个问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "西瓜，这是回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">西瓜</span>' in ch.content
+
     def test_colon_ending_continuation_is_not_a_questioner(self, parser):
         """A sentence wrapped onto a left-margin line that ends with '：' inside
         an open question must stay question text, not become a fake questioner."""
