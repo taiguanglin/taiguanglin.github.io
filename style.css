@@ -6,22 +6,22 @@
 }
 
 :root {
-    /* Pink Color Palette */
-    --primary-pink: #ff69b4;
-    --light-pink: #ffb6c1;
-    --soft-pink: #ffc0cb;
-    --pale-pink: #f8f4f6;
-    --deep-pink: #ff1493;
+    /* Ink-wash Sepia Palette */
+    --primary-pink: #8a5a2b;
+    --light-pink: #c69a5a;
+    --soft-pink: #e7d7b8;
+    --pale-pink: #f5eee0;
+    --deep-pink: #5f3c18;
     
-    /* Neutral Colors */
+    /* Neutral Colors (warm) */
     --white: #ffffff;
-    --light-gray: #f8f9fa;
-    --gray: #6c757d;
-    --dark-gray: #495057;
-    --black: #212529;
+    --light-gray: #f6f1e7;
+    --gray: #7a6e5d;
+    --dark-gray: #50463a;
+    --black: #2c2620;
     
     /* Gradients */
-    --pink-gradient: linear-gradient(135deg, var(--light-pink) 0%, var(--primary-pink) 100%);
+    --pink-gradient: linear-gradient(135deg, #a9712f 0%, #74491e 100%);
     --soft-gradient: linear-gradient(135deg, var(--pale-pink) 0%, var(--white) 100%);
     
     /* Primary Colors (Legacy Support) */
@@ -84,7 +84,7 @@
         color: white;
         border-color: var(--primary-pink);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+        box-shadow: 0 4px 12px rgba(94, 60, 24, 0.3);
     }
     
     .nav-button.next {
@@ -102,10 +102,10 @@
     --radius-xl: 2rem;
     
     /* Shadows */
-    --shadow-sm: 0 2px 4px rgba(255, 105, 180, 0.1);
-    --shadow-md: 0 4px 12px rgba(255, 105, 180, 0.15);
-    --shadow-lg: 0 8px 24px rgba(255, 105, 180, 0.2);
-    --shadow-xl: 0 16px 40px rgba(255, 105, 180, 0.25);
+    --shadow-sm: 0 2px 4px rgba(94, 60, 24, 0.12);
+    --shadow-md: 0 4px 12px rgba(94, 60, 24, 0.16);
+    --shadow-lg: 0 8px 24px rgba(94, 60, 24, 0.20);
+    --shadow-xl: 0 16px 40px rgba(94, 60, 24, 0.24);
     
     /* Transitions */
     --transition-fast: all 0.2s ease;
@@ -588,7 +588,7 @@ html {
     box-shadow: var(--shadow-sm);
     text-align: center;
     transition: var(--transition-normal);
-    border: 1px solid rgba(255, 105, 180, 0.1);
+    border: 1px solid rgba(94, 60, 24, 0.1);
 }
 
 .theory-card:hover {
@@ -629,7 +629,7 @@ html {
 .infographic-cta {
     margin-top: var(--spacing-xl);
     padding-top: var(--spacing-xl);
-    border-top: 1px solid rgba(255, 105, 180, 0.2);
+    border-top: 1px solid rgba(94, 60, 24, 0.2);
 }
 
 .infographic-cta-content {
@@ -932,7 +932,7 @@ html {
     box-shadow: var(--shadow-sm);
     text-align: center;
     transition: var(--transition-normal);
-    border: 1px solid rgba(255, 105, 180, 0.1);
+    border: 1px solid rgba(94, 60, 24, 0.1);
 }
 
 .wenda-card:hover {
@@ -992,7 +992,7 @@ html {
 .wenda-topics {
     margin-top: var(--spacing-xl);
     padding-top: var(--spacing-xl);
-    border-top: 1px solid rgba(255, 105, 180, 0.2);
+    border-top: 1px solid rgba(94, 60, 24, 0.2);
     text-align: center;
 }
 
@@ -1171,7 +1171,7 @@ html {
     text-align: center;
     margin-top: var(--spacing-xl);
     padding-top: var(--spacing-xl);
-    border-top: 1px solid rgba(255, 105, 180, 0.2);
+    border-top: 1px solid rgba(94, 60, 24, 0.2);
 }
 
 .more-stories-button {
@@ -1985,7 +1985,7 @@ html {
 .infographic-category {
     margin-bottom: var(--spacing-xxl);
     padding-bottom: var(--spacing-xl);
-    border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+    border-bottom: 1px solid rgba(94, 60, 24, 0.2);
 }
 
 .infographic-category:last-child {
@@ -2121,7 +2121,7 @@ html {
     max-height: 80vh;
     object-fit: contain;
     border-radius: var(--radius-md);
-    box-shadow: 0 0 50px rgba(255, 105, 180, 0.3);
+    box-shadow: 0 0 50px rgba(94, 60, 24, 0.3);
 }
 
 .lightbox-close {
