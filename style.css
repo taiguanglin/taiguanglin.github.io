@@ -351,8 +351,22 @@ html {
     align-items: center;
     justify-content: center;
     position: relative;
-    background: url('images/cosmic-buddha.png') center/cover no-repeat;
+    background: url('images/zazen.png') center/cover no-repeat;
     overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(18, 18, 28, 0.30) 0%,
+        rgba(18, 18, 28, 0.38) 38%,
+        rgba(12, 12, 22, 0.66) 100%
+    );
+    z-index: 1;
+    pointer-events: none;
 }
 
 .hero-background {
@@ -382,15 +396,17 @@ html {
     font-size: 3.5rem;
     font-weight: var(--font-weight-bold);
     margin-bottom: var(--spacing-md);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+    color: #ffffff;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.85), 0 1px 3px rgba(0, 0, 0, 0.6);
 }
 
 .hero-subtitle {
     font-size: 1.25rem;
-    font-weight: var(--font-weight-normal);
+    font-weight: var(--font-weight-medium);
     margin-bottom: var(--spacing-lg);
-    opacity: 0.95;
-    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    opacity: 1;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9), 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .hero-quote {
@@ -405,22 +421,24 @@ html {
     line-height: 1.7;
     margin-bottom: var(--spacing-sm);
     padding: var(--spacing-md) var(--spacing-lg);
-    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    background: rgba(10, 12, 20, 0.42);
     border-radius: var(--radius-md);
     backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.28);
     font-style: italic;
     quotes: none;
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
 }
 
 .hero-quote cite {
     font-size: 1rem;
     font-weight: var(--font-weight-semibold);
-    opacity: 0.9;
+    color: #ffffff;
+    opacity: 1;
     display: block;
     margin-top: var(--spacing-xs);
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
 }
 
 .hero-buttons {
@@ -470,6 +488,8 @@ html {
     transform: translateX(-50%);
     color: var(--white);
     font-size: 1.5rem;
+    z-index: 2;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
     animation: bounce 2s infinite;
 }
 
