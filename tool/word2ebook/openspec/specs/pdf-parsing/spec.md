@@ -63,8 +63,8 @@ without inserting a space. Spaces adjacent to CJK characters SHALL be removed.
 ### Requirement: Question / Answer Detection
 The parser SHALL emit `<div class="question">` cards (with `questioner` and
 optional `question-time` meta) and `<div class="answer">` cards (answerer raw
-name `Taiguanglin`), matching the Word output markup. A questioner line is
-`名字：YYYY-MM-DD HH:MM`. An answer marker is `Taiguanglin：`. Numbered
+name `Taiguanglin`), matching the Word output markup. A timestamped questioner
+line is `名字：YYYY-MM-DD HH:MM`. An answer marker is `Taiguanglin：`. Numbered
 sub-questions (`N、`, `问题N、`, …) SHALL each become their own question card and
 reuse the questioner's name/time; an intro/greeting before the first number stays
 with the first question card.
@@ -74,6 +74,36 @@ with the first question card.
 - WHEN parsed
 - THEN three separate question cards SHALL be produced, each carrying the same
   questioner name and time
+
+### Requirement: Questioners Without a Timestamp
+Many 贴吧/微信公众号 comments carry only a name (`名字：`) with no timestamp on
+its line. The parser SHALL still emit these as `<div class="question">` cards
+(with an empty `question-time`) rather than stray paragraphs. A left-margin
+`名字：` line (colon at end, no time) SHALL be treated as a new questioner **only
+when** it opens a section — i.e. the current card is `None` (the line directly
+follows a separator line, which always precedes a questioner) or the current card
+is the `师父说` source-switch paragraph (the first commenter of a section). Such a
+questioner's name/time SHALL be reused by any following numbered sub-questions.
+
+A left-margin line that merely ends with `：` while a question or answer card is
+open (e.g. a wrapped sentence like `…想请教三个问题：`) SHALL remain body text and
+SHALL NOT be misread as a questioner.
+
+#### Scenario: Comment after a separator has no time
+- GIVEN a separator line followed by `无明萤火：` and then the comment body
+- WHEN parsed
+- THEN a question card with questioner `无明萤火` and no `question-time` SHALL be
+  produced, and the body text SHALL belong to that card
+
+#### Scenario: First section commenter after 师父说 has no time
+- GIVEN a `师父说…回答微信公众号的问题` line immediately followed by `诚杨：`
+- WHEN parsed
+- THEN `诚杨` SHALL become a question card, not a paragraph
+
+#### Scenario: Colon-ending continuation is not a questioner
+- GIVEN an open question whose wrapped text ends a line with `…问题：`
+- WHEN parsed
+- THEN no questioner named `问题` SHALL be created; the text stays in the question
 
 ### Requirement: Wrapped-Separator Questioner
 The parser SHALL handle a questioner whose name is glued to a leading separator

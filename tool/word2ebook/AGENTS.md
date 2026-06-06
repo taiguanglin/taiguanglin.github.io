@@ -49,7 +49,7 @@ identical markup, TOC, Q&A counts, and search behaviour.
 | `models/document_models.py` | Dataclasses: `Chapter`, `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` (incl. `pdf_file`, `only_word`, `only_pdf`, `pdf_start_index`) | ~195 |
 | `config/settings.py` | `Settings` dataclass, `Constants` (CDN URLs, filenames, search weights, answerer names, heading ranges) | 124 |
 | `core/document_parser.py` | Parses `.docx` → `List[Chapter]`; builds HTML content; delegates chapter finalize to `chapter_finalizer` | ~300 |
-| `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` sections); x0-indent paragraph reflow; shares `chapter_finalizer` | ~330 |
+| `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` sections); x0-indent paragraph reflow; detects timestamped **and** no-time questioners (separator- or 师父说-introduced); shares `chapter_finalizer` | ~415 |
 | `core/chapter_finalizer.py` | Shared block→`Chapter` finalize (QA merge, back-to-top, QA counts, chapter TOC) used by both Word and PDF parsers | ~190 |
 | `core/content_processor.py` | Extracts search items from HTML; assigns element IDs | 216 |
 | `generators/html_generator.py` | `HTMLGenerator` — renders chapter/index pages via `I18nTemplateManager`; simplified/traditional variants are unified via `_generate_chapters`/`_generate_index` | ~220 |

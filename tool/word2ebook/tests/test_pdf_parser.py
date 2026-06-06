@@ -222,6 +222,101 @@ class TestNumberedQuestions:
 
 
 # ---------------------------------------------------------------------------
+# questioners without a timestamp
+# ---------------------------------------------------------------------------
+
+class TestNoTimeQuestioners:
+    """Many tieba/weixin comments carry only a name (no time). They are always
+    introduced either by a separator line above, or by the 师父说 source-switch
+    paragraph that opens a section."""
+
+    def test_questioner_after_separator_without_time(self, parser):
+        lines = [
+            (157.0, "Tai 师父2025 年6 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月9 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-06-09 08:00"),
+            (IND,  "第一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "无明萤火："),
+            (IND,  "感恩师父，请问第二个问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        # the no-time commenter is a real question card, not a stray paragraph
+        assert '<span class="questioner">无明萤火</span>' in ch.content
+        assert "感恩师父，请问第二个问题？" in ch.content
+        # name must not leak into a paragraph and there is no empty time span
+        assert "<p>无明萤火" not in ch.content
+        # the question-text directly follows the (empty) meta -> no time span text
+        assert "question-time" not in ch.content.split('无明萤火')[1].split('question-text')[0]
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+
+    def test_section_start_questioner_without_time(self, parser):
+        """First weixin commenter right after the 师父说 switch lacks a time."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月9 号，回答微信公众号的问题。"),
+            (CONT, "诚杨："),
+            (IND,  "师父吉祥，请开示一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这是回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">诚杨</span>' in ch.content
+        assert "师父吉祥，请开示一个问题。" in ch.content
+        assert len(re.findall(r'<div class="question"', ch.content)) == 1
+
+    def test_no_time_questioner_with_numbered_followups(self, parser):
+        """无明萤火 pattern: greeting + 1、 share one card; 2、 opens another,
+        both attributed to the same no-time questioner (the 无明萤火 case)."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月12 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月12 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-07-12 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "无明萤火："),
+            (IND,  "感恩师父"),
+            (IND,  "1、第一个泰国佛牌问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "无名萤火，这是第一个回答。"),
+            (IND,  "2、第二个佛牌问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这是第二个回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        cards = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        # 甲 + two 无明萤火 cards
+        assert cards == ["甲", "无明萤火", "无明萤火"]
+        first = ch.content.split('无明萤火', 1)[1]
+        assert "感恩师父" in first
+        assert "1、第一个泰国佛牌问题？" in first
+
+    def test_colon_ending_continuation_is_not_a_questioner(self, parser):
+        """A sentence wrapped onto a left-margin line that ends with '：' inside
+        an open question must stay question text, not become a fake questioner."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月9 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-06-09 08:00"),
+            (IND,  "Tai 师好，末学今天想请教以下三个"),
+            (CONT, "问题："),
+            (IND,  "1、问题一？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答一。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["甲"]               # no questioner named "问题"
+        assert "想请教以下三个问题：" in ch.content   # reflowed into question text
+
+
+# ---------------------------------------------------------------------------
 # empty / edge
 # ---------------------------------------------------------------------------
 

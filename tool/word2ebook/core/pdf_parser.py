@@ -237,7 +237,8 @@ class PDFParser:
             finish_card()
             ensure_section()
             state["card"] = {
-                "kind": kind, "name": name, "time": time, "paras": [], "numbered": False,
+                "kind": kind, "name": name, "time": time, "paras": [],
+                "numbered": False, "shifu": False,
             }
 
         def add_line(text, indented):
@@ -274,6 +275,7 @@ class PDFParser:
                     state["source"] = SOURCE_WEIXIN
                 content = re.sub(r"^师父说[：:]\s*", "", text)
                 start_card("paragraph")
+                state["card"]["shifu"] = True
                 add_line(content, indented=True)
                 continue
 
@@ -292,6 +294,25 @@ class PDFParser:
                 state["qtime"] = qm.group("time").strip()
                 start_card("question", state["questioner"], state["qtime"])
                 continue
+
+            # 提問者（人名，無時間）：很多貼吧/公眾號的留言沒有時間戳，
+            # 名字上方一定有分隔線（→ card 為 None），或緊接在師父說的來源
+            # 開場之後（→ card 為師父說段落）。其餘以冒號結尾的行（例如句子中的
+            # 「想請教三個問題：」）發生在問題/回答卡片內，視為內文延續，不誤判。
+            if x0 < INDENT_THRESHOLD and not indented:
+                nc = NAMECOLON_RE.match(text)
+                if nc:
+                    card = state["card"]
+                    is_section_intro = card is None or (
+                        card["kind"] == "paragraph" and card.get("shifu")
+                    )
+                    if is_section_intro:
+                        name = _normalize_spaces(nc.group("name"))
+                        if name:
+                            state["questioner"] = name
+                            state["qtime"] = ""
+                            start_card("question", name, "")
+                            continue
 
             # 編號子問題
             if indented and NUM_RE.match(text):
