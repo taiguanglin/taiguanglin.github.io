@@ -1,6 +1,8 @@
 """HTML 生成器"""
 
+import os
 import re
+from html import escape
 from typing import List, Optional, Dict
 from pathlib import Path
 
@@ -181,7 +183,8 @@ class HTMLGenerator:
                 toc_items=self.i18n_processor.ensure_simplified(toc_html),
                 lang_switch_links=lang_switch_links,
                 favicon_tag=self.favicon_tag,
-                source_filename=self.i18n_processor.ensure_simplified(source_filename),
+                # 來源檔連結保持原樣（不做簡繁轉換），避免破壞檔名與資料夾路徑
+                source_filename=source_filename,
             )
 
         self.file_manager.write_file(index_filename, html_content)
@@ -242,12 +245,45 @@ class HTMLGenerator:
         return {"prev_link": prev_link, "next_link": next_link, "top_nav_links": top_nav_links}
 
     def _build_source_filename(self) -> str:
-        """組合首頁底部的來源檔名（Word + 任何附加 PDF）。"""
-        names = []
+        """組合首頁底部的來源檔下載連結（Word + 任何附加 PDF）。
+
+        每個來源檔輸出成一個可下載的超連結：
+        - ``href`` 指向來源檔相對於輸出資料夾的路徑，點擊即可下載原始檔。
+        - 連結文字保留原始檔名。
+
+        這段連結 HTML 不做任何簡繁轉換，以免破壞實際檔名或資料夾路徑
+        （例如以繁體命名的「問答錄2」資料夾若被轉成簡體就會連結失效）。
+        """
+        sources: List[Path] = []
         if self.input_file:
-            names.append(self.input_file.name)
-        names.extend(p.name for p in self.extra_source_files)
-        return "、".join(names)
+            sources.append(Path(self.input_file))
+        sources.extend(self.extra_source_files)
+
+        links = []
+        for source in sources:
+            name = source.name
+            href = self._build_source_href(source)
+            links.append(
+                f'<a class="source-link" href="{escape(href, quote=True)}" '
+                f'download="{escape(name, quote=True)}">{escape(name)}</a>'
+            )
+        return "、".join(links)
+
+    def _build_source_href(self, source: Path) -> str:
+        """計算來源檔相對於輸出資料夾的下載連結（使用 POSIX 斜線）。
+
+        來源檔（Word / PDF）與輸出的電子書一同部署在站台上，因此以輸出資料夾
+        為基準計算相對路徑即可正確連到原始檔；若無法計算（例如不同磁碟）則
+        退回只用檔名。
+        """
+        try:
+            rel = os.path.relpath(
+                Path(source).resolve(),
+                self.file_manager.output_folder.resolve(),
+            )
+        except (ValueError, OSError):
+            rel = source.name
+        return Path(rel).as_posix()
 
     def _build_lang_switch_links(self, current_filename: str, is_traditional: bool) -> str:
         """生成语言切换 HTML 片段。"""

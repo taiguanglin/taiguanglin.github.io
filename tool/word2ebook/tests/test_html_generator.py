@@ -175,12 +175,28 @@ class TestHTMLGeneratorIndexPages:
 class TestSourceFilename:
     def test_word_only_source(self, settings, file_manager, fake_input):
         gen = HTMLGenerator(settings, file_manager, fake_input)
-        assert gen._build_source_filename() == "book.docx"
+        html = gen._build_source_filename()
+        # 來源檔輸出成可下載的超連結（href 為相對於輸出資料夾的路徑）
+        assert '<a class="source-link"' in html
+        assert 'href="../book.docx"' in html
+        assert 'download="book.docx"' in html
+        assert ">book.docx</a>" in html
 
     def test_word_plus_pdf_source(self, settings, file_manager, fake_input, tmp_path):
         pdf = tmp_path / "answers.pdf"
         gen = HTMLGenerator(settings, file_manager, fake_input, extra_source_files=[pdf])
-        assert gen._build_source_filename() == "book.docx、answers.pdf"
+        html = gen._build_source_filename()
+        assert html.count("<a ") == 2
+        assert "、" in html
+        assert 'href="../book.docx"' in html
+        assert ">book.docx</a>" in html
+        assert 'href="../answers.pdf"' in html
+        assert ">answers.pdf</a>" in html
+
+    def test_source_href_is_relative_to_output(self, settings, file_manager, fake_input):
+        # output_dir 與來源檔同在 tmp_path 下，連結應以 ../ 退回上層再指向來源檔
+        gen = HTMLGenerator(settings, file_manager, fake_input)
+        assert gen._build_source_href(fake_input) == "../book.docx"
 
     def test_index_shows_both_sources(self, settings, file_manager, fake_input, output_dir, tmp_path):
         pdf = tmp_path / "answers.pdf"
@@ -190,4 +206,6 @@ class TestSourceFilename:
         ch.add_toc_item(1, "第一章", "ch1")
         gen.generate_index_pages([ch], cfg, generate_traditional=False, generate_simplified=True)
         content = (output_dir / "index.html").read_text(encoding="utf-8")
-        assert "book.docx、answers.pdf" in content
+        assert ">book.docx</a>" in content
+        assert ">answers.pdf</a>" in content
+        assert 'download="answers.pdf"' in content

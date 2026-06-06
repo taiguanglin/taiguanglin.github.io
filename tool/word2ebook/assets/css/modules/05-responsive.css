@@ -55,6 +55,17 @@ p.source-filename:hover {
   opacity: 1.0;
 }
 
+/* 來源檔做成可下載連結：文字顏色維持不變，只加底線 */
+p.source-filename a,
+p.source-filename a:link,
+p.source-filename a:visited,
+p.source-filename a:hover,
+p.source-filename a:active {
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 /* 響應式設計：在小螢幕上調整 */
 @media (max-width: 768px) {
   p.source-filename {

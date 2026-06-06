@@ -38,6 +38,27 @@ containing the full table of contents with chapter links.
 - WHEN `HTMLGenerator.generate_index_pages` is called
 - THEN `index.html` SHALL contain links to all N chapter files
 
+### Requirement: Source File Download Links
+The homepage footer (`<p class="source-filename">`) SHALL list every source file
+(the input Word document plus any `--pdf` extra sources) as a downloadable
+hyperlink. Each link SHALL:
+- Use an `href` pointing to the source file path **relative to the output folder**
+  (computed with `os.path.relpath`, POSIX separators), so the link resolves to the
+  original file deployed alongside the ebook.
+- Carry a `download` attribute so clicking saves the file instead of navigating.
+- Show the original file name as its visible text.
+
+The source-link HTML SHALL NOT be passed through simplified/traditional
+conversion, so that real file names and folder paths (e.g. the traditionally named
+`問答錄2` folder) are preserved identically on both `index.html` and
+`index_trad.html`. Link styling SHALL keep the surrounding text colour (inherit)
+and add only an underline.
+
+#### Scenario: Homepage lists sources as download links
+- GIVEN an input `book.docx` and an extra `answers.pdf`, output folder a sibling of the sources
+- WHEN `HTMLGenerator.generate_index_pages` is called
+- THEN the generated `index.html` SHALL contain `<a … href="../book.docx" download="book.docx">book.docx</a>` and a matching anchor for `answers.pdf`, joined by `、`
+
 ### Requirement: Asset References
 Every generated HTML page SHALL reference:
 - `assets/css/style.css` via a `<link>` tag
