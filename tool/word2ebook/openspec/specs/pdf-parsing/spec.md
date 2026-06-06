@@ -137,6 +137,48 @@ NOT be merged.
 - WHEN parsed
 - THEN `西瓜` SHALL remain its own questioner
 
+### Requirement: Split Name / Colon Rejoin
+A short questioner line can be full-justified so its colon (and sometimes the
+name itself) lands on its own line (e.g. `M` followed by a lone `：`, or
+`奔跑吧兄弟` followed by a lone `：` far to the right). The parser SHALL rejoin a
+plausible name line with an immediately-following lone-colon line into `名字：`
+so the entry becomes a proper questioner instead of stray paragraphs (`M`, `：`).
+When the name is lost entirely (a separator followed only by a bare `：` and then
+the body), the parser SHALL still emit a question card (with an empty questioner
+name) so the body never leaks as a `<p>：</p>` paragraph.
+
+#### Scenario: Name and colon on separate lines
+- GIVEN `M` on one line and `：` on the next, then the question body
+- WHEN parsed
+- THEN a questioner `M` SHALL be produced and neither `M` nor `：` SHALL appear
+  as a stray paragraph
+
+#### Scenario: Name entirely missing
+- GIVEN a separator followed by a bare `：` and then the question body
+- WHEN parsed
+- THEN a question card (empty questioner name) SHALL hold the body, and no
+  `<p>：</p>` paragraph SHALL be produced
+
+### Requirement: In-Question Divider Lines
+Real questioner-boundary separators sit at the left margin (x0 below the indent
+threshold). A separator that is indented (x0 at/above the indent threshold) is a
+divider the questioner drew inside their own post. The parser SHALL treat an
+indented separator as a card boundary only when the following line is a new
+questioner or structural marker; otherwise it SHALL drop the divider and keep the
+surrounding text in the same question card, so a single question is not split and
+its tail does not leak as stray paragraphs.
+
+#### Scenario: Divider inside a question is dropped
+- GIVEN an indented separator inside a question, followed by more question text
+- WHEN parsed
+- THEN the divider SHALL be dropped and the following text SHALL remain in the
+  same question card (not leak as a `<p>` paragraph)
+
+#### Scenario: Indented separator before a questioner still splits
+- GIVEN an indented separator immediately followed by `随息居Lomi：`
+- WHEN parsed
+- THEN it SHALL act as a real boundary and `随息居Lomi` SHALL be a new questioner
+
 ### Requirement: Source Switching
 A new day SHALL reset the current source to `贴吧`. A `师父说` line mentioning
 `公众号` or `微信` SHALL switch the current source to `微信公众号`. Closing lines

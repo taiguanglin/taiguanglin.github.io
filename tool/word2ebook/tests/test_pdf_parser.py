@@ -360,6 +360,107 @@ class TestNoTimeQuestioners:
         ch = parser.parse_lines(lines, start_index=12)[0]
         assert '<span class="questioner">西瓜</span>' in ch.content
 
+    def test_split_name_and_colon_rejoined(self, parser):
+        """A short name is justified so its colon lands on its own line
+        ('M' then '：'); they must rejoin into questioner 'M'."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月9 号，回答微信公众号的问题。"),
+            (CONT, "M"),
+            (117.1, "："),
+            (IND,  "顶礼师父，打坐坐不住，怎么办？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "M，就是坚持的问题。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">M</span>' in ch.content
+        assert "<p>M</p>" not in ch.content
+        assert "<p>：</p>" not in ch.content
+        assert "顶礼师父，打坐坐不住，怎么办？" in ch.content
+
+    def test_split_name_and_colon_after_separator(self, parser):
+        """Same split but introduced by a separator ('奔跑吧兄弟' + '：')."""
+        lines = [
+            (157.0, "Tai 师父2025 年9 月6 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年9 月6 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-09-06 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "奔跑吧兄弟"),
+            (174.0, "："),
+            (IND,  "师父，三魂七魄能够分散到各处吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "奔跑吧兄弟，我们不讲三魂七魄。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">奔跑吧兄弟</span>' in ch.content
+        assert "<p>奔跑吧兄弟</p>" not in ch.content
+
+    def test_lone_colon_without_name_becomes_question(self, parser):
+        """When the name is lost entirely (separator + bare '：' + body), the
+        body must still be a question card, not a stray '<p>：</p>'."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月10 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-06-10 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "："),
+            (IND,  "师父吉祥，修到什么程度可以知晓前世？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这是回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert "<p>：</p>" not in ch.content
+        assert "师父吉祥，修到什么程度可以知晓前世？" in ch.content
+        # the body sits in a question card (with empty questioner meta)
+        assert '<div class="question-text">师父吉祥，修到什么程度可以知晓前世？</div>' in ch.content
+
+    def test_indented_in_question_divider_does_not_split_card(self, parser):
+        """A user-drawn divider INSIDE a question is indented (x0>=104) and is
+        NOT followed by a questioner -> dropped, content stays in the card."""
+        lines = [
+            (157.0, "Tai 师父2025 年9 月6 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年9 月6 号，先回答贴吧的问题。"),
+            (CONT, "极乐是我家：2025-09-06 18:05"),
+            (IND,  "感恩师父，有个家庭困扰很久的问题请教："),
+            (IND,  "———————————"),   # indented divider drawn by the user
+            (IND,  "我目前全职在家修行，家先生脾气暴躁。"),
+            (IND,  "以上是家里基本情况。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这是回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        # the post-divider text must stay inside the question, not leak as <p>
+        assert "<p>我目前全职在家修行，家先生脾气暴躁。</p>" not in ch.content
+        assert '<div class="question-text">我目前全职在家修行，家先生脾气暴躁。</div>' in ch.content
+        assert "———" not in ch.content   # the divider is dropped
+        assert len(re.findall(r'<div class="question"', ch.content)) == 1
+
+    def test_indented_separator_before_questioner_still_splits(self, parser):
+        """An indented separator that IS followed by a questioner stays a real
+        boundary (the rare 随息居Lomi case)."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月13 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月13 号，回答微信公众号的问题。"),
+            (CONT, "甲：2025-06-13 08:00"),
+            (IND,  "第一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第一个回答。"),
+            (IND,  "———————————"),     # indented, but a questioner follows
+            (CONT, "随息居Lomi："),
+            (IND,  "第二个问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert '<span class="questioner">随息居Lomi</span>' in ch.content
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+
     def test_colon_ending_continuation_is_not_a_questioner(self, parser):
         """A sentence wrapped onto a left-margin line that ends with '：' inside
         an open question must stay question text, not become a fake questioner."""

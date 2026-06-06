@@ -47,6 +47,7 @@ BARETIME_RE = re.compile(r"^20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}$")
 NUM_RE = re.compile(r"^(问题|問題|问|問|第)?\s*\d+\s*[、.，,)）]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
+LONE_COLON_RE = re.compile(r"^[：:]\s*$")
 
 # 來源標籤（簡體；繁體版由 opencc 轉換，與 qa/ 資料夾的「貼吧/微信公眾號/官網」對應）
 SOURCE_TIEBA = "贴吧"
@@ -99,6 +100,22 @@ def _plausible_lone_name(s: str) -> bool:
     if ANSWER_RE.match(s) or s.startswith("师父说") or NUM_RE.match(s):
         return False
     return not re.search(r"[。？！，；,.?!;：:]", s)
+
+
+def _is_boundary_after_sep(nxt: str) -> bool:
+    """分隔線之後的 ``nxt`` 是否為「新提問者／結構標記」（→ 該分隔線是真正分界）。
+
+    用於判斷縮排分隔線：若其後是內文（非提問者），代表這是使用者在自己問題裡
+    畫的分隔線，應丟棄而非斷開卡片。
+    """
+    if not nxt:
+        return False
+    if SHIFU_RE.match(nxt) or ANSWER_RE.match(nxt) or DAY_RE.search(nxt):
+        return True
+    if QTIME_RE.match(nxt):
+        return True
+    m = NAMECOLON_RE.match(nxt)
+    return bool(m and _plausible_lone_name(_normalize_spaces(m.group("name"))))
 
 
 class PDFParser:
@@ -213,24 +230,53 @@ class PDFParser:
             stage1.append((x0, rest))
             i += 1
 
-        # 階段 2：合併「人名：」（單獨一行、無時間）+ 下一行純時間
-        merged: List[Tuple[float, str]] = []
+        # 階段 1.5：合併「人名」+ 單獨一行的冒號。短名提問者行（如「M」「奔跑吧
+        # 兄弟」）會被左右對齊把冒號擠到行尾、甚至獨立成一行「：」，造成名字與冒號
+        # 分離。把它們接回成「人名：」。
+        stageL: List[Tuple[float, str]] = []
         i = 0
         while i < len(stage1):
             x0, t = stage1[i]
             if (
                 i + 1 < len(stage1)
+                and LONE_COLON_RE.match(stage1[i + 1][1])
+                and _plausible_lone_name(_normalize_spaces(t))
+            ):
+                stageL.append((x0, t + "："))
+                i += 2
+                continue
+            stageL.append((x0, t))
+            i += 1
+
+        # 階段 2：合併「人名：」（單獨一行、無時間）+ 下一行純時間
+        merged: List[Tuple[float, str]] = []
+        i = 0
+        while i < len(stageL):
+            x0, t = stageL[i]
+            if (
+                i + 1 < len(stageL)
                 and NAMECOLON_RE.match(t)
                 and not t.startswith("师父说")
                 and not ANSWER_RE.match(t)
-                and BARETIME_RE.match(stage1[i + 1][1])
+                and BARETIME_RE.match(stageL[i + 1][1])
             ):
-                merged.append((x0, t + stage1[i + 1][1]))
+                merged.append((x0, t + stageL[i + 1][1]))
                 i += 2
                 continue
             merged.append((x0, t))
             i += 1
-        return merged
+
+        # 階段 3：丟棄「問題內部」的縮排分隔線。真正用來分隔提問者的分隔線在
+        # 左邊界（x0≈90）；少數使用者會在自己的問題裡畫一條線（x0≈118 縮排），
+        # 若其後不是新提問者就視為內文裝飾，丟棄以免把同一個問題切開。
+        result: List[Tuple[float, str]] = []
+        for i, (x0, t) in enumerate(merged):
+            if SEP_RE.match(t) and x0 >= INDENT_THRESHOLD:
+                nxt = merged[i + 1][1] if i + 1 < len(merged) else ""
+                if not _is_boundary_after_sep(nxt):
+                    continue
+            result.append((x0, t))
+        return result
 
     # ------------------------------------------------------------------ #
     # 3. 狀態機：行 → 段落 → 卡片 → 區段（日期+來源）                       #
@@ -354,14 +400,16 @@ class PDFParser:
             # 「想請教三個問題：」）發生在問題/回答卡片內，視為內文延續，不誤判。
             if x0 < INDENT_THRESHOLD and not indented:
                 nc = NAMECOLON_RE.match(text)
-                if nc:
+                lone = LONE_COLON_RE.match(text)
+                if nc or lone:
                     card = state["card"]
                     is_section_intro = card is None or (
                         card["kind"] == "paragraph" and card.get("shifu")
                     )
                     if is_section_intro:
-                        name = _normalize_spaces(nc.group("name"))
-                        if name:
+                        # 提問者名字偶爾完全抽取不到，只剩一個冒號 → 無名提問者
+                        name = _normalize_spaces(nc.group("name")) if nc else ""
+                        if name or lone:
                             state["questioner"] = name
                             state["qtime"] = ""
                             start_card("question", name, "")
