@@ -150,20 +150,8 @@ function bindEvents() {
             renderDocument();
         }
     });
-    // 整體編輯的上一步／下一步：⌘Z／Ctrl+Z 復原，⌘⇧Z／Ctrl+Shift+Z（或 Ctrl+Y）重做。
-    document.addEventListener('keydown', (event) => {
-        const mod = event.metaKey || event.ctrlKey;
-        if (!mod) return;
-        const key = event.key.toLowerCase();
-        if (key !== 'z' && key !== 'y') return;
-        // 對話框（例如設定 PAT）內維持瀏覽器原生復原，不攔截。
-        if (event.target.closest?.('dialog')) return;
-        if (!state.document) return;
-        const redo = key === 'y' || (key === 'z' && event.shiftKey);
-        event.preventDefault();
-        if (redo) redoEdit();
-        else undoEdit();
-    });
+    // 整體編輯的上一步／下一步僅透過 UI 按鈕觸發，不攔截 ⌘Z／⌘⇧Z 等鍵盤組合，
+    // 以免在文字編輯框中造成畫面捲動等干擾。
     window.addEventListener('beforeunload', (event) => {
         if (!state.dirty) return;
         event.preventDefault();
