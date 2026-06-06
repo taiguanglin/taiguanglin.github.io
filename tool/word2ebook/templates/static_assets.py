@@ -127,23 +127,7 @@ class StaticAssetsManager:
     def get_full_css_content(self) -> str:
         modules_dir = self._assets_base / "css" / "modules"
         if modules_dir.exists():
-            # #region agent log
-            import json as _json, time as _time
-            _log_path = "/Users/paul/tai/taiguanglin.github.io/.cursor/debug-1e1df3.log"
-            _css_files = sorted(modules_dir.glob("*.css"))
-            _css_names = [f.name for f in _css_files]
-            _css_sizes = {f.name: len(f.read_text(encoding="utf-8")) for f in _css_files}
-            with open(_log_path, "a") as _lf:
-                _lf.write(_json.dumps({"sessionId":"1e1df3","hypothesisId":"H-B,H-D","location":"static_assets.py:get_full_css_content","message":"CSS modules found","data":{"files":_css_names,"sizes":_css_sizes,"total_files":len(_css_files)},"timestamp":int(_time.time()*1000)}) + "\n")
-            # #endregion
-            _result = self._concat_files(modules_dir, "*.css")
-            # #region agent log
-            _root_block = _result[:_result.find("}")+1] if "}" in _result else _result[:500]
-            _has_self_ref = "var(--color-primary)" in _root_block and "--color-primary:" in _root_block
-            with open(_log_path, "a") as _lf:
-                _lf.write(_json.dumps({"sessionId":"1e1df3","hypothesisId":"H-A","location":"static_assets.py:get_full_css_content","message":"CSS root block check","data":{"root_block_first200":_root_block[:200],"has_self_ref":_has_self_ref,"total_css_len":len(_result)},"timestamp":int(_time.time()*1000)}) + "\n")
-            # #endregion
-            return _result
+            return self._concat_files(modules_dir, "*.css")
 
         single_file = self._assets_base / "css" / "style.css"
         if single_file.exists():
@@ -158,22 +142,7 @@ class StaticAssetsManager:
     def get_full_js_content(self) -> str:
         modules_dir = self._assets_base / "js" / "modules"
         if modules_dir.exists():
-            # #region agent log
-            import json as _json, time as _time
-            _log_path = "/Users/paul/tai/taiguanglin.github.io/.cursor/debug-1e1df3.log"
-            _js_files = sorted(modules_dir.glob("*.js"))
-            _js_names = [f.name for f in _js_files]
-            _js_sizes = {f.name: len(f.read_text(encoding="utf-8")) for f in _js_files}
-            with open(_log_path, "a") as _lf:
-                _lf.write(_json.dumps({"sessionId":"1e1df3","hypothesisId":"H-C","location":"static_assets.py:get_full_js_content","message":"JS modules found","data":{"files":_js_names,"sizes":_js_sizes,"total_files":len(_js_files)},"timestamp":int(_time.time()*1000)}) + "\n")
-            # #endregion
             inner = self._concat_files(modules_dir, "*.js")
-            # #region agent log
-            _key_fns = ["initSearch","performSearch","getBookmarks","toggleBookmark","renderBookmarks","applyReadingSettings","isIndexPage","isTraditionalChinesePage"]
-            _missing = [fn for fn in _key_fns if f"function {fn}" not in inner]
-            with open(_log_path, "a") as _lf:
-                _lf.write(_json.dumps({"sessionId":"1e1df3","hypothesisId":"H-C","location":"static_assets.py:get_full_js_content","message":"JS key function check","data":{"missing_functions":_missing,"total_js_len":len(inner)},"timestamp":int(_time.time()*1000)}) + "\n")
-            # #endregion
             return JS_WRAPPER_OPEN + inner + JS_WRAPPER_CLOSE
 
         single_file = self._assets_base / "js" / "script.js"

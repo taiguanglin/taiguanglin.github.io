@@ -38,20 +38,6 @@ function getText(simplifiedText, traditionalText) {
 if (localStorage.getItem('darkMode') === 'true') {
   document.body.classList.add('dark-mode');
 }
-
-// #region agent log
-(function(){
-  var root = getComputedStyle(document.documentElement);
-  var vars = {
-    colorPrimary: root.getPropertyValue('--color-primary').trim(),
-    colorPrimaryLight: root.getPropertyValue('--color-primary-light').trim(),
-    colorBgPage: root.getPropertyValue('--color-bg-page').trim(),
-    radiusSm: root.getPropertyValue('--radius-sm').trim(),
-    lineHeight: root.getPropertyValue('--line-height').trim()
-  };
-  fetch('http://127.0.0.1:7618/ingest/29c0cb97-0ee5-4d63-80f1-c39c24c9f364',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'1e1df3'},body:JSON.stringify({sessionId:'1e1df3',hypothesisId:'H-A',location:'00-base.js:runtime',message:'CSS var resolved values',data:vars,timestamp:Date.now()})}).catch(function(){});
-})();
-// #endregion
   // ============ 搜索功能（延迟加载） ============
   // isIndexPage / isTraditionalChinesePage / getText 由 00-base.js 提供
 
