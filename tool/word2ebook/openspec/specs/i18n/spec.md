@@ -22,6 +22,55 @@ traditional Chinese using the `opencc-python-reimplemented` library.
 - WHEN the method runs
 - THEN it SHALL return an empty string without raising
 
+### Requirement: Taiwan-Standard Traditional Output
+`to_traditional` SHALL output Taiwan-standard traditional Chinese (台灣正體),
+regardless of whether the source text is simplified or Hong-Kong/old-style
+traditional. Because the source documents are already traditional with
+Hong-Kong / semantically over-converted glyphs (e.g. `隻能`, `幹預`, `裏面`,
+`沖突`), the method SHALL first normalise the input to simplified (`t2s`) so the
+phrase dictionary can resolve semantic ambiguity, then convert to Taiwan
+traditional (`s2tw`), then apply the variant-character map.
+
+#### Scenario: Over-converted "only" is corrected
+- GIVEN the text `隻能` (over-converted "only can")
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `只能`
+
+#### Scenario: Over-converted "intervene" is corrected
+- GIVEN the text `幹預`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `干預`
+
+#### Scenario: Taiwan glyph preference
+- GIVEN the text `裏面`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `裡面` (Taiwan uses `裡`, not `裏`)
+
+#### Scenario: Legitimate measure word preserved
+- GIVEN the text `一隻貓` (where `隻` is a valid measure word)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL remain `一隻貓`
+
+### Requirement: Correct s2tw "only" Over-Conversion
+The bundled `opencc-python-reimplemented` `s2tw` dictionary over-converts the
+adverb `只` (only) into the measure word `隻` after certain characters
+(e.g. `是只能` → `是隻能`). After the `s2tw` step `to_traditional` SHALL repair
+this: a `隻` whose following character is an adverb/verb/copula follower
+(`能`, `要`, `是`, `有`, `會`, …) and whose preceding character is not a
+number/quantifier SHALL be converted back to `只`. Fixed measure idioms such as
+`隻字`, `隻身`, and `船隻` SHALL remain unchanged because their following
+characters are not in the follower set.
+
+#### Scenario: Adverb after copula repaired
+- GIVEN the text `就是隻能治標`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `就是只能治標`
+
+#### Scenario: Measure idiom untouched
+- GIVEN the text `隻字不提`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL still contain `隻字不提`
+
 ### Requirement: Variant Character Normalisation
 Before and after OpenCC conversion the system SHALL apply a variant-character
 map to standardise uncommon glyphs (e.g. `衆 → 眾`, `喫 → 吃`).
