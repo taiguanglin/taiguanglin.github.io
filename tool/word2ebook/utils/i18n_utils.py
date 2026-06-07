@@ -30,6 +30,14 @@ _ONLY_OVERCONVERT_RE = re.compile(
     r"(?<![" + _MEASURE_PREFIX + r"])隻(?=[" + _ONLY_FOLLOWER + r"])"
 )
 
+# 需人工判斷的個別「只／隻」情境（通用規則無法自動判斷者）。
+# 例：「一歸何處，那一隻能回到自性」中的「一」是禪宗的「那個一」（代詞），
+#     語意是「只能」；但通用規則因前一字是數字「一」而保留「隻」，故在此特別修正。
+#     以「回到自性」為語意錨點，確保不會誤改到真正的量詞用法（如「這一隻能飛」）。
+_ONLY_CONTEXT_FIXES = {
+    "一隻能回到自性": "一只能回到自性",
+}
+
 
 class I18nProcessor:
     """国际化处理器"""
@@ -153,7 +161,12 @@ class I18nProcessor:
         """
         if not text:
             return text
-        return _ONLY_OVERCONVERT_RE.sub("只", text)
+        text = _ONLY_OVERCONVERT_RE.sub("只", text)
+        # 個別需人工判斷的情境修正
+        for wrong, right in _ONLY_CONTEXT_FIXES.items():
+            if wrong in text:
+                text = text.replace(wrong, right)
+        return text
     
     def to_simplified(self, text: str) -> str:
         """繁体转简体"""

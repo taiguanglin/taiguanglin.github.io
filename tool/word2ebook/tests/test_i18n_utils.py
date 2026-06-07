@@ -67,6 +67,16 @@ class TestI18nProcessor:
         assert processor.to_traditional("那隻能來地球度人") == "那只能來地球度人"
         assert processor.to_traditional("他們是隻關心修行") == "他們是只關心修行"
 
+    def test_to_traditional_context_fix_zen_one(self, processor):
+        # 禪宗「那個一」語境：「那一隻能回到自性」應為「只能」（人工判斷的個案修正）
+        result = processor.to_traditional("一歸何處，那一隻能回到自性當中去")
+        assert "那一只能回到自性" in result
+        assert "隻能" not in result
+
+    def test_to_traditional_keeps_measure_one_can(self, processor):
+        # 真正的量詞用法（這一隻能飛）不可被個案修正影響
+        assert processor.to_traditional("這一隻能飛") == "這一隻能飛"
+
     def test_to_traditional_keeps_zhi_idioms(self, processor):
         # 固定詞「隻字」「隻身」必須保留
         assert "隻字不提" in processor.to_traditional("迴避、隻字不提")

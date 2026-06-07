@@ -71,6 +71,14 @@ characters are not in the follower set.
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL still contain `隻字不提`
 
+#### Scenario: Manual context correction for ambiguous cases
+- GIVEN a phrase the general heuristic cannot resolve, such as the Zen text
+  `一歸何處，那一隻能回到自性` (where `一` is the pronoun "the One", so `隻能`
+  should be `只能`, yet `一` is normally a measure-word prefix)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN a curated context-fix map SHALL correct it to `那一只能回到自性`,
+  while genuine measure-word usage such as `這一隻能飛` SHALL remain unchanged
+
 ### Requirement: Variant Character Normalisation
 Before and after OpenCC conversion the system SHALL apply a variant-character
 map to standardise uncommon glyphs (e.g. `衆 → 眾`, `喫 → 吃`).
