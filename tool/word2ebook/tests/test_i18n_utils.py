@@ -112,6 +112,80 @@ class TestI18nProcessor:
         # 簡體來源也應得到正確台灣正體
         assert processor.to_traditional("只能干预") == "只能干預"
 
+    # ---- 發 / 髮 (emit vs hair) ----
+
+    def test_to_traditional_fixes_fa_over_hair(self, processor):
+        # s2tw 把「發」誤轉成「髮」，需修正回「發」
+        assert processor.to_traditional("不要乱发愿") == "不要亂發願"
+        assert processor.to_traditional("众生发愿") == "眾生發願"
+        assert processor.to_traditional("一抬头发现自己") == "一抬頭發現自己"
+        assert processor.to_traditional("舌头发生变化") == "舌頭發生變化"
+        assert processor.to_traditional("额头发紧") == "額頭發緊"
+        assert processor.to_traditional("一直发呆") == "一直發呆"
+
+    def test_to_traditional_keeps_real_hair(self, processor):
+        # 真正的「頭髮」類詞必須保留
+        assert processor.to_traditional("头发的颜色") == "頭髮的顏色"
+        assert processor.to_traditional("白发变黑") == "白髮變黑"
+        assert processor.to_traditional("发际线") == "髮際線"
+        assert processor.to_traditional("脱发和白发问题") == "脫髮和白髮問題"
+        assert processor.to_traditional("理发") == "理髮"
+
+    # ---- 後 / 后 (after vs queen) ----
+
+    def test_to_traditional_fixes_hou_after(self, processor):
+        # s2tw 把「後」漏轉成「后」，需修正回「後」
+        assert processor.to_traditional("吃了东西后盘腿") == "吃了東西後盤腿"
+        assert processor.to_traditional("49天后再看看") == "49天後再看看"
+        assert processor.to_traditional("上天后断开关系") == "上天後斷開關係"
+        assert processor.to_traditional("聊天后出现") == "聊天後出現"
+
+    def test_to_traditional_keeps_queen_hou(self, processor):
+        # 真正的皇后／太后／呂后／蟻后必須保留「后」
+        assert "皇后" in processor.to_traditional("娶一个皇后")
+        assert "太后" in processor.to_traditional("慈禧太后")
+        assert "吕后" not in processor.to_traditional("仿效吕后")
+        assert "呂后" in processor.to_traditional("仿效吕后")
+        assert "蟻后" in processor.to_traditional("蚂蚁离开蚁后")
+
+    # ---- 裡 / 里 (inside vs li/mile) ----
+
+    def test_to_traditional_fixes_li_inside(self, processor):
+        # s2tw 在片語後把「裡」漏轉成「里」，需修正回「裡」
+        assert processor.to_traditional("剧本里写的") == "劇本裡寫的"
+        assert processor.to_traditional("六道里") == "六道裡"
+        assert processor.to_traditional("我知道里面有鬼") == "我知道裡面有鬼"
+        assert processor.to_traditional("在他们视角里") == "在他們視角裡"
+        assert processor.to_traditional("往轮回里拉") == "往輪迴裡拉"
+
+    def test_to_traditional_keeps_real_li(self, processor):
+        # 真正的距離／音譯「里」必須保留
+        assert processor.to_traditional("公里") == "公里"
+        assert processor.to_traditional("千里之外") == "千里之外"
+        assert processor.to_traditional("斯里兰卡") == "斯里蘭卡"
+        assert processor.to_traditional("邻里") == "鄰里"
+
+    # ---- 製 / 制, 分鐘, 睏 ----
+
+    def test_to_traditional_fixes_zhi_zhi(self, processor):
+        # 製造 / 制度 的字詞層級誤轉
+        assert processor.to_traditional("少和人制造矛盾") == "少和人製造矛盾"
+        assert processor.to_traditional("中国制度规定") == "中國制度規定"
+
+    def test_to_traditional_fixes_minute(self, processor):
+        # 分鐘（minute）不可寫成 分鍾
+        assert processor.to_traditional("十几分钟") == "十幾分鐘"
+
+    def test_to_traditional_context_fix_sleepy_kun(self, processor):
+        # 「現在困才是更大的問題」的「困」是睡意「睏」（人工判斷的個案修正）
+        result = processor.to_traditional("反而你现在困才是更大的问题")
+        assert "現在睏才是" in result
+
+    def test_to_traditional_keeps_trapped_kun(self, processor):
+        # 真正「受困／困難」的困不可被誤改成睏
+        assert "困難" in processor.to_traditional("遇到困难")
+        assert "被困" in processor.to_traditional("被困住")
+
     def test_to_simplified_empty(self, processor):
         assert processor.to_simplified("") == ""
 

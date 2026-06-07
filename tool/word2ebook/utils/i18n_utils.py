@@ -30,12 +30,59 @@ _ONLY_OVERCONVERT_RE = re.compile(
     r"(?<![" + _MEASURE_PREFIX + r"])隻(?=[" + _ONLY_FOLLOWER + r"])"
 )
 
-# 需人工判斷的個別「只／隻」情境（通用規則無法自動判斷者）。
-# 例：「一歸何處，那一隻能回到自性」中的「一」是禪宗的「那個一」（代詞），
-#     語意是「只能」；但通用規則因前一字是數字「一」而保留「隻」，故在此特別修正。
-#     以「回到自性」為語意錨點，確保不會誤改到真正的量詞用法（如「這一隻能飛」）。
-_ONLY_CONTEXT_FIXES = {
+# ---------------------------------------------------------------------------
+# 修正 s2tw 把「發」（emit/issue，发）過度轉成「髮」（hair，发）的錯誤。
+# 簡體「发」對應繁體「發」與「髮」兩字；s2tw 在某些前綴後（例如「亂发愿」被
+# 當成「亂髮」+「願」、「眾生发願」被當成「生髮」）會誤選「髮」。
+#
+# 判斷準則：
+#   - 「髮」（頭髮）固定出現在毛髮類詞：前接「頭白脫長短掉…」或後接「際型絲…」。
+#   - 其餘情況（尤其後接動詞／抽象名詞，如願現生出音揮作展…）多為被誤轉的「發」。
+# 規則：當「髮」的後一字屬於「發」的後接字集合，或（前一字非毛髮修飾字 且
+#       後一字非毛髮類名詞）時，判定為被過度轉換的「發」，改回「發」。
+# ---------------------------------------------------------------------------
+
+# 「發」常見後接字（動詞／抽象名詞）—— 毛髮詞不會以這些字接續。
+_FA_FOLLOWER = set(
+    "願現生出音揮作展菩善悶火熱財明動言表射放送芽炎燒洩誓怒愁呆抖達號脾瘋楞起揚緊哮酵汗黃脹"
+)
+# 毛髮修飾字（出現在「髮」前 → 視為真正的頭髮，不修改）
+_FA_HAIR_PREV = set("頭白脫長短掉毛理染燙捲金黑銀假鬚削落洗護美禿鬢結披散束拔")
+# 毛髮類後接名詞（出現在「髮」後 → 視為真正的頭髮，不修改，例如髮際、髮型）
+_FA_HAIR_NEXT = set("際型絲夾膠根量質色梢網飾辮")
+
+# ---------------------------------------------------------------------------
+# 修正 s2tw 把「後」（after，后）漏轉、保留成「后」的錯誤。
+# 簡體「后」對應繁體「後」（之後）與「后」（皇后）；s2tw 在「天后、東西后、
+# 父母后、聊天后」等情境會誤判為皇后義而保留「后」。
+# 規則：當「后」的前一字不是皇后類修飾字、且後一字不是皇后類名詞時，改成「後」。
+#       固定詞「皇后、太后、呂后、武后、蟻后、天后宮、后土」等因前／後字命中
+#       下列集合而保留。
+# ---------------------------------------------------------------------------
+_QUEEN_PREV = "皇太呂武蟻王神褒妲媽"
+_QUEEN_NEXT = "土羿稷冠宮娘妃主座裔"
+_HOU_OVERCONVERT_RE = re.compile(
+    r"(?<![" + _QUEEN_PREV + r"])后(?![" + _QUEEN_NEXT + r"])"
+)
+
+# ---------------------------------------------------------------------------
+# 修正 s2tw 把「裡」（inside，里）漏轉、保留成「里」的錯誤。
+# s2tw 對「這裡、心裡、手裡」轉換正確，但在片語後（劇本里、知道里面、六道里、
+# 視角里…）會保留簡體「里」。下列前綴後的「里」一律是「裡面」之意，改成「裡」。
+# 真正的「里」（公里、千里、鄰里、斯里蘭卡等音譯／距離詞）前綴不在此集合，保留。
+# ---------------------------------------------------------------------------
+_LI_INSIDE_PREV = "本道會角方場子迴穴識經向"
+_LI_INSIDE_RE = re.compile(r"(?<=[" + _LI_INSIDE_PREV + r"])里")
+
+# 需人工判斷的個別情境（通用規則無法自動判斷者）。
+# 1.「一歸何處，那一隻能回到自性」中的「一」是禪宗的「那個一」（代詞），
+#    語意是「只能」；但通用規則因前一字是數字「一」而保留「隻」，故特別修正。
+#    以「回到自性」為語意錨點，確保不誤改真正的量詞用法（如「這一隻能飛」）。
+# 2.「反而你現在困才是更大的問題」中的「困」是「睏」（睡意），非「受困」之困；
+#    s2tw 無從分辨，以整句錨點修正成「睏」。
+_CONTEXT_FIXES = {
     "一隻能回到自性": "一只能回到自性",
+    "現在困才是": "現在睏才是",
 }
 
 
@@ -82,6 +129,11 @@ class I18nProcessor:
             "沖動": "衝動",
             "沖擊": "衝擊",
             "沖撞": "衝撞",
+            # 修正 s2tw 對「製／制」「鐘／鍾」的字詞層級誤轉（這些詞繁體只有一種寫法）。
+            "制造": "製造",   # 製造（manufacture）誤寫成 制造
+            "制作": "製作",   # 製作 誤寫成 制作
+            "製度": "制度",   # 制度（system）誤寫成 製度
+            "分鍾": "分鐘",   # 分鐘（minute）誤寫成 分鍾（鍾 only for 鍾情/姓鍾）
             "_x000B_": "",  # 將 _x000B_ 字符串替換為換行符
             # 可以根據需要繼續添加
         }
@@ -140,7 +192,10 @@ class I18nProcessor:
            例如「隻能」→「只能」、「幹預」→「干預」、「沖突」→「冲突」。
            合法的量詞「隻」（如「一隻貓」）會被片語字典保留。
         2. 再用 s2tw 轉成台灣正體 —— 例如「裏」→「裡」、「冲突」→「衝突」。
-        3. 最後套用異體字標準化表收尾（補 s2tw 未涵蓋的港式異體字）。
+        3. 修正 s2tw 對一簡多繁字的語境誤轉（OpenCC 既有缺陷，兩個套件皆然）：
+           只／隻、發／髮、後／后、裡／里。
+        4. 套用個別情境的人工修正（禪宗「那個一」、睡意「睏」等）。
+        5. 最後套用異體字／字詞標準化表收尾（補 s2tw 未涵蓋的港式異體字與誤轉詞）。
         """
         if not text:
             return text
@@ -149,24 +204,76 @@ class I18nProcessor:
         simplified = self.opencc_t2s.convert(text)
         # 2. 簡體轉台灣正體繁體
         traditional = self.opencc_s2tw.convert(simplified)
-        # 3. 修正 s2tw 把副詞「只」過度轉成量詞「隻」的錯誤
-        traditional = self._fix_only_overconversion(traditional)
-        # 4. 標準化異體字
+        # 3. 修正 s2tw 對一簡多繁字的語境誤轉
+        traditional = self._fix_only_overconversion(traditional)   # 隻 → 只
+        traditional = self._fix_fa_overconversion(traditional)     # 髮 → 發
+        traditional = self._fix_hou_overconversion(traditional)    # 后 → 後
+        traditional = self._fix_li_overconversion(traditional)     # 里 → 裡
+        # 4. 個別需人工判斷的情境修正
+        traditional = self._apply_context_fixes(traditional)
+        # 5. 標準化異體字與誤轉字詞
         return self.standardize_variant_chars(traditional)
 
-    def _fix_only_overconversion(self, text: str) -> str:
+    @staticmethod
+    def _apply_context_fixes(text: str) -> str:
+        """套用個別需人工判斷的整句／片語修正（詳見 ``_CONTEXT_FIXES``）。"""
+        if not text:
+            return text
+        for wrong, right in _CONTEXT_FIXES.items():
+            if wrong in text:
+                text = text.replace(wrong, right)
+        return text
+
+    @staticmethod
+    def _fix_only_overconversion(text: str) -> str:
         """把被 s2tw 過度轉換的量詞「隻」改回副詞「只」。
 
         詳見模組頂端 ``_ONLY_OVERCONVERT_RE`` 的說明。
         """
         if not text:
             return text
-        text = _ONLY_OVERCONVERT_RE.sub("只", text)
-        # 個別需人工判斷的情境修正
-        for wrong, right in _ONLY_CONTEXT_FIXES.items():
-            if wrong in text:
-                text = text.replace(wrong, right)
-        return text
+        return _ONLY_OVERCONVERT_RE.sub("只", text)
+
+    @staticmethod
+    def _fix_fa_overconversion(text: str) -> str:
+        """把被 s2tw 過度轉換的「髮」（hair）改回「發」（emit/issue）。
+
+        詳見模組頂端 ``_FA_FOLLOWER`` 等集合的說明。
+        """
+        if "髮" not in text:
+            return text
+        chars = list(text)
+        n = len(chars)
+        for i, ch in enumerate(chars):
+            if ch != "髮":
+                continue
+            prev = chars[i - 1] if i > 0 else ""
+            nxt = chars[i + 1] if i + 1 < n else ""
+            if nxt in _FA_FOLLOWER or (
+                prev not in _FA_HAIR_PREV and nxt not in _FA_HAIR_NEXT
+            ):
+                chars[i] = "發"
+        return "".join(chars)
+
+    @staticmethod
+    def _fix_hou_overconversion(text: str) -> str:
+        """把被 s2tw 漏轉的「后」（after）改成「後」。
+
+        詳見模組頂端 ``_HOU_OVERCONVERT_RE`` 的說明。
+        """
+        if "后" not in text:
+            return text
+        return _HOU_OVERCONVERT_RE.sub("後", text)
+
+    @staticmethod
+    def _fix_li_overconversion(text: str) -> str:
+        """把被 s2tw 漏轉的「里」（inside）改成「裡」。
+
+        詳見模組頂端 ``_LI_INSIDE_RE`` 的說明。
+        """
+        if "里" not in text:
+            return text
+        return _LI_INSIDE_RE.sub("裡", text)
     
     def to_simplified(self, text: str) -> str:
         """繁体转简体"""

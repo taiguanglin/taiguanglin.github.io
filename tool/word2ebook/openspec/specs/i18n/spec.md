@@ -23,13 +23,16 @@ traditional Chinese using the `opencc-python-reimplemented` library.
 - THEN it SHALL return an empty string without raising
 
 ### Requirement: Taiwan-Standard Traditional Output
-`to_traditional` SHALL output Taiwan-standard traditional Chinese (台灣正體),
-regardless of whether the source text is simplified or Hong-Kong/old-style
-traditional. Because the source documents are already traditional with
-Hong-Kong / semantically over-converted glyphs (e.g. `隻能`, `幹預`, `裏面`,
-`沖突`), the method SHALL first normalise the input to simplified (`t2s`) so the
-phrase dictionary can resolve semantic ambiguity, then convert to Taiwan
-traditional (`s2tw`), then apply the variant-character map.
+`to_traditional` SHALL output Taiwan-standard traditional Chinese (台灣正體).
+The source documents are simplified Chinese, so the method SHALL normalise the
+input to simplified (`t2s`, a near no-op that also flattens any stray
+Hong-Kong / old-style glyphs), convert to Taiwan traditional (`s2tw`), then
+repair the inherent one-to-many mis-conversions of OpenCC's `s2tw` dictionary
+(see below), apply curated context fixes, and finally apply the
+variant-character/word map. The one-to-many repairs are required because both
+`opencc` and `opencc-python-reimplemented` greedily segment ambiguous
+simplified characters (`只`, `发`, `后`, `里`, …) and pick the wrong traditional
+glyph in certain contexts.
 
 #### Scenario: Over-converted "only" is corrected
 - GIVEN the text `隻能` (over-converted "only can")
@@ -79,14 +82,95 @@ characters are not in the follower set.
 - THEN a curated context-fix map SHALL correct it to `那一只能回到自性`,
   while genuine measure-word usage such as `這一隻能飛` SHALL remain unchanged
 
+### Requirement: Correct s2tw "emit/hair" (發/髮) Over-Conversion
+Simplified `发` maps to both `發` (emit/issue) and `髮` (hair). `s2tw`
+over-converts `發` into `髮` after characters that collocate with hair
+(e.g. `亂发愿` is read as `亂髮`+`願`; `眾生发願` as `生髮`+…). After `s2tw`,
+`to_traditional` SHALL convert a `髮` back to `發` when its following character
+is an emit/issue follower (`願`, `現`, `生`, `出`, `音`, `揮`, `作`, `展`, …),
+OR when its preceding character is not a hair modifier (`頭`, `白`, `脫`, `長`,
+`理`, `染`, …) and its following character is not a hair noun (`際`, `型`, `絲`,
+…). Genuine hair words (`頭髮`, `白髮`, `髮際線`, `脫髮`, `理髮`) SHALL be kept.
+
+#### Scenario: Emit over-converted to hair is repaired
+- GIVEN the simplified text `不要乱发愿` (and `众生发愿`, `舌头发生`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `不要亂發願` (and `眾生發願`, `舌頭發生`)
+
+#### Scenario: Genuine hair word preserved
+- GIVEN the simplified text `头发的颜色` (and `白发变黑`, `发际线`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `頭髮的顏色` (and `白髮變黑`, `髮際線`)
+
+### Requirement: Correct s2tw "after/queen" (後/后) Under-Conversion
+Simplified `后` maps to both `後` (after) and `后` (queen/empress). `s2tw`
+leaves `后` unconverted in `天后`, `東西后`, `父母后`, `聊天后` etc. where it
+means "after". After `s2tw`, `to_traditional` SHALL convert `后` to `後` unless
+its preceding character is a queen modifier (`皇`, `太`, `呂`, `武`, `蟻`, `王`,
+…) or its following character is a queen noun (`宮`, `娘`, `妃`, `土`, …), so
+that `皇后`, `太后`, `呂后`, `蟻后`, `天后宮`, `后土` are preserved.
+
+#### Scenario: "after" under-conversion repaired
+- GIVEN the simplified text `49天后再看看` (and `吃了东西后盘腿`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `49天後再看看` (and `吃了東西後盤腿`)
+
+#### Scenario: Queen word preserved
+- GIVEN the simplified text `慈禧太后` (and `娶一个皇后`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL contain `太后` (and `皇后`)
+
+### Requirement: Correct s2tw "inside" (裡/里) Under-Conversion
+Simplified `里` maps to both `裡` (inside) and `里` (li/mile/village/translit).
+`s2tw` converts `這裡`/`心裡` correctly but leaves `里` after certain phrases
+(`劇本里`, `知道里面`, `六道里`, `視角里`, `輪迴里`). After `s2tw`,
+`to_traditional` SHALL convert `里` to `裡` when preceded by an inside-context
+character (`本`, `道`, `會`, `角`, `方`, `場`, `子`, `迴`, `穴`, `識`, `經`,
+`向`). Distance/transliteration words (`公里`, `千里`, `鄰里`, `斯里蘭卡`)
+SHALL be preserved because their preceding character is not in that set.
+
+#### Scenario: "inside" under-conversion repaired
+- GIVEN the simplified text `剧本里写的` (and `六道里`, `我知道里面有鬼`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `劇本裡寫的` (and `六道裡`, `我知道裡面有鬼`)
+
+#### Scenario: Distance/transliteration "li" preserved
+- GIVEN the simplified text `公里` (and `斯里兰卡`, `邻里`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `公里` (and `斯里蘭卡`, `鄰里`)
+
+### Requirement: Sleepy "睏" Context Correction
+Simplified `困` covers both `困` (trapped/difficult) and `睏` (sleepy/drowsy).
+`s2tw` always produces `困`. Where a curated phrase unambiguously means sleepy,
+`to_traditional` SHALL correct it via the context-fix map, while genuine
+"trapped/difficult" usage (`困難`, `被困`) SHALL remain `困`.
+
+#### Scenario: Sleepy 困 corrected to 睏
+- GIVEN the simplified text `反而你现在困才是更大的问题`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL contain `現在睏才是`
+
+#### Scenario: Trapped 困 preserved
+- GIVEN the simplified text `遇到困难`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL contain `困難`
+
 ### Requirement: Variant Character Normalisation
 Before and after OpenCC conversion the system SHALL apply a variant-character
-map to standardise uncommon glyphs (e.g. `衆 → 眾`, `喫 → 吃`).
+map to standardise uncommon glyphs (e.g. `衆 → 眾`, `喫 → 吃`). The same map
+SHALL also correct unambiguous word-level mis-conversions where the traditional
+form has only one correct spelling but `s2tw` picks the wrong one:
+`制造 → 製造`, `制作 → 製作`, `製度 → 制度`, `分鍾 → 分鐘`.
 
 #### Scenario: Variant character replaced
 - GIVEN text containing the character `衆`
 - WHEN `I18nProcessor.standardize_variant_chars` is called
 - THEN the returned string SHALL contain `眾` instead
+
+#### Scenario: Word-level mis-conversion corrected
+- GIVEN the simplified text `少和人制造矛盾` (and `十几分钟`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `少和人製造矛盾` (and `十幾分鐘`)
 
 ### Requirement: Filename Conventions
 Traditional Chinese variants of HTML files SHALL use the `_trad.html` suffix.
