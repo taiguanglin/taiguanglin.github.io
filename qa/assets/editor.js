@@ -363,6 +363,17 @@ function updateFileStatsDom(path) {
     applyFileStats(item, state.fileStats.get(path));
 }
 
+// 只更新某個檔案在側邊欄的「草稿」標記（小圓點與「捨棄草稿」↺ 鈕），
+// 不整份重建清單。還原成原樣而清掉草稿時用它把標記收掉。
+function updateFileDraftDom(path) {
+    if (!els.fileList) return;
+    const item = els.fileList.querySelector(`.file-item[data-path="${CSS.escape(path)}"]`);
+    if (!item) return;
+    const hasDraft = state.draftPaths.has(path);
+    item.querySelector('.draft-dot')?.classList.toggle('hidden', !hasDraft);
+    item.closest('.file-row')?.querySelector('.file-discard')?.classList.toggle('hidden', !hasDraft);
+}
+
 async function fetchAllFileStats(files) {
     const queue = files.map((file) => file.path).filter((path) => !state.fileStats.has(path));
     const worker = async () => {
@@ -1184,11 +1195,13 @@ function recomputeDirty() {
     if (state.dirty && state.currentFile) {
         scheduleDraftSave(text);
     } else if (state.currentFile) {
-        // 還原成原樣（或只是聽過）時，取消尚未寫入的草稿暫存並清掉既有草稿。
+        // 還原成原樣（或只是聽過）時，取消尚未寫入的草稿暫存並清掉既有草稿，
+        // 同時把側邊欄該檔的草稿標記（小圓點、捨棄草稿 ↺ 鈕）一起收掉。
         clearTimeout(state.draftTimer);
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
         els.draftBadge.classList.add('hidden');
+        updateFileDraftDom(state.currentFile.path);
     }
     refreshMetaSummary();
     refreshCurrentFileStats();
