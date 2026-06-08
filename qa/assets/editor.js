@@ -1672,7 +1672,6 @@ function closeContextMenu() {
     activeContextMenu.remove();
     activeContextMenu = null;
     document.removeEventListener('pointerdown', onContextMenuPointerDown, true);
-    document.removeEventListener('keydown', onContextMenuKeyDown, true);
     document.removeEventListener('scroll', closeContextMenu, true);
     window.removeEventListener('blur', closeContextMenu);
     window.removeEventListener('resize', closeContextMenu);
@@ -1680,13 +1679,6 @@ function closeContextMenu() {
 
 function onContextMenuPointerDown(event) {
     if (activeContextMenu && !activeContextMenu.contains(event.target)) {
-        closeContextMenu();
-    }
-}
-
-function onContextMenuKeyDown(event) {
-    if (event.key === 'Escape') {
-        event.preventDefault();
         closeContextMenu();
     }
 }
@@ -1721,7 +1713,6 @@ function showContextMenu(x, y, items) {
     // 延後掛上關閉監聽，避免開啟當下的事件立刻把它關掉。
     setTimeout(() => {
         document.addEventListener('pointerdown', onContextMenuPointerDown, true);
-        document.addEventListener('keydown', onContextMenuKeyDown, true);
         document.addEventListener('scroll', closeContextMenu, true);
         window.addEventListener('blur', closeContextMenu);
         window.addEventListener('resize', closeContextMenu);
