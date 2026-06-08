@@ -568,6 +568,9 @@ function renderSegmentCard(segment, segmentIndex) {
         button.addEventListener('click', () => clearSegmentMeta(segmentIndex, button.dataset.field));
     }
 
+    const copyButton = node.querySelector('.copy-segment');
+    copyButton?.addEventListener('click', () => copySegmentAnswer(segmentIndex, copyButton));
+
     const mergeUpButton = node.querySelector('.merge-up');
     const mergeDownButton = node.querySelector('.merge-down');
     const splitButton = node.querySelector('.split-segment');
@@ -1330,6 +1333,70 @@ function refreshMetaSummary() {
 
 function segmentBodyText(segment) {
     return segment?.parts?.map((part) => part.text).join('') || '';
+}
+
+// 「答疑內容」＝段落內文（Taiguanglin：…），不含「### 提問」「時間」等標記列，
+// 也不含「最後播放／最後編輯」。複製鈕用它把師父的回答原文放進剪貼簿。
+function segmentAnswerText(segment) {
+    return (segment?.parts || [])
+        .filter((part) => part.type === 'chunk')
+        .map((part) => part.text)
+        .join('')
+        .trim();
+}
+
+async function copySegmentAnswer(segmentIndex, button) {
+    const segment = state.document?.segments?.[segmentIndex];
+    if (!segment) return;
+    const text = segmentAnswerText(segment);
+    if (!text) {
+        setStatus('這一段沒有可複製的答疑內容', 'error');
+        return;
+    }
+    const ok = await copyTextToClipboard(text);
+    if (ok) {
+        setStatus(`已複製第 ${segment.number || segmentIndex + 1} 段答疑內容`, 'ok');
+        flashCopyButton(button);
+    } else {
+        setStatus('複製失敗，請改用手動選取複製', 'error');
+    }
+}
+
+async function copyTextToClipboard(text) {
+    try {
+        if (navigator.clipboard?.writeText) {
+            await navigator.clipboard.writeText(text);
+            return true;
+        }
+    } catch (_) { /* 權限或非安全環境失敗時，改走下方備援 */ }
+    try {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.setAttribute('readonly', '');
+        textarea.style.position = 'fixed';
+        textarea.style.top = '-1000px';
+        textarea.style.opacity = '0';
+        document.body.append(textarea);
+        textarea.select();
+        const ok = document.execCommand('copy');
+        textarea.remove();
+        return ok;
+    } catch (_) {
+        return false;
+    }
+}
+
+function flashCopyButton(button) {
+    if (!button) return;
+    const original = button.dataset.label || button.textContent;
+    button.dataset.label = original;
+    button.classList.add('copied');
+    button.textContent = '✓';
+    clearTimeout(button._copyTimer);
+    button._copyTimer = setTimeout(() => {
+        button.textContent = button.dataset.label || original;
+        button.classList.remove('copied');
+    }, 1200);
 }
 
 function formatTimestamp(date = new Date()) {

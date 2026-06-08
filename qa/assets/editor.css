@@ -772,6 +772,28 @@ textarea.marker-heading {
     color: #fff;
 }
 
+.copy-segment {
+    background: transparent;
+    border-color: var(--border);
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1;
+    padding: 0.45rem 0.55rem;
+}
+
+.copy-segment:hover:not(:disabled),
+.copy-segment:focus-visible {
+    background: var(--accent);
+    border-color: transparent;
+    color: #fff;
+}
+
+.copy-segment.copied {
+    background: var(--status-both);
+    border-color: transparent;
+    color: #fff;
+}
+
 .icon-button {
     background: transparent;
     color: var(--text);
