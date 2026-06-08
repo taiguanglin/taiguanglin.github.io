@@ -146,10 +146,14 @@ function bindEvents() {
     els.undoButton?.addEventListener('click', () => undoEdit());
     els.redoButton?.addEventListener('click', () => redoEdit());
     document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && state.dirty) {
-            event.preventDefault();
-            renderDocument();
-        }
+        if (event.key !== 'Escape') return;
+        // 中文等輸入法選字途中按 ESC 是要取消候選字，這時不該觸發整份重繪，
+        // 否則會像存檔那樣讓畫面捲動跳掉（isComposing／keyCode 229 都代表組字中）。
+        if (event.isComposing || event.keyCode === 229) return;
+        if (!state.dirty) return;
+        event.preventDefault();
+        // 重繪會清空再重建內文框造成捲動位置跳動，用同一套保護維持目前捲動位置。
+        preserveWorkspaceScroll(() => renderDocument());
     });
     // 整體編輯的上一步／下一步僅透過 UI 按鈕觸發，不攔截 ⌘Z／⌘⇧Z 等鍵盤組合，
     // 以免在文字編輯框中造成畫面捲動等干擾。
