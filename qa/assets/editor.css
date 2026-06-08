@@ -772,6 +772,7 @@ textarea.marker-heading {
     color: #fff;
 }
 
+.reset-segment,
 .copy-segment {
     background: transparent;
     border-color: var(--border);
@@ -779,6 +780,13 @@ textarea.marker-heading {
     font-size: 1.05rem;
     line-height: 1;
     padding: 0.45rem 0.55rem;
+}
+
+.reset-segment:hover:not(:disabled),
+.reset-segment:focus-visible {
+    background: var(--accent);
+    border-color: transparent;
+    color: #fff;
 }
 
 .copy-segment:hover:not(:disabled),
