@@ -487,18 +487,34 @@ function discardDraftFor(file) {
     setStatus(`已捨棄「${displayName}」的本機草稿`, 'ok');
 }
 
-// 在重繪期間維持 .workspace 的捲動位置。重繪會清空再重建內文框，
-// 文字框先以最小高度出現、之後才用 microtask 自動長回，這段期間捲動高度
-// 會塌縮、捲動位置被夾到頂端。先記住捲動量，等文字框長回後（microtask 之後的
-// animation frame）再把捲動位置還原回去，畫面就不會自己往上跳。
+// 在重繪期間維持 .workspace 的捲動位置。重繪會清空再重建 #editorRoot，內文框
+// 先以最小高度出現、之後才用 microtask 自動長回，這段期間整份內容高度會瞬間
+// 塌縮，捲動位置因而被瀏覽器夾到較上面（畫面看起來自己往上捲）。
+//
+// 與其事後還原，不如直接避免塌縮：重建前先把容器的最小高度鎖在目前高度，整個
+// 重建＋長回過程高度都不會掉，捲動位置自然不被夾掉；等文字框長回後（microtask
+// 之後的 animation frame）再解除鎖定，並保險地把捲動位置設回原值。
 function preserveWorkspaceScroll(render) {
     const scroller = els.workspace;
-    const savedScrollTop = scroller ? scroller.scrollTop : 0;
-    render();
-    if (!scroller) return;
-    requestAnimationFrame(() => {
+    if (!scroller) {
+        render();
+        return;
+    }
+    const savedScrollTop = scroller.scrollTop;
+    const root = els.editorRoot;
+    const lockedHeight = root ? root.offsetHeight : 0;
+    if (root && lockedHeight) {
+        root.style.minHeight = `${lockedHeight}px`;
+    }
+    try {
+        render();
+    } finally {
         scroller.scrollTop = savedScrollTop;
-    });
+        requestAnimationFrame(() => {
+            if (root) root.style.minHeight = '';
+            scroller.scrollTop = savedScrollTop;
+        });
+    }
 }
 
 function renderDocument() {
