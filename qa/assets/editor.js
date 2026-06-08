@@ -39,6 +39,7 @@ const els = {
     sidebarResizer: document.querySelector('#sidebarResizer'),
     fileList: document.querySelector('#fileList'),
     fileSearch: document.querySelector('#fileSearch'),
+    workspace: document.querySelector('.workspace'),
     welcomePanel: document.querySelector('#welcomePanel'),
     documentPanel: document.querySelector('#documentPanel'),
     documentPath: document.querySelector('#documentPath'),
@@ -484,6 +485,20 @@ function discardDraftFor(file) {
         .catch(() => state.fileStats.set(file.path, { error: true }))
         .finally(() => updateFileStatsDom(file.path));
     setStatus(`已捨棄「${displayName}」的本機草稿`, 'ok');
+}
+
+// 在重繪期間維持 .workspace 的捲動位置。重繪會清空再重建內文框，
+// 文字框先以最小高度出現、之後才用 microtask 自動長回，這段期間捲動高度
+// 會塌縮、捲動位置被夾到頂端。先記住捲動量，等文字框長回後（microtask 之後的
+// animation frame）再把捲動位置還原回去，畫面就不會自己往上跳。
+function preserveWorkspaceScroll(render) {
+    const scroller = els.workspace;
+    const savedScrollTop = scroller ? scroller.scrollTop : 0;
+    render();
+    if (!scroller) return;
+    requestAnimationFrame(() => {
+        scroller.scrollTop = savedScrollTop;
+    });
 }
 
 function renderDocument() {
@@ -1439,8 +1454,13 @@ async function saveCurrentFile({ force = false, reason = 'edit' } = {}) {
         clearDraft(state.currentFile.path);
         state.draftPaths = listDraftPaths();
         renderFileList();
-        renderDocument();
-        refreshCurrentFileStats();
+        // 重繪會把內文框重建並從最小高度開始（之後才以 microtask 自動長回），
+        // 過程中捲動高度短暫塌縮，捲動位置會被夾到頂端，畫面因此往上跳。
+        // 存檔不需要移動視角，所以記住目前捲動位置，等版面長回後再還原。
+        preserveWorkspaceScroll(() => {
+            renderDocument();
+            refreshCurrentFileStats();
+        });
         setStatus(playedOnly ? '已將收聽進度儲存到 GitHub' : '已儲存並建立 GitHub commit', 'ok');
     } catch (error) {
         if (isConflict(error)) {
