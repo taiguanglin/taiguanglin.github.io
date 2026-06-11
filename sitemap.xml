@@ -3,337 +3,345 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
         http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  
+
   <!-- ============ 主要頁面 ============ -->
   <!-- 網站首頁 -->
   <url>
     <loc>https://taiguanglin.info/</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
-  
+
   <!-- 雙盤修行故事頁面 -->
   <url>
     <loc>https://taiguanglin.info/stories.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 問答錄主頁面 -->
   <url>
     <loc>https://taiguanglin.info/wenda.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
+  <!-- 佛法名詞圖解 -->
+  <url>
+    <loc>https://taiguanglin.info/infographic.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ============ 問答錄章節 - 核心理論篇 ============ -->
   <!-- 自性與意識 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-01.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- 羯磨（業） -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-02.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- 發心 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-03.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- 世界起源與輪轉 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-04.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- ============ 問答錄章節 - 實修篇 ============ -->
   <!-- 戒性 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-05.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 修福及功德 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-06.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 念誦經咒 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-07.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 腹式呼吸 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-08.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 磕大頭 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-09.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 雙盤 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-10.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- ============ 問答錄章節 - 高階篇 ============ -->
   <!-- 禪定 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-11.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- 佛門修行 -->
   <url>
     <loc>https://taiguanglin.info/wenda/chapter-12.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- ============ 問答錄完整版2 - 最新版本 ============ -->
   <!-- 完整版首頁 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/index.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- 完整版首頁 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/index_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
-  
+
   <!-- ============ 完整版章節 - 簡化版本 ============ -->
   <!-- 自性與意識 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/01.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 自性與意識 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/01_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 羯磨（業） - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/02.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 羯磨（業） - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/02_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 發心 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/03.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 發心 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/03_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 世界起源與輪轉 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/04.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 世界起源與輪轉 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/04_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 戒性 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/05.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 戒性 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/05_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 修福及功德 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/06.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 修福及功德 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/06_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 念誦經咒 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/07.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 念誦經咒 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/07_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 腹式呼吸 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/08.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-08-18</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 腹式呼吸 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/08_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 磕大頭 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/09.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 磕大頭 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/09_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 雙盤 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/10.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 雙盤 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/10_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
-  
+
   <!-- 禪定 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/11.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 禪定 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/11_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 佛門修行 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/12.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-  
+
   <!-- 佛門修行 - 繁體 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_ebook/12_trad.html</loc>
-    <lastmod>2025-01-30</lastmod>
+    <lastmod>2026-06-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
