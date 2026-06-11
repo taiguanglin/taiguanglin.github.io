@@ -39,6 +39,28 @@ class TestI18nProcessor:
         text = "沒有異體字"
         assert processor.standardize_variant_chars(text) == text
 
+    # ---- OOXML control-char escape removal ----
+
+    def test_standardize_strips_ooxml_control_escape(self, processor):
+        # Word 殘留的控制字元轉義（_x0001_ / _x000B_）應被移除
+        assert processor.standardize_variant_chars("希望_x0001_，沒有問題") == "希望，沒有問題"
+        assert processor.standardize_variant_chars("一行_x000B_文字") == "一行文字"
+        assert processor.standardize_variant_chars("_x001F_開頭") == "開頭"
+        assert processor.standardize_variant_chars("結尾_x007F_") == "結尾"
+
+    def test_standardize_keeps_printable_char_escape(self, processor):
+        # 可列印字元的轉義（底線 _x005F_、字母 _x0041_）不在控制字元範圍，應保留
+        assert "_x005F_" in processor.standardize_variant_chars("保留_x005F_底線")
+        assert "_x0041_" in processor.standardize_variant_chars("保留_x0041_字母")
+
+    def test_to_traditional_strips_ooxml_control_escape(self, processor):
+        # 繁體輸出（經 to_traditional）也應移除控制字元轉義
+        assert processor.to_traditional("真實不虛的希望_x0001_") == "真實不虛的希望"
+
+    def test_ensure_simplified_strips_ooxml_control_escape(self, processor):
+        # 簡體輸出（經 ensure_simplified）也應移除控制字元轉義
+        assert "_x0001_" not in processor.ensure_simplified("希望_x0001_沒有問題")
+
     # ---- conversion (requires opencc) ----
 
     def test_to_traditional_returns_string(self, processor):

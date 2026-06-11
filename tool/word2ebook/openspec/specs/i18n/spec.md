@@ -172,6 +172,30 @@ form has only one correct spelling but `s2tw` picks the wrong one:
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL be `少和人製造矛盾` (and `十幾分鐘`)
 
+### Requirement: OOXML Control-Character Escape Removal
+Word escapes characters that are invalid in XML — the C0 control range
+(`0x00`–`0x1F`) and DEL (`0x7F`) — into literal strings of the form `_xHHHH_`
+(e.g. `_x0001_`, `_x000B_`), which `python-docx` returns verbatim. These are
+meaningless noise. `standardize_variant_chars` SHALL strip every such
+control-character escape (replacing it with the empty string) so it appears in
+neither the simplified nor traditional output. Because this runs inside
+`standardize_variant_chars`, both `to_traditional` and `ensure_simplified`
+inherit the behaviour. Escapes for printable characters (e.g. `_x005F_` for the
+underscore itself, `_x0041_` for `A`) are outside the control range and SHALL be
+preserved so genuine body text is never deleted.
+
+#### Scenario: Control-character escape stripped
+- GIVEN the text `真實不虛的希望_x0001_` (and `一行_x000B_文字`)
+- WHEN `I18nProcessor.standardize_variant_chars` (or `to_traditional` /
+  `ensure_simplified`) is called
+- THEN the result SHALL be `真實不虛的希望` (and `一行文字`), with no `_xHHHH_`
+  control-character escape remaining
+
+#### Scenario: Printable-character escape preserved
+- GIVEN the text `保留_x005F_底線`
+- WHEN `I18nProcessor.standardize_variant_chars` is called
+- THEN the result SHALL still contain `_x005F_`
+
 ### Requirement: Filename Conventions
 Traditional Chinese variants of HTML files SHALL use the `_trad.html` suffix.
 - `I18nProcessor.get_traditional_filename("01.html")` → `"01_trad.html"`

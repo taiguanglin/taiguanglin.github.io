@@ -85,6 +85,16 @@ _CONTEXT_FIXES = {
     "現在困才是": "現在睏才是",
 }
 
+# ---------------------------------------------------------------------------
+# 移除 OOXML（Word）控制字元轉義。
+# Word 在寫入 .docx 時，會把無法以 XML 表示的控制字元（C0 控制碼 0x00–0x1F 與
+# DEL 0x7F）轉義成形如「_x0001_」「_x000B_」的字串，python-docx 會原樣讀出。
+# 這些都是無意義的雜訊字元，一律取代成空字串。
+# 注意：可列印字元的轉義（例如底線本身 _x005F_、字母 _x0041_）不在此範圍，
+# 予以保留，以免誤刪內文。
+# ---------------------------------------------------------------------------
+_OOXML_CONTROL_CHAR_RE = re.compile(r"_x00[01][0-9A-Fa-f]_|_x007[Ff]_")
+
 
 class I18nProcessor:
     """国际化处理器"""
@@ -137,7 +147,8 @@ class I18nProcessor:
             # 「信息」在台灣已通用且看得懂，統一保留「信息」，不改成台灣慣用語「資訊」。
             # （s2tw 本就保留「信息」，此處再把來源中少數「资讯→資訊」一併歸一為「信息」。）
             "資訊": "信息",
-            "_x000B_": "",  # 將 _x000B_ 字符串替換為換行符
+            # OOXML 控制字元轉義（_x0001_、_x000B_ 等）改由 _OOXML_CONTROL_CHAR_RE
+            # 統一移除，見 standardize_variant_chars。
             # 可以根據需要繼續添加
         }
     
@@ -175,11 +186,12 @@ class I18nProcessor:
         return self._opencc_t2s
     
     def standardize_variant_chars(self, text: str) -> str:
-        """標準化異體字"""
+        """標準化異體字，並移除 OOXML 控制字元轉義（_x0001_、_x000B_ 等雜訊）"""
         if not text:
             return text
         
-        result = text
+        # 先移除 Word 殘留的控制字元轉義字串
+        result = _OOXML_CONTROL_CHAR_RE.sub("", text)
         for variant, standard in self.variant_char_map.items():
             result = result.replace(variant, standard)
         return result
