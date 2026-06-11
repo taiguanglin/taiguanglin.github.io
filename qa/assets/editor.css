@@ -912,9 +912,13 @@ textarea.marker-heading {
 
 .mini-player {
     background: var(--panel-strong);
-    border: 1px solid var(--border);
+    border: 2px solid var(--accent);
     border-radius: 1rem;
-    box-shadow: var(--shadow);
+    /* Accent ring + drop shadow so the box stays clearly separated from the
+       page background, making it easy to spot its edges when dragging. */
+    box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--accent) 35%, transparent),
+        var(--shadow);
     cursor: grab;
     display: grid;
     gap: 0.55rem;
