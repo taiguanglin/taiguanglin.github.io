@@ -181,8 +181,9 @@ class TestMonthGrouping:
 # ---------------------------------------------------------------------------
 
 class TestNumberedQuestions:
-    def test_all_questions_listed_then_answered(self, parser):
-        """1、2、3 listed before any answer -> three separate question cards."""
+    def test_consecutive_numbered_merge_into_one_card(self, parser):
+        """1、2、3 listed consecutively (no answer between) -> ONE merged question
+        card (a single multi-part question), with each number its own paragraph."""
         lines = [
             (157.0, "Tai 师父2025 年6 月9 日答疑（文字版）"),
             (IND,  "师父说：今天是2025 年6 月9 号，先回答贴吧的问题。"),
@@ -196,7 +197,33 @@ class TestNumberedQuestions:
             (IND,  "答二。"),
         ]
         ch = parser.parse_lines(lines, start_index=12)[0]
-        assert len(re.findall(r'<div class="question"', ch.content)) == 3
+        # exactly one question card, with a single questioner header
+        assert len(re.findall(r'<div class="question"', ch.content)) == 1
+        assert ch.content.count('<span class="questioner">甲</span>') == 1
+        # all three numbered items present, each as its own question-text paragraph
+        for q in ("1、问题一。", "2、问题二。", "3、问题三。"):
+            assert f'<div class="question-text">{q}</div>' in ch.content
+
+    def test_continuation_question_after_answer_opens_new_card(self, parser):
+        """A numbered question that comes AFTER an answer is a new turn and opens
+        a new card (still attributed to the same questioner)."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月9 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-06-09 08:00"),
+            (IND,  "1、问题一。"),
+            (IND,  "2、问题二。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答。"),
+            (IND,  "3、追问的问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "再答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        # 1、2、 merge into one card; 3、 after the answer opens a second card
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["甲", "甲"]
 
     def test_greeting_attached_to_first_numbered_question(self, parser):
         """An intro/greeting before '1、' stays in the same first question card."""

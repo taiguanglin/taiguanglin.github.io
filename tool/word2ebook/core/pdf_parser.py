@@ -418,13 +418,15 @@ class PDFParser:
             # 編號子問題
             if indented and NUM_RE.match(text):
                 card = state["card"]
-                if card is not None and card["kind"] == "question" and not card["numbered"]:
-                    # 問題卡片內的第一個編號（前面可能有「頂禮師父／想請教三個問題：」等引言）
-                    # → 接到同一張卡片
+                if card is not None and card["kind"] == "question":
+                    # 同一位提問者「連續」的編號子問題（中間沒有師父回答／分隔線／
+                    # 新提問者）視為同一個多段式問題，併進同一張問題卡片；每個編號各自
+                    # 成段（question-text）。引言（如「頂禮師父／續問：」）也留在同卡。
                     add_line(text, indented=True)
                     card["numbered"] = True
                 else:
-                    # 後續編號問題（不論前一張是問題或回答）→ 沿用同一提問者另開卡片
+                    # 編號問題出現在回答／敘述段落之後或尚無卡片 → 是新的一輪提問，
+                    # 沿用同一提問者另開新卡片。
                     start_card("question", state["questioner"], state["qtime"])
                     add_line(text, indented=True)
                     state["card"]["numbered"] = True

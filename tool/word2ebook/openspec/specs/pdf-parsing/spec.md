@@ -65,15 +65,25 @@ The parser SHALL emit `<div class="question">` cards (with `questioner` and
 optional `question-time` meta) and `<div class="answer">` cards (answerer raw
 name `Taiguanglin`), matching the Word output markup. A timestamped questioner
 line is `名字：YYYY-MM-DD HH:MM`. An answer marker is `Taiguanglin：`. Numbered
-sub-questions (`N、`, `问题N、`, …) SHALL each become their own question card and
-reuse the questioner's name/time; an intro/greeting before the first number stays
-with the first question card.
+sub-questions (`N、`, `问题N、`, …) posted **consecutively** by the same questioner
+(with no intervening answer, separator, or new questioner) SHALL be merged into a
+**single** question card — one multi-part question — with each number rendered as
+its own `question-text` paragraph. An intro/greeting before the first number stays
+with the same card. A numbered question that appears **after an answer** is a new
+turn and SHALL open a new question card (still reusing the same questioner's
+name/time).
 
-#### Scenario: Multiple numbered questions
-- GIVEN one questioner who asks `1、`, `2、`, `3、`
+#### Scenario: Consecutive numbered questions merge
+- GIVEN one questioner who asks `1、`, `2、`, `3、` consecutively before any answer
 - WHEN parsed
-- THEN three separate question cards SHALL be produced, each carrying the same
-  questioner name and time
+- THEN a single question card SHALL be produced, carrying the questioner name/time
+  once, with `1、`, `2、`, `3、` each as its own `question-text` paragraph
+
+#### Scenario: Numbered question after an answer opens a new card
+- GIVEN `1、` and `2、`, then `Taiguanglin：` answer, then `3、`
+- WHEN parsed
+- THEN two question cards SHALL be produced (`1、2、` merged; `3、` separate), both
+  carrying the same questioner name/time
 
 ### Requirement: Questioners Without a Timestamp
 Many 贴吧/微信公众号 comments carry only a name (`名字：`) with no timestamp on
