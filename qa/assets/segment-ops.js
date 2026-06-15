@@ -95,8 +95,12 @@ export function renumber(document) {
 
 // Split segment[segmentIndex] at `offset` inside its chunk part[partIndex].
 // Text before the caret stays in the first segment; text after becomes a new
-// segment. The original time range is divided at its midpoint as a starting
-// guess that the user can refine. Returns the same document object.
+// segment. The split boundary in time uses the segment's *current* end time
+// (the value shown in the 時間 input box): the usual workflow is to press the
+// floating player's「設結束」at the split moment first, so the first segment
+// keeps [start, end] from the input box and the new second segment starts at
+// that end (its own end is left equal, to be refined while listening on).
+// Returns the same document object.
 export function splitSegment(document, segmentIndex, partIndex, offset) {
     const segment = document.segments[segmentIndex];
     if (!segment) return document;
@@ -104,7 +108,7 @@ export function splitSegment(document, segmentIndex, partIndex, offset) {
     if (!part || part.type !== 'chunk') return document;
 
     const range = getSegmentRange(segment);
-    const mid = range ? (range.start + range.end) / 2 : null;
+    const boundary = range ? range.end : null;
     const before = part.text.slice(0, offset);
     const after = part.text.slice(offset);
 
@@ -112,7 +116,7 @@ export function splitSegment(document, segmentIndex, partIndex, offset) {
     firstParts.push({ type: 'chunk', text: ensureBlockEnd(before) });
     if (range) {
         const firstTime = firstParts.find(isTimeMarker);
-        if (firstTime) setTimeRange(firstTime, range.start, mid);
+        if (firstTime) setTimeRange(firstTime, range.start, boundary);
     }
 
     const tailParts = segment.parts
@@ -123,7 +127,7 @@ export function splitSegment(document, segmentIndex, partIndex, offset) {
     const secondTime = {
         type: 'marker',
         text: range
-            ? `時間：${secondsToTimecode(mid)} - ${secondsToTimecode(range.end)}\n`
+            ? `時間：${secondsToTimecode(boundary)} - ${secondsToTimecode(boundary)}\n`
             : '時間：00:00:00.000 - 00:00:00.000\n',
     };
     // Keep the split-off segment valid for format A: its body must start with a
