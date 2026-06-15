@@ -30,7 +30,30 @@ export async function listQaFiles({ showReports = false } = {}) {
             downloadUrl: item.download_url,
             isReport: item.name.startsWith('_'),
         }))
-        .sort((a, b) => b.name.localeCompare(a.name, 'zh-Hant-u-nu-latn'));
+        .sort(compareByDateDesc);
+}
+
+// 從檔名（如「2026年1月10日…」）取出年月日，組成可比較的數值（年*10000+月*100+日）。
+// 字串比較會把「10」排在「9」之前（逐字比 1 < 9），導致月份與日期沒有完全從新到舊，
+// 改以數值比較才能正確由近到遠排序；非日期檔名（如統計報告）排到最後。
+function dateKeyFromName(name) {
+    const match = name.match(/^(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    if (!match) return null;
+    return Number(match[1]) * 10000 + Number(match[2]) * 100 + Number(match[3]);
+}
+
+function compareByDateDesc(a, b) {
+    const keyA = dateKeyFromName(a.name);
+    const keyB = dateKeyFromName(b.name);
+    if (keyA != null && keyB != null) {
+        if (keyA !== keyB) return keyB - keyA;
+    } else if (keyA == null && keyB != null) {
+        return 1;
+    } else if (keyA != null && keyB == null) {
+        return -1;
+    }
+    // 同一天（或皆非日期檔名）時，沿用原本的檔名排序當作穩定的次序。
+    return b.name.localeCompare(a.name, 'zh-Hant-u-nu-latn');
 }
 
 export async function getFile(path) {
