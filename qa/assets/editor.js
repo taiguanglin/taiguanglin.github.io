@@ -1108,6 +1108,10 @@ function afterStructuralChange(message, caret = null) {
     if (caret) state.editorCaret = caret;
     recomputeDirty();
     renderDocument();
+    // renderDocument() 會清空並重建整個編輯區，捲動位置會被瀏覽器夾到頂端附近；
+    // 重繪後把游標與畫面聚焦到這次變更的段落（拆分＝新段、合併／刪除＝目標段），
+    // 避免畫面莫名往上跳。
+    restoreEditorCaret(caret);
     setStatus(message, 'ok');
     commitHistory();
 }
