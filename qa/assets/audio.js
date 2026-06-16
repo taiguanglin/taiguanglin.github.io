@@ -1,4 +1,6 @@
-const LECTURES_BASE = 'https://taiguanglin.github.io/lectures/QnA/';
+// 音檔放在本網站根目錄的 audio/ 資料夾，這個頁面位於 qa/，所以用相對路徑往上一層。
+// 同網域播放，不需跨 domain。
+const AUDIO_BASE = '../audio/';
 
 export function createAudioController({ audio, titleEl, rangeEl, rateSelect, stopCheckbox }) {
     let activeRange = null;
@@ -39,7 +41,7 @@ export function createAudioController({ audio, titleEl, rangeEl, rateSelect, sto
         },
         async playRange(filePath, range, label = '') {
             const baseName = filePath.split('/').pop().replace(/\.txt$/i, '.opus');
-            const src = `${LECTURES_BASE}${encodeURIComponent(baseName)}`;
+            const src = new URL(`${AUDIO_BASE}${encodeURIComponent(baseName)}`, document.baseURI).href;
             if (activeFile !== src) {
                 activeFile = src;
                 audio.src = src;
