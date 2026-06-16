@@ -376,6 +376,10 @@ textarea {
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 1.25rem;
+    /* On mobile the player is docked over the bottom of the viewport; reserve
+       room so the last segment is never hidden behind it. The var stays 0 on
+       desktop (floating player) and when the player is hidden. */
+    padding-bottom: calc(1.25rem + var(--mini-player-height, 0px));
 }
 
 .welcome-panel,
@@ -1007,6 +1011,24 @@ textarea.marker-heading {
     outline: none;
 }
 
+/* The expand/collapse chevron only makes sense for the bottom-docked mobile
+   bar; the floating desktop player always shows every control. */
+.mini-player-expand {
+    color: var(--muted);
+    cursor: pointer;
+    display: none;
+    font-size: 1.1rem;
+    line-height: 1;
+    padding: 0.15rem 0.45rem;
+}
+
+.mini-player-expand:hover,
+.mini-player-expand:focus-visible {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent);
+    outline: none;
+}
+
 .mini-player-progress input[type="range"] {
     accent-color: var(--accent);
     margin: 0;
@@ -1118,14 +1140,80 @@ textarea.marker-heading {
         flex-direction: column;
     }
 
+    /* Phones don't have room to drag a floating box around, so dock the player
+       to the bottom edge: full width, not draggable, and clear of the iOS home
+       indicator via the safe-area inset. */
     .mini-player {
-        left: 12px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        width: auto;
         max-width: none;
         min-width: 0;
-        /* On small screens left+right define the width; let it stretch. */
-        width: auto;
-        right: 12px;
-        top: auto;
-        bottom: 12px;
+        gap: 0.45rem;
+        border: 0;
+        border-top: 1px solid var(--accent);
+        border-radius: 1rem 1rem 0 0;
+        cursor: auto;
+        touch-action: auto;
+        max-height: 80dvh;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding: 0.55rem 0.85rem max(0.6rem, env(safe-area-inset-bottom));
+    }
+
+    .mini-player.dragging,
+    .mini-player.dragging * {
+        cursor: auto !important;
+    }
+
+    .mini-player-header {
+        cursor: auto;
+    }
+
+    .mini-player-expand {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+    }
+
+    /* Bigger, finger-friendly transport buttons on touch screens. */
+    .mini-player-controls button {
+        font-size: 0.92rem;
+        padding: 0.6rem 0.2rem;
+    }
+
+    .mini-player-controls button.primary {
+        font-size: 1.15rem;
+    }
+
+    .mini-player-settime button,
+    .speed-control select {
+        padding: 0.55rem 0.7rem;
+    }
+
+    /* Collapsed (default): show only the essentials — title, progress, the
+       play button and playback speed. Tapping the chevron expands the rest. */
+    .mini-player:not(.mini-player--expanded) .mini-player-time,
+    .mini-player:not(.mini-player--expanded) .mini-player-settime,
+    .mini-player:not(.mini-player--expanded) .mini-player-settings .checkbox-row,
+    .mini-player:not(.mini-player--expanded) .mini-player-controls button:not(.primary) {
+        display: none;
+    }
+
+    /* Collapsed: the play button stretches across the full width so it stays an
+       easy tap target even without the surrounding seek buttons. */
+    .mini-player:not(.mini-player--expanded) .mini-player-controls {
+        display: block;
+    }
+
+    .mini-player:not(.mini-player--expanded) .mini-player-controls button.primary {
+        width: 100%;
+    }
+
+    .mini-player:not(.mini-player--expanded) .mini-player-settings {
+        justify-content: flex-end;
     }
 }

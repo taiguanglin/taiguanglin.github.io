@@ -79,6 +79,7 @@ const els = {
     miniPlayer: document.querySelector('#miniPlayer'),
     miniPlayerHandle: document.querySelector('#miniPlayerHandle'),
     miniPlayerHide: document.querySelector('#miniPlayerHide'),
+    miniPlayerExpand: document.querySelector('#miniPlayerExpand'),
     miniPlayerToggle: document.querySelector('#miniPlayerToggle'),
     miniPlayerCurrent: document.querySelector('#miniPlayerCurrent'),
     miniPlayerDuration: document.querySelector('#miniPlayerDuration'),
@@ -97,6 +98,10 @@ const audio = createAudioController({
     rateSelect: els.playbackRate,
     stopCheckbox: els.stopAtRangeEnd,
 });
+
+// 手機模式：視窗寬度 <= 900px，播放器改為固定在底部的工具列（非浮動拖曳）。
+// 宣告在 bootstrap() 之前，避免初始化期間（setupMiniPlayer）讀到尚未定義的值。
+const mobileDockQuery = window.matchMedia('(max-width: 900px)');
 
 bootstrap();
 
@@ -143,6 +148,9 @@ function bindEvents() {
     els.miniPlayerHide?.addEventListener('click', () => {
         setMiniPlayerHidden(true);
     });
+    els.miniPlayerExpand?.addEventListener('click', () => {
+        setMiniPlayerExpanded(!state.prefs.miniPlayerExpanded);
+    });
     els.undoButton?.addEventListener('click', () => undoEdit());
     els.redoButton?.addEventListener('click', () => redoEdit());
     // 整體編輯的上一步／下一步僅透過 UI 按鈕觸發，不攔截 ⌘Z／⌘⇧Z 等鍵盤組合，
@@ -188,6 +196,8 @@ function applyMiniPlayerVisibility() {
         els.playerToggle.textContent = hidden ? '顯示播放器' : '隱藏播放器';
         els.playerToggle.setAttribute('aria-pressed', String(!hidden));
     }
+    applyMiniPlayerExpanded();
+    updateMiniPlayerHeight();
 }
 
 function setMiniPlayerHidden(hidden) {
@@ -196,6 +206,41 @@ function setMiniPlayerHidden(hidden) {
     state.prefs.miniPlayerHidden = next;
     setPrefs({ miniPlayerHidden: next });
     applyMiniPlayerVisibility();
+}
+
+function isMobileDock() {
+    return mobileDockQuery.matches;
+}
+
+function applyMiniPlayerExpanded() {
+    if (!els.miniPlayer) return;
+    const expanded = state.prefs.miniPlayerExpanded === true;
+    els.miniPlayer.classList.toggle('mini-player--expanded', expanded);
+    if (els.miniPlayerExpand) {
+        els.miniPlayerExpand.textContent = expanded ? '▾' : '▴';
+        els.miniPlayerExpand.setAttribute('aria-expanded', String(expanded));
+        els.miniPlayerExpand.setAttribute('aria-label', expanded ? '收合播放器' : '展開播放器');
+    }
+}
+
+function setMiniPlayerExpanded(expanded) {
+    const next = Boolean(expanded);
+    state.prefs.miniPlayerExpanded = next;
+    setPrefs({ miniPlayerExpanded: next });
+    applyMiniPlayerExpanded();
+    updateMiniPlayerHeight();
+}
+
+// 在手機底部工具列模式下，把工具列實際高度寫進 --mini-player-height，讓
+// .workspace 預留等高的底部留白，最後一段不會被工具列蓋住。桌機（浮動播放器）
+// 或播放器隱藏時設為 0。
+function updateMiniPlayerHeight() {
+    if (!els.app || !els.miniPlayer) return;
+    const docked = isMobileDock()
+        && state.prefs.miniPlayerHidden !== true
+        && !els.miniPlayer.classList.contains('hidden');
+    const height = docked ? els.miniPlayer.offsetHeight : 0;
+    els.app.style.setProperty('--mini-player-height', `${height}px`);
 }
 
 function setupSidebarControls() {
@@ -1750,6 +1795,22 @@ function setupMiniPlayer() {
     let seeking = false;
 
     restoreMiniPlayerPosition();
+    applyMiniPlayerExpanded();
+
+    // 進出手機（<=900px）模式時切換浮動／底部工具列外觀。
+    if (typeof mobileDockQuery.addEventListener === 'function') {
+        mobileDockQuery.addEventListener('change', handleDockModeChange);
+    } else if (typeof mobileDockQuery.addListener === 'function') {
+        mobileDockQuery.addListener(handleDockModeChange);
+    }
+
+    // 工具列高度會隨展開／收合或內容換行而變，用 ResizeObserver 即時把高度寫進
+    // --mini-player-height，讓 .workspace 底部留白持續吻合。
+    if (typeof ResizeObserver === 'function') {
+        const observer = new ResizeObserver(() => updateMiniPlayerHeight());
+        observer.observe(mini);
+    }
+    window.addEventListener('resize', updateMiniPlayerHeight);
 
     const togglePlay = async () => {
         if (!player.src) return;
@@ -1847,6 +1908,8 @@ function setupMiniPlayer() {
     });
 
     mini.addEventListener('pointerdown', (event) => {
+        // 手機底部工具列模式不可拖曳（固定在底部），讓觸控用來捲動／操作即可。
+        if (isMobileDock()) return;
         if (event.button !== undefined && event.button !== 0) return;
         if (event.target.closest('button, input, select, textarea, label, a')) return;
         dragging = true;
@@ -1930,6 +1993,9 @@ function setupMiniPlayer() {
 }
 
 function restoreMiniPlayerPosition() {
+    // 手機底部工具列模式由 CSS 固定位置；不要套用桌機儲存的浮動座標，否則
+    // 內嵌的 left/top 會蓋掉 CSS，讓工具列跳到舊的桌機位置。
+    if (isMobileDock()) return;
     const pos = state.prefs.miniPlayerPos;
     if (!pos || typeof pos !== 'object') return;
     const mini = els.miniPlayer;
@@ -1941,6 +2007,29 @@ function restoreMiniPlayerPosition() {
         mini.style.top = `${pos.top}px`;
         mini.style.bottom = 'auto';
     }
+}
+
+// 清掉內嵌的浮動座標，讓底部工具列的 CSS（left/right/bottom）生效。
+function clearMiniPlayerInlinePosition() {
+    const mini = els.miniPlayer;
+    if (!mini) return;
+    mini.style.left = '';
+    mini.style.top = '';
+    mini.style.right = '';
+    mini.style.bottom = '';
+}
+
+// 進出手機模式時切換播放器外觀：進入手機 -> 清掉浮動座標改用底部工具列；
+// 回到桌機 -> 還原先前拖曳儲存的浮動位置。並重算底部留白高度。
+function handleDockModeChange() {
+    if (isMobileDock()) {
+        clearMiniPlayerInlinePosition();
+    } else {
+        els.app?.style.setProperty('--mini-player-height', '0px');
+        restoreMiniPlayerPosition();
+    }
+    applyMiniPlayerExpanded();
+    updateMiniPlayerHeight();
 }
 
 function clamp(value, min, max) {

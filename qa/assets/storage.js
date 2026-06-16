@@ -9,6 +9,7 @@ const DEFAULT_PREFS = {
     sidebarWidth: 320,
     sidebarCollapsed: false,
     miniPlayerHidden: false,
+    miniPlayerExpanded: false,
 };
 
 export function getPat() {
