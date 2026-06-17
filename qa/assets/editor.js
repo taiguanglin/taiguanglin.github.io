@@ -36,7 +36,9 @@ const els = {
     app: document.querySelector('#app'),
     sidebar: document.querySelector('#sidebar'),
     sidebarToggle: document.querySelector('#sidebarToggle'),
+    sidebarToggleIcon: document.querySelector('#sidebarToggle .sidebar-toggle-icon'),
     sidebarResizer: document.querySelector('#sidebarResizer'),
+    sidebarBackdrop: document.querySelector('#sidebarBackdrop'),
     fileList: document.querySelector('#fileList'),
     fileSearch: document.querySelector('#fileSearch'),
     workspace: document.querySelector('.workspace'),
@@ -168,6 +170,10 @@ function applyPrefs() {
     els.opusWarning.classList.toggle('hidden', audio.supportsOpus);
     applyMiniPlayerVisibility();
     applySidebarPrefs();
+    // 手機：尚未選檔時預設展開檔案抽屜，讓使用者一眼看到檔案列表。
+    if (isMobileDock() && !state.currentFile) {
+        setSidebarOpen(true);
+    }
 }
 
 function applySidebarPrefs() {
@@ -183,18 +189,37 @@ function sidebarMaxWidth() {
 
 function updateSidebarToggleLabel() {
     if (!els.sidebarToggle) return;
-    const collapsed = els.app.classList.contains('sidebar-collapsed');
-    els.sidebarToggle.setAttribute('aria-expanded', String(!collapsed));
-    els.sidebarToggle.textContent = collapsed ? '☰' : '⟨';
-    els.sidebarToggle.title = collapsed ? '展開側邊欄' : '收起側邊欄';
+    const mobile = isMobileDock();
+    const open = mobile
+        ? els.app.classList.contains('sidebar-open')
+        : !els.app.classList.contains('sidebar-collapsed');
+    els.sidebarToggle.setAttribute('aria-expanded', String(open));
+    if (els.sidebarToggleIcon) {
+        // 手機抽屜固定用 ☰；桌機展開時改用 ⟨ 提示可收起。
+        els.sidebarToggleIcon.textContent = mobile ? '☰' : (open ? '⟨' : '☰');
+    }
+    els.sidebarToggle.title = open ? '隱藏檔案列表' : '顯示檔案列表';
+}
+
+// 手機：開關左側檔案抽屜（overlay）。桌機不使用此狀態（改用 sidebar-collapsed）。
+function setSidebarOpen(open) {
+    const next = Boolean(open);
+    els.app.classList.toggle('sidebar-open', next);
+    if (els.sidebarBackdrop) els.sidebarBackdrop.hidden = !next;
+    updateSidebarToggleLabel();
 }
 
 function applyMiniPlayerVisibility() {
     const hidden = state.prefs.miniPlayerHidden === true;
     els.miniPlayer?.classList.toggle('hidden', hidden);
     if (els.playerToggle) {
-        els.playerToggle.textContent = hidden ? '顯示播放器' : '隱藏播放器';
+        const text = hidden ? '顯示播放器' : '隱藏播放器';
+        // 按鈕內含 .btn-icon（手機）與 .btn-label（桌機）；只改文字標籤，保留圖示。
+        const label = els.playerToggle.querySelector('.btn-label');
+        if (label) label.textContent = text; else els.playerToggle.textContent = text;
         els.playerToggle.setAttribute('aria-pressed', String(!hidden));
+        els.playerToggle.setAttribute('aria-label', text);
+        els.playerToggle.title = text;
     }
     applyMiniPlayerExpanded();
     updateMiniPlayerHeight();
@@ -245,12 +270,19 @@ function updateMiniPlayerHeight() {
 
 function setupSidebarControls() {
     els.sidebarToggle.addEventListener('click', () => {
+        // 手機：開關 overlay 抽屜；桌機：收合／展開固定側邊欄並記住偏好。
+        if (isMobileDock()) {
+            setSidebarOpen(!els.app.classList.contains('sidebar-open'));
+            return;
+        }
         const collapsed = !els.app.classList.contains('sidebar-collapsed');
         els.app.classList.toggle('sidebar-collapsed', collapsed);
         state.prefs.sidebarCollapsed = collapsed;
         setPrefs({ sidebarCollapsed: collapsed });
         updateSidebarToggleLabel();
     });
+
+    els.sidebarBackdrop?.addEventListener('click', () => setSidebarOpen(false));
 
     let resizing = false;
     let startX = 0;
@@ -495,6 +527,8 @@ async function loadDocument(file, { preferDraft = null } = {}) {
         renderDocument();
         refreshCurrentFileStats();
         historyReset(serializeDocument(state.document));
+        // 手機：選檔後自動收起抽屜，把整個畫面讓給主要工作區。
+        if (isMobileDock()) setSidebarOpen(false);
         setStatus(state.dirty ? '已載入本機草稿' : '已載入遠端最新版', state.dirty ? 'dirty' : 'ok');
     } catch (error) {
         setStatus(`載入失敗：${error.message}`, 'error');
@@ -599,14 +633,18 @@ function renderIntroCard() {
     const ranges = state.document.headerRanges || parseRanges(state.document.header);
     card.innerHTML = `
         <header class="segment-header">
-            <div>
-                <p class="segment-number">開場</p>
-                <h3 class="segment-title">檔案開頭與說明（含「開場時間」等可編輯標記）</h3>
+            <div class="segment-topline">
+                <button class="segment-edit-toggle" type="button" aria-label="編輯開場" aria-expanded="false" title="編輯開場">✎</button>
+                <div>
+                    <p class="segment-number">開場</p>
+                    <h3 class="segment-title">檔案開頭與說明（含「開場時間」等可編輯標記）</h3>
+                </div>
             </div>
         </header>
         <div class="range-buttons"></div>
         <textarea class="editor-textarea" data-header="true" spellcheck="false"></textarea>
     `;
+    card.querySelector('.segment-edit-toggle')?.addEventListener('click', () => toggleSegmentEditing(card));
     const rangeContainer = card.querySelector('.range-buttons');
     rangeContainer.append(...renderRangeButtons(ranges, '開場'));
     const textarea = card.querySelector('textarea');
@@ -635,6 +673,8 @@ function renderIntroCard() {
     textarea.addEventListener('keyup', trackHeaderCaret);
     attachTextareaIME(textarea);
     queueMicrotask(() => autoGrow(textarea, { allowShrink: true }));
+    // 手機預設「聽」模式：開場內文先設唯讀，點鉛筆才能編輯。
+    applySegmentEditability(card);
     return card;
 }
 
@@ -644,6 +684,7 @@ function renderSegmentCard(segment, segmentIndex) {
     node.querySelector('.segment-number').textContent = segment.number ? `第 ${segment.number} 段` : '全文';
     setupSegmentTitle(node, segment, segmentIndex);
     updateSegmentMetaChips(node, segment);
+    node.querySelector('.segment-edit-toggle')?.addEventListener('click', () => toggleSegmentEditing(node));
     node.querySelector('.reset-segment').addEventListener('click', () => resetSegment(segmentIndex));
     for (const button of node.querySelectorAll('.seg-meta-clear')) {
         button.addEventListener('click', () => clearSegmentMeta(segmentIndex, button.dataset.field));
@@ -711,7 +752,53 @@ function renderSegmentCard(segment, segmentIndex) {
         }
     }
 
+    // 手機預設「聽」模式：欄位唯讀、控制項收起，等點鉛筆才進編輯模式。
+    applySegmentEditability(node);
+
     return node;
+}
+
+// 切換某張卡片的「編輯模式」（手機）。桌機一律可編輯，此切換只影響手機的
+// 唯讀狀態與（透過 .editing class）控制項的顯示。
+function toggleSegmentEditing(card) {
+    if (!card) return;
+    const editing = !card.classList.contains('editing');
+    card.classList.toggle('editing', editing);
+    const toggle = card.querySelector('.segment-edit-toggle');
+    if (toggle) {
+        toggle.setAttribute('aria-expanded', String(editing));
+        toggle.textContent = editing ? '✓' : '✎';
+        toggle.setAttribute('aria-label', editing ? '完成編輯這一段' : '編輯這一段');
+        toggle.title = editing ? '完成編輯（收合控制項）' : '編輯這一段';
+    }
+    applySegmentEditability(card);
+    if (editing) {
+        const title = card.querySelector('.segment-title');
+        if (title && !title.readOnly) {
+            try { title.focus({ preventScroll: true }); } catch (_) { /* noop */ }
+        }
+    }
+}
+
+// 設定卡片內各輸入欄位的唯讀狀態：桌機（或手機編輯模式）可編輯；手機未編輯時
+// 唯讀。標記為 data-locked 的欄位（無標題段落的標題）永遠唯讀。
+function applySegmentEditability(card) {
+    if (!card) return;
+    const editable = !isMobileDock() || card.classList.contains('editing');
+    for (const field of card.querySelectorAll('.segment-title, .editor-textarea, .marker-input')) {
+        if (field.dataset.locked === '1') {
+            field.readOnly = true;
+        } else {
+            field.readOnly = !editable;
+        }
+    }
+}
+
+// 手機「聽」模式（卡片未進編輯）不記錄「最後播放」；桌機或編輯模式才記。
+function isSegmentEditable(segmentIndex) {
+    if (!isMobileDock()) return true;
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
+    return Boolean(card && card.classList.contains('editing'));
 }
 
 // 卡片上方的大標題就是該段的「### N. 提問」，可直接編輯。編輯時只改提問文字，
@@ -725,8 +812,10 @@ function setupSegmentTitle(node, segment, segmentIndex) {
         (part) => part.type === 'marker' && /^###\s+/.test(part.text)
     );
     if (headingPartIndex < 0) {
-        // 沒有「### N.」標題的段落（例如全文模式）：標題僅供顯示，不可編輯。
+        // 沒有「### N.」標題的段落（例如全文模式）：標題僅供顯示，永遠唯讀，
+        // 標記 locked 讓 applySegmentEditability 不會在桌機把它解鎖成可編輯。
         field.readOnly = true;
+        field.dataset.locked = '1';
         queueMicrotask(() => autoGrow(field, { allowShrink: true }));
         return;
     }
@@ -944,7 +1033,8 @@ function updatePlayButton(button, markerText, segment) {
         try {
             setMiniPlayerHidden(false);
             await audio.playRange(state.currentFile.path, range, `${segment.number}. ${segment.title}`);
-            onSegmentPlayed(segment.index);
+            // 手機「聽」模式（未進編輯）不記錄「最後播放」；桌機或編輯模式才記。
+            if (isSegmentEditable(segment.index)) onSegmentPlayed(segment.index);
             setActiveSegment(segment.index);
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
@@ -2020,9 +2110,11 @@ function clearMiniPlayerInlinePosition() {
 }
 
 // 進出手機模式時切換播放器外觀：進入手機 -> 清掉浮動座標改用底部工具列；
-// 回到桌機 -> 還原先前拖曳儲存的浮動位置。並重算底部留白高度。
+// 回到桌機 -> 還原先前拖曳儲存的浮動位置。並重算底部留白高度、同步抽屜與卡片
+// 唯讀狀態，避免跨越斷點時殘留另一種模式的樣式。
 function handleDockModeChange() {
-    if (isMobileDock()) {
+    const mobile = isMobileDock();
+    if (mobile) {
         clearMiniPlayerInlinePosition();
     } else {
         els.app?.style.setProperty('--mini-player-height', '0px');
@@ -2030,6 +2122,21 @@ function handleDockModeChange() {
     }
     applyMiniPlayerExpanded();
     updateMiniPlayerHeight();
+
+    // 重新套用每張卡片（含開場卡）的唯讀狀態：回桌機全部可編輯，進手機則未進
+    // 編輯模式的卡片轉為唯讀。
+    for (const card of els.editorRoot?.querySelectorAll('.segment-card') || []) {
+        applySegmentEditability(card);
+    }
+
+    // 抽屜狀態：回桌機關閉 overlay（改用固定側邊欄）；進手機時尚未選檔就展開、
+    // 已選檔則收起，避免蓋住工作區。
+    if (!mobile) {
+        setSidebarOpen(false);
+    } else {
+        setSidebarOpen(!state.currentFile);
+    }
+    updateSidebarToggleLabel();
 }
 
 function clamp(value, min, max) {

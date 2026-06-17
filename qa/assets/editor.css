@@ -55,6 +55,16 @@ body {
     display: none !important;
 }
 
+/* Mobile-only affordances. The wide desktop layout shows full text labels, an
+   always-present sidebar and always-editable cards, so these stay hidden until
+   the phone breakpoint switches them on. */
+.btn-icon,
+.sidebar-toggle-label,
+.segment-edit-toggle,
+.sidebar-backdrop {
+    display: none;
+}
+
 .app-shell {
     --sidebar-width: 320px;
     display: grid;
@@ -1113,31 +1123,106 @@ textarea.marker-heading {
 }
 
 @media (max-width: 900px) {
-    .app-shell {
-        grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto minmax(0, 1fr);
-    }
-
+    /* The sidebar leaves the grid flow and becomes an overlay drawer, so the
+       app shell is just the topbar plus a full-width workspace. */
+    .app-shell,
     .app-shell.sidebar-collapsed {
         grid-template-columns: minmax(0, 1fr);
         grid-template-rows: auto minmax(0, 1fr);
     }
 
-    .sidebar {
-        border-bottom: 1px solid var(--border);
-        border-right: 0;
-        max-height: 35vh;
+    /* Slide-over file drawer: off-canvas by default, slides in when the shell
+       has .sidebar-open. Overrides the desktop collapse-hide so the drawer is
+       driven by transform, not display. */
+    .app-shell .sidebar,
+    .app-shell.sidebar-collapsed .sidebar {
+        border-bottom: 0;
+        border-right: 1px solid var(--border);
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        left: 0;
+        max-height: none;
+        position: fixed;
+        top: 0;
+        transform: translateX(-100%);
+        transition: transform 0.25s ease;
+        width: min(85vw, 360px);
+        z-index: 70;
+    }
+
+    .app-shell.sidebar-open .sidebar {
+        box-shadow: var(--shadow);
+        transform: none;
+    }
+
+    .app-shell.sidebar-open .sidebar-backdrop {
+        background: rgba(0, 0, 0, 0.45);
+        bottom: 0;
+        display: block;
+        left: 0;
+        position: fixed;
+        right: 0;
+        top: 0;
+        z-index: 65;
     }
 
     .sidebar-resizer {
         display: none;
     }
 
-    .topbar,
     .document-header,
     .segment-header {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    /* Keep the topbar compact: icon-only buttons and tight spacing. It stays on
+       one row on typical phones but may wrap to a second row on very narrow
+       screens rather than clipping (the app shell hides overflow). */
+    .topbar {
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        padding: 0.5rem 0.65rem;
+        row-gap: 0.4rem;
+    }
+
+    .topbar-actions {
+        gap: 0.35rem;
+    }
+
+    .topbar .btn-label {
+        display: none;
+    }
+
+    .topbar .btn-icon {
+        display: inline;
+        font-size: 1.05rem;
+        line-height: 1;
+    }
+
+    .topbar .button {
+        padding: 0.5rem 0.6rem;
+    }
+
+    .sidebar-toggle .sidebar-toggle-label {
+        display: inline;
+        font-size: 0.9rem;
+        margin-left: 0.3rem;
+    }
+
+    .sidebar-toggle {
+        align-items: center;
+        display: inline-flex;
+        font-size: 1.1rem;
+    }
+
+    .status-pill[data-type="ok"] {
+        display: none;
+    }
+
+    .save-played {
+        padding: 0.5rem 0.6rem;
     }
 
     /* Phones don't have room to drag a floating box around, so dock the player
@@ -1194,26 +1279,56 @@ textarea.marker-heading {
         padding: 0.55rem 0.7rem;
     }
 
-    /* Collapsed (default): show only the essentials — title, progress, the
-       play button and playback speed. Tapping the chevron expands the rest. */
-    .mini-player:not(.mini-player--expanded) .mini-player-time,
-    .mini-player:not(.mini-player--expanded) .mini-player-settime,
-    .mini-player:not(.mini-player--expanded) .mini-player-settings .checkbox-row,
-    .mini-player:not(.mini-player--expanded) .mini-player-controls button:not(.primary) {
+    /* On a phone the slider is fiddly for hour-long files, so drop it and the
+       rarely-used -10/+10 steps; keep -15/-5/play/+5/+15 in five even columns. */
+    .mini-player-progress,
+    .mini-player-controls button[data-seek="-10"],
+    .mini-player-controls button[data-seek="10"] {
         display: none;
     }
 
-    /* Collapsed: the play button stretches across the full width so it stays an
-       easy tap target even without the surrounding seek buttons. */
-    .mini-player:not(.mini-player--expanded) .mini-player-controls {
-        display: block;
+    .mini-player-controls {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
     }
 
-    .mini-player:not(.mini-player--expanded) .mini-player-controls button.primary {
-        width: 100%;
+    /* Collapsed (default): transport + time + speed + segment-end auto-stop are
+       enough for listening; only the time-setting tools wait behind the chevron. */
+    .mini-player:not(.mini-player--expanded) .mini-player-settime {
+        display: none;
     }
 
-    .mini-player:not(.mini-player--expanded) .mini-player-settings {
-        justify-content: flex-end;
+    /* Segment cards default to a compact, read-only "listen" view. The pencil
+       reveals that card's meta chips, op buttons and editable fields. */
+    .segment-edit-toggle {
+        align-items: center;
+        align-self: flex-start;
+        background: transparent;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        cursor: pointer;
+        display: inline-flex;
+        font: inherit;
+        font-size: 1rem;
+        justify-content: center;
+        line-height: 1;
+        order: 9;
+        padding: 0.35rem 0.55rem;
+    }
+
+    .segment-card.editing .segment-edit-toggle {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #fff;
+    }
+
+    /* Listen mode hides the op buttons, the played/edited chips and the
+       redundant time input (the ▶ button already shows the range); the segment
+       number, play button and the "未存" badge stay visible. The :has() guard
+       keeps non-time marker lines (no play button) readable. */
+    .segment-card:not(.editing) .segment-actions .segment-op,
+    .segment-card:not(.editing) .seg-meta-chip,
+    .segment-card:not(.editing) .marker-line:has(.play-range) .marker-input {
+        display: none;
     }
 }

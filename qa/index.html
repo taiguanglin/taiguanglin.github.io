@@ -11,7 +11,7 @@
     <div id="app" class="app-shell">
         <header class="topbar">
             <div class="topbar-left">
-                <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄">☰</button>
+                <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄"><span class="sidebar-toggle-icon">☰</span><span class="sidebar-toggle-label">檔案</span></button>
                 <div class="history-controls">
                     <button id="undoButton" class="icon-button history-button" type="button" aria-label="復原上一步" title="復原上一步" disabled>↶</button>
                     <button id="redoButton" class="icon-button history-button" type="button" aria-label="重做下一步" title="重做下一步" disabled>↷</button>
@@ -19,10 +19,10 @@
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
-                <button id="playerToggle" class="button button-secondary" type="button" aria-pressed="true" title="隱藏／顯示播放器">隱藏播放器</button>
-                <button id="settingsButton" class="button button-secondary" type="button">設定</button>
-                <button id="savePlayedButton" class="button button-secondary save-played hidden" type="button" title="把目前的收聽進度（各段「最後播放」時間）單獨存回 GitHub，不影響校稿草稿">存收聽進度</button>
-                <button id="saveButton" class="button button-primary" type="button" disabled>儲存到 GitHub</button>
+                <button id="playerToggle" class="button button-secondary" type="button" aria-pressed="true" aria-label="隱藏播放器" title="隱藏／顯示播放器"><span class="btn-icon" aria-hidden="true">🎧</span><span class="btn-label">隱藏播放器</span></button>
+                <button id="settingsButton" class="button button-secondary" type="button" aria-label="設定"><span class="btn-icon" aria-hidden="true">⚙</span><span class="btn-label">設定</span></button>
+                <button id="savePlayedButton" class="button button-secondary save-played hidden" type="button" aria-label="存收聽進度" title="把目前的收聽進度（各段「最後播放」時間）單獨存回 GitHub，不影響校稿草稿"><span class="btn-icon" aria-hidden="true">⤓</span><span class="btn-label">存收聽進度</span></button>
+                <button id="saveButton" class="button button-primary" type="button" aria-label="儲存到 GitHub" disabled><span class="btn-icon" aria-hidden="true">💾</span><span class="btn-label">儲存到 GitHub</span></button>
             </div>
         </header>
 
@@ -39,9 +39,11 @@
             <div id="sidebarResizer" class="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側邊欄寬度" title="拖曳調整寬度"></div>
         </aside>
 
+        <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
         <main class="workspace">
             <section id="welcomePanel" class="welcome-panel">
-                <h2>選擇左側檔案開始校稿</h2>
+                <h2>選擇檔案開始校稿（手機請點左上角「檔案」）</h2>
                 <p>每段答疑會依時間標記切成卡片。播放按鈕會串流 `audio/*.opus`，並在段落結束時間自動暫停。</p>
                 <p>首次儲存前請在「設定」中填入 GitHub Fine-grained PAT，權限只需要此 repo 的 `Contents: Read and write`。</p>
             </section>
@@ -180,6 +182,7 @@
         <article class="segment-card">
             <header class="segment-header">
                 <div class="segment-topline">
+                    <button class="segment-edit-toggle" type="button" aria-label="編輯這一段" aria-expanded="false" title="編輯這一段">✎</button>
                     <div class="segment-meta">
                         <span class="segment-number"></span>
                         <span class="seg-meta-chip">
