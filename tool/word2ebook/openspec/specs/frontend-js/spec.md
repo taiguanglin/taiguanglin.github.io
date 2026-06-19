@@ -33,6 +33,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
+| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player, seeks to each segment's start and auto-stops at its end |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.js` files (sorted by
@@ -62,6 +63,24 @@ the Python side: `MD5(questioner + normalized_time + first_50_chars)[0:12]`.
 Bookmarks SHALL be stored in `localStorage` under language-specific keys:
 - `ebook-bookmarks-simplified` for simplified pages
 - `ebook-bookmarks-traditional` for traditional pages
+
+### Requirement: QA Per-Segment Audio Playback
+On pages containing `.qa-play` buttons, the system SHALL play the segment's audio
+clip from `data-start` to `data-end` (seconds) using the URL in `data-audio`, and
+SHALL display a bottom floating mini-player showing the decoded audio filename and
+the `data-label` time range. Clicking a segment's button SHALL seek and play that
+segment; reaching `data-end` SHALL auto-stop; clicking the active segment again
+SHALL pause. Switching between segments of the **same** audio file SHALL seek
+without reloading the source. The audio filename SHALL be decoded for display with
+`decodeURIComponent`. The module SHALL no-op on pages without `.qa-play` buttons.
+This module is isolated in its own IIFE so its identifiers do not collide with the
+shared `DOMContentLoaded` scope.
+
+#### Scenario: Play and auto-stop a segment
+- GIVEN a QA chapter page with `.qa-play` buttons
+- WHEN the user clicks a segment's play button
+- THEN the mini-player SHALL appear, playback SHALL start at `data-start`, and it
+  SHALL stop automatically when `currentTime` reaches `data-end`
 
 ## Technical Notes
 

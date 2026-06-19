@@ -73,6 +73,31 @@ class TestCreateArgumentParser:
         args = parser.parse_args(["in.docx", "out/", "--pdf-start-index", "5"])
         assert args.pdf_start_index == 5
 
+    def test_qa_arg(self):
+        parser = create_argument_parser()
+        args = parser.parse_args(["in.docx", "out/", "--qa", "qa/"])
+        assert args.qa_folder == "qa/"
+
+    def test_only_qa_flag(self):
+        parser = create_argument_parser()
+        args = parser.parse_args(["-", "out/", "--qa", "qa/", "--only-qa"])
+        assert args.only_qa is True
+        assert args.only_word is False
+        assert args.only_pdf is False
+
+    def test_only_qa_mutually_exclusive_with_others(self):
+        parser = create_argument_parser()
+        with pytest.raises(SystemExit):
+            parser.parse_args(["in.docx", "out/", "--only-qa", "--only-pdf"])
+        with pytest.raises(SystemExit):
+            parser.parse_args(["in.docx", "out/", "--only-qa", "--only-word"])
+
+    def test_qa_start_index_default_and_custom(self):
+        parser = create_argument_parser()
+        assert parser.parse_args(["in.docx", "out/"]).qa_start_index == 16
+        args = parser.parse_args(["in.docx", "out/", "--qa-start-index", "20"])
+        assert args.qa_start_index == 20
+
 
 # ---------------------------------------------------------------------------
 # Word2EBookConverter
@@ -202,6 +227,75 @@ class TestWord2EBookConverter:
         assert mock_pdf.call_args.kwargs.get("start_index") == 12
         assert len(chapters) == 13
 
+    def test_parse_chapters_concatenates_word_pdf_and_qa(self, mock_input_file, tmp_path):
+        pdf = tmp_path / "answers.pdf"
+        pdf.touch()
+        qa_dir = tmp_path / "qa"
+        qa_dir.mkdir()
+        cfg = ConversionConfig(
+            input_file=mock_input_file,
+            output_folder=tmp_path / "output",
+            pdf_file=pdf,
+            qa_folder=qa_dir,
+        )
+        converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
+        word_chs = [Chapter(title=f"{i:02d}", filename=f"{i:02d}.html") for i in range(1, 13)]
+        pdf_chs = [Chapter(title=f"{i}月", filename=f"{i}.html") for i in range(13, 17)]
+        qa_chs = [Chapter(title="17十一月", filename="17.html", is_qa=True)]
+
+        with (
+            patch.object(converter.document_parser, "parse_document",
+                         return_value=(word_chs, {})),
+            patch.object(converter.pdf_parser, "parse", return_value=pdf_chs) as mock_pdf,
+            patch.object(converter.qa_parser, "parse_folder", return_value=qa_chs) as mock_qa,
+        ):
+            chapters = converter._parse_chapters()
+
+        # QA parser chained after Word(12) + PDF(4) → start_index == 16
+        mock_pdf.assert_called_once()
+        assert mock_pdf.call_args.kwargs.get("start_index") == 12
+        mock_qa.assert_called_once()
+        assert mock_qa.call_args.kwargs.get("start_index") == 16
+        assert len(chapters) == 17
+
+    def test_only_qa_partial_uses_start_index_and_skips_word_pdf(self, tmp_path):
+        qa_dir = tmp_path / "qa"
+        qa_dir.mkdir()
+        cfg = ConversionConfig(
+            input_file=Path("-"),
+            output_folder=tmp_path / "output",
+            qa_folder=qa_dir,
+            only_qa=True,
+            generate_search=False,
+            qa_start_index=16,
+        )
+        converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
+        qa_chs = [Chapter(title="17十一月", filename="17.html", is_qa=True)]
+
+        with (
+            patch.object(converter, "_setup_output_directory"),
+            patch.object(converter.html_generator, "copy_favicon_after_setup"),
+            patch.object(converter.document_parser, "parse_document") as mock_word,
+            patch.object(converter.pdf_parser, "parse") as mock_pdf,
+            patch.object(converter.qa_parser, "parse_folder", return_value=qa_chs) as mock_qa,
+            patch.object(converter.html_generator, "generate_chapter_pages") as mock_pages,
+            patch.object(converter.html_generator, "generate_index_pages") as mock_index,
+            patch.object(converter.search_generator, "generate_search_indexes") as mock_search,
+            patch.object(converter.search_generator, "ensure_search_index_files") as mock_ensure,
+            patch.object(converter, "_generate_static_assets"),
+            patch.object(converter, "_show_completion_info"),
+        ):
+            converter.convert()
+
+        mock_word.assert_not_called()           # only-qa does not parse docx
+        mock_pdf.assert_not_called()             # only-qa does not parse pdf
+        mock_qa.assert_called_once()
+        assert mock_qa.call_args.kwargs.get("start_index") == 16
+        mock_pages.assert_called_once()
+        mock_index.assert_not_called()           # partial mode: index preserved
+        mock_search.assert_not_called()          # partial mode: search preserved
+        mock_ensure.assert_not_called()
+
     def test_only_pdf_partial_skips_index_and_search(self, mock_input_file, tmp_path):
         pdf = tmp_path / "answers.pdf"
         pdf.touch()
@@ -288,6 +382,22 @@ class TestMainFunction:
         with patch("sys.argv", ["main.py", "in.docx", "out/", "--only-pdf"]):
             with pytest.raises(SystemExit):
                 main()
+
+    def test_main_only_qa_without_qa_exits(self):
+        from main import main
+        with patch("sys.argv", ["main.py", "-", "out/", "--only-qa"]):
+            with pytest.raises(SystemExit):
+                main()
+
+    def test_main_missing_qa_folder_returns(self, tmp_path, capsys):
+        from main import main
+        docx = tmp_path / "book.docx"
+        docx.touch()
+        with patch("sys.argv", ["main.py", str(docx), str(tmp_path / "out"),
+                                "--qa", str(tmp_path / "no_such_qa")]):
+            main()
+        captured = capsys.readouterr()
+        assert "QA" in captured.out and "不存在" in captured.out
 
     def test_main_missing_pdf_file_returns(self, tmp_path, capsys):
         from main import main

@@ -34,6 +34,13 @@ priority order:
 - WHEN `get_full_js_content()` is called
 - THEN the content of `script.js` SHALL be returned verbatim
 
+#### Scenario: New feature modules are auto-included
+- GIVEN `assets/css/modules/04c-qa-audio.css` and `assets/js/modules/08-qa-audio.js`
+- WHEN `get_full_css_content()` / `get_full_js_content()` are called
+- THEN the bundled CSS SHALL contain the QA audio selectors (`.qa-player`,
+  `.qa-source-banner`) and the bundled JS SHALL contain the QA audio behaviour
+  (`qa-play`, `qa-player`), with no build-config change required
+
 ### Requirement: Concatenation Ordering
 When concatenating module files, files SHALL be sorted lexicographically by
 filename. The numeric prefix (`00-`, `01-`, …) enforces the correct order.

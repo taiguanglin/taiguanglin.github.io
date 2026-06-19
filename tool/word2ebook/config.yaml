@@ -56,6 +56,28 @@ i18n:
   language_switch:
     simplified: "简体"
     traditional: "繁體"
+
+  # QA（qa/ 資料夾答疑章節）相關文字
+  qa:
+    # 章節頂部來源橫幅（連到線上校稿工具 qa/index.html）
+    banner:
+      simplified: "本章由录音 AI 转录、人工校稿中。点此查看来源与校稿进度"
+      traditional: "本章由錄音 AI 轉錄、人工校稿中。點此查看來源與校稿進度"
+
+    # 已人工校稿徽章（後面接最後校稿時間）
+    proofread:
+      simplified: "已人工校稿"
+      traditional: "已人工校稿"
+
+    # 尚未校對徽章（AI 轉錄草稿）
+    unproofread:
+      simplified: "AI 转录，尚未校对"
+      traditional: "AI 轉錄，尚未校對"
+
+    # 首頁來源的第三個連結標籤
+    source_label:
+      simplified: "线上答疑校稿稿（qa）"
+      traditional: "線上答疑校稿稿（qa）"
   
   # 搜索相關
   search:

@@ -23,7 +23,8 @@ cascade order.
 | `03-search.css` | Search panel, loading/progress/error/success states, search results, dark-mode search variants |
 | `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, TOC item hover, level-specific link colours, collapse animations |
 | `04b-toc-dark.css` | Dark-mode overrides for all TOC, floating-TOC, and bookmark elements inside the TOC panel |
-| `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px), small-phone (≤400px) |
+| `04c-qa-audio.css` | QA chapter styles: source banner, per-segment `qa-meta-bar` (number + `.qa-play` button + status badge), `qa-opening`, the bottom floating `qa-player`; dark-mode variants. Ordered before `05-responsive.css` so its `@media` overrides win. Responsive rules for these live in `05-responsive.css` |
+| `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px incl. QA player full-width), small-phone (≤400px) |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.css` files (sorted by

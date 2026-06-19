@@ -13,7 +13,7 @@ from utils.file_utils import FileManager
 from utils.i18n_utils import I18nProcessor
 from utils.config_utils import get_i18n_text
 from utils.favicon_utils import FaviconManager
-from config.settings import Settings
+from config.settings import Settings, Constants
 
 
 class HTMLGenerator:
@@ -31,6 +31,7 @@ class HTMLGenerator:
         file_manager: FileManager,
         input_file: Optional[Path] = None,
         extra_source_files: Optional[List[Path]] = None,
+        include_qa_source: bool = False,
     ):
         self.settings = settings
         self.file_manager = file_manager
@@ -40,6 +41,8 @@ class HTMLGenerator:
         self.input_file = input_file
         # 額外的來源檔（例如附加的 PDF）；會與 input_file 一起顯示在首頁底部的 Source
         self.extra_source_files = [Path(p) for p in (extra_source_files or [])]
+        # 是否在首頁來源加上第三個連結，直接連到線上校稿工具 qa/index.html
+        self.include_qa_source = include_qa_source
         self.favicon_manager = None
         self.favicon_tag = ""
 
@@ -133,6 +136,11 @@ class HTMLGenerator:
             )
 
             home_link = "index_trad.html" if is_traditional else "index.html"
+            qa_banner = (
+                self._build_qa_banner(is_traditional)
+                if getattr(chapter, "is_qa", False)
+                else ""
+            )
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=is_traditional,
                 title=title,
@@ -146,6 +154,7 @@ class HTMLGenerator:
                 home_link=home_link,
                 lang_switch_links=lang_switch_links,
                 favicon_tag=self.favicon_tag,
+                qa_banner=qa_banner,
             )
 
             self.file_manager.write_file(filename, html_content)
@@ -163,7 +172,7 @@ class HTMLGenerator:
             toc_html = self.toc_generator.build_index_toc(trad_chapters, is_traditional=True)
             index_filename = "index_trad.html"
             lang_switch_links = self._build_lang_switch_links(index_filename, is_traditional=True)
-            source_filename = self._build_source_filename()
+            source_filename = self._build_source_filename(is_traditional=True)
             html_content = self.i18n_template_manager.render_index(
                 is_traditional=True,
                 book_title=self.i18n_processor.to_traditional(book_title),
@@ -176,7 +185,7 @@ class HTMLGenerator:
             toc_html = self.toc_generator.build_index_toc(chapters, is_traditional=False)
             index_filename = "index.html"
             lang_switch_links = self._build_lang_switch_links(index_filename, is_traditional=False)
-            source_filename = self._build_source_filename()
+            source_filename = self._build_source_filename(is_traditional=False)
             html_content = self.i18n_template_manager.render_index(
                 is_traditional=False,
                 book_title=self.i18n_processor.ensure_simplified(book_title),
@@ -244,14 +253,17 @@ class HTMLGenerator:
 
         return {"prev_link": prev_link, "next_link": next_link, "top_nav_links": top_nav_links}
 
-    def _build_source_filename(self) -> str:
-        """組合首頁底部的來源檔下載連結（Word + 任何附加 PDF）。
+    def _build_source_filename(self, is_traditional: bool = False) -> str:
+        """組合首頁底部的來源連結（Word + 任何附加 PDF + 線上 QA 校稿工具）。
 
         每個來源檔輸出成一個可下載的超連結：
         - ``href`` 指向來源檔相對於輸出資料夾的路徑，點擊即可下載原始檔。
         - 連結文字保留原始檔名。
 
-        這段連結 HTML 不做任何簡繁轉換，以免破壞實際檔名或資料夾路徑
+        若有附加 QA 來源，再加上第三個連結，直接連到線上校稿工具
+        ``qa/index.html``（非下載，標籤可隨語言切換）。
+
+        來源檔連結的 HTML 不做任何簡繁轉換，以免破壞實際檔名或資料夾路徑
         （例如以繁體命名的「問答錄2」資料夾若被轉成簡體就會連結失效）。
         """
         sources: List[Path] = []
@@ -267,6 +279,17 @@ class HTMLGenerator:
                 f'<a class="source-link" href="{escape(href, quote=True)}" '
                 f'download="{escape(name, quote=True)}">{escape(name)}</a>'
             )
+
+        if self.include_qa_source:
+            qa_link = getattr(Constants, "QA_INDEX_LINK", "../qa/index.html")
+            qa_label = get_i18n_text(
+                "qa.source_label", is_traditional, "線上答疑校稿稿（qa）"
+            )
+            links.append(
+                f'<a class="source-link" href="{escape(qa_link, quote=True)}">'
+                f"{escape(qa_label)}</a>"
+            )
+
         return "、".join(links)
 
     def _build_source_href(self, source: Path) -> str:
@@ -304,9 +327,39 @@ class HTMLGenerator:
             )
 
     def _process_i18n_placeholders(self, content: str, is_traditional: bool) -> str:
-        """替换内容中的 i18n 占位符（如 {{back_to_chapter_toc}}）。"""
+        """替换内容中的 i18n 占位符（如 {{back_to_chapter_toc}}）。
+
+        QA 章節的校稿徽章使用 ``{{qa_proofread}}`` / ``{{qa_unproofread}}`` 佔位符；
+        在此（OpenCC 轉換之前）換成對應語言的文字，避免徽章被雙重轉換。
+        """
         back_to_toc = get_i18n_text("ui.back_to_chapter_toc", is_traditional, "回到本章目錄")
-        return content.replace("{{back_to_chapter_toc}}", back_to_toc)
+        content = content.replace("{{back_to_chapter_toc}}", back_to_toc)
+
+        qa_proofread = get_i18n_text("qa.proofread", is_traditional, "已人工校稿")
+        qa_unproofread = get_i18n_text(
+            "qa.unproofread", is_traditional, "AI 轉錄，尚未校對"
+        )
+        content = content.replace("{{qa_proofread}}", qa_proofread)
+        content = content.replace("{{qa_unproofread}}", qa_unproofread)
+        return content
+
+    def _build_qa_banner(self, is_traditional: bool) -> str:
+        """為 QA 章節建立頂部來源橫幅（連到線上校稿工具 qa/index.html）。
+
+        徽章文字取自 config（已是對應語言），連結為 ASCII 路徑；本片段在內文
+        OpenCC 轉換之後才併入模板，不會被再次轉換。
+        """
+        text = get_i18n_text(
+            "qa.banner",
+            is_traditional,
+            "本章由錄音 AI 轉錄、人工校稿中。點此查看來源與校稿進度",
+        )
+        link = getattr(Constants, "QA_INDEX_LINK", "../qa/index.html")
+        return (
+            f'<div class="qa-source-banner">'
+            f'<a href="{escape(link, quote=True)}">📝 {escape(text)}</a>'
+            f"</div>"
+        )
 
     # ------------------------------------------------------------------ #
     # Content transforms                                                  #

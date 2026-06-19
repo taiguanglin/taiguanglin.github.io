@@ -15,6 +15,7 @@ from config.settings import Settings, DEFAULT_SETTINGS
 from utils.file_utils import FileManager
 from core.document_parser import DocumentParser
 from core.pdf_parser import PDFParser
+from core.qa_parser import QAParser
 from generators.html_generator import HTMLGenerator
 from generators.search_generator import SearchIndexGenerator
 from templates.static_assets import StaticAssetsManager
@@ -31,10 +32,12 @@ class Word2EBookConverter:
         self.file_manager = FileManager(config.output_folder)
         self.document_parser = DocumentParser(self.settings, self.file_manager)
         self.pdf_parser = PDFParser(self.settings)
+        self.qa_parser = QAParser(self.settings)
         extra_sources = [config.pdf_file] if config.pdf_file else []
         self.html_generator = HTMLGenerator(
             self.settings, self.file_manager, config.input_file,
             extra_source_files=extra_sources,
+            include_qa_source=bool(config.qa_folder),
         )
         self.search_generator = SearchIndexGenerator(self.settings, self.file_manager)
         
@@ -44,16 +47,23 @@ class Word2EBookConverter:
 
     @property
     def _is_partial(self) -> bool:
-        """開發用部分模式：只重生 Word 或只重生 PDF 的章節頁。"""
-        return self.config.only_word or self.config.only_pdf
+        """開發用部分模式：只重生 Word / 只重生 PDF / 只重生 QA 的章節頁。"""
+        return self.config.only_word or self.config.only_pdf or self.config.only_qa
 
     def convert(self) -> None:
         """执行转换"""
         print(f"📋 开始转换：{self.config.input_file} -> {self.config.output_folder}")
         if self.config.pdf_file:
             print(f"   附加 PDF 來源: {self.config.pdf_file}")
+        if self.config.qa_folder:
+            print(f"   附加 QA 來源: {self.config.qa_folder}")
         if self._is_partial:
-            mode = "只重生 Word 章節" if self.config.only_word else "只重生 PDF 章節"
+            if self.config.only_word:
+                mode = "只重生 Word 章節"
+            elif self.config.only_pdf:
+                mode = "只重生 PDF 章節"
+            else:
+                mode = "只重生 QA 章節"
             print(f"   ⚡ 部分模式: {mode}（略過首頁與搜尋索引）")
         print(f"   生成简体版: {'✅' if self.config.generate_simplified else '❌'}")
         print(f"   生成繁体版: {'✅' if self.config.generate_traditional else '❌'}")
@@ -99,22 +109,34 @@ class Word2EBookConverter:
         self._show_completion_info()
 
     def _parse_chapters(self) -> list:
-        """解析 Word 與 PDF 來源並串接成單一章節清單。"""
+        """解析 Word + PDF + QA 來源並串接成單一章節清單。
+
+        完整執行時章節編號依序串接：Word → PDF → QA；各 ``--only-*`` 模式只重生
+        對應來源，並使用各自設定的起始編號（保留其他章節頁、首頁與搜尋索引）。
+        """
         chapters: list = []
 
-        if not self.config.only_pdf:
+        if not self.config.only_pdf and not self.config.only_qa:
             print("📖 正在解析 Word 文档...")
             word_chapters, _image_map = self.document_parser.parse_document(self.config.input_file)
             print(f"   Word 章節: {len(word_chapters)}")
             chapters.extend(word_chapters)
 
-        if self.config.pdf_file and not self.config.only_word:
+        if self.config.pdf_file and not self.config.only_word and not self.config.only_qa:
             # 完整執行時 PDF 章節接在 Word 章節之後；只跑 PDF 時用設定的起始編號
             start_index = self.config.pdf_start_index if self.config.only_pdf else len(chapters)
             print(f"📕 正在解析 PDF 答疑（章節編號從 {start_index + 1} 開始）...")
             pdf_chapters = self.pdf_parser.parse(self.config.pdf_file, start_index=start_index)
             print(f"   PDF 章節: {len(pdf_chapters)}")
             chapters.extend(pdf_chapters)
+
+        if self.config.qa_folder and not self.config.only_word and not self.config.only_pdf:
+            # 完整執行時 QA 章節接在 Word + PDF 章節之後；只跑 QA 時用設定的起始編號
+            start_index = self.config.qa_start_index if self.config.only_qa else len(chapters)
+            print(f"📂 正在解析 QA 答疑（章節編號從 {start_index + 1} 開始）...")
+            qa_chapters = self.qa_parser.parse_folder(self.config.qa_folder, start_index=start_index)
+            print(f"   QA 章節: {len(qa_chapters)}")
+            chapters.extend(qa_chapters)
 
         return chapters
     
@@ -191,6 +213,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
 示例:
   python main.py input.docx output_folder                    # 生成完整版本
   python main.py input.docx output_folder --pdf answers.pdf  # Word + PDF 月份章節（完整重建）
+  python main.py input.docx output_folder --pdf answers.pdf --qa qa  # Word + PDF + QA（完整重建）
   python main.py input.docx output_folder --fast            # 快速模式
   python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
   python main.py input.docx output_folder --skip-traditional # 跳过繁体版
@@ -199,6 +222,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
   # 開發用部分模式（略過首頁與搜尋索引，快速預覽版型）：
   python main.py input.docx output_folder --pdf answers.pdf --only-pdf   # 只重生 PDF 章節
   python main.py input.docx output_folder --only-word                    # 只重生 Word 章節
+  python main.py - output_folder --qa qa --only-qa                       # 只重生 QA 章節（省去 Word/PDF 轉換時間）
 
         """
     )
@@ -219,14 +243,22 @@ def create_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument('--pdf', dest='pdf_file', default=None,
                        help='附加的 PDF 答疑來源，會以月份分章接在 Word 章節之後')
 
+    parser.add_argument('--qa', dest='qa_folder', default=None,
+                       help='附加的 QA 答疑資料夾（含 txt 文字稿），會以月份分章接在 Word/PDF 章節之後')
+
     mode_group = parser.add_mutually_exclusive_group()
     mode_group.add_argument('--only-word', action='store_true',
-                       help='開發用：只重生 Word 章節頁（保留 PDF 章節、首頁、搜尋索引）')
+                       help='開發用：只重生 Word 章節頁（保留 PDF/QA 章節、首頁、搜尋索引）')
     mode_group.add_argument('--only-pdf', action='store_true',
-                       help='開發用：只重生 PDF 章節頁（保留 Word 章節、首頁、搜尋索引）')
+                       help='開發用：只重生 PDF 章節頁（保留 Word/QA 章節、首頁、搜尋索引）')
+    mode_group.add_argument('--only-qa', action='store_true',
+                       help='開發用：只重生 QA 章節頁（保留 Word/PDF 章節、首頁、搜尋索引；省去 Word/PDF 轉換時間）')
 
     parser.add_argument('--pdf-start-index', type=int, default=12,
                        help='只跑 --only-pdf 時，PDF 章節編號的起始基準（預設 12 → 從 13 開始）')
+
+    parser.add_argument('--qa-start-index', type=int, default=16,
+                       help='只跑 --only-qa 時，QA 章節編號的起始基準（預設 16 → 從 17 開始）')
     
     return parser
 
@@ -246,9 +278,14 @@ def main() -> None:
         print("❌ 错误：--only-pdf 需要同時提供 --pdf <PDF 路徑>")
         sys.exit(1)
 
+    if args.only_qa and not args.qa_folder:
+        print("❌ 错误：--only-qa 需要同時提供 --qa <QA 資料夾路徑>")
+        sys.exit(1)
+
     only_word = args.only_word
     only_pdf = args.only_pdf
-    is_partial = only_word or only_pdf
+    only_qa = args.only_qa
+    is_partial = only_word or only_pdf or only_qa
 
     # 处理快速模式和生成选项
     generate_search_index = not (args.skip_index or args.fast)
@@ -276,19 +313,23 @@ def main() -> None:
         generate_traditional=generate_traditional,
         generate_simplified=generate_simplified,
         pdf_file=Path(args.pdf_file) if args.pdf_file else None,
+        qa_folder=Path(args.qa_folder) if args.qa_folder else None,
         only_word=only_word,
         only_pdf=only_pdf,
+        only_qa=only_qa,
         pdf_start_index=args.pdf_start_index,
+        qa_start_index=args.qa_start_index,
     )
     
-    # 验证输入文件
-    if not config.input_file.exists():
-        print(f"❌ 错误：输入文件不存在 - {config.input_file}")
-        return
-    
-    if not config.input_file.suffix.lower() in ['.docx', '.doc']:
-        print(f"❌ 错误：不支持的文件格式 - {config.input_file.suffix}")
-        return
+    # 验证输入文件（--only-pdf / --only-qa 不需要 Word 來源，可省去 Word 轉換時間）
+    if not (only_pdf or only_qa):
+        if not config.input_file.exists():
+            print(f"❌ 错误：输入文件不存在 - {config.input_file}")
+            return
+
+        if not config.input_file.suffix.lower() in ['.docx', '.doc']:
+            print(f"❌ 错误：不支持的文件格式 - {config.input_file.suffix}")
+            return
 
     # 验证 PDF 来源
     if config.pdf_file is not None:
@@ -297,6 +338,15 @@ def main() -> None:
             return
         if config.pdf_file.suffix.lower() != '.pdf':
             print(f"❌ 错误：不支持的 PDF 文件格式 - {config.pdf_file.suffix}")
+            return
+
+    # 验证 QA 来源
+    if config.qa_folder is not None:
+        if not config.qa_folder.exists():
+            print(f"❌ 错误：QA 資料夾不存在 - {config.qa_folder}")
+            return
+        if not config.qa_folder.is_dir():
+            print(f"❌ 错误：QA 路徑不是資料夾 - {config.qa_folder}")
             return
     
     try:

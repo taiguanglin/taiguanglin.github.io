@@ -165,6 +165,17 @@ p.source-filename a:active {
 
   .toc-level-btn, .floating-level-btn { font-size: 16px !important; min-width: 38px; min-height: 38px; }
   .toc-level-label { font-size: 16px !important; }
+
+  /* QA 底部浮動播放器：小螢幕全寬貼底 */
+  .qa-player {
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+    width: auto;
+    transform: translateY(140%);
+  }
+  .qa-player.visible { transform: translateY(0); }
+  .qa-play .qa-play-label { font-size: 0.95em; }
 }
 
 /* ============================================================

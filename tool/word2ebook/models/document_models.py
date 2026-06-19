@@ -113,6 +113,9 @@ class Chapter:
     qa_pairs: List[QAPair] = field(default_factory=list)
     search_items: List[SearchItem] = field(default_factory=list)
     qa_count_metadata: Optional[QACountMetadata] = None
+    # 來自 qa/ 資料夾的章節（含每段音檔播放與校稿狀態徽章），HTML 生成時會額外
+    # 渲染來源橫幅（連到 qa/index.html）。
+    is_qa: bool = False
     
     @property
     def safe_title(self) -> str:
@@ -151,11 +154,16 @@ class ConversionConfig:
 
     # PDF 來源（可選）：把 PDF 答疑附加為新的月份章節
     pdf_file: Optional[Path] = None
-    # 開發用部分模式：只重生 Word 或只重生 PDF 的章節頁（略過首頁與搜尋索引重建）
+    # QA 來源（可選）：把 qa/ 資料夾的 txt 答疑附加為新的月份章節（含音檔與校稿狀態）
+    qa_folder: Optional[Path] = None
+    # 開發用部分模式：只重生 Word / 只重生 PDF / 只重生 QA 的章節頁（略過首頁與搜尋索引重建）
     only_word: bool = False
     only_pdf: bool = False
+    only_qa: bool = False
     # 只跑 PDF 時，章節編號從此值 + 1 開始（預設 12 → 第一個月份章節為 13）
     pdf_start_index: int = 12
+    # 只跑 QA 時，章節編號從此值 + 1 開始（預設 16 → 第一個月份章節為 17）
+    qa_start_index: int = 16
     
     def __post_init__(self):
         """初始化后处理"""
@@ -166,6 +174,8 @@ class ConversionConfig:
             self.output_folder = Path(self.output_folder)
         if self.pdf_file is not None and not isinstance(self.pdf_file, Path):
             self.pdf_file = Path(self.pdf_file)
+        if self.qa_folder is not None and not isinstance(self.qa_folder, Path):
+            self.qa_folder = Path(self.qa_folder)
         
         # 如果没有指定书名，从文件名获取
         if self.book_title is None:

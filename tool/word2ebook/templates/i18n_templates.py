@@ -32,6 +32,9 @@ class I18nTemplateManager:
         # 設置favicon默認值
         if 'favicon_tag' not in i18n_kwargs:
             i18n_kwargs['favicon_tag'] = ''
+        # QA 來源橫幅僅 QA 章節有，其餘章節預設為空字串以維持相容
+        if 'qa_banner' not in i18n_kwargs:
+            i18n_kwargs['qa_banner'] = ''
             
         return self.get_template('chapter').format(**i18n_kwargs)
     
@@ -110,6 +113,8 @@ class I18nTemplateManager:
 </div>
 
 {chapter_title}
+
+{qa_banner}
 
 <!-- 章節TOC標題和層級控制的水平布局 -->
 <div class="toc-header-container">

@@ -132,6 +132,13 @@ class Constants:
     # 内容默认值
     DEFAULT_QUESTION_TITLE = "問題"          # 无法提取标题时的回退标题
 
+    # QA（qa/ 資料夾 txt 答疑）相關
+    # 音檔基底路徑：電子書頁面位於 /wenda2_ebook/，音檔在站台根目錄 /audio/，
+    # 故以 ../audio/ 相對路徑連結（與 qa/assets/audio.js 一致）。
+    QA_AUDIO_BASE = "../audio/"
+    # QA 章節頂部與首頁來源連到線上校稿工具（qa/index.html）的相對連結。
+    QA_INDEX_LINK = "../qa/index.html"
+
     # HTML 标题层级范围（TOC 识别和 QA 计数使用的 h 标签范围）
     TOC_MIN_HEADING_LEVEL = 2
     TOC_MAX_HEADING_LEVEL = 4
