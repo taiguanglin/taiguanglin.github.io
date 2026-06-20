@@ -224,6 +224,9 @@ def create_argument_parser() -> argparse.ArgumentParser:
   python main.py input.docx output_folder --only-word                    # 只重生 Word 章節
   python main.py - output_folder --qa qa --only-qa                       # 只重生 QA 章節（省去 Word/PDF 轉換時間）
 
+  # 問答錄 2 一鍵完整重建（Word + PDF + QA → wenda2_ebook/）：
+  python3 gen_all.py
+
         """
     )
     

@@ -33,6 +33,8 @@ word2ebook/
 ├── config/                 # 配置管理
 │   └── settings.py         # 配置和常量
 ├── main.py                 # 主程序入口
+├── gen_all.py              # 問答錄 2 一鍵完整重建（Word + PDF + QA）
+├── run.py                  # 啟動腳本（解決相對匯入）
 ├── word2ebook.py          # 向后兼容接口
 └── requirements.txt        # 依赖包
 ```
@@ -72,6 +74,31 @@ python main.py input.docx output_folder --only-word                   # 只重�
 > `--pdf` 會把「每月答疑合併 PDF」解析成月份章節（章節標題如 `13二〇二五年六月`），
 > 章節內以「日期 + 來源」（例如 `2025年6月9日 貼吧`）作為第二層目錄，版型、計數與
 > 全文搜尋皆與 Word 章節一致。部分模式僅供開發快速預覽，最終發佈請執行一次完整建置。
+
+### 問答錄 2 一鍵完整重建
+
+修正 `qa/` 文字稿、或更新 Word/PDF 來源後，在 `tool/word2ebook/` 執行：
+
+```bash
+cd tool/word2ebook
+python3 gen_all.py
+```
+
+此腳本會完整重建 `wenda2_ebook/`（Word 章節 + PDF 月份章節 + QA 月份章節，含簡繁雙語、
+首頁目錄與搜尋索引）。預設路徑（皆相對於 repo 根目錄）：
+
+| 來源 | 路徑 |
+|------|------|
+| Word | `問答錄2/wenda2_250810_截止25年5月17日答疑_含图版.docx` |
+| PDF | `問答錄2/2025年6月-9月答疑合并（未分类）.pdf` |
+| QA | `qa/` |
+| 輸出 | `wenda2_ebook/` |
+
+開發時若只需快速驗證 QA 文字稿轉換（略過 Word/PDF 與首頁、搜尋索引），仍可使用：
+
+```bash
+python3 main.py - ../../wenda2_ebook --qa ../../qa --only-qa
+```
 
 ### 程序化使用
 

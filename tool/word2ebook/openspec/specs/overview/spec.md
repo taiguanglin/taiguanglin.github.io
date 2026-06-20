@@ -134,9 +134,30 @@ the Word/PDF parse cost.
 - WHEN the CLI parses arguments
 - THEN the system SHALL call `sys.exit(1)` with a descriptive message
 
+### Requirement: Site Full-Rebuild Script
+The repository SHALL ship `gen_all.py` in the `tool/word2ebook/` directory as a
+one-command full rebuild for the 問答錄 2 ebook. The script SHALL resolve all
+source and output paths relative to the repository root (not the caller's cwd),
+validate that the Word, PDF, and QA sources exist, then invoke the same full
+conversion pipeline as `main.py` with Word + PDF + QA (simplified + traditional
++ search index, no partial mode).
+
+#### Scenario: Full rebuild after QA transcript edits
+- GIVEN the default repo layout with `問答錄2/*.docx`, `問答錄2/*.pdf`, and `qa/`
+- WHEN the user runs `python3 gen_all.py` from `tool/word2ebook/`
+- THEN the system SHALL write a complete `wenda2_ebook/` output (all chapter
+  pages, index pages, search indexes, and static assets)
+
+#### Scenario: Missing source in gen_all
+- GIVEN one of the hard-coded source paths does not exist
+- WHEN the user runs `python3 gen_all.py`
+- THEN the system SHALL print an error naming the missing path and exit with a
+  non-zero status without starting conversion
+
 ## Technical Notes
 
 - Entry point: `main.py::main()`
+- Site full rebuild: `gen_all.py::main()` (問答錄 2 preset paths)
 - Core converter class: `main.Word2EBookConverter`
 - Pipeline orchestration: `Word2EBookConverter.convert()`; source parsing in
   `Word2EBookConverter._parse_chapters()`
