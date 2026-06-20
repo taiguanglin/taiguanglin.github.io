@@ -154,10 +154,31 @@ conversion pipeline as `main.py` with Word + PDF + QA (simplified + traditional
 - THEN the system SHALL print an error naming the missing path and exit with a
   non-zero status without starting conversion
 
+### Requirement: Site Full-Rebuild and Push Script
+The repository SHALL ship `gen_all_and_push.py` alongside `gen_all.py`. The script
+SHALL run the full rebuild first; on success it SHALL stage all changes from the
+repository root (`git add :/`), commit with a configurable message (default:
+`New txt changes to new wenda2ebook`), and push to the remote. If the rebuild
+fails, git operations SHALL be skipped. If there are no changes after staging,
+the script SHALL skip commit and push and exit successfully.
+
+#### Scenario: Rebuild, commit, and push after QA edits
+- GIVEN the user has modified QA transcript files
+- WHEN the user runs `python3 gen_all_and_push.py` from `tool/word2ebook/`
+- THEN the system SHALL rebuild `wenda2_ebook/`, commit all repo changes, and
+  push to the remote
+
+#### Scenario: Rebuild succeeds with no diff
+- GIVEN `gen_all.py` completes but produces no file changes
+- WHEN the user runs `python3 gen_all_and_push.py`
+- THEN the system SHALL report that there is nothing to commit and SHALL NOT run
+  `git commit` or `git push`
+
 ## Technical Notes
 
 - Entry point: `main.py::main()`
 - Site full rebuild: `gen_all.py::main()` (問答錄 2 preset paths)
+- Site full rebuild + git push: `gen_all_and_push.py::main()`
 - Core converter class: `main.Word2EBookConverter`
 - Pipeline orchestration: `Word2EBookConverter.convert()`; source parsing in
   `Word2EBookConverter._parse_chapters()`

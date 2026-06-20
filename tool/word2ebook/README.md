@@ -34,6 +34,7 @@ word2ebook/
 │   └── settings.py         # 配置和常量
 ├── main.py                 # 主程序入口
 ├── gen_all.py              # 問答錄 2 一鍵完整重建（Word + PDF + QA）
+├── gen_all_and_push.py     # 重建後 git add / commit / push
 ├── run.py                  # 啟動腳本（解決相對匯入）
 ├── word2ebook.py          # 向后兼容接口
 └── requirements.txt        # 依赖包
@@ -93,6 +94,24 @@ python3 gen_all.py
 | PDF | `問答錄2/2025年6月-9月答疑合并（未分类）.pdf` |
 | QA | `qa/` |
 | 輸出 | `wenda2_ebook/` |
+
+### 重建並推送到 GitHub
+
+重建完成後若要把變更直接提交、推送：
+
+```bash
+cd tool/word2ebook
+python3 gen_all_and_push.py
+```
+
+自訂 commit 訊息：
+
+```bash
+python3 gen_all_and_push.py -m "更新 2026 年 3 月 QA 校稿"
+```
+
+此腳本會依序執行 `gen_all.py` → `git add :/` → `git commit` → `git push`（在 repo
+根目錄操作）。若重建後沒有任何變更，會略過 commit 與 push。
 
 開發時若只需快速驗證 QA 文字稿轉換（略過 Word/PDF 與首頁、搜尋索引），仍可使用：
 
