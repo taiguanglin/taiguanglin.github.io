@@ -246,12 +246,16 @@ class TestStaticAssetsManagerRealModules:
         assert ".qa-play" in css
         assert ".qa-status" in css
         assert ".qa-player" in css
+        assert ".qa-player-skip" in css
+        assert ".qa-player-progress-thumb" in css
 
     def test_real_js_has_qa_audio_module(self):
         js = StaticAssetsManager().get_full_js_content()
-        # 08-qa-audio.js 內容（逐段播放 + 底部浮動播放器）
+        # 08-qa-audio.js 內容（逐段播放 + 底部浮動播放器 + 拖拉/±5s）
         assert "qa-play" in js
         assert "qa-player" in js
+        assert "qa-player-skip" in js
+        assert "seekFromClientX" in js
         assert "decodeURIComponent" in js
 
     def test_real_js_has_bookmark_ui_content(self):

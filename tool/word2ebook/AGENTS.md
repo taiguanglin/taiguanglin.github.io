@@ -101,7 +101,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse and level filtering |
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
-| `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player, seek-to-start + auto-stop-at-end (isolated IIFE) |
+| `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end (isolated IIFE) |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 
