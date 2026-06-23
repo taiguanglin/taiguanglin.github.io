@@ -110,8 +110,9 @@ python3 gen_all_and_push.py
 python3 gen_all_and_push.py -m "更新 2026 年 3 月 QA 校稿"
 ```
 
-此腳本會依序執行 `gen_all.py` → `git add :/` → `git commit` → `git push`（在 repo
-根目錄操作）。若重建後沒有任何變更，會略過 commit 與 push。
+此腳本會依序執行 `git pull` → `gen_all.py` → `git add :/` → `git commit` →
+`git push`（在 repo 根目錄操作）。若 `git pull` 或重建失敗，會略過後續步驟；若重建後
+沒有任何變更，會略過 commit 與 push。
 
 開發時若只需快速驗證 QA 文字稿轉換（略過 Word/PDF 與首頁、搜尋索引），仍可使用：
 

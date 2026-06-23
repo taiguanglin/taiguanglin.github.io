@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-"""一鍵完整重建 wenda2_ebook 並提交、推送到遠端。
+"""一鍵同步遠端、完整重建 wenda2_ebook 並提交、推送到遠端。
 
 修正 ``qa/`` 文字稿後，在 ``tool/word2ebook/`` 執行：
 
     python3 gen_all_and_push.py
 
-等同於：
+依序執行：
 
-    ./gen_all.py \\
+    git pull \\
+        && ./gen_all.py \\
         && git add :/ \\
         && git commit -m "New txt changes to new wenda2ebook" \\
         && git push
@@ -48,6 +49,29 @@ def _run_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProc
 def has_staged_or_unstaged_changes() -> bool:
     result = _run_git(["status", "--porcelain"], check=True)
     return bool(result.stdout.strip())
+
+
+def sync_to_local() -> int:
+    """從遠端拉取最新變更到本地（git pull）。"""
+    print("🔄 同步遠端變更到本地（git pull）")
+    print(f"   {REPO_ROOT}")
+    print()
+
+    pull = _run_git(["pull"], check=False)
+    if pull.returncode != 0:
+        print("❌ git pull 失敗")
+        if pull.stdout:
+            print(pull.stdout.strip())
+        if pull.stderr:
+            print(pull.stderr.strip())
+        return pull.returncode
+    if pull.stdout:
+        print(pull.stdout.strip())
+    if pull.stderr:
+        print(pull.stderr.strip())
+
+    print("✅ 本地已與遠端同步")
+    return 0
 
 
 def commit_and_push(message: str) -> int:
@@ -97,7 +121,7 @@ def commit_and_push(message: str) -> int:
 
 def create_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="完整重建 wenda2_ebook 後，git add / commit / push",
+        description="git pull → 完整重建 wenda2_ebook → git add / commit / push",
     )
     parser.add_argument(
         "-m",
@@ -111,12 +135,17 @@ def create_argument_parser() -> argparse.ArgumentParser:
 def main() -> int:
     args = create_argument_parser().parse_args()
 
-    print("🚀 gen_all_and_push — 重建 → 提交 → 推送")
+    print("🚀 gen_all_and_push — 同步 → 重建 → 提交 → 推送")
     print()
+
+    sync_rc = sync_to_local()
+    if sync_rc != 0:
+        print("❌ 同步失敗，略過後續操作")
+        return sync_rc
 
     build_rc = gen_all_main()
     if build_rc != 0:
-        print("❌ 重建失敗，略過 git 操作")
+        print("❌ 重建失敗，略過 commit 與 push")
         return build_rc
 
     return commit_and_push(args.message)

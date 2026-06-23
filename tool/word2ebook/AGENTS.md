@@ -19,9 +19,9 @@ Entry point: `python main.py <input.docx> <output_dir> [--pdf <answers.pdf>] [--
 **問答錄 2 一鍵完整重建**：在 `tool/word2ebook/` 執行 `python3 gen_all.py`（Word +
 PDF + QA → `wenda2_ebook/`，含首頁與搜尋索引）。修正 `qa/` 文字稿後可直接重跑。
 
-**重建並推送**：執行 `python3 gen_all_and_push.py` 會先跑 `gen_all.py`，再以
-`git add :/`、`git commit`、`git push` 把變更推上遠端（預設 commit 訊息：
-`New txt changes to new wenda2ebook`）。
+**重建並推送**：執行 `python3 gen_all_and_push.py` 會先 `git pull` 同步遠端到本地，
+再跑 `gen_all.py`，最後以 `git add :/`、`git commit`、`git push` 推上遠端（預設
+commit 訊息：`New txt changes to new wenda2ebook`）。
 
 A `--pdf` source is parsed into month-based chapters (date + source sub-headings)
 and appended after the Word chapters. A `--qa` folder is likewise parsed into
@@ -62,7 +62,7 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 |------|---------------|-------|
 | `main.py` | CLI entry, `Word2EBookConverter` orchestrator; `_parse_chapters` concatenates Word + PDF + QA; `--pdf`/`--qa`/`--only-word`/`--only-pdf`/`--only-qa` flags | ~340 |
 | `gen_all.py` | One-shot full rebuild for 問答錄 2: Word docx + PDF + `qa/` → `wenda2_ebook/` (simplified + traditional + search index); run after editing QA transcripts | ~100 |
-| `gen_all_and_push.py` | Runs `gen_all.py`, then `git add :/`, `git commit`, `git push` from repo root; default message `New txt changes to new wenda2ebook`; skips commit/push if no changes | ~120 |
+| `gen_all_and_push.py` | `git pull` → `gen_all.py` → `git add :/` → `git commit` → `git push` from repo root; default message `New txt changes to new wenda2ebook`; skips commit/push if no changes | ~140 |
 | `run.py` | Thin launcher that fixes import path and delegates to `main.main()` | ~20 |
 | `models/document_models.py` | Dataclasses: `Chapter` (incl. `is_qa`), `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` (incl. `pdf_file`, `qa_folder`, `only_word`, `only_pdf`, `only_qa`, `pdf_start_index`, `qa_start_index`) | ~200 |
 | `config/settings.py` | `Settings` dataclass, `Constants` (CDN URLs, filenames, search weights, answerer names, heading ranges, `QA_AUDIO_BASE`, `QA_INDEX_LINK`) | ~135 |

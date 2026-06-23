@@ -156,17 +156,23 @@ conversion pipeline as `main.py` with Word + PDF + QA (simplified + traditional
 
 ### Requirement: Site Full-Rebuild and Push Script
 The repository SHALL ship `gen_all_and_push.py` alongside `gen_all.py`. The script
-SHALL run the full rebuild first; on success it SHALL stage all changes from the
-repository root (`git add :/`), commit with a configurable message (default:
-`New txt changes to new wenda2ebook`), and push to the remote. If the rebuild
-fails, git operations SHALL be skipped. If there are no changes after staging,
-the script SHALL skip commit and push and exit successfully.
+SHALL sync remote changes to the local repository first (`git pull` from the repo
+root), then run the full rebuild; on success it SHALL stage all changes
+(`git add :/`), commit with a configurable message (default:
+`New txt changes to new wenda2ebook`), and push to the remote. If `git pull` or
+the rebuild fails, subsequent steps SHALL be skipped. If there are no changes
+after staging, the script SHALL skip commit and push and exit successfully.
 
-#### Scenario: Rebuild, commit, and push after QA edits
+#### Scenario: Pull, rebuild, commit, and push after QA edits
 - GIVEN the user has modified QA transcript files
 - WHEN the user runs `python3 gen_all_and_push.py` from `tool/word2ebook/`
-- THEN the system SHALL rebuild `wenda2_ebook/`, commit all repo changes, and
-  push to the remote
+- THEN the system SHALL run `git pull`, rebuild `wenda2_ebook/`, commit all repo
+  changes, and push to the remote
+
+#### Scenario: Pull fails
+- GIVEN `git pull` fails (e.g. merge conflict)
+- WHEN the user runs `python3 gen_all_and_push.py`
+- THEN the system SHALL abort without running the rebuild, commit, or push
 
 #### Scenario: Rebuild succeeds with no diff
 - GIVEN `gen_all.py` completes but produces no file changes
