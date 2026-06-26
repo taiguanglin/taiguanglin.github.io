@@ -204,8 +204,13 @@ metadata, and the collapsible chapter TOC are produced identically.
 - Public API: `PDFParser.parse(pdf_path, start_index=12)` and the pure,
   testable core `PDFParser.parse_lines(lines, start_index=12)` where `lines`
   is a list of `(x0, text)` tuples.
-- PyMuPDF (`fitz`) is imported lazily inside `_extract_lines`, so unit tests can
-  exercise `parse_lines` without PyMuPDF installed.
+- PyMuPDF is imported lazily inside `_extract_lines` via the `_import_pymupdf()`
+  helper, so unit tests can exercise `parse_lines` without PyMuPDF installed. The
+  helper imports the canonical `pymupdf` module name first (PyMuPDF ≥ 1.23.0),
+  falling back to `fitz`; this avoids the unrelated PyPI `fitz` package (which
+  depends on `frontend`/`starlette` and raises `RuntimeError: Directory 'static/'
+  does not exist` on import) shadowing the real module. A misimported `fitz`
+  lacking `open()` raises a clear `ImportError` with remediation steps.
 - Source labels `贴吧` / `微信公众号` are simplified; the traditional build
   converts them to `貼吧` / `微信公眾號` via OpenCC, matching the `qa/` folder
   naming used for future content.

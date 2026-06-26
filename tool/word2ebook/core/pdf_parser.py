@@ -27,6 +27,37 @@ from config.settings import Settings, Constants
 from core.chapter_finalizer import finalize_chapter
 
 
+def _import_pymupdf():
+    """匯入 PyMuPDF，回傳其模組物件。
+
+    PyMuPDF 自 1.23.0 起同時以 ``pymupdf``（推薦）與 ``fitz`` 兩個名稱提供模組。
+    我們優先匯入 ``pymupdf``，因為 PyPI 上另有一個與 PyMuPDF 無關、同樣叫 ``fitz``
+    的套件（依賴 ``frontend``/``starlette``），若被誤裝會在 ``import fitz`` 時搶先載入
+    並丟出 ``RuntimeError: Directory 'static/' does not exist``。改用 ``pymupdf``
+    名稱可繞過此命名衝突；找不到時才退回 ``fitz`` 並給出明確的修正提示。
+    """
+    try:
+        import pymupdf  # PyMuPDF >= 1.23.0 的正式模組名
+        return pymupdf
+    except ImportError:
+        pass
+
+    try:
+        import fitz
+    except ImportError as exc:
+        raise ImportError(
+            "需要 PyMuPDF 才能解析 PDF。請執行：pip install --upgrade PyMuPDF"
+        ) from exc
+
+    # 偵測「冒牌 fitz」：真正的 PyMuPDF 會有 open()/Document 屬性
+    if not hasattr(fitz, "open"):
+        raise ImportError(
+            "匯入到的 'fitz' 不是 PyMuPDF（可能誤裝了同名的 'fitz' 套件）。"
+            "請執行：pip uninstall -y fitz && pip install --upgrade PyMuPDF"
+        )
+    return fitz
+
+
 # ---------------------------------------------------------------------------
 # 常量 / 正則
 # ---------------------------------------------------------------------------
@@ -159,7 +190,7 @@ class PDFParser:
     # ------------------------------------------------------------------ #
 
     def _extract_lines(self, pdf_path: Path) -> List[Tuple[float, str]]:
-        import fitz  # 延遲匯入，讓不跑 PDF 的測試不需要安裝 PyMuPDF
+        fitz = _import_pymupdf()  # 延遲匯入，讓不跑 PDF 的測試不需要安裝 PyMuPDF
 
         doc = fitz.open(pdf_path)
         out: List[Tuple[float, str]] = []

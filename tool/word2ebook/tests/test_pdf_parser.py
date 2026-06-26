@@ -12,7 +12,10 @@ Layout convention (from the real PDF):
 import re
 import pytest
 
-from core.pdf_parser import PDFParser, _year_to_cn, _normalize_spaces
+import sys
+import types
+
+from core.pdf_parser import PDFParser, _year_to_cn, _normalize_spaces, _import_pymupdf
 from config.settings import DEFAULT_SETTINGS
 
 IND = 118.0   # indented (new paragraph)
@@ -514,3 +517,37 @@ class TestNoTimeQuestioners:
 class TestEdge:
     def test_empty_input_returns_no_chapters(self, parser):
         assert parser.parse_lines([], start_index=12) == []
+
+
+# ---------------------------------------------------------------------------
+# PyMuPDF import resilience（避免冒牌 fitz 套件造成的命名衝突）
+# ---------------------------------------------------------------------------
+
+class TestImportPyMuPDF:
+    def _clear(self, monkeypatch):
+        monkeypatch.delitem(sys.modules, "pymupdf", raising=False)
+        monkeypatch.delitem(sys.modules, "fitz", raising=False)
+
+    def test_prefers_pymupdf_module_name(self, monkeypatch):
+        self._clear(monkeypatch)
+        fake = types.ModuleType("pymupdf")
+        fake.open = lambda *a, **k: None
+        monkeypatch.setitem(sys.modules, "pymupdf", fake)
+        assert _import_pymupdf() is fake
+
+    def test_falls_back_to_fitz_when_no_pymupdf(self, monkeypatch):
+        self._clear(monkeypatch)
+        # 確保 import pymupdf 失敗
+        monkeypatch.setitem(sys.modules, "pymupdf", None)
+        fake = types.ModuleType("fitz")
+        fake.open = lambda *a, **k: None
+        monkeypatch.setitem(sys.modules, "fitz", fake)
+        assert _import_pymupdf() is fake
+
+    def test_rejects_bogus_fitz_without_open(self, monkeypatch):
+        self._clear(monkeypatch)
+        monkeypatch.setitem(sys.modules, "pymupdf", None)
+        bogus = types.ModuleType("fitz")  # 沒有 open()，模擬冒牌套件
+        monkeypatch.setitem(sys.modules, "fitz", bogus)
+        with pytest.raises(ImportError, match="PyMuPDF"):
+            _import_pymupdf()
