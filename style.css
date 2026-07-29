@@ -2881,6 +2881,7 @@ html {
 
 /* 書冊分布圖 */
 .mm-chart {
+    position: relative;
     background: var(--white);
     border: 1px solid #f2dde6;
     border-radius: 14px;
@@ -2916,12 +2917,18 @@ html {
     align-items: center;
     gap: var(--spacing-sm);
     padding: 5px 0;
+    transition: opacity 0.15s ease;
+}
+
+.mm-chart-rows:has(.mm-chart-row.is-active) .mm-chart-row:not(.is-active) {
+    opacity: 0.45;
 }
 
 .mm-chart-label {
     font-size: 0.9rem;
     color: var(--black);
     text-align: right;
+    cursor: default;
 }
 
 .mm-chart-track {
@@ -2930,11 +2937,19 @@ html {
     border-radius: 4px;
     overflow: hidden;
     background: #f8f4f6;
+    cursor: pointer;
 }
 
 .mm-chart-seg {
     display: block;
     height: 100%;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.mm-chart-seg:hover,
+.mm-chart-seg.is-active {
+    filter: brightness(1.08);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
 }
 
 .mm-chart-total {
@@ -2942,6 +2957,7 @@ html {
     color: var(--gray);
     text-align: right;
     font-variant-numeric: tabular-nums;
+    cursor: default;
 }
 
 .mm-chart-axis {
@@ -2952,6 +2968,73 @@ html {
     border-top: 1px solid #f6ecf1;
     font-size: 0.78rem;
     color: var(--gray);
+}
+
+.mm-chart-tip {
+    position: absolute;
+    z-index: 20;
+    min-width: 200px;
+    max-width: 260px;
+    padding: 12px 14px;
+    border-radius: 10px;
+    background: rgba(36, 28, 34, 0.94);
+    color: #fff;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+    pointer-events: none;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    backdrop-filter: blur(6px);
+}
+
+.mm-chart-tip-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.mm-chart-tip-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 3px 0;
+    color: rgba(255, 255, 255, 0.82);
+}
+
+.mm-chart-tip-row.is-hi {
+    color: #fff;
+    font-weight: 600;
+}
+
+.mm-chart-tip-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.mm-chart-tip-name i {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.mm-chart-tip-val {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: 0.02em;
+}
+
+.mm-chart-tip-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    font-weight: 600;
+    color: #fff;
 }
 
 @media (max-width: 768px) {

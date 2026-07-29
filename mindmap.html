@@ -242,7 +242,7 @@
                 <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-chart-bar"></i></span>
                 名詞的書冊分布
             </h2>
-            <p class="mm-lead">同一套名詞在五本書裡的權重差異，說明了各書的分工：《坐禪1》《問答錄》偏身體工程，《坐禪2》偏業與世界，兩本經典講解則集中在分別心與圓覺。</p>
+            <p class="mm-lead">同一套名詞在五本書裡的權重差異，說明了各書的分工：《坐禪1》《問答錄》偏身體工程，《坐禪2》偏業與世界，兩本經典講解則集中在分別心與圓覺。滑鼠移到色塊上可看各書明細。</p>
             <div class="mm-chart" id="mm-chart"></div>
             <p class="mm-source"><i class="fas fa-calculator"></i> 數值為該名詞在該書全文出現次數（次）。統計自五冊 PDF 全文（共 1,608 頁）。</p>
         </div>
@@ -1340,15 +1340,15 @@
                 return '<span class="mm-legend-item"><i style="background:' + b.color + '"></i>《' + b.name + '》</span>';
             }).join('') + '</div>';
 
-            var rows = TERM_COUNTS.map(function (r) {
+            var rows = TERM_COUNTS.map(function (r, ri) {
                 var segs = r.data.map(function (v, i) {
                     if (!v) return '';
                     return '<span class="mm-chart-seg" style="width:' + (v / max * 100) + '%;background:' +
-                           BOOKS[i].color + '" title="《' + BOOKS[i].name + '》：' + v + ' 次"></span>';
+                           BOOKS[i].color + '" data-row="' + ri + '" data-book="' + i + '"></span>';
                 }).join('');
-                return '<div class="mm-chart-row">' +
+                return '<div class="mm-chart-row" data-row="' + ri + '">' +
                        '<span class="mm-chart-label">' + r.term + '</span>' +
-                       '<span class="mm-chart-track">' + segs + '</span>' +
+                       '<span class="mm-chart-track" data-row="' + ri + '">' + segs + '</span>' +
                        '<span class="mm-chart-total">' + r.total.toLocaleString() + '</span>' +
                        '</div>';
             }).join('');
@@ -1356,7 +1356,106 @@
             host.innerHTML = legend +
                 '<div class="mm-chart-rows">' + rows + '</div>' +
                 '<div class="mm-chart-axis"><span>0</span><span>五書合計出現次數（次）</span><span>' +
-                max.toLocaleString() + '</span></div>';
+                max.toLocaleString() + '</span></div>' +
+                '<div class="mm-chart-tip" id="mm-chart-tip" hidden></div>';
+
+            var tip = document.getElementById('mm-chart-tip');
+            var activeRow = -1;
+            var activeBook = -1;
+
+            function tipHtml(ri, bi) {
+                var r = TERM_COUNTS[ri];
+                var lines = BOOKS.map(function (b, i) {
+                    var v = r.data[i];
+                    var hi = (bi === i) ? ' is-hi' : '';
+                    return '<div class="mm-chart-tip-row' + hi + '">' +
+                           '<span class="mm-chart-tip-name"><i style="background:' + b.color + '"></i>《' + b.name + '》</span>' +
+                           '<span class="mm-chart-tip-val">' + v.toLocaleString() + '</span>' +
+                           '</div>';
+                }).join('');
+                return '<div class="mm-chart-tip-title">' + r.term + '</div>' +
+                       lines +
+                       '<div class="mm-chart-tip-total"><span>合計</span><span>' +
+                       r.total.toLocaleString() + '</span></div>';
+            }
+
+            function placeTip(e) {
+                var pad = 12;
+                var rect = host.getBoundingClientRect();
+                var tw = tip.offsetWidth || 220;
+                var th = tip.offsetHeight || 180;
+                var x = e.clientX - rect.left + 14;
+                var y = e.clientY - rect.top + 14;
+                if (x + tw > rect.width - pad) x = e.clientX - rect.left - tw - 10;
+                if (y + th > rect.height - pad) y = e.clientY - rect.top - th - 10;
+                if (x < pad) x = pad;
+                if (y < pad) y = pad;
+                tip.style.left = x + 'px';
+                tip.style.top = y + 'px';
+            }
+
+            function showTip(ri, bi, e) {
+                if (ri < 0) return;
+                if (ri !== activeRow || bi !== activeBook) {
+                    tip.innerHTML = tipHtml(ri, bi);
+                    activeRow = ri;
+                    activeBook = bi;
+                }
+                tip.hidden = false;
+                tip.classList.add('is-visible');
+                placeTip(e);
+
+                host.querySelectorAll('.mm-chart-seg.is-active').forEach(function (n) {
+                    n.classList.remove('is-active');
+                });
+                host.querySelectorAll('.mm-chart-row.is-active').forEach(function (n) {
+                    n.classList.remove('is-active');
+                });
+                var row = host.querySelector('.mm-chart-row[data-row="' + ri + '"]');
+                if (row) row.classList.add('is-active');
+                if (bi >= 0) {
+                    var seg = host.querySelector('.mm-chart-seg[data-row="' + ri + '"][data-book="' + bi + '"]');
+                    if (seg) seg.classList.add('is-active');
+                }
+            }
+
+            function hideTip() {
+                tip.hidden = true;
+                tip.classList.remove('is-visible');
+                activeRow = -1;
+                activeBook = -1;
+                host.querySelectorAll('.mm-chart-seg.is-active, .mm-chart-row.is-active').forEach(function (n) {
+                    n.classList.remove('is-active');
+                });
+            }
+
+            host.querySelectorAll('.mm-chart-track, .mm-chart-seg, .mm-chart-label, .mm-chart-total').forEach(function (el) {
+                el.addEventListener('mousemove', function (e) {
+                    var rowEl = el.closest('[data-row]');
+                    if (!rowEl) return;
+                    var ri = parseInt(rowEl.getAttribute('data-row'), 10);
+                    var bi = el.classList.contains('mm-chart-seg')
+                        ? parseInt(el.getAttribute('data-book'), 10)
+                        : -1;
+                    showTip(ri, bi, e);
+                });
+                el.addEventListener('mouseleave', function (e) {
+                    if (!host.contains(e.relatedTarget)) hideTip();
+                });
+                el.addEventListener('click', function (e) {
+                    var rowEl = el.closest('[data-row]');
+                    if (!rowEl) return;
+                    var ri = parseInt(rowEl.getAttribute('data-row'), 10);
+                    var bi = el.classList.contains('mm-chart-seg')
+                        ? parseInt(el.getAttribute('data-book'), 10)
+                        : -1;
+                    showTip(ri, bi, e);
+                });
+            });
+            host.addEventListener('mouseleave', hideTip);
+            document.addEventListener('click', function (e) {
+                if (!host.contains(e.target)) hideTip();
+            });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
