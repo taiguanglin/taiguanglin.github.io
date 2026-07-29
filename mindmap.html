@@ -62,9 +62,22 @@
     </nav>
 
     <!-- Hero 區塊 -->
-    <section class="hero" style="height: 50vh; background: var(--pink-gradient); padding-top: 80px;">
+    <section class="hero mm-hero" style="height: 50vh; background: var(--pink-gradient); padding-top: 80px;">
         <div class="hero-background"></div>
         <div class="hero-content">
+            <div class="mm-hero-icon animate-fade-in" aria-hidden="true">
+                <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="36" cy="36" r="10" fill="rgba(255,255,255,0.95)"/>
+                    <circle cx="36" cy="14" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                    <circle cx="56" cy="28" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                    <circle cx="56" cy="48" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                    <circle cx="36" cy="58" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                    <circle cx="16" cy="48" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                    <circle cx="16" cy="28" r="5.5" fill="rgba(255,255,255,0.85)"/>
+                    <path d="M36 26V19.5M44.5 31.5L51 29M44.5 42.5L51 45M36 46V52.5M27.5 42.5L21 45M27.5 31.5L21 29" stroke="rgba(255,255,255,0.9)" stroke-width="2.2" stroke-linecap="round"/>
+                    <circle cx="36" cy="36" r="3.2" fill="#ff2d87"/>
+                </svg>
+            </div>
             <h1 class="hero-title animate-fade-in">名詞關聯心智圖</h1>
             <p class="hero-subtitle animate-fade-in delay-1">一張圖看懂五冊著作的關鍵名詞，以及它們彼此的關聯</p>
         </div>
@@ -90,18 +103,24 @@
 
             <div class="mm-stats">
                 <div class="mm-stat">
+                    <span class="mm-stat-icon" aria-hidden="true"><i class="fas fa-book"></i></span>
                     <strong>5</strong>
                     <span>冊著作</span>
                 </div>
                 <div class="mm-stat">
+                    <span class="mm-stat-icon" aria-hidden="true"><i class="fas fa-file-alt"></i></span>
                     <strong>1,608</strong>
                     <span>頁原文</span>
                 </div>
                 <div class="mm-stat">
+                    <span class="mm-stat-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 4v7M12 11l-6 5M12 11l6 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="4" r="2.2" fill="currentColor"/><circle cx="6" cy="17.5" r="2.2" fill="currentColor"/><circle cx="18" cy="17.5" r="2.2" fill="currentColor"/></svg>
+                    </span>
                     <strong>8</strong>
                     <span>條主幹</span>
                 </div>
                 <div class="mm-stat">
+                    <span class="mm-stat-icon" aria-hidden="true"><i class="fas fa-diagram-project"></i></span>
                     <strong>48</strong>
                     <span>個名詞節點</span>
                 </div>
@@ -112,7 +131,12 @@
     <!-- 三大初始設定 -->
     <section class="section bg-light">
         <div class="container">
-            <h2 class="section-title">三大初始設定</h2>
+            <h2 class="section-title mm-section-title">
+                <span class="mm-section-icon" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="18" width="8" height="16" rx="2" fill="currentColor" opacity=".35"/><rect x="16" y="10" width="8" height="24" rx="2" fill="currentColor" opacity=".7"/><rect x="27" y="6" width="8" height="28" rx="2" fill="currentColor"/><circle cx="9" cy="14" r="2.5" fill="currentColor"/><circle cx="20" cy="6" r="2.5" fill="currentColor"/><circle cx="31" cy="3" r="2.5" fill="currentColor"/></svg>
+                </span>
+                三大初始設定
+            </h2>
             <p class="mm-lead">Tai 師父把整套義理架在三條不可再往前追問的「初始設定」上。心智圖的每一條分支，最後都能回推到這三條其中之一。</p>
             <div class="mm-axiom-grid" id="mm-axioms"></div>
         </div>
@@ -121,7 +145,10 @@
     <!-- 心智圖 -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">名詞關聯圖</h2>
+            <h2 class="section-title mm-section-title">
+                <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-sitemap"></i></span>
+                名詞關聯圖
+            </h2>
             <p class="mm-lead">點選圖中任一名詞，可展開它的釋義、依原著整理的書中要點、原文摘句、出處章節，以及跨分支的關聯（以虛線標示）。手機請左右滑動圖面。</p>
 
             <div class="mm-chips" id="mm-chips"></div>
@@ -129,7 +156,7 @@
             <div class="mm-canvas-wrap">
                 <div class="mm-canvas-inner" id="mm-canvas"></div>
             </div>
-            <p class="mm-hint"><i class="fas fa-hand-pointer"></i> 中心為「自性」，右側四條主幹為義理，左側四條主幹為修證與世界觀。</p>
+            <p class="mm-hint"><i class="fas fa-hand-pointer"></i> 中心為「自性」；右側四條主幹為義理 <i class="fas fa-arrow-right mm-hint-side"></i>，左側四條主幹為修證與世界觀 <i class="fas fa-arrow-left mm-hint-side"></i>。</p>
 
             <div class="mm-detail" id="mm-detail"></div>
         </div>
@@ -138,7 +165,10 @@
     <!-- 核心對應軸 -->
     <section class="section bg-light">
         <div class="container">
-            <h2 class="section-title">核心對應軸</h2>
+            <h2 class="section-title mm-section-title">
+                <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                核心對應軸
+            </h2>
             <p class="mm-lead">這是整套書最具原創性的地方——把果位、四相、五蘊全部重新定義為「意識裡還剩幾層東西」的讀數。橫著讀任一列，就能把散在不同經典裡的名詞對上。</p>
             <div class="mm-table-wrap">
                 <table class="mm-table">
@@ -154,9 +184,9 @@
                     </tbody>
                 </table>
             </div>
-            <p class="mm-source">出處：《坐禪1》第一章第01、06節；《坐禪2》意識篇第01、02節；《講金剛經》總結。</p>
+            <p class="mm-source"><i class="fas fa-book-open"></i> 出處：《坐禪1》第一章第01、06節；《坐禪2》意識篇第01、02節；《講金剛經》總結。</p>
 
-            <h3 class="mm-subtitle">五乘佛法與五般若智的對位</h3>
+            <h3 class="mm-subtitle"><i class="fas fa-dharmachakra"></i> 五乘佛法與五般若智的對位</h3>
             <div class="mm-table-wrap">
                 <table class="mm-table">
                     <thead>
@@ -171,14 +201,19 @@
                     </tbody>
                 </table>
             </div>
-            <p class="mm-source">出處：《坐禪1》第一章第07節 五乘佛法、第08節 五般若。每一乘講的都是下位如何升到上位的方法。</p>
+            <p class="mm-source"><i class="fas fa-book-open"></i> 出處：《坐禪1》第一章第07節 五乘佛法、第08節 五般若。每一乘講的都是下位如何升到上位的方法。</p>
         </div>
     </section>
 
     <!-- 禪定階梯 -->
     <section class="section">
         <div class="container">
-            <h2 class="section-title">禪定階梯</h2>
+            <h2 class="section-title mm-section-title">
+                <span class="mm-section-icon" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 32h8v-6h8v-6h8v-6h8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="10" r="3.5" fill="currentColor"/></svg>
+                </span>
+                禪定階梯
+            </h2>
             <p class="mm-lead">Tai 師父反對用「今天比昨天舒服」判斷深定，改以心的變化與入定時長作為門檻。三禪是分水嶺：不參情緒者會堵死在此。</p>
             <div class="mm-table-wrap">
                 <table class="mm-table">
@@ -186,27 +221,30 @@
                         <tr><th>次第</th><th>心的變化</th><th>可檢驗的基準</th><th>此階段的功課</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td>起點</td><td>滅八成淫欲、滅八成文字妄想</td><td>三氣歸元、打通任督二脈</td><td>持戒消業、腹式呼吸、磕大頭</td></tr>
-                        <tr><td>欲界禪定</td><td>滅除一切文字妄想</td><td>2 小時以上無文字妄想</td><td>跏趺坐打通全身筋脈、觀丹田</td></tr>
-                        <tr><td>初禪</td><td>淫欲滅盡，開始收斂注意力</td><td>集中注意力 4 小時</td><td>改參思情／疑情</td></tr>
-                        <tr><td>二禪</td><td>高度集中注意力</td><td>一點上 10 小時以上不跳動</td><td>耳根圓通、話頭禪</td></tr>
-                        <tr class="mm-row-mark"><td>三禪</td><td>注意力破滅、五根脫落，進入陽神</td><td>入定 24 小時以上</td><td>必須參情緒，否則堵死在此</td></tr>
-                        <tr><td>四禪</td><td>苦情破滅，陽神向虛空擴散</td><td>通常 3 天以上，理論無上限</td><td>疑問破滅即開悟</td></tr>
-                        <tr class="mm-row-goal"><td>四空定 → 阿羅漢</td><td>滅喜情，再滅無內容的情緒</td><td>跳過二十八天所有天界</td><td>發心度眾生</td></tr>
+                        <tr><td><i class="fas fa-flag mm-td-icon"></i>起點</td><td>滅八成淫欲、滅八成文字妄想</td><td>三氣歸元、打通任督二脈</td><td>持戒消業、腹式呼吸、磕大頭</td></tr>
+                        <tr><td><i class="fas fa-spa mm-td-icon"></i>欲界禪定</td><td>滅除一切文字妄想</td><td>2 小時以上無文字妄想</td><td>跏趺坐打通全身筋脈、觀丹田</td></tr>
+                        <tr><td><i class="fas fa-fire mm-td-icon"></i>初禪</td><td>淫欲滅盡，開始收斂注意力</td><td>集中注意力 4 小時</td><td>改參思情／疑情</td></tr>
+                        <tr><td><i class="fas fa-bullseye mm-td-icon"></i>二禪</td><td>高度集中注意力</td><td>一點上 10 小時以上不跳動</td><td>耳根圓通、話頭禪</td></tr>
+                        <tr class="mm-row-mark"><td><i class="fas fa-exclamation-triangle mm-td-icon"></i>三禪</td><td>注意力破滅、五根脫落，進入陽神</td><td>入定 24 小時以上</td><td>必須參情緒，否則堵死在此</td></tr>
+                        <tr><td><i class="fas fa-sun mm-td-icon"></i>四禪</td><td>苦情破滅，陽神向虛空擴散</td><td>通常 3 天以上，理論無上限</td><td>疑問破滅即開悟</td></tr>
+                        <tr class="mm-row-goal"><td><i class="fas fa-dove mm-td-icon"></i>四空定 → 阿羅漢</td><td>滅喜情，再滅無內容的情緒</td><td>跳過二十八天所有天界</td><td>發心度眾生</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p class="mm-source">出處：《坐禪1》第三章第06節・3〈禪定次第與放鬆次第〉、第四章，及書末〈坐禪之修行路線圖〉。</p>
+            <p class="mm-source"><i class="fas fa-book-open"></i> 出處：《坐禪1》第三章第06節・3〈禪定次第與放鬆次第〉、第四章，及書末〈坐禪之修行路線圖〉。</p>
         </div>
     </section>
 
     <!-- 書冊分布 -->
     <section class="section bg-light">
         <div class="container">
-            <h2 class="section-title">名詞的書冊分布</h2>
+            <h2 class="section-title mm-section-title">
+                <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-chart-bar"></i></span>
+                名詞的書冊分布
+            </h2>
             <p class="mm-lead">同一套名詞在五本書裡的權重差異，說明了各書的分工：《坐禪1》《問答錄》偏身體工程，《坐禪2》偏業與世界，兩本經典講解則集中在分別心與圓覺。</p>
             <div class="mm-chart" id="mm-chart"></div>
-            <p class="mm-source">數值為該名詞在該書全文出現次數（次）。統計自五冊 PDF 全文（共 1,608 頁）。</p>
+            <p class="mm-source"><i class="fas fa-calculator"></i> 數值為該名詞在該書全文出現次數（次）。統計自五冊 PDF 全文（共 1,608 頁）。</p>
         </div>
     </section>
 
@@ -919,7 +957,27 @@
 
         var CX = 540, HUB_OFF = 156, LEAF_OFF = 332;
         var LEAF_H = 34, BRANCH_GAP = 26, BOX_H = 26;
+        var ICON_SIZE = 13, ICON_GAP = 6;
         var CJK = /[\u2e80-\u9fff\u3000-\u303f\uff00-\uffef]/;
+
+        /* 九個主節點共用的 SVG 圖示（chips + 心智圖節點） */
+        var NODE_ICON_SVG = {
+            root: '<circle cx="12" cy="12" r="7" fill="currentColor"/>',
+            'b-truth': '<rect x="3" y="11" width="5" height="10" rx="1.2" fill="currentColor" opacity=".4"/><rect x="9.5" y="7" width="5" height="14" rx="1.2" fill="currentColor" opacity=".7"/><rect x="16" y="4" width="5" height="17" rx="1.2" fill="currentColor"/>',
+            'b-mind': '<path d="M9.2 5.5c-2.4 0-4.2 2-4.2 4.5 0 1.1.4 2.1 1 2.9-.4.7-.6 1.5-.6 2.3 0 2.6 2 4.6 4.5 4.6.7 0 1.3-.1 1.9-.4.6.9 1.6 1.5 2.8 1.5 2.5 0 4.5-2 4.5-4.6 0-.8-.2-1.6-.6-2.3.6-.8 1-1.8 1-2.9 0-2.5-1.8-4.5-4.2-4.5-1.1 0-2.1.4-2.8 1.1-.7-.7-1.7-1.1-2.8-1.1z" fill="currentColor"/><path d="M12 8.2v9.2" stroke="#fff" stroke-width="1.4" stroke-linecap="round" opacity=".55"/>',
+            'b-fruit': '<path d="M12 20V11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M12 12c-3.2-1.2-5.2-3.6-5.5-6.2 2.8.2 5.2 1.8 5.5 4.2" fill="currentColor"/><path d="M12 12c3.2-1.2 5.2-3.6 5.5-6.2-2.8.2-5.2 1.8-5.5 4.2" fill="currentColor" opacity=".75"/>',
+            'b-sutra': '<path d="M5 6.5c0-1.2.9-2 2.2-2H15c1.4 0 2.5.9 2.5 2.2v11.6c0 .7-.6 1.2-1.3 1.2H8.2C6.4 19.5 5 18.2 5 16.5V6.5z" fill="currentColor" opacity=".25"/><path d="M7 5.2h9.2c.9 0 1.6.7 1.6 1.6v11.5c0 .5-.4.9-.9.9H8.5C7.1 19.2 6 18 6 16.6V6.8c0-.9.7-1.6 1.6-1.6h-.6z" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 9h6.5M9 12h6.5M9 15h4.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+            'b-realm': '<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.7" fill="none"/><ellipse cx="12" cy="12" rx="3.5" ry="8.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M3.5 12h17M5 7.5h14M5 16.5h14" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+            'b-jhana': '<path d="M4 19h5v-4h5v-4h5V7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><circle cx="19" cy="5.5" r="2" fill="currentColor"/>',
+            'b-practice': '<path d="M8.2 14.5c-.8 1.6-2.4 3.4-3.8 4.2-.3.2-.2.7.2.7 1.6-.1 3.6-.9 5-2.2l.4-.4c.5 1.2 1.5 2.2 2.8 2.7.4.1.7-.3.5-.6-.6-1.3-1.7-2.3-3-2.8l4.2-4.2c.9-.9 1-2.3.2-3.2-.8-.9-2.2-1-3.1-.2L8.2 14.5z" fill="currentColor"/><path d="M15.8 14.5c.8 1.6 2.4 3.4 3.8 4.2.3.2.2.7-.2.7-1.6-.1-3.6-.9-5-2.2l-.4-.4c-.5 1.2-1.5 2.2-2.8 2.7-.4.1-.7-.3-.5-.6.6-1.3 1.7-2.3 3-2.8l-4.2-4.2c-.9-.9-1-2.3-.2-3.2.8-.9 2.2-1 3.1-.2l6.4 5.8z" fill="currentColor" opacity=".85"/><circle cx="12" cy="8.2" r="1.6" fill="currentColor"/>',
+            'b-karma': '<circle cx="12" cy="12" r="8.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M12 3.5c-2.4 0-4.3 1.9-4.3 4.3S9.6 12 12 12s4.3 1.9 4.3 4.3-1.9 4.3-4.3 4.3" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="12" cy="7.8" r="1.5" fill="currentColor"/><circle cx="12" cy="16.2" r="1.5" fill="currentColor" opacity=".45"/>'
+        };
+
+        function iconHtml(id) {
+            var inner = NODE_ICON_SVG[id];
+            if (!inner) return '';
+            return '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+        }
 
         function textWidth(s, size) {
             var w = 0;
@@ -939,8 +997,9 @@
             });
             var height = Math.max(totals.L, totals.R) + 60;
             var cy = height / 2;
+            var iconExtra = ICON_SIZE + ICON_GAP;
 
-            var rootW = textWidth(ROOT.label, 14) + 30;
+            var rootW = textWidth(ROOT.label, 14) + 30 + iconExtra;
             boxes.push({ id: 'root', label: ROOT.label, x: CX - rootW / 2, y: cy - 17,
                          w: rootW, h: 34, kind: 'root' });
 
@@ -948,7 +1007,7 @@
                 var y = cy - totals[side] / 2;
                 BRANCHES.filter(function (b) { return b.side === side; }).forEach(function (b) {
                     var blockH = b.leaves.length * LEAF_H;
-                    var hubW = textWidth(b.label, 13.5) + 28;
+                    var hubW = textWidth(b.label, 13.5) + 28 + iconExtra;
                     boxes.push({
                         id: b.id, label: b.label, kind: 'hub', parent: 'root',
                         x: side === 'R' ? CX + HUB_OFF : CX - HUB_OFF - hubW,
@@ -1072,6 +1131,9 @@
                 var active = b.id === selected;
                 var related = !!fam[b.id];
                 var isRoot = b.kind === 'root', isHub = b.kind === 'hub';
+                var hasIcon = !!(NODE_ICON_SVG[b.id]);
+                var fillColor = (active || isRoot) ? '#ffffff' : (isHub ? '#c2185b' : '#3d3d3d');
+                var padX = isRoot ? 14 : 12;
 
                 var group = el('g', {
                     class: 'mm-node' + (active ? ' is-active' : ''),
@@ -1086,16 +1148,54 @@
                     stroke: active ? '#ff1493' : (isRoot || isHub ? '#ff69b4' : '#f0cfdd'),
                     'stroke-width': (active || isRoot) ? 1.8 : 1
                 }));
-                var text = el('text', {
-                    x: b.x + b.w / 2,
-                    y: b.y + b.h / 2 + (isRoot ? 5 : 4.5),
-                    'text-anchor': 'middle',
-                    fill: (active || isRoot) ? '#ffffff' : (isHub ? '#c2185b' : '#3d3d3d'),
-                    'font-size': isRoot ? 14 : (isHub ? 13.5 : 12.5),
-                    'font-weight': (isRoot || isHub) ? 600 : 400
-                });
-                text.appendChild(document.createTextNode(b.label));
-                group.appendChild(text);
+
+                if (hasIcon) {
+                    var iconX = b.x + padX;
+                    var iconY = b.y + (b.h - ICON_SIZE) / 2;
+                    var scale = ICON_SIZE / 24;
+                    var ig = el('g', {
+                        transform: 'translate(' + iconX + ',' + iconY + ') scale(' + scale + ')',
+                        class: 'mm-node-icon'
+                    });
+                    var parsed = new DOMParser().parseFromString(
+                        '<svg xmlns="http://www.w3.org/2000/svg">' + NODE_ICON_SVG[b.id] + '</svg>',
+                        'image/svg+xml'
+                    ).documentElement;
+                    var srcNodes = Array.prototype.slice.call(parsed.childNodes);
+                    srcNodes.forEach(function (src) {
+                        if (src.nodeType !== 1) return;
+                        var child = document.importNode(src, true);
+                        if (child.getAttribute('fill') === 'currentColor') child.setAttribute('fill', fillColor);
+                        if (child.getAttribute('stroke') === 'currentColor') child.setAttribute('stroke', fillColor);
+                        if (child.getAttribute('stroke') === '#fff') {
+                            child.setAttribute('stroke', (active || isRoot) ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.75)');
+                        }
+                        ig.appendChild(child);
+                    });
+                    group.appendChild(ig);
+
+                    var text = el('text', {
+                        x: b.x + padX + ICON_SIZE + ICON_GAP,
+                        y: b.y + b.h / 2 + (isRoot ? 5 : 4.5),
+                        'text-anchor': 'start',
+                        fill: fillColor,
+                        'font-size': isRoot ? 14 : (isHub ? 13.5 : 12.5),
+                        'font-weight': (isRoot || isHub) ? 600 : 400
+                    });
+                    text.appendChild(document.createTextNode(b.label));
+                    group.appendChild(text);
+                } else {
+                    var textOnly = el('text', {
+                        x: b.x + b.w / 2,
+                        y: b.y + b.h / 2 + (isRoot ? 5 : 4.5),
+                        'text-anchor': 'middle',
+                        fill: fillColor,
+                        'font-size': isRoot ? 14 : (isHub ? 13.5 : 12.5),
+                        'font-weight': (isRoot || isHub) ? 600 : 400
+                    });
+                    textOnly.appendChild(document.createTextNode(b.label));
+                    group.appendChild(textOnly);
+                }
 
                 group.addEventListener('click', function () { select(b.id); });
                 group.addEventListener('keydown', function (e) {
@@ -1111,11 +1211,22 @@
             var node = NODES[selected];
             var box = BOX_BY_ID[selected];
             var tag = selected === 'root' ? '中心' : (node.branch || '主幹分支');
+            var headIcon = iconHtml(selected) || '<i class="fas fa-bookmark"></i>';
+            if (!NODE_ICON_SVG[selected] && node.branch) {
+                for (var i = 0; i < BRANCHES.length; i++) {
+                    if (BRANCHES[i].label === node.branch) {
+                        headIcon = iconHtml(BRANCHES[i].id);
+                        break;
+                    }
+                }
+            }
 
             var html = '<div class="mm-detail-head">' +
+                '<span class="mm-detail-icon" aria-hidden="true">' + headIcon + '</span>' +
+                '<div class="mm-detail-title-wrap">' +
                 '<h3>' + node.label + '</h3>' +
                 '<span class="mm-detail-tag">' + tag + '</span>' +
-                '</div>' +
+                '</div></div>' +
                 '<p class="mm-detail-desc">' + node.desc + '</p>';
 
             if (node.points && node.points.length) {
@@ -1127,6 +1238,7 @@
 
             if (node.quote) {
                 html += '<blockquote class="mm-detail-quote">' +
+                        '<span class="mm-quote-mark" aria-hidden="true"><i class="fas fa-quote-left"></i></span>' +
                         '<p>' + node.quote.t + '</p>' +
                         '<cite>' + node.quote.s + '</cite>' +
                         '</blockquote>';
@@ -1135,7 +1247,7 @@
             html += '<p class="mm-detail-src"><i class="fas fa-book"></i> 出處：' + node.src + '</p>';
 
             if (node.rel && node.rel.length) {
-                html += '<div class="mm-detail-rel"><span>關聯名詞</span>';
+                html += '<div class="mm-detail-rel"><span><i class="fas fa-link"></i> 關聯名詞</span>';
                 node.rel.forEach(function (r) {
                     html += '<button type="button" class="mm-rel-chip" data-id="' + r + '">' +
                             (NODES[r] ? NODES[r].label : r) + '</button>';
@@ -1157,9 +1269,11 @@
                 BRANCHES.map(function (b) { return { id: b.id, label: b.label }; })
             );
             host.innerHTML = items.map(function (it) {
+                var icon = iconHtml(it.id);
                 return '<button type="button" class="mm-chip' +
                        (it.id === selected ? ' is-active' : '') +
-                       '" data-id="' + it.id + '">' + it.label + '</button>';
+                       '" data-id="' + it.id + '"><span class="mm-chip-icon" aria-hidden="true">' +
+                       icon + '</span>' + it.label + '</button>';
             }).join('');
             host.querySelectorAll('.mm-chip').forEach(function (btn) {
                 btn.addEventListener('click', function () { select(btn.dataset.id); });
@@ -1176,10 +1290,17 @@
 
         /* ------------------------------------------------------ 其它區塊 */
 
+        var AXIOM_ICONS = {
+            'axiom-eternal': '<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="28" cy="28" r="18" stroke="currentColor" stroke-width="2.2"/><circle cx="28" cy="28" r="10" stroke="currentColor" stroke-width="1.8" opacity=".55"/><circle cx="28" cy="28" r="3.5" fill="currentColor"/><path d="M28 6v5M28 45v5M6 28h5M45 28h5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+            'axiom-firstthought': '<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M28 8l2.8 14.2L44 28l-13.2 3.8L28 48l-2.8-16.2L12 28l13.2-5.8L28 8z" fill="currentColor" opacity=".2" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><circle cx="28" cy="28" r="4" fill="currentColor"/></svg>',
+            'axiom-onebody': '<svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="28" r="12" stroke="currentColor" stroke-width="2.1"/><circle cx="34" cy="28" r="12" stroke="currentColor" stroke-width="2.1"/><path d="M28 19.5c3 2.6 3 14.4 0 17" stroke="currentColor" stroke-width="1.6" opacity=".45"/></svg>'
+        };
+
         function renderAxioms() {
             var host = document.getElementById('mm-axioms');
             host.innerHTML = BRANCHES[0].leaves.slice(0, 3).map(function (a) {
                 return '<div class="mm-axiom-card">' +
+                       '<div class="mm-axiom-icon" aria-hidden="true">' + (AXIOM_ICONS[a.id] || '') + '</div>' +
                        '<h3>' + a.label + '</h3>' +
                        '<p>' + a.desc + '</p>' +
                        '</div>';
