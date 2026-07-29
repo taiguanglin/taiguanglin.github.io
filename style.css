@@ -1306,6 +1306,29 @@ html {
     text-decoration: underline;
 }
 
+/* 故事標題連到該篇的閱讀頁 */
+.story-header h3 a {
+    color: inherit;
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.story-header h3 a:hover {
+    color: var(--primary-pink);
+}
+
+/* 原檔下載：次要動作，靠右且不搶「線上閱讀」的注意力 */
+.download-link-muted {
+    margin-left: auto;
+    color: var(--gray);
+    font-weight: var(--font-weight-normal);
+    font-size: 0.85rem;
+}
+
+.download-link-muted:hover {
+    color: var(--gray);
+}
+
 /* Community Section */
 .community-grid {
     display: grid;

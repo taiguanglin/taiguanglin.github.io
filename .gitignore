@@ -4,3 +4,4 @@ classify/*classified_results_*.xlsx
 classify/qa_classification_results*.json
 classify/qa_classification.log
 問答錄2/~$*.xlsx
+tool/stories2html/build/

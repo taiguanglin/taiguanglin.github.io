@@ -8,6 +8,7 @@ Sitemap: https://taiguanglin.info/sitemap.xml
 Allow: /style.css
 Allow: /script.js
 Allow: /images/
+Allow: /stories/
 
 # Internal proofreading/editor tool — not for indexing
 Disallow: /qa/

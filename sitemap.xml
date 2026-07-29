@@ -354,4 +354,118 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- ============ 實修故事（逐篇 HTML） ============ -->
+
+  <!-- 雙盤打坐｜快速突破雙盤兩小時的階梯法 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/shuangpan-jieti-fa-meiqin.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 雙盤打坐｜雙盤 120 分鐘心得總結 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/shuangpan-120-buxu.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 雙盤打坐｜個人雙盤總結 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/geren-shuangpan-zongjie.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 雙盤打坐｜From 30 to 180 分鐘：小夕雙盤日記 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/xiaoxi-shuangpan-riji.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 雙盤打坐｜為了能雙盤而奮鬥的那些日子裡 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/huatouchan-weile-shuangpan.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 磕大頭（大禮拜）｜磕大頭百日期 30 萬圓滿分享 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/shanhui-bairi-30wan.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 磕大頭（大禮拜）｜【Tai 人說】磕大頭經歷分享 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/tianxi-kedatou.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 磕大頭（大禮拜）｜【Tai 人說】磕大頭經歷第二篇 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/wuganzi-kedatou.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 磕大頭（大禮拜）｜磕大頭：磕掉結痂感悟 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/kedatou-jieba-ganwu.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 磕大頭（大禮拜）｜Tai 式磕大頭小結（第 1 版） -->
+  <url>
+    <loc>https://taiguanglin.info/stories/huatouchan-kedatou-xiaojie.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 磕大頭（大禮拜）｜大禮拜後必須溫養 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/dalibai-wenyang.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 呼吸法｜腹式呼吸法 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/fushi-huxi.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 經典研習｜學習《占察善惡業報經》與再讀《坐禪》之心得 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/zhancha-zuochan-xinde.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 綜合實修｜歷時 5 年多完成 3000 遍地藏經 -->
+  <url>
+    <loc>https://taiguanglin.info/stories/anhui-3000-dizangjing.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
 </urlset>

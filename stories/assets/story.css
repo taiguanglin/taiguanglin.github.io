@@ -1,0 +1,667 @@
+/* 實修故事閱讀頁樣式：沿用網站的粉色系變數（見 ../style.css） */
+
+:root {
+    --story-measure: 40rem;
+    --story-font-size: 18px;
+    --story-line-height: 2;
+    --story-paper: #fffdfb;
+    --story-ink: #2b2b2f;
+    --story-ink-soft: #6c757d;
+    --story-rule: #f0e6ea;
+    --story-navh: 80px;
+}
+
+body.story-body {
+    background: #faf7f8;
+}
+
+/* ---------------- 閱讀進度條 ---------------- */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: var(--pink-gradient);
+    z-index: 1200;
+    transition: width 0.1s linear;
+}
+
+/* ---------------- 標頭 ---------------- */
+.story-hero {
+    background: var(--soft-gradient);
+    border-bottom: 1px solid var(--story-rule);
+    padding: calc(var(--story-navh) + var(--spacing-lg)) var(--spacing-md) var(--spacing-lg);
+}
+
+.story-hero-inner {
+    max-width: var(--story-measure);
+    margin: 0 auto;
+}
+
+.story-crumbs {
+    font-size: 13px;
+    color: var(--story-ink-soft);
+    margin-bottom: var(--spacing-sm);
+}
+
+.story-crumbs a {
+    color: var(--story-ink-soft);
+    text-decoration: none;
+}
+
+.story-crumbs a:hover {
+    color: var(--primary-color);
+}
+
+.story-hero h1 {
+    font-size: clamp(24px, 5vw, 34px);
+    line-height: 1.4;
+    color: var(--story-ink);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.01em;
+}
+
+.story-hero .story-original-title {
+    margin-top: var(--spacing-xs);
+    font-size: 14px;
+    color: var(--story-ink-soft);
+}
+
+.story-byline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs) var(--spacing-sm);
+    margin-top: var(--spacing-md);
+    font-size: 14px;
+    color: var(--story-ink-soft);
+}
+
+.story-byline .story-tag {
+    background: var(--white);
+    border: 1px solid var(--soft-pink);
+    color: var(--accent-color);
+    border-radius: 999px;
+    padding: 3px 12px;
+    font-size: 12px;
+}
+
+.story-byline .story-author-name {
+    color: var(--story-ink);
+    font-weight: var(--font-weight-medium);
+}
+
+.story-lede {
+    margin-top: var(--spacing-md);
+    padding-left: var(--spacing-sm);
+    border-left: 3px solid var(--light-pink);
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--dark-gray);
+}
+
+/* ---------------- 閱讀工具列 ---------------- */
+.story-toolbar {
+    position: sticky;
+    top: var(--story-navh);
+    z-index: 900;
+    display: flex;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-xs);
+    background: rgba(250, 247, 248, 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--story-rule);
+}
+
+.story-toolbar button {
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid var(--story-rule);
+    background: var(--white);
+    color: var(--dark-gray);
+    border-radius: 999px;
+    padding: 6px 14px;
+    transition: all 0.2s ease;
+}
+
+.story-toolbar button:hover {
+    border-color: var(--light-pink);
+    color: var(--accent-color);
+}
+
+.story-toolbar button[aria-pressed="true"] {
+    background: var(--pink-gradient);
+    border-color: transparent;
+    color: var(--white);
+}
+
+/* ---------------- 目錄 ---------------- */
+.story-toc {
+    max-width: var(--story-measure);
+    margin: var(--spacing-lg) auto 0;
+    padding: 0 var(--spacing-md);
+}
+
+.story-toc > details {
+    background: var(--white);
+    border: 1px solid var(--story-rule);
+    border-radius: 14px;
+    padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.story-toc summary {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    color: var(--story-ink);
+    list-style: none;
+}
+
+.story-toc summary::-webkit-details-marker {
+    display: none;
+}
+
+.story-toc summary::before {
+    content: "\f0ca";
+    font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+    font-weight: 900;
+    color: var(--primary-color);
+    margin-right: 8px;
+}
+
+.story-toc ol {
+    list-style: none;
+    margin: var(--spacing-sm) 0 var(--spacing-xs);
+    counter-reset: toc;
+    max-height: 22rem;
+    overflow-y: auto;
+}
+
+.story-toc li {
+    counter-increment: toc;
+    border-top: 1px dashed var(--story-rule);
+}
+
+.story-toc li.lv3 {
+    padding-left: var(--spacing-md);
+}
+
+.story-toc a {
+    display: block;
+    padding: 7px 2px;
+    font-size: 14.5px;
+    line-height: 1.6;
+    color: var(--dark-gray);
+    text-decoration: none;
+}
+
+.story-toc a::before {
+    content: counter(toc) ".";
+    color: var(--light-pink);
+    margin-right: 8px;
+    font-size: 12px;
+}
+
+.story-toc a:hover {
+    color: var(--accent-color);
+}
+
+/* ---------------- 內文 ---------------- */
+.story-article {
+    max-width: var(--story-measure);
+    margin: 0 auto;
+    padding: var(--spacing-xl) var(--spacing-md) var(--spacing-lg);
+    font-size: var(--story-font-size);
+    line-height: var(--story-line-height);
+    color: var(--story-ink);
+    text-align: justify;
+    word-break: normal;
+    overflow-wrap: break-word;
+}
+
+.story-article p {
+    margin: 0 0 1.15em;
+    text-indent: 2em;
+}
+
+.story-article p.noindent,
+.story-article p.story-signoff {
+    text-indent: 0;
+}
+
+.story-article h2 {
+    margin: 2.2em 0 0.9em;
+    font-size: 1.28em;
+    line-height: 1.5;
+    font-weight: var(--font-weight-bold);
+    color: var(--story-ink);
+    scroll-margin-top: calc(var(--story-navh) + 4rem);
+    padding-bottom: 0.35em;
+    border-bottom: 2px solid var(--story-rule);
+}
+
+.story-article h2::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 1em;
+    vertical-align: -0.12em;
+    margin-right: 0.5em;
+    border-radius: 3px;
+    background: var(--pink-gradient);
+}
+
+.story-article h3 {
+    margin: 1.9em 0 0.7em;
+    font-size: 1.08em;
+    line-height: 1.6;
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-color);
+    scroll-margin-top: calc(var(--story-navh) + 4rem);
+}
+
+.story-article h2:first-child,
+.story-article h3:first-child {
+    margin-top: 0;
+}
+
+/* 原檔標題頁（原文的題名、副題與署名，逐字保留） */
+.story-article .story-frontmatter {
+    margin: 0 0 2.4em;
+    padding-bottom: 1.4em;
+    border-bottom: 1px dashed var(--story-rule);
+    text-align: center;
+    color: var(--story-ink-soft);
+}
+
+.story-article .story-frontmatter p {
+    text-indent: 0;
+    margin: 0 0 0.35em;
+    font-size: 0.86em;
+    line-height: 1.8;
+}
+
+.story-article .story-frontmatter p:first-child {
+    font-size: 1em;
+    color: var(--story-ink);
+    font-weight: var(--font-weight-medium);
+}
+
+.story-article h2.has-date::before {
+    display: none;
+}
+
+.story-article h2 .story-h-date {
+    display: block;
+    font-size: 0.66em;
+    font-weight: var(--font-weight-normal);
+    color: var(--primary-color);
+    letter-spacing: 0.06em;
+    margin-bottom: 0.15em;
+}
+
+.story-article blockquote {
+    margin: 1.4em 0;
+    padding: 0.9em 1.2em;
+    background: var(--white);
+    border-left: 4px solid var(--light-pink);
+    border-radius: 0 10px 10px 0;
+    color: var(--dark-gray);
+    font-size: 0.97em;
+}
+
+.story-article blockquote p {
+    margin-bottom: 0.7em;
+}
+
+.story-article blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+.story-article .story-qa {
+    margin: 1.6em 0;
+    padding: 1em 1.2em;
+    background: var(--white);
+    border: 1px solid var(--story-rule);
+    border-radius: 14px;
+}
+
+.story-article .story-qa > .q {
+    text-indent: 0;
+    font-weight: var(--font-weight-medium);
+    color: var(--story-ink);
+    padding-bottom: 0.7em;
+    margin-bottom: 0.8em;
+    border-bottom: 1px dashed var(--story-rule);
+}
+
+.story-article .story-qa > .q::before {
+    content: "問";
+    display: inline-block;
+    width: 1.7em;
+    height: 1.7em;
+    line-height: 1.7em;
+    text-align: center;
+    margin-right: 0.6em;
+    border-radius: 50%;
+    font-size: 0.78em;
+    background: var(--pale-pink);
+    color: var(--accent-color);
+}
+
+.story-article .story-qa > .a {
+    text-indent: 0;
+    margin-bottom: 0.6em;
+}
+
+.story-article .story-qa > .a:last-child {
+    margin-bottom: 0;
+}
+
+.story-article .story-qa > .a::before {
+    content: "答";
+    display: inline-block;
+    width: 1.7em;
+    height: 1.7em;
+    line-height: 1.7em;
+    text-align: center;
+    margin-right: 0.6em;
+    border-radius: 50%;
+    font-size: 0.78em;
+    background: var(--pink-gradient);
+    color: var(--white);
+}
+
+/* 圖片 */
+.story-article figure {
+    margin: 1.8em 0;
+    text-align: center;
+}
+
+.story-article figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    background: var(--white);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
+    cursor: zoom-in;
+}
+
+.story-article figure.wide img {
+    cursor: zoom-in;
+}
+
+.story-article figcaption {
+    margin-top: 0.7em;
+    font-size: 0.8em;
+    line-height: 1.7;
+    color: var(--story-ink-soft);
+    text-align: center;
+    text-indent: 0;
+}
+
+/* 表格 */
+.story-table-wrap {
+    margin: 1.6em 0;
+    overflow-x: auto;
+    border: 1px solid var(--story-rule);
+    border-radius: 12px;
+    background: var(--white);
+}
+
+/* 拆成每月一張的小表並排 */
+.story-table-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: var(--spacing-sm);
+    margin: 1.6em 0;
+    align-items: start;
+}
+
+.story-table-grid .story-table-wrap {
+    margin: 0;
+}
+
+.story-article table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.82em;
+    line-height: 1.6;
+}
+
+.story-article caption {
+    caption-side: top;
+    padding: 0.7em;
+    font-size: 0.9em;
+    font-weight: var(--font-weight-medium);
+    color: var(--story-ink);
+    text-align: center;
+}
+
+.story-article th,
+.story-article td {
+    border: 1px solid var(--story-rule);
+    padding: 6px 10px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.story-article thead th {
+    background: var(--pale-pink);
+    color: var(--accent-color);
+    font-weight: var(--font-weight-medium);
+    position: sticky;
+    top: 0;
+}
+
+/* ---------------- 頁尾區塊 ---------------- */
+.story-end {
+    max-width: var(--story-measure);
+    margin: 0 auto;
+    padding: 0 var(--spacing-md) var(--spacing-xxl);
+}
+
+.story-end-rule {
+    border: 0;
+    border-top: 1px solid var(--story-rule);
+    margin: 0 0 var(--spacing-lg);
+}
+
+.story-siblings {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-lg);
+}
+
+.story-siblings a {
+    flex: 1 1 14rem;
+    display: block;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--white);
+    border: 1px solid var(--story-rule);
+    border-radius: 12px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.story-siblings a:hover {
+    border-color: var(--light-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.12);
+}
+
+.story-siblings span {
+    display: block;
+    font-size: 12px;
+    color: var(--story-ink-soft);
+    margin-bottom: 4px;
+}
+
+.story-siblings strong {
+    font-size: 15px;
+    font-weight: var(--font-weight-medium);
+    color: var(--story-ink);
+    line-height: 1.5;
+}
+
+.story-back {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.story-back a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px;
+    border-radius: 999px;
+    background: var(--pink-gradient);
+    color: var(--white);
+    text-decoration: none;
+    font-size: 14px;
+    box-shadow: 0 3px 12px rgba(255, 105, 180, 0.28);
+}
+
+/* 原檔下載：刻意低調，放在最末端 */
+.story-source {
+    font-size: 12.5px;
+    line-height: 1.9;
+    color: #a8a2a5;
+    text-align: center;
+}
+
+.story-source a {
+    color: #8f8a8d;
+    text-decoration: underline;
+    text-decoration-color: #ddd6d9;
+    text-underline-offset: 3px;
+}
+
+.story-source a:hover {
+    color: var(--accent-color);
+    text-decoration-color: var(--light-pink);
+}
+
+/* ---------------- 圖片燈箱 ---------------- */
+.story-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 16, 18, 0.92);
+    padding: 2vmin;
+}
+
+.story-lightbox.open {
+    display: flex;
+}
+
+.story-lightbox img {
+    max-width: 100%;
+    max-height: 96vh;
+    object-fit: contain;
+    cursor: zoom-out;
+}
+
+.story-lightbox .close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    font-size: 26px;
+    line-height: 1;
+    color: #fff;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    opacity: 0.8;
+}
+
+/* ---------------- 深色閱讀模式 ---------------- */
+body.story-dark {
+    background: #17161a;
+}
+
+body.story-dark .story-hero {
+    background: linear-gradient(135deg, #221f26 0%, #17161a 100%);
+    border-bottom-color: #2c2930;
+}
+
+body.story-dark .story-toolbar {
+    background: rgba(23, 22, 26, 0.92);
+    border-bottom-color: #2c2930;
+}
+
+body.story-dark {
+    --story-ink: #ddd8dc;
+    --story-ink-soft: #918b95;
+    --story-rule: #2c2930;
+}
+
+body.story-dark .story-hero h1,
+body.story-dark .story-article,
+body.story-dark .story-toc summary,
+body.story-dark .story-siblings strong {
+    color: #ddd8dc;
+}
+
+body.story-dark .story-lede,
+body.story-dark .story-article blockquote,
+body.story-dark .story-toc a {
+    color: #b3adb6;
+}
+
+body.story-dark .story-toc > details,
+body.story-dark .story-toolbar button,
+body.story-dark .story-article blockquote,
+body.story-dark .story-article .story-qa,
+body.story-dark .story-siblings a,
+body.story-dark .story-table-wrap {
+    background: #1f1d23;
+    border-color: #2c2930;
+}
+
+body.story-dark .story-article thead th {
+    background: #292630;
+}
+
+body.story-dark .story-article figure img {
+    background: #1f1d23;
+}
+
+/* ---------------- 響應式 ---------------- */
+@media (max-width: 768px) {
+    :root {
+        --story-font-size: 17px;
+        --story-line-height: 1.95;
+    }
+
+    .story-toolbar {
+        flex-wrap: wrap;
+    }
+
+    .story-article {
+        padding-top: var(--spacing-lg);
+        text-align: left;
+    }
+}
+
+@media print {
+    .navbar,
+    .story-toolbar,
+    .reading-progress,
+    .scroll-to-top,
+    .story-siblings,
+    .story-back,
+    .footer {
+        display: none !important;
+    }
+
+    .story-article {
+        max-width: none;
+    }
+}
