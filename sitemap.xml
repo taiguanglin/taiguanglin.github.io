@@ -37,6 +37,14 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- 名詞關聯心智圖 -->
+  <url>
+    <loc>https://taiguanglin.info/mindmap.html</loc>
+    <lastmod>2026-07-29</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <!-- ============ 問答錄章節 - 核心理論篇 ============ -->
   <!-- 自性與意識 -->
   <url>

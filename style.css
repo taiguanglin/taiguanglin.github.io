@@ -2247,3 +2247,534 @@ html {
         max-height: 70vh;
     }
 }
+
+/* ===================== 名詞關聯心智圖 (mindmap.html) ===================== */
+
+.mm-lead {
+    max-width: 820px;
+    margin: 0 auto var(--spacing-lg);
+    text-align: center;
+    color: var(--dark-gray);
+    line-height: 1.9;
+}
+
+.mm-subtitle {
+    margin: var(--spacing-xl) 0 var(--spacing-md);
+    font-size: 1.25rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--deep-pink);
+}
+
+.mm-source {
+    margin-top: var(--spacing-sm);
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.7;
+}
+
+/* AI 產出聲明 */
+.mm-notice {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    background: #fff8e6;
+    border: 1px solid #f2dca8;
+    border-left: 5px solid #e8b64c;
+    border-radius: 12px;
+}
+
+.mm-notice-icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f6e4bb;
+    color: #a9761a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+}
+
+.mm-notice-body strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #8a5f10;
+    font-size: 1.02rem;
+}
+
+.mm-notice-body p {
+    margin: 0 0 6px;
+    font-size: 0.9rem;
+    line-height: 1.9;
+    color: #6f5423;
+}
+
+.mm-notice-body p:last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+    .mm-notice {
+        flex-direction: column;
+        gap: var(--spacing-sm);
+        padding: var(--spacing-md);
+    }
+}
+
+/* 統計數字 */
+.mm-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-sm);
+    margin-top: var(--spacing-lg);
+}
+
+.mm-stat {
+    background: var(--white);
+    border: 1px solid #f2dde6;
+    border-radius: 12px;
+    padding: var(--spacing-md) var(--spacing-sm);
+    text-align: center;
+}
+
+.mm-stat strong {
+    display: block;
+    font-size: 1.9rem;
+    line-height: 1.2;
+    color: var(--deep-pink);
+    font-weight: var(--font-weight-bold);
+}
+
+.mm-stat span {
+    display: block;
+    margin-top: 4px;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+/* 三大初始設定 */
+.mm-axiom-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-md);
+}
+
+.mm-axiom-card {
+    background: var(--white);
+    border-radius: 14px;
+    padding: var(--spacing-lg);
+    border-top: 4px solid var(--primary-pink);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.mm-axiom-card h3 {
+    font-size: 1.2rem;
+    color: var(--deep-pink);
+    margin-bottom: var(--spacing-xs);
+}
+
+.mm-axiom-card p {
+    font-size: 0.92rem;
+    line-height: 1.85;
+    color: var(--dark-gray);
+}
+
+/* 分支快捷鍵 */
+.mm-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-md);
+}
+
+.mm-chip {
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1px solid #f0cfdd;
+    background: var(--white);
+    color: var(--dark-gray);
+    font-family: var(--font-primary);
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.mm-chip:hover {
+    border-color: var(--primary-pink);
+    color: var(--deep-pink);
+}
+
+.mm-chip.is-active {
+    background: var(--pink-gradient);
+    border-color: transparent;
+    color: var(--white);
+}
+
+/* 圖面 */
+.mm-canvas-wrap {
+    background: var(--white);
+    border: 1px solid #f2dde6;
+    border-radius: 14px;
+    padding: var(--spacing-sm);
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mm-canvas-inner {
+    min-width: 900px;
+}
+
+.mm-canvas-inner svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.mm-node {
+    cursor: pointer;
+    transition: opacity 0.25s ease;
+}
+
+.mm-node rect {
+    transition: fill 0.2s ease, stroke 0.2s ease;
+}
+
+.mm-node:hover rect {
+    stroke: var(--deep-pink);
+}
+
+.mm-node:focus {
+    outline: none;
+}
+
+.mm-node:focus rect {
+    stroke: var(--deep-pink);
+    stroke-width: 2;
+}
+
+.mm-hint {
+    margin-top: var(--spacing-xs);
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.mm-hint i {
+    color: var(--primary-pink);
+    margin-right: 4px;
+}
+
+/* 節點詳情 */
+.mm-detail {
+    margin-top: var(--spacing-lg);
+    background: var(--soft-gradient);
+    border: 1px solid #f2dde6;
+    border-radius: 14px;
+    padding: var(--spacing-lg);
+}
+
+.mm-detail-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+    margin-bottom: var(--spacing-sm);
+}
+
+.mm-detail-head h3 {
+    font-size: 1.4rem;
+    color: var(--deep-pink);
+}
+
+.mm-detail-tag {
+    padding: 3px 12px;
+    border-radius: 12px;
+    background: var(--white);
+    border: 1px solid #f0cfdd;
+    font-size: 0.78rem;
+    color: var(--gray);
+}
+
+.mm-detail-desc {
+    line-height: 2;
+    color: var(--dark-gray);
+}
+
+.mm-detail-block {
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed #f0cfdd;
+}
+
+.mm-detail-block h4 {
+    font-size: 0.95rem;
+    color: var(--deep-pink);
+    margin-bottom: var(--spacing-sm);
+}
+
+.mm-detail-block h4 i {
+    margin-right: 6px;
+    font-size: 0.85rem;
+}
+
+.mm-detail-points {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.mm-detail-points li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 10px;
+    line-height: 1.95;
+    color: var(--dark-gray);
+}
+
+.mm-detail-points li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.85em;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--primary-pink);
+}
+
+.mm-detail-quote {
+    margin: var(--spacing-md) 0 0;
+    padding: var(--spacing-md) var(--spacing-md) var(--spacing-md) calc(var(--spacing-md) + 8px);
+    background: var(--white);
+    border-left: 4px solid var(--primary-pink);
+    border-radius: 0 10px 10px 0;
+}
+
+.mm-detail-quote p {
+    line-height: 2;
+    color: var(--dark-gray);
+    margin: 0;
+}
+
+.mm-detail-quote p::before { content: '「'; }
+.mm-detail-quote p::after { content: '」'; }
+
+.mm-detail-quote cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 0.82rem;
+    font-style: normal;
+    color: var(--gray);
+    text-align: right;
+}
+
+.mm-detail-src {
+    margin-top: var(--spacing-md);
+    font-size: 0.85rem;
+    color: var(--gray);
+}
+
+.mm-detail-src i {
+    margin-right: 5px;
+    color: var(--primary-pink);
+}
+
+.mm-detail-rel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    padding-top: var(--spacing-md);
+    border-top: 1px dashed #f0cfdd;
+}
+
+.mm-detail-rel > span {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-right: 4px;
+}
+
+.mm-rel-chip {
+    padding: 5px 14px;
+    border-radius: 16px;
+    border: 1px solid var(--light-pink);
+    background: var(--white);
+    color: var(--deep-pink);
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.mm-rel-chip:hover {
+    background: var(--primary-pink);
+    border-color: var(--primary-pink);
+    color: var(--white);
+}
+
+/* 表格 */
+.mm-table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
+    border: 1px solid #f2dde6;
+    background: var(--white);
+}
+
+.mm-table {
+    width: 100%;
+    min-width: 680px;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+.mm-table th {
+    background: var(--pale-pink);
+    color: var(--deep-pink);
+    font-weight: var(--font-weight-semibold);
+    text-align: left;
+    padding: 14px 16px;
+    white-space: nowrap;
+    border-bottom: 1px solid #f0cfdd;
+}
+
+.mm-table td {
+    padding: 14px 16px;
+    line-height: 1.7;
+    color: var(--dark-gray);
+    border-bottom: 1px solid #f6ecf1;
+    vertical-align: top;
+}
+
+.mm-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.mm-table tbody tr:nth-child(even) {
+    background: #fdf9fb;
+}
+
+.mm-table td:first-child {
+    font-weight: var(--font-weight-medium);
+    color: var(--black);
+    white-space: nowrap;
+}
+
+.mm-table tr.mm-row-mark td:first-child {
+    box-shadow: inset 3px 0 0 var(--primary-pink);
+}
+
+.mm-table tr.mm-row-goal td:first-child {
+    box-shadow: inset 3px 0 0 var(--deep-pink);
+}
+
+/* 書冊分布圖 */
+.mm-chart {
+    background: var(--white);
+    border: 1px solid #f2dde6;
+    border-radius: 14px;
+    padding: var(--spacing-lg);
+}
+
+.mm-chart-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
+    padding-bottom: var(--spacing-sm);
+    border-bottom: 1px solid #f6ecf1;
+}
+
+.mm-legend-item {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.82rem;
+    color: var(--gray);
+}
+
+.mm-legend-item i {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    margin-right: 6px;
+}
+
+.mm-chart-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 56px;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: 5px 0;
+}
+
+.mm-chart-label {
+    font-size: 0.9rem;
+    color: var(--black);
+    text-align: right;
+}
+
+.mm-chart-track {
+    display: flex;
+    height: 18px;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #f8f4f6;
+}
+
+.mm-chart-seg {
+    display: block;
+    height: 100%;
+}
+
+.mm-chart-total {
+    font-size: 0.82rem;
+    color: var(--gray);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.mm-chart-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: var(--spacing-sm);
+    padding-top: var(--spacing-xs);
+    border-top: 1px solid #f6ecf1;
+    font-size: 0.78rem;
+    color: var(--gray);
+}
+
+@media (max-width: 768px) {
+    .mm-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mm-stat strong {
+        font-size: 1.5rem;
+    }
+
+    .mm-axiom-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mm-detail,
+    .mm-chart {
+        padding: var(--spacing-md);
+    }
+
+    .mm-detail-head h3 {
+        font-size: 1.2rem;
+    }
+
+    .mm-chart-row {
+        grid-template-columns: 60px 1fr 48px;
+    }
+
+    .mm-chart-label,
+    .mm-chart-total {
+        font-size: 0.78rem;
+    }
+}
