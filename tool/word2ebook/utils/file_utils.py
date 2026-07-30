@@ -82,6 +82,32 @@ class ImageHandler:
     def __init__(self, file_manager: FileManager):
         self.file_manager = file_manager
         self.image_counter = 1
+
+    def seed_counter_from_disk(self) -> None:
+        """從既有 ``assets/images/image_N.png`` 接續編號，避免 --only-pdf 覆寫 Word 圖。"""
+        images_dir = self.file_manager.get_assets_path("images")
+        max_n = 0
+        if images_dir.exists():
+            for path in images_dir.glob("image_*.png"):
+                stem = path.stem  # image_12
+                try:
+                    n = int(stem.split("_", 1)[1])
+                except (IndexError, ValueError):
+                    continue
+                if n > max_n:
+                    max_n = n
+        self.image_counter = max_n + 1
+
+    def save_image_bytes(self, image_data: bytes) -> str:
+        """將圖片位元組寫入 ``assets/images/image_N.png``，回傳相對路徑。"""
+        filename = f"image_{self.image_counter}.png"
+        image_path = self.file_manager.get_assets_path("images") / filename
+        image_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(image_path, "wb") as f:
+            f.write(image_data)
+        relative_path = f"assets/images/{filename}"
+        self.image_counter += 1
+        return relative_path
     
     def extract_images_from_document(self, doc, image_map: Dict[str, str]) -> Dict[str, str]:
         """从 Word 文档提取图片并保存到输出目录
@@ -98,16 +124,7 @@ class ImageHandler:
         for rel in rels.values():
             if "image" in rel.target_ref:
                 image_data = rel.target_part.blob
-                filename = f"image_{self.image_counter}.png"
-                
-                # 保存图片到 assets/images 目录
-                image_path = self.file_manager.get_assets_path("images") / filename
-                with open(image_path, "wb") as f:
-                    f.write(image_data)
-                
-                # 记录映射关系（使用相对路径）
-                relative_path = f"assets/images/{filename}"
+                relative_path = self.save_image_bytes(image_data)
                 image_map[rel.rId] = relative_path
-                self.image_counter += 1
         
         return image_map

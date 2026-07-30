@@ -3,7 +3,7 @@
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 # 添加当前目录到路径以支持导入
 current_dir = Path(__file__).parent
@@ -12,7 +12,7 @@ if str(current_dir) not in sys.path:
 
 from models.document_models import ConversionConfig
 from config.settings import Settings, DEFAULT_SETTINGS
-from utils.file_utils import FileManager
+from utils.file_utils import FileManager, ImageHandler
 from core.document_parser import DocumentParser
 from core.pdf_parser import PDFParser
 from core.qa_parser import QAParser
@@ -28,15 +28,16 @@ class Word2EBookConverter:
         self.config = config
         self.settings = settings or DEFAULT_SETTINGS
         
-        # 初始化组件
+        # 初始化组件（Word / PDF 共用 ImageHandler，序號連續且不互覆）
         self.file_manager = FileManager(config.output_folder)
+        self.image_handler = ImageHandler(self.file_manager)
         self.document_parser = DocumentParser(self.settings, self.file_manager)
-        self.pdf_parser = PDFParser(self.settings)
+        self.document_parser.image_handler = self.image_handler
+        self.pdf_parser = PDFParser(self.settings, image_handler=self.image_handler)
         self.qa_parser = QAParser(self.settings)
-        extra_sources = [config.pdf_file] if config.pdf_file else []
         self.html_generator = HTMLGenerator(
             self.settings, self.file_manager, config.input_file,
-            extra_source_files=extra_sources,
+            extra_source_files=list(config.pdf_files),
             include_qa_source=bool(config.qa_folder),
         )
         self.search_generator = SearchIndexGenerator(self.settings, self.file_manager)
@@ -53,8 +54,8 @@ class Word2EBookConverter:
     def convert(self) -> None:
         """执行转换"""
         print(f"📋 开始转换：{self.config.input_file} -> {self.config.output_folder}")
-        if self.config.pdf_file:
-            print(f"   附加 PDF 來源: {self.config.pdf_file}")
+        for pdf in self.config.pdf_files:
+            print(f"   附加 PDF 來源: {pdf}")
         if self.config.qa_folder:
             print(f"   附加 QA 來源: {self.config.qa_folder}")
         if self._is_partial:
@@ -73,6 +74,8 @@ class Word2EBookConverter:
         
         # 1. 设置输出目录
         self._setup_output_directory()
+        # 部分模式保留既有圖片編號，避免覆寫 Word 抽出的圖
+        self.image_handler.seed_counter_from_disk()
         
         # 1.5. 複製favicon文件（如果有的話）
         self.html_generator.copy_favicon_after_setup()
@@ -111,7 +114,7 @@ class Word2EBookConverter:
     def _parse_chapters(self) -> list:
         """解析 Word + PDF + QA 來源並串接成單一章節清單。
 
-        完整執行時章節編號依序串接：Word → PDF → QA；各 ``--only-*`` 模式只重生
+        完整執行時章節編號依序串接：Word → PDF(s) → QA；各 ``--only-*`` 模式只重生
         對應來源，並使用各自設定的起始編號（保留其他章節頁、首頁與搜尋索引）。
         """
         chapters: list = []
@@ -122,13 +125,15 @@ class Word2EBookConverter:
             print(f"   Word 章節: {len(word_chapters)}")
             chapters.extend(word_chapters)
 
-        if self.config.pdf_file and not self.config.only_word and not self.config.only_qa:
-            # 完整執行時 PDF 章節接在 Word 章節之後；只跑 PDF 時用設定的起始編號
+        if self.config.pdf_files and not self.config.only_word and not self.config.only_qa:
+            # 完整執行時 PDF 章節接在 Word 章節之後；只跑 PDF 時用設定的起始編號，多份依序累加
             start_index = self.config.pdf_start_index if self.config.only_pdf else len(chapters)
-            print(f"📕 正在解析 PDF 答疑（章節編號從 {start_index + 1} 開始）...")
-            pdf_chapters = self.pdf_parser.parse(self.config.pdf_file, start_index=start_index)
-            print(f"   PDF 章節: {len(pdf_chapters)}")
-            chapters.extend(pdf_chapters)
+            for pdf_path in self.config.pdf_files:
+                print(f"📕 正在解析 PDF 答疑：{pdf_path.name}（章節編號從 {start_index + 1} 開始）...")
+                pdf_chapters = self.pdf_parser.parse(pdf_path, start_index=start_index)
+                print(f"   PDF 章節: {len(pdf_chapters)}")
+                chapters.extend(pdf_chapters)
+                start_index += len(pdf_chapters)
 
         if self.config.qa_folder and not self.config.only_word and not self.config.only_pdf:
             # 完整執行時 QA 章節接在 Word + PDF 章節之後；只跑 QA 時用設定的起始編號
@@ -213,6 +218,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
 示例:
   python main.py input.docx output_folder                    # 生成完整版本
   python main.py input.docx output_folder --pdf answers.pdf  # Word + PDF 月份章節（完整重建）
+  python main.py input.docx output_folder --pdf a.pdf --pdf b.pdf  # 多份 PDF 依序串接
   python main.py input.docx output_folder --pdf answers.pdf --qa qa  # Word + PDF + QA（完整重建）
   python main.py input.docx output_folder --fast            # 快速模式
   python main.py input.docx output_folder --skip-index      # 跳过搜索索引生成
@@ -224,7 +230,7 @@ def create_argument_parser() -> argparse.ArgumentParser:
   python main.py input.docx output_folder --only-word                    # 只重生 Word 章節
   python main.py - output_folder --qa qa --only-qa                       # 只重生 QA 章節（省去 Word/PDF 轉換時間）
 
-  # 問答錄 2 一鍵完整重建（Word + PDF + QA → wenda2_ebook/）：
+  # 問答錄 2 一鍵完整重建（Word + 兩份 PDF → wenda2_ebook/）：
   python3 gen_all.py
 
         """
@@ -243,8 +249,8 @@ def create_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument('--fast', action='store_true',
                        help='快速模式：跳过搜索索引生成和繁体版生成')
 
-    parser.add_argument('--pdf', dest='pdf_file', default=None,
-                       help='附加的 PDF 答疑來源，會以月份分章接在 Word 章節之後')
+    parser.add_argument('--pdf', dest='pdf_files', action='append', default=None,
+                       help='附加的 PDF 答疑來源（可重複指定多份，依序以月份分章接在 Word 章節之後）')
 
     parser.add_argument('--qa', dest='qa_folder', default=None,
                        help='附加的 QA 答疑資料夾（含 txt 文字稿），會以月份分章接在 Word/PDF 章節之後')
@@ -277,7 +283,9 @@ def main() -> None:
         print("   请选择生成至少一种版本")
         sys.exit(1)
 
-    if args.only_pdf and not args.pdf_file:
+    pdf_paths: List[Path] = [Path(p) for p in (args.pdf_files or [])]
+
+    if args.only_pdf and not pdf_paths:
         print("❌ 错误：--only-pdf 需要同時提供 --pdf <PDF 路徑>")
         sys.exit(1)
 
@@ -315,7 +323,7 @@ def main() -> None:
         generate_search=generate_search_index,
         generate_traditional=generate_traditional,
         generate_simplified=generate_simplified,
-        pdf_file=Path(args.pdf_file) if args.pdf_file else None,
+        pdf_files=pdf_paths,
         qa_folder=Path(args.qa_folder) if args.qa_folder else None,
         only_word=only_word,
         only_pdf=only_pdf,
@@ -335,12 +343,12 @@ def main() -> None:
             return
 
     # 验证 PDF 来源
-    if config.pdf_file is not None:
-        if not config.pdf_file.exists():
-            print(f"❌ 错误：PDF 文件不存在 - {config.pdf_file}")
+    for pdf_path in config.pdf_files:
+        if not pdf_path.exists():
+            print(f"❌ 错误：PDF 文件不存在 - {pdf_path}")
             return
-        if config.pdf_file.suffix.lower() != '.pdf':
-            print(f"❌ 错误：不支持的 PDF 文件格式 - {config.pdf_file.suffix}")
+        if pdf_path.suffix.lower() != '.pdf':
+            print(f"❌ 错误：不支持的 PDF 文件格式 - {pdf_path.suffix}")
             return
 
     # 验证 QA 来源

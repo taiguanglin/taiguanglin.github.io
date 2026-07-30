@@ -17,7 +17,7 @@ def test_gen_all_and_push_repo_layout():
 
 
 def test_default_commit_message():
-    assert DEFAULT_COMMIT_MESSAGE == "New txt changes to new wenda2ebook"
+    assert DEFAULT_COMMIT_MESSAGE == "Rebuild wenda2_ebook from Word + PDFs"
 
 
 def test_custom_commit_message_arg():

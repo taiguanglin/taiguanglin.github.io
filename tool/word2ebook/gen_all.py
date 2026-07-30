@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""一鍵完整重建 wenda2_ebook（Word + PDF + QA）。
+"""一鍵完整重建 wenda2_ebook（Word + 兩份 PDF）。
 
-本腳本封裝問答錄 2 電子書的預設來源路徑，修正 ``qa/`` 文字稿或更新 Word/PDF
+本腳本封裝問答錄 2 電子書的預設來源路徑，更新 Word/PDF
 來源後，在 ``tool/word2ebook/`` 目錄執行即可：
 
     python3 gen_all.py
@@ -12,7 +12,10 @@
         "../../問答錄2/wenda2_250810_截止25年5月17日答疑_含图版.docx" \\
         "../../wenda2_ebook" \\
         --pdf "../../問答錄2/2025年6月-9月答疑合并（未分类）.pdf" \\
-        --qa "../../qa"
+        --pdf "../../問答錄2/2025年11月-2026年3月答疑合并（未分类）.pdf"
+
+2025年11月–2026年3月改由第二份 PDF 產生，不再餵入 ``qa/``。
+``qa/`` 與線上校稿工具仍可獨立使用。
 """
 
 from __future__ import annotations
@@ -25,7 +28,8 @@ REPO_ROOT = TOOL_DIR.parent.parent
 
 DOCX_FILE = REPO_ROOT / "問答錄2" / "wenda2_250810_截止25年5月17日答疑_含图版.docx"
 PDF_FILE = REPO_ROOT / "問答錄2" / "2025年6月-9月答疑合并（未分类）.pdf"
-QA_FOLDER = REPO_ROOT / "qa"
+PDF_FILE_NOV_MAR = REPO_ROOT / "問答錄2" / "2025年11月-2026年3月答疑合并（未分类）.pdf"
+PDF_FILES = [PDF_FILE, PDF_FILE_NOV_MAR]
 OUTPUT_FOLDER = REPO_ROOT / "wenda2_ebook"
 
 if str(TOOL_DIR) not in sys.path:
@@ -44,8 +48,7 @@ def build_config() -> ConversionConfig:
         generate_search=True,
         generate_traditional=True,
         generate_simplified=True,
-        pdf_file=PDF_FILE,
-        qa_folder=QA_FOLDER,
+        pdf_files=list(PDF_FILES),
     )
 
 
@@ -59,28 +62,22 @@ def validate_paths() -> bool:
         print(f"❌ 不支援的 Word 格式: {DOCX_FILE.suffix}")
         ok = False
 
-    if not PDF_FILE.exists():
-        print(f"❌ PDF 來源不存在: {PDF_FILE}")
-        ok = False
-    elif PDF_FILE.suffix.lower() != ".pdf":
-        print(f"❌ 不支援的 PDF 格式: {PDF_FILE.suffix}")
-        ok = False
-
-    if not QA_FOLDER.exists():
-        print(f"❌ QA 資料夾不存在: {QA_FOLDER}")
-        ok = False
-    elif not QA_FOLDER.is_dir():
-        print(f"❌ QA 路徑不是資料夾: {QA_FOLDER}")
-        ok = False
+    for pdf in PDF_FILES:
+        if not pdf.exists():
+            print(f"❌ PDF 來源不存在: {pdf}")
+            ok = False
+        elif pdf.suffix.lower() != ".pdf":
+            print(f"❌ 不支援的 PDF 格式: {pdf.suffix}")
+            ok = False
 
     return ok
 
 
 def main() -> int:
-    print("📚 gen_all — 完整重建 wenda2_ebook（Word + PDF + QA）")
+    print("📚 gen_all — 完整重建 wenda2_ebook（Word + 兩份 PDF）")
     print(f"   Word:   {DOCX_FILE}")
-    print(f"   PDF:    {PDF_FILE}")
-    print(f"   QA:     {QA_FOLDER}")
+    for pdf in PDF_FILES:
+        print(f"   PDF:    {pdf}")
     print(f"   輸出:   {OUTPUT_FOLDER}")
     print()
 

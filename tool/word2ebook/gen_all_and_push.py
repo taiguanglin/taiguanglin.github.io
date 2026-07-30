@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """一鍵同步遠端、完整重建 wenda2_ebook 並提交、推送到遠端。
 
-修正 ``qa/`` 文字稿後，在 ``tool/word2ebook/`` 執行：
+更新 Word/PDF 來源後，在 ``tool/word2ebook/`` 執行：
 
     python3 gen_all_and_push.py
 
@@ -10,12 +10,12 @@
     git pull \\
         && ./gen_all.py \\
         && git add :/ \\
-        && git commit -m "New txt changes to new wenda2ebook" \\
+        && git commit -m "Rebuild wenda2_ebook from Word + PDFs" \\
         && git push
 
 自訂 commit 訊息：
 
-    python3 gen_all_and_push.py -m "更新 2026 年 3 月 QA 校稿"
+    python3 gen_all_and_push.py -m "更新 2025 年 11 月–2026 年 3 月 PDF"
 """
 
 from __future__ import annotations
@@ -28,7 +28,7 @@ from pathlib import Path
 TOOL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = TOOL_DIR.parent.parent
 
-DEFAULT_COMMIT_MESSAGE = "New txt changes to new wenda2ebook"
+DEFAULT_COMMIT_MESSAGE = "Rebuild wenda2_ebook from Word + PDFs"
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))

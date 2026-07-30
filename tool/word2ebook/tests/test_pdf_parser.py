@@ -15,7 +15,9 @@ import pytest
 import sys
 import types
 
-from core.pdf_parser import PDFParser, _year_to_cn, _normalize_spaces, _import_pymupdf
+from core.pdf_parser import (
+    PDFParser, _year_to_cn, _normalize_spaces, _import_pymupdf, make_img_marker,
+)
 from config.settings import DEFAULT_SETTINGS
 
 IND = 118.0   # indented (new paragraph)
@@ -177,6 +179,127 @@ class TestMonthGrouping:
         ch2 = parser.parse_lines(lines, start_index=0)[0]
         assert ch2.filename == "01.html"
         assert ch2.title == "01二〇二五年六月"
+
+    def test_cross_year_months_use_correct_year(self, parser):
+        """Nov 2025 + Jan 2026 must not both become 二〇二五年."""
+        lines = self._session(2025, 11, 10, "甲") + self._session(2026, 1, 5, "乙")
+        chapters = parser.parse_lines(lines, start_index=16)
+        assert [c.title for c in chapters] == ["17二〇二五年十一月", "18二〇二六年一月"]
+
+
+# ---------------------------------------------------------------------------
+# 官网 source switching (Nov–Mar PDF)
+# ---------------------------------------------------------------------------
+
+class TestGuanwangSource:
+    def test_guanwang_then_weixin_sections(self, parser):
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是11 月10 号，周一，先回答官网的答疑。"),
+            (CONT, "甲：2025-11-10 10:00"),
+            (IND,  "官网问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "官网回答。"),
+            (IND,  "师父说：今天是2025 年11 月10 号，回答微信公众号的问题。"),
+            (CONT, "乙：2025-11-10 20:00"),
+            (IND,  "微信问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "微信回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        texts = [t.text for t in ch.toc_items]
+        assert texts == ["2025年11月10日 官网", "2025年11月10日 微信公众号"]
+        assert "官网问题。" in ch.content
+        assert "微信问题。" in ch.content
+
+    def test_same_day_continuation_keeps_guanwang(self, parser):
+        """同一天多個「Tai 师父…日答疑」續錄不應重設成贴吧。"""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是11 月10 号，先回答官网的答疑。"),
+            (CONT, "甲：2025-11-10 10:00"),
+            (IND,  "第一段问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第一段回答。"),
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，继续回答官网的问题。"),
+            (CONT, "乙：2025-11-10 12:00"),
+            (IND,  "第二段问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二段回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        texts = [t.text for t in ch.toc_items]
+        assert texts == ["2025年11月10日 官网"]
+        assert texts.count("2025年11月10日 贴吧") == 0
+
+    def test_floor_number_opening_is_guanwang(self, parser):
+        """開場折行後才出現「N楼」時仍視為官网。"""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月11 号，周二，今天是什么？双"),
+            (CONT, "11 吧，想买东西便宜的什么节日。咱们先来回答问题，昨天回答到127 楼。"),
+            (CONT, "甲：2025-11-11 10:00"),
+            (IND,  "问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert [t.text for t in ch.toc_items] == ["2025年11月11日 官网"]
+
+    def test_unlabeled_first_opening_defaults_to_guanwang(self, parser):
+        """當天首段師父說完全未標來源時，預設官网（非贴吧）。"""
+        lines = [
+            (157.0, "Tai 师父2026 年1 月5 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年1 月5 号，周一，时间过得真快。"),
+            (CONT, "甲：2026-01-05 10:00"),
+            (IND,  "问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=18)[0]
+        assert [t.text for t in ch.toc_items] == ["2026年1月5日 官网"]
+        assert "贴吧" not in [t.text for t in ch.toc_items]
+
+    def test_bare_today_is_opening_without_shifu_prefix(self, parser):
+        """無「师父说」前綴的「今天是…先回答官网」也要切到官网。"""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月15 日答疑（文字版）"),
+            (IND,  "今天是2025 年11 月15 号周六，这个月的最后一次上线答疑，"),
+            (CONT, "先回答官网的问题。"),
+            (CONT, "winnie："),
+            (IND,  "感恩顶礼Tai 师父。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert [t.text for t in ch.toc_items] == ["2025年11月15日 官网"]
+        assert "贴吧" not in [t.text for t in ch.toc_items]
+
+
+# ---------------------------------------------------------------------------
+# PDF images (marker injected into parse_lines)
+# ---------------------------------------------------------------------------
+
+class TestPdfImages:
+    def test_image_marker_becomes_img_tag(self, parser):
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是11 月10 号，先回答官网的问题。"),
+            (CONT, "甲：2025-11-10 10:00"),
+            (IND,  "问题上文。"),
+            (CONT, make_img_marker("assets/images/image_99.png")),
+            (IND,  "问题下文。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert '<img src="assets/images/image_99.png" alt="Image">' in ch.content
+        # image sits between question content and answer
+        q_pos = ch.content.index("问题上文。")
+        img_pos = ch.content.index('<img src="assets/images/image_99.png"')
+        a_pos = ch.content.index("回答。")
+        assert q_pos < img_pos < a_pos
 
 
 # ---------------------------------------------------------------------------

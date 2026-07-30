@@ -23,6 +23,7 @@ from typing import List, Tuple, Optional, Dict
 
 from models.document_models import Chapter
 from utils.text_utils import TextProcessor, IDGenerator
+from utils.file_utils import ImageHandler
 from config.settings import Settings, Constants
 from core.chapter_finalizer import finalize_chapter
 
@@ -82,8 +83,15 @@ LONE_COLON_RE = re.compile(r"^[：:]\s*$")
 
 # 來源標籤（簡體；繁體版由 opencc 轉換，與 qa/ 資料夾的「貼吧/微信公眾號/官網」對應）
 SOURCE_TIEBA = "贴吧"
+SOURCE_GUANWANG = "官网"
 SOURCE_WEIXIN = "微信公众号"
-SOURCE_RANK = {SOURCE_TIEBA: 0, SOURCE_WEIXIN: 1}
+# 同一天：官网 / 贴吧 皆排在微信公众号之前
+SOURCE_RANK = {SOURCE_GUANWANG: 0, SOURCE_TIEBA: 0, SOURCE_WEIXIN: 1}
+
+# 行串流中的圖片標記（由 _extract_lines 寫入；parse_lines 可直接餵入以便測試）
+IMG_MARKER_PREFIX = "__PDF_IMG__:"
+# 兩邊皆小於此像素的圖視為 emoji/裝飾，丟棄
+IMG_MIN_SIDE = 80
 
 MONTH_CN = {
     1: "一月", 2: "二月", 3: "三月", 4: "四月", 5: "五月", 6: "六月",
@@ -149,13 +157,53 @@ def _is_boundary_after_sep(nxt: str) -> bool:
     return bool(m and _plausible_lone_name(_normalize_spaces(m.group("name"))))
 
 
+def _is_img_marker(text: str) -> bool:
+    return text.startswith(IMG_MARKER_PREFIX)
+
+
+def _detect_source_from_shifu(text: str) -> Optional[str]:
+    """從師父說開場文推斷來源；無法判斷時回傳 None（維持現況）。"""
+    if "公众号" in text or "微信" in text:
+        return SOURCE_WEIXIN
+    if "官网" in text or "官網" in text:
+        return SOURCE_GUANWANG
+    if "贴吧" in text or "貼吧" in text:
+        return SOURCE_TIEBA
+    if re.search(r"\d+\s*楼", text):
+        return SOURCE_GUANWANG
+    return None
+
+
+def _is_structural_line(text: str) -> bool:
+    """是否為會打斷師父說開場折行的結構行。"""
+    if _is_img_marker(text) or SEP_RE.match(text) or ANSWER_RE.match(text):
+        return True
+    if SHIFU_RE.match(text) or QTIME_RE.match(text) or NAMECOLON_RE.match(text):
+        return True
+    if text.startswith("Tai") and DAY_RE.search(text):
+        return True
+    if LONE_COLON_RE.match(text):
+        return True
+    return False
+
+
+def _img_marker_path(text: str) -> str:
+    return text[len(IMG_MARKER_PREFIX):]
+
+
+def make_img_marker(relative_path: str) -> str:
+    """測試／抽取共用的圖片標記字串。"""
+    return f"{IMG_MARKER_PREFIX}{relative_path}"
+
+
 class PDFParser:
     """PDF 答疑解析器。"""
 
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings, image_handler: Optional[ImageHandler] = None):
         self.settings = settings
         self.text_processor = TextProcessor(settings)
         self.id_generator = IDGenerator(settings)
+        self.image_handler = image_handler
 
     # ------------------------------------------------------------------ #
     # Public API                                                          #
@@ -178,7 +226,8 @@ class PDFParser:
         """核心解析（純函式，便於測試）。
 
         Args:
-            lines: ``(x0, text)`` 行清單（已含版面 x 座標）
+            lines: ``(x0, text)`` 行清單（已含版面 x 座標；圖片為
+                ``(x0, "__PDF_IMG__:assets/images/…")`` 標記）
             start_index: 既有章節數
         """
         cleaned = self._preclean(lines)
@@ -186,7 +235,7 @@ class PDFParser:
         return self._sections_to_chapters(sections, start_index)
 
     # ------------------------------------------------------------------ #
-    # 1. PyMuPDF 文字抽取（唯一依賴 fitz 的部分）                          #
+    # 1. PyMuPDF 文字 + 圖片抽取（唯一依賴 fitz 的部分）                   #
     # ------------------------------------------------------------------ #
 
     def _extract_lines(self, pdf_path: Path) -> List[Tuple[float, str]]:
@@ -194,9 +243,17 @@ class PDFParser:
 
         doc = fitz.open(pdf_path)
         out: List[Tuple[float, str]] = []
+        # 同一 xref 可能在多頁重複出現（例如共用 emoji）；只寫檔一次
+        xref_to_path: Dict[int, str] = {}
+
         for page in doc:
+            items: List[Tuple[float, float, str]] = []  # (y0, x0, text_or_marker)
+
             data = page.get_text("dict")
             for block in data.get("blocks", []):
+                if block.get("type") == 1:
+                    # 圖片 block：以 bbox 對應 page.get_images 的 xref
+                    continue
                 for ln in block.get("lines", []):
                     spans = ln.get("spans", [])
                     if not spans:
@@ -205,7 +262,47 @@ class PDFParser:
                     if not text:
                         continue
                     x0 = round(ln["bbox"][0], 1)
-                    out.append((x0, text))
+                    y0 = round(ln["bbox"][1], 1)
+                    items.append((y0, x0, text))
+
+            if self.image_handler is not None:
+                for img in page.get_images(full=True):
+                    xref = img[0]
+                    try:
+                        rects = page.get_image_rects(xref)
+                    except Exception:
+                        rects = []
+                    if not rects:
+                        # 無位置資訊則跳過（無法插入閱讀順序）
+                        continue
+                    # 取第一個出現位置
+                    rect = rects[0]
+                    w = abs(rect.width)
+                    h = abs(rect.height)
+                    # 過濾極小圖（emoji / 裝飾）；以顯示尺寸為準
+                    if w < IMG_MIN_SIDE and h < IMG_MIN_SIDE:
+                        continue
+                    # 再以原始像素過濾一次（顯示被放大的小圖）
+                    try:
+                        pix = fitz.Pixmap(doc, xref)
+                        if pix.n - pix.alpha >= 4:  # CMYK → RGB
+                            pix = fitz.Pixmap(fitz.csRGB, pix)
+                        pw, ph = pix.width, pix.height
+                        if pw < IMG_MIN_SIDE and ph < IMG_MIN_SIDE:
+                            continue
+                        if xref not in xref_to_path:
+                            # 統一存 PNG
+                            png_bytes = pix.tobytes("png")
+                            xref_to_path[xref] = self.image_handler.save_image_bytes(png_bytes)
+                        rel = xref_to_path[xref]
+                        items.append((round(rect.y0, 1), round(rect.x0, 1), make_img_marker(rel)))
+                    except Exception:
+                        continue
+
+            items.sort(key=lambda t: (t[0], t[1]))
+            for _y, x0, payload in items:
+                out.append((x0, payload))
+
         doc.close()
         return out
 
@@ -214,11 +311,16 @@ class PDFParser:
     # ------------------------------------------------------------------ #
 
     def _preclean(self, lines: List[Tuple[float, str]]) -> List[Tuple[float, str]]:
-        # 階段 0：移除頁碼／頁尾／空行
+        # 階段 0：移除頁碼／頁尾／空行（圖片標記原樣保留）
         clean: List[Tuple[float, str]] = []
         for x0, raw in lines:
             t = raw.strip()
-            if not t or PAGE_RE.match(t) or FOOTER_TEXT in t:
+            if not t:
+                continue
+            if _is_img_marker(t):
+                clean.append((x0, t))
+                continue
+            if PAGE_RE.match(t) or FOOTER_TEXT in t:
                 continue
             clean.append((x0, t))
 
@@ -232,6 +334,10 @@ class PDFParser:
         n = len(clean)
         while i < n:
             x0, t = clean[i]
+            if _is_img_marker(t):
+                stage1.append((x0, t))
+                i += 1
+                continue
             m = LEAD_DASH_RE.match(t)
             if not m:
                 stage1.append((x0, t))
@@ -268,6 +374,10 @@ class PDFParser:
         i = 0
         while i < len(stage1):
             x0, t = stage1[i]
+            if _is_img_marker(t):
+                stageL.append((x0, t))
+                i += 1
+                continue
             if (
                 i + 1 < len(stage1)
                 and LONE_COLON_RE.match(stage1[i + 1][1])
@@ -284,6 +394,10 @@ class PDFParser:
         i = 0
         while i < len(stageL):
             x0, t = stageL[i]
+            if _is_img_marker(t):
+                merged.append((x0, t))
+                i += 1
+                continue
             if (
                 i + 1 < len(stageL)
                 and NAMECOLON_RE.match(t)
@@ -302,6 +416,9 @@ class PDFParser:
         # 若其後不是新提問者就視為內文裝飾，丟棄以免把同一個問題切開。
         result: List[Tuple[float, str]] = []
         for i, (x0, t) in enumerate(merged):
+            if _is_img_marker(t):
+                result.append((x0, t))
+                continue
             if SEP_RE.match(t) and x0 >= INDENT_THRESHOLD:
                 nxt = merged[i + 1][1] if i + 1 < len(merged) else ""
                 if not _is_boundary_after_sep(nxt):
@@ -349,6 +466,11 @@ class PDFParser:
                 return
             if state["section"] is not None and state["section"]["key"] == key:
                 return
+            # 同一 (日期, 來源) 若先前已建過（來源切走又切回），接續該區段，避免重複 h2
+            for sec in sections:
+                if sec["key"] == key:
+                    state["section"] = sec
+                    return
             year, month, day = state["date"]
             h2_text = f"{year}年{month}月{day}日 {state['source']}"
             anchor = self.id_generator.generate_heading_id(h2_text)
@@ -380,33 +502,97 @@ class PDFParser:
             else:
                 state["para"].append(text)
 
-        for x0, text in lines:
+        i = 0
+        n_lines = len(lines)
+        while i < n_lines:
+            x0, text = lines[i]
+
+            # 圖片：結束當前卡片後以獨立 block 插入（與 Word 一致）
+            if _is_img_marker(text):
+                finish_card()
+                ensure_section()
+                if state["section"] is not None:
+                    rel = _img_marker_path(text)
+                    state["section"]["blocks"].append(
+                        f'<img src="{rel}" alt="Image">'
+                    )
+                i += 1
+                continue
+
             indented = x0 > INDENT_THRESHOLD
 
-            # 新的一天
+            # 新的一天（同一日期的續錄音訊不重設來源，避免被誤標成贴吧）
             if text.startswith("Tai"):
                 m = DAY_RE.search(text)
                 if m:
                     finish_card()
-                    state["date"] = (int(m.group(1)), int(m.group(2)), int(m.group(3)))
-                    state["source"] = SOURCE_TIEBA
+                    new_date = (int(m.group(1)), int(m.group(2)), int(m.group(3)))
+                    if state["date"] != new_date:
+                        state["source"] = SOURCE_TIEBA
+                    state["date"] = new_date
                     state["questioner"] = None
                     state["qtime"] = None
+                    i += 1
                     continue
 
             # 分隔線（黏住的已在 preclean 拆出）
             if SEP_RE.match(text):
                 finish_card()
+                i += 1
                 continue
 
-            # 師父說（敘述 + 來源切換訊號）
+            # 無「师父说」前綴的開場（如 Nov 15：直接「今天是…先回答官网」）
+            if (
+                state["card"] is None
+                and state["questioner"] is None
+                and re.match(r"^今天是", text)
+            ):
+                blob_parts = [text]
+                j = i + 1
+                while j < n_lines:
+                    _x1, t1 = lines[j]
+                    if _is_structural_line(t1):
+                        break
+                    blob_parts.append(t1)
+                    j += 1
+                blob = "".join(blob_parts)
+                detected = _detect_source_from_shifu(blob)
+                if detected is not None:
+                    state["source"] = detected
+                elif state["source"] == SOURCE_TIEBA and not any(
+                    s["date"] == state["date"] for s in sections
+                ):
+                    state["source"] = SOURCE_GUANWANG
+                start_card("paragraph")
+                add_line(blob, indented=True)
+                i = j
+                continue
+
+            # 師父說（敘述 + 來源切換訊號）；開場常折行，先併後續延續行再判斷來源
             if SHIFU_RE.match(text):
-                if "公众号" in text or "微信" in text:
-                    state["source"] = SOURCE_WEIXIN
-                content = re.sub(r"^师父说[：:]\s*", "", text)
+                blob_parts = [text]
+                j = i + 1
+                while j < n_lines:
+                    _x1, t1 = lines[j]
+                    if _is_structural_line(t1):
+                        break
+                    blob_parts.append(t1)
+                    j += 1
+                blob = "".join(blob_parts)
+                detected = _detect_source_from_shifu(blob)
+                if detected is not None:
+                    state["source"] = detected
+                elif state["source"] == SOURCE_TIEBA and not any(
+                    s["date"] == state["date"] for s in sections
+                ):
+                    # 當天第一段師父說未標來源（Nov–Mar 常見）→ 官网；
+                    # Jun–Sep 開場會寫明「贴吧」，不會走到這裡。
+                    state["source"] = SOURCE_GUANWANG
+                content = re.sub(r"^师父说[：:]\s*", "", blob)
                 start_card("paragraph")
                 state["card"]["shifu"] = True
                 add_line(content, indented=True)
+                i = j
                 continue
 
             # 回答
@@ -415,6 +601,7 @@ class PDFParser:
                 start_card("answer")
                 if after:
                     add_line(after, indented=True)
+                i += 1
                 continue
 
             # 提問者（人名 + 時間）
@@ -423,6 +610,7 @@ class PDFParser:
                 state["questioner"] = _normalize_spaces(qm.group("name"))
                 state["qtime"] = qm.group("time").strip()
                 start_card("question", state["questioner"], state["qtime"])
+                i += 1
                 continue
 
             # 提問者（人名，無時間）：很多貼吧/公眾號的留言沒有時間戳，
@@ -444,6 +632,7 @@ class PDFParser:
                             state["questioner"] = name
                             state["qtime"] = ""
                             start_card("question", name, "")
+                            i += 1
                             continue
 
             # 編號子問題
@@ -461,10 +650,12 @@ class PDFParser:
                     start_card("question", state["questioner"], state["qtime"])
                     add_line(text, indented=True)
                     state["card"]["numbered"] = True
+                i += 1
                 continue
 
             # 一般內文（縮排=新段落；否則接續）
             add_line(text, indented)
+            i += 1
 
         finish_card()
         return sections
@@ -522,17 +713,17 @@ class PDFParser:
         if not sections:
             return []
 
-        # 依月份分組
-        by_month: Dict[int, List[Dict]] = {}
-        year = sections[0]["date"][0]
+        # 依 (年, 月) 分組（跨年度 PDF 如 2025-11～2026-03 必須分開）
+        by_month: Dict[Tuple[int, int], List[Dict]] = {}
         for sec in sections:
-            by_month.setdefault(sec["date"][1], []).append(sec)
+            year, month, _day = sec["date"]
+            by_month.setdefault((year, month), []).append(sec)
 
         chapters: List[Chapter] = []
-        for offset, month in enumerate(sorted(by_month.keys())):
+        for offset, (year, month) in enumerate(sorted(by_month.keys())):
             index = start_index + 1 + offset
-            month_sections = by_month[month]
-            # 同一月份內依（日期, 來源）排序，使閱讀順序為時間先後、貼吧先於公眾號
+            month_sections = by_month[(year, month)]
+            # 同一月份內依（日期, 來源）排序：時間先後；官网/贴吧 先於 微信公众号
             month_sections.sort(key=lambda s: (s["date"], SOURCE_RANK.get(s["source"], 9)))
 
             title = f"{index:02d}{_year_to_cn(year)}年{MONTH_CN.get(month, f'{month}月')}"

@@ -7,30 +7,29 @@
 
 ## What this project does
 
-Converts a `.docx` file (and, optionally, a monthly-Q&A `.pdf` and/or a `qa/`
-folder of AI-transcribed Q&A text files) into a static HTML ebook with:
+Converts a `.docx` file (and, optionally, one or more monthly-Q&A `.pdf` files
+and/or a `qa/` folder of AI-transcribed Q&A text files) into a static HTML ebook with:
 - Bilingual output (Simplified + Traditional Chinese)
 - Full-text search via [MiniSearch](https://lucaong.github.io/minisearch/) + jieba WASM
 - Collapsible TOC, bookmarks, reading settings, floating controls
 - All output files are plain HTML/CSS/JS — no runtime server needed
 
-Entry point: `python main.py <input.docx> <output_dir> [--pdf <answers.pdf>] [--qa <qa_folder>]`
+Entry point: `python main.py <input.docx> <output_dir> [--pdf <a.pdf>] [--pdf <b.pdf>] [--qa <qa_folder>]`
 
 **問答錄 2 一鍵完整重建**：在 `tool/word2ebook/` 執行 `python3 gen_all.py`（Word +
-PDF + QA → `wenda2_ebook/`，含首頁與搜尋索引）。修正 `qa/` 文字稿後可直接重跑。
+Jun–Sep PDF + Nov–Mar PDF → `wenda2_ebook/`，含首頁與搜尋索引）。2025年11月–2026年3月
+改由第二份 PDF 產生，不再餵入 `qa/`。
 
 **重建並推送**：執行 `python3 gen_all_and_push.py` 會先 `git pull` 同步遠端到本地，
 再跑 `gen_all.py`，最後以 `git add :/`、`git commit`、`git push` 推上遠端（預設
-commit 訊息：`New txt changes to new wenda2ebook`）。
+commit 訊息：`Rebuild wenda2_ebook from Word + PDFs`）。
 
-A `--pdf` source is parsed into month-based chapters (date + source sub-headings)
-and appended after the Word chapters. A `--qa` folder is likewise parsed into
-month-based chapters appended after the PDF chapters, but with two extra,
-QA-only features: a per-segment audio player (cued `.opus` clip) and a
-proofreading-status badge. Dev-only `--only-word` / `--only-pdf` / `--only-qa`
-modes regenerate just one source's chapter pages (skipping index + search
-rebuild); `--only-qa` does not need a `.docx` (relaxed validation) so QA layout
-can be previewed without the Word/PDF parse cost.
+Each `--pdf` is parsed into month-based chapters (date + source sub-headings,
+including `官网` / `贴吧` / `微信公众号`, plus embedded images) and appended after
+the Word chapters in flag order. A `--qa` folder can still be appended after the
+PDFs with audio/proofreading UI. Dev-only `--only-word` / `--only-pdf` /
+`--only-qa` modes regenerate just one source's chapter pages (skipping index +
+search rebuild).
 
 ---
 
@@ -60,14 +59,14 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 
 | File | Responsibility | Lines |
 |------|---------------|-------|
-| `main.py` | CLI entry, `Word2EBookConverter` orchestrator; `_parse_chapters` concatenates Word + PDF + QA; `--pdf`/`--qa`/`--only-word`/`--only-pdf`/`--only-qa` flags | ~340 |
-| `gen_all.py` | One-shot full rebuild for 問答錄 2: Word docx + PDF + `qa/` → `wenda2_ebook/` (simplified + traditional + search index); run after editing QA transcripts | ~100 |
-| `gen_all_and_push.py` | `git pull` → `gen_all.py` → `git add :/` → `git commit` → `git push` from repo root; default message `New txt changes to new wenda2ebook`; skips commit/push if no changes | ~140 |
+| `main.py` | CLI entry, `Word2EBookConverter` orchestrator; `_parse_chapters` concatenates Word + PDF(s) + QA; repeatable `--pdf`/`--qa`/`--only-*` flags; shared `ImageHandler` | ~390 |
+| `gen_all.py` | One-shot full rebuild for 問答錄 2: Word + Jun–Sep PDF + Nov–Mar PDF → `wenda2_ebook/` (no `qa/`) | ~110 |
+| `gen_all_and_push.py` | `git pull` → `gen_all.py` → `git add :/` → `git commit` → `git push` from repo root; default message `Rebuild wenda2_ebook from Word + PDFs` | ~140 |
 | `run.py` | Thin launcher that fixes import path and delegates to `main.main()` | ~20 |
-| `models/document_models.py` | Dataclasses: `Chapter` (incl. `is_qa`), `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` (incl. `pdf_file`, `qa_folder`, `only_word`, `only_pdf`, `only_qa`, `pdf_start_index`, `qa_start_index`) | ~200 |
+| `models/document_models.py` | Dataclasses: `Chapter` (incl. `is_qa`), `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` (incl. `pdf_files`, legacy `pdf_file`, `qa_folder`, `only_*`, start indexes) | ~210 |
 | `config/settings.py` | `Settings` dataclass, `Constants` (CDN URLs, filenames, search weights, answerer names, heading ranges, `QA_AUDIO_BASE`, `QA_INDEX_LINK`) | ~135 |
 | `core/document_parser.py` | Parses `.docx` → `List[Chapter]`; builds HTML content; delegates chapter finalize to `chapter_finalizer` | ~300 |
-| `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` sections); x0-indent paragraph reflow; detects timestamped **and** no-time questioners (separator- or 师父说-introduced); shares `chapter_finalizer` | ~415 |
+| `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` incl. 官网/贴吧/微信); cross-year `(year,month)` grouping; image extract via `ImageHandler`; shares `chapter_finalizer` | ~620 |
 | `core/qa_parser.py` | Parses `qa/*.txt` (AI transcripts) → month-based `List[Chapter]` across years; filename→date/source; per-segment `qa-meta-bar` (play button with percent-encoded `data-audio` + `{{qa_proofread}}`/`{{qa_unproofread}}` badge); shares `chapter_finalizer` | ~415 |
 | `core/chapter_finalizer.py` | Shared block→`Chapter` finalize (QA merge, back-to-top, QA counts, chapter TOC) used by the Word, PDF, and QA parsers | ~190 |
 | `core/content_processor.py` | Extracts search items from HTML; assigns element IDs | 216 |

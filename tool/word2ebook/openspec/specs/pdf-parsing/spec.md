@@ -191,8 +191,30 @@ its tail does not leak as stray paragraphs.
 
 ### Requirement: Source Switching
 A new day SHALL reset the current source to `贴吧`. A `师父说` line mentioning
-`公众号` or `微信` SHALL switch the current source to `微信公众号`. Closing lines
-(`…回答到这里`) SHALL NOT change the source.
+`官网` or `官網` SHALL switch the current source to `官网`. A `师父说` line
+mentioning `公众号` or `微信` SHALL switch the current source to `微信公众号`
+(微信 takes precedence if both appear). Closing lines (`…回答到这里`) SHALL NOT
+change the source. On the same day, `官网` / `贴吧` sections SHALL sort before
+`微信公众号`.
+
+#### Scenario: 官网 then 微信公众号
+- GIVEN a day whose opening `师父说` mentions 官网, then a later `师父说` mentions
+  微信公众号
+- WHEN parsed
+- THEN `toc_items` SHALL include `YYYY年M月D日 官网` then `YYYY年M月D日 微信公众号`
+
+### Requirement: Cross-Year Month Chapters
+When a PDF spans multiple calendar years (e.g. Nov 2025–Mar 2026), the parser
+SHALL group sections by `(year, month)` so January 2026 becomes
+`NN二〇二六年一月`, not `二〇二五年一月`.
+
+### Requirement: Embedded Images
+When an `ImageHandler` is supplied, the parser SHALL extract embedded PDF images
+in reading order (by page y then x), skip images whose display width and height
+are both below 80px, write each kept image under `assets/images/image_N.png`,
+and insert `<img src="assets/images/…" alt="Image">` as an independent content
+block (not inside Q/A meta). Unit tests MAY inject `__PDF_IMG__:…` markers into
+`parse_lines` without PyMuPDF.
 
 ### Requirement: Shared Finalizer
 The parser SHALL build each chapter via `core.chapter_finalizer.finalize_chapter`,

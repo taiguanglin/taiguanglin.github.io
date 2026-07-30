@@ -64,8 +64,9 @@ python main.py input.docx output_folder --skip-index
 # 跳过繁体版
 python main.py input.docx output_folder --skip-traditional
 
-# Word + 附加 PDF 答疑（依月份分章，接在 Word 章節之後）
+# Word + 附加 PDF 答疑（依月份分章，接在 Word 章節之後；可重複 --pdf）
 python main.py input.docx output_folder --pdf answers.pdf
+python main.py input.docx output_folder --pdf a.pdf --pdf b.pdf
 
 # 開發用部分模式（略過首頁與搜尋索引，快速預覽版型）
 python main.py input.docx output_folder --pdf answers.pdf --only-pdf  # 只重生 PDF 章節
@@ -73,26 +74,28 @@ python main.py input.docx output_folder --only-word                   # 只重�
 ```
 
 > `--pdf` 會把「每月答疑合併 PDF」解析成月份章節（章節標題如 `13二〇二五年六月`），
-> 章節內以「日期 + 來源」（例如 `2025年6月9日 貼吧`）作為第二層目錄，版型、計數與
-> 全文搜尋皆與 Word 章節一致。部分模式僅供開發快速預覽，最終發佈請執行一次完整建置。
+> 章節內以「日期 + 來源」（例如 `2025年6月9日 贴吧` / `2025年11月10日 官网`）作為第二層目錄，
+> 並抽出嵌入圖片；版型、計數與全文搜尋皆與 Word 章節一致。可重複指定多份 PDF。
+> 部分模式僅供開發快速預覽，最終發佈請執行一次完整建置。
 
 ### 問答錄 2 一鍵完整重建
 
-修正 `qa/` 文字稿、或更新 Word/PDF 來源後，在 `tool/word2ebook/` 執行：
+更新 Word/PDF 來源後，在 `tool/word2ebook/` 執行：
 
 ```bash
 cd tool/word2ebook
 python3 gen_all.py
 ```
 
-此腳本會完整重建 `wenda2_ebook/`（Word 章節 + PDF 月份章節 + QA 月份章節，含簡繁雙語、
-首頁目錄與搜尋索引）。預設路徑（皆相對於 repo 根目錄）：
+此腳本會完整重建 `wenda2_ebook/`（Word 章節 + 兩份 PDF 月份章節，含簡繁雙語、
+首頁目錄與搜尋索引）。2025年11月–2026年3月改由第二份 PDF 產生，不再餵入 `qa/`。
+預設路徑（皆相對於 repo 根目錄）：
 
 | 來源 | 路徑 |
 |------|------|
 | Word | `問答錄2/wenda2_250810_截止25年5月17日答疑_含图版.docx` |
 | PDF | `問答錄2/2025年6月-9月答疑合并（未分类）.pdf` |
-| QA | `qa/` |
+| PDF | `問答錄2/2025年11月-2026年3月答疑合并（未分类）.pdf` |
 | 輸出 | `wenda2_ebook/` |
 
 ### 重建並推送到 GitHub

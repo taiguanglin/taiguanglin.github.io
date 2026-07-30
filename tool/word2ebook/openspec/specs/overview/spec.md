@@ -5,10 +5,12 @@
 word2ebook is a Python CLI tool that converts a single `.docx` input file into a
 collection of HTML pages forming a navigable ebook. The output includes a landing
 index page, per-chapter pages, JSON search indexes, and static assets (CSS/JS).
-An optional `.pdf` source can be appended as additional month-based chapters
-(see `pdf-parsing/spec.md`), and an optional `qa/` folder of AI-transcribed Q&A
-text files can be appended as further month-based chapters with per-segment audio
-playback and proofreading-status badges (see `qa-parsing/spec.md`).
+One or more optional `.pdf` sources can be appended as additional month-based
+chapters (see `pdf-parsing/spec.md`); `--pdf` may be repeated. An optional `qa/`
+folder of AI-transcribed Q&A text files can still be appended as further
+month-based chapters with per-segment audio playback and proofreading-status
+badges (see `qa-parsing/spec.md`). For 問答錄 2, Nov 2025–Mar 2026 comes from a
+second PDF, not from `qa/`.
 
 ## Requirements
 
@@ -16,8 +18,8 @@ playback and proofreading-status badges (see `qa-parsing/spec.md`).
 The system SHALL expose a command-line interface via `main.py` that accepts
 `input_file` (positional), `output_folder` (positional), and optional flags
 `--skip-index`, `--skip-traditional`, `--skip-simplified`, `--fast`,
-`--pdf <path>`, `--qa <folder>`, `--only-word`, `--only-pdf`, `--only-qa`,
-`--pdf-start-index <int>`, and `--qa-start-index <int>`.
+`--pdf <path>` (repeatable), `--qa <folder>`, `--only-word`, `--only-pdf`,
+`--only-qa`, `--pdf-start-index <int>`, and `--qa-start-index <int>`.
 
 #### Scenario: Successful conversion
 - GIVEN a valid `.docx` file at `input_file`
@@ -50,7 +52,7 @@ The system SHALL execute these steps in order:
 1. Set up / clean the output directory
 2. Copy favicon if present
 3. Parse the source(s) into a single `List[Chapter]` — Word chapters first, then
-   PDF month-chapters (if `--pdf` is supplied), then QA month-chapters (if `--qa`
+   each `--pdf` month-chapter batch in order, then QA month-chapters (if `--qa`
    is supplied)
 4. Generate HTML pages for each chapter (simplified and/or traditional)
 5. Generate HTML index pages
@@ -62,17 +64,24 @@ When `--fast` is passed, the system SHALL skip both the search index generation
 and the traditional Chinese version.
 
 ### Requirement: PDF Source Append
-When `--pdf <path>` is supplied (without a partial mode), the system SHALL parse
-the PDF into month-based chapters and append them after the Word chapters, with
-chapter indices continuing from the Word chapter count. The homepage footer
-`Source:` line SHALL list both the Word filename and the PDF filename, joined by
-`、`.
+When one or more `--pdf <path>` flags are supplied (without a partial mode), the
+system SHALL parse each PDF into month-based chapters in flag order and append
+them after the Word chapters, with chapter indices continuing from the running
+chapter count (each subsequent PDF starts after the previous PDF's months). The
+homepage footer `Source:` line SHALL list the Word filename and every PDF
+filename, joined by `、`, each as a downloadable link.
 
 #### Scenario: Word plus PDF full build
 - GIVEN a valid `.docx` and a valid `.pdf`
 - WHEN the user runs `python main.py book.docx out/ --pdf answers.pdf`
 - THEN the output SHALL contain the Word chapters followed by the PDF
   month-chapters, a merged index TOC, and search indexes covering all chapters
+
+#### Scenario: Multiple PDFs
+- GIVEN a valid `.docx` and two valid `.pdf` files
+- WHEN the user runs `python main.py book.docx out/ --pdf a.pdf --pdf b.pdf`
+- THEN chapters from `a.pdf` SHALL precede chapters from `b.pdf`, and the
+  homepage `Source:` line SHALL list Word, `a.pdf`, and `b.pdf`
 
 #### Scenario: Missing or invalid PDF
 - GIVEN `--pdf` points to a non-existent file or a non-`.pdf` extension
@@ -138,15 +147,15 @@ the Word/PDF parse cost.
 The repository SHALL ship `gen_all.py` in the `tool/word2ebook/` directory as a
 one-command full rebuild for the 問答錄 2 ebook. The script SHALL resolve all
 source and output paths relative to the repository root (not the caller's cwd),
-validate that the Word, PDF, and QA sources exist, then invoke the same full
-conversion pipeline as `main.py` with Word + PDF + QA (simplified + traditional
-+ search index, no partial mode).
+validate that the Word and both PDF sources exist, then invoke the same full
+conversion pipeline as `main.py` with Word + Jun–Sep PDF + Nov–Mar PDF
+(simplified + traditional + search index, no partial mode, no `qa/`).
 
-#### Scenario: Full rebuild after QA transcript edits
-- GIVEN the default repo layout with `問答錄2/*.docx`, `問答錄2/*.pdf`, and `qa/`
+#### Scenario: Full rebuild from Word and two PDFs
+- GIVEN the default repo layout with `問答錄2/*.docx` and both monthly-Q&A PDFs
 - WHEN the user runs `python3 gen_all.py` from `tool/word2ebook/`
-- THEN the system SHALL write a complete `wenda2_ebook/` output (all chapter
-  pages, index pages, search indexes, and static assets)
+- THEN the system SHALL write a complete `wenda2_ebook/` output (chapters 01–21,
+  index pages, search indexes, and static assets) without a QA source link
 
 #### Scenario: Missing source in gen_all
 - GIVEN one of the hard-coded source paths does not exist

@@ -52,7 +52,14 @@ class TestCreateArgumentParser:
     def test_pdf_arg(self):
         parser = create_argument_parser()
         args = parser.parse_args(["in.docx", "out/", "--pdf", "answers.pdf"])
-        assert args.pdf_file == "answers.pdf"
+        assert args.pdf_files == ["answers.pdf"]
+
+    def test_pdf_arg_repeatable(self):
+        parser = create_argument_parser()
+        args = parser.parse_args([
+            "in.docx", "out/", "--pdf", "a.pdf", "--pdf", "b.pdf",
+        ])
+        assert args.pdf_files == ["a.pdf", "b.pdf"]
 
     def test_only_word_and_only_pdf_flags(self):
         parser = create_argument_parser()
@@ -209,7 +216,7 @@ class TestWord2EBookConverter:
         cfg = ConversionConfig(
             input_file=mock_input_file,
             output_folder=tmp_path / "output",
-            pdf_file=pdf,
+            pdf_files=[pdf],
         )
         converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
         word_chs = [Chapter(title=f"{i:02d}", filename=f"{i:02d}.html") for i in range(1, 13)]
@@ -227,6 +234,41 @@ class TestWord2EBookConverter:
         assert mock_pdf.call_args.kwargs.get("start_index") == 12
         assert len(chapters) == 13
 
+    def test_parse_chapters_concatenates_multiple_pdfs(self, mock_input_file, tmp_path):
+        pdf1 = tmp_path / "a.pdf"
+        pdf2 = tmp_path / "b.pdf"
+        pdf1.touch()
+        pdf2.touch()
+        cfg = ConversionConfig(
+            input_file=mock_input_file,
+            output_folder=tmp_path / "output",
+            pdf_files=[pdf1, pdf2],
+        )
+        converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
+        word_chs = [Chapter(title=f"{i:02d}", filename=f"{i:02d}.html") for i in range(1, 13)]
+        pdf1_chs = [Chapter(title=f"{i}", filename=f"{i:02d}.html") for i in range(13, 17)]
+        pdf2_chs = [Chapter(title=f"{i}", filename=f"{i:02d}.html") for i in range(17, 22)]
+
+        def parse_side_effect(path, start_index=12):
+            if Path(path) == pdf1:
+                assert start_index == 12
+                return pdf1_chs
+            assert Path(path) == pdf2
+            assert start_index == 16
+            return pdf2_chs
+
+        with (
+            patch.object(converter.document_parser, "parse_document",
+                         return_value=(word_chs, {})),
+            patch.object(converter.pdf_parser, "parse", side_effect=parse_side_effect) as mock_pdf,
+        ):
+            chapters = converter._parse_chapters()
+
+        assert mock_pdf.call_count == 2
+        assert len(chapters) == 21
+        assert converter.html_generator.extra_source_files == [pdf1, pdf2]
+        assert converter.html_generator.include_qa_source is False
+
     def test_parse_chapters_concatenates_word_pdf_and_qa(self, mock_input_file, tmp_path):
         pdf = tmp_path / "answers.pdf"
         pdf.touch()
@@ -235,7 +277,7 @@ class TestWord2EBookConverter:
         cfg = ConversionConfig(
             input_file=mock_input_file,
             output_folder=tmp_path / "output",
-            pdf_file=pdf,
+            pdf_files=[pdf],
             qa_folder=qa_dir,
         )
         converter = Word2EBookConverter(cfg, DEFAULT_SETTINGS)
@@ -302,7 +344,7 @@ class TestWord2EBookConverter:
         cfg = ConversionConfig(
             input_file=mock_input_file,
             output_folder=tmp_path / "output",
-            pdf_file=pdf,
+            pdf_files=[pdf],
             only_pdf=True,
             generate_search=False,
             pdf_start_index=12,

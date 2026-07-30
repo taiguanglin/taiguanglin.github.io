@@ -152,7 +152,9 @@ class ConversionConfig:
 
     book_title: Optional[str] = None
 
-    # PDF 來源（可選）：把 PDF 答疑附加為新的月份章節
+    # PDF 來源（可選）：把一份或多份 PDF 答疑依序附加為月份章節
+    pdf_files: List[Path] = field(default_factory=list)
+    # 單一 PDF 相容欄位（會併入 pdf_files；新程式請用 pdf_files）
     pdf_file: Optional[Path] = None
     # QA 來源（可選）：把 qa/ 資料夾的 txt 答疑附加為新的月份章節（含音檔與校稿狀態）
     qa_folder: Optional[Path] = None
@@ -172,10 +174,17 @@ class ConversionConfig:
             self.input_file = Path(self.input_file)
         if not isinstance(self.output_folder, Path):
             self.output_folder = Path(self.output_folder)
-        if self.pdf_file is not None and not isinstance(self.pdf_file, Path):
-            self.pdf_file = Path(self.pdf_file)
         if self.qa_folder is not None and not isinstance(self.qa_folder, Path):
             self.qa_folder = Path(self.qa_folder)
+
+        # 合併 pdf_file + pdf_files（去重、保序）
+        resolved: List[Path] = []
+        for raw in ([self.pdf_file] if self.pdf_file is not None else []) + list(self.pdf_files or []):
+            path = Path(raw) if not isinstance(raw, Path) else raw
+            if path not in resolved:
+                resolved.append(path)
+        self.pdf_files = resolved
+        self.pdf_file = self.pdf_files[0] if self.pdf_files else None
         
         # 如果没有指定书名，从文件名获取
         if self.book_title is None:
