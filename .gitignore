@@ -5,3 +5,6 @@ classify/qa_classification_results*.json
 classify/qa_classification.log
 問答錄2/~$*.xlsx
 tool/stories2html/build/
+
+# Local symlink to external audio library (/Users/paul/tai/audio); do not commit.
+/audio

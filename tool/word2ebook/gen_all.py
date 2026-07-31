@@ -16,6 +16,9 @@
 
 2025年11月–2026年3月改由第二份 PDF 產生，不再餵入 ``qa/``。
 ``qa/`` 與線上校稿工具仍可獨立使用。
+
+PDF 章節的逐段音檔播放鈕由 ``data/audio_map/*.json`` 在建置時注入
+（見 ``tool/pdf_audio_map/`` 與站台 ``/audio_map/`` 微調工具）。
 """
 
 from __future__ import annotations

@@ -37,6 +37,7 @@ from models.document_models import Chapter
 from utils.text_utils import IDGenerator
 from config.settings import Settings, Constants
 from core.chapter_finalizer import finalize_chapter
+from core.qa_play_markup import render_opening_meta_bar, render_play, render_segment_meta_bar
 
 
 # ---------------------------------------------------------------------------
@@ -288,10 +289,9 @@ class QAParser:
 
         # 開場白（含播放鈕，但無校稿徽章）
         if opening["range"] or opening["paras"]:
-            blocks.append(
-                f'<div class="qa-meta-bar qa-meta-bar--opening">'
-                f'{self._render_play(opening["range"], audio_rel)}</div>'
-            )
+            bar = render_opening_meta_bar(opening["range"], audio_rel, hide_if_missing=False)
+            if bar:
+                blocks.append(bar)
             for p in opening["paras"]:
                 blocks.append(f'<p class="qa-opening">{escape(p)}</p>')
 
@@ -314,25 +314,10 @@ class QAParser:
         }
 
     def _render_play(self, range_tuple, audio_rel: str) -> str:
-        if not range_tuple:
-            return '<span class="qa-play qa-play--disabled" aria-disabled="true">▶</span>'
-        start, end, label = range_tuple
-        return (
-            f'<button class="qa-play" type="button" '
-            f'data-audio="{escape(audio_rel, quote=True)}" '
-            f'data-start="{start:.3f}" data-end="{end:.3f}" '
-            f'data-label="{escape(label, quote=True)}">'
-            f'<span class="qa-play-icon">▶</span>'
-            f'<span class="qa-play-label">{escape(label)}</span>'
-            f"</button>"
-        )
+        return render_play(range_tuple, audio_rel, disabled_if_missing=True) or ""
 
     def _render_meta_bar(self, seg: Dict, audio_rel: str) -> str:
         number = seg.get("number") or ""
-        number_html = (
-            f'<span class="qa-number">{escape(number)}.</span>' if number else ""
-        )
-        play = self._render_play(seg.get("range"), audio_rel)
         edited = seg.get("edited") or ""
         if edited:
             status = (
@@ -344,7 +329,13 @@ class QAParser:
                 f'<span class="qa-status qa-status--ai">'
                 f"{UNPROOFREAD_PLACEHOLDER}</span>"
             )
-        return f'<div class="qa-meta-bar">{number_html}{play}{status}</div>'
+        return render_segment_meta_bar(
+            number,
+            seg.get("range"),
+            audio_rel,
+            hide_if_missing=False,
+            status_html=status,
+        )
 
     def _render_question(self, seg: Dict) -> str:
         paras = seg.get("question") or []

@@ -41,7 +41,13 @@ main.py
     1. _setup_output_directory()          → FileManager cleans/creates output dir
     2. copy_favicon_after_setup()         → FaviconManager copies favicon
     3. _parse_chapters()                  → DocumentParser (.docx) + PDFParser (.pdf) + QAParser (qa/) → List[Chapter]
+    3.5 inject_chapters()                 → PDF audio_map → `.qa-play` on in-memory Chapter.content (no-op if maps absent)
     4. HTMLGenerator.generate_chapter_pages()   → writes chapter .html files
+
+**Audio play buttons are never hand-patched under `wenda2_ebook/`.**  
+Mapping JSON lives in `data/audio_map/` (built by `tool/pdf_audio_map/`).  
+Only `inject_chapters()` inside this converter inserts `.qa-play`; then step 4
+writes the ebook. Regenerate with `gen_all.py` / `main.py` after mapping changes.
     5. HTMLGenerator.generate_index_pages()     → writes index.html / index_trad.html  (skipped in partial mode)
     6. SearchIndexGenerator.generate_search_indexes()  → writes search_index*.json     (skipped in partial mode)
     7. _generate_static_assets()          → copies CSS/JS bundle to output/assets/
@@ -68,6 +74,8 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 | `core/document_parser.py` | Parses `.docx` → `List[Chapter]`; builds HTML content; delegates chapter finalize to `chapter_finalizer` | ~300 |
 | `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` incl. 官网/贴吧/微信); cross-year `(year,month)` grouping; image extract via `ImageHandler`; shares `chapter_finalizer` | ~620 |
 | `core/qa_parser.py` | Parses `qa/*.txt` (AI transcripts) → month-based `List[Chapter]` across years; filename→date/source; per-segment `qa-meta-bar` (play button with percent-encoded `data-audio` + `{{qa_proofread}}`/`{{qa_unproofread}}` badge); shares `chapter_finalizer` | ~415 |
+| `core/qa_play_markup.py` | Shared `.qa-play` / meta-bar HTML helpers used by QA parser and PDF audio-map injector | ~80 |
+| `core/audio_map_injector.py` | Injects play buttons into PDF chapter HTML from `data/audio_map/*.json` (hide when missing) | ~160 |
 | `core/chapter_finalizer.py` | Shared block→`Chapter` finalize (QA merge, back-to-top, QA counts, chapter TOC) used by the Word, PDF, and QA parsers | ~190 |
 | `core/content_processor.py` | Extracts search items from HTML; assigns element IDs | 216 |
 | `generators/html_generator.py` | `HTMLGenerator` — renders chapter/index pages via `I18nTemplateManager`; simplified/traditional variants unified via `_generate_chapters`/`_generate_index`; QA banner + `{{qa_*}}` placeholder substitution + homepage QA source link | ~250 |
@@ -148,6 +156,7 @@ Behavioral specs live in `openspec/specs/<domain>/spec.md`. They define **what t
 | `overview/spec.md` | CLI args, pipeline order, fast/skip modes, PDF + QA append, partial dev modes |
 | `document-parsing/spec.md` | `.docx` parsing rules, QA merging |
 | `pdf-parsing/spec.md` | `.pdf` → month chapters, date+source headings, reflow, source switching |
+| `pdf-audio-map/spec.md` | PDF chapters ↔ `data/audio_map` time ranges, build-time `.qa-play` injection, editor |
 | `qa-parsing/spec.md` | `qa/*.txt` → month chapters, audio playback data, proofreading badges, encoded audio paths |
 | `html-generation/spec.md` | Chapter/index HTML structure, QA banner + badge placeholders + QA source link |
 | `search/spec.md` | Search index generation, content extraction |

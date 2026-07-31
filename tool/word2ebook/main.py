@@ -16,6 +16,7 @@ from utils.file_utils import FileManager, ImageHandler
 from core.document_parser import DocumentParser
 from core.pdf_parser import PDFParser
 from core.qa_parser import QAParser
+from core.audio_map_injector import inject_chapters
 from generators.html_generator import HTMLGenerator
 from generators.search_generator import SearchIndexGenerator
 from templates.static_assets import StaticAssetsManager
@@ -83,6 +84,11 @@ class Word2EBookConverter:
         # 2. 解析來源（Word + 可選的 PDF）
         chapters = self._parse_chapters()
         print(f"✅ 解析完成，共 {len(chapters)} 个章节")
+
+        # 2.5. 依 audio_map 為 PDF 章節注入逐段播放鈕（無 mapping 時略過）
+        injected = inject_chapters(chapters)
+        if injected:
+            print(f"🎧 已為 {injected} 個章節注入音檔播放鈕（audio_map）")
         
         # 3. 生成HTML页面
         print("🔧 正在生成 HTML 页面...")

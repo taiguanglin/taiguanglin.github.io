@@ -54,10 +54,12 @@ The system SHALL execute these steps in order:
 3. Parse the source(s) into a single `List[Chapter]` — Word chapters first, then
    each `--pdf` month-chapter batch in order, then QA month-chapters (if `--qa`
    is supplied)
-4. Generate HTML pages for each chapter (simplified and/or traditional)
-5. Generate HTML index pages
-6. Generate or ensure existence of search index JSON files
-7. Write static assets (CSS, JS, and auxiliary JS files)
+4. Inject per-segment audio play buttons from `data/audio_map/*.json` into PDF
+   chapter HTML when mapping files exist (see `pdf-audio-map/spec.md`)
+5. Generate HTML pages for each chapter (simplified and/or traditional)
+6. Generate HTML index pages
+7. Generate or ensure existence of search index JSON files
+8. Write static assets (CSS, JS, and auxiliary JS files)
 
 ### Requirement: Fast Mode
 When `--fast` is passed, the system SHALL skip both the search index generation
