@@ -1280,10 +1280,10 @@ textarea.marker-heading {
     }
 
     /* On a phone the slider is fiddly for hour-long files, so drop it and the
-       rarely-used -10/+10 steps; keep -15/-5/play/+5/+15 in five even columns. */
+       middle -5/+5 steps; keep -15/-2/play/+2/+15 in five even columns. */
     .mini-player-progress,
-    .mini-player-controls button[data-seek="-10"],
-    .mini-player-controls button[data-seek="10"] {
+    .mini-player-controls button[data-seek="-5"],
+    .mini-player-controls button[data-seek="5"] {
         display: none;
     }
 

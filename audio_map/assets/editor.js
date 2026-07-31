@@ -1395,12 +1395,12 @@ function setupMiniPlayer() {
             case 'ArrowLeft':
                 if (!alt) return;
                 event.preventDefault();
-                seekBy(-5);
+                seekBy(-2);
                 break;
             case 'ArrowRight':
                 if (!alt) return;
                 event.preventDefault();
-                seekBy(5);
+                seekBy(2);
                 break;
         }
     }, true);
