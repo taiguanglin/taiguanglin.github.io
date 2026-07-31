@@ -1,5 +1,6 @@
 """内容处理器"""
 
+import re
 from typing import List, Dict, Tuple
 from bs4 import BeautifulSoup
 
@@ -7,6 +8,12 @@ from models.document_models import Chapter, SearchItem
 from utils.text_utils import TextProcessor, IDGenerator
 from utils.text_segmentation import get_segmenter, is_segmenter_available
 from config.settings import Settings, Constants
+
+# PDF 日期+來源小節標題，例如「2025年11月10日 官網」
+_PDF_SECTION_LABEL_RE = re.compile(
+    r'^\d{4}年\d{1,2}月\d{1,2}日\s+'
+    r'(?:贴吧|貼吧|官网|官網|微信公众号|微信公眾號)$'
+)
 
 
 class ContentProcessor:
@@ -98,14 +105,19 @@ class ContentProcessor:
             element_id = self._generate_or_get_id(question, 'question', content)
             question['id'] = element_id
             
-            # 提取问题者和时间信息作为标题
+            # 提取问题者和时间信息作为标题；无时间则回退到 PDF 日期+來源小節名
             questioner = question.find(class_='questioner')
             time_elem = question.find(class_='question-time')
             title_parts = []
             if questioner:
                 title_parts.append(questioner.get_text().strip())
-            if time_elem:
-                title_parts.append(time_elem.get_text().strip())
+            time_text = time_elem.get_text().strip() if time_elem else ''
+            if time_text:
+                title_parts.append(time_text)
+            else:
+                section_label = self._pdf_section_label_for(question)
+                if section_label:
+                    title_parts.append(section_label)
             title = ' | '.join(title_parts) if title_parts else Constants.DEFAULT_QUESTION_TITLE
             
             items.append(SearchItem(
@@ -133,16 +145,31 @@ class ContentProcessor:
             element_id = self._generate_or_get_id(answer, 'answer', content)
             answer['id'] = element_id
             
-            # 提取回答者信息作为标题
+            # 提取回答者信息作为标题；时间点取该回答对应问题的时间，
+            # 无时间则回退到 PDF 日期+來源小節名
             answerer = answer.find(class_='answerer')
             title = answerer.get_text().strip() if answerer else self.settings.default_answerer
             
             if title == Constants.ANSWERER_RAW_NAME:
                 title = Constants.ANSWERER_DISPLAY_NAME
+
+            title = f"{title}的回答"
+            prev_question = answer.find_previous_sibling(class_='question')
+            time_text = ''
+            if prev_question:
+                time_elem = prev_question.find(class_='question-time')
+                if time_elem:
+                    time_text = time_elem.get_text().strip()
+            if time_text:
+                title = f"{title} | {time_text}"
+            else:
+                section_label = self._pdf_section_label_for(prev_question or answer)
+                if section_label:
+                    title = f"{title} | {section_label}"
             
             items.append(SearchItem(
                 id=f"{base_filename}-{item_id}",
-                title=f"{title}的回答",
+                title=title,
                 type=Constants.SEARCH_TYPES['answer'],
                 content=content,
                 context=self._get_context(answer, self.settings.search_context_length),
@@ -151,6 +178,26 @@ class ContentProcessor:
             item_id += 1
             
         return items
+
+    def _pdf_section_label_for(self, element) -> str:
+        """若元素位於 PDF「日期 + 來源」h2 下，回傳該小節名（不含答疑數）。"""
+        if element is None:
+            return ''
+        h2 = element.find_previous('h2')
+        if not h2:
+            return ''
+        label_parts = []
+        for node in h2.contents:
+            if getattr(node, 'name', None) == 'span' and 'chapter-qa-count' in (node.get('class') or []):
+                continue
+            if hasattr(node, 'get_text'):
+                label_parts.append(node.get_text())
+            else:
+                label_parts.append(str(node))
+        label = ''.join(label_parts).strip()
+        if _PDF_SECTION_LABEL_RE.match(label):
+            return label
+        return ''
     
     def _extract_content(self, soup: BeautifulSoup, base_filename: str, start_id: int) -> List[SearchItem]:
         """提取其他内容"""

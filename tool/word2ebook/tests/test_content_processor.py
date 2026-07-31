@@ -60,6 +60,70 @@ class TestExtractSearchContent:
         answers = [i for i in items if i.type == "answer"]
         assert len(answers) >= 1
 
+    def test_answer_title_includes_question_time(self, processor):
+        items, _ = processor.extract_search_content(SIMPLE_HTML, "01.html")
+        answers = [i for i in items if i.type == "answer"]
+        assert len(answers) >= 1
+        assert answers[0].title == "Tai師父的回答 | 2024-01-15 10:30"
+
+    def test_question_title_includes_time(self, processor):
+        items, _ = processor.extract_search_content(SIMPLE_HTML, "01.html")
+        questions = [i for i in items if i.type == "question"]
+        assert len(questions) >= 1
+        assert questions[0].title == "學生甲 | 2024-01-15 10:30"
+
+    def test_answer_title_without_question_time(self, processor):
+        html = """<html><body>
+<div class="question">
+  <div class="question-meta"><span class="questioner">學生乙</span></div>
+  <div class="question-text">沒有時間的問題內容，長度足夠。</div>
+</div>
+<div class="answer">
+  <div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+  <div class="answer-text">對應回答的詳細內容，長度足夠。</div>
+</div>
+</body></html>"""
+        items, _ = processor.extract_search_content(html, "01.html")
+        answers = [i for i in items if i.type == "answer"]
+        assert len(answers) == 1
+        assert answers[0].title == "Tai師父的回答"
+
+    def test_pdf_section_label_fallback_for_question_and_answer(self, processor):
+        html = """<html><body>
+<h2 id="sec">2025年11月10日 官網<span class="chapter-qa-count">(138)</span></h2>
+<div class="question">
+  <div class="question-meta"><span class="questioner">印龍</span></div>
+  <div class="question-text">PDF 章節沒有時間戳的問題內容。</div>
+</div>
+<div class="answer">
+  <div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+  <div class="answer-text">對應回答的詳細內容，長度足夠說明。</div>
+</div>
+</body></html>"""
+        items, _ = processor.extract_search_content(html, "17.html")
+        questions = [i for i in items if i.type == "question"]
+        answers = [i for i in items if i.type == "answer"]
+        assert questions[0].title == "印龍 | 2025年11月10日 官網"
+        assert answers[0].title == "Tai師父的回答 | 2025年11月10日 官網"
+
+    def test_topical_heading_not_used_as_time_fallback(self, processor):
+        html = """<html><body>
+<h2>初始設定1.自性恆常<span class="chapter-qa-count">(50)</span></h2>
+<div class="question">
+  <div class="question-meta"><span class="questioner">無名</span></div>
+  <div class="question-text">Word 章節沒有時間的問題內容。</div>
+</div>
+<div class="answer">
+  <div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+  <div class="answer-text">對應回答的詳細內容，長度足夠說明。</div>
+</div>
+</body></html>"""
+        items, _ = processor.extract_search_content(html, "01.html")
+        questions = [i for i in items if i.type == "question"]
+        answers = [i for i in items if i.type == "answer"]
+        assert questions[0].title == "無名"
+        assert answers[0].title == "Tai師父的回答"
+
     def test_extracts_content_paragraphs(self, processor):
         items, _ = processor.extract_search_content(SIMPLE_HTML, "01.html")
         content_items = [i for i in items if i.type == "content"]

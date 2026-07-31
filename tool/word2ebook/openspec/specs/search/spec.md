@@ -23,6 +23,48 @@ The search index SHALL contain items of type `heading`, `question`, `answer`,
 and `content`. Short paragraphs (below `Settings.search_min_paragraph_length`)
 MUST be excluded from the content items.
 
+### Requirement: Question and Answer Result Titles
+Question search items SHALL use a title of `questioner | question-time` when
+both are present (falling back to whichever exists, or
+`Constants.DEFAULT_QUESTION_TITLE`). Answer search items SHALL use a title of
+`{answerer display name}的回答`, and when the immediately preceding sibling
+`.question` has a `.question-time`, SHALL append that same timestamp as
+` | {question-time}` so answer results show the related question's time.
+
+When a question has no `.question-time`, and the nearest preceding `<h2>` is a
+PDF date+source section (`YYYY年M月D日` plus `贴吧` / `官网` / `微信公众号`, or
+their traditional forms), both the question and its answer search titles SHALL
+append that section label (without the `.chapter-qa-count` badge) after ` | `,
+so results identify which day's Tieba / official-site / WeChat Q&A they belong
+to. Topical Word-chapter `<h2>` headings MUST NOT be used for this fallback.
+
+#### Scenario: Answer title includes related question time
+- GIVEN HTML with a `.question` that has `.question-time` `2024-01-15 10:30`
+  immediately followed by a `.answer` whose `.answerer` is `Taiguanglin`
+- WHEN the content extractor runs
+- THEN the answer item `title` SHALL be `Tai師父的回答 | 2024-01-15 10:30`
+
+#### Scenario: Answer title without question time
+- GIVEN HTML with a `.question` that has no `.question-time`, followed by a
+  `.answer`, and no PDF date+source `<h2>` before them
+- WHEN the content extractor runs
+- THEN the answer item `title` SHALL be `Tai師父的回答` with no trailing
+  timestamp
+
+#### Scenario: PDF section label fallback when question has no time
+- GIVEN HTML with `<h2>2025年11月10日 官網<span class="chapter-qa-count">(138)</span></h2>`
+  followed by a `.question` (questioner `印龍`, no `.question-time`) and
+  `.answer` (`Taiguanglin`)
+- WHEN the content extractor runs
+- THEN the question item `title` SHALL be `印龍 | 2025年11月10日 官網`
+- AND the answer item `title` SHALL be `Tai師父的回答 | 2025年11月10日 官網`
+
+#### Scenario: Topical Word heading is not used as fallback
+- GIVEN HTML with `<h2>初始設定1.自性恆常</h2>` followed by a question with no
+  `.question-time` and an answer
+- WHEN the content extractor runs
+- THEN neither title SHALL append that topical heading
+
 ### Requirement: Deduplication of QA from Content
 Paragraphs that are direct children of `.question` or `.answer` elements SHALL
 NOT be duplicated as `content` items.
