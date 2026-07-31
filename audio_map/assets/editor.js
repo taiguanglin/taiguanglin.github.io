@@ -1,6 +1,6 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, putFile, testToken } from './github.js';
-import { parseRanges, secondsToTimecode } from '../../qa/assets/parser.js';
+import { parseRanges, secondsToTimecode, timecodeToSeconds } from '../../qa/assets/parser.js';
 import {
     clearDraft,
     clearPat,
@@ -357,6 +357,123 @@ function cloneMap(map) {
     return JSON.parse(JSON.stringify(map));
 }
 
+/** Round to millisecond precision used by labels / inject. */
+function roundSeconds(value) {
+    if (value == null || !Number.isFinite(value)) return null;
+    return Math.round(Math.max(0, value) * 1000) / 1000;
+}
+
+/**
+ * Parse a time marker line. Accepts fullwidth/halfwidth colon and optional spaces
+ * (qa parser only matches fullwidth `：`).
+ */
+function parseTimeMarkerValue(text) {
+    const fromQa = parseRanges(text || '')[0];
+    if (fromQa) return fromQa;
+    const match = String(text || '').match(
+        /(?:開場時間|時間)\s*[:：]\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})/,
+    );
+    if (!match) return null;
+    const startLabel = match[1].replace(',', '.');
+    const endLabel = match[2].replace(',', '.');
+    return {
+        label: `${startLabel} - ${endLabel}`,
+        startLabel,
+        endLabel,
+        start: timecodeToSeconds(startLabel),
+        end: timecodeToSeconds(endLabel),
+    };
+}
+
+/** Write start/end + labels onto a map item from a parsed range. */
+function applyRangeToItem(item, range, { markManual = true } = {}) {
+    const start = roundSeconds(range.start);
+    const end = roundSeconds(range.end);
+    item.start = start;
+    item.end = end;
+    item.start_label = start != null ? secondsToTimecode(start) : null;
+    item.end_label = end != null ? secondsToTimecode(end) : null;
+    if (markManual || item.status === 'missing') item.status = 'manual';
+}
+
+/** Keep numeric seconds and label strings in sync for one item. */
+function normalizeItemTimes(item) {
+    if (!item || typeof item !== 'object') return;
+    let start = item.start;
+    let end = item.end;
+    if ((start == null || end == null) && item.start_label && item.end_label) {
+        start = timecodeToSeconds(String(item.start_label).replace(',', '.'));
+        end = timecodeToSeconds(String(item.end_label).replace(',', '.'));
+    }
+    if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) {
+        return;
+    }
+    start = roundSeconds(start);
+    end = roundSeconds(end);
+    if (end < start) end = start;
+    item.start = start;
+    item.end = end;
+    item.start_label = secondsToTimecode(start);
+    item.end_label = secondsToTimecode(end);
+    if (item.status === 'missing') item.status = 'manual';
+}
+
+function normalizeMapTimes(map) {
+    for (const session of map?.sessions || []) {
+        if (session.opening) normalizeItemTimes(session.opening);
+        for (const seg of session.segments || []) normalizeItemTimes(seg);
+    }
+    return map;
+}
+
+/**
+ * Pull times from visible marker inputs into state.map (so Save works even if
+ * the input was edited but not blurred / change-committed yet).
+ * @returns {{ ok: true } | { ok: false, message: string }}
+ */
+function flushEditorTimesIntoMap() {
+    const items = sessionItems();
+    for (const card of els.editorRoot.querySelectorAll('.segment-card')) {
+        const idx = Number(card.dataset.segmentIndex);
+        const entry = items[idx];
+        const input = card.querySelector('.marker-input');
+        if (!entry || !input) continue;
+        const range = parseTimeMarkerValue(input.value);
+        if (!range || !Number.isFinite(range.start) || !Number.isFinite(range.end)) {
+            const label = entry.kind === 'opening' ? '開場' : `第 ${entry.number} 段`;
+            return {
+                ok: false,
+                message: `${label} 時間格式無效，請使用 00:00:00.000 - 00:00:00.000`,
+            };
+        }
+        const hadTimes = entry.item.start != null && entry.item.end != null;
+        const nextStart = roundSeconds(range.start);
+        const nextEnd = roundSeconds(range.end);
+        // Placeholder "00:00:00.000 - 00:00:00.000" for unset items must not be written.
+        if (!hadTimes && nextStart === 0 && nextEnd === 0) {
+            continue;
+        }
+        const prevStart = roundSeconds(entry.item.start);
+        const prevEnd = roundSeconds(entry.item.end);
+        const changed = prevStart !== nextStart || prevEnd !== nextEnd;
+        applyRangeToItem(entry.item, range, { markManual: changed || entry.item.status === 'manual' });
+        input.value = formatTimeMarker(entry.item, entry.kind);
+        input.dataset.startTc = entry.item.start_label;
+        input.dataset.endTc = entry.item.end_label;
+        const playButton = input.closest('.marker-line')?.querySelector('.play-range');
+        if (playButton) updatePlayButton(playButton, input.value, idx, entry.title);
+    }
+    normalizeMapTimes(state.map);
+    return { ok: true };
+}
+
+function prepareMapForSave() {
+    const flush = flushEditorTimesIntoMap();
+    if (!flush.ok) return flush;
+    normalizeMapTimes(state.map);
+    return { ok: true };
+}
+
 function currentSession() {
     return state.map?.sessions?.find((s) => s.session_id === state.sessionId) || null;
 }
@@ -662,7 +779,7 @@ function renderSegmentCard(entry, segmentIndex) {
     timeInput.value = formatTimeMarker(item, kind);
     timeInput.setAttribute('aria-label', '段落時間（格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm）');
     timeInput.title = '格式：時間：HH:MM:SS.mmm - HH:MM:SS.mmm';
-    const initRange = parseRanges(timeInput.value)[0];
+    const initRange = parseTimeMarkerValue(timeInput.value);
     if (initRange) {
         timeInput.dataset.startTc = initRange.startLabel;
         timeInput.dataset.endTc = initRange.endLabel;
@@ -672,7 +789,7 @@ function renderSegmentCard(entry, segmentIndex) {
     playButton.className = 'button button-secondary play-range';
     updatePlayButton(playButton, timeInput.value, segmentIndex, title);
     timeInput.addEventListener('change', () => {
-        const range = parseRanges(timeInput.value)[0];
+        const range = parseTimeMarkerValue(timeInput.value);
         if (!range) {
             setStatus('時間格式無效，請使用 時間：00:00:00.000 - 00:00:00.000', 'error');
             timeInput.value = formatTimeMarker(item, kind);
@@ -680,10 +797,11 @@ function renderSegmentCard(entry, segmentIndex) {
         }
         const startChanged = range.startLabel !== timeInput.dataset.startTc;
         const endChanged = range.endLabel !== timeInput.dataset.endTc;
-        timeInput.dataset.startTc = range.startLabel;
-        timeInput.dataset.endTc = range.endLabel;
         commitHistory();
         applyRangeToItem(item, range);
+        timeInput.value = formatTimeMarker(item, kind);
+        timeInput.dataset.startTc = item.start_label;
+        timeInput.dataset.endTc = item.end_label;
         if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
         if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
         updatePlayButton(playButton, timeInput.value, segmentIndex, title);
@@ -722,21 +840,13 @@ function renderSegmentCard(entry, segmentIndex) {
 
 function formatTimeMarker(item, kind) {
     const prefix = kind === 'opening' ? '開場時間' : '時間';
-    const start = item.start != null ? secondsToTimecode(item.start) : '00:00:00.000';
-    const end = item.end != null ? secondsToTimecode(item.end) : '00:00:00.000';
+    const start = item.start != null ? secondsToTimecode(roundSeconds(item.start)) : '00:00:00.000';
+    const end = item.end != null ? secondsToTimecode(roundSeconds(item.end)) : '00:00:00.000';
     return `${prefix}：${start} - ${end}`;
 }
 
-function applyRangeToItem(item, range) {
-    item.start = range.start;
-    item.end = range.end;
-    item.start_label = secondsToTimecode(range.start);
-    item.end_label = secondsToTimecode(range.end);
-    item.status = 'manual';
-}
-
 function updatePlayButton(button, markerText, segmentIndex, title) {
-    const range = parseRanges(markerText)[0];
+    const range = parseTimeMarkerValue(markerText);
     if (!range) {
         button.textContent = '▶ 時間格式無效';
         button.disabled = true;
@@ -781,7 +891,7 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
     const entry = items[segmentIndex];
     if (!entry || seconds == null || !Number.isFinite(seconds)) return false;
     const item = entry.item;
-    const value = Math.max(0, seconds);
+    const value = roundSeconds(seconds);
     if (edge === 'start') {
         item.start = value;
         item.start_label = secondsToTimecode(value);
@@ -798,17 +908,15 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
         }
     }
     item.status = 'manual';
+    normalizeItemTimes(item);
     const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
     const input = card?.querySelector('.marker-input');
     if (input) {
         input.value = formatTimeMarker(item, entry.kind);
-        const range = parseRanges(input.value)[0];
-        if (range) {
-            input.dataset.startTc = range.startLabel;
-            input.dataset.endTc = range.endLabel;
-            const playButton = input.closest('.marker-line')?.querySelector('.play-range');
-            if (playButton) updatePlayButton(playButton, input.value, segmentIndex, entry.title);
-        }
+        input.dataset.startTc = item.start_label;
+        input.dataset.endTc = item.end_label;
+        const playButton = input.closest('.marker-line')?.querySelector('.play-range');
+        if (playButton) updatePlayButton(playButton, input.value, segmentIndex, entry.title);
     }
     if (markEdited) onSegmentEdit(segmentIndex);
     else recomputeDirty();
@@ -1011,6 +1119,8 @@ function scheduleDraft() {
     clearTimeout(state.draftTimer);
     state.draftTimer = setTimeout(() => {
         if (!state.map) return;
+        // Best-effort: include any in-progress marker edits in the local draft.
+        flushEditorTimesIntoMap();
         setDraft(mapPath(state.month), serializeMap(state.map), state.currentSha);
         state.draftPaths = listDraftPaths();
         els.draftBadge.classList.remove('hidden');
@@ -1074,6 +1184,11 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         setStatus('請先設定 PAT', 'error');
         return;
     }
+    const prepared = prepareMapForSave();
+    if (!prepared.ok) {
+        setStatus(prepared.message, 'error');
+        return;
+    }
     const path = mapPath(state.month);
     setStatus('上傳中…', 'loading');
     try {
@@ -1085,18 +1200,22 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
                 // new file path unlikely
             }
         }
-        const text = serializeMap(state.map);
+        // Clone + normalize again so the uploaded payload is self-consistent.
+        const payload = normalizeMapTimes(cloneMap(state.map));
+        const text = serializeMap(payload);
         const message = reason === 'played'
             ? `Update audio_map listen progress ${state.month}`
             : `Update audio_map ${state.month}`;
         const result = await putFile(path, text, state.currentSha, message, { force });
         state.currentSha = result.content?.sha || state.currentSha;
-        state.originalMap = cloneMap(state.map);
+        state.map = payload;
+        state.originalMap = cloneMap(payload);
         state.dirty = false;
         state.usingDraft = false;
         clearDraft(path);
         els.draftBadge.classList.add('hidden');
         resetHistory();
+        if (state.sessionId) renderEditor();
         recomputeDirty();
         setStatus(`已存到 GitHub：${path}`, 'ok');
     } catch (error) {
