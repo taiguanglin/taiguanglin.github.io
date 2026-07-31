@@ -43,6 +43,12 @@ class TestMatchStartOwner:
         variants = spoken_name_variants("牧羊少年571", CONV)
         assert any("五七幺" in v or "五七一" in v for v in variants)
 
+    def test_year_digits_not_expanded_into_date_words(self):
+        variants = spoken_name_variants("明月2025", CONV)
+        joined = " ".join(variants)
+        assert "二零二五" not in joined
+        assert any("2025" in v for v in variants)
+
 
 class TestTitleCoverage:
     def test_short_title_inside_long_question(self):

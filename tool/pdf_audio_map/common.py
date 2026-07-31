@@ -307,18 +307,43 @@ def spoken_name_variants(name: str, converter=None) -> List[str]:
 
     Spoken digit forms (五七幺) are tried before Arabic digits, because
     SenseVoice/Paraformer usually reads IDs that way.
+
+    Digit runs of length ≥ 4 (years like 2025) are **not** expanded — otherwise
+    ``明月2025`` becomes ``明月二零二五`` and false-hits the opening date.
     """
     if not name:
         return []
     base = normalize(name, converter)
     if not base:
         return []
-    cn = base.translate(_DIGIT_CN)
-    yao = base.translate(_DIGIT_YAO)
+
+    def _expand(s: str, table) -> str:
+        out = []
+        i = 0
+        while i < len(s):
+            if s[i].isdigit():
+                j = i
+                while j < len(s) and s[j].isdigit():
+                    j += 1
+                run = s[i:j]
+                if len(run) >= 4:
+                    out.append(run)  # keep years / long ids as digits
+                else:
+                    out.append(run.translate(table))
+                i = j
+            else:
+                out.append(s[i])
+                i += 1
+        return "".join(out)
+
+    cn = _expand(base, _DIGIT_CN)
+    yao = _expand(base, _DIGIT_YAO)
     out: List[str] = []
     for v in (yao, cn, base):
         if v and v not in out:
             out.append(v)
+    # Prefer variants that keep a non-digit prefix (≥2 chars) for anchoring
+    out.sort(key=lambda v: (0 if re.search(r"\D{2,}", v) else 1, -len(v)))
     return out
 
 

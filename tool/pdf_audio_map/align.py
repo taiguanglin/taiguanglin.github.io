@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -160,6 +161,96 @@ def _mark_all_missing(session: dict, note: str) -> dict:
     return {**session, "opening": opening, "segments": segs}
 
 
+def _collect_name_hits(cues, name: str, converter) -> List[Tuple[float, int]]:
+    """All (start_time, cue_idx) where a spoken form of ``name`` appears."""
+    hits: List[Tuple[float, int]] = []
+    seen = set()
+    # Require a non-trivial block so short digit tails don't false-hit dates
+    letterish = re.sub(r"\d+", "", normalize(name, converter) or "")
+    min_block = 4 if len(letterish) >= 2 else 3
+    for variant in spoken_name_variants(name, converter):
+        if len(variant) < 2:
+            continue
+        # Skip pure-digit / year-only needles
+        if variant.isdigit():
+            continue
+        cursor = 0
+        while cursor < len(cues):
+            res = match_start(
+                cues,
+                cursor,
+                variant,
+                min_len=min(2, len(variant)),
+                min_block=min(min_block, len(variant)),
+                max_scan=len(cues) - cursor,
+            )
+            if res is None:
+                break
+            start_t, idx, size = res
+            need = min(min_block, len(variant))
+            if size >= need and idx not in seen:
+                hits.append((start_t, idx))
+                seen.add(idx)
+            cursor = idx + 1
+    hits.sort(key=lambda x: x[0])
+    return hits
+
+
+def _refine_starts_by_questioner(
+    session: dict,
+    cues,
+    starts: List[Optional[float]],
+    scores: List[float],
+    converter,
+    snap_window: float = 90.0,
+) -> Tuple[List[Optional[float]], List[float], List[str]]:
+    """Snap segment starts to ordered SRT questioner-name hits when nearby.
+
+    Only snaps when a name hit lies within ``snap_window`` seconds of the
+    current estimate (or the estimate is missing). Prevents jumping to a
+    lone late name reading when Tai skipped saying the name on earlier parts.
+    """
+    notes = [""] * len(starts)
+    cache: Dict[str, List[Tuple[float, int]]] = {}
+    cursors: Dict[str, int] = {}
+    prev_t = 0.0
+
+    for i, seg in enumerate(session.get("segments") or []):
+        name = (seg.get("questioner") or "").strip()
+        if not name:
+            if starts[i] is not None:
+                prev_t = max(prev_t, float(starts[i]))
+            continue
+        if name not in cache:
+            cache[name] = _collect_name_hits(cues, name, converter)
+            cursors[name] = 0
+        hits = cache[name]
+        ci = cursors[name]
+        while ci < len(hits) and hits[ci][0] < prev_t - 0.05:
+            ci += 1
+        cursors[name] = ci
+        if ci >= len(hits):
+            if starts[i] is not None:
+                prev_t = max(prev_t, float(starts[i]))
+            continue
+        hit_t = hits[ci][0]
+        cur = starts[i]
+        near = cur is None or abs(float(cur) - hit_t) <= snap_window
+        if near and (cur is None or abs(float(cur) - hit_t) > 1.0):
+            starts[i] = hit_t
+            scores[i] = max(scores[i], 12.0)
+            notes[i] = "snapped to questioner name"
+            cursors[name] = ci + 1
+            prev_t = hit_t
+        else:
+            if near:
+                # Already within 1s — consume this hit
+                cursors[name] = ci + 1
+            if starts[i] is not None:
+                prev_t = max(prev_t, float(starts[i]))
+    return starts, scores, notes
+
+
 def _interpolate_starts(
     starts: List[Optional[float]],
     scores: List[float],
@@ -304,6 +395,9 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
         scores.append(max(float(score), 12.0) if via_name else float(score))
         cursor_idx = cue_idx + 1
 
+    starts, scores, snap_notes = _refine_starts_by_questioner(
+        session, cues, starts, scores, converter
+    )
     resolved, fill_notes = _interpolate_starts(starts, scores, audio_end)
 
     new_segments = []
@@ -316,9 +410,11 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
         preview = srt_preview(cues_raw, resolved[i], end)
         fields = range_fields(resolved[i], end, conf, status, preview)
         note_parts = []
+        if snap_notes[i]:
+            note_parts.append(snap_notes[i])
         if fill_notes[i]:
             note_parts.append(fill_notes[i])
-        elif conf < 0.4:
+        elif conf < 0.4 and not snap_notes[i]:
             note_parts.append(f"low confidence score={scores[i]}")
         fields["notes"] = "; ".join(note_parts)
         new_segments.append({**seg, **fields})
