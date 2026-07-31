@@ -226,6 +226,22 @@ async function initSearch() {
     searchTimeout = setTimeout(() => performSearch(query), 300);
   });
 
+  // 搜尋範圍：問題 / 回答 / 兩者
+  document.querySelectorAll('.search-scope-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const scope = btn.getAttribute('data-scope');
+      if (!scope || scope === searchScope) return;
+      searchScope = scope;
+      document.querySelectorAll('.search-scope-btn').forEach((b) => {
+        const active = b.getAttribute('data-scope') === searchScope;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      const query = elements.searchInput.value.trim();
+      if (query.length >= 2) performSearch(query);
+    });
+  });
+
   // 清除 / 收起按钮
   if (elements.searchClear) elements.searchClear.addEventListener('click', clearSearch);
   if (elements.searchCollapse) elements.searchCollapse.addEventListener('click', collapseSearch);

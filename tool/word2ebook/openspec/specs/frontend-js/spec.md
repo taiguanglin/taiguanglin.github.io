@@ -22,8 +22,8 @@ Source JavaScript SHALL be split into ordered module files under
 | `01a-search-init.js` | Search state variables, `activateSearch`, loading/error UI, `loadSearchIndexWithProgress`, Jieba WASM init, `segmentWithJieba` |
 | `01b-search-index.js` | `createSearchConfig`, `buildSearchIndexInBatches`, `buildSearchIndexInBatchesWithCache` |
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |
-| `01d-search-perform.js` | `performSearch`, `displayPagedResults`, `loadMoreResults` |
-| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, clear, collapse, load-more) |
+| `01d-search-perform.js` | `performSearch` (MiniSearch + scope `filter`), `displayPagedResults`, `loadMoreResults` |
+| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, scope buttons, clear, collapse, load-more) |
 | `02-reader-ux.js` | Q&A ID generation, reading toolbar, floating TOC creation, action buttons, Q&A action overlays |
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
@@ -45,6 +45,19 @@ name) and wrap them in one `DOMContentLoaded` listener to produce the single
 - WHEN `StaticAssetsManager.get_full_js_content()` is called
 - THEN the returned string SHALL start with `document.addEventListener('DOMContentLoaded'`
 - AND the returned string SHALL contain the content of every module file
+
+### Requirement: Search Scope State
+Search SHALL keep a session state variable `searchScope` with values
+`question`, `answer`, or `both` (default `both`). Scope buttons with
+`data-scope` SHALL update this state, toggle `is-active` / `aria-pressed`, and
+re-invoke `performSearch` when the current query is at least 2 characters.
+`clearSearch` SHALL NOT reset `searchScope`.
+
+#### Scenario: Scope change re-searches
+- GIVEN an active query of length ≥ 2 and `searchScope` is `both`
+- WHEN the user activates the `answer` scope button
+- THEN `searchScope` SHALL become `answer` and `performSearch` SHALL run again
+  with an answer-only filter
 
 ### Requirement: Dark Mode Persistence
 The system SHALL read `localStorage['darkMode']` on page load and add the

@@ -6,6 +6,18 @@ alwaysApply: false
 
 # word2ebook Maintenance Rules
 
+## Source vs `wenda2_ebook/`
+
+`wenda2_ebook/` is **generated output**. Never implement features by editing
+files under `wenda2_ebook/` (HTML, concatenated `assets/js/script.js` /
+`assets/css/style.css`, search indexes, etc.) — those are overwritten by
+`python3 gen_all.py` / `main.py`.
+
+Edit only under `tool/word2ebook/` (templates, `assets/js/modules/`,
+`assets/css/modules/`, generators, `config.yaml`, specs), then rebuild so the
+ebook is regenerated from source. See `tool/word2ebook/AGENTS.md` § Source vs
+generated output.
+
 ## After Every Code Change
 
 ### 1. Update OpenSpec specs

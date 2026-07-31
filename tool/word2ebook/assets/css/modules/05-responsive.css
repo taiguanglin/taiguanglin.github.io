@@ -82,6 +82,7 @@ p.source-filename a:active {
     .search-activate-hint { font-size: 11px; }
     .search-container { margin: 20px 0; padding: 15px; }
     #search-input { font-size: 16px; }
+    .search-scope-btn { font-size: 13px; padding: 7px 8px; }
     .search-results-header { flex-direction: column; align-items: flex-start; gap: 10px; }
     .search-results-actions { width: 100%; justify-content: flex-start; }
     .search-clear, .search-collapse, .search-load-more, .search-load-all { font-size: 11px; padding: 5px 10px; }

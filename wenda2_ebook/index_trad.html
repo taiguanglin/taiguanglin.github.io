@@ -53,6 +53,11 @@ if (typeof MiniSearch === 'undefined') {
 <div class="search-container" id="search-container" style="display: none;">
   <div class="search-box">
     <input type="text" id="search-input" placeholder="搜尋全文內容..." autocomplete="off">
+    <div class="search-scope" role="group" aria-label="搜尋範圍">
+      <button type="button" class="search-scope-btn" data-scope="question" aria-pressed="false">問題</button>
+      <button type="button" class="search-scope-btn" data-scope="answer" aria-pressed="false">回答</button>
+      <button type="button" class="search-scope-btn is-active" data-scope="both" aria-pressed="true">兩者</button>
+    </div>
     <div class="search-status" id="search-status">正在初始化搜尋功能...</div>
   </div>
   

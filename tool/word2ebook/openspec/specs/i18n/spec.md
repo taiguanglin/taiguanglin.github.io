@@ -219,7 +219,10 @@ key, with `simplified` and `traditional` sub-keys for each string.
 The JavaScript file `assets/js/i18n-text.js` SHALL export or define a mapping
 of UI string keys to their simplified and traditional values, mirroring
 `config.yaml`. The helper `getI18nText(key, isTraditional, fallback, params)`
-in `01-search.js` SHALL resolve strings from this mapping.
+SHALL resolve strings from this mapping. Search scope labels
+(`search.scope_label`, `search.scope_question`, `search.scope_answer`,
+`search.scope_both`) SHALL appear in both `config.yaml` and `i18n-text.js`,
+and the index template SHALL inject them into the scope control buttons.
 
 ### Requirement: Ensure Simplified Content in Search Index
 Before writing simplified search index entries, the system SHALL call

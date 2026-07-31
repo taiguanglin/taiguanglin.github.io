@@ -46,6 +46,7 @@ if (localStorage.getItem('darkMode') === 'true') {
   let searchInitialized = false;
   let currentSearchResults = [];
   let displayedResultsCount = 0;
+  let searchScope = 'both'; // 'question' | 'answer' | 'both'
   const RESULTS_PER_PAGE = 20;
 
   // 获取搜索索引文件名
@@ -786,7 +787,15 @@ function performSearch(query) {
   const trimmedQuery = query.trim();
   try {
     let searchQuery = trimmedQuery;
-    const searchOptions = { boost: { processedContent: 1 } };
+    const allowedTypes = searchScope === 'question' ? ['question']
+      : searchScope === 'answer' ? ['answer']
+      : ['question', 'answer'];
+    const searchOptions = {
+      boost: { processedContent: 1 },
+      filter: function (result) {
+        return allowedTypes.indexOf(result.type) !== -1;
+      }
+    };
 
     if (chineseSegmenter && trimmedQuery.length > 1) {
       const words = segmentWithJieba(trimmedQuery, true);
@@ -1127,6 +1136,22 @@ async function initSearch() {
     clearTimeout(searchTimeout);
     const query = e.target.value.trim();
     searchTimeout = setTimeout(() => performSearch(query), 300);
+  });
+
+  // 搜尋範圍：問題 / 回答 / 兩者
+  document.querySelectorAll('.search-scope-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const scope = btn.getAttribute('data-scope');
+      if (!scope || scope === searchScope) return;
+      searchScope = scope;
+      document.querySelectorAll('.search-scope-btn').forEach((b) => {
+        const active = b.getAttribute('data-scope') === searchScope;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      const query = elements.searchInput.value.trim();
+      if (query.length >= 2) performSearch(query);
+    });
   });
 
   // 清除 / 收起按钮

@@ -73,6 +73,10 @@ class I18nTemplateManager:
             'show_all': get_i18n_text('search.show_all', is_traditional, '顯示全部'),
             'clear_search': get_i18n_text('search.clear_search', is_traditional, '清除搜尋'),
             'collapse_search': get_i18n_text('search.collapse_search', is_traditional, '收起搜尋'),
+            'scope_label': get_i18n_text('search.scope_label', is_traditional, '搜尋範圍'),
+            'scope_question': get_i18n_text('search.scope_question', is_traditional, '問題'),
+            'scope_answer': get_i18n_text('search.scope_answer', is_traditional, '回答'),
+            'scope_both': get_i18n_text('search.scope_both', is_traditional, '兩者'),
             'show_level': get_i18n_text('level_control.show_level', is_traditional, '顯示層級'),
             'level': get_i18n_text('level_control.level', is_traditional, '層級'),
             'collapse_expand_level_control': get_i18n_text('level_control.collapse_expand', is_traditional, '收縮/展開層級控制'),
@@ -212,6 +216,11 @@ if (typeof MiniSearch === 'undefined') {{
 <div class="search-container" id="search-container" style="display: none;">
   <div class="search-box">
     <input type="text" id="search-input" placeholder="{search_placeholder}" autocomplete="off">
+    <div class="search-scope" role="group" aria-label="{scope_label}">
+      <button type="button" class="search-scope-btn" data-scope="question" aria-pressed="false">{scope_question}</button>
+      <button type="button" class="search-scope-btn" data-scope="answer" aria-pressed="false">{scope_answer}</button>
+      <button type="button" class="search-scope-btn is-active" data-scope="both" aria-pressed="true">{scope_both}</button>
+    </div>
     <div class="search-status" id="search-status">{search_initializing}</div>
   </div>
   

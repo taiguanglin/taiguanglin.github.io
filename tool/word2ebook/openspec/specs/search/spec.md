@@ -94,10 +94,31 @@ The generated HTML pages SHALL load MiniSearch from CDN with a fallback URL.
 Chinese text search SHALL use the Jieba WASM segmenter when available; the
 system SHALL fall back to substring matching when Jieba is unavailable.
 
+### Requirement: Search Scope Filter
+The index-page search UI SHALL provide a mutually exclusive scope control with
+three modes: `question` (only `type=question`), `answer` (only `type=answer`),
+and `both` (default; `question` and `answer`). MiniSearch queries SHALL apply a
+`filter` that keeps only results whose `type` is in the active mode's allow-list.
+`heading` and `content` items SHALL NOT match any of these three modes. Changing
+scope while the query has at least 2 characters SHALL re-run the search.
+Clearing the search SHALL reset the query and results but SHALL preserve the
+active scope.
+
+#### Scenario: Answer-only scope
+- GIVEN the search scope is set to `answer` and the query matches both question
+  and answer documents
+- WHEN `performSearch` runs
+- THEN the result list SHALL contain only items with `type` equal to `answer`
+
+#### Scenario: Both scope excludes headings
+- GIVEN the search scope is `both` and a heading also matches the query
+- WHEN `performSearch` runs
+- THEN heading and content items SHALL NOT appear in the results
+
 ## Technical Notes
 
 - Server-side: `generators/search_generator.py::SearchIndexGenerator`
 - Content extraction: `core/content_processor.py::ContentProcessor.extract_search_content`
-- Client-side: `assets/js/modules/01-search.js`
+- Client-side: `assets/js/modules/01a-search-init.js` … `01e-search-ui.js`
 - MiniSearch CDN: `config/settings.py::Constants.MINISEARCH_CDN_PRIMARY` / `MINISEARCH_CDN_BACKUP`
 - Jieba WASM assets: `assets/js/jieba_rs_wasm.js` + `assets/js/jieba_rs_wasm_bg.wasm`

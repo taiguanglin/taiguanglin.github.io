@@ -6,6 +6,7 @@
   let searchInitialized = false;
   let currentSearchResults = [];
   let displayedResultsCount = 0;
+  let searchScope = 'both'; // 'question' | 'answer' | 'both'
   const RESULTS_PER_PAGE = 20;
 
   // 获取搜索索引文件名

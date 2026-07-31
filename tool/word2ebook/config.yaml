@@ -112,6 +112,22 @@ i18n:
     collapse_search:
       simplified: "收起搜索"
       traditional: "收起搜尋"
+
+    scope_label:
+      simplified: "搜索范围"
+      traditional: "搜尋範圍"
+
+    scope_question:
+      simplified: "问题"
+      traditional: "問題"
+
+    scope_answer:
+      simplified: "回答"
+      traditional: "回答"
+
+    scope_both:
+      simplified: "两者"
+      traditional: "兩者"
   
   # 層級控制
   level_control:

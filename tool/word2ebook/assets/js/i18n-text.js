@@ -67,6 +67,22 @@ window.I18N_TEXT = {
         simplified: '内容',
         traditional: '內容'
       }
+    },
+    scope_label: {
+      simplified: '搜索范围',
+      traditional: '搜尋範圍'
+    },
+    scope_question: {
+      simplified: '问题',
+      traditional: '問題'
+    },
+    scope_answer: {
+      simplified: '回答',
+      traditional: '回答'
+    },
+    scope_both: {
+      simplified: '两者',
+      traditional: '兩者'
     }
   },
   

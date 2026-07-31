@@ -51,7 +51,15 @@ function performSearch(query) {
   const trimmedQuery = query.trim();
   try {
     let searchQuery = trimmedQuery;
-    const searchOptions = { boost: { processedContent: 1 } };
+    const allowedTypes = searchScope === 'question' ? ['question']
+      : searchScope === 'answer' ? ['answer']
+      : ['question', 'answer'];
+    const searchOptions = {
+      boost: { processedContent: 1 },
+      filter: function (result) {
+        return allowedTypes.indexOf(result.type) !== -1;
+      }
+    };
 
     if (chineseSegmenter && trimmedQuery.length > 1) {
       const words = segmentWithJieba(trimmedQuery, true);

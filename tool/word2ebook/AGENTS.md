@@ -48,6 +48,27 @@ main.py
 Mapping JSON lives in `data/audio_map/` (built by `tool/pdf_audio_map/`).  
 Only `inject_chapters()` inside this converter inserts `.qa-play`; then step 4
 writes the ebook. Regenerate with `gen_all.py` / `main.py` after mapping changes.
+
+---
+
+## Source vs generated output (`wenda2_ebook/`)
+
+`../../wenda2_ebook/` is **build output**, not the place to implement features.
+
+| Edit here (source of truth) | Do **not** hand-edit (regenerated / overwritten) |
+|-------------------------------|--------------------------------------------------|
+| `templates/i18n_templates.py` | `wenda2_ebook/index.html`, `index_trad.html`, chapter `*.html` |
+| `assets/js/modules/*.js`, `assets/js/i18n-text.js`, `assets/js/search-cache.js` | `wenda2_ebook/assets/js/script.js` (concatenated) and copied standalone JS |
+| `assets/css/modules/*.css` | `wenda2_ebook/assets/css/style.css` (concatenated) |
+| `generators/`, `core/`, `config.yaml`, `config/settings.py` | `wenda2_ebook/search_index*.json` / `.hash` (from `SearchIndexGenerator`) |
+| `openspec/specs/**` | Any one-off patches under `wenda2_ebook/` for UI/behaviour |
+
+**Rules for agents and humans:**
+
+1. Implement HTML/CSS/JS/i18n/behaviour changes under `tool/word2ebook/` only.
+2. After source changes, run `python3 gen_all.py` (or `main.py` / a targeted rebuild) so `wenda2_ebook/` is rewritten from the pipeline — do not “fix” the live ebook by editing files inside `wenda2_ebook/` and treating that as the fix.
+3. Previewing or temporarily syncing built assets into `wenda2_ebook/` is fine only if the same change already exists in the source tree; a later `gen_all` must still produce the correct result without those hand edits.
+4. Same rule as audio: never rely on hand-patched chapter HTML under `wenda2_ebook/`.
     5. HTMLGenerator.generate_index_pages()     → writes index.html / index_trad.html  (skipped in partial mode)
     6. SearchIndexGenerator.generate_search_indexes()  → writes search_index*.json     (skipped in partial mode)
     7. _generate_static_assets()          → copies CSS/JS bundle to output/assets/
@@ -198,13 +219,14 @@ Module **load order** matters — it is determined by filename numeric sort.
 
 ## Editing rules
 
-1. **Never recreate** the monolithic `script.js` or `style.css` — edit the module files; `StaticAssetsManager` concatenates them.
-2. **After any Python change** — run `python3 -m pytest tests/` from `tool/word2ebook/`.
-3. **After any behavioral change** — update the matching `openspec/specs/<domain>/spec.md`.
-4. **`I18nTemplateManager` is the sole template path** — `html_templates.py` has been deleted.
-5. **`Constants` in `config/settings.py`** is the single source of truth for CDN URLs, index filenames, search weights, answerer names, and heading level ranges. Do not hardcode these elsewhere.
-6. **Adding a new JS/CSS module**: create the file with the correct numeric prefix; `StaticAssetsManager` picks it up automatically; update `static-assets/spec.md`.
-7. **i18n strings** shown in the UI should come from `config.yaml` (via `get_i18n_text`), not hardcoded in Python or JS.
-8. **Simplified/Traditional generation**: use the parameterised `is_traditional` pattern — never duplicate logic for two language variants.
-9. **CSS @media rules**: place all breakpoints in `05-responsive.css`; do not scatter `@media` blocks in component files.
-10. **CSS design tokens**: use `var(--color-primary)` etc.; do not repeat raw hex/pixel values.
+1. **Never edit `wenda2_ebook/` as the source of a feature** — see [Source vs generated output](#source-vs-generated-output-wenda2_ebook) above. Change `tool/word2ebook/` then rebuild.
+2. **Never recreate** the monolithic `script.js` or `style.css` — edit the module files; `StaticAssetsManager` concatenates them.
+3. **After any Python change** — run `python3 -m pytest tests/` from `tool/word2ebook/`.
+4. **After any behavioral change** — update the matching `openspec/specs/<domain>/spec.md`.
+5. **`I18nTemplateManager` is the sole template path** — `html_templates.py` has been deleted.
+6. **`Constants` in `config/settings.py`** is the single source of truth for CDN URLs, index filenames, search weights, answerer names, and heading level ranges. Do not hardcode these elsewhere.
+7. **Adding a new JS/CSS module**: create the file with the correct numeric prefix; `StaticAssetsManager` picks it up automatically; update `static-assets/spec.md`.
+8. **i18n strings** shown in the UI should come from `config.yaml` (via `get_i18n_text`), not hardcoded in Python or JS.
+9. **Simplified/Traditional generation**: use the parameterised `is_traditional` pattern — never duplicate logic for two language variants.
+10. **CSS @media rules**: place all breakpoints in `05-responsive.css`; do not scatter `@media` blocks in component files.
+11. **CSS design tokens**: use `var(--color-primary)` etc.; do not repeat raw hex/pixel values.
