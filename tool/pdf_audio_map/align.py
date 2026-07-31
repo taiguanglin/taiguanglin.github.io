@@ -112,13 +112,15 @@ def align_from_qa_txt(session: dict, converter, cues_raw, srt_root: Path) -> dic
         normalize(seg.get("q_text") or seg.get("q_preview") or "", converter)
         for seg in session["segments"]
     ]
-    # QA (fewer, short titles) → PDF (more, full questions)
+    # QA (fewer, short titles) → PDF (more, full questions).
+    # Slightly looser ratio/window recovers more human-tuned times on long
+    # 官网 days (e.g. 2025-11-10, 2026-02-06) where titles paraphrase heavily.
     qa_to_pdf = match_ordered(
         qa_titles,
         pdf_hay,
-        min_ratio=0.45,
+        min_ratio=0.32,
         scorer=title_coverage,
-        window=16,
+        window=28,
     )
 
     new_segments = [dict(seg) for seg in srt_result["segments"]]
