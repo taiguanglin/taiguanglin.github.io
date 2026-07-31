@@ -111,6 +111,13 @@ scope while the query has at least 2 characters SHALL re-run the search.
 Clearing the search SHALL reset the query and results but SHALL preserve the
 active scope.
 
+The scope control (`.search-scope`) SHALL remain hidden during index loading and
+while the input is empty / shorter than the minimum query length. It SHALL become
+visible (`.is-visible`) after a successful search that returns at least one
+result, so the initial search box stays uncluttered. Once visible for the current
+query, it SHALL stay visible even if a scope change yields zero hits (so the user
+can switch back); clearing the query or collapsing search SHALL hide it again.
+
 #### Scenario: Answer-only scope
 - GIVEN the search scope is set to `answer` and the query matches both question
   and answer documents

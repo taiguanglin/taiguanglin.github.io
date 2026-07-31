@@ -39,6 +39,7 @@ function performSearch(query) {
     currentSearchResults = [];
     displayedResultsCount = 0;
     hideLoadMoreButtons();
+    setSearchScopeVisible(false);
     if (query && query.trim().length > 0 && query.trim().length < 2) {
       elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
     } else {
@@ -75,9 +76,15 @@ function performSearch(query) {
     if (results.length > 0) {
       resetSearchResultsHeight();
       displayPagedResults(trimmedQuery);
+      setSearchScopeVisible(true);
     } else {
       displayNoResults(trimmedQuery, elements);
       elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
+      // 若使用者已透過有結果的搜尋打開過範圍選項，保留可見以免切換後無法切回
+      const scopeEl = document.querySelector('.search-scope');
+      if (!(scopeEl && scopeEl.classList.contains('is-visible'))) {
+        setSearchScopeVisible(false);
+      }
     }
 
     elements.searchResults.style.display = 'block';
@@ -90,6 +97,7 @@ function performSearch(query) {
     elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
     elements.searchResults.style.display = 'none';
     elements.tocHeader.style.display = 'block';
+    setSearchScopeVisible(false);
     setTimeout(updateFloatingControlsState, 10);
   }
 }

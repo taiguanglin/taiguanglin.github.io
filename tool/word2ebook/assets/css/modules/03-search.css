@@ -26,13 +26,17 @@
 }
 
 .search-scope {
-    display: flex;
+    display: none;
     gap: 0;
     margin-top: 10px;
     border: 2px solid var(--color-accent-pale);
     border-radius: var(--radius-sm, 8px);
     overflow: hidden;
     background: #fff;
+}
+
+.search-scope.is-visible {
+    display: flex;
 }
 
 .search-scope-btn {

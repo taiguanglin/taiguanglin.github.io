@@ -820,6 +820,7 @@ function performSearch(query) {
     currentSearchResults = [];
     displayedResultsCount = 0;
     hideLoadMoreButtons();
+    setSearchScopeVisible(false);
     if (query && query.trim().length > 0 && query.trim().length < 2) {
       elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
     } else {
@@ -856,9 +857,15 @@ function performSearch(query) {
     if (results.length > 0) {
       resetSearchResultsHeight();
       displayPagedResults(trimmedQuery);
+      setSearchScopeVisible(true);
     } else {
       displayNoResults(trimmedQuery, elements);
       elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
+      // 若使用者已透過有結果的搜尋打開過範圍選項，保留可見以免切換後無法切回
+      const scopeEl = document.querySelector('.search-scope');
+      if (!(scopeEl && scopeEl.classList.contains('is-visible'))) {
+        setSearchScopeVisible(false);
+      }
     }
 
     elements.searchResults.style.display = 'block';
@@ -871,6 +878,7 @@ function performSearch(query) {
     elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
     elements.searchResults.style.display = 'none';
     elements.tocHeader.style.display = 'block';
+    setSearchScopeVisible(false);
     setTimeout(updateFloatingControlsState, 10);
   }
 }
@@ -1062,6 +1070,13 @@ function handleSearchInitError(elements, error) {
   if (activateBtn) activateBtn.disabled = false;
 }
 
+// 搜尋範圍選項：僅在有結果時顯示，保持載入／空輸入時介面乾淨
+function setSearchScopeVisible(visible) {
+  const scopeEl = document.querySelector('.search-scope');
+  if (!scopeEl) return;
+  scopeEl.classList.toggle('is-visible', !!visible);
+}
+
 // 清除搜索状态（重置输入框、结果、计数）
 function clearSearch() {
   const elements = getSearchElements();
@@ -1072,6 +1087,7 @@ function clearSearch() {
   displayedResultsCount = 0;
   hideLoadMoreButtons();
   resetSearchResultsHeight();
+  setSearchScopeVisible(false);
   if (elements.searchStatus) {
     const count = searchIndex ? searchIndex.length : 0;
     elements.searchStatus.innerHTML = getText(`搜索准备就绪 (共${count}条记录)`, `搜尋準備就緒 (共${count}條記錄)`);
@@ -1097,6 +1113,7 @@ function collapseSearch() {
   currentSearchResults = [];
   displayedResultsCount = 0;
   hideLoadMoreButtons();
+  setSearchScopeVisible(false);
 
   if (searchStatus) searchStatus.innerHTML = '';
   if (searchResultsList) { searchResultsList.innerHTML = ''; searchResultsList.style.maxHeight = ''; searchResultsList.style.overflowY = ''; }

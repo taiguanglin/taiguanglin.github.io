@@ -51,13 +51,20 @@ Search SHALL keep a session state variable `searchScope` with values
 `question`, `answer`, or `both` (default `both`). Scope buttons with
 `data-scope` SHALL update this state, toggle `is-active` / `aria-pressed`, and
 re-invoke `performSearch` when the current query is at least 2 characters.
-`clearSearch` SHALL NOT reset `searchScope`.
+`clearSearch` SHALL NOT reset `searchScope`. The scope control SHALL stay hidden
+until `performSearch` yields at least one result (`setSearchScopeVisible(true)`);
+empty query, short query, zero hits, clear, and collapse SHALL hide it again.
 
 #### Scenario: Scope change re-searches
 - GIVEN an active query of length ≥ 2 and `searchScope` is `both`
 - WHEN the user activates the `answer` scope button
 - THEN `searchScope` SHALL become `answer` and `performSearch` SHALL run again
   with an answer-only filter
+
+#### Scenario: Scope hidden until results exist
+- GIVEN search has finished loading and the user has not yet produced results
+- WHEN the search panel is shown
+- THEN `.search-scope` SHALL NOT have class `is-visible`
 
 ### Requirement: Search Index Download Progress
 When the index page downloads `search_index.json` / `search_index_trad.json`
