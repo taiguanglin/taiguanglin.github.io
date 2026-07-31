@@ -59,6 +59,29 @@ re-invoke `performSearch` when the current query is at least 2 characters.
 - THEN `searchScope` SHALL become `answer` and `performSearch` SHALL run again
   with an answer-only filter
 
+### Requirement: Search Index Download Progress
+When the index page downloads `search_index.json` / `search_index_trad.json`
+over the network, the UI SHALL show a progress bar (same `.search-progress-*`
+pattern as index building) with downloaded / total megabytes and a percentage.
+The total byte count SHALL come from the companion `.hash` file's `size` field
+(uncompressed JSON size), NOT from HTTP `Content-Length` (which reflects the
+gzip-encoded transfer size under GitHub Pages). UI updates SHALL be throttled
+(about every 100ms or when the percentage changes). When `size` is unavailable,
+the UI SHALL show downloaded megabytes with an indeterminate progress bar.
+When the index is loaded from IndexedDB cache, the download progress UI SHALL
+be skipped and a short cache-loading message MAY be shown instead.
+
+#### Scenario: Network download shows percentage from hash size
+- GIVEN `.hash` reports `size` equal to the uncompressed index byte length
+- WHEN `loadSearchIndexWithProgress` streams the index body
+- THEN the status text SHALL include loaded MB, total MB, and a percentage
+  that reaches 100% when the stream completes
+
+#### Scenario: Missing hash size shows bytes only
+- GIVEN no usable `.hash` `size`
+- WHEN the index is downloaded
+- THEN the status text SHALL show downloaded MB without a percentage denominator
+
 ### Requirement: Dark Mode Persistence
 The system SHALL read `localStorage['darkMode']` on page load and add the
 `dark-mode` class to `<body>` if the value is `'true'`.

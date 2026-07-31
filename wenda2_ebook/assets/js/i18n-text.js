@@ -18,6 +18,22 @@ window.I18N_TEXT = {
       simplified: '正在下载搜索数据...',
       traditional: '正在下載搜尋資料...'
     },
+    downloadingProgress: {
+      simplified: '正在下载搜索数据… {loaded} / {total} MB（{pct}%）',
+      traditional: '正在下載搜尋資料… {loaded} / {total} MB（{pct}%）'
+    },
+    downloadingBytes: {
+      simplified: '正在下载搜索数据… {loaded} MB',
+      traditional: '正在下載搜尋資料… {loaded} MB'
+    },
+    loadingFromCache: {
+      simplified: '正在从缓存加载搜索索引…',
+      traditional: '正在從快取載入搜尋索引…'
+    },
+    preparingIndex: {
+      simplified: '准备智能搜索索引... 即将完成',
+      traditional: '準備智能搜尋索引... 即將完成'
+    },
     processingIndex: {
       simplified: '正在处理搜索索引...',
       traditional: '正在處理搜尋索引...'

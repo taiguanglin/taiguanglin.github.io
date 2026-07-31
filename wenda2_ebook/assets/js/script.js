@@ -111,7 +111,7 @@ if (localStorage.getItem('darkMode') === 'true') {
     await initSearch();
   }
   
-  // 創建載入UI
+  // 創建載入UI（spinner；下載進度改由 createProgressUI 負責）
   function createLoadingUI(container) {
     const loadingDiv = document.createElement('div');
     loadingDiv.className = 'search-loading';
@@ -147,68 +147,113 @@ if (localStorage.getItem('darkMode') === 'true') {
     
     return errorDiv;
   }
-  
-  // 載入搜索索引（支援進度追蹤）
-  async function loadSearchIndexWithProgress() {
+
+  function formatDownloadMb(bytes) {
+    return (bytes / (1024 * 1024)).toFixed(1);
+  }
+
+  /**
+   * 載入搜索索引並顯示下載進度條。
+   * @param {number|null|undefined} expectedTotalBytes 未壓縮 JSON 位元組數（來自 .hash 的 size）；
+   *   勿使用 HTTP Content-Length（gzip 時為壓縮大小，與 body stream 單位不一致）。
+   * @param {HTMLElement} searchStatus 狀態容器
+   */
+  async function loadSearchIndexWithProgress(expectedTotalBytes, searchStatus) {
     const indexFile = getSearchIndexFile();
-    
+    const isTrad = isTraditionalChinesePage();
+    const total = (typeof expectedTotalBytes === 'number' && expectedTotalBytes > 0)
+      ? expectedTotalBytes
+      : null;
+
     try {
-      const response = await fetch(indexFile);
-      
-      if (!response.ok) {
-        throw new Error(getI18nText('search.networkError', isTraditionalChinesePage(), '網路連接失敗，請檢查網路後重試'));
+      const initialText = getI18nText('search.loadingIndex', isTrad, '正在載入搜尋索引...');
+      const progress = createProgressUI(searchStatus, initialText);
+      const progressBar = progress.fill.parentElement;
+      if (total === null && progressBar) {
+        progressBar.classList.add('is-indeterminate');
       }
-      
-      const contentLength = response.headers.get('content-length');
-      const total = parseInt(contentLength, 10);
+
+      const response = await fetch(indexFile);
+
+      if (!response.ok) {
+        throw new Error(getI18nText('search.networkError', isTrad, '網路連接失敗，請檢查網路後重試'));
+      }
+
       let loaded = 0;
-      
       const reader = response.body.getReader();
       const chunks = [];
-      
-      // 更新載入文字的函數
-      const updateLoadingText = (text) => {
-        const loadingText = document.getElementById('search-loading-text');
-        
-        if (loadingText) {
-          loadingText.textContent = text;
+      let lastUiAt = 0;
+      let lastPct = -1;
+
+      const renderDownloadProgress = (force) => {
+        const now = Date.now();
+        const loadedMb = formatDownloadMb(loaded);
+        let pct = null;
+        if (total !== null) {
+          pct = Math.min(100, Math.round((loaded / total) * 100));
+        }
+        if (!force) {
+          const pctUnchanged = pct === null || pct === lastPct;
+          if (now - lastUiAt < 100 && pctUnchanged) return;
+        }
+        lastUiAt = now;
+        if (pct !== null) lastPct = pct;
+
+        if (pct !== null) {
+          const totalMb = formatDownloadMb(total);
+          progress.text.textContent = getI18nText(
+            'search.downloadingProgress',
+            isTrad,
+            '正在下載搜尋資料… ' + loadedMb + ' / ' + totalMb + ' MB（' + pct + '%）',
+            { loaded: loadedMb, total: totalMb, pct: pct }
+          );
+          progress.fill.style.width = pct + '%';
+        } else {
+          progress.text.textContent = getI18nText(
+            'search.downloadingBytes',
+            isTrad,
+            '正在下載搜尋資料… ' + loadedMb + ' MB',
+            { loaded: loadedMb }
+          );
         }
       };
-      
-      // 初始狀態
-      updateLoadingText(getI18nText('search.loadingIndex', isTraditionalChinesePage(), '正在載入搜尋索引...'));
-      
+
+      renderDownloadProgress(true);
+
       while (true) {
         const { done, value } = await reader.read();
-        
         if (done) break;
-        
         chunks.push(value);
         loaded += value.length;
-        
-        // 顯示下載中的提示
-        updateLoadingText(getI18nText('search.loadingData', isTraditionalChinesePage(), '正在下載搜尋資料...'));
+        renderDownloadProgress(false);
       }
-      
-      // 組合所有chunks
+
+      if (progressBar) progressBar.classList.remove('is-indeterminate');
+      progress.fill.style.width = '100%';
+      progress.text.textContent = getI18nText(
+        'search.processingIndex',
+        isTrad,
+        '正在處理搜尋索引...'
+      );
+
       const allChunks = new Uint8Array(loaded);
       let position = 0;
-      for (const chunk of chunks) {
-        allChunks.set(chunk, position);
-        position += chunk.length;
+      for (let i = 0; i < chunks.length; i++) {
+        allChunks.set(chunks[i], position);
+        position += chunks[i].length;
       }
-      
-      // 更新到處理階段
-      updateLoadingText(getI18nText('search.processingIndex', isTraditionalChinesePage(), '正在處理搜尋索引...'));
-      
-      // 解析JSON
+
       const text = new TextDecoder().decode(allChunks);
-      const searchIndex = JSON.parse(text);
-      
-      updateLoadingText(getI18nText('search.preparingIndex', isTraditionalChinesePage(), '準備智能搜索索引... 即將完成', '準備智能搜尋索引... 即將完成'));
-      
-      return searchIndex;
-      
+      const parsedIndex = JSON.parse(text);
+
+      progress.text.textContent = getI18nText(
+        'search.preparingIndex',
+        isTrad,
+        '準備智能搜尋索引... 即將完成'
+      );
+
+      return parsedIndex;
+
     } catch (error) {
       console.error('載入搜索索引失敗:', error);
       throw error;
@@ -930,12 +975,20 @@ function getSearchElements() {
   };
 }
 
-// 初始化搜索 UI（显示容器、创建加载中状态）
+// 初始化搜索 UI（显示容器；进度条由下载／建索引阶段自行挂载）
 function initializeSearchUI(elements) {
   if (elements.searchActivation) elements.searchActivation.style.display = 'none';
   elements.searchContainer.style.display = 'block';
   elements.searchStatus.innerHTML = '';
-  return createLoadingUI(elements.searchStatus);
+  const loadingUI = createLoadingUI(elements.searchStatus);
+  if (loadingUI.textElement) {
+    loadingUI.textElement.textContent = getI18nText(
+      'search.loading',
+      isTraditionalChinesePage(),
+      '正在載入搜尋功能，請稍候...'
+    );
+  }
+  return loadingUI;
 }
 
 // 更新「显示更多」按钮的显示状态
@@ -1080,7 +1133,7 @@ async function initSearch() {
   }
 
   try {
-    const loadingUI = initializeSearchUI(elements);
+    initializeSearchUI(elements);
 
     if (typeof MiniSearch === 'undefined') throw new Error('MiniSearch库未加载');
 
@@ -1090,24 +1143,51 @@ async function initSearch() {
       : `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
 
     const isTraditional = isTraditionalChinesePage();
+    const isTrad = isTraditionalChinesePage();
 
-    // 检查是否需要从网络更新
     let needsUpdate = true;
-    if (cacheManager) needsUpdate = await cacheManager.needsUpdate(isTraditional);
+    let hashData = null;
+    if (cacheManager) {
+      const updateInfo = await cacheManager.checkUpdate(isTraditional);
+      needsUpdate = updateInfo.needsUpdate;
+      hashData = updateInfo.hashData;
+    }
 
     if (!needsUpdate) {
+      elements.searchStatus.innerHTML = '';
+      const cacheMsg = document.createElement('div');
+      cacheMsg.className = 'search-loading-text';
+      cacheMsg.textContent = getI18nText(
+        'search.loadingFromCache',
+        isTrad,
+        '正在從快取載入搜尋索引…'
+      );
+      elements.searchStatus.appendChild(cacheMsg);
       searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
-      if (!searchIndex) { console.log('📡 緩存數據丟失，重新下載...'); needsUpdate = true; }
-      else console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
+      if (!searchIndex) {
+        console.log('📡 緩存數據丟失，重新下載...');
+        needsUpdate = true;
+      } else {
+        console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
+      }
     }
 
     if (needsUpdate) {
       console.log('📡 從網絡加載搜索索引...');
-      searchIndex = await loadSearchIndexWithProgress();
+      if (!hashData && cacheManager) {
+        const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
+        hashData = await cacheManager.fetchHashFile(`${indexFileName}.hash`);
+      } else if (!hashData) {
+        try {
+          const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
+          const hashResp = await fetch(`${indexFileName}.hash`);
+          if (hashResp.ok) hashData = await hashResp.json();
+        } catch (e) { /* 無 hash 時改顯示位元組進度 */ }
+      }
+      const expectedSize = hashData && typeof hashData.size === 'number' ? hashData.size : null;
+      searchIndex = await loadSearchIndexWithProgress(expectedSize, elements.searchStatus);
       if (cacheManager && searchIndex) {
         await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
-        const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
-        const hashData = await cacheManager.fetchHashFile(`${indexFileName}.hash`);
         if (hashData) {
           await cacheManager.saveHashMetadata(hashData, isTraditional);
           console.log('🗑️ 清除舊的處理後索引緩存...');
@@ -1116,7 +1196,6 @@ async function initSearch() {
       }
     }
 
-    elements.searchStatus.removeChild(loadingUI.loadingDiv);
     console.log(`📋 索引記錄數: ${searchIndex.length}`);
 
     const searchConfig = createSearchConfig(segmenterEnabled);

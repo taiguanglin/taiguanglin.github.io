@@ -231,41 +231,47 @@ class SearchCacheManager {
 
   /**
    * 檢查緩存是否需要更新（基於哈希值）
+   * @returns {Promise<boolean>}
    */
   async needsUpdate(isTraditional = false) {
+    const result = await this.checkUpdate(isTraditional);
+    return result.needsUpdate;
+  }
+
+  /**
+   * 下載遠程 .hash 並與本地比對；回傳是否需更新與 hash 資料（含未壓縮 size）。
+   * @returns {Promise<{needsUpdate: boolean, hashData: object|null}>}
+   */
+  async checkUpdate(isTraditional = false) {
     try {
-      // 獲取搜索索引文件名
       const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
       const hashFileName = `${indexFileName}.hash`;
-      
-      // 下載哈希文件
+
       const remoteHashData = await this.fetchHashFile(hashFileName);
       if (!remoteHashData) {
         console.log('📡 無法獲取遠程哈希文件，將重新下載索引');
-        return true;
+        return { needsUpdate: true, hashData: null };
       }
-      
-      // 獲取本地緩存的哈希值
+
       const localHashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
       const localHashData = await this.getMetadata(localHashKey);
-      
+
       if (!localHashData) {
         console.log('💾 本地無哈希記錄，需要下載');
-        return true;
+        return { needsUpdate: true, hashData: remoteHashData };
       }
-      
-      // 比較哈希值
+
       const needsUpdate = localHashData.hash !== remoteHashData.hash;
       if (needsUpdate) {
         console.log(`🔄 檢測到內容更新 (${localHashData.hash.substring(0,8)} → ${remoteHashData.hash.substring(0,8)})`);
       } else {
         console.log(`✅ 內容未變更 (${remoteHashData.hash.substring(0,8)})`);
       }
-      
-      return needsUpdate;
+
+      return { needsUpdate: needsUpdate, hashData: remoteHashData };
     } catch (error) {
       console.warn('哈希檢查失敗，將重新下載:', error);
-      return true;
+      return { needsUpdate: true, hashData: null };
     }
   }
 

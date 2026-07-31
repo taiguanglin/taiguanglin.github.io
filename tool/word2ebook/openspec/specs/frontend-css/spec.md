@@ -20,7 +20,7 @@ cascade order.
 | `01b-floating-toc.css` | Floating TOC panel, TOC header, content area, items, tabs; dark-mode floating-TOC variants |
 | `01c-bookmarks.css` | Bookmark list items, homepage bookmark groups, visual bookmark indicators, current-chapter info bar; dark-mode bookmark variants |
 | `02-search-btn.css` | Search activation button styles (top and bottom) |
-| `03-search.css` | Search panel, scope segmented control (`.search-scope`), loading/progress/error/success states, search results, dark-mode search variants |
+| `03-search.css` | Search panel, scope segmented control (`.search-scope`), loading/progress/error/success states (incl. `.search-progress-bar.is-indeterminate` for unknown totals), search results, dark-mode search variants |
 | `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, TOC item hover, level-specific link colours, collapse animations |
 | `04b-toc-dark.css` | Dark-mode overrides for all TOC, floating-TOC, and bookmark elements inside the TOC panel |
 | `04c-qa-audio.css` | QA chapter styles: source banner, per-segment `qa-meta-bar` (number + `.qa-play` button + status badge), `qa-opening`, the bottom floating `qa-player` (seek row with `−5s`/progress/`+5s`, play/pause toggle); dark-mode variants. Ordered before `05-responsive.css` so its `@media` overrides win. Responsive rules for these live in `05-responsive.css` |

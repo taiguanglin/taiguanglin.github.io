@@ -94,6 +94,13 @@ The generated HTML pages SHALL load MiniSearch from CDN with a fallback URL.
 Chinese text search SHALL use the Jieba WASM segmenter when available; the
 system SHALL fall back to substring matching when Jieba is unavailable.
 
+### Requirement: Index Download Progress Uses Hash Size
+The client SHALL use the `.hash` file's `size` field (uncompressed UTF-8 byte
+length of the JSON) as the progress denominator when streaming the search index.
+It MUST NOT use HTTP `Content-Length` for percentage progress, because GitHub
+Pages serves the JSON with `Content-Encoding: gzip` while `fetch` exposes the
+decompressed body stream.
+
 ### Requirement: Search Scope Filter
 The index-page search UI SHALL provide a mutually exclusive scope control with
 three modes: `question` (only `type=question`), `answer` (only `type=answer`),
