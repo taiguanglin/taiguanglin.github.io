@@ -162,13 +162,48 @@ def _is_img_marker(text: str) -> bool:
 
 
 def _detect_source_from_shifu(text: str) -> Optional[str]:
-    """從師父說開場文推斷來源；無法判斷時回傳 None（維持現況）。"""
-    if "公众号" in text or "微信" in text:
+    """從師父說開場文推斷來源；無法判斷時回傳 None（維持現況）。
+
+    規則重點：
+    - 「微信公众号的问题」優於順帶提到的「贴吧的问题太多」（2025-07-07）
+    - 「下边回答了，去公众号」不算切到微信（2025-08-04 贴吧开场）
+    - 純收尾行（就回答到这里）不切源，避免空的贴吧段（2025-08-09）
+    """
+    # Explicit 「X的问题/答疑」labels — 微信 before 贴吧 so
+    # 「…微信公众号的问题。因为贴吧的问题太多了」→ 微信
+    if re.search(r"(微信\s*)?公众号的(问题|答疑)", text) or re.search(
+        r"(微信\s*)?公眾號的(問題|答疑)", text
+    ) or re.search(r"微信的(问题|答疑)", text):
         return SOURCE_WEIXIN
-    if "官网" in text or "官網" in text:
-        return SOURCE_GUANWANG
-    if "贴吧" in text or "貼吧" in text:
+    if re.search(r"(先回答|继续回答|回答)\s*贴吧的(问题|答疑)", text) or re.search(
+        r"(先回答|繼續回答|回答)\s*貼吧的(問題|答疑)", text
+    ):
         return SOURCE_TIEBA
+    if re.search(r"(先回答|继续回答|回答)\s*官网的(问题|答疑)", text) or re.search(
+        r"(先回答|繼續回答|回答)\s*官網的(問題|答疑)", text
+    ):
+        return SOURCE_GUANWANG
+    if re.search(r"官方网站", text[:120]):
+        return SOURCE_GUANWANG
+
+    # Pure wrap-up: keep current source (do not spawn empty sections)
+    if re.search(
+        r"(就回答到这[里裡]|回答就到这[里裡]|答疑就到这[里裡]|今天就回答到这[里裡])",
+        text,
+    ):
+        return None
+
+    has_tieba = "贴吧" in text or "貼吧" in text
+    has_weixin = "公众号" in text or "微信公众" in text
+    has_guanwang = "官网" in text or "官網" in text
+
+    # Weak keywords: 贴吧 wins over incidental 公众号/微信 mention
+    if has_tieba:
+        return SOURCE_TIEBA
+    if has_weixin:
+        return SOURCE_WEIXIN
+    if has_guanwang:
+        return SOURCE_GUANWANG
     if re.search(r"\d+\s*楼", text):
         return SOURCE_GUANWANG
     return None

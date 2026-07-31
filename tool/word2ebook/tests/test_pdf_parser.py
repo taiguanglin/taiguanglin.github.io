@@ -276,6 +276,85 @@ class TestGuanwangSource:
         assert [t.text for t in ch.toc_items] == ["2025年11月15日 官网"]
         assert "贴吧" not in [t.text for t in ch.toc_items]
 
+    def test_incidental_gongzhonghao_in_tieba_opening(self, parser):
+        """贴吧開場閒聊「回答了，去公众号领书」不應把整場誤判成微信。"""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月4 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月4 号，周一。有人问怎么领这个书，"),
+            (CONT, "下边回答了，去公众号或者微信群。要贴吧不倒，从15 楼开始是正式问题。"),
+            (CONT, "牧羊少年571：2025-08-04 10:00"),
+            (IND,  "顶礼师父，请问三观问题？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "贴吧回答内容。"),
+            (IND,  "师父说：好了，贴吧的问题就回答到这里。"),
+            (IND,  "师父说：今天是2025 年8 月4 号，回答微信公众号的问题。"),
+            (CONT, "微信用户：2025-08-04 20:00"),
+            (IND,  "微信问题内容。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "微信回答内容。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=15)[0]
+        texts = [t.text for t in ch.toc_items]
+        assert texts == ["2025年8月4日 贴吧", "2025年8月4日 微信公众号"]
+        tieba = ch.content.index("2025年8月4日 贴吧")
+        weixin = ch.content.index("2025年8月4日 微信公众号")
+        assert "三观问题" in ch.content[tieba:weixin]
+        assert "贴吧回答内容" in ch.content[tieba:weixin]
+        assert "微信问题内容" in ch.content[weixin:]
+        assert "微信问题内容" not in ch.content[tieba:weixin]
+
+    def test_weixin_opening_mentions_tieba_overload(self, parser):
+        """「微信公众号的问题。因为贴吧的问题太多了」仍應切到微信（2025-07-07）。"""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月7 号，周一，先回答贴吧的问题。"),
+            (CONT, "甲：2025-07-07 10:00"),
+            (IND,  "贴吧问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "贴吧回答。"),
+            (IND,  "师父说：好了，今天贴吧的问题就回答到这里。"),
+            (IND,  "师父说：今天是2025 年7 月7 号，虽然时间已经到了7 月8号，"),
+            (CONT, "但是回答还是7 月7 号的问题，微信公众号的问题。因为贴吧的问题太多了。"),
+            (CONT, "现在看微信公众号的问题。"),
+            (CONT, "乙：2025-07-07 20:00"),
+            (IND,  "微信问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "微信回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=14)[0]
+        texts = [t.text for t in ch.toc_items]
+        assert texts == ["2025年7月7日 贴吧", "2025年7月7日 微信公众号"]
+        tieba = ch.content.index("2025年7月7日 贴吧")
+        weixin = ch.content.index("2025年7月7日 微信公众号")
+        assert "贴吧问题" in ch.content[tieba:weixin]
+        assert "微信问题" in ch.content[weixin:]
+        assert "微信问题" not in ch.content[tieba:weixin]
+
+    def test_closing_does_not_spawn_empty_tieba(self, parser):
+        """官网場次結尾「今天贴吧的答疑就到这里」不應長出空的贴吧段。"""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月9 号，周六，从164 楼开始回答。"),
+            (CONT, "甲：2025-08-09 10:00"),
+            (IND,  "官网问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "官网回答。"),
+            (IND,  "师父说：今天贴吧的答疑就到这里，光是录音就一个半小时了。"),
+            (IND,  "师父说：今天是2025 年8 月9 号，回答微信公众号的问题。"),
+            (CONT, "乙：2025-08-09 20:00"),
+            (IND,  "微信问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "微信回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=15)[0]
+        texts = [t.text for t in ch.toc_items]
+        assert texts == ["2025年8月9日 官网", "2025年8月9日 微信公众号"]
+        assert "2025年8月9日 贴吧" not in texts
+        assert "一个半小时" in ch.content
+        guan = ch.content.index("2025年8月9日 官网")
+        weixin = ch.content.index("2025年8月9日 微信公众号")
+        assert "一个半小时" in ch.content[guan:weixin]
+
 
 # ---------------------------------------------------------------------------
 # PDF images (marker injected into parse_lines)
