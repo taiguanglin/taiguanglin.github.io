@@ -99,8 +99,11 @@ def extract_session_from_section(
                 "question_id": qid,
                 "questioner": questioner,
                 "question_time": q_time,
+                # Include index so multi-part posts (same questioner+time) stay unique.
                 "stable_key": (
-                    f"{questioner}|{q_time}" if questioner and q_time else f"{section_id}#{idx}"
+                    f"{questioner}|{q_time}|{idx}"
+                    if questioner and q_time
+                    else f"{section_id}#{idx}"
                 ),
                 "q_preview": q_text[:180],
                 "q_text": q_text,

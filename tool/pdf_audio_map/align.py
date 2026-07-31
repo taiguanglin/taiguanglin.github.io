@@ -437,6 +437,15 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
     return {**session, "opening": opening, "segments": new_segments, "srt_file": str(srt)}
 
 
+def _seg_match_key(seg: dict) -> str:
+    """Unique-ish key for merge/refresh. Prefer question_id, then index."""
+    if seg.get("question_id"):
+        return f"qid:{seg['question_id']}"
+    if seg.get("index") is not None:
+        return f"idx:{seg['index']}"
+    return seg.get("stable_key") or ""
+
+
 def merge_session(old: Optional[dict], new: dict) -> dict:
     if not old:
         return new
@@ -449,11 +458,13 @@ def merge_session(old: Optional[dict], new: dict) -> dict:
                 out["opening"][k] = new["opening"][k]
     old_by_key = {}
     for seg in old.get("segments") or []:
+        old_by_key[_seg_match_key(seg)] = seg
+        # legacy fallback
         old_by_key[seg.get("stable_key") or f"#{seg.get('index')}"] = seg
     merged_segs = []
     for seg in new.get("segments") or []:
-        key = seg.get("stable_key") or f"#{seg.get('index')}"
-        prev = old_by_key.get(key)
+        key = _seg_match_key(seg)
+        prev = old_by_key.get(key) or old_by_key.get(seg.get("stable_key") or f"#{seg.get('index')}")
         if _is_protected(prev):
             # Keep timing from prev, refresh PDF text from new
             kept = {**seg, **{k: prev[k] for k in (
@@ -657,21 +668,24 @@ def refresh_pdf_text(payload: dict, ebook_dir: Path, srt_root: Path) -> dict:
                 if k in fresh["opening"]:
                     op[k] = fresh["opening"][k]
             sc["opening"] = op if op else sc.get("opening")
-        fresh_segs = {
-            s.get("stable_key") or f"#{s.get('index')}": s
-            for s in (fresh.get("segments") or [])
+        # Match by index only. question_id / stable_key can be duplicated or
+        # corrupted in older maps; index tracks PDF order.
+        fresh_by_idx = {
+            s["index"]: s for s in (fresh.get("segments") or []) if s.get("index") is not None
         }
+        fresh_list = list(fresh.get("segments") or [])
         segs = []
-        for seg in sc.get("segments") or []:
-            key_s = seg.get("stable_key") or f"#{seg.get('index')}"
-            fs = fresh_segs.get(key_s)
+        for pos, seg in enumerate(sc.get("segments") or []):
+            fs = fresh_by_idx.get(seg.get("index"))
+            if fs is None and pos < len(fresh_list):
+                fs = fresh_list[pos]
             if not fs:
                 segs.append(seg)
                 continue
             merged = dict(seg)
             for k in (
                 "q_text", "q_preview", "answer_text", "answer_preview",
-                "questioner", "question_time", "question_id",
+                "questioner", "question_time", "question_id", "stable_key", "index",
             ):
                 if k in fs:
                     merged[k] = fs[k]
