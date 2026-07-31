@@ -33,9 +33,16 @@ If **官网** has no mp3/srt/opus for that day, it falls back to the same day's 
 
 - **2025-11 … 2026-03**: prefer times from `qa/*.txt`, fill gaps via SRT.
 - **2025-06 … 2025-09**: SRT ordered fuzzy match against PDF question/answer text.
+- Match order per question: **questioner name** (digits → 五七幺/五七一) → question body
+  (honorifics stripped) → answer opening → global re-anchor.
+- `match_start` returns the cue that *owns* the matched text (not the sliding-window
+  start). This avoids ~20s-early starts when the window reaches into later speech
+  (e.g. 2025-08-04 贴吧 Q1).
 - Unmatched gaps are filled by monotonic interpolation (`notes: interpolated`) so the map has **zero missing** ranges.
 - Re-runs skip segments with `locked: true` or `status: "manual"` (unless `--fresh`).
 - Hard misses (no SRT at all): `fill_misses.py` retranscribes the session mp3 with [`tool/sense_voice`](../sense_voice/).
+- If a session’s SRT is badly out of sync with the opus, force-retranscribe that mp3
+  then `align.py --month YYYY-MM --fresh --apply --require-complete`.
 
 ## Browser editor
 

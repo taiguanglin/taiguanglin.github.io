@@ -26,8 +26,10 @@ from common import (
     parse_srt,
     parse_srt_raw,
     parse_tc,
+    question_needles,
     range_fields,
     resolve_media,
+    spoken_name_variants,
     srt_path_for,
     srt_preview,
     title_coverage,
@@ -245,14 +247,43 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
     scores: List[float] = []
 
     for seg in session["segments"]:
-        q = normalize(seg.get("q_text") or seg.get("q_preview") or "", converter)[:70]
-        res = match_start(cues, cursor_idx, q, min_len=4, min_block=4)
+        res = None
+        via_name = False
+        # 1) Questioner name (ASR often reads 571 as 五七幺) — strongest anchor
+        for name in spoken_name_variants(seg.get("questioner") or "", converter):
+            if len(name) < 2:
+                continue
+            res = match_start(
+                cues, cursor_idx, name, min_len=2, min_block=min(4, len(name)), max_scan=280
+            )
+            if res is not None:
+                via_name = True
+                break
+        # 2) Distinctive question body (skip 顶礼师父… boilerplate)
+        if res is None:
+            for needle in question_needles(
+                seg.get("q_text") or seg.get("q_preview") or "", converter
+            ):
+                res = match_start(
+                    cues, cursor_idx, needle, min_len=6, min_block=6, max_scan=280
+                )
+                if res is not None and res[2] >= 6:
+                    break
+                res = None
+        # 3) Answer opening
         if res is None and seg.get("answer_preview"):
             a = normalize(seg["answer_preview"], converter)[:60]
             res = match_start(cues, cursor_idx, a, min_len=6, min_block=5)
+        # 4) Global re-anchor
         if res is None:
-            gq = normalize(seg.get("q_text") or seg.get("q_preview") or "", converter)[:80]
-            res = match_start(cues, 0, gq, min_len=8, min_block=8, max_scan=len(cues))
+            for needle in question_needles(
+                seg.get("q_text") or seg.get("q_preview") or "", converter
+            ):
+                res = match_start(
+                    cues, 0, needle, min_len=8, min_block=8, max_scan=len(cues)
+                )
+                if res is not None:
+                    break
         if res is None and seg.get("answer_preview"):
             ga = normalize(seg["answer_preview"], converter)[:90]
             res = match_start(cues, 0, ga, min_len=10, min_block=10, max_scan=len(cues))
@@ -261,8 +292,16 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
             scores.append(0.0)
             continue
         start_time, cue_idx, score = res
+        # Enforce monotonicity: never go backwards
+        if starts and any(s is not None for s in starts):
+            prev = max(s for s in starts if s is not None)
+            if start_time < prev:
+                starts.append(None)
+                scores.append(0.0)
+                continue
         starts.append(start_time)
-        scores.append(float(score))
+        # Name hits are short but reliable — don't mark as low-conf
+        scores.append(max(float(score), 12.0) if via_name else float(score))
         cursor_idx = cue_idx + 1
 
     resolved, fill_notes = _interpolate_starts(starts, scores, audio_end)

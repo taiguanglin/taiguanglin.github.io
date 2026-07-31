@@ -10,10 +10,38 @@ import pytest
 PDF_AUDIO_MAP = Path(__file__).resolve().parents[2] / "pdf_audio_map"
 sys.path.insert(0, str(PDF_AUDIO_MAP))
 
-from common import get_converter, match_ordered, normalize, resolve_media, title_coverage  # noqa: E402
+from common import (  # noqa: E402
+    get_converter,
+    match_ordered,
+    match_start,
+    normalize,
+    resolve_media,
+    spoken_name_variants,
+    title_coverage,
+)
 from align import _interpolate_starts  # noqa: E402
 
 CONV = get_converter()
+
+
+class TestMatchStartOwner:
+    def test_returns_cue_that_owns_match_not_window_start(self):
+        """Window starting early must not steal a later cue's match time."""
+        # Synthetic cues: filler then the real phrase
+        cues = [
+            (100.0, 110.0, normalize("只要贴吧不倒咱们继续发着玩", CONV)),
+            (110.0, 120.0, normalize("从十五楼开始是正式问题", CONV)),
+            (120.0, 130.0, normalize("牧羊少年五七幺这位朋友问是不是人的三观和思维方式", CONV)),
+        ]
+        needle = normalize("的三观和思维方式", CONV)
+        start, idx, size = match_start(cues, 0, needle, min_len=4, min_block=4)
+        assert idx == 2
+        assert abs(start - 120.0) < 0.01
+        assert size >= 6
+
+    def test_spoken_name_variants_include_yao(self):
+        variants = spoken_name_variants("牧羊少年571", CONV)
+        assert any("五七幺" in v or "五七一" in v for v in variants)
 
 
 class TestTitleCoverage:

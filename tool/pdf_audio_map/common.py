@@ -251,10 +251,17 @@ def _window(cues, i, need_len):
 
 
 def match_start(cues, cursor_idx, needle, min_len, min_block=6, max_scan=340):
-    """Find cue where needle is first read aloud. Returns (start, cue_idx, size) or None."""
+    """Find cue where needle is first read aloud. Returns (start, cue_idx, size) or None.
+
+    Important: the sliding window may *contain* a later match while starting on an
+    earlier cue. Always return the cue that *owns* the matched span, not the
+    window's first cue (otherwise Q1 can start ~20s early when the window
+    reaches into the real answer).
+    """
     if len(needle) < min_len:
         return None
     n = len(needle)
+    # best: (priority, size, owner_idx) — prefer needle-aligned matches
     best = None
     end_idx = min(len(cues), cursor_idx + max_scan)
     for i in range(cursor_idx, end_idx):
@@ -264,15 +271,80 @@ def match_start(cues, cursor_idx, needle, min_len, min_block=6, max_scan=340):
         m = difflib.SequenceMatcher(None, win, needle, autojunk=False).find_longest_match(
             0, len(win), 0, n
         )
-        if best is None or m.size > best[0]:
-            best = (m.size, i)
+        min_accept = max(min_len, min_block - 2)
+        if m.size < min_accept:
+            continue
+        # Map match back to the cue that speaks those characters
+        qpos = max(0, m.a - m.b) if m.b <= 4 else m.a
+        owner = owners[qpos] if qpos < len(owners) else i
+        # Priority: needle starts near match (m.b small) > mid-needle hit
+        priority = 2 if m.b <= 4 else (1 if m.b <= 12 else 0)
+        cand = (priority, m.size, owner)
+        if best is None or cand > best:
+            best = cand
+        # Fast path: strong prefix alignment
         if m.size >= min_block and m.b <= 4:
-            qpos = max(0, m.a - m.b)
-            owner = owners[qpos] if qpos < len(owners) else i
             return cues[owner][0], owner, m.size
-    if best is None or best[0] < max(4, min_block - 2):
+    min_accept = max(min_len, min_block - 2)
+    if best is None or best[1] < min_accept:
         return None
-    return cues[best[1]][0], best[1], best[0]
+    _priority, size, owner = best
+    return cues[owner][0], owner, size
+
+
+# Arabic digits → common spoken forms in ASR (1 often becomes 幺)
+_DIGIT_CN = str.maketrans("0123456789", "零一二三四五六七八九")
+_DIGIT_YAO = str.maketrans("0123456789", "零幺二三四五六七八九")
+
+HONORIFIC_RE = re.compile(
+    r"^(顶礼|頂禮)?(tai)?(师父|師父|老师|老師)?(好|吉祥)?",
+    re.I,
+)
+
+
+def spoken_name_variants(name: str, converter=None) -> List[str]:
+    """Normalize a questioner name into ASR-friendly variants.
+
+    Spoken digit forms (五七幺) are tried before Arabic digits, because
+    SenseVoice/Paraformer usually reads IDs that way.
+    """
+    if not name:
+        return []
+    base = normalize(name, converter)
+    if not base:
+        return []
+    cn = base.translate(_DIGIT_CN)
+    yao = base.translate(_DIGIT_YAO)
+    out: List[str] = []
+    for v in (yao, cn, base):
+        if v and v not in out:
+            out.append(v)
+    return out
+
+
+def question_needles(q_text: str, converter=None) -> List[str]:
+    """Distinctive needles from a PDF question (strip honorifics; prefer body)."""
+    raw = normalize(q_text or "", converter)
+    if not raw:
+        return []
+    stripped = HONORIFIC_RE.sub("", raw)
+    needles = []
+    for cand in (stripped, raw):
+        if len(cand) >= 8:
+            needles.append(cand[:80])
+        if len(cand) >= 24:
+            # Mid-question block avoids shared openings like 顶礼师父
+            mid = cand[8:8 + 60]
+            if len(mid) >= 12:
+                needles.append(mid)
+    # de-dupe preserving order
+    seen = set()
+    uniq = []
+    for n in needles:
+        if n not in seen:
+            seen.add(n)
+            uniq.append(n)
+    return uniq
 
 
 def text_similarity(a: str, b: str) -> float:
