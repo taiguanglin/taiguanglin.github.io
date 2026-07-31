@@ -20,3 +20,25 @@
 .marker-input {
     font-variant-numeric: tabular-nums;
 }
+
+/* Answer / opening PDF text: expand with content, never nest a scrollbar.
+   Wheel over the block should scroll the page (workspace), not an inner box. */
+.segment-body .answer-body {
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    color: var(--text);
+    font: inherit;
+    line-height: 1.8;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+    padding: 0.8rem 0.95rem;
+    resize: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.segment-body .answer-body--empty {
+    color: var(--muted);
+}

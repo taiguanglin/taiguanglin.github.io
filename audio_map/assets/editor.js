@@ -815,24 +815,24 @@ function renderSegmentCard(entry, segmentIndex) {
     timeLine.append(timeInput, playButton);
     body.append(timeLine);
 
-    // PDF answer (or opening text) — human-proofread source
+    // PDF answer (or opening text) — read-only block (div, not textarea) so
+    // mouse wheel scrolls the page instead of an inner scrollbar.
     const answer = kind === 'opening'
         ? (item.text || item.text_preview || '')
         : (item.answer_text || item.answer_preview || '');
-    const textarea = document.createElement('textarea');
-    textarea.className = 'editor-textarea';
-    textarea.spellcheck = false;
-    textarea.value = answer;
-    textarea.readOnly = true;
-    textarea.dataset.locked = '1';
-    textarea.setAttribute('aria-label', kind === 'opening' ? '開場文字（PDF）' : '回答（PDF 校對稿）');
-    if (!answer) {
-        textarea.placeholder = kind === 'opening'
+    const answerEl = document.createElement('div');
+    answerEl.className = 'editor-textarea answer-body';
+    answerEl.setAttribute('role', 'region');
+    answerEl.setAttribute('aria-label', kind === 'opening' ? '開場文字（PDF）' : '回答（PDF 校對稿）');
+    if (answer) {
+        answerEl.textContent = answer;
+    } else {
+        answerEl.classList.add('answer-body--empty');
+        answerEl.textContent = kind === 'opening'
             ? '（此段開場文字缺失，請重新載入本地 audio_map JSON）'
             : '（此段尚無 PDF 回答文字，請重新載入本地 audio_map JSON）';
     }
-    body.append(textarea);
-    queueMicrotask(() => autoGrow(textarea, { allowShrink: true }));
+    body.append(answerEl);
 
     applySegmentEditability(node);
     return node;
@@ -963,7 +963,7 @@ function toggleSegmentEditing(card) {
 function applySegmentEditability(card) {
     if (!card) return;
     const editable = !isMobileDock() || card.classList.contains('editing');
-    for (const field of card.querySelectorAll('.segment-title, .editor-textarea, .marker-input')) {
+    for (const field of card.querySelectorAll('.segment-title, .marker-input')) {
         if (field.dataset.locked === '1') {
             field.readOnly = true;
         } else {
