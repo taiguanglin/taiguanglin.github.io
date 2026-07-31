@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from common import (
-    ANSWER_AFTER_Q_RE,
+    ANSWER_TEXT_RE,
     DEFAULT_SRT_ROOT,
     EBOOK_DIR,
     H2_RE,
@@ -23,6 +23,13 @@ from common import (
     session_id,
     strip_html,
 )
+
+
+def _answer_text_between(section_html: str, start: int, end: int) -> str:
+    """All PDF answer-text paragraphs between two offsets (human-proofread)."""
+    chunk = section_html[start:end]
+    texts = [strip_html(t) for t in ANSWER_TEXT_RE.findall(chunk)]
+    return "\n\n".join(t for t in texts if t)
 
 
 def _split_sections(html: str) -> List[tuple]:
@@ -63,21 +70,22 @@ def extract_session_from_section(
     opening = None
     if opening_text:
         opening = {
+            "text": opening_text,
             "text_preview": opening_text[:200],
             **empty_range_fields(),
         }
 
+    q_matches = list(QUESTION_BLOCK_RE.finditer(section_html))
     segments = []
-    for idx, qm in enumerate(QUESTION_BLOCK_RE.finditer(section_html), start=1):
+    for idx, qm in enumerate(q_matches, start=1):
         qid = qm.group(1)
         questioner = (qm.group(2) or "").strip()
         q_time = (qm.group(3) or "").strip()
         texts = [strip_html(t) for t in QUESTION_TEXT_RE.findall(qm.group(0))]
         q_text = "\n".join(t for t in texts if t)
-        # Answer opening (first answer-text after this question) for SRT fallback
-        rest = section_html[qm.end() : qm.end() + 2500]
-        am = ANSWER_AFTER_Q_RE.search(rest)
-        answer_preview = strip_html(am.group(1)) if am else ""
+        next_start = q_matches[idx].start() if idx < len(q_matches) else len(section_html)
+        answer_text = _answer_text_between(section_html, qm.end(), next_start)
+        answer_preview = answer_text[:120]
 
         key = {
             "questioner": questioner,
@@ -96,7 +104,8 @@ def extract_session_from_section(
                 ),
                 "q_preview": q_text[:180],
                 "q_text": q_text,
-                "answer_preview": answer_preview[:120],
+                "answer_preview": answer_preview,
+                "answer_text": answer_text,
                 **empty_range_fields(),
                 "_key": key,
             }

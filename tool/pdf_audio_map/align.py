@@ -364,8 +364,8 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
                     break
                 res = None
         # 3) Answer opening
-        if res is None and seg.get("answer_preview"):
-            a = normalize(seg["answer_preview"], converter)[:60]
+        if res is None and (seg.get("answer_text") or seg.get("answer_preview")):
+            a = normalize(seg.get("answer_text") or seg["answer_preview"], converter)[:60]
             res = match_start(cues, cursor_idx, a, min_len=6, min_block=5)
         # 4) Global re-anchor
         if res is None:
@@ -377,8 +377,8 @@ def align_from_srt(session: dict, converter, srt_root: Path) -> dict:
                 )
                 if res is not None:
                     break
-        if res is None and seg.get("answer_preview"):
-            ga = normalize(seg["answer_preview"], converter)[:90]
+        if res is None and (seg.get("answer_text") or seg.get("answer_preview")):
+            ga = normalize(seg.get("answer_text") or seg["answer_preview"], converter)[:90]
             res = match_start(cues, 0, ga, min_len=10, min_block=10, max_scan=len(cues))
         if res is None:
             starts.append(None)
@@ -442,6 +442,11 @@ def merge_session(old: Optional[dict], new: dict) -> dict:
         return new
     out = {**new}
     out["opening"] = _merge_preserve(old.get("opening"), new.get("opening"))
+    # Opening PDF text always refreshes from extract.
+    if new.get("opening") and out.get("opening") is not None:
+        for k in ("text", "text_preview"):
+            if k in new["opening"]:
+                out["opening"][k] = new["opening"][k]
     old_by_key = {}
     for seg in old.get("segments") or []:
         old_by_key[seg.get("stable_key") or f"#{seg.get('index')}"] = seg
@@ -450,14 +455,22 @@ def merge_session(old: Optional[dict], new: dict) -> dict:
         key = seg.get("stable_key") or f"#{seg.get('index')}"
         prev = old_by_key.get(key)
         if _is_protected(prev):
-            # Keep timing from prev, refresh text previews from new
+            # Keep timing from prev, refresh PDF text from new
             kept = {**seg, **{k: prev[k] for k in (
                 "start", "end", "start_label", "end_label",
                 "confidence", "status", "locked", "notes", "srt_preview",
             ) if k in prev}}
+            if prev.get("meta"):
+                kept["meta"] = prev["meta"]
             merged_segs.append(kept)
         else:
-            merged_segs.append(seg)
+            merged = dict(seg)
+            if prev:
+                if prev.get("meta"):
+                    merged["meta"] = prev["meta"]
+                if prev.get("notes") and not seg.get("notes"):
+                    merged["notes"] = prev["notes"]
+            merged_segs.append(merged)
     out["segments"] = merged_segs
     return out
 
@@ -604,15 +617,18 @@ def count_missing(payload: dict) -> int:
 
 
 def _strip_for_write(payload: dict) -> dict:
-    """Drop bulky fields not needed at runtime inject (keep q_preview, drop q_text)."""
+    """Drop private/temp keys; keep PDF q_text / answer_text for the proofreading UI."""
     sessions = []
     for s in payload.get("sessions") or []:
-        sc = dict(s)
+        sc = {k: v for k, v in s.items() if not str(k).startswith("_")}
         segs = []
         for seg in sc.get("segments") or []:
-            seg2 = {k: v for k, v in seg.items() if k not in ("q_text", "answer_preview")}
+            seg2 = {k: v for k, v in seg.items() if not str(k).startswith("_")}
             segs.append(seg2)
         sc["segments"] = segs
+        opening = sc.get("opening")
+        if isinstance(opening, dict):
+            sc["opening"] = {k: v for k, v in opening.items() if not str(k).startswith("_")}
         sessions.append(sc)
     return {
         "month": payload["month"],
@@ -620,6 +636,50 @@ def _strip_for_write(payload: dict) -> dict:
         "stats": payload.get("stats"),
         "sessions": sessions,
     }
+
+
+def refresh_pdf_text(payload: dict, ebook_dir: Path, srt_root: Path) -> dict:
+    """Overlay PDF question/answer text onto an existing map without changing times."""
+    key = payload["month"]
+    by_month = extract_all(ebook_dir=ebook_dir, srt_root=srt_root, months={key})
+    fresh_by_id = {s["session_id"]: s for s in (by_month.get(key) or [])}
+    out = dict(payload)
+    sessions = []
+    for session in payload.get("sessions") or []:
+        fresh = fresh_by_id.get(session["session_id"])
+        if not fresh:
+            sessions.append(session)
+            continue
+        sc = dict(session)
+        if fresh.get("opening"):
+            op = dict(sc.get("opening") or {})
+            for k in ("text", "text_preview"):
+                if k in fresh["opening"]:
+                    op[k] = fresh["opening"][k]
+            sc["opening"] = op if op else sc.get("opening")
+        fresh_segs = {
+            s.get("stable_key") or f"#{s.get('index')}": s
+            for s in (fresh.get("segments") or [])
+        }
+        segs = []
+        for seg in sc.get("segments") or []:
+            key_s = seg.get("stable_key") or f"#{seg.get('index')}"
+            fs = fresh_segs.get(key_s)
+            if not fs:
+                segs.append(seg)
+                continue
+            merged = dict(seg)
+            for k in (
+                "q_text", "q_preview", "answer_text", "answer_preview",
+                "questioner", "question_time", "question_id",
+            ):
+                if k in fs:
+                    merged[k] = fs[k]
+            segs.append(merged)
+        sc["segments"] = segs
+        sessions.append(sc)
+    out["sessions"] = sessions
+    return out
 
 
 def main(argv: Optional[list] = None) -> int:
@@ -639,10 +699,15 @@ def main(argv: Optional[list] = None) -> int:
         action="store_true",
         help="Ignore existing mapping (except locked/manual still skipped only if not --fresh)",
     )
+    parser.add_argument(
+        "--text-only",
+        action="store_true",
+        help="Only refresh PDF q_text/answer_text onto existing maps (no re-align)",
+    )
     args = parser.parse_args(argv)
 
     converter = get_converter()
-    if converter is None:
+    if converter is None and not args.text_only:
         print("warning: OpenCC unavailable; matching quality may drop")
 
     MAP_DIR.mkdir(parents=True, exist_ok=True)
@@ -662,6 +727,23 @@ def main(argv: Optional[list] = None) -> int:
     total_missing = 0
     for year, month in months:
         path = month_map_path(year, month)
+        if args.text_only:
+            if not path.exists():
+                print(f"[{year:04d}-{month:02d}] skip (no existing map)")
+                continue
+            payload = json.loads(path.read_text(encoding="utf-8"))
+            payload = refresh_pdf_text(payload, args.ebook_dir, args.srt_root)
+            print(
+                f"[{payload['month']}] refreshed PDF text for "
+                f"{len(payload.get('sessions') or [])} sessions"
+            )
+            total_missing += count_missing(payload)
+            if args.apply:
+                out = _strip_for_write(payload)
+                path.write_text(json.dumps(out, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+                print(f"  wrote {path}")
+            continue
+
         existing = {} if args.fresh else _load_existing(path)
         payload = align_month(year, month, args.ebook_dir, args.srt_root, converter, existing)
         print_report(payload)

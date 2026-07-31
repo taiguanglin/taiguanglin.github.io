@@ -78,6 +78,7 @@ ANSWER_AFTER_Q_RE = re.compile(
     r'<div class="answer"[^>]*>.*?<div class="answer-text">(.*?)</div>',
     re.S,
 )
+ANSWER_TEXT_RE = re.compile(r'<div class="answer-text">(.*?)</div>', re.S)
 TAG_RE = re.compile(r"<[^>]+>")
 HEADING_RE = re.compile(r"^###\s+(\d+)\.\s*(.*?)\s*$", re.M)
 TIME_LINE_RE = re.compile(
