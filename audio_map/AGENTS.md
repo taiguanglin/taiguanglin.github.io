@@ -33,6 +33,12 @@ If that transition phrase is absent, align to the **spoken start of that
 segment’s opening text** (answer / questioner name / first content), then apply
 the same lead-in rule below. Inspect these cases individually.
 
+**Always cross-check content:** after choosing an onset (whether from
+「下一个问题」or text match), confirm the following SRT window overlaps the
+segment’s answer/name. Reject / skip a next_q hit that does not match content —
+do not consume anchors in order blindly, or one early miss will shift every later
+segment.
+
 ### 3. Adaptive lead-in (not a hard −0.5s)
 
 Do **not** always subtract 0.5s. Choose lead-in from the **pause between the
@@ -58,8 +64,11 @@ previous cue’s end (effective lead may shrink to ~0 when speech is back-to-bac
 
 - Helpers: `tool/pdf_audio_map/realign_half_second.py` (`adaptive_lead`,
   `start_from_onset`, `--adjust-leadin`).
+- Batch content-aware realign: `tool/pdf_audio_map/realign_content_aware.py`
+  (下一个问题 + content score; skips already proofread 2025-06-12 / 06-13-wechat
+  by default; scope `2025-06-13-tieba` + `date >= 2025-06-14`).
 - After map edits that should reach the ebook: rebuild via
-  `tool/word2ebook/gen_all.py` (or equivalent inject), do not patch chapter HTML.
+  `tool/word2ebook/gen_all.py` (or `--only-pdf` inject), do not patch chapter HTML.
 
 ---
 
