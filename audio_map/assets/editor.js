@@ -124,11 +124,23 @@ async function bootstrap() {
     setupMiniPlayer();
     setupSidebarControls();
     applyPrefs();
-    await loadMonth(state.month);
+    const savedMonth = MONTHS.includes(state.prefs.lastMonth) ? state.prefs.lastMonth : MONTHS[0];
+    const savedSessionId = state.prefs.lastSessionId;
+    await loadMonth(savedMonth);
+    if (
+        savedSessionId
+        && state.map?.sessions?.some((session) => session.session_id === savedSessionId)
+    ) {
+        selectSession(savedSessionId);
+    }
 }
 
 function bindEvents() {
-    els.monthSelect.addEventListener('change', () => loadMonth(els.monthSelect.value));
+    els.monthSelect.addEventListener('change', () => {
+        state.prefs.lastSessionId = null;
+        setPrefs({ lastSessionId: null });
+        loadMonth(els.monthSelect.value);
+    });
     els.fileSearch.addEventListener('input', renderSessionList);
     els.saveButton.addEventListener('click', () => saveCurrentMap());
     els.savePlayedButton?.addEventListener('click', () => saveCurrentMap({ reason: 'played' }));
@@ -564,6 +576,8 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         state.dirty = false;
         state.draftPaths = listDraftPaths();
         resetHistory();
+        state.prefs.lastMonth = month;
+        setPrefs({ lastMonth: month });
         renderSessionList();
         els.welcomePanel.classList.remove('hidden');
         els.documentPanel.classList.add('hidden');
@@ -690,8 +704,12 @@ function countSessionMeta(session) {
 function selectSession(sessionId) {
     state.sessionId = sessionId;
     state.activeSegmentIndex = null;
+    state.prefs.lastMonth = state.month;
+    state.prefs.lastSessionId = sessionId;
+    setPrefs({ lastMonth: state.month, lastSessionId: sessionId });
     setActiveSegment(null);
     renderSessionList();
+    els.fileList.querySelector('.file-item.active')?.scrollIntoView({ block: 'nearest' });
     renderEditor();
     if (isMobileDock()) setSidebarOpen(false);
 }

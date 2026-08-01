@@ -10,6 +10,8 @@ const DEFAULT_PREFS = {
     sidebarCollapsed: false,
     miniPlayerHidden: false,
     miniPlayerExpanded: false,
+    lastMonth: null,
+    lastSessionId: null,
 };
 
 export function getPat() {
