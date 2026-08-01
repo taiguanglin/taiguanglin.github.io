@@ -639,7 +639,7 @@ function renderSessionList() {
             <span class="draft-dot hidden"></span>
             <div class="file-item-body">
                 <span class="file-name">${escapeHtml(label)}</span>
-                <span class="file-stats">✓${stats.matched} · ✗${stats.missing} · ${stats.total} 題 · 完成 ${stats.both}</span>
+                <span class="file-stats">✓${stats.matched} · ✗${stats.missing} · ${stats.total} 題 · 完成 ${stats.completed}</span>
             </div>
         `;
         btn.addEventListener('click', () => selectSession(session.session_id));
@@ -657,6 +657,7 @@ function countSessionMeta(session) {
     items.push(...(session.segments || []));
     let matched = 0;
     let missing = 0;
+    let completed = 0;
     let both = 0;
     let played = 0;
     let edited = 0;
@@ -666,6 +667,8 @@ function countSessionMeta(session) {
         else missing += 1;
         const hasPlayed = Boolean(item?.meta?.lastPlayed);
         const hasEdited = Boolean(item?.meta?.lastEdited);
+        // 「完成」= 聽過即可（不需再校過）
+        if (hasPlayed) completed += 1;
         if (hasPlayed && hasEdited) both += 1;
         else if (hasPlayed) played += 1;
         else if (hasEdited) edited += 1;
@@ -675,6 +678,7 @@ function countSessionMeta(session) {
         matched,
         missing,
         total: session.segments?.length || 0,
+        completed,
         both,
         played,
         edited,
@@ -713,20 +717,21 @@ function renderEditor() {
 }
 
 function updateMetaStrip(items) {
-    let both = 0;
+    let completed = 0;
     let played = 0;
     let edited = 0;
     let none = 0;
     for (const { item } of items) {
         const hasPlayed = Boolean(item?.meta?.lastPlayed);
         const hasEdited = Boolean(item?.meta?.lastEdited);
-        if (hasPlayed && hasEdited) both += 1;
-        else if (hasPlayed) played += 1;
-        else if (hasEdited) edited += 1;
-        else none += 1;
+        // 「完成」= 聽過即可
+        if (hasPlayed) completed += 1;
+        if (hasPlayed && !hasEdited) played += 1;
+        else if (!hasPlayed && hasEdited) edited += 1;
+        else if (!hasPlayed && !hasEdited) none += 1;
     }
     els.metaTotalCount.textContent = String(items.length);
-    els.metaBothCount.textContent = String(both);
+    els.metaBothCount.textContent = String(completed);
     els.metaPlayedOnlyCount.textContent = String(played);
     els.metaEditedOnlyCount.textContent = String(edited);
     els.metaNoneCount.textContent = String(none);
