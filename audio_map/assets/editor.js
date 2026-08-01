@@ -63,6 +63,7 @@ const els = {
     metaPlayedOnlyCount: document.querySelector('#metaPlayedOnlyCount'),
     metaEditedOnlyCount: document.querySelector('#metaEditedOnlyCount'),
     metaNoneCount: document.querySelector('#metaNoneCount'),
+    workspace: document.querySelector('.workspace'),
     editorRoot: document.querySelector('#editorRoot'),
     saveButton: document.querySelector('#saveButton'),
     savePlayedButton: document.querySelector('#savePlayedButton'),
@@ -711,7 +712,38 @@ function selectSession(sessionId) {
     renderSessionList();
     els.fileList.querySelector('.file-item.active')?.scrollIntoView({ block: 'nearest' });
     renderEditor();
+    scrollEditorToProgress();
     if (isMobileDock()) setSidebarOpen(false);
+}
+
+/** 「完成」= 聽過（有 lastPlayed）。捲到最後一段完成處；都沒完成則捲到頂。 */
+function scrollEditorToProgress() {
+    const workspace = els.workspace;
+    if (!workspace) return;
+    const items = sessionItems();
+    let lastCompleted = -1;
+    for (let i = 0; i < items.length; i += 1) {
+        if (items[i].item?.meta?.lastPlayed) lastCompleted = i;
+    }
+    const apply = () => {
+        if (lastCompleted < 0) {
+            workspace.scrollTop = 0;
+            return;
+        }
+        const card = els.editorRoot.querySelector(
+            `.segment-card[data-segment-index="${lastCompleted}"]`,
+        );
+        if (!card) {
+            workspace.scrollTop = 0;
+            return;
+        }
+        const top = card.getBoundingClientRect().top
+            - workspace.getBoundingClientRect().top
+            + workspace.scrollTop;
+        workspace.scrollTop = Math.max(0, top - 8);
+    };
+    // Wait past title autoGrow microtasks + layout.
+    requestAnimationFrame(() => requestAnimationFrame(apply));
 }
 
 function renderEditor() {
