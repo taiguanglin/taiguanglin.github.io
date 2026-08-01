@@ -1,7 +1,8 @@
 # word2ebook — Agent / LLM Maintenance Guide
 
-> Read this file first before editing anything in this project.  
-> It is the single authoritative map of the codebase.
+> **Tool-specific** guide for `tool/word2ebook/`: code map, pipeline, OpenSpec, tests.  
+> Repo-wide layout and conventions: see [`../../AGENTS.md`](../../AGENTS.md) at the repository root.  
+> Put cross-tool / site-wide rules in the root file; keep this file focused on the converter.
 
 ---
 
@@ -43,17 +44,28 @@ main.py
     3. _parse_chapters()                  → DocumentParser (.docx) + PDFParser (.pdf) + QAParser (qa/) → List[Chapter]
     3.5 inject_chapters()                 → PDF audio_map → `.qa-play` on in-memory Chapter.content (no-op if maps absent)
     4. HTMLGenerator.generate_chapter_pages()   → writes chapter .html files
+    5. HTMLGenerator.generate_index_pages()     → writes index.html / index_trad.html  (skipped in partial mode)
+    6. SearchIndexGenerator.generate_search_indexes()  → writes search_index*.json     (skipped in partial mode)
+    7. _generate_static_assets()          → copies CSS/JS bundle to output/assets/
+```
 
 **Audio play buttons are never hand-patched under `wenda2_ebook/`.**  
 Mapping JSON lives in `data/audio_map/` (built by `tool/pdf_audio_map/`).  
 Only `inject_chapters()` inside this converter inserts `.qa-play`; then step 4
 writes the ebook. Regenerate with `gen_all.py` / `main.py` after mapping changes.
 
+`DocumentParser`, `PDFParser`, and `QAParser` all build their chapters through the
+shared `core/chapter_finalizer.py` (`finalize_chapter`), so Word, PDF, and QA
+chapters have identical markup, TOC, Q&A counts, and search behaviour. QA chapters
+additionally set `Chapter.is_qa = True`, which triggers the per-chapter source
+banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
+
 ---
 
 ## Source vs generated output (`wenda2_ebook/`)
 
-`../../wenda2_ebook/` is **build output**, not the place to implement features.
+`../../wenda2_ebook/` is **build output**, not the place to implement features.  
+(Repo-wide: also see root `AGENTS.md` — `wenda/` is a separate hand TOC, not this output.)
 
 | Edit here (source of truth) | Do **not** hand-edit (regenerated / overwritten) |
 |-------------------------------|--------------------------------------------------|
@@ -69,16 +81,6 @@ writes the ebook. Regenerate with `gen_all.py` / `main.py` after mapping changes
 2. After source changes, run `python3 gen_all.py` (or `main.py` / a targeted rebuild) so `wenda2_ebook/` is rewritten from the pipeline — do not “fix” the live ebook by editing files inside `wenda2_ebook/` and treating that as the fix.
 3. Previewing or temporarily syncing built assets into `wenda2_ebook/` is fine only if the same change already exists in the source tree; a later `gen_all` must still produce the correct result without those hand edits.
 4. Same rule as audio: never rely on hand-patched chapter HTML under `wenda2_ebook/`.
-    5. HTMLGenerator.generate_index_pages()     → writes index.html / index_trad.html  (skipped in partial mode)
-    6. SearchIndexGenerator.generate_search_indexes()  → writes search_index*.json     (skipped in partial mode)
-    7. _generate_static_assets()          → copies CSS/JS bundle to output/assets/
-```
-
-`DocumentParser`, `PDFParser`, and `QAParser` all build their chapters through the
-shared `core/chapter_finalizer.py` (`finalize_chapter`), so Word, PDF, and QA
-chapters have identical markup, TOC, Q&A counts, and search behaviour. QA chapters
-additionally set `Chapter.is_qa = True`, which triggers the per-chapter source
-banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 
 ---
 
@@ -221,12 +223,50 @@ Module **load order** matters — it is determined by filename numeric sort.
 
 1. **Never edit `wenda2_ebook/` as the source of a feature** — see [Source vs generated output](#source-vs-generated-output-wenda2_ebook) above. Change `tool/word2ebook/` then rebuild.
 2. **Never recreate** the monolithic `script.js` or `style.css` — edit the module files; `StaticAssetsManager` concatenates them.
-3. **After any Python change** — run `python3 -m pytest tests/` from `tool/word2ebook/`.
-4. **After any behavioral change** — update the matching `openspec/specs/<domain>/spec.md`.
-5. **`I18nTemplateManager` is the sole template path** — `html_templates.py` has been deleted.
-6. **`Constants` in `config/settings.py`** is the single source of truth for CDN URLs, index filenames, search weights, answerer names, and heading level ranges. Do not hardcode these elsewhere.
-7. **Adding a new JS/CSS module**: create the file with the correct numeric prefix; `StaticAssetsManager` picks it up automatically; update `static-assets/spec.md`.
-8. **i18n strings** shown in the UI should come from `config.yaml` (via `get_i18n_text`), not hardcoded in Python or JS.
-9. **Simplified/Traditional generation**: use the parameterised `is_traditional` pattern — never duplicate logic for two language variants.
-10. **CSS @media rules**: place all breakpoints in `05-responsive.css`; do not scatter `@media` blocks in component files.
-11. **CSS design tokens**: use `var(--color-primary)` etc.; do not repeat raw hex/pixel values.
+3. **`I18nTemplateManager` is the sole template path** — `html_templates.py` has been deleted.
+4. **`Constants` in `config/settings.py`** is the single source of truth for CDN URLs, index filenames, search weights, answerer names, and heading level ranges. Do not hardcode these elsewhere.
+5. **i18n strings** shown in the UI should come from `config.yaml` (via `get_i18n_text`), not hardcoded in Python or JS.
+6. **Simplified/Traditional generation**: use the parameterised `is_traditional` pattern — never duplicate logic for two language variants.
+7. **CSS @media rules**: place all breakpoints in `05-responsive.css`; do not scatter `@media` blocks in component files.
+8. **CSS design tokens**: use `var(--color-primary)` etc. (defined in `00-base.css` `:root`); never hardcode raw hex/pixel values in new CSS.
+9. **Cross-module JS communication** goes through the `W2E` namespace (`window.W2E`), not implicit globals.
+
+---
+
+## After every code change
+
+### 1. Update OpenSpec specs
+
+When behaviour changes in any Python module or JS/CSS module, update the matching `openspec/specs/<domain>/spec.md`:
+
+| Changed area | Spec to update |
+|---|---|
+| `main.py`, `Word2EBookConverter` | `overview/spec.md` |
+| `core/document_parser.py` | `document-parsing/spec.md` |
+| `core/pdf_parser.py` | `pdf-parsing/spec.md` |
+| `core/audio_map_injector.py`, `data/audio_map/` | `pdf-audio-map/spec.md` |
+| `core/qa_parser.py` | `qa-parsing/spec.md` |
+| `generators/html_generator.py`, `generators/toc_generator.py`, `templates/` | `html-generation/spec.md` |
+| `generators/search_generator.py`, `core/content_processor.py` | `search/spec.md` |
+| `assets/js/modules/*.js` | `frontend-js/spec.md` |
+| `assets/css/modules/*.css` | `frontend-css/spec.md` |
+| `templates/static_assets.py` | `static-assets/spec.md` |
+| `utils/i18n_utils.py`, `utils/config_utils.py`, `config.yaml` | `i18n/spec.md` |
+
+### 2. Keep unit tests passing
+
+```bash
+cd tool/word2ebook
+python3 -m pytest tests/
+```
+
+- New function/class → add a test in `tests/test_<module>.py`
+- Behaviour change → update the affected test
+- Target: maintain ≥ 80% coverage on all non-parser modules
+
+### 3. Adding a new JS or CSS module
+
+1. Create the file with the correct numeric prefix in `assets/{js,css}/modules/`
+2. Verify `StaticAssetsManager.get_full_{js,css}_content()` picks it up
+3. Add/update the module table in `static-assets/spec.md`
+4. Add a test in `tests/test_static_assets.py` confirming the new content appears in output
