@@ -45,9 +45,23 @@ slug `id` so search results and the TOC link to the correct anchor.
   each with a slug anchor present as an `id` in the chapter content
 
 ### Requirement: Artifact Stripping
-The parser SHALL remove page-number lines (`N / M`), the repeated audio footer
-(`完整音频请关注微信公众号：…`), and blank lines before reflow, so they never
-appear in the output.
+The parser SHALL remove page-number lines — both absolute counters (`N / M`) and
+bare bottom-of-page counters that are only digits (`N`) — the repeated audio
+footer (`完整音频请关注微信公众号：…`), and blank lines before reflow, so they
+never appear in the output. Bare digit lines MUST be dropped so a word split
+across a page break (e.g. `菩` | `萨`) is not corrupted into `菩39萨`.
+
+#### Scenario: Bare page counter between wrapped lines
+- GIVEN an answer whose last line on a page ends mid-word (`在菩`) and the next
+  page starts with a bare page counter (`39`) then the rest of the word (`萨这里…`)
+- WHEN parsed
+- THEN the bare counter is removed and the answer reads `在菩萨这里…` with no
+  embedded digits
+
+#### Scenario: Absolute page counter stripped
+- GIVEN a line `1409 / 2379` after body text
+- WHEN parsed
+- THEN that line does not appear in the chapter content
 
 ### Requirement: Paragraph Reflow via Indentation
 The parser SHALL use the line's left x-coordinate to reconstruct paragraphs:

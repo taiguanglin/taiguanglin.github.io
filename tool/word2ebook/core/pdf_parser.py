@@ -67,7 +67,13 @@ INDENT_THRESHOLD = 104.0  # x0 大於此值視為「縮排首行」（118 vs 90 
 
 FOOTER_TEXT = "完整音频请关注微信公众号"
 
-PAGE_RE = re.compile(r"^\d+\s*/\s*\d+$")
+# Page counters appear in two forms in the source PDFs:
+#   * ``1409 / 2379`` — absolute page within the big merged book (most days)
+#   * ``39``          — bare per-session counter at the bottom (e.g. 2025-06-12
+#                       and some Nov–Mar stretches). These sit between the last
+#                       body line of page N and the first line of page N+1, so
+#                       if kept they glue into words (菩 + 39 + 萨 → 菩39萨).
+PAGE_RE = re.compile(r"^(?:\d+\s*/\s*\d+|\d{1,4})$")
 DAY_RE = re.compile(r"Tai\s*师父\s*(20\d{2})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*[日号號]")
 SHIFU_RE = re.compile(r"^师父说[：:]")
 ANSWER_RE = re.compile(r"^Taiguanglin[：:]")

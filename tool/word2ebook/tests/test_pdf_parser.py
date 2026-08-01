@@ -110,6 +110,27 @@ class TestSingleDay:
         assert "完整音频" not in ch.content     # footer removed
         assert "2379" not in ch.content         # page number removed
 
+    def test_bare_page_counter_not_glued_into_word(self, parser):
+        """2025-06-12-style bare footer digits must not split 菩萨 → 菩39萨."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月12 日答疑（文字版）"),
+            (239.0, "完整音频请关注微信公众号：TaiGuangLin"),
+            (IND,  "师父说：今天是2025 年6 月12 号，先回答贴吧的问题。"),
+            (CONT, "学生甲：2025-06-12 08:00"),
+            (IND,  "请问胖东来？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "我觉得在菩"),
+            (276.5, "39"),                 # bare per-session page counter
+            (CONT, "萨这里商人职业是不求利的。"),
+            (276.5, "1410 / 2379"),         # absolute counter also present
+            (IND,  "师父说：今天贴吧的问题就回答到这里。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert "菩萨这里商人职业是不求利的" in ch.content
+        assert "39萨" not in ch.content
+        assert "2379" not in ch.content
+        assert re.search(r">\s*39\s*<", ch.content) is None
+
     def test_reflow_joins_wrapped_lines(self, parser, one_day_two_sources):
         ch = parser.parse_lines(one_day_two_sources, start_index=12)[0]
         assert "1、第一个问题的内容，继续第一个问题。" in ch.content
