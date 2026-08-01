@@ -1282,11 +1282,8 @@ function autoGrow(field, { allowShrink = false } = {}) {
 }
 
 function formatClock(seconds) {
-    if (!Number.isFinite(seconds)) return '00:00';
-    const total = Math.max(0, Math.floor(seconds));
-    const m = Math.floor(total / 60);
-    const s = total % 60;
-    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    if (!Number.isFinite(seconds)) return '00:00:00.000';
+    return secondsToTimecode(Math.max(0, seconds));
 }
 
 function showContextMenu(x, y, items) {
@@ -1493,8 +1490,8 @@ function setupMiniPlayer() {
         if (!seeking) seekBar.value = String(player.currentTime);
     });
     player.addEventListener('emptied', () => {
-        currentEl.textContent = '00:00';
-        durationEl.textContent = '00:00';
+        currentEl.textContent = '00:00:00.000';
+        durationEl.textContent = '00:00:00.000';
         seekBar.value = '0';
         seekBar.max = '0';
     });
