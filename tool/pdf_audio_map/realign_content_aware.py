@@ -5,8 +5,9 @@ Prevents cascade drift: each primary segment must score well against the SRT
 window after its chosen onset; weak next_q hits are skipped in favour of
 content match. Adaptive lead-in per audio_map/AGENTS.md.
 
-Default scope: 2025-06-13-tieba + all sessions with date >= 2025-06-14.
-Skips 2025-06-12-* and 2025-06-13-wechat (already user-proofread suffixes).
+Default scope: 2025-07-07-tieba + all sessions with date >= 2025-07-08.
+Skips earlier proofread sessions including 2025-07-07-wechat (use
+--session + --keep-through for suffix repair).
 """
 
 from __future__ import annotations
@@ -40,6 +41,8 @@ SKIP_SESSION_IDS = {
     "2025-06-12-wechat",
     "2025-06-12-tieba",
     "2025-06-13-wechat",
+    # Suffix-proofread separately (keep user start through N)
+    "2025-07-07-wechat",
 }
 
 
@@ -61,7 +64,16 @@ def _content_score(seg, cues_norm, onset_t: float, converter) -> float:
     )
 
 
-def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
+def assign_onsets(
+    segs,
+    cues_norm,
+    cues_raw,
+    converter,
+    audio_end: float,
+    fixed_starts: Optional[dict] = None,
+):
+    """fixed_starts: {segment_index: absolute_start_seconds} kept as-is (no lead redo)."""
+    fixed_starts = {int(k): float(v) for k, v in (fixed_starts or {}).items()}
     n = len(segs)
     anchors = collect_next_q_anchors(cues_raw, cues_norm)
     followup = [
@@ -71,13 +83,34 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
     methods: List[str] = [""] * n
     scores_out: List[float] = [0.0] * n
 
+    for i, seg in enumerate(segs):
+        idx = int(seg.get("index") or i + 1)
+        if idx in fixed_starts:
+            onsets[i] = fixed_starts[idx]
+            methods[i] = "keep-user-start"
+            scores_out[i] = _content_score(seg, cues_norm, onsets[i], converter)
+
     a_ptr = 0
     prev_t = 0.0
+    for o in onsets:
+        if o is not None:
+            prev_t = max(prev_t, float(o))
+    while a_ptr < len(anchors) and anchors[a_ptr][0] < prev_t + 0.2:
+        a_ptr += 1
+
     primary_idxs = [i for i in range(n) if not followup[i]]
 
     for pi, i in enumerate(primary_idxs):
+        if methods[i] == "keep-user-start":
+            prev_t = float(onsets[i])  # type: ignore
+            while a_ptr < len(anchors) and anchors[a_ptr][0] < prev_t + 0.2:
+                a_ptr += 1
+            continue
+
         seg = segs[i]
-        is_first = pi == 0
+        is_first = pi == 0 and all(
+            methods[j] != "keep-user-start" for j in primary_idxs[: pi + 1]
+        )
 
         if is_first:
             hit = match_text_onset(
@@ -92,7 +125,7 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
             prev_t = float(onsets[i])
             continue
 
-        # Rank next_q anchors ahead of prev_t (lookahead)
+        # Rank next_q anchors ahead of prev_t (lookahead + content score)
         cands = []
         for ai in range(a_ptr, len(anchors)):
             xia_t, cue_i, _k = anchors[ai]
@@ -103,18 +136,34 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
             )
             sc += 0.35 * score_seg_at_window(seg, cues_norm, cue_i, converter)
             cands.append((sc, xia_t, cue_i, ai))
-            if len(cands) >= 6:
+            if len(cands) >= 8:
                 break
 
-        # Peek: if current best is weak but next anchor fits this seg much better, skip
-        best = max(cands, key=lambda x: x[0]) if cands else None
-        if best and len(cands) >= 2 and best[0] < 35:
-            for alt in cands[1:3]:
-                if alt[0] >= best[0] + 22 and alt[0] >= 40:
-                    # Only skip if the weak anchor is close in time (false positive)
-                    if alt[1] - best[1] < 90:
+        # Prefer later anchors when early next_q is a weak / off-topic hit
+        # (SRT-only digressions not in PDF must be skipped to avoid cascade drift).
+        best = None
+        if cands:
+            ranked = sorted(cands, key=lambda x: (-x[0], x[1]))
+            best = ranked[0]
+            if len(ranked) >= 2 and ranked[0][0] < 40:
+                for alt in ranked[1:4]:
+                    if alt[0] >= ranked[0][0] + 18 and alt[0] >= 36:
                         best = alt
                         break
+                    if ranked[0][0] < 28 and alt[0] >= 45 and alt[1] - ranked[0][1] < 180:
+                        best = alt
+                        break
+            # Prefer nearer next_q when a distant hit only wins on shared name tokens
+            if best and prev_t > 0:
+                near = [
+                    c
+                    for c in cands
+                    if c[1] - prev_t <= 150 and c[0] >= 24
+                ]
+                if near:
+                    near_best = max(near, key=lambda x: x[0])
+                    if best[1] - prev_t > 150 and near_best[0] >= best[0] - 25:
+                        best = near_best
 
         content = match_text_onset(
             seg,
@@ -129,15 +178,24 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
         )
 
         use_nq = best is not None and best[0] >= 26
-        # Content wins when next_q score is weak / mismatched
-        if use_nq and content and content_sc >= best[0] + 18 and content_sc >= 40:
-            # Content must still be after prev and not jump past too many anchors carelessly
-            if content[0] >= prev_t + 0.3:
+        if use_nq and content and content_sc >= 40 and content[0] >= prev_t + 0.3:
+            dist_nq = best[1] - prev_t
+            dist_c = content[0] - prev_t
+            # Nearby strong content beats a distant next_q (name collision later)
+            if dist_c <= 120 and dist_nq > max(dist_c + 45, 90):
+                use_nq = False
+            elif content_sc >= best[0] + 12:
+                use_nq = False
+            elif content_sc >= best[0] + 8 and dist_c + 30 < dist_nq:
                 use_nq = False
         if use_nq and best[0] < 22:
             use_nq = False
         if use_nq and content and best[0] < 30 and content_sc >= 45:
             use_nq = False
+        # Reject next_q if content match is clearly better-aligned topic
+        if use_nq and content and content_sc >= 50 and best[0] < 38:
+            if abs(content[0] - best[1]) > 8:
+                use_nq = False
 
         if use_nq:
             onsets[i] = best[1]
@@ -189,17 +247,72 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
             for k in range(i, j):
                 slot_lo = float(onsets[k])  # type: ignore
                 slot_hi = float(onsets[k + 1]) if k + 1 < j else t1  # type: ignore
+                ans = segs[k].get("answer_text") or ""
+                # Prefer spoken 下一个问题 / 第N个问题 when PDF answer is introduced that way
+                spoken_lead = None
+                if "下一个问题" in ans[:12] or ans.startswith("下一个问题"):
+                    spoken_lead = "下一个问题"
+                else:
+                    m = re.match(r"第[一二三四五六七八九十\d]+个问题", ans[:12])
+                    if m:
+                        spoken_lead = m.group(0)
+                if spoken_lead:
+                    best_a = None
+                    for ci, (st, en, raw) in enumerate(cues_raw):
+                        if st < t0 + 0.3 or st >= t1 - 0.5:
+                            continue
+                        if spoken_lead not in raw and normalize(spoken_lead, converter) not in normalize(
+                            raw, converter
+                        ):
+                            # loose: 第二个问题 vs 第二问题
+                            if spoken_lead[:2] == "第" and "问题" in raw and "第" in raw:
+                                pass
+                            else:
+                                continue
+                        sc = score_seg_at_window(
+                            segs[k],
+                            cues_norm,
+                            min(ci + 1, len(cues_norm) - 1),
+                            converter,
+                        )
+                        # Prefer earlier spoken lead in the parent window
+                        score = sc + max(0, 40 - (st - t0) * 0.05)
+                        if best_a is None or score > best_a[0]:
+                            best_a = (score, st, sc)
+                    if best_a and best_a[2] >= 18:
+                        onsets[k] = best_a[1]
+                        methods[k] = "followup-spoken-lead"
+                        scores_out[k] = best_a[2]
+                        continue
+                if "下一个问题" in ans[:12] or ans.startswith("下一个问题"):
+                    best_a = None
+                    for xia_t, cue_i, _ in anchors:
+                        if t0 + 0.5 <= xia_t < t1 - 0.5:
+                            sc = score_seg_at_window(
+                                segs[k],
+                                cues_norm,
+                                min(cue_i + 1, len(cues_norm) - 1),
+                                converter,
+                            )
+                            if best_a is None or sc > best_a[0]:
+                                best_a = (sc, xia_t)
+                    if best_a and best_a[0] >= 20:
+                        onsets[k] = best_a[1]
+                        methods[k] = "followup-next_q"
+                        scores_out[k] = best_a[0]
+                        continue
                 if slot_hi - slot_lo < 2.5:
                     continue
                 hit = match_text_onset(
                     segs[k],
                     cues_norm,
-                    _cue_at(cues_norm, slot_lo),
+                    _cue_at(cues_norm, max(t0, slot_lo - 25)),
                     converter,
                     prefer_answer=True,
-                    min_onset=slot_lo,
+                    min_onset=t0 + 0.5,
                 )
-                if hit and slot_lo + 0.2 <= hit[0] <= slot_hi - 0.8:
+                if hit and t0 + 0.5 <= hit[0] <= t1 - 0.8:
+                    # keep if inside this followup's share of the window roughly
                     onsets[k] = hit[0]
                     methods[k] = "followup-answer"
                     scores_out[k] = _content_score(segs[k], cues_norm, hit[0], converter)
@@ -243,6 +356,8 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
 
     # Content repair: weak primary → rematch inside (prev, next)
     for i in primary_idxs:
+        if methods[i] == "keep-user-start":
+            continue
         if methods[i].startswith("next_q") and scores_out[i] >= 28:
             continue
         if scores_out[i] >= 40:
@@ -266,15 +381,30 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
                 methods[i] = f"repair-{hit[2]}"
                 scores_out[i] = sc
 
-    # Monotonic onsets
+    # Monotonic onsets (never move keep-user-start backwards/forwards)
     out = [float(o if o is not None else 0.0) for o in onsets]
     for i in range(1, n):
+        if methods[i] == "keep-user-start":
+            continue
         if out[i] <= out[i - 1]:
             out[i] = out[i - 1] + 0.15
             methods[i] += "+mono"
+    # Ensure keep-user-start still monotonic vs neighbors by moving non-kept
+    for i in range(n):
+        if methods[i] != "keep-user-start":
+            continue
+        if i and out[i] <= out[i - 1]:
+            out[i - 1] = out[i] - 0.15
+            if methods[i - 1] != "keep-user-start":
+                methods[i - 1] += "+mono"
+        if i + 1 < n and out[i + 1] <= out[i] and methods[i + 1] != "keep-user-start":
+            out[i + 1] = out[i] + 0.15
+            methods[i + 1] += "+mono"
 
     def _solid(idx: int) -> bool:
         m = methods[idx] or ""
+        if m == "keep-user-start":
+            return True
         if m.startswith("next_q"):
             return scores_out[idx] >= 32
         if m.startswith("name") or m.startswith("answer") or m.startswith("repair"):
@@ -349,7 +479,9 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
 
     # If still many collapses (anchors << segs), force full char-weight layout
     # while snapping primaries to nearby next_q when content score allows.
-    if _collapse_count() >= 4 or (n >= 20 and len(anchors) * 2 < n):
+    # Skip this path when any starts are user-fixed (would clobber the suffix repair).
+    has_fixed = any(m == "keep-user-start" for m in methods)
+    if not has_fixed and (_collapse_count() >= 4 or (n >= 20 and len(anchors) * 2 < n)):
         weights = [max(answer_chars(s), 40) for s in segs]
         total_w = sum(weights) or 1
         prop = []
@@ -415,22 +547,30 @@ def assign_onsets(segs, cues_norm, cues_raw, converter, audio_end: float):
             scores_out[i] = _content_score(segs[i], cues_norm, out[i], converter)
 
     for i in range(1, n):
+        if methods[i] == "keep-user-start":
+            continue
         if out[i] <= out[i - 1]:
             out[i] = out[i - 1] + 0.05
             if "mono" not in methods[i]:
                 methods[i] += "+mono"
 
-    # Adaptive lead → starts
+    # Adaptive lead → starts (fixed starts keep absolute value)
     starts = []
     floor = 0.0
     leads = []
     for i, onset in enumerate(out):
-        st, lead, gap = start_from_onset(onset, cues_raw, floor=floor)
+        if methods[i] == "keep-user-start":
+            st = round(float(onset), 3)
+            lead, gap = 0.0, 0.0
+        else:
+            st, lead, gap = start_from_onset(onset, cues_raw, floor=floor)
         starts.append(st)
         leads.append((lead, gap, onset))
         floor = st + 0.05
 
     for i in range(1, n):
+        if methods[i] == "keep-user-start":
+            continue
         if starts[i] <= starts[i - 1]:
             starts[i] = round(starts[i - 1] + 0.05, 3)
 
@@ -459,7 +599,11 @@ def verify_content(segs, starts, cues_norm, converter) -> List[str]:
     return warns
 
 
-def realign_session(session: dict, converter) -> Tuple[dict, dict]:
+def realign_session(
+    session: dict,
+    converter,
+    keep_through: Optional[int] = None,
+) -> Tuple[dict, dict]:
     srt = Path(session.get("srt_file") or "")
     if not srt.exists():
         return session, {"error": "no_srt"}
@@ -470,8 +614,15 @@ def realign_session(session: dict, converter) -> Tuple[dict, dict]:
 
     audio_end = float(cues_norm[-1][1])
     segs = session.get("segments") or []
+    fixed_starts = None
+    if keep_through is not None:
+        fixed_starts = {}
+        for seg in segs:
+            idx = int(seg.get("index") or 0)
+            if idx <= keep_through and seg.get("start") is not None:
+                fixed_starts[idx] = float(seg["start"])
     starts, methods, scores, leads, n_anchors = assign_onsets(
-        segs, cues_norm, cues_raw, converter, audio_end
+        segs, cues_norm, cues_raw, converter, audio_end, fixed_starts=fixed_starts
     )
 
     new_segs = []
@@ -482,6 +633,7 @@ def realign_session(session: dict, converter) -> Tuple[dict, dict]:
         "content": 0,
         "other": 0,
         "weak": 0,
+        "kept": 0,
     }
     for i, seg in enumerate(segs):
         if seg.get("locked"):
@@ -493,7 +645,9 @@ def realign_session(session: dict, converter) -> Tuple[dict, dict]:
             end = round(start + 0.5, 3)
         method = methods[i]
         lead, gap, onset = leads[i]
-        if method.startswith("next_q"):
+        if method == "keep-user-start":
+            stats["kept"] += 1
+        elif method.startswith("next_q"):
             stats["next_q"] += 1
         elif method in ("name", "answer", "question", "repair-name", "repair-answer", "repair-question"):
             stats["content"] += 1
@@ -508,7 +662,7 @@ def realign_session(session: dict, converter) -> Tuple[dict, dict]:
         fields = range_fields(
             start,
             end,
-            0.93 if method.startswith("next_q") else 0.82,
+            0.93 if method.startswith("next_q") or method == "keep-user-start" else 0.82,
             "manual",
             srt_preview(cues_raw, start, end),
         )
@@ -549,7 +703,7 @@ def session_selected(session: dict, args) -> bool:
         return sid in args.session
     if sid in SKIP_SESSION_IDS:
         return False
-    if sid == "2025-06-13-tieba":
+    if sid == "2025-07-07-tieba":
         return True
     return session.get("date", "") >= args.from_date
 
@@ -570,9 +724,15 @@ def count_collapses(session: dict) -> int:
 
 def main(argv=None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--from-date", default="2025-06-14")
+    parser.add_argument("--from-date", default="2025-07-08")
     parser.add_argument("--month", action="append")
     parser.add_argument("--session", action="append")
+    parser.add_argument(
+        "--keep-through",
+        type=int,
+        default=None,
+        help="Keep segment starts with index <= N (requires --session)",
+    )
     parser.add_argument("--apply", action="store_true")
     parser.add_argument(
         "--force",
@@ -602,7 +762,10 @@ def main(argv=None) -> int:
                 new_sessions.append(session)
                 continue
             old_c = count_collapses(session)
-            aligned, stats = realign_session(session, converter)
+            keep_through = args.keep_through if args.session else None
+            aligned, stats = realign_session(
+                session, converter, keep_through=keep_through
+            )
             if "error" in stats:
                 print(f"  {session['session_id']}: ERROR {stats['error']}")
                 new_sessions.append(session)
@@ -614,7 +777,7 @@ def main(argv=None) -> int:
             print(
                 f"  {session['session_id']}: segs={stats['segs']} anchors={stats['anchors']} "
                 f"next_q={stats['next_q']} content={stats['content']} other={stats['other']} "
-                f"weak_cscore={stats['weak']} warns={len(warns)} "
+                f"kept={stats.get('kept', 0)} weak_cscore={stats['weak']} warns={len(warns)} "
                 f"collapse {old_c}->{new_c} [{tag}]"
             )
             for w in warns[:8]:
