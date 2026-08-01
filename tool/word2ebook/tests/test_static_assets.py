@@ -248,15 +248,26 @@ class TestStaticAssetsManagerRealModules:
         assert ".qa-player" in css
         assert ".qa-player-skip" in css
         assert ".qa-player-progress-thumb" in css
+        assert ".qa-play.loading" in css
+        assert "qa-play-icon--spinner" in css
+        assert ".qa-player.is-loading" in css
+        assert "body.dark-mode .qa-play.loading" in css
+        assert "body.dark-mode .qa-play-icon--spinner" in css
+        assert "body.dark-mode .qa-player-toggle.is-loading" in css
+        assert "body.dark-mode .qa-player.is-loading .qa-player-range" in css
+        assert "body.dark-mode .qa-player-progress.is-indeterminate" in css
 
     def test_real_js_has_qa_audio_module(self):
         js = StaticAssetsManager().get_full_js_content()
-        # 08-qa-audio.js 內容（逐段播放 + 底部浮動播放器 + 拖拉/±5s）
+        # 08-qa-audio.js 內容（逐段播放 + 底部浮動播放器 + 拖拉/±5s + 載入進度）
         assert "qa-play" in js
         assert "qa-player" in js
         assert "qa-player-skip" in js
         assert "seekFromClientX" in js
         assert "decodeURIComponent" in js
+        assert "beginLoading" in js
+        assert "getBufferPercent" in js
+        assert "qaAudio.loading" in js
 
     def test_real_js_has_bookmark_ui_content(self):
         js = StaticAssetsManager().get_full_js_content()

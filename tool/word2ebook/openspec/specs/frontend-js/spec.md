@@ -33,7 +33,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
-| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle), seeks to each segment's start and auto-stops at its end |
+| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.js` files (sorted by
@@ -127,6 +127,23 @@ audio filename SHALL be decoded for display with `decodeURIComponent`. The modul
 SHALL no-op on pages without `.qa-play` buttons. This module is isolated in its own
 IIFE so its identifiers do not collide with the shared `DOMContentLoaded` scope.
 
+While the audio resource is buffering (first load, mid-file seek, or a stall during
+playback), the system SHALL show a loading state so the user can tell the wait is
+intentional:
+
+- The active `.qa-play` button SHALL gain a `loading` class, replace its play icon
+  with a spinner, and MAY fill a progress overlay from `--qa-load-pct` when buffer
+  percent is known
+- The mini-player SHALL gain `is-loading`, show a spinner on the toggle, display a
+  loading message (with percent when available) in place of the time-range label,
+  and treat the progress track as a buffer indicator (indeterminate pulse when
+  percent is unknown)
+- Seek / skip controls SHALL be inert while loading
+- Loading UI SHOULD be delayed briefly (~100–150ms) to avoid flicker when the
+  audio is already cached
+- Loading SHALL clear on `playing`; an `error` event SHALL clear loading and show
+  a failure message
+
 #### Scenario: Play and auto-stop a segment
 - GIVEN a QA chapter page with `.qa-play` buttons
 - WHEN the user clicks a segment's play button
@@ -138,6 +155,13 @@ IIFE so its identifiers do not collide with the shared `DOMContentLoaded` scope.
 - WHEN the user drags the progress bar or clicks `−5s` / `+5s`
 - THEN `audio.currentTime` SHALL be clamped to `[data-start, data-end]` and the
   progress UI SHALL update accordingly
+
+#### Scenario: Loading feedback on first play
+- GIVEN a QA chapter page whose audio file is not yet buffered
+- WHEN the user clicks a `.qa-play` button
+- THEN the play button and mini-player SHALL enter a loading state (spinner /
+  loading message, optional buffer percent) until the `playing` event fires
+  (or an `error` clears loading with a failure message)
 
 ## Technical Notes
 

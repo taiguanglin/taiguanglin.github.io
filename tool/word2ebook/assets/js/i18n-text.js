@@ -282,6 +282,22 @@ window.I18N_TEXT = {
     }
   },
   
+  // 答疑音檔播放
+  qaAudio: {
+    loading: {
+      simplified: '正在加载音档…',
+      traditional: '正在載入音檔…'
+    },
+    loadingProgress: {
+      simplified: '正在加载音档… {pct}%',
+      traditional: '正在載入音檔… {pct}%'
+    },
+    loadError: {
+      simplified: '音档加载失败',
+      traditional: '音檔載入失敗'
+    }
+  },
+
   // 功能說明
   instructions: {
     bookmarkHelp: {

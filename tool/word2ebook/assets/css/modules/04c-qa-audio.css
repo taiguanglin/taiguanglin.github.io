@@ -41,6 +41,7 @@
 
 /* 播放按鈕 */
 .qa-play {
+    position: relative;
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -54,6 +55,8 @@
     cursor: pointer;
     transition: all 0.2s ease;
     box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    --qa-load-pct: 0%;
 }
 .qa-play:hover {
     background: var(--gradient-primary);
@@ -66,8 +69,43 @@
     color: #fff;
     border-color: transparent;
 }
+.qa-play.loading {
+    background: var(--gradient-primary);
+    color: #fff;
+    border-color: transparent;
+    cursor: wait;
+    box-shadow: var(--shadow-md);
+}
+/* 載入進度底色（由 --qa-load-pct 驅動） */
+.qa-play.loading::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: var(--qa-load-pct);
+    background: rgba(255, 255, 255, 0.22);
+    transition: width 0.2s ease;
+    pointer-events: none;
+}
+.qa-play .qa-play-icon,
+.qa-play .qa-play-label {
+    position: relative;
+    z-index: 1;
+}
 .qa-play .qa-play-icon { font-size: 0.9em; line-height: 1; }
 .qa-play .qa-play-label { font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
+.qa-play-icon--spinner {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: qa-spin 0.7s linear infinite;
+    vertical-align: -0.05em;
+}
+@keyframes qa-spin {
+    to { transform: rotate(360deg); }
+}
 
 .qa-play--disabled {
     display: inline-flex;
@@ -155,6 +193,47 @@
     box-shadow: var(--shadow-sm);
 }
 .qa-player-toggle:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.qa-player-toggle.is-loading {
+    color: transparent;
+    pointer-events: none;
+    position: relative;
+}
+.qa-player-toggle.is-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin: -8px 0 0 -8px;
+    border: 2px solid rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: qa-spin 0.7s linear infinite;
+}
+.qa-player.is-loading .qa-player-skip {
+    opacity: 0.45;
+    pointer-events: none;
+}
+.qa-player.is-loading .qa-player-progress {
+    cursor: wait;
+}
+.qa-player.is-loading .qa-player-range {
+    color: var(--color-primary-deep);
+}
+.qa-player-progress.is-indeterminate .qa-player-progress-fill {
+    width: 100% !important;
+    transition: none;
+    opacity: 0.55;
+    animation: qa-progress-pulse 1.1s ease-in-out infinite;
+}
+.qa-player-progress.is-indeterminate .qa-player-progress-thumb {
+    display: none;
+}
+@keyframes qa-progress-pulse {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.95; }
+}
 .qa-player-close {
     background: transparent;
     color: var(--color-primary-deep);
@@ -250,9 +329,22 @@ body.dark-mode .qa-play {
     border-color: #5a2d49;
 }
 body.dark-mode .qa-play:hover,
-body.dark-mode .qa-play.playing {
+body.dark-mode .qa-play.playing,
+body.dark-mode .qa-play.loading {
     background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
     color: #fff;
+    border-color: transparent;
+}
+body.dark-mode .qa-play.loading {
+    cursor: wait;
+    box-shadow: var(--shadow-md);
+}
+body.dark-mode .qa-play.loading::before {
+    background: rgba(255, 255, 255, 0.2);
+}
+body.dark-mode .qa-play-icon--spinner {
+    border-color: rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
 }
 body.dark-mode .qa-play--disabled { background: #3b2330; color: #7c6470; }
 body.dark-mode .qa-status--proofread {
@@ -275,8 +367,22 @@ body.dark-mode .qa-player {
 }
 body.dark-mode .qa-player-file { color: #ff91af; }
 body.dark-mode .qa-player-range { color: #c79bac; }
+body.dark-mode .qa-player.is-loading .qa-player-range {
+    color: #ffb3c6;
+}
 body.dark-mode .qa-player-close { color: #ffb3c6; }
 body.dark-mode .qa-player-close:hover { background: rgba(90, 45, 73, 0.6); }
+body.dark-mode .qa-player-toggle {
+    background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
+    color: #fff;
+}
+body.dark-mode .qa-player-toggle.is-loading::after {
+    border-color: rgba(255, 255, 255, 0.35);
+    border-top-color: #fff;
+}
+body.dark-mode .qa-player.is-loading .qa-player-skip {
+    opacity: 0.4;
+}
 body.dark-mode .qa-player-skip {
     background: #3b2330;
     color: #ffb3c6;
@@ -287,4 +393,10 @@ body.dark-mode .qa-player-skip:hover {
     border-color: #ff91af;
 }
 body.dark-mode .qa-player-progress { background: rgba(90, 45, 73, 0.6); }
+body.dark-mode .qa-player-progress-fill {
+    background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
+}
+body.dark-mode .qa-player-progress.is-indeterminate .qa-player-progress-fill {
+    background: linear-gradient(90deg, #5a2d49, #ff91af, #5a2d49);
+}
 body.dark-mode .qa-player-progress-thumb { background: #ff91af; }

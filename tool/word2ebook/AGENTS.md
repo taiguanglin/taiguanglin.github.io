@@ -136,7 +136,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse and level filtering |
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
-| `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end (isolated IIFE) |
+| `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback (isolated IIFE) |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 
@@ -163,7 +163,7 @@ All CSS modules live in `assets/css/modules/` and are concatenated (in numeric o
 | `03-search.css` | Search panel, results, highlight styles, dark-mode search overrides |
 | `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, level-specific link colours, collapse animations |
 | `04b-toc-dark.css` | Dark-mode overrides for TOC controls, floating TOC, bookmark items inside the TOC panel |
-| `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), `qa-opening`, bottom floating `qa-player`; dark-mode variants. Loads before `05` so its responsive overrides win |
+| `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), `qa-opening`, bottom floating `qa-player`, loading states; dark-mode variants. Loads before `05` so its responsive overrides win |
 | `05-responsive.css` | **All** `@media` breakpoints: height-based toolbar, ≤768px tablet, ≥800px wide, ≤600px mobile (incl. QA player full-width), ≤400px small-phone |
 
 **Design-token rule:** always use `var(--color-primary)`, `var(--radius-sm)`, etc. (defined in `00-base.css`) — never hardcode raw hex or pixel values in new CSS.
