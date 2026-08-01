@@ -650,6 +650,7 @@ function renderSessionList() {
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'file-item' + (session.session_id === state.sessionId ? ' active' : '');
+        btn.dataset.status = sessionListenStatus(stats);
         btn.innerHTML = `
             <span class="draft-dot hidden"></span>
             <div class="file-item-body">
@@ -664,6 +665,17 @@ function renderSessionList() {
     if (!shown) {
         els.fileList.innerHTML = '<div class="empty-state">沒有符合的 session</div>';
     }
+}
+
+/** 聽完（或只差 1，通常是開場未播）→ all；有聽過 → partial；否則 none。 */
+function sessionListenStatus(stats) {
+    const all = stats.all || 0;
+    const completed = stats.completed || 0;
+    if (all === 0) return 'empty';
+    // 少 1 也算整體完成（開頭第一段常不播）
+    if (completed >= all || (all > 1 && completed >= all - 1)) return 'all';
+    if (completed > 0) return 'partial';
+    return 'none';
 }
 
 function countSessionMeta(session) {
