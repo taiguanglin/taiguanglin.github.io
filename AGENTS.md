@@ -51,7 +51,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic/` | Assets | Concept PNGs for `infographic.html`. |
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
-| `audio_map/` | Editorial UI | Browser editor for month JSON; **SoT JSON lives in** `tool/word2ebook/data/audio_map/`. |
+| `audio_map/` | Editorial UI | Browser editor for month JSON; **SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)
