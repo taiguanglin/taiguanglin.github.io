@@ -51,7 +51,6 @@ const els = {
     sidebarBackdrop: document.querySelector('#sidebarBackdrop'),
     monthSelect: document.querySelector('#monthSelect'),
     fileList: document.querySelector('#fileList'),
-    fileSearch: document.querySelector('#fileSearch'),
     welcomePanel: document.querySelector('#welcomePanel'),
     documentPanel: document.querySelector('#documentPanel'),
     documentPath: document.querySelector('#documentPath'),
@@ -142,7 +141,6 @@ function bindEvents() {
         setPrefs({ lastSessionId: null });
         loadMonth(els.monthSelect.value);
     });
-    els.fileSearch.addEventListener('input', renderSessionList);
     els.saveButton.addEventListener('click', () => saveCurrentMap());
     els.savePlayedButton?.addEventListener('click', () => saveCurrentMap({ reason: 'played' }));
     els.settingsButton.addEventListener('click', () => openSettings());
@@ -634,15 +632,11 @@ function askDraftChoice(path, draft) {
 }
 
 function renderSessionList() {
-    const query = (els.fileSearch.value || '').trim().toLowerCase();
     els.fileList.innerHTML = '';
     const sessions = state.map?.sessions || [];
     let shown = 0;
     for (const session of sessions) {
         const label = `${session.date} ${session.source}`;
-        if (query && !label.toLowerCase().includes(query) && !(session.session_id || '').toLowerCase().includes(query)) {
-            continue;
-        }
         shown += 1;
         const stats = countSessionMeta(session);
         const row = document.createElement('div');
