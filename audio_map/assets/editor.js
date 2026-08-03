@@ -42,6 +42,13 @@ const state = {
     usingDraft: false,
 };
 
+/** Merge rapid start-nudge clicks into one undo step + one auto-replay. */
+const nudgeBurst = {
+    timer: null,
+    segmentIndex: null,
+    started: false,
+};
+
 const els = {
     app: document.querySelector('#app'),
     sidebar: document.querySelector('#sidebar'),
@@ -99,6 +106,7 @@ const els = {
     seekBar: document.querySelector('#seekBar'),
     setStartButton: document.querySelector('#setStartButton'),
     setEndButton: document.querySelector('#setEndButton'),
+    nudgeStartButtons: document.querySelectorAll('[data-nudge-start]'),
     undoButton: document.querySelector('#undoButton'),
     redoButton: document.querySelector('#redoButton'),
     discardDraftButton: document.querySelector('#discardDraftButton'),
@@ -522,6 +530,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         }
     }
 
+    clearNudgeBurst();
     setStatus('正在載入…', 'loading');
     state.month = month;
     els.monthSelect.value = month;
@@ -709,6 +718,7 @@ function countSessionMeta(session) {
 }
 
 function selectSession(sessionId) {
+    clearNudgeBurst({ commit: true });
     state.sessionId = sessionId;
     state.activeSegmentIndex = null;
     state.prefs.lastMonth = state.month;
@@ -938,6 +948,9 @@ function setActiveSegment(index) {
     const disabled = state.activeSegmentIndex == null;
     if (els.setStartButton) els.setStartButton.disabled = disabled;
     if (els.setEndButton) els.setEndButton.disabled = disabled;
+    for (const button of els.nudgeStartButtons || []) {
+        button.disabled = disabled;
+    }
 }
 
 function playerCurrentTime() {
@@ -945,6 +958,99 @@ function playerCurrentTime() {
     if (!player || !player.src) return null;
     const t = player.currentTime;
     return Number.isFinite(t) ? t : null;
+}
+
+/**
+ * Nudge the active segment's start by `delta` seconds.
+ * Chains previous segment end; rapid clicks are merged into one undo + one replay.
+ */
+function nudgeSegmentStart(delta) {
+    const idx = state.activeSegmentIndex;
+    if (idx == null) {
+        setStatus('請先播放某一段的音檔，才知道要微調哪一段的起始', 'error');
+        return;
+    }
+    const items = sessionItems();
+    const entry = items[idx];
+    if (!entry) return;
+    const item = entry.item;
+    if (item.start == null || !Number.isFinite(item.start)) {
+        setStatus('請先用「設起始」設定起始時間', 'error');
+        return;
+    }
+    if (!Number.isFinite(delta) || delta === 0) return;
+
+    const prev = items[idx - 1]?.item;
+    const minStart = prev?.start != null && Number.isFinite(prev.start) ? prev.start : 0;
+    const maxStart = item.end != null && Number.isFinite(item.end) ? item.end : Infinity;
+    const next = roundSeconds(clamp(item.start + delta, minStart, maxStart));
+    if (next === roundSeconds(item.start)) {
+        setStatus(delta < 0 ? '已到起始下限，無法再提早' : '已到起始上限（本段結束），無法再延後', 'error');
+        return;
+    }
+
+    // First click in a burst (or after switching segment): snapshot undo baseline.
+    if (!nudgeBurst.started || nudgeBurst.segmentIndex !== idx) {
+        clearTimeout(nudgeBurst.timer);
+        commitHistory();
+        nudgeBurst.started = true;
+        nudgeBurst.segmentIndex = idx;
+    }
+
+    const signed = next >= item.start ? `+${(next - item.start).toFixed(3)}` : (next - item.start).toFixed(3);
+    setSegmentEdge(idx, 'start', next);
+    setSegmentEdge(idx - 1, 'end', next, { markEdited: false });
+    const label = entry.kind === 'opening' ? '開場' : `第 ${entry.number} 段`;
+    setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）`, 'ok');
+    if (els.audioRange && item.start_label && item.end_label) {
+        els.audioRange.textContent = ` ${item.start_label} - ${item.end_label}`;
+    }
+
+    clearTimeout(nudgeBurst.timer);
+    nudgeBurst.timer = setTimeout(() => finishNudgeBurst(), 450);
+}
+
+async function finishNudgeBurst() {
+    const idx = nudgeBurst.segmentIndex;
+    nudgeBurst.timer = null;
+    nudgeBurst.started = false;
+    nudgeBurst.segmentIndex = null;
+    commitHistory();
+    renderSessionList();
+
+    const entry = sessionItems()[idx];
+    const session = currentSession();
+    if (!entry || !session?.audio_file) return;
+    const start = entry.item.start;
+    const end = entry.item.end;
+    if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) return;
+    const range = {
+        start,
+        end,
+        startLabel: entry.item.start_label,
+        endLabel: entry.item.end_label,
+        label: `${entry.item.start_label} - ${entry.item.end_label}`,
+    };
+    try {
+        setMiniPlayerHidden(false);
+        await audio.playRange(session.audio_file, range, entry.title);
+        setActiveSegment(idx);
+    } catch (error) {
+        setStatus(`重播失敗：${error.message}`, 'error');
+    }
+}
+
+function clearNudgeBurst({ commit = false } = {}) {
+    if (!nudgeBurst.started && !nudgeBurst.timer) return;
+    clearTimeout(nudgeBurst.timer);
+    nudgeBurst.timer = null;
+    const wasStarted = nudgeBurst.started;
+    nudgeBurst.started = false;
+    nudgeBurst.segmentIndex = null;
+    if (commit && wasStarted) {
+        commitHistory();
+        renderSessionList();
+    }
 }
 
 function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {}) {
@@ -1211,6 +1317,7 @@ function commitHistory() {
 
 function undoEdit() {
     if (!history.undo.length) return;
+    clearNudgeBurst();
     history.redo.push(serializeMap(state.map));
     const prev = history.undo.pop();
     state.map = JSON.parse(prev);
@@ -1223,6 +1330,7 @@ function undoEdit() {
 
 function redoEdit() {
     if (!history.redo.length) return;
+    clearNudgeBurst();
     history.undo.push(serializeMap(state.map));
     const next = history.redo.pop();
     state.map = JSON.parse(next);
@@ -1407,6 +1515,12 @@ function setupMiniPlayer() {
     for (const button of mini.querySelectorAll('[data-seek]')) {
         button.addEventListener('click', () => {
             seekBy(Number(button.dataset.seek));
+        });
+    }
+
+    for (const button of els.nudgeStartButtons || []) {
+        button.addEventListener('click', () => {
+            nudgeSegmentStart(Number(button.dataset.nudgeStart));
         });
     }
 

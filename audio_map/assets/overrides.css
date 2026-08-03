@@ -42,3 +42,54 @@
 .segment-body .answer-body--empty {
     color: var(--muted);
 }
+
+/* Start-time nudge row on the floating mini player (audio_map only). */
+.mini-player-nudge {
+    align-items: center;
+    display: grid;
+    gap: 0.3rem;
+    grid-template-columns: auto repeat(6, minmax(0, 1fr));
+}
+
+.mini-player-nudge-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.mini-player-nudge button {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid var(--accent);
+    border-radius: 0.5rem;
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    padding: 0.3rem 0.15rem;
+    white-space: nowrap;
+}
+
+.mini-player-nudge button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.mini-player-nudge button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+/* Gap between negative and positive nudge groups. */
+.mini-player-nudge button[data-nudge-start="0.1"] {
+    margin-left: 0.25rem;
+}
+
+@media (max-width: 900px) {
+    .mini-player-nudge button {
+        padding: 0.55rem 0.2rem;
+    }
+
+    .mini-player:not(.mini-player--expanded) .mini-player-nudge {
+        display: none;
+    }
+}
