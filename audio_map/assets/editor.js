@@ -905,8 +905,29 @@ function renderSegmentCard(entry, segmentIndex) {
     }
     body.append(answerEl);
 
+    // Click question / answer to play (same as ▶); keep text selection for copy.
+    bindPlayOnTextClick(titleField, playButton, '點擊播放這一段');
+    bindPlayOnTextClick(answerEl, playButton, '點擊播放這一段');
+
     applySegmentEditability(node);
     return node;
+}
+
+/** Click-to-play on read-only Q/A text; skip if the user was selecting text. */
+function bindPlayOnTextClick(el, playButton, hint) {
+    if (!el || !playButton) return;
+    el.classList.add('play-on-click');
+    const prevTitle = el.getAttribute('title') || '';
+    el.title = prevTitle ? `${prevTitle} · ${hint}` : hint;
+    el.addEventListener('click', () => {
+        if (playButton.disabled) return;
+        const sel = window.getSelection();
+        if (sel && !sel.isCollapsed) {
+            // Only suppress when the selection is inside this field.
+            if (el.contains(sel.anchorNode) || el.contains(sel.focusNode)) return;
+        }
+        playButton.click();
+    });
 }
 
 function formatTimeMarker(item, kind) {
