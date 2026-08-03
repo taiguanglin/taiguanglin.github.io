@@ -1531,10 +1531,18 @@ function setupMiniPlayer() {
         }
     };
 
-    const seekBy = (delta) => {
+    const seekBy = async (delta) => {
         if (!Number.isFinite(delta) || !player.src) return;
         const duration = Number.isFinite(player.duration) ? player.duration : Infinity;
         player.currentTime = Math.min(Math.max(player.currentTime + delta, 0), duration);
+        // Seek alone does not touch start/end; if paused, resume so the jump is audible.
+        if (player.paused) {
+            try {
+                await player.play();
+            } catch (error) {
+                setStatus(`播放失敗：${error.message}`, 'error');
+            }
+        }
     };
 
     toggle.addEventListener('click', togglePlay);
