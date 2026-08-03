@@ -1038,8 +1038,12 @@ async function finishNudgeBurst() {
     nudgeBurst.segmentIndex = null;
     commitHistory();
     renderSessionList();
+    await replaySegment(idx);
+}
 
-    const entry = sessionItems()[idx];
+/** Play the segment from its current start→end (same as ▶ / nudge settle). */
+async function replaySegment(segmentIndex) {
+    const entry = sessionItems()[segmentIndex];
     const session = currentSession();
     if (!entry || !session?.audio_file) return;
     const start = entry.item.start;
@@ -1055,7 +1059,7 @@ async function finishNudgeBurst() {
     try {
         setMiniPlayerHidden(false);
         await audio.playRange(session.audio_file, range, entry.title);
-        setActiveSegment(idx);
+        setActiveSegment(segmentIndex);
     } catch (error) {
         setStatus(`重播失敗：${error.message}`, 'error');
     }
@@ -1121,6 +1125,7 @@ function applyPlayerTime(segmentIndex, edge, seconds) {
     setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
     commitHistory();
     renderSessionList();
+    if (edge === 'start') replaySegment(segmentIndex);
 }
 
 function applyPlayerTimeSingle(segmentIndex, edge, seconds) {
@@ -1132,6 +1137,7 @@ function applyPlayerTimeSingle(segmentIndex, edge, seconds) {
     setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}${note}`, 'ok');
     commitHistory();
     renderSessionList();
+    if (edge === 'start') replaySegment(segmentIndex);
 }
 
 function toggleSegmentEditing(card) {
