@@ -283,7 +283,8 @@ class TestGuanwangSource:
         assert "贴吧" not in [t.text for t in ch.toc_items]
 
     def test_bare_today_is_opening_without_shifu_prefix(self, parser):
-        """無「师父说」前綴的「今天是…先回答官网」也要切到官网。"""
+        """無「师父说」前綴的「今天是…先回答官网」也要切到官网，且首個
+        無時間提問者（winnie：）不得併進開場。"""
         lines = [
             (157.0, "Tai 师父2025 年11 月15 日答疑（文字版）"),
             (IND,  "今天是2025 年11 月15 号周六，这个月的最后一次上线答疑，"),
@@ -296,6 +297,11 @@ class TestGuanwangSource:
         ch = parser.parse_lines(lines, start_index=16)[0]
         assert [t.text for t in ch.toc_items] == ["2025年11月15日 官网"]
         assert "贴吧" not in [t.text for t in ch.toc_items]
+        before_q = ch.content.split('<div class="question"', 1)[0]
+        assert "感恩顶礼" not in before_q
+        assert "先回答官网的问题" in before_q
+        assert '<span class="questioner">winnie</span>' in ch.content
+        assert len(re.findall(r'<div class="question"', ch.content)) == 1
 
     def test_incidental_gongzhonghao_in_tieba_opening(self, parser):
         """贴吧開場閒聊「回答了，去公众号领书」不應把整場誤判成微信。"""

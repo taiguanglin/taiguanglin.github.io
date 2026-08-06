@@ -114,8 +114,9 @@ its line. The parser SHALL still emit these as `<div class="question">` cards
 `名字：` line (colon at end, no time) SHALL be treated as a new questioner **only
 when** it opens a section — i.e. the current card is `None` (the line directly
 follows a separator line, which always precedes a questioner) or the current card
-is the `师父说` source-switch paragraph (the first commenter of a section). Such a
-questioner's name/time SHALL be reused by any following numbered sub-questions.
+is a source-opening paragraph (`师父说…` **or** a bare `今天是…` intro without the
+`师父说` prefix, as on 2025-11-15 官网). Such a questioner's name/time SHALL be
+reused by any following numbered sub-questions.
 
 A left-margin line that merely ends with `：` while a question or answer card is
 open (e.g. a wrapped sentence like `…想请教三个问题：`) SHALL remain body text and
@@ -131,6 +132,13 @@ SHALL NOT be misread as a questioner.
 - GIVEN a `师父说…回答微信公众号的问题` line immediately followed by `诚杨：`
 - WHEN parsed
 - THEN `诚杨` SHALL become a question card, not a paragraph
+
+#### Scenario: First commenter after bare 今天是 opening has no time
+- GIVEN a bare `今天是…先回答官网的问题。` opening (no `师父说` prefix) followed by
+  `winnie：` and the comment body
+- WHEN parsed
+- THEN `winnie` SHALL become a question card, and the opening paragraph SHALL
+  contain only the intro — not the comment body
 
 #### Scenario: Colon-ending continuation is not a questioner
 - GIVEN an open question whose wrapped text ends a line with `…问题：`

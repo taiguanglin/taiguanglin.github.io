@@ -613,6 +613,9 @@ class PDFParser:
                 ):
                     state["source"] = SOURCE_GUANWANG
                 start_card("paragraph")
+                # 與「师父说」開場相同：允許緊接的無時間提問者（如 winnie：）成卡，
+                # 否則會被併進開場 <p>（2025-11-15 官网）。
+                state["card"]["shifu"] = True
                 add_line(blob, indented=True)
                 i = j
                 continue
@@ -663,9 +666,10 @@ class PDFParser:
                 continue
 
             # 提問者（人名，無時間）：很多貼吧/公眾號的留言沒有時間戳，
-            # 名字上方一定有分隔線（→ card 為 None），或緊接在師父說的來源
-            # 開場之後（→ card 為師父說段落）。其餘以冒號結尾的行（例如句子中的
-            # 「想請教三個問題：」）發生在問題/回答卡片內，視為內文延續，不誤判。
+            # 名字上方一定有分隔線（→ card 為 None），或緊接在來源開場之後
+            # （→ card 為「师父说」／裸「今天是」開場段落，shifu=True）。
+            # 其餘以冒號結尾的行（例如句子中的「想請教三個問題：」）發生在
+            # 問題/回答卡片內，視為內文延續，不誤判。
             if x0 < INDENT_THRESHOLD and not indented:
                 nc = NAMECOLON_RE.match(text)
                 lone = LONE_COLON_RE.match(text)
