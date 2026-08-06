@@ -19,7 +19,7 @@ python3 align.py --month 2025-08 --fresh --apply --require-complete
 
 SRT / MP3 root (default):
 
-`~/Documents/backup_2026-07-16_13inch_macbook/{year}答疑音頻`
+`~/Documents/backup_on_2026-07-16_13inch_macbook/{year}答疑音頻`
 
 Opus playback files: `~/tai/audio/` (linked from the site as `../audio/`).
 

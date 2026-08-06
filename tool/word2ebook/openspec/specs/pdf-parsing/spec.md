@@ -78,14 +78,15 @@ without inserting a space. Spaces adjacent to CJK characters SHALL be removed.
 The parser SHALL emit `<div class="question">` cards (with `questioner` and
 optional `question-time` meta) and `<div class="answer">` cards (answerer raw
 name `Taiguanglin`), matching the Word output markup. A timestamped questioner
-line is `名字：YYYY-MM-DD HH:MM`. An answer marker is `Taiguanglin：`. Numbered
-sub-questions (`N、`, `问题N、`, …) posted **consecutively** by the same questioner
-(with no intervening answer, separator, or new questioner) SHALL be merged into a
-**single** question card — one multi-part question — with each number rendered as
-its own `question-text` paragraph. An intro/greeting before the first number stays
-with the same card. A numbered question that appears **after an answer** is a new
-turn and SHALL open a new question card (still reusing the same questioner's
-name/time).
+line is either `名字：YYYY-MM-DD HH:MM` (typical 贴吧) or `名字：HH:MM:SS` /
+`名字：HH:MM` (WeChat official-account backend timestamps, e.g. 2025-11-10).
+An answer marker is `Taiguanglin：`. Numbered sub-questions (`N、`, `问题N、`, …)
+posted **consecutively** by the same questioner (with no intervening answer,
+separator, or new questioner) SHALL be merged into a **single** question card —
+one multi-part question — with each number rendered as its own `question-text`
+paragraph. An intro/greeting before the first number stays with the same card. A
+numbered question that appears **after an answer** is a new turn and SHALL open a
+new question card (still reusing the same questioner's name/time).
 
 #### Scenario: Consecutive numbered questions merge
 - GIVEN one questioner who asks `1、`, `2、`, `3、` consecutively before any answer
@@ -98,6 +99,13 @@ name/time).
 - WHEN parsed
 - THEN two question cards SHALL be produced (`1、2、` merged; `3、` separate), both
   carrying the same questioner name/time
+
+#### Scenario: WeChat HH:MM:SS questioner is not swallowed by opening
+- GIVEN a WeChat section whose first commenters are `亻田：10:38:28` and
+  `素山Celine ：10:42:42` (time-only stamps) with answers between them
+- WHEN parsed
+- THEN each SHALL become its own question card with `question-time`, and the
+  opening paragraph SHALL contain only the `师父说` intro — not the comment bodies
 
 ### Requirement: Questioners Without a Timestamp
 Many 贴吧/微信公众号 comments carry only a name (`名字：`) with no timestamp on

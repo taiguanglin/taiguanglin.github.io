@@ -475,6 +475,57 @@ class TestNumberedQuestions:
 
 
 # ---------------------------------------------------------------------------
+# WeChat HH:MM:SS questioners (2025-11-10 / 11-11 backend timestamps)
+# ---------------------------------------------------------------------------
+
+class TestWechatClockQuestioners:
+    """WeChat official-account PDF dumps use clock-only stamps (HH:MM:SS), not
+    YYYY-MM-DD HH:MM. Those must become question cards or they collapse into the
+    opening paragraph (the 2025-11-10 regression)."""
+
+    def test_hhmmss_questioners_split_from_opening(self, parser):
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，回答微信公众号的问题。"),
+            (CONT, "亻田：10:38:28"),
+            (IND,  "师父吉祥，肌肉紧绷怎么办？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "有妄想的话身体就会绷起来。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "素山Celine ：10:42:42"),
+            (IND,  "顶礼师父，静修期间有什么注意事项吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "先把第一本书和第二本书都看一看。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "淡薄：13:17:45"),
+            (IND,  "师父好，"),
+            (IND,  "1、为什么有的人生孩子不痛？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "应该算是业力。"),
+            (IND,  "2、打无痛是不是在逃避业力？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这个就不好说了。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert "2025年11月10日 微信公众号" in ch.content
+        # opening is only the 师父说 intro
+        before_q = ch.content.split('<div class="question"', 1)[0]
+        assert "肌肉紧绷" not in before_q
+        assert "静修期间" not in before_q
+        assert "回答微信公众号的问题" in before_q
+        # clock-stamp commenters become real cards
+        assert '<span class="questioner">亻田</span>' in ch.content
+        assert '<span class="question-time">10:38:28</span>' in ch.content
+        assert '<span class="questioner">素山Celine</span>' in ch.content
+        assert '<span class="question-time">10:42:42</span>' in ch.content
+        assert '<span class="questioner">淡薄</span>' in ch.content
+        # 1、 before answer + 2、 after answer → two cards, both 淡薄
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["亻田", "素山Celine", "淡薄", "淡薄"]
+        assert len(re.findall(r'<div class="question"', ch.content)) == 4
+
+
+# ---------------------------------------------------------------------------
 # questioners without a timestamp
 # ---------------------------------------------------------------------------
 

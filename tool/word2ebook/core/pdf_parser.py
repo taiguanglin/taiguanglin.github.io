@@ -77,11 +77,19 @@ PAGE_RE = re.compile(r"^(?:\d+\s*/\s*\d+|\d{1,4})$")
 DAY_RE = re.compile(r"Tai\s*师父\s*(20\d{2})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*[日号號]")
 SHIFU_RE = re.compile(r"^师父说[：:]")
 ANSWER_RE = re.compile(r"^Taiguanglin[：:]")
+# 提問者時間：貼吧多為「YYYY-MM-DD HH:MM」；微信公眾號後台常見「HH:MM:SS」
+# （2025-11-10 / 11-11），兩者皆須辨識，否則整段會被併進開場 <p>。
 QTIME_RE = re.compile(
-    r"^(?P<name>.{1,40}?)[：:]\s*(?P<time>20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2})\s*$"
+    r"^(?P<name>.{1,40}?)[：:]\s*(?P<time>"
+    r"(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}"
+    r"|\d{1,2}:\d{2}(?::\d{2})?)"
+    r")\s*$"
 )
 NAMECOLON_RE = re.compile(r"^(?P<name>.{1,40}?)[：:]\s*$")
-BARETIME_RE = re.compile(r"^20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}$")
+BARETIME_RE = re.compile(
+    r"^(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}"
+    r"|\d{1,2}:\d{2}(?::\d{2})?)$"
+)
 NUM_RE = re.compile(r"^(问题|問題|问|問|第)?\s*\d+\s*[、.，,)）]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")

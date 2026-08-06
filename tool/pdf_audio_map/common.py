@@ -19,7 +19,7 @@ MAP_DIR = ROOT / "tool" / "word2ebook" / "data" / "audio_map"
 DEFAULT_SRT_ROOT = (
     Path.home()
     / "Documents"
-    / "backup_2026-07-16_13inch_macbook"
+    / "backup_on_2026-07-16_13inch_macbook"
 )
 DEFAULT_AUDIO_DIR = Path.home() / "tai" / "audio"
 SENSE_VOICE_PYTHON = ROOT / "tool" / "sense_voice" / ".venv" / "bin" / "python"
