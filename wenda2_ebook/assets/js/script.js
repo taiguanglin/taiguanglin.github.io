@@ -4266,17 +4266,17 @@ function addHomepageBookmarkEventListeners() {
       var icon = btn.querySelector('.qa-play-icon');
       if (!icon) return;
       if (loading) {
-        if (!icon.getAttribute('data-play-icon')) {
-          icon.setAttribute('data-play-icon', icon.textContent || '▶');
+        if (!icon.getAttribute('data-play-icon-html')) {
+          icon.setAttribute('data-play-icon-html', icon.innerHTML);
         }
-        icon.textContent = '';
+        icon.innerHTML = '';
         icon.classList.add('qa-play-icon--spinner');
       } else {
         icon.classList.remove('qa-play-icon--spinner');
-        var saved = icon.getAttribute('data-play-icon');
+        var saved = icon.getAttribute('data-play-icon-html');
         if (saved != null) {
-          icon.textContent = saved;
-          icon.removeAttribute('data-play-icon');
+          icon.innerHTML = saved;
+          icon.removeAttribute('data-play-icon-html');
         }
         btn.style.removeProperty('--qa-load-pct');
       }
