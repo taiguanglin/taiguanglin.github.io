@@ -52,6 +52,7 @@ def _session(**overrides):
                 "start_label": "00:00:10.000",
                 "end_label": "00:00:20.500",
                 "status": "from_qa_txt",
+                "meta": {"lastPlayed": "2026-08-01 12:00"},
             },
             {
                 "index": 2,
@@ -87,13 +88,79 @@ class TestInjectHtml:
         by_section = {"2025nian-11yue-10ri-guan-wang": _session()}
         out = inject_html(SAMPLE_SECTION, by_section)
         assert 'class="qa-meta-bar qa-meta-bar--opening"' in out
-        assert out.count('button class="qa-play"') == 2  # opening + q1
+        assert out.count('button class="qa-play"') == 2  # opening + q1 (listened)
         assert 'data-start="10.000"' in out
         assert 'data-end="20.500"' in out
         # question-bbb is missing → no meta bar immediately before it
         idx_b = out.index('id="question-bbb"')
         before = out[max(0, idx_b - 120) : idx_b]
         assert "qa-meta-bar" not in before
+
+    def test_hides_unlistened_segment_even_with_range(self):
+        session = _session(
+            segments=[
+                {
+                    "index": 1,
+                    "question_id": "question-aaa",
+                    "start": 10.0,
+                    "end": 20.5,
+                    "start_label": "00:00:10.000",
+                    "end_label": "00:00:20.500",
+                    "status": "manual",
+                    # no meta.lastPlayed
+                },
+                {
+                    "index": 2,
+                    "question_id": "question-bbb",
+                    "start": 20.5,
+                    "end": 30.0,
+                    "start_label": "00:00:20.500",
+                    "end_label": "00:00:30.000",
+                    "status": "manual",
+                    "meta": {"lastPlayed": "2026-08-01 12:00"},
+                },
+            ]
+        )
+        out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
+        # First segment not listened → no opening, no play before question-aaa
+        assert "qa-meta-bar--opening" not in out
+        idx_a = out.index('id="question-aaa"')
+        before_a = out[max(0, idx_a - 160) : idx_a]
+        assert "qa-play" not in before_a
+        # Second segment listened → play before question-bbb
+        idx_b = out.index('id="question-bbb"')
+        before_b = out[max(0, idx_b - 400) : idx_b]
+        assert 'class="qa-play"' in before_b
+        assert out.count('button class="qa-play"') == 1
+
+    def test_opening_follows_first_segment_listened(self):
+        session = _session(
+            segments=[
+                {
+                    "index": 1,
+                    "question_id": "question-aaa",
+                    "start": 10.0,
+                    "end": 20.5,
+                    "start_label": "00:00:10.000",
+                    "end_label": "00:00:20.500",
+                    "status": "manual",
+                    "meta": {"lastPlayed": "2026-08-01 12:00"},
+                },
+                {
+                    "index": 2,
+                    "question_id": "question-bbb",
+                    "start": 20.5,
+                    "end": 30.0,
+                    "start_label": "00:00:20.500",
+                    "end_label": "00:00:30.000",
+                    "status": "manual",
+                    # unlistened
+                },
+            ]
+        )
+        out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
+        assert "qa-meta-bar--opening" in out
+        assert out.count('button class="qa-play"') == 2  # opening + q1 only
 
     def test_idempotent(self):
         by_section = {"2025nian-11yue-10ri-guan-wang": _session()}

@@ -49,12 +49,16 @@ record `media_fallback` / `resolved_source` on the session. The emitted
 After Word/PDF/QA parsing, the converter SHALL call `inject_chapters` before
 HTML generation. Injection SHALL insert
 `<div class="qa-meta-bar">…<button class="qa-play" …>` before each matched
-`.question`, and an opening meta bar after the section `<h2>` when the opening
-has a range. Unmatched questions SHALL receive **no** play control (not a
+`.question` **that has been listened to** in `/audio_map/`
+(`meta.lastPlayed` present) and has a valid time range, and an opening meta bar
+after the section `<h2>` when the opening has a range **and** the first Q&A
+segment of that session has been listened to. Unmatched questions, missing
+ranges, and unlistened segments SHALL receive **no** play control (not a
 disabled button). Injection SHALL be idempotent (strips prior meta bars first).
 
-#### Scenario: Matched question gets play data
-- GIVEN a mapping segment with start=10.5 end=20.0 and audio `X.opus`
+#### Scenario: Matched listened question gets play data
+- GIVEN a mapping segment with start=10.5 end=20.0, audio `X.opus`, and
+  `meta.lastPlayed` set
 - WHEN the chapter HTML is injected
 - THEN a `.qa-play` button SHALL appear before that question with
   `data-start="10.500"`, `data-end="20.000"`, and percent-encoded `data-audio`
@@ -63,6 +67,20 @@ disabled button). Injection SHALL be idempotent (strips prior meta bars first).
 - GIVEN a mapping segment with `status: "missing"`
 - WHEN injected
 - THEN no `.qa-play` and no `.qa-meta-bar` SHALL be inserted for that question
+
+#### Scenario: Unlistened segment omitted even with a range
+- GIVEN a mapping segment with valid `start`/`end` but no `meta.lastPlayed`
+- WHEN injected
+- THEN no `.qa-play` and no `.qa-meta-bar` SHALL be inserted for that question
+
+#### Scenario: Opening follows first segment listen state
+- GIVEN an opening with a valid range and a first Q&A segment without
+  `meta.lastPlayed`
+- WHEN injected
+- THEN no opening `.qa-meta-bar` SHALL be inserted
+- GIVEN the same opening and a first Q&A segment with `meta.lastPlayed`
+- WHEN injected
+- THEN an opening `.qa-meta-bar` with `.qa-play` SHALL be inserted after `<h2>`
 
 ### Requirement: Shared Play Markup
 Play-button HTML SHALL be produced by `core/qa_play_markup.py` so QA chapters

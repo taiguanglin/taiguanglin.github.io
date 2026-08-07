@@ -25,6 +25,16 @@ H2_RE = re.compile(
 QUESTION_OPEN_RE = re.compile(r'<div class="question"(?=[\s>])')
 
 
+def _has_been_listened(item: Optional[dict]) -> bool:
+    """True when audio_map editorial UI recorded a listen (``meta.lastPlayed``)."""
+    if not item or not isinstance(item, dict):
+        return False
+    meta = item.get("meta")
+    if not isinstance(meta, dict):
+        return False
+    return bool(meta.get("lastPlayed"))
+
+
 def _range_tuple(item: Optional[dict]) -> Optional[Tuple[float, float, str]]:
     if not item:
         return None
@@ -97,10 +107,14 @@ def _inject_section(section: str, session: dict) -> str:
     )
 
     audio_rel = audio_url(session.get("audio_file") or "")
-    # Opening bar after </h2>
+    segments = session.get("segments") or []
+    # Opening play button follows whether the first Q&A segment was listened to.
+    first_segment_listened = _has_been_listened(segments[0] if segments else None)
+
     opening = session.get("opening")
+    opening_range = _range_tuple(opening) if first_segment_listened else None
     opening_bar = render_opening_meta_bar(
-        _range_tuple(opening), audio_rel, hide_if_missing=True
+        opening_range, audio_rel, hide_if_missing=True
     )
     if opening_bar:
         section = re.sub(
@@ -110,7 +124,6 @@ def _inject_section(section: str, session: dict) -> str:
             count=1,
         )
 
-    segments = session.get("segments") or []
     # Build lookup by question_id and by index order
     by_qid = {s.get("question_id"): s for s in segments if s.get("question_id")}
 
@@ -128,7 +141,7 @@ def _inject_section(section: str, session: dict) -> str:
         if seg is None and q_index <= len(segments):
             seg = segments[q_index - 1]
         bar = ""
-        if seg:
+        if seg and _has_been_listened(seg):
             bar = render_segment_meta_bar(
                 str(seg.get("index") or q_index),
                 _range_tuple(seg),
