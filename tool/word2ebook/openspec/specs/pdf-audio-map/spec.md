@@ -85,7 +85,9 @@ disabled button). Injection SHALL be idempotent (strips prior meta bars first).
 ### Requirement: Shared Play Markup
 Play-button HTML SHALL be produced by `core/qa_play_markup.py` so QA chapters
 and PDF audio-map injection share the same `data-*` contract consumed by
-`08-qa-audio.js`.
+`08-qa-audio.js`. Visible labels SHALL use `HH:MM:SS` (no milliseconds); the
+editorial `/audio_map/` UI keeps millisecond precision. Each `.qa-play` button
+SHALL include a speaker SVG icon (`.qa-play-speaker`).
 
 ### Requirement: Alignment Sources
 For months 2025-11 through 2026-03, alignment SHALL prefer times from

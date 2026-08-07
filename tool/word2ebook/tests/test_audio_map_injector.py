@@ -81,6 +81,20 @@ class TestQaPlayMarkup:
     def test_disabled_when_allowed(self):
         html = render_play(None, "../audio/x.opus", disabled_if_missing=True)
         assert "qa-play--disabled" in html
+        assert "qa-play-speaker" in html
+
+    def test_display_label_is_hms_without_ms(self):
+        from core.qa_play_markup import format_hms, format_range_label
+
+        assert format_hms(20.5) == "00:00:20"
+        assert format_range_label(10.0, 20.5) == "00:00:10 - 00:00:20"
+        html = render_play((10.0, 20.5, "ignored"), "../audio/x.opus")
+        assert "qa-play-speaker" in html
+        assert 'data-label="00:00:10 - 00:00:20"' in html
+        assert ">00:00:10 - 00:00:20<" in html
+        assert 'data-start="10.000"' in html  # playback attrs keep precision
+        assert 'data-end="20.500"' in html
+        assert ".500" not in html.split('data-label="')[1].split('"')[0]
 
 
 class TestInjectHtml:
@@ -129,7 +143,7 @@ class TestInjectHtml:
         assert "qa-play" not in before_a
         # Second segment listened → play before question-bbb
         idx_b = out.index('id="question-bbb"')
-        before_b = out[max(0, idx_b - 400) : idx_b]
+        before_b = out[max(0, idx_b - 800) : idx_b]
         assert 'class="qa-play"' in before_b
         assert out.count('button class="qa-play"') == 1
 

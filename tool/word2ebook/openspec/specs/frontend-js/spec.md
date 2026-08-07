@@ -131,9 +131,9 @@ While the audio resource is buffering (first load, mid-file seek, or a stall dur
 playback), the system SHALL show a loading state so the user can tell the wait is
 intentional:
 
-- The active `.qa-play` button SHALL gain a `loading` class, replace its play icon
-  with a spinner, and MAY fill a progress overlay from `--qa-load-pct` when buffer
-  percent is known
+- The active `.qa-play` button SHALL gain a `loading` class, replace its speaker
+  icon with a spinner (restoring the SVG via saved `innerHTML` when loading ends),
+  and MAY fill a progress overlay from `--qa-load-pct` when buffer percent is known
 - The mini-player SHALL gain `is-loading`, show a spinner on the toggle, display a
   loading message (with percent when available) in place of the time-range label,
   and treat the progress track as a buffer indicator (indeterminate pulse when

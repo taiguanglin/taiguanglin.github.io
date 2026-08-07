@@ -184,7 +184,7 @@ class TestBuildSection:
         assert "%E5%B9%B4" in audio  # 「年」字的 percent-encoding
         assert 'data-start="107.210"' in joined
         assert 'data-end="402.680"' in joined
-        assert 'data-label="00:01:47.210 - 00:06:42.680"' in joined
+        assert 'data-label="00:01:47 - 00:06:42"' in joined
 
     def test_question_and_answer_divs_have_ids(self, parser):
         section, _ = self._section(parser)

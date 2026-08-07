@@ -44,13 +44,13 @@
     position: relative;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 4px 10px;
-    border: 1px solid var(--color-accent-pale);
-    background: #fff;
+    gap: 7px;
+    padding: 5px 12px 5px 10px;
+    border: 1.5px solid var(--color-primary);
+    background: rgba(248, 200, 220, 0.28);
     color: var(--color-primary-deep);
     border-radius: 999px;
-    font-size: 0.82em;
+    font-size: 0.84em;
     font-family: inherit;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -91,17 +91,37 @@
     position: relative;
     z-index: 1;
 }
-.qa-play .qa-play-icon { font-size: 0.9em; line-height: 1; }
+.qa-play .qa-play-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    line-height: 1;
+    color: var(--color-primary);
+}
+.qa-play:hover .qa-play-icon,
+.qa-play.playing .qa-play-icon,
+.qa-play.loading .qa-play-icon {
+    color: #fff;
+}
+.qa-play-speaker {
+    display: block;
+    width: 1.2em;
+    height: 1.2em;
+}
 .qa-play .qa-play-label { font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 .qa-play-icon--spinner {
     display: inline-block;
-    width: 0.9em;
-    height: 0.9em;
+    width: 1em;
+    height: 1em;
     border: 2px solid rgba(255, 255, 255, 0.35);
     border-top-color: #fff;
     border-radius: 50%;
     animation: qa-spin 0.7s linear infinite;
     vertical-align: -0.05em;
+}
+.qa-play-icon.qa-play-icon--spinner .qa-play-speaker {
+    display: none;
 }
 @keyframes qa-spin {
     to { transform: rotate(360deg); }
@@ -110,12 +130,18 @@
 .qa-play--disabled {
     display: inline-flex;
     align-items: center;
-    padding: 4px 10px;
+    gap: 4px;
+    padding: 5px 10px;
     border-radius: 999px;
     background: #f0e6eb;
     color: #b79aa8;
-    font-size: 0.82em;
+    font-size: 0.84em;
     cursor: not-allowed;
+}
+.qa-play--disabled .qa-play-speaker {
+    width: 1.1em;
+    height: 1.1em;
+    opacity: 0.7;
 }
 
 /* 校稿狀態徽章 */
@@ -324,9 +350,12 @@ body.dark-mode .qa-source-banner {
 body.dark-mode .qa-source-banner a { color: #ff91af; }
 body.dark-mode .qa-number { color: #ff91af; }
 body.dark-mode .qa-play {
-    background: #4a2c3a;
+    background: rgba(90, 45, 73, 0.45);
     color: #ffb3c6;
-    border-color: #5a2d49;
+    border-color: #ff91af;
+}
+body.dark-mode .qa-play .qa-play-icon {
+    color: #ff91af;
 }
 body.dark-mode .qa-play:hover,
 body.dark-mode .qa-play.playing,

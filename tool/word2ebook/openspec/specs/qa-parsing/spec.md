@@ -83,16 +83,19 @@ indexes the play-button label, timecodes, or badge text.
 - GIVEN a built QA chapter
 - WHEN the search index is generated
 - THEN it SHALL contain the question/answer prose but SHALL NOT contain the
-  badge text, the play icon, or the `HH:MM:SS.mmm` timecodes
+  badge text, the play icon, or the `HH:MM:SS` timecodes
 
 ### Requirement: Audio Playback Data
 Each play control SHALL be a `<button class="qa-play">` carrying `data-audio`
 (the segment's audio URL), `data-start`/`data-end` (segment bounds in seconds),
-and `data-label` (the human-readable `HH:MM:SS.mmm - HH:MM:SS.mmm` range). The
-audio URL SHALL be `{QA_AUDIO_BASE}{percent-encoded(<txt-stem>.opus)}` where
+and `data-label` (the human-readable `HH:MM:SS - HH:MM:SS` range; milliseconds
+are truncated for ebook display). Precise bounds remain in `data-start` /
+`data-end`. The audio URL SHALL be `{QA_AUDIO_BASE}{percent-encoded(<txt-stem>.opus)}` where
 `QA_AUDIO_BASE` defaults to `../audio/`. Percent-encoding keeps the URL ASCII so
 OpenCC simplified/traditional conversion cannot corrupt the CJK filename. A
 segment with no parseable time range SHALL render a disabled, non-button control.
+Each play button SHALL include a speaker icon (`.qa-play-speaker`) so the control
+is visually distinct from surrounding text.
 
 #### Scenario: Audio filename derived from txt stem
 - GIVEN `2025年11月10日Tai師父官網答疑.txt`
