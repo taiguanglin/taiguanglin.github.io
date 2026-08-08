@@ -952,6 +952,12 @@ function renderSegmentCard(entry, segmentIndex) {
     // Click question / answer to play (same as ▶); keep text selection for copy.
     bindPlayOnTextClick(titleField, playButton, '點擊播放這一段');
     bindPlayOnTextClick(answerEl, playButton, '點擊播放這一段');
+    // Ensure Q/A surfaces never keep form focus that would swallow P / ← / →.
+    for (const surface of [titleField, answerEl]) {
+        surface.addEventListener('pointerdown', () => {
+            blurIfBlocksShortcuts(document.activeElement);
+        });
+    }
 
     applySegmentEditability(node);
     return node;
@@ -970,8 +976,38 @@ function bindPlayOnTextClick(el, playButton, hint) {
             // Only suppress when the selection is inside this field.
             if (el.contains(sel.anchorNode) || el.contains(sel.focusNode)) return;
         }
+        // Drop form focus so P / ← / → keep working after click-to-play.
+        blurIfBlocksShortcuts(document.activeElement);
         playButton.click();
     });
+}
+
+/**
+ * True when the user is typing in a real editable control.
+ * Read-only 問題、回答區、時間標記列不擋全域音檔快捷鍵。
+ */
+function isTypingInEditableField(el) {
+    if (!(el instanceof HTMLElement)) return false;
+    if (el.closest('.answer-body')) return false;
+    if (el.closest('textarea.segment-title[readonly]')) return false;
+    if (el.classList.contains('marker-input') || el.closest('.marker-input')) return false;
+    if (el.isContentEditable) return true;
+    const tag = el.tagName;
+    if (tag === 'SELECT') return true;
+    if (tag === 'TEXTAREA') return !el.readOnly && !el.disabled;
+    if (tag === 'INPUT') {
+        if (el.readOnly || el.disabled) return false;
+        const type = (el.type || 'text').toLowerCase();
+        return !['button', 'checkbox', 'radio', 'submit', 'reset', 'file', 'range', 'color', 'hidden'].includes(type);
+    }
+    return false;
+}
+
+function blurIfBlocksShortcuts(el) {
+    if (!(el instanceof HTMLElement)) return;
+    if (el.matches('input, textarea, select') || el.isContentEditable) {
+        try { el.blur(); } catch { /* noop */ }
+    }
 }
 
 function formatTimeMarker(item, kind) {
@@ -1673,19 +1709,9 @@ function setupMiniPlayer() {
     els.setEndButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'end'));
 
     document.addEventListener('keydown', (event) => {
-        // Ignore when typing in form fields (but work regardless of which panel is focused).
-        const t = event.target;
-        if (t instanceof HTMLElement) {
-            const tag = t.tagName;
-            if (
-                tag === 'INPUT'
-                || tag === 'TEXTAREA'
-                || tag === 'SELECT'
-                || t.isContentEditable
-            ) {
-                return;
-            }
-        }
+        // Ignore only when actually typing in an editable field.
+        // Read-only 問題區 / 回答區 / 時間標記 都要能用 P、←、→。
+        if (isTypingInEditableField(event.target)) return;
         // Plain keys only (no Alt/Ctrl/Meta/Shift combos).
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
