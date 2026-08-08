@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Extract PDF ebook sessions (opening + questions) into audio_map skeletons."""
+"""Extract PDF ebook sessions (opening + questions + closing) into audio_map skeletons."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import re
 from pathlib import Path
 from typing import Dict, List, Optional
 
+from closing import closing_text_from_section
 from common import (
     ANSWER_TEXT_RE,
     DEFAULT_SRT_ROOT,
@@ -114,6 +115,16 @@ def extract_session_from_section(
             }
         )
 
+    closing = None
+    if q_matches:
+        closing_text = closing_text_from_section(section_html, q_matches[-1].start())
+        if closing_text:
+            closing = {
+                "text": closing_text,
+                "text_preview": closing_text[:200],
+                **empty_range_fields(),
+            }
+
     return {
         "session_id": session_id(year, month, day, source),
         "year": year,
@@ -130,6 +141,7 @@ def extract_session_from_section(
         "section_id": section_id,
         "opening": opening,
         "segments": segments,
+        "closing": closing,
     }
 
 

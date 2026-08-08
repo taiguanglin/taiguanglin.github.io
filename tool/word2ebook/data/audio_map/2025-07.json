@@ -6,7 +6,8 @@
     "missing": 0,
     "opening_ok": 12,
     "sessions": 12,
-    "fallbacks": 0
+    "fallbacks": 0,
+    "closing_ok": 12
   },
   "sessions": [
     {
@@ -17,7 +18,7 @@
       "date": "2025-07-07",
       "source": "微信公众号",
       "audio_file": "2025年7月7日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月7日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月7日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月7日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -940,9 +941,9 @@
           "stable_key": "2025nian-7yue-7ri-wei-xin-gong-zhong-hao#39",
           "q_preview": "顶礼师父，最近刚把大悲咒背熟练，就开始双盘念大悲咒，但是有时候会憋的慌，怎么办师父？还有我也是声带不发音嘴动念，但是喘气只能用嘴喘气，这样对吗？",
           "start": 2189.61,
-          "end": 2257.935,
+          "end": 2255.72,
           "start_label": "00:36:29.610",
-          "end_label": "00:37:37.935",
+          "end_label": "00:37:35.720",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -955,7 +956,20 @@
             "lastPlayed": "2026-08-01 21:18"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天就回答到这里。",
+        "text_preview": "今天就回答到这里。",
+        "start": 2255.72,
+        "end": 2257.935,
+        "start_label": "00:37:35.720",
+        "end_label": "00:37:37.935",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "那今天就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-07-07-tieba",
@@ -965,7 +979,7 @@
       "date": "2025-07-07",
       "source": "贴吧",
       "audio_file": "2025年7月7日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月7日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月7日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月7日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -2788,9 +2802,9 @@
           "stable_key": "gxgsjqwd33|2025-07-07 23:32|78",
           "q_preview": "生活即道场：“无限宽容”修行路——从家庭烦恼中体悟慈悲真义。无缘大慈，同体大悲。对慈悲的理解，不能用人的思维去触及。我就试图用几个修行的体悟，来探讨一下慈悲可能是什么！\n1、儿子在十四到十六岁，进入青春期。由于学业重，压力大，跟老师关系及其紧张。我们试图配合老师，结果孩子出现了自闭征兆：高三下半年，学也不上了，大学也不考了，整天蓬头垢面，整天玩游戏。看到孩子",
           "start": 8074.76,
-          "end": 8236.675,
+          "end": 8232.37,
           "start_label": "02:14:34.760",
-          "end_label": "02:17:16.675",
+          "end_label": "02:17:12.370",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -2804,7 +2818,20 @@
             "lastEdited": "2026-08-01 18:46"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天贴吧的问题就回答到这里。",
+        "text_preview": "好了，今天贴吧的问题就回答到这里。",
+        "start": 8232.37,
+        "end": 8236.675,
+        "start_label": "02:17:12.370",
+        "end_label": "02:17:16.675",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了，这个今天贴吧的问题就回答到这里吧，这已经很长了哈。"
+      }
     },
     {
       "session_id": "2025-07-08-wechat",
@@ -2814,7 +2841,7 @@
       "date": "2025-07-08",
       "source": "微信公众号",
       "audio_file": "2025年7月8日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月8日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月8日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月8日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -3269,9 +3296,9 @@
           "stable_key": "2025nian-7yue-8ri-wei-xin-gong-zhong-hao#19",
           "q_preview": "顶礼Tai师，如您所说，我确实是发愿向佛菩萨请求帮助要找到名师后，遇到您的。感恩师父。接触您后刷新了很多认知，收获满满。今天的问题是：关于忍辱消业，本来我的性格是比较强势，杀伐果断的，做事情是比较顺利的。现在修忍辱和顺遂他人过程中。\n有两个问题，第一个就是有时忍辱忍得自己非常不爽，排解不掉很难受。第二方面就是有的人因为我态度软，开始有欺负我的意思，那这样我是",
           "start": 2081.517,
-          "end": 2341.985,
+          "end": 2339.4,
           "start_label": "00:34:41.517",
-          "end_label": "00:39:01.985",
+          "end_label": "00:38:59.400",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -3284,7 +3311,20 @@
             "lastPlayed": "2026-08-01 19:40"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天的回答就到这里。",
+        "text_preview": "好了，今天的回答就到这里。",
+        "start": 2339.4,
+        "end": 2341.985,
+        "start_label": "00:38:59.400",
+        "end_label": "00:39:01.985",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了，那今天的回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-07-08-tieba",
@@ -3294,7 +3334,7 @@
       "date": "2025-07-08",
       "source": "贴吧",
       "audio_file": "2025年7月8日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月8日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月8日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月8日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -3809,9 +3849,9 @@
           "stable_key": "Fun09|2025-07-08 19:53|22",
           "q_preview": "Tai师父吉祥，请问师父，身体带给意识的感受，不是累就是困，昏昏沉沉一点都不舒服，全是沉重的负担感，怎么办呢？干啥都觉得累，消耗精力的感觉，正常吗？打坐的时候，感觉要是呼吸调节得很稳定的话，坐的也更稳定，呼吸调整很重要？",
           "start": 2167.47,
-          "end": 2256.525,
+          "end": 2251.79,
           "start_label": "00:36:07.470",
-          "end_label": "00:37:36.525",
+          "end_label": "00:37:31.790",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -3824,7 +3864,20 @@
             "lastPlayed": "2026-08-01 20:14"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里。",
+        "text_preview": "今天贴吧的问题就回答到这里。",
+        "start": 2251.79,
+        "end": 2256.525,
+        "start_label": "00:37:31.790",
+        "end_label": "00:37:36.525",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天这个街霸的问题就回答到这里吧，这一千四百七十二楼。"
+      }
     },
     {
       "session_id": "2025-07-09-wechat",
@@ -3834,7 +3887,7 @@
       "date": "2025-07-09",
       "source": "微信公众号",
       "audio_file": "2025年7月9日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月9日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月9日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月9日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -4373,9 +4426,9 @@
           "stable_key": "2025nian-7yue-9ri-wei-xin-gong-zhong-hao#23",
           "q_preview": "请教师父《圆觉经》当中“圆觉自性，非性性有，循诸性有，无取无证”，“性有”的“性”该怎么理解？是不是妄想分别执著呢？还有后面“譬如眼根，不自见眼，性自平等，无平等者。”这里的“性”和前面一个意思吗？菩萨用奢摩他消灭自己的妄想，我记得师父说过菩萨没有禅定，那么奢摩他具体怎么消灭妄想呢？还是说在菩萨境界就是在奢摩他呢？",
           "start": 1033.646,
-          "end": 1061.825,
+          "end": 1041.19,
           "start_label": "00:17:13.646",
-          "end_label": "00:17:41.825",
+          "end_label": "00:17:21.190",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -4388,7 +4441,20 @@
             "lastPlayed": "2026-08-01 20:21"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "",
+        "text_preview": "",
+        "start": 1041.19,
+        "end": 1061.825,
+        "start_label": "00:17:21.190",
+        "end_label": "00:17:41.825",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "都已经录完了，发出去了呀，都都很长时间了。嗯，你去好好看看吧，把先把那个我我发的那个原掘经的音频都听一遍，都听一遍，再再问这些问题吧哈我认得你这个先你问的这些问题都没有听完那个啊我讲的那个原掘经啊，你先去听一听，好吧。"
+      }
     },
     {
       "session_id": "2025-07-09-tieba",
@@ -4398,7 +4464,7 @@
       "date": "2025-07-09",
       "source": "贴吧",
       "audio_file": "2025年7月9日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月9日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月9日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月9日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -5369,9 +5435,9 @@
           "stable_key": "牧羊少年571|2025-07-09 21:04|41",
           "q_preview": "顶礼Tai师父，您在书中讲了终极佛法，讲了佛堕落到凡夫的全过程。讲了菩萨的十一种分别心，讲了阿罗汉的九种分别心，讲了凡夫的执著心和三界二十八天的演变过程。这里我们说，在三禅以上，众生之间没有互动，那么都是自己静静地在打妄想在做梦，但是为什么每一个自性做的梦都是一样的过程呢？都是从菩萨的十一种妄想，到阿罗汉的分别心，再到凡夫的执著心。为什么都是一样的这个堕落的",
           "start": 2975.661,
-          "end": 3060.785,
+          "end": 3055.23,
           "start_label": "00:49:35.661",
-          "end_label": "00:51:00.785",
+          "end_label": "00:50:55.230",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -5385,7 +5451,20 @@
             "lastEdited": "2026-08-01 20:40"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里。",
+        "text_preview": "今天贴吧的问题就回答到这里。",
+        "start": 3055.23,
+        "end": 3060.785,
+        "start_label": "00:50:55.230",
+        "end_label": "00:51:00.785",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "嗯贴吧的问题你就回答到这里吧，这里是一五一零楼哈。"
+      }
     },
     {
       "session_id": "2025-07-10-wechat",
@@ -5395,7 +5474,7 @@
       "date": "2025-07-10",
       "source": "微信公众号",
       "audio_file": "2025年7月10日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月10日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月10日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月10日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -5920,9 +5999,9 @@
           "stable_key": "2025nian-7yue-10ri-wei-xin-gong-zhong-hao#22",
           "q_preview": "师父想问下，两个人互相怨恨彼此，当有一方放下了，不想纠缠了，但另一方放不下，超级执著，恨之入骨，怨恨心极强，这样来生还会纠缠吗？难道要双方彼此都放下怨恨才行吗？还是有一方放下就行？",
           "start": 1283.03,
-          "end": 1353.315,
+          "end": 1350.88,
           "start_label": "00:21:23.030",
-          "end_label": "00:22:33.315",
+          "end_label": "00:22:30.880",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -5936,7 +6015,20 @@
             "lastEdited": "2026-08-01 20:46"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "到这里今天的回答就结束了。",
+        "text_preview": "到这里今天的回答就结束了。",
+        "start": 1350.88,
+        "end": 1353.315,
+        "start_label": "00:22:30.880",
+        "end_label": "00:22:33.315",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了，到这里今天的回答就结束了。"
+      }
     },
     {
       "session_id": "2025-07-10-tieba",
@@ -5946,7 +6038,7 @@
       "date": "2025-07-10",
       "source": "贴吧",
       "audio_file": "2025年7月10日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月10日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月10日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月10日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -6684,9 +6776,9 @@
           "stable_key": "椰子糕不错|2025-07-10 21:07|31",
           "q_preview": "2、有次中午休息听师父讲《楞伽经》，同事中途闲聊打断了好几次，我自己也主动聊了个花边新闻，结果我再听时发现电脑版音频怎么点击都没声音，我关掉重开干脆连页面都打不开了，但其他网页都能访问，肯定不是网络问题，试了好多次就是听不了讲经的音频，我第一次特别深刻感受到绝不是自然力量……我怕是有听经的总被中断，怒了，赶紧忏悔，过了段时间就恢复了，请问师父这情况是不是我想",
           "start": 2709.18,
-          "end": 2857.825,
+          "end": 2854.12,
           "start_label": "00:45:09.180",
-          "end_label": "00:47:37.825",
+          "end_label": "00:47:34.120",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -6699,7 +6791,20 @@
             "lastPlayed": "2026-08-01 20:54"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的回答就到这里。",
+        "text_preview": "今天贴吧的回答就到这里。",
+        "start": 2854.12,
+        "end": 2857.825,
+        "start_label": "00:47:34.120",
+        "end_label": "00:47:37.825",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了啊，今天这个贴吧的回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-07-11-wechat",
@@ -6709,7 +6814,7 @@
       "date": "2025-07-11",
       "source": "微信公众号",
       "audio_file": "2025年7月11日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月11日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月11日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月11日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -7133,9 +7238,9 @@
           "stable_key": "2025nian-7yue-11ri-wei-xin-gong-zhong-hao#18",
           "q_preview": "师父说过，虽然有命运安排，但是凡夫的个人选择有随机性。这么多凡夫的偶然选择，汇聚到一起，会不会导致文明剧本发生变化？如何在善变的人类世界，还能推进文明方向不变？",
           "start": 1476.658,
-          "end": 1582.715,
+          "end": 1579.6,
           "start_label": "00:24:36.658",
-          "end_label": "00:26:22.715",
+          "end_label": "00:26:19.600",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -7149,7 +7254,20 @@
             "lastEdited": "2026-08-02 17:16"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天的回答就到这里。",
+        "text_preview": "好了，今天的回答就到这里。",
+        "start": 1579.6,
+        "end": 1582.715,
+        "start_label": "00:26:19.600",
+        "end_label": "00:26:22.715",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了啊，今天的回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-07-11-tieba",
@@ -7159,7 +7277,7 @@
       "date": "2025-07-11",
       "source": "贴吧",
       "audio_file": "2025年7月11日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月11日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月11日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月11日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -8091,9 +8209,9 @@
           "stable_key": "qqw_huanghua1|2025-07-11 22:38|38",
           "q_preview": "2、对于已经结婚的居士来说，如何说服另外一半？",
           "start": 3332.535,
-          "end": 3475.025,
+          "end": 3471.84,
           "start_label": "00:55:32.535",
-          "end_label": "00:57:55.025",
+          "end_label": "00:57:51.840",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -8108,7 +8226,20 @@
             "lastEdited": "2026-08-02 17:27"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里。",
+        "text_preview": "今天贴吧的问题就回答到这里。",
+        "start": 3471.84,
+        "end": 3475.025,
+        "start_label": "00:57:51.840",
+        "end_label": "00:57:55.025",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天这个贴吧的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-07-12-wechat",
@@ -8118,7 +8249,7 @@
       "date": "2025-07-12",
       "source": "微信公众号",
       "audio_file": "2025年7月12日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月12日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月12日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月12日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -8382,9 +8513,9 @@
           "stable_key": "2025nian-7yue-12ri-wei-xin-gong-zhong-hao#11",
           "q_preview": "请问师父，“八识转六识”是如何做到的？",
           "start": 992.563,
-          "end": 1061.985,
+          "end": 1056.86,
           "start_label": "00:16:32.563",
-          "end_label": "00:17:41.985",
+          "end_label": "00:17:36.860",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -8398,7 +8529,20 @@
             "lastEdited": "2026-08-02 18:05"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天的回答就到这里。",
+        "text_preview": "今天的回答就到这里。",
+        "start": 1056.86,
+        "end": 1061.985,
+        "start_label": "00:17:36.860",
+        "end_label": "00:17:41.985",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "也就是菩萨境界啊啊今天的回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-07-12-tieba",
@@ -8408,7 +8552,7 @@
       "date": "2025-07-12",
       "source": "贴吧",
       "audio_file": "2025年7月12日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月12日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月12日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年7月12日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -9118,9 +9262,9 @@
           "stable_key": "心画世间|2025-07-12 22:01|30",
           "q_preview": "打坐犯困昏沉，除了呼吸有问题，还有什么原因吗?",
           "start": 1999.66,
-          "end": 2133.955,
+          "end": 2130.53,
           "start_label": "00:33:19.660",
-          "end_label": "00:35:33.955",
+          "end_label": "00:35:30.530",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -9133,7 +9277,20 @@
             "lastPlayed": "2026-08-02 18:13"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里。",
+        "text_preview": "今天贴吧的问题就回答到这里。",
+        "start": 2130.53,
+        "end": 2133.955,
+        "start_label": "00:35:30.530",
+        "end_label": "00:35:33.955",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了，那今天贴吧的问题就回答到这里吧。"
+      }
     }
   ]
 }

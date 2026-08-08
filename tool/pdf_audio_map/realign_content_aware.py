@@ -694,7 +694,14 @@ def realign_session(
     warns = verify_content(segs, starts, cues_norm, converter)
     stats["warns"] = len(warns)
     stats["warn_list"] = warns
-    return {**session, "segments": new_segs, "opening": opening, "srt_file": str(srt)}, stats
+    result = {**session, "segments": new_segs, "opening": opening, "srt_file": str(srt)}
+    try:
+        from closing import attach_closing_to_session
+
+        result = attach_closing_to_session(result, force=False)
+    except Exception:
+        pass
+    return result, stats
 
 
 def session_selected(session: dict, args) -> bool:

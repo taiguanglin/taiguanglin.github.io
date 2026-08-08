@@ -28,6 +28,11 @@ SAMPLE_SECTION = """
 <div class="question" id="question-bbb">
 <div class="question-text">问题二内容</div>
 </div>
+<div class="answer" id="answer-bbb">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+<div class="answer-text">答二</div>
+</div>
+<p id="content-closing">今天就回答到这里。</p>
 """
 
 
@@ -62,6 +67,15 @@ def _session(**overrides):
                 "status": "missing",
             },
         ],
+        "closing": {
+            "text": "今天就回答到这里。",
+            "text_preview": "今天就回答到这里。",
+            "start": 30.0,
+            "end": 40.0,
+            "start_label": "00:00:30.000",
+            "end_label": "00:00:40.000",
+            "status": "auto",
+        },
     }
     base.update(overrides)
     return base
@@ -175,6 +189,52 @@ class TestInjectHtml:
         out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
         assert "qa-meta-bar--opening" in out
         assert out.count('button class="qa-play"') == 2  # opening + q1 only
+        assert "qa-meta-bar--closing" not in out
+
+    def test_closing_requires_own_listen(self):
+        session = _session(
+            segments=[
+                {
+                    "index": 1,
+                    "question_id": "question-aaa",
+                    "start": 10.0,
+                    "end": 20.5,
+                    "status": "manual",
+                    "meta": {"lastPlayed": "2026-08-01 12:00"},
+                },
+                {
+                    "index": 2,
+                    "question_id": "question-bbb",
+                    "start": 20.5,
+                    "end": 30.0,
+                    "status": "manual",
+                    "meta": {"lastPlayed": "2026-08-01 12:01"},
+                },
+            ],
+            closing={
+                "text": "今天就回答到这里。",
+                "start": 30.0,
+                "end": 40.0,
+                "status": "auto",
+                "meta": {"lastPlayed": "2026-08-01 12:02"},
+            },
+        )
+        out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
+        assert "qa-meta-bar--closing" in out
+        assert "收場" in out
+        assert 'data-start="30.000"' in out
+        # unlistened closing → no bar
+        session2 = _session(
+            segments=session["segments"],
+            closing={
+                "text": "今天就回答到这里。",
+                "start": 30.0,
+                "end": 40.0,
+                "status": "auto",
+            },
+        )
+        out2 = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session2})
+        assert "qa-meta-bar--closing" not in out2
 
     def test_idempotent(self):
         by_section = {"2025nian-11yue-10ri-guan-wang": _session()}

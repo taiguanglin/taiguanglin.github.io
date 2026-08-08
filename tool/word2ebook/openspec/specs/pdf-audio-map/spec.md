@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Attach per-question (and opening) audio playback to PDF-sourced ebook chapters
-for 2025-06…09 and 2025-11…2026-03 without replacing PDF prose with `qa/`
-transcripts. A JSON mapping under `data/audio_map/` stores time ranges; the
-build injects `.qa-play` buttons; a browser tool at `/audio_map/` allows manual
-refinement.
+Attach per-question (plus opening and closing) audio playback to PDF-sourced
+ebook chapters for 2025-06…09 and 2025-11…2026-03 without replacing PDF prose
+with `qa/` transcripts. A JSON mapping under `data/audio_map/` stores time
+ranges; the build injects `.qa-play` buttons; a browser tool at `/audio_map/`
+allows manual refinement.
 
 ## Requirements
 
@@ -21,9 +21,11 @@ The system SHALL store month-level JSON files at
 - WHEN `align.py --apply` runs for that month
 - THEN that segment's `start`/`end` SHALL remain unchanged
 
-### Requirement: One Range Per Question Plus Opening
+### Requirement: One Range Per Question Plus Opening And Closing
 Each PDF question SHALL map to at most one `[start, end]` range on a single
 `.opus` file. When an opening paragraph exists, it SHALL also have a range.
+When a closing（收場）paragraph exists after the last answer, it SHALL also
+have a range (last segment end = closing start; closing end = audio end).
 After a complete align (`--require-complete` / `fill_misses.py`), **no** segment
 or opening SHALL remain `status: "missing"`. Gaps with no direct SRT hit SHALL
 be filled by monotonic interpolation (`notes` containing `interpolated`).
@@ -52,9 +54,12 @@ HTML generation. Injection SHALL insert
 `.question` **that has been listened to** in `/audio_map/`
 (`meta.lastPlayed` present) and has a valid time range, and an opening meta bar
 after the section `<h2>` when the opening has a range **and** the first Q&A
-segment of that session has been listened to. Unmatched questions, missing
-ranges, and unlistened segments SHALL receive **no** play control (not a
-disabled button). Injection SHALL be idempotent (strips prior meta bars first).
+segment of that session has been listened to. When a closing has a range **and**
+`meta.lastPlayed` on the closing itself, a closing meta bar
+(`.qa-meta-bar--closing`) SHALL be inserted before the section footer.
+Unmatched questions, missing ranges, and unlistened segments/closing SHALL
+receive **no** play control (not a disabled button). Injection SHALL be
+idempotent (strips prior meta bars first).
 
 #### Scenario: Matched listened question gets play data
 - GIVEN a mapping segment with start=10.5 end=20.0, audio `X.opus`, and
@@ -82,6 +87,14 @@ disabled button). Injection SHALL be idempotent (strips prior meta bars first).
 - WHEN injected
 - THEN an opening `.qa-meta-bar` with `.qa-play` SHALL be inserted after `<h2>`
 
+#### Scenario: Closing requires its own listen
+- GIVEN a closing with a valid range but no `meta.lastPlayed`
+- WHEN injected
+- THEN no closing `.qa-meta-bar--closing` SHALL be inserted
+- GIVEN the same closing with `meta.lastPlayed`
+- WHEN injected
+- THEN a closing `.qa-meta-bar--closing` with `.qa-play` SHALL be inserted
+  near the end of the section
 ### Requirement: Shared Play Markup
 Play-button HTML SHALL be produced by `core/qa_play_markup.py` so QA chapters
 and PDF audio-map injection share the same `data-*` contract consumed by

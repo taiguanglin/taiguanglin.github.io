@@ -6,7 +6,8 @@
     "missing": 0,
     "opening_ok": 12,
     "sessions": 12,
-    "fallbacks": 0
+    "fallbacks": 0,
+    "closing_ok": 12
   },
   "sessions": [
     {
@@ -17,7 +18,7 @@
       "date": "2025-06-09",
       "source": "微信公众号",
       "audio_file": "2025年6月9日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月9日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月9日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月9日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -590,9 +591,9 @@
           "stable_key": "2025nian-6yue-9ri-wei-xin-gong-zhong-hao#24",
           "q_preview": "3、不修禅的人怎么才能保证去极乐呢，就光念阿弥陀佛号、吃素、放生，能行吗？临命终的时候应该怎么做呢？是念还是不念佛？还是只要平时坚持，临终念不念都行？",
           "start": 2330.77,
-          "end": 2436.755,
+          "end": 2434.68,
           "start_label": "00:38:50.770",
-          "end_label": "00:40:36.755",
+          "end_label": "00:40:34.680",
           "confidence": 0.95,
           "status": "manual",
           "locked": false,
@@ -605,7 +606,20 @@
             "lastPlayed": "2026-08-07 17:21"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天的问题就回答到这里。",
+        "text_preview": "今天的问题就回答到这里。",
+        "start": 2434.68,
+        "end": 2436.755,
+        "start_label": "00:40:34.680",
+        "end_label": "00:40:36.755",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-06-09-tieba",
@@ -615,7 +629,7 @@
       "date": "2025-06-09",
       "source": "贴吧",
       "audio_file": "2025年6月9日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月9日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月9日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月9日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -1630,9 +1644,9 @@
           "stable_key": "果慧|2025-06-09 20:09|43",
           "q_preview": "顶礼Tai师父！末学老公脑出血，现在能走路，右胳膊可以抬起来，但是右手不能拿东西，请问可以对著红绳念六字真言，然后给我老公戴右手上吗？大悲咒太长了，一个小时也念不了多少。然后对著红绳念六字真言可以管几天呢？念完后红绳是会持续放出金光对我老公的右手进行加持吗？",
           "start": 4866.74,
-          "end": 4988.505,
+          "end": 4984.19,
           "start_label": "01:21:06.740",
-          "end_label": "01:23:08.505",
+          "end_label": "01:23:04.190",
           "confidence": 0.9,
           "status": "manual",
           "locked": false,
@@ -1645,7 +1659,20 @@
             "lastPlayed": "2026-07-31 17:46"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，贴吧的问题回答到这里。",
+        "text_preview": "好了，贴吧的问题回答到这里。",
+        "start": 4984.19,
+        "end": 4988.505,
+        "start_label": "01:23:04.190",
+        "end_label": "01:23:08.505",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "贴吧的问题回答到这里吧，这里是一千二百六十三楼哈。"
+      }
     },
     {
       "session_id": "2025-06-10-wechat",
@@ -1655,7 +1682,7 @@
       "date": "2025-06-10",
       "source": "微信公众号",
       "audio_file": "2025年6月10日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月10日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月10日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月10日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -2250,9 +2277,9 @@
           "stable_key": "2025nian-6yue-10ri-wei-xin-gong-zhong-hao#25",
           "q_preview": "请问师父之后还会不会讲经？我突然很想了解《楞严经》，之前读过一章觉得太难了，如果师父以后准备讲经，能不能先讲《楞严经》？打扰您了",
           "start": 1893.33,
-          "end": 1978.655,
+          "end": 1976.8,
           "start_label": "00:31:33.330",
-          "end_label": "00:32:58.655",
+          "end_label": "00:32:56.800",
           "confidence": 0.9,
           "status": "manual",
           "locked": false,
@@ -2265,7 +2292,20 @@
             "lastPlayed": "2026-07-31 18:36"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天的回答就到这里。",
+        "text_preview": "今天的回答就到这里。",
+        "start": 1976.8,
+        "end": 1978.655,
+        "start_label": "00:32:56.800",
+        "end_label": "00:32:58.655",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-06-10-tieba",
@@ -2275,7 +2315,7 @@
       "date": "2025-06-10",
       "source": "贴吧",
       "audio_file": "2025年6月10日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月10日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月10日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月10日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -3221,9 +3261,9 @@
           "stable_key": "Fun09|2025-06-10 20:21|40",
           "q_preview": "Tai师父吉祥，请问师父，放生功德回向是回向给法界众生，还是回向给冤亲债主更好呢，都是希望冤亲债主能早日去投胎？还有，打坐、磕头、念佛等修行的功德大吗，还是放生的功德更大？看到有的人拼命做功德，修行也很用功，好生羡慕啊～",
           "start": 3901.638,
-          "end": 4063.015,
+          "end": 4060.03,
           "start_label": "01:05:01.638",
-          "end_label": "01:07:43.015",
+          "end_label": "01:07:40.030",
           "confidence": 0.9,
           "status": "manual",
           "locked": false,
@@ -3237,7 +3277,20 @@
             "lastEdited": "2026-07-31 18:49"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里。",
+        "text_preview": "今天贴吧的问题就回答到这里。",
+        "start": 4060.03,
+        "end": 4063.015,
+        "start_label": "01:07:40.030",
+        "end_label": "01:07:43.015",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天这个贴吧的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-06-11-wechat",
@@ -3247,7 +3300,7 @@
       "date": "2025-06-11",
       "source": "微信公众号",
       "audio_file": "2025年6月11日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月11日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月11日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月11日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -3842,9 +3895,9 @@
           "stable_key": "2025nian-6yue-11ri-wei-xin-gong-zhong-hao#25",
           "q_preview": "师父，请问堕无间地狱是否地狱刑罚中最重之处？那里的众生如何才能有机会出离？新佛出世格式化时，连阳神被打散的众生都能合拢，无间地狱也能有机会出离地狱吗？作为处罚来说，是阳神被打散惨还是堕无间地狱惨？这两种是否就已经是这世间最严重、最终极的惩罚措施呢？",
           "start": 1637.61,
-          "end": 1794.455,
+          "end": 1791.68,
           "start_label": "00:27:17.610",
-          "end_label": "00:29:54.455",
+          "end_label": "00:29:51.680",
           "confidence": 0.9,
           "status": "manual",
           "locked": false,
@@ -3857,7 +3910,20 @@
             "lastPlayed": "2026-07-31 19:25"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天的问题就回答到这里。",
+        "text_preview": "好了，今天的问题就回答到这里。",
+        "start": 1791.68,
+        "end": 1794.455,
+        "start_label": "00:29:51.680",
+        "end_label": "00:29:54.455",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "基本上今天的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-06-11-tieba",
@@ -3867,7 +3933,7 @@
       "date": "2025-06-11",
       "source": "贴吧",
       "audio_file": "2025年6月11日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月11日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月11日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月11日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -4629,9 +4695,9 @@
           "stable_key": "Fun09|2025-06-11 20:51|32",
           "q_preview": "Tai师父吉祥，请问师父，念百字明咒的时候，注意力应该放在观想金刚萨埵，还是心念耳闻听声音，还是放在丹田？",
           "start": 3439.53,
-          "end": 3501.425,
+          "end": 3491.655,
           "start_label": "00:57:19.530",
-          "end_label": "00:58:21.425",
+          "end_label": "00:58:11.655",
           "confidence": 0.9,
           "status": "manual",
           "locked": false,
@@ -4644,7 +4710,20 @@
             "lastPlayed": "2026-07-31 19:58"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天贴吧的问题就回答到这里。",
+        "text_preview": "好了，今天贴吧的问题就回答到这里。",
+        "start": 3491.655,
+        "end": 3501.425,
+        "start_label": "00:58:11.655",
+        "end_label": "00:58:21.425",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "吧的问题就回答到这里吧。啊，今天是六月十一号回答到一千三百二十二楼。"
+      }
     },
     {
       "session_id": "2025-06-12-wechat",
@@ -4654,7 +4733,7 @@
       "date": "2025-06-12",
       "source": "微信公众号",
       "audio_file": "2025年6月12日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月12日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月12日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月12日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -5214,9 +5293,9 @@
           "stable_key": "2025nian-6yue-12ri-wei-xin-gong-zhong-hao#24",
           "q_preview": "请问师父，是否可以根据修行人去世后烧出舍利来判断这人的境界？至少什么境界的人才能烧出舍利？不同境界的舍利子数量、质量、大小、颜色是否不同？比如佛的舍利，菩萨的舍利，罗汉的舍利，凡夫二禅、三禅、四禅的舍利？是否有大修行人不留舍利子的？\n因为有时候有很多人回去看前人写的书，或者开示汇总之类的，通过舍利子也可以增强对该人讲法的信心。对于普通人而已，不是说故意看哪个",
           "start": 1831.46,
-          "end": 1970.315,
+          "end": 1968.51,
           "start_label": "00:30:31.460",
-          "end_label": "00:32:50.315",
+          "end_label": "00:32:48.510",
           "confidence": 0.92,
           "status": "manual",
           "locked": false,
@@ -5229,7 +5308,20 @@
             "lastPlayed": "2026-08-01 11:24"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天回答就到这里。",
+        "text_preview": "今天回答就到这里。",
+        "start": 1968.51,
+        "end": 1970.315,
+        "start_label": "00:32:48.510",
+        "end_label": "00:32:50.315",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-06-12-tieba",
@@ -5239,7 +5331,7 @@
       "date": "2025-06-12",
       "source": "贴吧",
       "audio_file": "2025年6月12日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月12日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月12日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月12日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -5916,9 +6008,9 @@
           "stable_key": "Fun09|2025-06-12 20:28|29",
           "q_preview": "Tai师父吉祥，请问师父，感觉时间过得好快，好多事情都还没来得及，一天时间就没有了，吃喝拉撒睡消耗了很多时间，怎么解决呢？打坐熬腿好痛苦，感觉要命，怎么办呢？",
           "start": 3917.99,
-          "end": 4012.275,
+          "end": 4004.42,
           "start_label": "01:05:17.990",
-          "end_label": "01:06:52.275",
+          "end_label": "01:06:44.420",
           "confidence": 0.95,
           "status": "manual",
           "locked": false,
@@ -5931,7 +6023,20 @@
             "lastPlayed": "2026-08-01 14:17"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的答疑到这里。",
+        "text_preview": "今天贴吧的答疑到这里。",
+        "start": 4004.42,
+        "end": 4012.275,
+        "start_label": "01:06:44.420",
+        "end_label": "01:06:52.275",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好吧啊今天贴吧的答疑到这里吧啊今天回到到一千三百五十二楼 啊。"
+      }
     },
     {
       "session_id": "2025-06-13-wechat",
@@ -5941,7 +6046,7 @@
       "date": "2025-06-13",
       "source": "微信公众号",
       "audio_file": "2025年6月13日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月13日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月13日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月13日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -6456,9 +6561,9 @@
           "stable_key": "2025nian-6yue-13ri-wei-xin-gong-zhong-hao#22",
           "q_preview": "顶礼Tai师。现在四十五岁，三年前看了《坐禅1》后开始吃锅边素，《坐禅2》也看了，断断续续打坐磕头有三年多了，腹式呼吸练得很少，每次打坐六十分钟(到五十分钟左右开始比较痛，心也不静)，磕头比较少，每次一百零八(心跳也还是加快，有汗)。最近一年开始静脉曲张比较严重，很多时候会有腿不舒服。是不是继续加强学习，加强磕大头？请开示，感恩！",
           "start": 2071.333,
-          "end": 2275.905,
+          "end": 2274.34,
           "start_label": "00:34:31.333",
-          "end_label": "00:37:55.905",
+          "end_label": "00:37:54.340",
           "confidence": 0.95,
           "status": "manual",
           "locked": false,
@@ -6471,7 +6576,20 @@
             "lastPlayed": "2026-08-01 16:53"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天就回答到这里吧。",
+        "text_preview": "今天就回答到这里吧。",
+        "start": 2274.34,
+        "end": 2275.905,
+        "start_label": "00:37:54.340",
+        "end_label": "00:37:55.905",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-06-13-tieba",
@@ -6481,7 +6599,7 @@
       "date": "2025-06-13",
       "source": "贴吧",
       "audio_file": "2025年6月13日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月13日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月13日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月13日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -6884,9 +7002,9 @@
           "stable_key": "3nnn.|2025-06-13 19:28|17",
           "q_preview": "师父，今天看新闻：浙江省首例克隆湖羊在湖州诞生。克隆技术是通过提取单细胞经核移植培养成胚胎，无需雌雄交配即可复制优质基因。意识投胎不一定要看到雌雄交配，一个单胞也会有意识投胎进去吗？",
           "start": 1736.97,
-          "end": 1889.395,
+          "end": 1820.35,
           "start_label": "00:28:56.970",
-          "end_label": "00:31:29.395",
+          "end_label": "00:30:20.350",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -6899,7 +7017,20 @@
             "lastPlayed": "2026-08-01 17:02"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的回答到这里。贴吧从1353楼开始到1372楼，但是问题根本没有20个，中间好像少了很多，应该是有人发了之后被删掉了。所以大家发问题的时候，一定要了解一下敏感词。我也是不敢在这上面发什么了，因为写了很多之后有发不出去的时候，甚至有时候忘了复制存档，写了一、两个小时都发不出去，就很烦，所以就不发了。以后书就发到群里，然后可能拿去印，以这种方式来。在贴吧我自己不发，当然大家可以继续提问，提问的时候尽量注意一下敏感词，关键是贴吧也没有明确地告诉你什么词不能说，这也是管理的问题。好了，今天就说到这里。",
+        "text_preview": "今天贴吧的回答到这里。贴吧从1353楼开始到1372楼，但是问题根本没有20个，中间好像少了很多，应该是有人发了之后被删掉了。所以大家发问题的时候，一定要了解一下敏感词。我也是不敢在这上面发什么了，因为写了很多之后有发不出去的时候，甚至有时候忘了复制存档，写了一、两个小时都发不出去，就很烦，所以就不发了。以后书就发到群里，然后可能拿去印，以这种方式来。在贴吧我自己不发，当然大家可以继续提问，提问的",
+        "start": 1820.35,
+        "end": 1889.395,
+        "start_label": "00:30:20.350",
+        "end_label": "00:31:29.395",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天贴吧的回答到这里啊啊贴吧啊从一千三百五十三楼开始到一千三一千三百七十二楼，但是问题根本没有二十个，可能中间也好像少了很多哈啊，应该是有人发了之后呢，可能被删掉了吧。啊，所以大家发的问题的时候，已经有是这个了解一下这个敏感词啊，我我也是不敢再发，不敢在这个上面发什么了。因为写了很多之后，发出去又发不出去的时候，甚至有些时候忘忘了都嗯复制嗯存档啊，写了一两个小时都发不出去就很烦啊，所以就不发了。这以后就嗯书我书就发到群里，然后就可能拿去…"
+      }
     },
     {
       "session_id": "2025-06-14-wechat",
@@ -6909,7 +7040,7 @@
       "date": "2025-06-14",
       "source": "微信公众号",
       "audio_file": "2025年6月14日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月14日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月14日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月14日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -7311,9 +7442,9 @@
           "stable_key": "2025nian-6yue-14ri-wei-xin-gong-zhong-hao#17",
           "q_preview": "在打坐过程中欲望被翻出来，没忍住去正规按摩，事前没有打算发生关系，但按摩有肢体接触后自己定力不足泄了。事前忍不住，事后又后悔。但是经历之后感觉自己对异性的执著减少了，觉著异性也没什么意思了，以后也不太想著去接触女人了。我想请问师父，这种情况算不算破戒？如果破戒了佛菩萨是不是就不认可了？不再加持引导自己了？完事自己有一种愧疚感、负罪感，觉著自己境界太低了，心情",
           "start": 1365.975,
-          "end": 1741.255,
+          "end": 1715.74,
           "start_label": "00:22:45.975",
-          "end_label": "00:29:01.255",
+          "end_label": "00:28:35.740",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -7326,7 +7457,20 @@
             "lastPlayed": "2026-08-01 17:07"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天的问题就回答到这里。一周又过去了，六天很快，三周之后就再见面，三周之后可能就带出新的佛经来了，到时候看看吧，我现在计划是讲《坛经》。好了，今天就讲到这里，希望下三个星期也是精进修行的三个周，好吧，祝大家好好修行。",
+        "text_preview": "今天的问题就回答到这里。一周又过去了，六天很快，三周之后就再见面，三周之后可能就带出新的佛经来了，到时候看看吧，我现在计划是讲《坛经》。好了，今天就讲到这里，希望下三个星期也是精进修行的三个周，好吧，祝大家好好修行。",
+        "start": 1715.74,
+        "end": 1741.255,
+        "start_label": "00:28:35.740",
+        "end_label": "00:29:01.255",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的问题就回答到这里吧。啊，今天嗯一周又过去了哈，六天很快啊，下一周三周之后就再见面吧哈嗯三周之后呢可能就带出新的铂金 来了啊，到时候看看吧哈，我现在计划那是嗯讲谭晶哈啊，今天就讲到这里吧啊大家希望下三个星期也是经济修行的三个周 。好吧，祝大家好好修行啊。"
+      }
     },
     {
       "session_id": "2025-06-14-tieba",
@@ -7336,7 +7480,7 @@
       "date": "2025-06-14",
       "source": "贴吧",
       "audio_file": "2025年6月14日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月14日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月14日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年6月14日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -8068,9 +8212,9 @@
           "stable_key": "与人无争于事无求|2025-06-14 20:49|31",
           "q_preview": "师父，请问华藏世界是个怎么样的世界？另外，是否各个世界的众生都长的不同？传法时，是否要化成当地的长相(有些是否不是人的样子)？在设计的文明剧本是否也要依据当地的风俗传统？还是说都一个套路：先动物世界消杀业，然后上行文明，然后下行文明，大体框架相同？",
           "start": 3297.93,
-          "end": 3465.095,
+          "end": 3461.99,
           "start_label": "00:54:57.930",
-          "end_label": "00:57:45.095",
+          "end_label": "00:57:41.990",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -8083,7 +8227,20 @@
             "lastPlayed": "2026-08-01 17:19"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里。",
+        "text_preview": "今天贴吧的问题就回答到这里。",
+        "start": 3461.99,
+        "end": 3465.095,
+        "start_label": "00:57:41.990",
+        "end_label": "00:57:45.095",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了，今天就贴吧的问题就回答到这里吧。"
+      }
     }
   ]
 }

@@ -335,8 +335,26 @@ def realign_session(session: dict, converter, srt_root: Path) -> Tuple[dict, dic
             new_segs[i]["end"] = round(float(nxt), 3)
             new_segs[i]["end_label"] = fmt_tc(float(nxt))
     if new_segs:
-        new_segs[-1]["end"] = round(audio_end, 3)
-        new_segs[-1]["end_label"] = fmt_tc(audio_end)
+        closing = session.get("closing")
+        if (
+            closing
+            and closing.get("start") is not None
+            and closing.get("status") != "missing"
+        ):
+            cl_start = float(closing["start"])
+            new_segs[-1]["end"] = round(cl_start, 3)
+            new_segs[-1]["end_label"] = fmt_tc(cl_start)
+            closing = dict(closing)
+            closing["end"] = round(audio_end, 3)
+            closing["end_label"] = fmt_tc(audio_end)
+            if closing.get("status") == "missing":
+                closing["status"] = "manual"
+        else:
+            new_segs[-1]["end"] = round(audio_end, 3)
+            new_segs[-1]["end_label"] = fmt_tc(audio_end)
+            closing = session.get("closing")
+    else:
+        closing = session.get("closing")
 
     # Opening end → first segment start
     opening = session.get("opening")
@@ -359,7 +377,13 @@ def realign_session(session: dict, converter, srt_root: Path) -> Tuple[dict, dic
             op["status"] = "manual"
         opening = op
 
-    out = {**session, "segments": new_segs, "opening": opening, "srt_file": str(srt)}
+    out = {
+        **session,
+        "segments": new_segs,
+        "opening": opening,
+        "closing": closing,
+        "srt_file": str(srt),
+    }
     return out, {
         "fixed": fixed,
         "kept_locked": kept_locked,

@@ -6,7 +6,8 @@
     "missing": 0,
     "opening_ok": 12,
     "sessions": 12,
-    "fallbacks": 1
+    "fallbacks": 1,
+    "closing_ok": 12
   },
   "sessions": [
     {
@@ -17,7 +18,7 @@
       "date": "2025-09-01",
       "source": "微信公众号",
       "audio_file": "2025年9月1日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月1日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月1日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月1日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -334,9 +335,9 @@
           "stable_key": "2025nian-9yue-1ri-wei-xin-gong-zhong-hao#13",
           "q_preview": "家中饲养宠物会不会和宠物之间产生爱取有的缘分关系，导致往生下三途的几率增加？",
           "start": 1119.293,
-          "end": 1260.395,
+          "end": 1257.59,
           "start_label": "00:18:39.293",
-          "end_label": "00:21:00.395",
+          "end_label": "00:20:57.590",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -350,7 +351,20 @@
             "lastEdited": "2026-08-03 17:37"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天微信公众号的问题回答完了。管理员说可能问题应该是比较多的，但是很多都被和谐了。大家下次注意一下，然后觉得不能把握的话，就在贴吧上再发一次，好吧，今天就回答到这里。",
+        "text_preview": "今天微信公众号的问题回答完了。管理员说可能问题应该是比较多的，但是很多都被和谐了。大家下次注意一下，然后觉得不能把握的话，就在贴吧上再发一次，好吧，今天就回答到这里。",
+        "start": 1257.59,
+        "end": 1260.395,
+        "start_label": "00:20:57.590",
+        "end_label": "00:21:00.395",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好吧啊今天就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-09-01-tieba",
@@ -360,7 +374,7 @@
       "date": "2025-09-01",
       "source": "贴吧",
       "audio_file": "2025年9月1日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月1日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月1日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月1日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -1628,9 +1642,9 @@
           "stable_key": "贴吧用户_JReUMUZ|2025-09-01 21:27|53",
           "q_preview": "Tai师您好我今年二十二岁，我的发小二十四岁。8月24**姐姐带他出去游泳他淹死了，我们四五岁就认识了，有著太多的共同回忆他还这么年轻，他爸六十八岁了早年丧妻一个人把他拉扯大非常不容易，前几天我们还在一起快乐的玩耍现在这种感觉太不真实了现在我心里特别难受，最诡异的是他出事的那个地方前两天有个三十六岁的女人差点淹死后续情况是没淹死抢救回来了，我发小人缘特别好是",
           "start": 5909.634,
-          "end": 6035.435,
+          "end": 6026.68,
           "start_label": "01:38:29.634",
-          "end_label": "01:40:35.435",
+          "end_label": "01:40:26.680",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -1644,7 +1658,20 @@
             "lastEdited": "2026-08-03 18:09"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的答疑就到这里。",
+        "text_preview": "今天贴吧的答疑就到这里。",
+        "start": 6026.68,
+        "end": 6035.435,
+        "start_label": "01:40:26.680",
+        "end_label": "01:40:35.435",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好吧啊今天贴吧的答疑就到这里吧啊，现在这回就回到到一二百四十八楼了哈。"
+      }
     },
     {
       "session_id": "2025-09-02-wechat",
@@ -1654,7 +1681,7 @@
       "date": "2025-09-02",
       "source": "微信公众号",
       "audio_file": "2025年9月2日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月2日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月2日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月2日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -2209,9 +2236,9 @@
           "stable_key": "2025nian-9yue-2ri-wei-xin-gong-zhong-hao#23",
           "q_preview": "Tai师父好！我四十八岁，前几年疫情刚过，得了鼻炎，每年立秋之后一个多月都很难受，天气真正冷下来，就自愈了，您方便说一下鼻炎的因果吗？",
           "start": 1322.209,
-          "end": 1447.615,
+          "end": 1445.43,
           "start_label": "00:22:02.209",
-          "end_label": "00:24:07.615",
+          "end_label": "00:24:05.430",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -2225,7 +2252,20 @@
             "lastEdited": "2026-08-03 19:06"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天的回答就到这里。",
+        "text_preview": "今天的回答就到这里。",
+        "start": 1445.43,
+        "end": 1447.615,
+        "start_label": "00:24:05.430",
+        "end_label": "00:24:07.615",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的回答就到这里吧哈。"
+      }
     },
     {
       "session_id": "2025-09-02-tieba",
@@ -2235,7 +2275,7 @@
       "date": "2025-09-02",
       "source": "贴吧",
       "audio_file": "2025年9月2日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月2日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月2日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月2日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -3173,9 +3213,9 @@
           "stable_key": "sky之我|2025-09-02 20:28|39",
           "q_preview": "师父，佛菩萨转世人间，是以菩萨身来，还是以凡人身而来从新修习，那转世人间的佛菩萨身上的习俗是以佛菩萨的习性而来，还是以凡间的从新开始，那佛菩萨的修行会带到凡间吗？带到凡间如果没有遵守戒律会受到惩罚吗？都说佛菩萨修行不管转多少世修行是一直积累的，如果这世他没有遵守佛的教导，选择肆意而为的生活，没有完成这一世的使命那怎么办？还有，如果他没有完成佛菩萨的教导使命，",
           "start": 3334.5,
-          "end": 3568.535,
+          "end": 3560.52,
           "start_label": "00:55:34.500",
-          "end_label": "00:59:28.535",
+          "end_label": "00:59:20.520",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -3189,7 +3229,20 @@
             "lastEdited": "2026-08-03 21:18"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里，285楼。",
+        "text_preview": "今天贴吧的问题就回答到这里，285楼。",
+        "start": 3560.52,
+        "end": 3568.535,
+        "start_label": "00:59:20.520",
+        "end_label": "00:59:28.535",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天这边贴吧的问题就会带到这里。嗯，这里是一二百八十五楼哈。"
+      }
     },
     {
       "session_id": "2025-09-03-guanwang",
@@ -3199,7 +3252,7 @@
       "date": "2025-09-03",
       "source": "官网",
       "audio_file": "2025年9月3日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月3日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月3日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月3日Tai師父貼吧答疑.mp3",
       "media_fallback": "官網",
       "resolved_source": "貼吧",
@@ -4040,9 +4093,9 @@
           "stable_key": "与人无争于事无求|2025-09-03 21:30|35",
           "q_preview": "师父，我从两月开始练双盘到现在，发现两边大腿外侧链接髋部的位置很酸，这个酸半年多时间一直持续，请问正常吗？如何消除这种酸痛？",
           "start": 5412.83,
-          "end": 5505.625,
+          "end": 5501.57,
           "start_label": "01:30:12.830",
-          "end_label": "01:31:45.625",
+          "end_label": "01:31:41.570",
           "confidence": 0.92,
           "status": "manual",
           "locked": false,
@@ -4056,7 +4109,20 @@
             "lastEdited": "2026-08-04 20:10"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天的问题就回答到这里。",
+        "text_preview": "今天的问题就回答到这里。",
+        "start": 5501.57,
+        "end": 5505.625,
+        "start_label": "01:31:41.570",
+        "end_label": "01:31:45.625",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的问题就回答到这里吧哈，这个是三百一十九楼哈。"
+      }
     },
     {
       "session_id": "2025-09-03-wechat",
@@ -4066,7 +4132,7 @@
       "date": "2025-09-03",
       "source": "微信公众号",
       "audio_file": "2025年9月3日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月3日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月3日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月3日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -4501,9 +4567,9 @@
           "stable_key": "2025nian-9yue-3ri-wei-xin-gong-zhong-hao#18",
           "q_preview": "Tai师父吉祥！！请问用下面这一个方法能够证得那个无相念佛吗？\n每天加意念想像自己的心就是一个可以自动播放的念佛机，从早上一起床，就自动打开念佛机的按钮，这个阿弥陀佛或者南无观世音菩萨这个佛号就一直在响，然后在每天日常生活的行住坐卧中，这个佛号它一天从早到晚在自动念，不管自己打任何妄念，那个佛号就是一直不间断的。就是自己睡著它也在念，只要自己一静下来，就能听",
           "start": 1714.29,
-          "end": 1730.965,
+          "end": 1725.89,
           "start_label": "00:28:34.290",
-          "end_label": "00:28:50.965",
+          "end_label": "00:28:45.890",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -4517,7 +4583,20 @@
             "lastEdited": "2026-08-04 21:21"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天微信公众号的问题就回答到这里。",
+        "text_preview": "好了，今天微信公众号的问题就回答到这里。",
+        "start": 1725.89,
+        "end": 1730.965,
+        "start_label": "00:28:45.890",
+        "end_label": "00:28:50.965",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天这个嗯微信公众之后的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-09-04-wechat",
@@ -4527,7 +4606,7 @@
       "date": "2025-09-04",
       "source": "微信公众号",
       "audio_file": "2025年9月4日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月4日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月4日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月4日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -5032,9 +5111,9 @@
           "stable_key": "2025nian-9yue-4ri-wei-xin-gong-zhong-hao#21",
           "q_preview": "顶礼师父，请问生活中莫名其妙遇到一个人，无端牵扯，还需替她还债，跟她接触总感觉不舒服，想断掉缘分，却总会遇到。师父，我该怎么面对此事？",
           "start": 1435.12,
-          "end": 1517.315,
+          "end": 1512.27,
           "start_label": "00:23:55.120",
-          "end_label": "00:25:17.315",
+          "end_label": "00:25:12.270",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -5047,7 +5126,20 @@
             "lastPlayed": "2026-08-05 16:10"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天微信公众号的问题就回答到这里。",
+        "text_preview": "今天微信公众号的问题就回答到这里。",
+        "start": 1512.27,
+        "end": 1517.315,
+        "start_label": "00:25:12.270",
+        "end_label": "00:25:17.315",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的这个啊微信公共工作会好的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-09-04-tieba",
@@ -5057,7 +5149,7 @@
       "date": "2025-09-04",
       "source": "贴吧",
       "audio_file": "2025年9月4日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月4日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月4日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月4日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -6043,9 +6135,9 @@
           "stable_key": "LijiaxinCynthia|2025-09-04 19:53|41",
           "q_preview": "顶礼Tai师父\n前几天请群里师兄帮忙放生两千，老大1号2号上学，3号开始也不去上学了，但是老大在家里自己看视频写作业了，起码对我也是一种安慰。老二依然不上学。我的问题是：\n我家租的房子，供观音菩萨家里空间有点困难，客厅靠阳台东墙这里墙有个空调洞，这里下午还能晒到太阳，今年装空调没装，如果明年装空调，客厅这个地方合适吗？不合适的话还有没有其他办法可以替代吗？",
           "start": 3133.303,
-          "end": 3166.165,
+          "end": 3158.81,
           "start_label": "00:52:13.303",
-          "end_label": "00:52:46.165",
+          "end_label": "00:52:38.810",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -6059,7 +6151,20 @@
             "lastEdited": "2026-08-05 17:13"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回到这里。",
+        "text_preview": "今天贴吧的问题就回到这里。",
+        "start": 3158.81,
+        "end": 3166.165,
+        "start_label": "00:52:38.810",
+        "end_label": "00:52:46.165",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天这个贴吧的问题就回到这里吧，今天是三百四十八楼啊，最后回答三百四十八楼。"
+      }
     },
     {
       "session_id": "2025-09-05-wechat",
@@ -6069,7 +6174,7 @@
       "date": "2025-09-05",
       "source": "微信公众号",
       "audio_file": "2025年9月5日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月5日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月5日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月5日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -6521,9 +6626,9 @@
           "stable_key": "2025nian-9yue-5ri-wei-xin-gong-zhong-hao#18",
           "q_preview": "顶礼师父。弟子请教：关于思佛，你曾回复让我像恋爱时思念爱人一样。我仔细体会一下，当时思念他时，脑子里有他的形象，说话的声音，还有想他在干什么，有没有感冒等。那我思佛时，能思佛的相好，佛的大愿，佛的极乐世界吗？感觉跟师父说的思佛不同。师父有没有具体步骤或方式，让我们学会思佛吗？",
           "start": 1452.422,
-          "end": 1538.075,
+          "end": 1532.17,
           "start_label": "00:24:12.422",
-          "end_label": "00:25:38.075",
+          "end_label": "00:25:32.170",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -6538,7 +6643,20 @@
             "lastEdited": "2026-08-05 21:13"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天微信公众号的问题就回答到这里吧。",
+        "text_preview": "今天微信公众号的问题就回答到这里吧。",
+        "start": 1532.17,
+        "end": 1538.075,
+        "start_label": "00:25:32.170",
+        "end_label": "00:25:38.075",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "今天的这个微信公众号的问题就回答到这里吧。"
+      }
     },
     {
       "session_id": "2025-09-05-tieba",
@@ -6548,7 +6666,7 @@
       "date": "2025-09-05",
       "source": "贴吧",
       "audio_file": "2025年9月5日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月5日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月5日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月5日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -7224,9 +7342,9 @@
           "stable_key": "wxpcjrjgcs|2025-09-05 19:20|28",
           "q_preview": "3.、今天中午做了个梦：梦到我和您去我堂哥家串门（但是感觉好像是去传法），我堂哥深入邪教，他家又黑暗又恐怖，他又杀人成性。您不想在那里待著，就想离开，可是他关著门不让走。您把师父送给您的饭请他吃，他接过饭以后不想吃又给了我，我就随手放在桌子上了。\n堂哥一边和我说话一边靠近我，就想要我的命。我有些害怕，感觉讲法和他理论肯定不起作用，就故作镇定的给他讲人情事故，",
           "start": 2800.427,
-          "end": 2852.995,
+          "end": 2846.37,
           "start_label": "00:46:40.427",
-          "end_label": "00:47:32.995",
+          "end_label": "00:47:26.370",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -7240,7 +7358,20 @@
             "lastEdited": "2026-08-05 21:21"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天贴吧的问题就回答到这里吧。",
+        "text_preview": "今天贴吧的问题就回答到这里吧。",
+        "start": 2846.37,
+        "end": 2852.995,
+        "start_label": "00:47:26.370",
+        "end_label": "00:47:32.995",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "这个是今天就三百七十一楼哈啊嗯今天这个贴吧的问题就回答到 这里吧。"
+      }
     },
     {
       "session_id": "2025-09-06-wechat",
@@ -7250,7 +7381,7 @@
       "date": "2025-09-06",
       "source": "微信公众号",
       "audio_file": "2025年9月6日Tai師父微信公眾號答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月6日Tai師父微信公眾號答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月6日Tai師父微信公眾號答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月6日Tai師父微信公眾號答疑.mp3",
       "media_fallback": null,
       "resolved_source": "微信公眾號",
@@ -7733,9 +7864,9 @@
           "stable_key": "2025nian-9yue-6ri-wei-xin-gong-zhong-hao#20",
           "q_preview": "顶礼Tai师父，弟子四十八岁，戒肉十年整，上半年听师父说鸡蛋也属于肉，因此，决定2026年1月1日，戒蛋，但是，家人出于关心我健康的原因（我的身体除了秋季犯两个月的鼻炎，其它没毛病），非常反对，希望得到师父的指点。\n另外，问一下，立秋后的鼻炎，打坐应该可以治好吧？",
           "start": 1505.75,
-          "end": 1569.095,
+          "end": 1566.93,
           "start_label": "00:25:05.750",
-          "end_label": "00:26:09.095",
+          "end_label": "00:26:06.930",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -7749,7 +7880,20 @@
             "lastEdited": "2026-08-06 10:11"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "今天微信公众号的回答就到这里。",
+        "text_preview": "今天微信公众号的回答就到这里。",
+        "start": 1566.93,
+        "end": 1569.095,
+        "start_label": "00:26:06.930",
+        "end_label": "00:26:09.095",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "这个微信公众号的回答就到这里吧。"
+      }
     },
     {
       "session_id": "2025-09-06-tieba",
@@ -7759,7 +7903,7 @@
       "date": "2025-09-06",
       "source": "贴吧",
       "audio_file": "2025年9月6日Tai師父貼吧答疑.opus",
-      "srt_file": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月6日Tai師父貼吧答疑.srt",
+      "srt_file": "/Users/paul/Documents/backup_on_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月6日Tai師父貼吧答疑.srt",
       "mp3_path": "/Users/paul/Documents/backup_2026-07-16_13inch_macbook/2025答疑音頻/2025年9月6日Tai師父貼吧答疑.mp3",
       "media_fallback": null,
       "resolved_source": "貼吧",
@@ -8219,9 +8363,9 @@
           "stable_key": "青叆2050|2025-09-06 21:44|19",
           "q_preview": "请教师父关于地藏占察的问题，我在六月份占察能否去国企上班第十二把出九十轮相有所求皆当得：八月份应验上班国企，证明占察真实不虚。对我来说我还是想进入衙门，因为衙门能调动更多资源在世间和出世间帮助更多众生，而且我发愿未来要加入人王职业，所以我十天前占察能否进入衙门，第七把出九十一轮相有所求皆不得，当时有些沮丧，今晚我又占察一次，第一把出九十轮相有所求皆当得。这一",
           "start": 2293.673,
-          "end": 2391.435,
+          "end": 2388.18,
           "start_label": "00:38:13.673",
-          "end_label": "00:39:51.435",
+          "end_label": "00:39:48.180",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -8235,7 +8379,20 @@
             "lastEdited": "2026-08-06 10:22"
           }
         }
-      ]
+      ],
+      "closing": {
+        "text": "好了，今天贴吧的问题就回答到这里。",
+        "text_preview": "好了，今天贴吧的问题就回答到这里。",
+        "start": 2388.18,
+        "end": 2391.435,
+        "start_label": "00:39:48.180",
+        "end_label": "00:39:51.435",
+        "confidence": 0.85,
+        "status": "auto",
+        "locked": false,
+        "notes": "leadin:closing|auto",
+        "srt_preview": "好了，今天这个贴吧的问题就回答到这里吧哈。"
+      }
     }
   ]
 }

@@ -9,6 +9,7 @@ from typing import Dict, List, Optional, Tuple
 
 from core.qa_play_markup import (
     audio_url,
+    render_closing_meta_bar,
     render_opening_meta_bar,
     render_segment_meta_bar,
 )
@@ -153,7 +154,29 @@ def _inject_section(section: str, session: dict) -> str:
         out.append(section[qm.start():qm.end()])
         pos = qm.end()
     out.append(section[pos:])
-    return "".join(out)
+    section = "".join(out)
+
+    # Closing play button: require closing itself to have been listened to.
+    closing = session.get("closing")
+    if closing and _has_been_listened(closing):
+        closing_bar = render_closing_meta_bar(
+            _range_tuple(closing), audio_rel, hide_if_missing=True
+        )
+        if closing_bar:
+            # Insert before back-to-top / nav-footer if present; else append.
+            m_nav = re.search(
+                r'<div class="(?:back-to-top|nav-footer)"', section
+            )
+            if m_nav:
+                section = (
+                    section[: m_nav.start()]
+                    + closing_bar
+                    + "\n"
+                    + section[m_nav.start() :]
+                )
+            else:
+                section = section.rstrip() + "\n" + closing_bar + "\n"
+    return section
 
 
 def inject_chapters(chapters: List[Chapter], map_dir: Optional[Path] = None) -> int:

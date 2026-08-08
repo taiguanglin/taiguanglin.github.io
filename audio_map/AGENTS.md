@@ -55,18 +55,28 @@ previous cue’s end (effective lead may shrink to ~0 when speech is back-to-bac
 
 ### 4. Ends and chain
 
-- Segment **end** = next segment’s **start** (last segment end = audio end).
+- Segment **end** = next segment’s **start**.
 - Opening ends at segment 1 start.
+- When a **closing（收場）** exists with a range: last segment end = closing
+  start; closing end = audio end. Otherwise last segment end = audio end.
 - Preserve user-`locked` / explicitly kept starts when only repairing a suffix
   of a session (e.g. “from segment N onward”).
 
-### 5. Tooling hints
+### 5. Opening vs closing (completion)
+
+- **開場** is optional for session completion (may stay unlistened).
+- **收場** is required: it counts toward must-calibrate items together with all
+  Q&A segments. A date/session is complete only after every segment **and** the
+  closing have been listened (`meta.lastPlayed`).
+
+### 6. Tooling hints
 
 - Helpers: `tool/pdf_audio_map/realign_half_second.py` (`adaptive_lead`,
   `start_from_onset`, `--adjust-leadin`).
 - Batch content-aware realign: `tool/pdf_audio_map/realign_content_aware.py`
   (下一个问题 + content score; skips already proofread 2025-06-12 / 06-13-wechat
   by default; scope `2025-06-13-tieba` + `date >= 2025-06-14`).
+- Backfill closing ranges: `tool/pdf_audio_map/backfill_closing.py --apply`.
 - After map edits that should reach the ebook: rebuild via
   `tool/word2ebook/gen_all.py` (or `--only-pdf` inject), do not patch chapter HTML.
 

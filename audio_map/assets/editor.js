@@ -390,7 +390,7 @@ function parseTimeMarkerValue(text) {
     const fromQa = parseRanges(text || '')[0];
     if (fromQa) return fromQa;
     const match = String(text || '').match(
-        /(?:開場時間|時間)\s*[:：]\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})/,
+        /(?:開場時間|收場時間|時間)\s*[:：]\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})\s*-\s*(\d{2}:\d{2}:\d{2}[.,]\d{3})/,
     );
     if (!match) return null;
     const startLabel = match[1].replace(',', '.');
@@ -441,6 +441,7 @@ function normalizeMapTimes(map) {
     for (const session of map?.sessions || []) {
         if (session.opening) normalizeItemTimes(session.opening);
         for (const seg of session.segments || []) normalizeItemTimes(seg);
+        if (session.closing) normalizeItemTimes(session.closing);
     }
     return map;
 }
@@ -459,7 +460,9 @@ function flushEditorTimesIntoMap() {
         if (!entry || !input) continue;
         const range = parseTimeMarkerValue(input.value);
         if (!range || !Number.isFinite(range.start) || !Number.isFinite(range.end)) {
-            const label = entry.kind === 'opening' ? '開場' : `第 ${entry.number} 段`;
+            const label = entry.kind === 'opening' ? '開場'
+                : entry.kind === 'closing' ? '收場'
+                : `第 ${entry.number} 段`;
             return {
                 ok: false,
                 message: `${label} 時間格式無效，請使用 00:00:00.000 - 00:00:00.000`,
@@ -518,7 +521,23 @@ function sessionItems() {
             title: title || `第 ${seg.index} 題`,
         });
     }
+    if (session.closing) {
+        items.push({ kind: 'closing', item: session.closing, number: '收場', title: '收場' });
+    }
     return items;
+}
+
+/** Items that must be listened to before the session counts as complete. */
+function mustCalibrateItems(session) {
+    const items = [...(session.segments || [])];
+    if (session.closing) items.push(session.closing);
+    return items;
+}
+
+function itemKindLabel(kind, number) {
+    if (kind === 'opening') return '開場';
+    if (kind === 'closing') return '收場';
+    return `第 ${number} 段`;
 }
 
 async function loadMonth(month, { forceRemote = false } = {}) {
@@ -613,6 +632,12 @@ function mergePdfTextFrom(target, source) {
                 if (src.opening[k]) session.opening[k] = src.opening[k];
             }
         }
+        if (src.closing) {
+            session.closing = session.closing || {};
+            for (const k of ['text', 'text_preview']) {
+                if (src.closing[k]) session.closing[k] = src.closing[k];
+            }
+        }
         const srcSegs = new Map(
             (src.segments || []).map((seg) => [seg.stable_key || `#${seg.index}`, seg]),
         );
@@ -658,7 +683,7 @@ function renderSessionList() {
             <span class="draft-dot hidden"></span>
             <div class="file-item-body">
                 <span class="file-name">${escapeHtml(label)}</span>
-                <span class="file-stats">✓${stats.matched} · ✗${stats.missing} · ${stats.total} 題 · 完成 ${stats.completed}</span>
+                <span class="file-stats">✓${stats.matched} · ✗${stats.missing} · ${stats.total} 題 · 完成 ${stats.completed}${stats.hasClosing ? ' · 含收場' : ''}</span>
             </div>
         `;
         btn.addEventListener('click', () => selectSession(session.session_id));
@@ -670,34 +695,42 @@ function renderSessionList() {
     }
 }
 
-/** 聽完（或只差 1，通常是開場未播）→ all；有聽過 → partial；否則 none。 */
+/**
+ * Session complete only when every must-calibrate item (all Q&A + 收場) was listened.
+ * 開場 is optional and does not gate completion.
+ */
 function sessionListenStatus(stats) {
-    const all = stats.all || 0;
+    const must = stats.mustTotal || 0;
     const completed = stats.completed || 0;
-    if (all === 0) return 'empty';
-    // 少 1 也算整體完成（開頭第一段常不播）
-    if (completed >= all || (all > 1 && completed >= all - 1)) return 'all';
+    if (must === 0) return 'empty';
+    if (completed >= must) return 'all';
     if (completed > 0) return 'partial';
     return 'none';
 }
 
 function countSessionMeta(session) {
-    const items = [];
-    if (session.opening) items.push(session.opening);
-    items.push(...(session.segments || []));
+    const rangeItems = [];
+    if (session.opening) rangeItems.push(session.opening);
+    rangeItems.push(...(session.segments || []));
+    if (session.closing) rangeItems.push(session.closing);
+
     let matched = 0;
     let missing = 0;
+    for (const item of rangeItems) {
+        if (item.start != null && item.status !== 'missing') matched += 1;
+        else missing += 1;
+    }
+
+    const mustItems = mustCalibrateItems(session);
     let completed = 0;
     let both = 0;
     let played = 0;
     let edited = 0;
     let none = 0;
-    for (const item of items) {
-        if (item.start != null && item.status !== 'missing') matched += 1;
-        else missing += 1;
+    for (const item of mustItems) {
         const hasPlayed = Boolean(item?.meta?.lastPlayed);
         const hasEdited = Boolean(item?.meta?.lastEdited);
-        // 「完成」= 聽過即可（不需再校過）
+        // 「完成」= 必須項已聽過（含收場；不含開場）
         if (hasPlayed) completed += 1;
         if (hasPlayed && hasEdited) both += 1;
         else if (hasPlayed) played += 1;
@@ -713,7 +746,9 @@ function countSessionMeta(session) {
         played,
         edited,
         none,
-        all: items.length,
+        all: rangeItems.length,
+        mustTotal: mustItems.length,
+        hasClosing: Boolean(session.closing),
     };
 }
 
@@ -783,20 +818,21 @@ function renderEditor() {
 }
 
 function updateMetaStrip(items) {
+    // Meta strip tracks must-calibrate items only (segments + 收場).
+    const must = items.filter((e) => e.kind === 'segment' || e.kind === 'closing');
     let completed = 0;
     let played = 0;
     let edited = 0;
     let none = 0;
-    for (const { item } of items) {
+    for (const { item } of must) {
         const hasPlayed = Boolean(item?.meta?.lastPlayed);
         const hasEdited = Boolean(item?.meta?.lastEdited);
-        // 「完成」= 聽過即可
         if (hasPlayed) completed += 1;
         if (hasPlayed && !hasEdited) played += 1;
         else if (!hasPlayed && hasEdited) edited += 1;
         else if (!hasPlayed && !hasEdited) none += 1;
     }
-    els.metaTotalCount.textContent = String(items.length);
+    els.metaTotalCount.textContent = String(must.length);
     els.metaBothCount.textContent = String(completed);
     els.metaPlayedOnlyCount.textContent = String(played);
     els.metaEditedOnlyCount.textContent = String(edited);
@@ -808,8 +844,7 @@ function renderSegmentCard(entry, segmentIndex) {
     const node = els.segmentTemplate.content.firstElementChild.cloneNode(true);
     node.dataset.segmentIndex = String(segmentIndex);
     node.dataset.kind = kind;
-    node.querySelector('.segment-number').textContent =
-        kind === 'opening' ? '開場' : `第 ${number} 段`;
+    node.querySelector('.segment-number').textContent = itemKindLabel(kind, number);
 
     const titleField = node.querySelector('.segment-title');
     titleField.value = title;
@@ -888,20 +923,27 @@ function renderSegmentCard(entry, segmentIndex) {
 
     // PDF answer (or opening text) — read-only block (div, not textarea) so
     // mouse wheel scrolls the page instead of an inner scrollbar.
-    const answer = kind === 'opening'
+    const answer = (kind === 'opening' || kind === 'closing')
         ? (item.text || item.text_preview || '')
         : (item.answer_text || item.answer_preview || '');
     const answerEl = document.createElement('div');
     answerEl.className = 'editor-textarea answer-body';
     answerEl.setAttribute('role', 'region');
-    answerEl.setAttribute('aria-label', kind === 'opening' ? '開場文字（PDF）' : '回答（PDF 校對稿）');
+    answerEl.setAttribute(
+        'aria-label',
+        kind === 'opening' ? '開場文字（PDF）'
+            : kind === 'closing' ? '收場文字（PDF）'
+            : '回答（PDF 校對稿）',
+    );
     if (answer) {
         answerEl.textContent = answer;
     } else {
         answerEl.classList.add('answer-body--empty');
         answerEl.textContent = kind === 'opening'
             ? '（此段開場文字缺失，請重新載入本地 audio_map JSON）'
-            : '（此段尚無 PDF 回答文字，請重新載入本地 audio_map JSON）';
+            : kind === 'closing'
+                ? '（此段收場文字缺失，請重新載入本地 audio_map JSON）'
+                : '（此段尚無 PDF 回答文字，請重新載入本地 audio_map JSON）';
     }
     body.append(answerEl);
 
@@ -931,7 +973,9 @@ function bindPlayOnTextClick(el, playButton, hint) {
 }
 
 function formatTimeMarker(item, kind) {
-    const prefix = kind === 'opening' ? '開場時間' : '時間';
+    const prefix = kind === 'opening' ? '開場時間'
+        : kind === 'closing' ? '收場時間'
+        : '時間';
     const start = item.start != null ? secondsToTimecode(roundSeconds(item.start)) : '00:00:00.000';
     const end = item.end != null ? secondsToTimecode(roundSeconds(item.end)) : '00:00:00.000';
     return `${prefix}：${start} - ${end}`;
@@ -1021,7 +1065,7 @@ function nudgeSegmentStart(delta) {
     const signed = next >= item.start ? `+${(next - item.start).toFixed(3)}` : (next - item.start).toFixed(3);
     setSegmentEdge(idx, 'start', next);
     setSegmentEdge(idx - 1, 'end', next, { markEdited: false });
-    const label = entry.kind === 'opening' ? '開場' : `第 ${entry.number} 段`;
+    const label = itemKindLabel(entry.kind, entry.number);
     setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）`, 'ok');
     if (els.audioRange && item.start_label && item.end_label) {
         els.audioRange.textContent = ` ${item.start_label} - ${item.end_label}`;
@@ -1253,6 +1297,8 @@ function resetSegment(segmentIndex) {
     commitHistory();
     if (entry.kind === 'opening') {
         session.opening = cloneMap(orig.opening);
+    } else if (entry.kind === 'closing') {
+        session.closing = cloneMap(orig.closing);
     } else {
         const idx = entry.item.index;
         const o = (orig.segments || []).find((s) => s.index === idx);
@@ -1268,7 +1314,7 @@ function resetSegment(segmentIndex) {
 async function copySegmentAnswer(segmentIndex, button) {
     const entry = sessionItems()[segmentIndex];
     if (!entry) return;
-    const text = entry.kind === 'opening'
+    const text = (entry.kind === 'opening' || entry.kind === 'closing')
         ? (entry.item.text || entry.item.text_preview || '')
         : (entry.item.answer_text || entry.item.answer_preview || '');
     try {
@@ -1299,6 +1345,7 @@ function recomputeDirty() {
             const list = [];
             if (session.opening) list.push(session.opening);
             list.push(...(session.segments || []));
+            if (session.closing) list.push(session.closing);
             return list;
         })();
         const orig = origItems[idx];

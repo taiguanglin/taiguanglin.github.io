@@ -92,6 +92,21 @@ def render_opening_meta_bar(
     return f'<div class="qa-meta-bar qa-meta-bar--opening">{play}</div>'
 
 
+def render_closing_meta_bar(
+    range_tuple: Optional[Tuple[float, float, str]],
+    audio_rel: str,
+    *,
+    hide_if_missing: bool = False,
+) -> str:
+    play = render_play(range_tuple, audio_rel, disabled_if_missing=not hide_if_missing)
+    if play is None:
+        return ""
+    return (
+        f'<div class="qa-meta-bar qa-meta-bar--closing">'
+        f'<span class="qa-closing-label">收場</span>{play}</div>'
+    )
+
+
 def render_segment_meta_bar(
     number: str,
     range_tuple: Optional[Tuple[float, float, str]],

@@ -163,7 +163,7 @@ All CSS modules live in `assets/css/modules/` and are concatenated (in numeric o
 | `03-search.css` | Search panel, results, highlight styles, dark-mode search overrides |
 | `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, level-specific link colours, collapse animations |
 | `04b-toc-dark.css` | Dark-mode overrides for TOC controls, floating TOC, bookmark items inside the TOC panel |
-| `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), `qa-opening`, bottom floating `qa-player`, loading states; dark-mode variants. Loads before `05` so its responsive overrides win |
+| `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), opening/closing bars, `qa-opening`, bottom floating `qa-player`, loading states; dark-mode variants. Loads before `05` so its responsive overrides win |
 | `05-responsive.css` | **All** `@media` breakpoints: height-based toolbar, ≤768px tablet, ≥800px wide, ≤600px mobile (incl. QA player full-width), ≤400px small-phone |
 
 **Design-token rule:** always use `var(--color-primary)`, `var(--radius-sm)`, etc. (defined in `00-base.css`) — never hardcode raw hex or pixel values in new CSS.
