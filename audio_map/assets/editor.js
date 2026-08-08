@@ -47,6 +47,8 @@ const nudgeBurst = {
     timer: null,
     segmentIndex: null,
     started: false,
+    /** When true, settle-replay plays only ~3s from the new start. */
+    previewShort: false,
 };
 
 const els = {
@@ -1028,8 +1030,10 @@ function playerCurrentTime() {
 /**
  * Nudge the active segment's start by `delta` seconds.
  * Chains previous segment end; rapid clicks are merged into one undo + one replay.
+ * @param {number} delta
+ * @param {{ previewShort?: boolean, button?: HTMLElement }} [opts]
  */
-function nudgeSegmentStart(delta) {
+function nudgeSegmentStart(delta, opts = {}) {
     const idx = state.activeSegmentIndex;
     if (idx == null) {
         setStatus('請先播放某一段的音檔，才知道要微調哪一段的起始', 'error');
@@ -1060,49 +1064,77 @@ function nudgeSegmentStart(delta) {
         commitHistory();
         nudgeBurst.started = true;
         nudgeBurst.segmentIndex = idx;
+        nudgeBurst.previewShort = false;
     }
+    if (opts.previewShort) nudgeBurst.previewShort = true;
 
     const signed = next >= item.start ? `+${(next - item.start).toFixed(3)}` : (next - item.start).toFixed(3);
     setSegmentEdge(idx, 'start', next);
     setSegmentEdge(idx - 1, 'end', next, { markEdited: false });
     const label = itemKindLabel(entry.kind, entry.number);
-    setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）`, 'ok');
+    const previewNote = opts.previewShort ? ' · 將試播 3 秒' : '';
+    setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）${previewNote}`, 'ok');
     if (els.audioRange && item.start_label && item.end_label) {
         els.audioRange.textContent = ` ${item.start_label} - ${item.end_label}`;
     }
+
+    spawnNudgeFloat(opts.button, delta);
 
     clearTimeout(nudgeBurst.timer);
     nudgeBurst.timer = setTimeout(() => finishNudgeBurst(), 450);
 }
 
+/** Damage-number style float for nudge button feedback. */
+function spawnNudgeFloat(button, delta) {
+    if (!button || !Number.isFinite(delta)) return;
+    const text = delta > 0 ? `+${delta}s` : `−${Math.abs(delta)}s`;
+    const floater = document.createElement('span');
+    floater.className = 'nudge-float' + (delta < 0 ? ' nudge-float--neg' : ' nudge-float--pos');
+    floater.textContent = text;
+    floater.setAttribute('aria-hidden', 'true');
+    button.append(floater);
+    floater.addEventListener('animationend', () => floater.remove(), { once: true });
+}
+
 async function finishNudgeBurst() {
     const idx = nudgeBurst.segmentIndex;
+    const previewShort = nudgeBurst.previewShort;
     nudgeBurst.timer = null;
     nudgeBurst.started = false;
     nudgeBurst.segmentIndex = null;
+    nudgeBurst.previewShort = false;
     commitHistory();
     renderSessionList();
-    await replaySegment(idx);
+    await replaySegment(idx, previewShort ? { maxDuration: 3 } : undefined);
 }
 
 /** Play the segment from its current start→end (same as ▶ / nudge settle). */
-async function replaySegment(segmentIndex) {
+async function replaySegment(segmentIndex, { maxDuration } = {}) {
     const entry = sessionItems()[segmentIndex];
     const session = currentSession();
     if (!entry || !session?.audio_file) return;
     const start = entry.item.start;
     const end = entry.item.end;
     if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) return;
+    let playEnd = end;
+    if (maxDuration != null && Number.isFinite(maxDuration) && maxDuration > 0) {
+        playEnd = Math.min(end, roundSeconds(start + maxDuration));
+    }
     const range = {
         start,
-        end,
+        end: playEnd,
         startLabel: entry.item.start_label,
         endLabel: entry.item.end_label,
         label: `${entry.item.start_label} - ${entry.item.end_label}`,
     };
     try {
         setMiniPlayerHidden(false);
-        await audio.playRange(session.audio_file, range, entry.title);
+        await audio.playRange(
+            session.audio_file,
+            range,
+            entry.title,
+            maxDuration != null ? { forceStopAtEnd: true } : undefined,
+        );
         setActiveSegment(segmentIndex);
     } catch (error) {
         setStatus(`重播失敗：${error.message}`, 'error');
@@ -1116,6 +1148,7 @@ function clearNudgeBurst({ commit = false } = {}) {
     const wasStarted = nudgeBurst.started;
     nudgeBurst.started = false;
     nudgeBurst.segmentIndex = null;
+    nudgeBurst.previewShort = false;
     if (commit && wasStarted) {
         commitHistory();
         renderSessionList();
@@ -1601,8 +1634,12 @@ function setupMiniPlayer() {
     }
 
     for (const button of els.nudgeStartButtons || []) {
-        button.addEventListener('click', () => {
-            nudgeSegmentStart(Number(button.dataset.nudgeStart));
+        button.addEventListener('click', (event) => {
+            const previewShort = Boolean(event.altKey || event.metaKey || event.ctrlKey);
+            nudgeSegmentStart(Number(button.dataset.nudgeStart), {
+                previewShort,
+                button,
+            });
         });
     }
 

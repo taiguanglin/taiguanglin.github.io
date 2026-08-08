@@ -39,7 +39,7 @@ export function createAudioController({ audio, titleEl, rangeEl, rateSelect, sto
                 activeRange.stopAtEnd = stopCheckbox.checked;
             }
         },
-        async playRange(filePath, range, label = '') {
+        async playRange(filePath, range, label = '', opts = {}) {
             const baseName = filePath.split('/').pop().replace(/\.txt$/i, '.opus');
             const src = new URL(`${AUDIO_BASE}${encodeURIComponent(baseName)}`, document.baseURI).href;
             if (activeFile !== src) {
@@ -47,10 +47,13 @@ export function createAudioController({ audio, titleEl, rangeEl, rateSelect, sto
                 audio.src = src;
             }
 
+            const forceStop = opts && opts.forceStopAtEnd != null
+                ? Boolean(opts.forceStopAtEnd)
+                : null;
             activeRange = {
                 start: range.start,
                 end: range.end,
-                stopAtEnd: stopCheckbox.checked,
+                stopAtEnd: forceStop != null ? forceStop : stopCheckbox.checked,
             };
             titleEl.textContent = label || baseName;
             titleEl.title = label || baseName;
