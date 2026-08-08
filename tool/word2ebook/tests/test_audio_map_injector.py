@@ -223,6 +223,10 @@ class TestInjectHtml:
         assert "qa-meta-bar--closing" in out
         assert "收場" in out
         assert 'data-start="30.000"' in out
+        # Play button must sit above the closing paragraph (same order as opening).
+        bar_i = out.index("qa-meta-bar--closing")
+        p_i = out.index('id="content-closing"')
+        assert bar_i < p_i
         # unlistened closing → no bar
         session2 = _session(
             segments=session["segments"],

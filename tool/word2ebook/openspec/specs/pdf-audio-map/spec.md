@@ -94,7 +94,7 @@ idempotent (strips prior meta bars first).
 - GIVEN the same closing with `meta.lastPlayed`
 - WHEN injected
 - THEN a closing `.qa-meta-bar--closing` with `.qa-play` SHALL be inserted
-  near the end of the section
+  immediately before the trailing closing paragraph(s)
 ### Requirement: Shared Play Markup
 Play-button HTML SHALL be produced by `core/qa_play_markup.py` so QA chapters
 and PDF audio-map injection share the same `data-*` contract consumed by

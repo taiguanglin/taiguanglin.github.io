@@ -157,26 +157,47 @@ def _inject_section(section: str, session: dict) -> str:
     section = "".join(out)
 
     # Closing play button: require closing itself to have been listened to.
+    # Insert *above* the closing paragraph(s), mirroring opening (bar then text).
     closing = session.get("closing")
     if closing and _has_been_listened(closing):
         closing_bar = render_closing_meta_bar(
             _range_tuple(closing), audio_rel, hide_if_missing=True
         )
         if closing_bar:
-            # Insert before back-to-top / nav-footer if present; else append.
-            m_nav = re.search(
-                r'<div class="(?:back-to-top|nav-footer)"', section
-            )
-            if m_nav:
-                section = (
-                    section[: m_nav.start()]
-                    + closing_bar
-                    + "\n"
-                    + section[m_nav.start() :]
-                )
-            else:
-                section = section.rstrip() + "\n" + closing_bar + "\n"
+            section = _insert_closing_bar(section, closing_bar)
     return section
+
+
+def _insert_closing_bar(section: str, closing_bar: str) -> str:
+    """Place closing meta bar immediately before trailing closing ``<p>`` prose."""
+    # Content after the last question block (answer + optional trailing <p>).
+    last_q = None
+    for m in QUESTION_OPEN_RE.finditer(section):
+        last_q = m
+    if last_q is None:
+        m_nav = re.search(r'<div class="(?:back-to-top|nav-footer)"', section)
+        if m_nav:
+            return section[: m_nav.start()] + closing_bar + "\n" + section[m_nav.start() :]
+        return section.rstrip() + "\n" + closing_bar + "\n"
+
+    after_q = section[last_q.start() :]
+    # Prefer first bare <p> after the last answer closes (closing prose).
+    ans = re.search(r'class="answer-text"', after_q)
+    search_from = 0
+    if ans:
+        close = re.search(r"</div>\s*</div>", after_q[ans.start() :])
+        if close:
+            search_from = ans.start() + close.end()
+    trailing = after_q[search_from:]
+    p_m = re.search(r"<p(?:\s[^>]*)?>", trailing)
+    if p_m:
+        abs_pos = last_q.start() + search_from + p_m.start()
+        return section[:abs_pos] + closing_bar + "\n" + section[abs_pos:]
+
+    m_nav = re.search(r'<div class="(?:back-to-top|nav-footer)"', section)
+    if m_nav:
+        return section[: m_nav.start()] + closing_bar + "\n" + section[m_nav.start() :]
+    return section.rstrip() + "\n" + closing_bar + "\n"
 
 
 def inject_chapters(chapters: List[Chapter], map_dir: Optional[Path] = None) -> int:
