@@ -616,7 +616,10 @@
         "status": "auto",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "这个啊微信公众号的问题就回答到这里吧哈。"
+        "srt_preview": "这个啊微信公众号的问题就回答到这里吧哈。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:57"
+        }
       }
     },
     {
@@ -1682,7 +1685,10 @@
         "status": "auto",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "好了，贴吧的问题就回答到这里吧。"
+        "srt_preview": "好了，贴吧的问题就回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:57"
+        }
       }
     },
     {
@@ -1977,9 +1983,9 @@
           "stable_key": "2025nian-8yue-5ri-wei-xin-gong-zhong-hao#12",
           "q_preview": "师父吉祥，打坐全身发热发烫（最初是脚心发热），平时全身大部分时间也进入发热发烫的状态，这是启动了拙火还是什么情况？",
           "start": 1003.63,
-          "end": 1048.61,
+          "end": 1048.21,
           "start_label": "00:16:43.630",
-          "end_label": "00:17:28.610",
+          "end_label": "00:17:28.210",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -1996,15 +2002,19 @@
       "closing": {
         "text": "今天说是微信公众号的问题，有很多被屏蔽掉了，我也不知道什么情况，大家注意一下敏感词。今天就回答到这里。",
         "text_preview": "今天说是微信公众号的问题，有很多被屏蔽掉了，我也不知道什么情况，大家注意一下敏感词。今天就回答到这里。",
-        "start": 1048.61,
+        "start": 1048.21,
         "end": 1050.165,
-        "start_label": "00:17:28.610",
+        "start_label": "00:17:28.210",
         "end_label": "00:17:30.165",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "今天就回答到这里吧。"
+        "srt_preview": "今天就回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:57",
+          "lastEdited": "2026-08-08 08:57"
+        }
       }
     },
     {
@@ -2683,9 +2693,9 @@
           "stable_key": "链接爱|2025-08-05 20:42|28",
           "q_preview": "顶礼Tai师父！这次我没有问题，纯是表达感谢。\n感谢师父指引修行道路，了解真相后面对人生的状态发生了很大变化。对繁琐工作的承受能力、定力和复杂人际关系的处理智慧也提升了。知道没什么可追求的，只剩下消业和干活训练。因为很清楚接下来大几十年要怎么过，就觉得很坦然心安，知道未来一定会有各种困难和问题也可以面对，物质生活也变得简单。\n这种坦然是其他任何条件，不管是财",
           "start": 2125.24,
-          "end": 2200.65,
+          "end": 2200.55,
           "start_label": "00:35:25.240",
-          "end_label": "00:36:40.650",
+          "end_label": "00:36:40.550",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -2703,15 +2713,19 @@
       "closing": {
         "text": "贴吧的问题就回答到这里。",
         "text_preview": "贴吧的问题就回答到这里。",
-        "start": 2200.65,
+        "start": 2200.55,
         "end": 2204.895,
-        "start_label": "00:36:40.650",
+        "start_label": "00:36:40.550",
         "end_label": "00:36:44.895",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "然后呢嗯到这个贴吧的问题就回答到这里吧。"
+        "srt_preview": "然后呢嗯到这个贴吧的问题就回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:58",
+          "lastEdited": "2026-08-08 08:57"
+        }
       }
     },
     {
@@ -3197,9 +3211,9 @@
           "stable_key": "2025nian-8yue-6ri-wei-xin-gong-zhong-hao#20",
           "q_preview": "顶礼师父！关于《坛经》的问题，韦刺史是否是一个凡夫？《坛经》是否告诉我们，跟凡夫讲法，要先从故事入手，再引入经义？《坛经》中“心平何劳持戒，行直何用修禅”是专门对凡夫开示的方便法，是为了对治当时人只坐禅、不修心的风气，并不应该拿来当现在的我们不坐禅的借口，对否？",
           "start": 1495.376,
-          "end": 1593.35,
+          "end": 1590.018,
           "start_label": "00:24:55.376",
-          "end_label": "00:26:33.350",
+          "end_label": "00:26:30.018",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -3216,15 +3230,19 @@
       "closing": {
         "text": "好了，今天微信公众号的问题就回答到这里。",
         "text_preview": "好了，今天微信公众号的问题就回答到这里。",
-        "start": 1593.35,
+        "start": 1590.018,
         "end": 1595.095,
-        "start_label": "00:26:33.350",
+        "start_label": "00:26:30.018",
         "end_label": "00:26:35.095",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "你问题就回答到这里吧。"
+        "srt_preview": "你问题就回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:58",
+          "lastEdited": "2026-08-08 08:58"
+        }
       }
     },
     {
@@ -4156,9 +4174,9 @@
           "stable_key": "qqw_huanghua1|2025-08-06 21:34|39",
           "q_preview": "2、四禅开悟，开悟后，会退转吗？谢谢师父，阿弥陀佛！",
           "start": 2290.138,
-          "end": 2349.72,
+          "end": 2353.227,
           "start_label": "00:38:10.138",
-          "end_label": "00:39:09.720",
+          "end_label": "00:39:13.227",
           "confidence": 0.82,
           "status": "manual",
           "locked": false,
@@ -4176,15 +4194,19 @@
       "closing": {
         "text": "今天贴吧的先回答到这里。",
         "text_preview": "今天贴吧的先回答到这里。",
-        "start": 2349.72,
+        "start": 2353.227,
         "end": 2356.315,
-        "start_label": "00:39:09.720",
+        "start_label": "00:39:13.227",
         "end_label": "00:39:16.315",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "因为凡夫本来就是善变的嘛啊今天贴吧的先回答到这里吧。"
+        "srt_preview": "因为凡夫本来就是善变的嘛啊今天贴吧的先回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:58",
+          "lastEdited": "2026-08-08 08:58"
+        }
       }
     },
     {
@@ -4593,9 +4615,9 @@
           "stable_key": "2025nian-8yue-7ri-wei-xin-gong-zhong-hao#16",
           "q_preview": "顶礼师父。前天晚上读《地藏经》的时候，鼻头突然很痒，想抓，读完后就没了。后面看到网上也有一些人说读《地藏经》的时候鼻头痒，这是什么原因呢？感觉好神奇。",
           "start": 1137.02,
-          "end": 1210.93,
+          "end": 1211.13,
           "start_label": "00:18:57.020",
-          "end_label": "00:20:10.930",
+          "end_label": "00:20:11.130",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -4614,15 +4636,19 @@
       "closing": {
         "text": "今天微信公众号的问题就回答到这里。",
         "text_preview": "今天微信公众号的问题就回答到这里。",
-        "start": 1210.93,
+        "start": 1211.13,
         "end": 1214.245,
-        "start_label": "00:20:10.930",
+        "start_label": "00:20:11.130",
         "end_label": "00:20:14.245",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "那今天微信公众号的问题就回答到这里吧。"
+        "srt_preview": "那今天微信公众号的问题就回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:58",
+          "lastEdited": "2026-08-08 08:58"
+        }
       }
     },
     {
@@ -5306,9 +5332,9 @@
           "stable_key": "Fun09|2025-08-07 20:47|28",
           "q_preview": "师父，请问磕头的时候可以听《地藏经》吗？感觉更能生起忏悔心……。盘腿的时候感觉腿好紧，好僵硬，特别是吃了东西后盘腿，他们那种柔软放松的盘腿，都怎么做到的啊？",
           "start": 2560.553,
-          "end": 2624.39,
+          "end": 2624.29,
           "start_label": "00:42:40.553",
-          "end_label": "00:43:44.390",
+          "end_label": "00:43:44.290",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -5326,15 +5352,19 @@
       "closing": {
         "text": "今天贴吧的问题就回答到这里。",
         "text_preview": "今天贴吧的问题就回答到这里。",
-        "start": 2624.39,
+        "start": 2624.29,
         "end": 2629.905,
-        "start_label": "00:43:44.390",
+        "start_label": "00:43:44.290",
         "end_label": "00:43:49.905",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "今天这个贴吧的问题就回答到这里吧，这里是一百二十四楼。"
+        "srt_preview": "今天这个贴吧的问题就回答到这里吧，这里是一百二十四楼。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:59",
+          "lastEdited": "2026-08-08 08:58"
+        }
       }
     },
     {
@@ -6498,9 +6528,9 @@
           "stable_key": "Fun09|2025-08-08 19:40|48",
           "q_preview": "Tai师父吉祥。请问师父，高僧大德留下的物品有什么加持力之类的吗？如何才能勇敢做自己，不再外求呢，茫茫然？本来早上起来是要打坐的，可是总睡得太沉，闹钟响了都听不见，怎么办呢？我们修行是为了自己，还是他人？",
           "start": 4747.555,
-          "end": 4888.45,
+          "end": 4888.35,
           "start_label": "01:19:07.555",
-          "end_label": "01:21:28.450",
+          "end_label": "01:21:28.350",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -6517,15 +6547,19 @@
       "closing": {
         "text": "今天的回答就到这里。",
         "text_preview": "今天的回答就到这里。",
-        "start": 4888.45,
+        "start": 4888.35,
         "end": 4897.27,
-        "start_label": "01:21:28.450",
+        "start_label": "01:21:28.350",
         "end_label": "01:21:37.270",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "今天的回答就到这里吧啊这边是嗯一百六十二上三楼吧嗯。"
+        "srt_preview": "今天的回答就到这里吧啊这边是嗯一百六十二上三楼吧嗯。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:59",
+          "lastEdited": "2026-08-08 08:59"
+        }
       }
     },
     {
@@ -6851,9 +6885,9 @@
           "stable_key": "2025nian-8yue-8ri-wei-xin-gong-zhong-hao#13",
           "q_preview": "Tai师父好。该如何看待少林寺释永信这样的人及对佛教的影响？是剧本事先就写好故意安排的，还是无法控制了？又该如何给身边的人解释，避免对佛产生误解？",
           "start": 924.35,
-          "end": 2009.49,
+          "end": 2009.39,
           "start_label": "00:15:24.350",
-          "end_label": "00:33:29.490",
+          "end_label": "00:33:29.390",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -6871,15 +6905,19 @@
       "closing": {
         "text": "今天微信公众号的问题就回答到这里。",
         "text_preview": "今天微信公众号的问题就回答到这里。",
-        "start": 2009.49,
+        "start": 2009.39,
         "end": 2012.805,
-        "start_label": "00:33:29.490",
+        "start_label": "00:33:29.390",
         "end_label": "00:33:32.805",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "今天这个微信公众的号的问题就回答到这里吧。"
+        "srt_preview": "今天这个微信公众的号的问题就回答到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:59",
+          "lastEdited": "2026-08-08 08:59"
+        }
       }
     },
     {
@@ -7967,9 +8005,9 @@
           "stable_key": "观照0620|2025-08-09 20:23|45",
           "q_preview": "顶礼师父！\n师父上线答疑成了我每个月最美好的期待，师父的回答总是那么耐心，又那么智慧和圆满，让我赞叹不已，感恩师父！同时，也非常感恩提出各类问题的师兄们！请问师父，精心组织问题向师父提问是不是也算是一种请法，也有一定功德？",
           "start": 5265.706,
-          "end": 5282.07,
+          "end": 5281.97,
           "start_label": "01:27:45.706",
-          "end_label": "01:28:02.070",
+          "end_label": "01:28:01.970",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -7987,15 +8025,19 @@
       "closing": {
         "text": "今天贴吧的答疑就到这里，光是录音的时间就达到一个半小时了。最近发现怎么贴吧的突然人多了起来。总之，来提问的人我都感谢，尤其是这些在修行方面比较精进努力的人，这个世界之所以能够维持下去，就是还有很多人修行。如果这个世界都不再有人修行了，传播佛法也就没有啥意义了。文明进程也是该怎么来就怎么来，也不需要故意拖慢。总之感谢所有来提问和修行的朋友们，今天贴吧的回答就到这里。",
         "text_preview": "今天贴吧的答疑就到这里，光是录音的时间就达到一个半小时了。最近发现怎么贴吧的突然人多了起来。总之，来提问的人我都感谢，尤其是这些在修行方面比较精进努力的人，这个世界之所以能够维持下去，就是还有很多人修行。如果这个世界都不再有人修行了，传播佛法也就没有啥意义了。文明进程也是该怎么来就怎么来，也不需要故意拖慢。总之感谢所有来提问和修行的朋友们，今天贴吧的回答就到这里。",
-        "start": 5282.07,
+        "start": 5281.97,
         "end": 5330.125,
-        "start_label": "01:28:02.070",
+        "start_label": "01:28:01.970",
         "end_label": "01:28:50.125",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "今天这个啊贴吧的答疑就到这里吧。啊，这个光是录音的时间就达到一个半小时了哈。这最近发现怎么贴吧的突然人多了起来哈。嗯，总之呃来提问的人我都感谢啊啊，尤其是这些在修行方面嗯比较经济努力的人啊，呃就是整个这个世界就是怎么说呢？这个世界之所以能能够维持下去，就是还有很多人修行。如果这个世界嗯都不再有人修行了，那传播佛法也就没有啥意义了。那文明进程也是呃这个该怎么来就怎么来，也不需要故意拖满啊啊。所以总之感谢所有来提问和修询的朋友们啊，那今天的…"
+        "srt_preview": "今天这个啊贴吧的答疑就到这里吧。啊，这个光是录音的时间就达到一个半小时了哈。这最近发现怎么贴吧的突然人多了起来哈。嗯，总之呃来提问的人我都感谢啊啊，尤其是这些在修行方面嗯比较经济努力的人啊，呃就是整个这个世界就是怎么说呢？这个世界之所以能能够维持下去，就是还有很多人修行。如果这个世界嗯都不再有人修行了，那传播佛法也就没有啥意义了。那文明进程也是呃这个该怎么来就怎么来，也不需要故意拖满啊啊。所以总之感谢所有来提问和修询的朋友们啊，那今天的…",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:59",
+          "lastEdited": "2026-08-08 08:59"
+        }
       }
     },
     {
@@ -8370,9 +8412,9 @@
           "stable_key": "2025nian-8yue-9ri-wei-xin-gong-zhong-hao#15",
           "q_preview": "请问师父，同性恋是什么原因，怎么改变？双性恋是什么原因，怎么改变？近几年身边出现一些这样的人？感恩师父开示！",
           "start": 693.2,
-          "end": 943.92,
+          "end": 943.82,
           "start_label": "00:11:33.200",
-          "end_label": "00:15:43.920",
+          "end_label": "00:15:43.820",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -8390,15 +8432,19 @@
       "closing": {
         "text": "今天的回答就到这里。",
         "text_preview": "今天的回答就到这里。",
-        "start": 943.92,
+        "start": 943.82,
         "end": 946.065,
-        "start_label": "00:15:43.920",
+        "start_label": "00:15:43.820",
         "end_label": "00:15:46.065",
         "confidence": 0.85,
-        "status": "auto",
+        "status": "manual",
         "locked": false,
         "notes": "leadin:closing|auto",
-        "srt_preview": "今天的回答就到这里吧。"
+        "srt_preview": "今天的回答就到这里吧。",
+        "meta": {
+          "lastPlayed": "2026-08-08 08:59",
+          "lastEdited": "2026-08-08 08:59"
+        }
       }
     }
   ]
