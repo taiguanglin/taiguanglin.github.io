@@ -221,7 +221,8 @@ class TestInjectHtml:
         )
         out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
         assert "qa-meta-bar--closing" in out
-        assert "收場" in out
+        assert "qa-closing-label" not in out
+        assert "收場" not in out.split("qa-meta-bar--closing")[1].split("</div>")[0]
         assert 'data-start="30.000"' in out
         # Play button must sit above the closing paragraph (same order as opening).
         bar_i = out.index("qa-meta-bar--closing")

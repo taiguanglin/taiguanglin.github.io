@@ -1814,13 +1814,6 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
 
 .qa-meta-bar--closing {
     margin: 14px 0 8px;
-    align-items: center;
-}
-.qa-closing-label {
-    font-size: 0.85em;
-    font-weight: 600;
-    color: var(--color-text-muted, #666);
-    margin-right: 4px;
 }
 
 /* 底部浮動播放器 */

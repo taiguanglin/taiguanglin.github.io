@@ -101,10 +101,7 @@ def render_closing_meta_bar(
     play = render_play(range_tuple, audio_rel, disabled_if_missing=not hide_if_missing)
     if play is None:
         return ""
-    return (
-        f'<div class="qa-meta-bar qa-meta-bar--closing">'
-        f'<span class="qa-closing-label">收場</span>{play}</div>'
-    )
+    return f'<div class="qa-meta-bar qa-meta-bar--closing">{play}</div>'
 
 
 def render_segment_meta_bar(
