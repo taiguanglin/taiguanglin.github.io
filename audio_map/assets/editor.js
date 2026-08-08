@@ -1673,25 +1673,42 @@ function setupMiniPlayer() {
     els.setEndButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'end'));
 
     document.addEventListener('keydown', (event) => {
-        if (event.ctrlKey || event.shiftKey) return;
-        if (!player.src) return;
-        const alt = event.altKey && !event.metaKey;
-        const meta = event.metaKey && !event.altKey;
-        if (!alt && !meta) return;
+        // Ignore when typing in form fields (but work regardless of which panel is focused).
+        const t = event.target;
+        if (t instanceof HTMLElement) {
+            const tag = t.tagName;
+            if (
+                tag === 'INPUT'
+                || tag === 'TEXTAREA'
+                || tag === 'SELECT'
+                || t.isContentEditable
+            ) {
+                return;
+            }
+        }
+        // Plain keys only (no Alt/Ctrl/Meta/Shift combos).
+        if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+
         switch (event.code) {
-            case 'KeyP':
+            case 'KeyP': {
+                if (!player.src) return;
                 event.preventDefault();
                 togglePlay();
                 break;
-            case 'ArrowLeft':
-                if (!alt) return;
+            }
+            case 'ArrowLeft': {
                 event.preventDefault();
-                seekBy(-2);
+                const btn = document.querySelector('[data-nudge-start="-0.1"]');
+                nudgeSegmentStart(-0.1, { previewShort: true, button: btn || undefined });
                 break;
-            case 'ArrowRight':
-                if (!alt) return;
+            }
+            case 'ArrowRight': {
                 event.preventDefault();
-                seekBy(2);
+                const btn = document.querySelector('[data-nudge-start="0.1"]');
+                nudgeSegmentStart(0.1, { previewShort: true, button: btn || undefined });
+                break;
+            }
+            default:
                 break;
         }
     }, true);
