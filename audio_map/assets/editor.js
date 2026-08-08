@@ -984,13 +984,19 @@ function bindPlayOnTextClick(el, playButton, hint) {
 
 /**
  * True when the user is typing in a real editable control.
- * Read-only 問題、回答區、時間標記列不擋全域音檔快捷鍵。
+ * Read-only 問題、回答區不擋全域音檔快捷鍵。
+ * 時間標記列由 keydown 另行處理（←→ 失效、P 仍有效）。
  */
+function isMarkerTimeInput(el) {
+    if (!(el instanceof HTMLElement)) return false;
+    return el.classList.contains('marker-input') || Boolean(el.closest('.marker-input'));
+}
+
 function isTypingInEditableField(el) {
     if (!(el instanceof HTMLElement)) return false;
     if (el.closest('.answer-body')) return false;
     if (el.closest('textarea.segment-title[readonly]')) return false;
-    if (el.classList.contains('marker-input') || el.closest('.marker-input')) return false;
+    if (isMarkerTimeInput(el)) return false;
     if (el.isContentEditable) return true;
     const tag = el.tagName;
     if (tag === 'SELECT') return true;
@@ -1709,9 +1715,11 @@ function setupMiniPlayer() {
     els.setEndButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'end'));
 
     document.addEventListener('keydown', (event) => {
-        // Ignore only when actually typing in an editable field.
-        // Read-only 問題區 / 回答區 / 時間標記 都要能用 P、←、→。
-        if (isTypingInEditableField(event.target)) return;
+        // 時間輸入筐：←→ 留給游標移動，P 仍可播放／暫停。
+        const inMarker = isMarkerTimeInput(event.target);
+        if (inMarker && (event.code === 'ArrowLeft' || event.code === 'ArrowRight')) return;
+        // 其他真正在輸入的欄位：全部快捷鍵讓出。
+        if (!inMarker && isTypingInEditableField(event.target)) return;
         // Plain keys only (no Alt/Ctrl/Meta/Shift combos).
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
