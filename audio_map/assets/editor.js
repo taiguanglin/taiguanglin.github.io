@@ -1785,6 +1785,30 @@ function setupMiniPlayer() {
                 togglePlay();
                 break;
             }
+            case 'KeyR': {
+                // 重頭播放：等同點擊該段問題／回答（觸發 ▶ 從段首播起）。
+                event.preventDefault();
+                const idx = state.activeSegmentIndex;
+                if (idx == null || !sessionItems()[idx]) {
+                    setStatus('請先播放某一段的音檔，才知道要重頭播放哪一段', 'error');
+                    break;
+                }
+                const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${idx}"]`);
+                const playBtn = card?.querySelector('.play-range');
+                if (playBtn && !playBtn.disabled) {
+                    blurIfBlocksShortcuts(document.activeElement);
+                    playBtn.click();
+                } else {
+                    replaySegment(idx);
+                }
+                break;
+            }
+            case 'KeyS': {
+                if (!player.src) return;
+                event.preventDefault();
+                if (!player.paused) player.pause();
+                break;
+            }
             case 'ArrowLeft': {
                 event.preventDefault();
                 const btn = document.querySelector('[data-nudge-start="-0.1"]');
