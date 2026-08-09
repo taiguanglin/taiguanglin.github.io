@@ -401,11 +401,66 @@ class TestPdfImages:
         ]
         ch = parser.parse_lines(lines, start_index=16)[0]
         assert '<img src="assets/images/image_99.png" alt="Image">' in ch.content
-        # image sits between question content and answer
+        # image stays inside the question card (between 上文 and 下文)
         q_pos = ch.content.index("问题上文。")
         img_pos = ch.content.index('<img src="assets/images/image_99.png"')
+        below_pos = ch.content.index("问题下文。")
         a_pos = ch.content.index("回答。")
-        assert q_pos < img_pos < a_pos
+        assert q_pos < img_pos < below_pos < a_pos
+        # still inside .question … </div> before the answer
+        q_open = ch.content.index('<div class="question"')
+        q_close = ch.content.index("</div>", ch.content.index("问题下文。"))
+        assert q_open < img_pos < a_pos
+
+    def test_image_does_not_orphan_mid_sentence(self, parser):
+        """Image mid-question must not spit the rest into bare <p> outside the card."""
+        lines = [
+            (157.0, "Tai 师父2025 年12 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是12 月11 号，先回答官网的问题。"),
+            (CONT, "甲：2025-12-11 10:00"),
+            (IND,  "如果双方为了任务，稍"),
+            (CONT, make_img_marker("assets/images/image_53.png")),
+            (IND,  "微带点执著心做事，还会再造业吗?"),
+            (CONT, "Taiguanglin："),
+            (IND,  "回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert "<p>微带点执著心做事，还会再造业吗?</p>" not in ch.content
+        assert "稍微带点执著心做事，还会再造业吗?" in ch.content
+        assert '<img src="assets/images/image_53.png" alt="Image">' in ch.content
+        # merged sentence lives in the question card
+        assert '<div class="question-text">' in ch.content
+        q_block_start = ch.content.index('<div class="question"')
+        a_block_start = ch.content.index('<div class="answer"')
+        chunk = ch.content[q_block_start:a_block_start]
+        assert "稍微带点执著心做事，还会再造业吗?" in chunk
+        assert "<img" in chunk
+
+    def test_vertical_glyph_lines_merge(self, parser):
+        """One-char-per-line fragments after an image merge into one paragraph."""
+        lines = [
+            (157.0, "Tai 师父2025 年12 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是12 月11 号，先回答官网的问题。"),
+            (CONT, "甲：2025-12-11 10:00"),
+            (IND,  "求观世音指点我找"),
+            (CONT, make_img_marker("assets/images/image_54.png")),
+            (IND,  "师"),
+            (IND,  "父"),
+            (IND,  "您"),
+            (IND,  "。"),
+            (IND,  "感"),
+            (IND,  "恩"),
+            (IND,  "师"),
+            (IND,  "父"),
+            (IND,  "。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert "<p>师</p>" not in ch.content
+        assert "<p>父</p>" not in ch.content
+        assert "求观世音指点我找师父您。感恩师父。" in ch.content
+        assert '<img src="assets/images/image_54.png" alt="Image">' in ch.content
 
 
 # ---------------------------------------------------------------------------

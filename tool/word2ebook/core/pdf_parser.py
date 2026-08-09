@@ -175,6 +175,94 @@ def _is_img_marker(text: str) -> bool:
     return text.startswith(IMG_MARKER_PREFIX)
 
 
+def _img_marker_path(text: str) -> str:
+    return text[len(IMG_MARKER_PREFIX):]
+
+
+def make_img_marker(relative_path: str) -> str:
+    """測試／抽取共用的圖片標記字串。"""
+    return f"{IMG_MARKER_PREFIX}{relative_path}"
+
+
+def _is_glyph_fragment(text: str) -> bool:
+    """是否為「垂直排／逐字抽出」造成的極短片段（單字或字+標點）。
+
+    PDF 在圖片旁常把「師父您。感恩師父。」拆成一字一行；合併後才不會變成
+    一堆 ``<p>师</p><p>父</p>…``。
+    """
+    t = (text or "").strip()
+    if not t or len(t) > 2:
+        return False
+    if NUM_RE.match(t) or ANSWER_RE.match(t) or SEP_RE.match(t):
+        return False
+    if NAMECOLON_RE.match(t) or LONE_COLON_RE.match(t) or QTIME_RE.match(t):
+        return False
+    return bool(
+        re.fullmatch(
+            r"[\u4e00-\u9fffA-Za-z0-9。？！，、；：…—\-·\.!?,;:\"'“”‘’（）()\[\]【】]{1,2}",
+            t,
+        )
+    )
+
+
+def _ends_sentence(text: str) -> bool:
+    s = (text or "").rstrip()
+    return bool(s) and s[-1] in "。？！…!?」』\""
+
+
+def _text_paras_only(paras: List[str]) -> List[str]:
+    return [p for p in paras if not _is_img_marker(p)]
+
+
+def _coalesce_card_paras(paras: List[str]) -> List[str]:
+    """合併「被圖片打斷」的未完成句子；圖片改掛在合併後文字之後。
+
+    例：``['…稍', IMG, '微带点…吗?']`` → ``['…稍微带点…吗?', IMG]``
+
+    沒有圖片夾在中間時，不合併相鄰文字段（縮排造成的正常分段要保留）。
+    """
+    if not paras:
+        return paras
+    out: List[str] = []
+    i = 0
+    n = len(paras)
+    while i < n:
+        if _is_img_marker(paras[i]):
+            out.append(paras[i])
+            i += 1
+            continue
+        text = paras[i]
+        i += 1
+        pending_imgs: List[str] = []
+        while i < n:
+            if _is_img_marker(paras[i]):
+                pending_imgs.append(paras[i])
+                i += 1
+                continue
+            # 沒夾圖片 → 保留原本段落邊界
+            if not pending_imgs:
+                break
+            nxt = paras[i]
+            if NUM_RE.match(nxt):
+                break
+            # 完整句後接一般新段 → 保留順序（文字、圖、下一段）
+            if _ends_sentence(text) and not _is_glyph_fragment(nxt):
+                break
+            text += nxt
+            i += 1
+        out.append(text)
+        out.extend(pending_imgs)
+    return out
+
+
+def _render_content_piece(piece: str, *, text_tag: str) -> str:
+    """卡片內一段：一般文字 → ``text_tag``；圖片標記 → ``<img>``。"""
+    if _is_img_marker(piece):
+        rel = _img_marker_path(piece)
+        return f'<img src="{rel}" alt="Image">'
+    return f"<{text_tag}>{piece}</{text_tag}>"
+
+
 def _detect_source_from_shifu(text: str) -> Optional[str]:
     """從師父說開場文推斷來源；無法判斷時回傳 None（維持現況）。
 
@@ -234,15 +322,6 @@ def _is_structural_line(text: str) -> bool:
     if LONE_COLON_RE.match(text):
         return True
     return False
-
-
-def _img_marker_path(text: str) -> str:
-    return text[len(IMG_MARKER_PREFIX):]
-
-
-def make_img_marker(relative_path: str) -> str:
-    """測試／抽取共用的圖片標記字串。"""
-    return f"{IMG_MARKER_PREFIX}{relative_path}"
 
 
 class PDFParser:
@@ -473,7 +552,39 @@ class PDFParser:
                 if not _is_boundary_after_sep(nxt):
                     continue
             result.append((x0, t))
-        return result
+
+        # 階段 4：合併「一字一行」的垂直／碎片段（常見於圖片旁的 OCR 抽出）
+        return self._merge_glyph_fragments(result)
+
+    def _merge_glyph_fragments(
+        self, lines: List[Tuple[float, str]]
+    ) -> List[Tuple[float, str]]:
+        """把連續極短行併成一行，避免卡片內出現 ``<p>师</p><p>父</p>…``。"""
+        out: List[Tuple[float, str]] = []
+        buf_x: Optional[float] = None
+        buf: List[str] = []
+
+        def flush() -> None:
+            nonlocal buf_x, buf
+            if buf:
+                out.append((buf_x if buf_x is not None else 0.0, "".join(buf)))
+            buf_x = None
+            buf = []
+
+        for x0, t in lines:
+            if _is_img_marker(t) or _is_structural_line(t):
+                flush()
+                out.append((x0, t))
+                continue
+            if _is_glyph_fragment(t):
+                if buf_x is None:
+                    buf_x = x0
+                buf.append(t)
+                continue
+            flush()
+            out.append((x0, t))
+        flush()
+        return out
 
     # ------------------------------------------------------------------ #
     # 3. 狀態機：行 → 段落 → 卡片 → 區段（日期+來源）                       #
@@ -505,6 +616,7 @@ class PDFParser:
             state["card"] = None
             if not card or not card["paras"]:
                 return
+            card["paras"] = _coalesce_card_paras(card["paras"])
             block = self._render_card(card)
             if block and state["section"] is not None:
                 state["section"]["blocks"].append(block)
@@ -556,11 +668,13 @@ class PDFParser:
         while i < n_lines:
             x0, text = lines[i]
 
-            # 圖片：結束當前卡片後以獨立 block 插入（與 Word 一致）
+            # 圖片：留在當前卡片內（不結束卡片），避免後半句變成卡片外的孤立 <p>
             if _is_img_marker(text):
-                finish_card()
                 ensure_section()
-                if state["section"] is not None:
+                if state["card"] is not None:
+                    finish_para()
+                    state["card"]["paras"].append(text)
+                elif state["section"] is not None:
                     rel = _img_marker_path(text)
                     state["section"]["blocks"].append(
                         f'<img src="{rel}" alt="Image">'
@@ -719,16 +833,26 @@ class PDFParser:
         if not paras:
             return ""
 
+        text_paras = _text_paras_only(paras)
+
         if kind == "paragraph":
-            return "\n".join(f"<p>{p}</p>" for p in paras)
+            return "\n".join(
+                _render_content_piece(p, text_tag="p") for p in paras
+            )
 
         if kind == "question":
             name = card["name"] or ""
             time = card["time"] or ""
-            joined = " ".join(paras)
+            joined = " ".join(text_paras)
             qid = self.id_generator.generate_stable_qa_id(name, joined, time, "question")
             time_html = f'<span class="question-time">{time}</span>' if time else ""
-            text_divs = "\n".join(f'    <div class="question-text">{p}</div>' for p in paras)
+            pieces = []
+            for p in paras:
+                if _is_img_marker(p):
+                    pieces.append(f'    <img src="{_img_marker_path(p)}" alt="Image">')
+                else:
+                    pieces.append(f'    <div class="question-text">{p}</div>')
+            text_divs = "\n".join(pieces)
             return (
                 f'<div class="question" id="{qid}">\n'
                 f'    <div class="question-meta">\n'
@@ -741,9 +865,15 @@ class PDFParser:
 
         if kind == "answer":
             answerer = Constants.ANSWERER_RAW_NAME
-            joined = " ".join(paras)
+            joined = " ".join(text_paras)
             aid = self.id_generator.generate_stable_qa_id(answerer, joined, "", "answer")
-            text_divs = "\n".join(f'    <div class="answer-text">{p}</div>' for p in paras)
+            pieces = []
+            for p in paras:
+                if _is_img_marker(p):
+                    pieces.append(f'    <img src="{_img_marker_path(p)}" alt="Image">')
+                else:
+                    pieces.append(f'    <div class="answer-text">{p}</div>')
+            text_divs = "\n".join(pieces)
             return (
                 f'<div class="answer" id="{aid}">\n'
                 f'    <div class="answer-meta">\n'
