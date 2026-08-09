@@ -1033,9 +1033,9 @@ function renderSegmentCard(entry, segmentIndex) {
     timeInput.addEventListener('input', () => {
         updatePlayButton(playButton, timeInput.value, segmentIndex, title);
     });
-    // ←→↑↓ 留給輸入框；不要冒泡到 document 的微調／換段快捷鍵；P／R／S 仍可冒泡。
+    // ←→ 只移動游標，不要冒泡到微調快捷鍵；↑↓／P／R／S 仍可冒泡生效。
     timeInput.addEventListener('keydown', (event) => {
-        if (isArrowLeftRight(event) || isArrowUpDown(event)) event.stopPropagation();
+        if (isArrowLeftRight(event)) event.stopPropagation();
     });
     timeLine.append(timeInput, playButton);
     body.append(timeLine);
@@ -1102,7 +1102,7 @@ function bindPlayOnTextClick(el, playButton, hint) {
 /**
  * True when the user is typing in a real editable control.
  * Read-only 問題、回答區不擋全域音檔快捷鍵。
- * 時間標記列由 keydown 另行處理（←→ 失效、P 仍有效）。
+ * 時間標記列：僅 ←→ 不觸發快捷鍵（留給游標）；P／R／S／↑↓ 仍有效。
  */
 function isMarkerTimeInput(el) {
     if (!(el instanceof Element)) return false;
@@ -1118,11 +1118,6 @@ function isMarkerTimeFocused() {
 function isArrowLeftRight(event) {
     return event.code === 'ArrowLeft' || event.code === 'ArrowRight'
         || event.key === 'ArrowLeft' || event.key === 'ArrowRight';
-}
-
-function isArrowUpDown(event) {
-    return event.code === 'ArrowUp' || event.code === 'ArrowDown'
-        || event.key === 'ArrowUp' || event.key === 'ArrowDown';
 }
 
 function isTypingInEditableField(el) {
@@ -1906,10 +1901,11 @@ function setupMiniPlayer() {
     bindLongPressMenu(els.setStartButton, (event) => openSetTimeMenu(event, 'start'));
     bindLongPressMenu(els.setEndButton, (event) => openSetTimeMenu(event, 'end'));
 
-    // Bubble phase：時間框可 stopPropagation 擋掉方向鍵；capture 會先於 input 執行而擋不住。
+    // Bubble phase：時間框只擋 ←→；↑↓／P／R／S 在時間框內仍生效。
     document.addEventListener('keydown', (event) => {
         const inMarker = isMarkerTimeFocused() || isMarkerTimeInput(event.target);
-        if (inMarker && (isArrowLeftRight(event) || isArrowUpDown(event))) return;
+        // 時間輸入框：僅 ←→ 留給游標，其餘快捷鍵照常。
+        if (inMarker && isArrowLeftRight(event)) return;
         if (!inMarker && isTypingInEditableField(event.target)) return;
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
