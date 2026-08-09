@@ -920,6 +920,10 @@ function renderSegmentCard(entry, segmentIndex) {
     timeInput.addEventListener('input', () => {
         updatePlayButton(playButton, timeInput.value, segmentIndex, title);
     });
+    // ←→ 只移動游標，不要冒泡到 document 的微調快捷鍵；P 仍可冒泡播放／暫停。
+    timeInput.addEventListener('keydown', (event) => {
+        if (isArrowLeftRight(event)) event.stopPropagation();
+    });
     timeLine.append(timeInput, playButton);
     body.append(timeLine);
 
@@ -988,8 +992,19 @@ function bindPlayOnTextClick(el, playButton, hint) {
  * 時間標記列由 keydown 另行處理（←→ 失效、P 仍有效）。
  */
 function isMarkerTimeInput(el) {
-    if (!(el instanceof HTMLElement)) return false;
-    return el.classList.contains('marker-input') || Boolean(el.closest('.marker-input'));
+    if (!(el instanceof Element)) return false;
+    if (el.classList.contains('marker-input')) return true;
+    if (el.closest('.marker-input')) return true;
+    return Boolean(el.closest('.marker-line') && el.matches('input'));
+}
+
+function isMarkerTimeFocused() {
+    return isMarkerTimeInput(document.activeElement);
+}
+
+function isArrowLeftRight(event) {
+    return event.code === 'ArrowLeft' || event.code === 'ArrowRight'
+        || event.key === 'ArrowLeft' || event.key === 'ArrowRight';
 }
 
 function isTypingInEditableField(el) {
@@ -1044,7 +1059,8 @@ function updatePlayButton(button, markerText, segmentIndex, title) {
         try {
             setMiniPlayerHidden(false);
             await audio.playRange(session.audio_file, range, title);
-            if (isSegmentEditable(segmentIndex)) onSegmentPlayed(segmentIndex);
+            // 聽過即算進度／完成；手機「聽」模式也要記，不可被 editing 閘門擋住。
+            onSegmentPlayed(segmentIndex);
             setActiveSegment(segmentIndex);
         } catch (error) {
             setStatus(`播放失敗：${error.message}`, 'error');
@@ -1178,6 +1194,8 @@ async function replaySegment(segmentIndex, { maxDuration } = {}) {
             maxDuration != null ? { forceStopAtEnd: true } : undefined,
         );
         setActiveSegment(segmentIndex);
+        // 完整重播也算聽過；短試播（maxDuration）不記，避免微調時誤標完成。
+        if (maxDuration == null) onSegmentPlayed(segmentIndex);
     } catch (error) {
         setStatus(`重播失敗：${error.message}`, 'error');
     }
@@ -1283,12 +1301,6 @@ function applySegmentEditability(card) {
             field.readOnly = !editable;
         }
     }
-}
-
-function isSegmentEditable(segmentIndex) {
-    if (!isMobileDock()) return true;
-    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
-    return Boolean(card && card.classList.contains('editing'));
 }
 
 function ensureMeta(item) {
@@ -1612,6 +1624,46 @@ function closeContextMenu() {
     document.querySelector('#audioMapContextMenu')?.remove();
 }
 
+/** Long-press ≈ right-click menu (for touch / mobile). */
+function bindLongPressMenu(el, onLongPress) {
+    if (!el || typeof onLongPress !== 'function') return;
+    let timer = null;
+    let startX = 0;
+    let startY = 0;
+    let fired = false;
+    const clear = () => {
+        if (timer != null) {
+            clearTimeout(timer);
+            timer = null;
+        }
+    };
+    el.addEventListener('pointerdown', (event) => {
+        if (event.pointerType === 'mouse' && event.button !== 0) return;
+        fired = false;
+        startX = event.clientX;
+        startY = event.clientY;
+        clear();
+        timer = setTimeout(() => {
+            timer = null;
+            fired = true;
+            onLongPress(event);
+        }, 550);
+    });
+    el.addEventListener('pointermove', (event) => {
+        if (timer == null) return;
+        if (Math.hypot(event.clientX - startX, event.clientY - startY) > 10) clear();
+    });
+    el.addEventListener('pointerup', clear);
+    el.addEventListener('pointercancel', clear);
+    el.addEventListener('pointerleave', clear);
+    el.addEventListener('click', (event) => {
+        if (!fired) return;
+        fired = false;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+    }, true);
+}
+
 function setupMiniPlayer() {
     const player = els.audioPlayer;
     const mini = els.miniPlayer;
@@ -1677,7 +1729,9 @@ function setupMiniPlayer() {
 
     for (const button of els.nudgeStartButtons || []) {
         button.addEventListener('click', (event) => {
-            const previewShort = Boolean(event.altKey || event.metaKey || event.ctrlKey);
+            // 桌機：Alt／⌘／Ctrl = 試播 3 秒。手機無修飾鍵，微調後預設試播 3 秒。
+            const previewShort = isMobileDock()
+                || Boolean(event.altKey || event.metaKey || event.ctrlKey);
             nudgeSegmentStart(Number(button.dataset.nudgeStart), {
                 previewShort,
                 button,
@@ -1713,14 +1767,15 @@ function setupMiniPlayer() {
     };
     els.setStartButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'start'));
     els.setEndButton?.addEventListener('contextmenu', (event) => openSetTimeMenu(event, 'end'));
+    // 手機無右鍵：長按「設起始／設結束」等同桌機右鍵選單。
+    bindLongPressMenu(els.setStartButton, (event) => openSetTimeMenu(event, 'start'));
+    bindLongPressMenu(els.setEndButton, (event) => openSetTimeMenu(event, 'end'));
 
+    // Bubble phase：時間框可 stopPropagation 擋掉 ←→；capture 會先於 input 執行而擋不住。
     document.addEventListener('keydown', (event) => {
-        // 時間輸入筐：←→ 留給游標移動，P 仍可播放／暫停。
-        const inMarker = isMarkerTimeInput(event.target);
-        if (inMarker && (event.code === 'ArrowLeft' || event.code === 'ArrowRight')) return;
-        // 其他真正在輸入的欄位：全部快捷鍵讓出。
+        const inMarker = isMarkerTimeFocused() || isMarkerTimeInput(event.target);
+        if (inMarker && isArrowLeftRight(event)) return;
         if (!inMarker && isTypingInEditableField(event.target)) return;
-        // Plain keys only (no Alt/Ctrl/Meta/Shift combos).
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
         switch (event.code) {
@@ -1745,7 +1800,7 @@ function setupMiniPlayer() {
             default:
                 break;
         }
-    }, true);
+    });
 
     seekBar.addEventListener('pointerdown', () => { seeking = true; });
     seekBar.addEventListener('pointerup', () => { seeking = false; });

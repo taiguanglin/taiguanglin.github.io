@@ -137,4 +137,14 @@
     .mini-player:not(.mini-player--expanded) .mini-player-nudge {
         display: none;
     }
+
+    /*
+     * qa/editor.css hides all .seg-meta-chip in listen mode. audio_map treats
+     *「聽過」as completion, so keep the last-played chip visible for progress.
+     */
+    .segment-card:not(.editing) .seg-meta-chip:has(.seg-meta-played) {
+        align-items: center;
+        display: inline-flex;
+        gap: 0.2rem;
+    }
 }
