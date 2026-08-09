@@ -920,9 +920,9 @@ function renderSegmentCard(entry, segmentIndex) {
     timeInput.addEventListener('input', () => {
         updatePlayButton(playButton, timeInput.value, segmentIndex, title);
     });
-    // ←→ 只移動游標，不要冒泡到 document 的微調快捷鍵；P 仍可冒泡播放／暫停。
+    // ←→↑↓ 留給輸入框；不要冒泡到 document 的微調／換段快捷鍵；P／R／S 仍可冒泡。
     timeInput.addEventListener('keydown', (event) => {
-        if (isArrowLeftRight(event)) event.stopPropagation();
+        if (isArrowLeftRight(event) || isArrowUpDown(event)) event.stopPropagation();
     });
     timeLine.append(timeInput, playButton);
     body.append(timeLine);
@@ -1007,6 +1007,11 @@ function isArrowLeftRight(event) {
         || event.key === 'ArrowLeft' || event.key === 'ArrowRight';
 }
 
+function isArrowUpDown(event) {
+    return event.code === 'ArrowUp' || event.code === 'ArrowDown'
+        || event.key === 'ArrowUp' || event.key === 'ArrowDown';
+}
+
 function isTypingInEditableField(el) {
     if (!(el instanceof HTMLElement)) return false;
     if (el.closest('.answer-body')) return false;
@@ -1066,6 +1071,22 @@ function updatePlayButton(button, markerText, segmentIndex, title) {
             setStatus(`播放失敗：${error.message}`, 'error');
         }
     };
+}
+
+/** Play a segment from its ▶ button (same as clicking Q/A text). */
+function playSegmentByIndex(segmentIndex) {
+    const items = sessionItems();
+    if (segmentIndex == null || !items[segmentIndex]) return false;
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
+    const playBtn = card?.querySelector('.play-range');
+    blurIfBlocksShortcuts(document.activeElement);
+    if (playBtn && !playBtn.disabled) {
+        playBtn.click();
+    } else {
+        replaySegment(segmentIndex);
+    }
+    card?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    return true;
 }
 
 function setActiveSegment(index) {
@@ -1771,10 +1792,10 @@ function setupMiniPlayer() {
     bindLongPressMenu(els.setStartButton, (event) => openSetTimeMenu(event, 'start'));
     bindLongPressMenu(els.setEndButton, (event) => openSetTimeMenu(event, 'end'));
 
-    // Bubble phase：時間框可 stopPropagation 擋掉 ←→；capture 會先於 input 執行而擋不住。
+    // Bubble phase：時間框可 stopPropagation 擋掉方向鍵；capture 會先於 input 執行而擋不住。
     document.addEventListener('keydown', (event) => {
         const inMarker = isMarkerTimeFocused() || isMarkerTimeInput(event.target);
-        if (inMarker && isArrowLeftRight(event)) return;
+        if (inMarker && (isArrowLeftRight(event) || isArrowUpDown(event))) return;
         if (!inMarker && isTypingInEditableField(event.target)) return;
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
@@ -1793,14 +1814,7 @@ function setupMiniPlayer() {
                     setStatus('請先播放某一段的音檔，才知道要重頭播放哪一段', 'error');
                     break;
                 }
-                const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${idx}"]`);
-                const playBtn = card?.querySelector('.play-range');
-                if (playBtn && !playBtn.disabled) {
-                    blurIfBlocksShortcuts(document.activeElement);
-                    playBtn.click();
-                } else {
-                    replaySegment(idx);
-                }
+                playSegmentByIndex(idx);
                 break;
             }
             case 'KeyS': {
@@ -1819,6 +1833,42 @@ function setupMiniPlayer() {
                 event.preventDefault();
                 const btn = document.querySelector('[data-nudge-start="0.1"]');
                 nudgeSegmentStart(0.1, { previewShort: true, button: btn || undefined });
+                break;
+            }
+            case 'ArrowDown': {
+                event.preventDefault();
+                {
+                    const items = sessionItems();
+                    if (!items.length) break;
+                    const cur = state.activeSegmentIndex;
+                    if (cur == null) {
+                        playSegmentByIndex(0);
+                        break;
+                    }
+                    if (cur >= items.length - 1) {
+                        setStatus('已是最後一段', 'ok');
+                        break;
+                    }
+                    playSegmentByIndex(cur + 1);
+                }
+                break;
+            }
+            case 'ArrowUp': {
+                event.preventDefault();
+                {
+                    const items = sessionItems();
+                    if (!items.length) break;
+                    const cur = state.activeSegmentIndex;
+                    if (cur == null) {
+                        playSegmentByIndex(0);
+                        break;
+                    }
+                    if (cur <= 0) {
+                        setStatus('已是第一段', 'ok');
+                        break;
+                    }
+                    playSegmentByIndex(cur - 1);
+                }
                 break;
             }
             default:
