@@ -10,6 +10,14 @@ const DEFAULT_PREFS = {
     sidebarCollapsed: false,
     miniPlayerHidden: false,
     miniPlayerExpanded: false,
+    /** Document panel max width in px; 0 = fill available width. */
+    contentMaxWidth: 1100,
+    /** 'center' | 'left' — widescreen only. */
+    contentAlign: 'center',
+    /** Extra workspace padding-right (px) so content clears the floating player. */
+    contentRightGutter: 0,
+    /** When false, play keeps the player hidden if the user already hid it. */
+    autoShowMiniPlayer: true,
     lastMonth: null,
     lastSessionId: null,
 };

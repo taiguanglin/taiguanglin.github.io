@@ -85,6 +85,40 @@
                 <h2>設定</h2>
                 <button class="icon-button" value="cancel" aria-label="關閉" type="submit">×</button>
             </header>
+
+            <fieldset class="settings-fieldset">
+                <legend>寬螢幕版面</legend>
+                <p class="hint">調整答疑段落寬度與位置，避免被右下角浮動播放器擋住。手機版忽略這些設定。</p>
+                <label class="checkbox-row">
+                    <input id="contentFillWidthInput" type="checkbox">
+                    <span>答疑段落填滿可用寬度</span>
+                </label>
+                <label class="field">
+                    <span>答疑段落最大寬度 <strong id="contentMaxWidthValue">1100</strong> px</span>
+                    <input id="contentMaxWidthRange" type="range" min="720" max="2000" step="20" value="1100">
+                </label>
+                <label class="field">
+                    <span>水平對齊</span>
+                    <select id="contentAlignSelect">
+                        <option value="center">置中</option>
+                        <option value="left">靠左</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>右側預留（避開啟播器） <strong id="contentRightGutterValue">0</strong> px</span>
+                    <input id="contentRightGutterRange" type="range" min="0" max="480" step="10" value="0">
+                </label>
+            </fieldset>
+
+            <fieldset class="settings-fieldset">
+                <legend>播放器</legend>
+                <label class="checkbox-row">
+                    <input id="autoShowMiniPlayerInput" type="checkbox" checked>
+                    <span>播放時自動顯示浮動播放器</span>
+                </label>
+                <p class="hint">關閉後，若你已隱藏播放器，點段落播放時不會再自動跳出（仍可用「顯示播放器」手動打開）。</p>
+            </fieldset>
+
             <label class="field">
                 <span>GitHub Fine-grained PAT</span>
                 <input id="patInput" type="password" autocomplete="off" placeholder="github_pat_...">

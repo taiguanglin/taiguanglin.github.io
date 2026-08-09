@@ -83,6 +83,13 @@ const els = {
     clearPatButton: document.querySelector('#clearPatButton'),
     testPatButton: document.querySelector('#testPatButton'),
     saveSettingsButton: document.querySelector('#saveSettingsButton'),
+    contentFillWidthInput: document.querySelector('#contentFillWidthInput'),
+    contentMaxWidthRange: document.querySelector('#contentMaxWidthRange'),
+    contentMaxWidthValue: document.querySelector('#contentMaxWidthValue'),
+    contentAlignSelect: document.querySelector('#contentAlignSelect'),
+    contentRightGutterRange: document.querySelector('#contentRightGutterRange'),
+    contentRightGutterValue: document.querySelector('#contentRightGutterValue'),
+    autoShowMiniPlayerInput: document.querySelector('#autoShowMiniPlayerInput'),
     draftDialog: document.querySelector('#draftDialog'),
     draftMessage: document.querySelector('#draftMessage'),
     conflictDialog: document.querySelector('#conflictDialog'),
@@ -156,6 +163,8 @@ function bindEvents() {
     els.settingsButton.addEventListener('click', () => openSettings());
     els.saveSettingsButton.addEventListener('click', () => {
         setPat(els.patInput.value);
+        saveLayoutSettingsFromForm();
+        els.settingsMessage.textContent = '設定已儲存。';
     });
     els.clearPatButton.addEventListener('click', () => {
         clearPat();
@@ -171,6 +180,28 @@ function bindEvents() {
         } catch (error) {
             els.settingsMessage.textContent = `PAT 測試失敗：${error.message}`;
         }
+    });
+    els.contentFillWidthInput?.addEventListener('change', () => {
+        saveLayoutSettingsFromForm({ live: true });
+    });
+    els.contentMaxWidthRange?.addEventListener('input', () => {
+        if (els.contentFillWidthInput?.checked) return;
+        if (els.contentMaxWidthValue) els.contentMaxWidthValue.textContent = els.contentMaxWidthRange.value;
+        saveLayoutSettingsFromForm({ live: true });
+    });
+    els.contentAlignSelect?.addEventListener('change', () => {
+        saveLayoutSettingsFromForm({ live: true });
+    });
+    els.contentRightGutterRange?.addEventListener('input', () => {
+        if (els.contentRightGutterValue) {
+            els.contentRightGutterValue.textContent = els.contentRightGutterRange.value;
+        }
+        saveLayoutSettingsFromForm({ live: true });
+    });
+    els.autoShowMiniPlayerInput?.addEventListener('change', () => {
+        const autoShow = Boolean(els.autoShowMiniPlayerInput.checked);
+        state.prefs.autoShowMiniPlayer = autoShow;
+        setPrefs({ autoShowMiniPlayer: autoShow });
     });
     els.playbackRate.addEventListener('change', () => {
         setPrefs({ playbackRate: Number(els.playbackRate.value) });
@@ -212,8 +243,84 @@ function applyPrefs() {
     els.opusWarning.classList.toggle('hidden', audio.supportsOpus);
     applyMiniPlayerVisibility();
     applySidebarPrefs();
+    applyContentLayoutPrefs();
     if (isMobileDock() && !state.sessionId) {
         setSidebarOpen(true);
+    }
+}
+
+function applyContentLayoutPrefs() {
+    if (!els.app) return;
+    const rawWidth = Number(state.prefs.contentMaxWidth);
+    const fill = !Number.isFinite(rawWidth) || rawWidth <= 0;
+    const width = fill ? 0 : clamp(rawWidth, 720, 2400);
+    const align = state.prefs.contentAlign === 'left' ? 'left' : 'center';
+    const gutter = clamp(Number(state.prefs.contentRightGutter) || 0, 0, 480);
+
+    els.app.style.setProperty('--content-max-width', fill ? 'none' : `${width}px`);
+    if (align === 'left') {
+        els.app.style.setProperty('--content-margin-left', '0');
+        els.app.style.setProperty('--content-margin-right', 'auto');
+    } else {
+        els.app.style.setProperty('--content-margin-left', 'auto');
+        els.app.style.setProperty('--content-margin-right', 'auto');
+    }
+    els.app.style.setProperty('--content-right-gutter', `${gutter}px`);
+}
+
+function syncLayoutSettingsForm() {
+    const rawWidth = Number(state.prefs.contentMaxWidth);
+    const fill = !Number.isFinite(rawWidth) || rawWidth <= 0;
+    const width = fill ? 1100 : clamp(rawWidth, 720, 2000);
+    const gutter = clamp(Number(state.prefs.contentRightGutter) || 0, 0, 480);
+    if (els.contentFillWidthInput) els.contentFillWidthInput.checked = fill;
+    if (els.contentMaxWidthRange) {
+        els.contentMaxWidthRange.value = String(width);
+        els.contentMaxWidthRange.disabled = fill;
+    }
+    if (els.contentMaxWidthValue) els.contentMaxWidthValue.textContent = fill ? '填滿' : String(width);
+    if (els.contentAlignSelect) {
+        els.contentAlignSelect.value = state.prefs.contentAlign === 'left' ? 'left' : 'center';
+    }
+    if (els.contentRightGutterRange) els.contentRightGutterRange.value = String(gutter);
+    if (els.contentRightGutterValue) els.contentRightGutterValue.textContent = String(gutter);
+    if (els.autoShowMiniPlayerInput) {
+        els.autoShowMiniPlayerInput.checked = state.prefs.autoShowMiniPlayer !== false;
+    }
+}
+
+function saveLayoutSettingsFromForm({ live = false } = {}) {
+    const fill = Boolean(els.contentFillWidthInput?.checked);
+    const width = fill
+        ? 0
+        : clamp(Number(els.contentMaxWidthRange?.value) || 1100, 720, 2000);
+    const align = els.contentAlignSelect?.value === 'left' ? 'left' : 'center';
+    const gutter = clamp(Number(els.contentRightGutterRange?.value) || 0, 0, 480);
+    const autoShow = els.autoShowMiniPlayerInput
+        ? Boolean(els.autoShowMiniPlayerInput.checked)
+        : state.prefs.autoShowMiniPlayer !== false;
+
+    if (els.contentMaxWidthRange) els.contentMaxWidthRange.disabled = fill;
+    if (els.contentMaxWidthValue) {
+        els.contentMaxWidthValue.textContent = fill ? '填滿' : String(width);
+    }
+    if (els.contentRightGutterValue) {
+        els.contentRightGutterValue.textContent = String(gutter);
+    }
+
+    state.prefs.contentMaxWidth = width;
+    state.prefs.contentAlign = align;
+    state.prefs.contentRightGutter = gutter;
+    state.prefs.autoShowMiniPlayer = autoShow;
+    setPrefs({
+        contentMaxWidth: width,
+        contentAlign: align,
+        contentRightGutter: gutter,
+        autoShowMiniPlayer: autoShow,
+    });
+    applyContentLayoutPrefs();
+    if (!live && els.settingsMessage) {
+        els.settingsMessage.textContent = '版面設定已套用。';
     }
 }
 
@@ -269,6 +376,12 @@ function setMiniPlayerHidden(hidden) {
     state.prefs.miniPlayerHidden = next;
     setPrefs({ miniPlayerHidden: next });
     applyMiniPlayerVisibility();
+}
+
+/** Show the floating player on play, unless the user opted out. */
+function revealMiniPlayerIfAllowed() {
+    if (state.prefs.autoShowMiniPlayer === false) return;
+    setMiniPlayerHidden(false);
 }
 
 function isMobileDock() {
@@ -1062,7 +1175,7 @@ function updatePlayButton(button, markerText, segmentIndex, title) {
             return;
         }
         try {
-            setMiniPlayerHidden(false);
+            revealMiniPlayerIfAllowed();
             await audio.playRange(session.audio_file, range, title);
             // 聽過即算進度／完成；手機「聽」模式也要記，不可被 editing 閘門擋住。
             onSegmentPlayed(segmentIndex);
@@ -1207,7 +1320,7 @@ async function replaySegment(segmentIndex, { maxDuration } = {}) {
         label: `${entry.item.start_label} - ${entry.item.end_label}`,
     };
     try {
-        setMiniPlayerHidden(false);
+        revealMiniPlayerIfAllowed();
         await audio.playRange(
             session.audio_file,
             range,
@@ -1583,6 +1696,7 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
 function openSettings() {
     els.patInput.value = getPat();
     els.settingsMessage.textContent = '';
+    syncLayoutSettingsForm();
     els.settingsDialog.showModal();
 }
 

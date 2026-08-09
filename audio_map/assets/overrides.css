@@ -21,6 +21,47 @@
     font-variant-numeric: tabular-nums;
 }
 
+/* Widescreen content layout (driven by prefs → CSS vars on #app). */
+#app .welcome-panel,
+#app .document-panel {
+    margin-left: var(--content-margin-left, auto);
+    margin-right: var(--content-margin-right, auto);
+    max-width: var(--content-max-width, 1100px);
+    width: 100%;
+}
+
+#app .workspace {
+    padding-right: calc(1.25rem + var(--content-right-gutter, 0px));
+}
+
+.settings-fieldset {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    min-width: 0;
+    padding: 0.85rem 1rem 1rem;
+}
+
+.settings-fieldset legend {
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0 0.35rem;
+}
+
+.settings-fieldset .field input[type="range"] {
+    accent-color: var(--accent);
+    width: 100%;
+}
+
+.settings-fieldset .field strong {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
 /* Answer / opening PDF text: expand with content, never nest a scrollbar.
    Wheel over the block should scroll the page (workspace), not an inner box. */
 .segment-body .answer-body {
@@ -130,6 +171,18 @@
 }
 
 @media (max-width: 900px) {
+    /* Mobile: ignore widescreen content layout prefs. */
+    #app .welcome-panel,
+    #app .document-panel {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: none;
+    }
+
+    #app .workspace {
+        padding-right: 1.25rem;
+    }
+
     .mini-player-nudge button {
         padding: 0.55rem 0.2rem;
     }
