@@ -111,16 +111,25 @@ new question card (still reusing the same questioner's name/time).
 Many 贴吧/微信公众号 comments carry only a name (`名字：`) with no timestamp on
 its line. The parser SHALL still emit these as `<div class="question">` cards
 (with an empty `question-time`) rather than stray paragraphs. A left-margin
-`名字：` line (colon at end, no time) SHALL be treated as a new questioner **only
-when** it opens a section — i.e. the current card is `None` (the line directly
-follows a separator line, which always precedes a questioner) or the current card
-is a source-opening paragraph (`师父说…` **or** a bare `今天是…` intro without the
-`师父说` prefix, as on 2025-11-15 官网). Such a questioner's name/time SHALL be
+questioner label SHALL be treated as a new questioner **only when** it opens a
+section — i.e. the current card is `None` (the line directly follows a separator
+line, which always precedes a questioner), the current card is a source-opening
+paragraph (`师父说…` **or** a bare `今天是…` intro without the `师父说` prefix, as
+on 2025-11-15 官网), **or** the current card is an answer (WeChat transcripts
+often omit the separator between answers and the next nickname). Accepted labels:
+`名字：`, a bang-suffixed nickname (`咩咩!` / `咩咩！`), or a bare short nickname
+(`咩咩`) that is a plausible display name. Such a questioner's name/time SHALL be
 reused by any following numbered sub-questions.
+
+When a bare display name is immediately followed by an emoji/symbol + timestamp
+line (e.g. `咩咩` then `🐏：14:20:56`), the parser SHALL keep the display name as
+`questioner` and attach the timestamp, rather than using the emoji as the name.
 
 A left-margin line that merely ends with `：` while a question or answer card is
 open (e.g. a wrapped sentence like `…想请教三个问题：`) SHALL remain body text and
-SHALL NOT be misread as a questioner.
+SHALL NOT be misread as a questioner. PDF glyph-junk lines of punctuation-only
+symbols (e.g. `"`, `#`, `$`, `%`, `&`, `+：`) SHALL be dropped and SHALL NOT
+become questioner names or body paragraphs.
 
 #### Scenario: Comment after a separator has no time
 - GIVEN a separator line followed by `无明萤火：` and then the comment body
@@ -144,6 +153,19 @@ SHALL NOT be misread as a questioner.
 - GIVEN an open question whose wrapped text ends a line with `…问题：`
 - WHEN parsed
 - THEN no questioner named `问题` SHALL be created; the text stays in the question
+
+#### Scenario: Bang-suffixed nickname after an answer
+- GIVEN an answer card followed by `咩咩!` (and optional junk symbol lines) then
+  the question body
+- WHEN parsed
+- THEN a question card with questioner `咩咩` SHALL be produced; `咩咩!` SHALL
+  NOT remain a stray paragraph, and junk symbols SHALL NOT appear as paragraphs
+
+#### Scenario: Bare nickname then emoji timestamp
+- GIVEN an answer card followed by `咩咩` then `🐏：14:20:56` then the body
+- WHEN parsed
+- THEN a question card with questioner `咩咩` and time `14:20:56` SHALL be
+  produced (not questioner `🐏`)
 
 ### Requirement: Wrapped-Separator Questioner
 The parser SHALL handle a questioner whose name is glued to a leading separator
@@ -242,9 +264,25 @@ SHALL group sections by `(year, month)` so January 2026 becomes
 When an `ImageHandler` is supplied, the parser SHALL extract embedded PDF images
 in reading order (by page y then x), skip images whose display width and height
 are both below 80px, write each kept image under `assets/images/image_N.png`,
-and insert `<img src="assets/images/…" alt="Image">` as an independent content
-block (not inside Q/A meta). Unit tests MAY inject `__PDF_IMG__:…` markers into
+and insert `<img src="assets/images/…" alt="Image">` into the surrounding
+content flow. When a Q/A card is open, the image SHALL stay inside that card
+(between preceding and following body text) rather than closing the card.
+Adjacent body fragments split by an image (including one-character-per-line
+PDF glyph runs) SHALL be coalesced back into continuous paragraphs where the
+sentence was mid-flow. Unit tests MAY inject `__PDF_IMG__:…` markers into
 `parse_lines` without PyMuPDF.
+
+#### Scenario: Image mid-question stays in the card
+- GIVEN a question whose body is split by an embedded image marker
+- WHEN parsed
+- THEN the `<img>` SHALL appear inside the question card between the split
+  body parts, and the split sentence SHALL be coalesced when mid-flow
+
+#### Scenario: Vertical glyph run after an image merges
+- GIVEN an image followed by successive single-character indented lines
+- WHEN parsed
+- THEN those glyphs SHALL merge into one continuous paragraph, not one `<p>`
+  per character
 
 ### Requirement: Shared Finalizer
 The parser SHALL build each chapter via `core.chapter_finalizer.finalize_chapter`,

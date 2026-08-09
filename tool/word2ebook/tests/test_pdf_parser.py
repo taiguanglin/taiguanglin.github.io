@@ -383,6 +383,83 @@ class TestGuanwangSource:
         assert "一个半小时" in ch.content[guan:weixin]
 
 
+    def test_bang_suffix_questioner(self, parser):
+        """Weixin nicknames sometimes end with ! (咩咩!) instead of a colon."""
+        lines = [
+            (157.0, "Tai 师父2025 年12 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是12 月11 号，回答微信公众号的问题。"),
+            (CONT, "娜娜："),
+            (IND,  "上一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "上一个回答。"),
+            (CONT, "咩咩!"),
+            (CONT, '"'),
+            (CONT, "#"),
+            (CONT, "$"),
+            (CONT, "%"),
+            (CONT, "&"),
+            (CONT, "+："),
+            (IND,  "Tai师好，请问一下读《地藏经》时耳边有女人叹息声的幻听，为何？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "那下一个问题，咩咩!"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert '<span class="questioner">咩咩</span>' in ch.content
+        assert "<p>咩咩!</p>" not in ch.content
+        assert "<p>#</p>" not in ch.content
+        assert "读《地藏经》时耳边有女人叹息声的幻听" in ch.content
+        # junk symbols must not become answer/question paras
+        assert ch.content.count('<div class="question"') == 2
+
+    def test_symbol_junk_inside_open_question(self, parser):
+        """PDF Symbol font runs after question body must not become question-text."""
+        junk = ['"', "#", "$", "%", "&", "'", "(", ")", "*", "+", ",", "-", ".", "/"]
+        lines = [
+            (157.0, "Tai 师父2025 年12 月8 日答疑（文字版）"),
+            (IND,  "师父说：今天是12 月8 号，先回答官网的问题。"),
+            (CONT, "上官："),
+            (IND,  "1、第一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第一个回答。"),
+            (IND,  "2、能听到您的法，已经不止是三生有幸。"),
+            *[(CONT, s) for s in junk],
+            (CONT, "Taiguanglin："),
+            (IND,  "未来会传多长时间我不好说。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert '<span class="questioner">上官</span>' in ch.content
+        assert "能听到您的法，已经不止是三生有幸。" in ch.content
+        assert "未来会传多长时间我不好说。" in ch.content
+        for s in junk:
+            assert f'<div class="question-text">{s}</div>' not in ch.content
+            assert f"<p>{s}</p>" not in ch.content
+        assert '<div class="question-text">&amp;</div>' not in ch.content
+        # body ends cleanly — no leftover junk question-text siblings
+        assert (
+            '能听到您的法，已经不止是三生有幸。</div>\n</div>\n<div class="answer"'
+            in ch.content
+        )
+    def test_bare_name_then_emoji_qtime(self, parser):
+        """Display name「咩咩」above an emoji+time line should become the questioner."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是11 月11 号，回答微信公众号的问题。"),
+            (CONT, "甲：12:00:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "咩咩"),
+            (CONT, "🐏：14:20:56"),
+            (IND,  "Tai师，您好，请问打坐后出现各种虚幻的相。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，咩咩"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert '<span class="questioner">咩咩</span>' in ch.content
+        assert "<p>咩咩</p>" not in ch.content
+        assert "打坐后出现各种虚幻的相" in ch.content
+
+
 # ---------------------------------------------------------------------------
 # PDF images (marker injected into parse_lines)
 # ---------------------------------------------------------------------------

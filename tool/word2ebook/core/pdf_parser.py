@@ -86,6 +86,8 @@ QTIME_RE = re.compile(
     r")\s*$"
 )
 NAMECOLON_RE = re.compile(r"^(?P<name>.{1,40}?)[：:]\s*$")
+# 微信暱稱偶發以 !／！ 收尾（如「咩咩!」），無冒號
+NAMEBANG_RE = re.compile(r"^(?P<name>.{1,40}?)[!！]\s*$")
 BARETIME_RE = re.compile(
     r"^(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}"
     r"|\d{1,2}:\d{2}(?::\d{2})?)$"
@@ -94,6 +96,10 @@ NUM_RE = re.compile(r"^(问题|問題|问|問|第)?\s*\d+\s*[、.，,)）]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
 LONE_COLON_RE = re.compile(r"^[：:]\s*$")
+# PDF Symbol／裝飾字型常被抽成純 ASCII 標點行（「" # $ % & … +：」）
+PDF_SYMBOL_JUNK_RE = re.compile(
+    r"""^[\s\"#\$%&'\(\)\*\+,\-\./:;<=>\?@\[\\\]\^_`\{\|\}~！：]+$"""
+)
 
 # 來源標籤（簡體；繁體版由 opencc 轉換，與 qa/ 資料夾的「貼吧/微信公眾號/官網」對應）
 SOURCE_TIEBA = "贴吧"
@@ -148,11 +154,61 @@ def _plausible_lone_name(s: str) -> bool:
     分隔線之後必為提問者，但少數名字抽取時遺失了冒號（例如「洋」後面直接接
     問題內容）。此時補上冒號當成無時間提問者。以長度與標點排除句子/標記。
     """
-    if not s or len(s) > 16:
+    return _plausible_questioner_label(s)
+
+
+def _strip_questioner_label(s: str) -> str:
+    """去掉暱稱尾端的 ：/!／空白。"""
+    return re.sub(r"[!！：:\s]+$", "", (s or "").strip())
+
+
+def _plausible_questioner_label(s: str) -> bool:
+    """是否像提問者標籤（可無冒號，或尾隨 !／！）。
+
+    例：``咩咩``、``咩咩!``、``无明萤火：`` 的 name 部分。
+    """
+    core = _strip_questioner_label(s)
+    if not core or len(core) > 16:
         return False
     if ANSWER_RE.match(s) or s.startswith("师父说") or NUM_RE.match(s):
         return False
-    return not re.search(r"[。？！，；,.?!;：:]", s)
+    # 句子標點（不含 !，因暱稱可用 !）
+    if re.search(r"[。？，；,;]", core):
+        return False
+    # 至少要有漢字或字母，排除純符號
+    if not re.search(r"[\u4e00-\u9fffA-Za-z]", core):
+        return False
+    return True
+
+
+def _is_pdf_symbol_junk(text: str) -> bool:
+    """PDF 裝飾／Symbol 字型抽出的純標點行（應丟棄）。
+
+    單獨的 ``：`` 要保留（供「M」+「：」重組成提問者）；``+：`` 這類
+    無漢字/字母的假冒號行則丟棄。
+    """
+    t = (text or "").strip()
+    if not t:
+        return False
+    if LONE_COLON_RE.match(t):
+        return False
+    if PDF_SYMBOL_JUNK_RE.match(t):
+        return True
+    m = NAMECOLON_RE.match(t)
+    if m and not re.search(r"[\u4e00-\u9fffA-Za-z]", m.group("name") or ""):
+        return True
+    return False
+
+
+def _is_emoji_or_symbol_name(name: str) -> bool:
+    """QTIME 抽出的 name 是否像 emoji／符號（應改用上一行顯示名）。"""
+    core = _strip_questioner_label(name)
+    if not core:
+        return True
+    # 沒有兩個以上連續漢字/字母 → 多半是 emoji 或單符號
+    if re.search(r"[\u4e00-\u9fffA-Za-z]{2,}", core):
+        return False
+    return True
 
 
 def _is_boundary_after_sep(nxt: str) -> bool:
@@ -168,7 +224,12 @@ def _is_boundary_after_sep(nxt: str) -> bool:
     if QTIME_RE.match(nxt):
         return True
     m = NAMECOLON_RE.match(nxt)
-    return bool(m and _plausible_lone_name(_normalize_spaces(m.group("name"))))
+    if m and _plausible_questioner_label(m.group("name")):
+        return True
+    bang = NAMEBANG_RE.match(nxt)
+    if bang and _plausible_questioner_label(bang.group("name")):
+        return True
+    return _plausible_questioner_label(nxt)
 
 
 def _is_img_marker(text: str) -> bool:
@@ -195,7 +256,9 @@ def _is_glyph_fragment(text: str) -> bool:
         return False
     if NUM_RE.match(t) or ANSWER_RE.match(t) or SEP_RE.match(t):
         return False
-    if NAMECOLON_RE.match(t) or LONE_COLON_RE.match(t) or QTIME_RE.match(t):
+    if _is_pdf_symbol_junk(t):
+        return False
+    if NAMECOLON_RE.match(t) or NAMEBANG_RE.match(t) or LONE_COLON_RE.match(t) or QTIME_RE.match(t):
         return False
     return bool(
         re.fullmatch(
@@ -317,9 +380,9 @@ def _is_structural_line(text: str) -> bool:
         return True
     if SHIFU_RE.match(text) or QTIME_RE.match(text) or NAMECOLON_RE.match(text):
         return True
-    if text.startswith("Tai") and DAY_RE.search(text):
+    if NAMEBANG_RE.match(text) or LONE_COLON_RE.match(text):
         return True
-    if LONE_COLON_RE.match(text):
+    if text.startswith("Tai") and DAY_RE.search(text):
         return True
     return False
 
@@ -449,6 +512,8 @@ class PDFParser:
                 clean.append((x0, t))
                 continue
             if PAGE_RE.match(t) or FOOTER_TEXT in t:
+                continue
+            if _is_pdf_symbol_junk(t):
                 continue
             clean.append((x0, t))
 
@@ -773,8 +838,33 @@ class PDFParser:
             # 提問者（人名 + 時間）
             qm = QTIME_RE.match(text)
             if qm:
-                state["questioner"] = _normalize_spaces(qm.group("name"))
-                state["qtime"] = qm.group("time").strip()
+                name = _normalize_spaces(qm.group("name"))
+                qtime = qm.group("time").strip()
+                card = state["card"]
+                # 上一張若是單行顯示名段落（如「咩咩」），而本行 name 是 emoji
+                if (
+                    card
+                    and card["kind"] == "paragraph"
+                    and len(card.get("paras") or []) == 1
+                    and _plausible_questioner_label(card["paras"][0])
+                    and _is_emoji_or_symbol_name(name)
+                ):
+                    name = _strip_questioner_label(card["paras"][0])
+                    state["card"] = None
+                # 或：已用純暱稱開了空問題卡，本行是 emoji+時間 → 只補時間
+                elif (
+                    card
+                    and card["kind"] == "question"
+                    and not (card.get("paras"))
+                    and card.get("name")
+                    and _is_emoji_or_symbol_name(name)
+                ):
+                    state["qtime"] = qtime
+                    card["time"] = qtime
+                    i += 1
+                    continue
+                state["questioner"] = name
+                state["qtime"] = qtime
                 start_card("question", state["questioner"], state["qtime"])
                 i += 1
                 continue
@@ -782,19 +872,33 @@ class PDFParser:
             # 提問者（人名，無時間）：很多貼吧/公眾號的留言沒有時間戳，
             # 名字上方一定有分隔線（→ card 為 None），或緊接在來源開場之後
             # （→ card 為「师父说」／裸「今天是」開場段落，shifu=True）。
+            # 亦接受尾隨 !／！ 或純暱稱（「咩咩!」「咩咩」）。
             # 其餘以冒號結尾的行（例如句子中的「想請教三個問題：」）發生在
             # 問題/回答卡片內，視為內文延續，不誤判。
             if x0 < INDENT_THRESHOLD and not indented:
                 nc = NAMECOLON_RE.match(text)
+                bang = NAMEBANG_RE.match(text)
                 lone = LONE_COLON_RE.match(text)
-                if nc or lone:
+                bare = (
+                    not nc and not bang and not lone
+                    and _plausible_questioner_label(text)
+                )
+                if nc or bang or lone or bare:
                     card = state["card"]
                     is_section_intro = card is None or (
                         card["kind"] == "paragraph" and card.get("shifu")
                     )
-                    if is_section_intro:
-                        # 提問者名字偶爾完全抽取不到，只剩一個冒號 → 無名提問者
-                        name = _normalize_spaces(nc.group("name")) if nc else ""
+                    # 微信常無分隔線：上一段回答結束後直接接下一暱稱
+                    is_after_answer = card is not None and card["kind"] == "answer"
+                    if is_section_intro or is_after_answer:
+                        if nc:
+                            name = _normalize_spaces(nc.group("name"))
+                        elif bang:
+                            name = _normalize_spaces(bang.group("name"))
+                        elif bare:
+                            name = _normalize_spaces(_strip_questioner_label(text))
+                        else:
+                            name = ""
                         if name or lone:
                             state["questioner"] = name
                             state["qtime"] = ""
