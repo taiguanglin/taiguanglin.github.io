@@ -34,6 +34,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
 | `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
+| `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.js` files (sorted by
@@ -162,6 +163,51 @@ intentional:
 - THEN the play button and mini-player SHALL enter a loading state (spinner /
   loading message, optional buffer percent) until the `playing` event fires
   (or an `error` clears loading with a failure message)
+
+### Requirement: Same-Page Image Lightbox
+On chapter pages, clicking an `img` whose `src` contains `assets/images/` SHALL
+open a full-screen lightbox showing that image at its file resolution (not
+constrained by the in-flow `max-width: 100%`). The lightbox SHALL:
+
+- Fit the image to the viewport on open
+- Allow zoom in/out via toolbar buttons, mouse wheel, and pinch-to-zoom
+- Allow panning by drag when zoomed
+- Toggle between fit-to-viewport and 1:1 via double-click / reset control
+- Navigate previous/next among all matching images **on the same HTML page**
+  (DOM order); prev/next SHALL be disabled at the ends (no wrap)
+- Provide a control to jump to the image's Q&A context: close the lightbox and
+  smooth-scroll to the enclosing `.question` / `.answer` (or the image itself
+  if it is outside a card)
+- Close on backdrop click, close button, or `Esc`
+- Support keyboard: `←`/`→` for prev/next, `+`/`-` for zoom, `0` for fit
+- Lock `body` scroll while open
+- No-op on pages with no matching images
+- Be isolated in its own IIFE so identifiers do not collide with the shared
+  `DOMContentLoaded` scope
+
+#### Scenario: Open original from chapter image
+- GIVEN a chapter page with at least one `img[src*="assets/images/"]`
+- WHEN the user clicks that image
+- THEN an `.img-lightbox.is-open` overlay SHALL appear showing the same `src`
+  fitted to the viewport
+
+#### Scenario: Prev/next within the page
+- GIVEN the lightbox is open on image 2 of 5 on the page
+- WHEN the user activates next (button or `→`)
+- THEN image 3 SHALL be shown and the counter SHALL read `3 / 5`
+- WHEN on the last image
+- THEN the next control SHALL be disabled
+
+#### Scenario: Jump to Q&A from lightbox
+- GIVEN the lightbox is open on an image inside a `.question` card
+- WHEN the user activates the jump-to-Q&A control
+- THEN the lightbox SHALL close and the page SHALL smooth-scroll to that
+  `.question` element
+
+#### Scenario: Zoom and close
+- GIVEN the lightbox is open
+- WHEN the user zooms in and then presses `Esc`
+- THEN the overlay SHALL close and page scrolling SHALL be restored
 
 ## Technical Notes
 

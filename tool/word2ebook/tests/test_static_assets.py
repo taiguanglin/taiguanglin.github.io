@@ -269,6 +269,21 @@ class TestStaticAssetsManagerRealModules:
         assert "getBufferPercent" in js
         assert "qaAudio.loading" in js
 
+    def test_real_css_has_image_lightbox_module(self):
+        css = StaticAssetsManager().get_full_css_content()
+        assert ".img-lightbox" in css
+        assert ".img-lightbox.is-open" in css
+        assert "img[src*=\"assets/images/\"]" in css
+        assert "cursor: zoom-in" in css
+
+    def test_real_js_has_image_lightbox_module(self):
+        js = StaticAssetsManager().get_full_js_content()
+        assert "img-lightbox" in js
+        assert "openImageLightbox" in js
+        assert "assets/images/" in js
+        assert "jumpToSource" in js
+        assert "跳到问答" in js or "跳到問答" in js
+
     def test_real_js_has_bookmark_ui_content(self):
         js = StaticAssetsManager().get_full_js_content()
         assert "renderBookmarks" in js

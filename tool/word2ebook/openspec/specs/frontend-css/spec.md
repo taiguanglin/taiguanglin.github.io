@@ -24,6 +24,7 @@ cascade order.
 | `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, TOC item hover, level-specific link colours, collapse animations |
 | `04b-toc-dark.css` | Dark-mode overrides for all TOC, floating-TOC, and bookmark elements inside the TOC panel |
 | `04c-qa-audio.css` | QA chapter styles: source banner, per-segment `qa-meta-bar` (number + `.qa-play` button + status badge), `qa-opening`, the bottom floating `qa-player` (seek row with `−5s`/progress/`+5s`, play/pause toggle), loading states (`.qa-play.loading`, `.qa-play-icon--spinner`, `.qa-player.is-loading`, indeterminate progress pulse) with matching `body.dark-mode` overrides; dark-mode variants. Ordered before `05-responsive.css` so its `@media` overrides win. Responsive rules for these live in `05-responsive.css` |
+| `04d-image-lightbox.css` | Content-image `cursor: zoom-in`; full-screen `.img-lightbox` overlay (toolbar, stage, transform-based zoom/pan); mobile tap targets and safe-area padding; `body.dark-mode` variants. Ordered before `05-responsive.css` |
 | `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px incl. QA player full-width), small-phone (≤400px) |
 
 ### Requirement: Single Output File

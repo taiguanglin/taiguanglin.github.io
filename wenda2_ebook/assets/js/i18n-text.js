@@ -211,6 +211,46 @@ window.I18N_TEXT = {
     tableOfContents: {
       simplified: '目录',
       traditional: '目錄'
+    },
+    imageViewer: {
+      simplified: '图片查看',
+      traditional: '圖片檢視'
+    },
+    imageClose: {
+      simplified: '关闭',
+      traditional: '關閉'
+    },
+    imageZoomIn: {
+      simplified: '放大',
+      traditional: '放大'
+    },
+    imageZoomOut: {
+      simplified: '缩小',
+      traditional: '縮小'
+    },
+    imageActualSize: {
+      simplified: '实际大小',
+      traditional: '實際大小'
+    },
+    imageFit: {
+      simplified: '适合窗口',
+      traditional: '適合視窗'
+    },
+    imagePrev: {
+      simplified: '上一张',
+      traditional: '上一張'
+    },
+    imageNext: {
+      simplified: '下一张',
+      traditional: '下一張'
+    },
+    imageJumpToQA: {
+      simplified: '跳到问答',
+      traditional: '跳到問答'
+    },
+    imageJumpToQAHint: {
+      simplified: '关闭并滚动到该图片所在问答',
+      traditional: '關閉並捲動到該圖片所在問答'
     }
   },
   

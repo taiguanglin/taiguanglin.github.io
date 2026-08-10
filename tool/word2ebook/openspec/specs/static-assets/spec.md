@@ -41,6 +41,14 @@ priority order:
   `.qa-source-banner`) and the bundled JS SHALL contain the QA audio behaviour
   (`qa-play`, `qa-player`), with no build-config change required
 
+#### Scenario: Image lightbox modules are auto-included
+- GIVEN `assets/css/modules/04d-image-lightbox.css` and
+  `assets/js/modules/09-image-lightbox.js`
+- WHEN `get_full_css_content()` / `get_full_js_content()` are called
+- THEN the bundled CSS SHALL contain `.img-lightbox` and the bundled JS SHALL
+  contain `img-lightbox` / `openImageLightbox`, with no build-config change
+  required
+
 ### Requirement: Concatenation Ordering
 When concatenating module files, files SHALL be sorted lexicographically by
 filename. The numeric prefix (`00-`, `01-`, …) enforces the correct order.
