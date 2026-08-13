@@ -92,7 +92,22 @@ BARETIME_RE = re.compile(
     r"^(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}"
     r"|\d{1,2}:\d{2}(?::\d{2})?)$"
 )
-NUM_RE = re.compile(r"^(问题|問題|问|問|第)?\s*\d+\s*[、.，,)）]")
+# Arabic 1、 / 问题2、 and Chinese 一、…九、 (not 十、 — that is often a
+# wrapped「二十、三十分钟」). 2026-02-02 官网 guangTz Q2 is 二、.
+# Do not treat Tai's answer enumerators「第一，」「第二，」as question openers:
+# optional「第」+ Chinese numeral + fullwidth comma is spoken listing, not 一、.
+NUM_RE = re.compile(
+    r"^(?:"
+    r"(?:问题|問題|问|問)?\s*\d+\s*[、.，,)）]"
+    r"|[一二三四五六七八九]\s*[、.]"
+    r")"
+)
+# Tai/PDF restatement of a later sub-question dumped into the previous answer
+# (2026-02-02 枫红：「第二个问题是，腰容易塌…」). Distinct from Tai answering
+# 「第二个问题，…」 / 「第二个问题脑梗…」(no 是，).
+SUBQ_RESTATE_RE = re.compile(
+    r"^第[二三四五六七八九十百\d]+个问题是[，,]"
+)
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
 LONE_COLON_RE = re.compile(r"^[：:]\s*$")
@@ -162,6 +177,22 @@ def _strip_questioner_label(s: str) -> str:
     return re.sub(r"[!！：:\s]+$", "", (s or "").strip())
 
 
+def _is_ellipsis_questioner_name(s: str) -> bool:
+    """Nickname that is only dots / ideographic periods.
+
+    ``。。`` is 2026-02-02 官网 23楼; a single ``。`` is 2026-02-05 微信
+    (Tai:「这个人的名字是句号」).
+    """
+    core = _strip_questioner_label(s)
+    return bool(re.fullmatch(r"[。．]+", core or ""))
+
+
+def _is_digit_questioner_name(s: str) -> bool:
+    """Numeric nickname such as ``13020466664`` or ``57`` (57楼), not ``1、``."""
+    core = _strip_questioner_label(s)
+    return bool(re.fullmatch(r"\d{2,16}", core or ""))
+
+
 def _plausible_questioner_label(s: str) -> bool:
     """是否像提問者標籤（可無冒號，或尾隨 !／！）。
 
@@ -172,6 +203,8 @@ def _plausible_questioner_label(s: str) -> bool:
         return False
     if ANSWER_RE.match(s) or s.startswith("师父说") or NUM_RE.match(s):
         return False
+    if _is_ellipsis_questioner_name(s) or _is_digit_questioner_name(s):
+        return True
     # 句子標點（不含 !，因暱稱可用 !）
     if re.search(r"[。？，；,;]", core):
         return False
@@ -192,10 +225,14 @@ def _is_pdf_symbol_junk(text: str) -> bool:
         return False
     if LONE_COLON_RE.match(t):
         return False
-    if PDF_SYMBOL_JUNK_RE.match(t):
+    if PDF_SYMBOL_JUNK_RE.match(t) and not (
+        _is_ellipsis_questioner_name(t) or _is_digit_questioner_name(t)
+    ):
         return True
     m = NAMECOLON_RE.match(t)
     if m and not re.search(r"[\u4e00-\u9fffA-Za-z]", m.group("name") or ""):
+        if _is_ellipsis_questioner_name(t) or _is_digit_questioner_name(t):
+            return False
         return True
     return False
 
@@ -230,6 +267,12 @@ def _is_boundary_after_sep(nxt: str) -> bool:
     if bang and _plausible_questioner_label(bang.group("name")):
         return True
     return _plausible_questioner_label(nxt)
+
+
+def _is_subquestion_line(text: str) -> bool:
+    """Numbered sub-question opener: ``1、`` / ``二、`` / ``第二个问题是，``."""
+    t = (text or "").strip()
+    return bool(NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t))
 
 
 def _is_img_marker(text: str) -> bool:
@@ -906,8 +949,11 @@ class PDFParser:
                             i += 1
                             continue
 
-            # 編號子問題
-            if indented and NUM_RE.match(text):
+            # 編號子問題（阿拉伯數字、中文數字、或「第二个问题是，」複述）
+            if _is_subquestion_line(text) and (
+                indented
+                or (state["card"] is not None and state["card"]["kind"] == "answer")
+            ):
                 card = state["card"]
                 if card is not None and card["kind"] == "question":
                     # 同一位提問者「連續」的編號子問題（中間沒有師父回答／分隔線／

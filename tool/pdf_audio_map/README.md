@@ -31,6 +31,12 @@ If **官网** has no mp3/srt/opus for that day, it falls back to the same day's 
 
 ## Alignment rules
 
+**Segment identity** (what is a new play range) is decided from the **spoken
+answer opening** — floor (`第N楼` / `N楼`), `下一个问题` + new name/floor, or a
+same-person follow-up (`第二个问题` / `下面的问题` / `最后问` / …). Full taxonomy:
+[`audio_map/AGENTS.md`](../../audio_map/AGENTS.md). Split PDF-merged cards when
+the speaker starts a new numbered unit; do not invent a global time offset.
+
 - **2025-11 … 2026-03**: prefer times from `qa/*.txt`, fill gaps via SRT.
 - **2025-06 … 2025-09**: SRT ordered fuzzy match against PDF question/answer text.
 - Match order per question: **questioner name** (digits → 五七幺/五七一) → question body

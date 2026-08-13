@@ -86,7 +86,10 @@ separator, or new questioner) SHALL be merged into a **single** question card �
 one multi-part question — with each number rendered as its own `question-text`
 paragraph. An intro/greeting before the first number stays with the same card. A
 numbered question that appears **after an answer** is a new turn and SHALL open a
-new question card (still reusing the same questioner's name/time).
+new question card (still reusing the same questioner's name/time). Numbered
+openers include Arabic `N、` / `问题N、`, Chinese `一、` / `二、` (顿号/dot only),
+and a dumped restatement `第二个问题是，…` (distinct from the answerer saying
+`第二个问题，…` or listing points as `第一，` / `第二，`).
 
 #### Scenario: Consecutive numbered questions merge
 - GIVEN one questioner who asks `1、`, `2、`, `3、` consecutively before any answer
@@ -99,6 +102,24 @@ new question card (still reusing the same questioner's name/time).
 - WHEN parsed
 - THEN two question cards SHALL be produced (`1、2、` merged; `3、` separate), both
   carrying the same questioner name/time
+
+#### Scenario: Chinese numbered question after an answer opens a new card
+- GIVEN `一、` then `Taiguanglin：` answer, then `二、`
+- WHEN parsed
+- THEN two question cards SHALL be produced, both carrying the same questioner
+
+#### Scenario: 第二个问题是 restatement after an answer opens a new card
+- GIVEN an answer, then a body paragraph `第二个问题是，腰容易塌…`, then another
+  `Taiguanglin：` answer
+- WHEN parsed
+- THEN a second question card SHALL be produced for the restatement, and it SHALL
+  NOT remain inside the previous answer
+
+#### Scenario: 第一， in an answer is not a new card
+- GIVEN an answer paragraph `第一，你不需要向他解释…`
+- WHEN parsed
+- THEN that paragraph SHALL remain in the answer card and SHALL NOT open a
+  new question (unlike PDF `一、` / `二、` with a 顿号)
 
 #### Scenario: WeChat HH:MM:SS questioner is not swallowed by opening
 - GIVEN a WeChat section whose first commenters are `亻田：10:38:28` and
@@ -129,7 +150,9 @@ A left-margin line that merely ends with `：` while a question or answer card i
 open (e.g. a wrapped sentence like `…想请教三个问题：`) SHALL remain body text and
 SHALL NOT be misread as a questioner. PDF glyph-junk lines of punctuation-only
 symbols (e.g. `"`, `#`, `$`, `%`, `&`, `+：`) SHALL be dropped and SHALL NOT
-become questioner names or body paragraphs.
+become questioner names or body paragraphs. An exception: a nickname that is only
+periods (`。：` / `。。：`) or only digits (`57：` / `13020466664：`) SHALL still
+become a question card.
 
 #### Scenario: Comment after a separator has no time
 - GIVEN a separator line followed by `无明萤火：` and then the comment body

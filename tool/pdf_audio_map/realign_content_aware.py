@@ -45,6 +45,22 @@ SKIP_SESSION_IDS = {
     "2025-07-07-wechat",
 }
 
+_SPOKEN_FOLLOWUP_LEAD_RE = re.compile(
+    r"^(?:"
+    r"第[一二三四五六七八九十\d]+个问题"
+    r"|下一个问题"
+    r"|最后问"
+    r"|下面的问题|下面说"
+    r"|还有下一个问题|还有下面|还有第[一二三四五六七八九十\d]+个问题"
+    r")"
+)
+
+
+def _spoken_followup_lead(ans: str) -> Optional[str]:
+    """First spoken follow-up marker at the start of answer_text, if any."""
+    m = _SPOKEN_FOLLOWUP_LEAD_RE.match((ans or "").strip())
+    return m.group(0) if m else None
+
 
 def _cue_at(cues_norm, t: float) -> int:
     best_i, best_d = 0, 1e18
@@ -248,14 +264,8 @@ def assign_onsets(
                 slot_lo = float(onsets[k])  # type: ignore
                 slot_hi = float(onsets[k + 1]) if k + 1 < j else t1  # type: ignore
                 ans = segs[k].get("answer_text") or ""
-                # Prefer spoken 下一个问题 / 第N个问题 when PDF answer is introduced that way
-                spoken_lead = None
-                if "下一个问题" in ans[:12] or ans.startswith("下一个问题"):
-                    spoken_lead = "下一个问题"
-                else:
-                    m = re.match(r"第[一二三四五六七八九十\d]+个问题", ans[:12])
-                    if m:
-                        spoken_lead = m.group(0)
+                # Prefer spoken follow-up openings (第二个问题 / 下面的问题 / 最后问 / …)
+                spoken_lead = _spoken_followup_lead(ans)
                 if spoken_lead:
                     best_a = None
                     for ci, (st, en, raw) in enumerate(cues_raw):

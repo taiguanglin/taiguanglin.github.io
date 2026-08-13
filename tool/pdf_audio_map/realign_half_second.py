@@ -226,17 +226,45 @@ def score_seg_at_window(
     return score
 
 
-def _is_followup_seg(seg: dict, prev_seg: Optional[dict] = None) -> bool:
-    """True for numbered sub-questions (2、3…) that usually share one 下一个问题.
+# Spoken primary vs follow-up (audio_map/AGENTS.md — segment identity).
+_FLOOR_OPEN_RE = re.compile(
+    r"^(?:下一个问题[，,\s]*)?(?:第[一二三四五六七八九十百零〇\d]+|\d+)楼"
+)
+_FOLLOWUP_OPEN_RE = re.compile(
+    r"^(?:"
+    r"第[二三四五六七八九十\d]+个问题"
+    r"|第二个问题|第三个问题|第四个问题"
+    r"|最后问"
+    r"|下面的问题|下面说"
+    r"|还有下一个问题|还有下面|还有第"
+    r")"
+)
 
-    Same questioner alone is NOT enough — e.g.「再问一个」is often preceded by
-    a spoken「下一个问题」and must consume that anchor.
+
+def _is_followup_seg(seg: dict, prev_seg: Optional[dict] = None) -> bool:
+    """True for same-person numbered/topic follow-ups (not a new floor).
+
+    A spoken floor (「第N楼」/「下一个问题11楼…」) is always primary, even when
+    ``q_text`` starts with ``2、``. Same questioner alone is NOT enough —
+    e.g.「再问一个」is often preceded by a spoken「下一个问题」and must consume
+    that anchor unless the answer itself is a follow-up opening.
     """
-    del prev_seg  # kept for call-site compatibility
     q = (seg.get("q_text") or seg.get("q_preview") or "").strip()
+    a = (seg.get("answer_text") or seg.get("answer_preview") or "").strip()
+    if _FLOOR_OPEN_RE.match(a):
+        return False
     if re.match(r"^[2-9２-９二三四五六七八九十]+[、.．\)]", q):
         return True
     if re.match(r"^[2-9２-９][\.．、]", q):
+        return True
+    if _FOLLOWUP_OPEN_RE.match(a):
+        return True
+    if (
+        a.startswith("下一个问题")
+        and prev_seg
+        and (seg.get("questioner") or "")
+        and seg.get("questioner") == prev_seg.get("questioner")
+    ):
         return True
     return False
 

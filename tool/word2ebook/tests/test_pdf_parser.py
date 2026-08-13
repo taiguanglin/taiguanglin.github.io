@@ -10,10 +10,11 @@ Layout convention (from the real PDF):
 """
 
 import re
-import pytest
-
 import sys
 import types
+from pathlib import Path
+
+import pytest
 
 from core.pdf_parser import (
     PDFParser, _year_to_cn, _normalize_spaces, _import_pymupdf, make_img_marker,
@@ -612,6 +613,184 @@ class TestNumberedQuestions:
         assert "1、问题一。" in first_card
 
 
+    def test_chinese_numbered_after_answer_opens_new_card(self, parser):
+        """Chinese 一、／二、 after an answer is a new turn (2026-02-02 guangTz)."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月2 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月2 号，先回答官网的问题。"),
+            (CONT, "guangTz："),
+            (IND,  "Tai师父好！有几个问题。"),
+            (IND,  "一、本土道教在设计内吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第六楼guangTz，第一个问题，是的。"),
+            (IND,  "二、关于疾病。2024年突发脑梗，请师父解惑。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题脑梗，更多的原因是心情。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["guangTz", "guangTz"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert len(questions) == 2
+        assert "一、本土道教在设计内吗？" in questions[0]
+        assert "二、关于疾病。" in questions[1]
+        assert "二、关于疾病。" not in questions[0]
+
+
+    def test_subquestion_restatement_after_answer_opens_new_card(self, parser):
+        """「第二个问题是，…」dumped into the previous answer is a new question
+        (2026-02-02 枫红201九). Tai answering「第二个问题腰…」must stay an answer."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月2 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月2 号，先回答官网的问题。"),
+            (CONT, "枫红201九："),
+            (IND,  "上坐时有我在打坐的意念就容易昏沉。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题15楼枫红201九，第一个问题，按照这个来做就可以了。"),
+            (IND,  "第二个问题是，腰容易塌，外加西洋粉提气是否可行。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题腰容易塌，腰塌是气不足。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["枫红201九", "枫红201九"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "第二个问题是，腰容易塌" in questions[1]
+        assert "第二个问题是，腰容易塌" not in questions[0]
+        assert "腰塌是气不足" in ch.content
+
+
+    def test_diyi_comma_in_answer_is_not_a_new_question(self, parser):
+        """Tai listing「第一，」「第二，」in an answer must stay in that answer
+        (2026-02-03 莲光映心 / 2026-02-04 Redload). Distinct from PDF 一、／二、."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月3 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月3 号，先回答官网的问题。"),
+            (CONT, "莲光映心："),
+            (IND,  "有位朋友说放生要随缘。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题莲光映心。"),
+            (IND,  "第一，你不需要向他解释，你做你的事。"),
+            (IND,  "第二，这次设计和上次设计相比有进步的地方。"),
+            (CONT, "甲："),
+            (IND,  "下一个提问者。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["莲光映心", "甲"]
+        first_a = ch.content.split('<div class="answer"', 1)[1]
+        answer_only = first_a.split('<div class="question"', 1)[0]
+        assert "第一，你不需要向他解释" in answer_only
+        assert "第二，这次设计和上次设计相比" in answer_only
+
+    def test_shi_顿号_in_answer_is_not_a_new_question(self, parser):
+        """Wrapped「二十、三十分钟」must not open a card at「十、三十分钟」。"""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月2 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月2 号，先回答官网的问题。"),
+            (CONT, "明月照我心："),
+            (IND,  "1、打坐二十到三十分腿痛。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "8楼明月照我心，再来个二十、"),
+            (IND,  "十、三十分钟也可以，或者硬忍一下十分钟。"),
+            (CONT, "甲："),
+            (IND,  "1、下一个提问者。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["明月照我心", "甲"]
+        assert "十、三十分钟也可以" in ch.content
+        first_a = ch.content.split('<div class="answer"', 1)[1]
+        assert "十、三十分钟也可以" in first_a.split('<div class="question"', 1)[0]
+
+
+    def test_ellipsis_nickname_is_a_questioner(self, parser):
+        """``。。`` is a real nickname (2026-02-02 官网 23楼)."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月2 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月2 号，先回答官网的问题。"),
+            (CONT, "小鱼鱼："),
+            (IND,  "路过香火旺盛的庙要拜吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "你随意。"),
+            (CONT, "。。："),
+            (IND,  "网上说帮别人治病自己会得那个病，是真的吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题23楼，两个句号，医不叩门。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["小鱼鱼", "。。"]
+        assert "医不叩门" in ch.content
+
+
+    def test_digit_nickname_is_a_questioner(self, parser):
+        """All-digit nicknames (e.g. ``13020466664``) must not be dropped as junk
+        or reused as the previous questioner's numbered follow-ups."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月2 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月2 号，先回答官网的问题。"),
+            (CONT, "明月照我心："),
+            (IND,  "2、关于思佛。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "观察就可以了。"),
+            (CONT, "13020466664："),
+            (IND,  "1、道教丹道是外道吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第9楼，看理论就可以了。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["明月照我心", "13020466664"]
+        assert "道教丹道是外道吗？" in ch.content
+
+    def test_single_period_nickname_is_a_questioner(self, parser):
+        """A single ``。`` is a real nickname (2026-02-05 微信 句号)."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月5 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月5 号，回答微信公众号的问题。"),
+            (CONT, "汐怡："),
+            (IND,  "嗜睡该怎么办？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "睡饱了起来打坐就可以了。"),
+            (CONT, "。："),
+            (IND,  "羊毛衫拿错尺寸，供养给出家师父不如法吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这个人的名字是句号。没有关系。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["汐怡", "。"]
+
+    def test_two_digit_nickname_is_a_questioner(self, parser):
+        """Short numeric nicknames such as ``57`` (57楼) must not be dropped."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月5 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月5 号，回答微信公众号的问题。"),
+            (CONT, "汐怡："),
+            (IND,  "嗜睡该怎么办？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "睡饱了起来打坐就可以了。"),
+            (CONT, "57："),
+            (IND,  "如果很多事情都不顺是为什么？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，57楼。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["汐怡", "57"]
+
+
 # ---------------------------------------------------------------------------
 # WeChat HH:MM:SS questioners (2025-11-10 / 11-11 backend timestamps)
 # ---------------------------------------------------------------------------
@@ -963,3 +1142,47 @@ class TestImportPyMuPDF:
         monkeypatch.setitem(sys.modules, "fitz", bogus)
         with pytest.raises(ImportError, match="PyMuPDF"):
             _import_pymupdf()
+
+
+# ---------------------------------------------------------------------------
+# Live Nov–Mar PDF: 2026-02-02 官网 must stay 46 cards on rebuild
+# ---------------------------------------------------------------------------
+
+NOV_MAR_PDF = (
+    Path(__file__).resolve().parents[3]
+    / "問答錄2"
+    / "2025年11月-2026年3月答疑合并（未分类）.pdf"
+)
+
+
+class TestFeb2GuanwangRebuildCount:
+    """``gen_all.py`` / ``PDFParser.parse`` of the Nov–Mar PDF must emit 46
+    question cards for 2026-02-02 官网 (matches audio_map ``2026-02-02-guanwang``).
+
+    Pre-fix this session collapsed to 43–44 cards: Chinese ``二、`` and
+    ``第二个问题是，`` were swallowed, and digit / ellipsis nicknames were
+    dropped as PDF-symbol junk.
+    """
+
+    @pytest.mark.skipif(not NOV_MAR_PDF.is_file(), reason="Nov–Mar source PDF missing")
+    def test_2026_02_02_guanwang_is_46_cards(self):
+        parser = PDFParser(DEFAULT_SETTINGS, image_handler=None)
+        chapters = parser.parse(NOV_MAR_PDF, start_index=16)
+        feb = next(ch for ch in chapters if ch.filename == "20.html")
+        h2s = list(re.finditer(
+            r'<h2 id="([^"]+)">\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s+([^<]+)',
+            feb.content,
+        ))
+        section = None
+        for i, m in enumerate(h2s):
+            if m.group(1) == "2026nian-2yue-2ri-guan-wang":
+                end = h2s[i + 1].start() if i + 1 < len(h2s) else len(feb.content)
+                section = feb.content[m.start():end]
+                break
+        assert section, "2026-02-02 官网 h2 missing from February chapter"
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', section)
+        assert len(names) == 46
+        assert names.count("guangTz") == 2
+        assert names.count("枫红201九") == 2
+        assert names.count("13020466664") == 4
+        assert names.count("。。") == 1

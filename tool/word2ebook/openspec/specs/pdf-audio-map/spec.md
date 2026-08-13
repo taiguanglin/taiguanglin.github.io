@@ -21,14 +21,20 @@ The system SHALL store month-level JSON files at
 - WHEN `align.py --apply` runs for that month
 - THEN that segment's `start`/`end` SHALL remain unchanged
 
-### Requirement: One Range Per Question Plus Opening And Closing
-Each PDF question SHALL map to at most one `[start, end]` range on a single
-`.opus` file. When an opening paragraph exists, it SHALL also have a range.
-When a closing（收場）paragraph exists after the last answer, it SHALL also
-have a range (last segment end = closing start; closing end = audio end).
-After a complete align (`--require-complete` / `fill_misses.py`), **no** segment
-or opening SHALL remain `status: "missing"`. Gaps with no direct SRT hit SHALL
-be filled by monotonic interpolation (`notes` containing `interpolated`).
+### Requirement: One Range Per Spoken Answer Unit Plus Opening And Closing
+Each **spoken answer unit** SHALL map to one `[start, end]` range on a single
+`.opus` file. Units are identified from the answer opening (floor `第N楼`/`N楼`,
+`下一个问题` + new name/floor, or a same-person follow-up such as `第二个问题` /
+`下面的问题` / `最后问`) as specified in `audio_map/AGENTS.md`. When the speaker
+splits numbered items that PDF merged into one question card, the mapping MAY
+contain extra segments beyond HTML `.question` count. Each PDF question still
+maps to at least one range (the first spoken unit for that card). When an
+opening paragraph exists, it SHALL also have a range. When a closing（收場）
+paragraph exists after the last answer, it SHALL also have a range (last
+segment end = closing start; closing end = audio end). After a complete align
+(`--require-complete` / `fill_misses.py`), **no** segment or opening SHALL
+remain `status: "missing"`. Gaps with no direct SRT hit SHALL be filled by
+monotonic interpolation (`notes` containing `interpolated`).
 
 #### Scenario: Unmatched gap is interpolated
 - GIVEN a PDF question with no direct SRT hit but neighbors matched
