@@ -74,7 +74,16 @@ FOOTER_TEXT = "完整音频请关注微信公众号"
 #                       body line of page N and the first line of page N+1, so
 #                       if kept they glue into words (菩 + 39 + 萨 → 菩39萨).
 PAGE_RE = re.compile(r"^(?:\d+\s*/\s*\d+|\d{1,4})$")
-DAY_RE = re.compile(r"Tai\s*师父\s*(20\d{2})\s*年\s*(\d{1,2})\s*月\s*(\d{1,2})\s*[日号號]")
+# Year token allows OCR CJK digits (Tai师父202六年2月7日).
+DAY_RE = re.compile(
+    r"Tai\s*师父\s*(20[\d零〇一二三四五六七八九]{2})\s*年\s*"
+    r"(\d{1,2})\s*月\s*(\d{1,2})\s*[日号號]"
+)
+_YEAR_DIGIT = str.maketrans("零〇一二三四五六七八九", "00123456789")
+TODAY_IS_DATE_RE = re.compile(
+    r"今天是\s*(?:(20[\d零〇一二三四五六七八九]{2})\s*年\s*)?"
+    r"(\d{1,2})\s*月\s*(\d{1,2})\s*[号日號]"
+)
 SHIFU_RE = re.compile(r"^师父说[：:]")
 ANSWER_RE = re.compile(r"^Taiguanglin[：:]")
 # 提問者時間：貼吧多為「YYYY-MM-DD HH:MM」；微信公眾號後台常見「HH:MM:SS」
@@ -142,6 +151,31 @@ _SPACE_BEFORE_CJK = re.compile(r"\s+(?=[\u4e00-\u9fff])")
 def _year_to_cn(year: int) -> str:
     """2025 → 二〇二五"""
     return "".join(_DIGIT_CN[int(d)] for d in str(year))
+
+
+def _parse_year_token(token: str) -> int:
+    """``2026`` or OCR ``202六`` → 2026."""
+    return int(token.translate(_YEAR_DIGIT))
+
+
+def _date_from_day_match(m: re.Match) -> Tuple[int, int, int]:
+    return (_parse_year_token(m.group(1)), int(m.group(2)), int(m.group(3)))
+
+
+def _parse_session_date(
+    text: str, default_year: Optional[int]
+) -> Optional[Tuple[int, int, int]]:
+    """Date at the first「今天是…M月D号」in an opening blob (not later 到了7月8号)."""
+    m = TODAY_IS_DATE_RE.search(_normalize_spaces(text or ""))
+    if not m:
+        return None
+    if m.group(1):
+        year = _parse_year_token(m.group(1))
+    elif default_year is not None:
+        year = default_year
+    else:
+        return None
+    return (year, int(m.group(2)), int(m.group(3)))
 
 
 def _normalize_spaces(text: str) -> str:
@@ -425,7 +459,7 @@ def _is_structural_line(text: str) -> bool:
         return True
     if NAMEBANG_RE.match(text) or LONE_COLON_RE.match(text):
         return True
-    if text.startswith("Tai") and DAY_RE.search(text):
+    if DAY_RE.search(text):
         return True
     return False
 
@@ -793,18 +827,21 @@ class PDFParser:
             indented = x0 > INDENT_THRESHOLD
 
             # 新的一天（同一日期的續錄音訊不重設來源，避免被誤標成贴吧）
-            if text.startswith("Tai"):
-                m = DAY_RE.search(text)
-                if m:
-                    finish_card()
-                    new_date = (int(m.group(1)), int(m.group(2)), int(m.group(3)))
-                    if state["date"] != new_date:
-                        state["source"] = SOURCE_TIEBA
-                    state["date"] = new_date
-                    state["questioner"] = None
-                    state["qtime"] = None
-                    i += 1
-                    continue
+            # Header may be glued onto the previous closing sentence.
+            m_day = DAY_RE.search(text)
+            if m_day:
+                before = text[: m_day.start()].strip()
+                if before:
+                    add_line(before, indented)
+                finish_card()
+                new_date = _date_from_day_match(m_day)
+                if state["date"] != new_date:
+                    state["source"] = SOURCE_TIEBA
+                state["date"] = new_date
+                state["questioner"] = None
+                state["qtime"] = None
+                i += 1
+                continue
 
             # 分隔線（黏住的已在 preclean 拆出）
             if SEP_RE.match(text):
@@ -813,11 +850,8 @@ class PDFParser:
                 continue
 
             # 無「师父说」前綴的開場（如 Nov 15：直接「今天是…先回答官网」）
-            if (
-                state["card"] is None
-                and state["questioner"] is None
-                and re.match(r"^今天是", text)
-            ):
+            # 日期變了也要切開（2026-02-07 黏在 2/6 段落下、沒有獨立 Tai 日標）。
+            if re.match(r"^今天是", text):
                 blob_parts = [text]
                 j = i + 1
                 while j < n_lines:
@@ -827,20 +861,41 @@ class PDFParser:
                     blob_parts.append(t1)
                     j += 1
                 blob = "".join(blob_parts)
+                default_year = state["date"][0] if state["date"] else None
+                parsed = _parse_session_date(blob, default_year)
                 detected = _detect_source_from_shifu(blob)
-                if detected is not None:
-                    state["source"] = detected
-                elif state["source"] == SOURCE_TIEBA and not any(
-                    s["date"] == state["date"] for s in sections
-                ):
-                    state["source"] = SOURCE_GUANWANG
-                start_card("paragraph")
-                # 與「师父说」開場相同：允許緊接的無時間提問者（如 winnie：）成卡，
-                # 否則會被併進開場 <p>（2025-11-15 官网）。
-                state["card"]["shifu"] = True
-                add_line(blob, indented=True)
-                i = j
-                continue
+                date_changed = parsed is not None and parsed != state["date"]
+                source_switch = detected is not None and detected != state["source"]
+                opening_slot = state["card"] is None or state["card"]["kind"] in (
+                    "answer",
+                    "paragraph",
+                )
+                use_as_opening = (
+                    state["card"] is None
+                    and state["questioner"] is None
+                    and parsed is not None
+                ) or (opening_slot and detected is not None and (date_changed or source_switch))
+                if use_as_opening:
+                    finish_card()
+                    if date_changed:
+                        state["date"] = parsed
+                        if detected is None:
+                            state["source"] = SOURCE_TIEBA
+                        state["questioner"] = None
+                        state["qtime"] = None
+                    if detected is not None:
+                        state["source"] = detected
+                    elif state["source"] == SOURCE_TIEBA and not any(
+                        s["date"] == state["date"] for s in sections
+                    ):
+                        state["source"] = SOURCE_GUANWANG
+                    start_card("paragraph")
+                    # 與「师父说」開場相同：允許緊接的無時間提問者（如 winnie：）成卡，
+                    # 否則會被併進開場 <p>（2025-11-15 官网）。
+                    state["card"]["shifu"] = True
+                    add_line(blob, indented=True)
+                    i = j
+                    continue
 
             # 師父說（敘述 + 來源切換訊號）；開場常折行，先併後續延續行再判斷來源
             if SHIFU_RE.match(text):
@@ -853,6 +908,13 @@ class PDFParser:
                     blob_parts.append(t1)
                     j += 1
                 blob = "".join(blob_parts)
+                default_year = state["date"][0] if state["date"] else None
+                parsed = _parse_session_date(blob, default_year)
+                if parsed is not None and parsed != state["date"]:
+                    state["date"] = parsed
+                    state["source"] = SOURCE_TIEBA
+                    state["questioner"] = None
+                    state["qtime"] = None
                 detected = _detect_source_from_shifu(blob)
                 if detected is not None:
                     state["source"] = detected

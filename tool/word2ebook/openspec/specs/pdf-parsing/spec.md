@@ -44,6 +44,20 @@ slug `id` so search results and the TOC link to the correct anchor.
 - THEN its `toc_items` SHALL include `YYYY年M月D日 贴吧` then `YYYY年M月D日 微信公众号`,
   each with a slug anchor present as an `id` in the chapter content
 
+#### Scenario: Next-day opening without a standalone Tai header
+- GIVEN a `2月6日 官网` session whose closing is followed by a bare
+  `今天是2026年2月7号…先回答官网的问题` (no new `Tai师父…日答疑` line before it)
+- WHEN parsed
+- THEN a new `2026年2月7日 官网` `<h2>` SHALL be emitted; the following questions
+  SHALL NOT remain under `2026年2月6日 官网`
+
+#### Scenario: OCR year in Tai header still starts the new day
+- GIVEN a closing paragraph that glues `Tai师父202六年2月7日答疑` onto the
+  previous day's wrap-up, then `今天是202六年2月7号…回答微信公众号的问题`
+- WHEN parsed
+- THEN `202六年` SHALL be read as 2026 and a `2026年2月7日 微信公众号` section
+  SHALL be created (not left inside the previous day)
+
 ### Requirement: Artifact Stripping
 The parser SHALL remove page-number lines — both absolute counters (`N / M`) and
 bare bottom-of-page counters that are only digits (`N`) — the repeated audio

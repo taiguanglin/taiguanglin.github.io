@@ -304,6 +304,53 @@ class TestGuanwangSource:
         assert '<span class="questioner">winnie</span>' in ch.content
         assert len(re.findall(r'<div class="question"', ch.content)) == 1
 
+    def test_bare_today_is_new_date_splits_session(self, parser):
+        """Bare「今天是…2月7号」after a 2/6 closing must open 2/7 官网,
+        not stay under 2/6. OCR「202六年」in the glued Tai header + weixin
+        opening must still parse as 2026-02-07."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月6 日答疑（文字版）"),
+            (IND,  "今天是2026 年2 月6 号周五，先回答官网的问题。"),
+            (CONT, "甲："),
+            (IND,  "六号官网问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "六号官网回答。"),
+            (IND,  "今天的官网的问题就回答到这里。"),
+            (IND,  "今天是2026 年2 月7 号周六，先回答官网的问题。"),
+            (CONT, "乙："),
+            (IND,  "七号官网问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "七号官网回答。"),
+            (IND,  "今天的问题就回答到这里。Tai师父202六年2月7日答疑（文字版）"),
+            (IND,  "今天是202六年2月7号，周六，回答微信公众号的问题，"),
+            (CONT, "丙："),
+            (IND,  "七号微信问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "七号微信回答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        texts = [t.text for t in ch.toc_items]
+        assert texts == [
+            "2026年2月6日 官网",
+            "2026年2月7日 官网",
+            "2026年2月7日 微信公众号",
+        ]
+        h2s = list(re.finditer(
+            r'<h2 id="([^"]+)">\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s+([^<]+)',
+            ch.content,
+        ))
+        sections = []
+        for i, m in enumerate(h2s):
+            end = h2s[i + 1].start() if i + 1 < len(h2s) else len(ch.content)
+            sections.append((m.group(0), ch.content[m.start():end]))
+        assert "六号官网问题" in sections[0][1]
+        assert "七号官网问题" in sections[1][1]
+        assert "七号官网问题" not in sections[0][1]
+        assert "七号微信问题" in sections[2][1]
+        assert "七号微信问题" not in sections[1][1]
+        assert "2026nian-2yue-7ri-guan-wang" in ch.content
+        assert "2026nian-2yue-7ri-wei-xin-gong-zhong-hao" in ch.content
+
     def test_incidental_gongzhonghao_in_tieba_opening(self, parser):
         """贴吧開場閒聊「回答了，去公众号领书」不應把整場誤判成微信。"""
         lines = [
