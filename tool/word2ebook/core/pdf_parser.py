@@ -135,6 +135,31 @@ CIRCLED_OPEN_RE = re.compile(r"^[①②③④⑤⑥⑦⑧⑨⑩]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
 LONE_COLON_RE = re.compile(r"^[：:]\s*$")
+# Separator then ``：师父好…`` on one line (2026-03-03 微信 月亮).
+LEADING_COLON_BODY_RE = re.compile(r"^[：:]\s*(?P<body>.+)$")
+# Greeting-shaped labels must not be read as nicknames when splitting
+# ``顶礼Tai师父：正文``.
+GREETING_NAME_RE = re.compile(
+    r"^(?:顶礼|师父好|师父您好|师父吉祥|请问|感恩|Tai师父|Tai师)"
+)
+# Nameless post after a separator (2026-03-03 / 03-07 微信 Ｃｑｙ).
+QBODY_OPEN_RE = re.compile(
+    r"^(?:顶礼|师父好|师父您好|师父吉祥|Tai师父好|Tai师好|"
+    r"Tai师父[，,！!]|"
+    r"请问|感恩师父|感恩Tai)"
+)
+# Recover empty questioner from Tai's following opening.
+# Do not treat topic restatements (「要看前世和未来」) as nicknames.
+NEXT_Q_NAME_RE = re.compile(
+    r"^(?:还有)?下一个问题[，,]?\s*"
+    r"(?:第?\d+楼[，,]?\s*)?"
+    r"(?P<name>.+?)"
+    r"(?:[，,]|这位|这个是)"
+)
+TOPIC_RECOVERED_NAME_RE = re.compile(
+    r"^(?:要看|要问|如何|怎么|怎样|关于|是否|如果|因为|修到|"
+    r"想问|这是|这个|那个|就是|未来|前世)"
+)
 # PDF Symbol／裝飾字型常被抽成純 ASCII 標點行（「" # $ % & … +：」）
 PDF_SYMBOL_JUNK_RE = re.compile(
     r"""^[\s\"#\$%&'\(\)\*\+,\-\./:;<=>\?@\[\\\]\^_`\{\|\}~！：]+$"""
@@ -261,10 +286,91 @@ def _plausible_questioner_label(s: str) -> bool:
     # 句子標點（不含 !，因暱稱可用 !）
     if re.search(r"[。？，；,;]", core):
         return False
-    # 至少要有漢字或字母，排除純符號
-    if not re.search(r"[\u4e00-\u9fffA-Za-z]", core):
+    # 至少要有漢字或字母（含全形 Ｃｑｙ），排除純符號
+    if not re.search(r"[\u4e00-\u9fffA-Za-z\uFF21-\uFF3A\uFF41-\uFF5A]", core):
         return False
     return True
+
+
+def _looks_like_question_body(text: str) -> bool:
+    """Indented post after a separator that lost its nickname line."""
+    t = (text or "").strip()
+    if not t or t.startswith("今天是") or t.startswith("师父说"):
+        return False
+    if ANSWER_RE.match(t) or SEP_RE.match(t):
+        return False
+    return bool(QBODY_OPEN_RE.match(t))
+
+
+def _split_glued_name_body(text: str):
+    """``名字：正文`` on one line (2025-11-13 官网 我空法空空亦空).
+
+    Returns ``(name, body)`` or ``None``. Timestamp lines and name-only
+    ``名字：`` / ``名字：，`` stay with QTIME / NAMECOLON.
+    """
+    t = (text or "").strip()
+    if not t or QTIME_RE.match(t) or NAMECOLON_RE.match(t):
+        return None
+    if ANSWER_RE.match(t) or t.startswith("师父说"):
+        return None
+    m = re.match(r"^(?P<name>.{1,40}?)[：:]\s*(?P<body>.+)$", t)
+    if not m:
+        return None
+    name = _normalize_spaces(m.group("name"))
+    body = re.sub(r"^[，,、.。；;]+", "", (m.group("body") or "").strip()).strip()
+    if not name or not body or BARETIME_RE.match(body):
+        return None
+    if GREETING_NAME_RE.match(name) or not _plausible_questioner_label(name):
+        return None
+    if "师父说" in name or "音频" in name or "（" in name or "(" in name:
+        return None
+    if body.startswith("今天是"):
+        return None
+    if not re.search(r"[\u4e00-\u9fffA-Za-z]", body):
+        return None
+    return name, body
+
+
+def _plausible_recovered_name(name: str) -> bool:
+    n = _normalize_spaces(name or "")
+    if not n or len(n) > 16:
+        return False
+    if n.startswith(("就是", "你的", "这个", "那位", "这位")):
+        return False
+    if GREETING_NAME_RE.match(n) or TOPIC_RECOVERED_NAME_RE.match(n):
+        return False
+    if "师父说" in n or "音频" in n or "（" in n or "(" in n:
+        return False
+    return bool(re.search(r"[\u4e00-\u9fffA-Za-z\uFF21-\uFF3A\uFF41-\uFF5A]", n))
+
+
+def _recover_questioner_from_following_answer(
+    lines: List[Tuple[float, str]], i: int
+) -> str:
+    """Peek the next ``Taiguanglin：`` opening for a named 下一个问题 cue."""
+    opening = ""
+    for j in range(i + 1, min(i + 80, len(lines))):
+        t = lines[j][1]
+        if SEP_RE.match(t) or DAY_RE.search(t):
+            break
+        if not ANSWER_RE.match(t):
+            continue
+        after = re.sub(r"^Taiguanglin[：:]\s*", "", t)
+        parts = [after]
+        for k in range(j + 1, min(j + 20, len(lines))):
+            t2 = lines[k][1]
+            if _is_structural_line(t2) or ANSWER_RE.match(t2):
+                break
+            parts.append(t2)
+        opening = _normalize_spaces("".join(parts))
+        break
+    if not opening:
+        return ""
+    m = NEXT_Q_NAME_RE.match(opening)
+    if not m:
+        return ""
+    name = _normalize_spaces(m.group("name") or "")
+    return name if _plausible_recovered_name(name) else ""
 
 
 def _strip_leading_pdf_symbol_junk(text: str) -> str:
@@ -335,6 +441,10 @@ def _is_boundary_after_sep(nxt: str) -> bool:
         return True
     bang = NAMEBANG_RE.match(nxt)
     if bang and _plausible_questioner_label(bang.group("name")):
+        return True
+    if LONE_COLON_RE.match(nxt) or LEADING_COLON_BODY_RE.match(nxt):
+        return True
+    if _looks_like_question_body(nxt) or _split_glued_name_body(nxt):
         return True
     return _plausible_questioner_label(nxt)
 
@@ -570,6 +680,8 @@ def _is_structural_line(text: str) -> bool:
     if SHIFU_RE.match(text) or QTIME_RE.match(text) or NAMECOLON_RE.match(text):
         return True
     if NAMEBANG_RE.match(text) or LONE_COLON_RE.match(text):
+        return True
+    if _split_glued_name_body(text) or LEADING_COLON_BODY_RE.match(text):
         return True
     if DAY_RE.search(text):
         return True
@@ -1128,11 +1240,52 @@ class PDFParser:
                         else:
                             name = ""
                         if name or lone:
+                            if not name:
+                                name = _recover_questioner_from_following_answer(
+                                    lines, i
+                                )
                             state["questioner"] = name
                             state["qtime"] = ""
                             start_card("question", name, "")
                             i += 1
                             continue
+
+            # 分隔線後暱稱列缺失：縮排正文 / 裸「：」+正文 / 「名字：正文」黏在一行。
+            # 不讀 audio_map；能從下一則 Tai 回答開頭取回暱稱則填上，否則空名。
+            if state["card"] is None:
+                glued = _split_glued_name_body(text)
+                lead = LEADING_COLON_BODY_RE.match(text)
+                if glued:
+                    name, body = glued
+                    state["questioner"] = name
+                    state["qtime"] = ""
+                    start_card("question", name, "")
+                    add_line(body, indented=True)
+                    i += 1
+                    continue
+                if LONE_COLON_RE.match(text):
+                    name = _recover_questioner_from_following_answer(lines, i)
+                    state["questioner"] = name
+                    state["qtime"] = ""
+                    start_card("question", name, "")
+                    i += 1
+                    continue
+                if lead:
+                    name = _recover_questioner_from_following_answer(lines, i)
+                    state["questioner"] = name
+                    state["qtime"] = ""
+                    start_card("question", name, "")
+                    add_line(lead.group("body").strip(), indented=True)
+                    i += 1
+                    continue
+                if _looks_like_question_body(text):
+                    name = _recover_questioner_from_following_answer(lines, i)
+                    state["questioner"] = name
+                    state["qtime"] = ""
+                    start_card("question", name, "")
+                    add_line(text, indented=True)
+                    i += 1
+                    continue
 
             # 編號子問題（阿拉伯數字、中文數字、或「第二个问题是，」複述）
             if _is_subquestion_line(text) and (

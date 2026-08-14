@@ -311,6 +311,17 @@ When the name is lost entirely (a separator followed only by a bare `：` and th
 the body), the parser SHALL still emit a question card (with an empty questioner
 name) so the body never leaks as a `<p>：</p>` paragraph.
 
+When a separator is followed by question body with **no** nickname line at all
+(`顶礼…` / `师父好…` / `请问…`, or `：` glued onto that body), the parser SHALL
+open a question card rather than a stray `<p>`. If the following `Taiguanglin：`
+answer begins with `下一个问题` / `还有下一个问题` plus a nickname (before `，`
+or `这位` / `这个是`), that nickname SHALL be used as `questioner`. Otherwise the
+questioner name MAY be empty. The parser SHALL NOT read audio-map JSON.
+
+A left-margin `名字：正文` glued on one line after a separator SHALL split into
+questioner + body (e.g. `我空法空空亦空：感觉就是自己没了一会`). Greeting-shaped
+prefixes (`顶礼Tai师父：…`) SHALL remain question body, not a nickname.
+
 #### Scenario: Name and colon on separate lines
 - GIVEN `M` on one line and `：` on the next, then the question body
 - WHEN parsed
@@ -322,6 +333,27 @@ name) so the body never leaks as a `<p>：</p>` paragraph.
 - WHEN parsed
 - THEN a question card (empty questioner name) SHALL hold the body, and no
   `<p>：</p>` paragraph SHALL be produced
+
+#### Scenario: Nameless 顶礼 body after a separator recovers the nickname
+- GIVEN a separator, then indented `顶礼Tai师，为什么出家的是男众…`, then
+  `Taiguanglin：还有下一个问题，Ｃｑｙ，为什么出家的是男众…`
+- WHEN parsed
+- THEN a question card with questioner `Ｃｑｙ` SHALL hold the 顶礼 body, and
+  the body SHALL NOT leak as a `<p>` paragraph
+
+#### Scenario: Colon glued to 师父好 body recovers 月亮
+- GIVEN a separator, then `：师父好 我是一名同性恋…`, then
+  `Taiguanglin：下一个问题，月亮这个是个月亮图标，…`
+- WHEN parsed
+- THEN a question card with questioner `月亮` SHALL hold the body, and no
+  `<p>：</p>` SHALL be produced
+
+#### Scenario: Name and body glued on one line
+- GIVEN a separator followed by `我空法空空亦空：感觉就是自己没了一会` then
+  more question body
+- WHEN parsed
+- THEN a question card with questioner `我空法空空亦空` SHALL hold the body, and
+  `我空法空空亦空：感觉…` SHALL NOT appear as a stray paragraph
 
 ### Requirement: In-Question Divider Lines
 Real questioner-boundary separators sit at the left margin (x0 below the indent

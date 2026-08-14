@@ -1340,6 +1340,147 @@ class TestNoTimeQuestioners:
         assert "师父吉祥，修到什么程度可以知晓前世？" in ch.content
         # the body sits in a question card (with empty questioner meta)
         assert '<div class="question-text">师父吉祥，修到什么程度可以知晓前世？</div>' in ch.content
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert names[-1] == ""
+
+    def test_topic_restatement_is_not_recovered_as_name(self, parser):
+        """Tai's「下一个问题，要看前世和未来，」is a topic, not a nickname."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月10 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-06-10 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "："),
+            (IND,  "师父吉祥。想问一下，修到什么程度可以知晓前世和未来？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，要看前世和未来，未来不好说。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert "要看前世和未来" not in names
+        assert names[-1] == ""
+
+    def test_audio_note_shifu_opening_is_not_a_question(self, parser):
+        """Editorial「（音频…开始）师父说：今天是…」after a separator stays an
+        opening paragraph, not a glued nickname."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，先回答官网的问题。"),
+            (CONT, "甲：2025-11-10 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (IND,  "（音频55’43开始）师父说：今天是2025 年11 月10 号，周一，继续回答官网的问题。"),
+            (CONT, "牧羊少年："),
+            (IND,  "顶礼Tai师父，回向的问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "牧羊少年，这位朋友说回向。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert not any("音频" in n or n.endswith("师父说") for n in names)
+        assert "<p>今天是2025年11月10号" in ch.content or "（音频55’43开始）师父说" in ch.content
+        assert 'questioner">（音频' not in ch.content
+
+    def test_icon_description_is_not_recovered_as_name(self, parser):
+        """「下一个问题，这是一个这人像，」describes a missing emoji, not a nick."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月12 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月12 号，先回答官网的问题。"),
+            (CONT, "甲："),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (IND,  "请问TAI师父：哪些算是记忆中的众生？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，这是一个这人像，就是一个倒著的笑脸，第一个问题，哪些算是记忆中的众生？"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert "这是一个这人像" not in names
+
+    def test_nameless_body_after_separator_recovers_cqy(self, parser):
+        """Separator then indented 顶礼… (no nickname line): recover Ｃｑｙ
+        from Tai's「还有下一个问题，Ｃｑｙ，」."""
+        lines = [
+            (157.0, "Tai 师父2026 年3 月3 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年3 月3 号，回答微信公众号的问题。"),
+            (CONT, "甲："),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (IND,  "顶礼Tai师，为什么出家的是男众，未出家去做佛事的大部分是女众？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "还有下一个问题，Ｃｑｙ，为什么出家的是男众，未出家去做佛事的大部分是女众？"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert "<p>顶礼Tai师，为什么出家的是男众" not in ch.content
+        assert '<span class="questioner">Ｃｑｙ</span>' in ch.content
+        assert "为什么出家的是男众" in ch.content
+
+    def test_colon_glued_to_body_recovers_yueliang(self, parser):
+        """Separator then ``：师父好…`` (name lost): recover 月亮 from
+        「下一个问题，月亮这个是个月亮图标」."""
+        lines = [
+            (157.0, "Tai 师父2026 年3 月3 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年3 月3 号，回答微信公众号的问题。"),
+            (CONT, "甲："),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (IND,  "：师父好 我是一名同性恋，已经皈依了，想请教下佛教怎么看待同性恋？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，月亮这个是个月亮图标，我是一名同性恋已经皈依了，请教想请教下佛教怎么看待同性恋，同性恋是不是有罪？"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert "<p>：</p>" not in ch.content
+        assert "<p>：师父好" not in ch.content
+        assert '<span class="questioner">月亮</span>' in ch.content
+        assert "我是一名同性恋" in ch.content
+
+    def test_glued_name_and_body_after_separator(self, parser):
+        """``我空法空空亦空：感觉就是自己没了一会`` must be a question card."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月13 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月13 号，先回答官网的问题。"),
+            (CONT, "甲：2025-11-13 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "我空法空空亦空：感觉就是自己没了一会"),
+            (IND,  "顶礼Tai师"),
+            (IND,  "无记空跟睡著具体要怎么区分？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，205楼我空法空空亦空，无记空跟睡觉具体有怎么区分？"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert "<p>我空法空空亦空：感觉就是自己没了一会</p>" not in ch.content
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert "我空法空空亦空" in names
+        assert "无记空跟睡著具体要怎么区分？" in ch.content
+
+    def test_greeting_colon_body_is_not_a_questioner(self, parser):
+        """``顶礼Tai师父：去寺庙…`` inside an existing question stays body."""
+        lines = [
+            (157.0, "Tai 师父2026 年3 月3 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年3 月3 号，回答微信公众号的问题。"),
+            (CONT, "XW："),
+            (IND,  "顶礼Tai师父：去一些有名的寺庙烧香。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "那下一个问题XW，这位问去一些有名的寺庙。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert names == ["XW"]
+        assert "去一些有名的寺庙烧香" in ch.content
 
     def test_indented_in_question_divider_does_not_split_card(self, parser):
         """A user-drawn divider INSIDE a question is indented (x0>=104) and is
@@ -1482,8 +1623,8 @@ def nov_mar_chapters():
 
 class TestNovMarSwallowedSplitsBecomeCards:
     """audio_map splits for Dec–Mar must appear as ``.question`` cards after
-    ``PDFParser.parse`` / ``gen_all.py``. JSON-only Ｃｑｙ (no PDF nickname)
-    is not invented here.
+    ``PDFParser.parse`` / ``gen_all.py``. Nameless Ｃｑｙ posts recover the
+    nickname from Tai's following answer.
     """
 
     def test_2026_02_02_guanwang_is_46_cards(self, nov_mar_chapters):
@@ -1560,3 +1701,54 @@ class TestNovMarSwallowedSplitsBecomeCards:
         )
         assert any("看了您的书后" in q for q in q_blocks)
         assert any("家族里面兄弟相争" in q for q in q_blocks)
+
+    def test_2026_03_wechat_recovers_cqy_cards(self, nov_mar_chapters):
+        mar = next(ch for ch in nov_mar_chapters if ch.filename == "21.html")
+        names_3 = _section_questioners(mar, "2026nian-3yue-3ri-wei-xin-gong-zhong-hao")
+        names_7 = _section_questioners(mar, "2026nian-3yue-7ri-wei-xin-gong-zhong-hao")
+        assert "Ｃｑｙ" in names_3
+        assert "Ｃｑｙ" in names_7
+        html3 = _section_html(mar, "2026nian-3yue-3ri-wei-xin-gong-zhong-hao")
+        html7 = _section_html(mar, "2026nian-3yue-7ri-wei-xin-gong-zhong-hao")
+        q3 = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html3, flags=re.S
+        )
+        q7 = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html7, flags=re.S
+        )
+        assert any("为什么出家的是男众" in q for q in q3)
+        assert any("修行是消业和修心" in q for q in q7)
+
+    def test_2026_03_03_wechat_splits_yueliang(self, nov_mar_chapters):
+        mar = next(ch for ch in nov_mar_chapters if ch.filename == "21.html")
+        names = _section_questioners(mar, "2026nian-3yue-3ri-wei-xin-gong-zhong-hao")
+        assert "月亮" in names
+        html = _section_html(mar, "2026nian-3yue-3ri-wei-xin-gong-zhong-hao")
+        assert "<p>：</p>" not in html
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert any("同性恋" in q and "月亮" in q for q in q_blocks)
+
+    def test_2026_03_06_guanwang_keeps_four_huiji_cards(self, nov_mar_chapters):
+        mar = next(ch for ch in nov_mar_chapters if ch.filename == "21.html")
+        names = _section_questioners(mar, "2026nian-3yue-6ri-guan-wang")
+        assert names.count("huiji") == 4
+        html = _section_html(mar, "2026nian-3yue-6ri-guan-wang")
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert any("对家人不要太粘滞" in q for q in q_blocks)
+
+    def test_2025_11_13_guanwang_glued_wokong_is_a_card(self, nov_mar_chapters):
+        nov = next(ch for ch in nov_mar_chapters if ch.filename == "17.html")
+        html = _section_html(nov, "2025nian-11yue-13ri-guan-wang")
+        assert "<p>我空法空空亦空：感觉就是自己没了一会</p>" not in html
+        names = _section_questioners(nov, "2025nian-11yue-13ri-guan-wang")
+        assert "我空法空空亦空" in names
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert any(
+            "我空法空空亦空" in q and "无记空" in q for q in q_blocks
+        )
