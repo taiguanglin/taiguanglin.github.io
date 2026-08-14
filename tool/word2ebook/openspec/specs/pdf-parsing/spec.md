@@ -101,9 +101,16 @@ one multi-part question — with each number rendered as its own `question-text`
 paragraph. An intro/greeting before the first number stays with the same card. A
 numbered question that appears **after an answer** is a new turn and SHALL open a
 new question card (still reusing the same questioner's name/time). Numbered
-openers include Arabic `N、` / `问题N、`, Chinese `一、` / `二、` (顿号/dot only),
+openers include Arabic `N、` / `问题N、`, Chinese `一、` / `二、` and
+`问题二、` (顿号/dot only),
 and a dumped restatement `第二个问题是，…` (distinct from the answerer saying
-`第二个问题，…` or listing points as `第一，` / `第二，`).
+`第二个问题，…` as the **first** paragraph of a new answer, or listing points as
+`第一，` / `第二，`). When a later question body is dumped into the previous
+answer without `是，` — `第二个问题，…吗？`, `第二个问题 家族…`, `二是关于…`,
+or a circled `②…` — and the next structural line is `Taiguanglin：`, that body
+SHALL become its own question card. The same patterns SHALL stay inside the
+answer when they are the answerer's own listing (①②③ in one reply) or a
+continuation that is not followed by a new `Taiguanglin：`.
 
 #### Scenario: Consecutive numbered questions merge
 - GIVEN one questioner who asks `1、`, `2、`, `3、` consecutively before any answer
@@ -122,12 +129,50 @@ and a dumped restatement `第二个问题是，…` (distinct from the answerer 
 - WHEN parsed
 - THEN two question cards SHALL be produced, both carrying the same questioner
 
+#### Scenario: 问题二、 after an answer opens a new card
+- GIVEN an answer, then a body paragraph `问题二、临终之时…`, then another
+  `Taiguanglin：` answer
+- WHEN parsed
+- THEN a second question card SHALL be produced for `问题二、`, and it SHALL
+  NOT remain inside the previous answer
+
 #### Scenario: 第二个问题是 restatement after an answer opens a new card
 - GIVEN an answer, then a body paragraph `第二个问题是，腰容易塌…`, then another
   `Taiguanglin：` answer
 - WHEN parsed
 - THEN a second question card SHALL be produced for the restatement, and it SHALL
   NOT remain inside the previous answer
+
+#### Scenario: 第二个问题， dumped question after an answer opens a new card
+- GIVEN an answer, then `第二个问题，看了您的书后…算邪淫吗？`, then another
+  `Taiguanglin：` that starts `第二个问题淫欲的问题…`
+- WHEN parsed
+- THEN a second question card SHALL be produced for `看了您的书后`, and the
+  following `第二个问题淫欲的问题` SHALL remain in the new answer
+
+#### Scenario: 第二个问题 plus space after an answer opens a new card
+- GIVEN an answer, then `第二个问题 家族里面兄弟相争…存在吗？`, then another
+  `Taiguanglin：`
+- WHEN parsed
+- THEN a second question card SHALL be produced for that body
+
+#### Scenario: 二是关于 after an answer opens a new card
+- GIVEN a question that includes `一是关于腹式呼吸…`, an answer, then
+  `二是关于锻炼…想请您开示。`, then another `Taiguanglin：`
+- WHEN parsed
+- THEN two question cards SHALL be produced for that questioner
+
+#### Scenario: circled ② after an answer opens a new card
+- GIVEN an answer, then `②能否先度跟我有缘的人…吗？`, then another
+  `Taiguanglin：`
+- WHEN parsed
+- THEN a second question card SHALL be produced for `②能否先度`
+
+#### Scenario: circled ①②③ listing in an answer is not a new card
+- GIVEN an answer that lists `①见啥是啥` / `②见啥不是啥` / `③见啥还是啥`
+  with no new `Taiguanglin：` between them
+- WHEN parsed
+- THEN those lines SHALL remain in the same answer card
 
 #### Scenario: 第一， in an answer is not a new card
 - GIVEN an answer paragraph `第一，你不需要向他解释…`
@@ -152,7 +197,8 @@ line, which always precedes a questioner), the current card is a source-opening
 paragraph (`师父说…` **or** a bare `今天是…` intro without the `师父说` prefix, as
 on 2025-11-15 官网), **or** the current card is an answer (WeChat transcripts
 often omit the separator between answers and the next nickname). Accepted labels:
-`名字：`, a bang-suffixed nickname (`咩咩!` / `咩咩！`), or a bare short nickname
+`名字：`, `名字：，` (colon plus leftover comma when the timestamp is missing,
+e.g. `莲舟曲：，`), a bang-suffixed nickname (`咩咩!` / `咩咩！`), or a bare short nickname
 (`咩咩`) that is a plausible display name. Such a questioner's name/time SHALL be
 reused by any following numbered sub-questions.
 
@@ -164,9 +210,15 @@ A left-margin line that merely ends with `：` while a question or answer card i
 open (e.g. a wrapped sentence like `…想请教三个问题：`) SHALL remain body text and
 SHALL NOT be misread as a questioner. PDF glyph-junk lines of punctuation-only
 symbols (e.g. `"`, `#`, `$`, `%`, `&`, `+：`) SHALL be dropped and SHALL NOT
-become questioner names or body paragraphs. An exception: a nickname that is only
+become questioner names or body paragraphs. A body line that begins with such
+leftover symbols glued onto CJK text (e.g. `+，请问一下读《地藏经》…`) SHALL have
+the leading junk stripped so only the real sentence remains. An exception: a nickname that is only
 periods (`。：` / `。。：`) or only digits (`57：` / `13020466664：`) SHALL still
 become a question card.
+
+A left-margin bang line that continues an **unfinished** answer sentence
+(e.g. closing wrap `祝大家一路顺风，回` then `家过年开心！`) SHALL stay in that
+answer and SHALL NOT become a questioner.
 
 #### Scenario: Comment after a separator has no time
 - GIVEN a separator line followed by `无明萤火：` and then the comment body
@@ -190,6 +242,19 @@ become a question card.
 - GIVEN an open question whose wrapped text ends a line with `…问题：`
 - WHEN parsed
 - THEN no questioner named `问题` SHALL be created; the text stays in the question
+
+#### Scenario: Name with trailing comma after colon
+- GIVEN a separator followed by `莲舟曲：，` then the comment body
+- WHEN parsed
+- THEN a question card with questioner `莲舟曲` SHALL hold the body, and
+  `莲舟曲：，` SHALL NOT appear as a stray paragraph
+
+#### Scenario: Wrapped closing bang is not a questioner
+- GIVEN an answer whose last wrap is `祝大家一路顺风，回` then a left-margin
+  `家过年开心！`
+- WHEN parsed
+- THEN `家过年开心` SHALL NOT become a questioner, and the closing SHALL read
+  `祝大家一路顺风，回家过年开心！`
 
 #### Scenario: Bang-suffixed nickname after an answer
 - GIVEN an answer card followed by `咩咩!` (and optional junk symbol lines) then

@@ -458,6 +458,29 @@ class TestGuanwangSource:
         assert "读《地藏经》时耳边有女人叹息声的幻听" in ch.content
         # junk symbols must not become answer/question paras
         assert ch.content.count('<div class="question"') == 2
+        assert "+，" not in ch.content
+        assert "请问一下读《地藏经》时耳边有女人叹息声的幻听" in ch.content
+
+    def test_symbol_junk_glued_to_answer_body_is_stripped(self, parser):
+        """Symbol-font leftover glued onto CJK (「+，请问一下…」) is stripped."""
+        lines = [
+            (157.0, "Tai 师父2025 年12 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是12 月11 号，回答微信公众号的问题。"),
+            (CONT, "咩咩!"),
+            (IND,  "Tai师好，请问一下读《地藏经》时耳边有女人叹息声的幻听，为何？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "那下一个问题，咩咩!"),
+            (241.5, '"'),
+            (241.5, "#"),
+            (241.5, "+："),
+            (241.5, "+，请问一下读《地藏经》时耳边有女人叹"),
+            (CONT, "息声的幻听，为何？你正常读。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert "+，" not in ch.content
+        assert '<div class="answer-text">+</div>' not in ch.content
+        assert "请问一下读《地藏经》时耳边有女人叹息声的幻听" in ch.content
+        assert "你正常读。" in ch.content
 
     def test_symbol_junk_inside_open_question(self, parser):
         """PDF Symbol font runs after question body must not become question-text."""
@@ -687,6 +710,35 @@ class TestNumberedQuestions:
         assert "二、关于疾病。" not in questions[0]
 
 
+    def test_wentier_chinese_numeral_after_answer_opens_new_card(self, parser):
+        """「问题二、」after an answer is a new turn (2025-12-11 微信 缘起尘微)."""
+        lines = [
+            (157.0, "Tai 师父2025 年12 月11 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年12 月11 号，回答微信公众号的问题。"),
+            (CONT, "缘起尘微："),
+            (IND,  "问题一、师父，思念阿弥陀佛，可以将他想象成一个光团吗。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，缘起尘微，你最好还是想象成一个人影。"),
+            (IND,  "问题二、临终之时，愿望是去极乐世界，这个人是否还有机会去欲界六天？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题，福报够的话可以去的。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["缘起尘微", "缘起尘微"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "问题一、" in questions[0]
+        assert "问题二、临终之时" in questions[1]
+        assert "问题二、" not in questions[0]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "问题二、" not in answers[0]
+
+
     def test_subquestion_restatement_after_answer_opens_new_card(self, parser):
         """「第二个问题是，…」dumped into the previous answer is a new question
         (2026-02-02 枫红201九). Tai answering「第二个问题腰…」must stay an answer."""
@@ -711,6 +763,207 @@ class TestNumberedQuestions:
         assert "第二个问题是，腰容易塌" in questions[1]
         assert "第二个问题是，腰容易塌" not in questions[0]
         assert "腰塌是气不足" in ch.content
+
+
+    def test_dumped_di_ge_wenti_comma_after_answer_opens_new_card(self, parser):
+        """「第二个问题，…吗？」dumped into Q1's answer is a new card
+        (2026-03-04 官网 一缕思情). Tai's next「第二个问题淫欲…」stays an answer."""
+        lines = [
+            (157.0, "Tai 师父2026 年3 月4 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年3 月4 号，先回答官网的问题。"),
+            (CONT, "一缕思情："),
+            (IND,  "顶礼Tai师，第一个问题，做好事有功利心。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，61楼一缕思情，求福报就可以了。"),
+            (IND,  "第二个问题，看了您的书后淫欲很重，看黄片算邪淫吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题淫欲的问题，看黄片算邪淫吗？理论上算。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=20)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["一缕思情", "一缕思情"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "做好事有功利心" in questions[0]
+        assert "看了您的书后淫欲很重" in questions[1]
+        assert "看了您的书后淫欲很重" not in questions[0]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "看了您的书后淫欲很重" not in answers[0]
+        assert "理论上算" in answers[1]
+
+
+    def test_dumped_di_ge_wenti_space_after_answer_opens_new_card(self, parser):
+        """「第二个问题 家族里面…」with a space (2026-03-04 官网 Yue)."""
+        lines = [
+            (157.0, "Tai 师父2026 年3 月4 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年3 月4 号，先回答官网的问题。"),
+            (CONT, "Yue："),
+            (IND,  "第一个问题为了一个事情专门做了些功德去求。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，62楼Yue，功德还在。"),
+            (IND,  "第二个问题 家族里面兄弟相争，主动放弃的福报还在吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题，家族里面兄弟相争，如果该是你的，那肯定是你的。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=20)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["Yue", "Yue"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "家族里面兄弟相争" in questions[1]
+        assert "家族里面兄弟相争" not in questions[0]
+
+
+    def test_er_shi_about_after_answer_opens_new_card(self, parser):
+        """「二是关于锻炼」after an answer is a new card (2026-02-03 官网 guangtz)."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月3 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月3 号，先回答官网的问题。"),
+            (CONT, "guangtz："),
+            (IND,  "一是关于腹式呼吸。能不能每日吸氧？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题33楼，guangtz，不是重症就不用吸氧。"),
+            (IND,  "二是关于锻炼。因为脑梗，想开始打坐，想请您开示。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题想打坐，放下对身体的执著。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["guangtz", "guangtz"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "一是关于腹式呼吸" in questions[0]
+        assert "二是关于锻炼" in questions[1]
+        assert "二是关于锻炼" not in questions[0]
+
+
+    def test_circled_number_after_answer_opens_new_card(self, parser):
+        """「②能否先度…」after an answer is a new card (2026-01-06 官网 李四挑灯)."""
+        lines = [
+            (157.0, "Tai 师父2026 年1 月6 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年1 月6 号，先回答官网的问题。"),
+            (CONT, "李四挑灯："),
+            (IND,  "1、关于度人：我能不能发愿把有缘人都引去极乐世界？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "54楼，李四挑灯，你得先跟他消完业。"),
+            (IND,  "②能否先度跟我有缘的人，再度跟我无缘的人，可以这么发愿吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题，能否先度跟我有缘的人？可以。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=18)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["李四挑灯", "李四挑灯"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "②能否先度" in questions[1]
+        assert "②能否先度" not in questions[0]
+
+
+    def test_circled_list_inside_answer_stays_in_answer(self, parser):
+        """Tai listing ①②③ in one answer must not become extra cards."""
+        lines = [
+            (157.0, "Tai 师父2025 年12 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年12 月10 号，先回答官网的问题。"),
+            (CONT, "甲："),
+            (IND,  "见啥是啥怎么理解？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题甲，分三层。"),
+            (IND,  "①见啥是啥：被情绪吸引。"),
+            (IND,  "②见啥不是啥：用分别心观察执著。"),
+            (IND,  "③见啥还是啥：觉照一切。"),
+            (IND,  "但是俺翻了《坐禅1》，这是为什么？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，到了四禅还有细细的欢喜心。"),
+            (CONT, "乙："),
+            (IND,  "下一个提问者。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["甲", "乙"]
+        first_a = ch.content.split('<div class="answer"', 1)[1]
+        answer_only = first_a.split('<div class="question"', 1)[0]
+        assert "①见啥是啥" in answer_only
+        assert "③见啥还是啥" in answer_only
+        assert "但是俺翻了《坐禅1》" in answer_only
+
+
+    def test_tai_second_question_mid_answer_stays_in_answer(self, parser):
+        """Tai continuing「第二个问题，她可能是想听经…」is not a dumped Q."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月1 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月1 号，先回答贴吧的问题。"),
+            (CONT, "甲："),
+            (IND,  "1、家里有附体。2、她想听经。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第一个问题，附体不要理。"),
+            (IND,  "第二个问题，她可能是想听经，你正常念经给她听就可以了。"),
+            (IND,  "没有什么过分的要求就顺着。"),
+            (CONT, "乙："),
+            (IND,  "下一个提问者。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["甲", "乙"]
+        first_a = ch.content.split('<div class="answer"', 1)[1]
+        answer_only = first_a.split('<div class="question"', 1)[0]
+        assert "她可能是想听经" in answer_only
+
+
+    def test_namecolon_trailing_comma_is_a_questioner(self, parser):
+        """``莲舟曲：，`` is a questioner with a missing timestamp
+        (2026-01-06 微信), not a stray ``<p>莲舟曲：，</p>``."""
+        lines = [
+            (157.0, "Tai 师父2026 年1 月6 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年1 月6 号，回答微信公众号的问题。"),
+            (CONT, "如如不动："),
+            (IND,  "我母亲得了渐冻症。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题，如如不动，可以。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "莲舟曲：，"),
+            (IND,  "练磕头居然拉伤了左边肋骨下面一点，只好先停一下了"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，莲舟曲，磕头还能拉伤肋骨吗？"),
+        ]
+        ch = parser.parse_lines(lines, start_index=18)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["如如不动", "莲舟曲"]
+        assert "<p>莲舟曲：，</p>" not in ch.content
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "练磕头居然拉伤" in questions[1]
+
+
+    def test_closing_wrap_bang_is_not_a_questioner(self, parser):
+        """Wrapped closing「…顺风，回」+「家过年开心！」must stay in the answer
+        (2026-02-07 微信), not become questioner 家过年开心."""
+        lines = [
+            (157.0, "Tai 师父2026 年2 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2026 年2 月7 号，回答微信公众号的问题。"),
+            (CONT, "承慈："),
+            (IND,  "头脑中会出现各种杂乱的头像。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，就是你的妄想太多。"),
+            (IND,  "好了，今天微信公众号的问题就回答到这里，祝大家一路顺风，回"),
+            (CONT, "家过年开心！"),
+            (IND,  "新的一年里身体健康。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=19)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["承慈"]
+        assert "家过年开心" not in names
+        assert "祝大家一路顺风，回家过年开心！" in ch.content
 
 
     def test_diyi_comma_in_answer_is_not_a_new_question(self, parser):
@@ -1192,7 +1445,7 @@ class TestImportPyMuPDF:
 
 
 # ---------------------------------------------------------------------------
-# Live Nov–Mar PDF: 2026-02-02 官网 must stay 46 cards on rebuild
+# Live Nov–Mar PDF: split JSON segments must become HTML question cards
 # ---------------------------------------------------------------------------
 
 NOV_MAR_PDF = (
@@ -1202,34 +1455,108 @@ NOV_MAR_PDF = (
 )
 
 
-class TestFeb2GuanwangRebuildCount:
-    """``gen_all.py`` / ``PDFParser.parse`` of the Nov–Mar PDF must emit 46
-    question cards for 2026-02-02 官网 (matches audio_map ``2026-02-02-guanwang``).
+def _section_html(chapter, section_id: str) -> str:
+    h2s = list(re.finditer(r'<h2 id="([^"]+)">', chapter.content))
+    for i, m in enumerate(h2s):
+        if m.group(1) == section_id:
+            end = h2s[i + 1].start() if i + 1 < len(h2s) else len(chapter.content)
+            return chapter.content[m.start():end]
+    raise AssertionError(f"{section_id} missing from {chapter.filename}")
 
-    Pre-fix this session collapsed to 43–44 cards: Chinese ``二、`` and
-    ``第二个问题是，`` were swallowed, and digit / ellipsis nicknames were
-    dropped as PDF-symbol junk.
+
+def _section_questioners(chapter, section_id: str):
+    return re.findall(
+        r'<span class="questioner">([^<]*)</span>',
+        _section_html(chapter, section_id),
+    )
+
+
+@pytest.fixture(scope="module")
+def nov_mar_chapters():
+    if not NOV_MAR_PDF.is_file():
+        pytest.skip("Nov–Mar source PDF missing")
+    return PDFParser(DEFAULT_SETTINGS, image_handler=None).parse(
+        NOV_MAR_PDF, start_index=16
+    )
+
+
+class TestNovMarSwallowedSplitsBecomeCards:
+    """audio_map splits for Dec–Mar must appear as ``.question`` cards after
+    ``PDFParser.parse`` / ``gen_all.py``. JSON-only Ｃｑｙ (no PDF nickname)
+    is not invented here.
     """
 
-    @pytest.mark.skipif(not NOV_MAR_PDF.is_file(), reason="Nov–Mar source PDF missing")
-    def test_2026_02_02_guanwang_is_46_cards(self):
-        parser = PDFParser(DEFAULT_SETTINGS, image_handler=None)
-        chapters = parser.parse(NOV_MAR_PDF, start_index=16)
-        feb = next(ch for ch in chapters if ch.filename == "20.html")
-        h2s = list(re.finditer(
-            r'<h2 id="([^"]+)">\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s+([^<]+)',
-            feb.content,
-        ))
-        section = None
-        for i, m in enumerate(h2s):
-            if m.group(1) == "2026nian-2yue-2ri-guan-wang":
-                end = h2s[i + 1].start() if i + 1 < len(h2s) else len(feb.content)
-                section = feb.content[m.start():end]
-                break
-        assert section, "2026-02-02 官网 h2 missing from February chapter"
-        names = re.findall(r'<span class="questioner">([^<]*)</span>', section)
+    def test_2026_02_02_guanwang_is_46_cards(self, nov_mar_chapters):
+        feb = next(ch for ch in nov_mar_chapters if ch.filename == "20.html")
+        names = _section_questioners(feb, "2026nian-2yue-2ri-guan-wang")
         assert len(names) == 46
         assert names.count("guangTz") == 2
         assert names.count("枫红201九") == 2
         assert names.count("13020466664") == 4
         assert names.count("。。") == 1
+
+    def test_2026_02_03_guanwang_splits_guangtz_q2(self, nov_mar_chapters):
+        feb = next(ch for ch in nov_mar_chapters if ch.filename == "20.html")
+        names = _section_questioners(feb, "2026nian-2yue-3ri-guan-wang")
+        assert names.count("guangtz") == 2
+        html = _section_html(feb, "2026nian-2yue-3ri-guan-wang")
+        assert "二是关于锻炼" in html.split('<span class="questioner">廉廉1</span>')[0]
+        answers_before_lian = html.split('<span class="questioner">廉廉1</span>')[0]
+        # Q2 body must be a question card, not leftover answer-text
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>',
+            answers_before_lian,
+            flags=re.S,
+        )
+        assert any("二是关于锻炼" in q for q in q_blocks)
+
+    def test_2026_02_07_wechat_does_not_invent_home_newyear(self, nov_mar_chapters):
+        feb = next(ch for ch in nov_mar_chapters if ch.filename == "20.html")
+        names = _section_questioners(feb, "2026nian-2yue-7ri-wei-xin-gong-zhong-hao")
+        assert "家过年开心" not in names
+        html = _section_html(feb, "2026nian-2yue-7ri-wei-xin-gong-zhong-hao")
+        assert "回家过年开心" in html
+
+    def test_2026_01_06_guanwang_splits_circled_two(self, nov_mar_chapters):
+        jan = next(ch for ch in nov_mar_chapters if ch.filename == "19.html")
+        names = _section_questioners(jan, "2026nian-1yue-6ri-guan-wang")
+        assert names.count("李四挑灯") >= 3
+        html = _section_html(jan, "2026nian-1yue-6ri-guan-wang")
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert any("②能否先度" in q for q in q_blocks)
+
+    def test_2026_01_06_wechat_lianzhouqu_is_a_card(self, nov_mar_chapters):
+        jan = next(ch for ch in nov_mar_chapters if ch.filename == "19.html")
+        names = _section_questioners(jan, "2026nian-1yue-6ri-wei-xin-gong-zhong-hao")
+        assert "莲舟曲" in names
+        html = _section_html(jan, "2026nian-1yue-6ri-wei-xin-gong-zhong-hao")
+        assert "<p>莲舟曲：，</p>" not in html
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        lian = next(q for q, n in zip(q_blocks, names) if n == "莲舟曲")
+        assert "练磕头" in lian
+
+    def test_2025_12_08_guanwang_keeps_circled_list_in_answer(self, nov_mar_chapters):
+        dec = next(ch for ch in nov_mar_chapters if ch.filename == "18.html")
+        names = _section_questioners(dec, "2025nian-12yue-8ri-guan-wang")
+        assert len(names) == 68
+        html = _section_html(dec, "2025nian-12yue-8ri-guan-wang")
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert not any("③见啥还是啥" in q for q in q_blocks)
+
+    def test_2026_03_04_guanwang_splits_yilvsiquing_and_yue(self, nov_mar_chapters):
+        mar = next(ch for ch in nov_mar_chapters if ch.filename == "21.html")
+        names = _section_questioners(mar, "2026nian-3yue-4ri-guan-wang")
+        assert names.count("一缕思情") == 2
+        assert names.count("Yue") == 2
+        html = _section_html(mar, "2026nian-3yue-4ri-guan-wang")
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert any("看了您的书后" in q for q in q_blocks)
+        assert any("家族里面兄弟相争" in q for q in q_blocks)

@@ -94,20 +94,23 @@ QTIME_RE = re.compile(
     r"|\d{1,2}:\d{2}(?::\d{2})?)"
     r")\s*$"
 )
-NAMECOLON_RE = re.compile(r"^(?P<name>.{1,40}?)[：:]\s*$")
+# Trailing `：，` is a missing timestamp (2026-01-06 微信「莲舟曲：，」).
+NAMECOLON_RE = re.compile(r"^(?P<name>.{1,40}?)[：:]\s*[，,、.。；;]?\s*$")
 # 微信暱稱偶發以 !／！ 收尾（如「咩咩!」），無冒號
 NAMEBANG_RE = re.compile(r"^(?P<name>.{1,40}?)[!！]\s*$")
 BARETIME_RE = re.compile(
     r"^(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}"
     r"|\d{1,2}:\d{2}(?::\d{2})?)$"
 )
-# Arabic 1、 / 问题2、 and Chinese 一、…九、 (not 十、 — that is often a
-# wrapped「二十、三十分钟」). 2026-02-02 官网 guangTz Q2 is 二、.
+# Arabic 1、 / 问题2、, Chinese 问题二、, and bare 一、…九、 (not 十、 —
+# that is often a wrapped「二十、三十分钟」). 2026-02-02 官网 guangTz Q2 is 二、;
+# 2025-12-11 微信 缘起尘微 Q2 is 问题二、.
 # Do not treat Tai's answer enumerators「第一，」「第二，」as question openers:
 # optional「第」+ Chinese numeral + fullwidth comma is spoken listing, not 一、.
 NUM_RE = re.compile(
     r"^(?:"
     r"(?:问题|問題|问|問)?\s*\d+\s*[、.，,)）]"
+    r"|(?:问题|問題|问|問)\s*[一二三四五六七八九]\s*[、.]"
     r"|[一二三四五六七八九]\s*[、.]"
     r")"
 )
@@ -117,12 +120,28 @@ NUM_RE = re.compile(
 SUBQ_RESTATE_RE = re.compile(
     r"^第[二三四五六七八九十百\d]+个问题是[，,]"
 )
+# Same dump without「是，」: 「第二个问题，看了您的书后…」(一缕思情),
+# 「第二个问题 家族里面…」(Yue), 「二是关于锻炼」(guangtz), 「②能否先度…」.
+# Ambiguous vs Tai answering「第二个问题，福报够…」— only split when the
+# current answer already has body and the next opener is Taiguanglin.
+AMBIGUOUS_SUBQ_RE = re.compile(
+    r"^(?:"
+    r"第[二三四五六七八九十百\d]+个问题(?:[，,]|\s+|(?=[\u4e00-\u9fff]))"
+    r"|[一二三四五六七八九]是"
+    r"|[①②③④⑤⑥⑦⑧⑨⑩]"
+    r")"
+)
+CIRCLED_OPEN_RE = re.compile(r"^[①②③④⑤⑥⑦⑧⑨⑩]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
 LONE_COLON_RE = re.compile(r"^[：:]\s*$")
 # PDF Symbol／裝飾字型常被抽成純 ASCII 標點行（「" # $ % & … +：」）
 PDF_SYMBOL_JUNK_RE = re.compile(
     r"""^[\s\"#\$%&'\(\)\*\+,\-\./:;<=>\?@\[\\\]\^_`\{\|\}~！：]+$"""
+)
+# 符號字型殘渣黏在下一句開頭（2025-12-11 微信咩咩回答：「+，请问一下读…」）
+LEADING_PDF_SYMBOL_JUNK_RE = re.compile(
+    r"""^[\s\"#\$%&'\(\)\*\+,\-\./:;<=>\?@\[\\\]\^_`\{\|\}~！：，、]+"""
 )
 
 # 來源標籤（簡體；繁體版由 opencc 轉換，與 qa/ 資料夾的「貼吧/微信公眾號/官網」對應）
@@ -248,6 +267,23 @@ def _plausible_questioner_label(s: str) -> bool:
     return True
 
 
+def _strip_leading_pdf_symbol_junk(text: str) -> str:
+    """去掉行首的 PDF Symbol 殘渣，留下後面的正文。
+
+    純標點行由 ``_is_pdf_symbol_junk`` 丟棄；這裡處理「+，请问一下…」這類
+    殘渣已經黏上漢字的行。編號子問題（``1、`` / ``问题二、``）不動。
+    """
+    t = (text or "").strip()
+    if not t:
+        return t
+    if NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t) or AMBIGUOUS_SUBQ_RE.match(t):
+        return t
+    stripped = LEADING_PDF_SYMBOL_JUNK_RE.sub("", t, count=1).strip()
+    if stripped and stripped != t and re.search(r"[\u4e00-\u9fffA-Za-z]", stripped):
+        return stripped
+    return t
+
+
 def _is_pdf_symbol_junk(text: str) -> bool:
     """PDF 裝飾／Symbol 字型抽出的純標點行（應丟棄）。
 
@@ -304,9 +340,85 @@ def _is_boundary_after_sep(nxt: str) -> bool:
 
 
 def _is_subquestion_line(text: str) -> bool:
-    """Numbered sub-question opener: ``1、`` / ``二、`` / ``第二个问题是，``."""
+    """Numbered sub-question opener: ``1、`` / ``二、`` / ``问题二、`` / ``第二个问题是，`` / dumped ``第二个问题，``."""
     t = (text or "").strip()
-    return bool(NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t))
+    return bool(
+        NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t) or AMBIGUOUS_SUBQ_RE.match(t)
+    )
+
+
+def _is_ambiguous_dumped_subq(text: str) -> bool:
+    """Dumped Q2 without a unique marker (not ``1、`` / ``第二个问题是，``)."""
+    t = (text or "").strip()
+    if NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t):
+        return False
+    return bool(AMBIGUOUS_SUBQ_RE.match(t))
+
+
+def _following_is_answerer(lines: List[Tuple[float, str]], i: int) -> bool:
+    """True when the next structural opener after ``lines[i]`` is ``Taiguanglin：``.
+
+    Wrapped body of a dumped question is skipped. Another numbered opener,
+    separator, or new questioner means this line is not a swallowed turn.
+    """
+    for j in range(i + 1, min(i + 50, len(lines))):
+        t = lines[j][1]
+        if _is_img_marker(t):
+            continue
+        if ANSWER_RE.match(t):
+            return True
+        if _is_structural_line(t) or _is_subquestion_line(t):
+            return False
+    return False
+
+
+def _answer_expects_wrap(state: Dict) -> bool:
+    """Current answer's last fragment does not end a sentence (line-wrap)."""
+    card = state.get("card")
+    if not card or card.get("kind") != "answer":
+        return False
+    buf = "".join(state.get("para") or [])
+    if buf:
+        return not _ends_sentence(buf)
+    paras = _text_paras_only(card.get("paras") or [])
+    return bool(paras) and not _ends_sentence(paras[-1])
+
+
+def _answer_has_circled_para(card: Dict, state: Dict) -> bool:
+    """True if this answer already contains a ①②③ listing paragraph."""
+    paras = list(card.get("paras") or [])
+    buf = "".join(state.get("para") or [])
+    if buf:
+        paras = paras + [buf]
+    for p in paras:
+        if _is_img_marker(p):
+            continue
+        if CIRCLED_OPEN_RE.match((p or "").strip()):
+            return True
+    return False
+
+
+def _should_split_ambiguous_subq(
+    state: Dict, lines: List[Tuple[float, str]], i: int
+) -> bool:
+    """Split dumped Q2 out of an answer only when Tai's Q1 answer already started
+    and a new ``Taiguanglin：`` follows this paragraph (the real Q2 answer).
+
+    Circled ``③`` at the end of a ①②③ list (2025-12-08 TaiZhuYue) is followed
+    by more question body then ``Taiguanglin：`` — keep it in the answer.
+    """
+    card = state.get("card")
+    if not card or card.get("kind") != "answer":
+        return True
+    has_body = bool(_text_paras_only(card.get("paras") or [])) or bool(
+        state.get("para")
+    )
+    if not has_body:
+        return False
+    text = (lines[i][1] if i < len(lines) else "") or ""
+    if CIRCLED_OPEN_RE.match(text.strip()) and _answer_has_circled_para(card, state):
+        return False
+    return _following_is_answerer(lines, i)
 
 
 def _is_img_marker(text: str) -> bool:
@@ -591,6 +703,9 @@ class PDFParser:
             if PAGE_RE.match(t) or FOOTER_TEXT in t:
                 continue
             if _is_pdf_symbol_junk(t):
+                continue
+            t = _strip_leading_pdf_symbol_junk(t)
+            if not t or _is_pdf_symbol_junk(t):
                 continue
             clean.append((x0, t))
 
@@ -995,7 +1110,15 @@ class PDFParser:
                     )
                     # 微信常無分隔線：上一段回答結束後直接接下一暱稱
                     is_after_answer = card is not None and card["kind"] == "answer"
-                    if is_section_intro or is_after_answer:
+                    # 回答未結束的折行（「祝大家一路顺风，回」+「家过年开心！」）
+                    # 不可當成新暱稱。
+                    if (
+                        is_after_answer
+                        and not indented
+                        and _answer_expects_wrap(state)
+                    ):
+                        pass
+                    elif is_section_intro or is_after_answer:
                         if nc:
                             name = _normalize_spaces(nc.group("name"))
                         elif bang:
@@ -1023,14 +1146,24 @@ class PDFParser:
                     # 成段（question-text）。引言（如「頂禮師父／續問：」）也留在同卡。
                     add_line(text, indented=True)
                     card["numbered"] = True
+                    i += 1
+                    continue
+                # 編號問題出現在回答／敘述段落之後或尚無卡片 → 是新的一輪提問。
+                # 「第二个问题，…」「二是…」「②…」與師父回答開頭同形，只在
+                # 上一則回答已有正文、且下一個結構行是 Taiguanglin 時切開。
+                if (
+                    card is not None
+                    and card["kind"] == "answer"
+                    and _is_ambiguous_dumped_subq(text)
+                    and not _should_split_ambiguous_subq(state, lines, i)
+                ):
+                    pass
                 else:
-                    # 編號問題出現在回答／敘述段落之後或尚無卡片 → 是新的一輪提問，
-                    # 沿用同一提問者另開新卡片。
                     start_card("question", state["questioner"], state["qtime"])
                     add_line(text, indented=True)
                     state["card"]["numbered"] = True
-                i += 1
-                continue
+                    i += 1
+                    continue
 
             # 一般內文（縮排=新段落；否則接續）
             add_line(text, indented)
