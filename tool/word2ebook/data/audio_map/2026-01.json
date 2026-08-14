@@ -2,7 +2,7 @@
   "month": "2026-01",
   "version": 1,
   "stats": {
-    "matched": 468,
+    "matched": 470,
     "missing": 0,
     "opening_ok": 12,
     "sessions": 12,
@@ -3068,28 +3068,44 @@
           "stable_key": "2026nian-1yue-6ri-guan-wang#33",
           "q_preview": "顶礼Tai师父！\n1、关于度人：Tai师父，那极乐世界加持力那么大，尽未来际，我把跟我有缘无缘的人都往极乐世界引，那岂不是很好。这就不用在有三恶道的世界反复投胎专门度一个人，只要引导他们去了极乐世界，就能在强大的加持力下修到阿罗汉。\n问题:①我能不能发这样的愿，只要跟我有缘的人，我都引别人去极乐世界，都愿他们去极乐世界？他们去了极乐世界，修成阿罗汉跟我的业就",
           "start": 2187.085,
-          "end": 2256.386,
+          "end": 2248.058,
           "start_label": "00:36:27.085",
-          "end_label": "00:37:36.386",
-          "confidence": 0.82,
+          "end_label": "00:37:28.058",
+          "confidence": 0.93,
           "status": "manual",
           "locked": false,
-          "notes": "leadin:prop-split|lead=0.50|gap=0.73|onset=2183.326|cscore=109.8",
-          "srt_preview": "那就是障碍呀。恶念本身也是执着，你也解脱不了啊。五十四楼李四挑灯啊，你要把人都带到极乐世界。呃，这个院可以，但是呢你得先跟他消完业，哎，你才能能让他们成为这个不影响你这个称呼啊，你把他们带到极乐世界，要让让他们都成为阿罗汗。那之前你得跟他把这段夜给消了，你和他之间的夜给消了，你才能正常向他传法把他带到极乐世界去，明白吗？啊，你伤害了，人家现在你去跑去啊，你去极乐世界吧啊，你不要再向我报复了，这个可以吗？啊，有点不太可能吧，你得先受完这个…",
+          "notes": "leadin:prop-split|lead=0.50|gap=0.73|onset=2183.326|cscore=109.8|split-q2-at=2248.558",
+          "srt_preview": "五十四楼李四挑灯啊，你要把人都带到极乐世界。呃，这个院可以，但是呢你得先跟他消完业，哎，你才能能让他们成为这个不影响你这个称呼啊，你把他们带到极乐世界，要让让他们都成为阿罗汗。那之前你得跟他把这段夜给消了，你和他之间的夜给消了，你才能正常向他传法把他带到极乐世界去，明白吗？啊，你伤害了，人家现在你去跑去啊，你去极乐世界吧啊，你不要再向我报复了，这个可以吗？啊，有点不太可能吧，你得先受完这个报。那善缘的话，那没关系，你帮助过人，所以你劝他…",
           "q_text": "顶礼Tai师父！\n1、关于度人：Tai师父，那极乐世界加持力那么大，尽未来际，我把跟我有缘无缘的人都往极乐世界引，那岂不是很好。这就不用在有三恶道的世界反复投胎专门度一个人，只要引导他们去了极乐世界，就能在强大的加持力下修到阿罗汉。\n问题:①我能不能发这样的愿，只要跟我有缘的人，我都引别人去极乐世界，都愿他们去极乐世界？他们去了极乐世界，修成阿罗汉跟我的业就彻底消了。",
-          "answer_text": "54楼，李四挑灯，你要把人都带到极乐世界，这个愿可以，但是你得先跟他消完业，你才能让他们成为不影响你的成佛。你把他们带到极乐世界，要想让他们都成为阿罗汉之前，你得跟他把这段业给消了，你和他之间的业给消了，你才能正常向他传法，把他带到极乐世界去，明白吗？\n\n你伤害了人家，现在你跑去，你去极乐世界吧，你不要再向我报复了，这个可以吗？有点不太可能，你得先受完报。那善缘的话没关系，你帮助过人，所以你劝他去极乐世界，他愿意听你的，因为你帮助过他，所以他对你有信任，他更容易听你的，然后他愿意去的话，这样就可以了，这个人就算不影响你成佛了，他慢慢成为阿罗汉他就不影响你。但是坏、恶缘，你曾经伤害过的人，他们还得是你得先受报，消这个业。\n\n②能否先度跟我有缘的人，再度跟我无缘的人，可以这么发愿吗？\n\n第二个问题，能否先度跟我有缘的人再度跟我无缘的人？可以，这个也可以。",
-          "answer_preview": "54楼，李四挑灯，你要把人都带到极乐世界，这个愿可以，但是你得先跟他消完业，你才能让他们成为不影响你的成佛。你把他们带到极乐世界，要想让他们都成为阿罗汉之前，你得跟他把这段业给消了，你和他之间的业给消了，你才能正常向他传法，把他带到极乐世界",
-          "meta": {
-            "lastPlayed": "2026-08-10 19:35",
-            "lastEdited": "2026-08-10 19:35"
-          }
+          "answer_text": "54楼，李四挑灯，你要把人都带到极乐世界，这个愿可以，但是你得先跟他消完业，你才能让他们成为不影响你的成佛。你把他们带到极乐世界，要想让他们都成为阿罗汉之前，你得跟他把这段业给消了，你和他之间的业给消了，你才能正常向他传法，把他带到极乐世界去，明白吗？\n\n你伤害了人家，现在你跑去，你去极乐世界吧，你不要再向我报复了，这个可以吗？有点不太可能，你得先受完报。那善缘的话没关系，你帮助过人，所以你劝他去极乐世界，他愿意听你的，因为你帮助过他，所以他对你有信任，他更容易听你的，然后他愿意去的话，这样就可以了，这个人就算不影响你成佛了，他慢慢成为阿罗汉他就不影响你。但是坏、恶缘，你曾经伤害过的人，他们还得是你得先受报，消这个业。",
+          "answer_preview": "54楼，李四挑灯，你要把人都带到极乐世界，这个愿可以，但是你得先跟他消完业，你才能让他们成为不影响你的成佛。你把他们带到极乐世界，要想让他们都成为阿罗汉之前，你得跟他把这段业给消了，你和他之间的业给消了，你才能正常向他传法，把他带到极乐世界去，明白吗？\n\n你伤害了人家，现在你跑去，你去极乐世界吧，你不要再向我报复了，这个可以吗？有点不太可能，你得先受完报。那"
         },
         {
           "index": 34,
-          "question_id": "question-f53ffa0e22f8",
+          "question_id": "question-285af9480c4b",
           "questioner": "李四挑灯",
           "question_time": "",
           "stable_key": "2026nian-1yue-6ri-guan-wang#34",
+          "q_preview": "②能否先度跟我有缘的人，再度跟我无缘的人，可以这么发愿吗？",
+          "q_text": "②能否先度跟我有缘的人，再度跟我无缘的人，可以这么发愿吗？",
+          "answer_text": "第二个问题，能否先度跟我有缘的人再度跟我无缘的人？可以，这个也可以。",
+          "answer_preview": "第二个问题，能否先度跟我有缘的人再度跟我无缘的人？可以，这个也可以。",
+          "start": 2248.058,
+          "end": 2256.386,
+          "start_label": "00:37:28.058",
+          "end_label": "00:37:36.386",
+          "confidence": 0.93,
+          "status": "manual",
+          "locked": false,
+          "notes": "leadin:spoken-open|lead=0.50|gap=3.58|onset=2248.558|nd=第二个问题能否先度|split-from=#33-swallowed-q",
+          "srt_preview": "他们还得是你得先受报销这个叶哈啊第二个问题，能否先度跟我有缘的人再度跟我无缘的人可以呀，啊这个也可以。"
+        },
+        {
+          "index": 35,
+          "question_id": "question-f53ffa0e22f8",
+          "questioner": "李四挑灯",
+          "question_time": "",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#35",
           "q_preview": "2、同父亲去寺庙：Tai师父，几周前，我把我60多岁的父亲带到寺庙上香，因为他这一辈子很刚强难化，我想带他去寺庙看看，结个缘也好。他对出家人有些偏见，好几次说人家是假和尚，说人家和尚结婚。这次在寺庙里游玩的时候，我感叹其实能成为出家人挺好的，他说你以为人家是真和尚呀，说到这里我心里感觉要完蛋啦要造口业啦，心里想赶紧打住吧！也不知道怎么的，下一秒他居然闭嘴了，",
           "start": 2256.386,
           "end": 2283.225,
@@ -3109,11 +3125,11 @@
           }
         },
         {
-          "index": 35,
+          "index": 36,
           "question_id": "question-500bdbae6b47",
           "questioner": "行晖",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#35",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#36",
           "q_preview": "听师父说过一句双盘两小时以上，需要百日筑基。有一个疑问：如果最近时间上机缘不够，没有连续的时间保证俩小时，可不可以先随缘双盘时间，等有保证充足时间的时候，再连续百日及百日以上坐够俩小时，这样也可以。\n还是在达到两个小时的时候，必须连续百日坐够两个小时呢。",
           "start": 2283.225,
           "end": 2358.125,
@@ -3133,11 +3149,11 @@
           }
         },
         {
-          "index": 36,
+          "index": 37,
           "question_id": "question-bddf52865919",
           "questioner": "zzx",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#36",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#37",
           "q_preview": "师父，以前对发心的理解是四弘誓愿，众生无边誓愿度，那时候不知道要度到罗汉，以为只是随缘度化，但是针对的范围是不管有缘或者无缘，众生皆平等。现在听了师父的讲解，发的是“度一切与自己有缘的众生，随缘度一些无缘的众生”，这样对比，心量是不是反而降低了？",
           "start": 2358.125,
           "end": 2423.44,
@@ -3157,11 +3173,11 @@
           }
         },
         {
-          "index": 37,
+          "index": 38,
           "question_id": "question-c41b1556ffc3",
           "questioner": "Jinxi",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#37",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#38",
           "q_preview": "1、天人在天上享福是不是也是在“消业和受报”？",
           "start": 2423.44,
           "end": 2476.08,
@@ -3181,11 +3197,11 @@
           }
         },
         {
-          "index": 38,
+          "index": 39,
           "question_id": "question-5520dd03133c",
           "questioner": "Jinxi",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#38",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#39",
           "q_preview": "2、人活在世上需要福报，那无限地狱里的众生，第一次来到人间，他们的福报是从哪里来的呢？",
           "start": 2476.08,
           "end": 2565.619,
@@ -3205,11 +3221,11 @@
           }
         },
         {
-          "index": 39,
+          "index": 40,
           "question_id": "question-c03cdad59eed",
           "questioner": "Jinxi",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#39",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#40",
           "q_preview": "3、《地藏经》中说：“是大国王等欲布施时，若能具大慈悲，下心含笑，亲手遍布施，或使人施，软言慰谕，是国王等所获福利，如布施百恒河沙佛功德之利”，这个说法是不是太夸张了？即使国王及被施人都是空心管子，那他们记忆中的众生，比恒河沙佛记忆中的众生还多么？",
           "start": 2565.619,
           "end": 2669.206,
@@ -3229,11 +3245,11 @@
           }
         },
         {
-          "index": 40,
+          "index": 41,
           "question_id": "question-358992a15e1f",
           "questioner": "Jinxi",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#40",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#41",
           "q_preview": "4、一个人拥有的东西越多，消耗的福报越多，是不是可以这样理解：拥有的东西相当于是火，如果不想让火熄灭的话，就不停地往里加柴，而柴就是个人的福报。所有拥有的东西都是自己的福报在支撑著。",
           "start": 2669.206,
           "end": 2689.297,
@@ -3253,11 +3269,11 @@
           }
         },
         {
-          "index": 41,
+          "index": 42,
           "question_id": "question-daacd197396c",
           "questioner": "冷咖啡",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#41",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#42",
           "q_preview": "《坐禅2》中改剧本缘起这节，Tai师讲的:在现场，阿难第一次求情的时候....在场的所有人，尤其是等觉菩萨们，弥勒菩萨、文殊、普贤、观音、大势至等人.......。\n根据Tai师所说，这个时候阿难是凡夫状态，观音菩萨也在现场，大家都是轮回内见面，观音菩萨和释迦牟尼佛见面了，那阿弥陀佛的加持力不就能通过观音菩萨→释迦牟尼佛再传递给娑婆世界的众生了吗？",
           "start": 2689.297,
           "end": 2822.363,
@@ -3277,11 +3293,11 @@
           }
         },
         {
-          "index": 42,
+          "index": 43,
           "question_id": "question-cfac8955c12f",
           "questioner": "枫红2019",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#42",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#43",
           "q_preview": "之前因睡眠问题，修行左不是右不是的人也憔悴得不行，后来到寺院报了个长住义工，却后悔了，不想去。遇见师父答疑，师父说这是佛菩萨的加持，去。于是到寺院做了三个月义工，现在回来一个月了，睡得不好的时候少，睡不著的时候没有，太神奇了，感恩师父！\n现在每天磕大头两百多个，打坐一小时左右，两边肩不一边高的问题竟然缓解了。现在的问题是，卡在双盘一个小时不能前进，一日三餐都",
           "start": 2822.363,
           "end": 2918.693,
@@ -3301,11 +3317,11 @@
           }
         },
         {
-          "index": 43,
+          "index": 44,
           "question_id": "question-4ae75d4d0c50",
           "questioner": "笑观红尘",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#43",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#44",
           "q_preview": "顶礼Tai师父！\n1、请问《不空罥索神变真言经》所载的“不空摩尼供养真言”（ om嗡啊蒙嘎钵葛玛尼巴德玛哇佳类达他嘎达唯了嘎得三曼达波惹萨拉吽）是正法吗，可以每天经常念吗",
           "start": 2918.693,
           "end": 2951.52,
@@ -3325,11 +3341,11 @@
           }
         },
         {
-          "index": 44,
+          "index": 45,
           "question_id": "question-5894622d454f",
           "questioner": "笑观红尘",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-guan-wang#44",
+          "stable_key": "2026nian-1yue-6ri-guan-wang#45",
           "q_preview": "2、我的腿比较粗、比较短，感觉炼成双盘难度较大，想专修真言法门。我每天只念楞严咒，可以修出神通吗",
           "start": 2951.52,
           "end": 3011.53,
@@ -3427,28 +3443,44 @@
           "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#2",
           "q_preview": "我母亲84了，得了渐冻症，我现在每天给她念一部《地藏经》，回向给她累生累世的冤亲债主。目前已做好思想工作，她本人对念经不排斥，但是现在的身体状况，翻经书已经非常困难了，所以我想著是不是可以教她念诵灭定业真言兼念地藏菩萨圣号，回向给自己累生累世的冤亲债主，这样好吗？还有其他适合做的吗？",
           "start": 60.975,
-          "end": 133.32,
+          "end": 104.71,
           "start_label": "00:01:00.975",
-          "end_label": "00:02:13.320",
-          "confidence": 0.82,
+          "end_label": "00:01:44.710",
+          "confidence": 0.93,
           "status": "manual",
           "locked": false,
-          "notes": "leadin:prop-split|lead=0.50|gap=0.59|onset=59.375|cscore=80.0",
-          "srt_preview": "这样才能一直通下去啊。第二个问题，柔揉不动啊，给渐冻症的母亲，让他念灭顶的箴言和电地藏身后回乡，给自己领上领世的问真教主，这样好吗？可以啊，你想一定要练经度啊，也不是没有办法，你去买个买个 ipad 之类的。然后呢，看有没有视频版的那种地藏经，你找一下，看看有没有视频版的，然后一边放着让他跟着一起念也可以啊，不一定要非要翻书嘛啊，现在科技这么发达哈，还有多做功德回乡给他，让他发愿啊，让他发愿渡那些人人群债主啊，还有有恶报呢，愿意承受啊啊…",
+          "notes": "leadin:prop-split|lead=0.50|gap=0.59|onset=59.375|cscore=80.0|split-out-at=105.210",
+          "srt_preview": "第二个问题，柔揉不动啊，给渐冻症的母亲，让他念灭顶的箴言和电地藏身后回乡，给自己领上领世的问真教主，这样好吗？可以啊，你想一定要练经度啊，也不是没有办法，你去买个买个 ipad 之类的。然后呢，看有没有视频版的那种地藏经，你找一下，看看有没有视频版的，然后一边放着让他跟着一起念也可以啊，不一定要非要翻书嘛啊，现在科技这么发达哈，还有多做功德回乡给他，让他发愿啊，让他发愿渡那些人人群债主啊，还有有恶报呢，愿意承受啊啊啊，尽尽量尽人事吧，该…",
           "q_text": "我母亲84了，得了渐冻症，我现在每天给她念一部《地藏经》，回向给她累生累世的冤亲债主。目前已做好思想工作，她本人对念经不排斥，但是现在的身体状况，翻经书已经非常困难了，所以我想著是不是可以教她念诵灭定业真言兼念地藏菩萨圣号，回向给自己累生累世的冤亲债主，这样好吗？还有其他适合做的吗？",
-          "answer_text": "第二个问题，如如不动，给渐冻症的母亲让她念灭定业真言和地藏圣号，回向给自己累生累世的冤亲债主，这样好吗？可以。你想一定要念经的话，也不是没有办法，你去买个iPad之类的，看看有没有视频版的那种《地藏经》找一下，然后一边放著让她跟著一起念也可以，不一定要非要翻书，现在科技这么发达。还有，多做功德回向给她，让她发愿，让她发愿度那些冤亲债主，还有，有恶报来愿意承受。尽量尽人事，该做到的都做到吧。\n\n下一个问题，莲舟曲，练磕头居然拉伤左边肋骨下面一点，只好先停一下。磕头还能拉伤肋骨吗？又不是要拿肋骨磕头，怎么会拉伤呢？你是不是前面没有做好一些简单的热身运动，突然间去磕头，那有可能。你慢慢练，肌肉拉伤应该是没啥大问题的，过一段时间自己就好了。",
-          "answer_preview": "第二个问题，如如不动，给渐冻症的母亲让她念灭定业真言和地藏圣号，回向给自己累生累世的冤亲债主，这样好吗？可以。你想一定要念经的话，也不是没有办法，你去买个iPad之类的，看看有没有视频版的那种《地藏经》找一下，然后一边放著让她跟著一起念也可",
-          "meta": {
-            "lastPlayed": "2026-08-10 19:58",
-            "lastEdited": "2026-08-10 19:58"
-          }
+          "answer_text": "第二个问题，如如不动，给渐冻症的母亲让她念灭定业真言和地藏圣号，回向给自己累生累世的冤亲债主，这样好吗？可以。你想一定要念经的话，也不是没有办法，你去买个iPad之类的，看看有没有视频版的那种《地藏经》找一下，然后一边放著让她跟著一起念也可以，不一定要非要翻书，现在科技这么发达。还有，多做功德回向给她，让她发愿，让她发愿度那些冤亲债主，还有，有恶报来愿意承受。尽量尽人事，该做到的都做到吧。",
+          "answer_preview": "第二个问题，如如不动，给渐冻症的母亲让她念灭定业真言和地藏圣号，回向给自己累生累世的冤亲债主，这样好吗？可以。你想一定要念经的话，也不是没有办法，你去买个iPad之类的，看看有没有视频版的那种《地藏经》找一下，然后一边放著让她跟著一起念也可以，不一定要非要翻书，现在科技这么发达。还有，多做功德回向给她，让她发愿，让她发愿度那些冤亲债主，还有，有恶报来愿意承受"
         },
         {
           "index": 3,
+          "question_id": "question-72386087d948",
+          "questioner": "莲舟曲",
+          "question_time": "",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#3",
+          "q_preview": "问题佚失。原问帖题干未完整收录。",
+          "q_text": "问题佚失。原问帖题干未完整收录。",
+          "answer_text": "下一个问题，莲舟曲，练磕头居然拉伤左边肋骨下面一点，只好先停一下。磕头还能拉伤肋骨吗？又不是要拿肋骨磕头，怎么会拉伤呢？你是不是前面没有做好一些简单的热身运动，突然间去磕头，那有可能。你慢慢练，肌肉拉伤应该是没啥大问题的，过一段时间自己就好了。",
+          "answer_preview": "下一个问题，莲舟曲，练磕头居然拉伤左边肋骨下面一点，只好先停一下。磕头还能拉伤肋骨吗？又不是要拿肋骨磕头，怎么会拉伤呢？你是不是前面没有做好一些简单的热身运动，突然间去磕头，那有可能。你慢慢练，肌肉拉伤应该是没啥大问题的，过一段时间自己就好了。",
+          "start": 104.71,
+          "end": 133.32,
+          "start_label": "00:01:44.710",
+          "end_label": "00:02:13.320",
+          "confidence": 0.93,
+          "status": "manual",
+          "locked": false,
+          "notes": "leadin:spoken-open|lead=0.50|gap=0.68|onset=105.210|nd=下一个问题莲舟曲|split-from=#2-swallowed-person|q-missing",
+          "srt_preview": "下一个问题，连轴曲练磕头居然拉伤左边肋骨，下面一点之后先停一下磕头，还能拉伤肋骨吗？又不是要拿肋骨，磕头，怎么会拉伤呢？你是不是前面没有做好一一些简单的呃，这个热身运动哈，突然间去磕头，那是有可能啊你慢慢练哈啊，这个肌肉拉伤应该是嗯没啥大问题的，过一段时间自己就好了。"
+        },
+        {
+          "index": 4,
           "question_id": "question-9a85a521d6c3",
           "questioner": "金刚经",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#3",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#4",
           "q_preview": "师父，专心发愿忏悔持咒念佛打坐，不追求禅定境界，可以去到极乐世界吗？",
           "start": 133.32,
           "end": 183.114,
@@ -3468,11 +3500,11 @@
           }
         },
         {
-          "index": 4,
+          "index": 5,
           "question_id": "question-6f8f0fb2485d",
           "questioner": "河南·夜餐食",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#4",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#5",
           "q_preview": "顶礼师父！问个小问题，生活中平时的打牌下棋输赢，这是剧本消业吗？",
           "start": 183.114,
           "end": 242.37,
@@ -3492,11 +3524,11 @@
           }
         },
         {
-          "index": 5,
+          "index": 6,
           "question_id": "question-cf0ce3edbf55",
           "questioner": "配汽车遥控，智能卡，开修换指纹锁",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#5",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#6",
           "q_preview": "饭后两小时不能练呼吸，不能静坐，有什么好的帮助消化，助于修行的方法吗？（本人什么都不做就会想刷手机生烦恼，又没有地方可以走动，需要看店，空间窄小）",
           "start": 242.37,
           "end": 290.26,
@@ -3516,11 +3548,11 @@
           }
         },
         {
-          "index": 6,
+          "index": 7,
           "question_id": "question-e5df70b96aef",
           "questioner": "回家",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#6",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#7",
           "q_preview": "顶礼老师！\n1、想问的是，修习您的净土禅，临终时是您和阿弥陀佛一起来接，还是您自己来接呢？",
           "start": 290.26,
           "end": 315.741,
@@ -3540,11 +3572,11 @@
           }
         },
         {
-          "index": 7,
+          "index": 8,
           "question_id": "question-9965f5b8941c",
           "questioner": "回家",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#7",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#8",
           "q_preview": "2、师父，能不能指点下我的修行？",
           "start": 315.741,
           "end": 351.78,
@@ -3564,11 +3596,11 @@
           }
         },
         {
-          "index": 8,
+          "index": 9,
           "question_id": "question-df1c86e8a518",
           "questioner": "禅净",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#8",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#9",
           "q_preview": "顶礼Tai师父！\n听师父给其他师兄答疑，说念佛号打哈欠流眼泪是有出马仙在身上，我八岁女儿念两三句佛号就这样，我该怎么办？",
           "start": 351.78,
           "end": 522.584,
@@ -3588,11 +3620,11 @@
           }
         },
         {
-          "index": 9,
+          "index": 10,
           "question_id": "question-1cd30d751235",
           "questioner": "Q",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#9",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#10",
           "q_preview": "师父好，我这人特别沉迷于音乐，歌舞表演，戏曲，我戒肉的时候很轻松就戒掉了。戒欲也戒掉了一大部分。可是歌舞，音乐，戏曲我真的很沉迷。请问有什么对症下药的办法吗？",
           "start": 522.584,
           "end": 574.455,
@@ -3612,11 +3644,11 @@
           }
         },
         {
-          "index": 10,
+          "index": 11,
           "question_id": "question-d4cb38f65a2a",
           "questioner": "崔晓宁",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#10",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#11",
           "q_preview": "顶礼师父！弟子有三个问题，祈请师父开示：\n1、看了大势至菩萨念佛圆通章决定念佛，请问阿弥陀佛和南无阿弥陀佛您推荐念哪个？",
           "start": 574.455,
           "end": 586.981,
@@ -3636,11 +3668,11 @@
           }
         },
         {
-          "index": 11,
+          "index": 12,
           "question_id": "question-c702eb62bd8f",
           "questioner": "崔晓宁",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#11",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#12",
           "q_preview": "2、弟子目前双盘有几个月，双盘时同时拿著书默念《地藏经》可以坐一小时，但只专心打坐观丹田什么的二十分钟就坐不住了，请问师父推荐按第一种先能坐到两小时再说，还是按第二种并尝试打坐时思佛念佛？目前还思不起来。",
           "start": 586.981,
           "end": 620.459,
@@ -3660,11 +3692,11 @@
           }
         },
         {
-          "index": 12,
+          "index": 13,
           "question_id": "question-980d1a3a5185",
           "questioner": "崔晓宁",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#12",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#13",
           "q_preview": "3、关于孩子教育，弟子每天自由支配时间不多，每天大概一小时左右学习育儿，您推荐继续学，还是把这个时间用于多念点《地藏经》或其他的回向给孩子更好啊？",
           "start": 620.459,
           "end": 658.27,
@@ -3684,11 +3716,11 @@
           }
         },
         {
-          "index": 13,
+          "index": 14,
           "question_id": "question-e61ca521ee8e",
           "questioner": "咏叹调休止符",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#13",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#14",
           "q_preview": "1、看完了《坐禅2》有两个问题想问一下师父，第一个是关于发心大愿的。之前还没看《坐禅2》的时候，我有一天突然想发一个救度所有见过我的人的愿，只要见过我，不论是现实还是网上还是照片，我都会救度，所以发了往生极乐世界然后修好了再回娑婆救度所有与我有缘的众生，以及过去现在未来见过我的众生这么一个愿。后面看了《坐禅2》，不知道属不属于平等普化心，然后就想问一下师父。",
           "start": 658.27,
           "end": 725.121,
@@ -3708,11 +3740,11 @@
           }
         },
         {
-          "index": 14,
+          "index": 15,
           "question_id": "question-11115b84ce45",
           "questioner": "咏叹调休止符",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#14",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#15",
           "q_preview": "2、第二个问题是《坐禅2》里关于设计的。最近两年网上关于西方伪史论的话题越来越多了，说现在学的历史很多都是编造的，里面有一点就是关于明朝的，说明朝的时候已经对全球都有管辖了，后来被洋人和清朝给趁虚而入了，然后篡改了历史，举的那种证据还挺多。就像师父说的佛经里面一些事情当故事看，我觉得不管历史是怎样的，也可以当故事来看，所以如果说真如西方伪史论说的那样，明朝有",
           "start": 725.121,
           "end": 775.54,
@@ -3732,11 +3764,11 @@
           }
         },
         {
-          "index": 15,
+          "index": 16,
           "question_id": "question-af523b694dde",
           "questioner": "心得",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#15",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#16",
           "q_preview": "师父吉祥，阿弥陀佛！请问，四禅是明心见性，那为什么有四禅功夫的人，乃至更高层次的人，还是外道呢？",
           "start": 775.54,
           "end": 889.27,
@@ -3756,11 +3788,11 @@
           }
         },
         {
-          "index": 16,
+          "index": 17,
           "question_id": "question-d2a41fd0a197",
           "questioner": "千湍盈泰",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#16",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#17",
           "q_preview": "师父吉祥！\n晚上睡梦中，心里流出几句简单的诗，醒后还记得很清楚，网上查不到，也解决我正在修行中的问题。这样的情况是意伏藏吗？还是被加持？内容能公开告诉别人吗？",
           "start": 889.27,
           "end": 930.198,
@@ -3780,11 +3812,11 @@
           }
         },
         {
-          "index": 17,
+          "index": 18,
           "question_id": "question-4aa16cd40b2e",
           "questioner": "千湍盈泰",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#17",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#18",
           "q_preview": "师父吉祥！\n有时感觉本心的力量变得很强，好像似乎可以影响外界，飞跃出体外。\n但事实上无论怎样尝试，并不能对物理世界有丝毫影响。这说明心的力量（禅定力）还不够是吗？",
           "start": 930.198,
           "end": 1030,
@@ -3804,11 +3836,11 @@
           }
         },
         {
-          "index": 18,
+          "index": 19,
           "question_id": "question-18ba777dffd5",
           "questioner": "hanyin",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#18",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#19",
           "q_preview": "《阿含经》上说地球上的人类是光音天投生的，那恐龙时代有人类吗？",
           "start": 1030,
           "end": 1052.193,
@@ -3828,11 +3860,11 @@
           }
         },
         {
-          "index": 19,
+          "index": 20,
           "question_id": "question-5501420f52a8",
           "questioner": "叙舟",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#19",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#20",
           "q_preview": "顶礼师父，请问我们普通在家凡夫想要求得上品上生应该如何实践？",
           "start": 1052.193,
           "end": 1071.179,
@@ -3852,11 +3884,11 @@
           }
         },
         {
-          "index": 20,
+          "index": 21,
           "question_id": "question-350d8b04746c",
           "questioner": "WEIWEI",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#20",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#21",
           "q_preview": "请问师父，熬腿阶段，能否进入睡眠关闭痛感注意力，等不疼了，就丢掉睡觉，换成参思情？",
           "start": 1071.179,
           "end": 1094.387,
@@ -3876,11 +3908,11 @@
           }
         },
         {
-          "index": 21,
+          "index": 22,
           "question_id": "question-22295a563a4c",
           "questioner": "如如不动",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#21",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#22",
           "q_preview": "地藏菩萨是在娑婆世界证十地菩萨果位吗？",
           "start": 1094.387,
           "end": 1108.92,
@@ -3900,11 +3932,11 @@
           }
         },
         {
-          "index": 22,
+          "index": 23,
           "question_id": "question-23455d221c10",
           "questioner": "如如不动",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#22",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#23",
           "q_preview": "现在还存在没堕落过的佛因妄想而进入轮回吗？",
           "start": 1108.92,
           "end": 1119.04,
@@ -3924,11 +3956,11 @@
           }
         },
         {
-          "index": 23,
+          "index": 24,
           "question_id": "question-448da039ca5c",
           "questioner": "无明萤火",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#23",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#24",
           "q_preview": "亲爱的师父，若有机缘向他人讲法，对方是没有信仰但是对佛教感到好奇的人，那么应该从何处讲起？我能想到的是先劝人向善，劝人吃素，解释业的运作，然后再说说心的构成，说再多好像就超纲了，感恩师父。",
           "start": 1119.04,
           "end": 1150.002,
@@ -3948,11 +3980,11 @@
           }
         },
         {
-          "index": 24,
+          "index": 25,
           "question_id": "question-cae898f7eaf5",
           "questioner": "无明萤火",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#24",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#25",
           "q_preview": "感恩师父，在《楞伽经》讲经32中“远离攀缘，远离攀缘故，出过一切诸戏论法”这句话师父解释说对外不要执著，因为不对外境执著就能超越所有的诸法戏论，可以称之为如来。对于佛的境界来说，已经没有内外之分了吧？一切都是在自性中显现的虚妄，为何还说对外境攀缘这样的话？这个外到底指的是什么？是指重叠的其他自性吗？",
           "start": 1150.002,
           "end": 1211.562,
@@ -3972,11 +4004,11 @@
           }
         },
         {
-          "index": 25,
+          "index": 26,
           "question_id": "question-5523d6d93d81",
           "questioner": "靖",
           "question_time": "",
-          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#25",
+          "stable_key": "2026nian-1yue-6ri-wei-xin-gong-zhong-hao#26",
           "q_preview": "师父好请问师父，莲师是分家出去的等觉菩萨吗？他是不是有自己的世界",
           "start": 1211.562,
           "end": 1228.45,
