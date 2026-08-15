@@ -335,6 +335,10 @@ window.I18N_TEXT = {
     loadError: {
       simplified: '音档加载失败',
       traditional: '音檔載入失敗'
+    },
+    volume: {
+      simplified: '音量',
+      traditional: '音量'
     }
   },
 

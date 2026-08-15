@@ -33,7 +33,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
-| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
+| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle, Bilibili-style volume control — speaker button toggling a popup with a vertical slider persisted in `localStorage`), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
 | `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
 
 ### Requirement: Single Output File
@@ -118,6 +118,14 @@ the `data-label` time range. The mini-player SHALL provide:
 - A draggable progress bar (pointer drag on the track) to seek within the current
   segment bounds (`data-start` … `data-end`)
 - `−5s` and `+5s` skip buttons that adjust playback within the same segment bounds
+- A volume control in Bilibili style: the only visible element is a speaker
+  button; clicking it SHALL toggle a popup containing a vertical volume slider
+  (range 0–1) that sets `audio.volume` / `audio.muted`. The popup SHALL close
+  when the user clicks outside it, presses `Esc`, or closes the mini-player. The
+  volume value SHALL persist in `localStorage['qa-volume']` and be restored on
+  page load (default 1). Dragging the slider to 0 SHALL mute; dragging above 0
+  while muted SHALL unmute. The speaker icon SHALL reflect the muted state
+  (🔇 when muted or at 0, 🔊 otherwise)
 - Keyboard support on the progress bar: Left/Right arrows for ±5s, Space/Enter for
   play/pause
 
@@ -163,6 +171,18 @@ intentional:
 - THEN the play button and mini-player SHALL enter a loading state (spinner /
   loading message, optional buffer percent) until the `playing` event fires
   (or an `error` clears loading with a failure message)
+
+#### Scenario: Volume control and persistence
+- GIVEN a QA chapter page with the mini-player
+- WHEN the user clicks the speaker button
+- THEN a popup with a vertical volume slider SHALL appear and the button SHALL
+  have `aria-expanded="true"`
+- WHEN the user drags the slider to 0.5
+- THEN `audio.volume` SHALL become 0.5 and `localStorage['qa-volume']` SHALL be `"0.5"`
+- WHEN the user clicks outside the control or presses `Esc`
+- THEN the popup SHALL close and `aria-expanded` SHALL become `"false"`
+- WHEN the user reloads the page with `localStorage['qa-volume']` set
+- THEN the mini-player SHALL restore `audio.volume` from that value (defaulting to 1)
 
 ### Requirement: Same-Page Image Lightbox
 On chapter pages, clicking an `img` whose `src` contains `assets/images/` SHALL

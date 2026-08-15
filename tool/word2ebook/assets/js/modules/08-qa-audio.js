@@ -3,7 +3,9 @@
   //
   // 僅 qa/ 資料夾轉出的章節含 .qa-play 按鈕（data-audio/-start/-end/-label）。
   // 點擊後從指定時間播放對應 .opus 音檔，到段落結束自動停止，並在畫面底部
-  // 顯示一個浮動迷你播放器（音檔名稱 + 起訖時間 + 可拖拉進度條 + ±5s + 暫停）。
+  // 顯示一個浮動迷你播放器（音檔名稱 + 起訖時間 + 可拖拉進度條 + ±5s + 暫停 +
+  // 音量控制：b站風格，列上只有一個喇叭鈕，點擊後彈出垂直音量滑桿，
+  // 音量值存於 localStorage 以便跨頁保留）。
   //
   // 首次載入（或跳到尚未緩衝的時間點）時，播放鈕與迷你播放器會顯示載入中
   // 狀態與緩衝進度，避免使用者以為沒反應。
@@ -21,6 +23,7 @@
 
     var SKIP_SECONDS = 5;
     var LOADING_DELAY_MS = 120; // 避免已快取音檔時載入 UI 閃爍
+    var VOLUME_STORAGE_KEY = 'qa-volume';
 
     var audio = new Audio();
     audio.preload = 'none';
@@ -52,6 +55,12 @@
           '<button class="qa-player-skip qa-player-skip--fwd" type="button" aria-label="前進 5 秒">+5s</button>' +
         '</div>' +
       '</div>' +
+      '<div class="qa-player-volume-group">' +
+        '<button class="qa-player-volume-btn" type="button" aria-label="音量" aria-expanded="false">🔊</button>' +
+        '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
+          '<input class="qa-player-volume" type="range" min="0" max="1" step="0.05" value="1" aria-label="音量">' +
+        '</div>' +
+      '</div>' +
       '<button class="qa-player-close" type="button" aria-label="關閉">✕</button>';
     document.body.appendChild(bar);
 
@@ -63,6 +72,9 @@
     var thumbEl = bar.querySelector('.qa-player-progress-thumb');
     var skipBackBtn = bar.querySelector('.qa-player-skip--back');
     var skipFwdBtn = bar.querySelector('.qa-player-skip--fwd');
+    var volumeGroup = bar.querySelector('.qa-player-volume-group');
+    var volumeBtn = bar.querySelector('.qa-player-volume-btn');
+    var volumeInput = bar.querySelector('.qa-player-volume');
     var closeBtn = bar.querySelector('.qa-player-close');
 
     function isTrad() {
@@ -85,6 +97,42 @@
     function absoluteUrl(url) {
       try { return new URL(url, window.location.href).href; } catch (e) { return url; }
     }
+
+    // ---- 音量控制（b站風格：喇叭鈕點擊後彈出垂直音量滑桿） --------------
+    function clampVolume(v) {
+      if (!isFinite(v)) return 1;
+      return Math.max(0, Math.min(1, v));
+    }
+
+    function loadSavedVolume() {
+      try {
+        var saved = localStorage.getItem(VOLUME_STORAGE_KEY);
+        if (saved == null) return 1;
+        return clampVolume(parseFloat(saved));
+      } catch (e) {
+        return 1;
+      }
+    }
+
+    function saveVolume(v) {
+      try { localStorage.setItem(VOLUME_STORAGE_KEY, String(v)); } catch (e) {}
+    }
+
+    function updateVolumeUI() {
+      var muted = audio.muted || audio.volume === 0;
+      volumeBtn.textContent = muted ? '🔇' : '🔊';
+    }
+
+    function setVolumeOpen(open) {
+      volumeGroup.classList.toggle('is-open', open);
+      volumeBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    // 初始化音量（預設 1，若有上次儲存值則還原）
+    audio.volume = loadSavedVolume();
+    volumeInput.value = String(audio.volume);
+    volumeInput.setAttribute('aria-label', qaText('qaAudio.volume', '音量'));
+    updateVolumeUI();
 
     function segmentEndLimit() {
       if (segEnd != null) return segEnd;
@@ -390,6 +438,36 @@
     skipBackBtn.addEventListener('click', function () { skipBy(-SKIP_SECONDS); });
     skipFwdBtn.addEventListener('click', function () { skipBy(SKIP_SECONDS); });
 
+    volumeBtn.addEventListener('click', function () {
+      setVolumeOpen(!volumeGroup.classList.contains('is-open'));
+    });
+
+    // 點擊控制區外或按 Esc 時關閉音量彈出層
+    document.addEventListener('pointerdown', function (e) {
+      if (!volumeGroup.classList.contains('is-open')) return;
+      if (!volumeGroup.contains(e.target)) {
+        setVolumeOpen(false);
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && volumeGroup.classList.contains('is-open')) {
+        setVolumeOpen(false);
+        volumeBtn.focus();
+      }
+    });
+
+    volumeInput.addEventListener('input', function () {
+      var v = clampVolume(parseFloat(volumeInput.value));
+      audio.volume = v;
+      if (v === 0) {
+        audio.muted = true;
+      } else if (audio.muted) {
+        audio.muted = false;
+      }
+      updateVolumeUI();
+      saveVolume(v);
+    });
+
     progressEl.addEventListener('pointerdown', function (e) {
       if (!activeButton || isLoading) return;
       isDragging = true;
@@ -435,6 +513,7 @@
     closeBtn.addEventListener('click', function () {
       loadGen += 1;
       stopPlayback();
+      setVolumeOpen(false);
       bar.classList.remove('visible');
       bar.setAttribute('aria-hidden', 'true');
     });
