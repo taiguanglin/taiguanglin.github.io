@@ -110,7 +110,13 @@ answer without `是，` — `第二个问题，…吗？`, `第二个问题 家�
 or a circled `②…` — and the next structural line is `Taiguanglin：`, that body
 SHALL become its own question card. The same patterns SHALL stay inside the
 answer when they are the answerer's own listing (①②③ in one reply) or a
-continuation that is not followed by a new `Taiguanglin：`.
+continuation that is not followed by a new `Taiguanglin：`. An unnumbered
+question body dumped into the previous answer — `最后一个不是问题…`,
+`第二件事情…`, `另外想请教师父…`, `还有我现在…` — SHALL likewise become its
+own question card when the current answer already has body and the next
+structural line is `Taiguanglin：` (following paragraphs until that marker stay
+on the new question). These SHALL remain in the answer when the next opener is
+a new questioner rather than `Taiguanglin：`.
 
 #### Scenario: Consecutive numbered questions merge
 - GIVEN one questioner who asks `1、`, `2、`, `3、` consecutively before any answer
@@ -167,6 +173,39 @@ continuation that is not followed by a new `Taiguanglin：`.
   `Taiguanglin：`
 - WHEN parsed
 - THEN a second question card SHALL be produced for `②能否先度`
+
+#### Scenario: 最后一个不是问题 dumped after an answer opens a new card
+- GIVEN an answer, then `最后一个不是问题，…佛菩萨的加持力太强大了…`, then
+  another `Taiguanglin：`
+- WHEN parsed
+- THEN a second question card SHALL be produced for that body, and it SHALL
+  NOT remain inside the previous answer
+
+#### Scenario: 第二件事情 dumped after an answer opens a new card
+- GIVEN an answer, then `第二件事情，就是我之前做事情的时候…被人打断…`, then
+  `我想请问Tai师父的是…`, then another `Taiguanglin：`
+- WHEN parsed
+- THEN a second question card SHALL be produced containing both dumped
+  paragraphs, and they SHALL NOT remain inside the previous answer
+
+#### Scenario: 另外想请教师父 dumped after an answer opens a new card
+- GIVEN an answer, then `另外想请教师父，闭关有什么需要注意的事项…`, then
+  another `Taiguanglin：`
+- WHEN parsed
+- THEN a second question card SHALL be produced for the 闭关 body
+
+#### Scenario: 还有我现在 dumped after an answer opens a new card
+- GIVEN an answer, then `还有我现在刚开始练盘腿…`, then another
+  `Taiguanglin：`
+- WHEN parsed
+- THEN a second question card SHALL be produced for the 盘腿 body
+
+#### Scenario: dumped follow-up without a following Taiguanglin stays in the answer
+- GIVEN an answer ending `最后一个不是问题，加持力很大。`, then a new
+  questioner `乙：` (no intervening `Taiguanglin：`)
+- WHEN parsed
+- THEN that paragraph SHALL remain in the answer and SHALL NOT open a new
+  question card
 
 #### Scenario: circled ①②③ listing in an answer is not a new card
 - GIVEN an answer that lists `①见啥是啥` / `②见啥不是啥` / `③见啥还是啥`

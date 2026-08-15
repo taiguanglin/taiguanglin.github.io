@@ -131,6 +131,19 @@ AMBIGUOUS_SUBQ_RE = re.compile(
     r"|[①②③④⑤⑥⑦⑧⑨⑩]"
     r")"
 )
+# Unnumbered question body dumped into the previous answer (2025-11-10 官网):
+# 觉非「最后一个不是问题…加持力」、牧羊少年「第二件事情…被人打断」、
+# 彩虹糖「另外想请教师父，闭关…」、yuanjue777「还有我现在刚开始练盘腿」。
+# Same split guard as AMBIGUOUS_SUBQ: only when the current answer already has
+# body and the next opener is Taiguanglin.
+DUMPED_FOLLOWUP_BODY_RE = re.compile(
+    r"^(?:"
+    r"最后一个不是问题"
+    r"|第二件事情"
+    r"|另外想请教师父"
+    r"|还有我现在"
+    r")"
+)
 CIRCLED_OPEN_RE = re.compile(r"^[①②③④⑤⑥⑦⑧⑨⑩]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
@@ -382,7 +395,12 @@ def _strip_leading_pdf_symbol_junk(text: str) -> str:
     t = (text or "").strip()
     if not t:
         return t
-    if NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t) or AMBIGUOUS_SUBQ_RE.match(t):
+    if (
+        NUM_RE.match(t)
+        or SUBQ_RESTATE_RE.match(t)
+        or AMBIGUOUS_SUBQ_RE.match(t)
+        or DUMPED_FOLLOWUP_BODY_RE.match(t)
+    ):
         return t
     stripped = LEADING_PDF_SYMBOL_JUNK_RE.sub("", t, count=1).strip()
     if stripped and stripped != t and re.search(r"[\u4e00-\u9fffA-Za-z]", stripped):
@@ -463,6 +481,11 @@ def _is_ambiguous_dumped_subq(text: str) -> bool:
     if NUM_RE.match(t) or SUBQ_RESTATE_RE.match(t):
         return False
     return bool(AMBIGUOUS_SUBQ_RE.match(t))
+
+
+def _is_dumped_followup_body(text: str) -> bool:
+    """Unnumbered dumped question body (加持力 / 被人打断 / 闭关 / 盘腿)."""
+    return bool(DUMPED_FOLLOWUP_BODY_RE.match((text or "").strip()))
 
 
 def _following_is_answerer(lines: List[Tuple[float, str]], i: int) -> bool:
@@ -1317,6 +1340,18 @@ class PDFParser:
                     state["card"]["numbered"] = True
                     i += 1
                     continue
+
+            # 無編號、被塞進上一則回答的後續提問正文（加持力／被人打斷／閉關／盤腿）
+            if (
+                _is_dumped_followup_body(text)
+                and state["card"] is not None
+                and state["card"]["kind"] == "answer"
+                and _should_split_ambiguous_subq(state, lines, i)
+            ):
+                start_card("question", state["questioner"], state["qtime"])
+                add_line(text, indented=True)
+                i += 1
+                continue
 
             # 一般內文（縮排=新段落；否則接續）
             add_line(text, indented)

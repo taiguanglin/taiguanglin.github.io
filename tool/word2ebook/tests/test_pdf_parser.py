@@ -865,6 +865,151 @@ class TestNumberedQuestions:
         assert "②能否先度" not in questions[0]
 
 
+    def test_last_is_not_a_question_dumped_after_answer_opens_new_card(self, parser):
+        """「最后一个不是问题…加持力」after an answer is a new card
+        (2025-11-10 官网 觉非)."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，先回答官网的问题。"),
+            (CONT, "觉非："),
+            (IND,  "2、关于思情，一直在不停地练习觉察情绪的能力。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题，关于思情，算是吧，细微地一直保持著就可以了。"),
+            (IND,  "最后一个不是问题，我这段时间感受颇深，佛菩萨的加持力太强大了。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，这位朋友说感受到佛菩萨的加持力很大。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["觉非", "觉非"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "关于思情" in questions[0]
+        assert "佛菩萨的加持力太强大了" in questions[1]
+        assert "佛菩萨的加持力太强大了" not in questions[0]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "佛菩萨的加持力太强大了" not in answers[0]
+        assert "感受到佛菩萨的加持力很大" in answers[1]
+
+
+    def test_second_thing_dumped_after_answer_opens_new_card(self, parser):
+        """「第二件事情…被人打断」+ wrap stays a new card
+        (2025-11-10 官网 牧羊少年)."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，先回答官网的问题。"),
+            (CONT, "牧羊少年："),
+            (IND,  "邻居有人大吵大闹，后来想通了就不烦躁了。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，59楼，牧羊少年，邻居吵闹想通了就不烦躁了。"),
+            (IND,  "第二件事情，就是我之前做事情的时候非常不喜欢被人打断。"),
+            (IND,  "我想请问Tai师父的是，怎么一下子就有如此大的好的转变呢？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题也是一样，别人打断你的思考的时候，这就是你的执著。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["牧羊少年", "牧羊少年"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "邻居有人大吵大闹" in questions[0]
+        assert "被人打断" in questions[1]
+        assert "我想请问Tai师父的是" in questions[1]
+        assert "被人打断" not in questions[0]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "第二件事情" not in answers[0]
+        assert "这就是你的执著" in answers[1]
+
+
+    def test_lingwai_xiangqingjiao_dumped_after_answer_opens_new_card(self, parser):
+        """「另外想请教师父，闭关…」after an answer is a new card
+        (2025-11-10 官网 彩虹糖)."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，先回答官网的问题。"),
+            (CONT, "彩虹糖："),
+            (IND,  "打坐的时候头往左边倒，呼吸不畅。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题98了，彩虹糖，你先把磕头和腹式呼吸练好吧？"),
+            (IND,  "另外想请教师父，闭关有什么需要注意的事项和规矩。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，你目前不适合闭关。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["彩虹糖", "彩虹糖"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "头往左边倒" in questions[0]
+        assert "闭关有什么需要注意" in questions[1]
+        assert "闭关有什么需要注意" not in questions[0]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "闭关有什么需要注意" not in answers[0]
+        assert "你目前不适合闭关" in answers[1]
+
+
+    def test_haiyou_wo_xianzai_dumped_after_answer_opens_new_card(self, parser):
+        """「还有我现在刚开始练盘腿」after an answer is a new card
+        (2025-11-10 官网 yuanjue777)."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，先回答官网的问题。"),
+            (CONT, "yuanjue777："),
+            (IND,  "外婆年纪大了有点糊涂了，我给她念念《地藏经》管用吗"),
+            (CONT, "Taiguanglin："),
+            (IND,  "那下一个问题，99楼，yuanjue777，念经回向还是有好处的。"),
+            (IND,  "还有我现在刚开始练盘腿。我现在重点是应该放在盘腿上吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "还有第二个问题，你盘腿的问题，我是建议还是双盘。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["yuanjue777", "yuanjue777"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "地藏经" in questions[0]
+        assert "刚开始练盘腿" in questions[1]
+        assert "刚开始练盘腿" not in questions[0]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "刚开始练盘腿" not in answers[0]
+        assert "你盘腿的问题" in answers[1]
+
+
+    def test_dumped_followup_without_following_answerer_stays_in_answer(self, parser):
+        """「最后一个不是问题」with no following Taiguanglin stays in the answer."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月10 号，先回答官网的问题。"),
+            (CONT, "觉非："),
+            (IND,  "2、关于思情。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "第二个问题，关于思情，算是吧。"),
+            (IND,  "最后一个不是问题，加持力很大。"),
+            (CONT, "乙："),
+            (IND,  "下一个提问者。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "答。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["觉非", "乙"]
+        first_a = ch.content.split('<div class="answer"', 1)[1]
+        answer_only = first_a.split('<div class="question"', 1)[0]
+        assert "最后一个不是问题，加持力很大" in answer_only
+
+
     def test_circled_list_inside_answer_stays_in_answer(self, parser):
         """Tai listing ①②③ in one answer must not become extra cards."""
         lines = [
@@ -1751,4 +1896,45 @@ class TestNovMarSwallowedSplitsBecomeCards:
         )
         assert any(
             "我空法空空亦空" in q and "无记空" in q for q in q_blocks
+        )
+
+    def test_2025_11_10_guanwang_splits_unnumbered_dumps(self, nov_mar_chapters):
+        """觉非加持力 / 牧羊少年被人打断 / 彩虹糖闭关 / yuanjue777盘腿
+        must be question cards, not leftover answer-text (2025-11-10 官网)."""
+        nov = next(ch for ch in nov_mar_chapters if ch.filename == "17.html")
+        names = _section_questioners(nov, "2025nian-11yue-10ri-guan-wang")
+        assert len(names) == 144
+        assert names.count("觉非") == 4
+        assert names.count("牧羊少年") == 2
+        assert names.count("彩虹糖") == 2
+        assert names.count("yuanjue777") == 2
+        assert names.count("天生无才") == 3
+        html = _section_html(nov, "2025nian-11yue-10ri-guan-wang")
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert any("佛菩萨的加持力太强大了" in q for q in q_blocks)
+        assert any("第二件事情" in q and "被人打断" in q for q in q_blocks)
+        assert any("另外想请教师父" in q and "闭关" in q for q in q_blocks)
+        assert any("还有我现在刚开始练盘腿" in q for q in q_blocks)
+        a_blocks = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', html, flags=re.S
+        )
+        assert not any("最后一个不是问题" in a for a in a_blocks)
+        assert not any("另外想请教师父" in a for a in a_blocks)
+
+    def test_2025_11_missing_map_text_is_in_html(self, nov_mar_chapters):
+        """明清 / 非子 answers and 少少空's 佛像 question must survive parse
+        so the ebook is not blank even if audio_map text is stale."""
+        nov = next(ch for ch in nov_mar_chapters if ch.filename == "17.html")
+        html_12 = _section_html(nov, "2025nian-11yue-12ri-guan-wang")
+        assert "不是一个体系" in html_12
+        html_13 = _section_html(nov, "2025nian-11yue-13ri-guan-wang")
+        assert "站著练呼吸" in html_13 or "站着练呼吸" in html_13
+        html_11 = _section_html(nov, "2025nian-11yue-11ri-guan-wang")
+        q_blocks = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', html_11, flags=re.S
+        )
+        assert any(
+            "少少空" in q and ("地藏菩萨" in q or "阿弥陀佛" in q) for q in q_blocks
         )
