@@ -297,10 +297,14 @@
     left: 50%;
     transform: translateX(-50%) translateY(4px);
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 112px;
+    gap: 6px;
+    width: 44px;
+    height: 134px;
+    padding: 10px 6px;
+    box-sizing: border-box;
     background: #fff;
     border: 1px solid var(--color-accent-pale);
     border-radius: var(--radius-md);
@@ -315,20 +319,41 @@
     visibility: visible;
     transform: translateX(-50%) translateY(0);
 }
+/* 目前音量數字（0–100），顯示在滑桿上方（b站風格） */
+.qa-player-volume-value {
+    font-size: 0.72em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1;
+    color: var(--color-primary-deep);
+}
+/* 包住旋轉滑桿的容器：保留視覺上的垂直空間（寬=厚度、高=長度） */
+.qa-player-volume-track-wrap {
+    position: relative;
+    width: 20px;
+    height: 88px;
+}
 .qa-player-volume {
+    position: absolute;
+    top: 50%;
+    left: 50%;
     width: 88px;   /* 旋轉後即為視覺上的垂直高度 */
     height: 20px;  /* 旋轉後即為視覺上的厚度 */
-    margin: 0;
+    margin: -10px 0 0 -44px;
     transform: rotate(-90deg);
     -webkit-appearance: none;
     appearance: none;
     background: transparent;
     cursor: pointer;
 }
+/* 軌道以 --qa-volume-pct 填色：已達到的音量用主色，其餘用底色 */
 .qa-player-volume::-webkit-slider-runnable-track {
     height: 4px;
     border-radius: 2px;
-    background: rgba(248, 200, 220, 0.5);
+    background: linear-gradient(to right,
+        var(--color-primary) 0%,
+        var(--color-primary) var(--qa-volume-pct, 100%),
+        rgba(248, 200, 220, 0.5) var(--qa-volume-pct, 100%),
+        rgba(248, 200, 220, 0.5) 100%);
 }
 .qa-player-volume::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -343,7 +368,11 @@
 .qa-player-volume::-moz-range-track {
     height: 4px;
     border-radius: 2px;
-    background: rgba(248, 200, 220, 0.5);
+    background: linear-gradient(to right,
+        var(--color-primary) 0%,
+        var(--color-primary) var(--qa-volume-pct, 100%),
+        rgba(248, 200, 220, 0.5) var(--qa-volume-pct, 100%),
+        rgba(248, 200, 220, 0.5) 100%);
 }
 .qa-player-volume::-moz-range-thumb {
     width: 12px;
@@ -497,9 +526,22 @@ body.dark-mode .qa-player-close:hover { background: rgba(90, 45, 73, 0.6); }
 body.dark-mode .qa-player-volume-btn { color: #ffb3c6; }
 body.dark-mode .qa-player-volume-btn:hover { background: rgba(90, 45, 73, 0.6); }
 body.dark-mode .qa-player-volume-popup { background: #4a2c3a; border-color: #5a2d49; }
-body.dark-mode .qa-player-volume::-webkit-slider-runnable-track { background: rgba(90, 45, 73, 0.6); }
+body.dark-mode .qa-player-volume-value { color: #ff91af; }
+body.dark-mode .qa-player-volume::-webkit-slider-runnable-track {
+    background: linear-gradient(to right,
+        #ff91af 0%,
+        #ff91af var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) 100%);
+}
 body.dark-mode .qa-player-volume::-webkit-slider-thumb { background: #ff91af; }
-body.dark-mode .qa-player-volume::-moz-range-track { background: rgba(90, 45, 73, 0.6); }
+body.dark-mode .qa-player-volume::-moz-range-track {
+    background: linear-gradient(to right,
+        #ff91af 0%,
+        #ff91af var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) 100%);
+}
 body.dark-mode .qa-player-volume::-moz-range-thumb { background: #ff91af; }
 body.dark-mode .qa-player-toggle {
     background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);

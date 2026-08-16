@@ -4,8 +4,8 @@
   // 僅 qa/ 資料夾轉出的章節含 .qa-play 按鈕（data-audio/-start/-end/-label）。
   // 點擊後從指定時間播放對應 .opus 音檔，到段落結束自動停止，並在畫面底部
   // 顯示一個浮動迷你播放器（音檔名稱 + 起訖時間 + 可拖拉進度條 + ±5s + 暫停 +
-  // 音量控制：b站風格，列上只有一個喇叭鈕，點擊後彈出垂直音量滑桿，
-  // 音量值存於 localStorage 以便跨頁保留）。
+  // 音量控制：b站風格，列上只有一個喇叭鈕，點擊後彈出垂直音量滑桿
+  // （頂部 0–100 數字 + 已達到的音量以主色填滿軌道），音量值存於 localStorage 以便跨頁保留）。
   //
   // 首次載入（或跳到尚未緩衝的時間點）時，播放鈕與迷你播放器會顯示載入中
   // 狀態與緩衝進度，避免使用者以為沒反應。
@@ -58,7 +58,10 @@
       '<div class="qa-player-volume-group">' +
         '<button class="qa-player-volume-btn" type="button" aria-label="音量" aria-expanded="false">🔊</button>' +
         '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
-          '<input class="qa-player-volume" type="range" min="0" max="1" step="0.05" value="1" aria-label="音量">' +
+          '<div class="qa-player-volume-value">100</div>' +
+          '<div class="qa-player-volume-track-wrap">' +
+            '<input class="qa-player-volume" type="range" min="0" max="100" step="1" value="100" aria-label="音量">' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<button class="qa-player-close" type="button" aria-label="關閉">✕</button>';
@@ -74,6 +77,7 @@
     var skipFwdBtn = bar.querySelector('.qa-player-skip--fwd');
     var volumeGroup = bar.querySelector('.qa-player-volume-group');
     var volumeBtn = bar.querySelector('.qa-player-volume-btn');
+    var volumeValue = bar.querySelector('.qa-player-volume-value');
     var volumeInput = bar.querySelector('.qa-player-volume');
     var closeBtn = bar.querySelector('.qa-player-close');
 
@@ -119,8 +123,12 @@
     }
 
     function updateVolumeUI() {
-      var muted = audio.muted || audio.volume === 0;
+      var pct = Math.round(clampVolume(audio.volume) * 100);
+      var muted = audio.muted || pct === 0;
       volumeBtn.textContent = muted ? '🔇' : '🔊';
+      // 頂部 0–100 數字 + 軌道填色比例（b站風格）
+      volumeValue.textContent = String(pct);
+      volumeInput.style.setProperty('--qa-volume-pct', pct + '%');
     }
 
     function setVolumeOpen(open) {
@@ -130,7 +138,7 @@
 
     // 初始化音量（預設 1，若有上次儲存值則還原）
     audio.volume = loadSavedVolume();
-    volumeInput.value = String(audio.volume);
+    volumeInput.value = String(Math.round(audio.volume * 100));
     volumeInput.setAttribute('aria-label', qaText('qaAudio.volume', '音量'));
     updateVolumeUI();
 
@@ -457,7 +465,7 @@
     });
 
     volumeInput.addEventListener('input', function () {
-      var v = clampVolume(parseFloat(volumeInput.value));
+      var v = clampVolume((parseFloat(volumeInput.value) || 0) / 100);
       audio.volume = v;
       if (v === 0) {
         audio.muted = true;

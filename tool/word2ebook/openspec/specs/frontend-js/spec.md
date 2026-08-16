@@ -120,12 +120,15 @@ the `data-label` time range. The mini-player SHALL provide:
 - `−5s` and `+5s` skip buttons that adjust playback within the same segment bounds
 - A volume control in Bilibili style: the only visible element is a speaker
   button; clicking it SHALL toggle a popup containing a vertical volume slider
-  (range 0–1) that sets `audio.volume` / `audio.muted`. The popup SHALL close
-  when the user clicks outside it, presses `Esc`, or closes the mini-player. The
-  volume value SHALL persist in `localStorage['qa-volume']` and be restored on
-  page load (default 1). Dragging the slider to 0 SHALL mute; dragging above 0
-  while muted SHALL unmute. The speaker icon SHALL reflect the muted state
-  (🔇 when muted or at 0, 🔊 otherwise)
+  (0–100 scale) that sets `audio.volume` / `audio.muted`. The popup SHALL show a
+  numeric readout (0–100) of the current volume above the slider and SHALL fill
+  the reached portion of the track (from the bottom up to the current level)
+  with the primary colour. The popup SHALL close when the user clicks outside
+  it, presses `Esc`, or closes the mini-player. The volume value SHALL persist
+  in `localStorage['qa-volume']` and be restored on page load (default 1).
+  Dragging the slider to 0 SHALL mute; dragging above 0 while muted SHALL
+  unmute. The speaker icon SHALL reflect the muted state (🔇 when muted or at 0,
+  🔊 otherwise)
 - Keyboard support on the progress bar: Left/Right arrows for ±5s, Space/Enter for
   play/pause
 
@@ -177,8 +180,10 @@ intentional:
 - WHEN the user clicks the speaker button
 - THEN a popup with a vertical volume slider SHALL appear and the button SHALL
   have `aria-expanded="true"`
-- WHEN the user drags the slider to 0.5
-- THEN `audio.volume` SHALL become 0.5 and `localStorage['qa-volume']` SHALL be `"0.5"`
+- WHEN the user drags the slider to 80
+- THEN `audio.volume` SHALL become 0.8, the numeric readout SHALL show `80`, the
+  filled portion of the track SHALL cover 80% (from the bottom), and
+  `localStorage['qa-volume']` SHALL be `"0.8"`
 - WHEN the user clicks outside the control or presses `Esc`
 - THEN the popup SHALL close and `aria-expanded` SHALL become `"false"`
 - WHEN the user reloads the page with `localStorage['qa-volume']` set
