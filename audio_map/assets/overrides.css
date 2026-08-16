@@ -1,0 +1,203 @@
+/* Small audio_map-specific tweaks on top of assets/editor.css */
+
+.sidebar-toolbar .field + .field {
+    margin-top: 0.65rem;
+}
+
+.segment-lock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.85rem;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.segment-lock input {
+    margin: 0;
+}
+
+.marker-input {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Widescreen content layout (driven by prefs → CSS vars on #app). */
+#app .welcome-panel,
+#app .document-panel {
+    margin-left: var(--content-margin-left, auto);
+    margin-right: var(--content-margin-right, auto);
+    max-width: var(--content-max-width, 1100px);
+    width: 100%;
+}
+
+#app .workspace {
+    padding-right: calc(1.25rem + var(--content-right-gutter, 0px));
+}
+
+.settings-fieldset {
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    min-width: 0;
+    padding: 0.85rem 1rem 1rem;
+}
+
+.settings-fieldset legend {
+    color: var(--text);
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 0 0.35rem;
+}
+
+.settings-fieldset .field input[type="range"] {
+    accent-color: var(--accent);
+    width: 100%;
+}
+
+.settings-fieldset .field strong {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+/* Answer / opening PDF text: expand with content, never nest a scrollbar.
+   Wheel over the block should scroll the page (workspace), not an inner box. */
+.segment-body .answer-body {
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-radius: 0.75rem;
+    color: var(--text);
+    font: inherit;
+    line-height: 1.8;
+    max-height: none;
+    min-height: 0;
+    overflow: visible;
+    padding: 0.8rem 0.95rem;
+    resize: none;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.segment-body .answer-body--empty {
+    color: var(--muted);
+}
+
+.segment-title.play-on-click,
+.answer-body.play-on-click {
+    cursor: pointer;
+}
+
+.segment-title.play-on-click:hover,
+.answer-body.play-on-click:hover {
+    outline: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    outline-offset: 2px;
+}
+
+/* Start-time nudge row on the floating mini player (audio_map only). */
+.mini-player-nudge {
+    align-items: center;
+    display: grid;
+    gap: 0.3rem;
+    grid-template-columns: auto repeat(6, minmax(0, 1fr));
+}
+
+.mini-player-nudge-label {
+    color: var(--muted);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.mini-player-nudge button {
+    background: color-mix(in srgb, var(--accent) 12%, transparent);
+    border: 1px solid var(--accent);
+    border-radius: 0.5rem;
+    color: var(--text);
+    cursor: pointer;
+    font: inherit;
+    font-size: 0.78rem;
+    font-variant-numeric: tabular-nums;
+    overflow: visible;
+    padding: 0.3rem 0.15rem;
+    position: relative;
+    white-space: nowrap;
+}
+
+.mini-player-nudge button:hover:not(:disabled) {
+    background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.mini-player-nudge button:disabled {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
+/* Damage-number style float on nudge click. */
+.nudge-float {
+    animation: nudge-float-up 0.85s ease-out forwards;
+    font-size: 0.95rem;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    left: 50%;
+    letter-spacing: 0.02em;
+    pointer-events: none;
+    position: absolute;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55);
+    top: 0.15rem;
+    transform: translate(-50%, 0);
+    z-index: 5;
+}
+.nudge-float--pos { color: #7dffa0; }
+.nudge-float--neg { color: #ffb4a8; }
+
+@keyframes nudge-float-up {
+    0% {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
+    70% {
+        opacity: 0.85;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -1.6rem) scale(1.15);
+    }
+}
+
+/* Gap between negative and positive nudge groups. */
+.mini-player-nudge button[data-nudge-start="0.1"] {
+    margin-left: 0.25rem;
+}
+
+@media (max-width: 900px) {
+    /* Mobile: ignore widescreen content layout prefs. */
+    #app .welcome-panel,
+    #app .document-panel {
+        margin-left: auto;
+        margin-right: auto;
+        max-width: none;
+    }
+
+    #app .workspace {
+        padding-right: 1.25rem;
+    }
+
+    .mini-player-nudge button {
+        padding: 0.55rem 0.2rem;
+    }
+
+    .mini-player:not(.mini-player--expanded) .mini-player-nudge {
+        display: none;
+    }
+
+    /*
+     * assets/editor.css hides all .seg-meta-chip in listen mode. audio_map treats
+     *「聽過」as completion, so keep the last-played chip visible for progress.
+     */
+    .segment-card:not(.editing) .seg-meta-chip:has(.seg-meta-played) {
+        align-items: center;
+        display: inline-flex;
+        gap: 0.2rem;
+    }
+}
