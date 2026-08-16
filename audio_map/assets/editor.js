@@ -1,6 +1,6 @@
 import { createAudioController } from './audio.js';
 import { getFile, isConflict, putFile, testToken } from './github.js';
-import { parseRanges, secondsToTimecode, timecodeToSeconds } from '../../qa/assets/parser.js';
+import { parseRanges, secondsToTimecode, timecodeToSeconds } from './parser.js';
 import {
     clearDraft,
     clearPat,

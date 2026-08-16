@@ -1,4 +1,4 @@
-/* Small audio_map-specific tweaks on top of qa/editor.css */
+/* Small audio_map-specific tweaks on top of assets/editor.css */
 
 .sidebar-toolbar .field + .field {
     margin-top: 0.65rem;
@@ -192,7 +192,7 @@
     }
 
     /*
-     * qa/editor.css hides all .seg-meta-chip in listen mode. audio_map treats
+     * assets/editor.css hides all .seg-meta-chip in listen mode. audio_map treats
      *「聽過」as completion, so keep the last-played chip visible for progress.
      */
     .segment-card:not(.editing) .seg-meta-chip:has(.seg-meta-played) {
