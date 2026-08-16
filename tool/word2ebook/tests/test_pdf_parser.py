@@ -1320,6 +1320,32 @@ class TestNoTimeQuestioners:
         assert "question-time" not in ch.content.split('无明萤火')[1].split('question-text')[0]
         assert len(re.findall(r'<div class="question"', ch.content)) == 2
 
+    def test_indented_questioner_after_separator_is_still_question(self, parser):
+        """A rare PDF layout indents the questioner label itself (2025-08-07
+        薛祖宜). It must still produce a question card, not stray <p>."""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月7 号，先回答贴吧的问题。"),
+            (CONT, "甲：2025-08-07 08:00"),
+            (IND,  "前一个问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "前一个回答。"),
+            (CONT, "———————————————————————————"),
+            (IND,  "薛祖宜："),
+            (IND,  "师父午安。"),
+            (IND,  "假设静坐时感知进入一个遍满意识，不像空间但是意识占据一切"),
+            (CONT, "空间的，而感知意识是有前后先后的时间的，应用什么概念去观"),
+            (CONT, "察或认知呢？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "薛祖宜，这个问题有点复杂，简单来说你感知当下就够了。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=14)[0]
+        assert '<span class="questioner">薛祖宜</span>' in ch.content
+        assert "师父午安。" in ch.content
+        assert "假设静坐时感知进入一个遍满意识" in ch.content
+        assert "<p>薛祖宜：</p>" not in ch.content
+        assert len(re.findall(r'<div class="question"', ch.content)) == 2
+
     def test_section_start_questioner_without_time(self, parser):
         """First weixin commenter right after the 师父说 switch lacks a time."""
         lines = [

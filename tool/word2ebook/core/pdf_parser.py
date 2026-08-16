@@ -1276,6 +1276,16 @@ class PDFParser:
             # 分隔線後暱稱列缺失：縮排正文 / 裸「：」+正文 / 「名字：正文」黏在一行。
             # 不讀 audio_map；能從下一則 Tai 回答開頭取回暱稱則填上，否則空名。
             if state["card"] is None:
+                # 極少數 PDF 會把「提問者：」也縮排（2025-08-07 薛祖宜）。
+                # 此時沒有上一張卡片可作為內文，因此冒號結尾的單純暱稱應視為提問者。
+                nc = NAMECOLON_RE.match(text)
+                if nc and _plausible_questioner_label(nc.group("name")):
+                    name = _normalize_spaces(nc.group("name"))
+                    state["questioner"] = name
+                    state["qtime"] = ""
+                    start_card("question", name, "")
+                    i += 1
+                    continue
                 glued = _split_glued_name_body(text)
                 lead = LEADING_COLON_BODY_RE.match(text)
                 if glued:

@@ -245,6 +245,11 @@ When a bare display name is immediately followed by an emoji/symbol + timestamp
 line (e.g. `咩咩` then `🐏：14:20:56`), the parser SHALL keep the display name as
 `questioner` and attach the timestamp, rather than using the emoji as the name.
 
+Most questioner labels are left-margin, but a rare PDF layout may also indent the
+label itself (e.g. `薛祖宜：` after a separator). When the current card is `None`
+and an indented `名字：` is a plausible display name, the parser SHALL still start
+a question card rather than a stray paragraph.
+
 A left-margin line that merely ends with `：` while a question or answer card is
 open (e.g. a wrapped sentence like `…想请教三个问题：`) SHALL remain body text and
 SHALL NOT be misread as a questioner. PDF glyph-junk lines of punctuation-only
@@ -264,6 +269,12 @@ answer and SHALL NOT become a questioner.
 - WHEN parsed
 - THEN a question card with questioner `无明萤火` and no `question-time` SHALL be
   produced, and the body text SHALL belong to that card
+
+#### Scenario: Indented questioner label after a separator
+- GIVEN a separator line followed by an indented `薛祖宜：`, then the question body
+- WHEN parsed
+- THEN a question card with questioner `薛祖宜` SHALL be produced, and the body
+  SHALL NOT appear as stray `<p>` paragraphs
 
 #### Scenario: First section commenter after 师父说 has no time
 - GIVEN a `师父说…回答微信公众号的问题` line immediately followed by `诚杨：`
