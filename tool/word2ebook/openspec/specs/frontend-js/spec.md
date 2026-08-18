@@ -119,16 +119,16 @@ the `data-label` time range. The mini-player SHALL provide:
   segment bounds (`data-start` … `data-end`)
 - `−5s` and `+5s` skip buttons that adjust playback within the same segment bounds
 - A volume control in Bilibili style: the only visible element is a speaker
-  button; clicking it SHALL toggle a popup containing a vertical volume slider
-  (0–100 scale) that sets `audio.volume` / `audio.muted`. The popup SHALL show a
-  numeric readout (0–100) of the current volume above the slider and SHALL fill
-  the reached portion of the track (from the bottom up to the current level)
-  with the primary colour. The popup SHALL close when the user clicks outside
-  it, presses `Esc`, or closes the mini-player. The volume value SHALL persist
-  in `localStorage['qa-volume']` and be restored on page load (default 1).
-  Dragging the slider to 0 SHALL mute; dragging above 0 while muted SHALL
-  unmute. The speaker icon SHALL reflect the muted state (🔇 when muted or at 0,
-  🔊 otherwise)
+  button (an inline pink SVG speaker icon at roughly 3/4 the size of the original
+  emoji, with sound waves hidden when muted); clicking it SHALL toggle a popup
+  containing a vertical volume slider (0–100 scale) that sets `audio.volume` /
+  `audio.muted`. The popup SHALL show a numeric readout (0–100) of the current
+  volume above the slider and SHALL fill the reached portion of the track (from
+  the bottom up to the current level) with the primary colour. The popup SHALL
+  close when the user clicks outside it, presses `Esc`, or closes the
+  mini-player. The volume value SHALL persist in `localStorage['qa-volume']` and
+  be restored on page load (default 1). Dragging the slider to 0 SHALL mute;
+  dragging above 0 while muted SHALL unmute.
 - Keyboard support on the progress bar: Left/Right arrows for ±5s, Space/Enter for
   play/pause
 

@@ -274,23 +274,34 @@
 .qa-player-volume-group {
     position: relative;
     flex: 0 0 auto;
-    /* 與進度條（seek row）同一水平層，而非跟檔名/時間數字置中 */
-    align-self: flex-end;
+    /* 位於 seek row 內，由該列 align-items: center 垂直置中 */
 }
 .qa-player-volume-btn {
     flex: 0 0 auto;
     width: 30px;
     height: 30px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: transparent;
-    color: var(--color-primary-deep);
     border-radius: 50%;
     cursor: pointer;
-    font-size: 1em;
     line-height: 1;
     transition: background 0.2s ease;
 }
 .qa-player-volume-btn:hover { background: rgba(248, 200, 220, 0.4); }
+/* 喇叭 SVG：原本字型大小 emoji 的 3/4，取主題粉紅色，日夜模式一致 */
+.qa-player-volume-icon {
+    width: 19px;    /* 24 × 0.8 ≈ 19px（約原本 1em 的 3/4） */
+    height: 19px;
+    display: block;
+}
+.qa-volume-symbol { fill: var(--color-primary); }
+.qa-player-volume-btn:hover .qa-volume-symbol,
+.qa-player-volume-group.is-open .qa-volume-symbol {
+    fill: var(--color-primary-light);
+}
 .qa-player-volume-popup {
     position: absolute;
     bottom: calc(100% + 10px);
@@ -525,6 +536,9 @@ body.dark-mode .qa-player-close { color: #ffb3c6; }
 body.dark-mode .qa-player-close:hover { background: rgba(90, 45, 73, 0.6); }
 body.dark-mode .qa-player-volume-btn { color: #ffb3c6; }
 body.dark-mode .qa-player-volume-btn:hover { background: rgba(90, 45, 73, 0.6); }
+body.dark-mode .qa-volume-symbol { fill: #ff91af; }
+body.dark-mode .qa-player-volume-btn:hover .qa-volume-symbol,
+body.dark-mode .qa-player-volume-group.is-open .qa-volume-symbol { fill: #ffb3c6; }
 body.dark-mode .qa-player-volume-popup { background: #4a2c3a; border-color: #5a2d49; }
 body.dark-mode .qa-player-volume-value { color: #ff91af; }
 body.dark-mode .qa-player-volume::-webkit-slider-runnable-track {

@@ -4173,14 +4173,19 @@ function addHomepageBookmarkEventListeners() {
             '<span class="qa-player-progress-thumb"></span>' +
           '</div>' +
           '<button class="qa-player-skip qa-player-skip--fwd" type="button" aria-label="前進 5 秒">+5s</button>' +
-        '</div>' +
-      '</div>' +
-      '<div class="qa-player-volume-group">' +
-        '<button class="qa-player-volume-btn" type="button" aria-label="音量" aria-expanded="false">🔊</button>' +
-        '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
-          '<div class="qa-player-volume-value">100</div>' +
-          '<div class="qa-player-volume-track-wrap">' +
-            '<input class="qa-player-volume" type="range" min="0" max="100" step="1" value="100" aria-label="音量">' +
+          '<div class="qa-player-volume-group">' +
+            '<button class="qa-player-volume-btn" type="button" aria-label="音量" aria-expanded="false">' +
+              '<svg class="qa-player-volume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                '<path class="qa-volume-symbol qa-volume-speaker" d="M3 9v6h4l5 4V5L7 9H3z"/>' +
+                '<path class="qa-volume-symbol qa-volume-waves" d="M16 8a4 4 0 0 1 0 8M12 3v18" opacity="0"/>' +
+              '</svg>' +
+            '</button>' +
+            '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
+              '<div class="qa-player-volume-value">100</div>' +
+              '<div class="qa-player-volume-track-wrap">' +
+                '<input class="qa-player-volume" type="range" min="0" max="100" step="1" value="100" aria-label="音量">' +
+              '</div>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</div>' +
@@ -4197,6 +4202,7 @@ function addHomepageBookmarkEventListeners() {
     var skipFwdBtn = bar.querySelector('.qa-player-skip--fwd');
     var volumeGroup = bar.querySelector('.qa-player-volume-group');
     var volumeBtn = bar.querySelector('.qa-player-volume-btn');
+    var volumeBtnWaves = bar.querySelector('.qa-player-volume-icon .qa-volume-waves');
     var volumeValue = bar.querySelector('.qa-player-volume-value');
     var volumeInput = bar.querySelector('.qa-player-volume');
     var closeBtn = bar.querySelector('.qa-player-close');
@@ -4245,7 +4251,10 @@ function addHomepageBookmarkEventListeners() {
     function updateVolumeUI() {
       var pct = Math.round(clampVolume(audio.volume) * 100);
       var muted = audio.muted || pct === 0;
-      volumeBtn.textContent = muted ? '🔇' : '🔊';
+      // 音量波紋顯示（0 = 靜音時隱藏波紋）
+      if (volumeBtnWaves) {
+        volumeBtnWaves.setAttribute('opacity', muted ? '0' : '1');
+      }
       // 頂部 0–100 數字 + 軌道填色比例（b站風格）
       volumeValue.textContent = String(pct);
       volumeInput.style.setProperty('--qa-volume-pct', pct + '%');
