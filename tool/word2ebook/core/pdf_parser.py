@@ -96,6 +96,13 @@ QTIME_RE = re.compile(
 )
 # Trailing `：，` is a missing timestamp (2026-01-06 微信「莲舟曲：，」).
 NAMECOLON_RE = re.compile(r"^(?P<name>.{1,40}?)[：:]\s*[，,、.。；;]?\s*$")
+# 貼吧偶發「名字 時間」（空格分隔、無冒號；2025-07-07 貼吧用户_58NtK16）。
+QTIME_SPACE_RE = re.compile(
+    r"^(?P<name>.{1,40}?)\s+(?P<time>"
+    r"(?:20\d{2}[-/]\d{1,2}[-/]\d{1,2}\s+\d{1,2}:\d{2}"
+    r"|\d{1,2}:\d{2}(?::\d{2})?)"
+    r")\s*$"
+)
 # 微信暱稱偶發以 !／！ 收尾（如「咩咩!」），無冒號
 NAMEBANG_RE = re.compile(r"^(?P<name>.{1,40}?)[!！]\s*$")
 BARETIME_RE = re.compile(
@@ -111,7 +118,9 @@ NUM_RE = re.compile(
     r"^(?:"
     r"(?:问题|問題|问|問)?\s*\d+\s*[、.，,)）]"
     r"|(?:问题|問題|问|問)\s*[一二三四五六七八九]\s*[、.]"
+    r"|(?:问题|問題|问|問)\s*[一二三四五六七八九十\d]+\s*[：:]"
     r"|[一二三四五六七八九]\s*[、.]"
+    r"|第[一二三四五六七八九十百\d]+[、.]"
     r")"
 )
 # Tai/PDF restatement of a later sub-question dumped into the previous answer
@@ -126,7 +135,7 @@ SUBQ_RESTATE_RE = re.compile(
 # current answer already has body and the next opener is Taiguanglin.
 AMBIGUOUS_SUBQ_RE = re.compile(
     r"^(?:"
-    r"第[二三四五六七八九十百\d]+个问题(?:[，,]|\s+|(?=[\u4e00-\u9fff]))"
+    r"第[二三四五六七八九十百\d]+个问题(?:[，,、]|\s+|(?=[\u4e00-\u9fff]))"
     r"|[一二三四五六七八九]是"
     r"|[①②③④⑤⑥⑦⑧⑨⑩]"
     r")"
@@ -486,6 +495,63 @@ def _is_ambiguous_dumped_subq(text: str) -> bool:
 def _is_dumped_followup_body(text: str) -> bool:
     """Unnumbered dumped question body (加持力 / 被人打断 / 闭关 / 盘腿)."""
     return bool(DUMPED_FOLLOWUP_BODY_RE.match((text or "").strip()))
+
+
+def _dumped_nameless_question_para(
+    lines: List[Tuple[float, str]], i: int
+) -> Optional[str]:
+    """Full paragraph (line + wrapped continuation) if it reads as a nameless
+    question dumped into the previous answer, else ``None``.
+
+    2025-07-07 微信 腹股沟 spans 3 lines with ？ on the last wrapped line, so
+    the ？-ending check must run on the joined paragraph, not the raw line.
+    """
+    t0 = (lines[i][1] or "").strip()
+    if not t0:
+        return None
+    if _is_structural_line(t0) or _is_subquestion_line(t0):
+        return None
+    parts = [lines[i][1]]
+    for j in range(i + 1, min(i + 40, len(lines))):
+        x0, t = lines[j]
+        if _is_img_marker(t):
+            continue
+        if (
+            x0 > INDENT_THRESHOLD
+            or ANSWER_RE.match(t)
+            or _is_structural_line(t)
+            or _is_subquestion_line(t)
+        ):
+            break
+        parts.append(t)
+    para = "".join(parts).strip()
+    if not re.search(r"[？?]\s*$", para):
+        return None
+    return para
+
+
+def _nameless_question_followed_by_answer(
+    lines: List[Tuple[float, str]], i: int
+) -> bool:
+    """True when a nameless ？-line inside an answer is followed only by
+    wrapped continuation lines and then ``Taiguanglin：`` (its own answer).
+
+    Any new indented paragraph in between (another dumped question body,
+    another questioner…) means this ？-line is ordinary answer rhetoric and
+    must stay inside the answer (2025-11-10 官网 觉非加持力 dump; 12-08
+    TaiZhuYue ①②③ list follow-up).
+    """
+    for j in range(i + 1, min(i + 50, len(lines))):
+        x0, t = lines[j]
+        if _is_img_marker(t):
+            continue
+        if ANSWER_RE.match(t):
+            return True
+        if x0 > INDENT_THRESHOLD:
+            return False
+        if _is_structural_line(t) or _is_subquestion_line(t):
+            return False
+    return False
 
 
 def _following_is_answerer(lines: List[Tuple[float, str]], i: int) -> bool:
@@ -1192,6 +1258,8 @@ class PDFParser:
 
             # 提問者（人名 + 時間）
             qm = QTIME_RE.match(text)
+            if not qm:
+                qm = QTIME_SPACE_RE.match(text)
             if qm:
                 name = _normalize_spaces(qm.group("name"))
                 qtime = qm.group("time").strip()
@@ -1359,6 +1427,30 @@ class PDFParser:
                 and _should_split_ambiguous_subq(state, lines, i)
             ):
                 start_card("question", state["questioner"], state["qtime"])
+                add_line(text, indented=True)
+                i += 1
+                continue
+
+            # 無暱稱、以問號結尾的匿名提問正文（2025-07 腹股溝／李光耀／中東核戰…
+            # 被併進上一則回答）。PDF 中該段之後緊接 Taiguanglin 回答 → 切為新問題卡。
+            # 圈號 ①②③ 清單後的追問、以及其後還有其他問題行的 ？-段，留在原回答。
+            card = state["card"]
+            if (
+                _dumped_nameless_question_para(lines, i)
+                and card is not None
+                and card["kind"] == "answer"
+                and (
+                    bool(_text_paras_only(card.get("paras") or []))
+                    or bool(state.get("para"))
+                )
+                and not _answer_has_circled_para(card, state)
+                and _nameless_question_followed_by_answer(lines, i)
+            ):
+                start_card(
+                    "question",
+                    _recover_questioner_from_following_answer(lines, i),
+                    "",
+                )
                 add_line(text, indented=True)
                 i += 1
                 continue

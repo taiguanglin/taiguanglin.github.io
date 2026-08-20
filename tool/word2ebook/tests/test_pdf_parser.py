@@ -795,6 +795,61 @@ class TestNumberedQuestions:
         assert "理论上算" in answers[1]
 
 
+    def test_nameless_question_body_after_answer_opens_new_card(self, parser):
+        """Anonymous question body (ends ？, no nickname) dumped into Q1's answer
+        is a new card (2025-07-07 微信 自业自消 → 腹股沟). The ？ may land on a
+        wrapped line, so the paragraph is joined before the ？-ending check."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月7 号，回答微信公众号的问题。"),
+            (CONT, "自业自消："),
+            (IND,  "身体患病每天承受病痛折磨，请问师父这时该怎么办？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "自业自消，很疼的时候念佛吧。"),
+            (IND,  "师父，打坐后，腹股沟链接大腿的位置痛是正常吗？打坐一小时"),
+            (CONT, "后膝盖两侧的筋会很痛，但记得师父说大腿或屁股痛才正常，膝"),
+            (CONT, "盖两边的经络感到痛是有什么问题吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，打坐腹股沟这个位置疼，一开始应该会有点疼的。"),
+            (IND,  "新加坡前总理李光耀先生的作为是否具有人王的潜质？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "新加坡总理李光耀，我对他不是很熟。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert len(questions) == 3
+        assert "腹股沟链接大腿的位置痛是正常吗" in questions[1]
+        assert "李光耀先生的作为" in questions[2]
+        # dumped bodies must NOT remain inside the previous answer card
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "腹股沟链接大腿的位置痛是正常吗" not in answers[0]
+        assert "李光耀先生的作为" not in answers[0]
+
+
+    def test_mid_answer_question_mark_stays_in_answer(self, parser):
+        """An answer paragraph ending in ？ with NO following Taiguanglin opener
+        stays inside the answer (rhetorical question, not a dumped turn)."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月8 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月8 号，回答微信公众号的问题。"),
+            (CONT, "甲："),
+            (IND,  "问题一。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "这个问题你自己想想看，是不是这样呢？"),
+            (IND,  "所以说你还是好好修行吧。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        assert len(re.findall(r'<div class="question"', ch.content)) == 1
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "是不是这样呢？" in answers[0]
+
+
     def test_dumped_di_ge_wenti_space_after_answer_opens_new_card(self, parser):
         """「第二个问题 家族里面…」with a space (2026-03-04 官网 Yue)."""
         lines = [

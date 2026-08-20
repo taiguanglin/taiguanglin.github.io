@@ -118,6 +118,21 @@ structural line is `Taiguanglin：` (following paragraphs until that marker stay
 on the new question). These SHALL remain in the answer when the next opener is
 a new questioner rather than `Taiguanglin：`.
 
+A **nameless** question body (no nickname line) that is dumped into the previous
+answer (2025-07: 腹股沟/李光耀/中东核战/恶念/隔阴… ) SHALL become its own
+question card when the joined paragraph ends with `？`/`?`, the current card is an
+answer with body, the answer contains no circled `①②③` listing, and the next
+paragraph (skipping wrapped continuation lines) is a `Taiguanglin：` answer. The
+`？` may fall on a wrapped line, so the paragraph is joined before checking.
+Questioner is recovered from a `下一个问题，名字` cue in the following answer,
+else left empty. Mid-answer rhetoric ending in `？` (followed by more answer
+paragraphs or a dumped-marker line such as `最后一个不是问题…`) SHALL stay in
+the answer. The same applies to question bodies that are preceded by a
+`名字 时间` line (space-separated, no colon, e.g. `贴吧用户_58NtK16
+2025-07-07 19:48`) — such a line SHALL be read as the questioner + timestamp.
+Numbered openers additionally include `第N、` (e.g. `第二、`), `问题N：`
+(colons after the numeral), and `第N个问题、` (dumped with 顿号).
+
 #### Scenario: Consecutive numbered questions merge
 - GIVEN one questioner who asks `1、`, `2、`, `3、` consecutively before any answer
 - WHEN parsed
@@ -180,6 +195,23 @@ a new questioner rather than `Taiguanglin：`.
 - WHEN parsed
 - THEN a second question card SHALL be produced for that body, and it SHALL
   NOT remain inside the previous answer
+
+#### Scenario: nameless ？-ending question after an answer opens a new card
+- GIVEN an answer with body, then a nameless paragraph ending in `？` (the `？`
+  may fall on a wrapped line), then another `Taiguanglin：` answer
+- WHEN parsed
+- THEN a second, anonymous question card SHALL be produced for the paragraph,
+  and it SHALL NOT remain inside the previous answer
+- AND a `名字 时间` line (space-separated, no colon) directly before such a
+  paragraph SHALL be read as the questioner + timestamp
+
+#### Scenario: ？-ending rhetoric stays in the answer
+- GIVEN an answer whose own paragraph ends in `？` followed by more answer
+  paragraphs (no new `Taiguanglin：`), or by a dumped-marker line such as
+  `最后一个不是问题…`
+- WHEN parsed
+- THEN no new question card SHALL be produced; the paragraph SHALL remain
+  inside the answer
 
 #### Scenario: 第二件事情 dumped after an answer opens a new card
 - GIVEN an answer, then `第二件事情，就是我之前做事情的时候…被人打断…`, then
