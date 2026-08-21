@@ -270,11 +270,22 @@
 }
 .qa-player-close:hover { background: rgba(248, 200, 220, 0.4); }
 
-/* 音量控制（b站風格：列上只有喇叭鈕，點擊後彈出垂直音量滑桿） */
+/* 音量控制（b站風格：滑鼠移上喇叭鈕彈出垂直音量滑桿，移走即收起；點擊切換靜音） */
 .qa-player-volume-group {
     position: relative;
     flex: 0 0 auto;
     /* 位於 seek row 內，由該列 align-items: center 垂直置中 */
+}
+/* 彈出層與按鈕之間的 10px 空隙：用 ::before 橋接，滑鼠從按鈕移向滑桿不會中斷 hover */
+.qa-player-volume-group::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;   /* 與彈出層同寬 */
+    height: 10px;  /* 與彈出層下方的間距同高 */
+    z-index: 0;
 }
 .qa-player-volume-btn {
     flex: 0 0 auto;

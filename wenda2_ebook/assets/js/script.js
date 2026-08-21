@@ -4124,8 +4124,10 @@ function addHomepageBookmarkEventListeners() {
   // 僅 qa/ 資料夾轉出的章節含 .qa-play 按鈕（data-audio/-start/-end/-label）。
   // 點擊後從指定時間播放對應 .opus 音檔，到段落結束自動停止，並在畫面底部
   // 顯示一個浮動迷你播放器（音檔名稱 + 起訖時間 + 可拖拉進度條 + ±5s + 暫停 +
-  // 音量控制：b站風格，列上只有一個喇叭鈕，點擊後彈出垂直音量滑桿
-  // （頂部 0–100 數字 + 已達到的音量以主色填滿軌道），音量值存於 localStorage 以便跨頁保留）。
+  // 音量控制：b站風格，滑鼠移上喇叭鈕即彈出垂直音量滑桿
+  // （頂部 0–100 數字 + 已達到的音量以主色填滿軌道），移走即收起；
+  // 點一下喇叭鈕靜音、再點一下取消靜音（取消時還原靜音前音量）。
+  // 音量值存於 localStorage 以便跨頁保留。
   //
   // 首次載入（或跳到尚未緩衝的時間點）時，播放鈕與迷你播放器會顯示載入中
   // 狀態與緩衝進度，避免使用者以為沒反應。
@@ -4156,6 +4158,7 @@ function addHomepageBookmarkEventListeners() {
     var loadGen = 0;         // 載入世代，用於取消過期回呼
     var loadingDelayTimer = null;
     var savedRangeLabel = '';
+    var volumeBeforeMute = null; // 點擊喇叭鈕靜音前的音量，取消靜音時還原
 
     // ---- 底部浮動播放器 ------------------------------------------------
     var bar = document.createElement('div');
@@ -4178,6 +4181,7 @@ function addHomepageBookmarkEventListeners() {
               '<svg class="qa-player-volume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
                 '<path class="qa-volume-symbol qa-volume-speaker" d="M3 9v6h4l5 4V5L7 9H3z"/>' +
                 '<path class="qa-volume-symbol qa-volume-waves" d="M16 8a4 4 0 0 1 0 8M12 3v18" opacity="0"/>' +
+                '<path class="qa-volume-symbol qa-volume-muted" d="M4 4l16 16" opacity="0"/>' +
               '</svg>' +
             '</button>' +
             '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
@@ -4203,6 +4207,7 @@ function addHomepageBookmarkEventListeners() {
     var volumeGroup = bar.querySelector('.qa-player-volume-group');
     var volumeBtn = bar.querySelector('.qa-player-volume-btn');
     var volumeBtnWaves = bar.querySelector('.qa-player-volume-icon .qa-volume-waves');
+    var volumeBtnMuted = bar.querySelector('.qa-player-volume-icon .qa-volume-muted');
     var volumeValue = bar.querySelector('.qa-player-volume-value');
     var volumeInput = bar.querySelector('.qa-player-volume');
     var closeBtn = bar.querySelector('.qa-player-close');
@@ -4228,7 +4233,7 @@ function addHomepageBookmarkEventListeners() {
       try { return new URL(url, window.location.href).href; } catch (e) { return url; }
     }
 
-    // ---- 音量控制（b站風格：喇叭鈕點擊後彈出垂直音量滑桿） --------------
+    // ---- 音量控制（b站風格：滑鼠移上喇叭鈕彈出垂直音量滑桿，點擊切換靜音） ----
     function clampVolume(v) {
       if (!isFinite(v)) return 1;
       return Math.max(0, Math.min(1, v));
@@ -4251,18 +4256,40 @@ function addHomepageBookmarkEventListeners() {
     function updateVolumeUI() {
       var pct = Math.round(clampVolume(audio.volume) * 100);
       var muted = audio.muted || pct === 0;
-      // 音量波紋顯示（0 = 靜音時隱藏波紋）
+      // 靜音時隱藏波紋、顯示斜線；取消靜音則反之
       if (volumeBtnWaves) {
         volumeBtnWaves.setAttribute('opacity', muted ? '0' : '1');
       }
-      // 頂部 0–100 數字 + 軌道填色比例（b站風格）
+      if (volumeBtnMuted) {
+        volumeBtnMuted.setAttribute('opacity', muted ? '1' : '0');
+      }
+      // 頂部 0–100 數字 + 軌道填色比例（b站風格），並同步滑桿數值
       volumeValue.textContent = String(pct);
+      volumeInput.value = String(pct);
       volumeInput.style.setProperty('--qa-volume-pct', pct + '%');
     }
 
     function setVolumeOpen(open) {
       volumeGroup.classList.toggle('is-open', open);
       volumeBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    // 點擊喇叭鈕：靜音 / 取消靜音（b站風格；取消時還原靜音前的音量）
+    function toggleMute() {
+      if (audio.muted || audio.volume === 0) {
+        audio.muted = false;
+        if (volumeBeforeMute != null && volumeBeforeMute > 0) {
+          audio.volume = clampVolume(volumeBeforeMute);
+        } else if (audio.volume === 0) {
+          audio.volume = 1; // 從 0 取消靜音：回到預設音量
+        }
+        volumeBeforeMute = null;
+      } else {
+        volumeBeforeMute = audio.volume;
+        audio.muted = true;
+      }
+      saveVolume(audio.volume);
+      updateVolumeUI();
     }
 
     // 初始化音量（預設 1，若有上次儲存值則還原）
@@ -4575,8 +4602,27 @@ function addHomepageBookmarkEventListeners() {
     skipBackBtn.addEventListener('click', function () { skipBy(-SKIP_SECONDS); });
     skipFwdBtn.addEventListener('click', function () { skipBy(SKIP_SECONDS); });
 
-    volumeBtn.addEventListener('click', function () {
-      setVolumeOpen(!volumeGroup.classList.contains('is-open'));
+    volumeBtn.addEventListener('click', toggleMute);
+
+    // b站風格：滑鼠移上喇叭鈕（含彈出層）顯示音量滑桿，移走即收起
+    var volumeHoverTimer = null;
+    volumeGroup.addEventListener('mouseenter', function () {
+      if (volumeHoverTimer) {
+        clearTimeout(volumeHoverTimer);
+        volumeHoverTimer = null;
+      }
+      setVolumeOpen(true);
+    });
+    volumeGroup.addEventListener('mouseleave', function () {
+      if (volumeHoverTimer) {
+        clearTimeout(volumeHoverTimer);
+        volumeHoverTimer = null;
+      }
+      // 小延遲避免在按鈕與彈出層之間移動時閃爍
+      volumeHoverTimer = setTimeout(function () {
+        volumeHoverTimer = null;
+        setVolumeOpen(false);
+      }, 180);
     });
 
     // 點擊控制區外或按 Esc 時關閉音量彈出層
@@ -4595,6 +4641,7 @@ function addHomepageBookmarkEventListeners() {
 
     volumeInput.addEventListener('input', function () {
       var v = clampVolume((parseFloat(volumeInput.value) || 0) / 100);
+      volumeBeforeMute = null; // 手動調整後，舊的「靜音前音量」不再適用
       audio.volume = v;
       if (v === 0) {
         audio.muted = true;

@@ -33,7 +33,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
-| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle, Bilibili-style volume control — speaker button toggling a popup with a vertical slider persisted in `localStorage`), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
+| `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle, Bilibili-style volume control — hovering the speaker button shows a popup with a vertical slider persisted in `localStorage`, moving away hides it, clicking the speaker toggles mute/unmute), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
 | `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
 
 ### Requirement: Single Output File
@@ -120,15 +120,18 @@ the `data-label` time range. The mini-player SHALL provide:
 - `−5s` and `+5s` skip buttons that adjust playback within the same segment bounds
 - A volume control in Bilibili style: the only visible element is a speaker
   button (an inline pink SVG speaker icon at roughly 3/4 the size of the original
-  emoji, with sound waves hidden when muted); clicking it SHALL toggle a popup
-  containing a vertical volume slider (0–100 scale) that sets `audio.volume` /
-  `audio.muted`. The popup SHALL show a numeric readout (0–100) of the current
-  volume above the slider and SHALL fill the reached portion of the track (from
-  the bottom up to the current level) with the primary colour. The popup SHALL
-  close when the user clicks outside it, presses `Esc`, or closes the
-  mini-player. The volume value SHALL persist in `localStorage['qa-volume']` and
-  be restored on page load (default 1). Dragging the slider to 0 SHALL mute;
-  dragging above 0 while muted SHALL unmute.
+  emoji, with sound waves hidden and a slash shown when muted). Hovering the
+  speaker button SHALL show a popup containing a vertical volume slider (0–100
+  scale) that sets `audio.volume` / `audio.muted`; moving the pointer away from
+  the button and popup SHALL hide it. Clicking the speaker button SHALL toggle
+  mute: muting SHALL remember the current volume and unmuting SHALL restore it
+  (falling back to 1 when unmuting from 0). The popup SHALL show a numeric
+  readout (0–100) of the current volume above the slider and SHALL fill the
+  reached portion of the track (from the bottom up to the current level) with the
+  primary colour. The popup SHALL also close when the user clicks outside it,
+  presses `Esc`, or closes the mini-player. The volume value SHALL persist in
+  `localStorage['qa-volume']` and be restored on page load (default 1). Dragging
+  the slider to 0 SHALL mute; dragging above 0 while muted SHALL unmute.
 - Keyboard support on the progress bar: Left/Right arrows for ±5s, Space/Enter for
   play/pause
 
@@ -175,17 +178,22 @@ intentional:
   loading message, optional buffer percent) until the `playing` event fires
   (or an `error` clears loading with a failure message)
 
-#### Scenario: Volume control and persistence
+#### Scenario: Volume control, mute toggle, and persistence
 - GIVEN a QA chapter page with the mini-player
-- WHEN the user clicks the speaker button
+- WHEN the user moves the pointer over the speaker button
 - THEN a popup with a vertical volume slider SHALL appear and the button SHALL
   have `aria-expanded="true"`
+- WHEN the user moves the pointer away from the button and popup
+- THEN the popup SHALL close and `aria-expanded` SHALL become `"false"`
 - WHEN the user drags the slider to 80
 - THEN `audio.volume` SHALL become 0.8, the numeric readout SHALL show `80`, the
   filled portion of the track SHALL cover 80% (from the bottom), and
   `localStorage['qa-volume']` SHALL be `"0.8"`
-- WHEN the user clicks outside the control or presses `Esc`
-- THEN the popup SHALL close and `aria-expanded` SHALL become `"false"`
+- WHEN the user clicks the speaker button while audible
+- THEN the audio SHALL mute, the icon SHALL hide the sound waves and show the
+  muted slash, and the current volume SHALL be remembered
+- WHEN the user clicks the speaker button again
+- THEN the audio SHALL unmute and the previous volume SHALL be restored
 - WHEN the user reloads the page with `localStorage['qa-volume']` set
 - THEN the mini-player SHALL restore `audio.volume` from that value (defaulting to 1)
 
