@@ -4180,8 +4180,8 @@ function addHomepageBookmarkEventListeners() {
             '<button class="qa-player-volume-btn" type="button" aria-label="音量" aria-expanded="false">' +
               '<svg class="qa-player-volume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
                 '<path class="qa-volume-symbol qa-volume-speaker" d="M3 9v6h4l5 4V5L7 9H3z"/>' +
-                '<path class="qa-volume-symbol qa-volume-waves" d="M16 8a4 4 0 0 1 0 8M12 3v18" opacity="0"/>' +
-                '<path class="qa-volume-symbol qa-volume-muted" d="M4 4l16 16" opacity="0"/>' +
+                '<path class="qa-volume-symbol qa-volume-waves" d="M15 8.5a3.5 3.5 0 0 1 0 7M18 6a7 7 0 0 1 0 12" fill="none" stroke-linecap="round" opacity="0"/>' +
+                '<path class="qa-volume-symbol qa-volume-muted" d="M5 5l14 14" fill="none" stroke-linecap="round" opacity="0"/>' +
               '</svg>' +
             '</button>' +
             '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
