@@ -159,6 +159,9 @@ DUMPED_FOLLOWUP_BODY_RE = re.compile(
 # Tai restates a question someone asked earlier and answers it without a new
 # ``Taiguanglin：`` marker (2025-07-08 贴吧 咪了个喵xxx answer→「昨天还有人问…」).
 RESTATED_Q_RE = re.compile(r"^(?:昨天还有人问|昨天就有人问|昨天有人问)")
+# 音檔有問答但 PDF 未收錄原提問文字（2025-06-09「答案同上」／06-10「未找到原提问」）。
+MISSING_Q_MARKER_RE = re.compile(r"^(?:未找到原提[问問]|原[问問]题未收录|原問題未收錄)")
+ANSWER_SAME_AS_ABOVE_RE = re.compile(r"^下一个问题[，,]?\s*答案(?:还是和上边|還是和上邊|同上)")
 # Wrapped nickname fragment like「(十念)：」after「言午」(2025-07-08 微信).
 # preclean strips the leading 「(」, leaving「十念)：」.
 WRAPPED_NAME_FRAGMENT_RE = re.compile(r"^[^\s：:]{1,8}[）)][：:]\s*$")
@@ -1306,6 +1309,20 @@ class PDFParser:
                 if state["card"] is not None and state["card"]["kind"] == "answer":
                     add_line(text, indented=False)
                 finish_card()
+                i += 1
+                continue
+
+            # 音檔有問答但 PDF 未收錄原提問文字：切出佔位問題卡（2025-06 貼吧）。
+            if MISSING_Q_MARKER_RE.match(text):
+                start_card("question", "", "")
+                add_line(text, indented=True)
+                i += 1
+                continue
+            if ANSWER_SAME_AS_ABOVE_RE.match(text):
+                start_card("question", "", "")
+                add_line("（原问题未收录，答案为「和上边一样」）", indented=True)
+                start_card("answer")
+                add_line(text, indented=True)
                 i += 1
                 continue
 

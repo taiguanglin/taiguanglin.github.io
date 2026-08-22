@@ -241,6 +241,13 @@ Numbered openers additionally include `第N、` (e.g. `第二、`), `问题N：`
   question body, and the questioner SHALL be the preceding `名字：` (not a
   new questioner such as `。。发表于`)
 
+#### Scenario: 未找到原提问 / 答案同上 markers open placeholder cards
+- GIVEN an answer, then a `未找到原提问：` line followed by `Taiguanglin：`,
+  or a `下一个问题，答案还是和上边的一样…` line
+- WHEN parsed
+- THEN a placeholder question card SHALL be produced for the unrecorded
+  question (empty questioner), with its answer as a separate answer card
+
 #### Scenario: bare Taiguanglin without colon still opens an answer
 - GIVEN an answer, then a bare left-margin `Taiguanglin` line (PDF dropped the
   colon), then the answer body, then a later `N、` question dumped into it

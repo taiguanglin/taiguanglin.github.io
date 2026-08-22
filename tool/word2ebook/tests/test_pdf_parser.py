@@ -926,6 +926,56 @@ class TestNumberedQuestions:
         )
         assert "六、七秒" in answers[0]
 
+    def test_missing_question_marker_opens_placeholder_card(self, parser):
+        """「未找到原提问：」is an unrecorded-question marker → anonymous question card."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月10 号，先回答贴吧的问题。"),
+            (CONT, "wxpcjrjgcs："),
+            (IND,  "2、如果布施时明确说明不需要回报，那以后是否还会回到自己身上？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "不需要回报的情况下做的才叫布施。"),
+            (IND,  "未找到原提问："),
+            (CONT, "Taiguanglin："),
+            (IND,  "施食的事，我多次说，在家人不要做这个事。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=13)[0]
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert names == ["wxpcjrjgcs", ""]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "未找到原提问" in questions[1]
+        assert "施食的事" not in questions[1]
+
+    def test_answer_same_as_above_opens_placeholder_card(self, parser):
+        """「下一个问题，答案还是和上边的一样」is an unrecorded question whose
+        answer is「同上」→ placeholder question + answer card."""
+        lines = [
+            (157.0, "Tai 师父2025 年6 月9 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年6 月9 号，先回答贴吧的问题。"),
+            (CONT, "hffhi："),
+            (IND,  "请问师父，很多人会去收养流浪猫。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "拿走流浪小猫，你反过来想。"),
+            (IND,  "下一个问题，答案还是和上边的一样，刚才讲的，就是三个角色"),
+            (CONT, "都得来一遍。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "心画世间：2025-06-09 17:14"),
+            (IND,  "师父好！又来麻烦您了。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=13)[0]
+        names = re.findall(r'<span class="questioner">([^<]*)</span>', ch.content)
+        assert names == ["hffhi", "", "心画世间"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "原问题未收录" in questions[1]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "答案还是和上边的一样" in answers[1]
+
     def test_negative_number_sign_is_not_stripped(self, parser):
         """A leading minus on「-273.15 摄氏度」is a sign, not PDF symbol junk."""
         lines = [
