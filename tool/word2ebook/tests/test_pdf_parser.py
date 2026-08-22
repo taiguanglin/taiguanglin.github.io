@@ -926,6 +926,68 @@ class TestNumberedQuestions:
         )
         assert "六、七秒" in answers[0]
 
+    def test_negative_number_sign_is_not_stripped(self, parser):
+        """A leading minus on「-273.15 摄氏度」is a sign, not PDF symbol junk."""
+        lines = [
+            (157.0, "Tai 师父2025 年9 月1 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年9 月1 号，先回答贴吧的问题。"),
+            (CONT, "美小柒："),
+            (IND,  "3、宇宙间的绝对零度：科学家推算出宇宙中的绝对零度在"),
+            (CONT, "-273.15 摄氏度，是不是不打妄想状态下的温度？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "绝对零度就是意识停止的地方。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=16)[0]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "-273.15" in questions[0]
+
+    def test_bare_taiguanglin_without_colon_still_opens_answer(self, parser):
+        """A bare ``Taiguanglin`` line (PDF dropped the colon) still opens an
+        answer card, so a following「4、」dumped question splits (2025-08-08 官网)."""
+        lines = [
+            (157.0, "Tai 师父2025 年8 月8 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年8 月8 号，先回答官网的问题。"),
+            (CONT, "皈依自性觉正净："),
+            (IND,  "3、念《地藏经》时妄想从头到尾没断过。"),
+            (CONT, "Taiguanglin"),
+            (IND,  "下一个问题，念的时候脑子里妄想多，这个很正常。"),
+            (IND,  "4、朋友失业经济困窘，请问领取失业保险金是否会背因果？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，朋友失业的问题，可以领失业保险金。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=15)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["皈依自性觉正净", "皈依自性觉正净"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "3、念《地藏经》" in questions[0]
+        assert "4、朋友失业" in questions[1]
+        assert "4、朋友失业" not in questions[0]
+
+    def test_fabiao_floor_header_is_not_a_questioner(self, parser):
+        """「XX 发表于 YYYY-MM-DD HH:MM」is a 贴吧 floor header, not a new
+        questioner (2025-11-12 官网 我空法空空亦空 → 「。。发表于」)."""
+        lines = [
+            (157.0, "Tai 师父2025 年11 月12 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年11 月12 号，先回答官网的问题。"),
+            (CONT, "我空法空空亦空："),
+            (IND,  "。。 发表于 2025-11-12 07:52"),
+            (IND,  "谢谢师父，回答我这些很负能量的问题。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，188楼，这里没有问题。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=17)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["我空法空空亦空"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "发表于" in questions[0]
+        assert "谢谢师父" in questions[0]
+
     def test_wrapped_name_fragment_is_dropped(self, parser):
         """A wrapped nickname fragment「(十念)：」after「言午」is dropped, not
         glued into the question text (2025-07-08 微信)."""

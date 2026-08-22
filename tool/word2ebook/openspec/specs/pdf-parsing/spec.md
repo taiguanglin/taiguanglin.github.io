@@ -233,6 +233,21 @@ Numbered openers additionally include `第N、` (e.g. `第二、`), `问题N：`
 - THEN that line SHALL remain in the answer and SHALL NOT open a new question
   card (unlike a genuine indented `六、` sub-question opener)
 
+#### Scenario: 发表于 floor header is not a questioner
+- GIVEN a questioner line `名字：`, then an indented `楼层 发表于 YYYY-MM-DD HH:MM`
+  (贴吧 floor header), then the question body
+- WHEN parsed
+- THEN the `发表于` line SHALL be treated as the opening paragraph of the
+  question body, and the questioner SHALL be the preceding `名字：` (not a
+  new questioner such as `。。发表于`)
+
+#### Scenario: bare Taiguanglin without colon still opens an answer
+- GIVEN an answer, then a bare left-margin `Taiguanglin` line (PDF dropped the
+  colon), then the answer body, then a later `N、` question dumped into it
+- WHEN parsed
+- THEN the bare `Taiguanglin` SHALL open an answer card (like `Taiguanglin：`),
+  so the later `N、` SHALL split into a new question card
+
 #### Scenario: wrapped nickname fragment is dropped
 - GIVEN a bare questioner name `言午` followed by an indented `(十念)：` fragment
 - WHEN parsed

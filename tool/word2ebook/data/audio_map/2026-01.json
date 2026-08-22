@@ -208,10 +208,30 @@
         },
         {
           "index": 8,
-          "question_id": "question-d21a103396e4",
+          "question_id": "question-a0951a205496",
           "questioner": "印龙",
           "question_time": "",
           "stable_key": "2026nian-1yue-5ri-guan-wang#8",
+          "q_preview": "如果我就继续这样精进修行下去、发愿、戒行、修行、善行都做好，您感觉有没有可能在三年内入初禅呢？",
+          "q_text": "如果我就继续这样精进修行下去、发愿、戒行、修行、善行都做好，您感觉有没有可能在三年内入初禅呢？",
+          "answer_preview": "下一个问题，如果我就继续这样精进修行下去，有没有可能在三年内入初禅？\n\n你要问有没有可能，那肯定有可能，也有不可能，总之可能是肯定有的，就看你的业障和精进程度。初禅是四个小时，至少三个小时以上，开始身体发生第二次变化之后，就可以努力试一下。每个人的业障都不一样，有可能有些人就快，有可能有些人就业障就较多，障碍就多。不过继续努力就可以了，不用想著到某个时间段一",
+          "answer_text": "下一个问题，如果我就继续这样精进修行下去，有没有可能在三年内入初禅？\n\n你要问有没有可能，那肯定有可能，也有不可能，总之可能是肯定有的，就看你的业障和精进程度。初禅是四个小时，至少三个小时以上，开始身体发生第二次变化之后，就可以努力试一下。每个人的业障都不一样，有可能有些人就快，有可能有些人就业障就较多，障碍就多。不过继续努力就可以了，不用想著到某个时间段一定达到什么境界，这样的想法反而会成为你的执著，会障碍你修行。",
+          "start": null,
+          "end": null,
+          "start_label": null,
+          "end_label": null,
+          "confidence": null,
+          "status": "missing",
+          "locked": false,
+          "srt_preview": null,
+          "meta": {}
+        },
+        {
+          "index": 9,
+          "question_id": "question-d21a103396e4",
+          "questioner": "印龙",
+          "question_time": "",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#9",
           "q_preview": "2、我在躺著的时候感受过多次0.5禅，并大概知道怎么进去（全身逐渐放松，在呼吸时一点一点进去），但在打坐时却发现很难主动进去，想问您印象里，周围精进修行的师兄弟",
           "start": 521.78,
           "end": 604.41,
@@ -231,11 +251,11 @@
           }
         },
         {
-          "index": 9,
+          "index": 10,
           "question_id": "question-5d38cbee3461",
           "questioner": "印龙",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#9",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#10",
           "q_preview": "3、师父我爱人去年怀孕一个月后，胚胎的胎心胎芽没长出来，自然胎停了，然后通过吃药，把没长出胎心胎芽的胚胎排了出来。我爱人很希望要这个孩子，胎停后伤心了挺长时间。",
           "start": 604.41,
           "end": 646.04,
@@ -255,11 +275,11 @@
           }
         },
         {
-          "index": 10,
+          "index": 11,
           "question_id": "question-ecccb0800ab1",
           "questioner": "Ming",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#10",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#11",
           "q_preview": "Tai师父您好。",
           "start": 646.04,
           "end": 742.56,
@@ -279,11 +299,11 @@
           }
         },
         {
-          "index": 11,
+          "index": 12,
           "question_id": "question-efecba905ded",
           "questioner": "Ming",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#11",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#12",
           "q_preview": "2、另外，本人升起了信，但是也有疑，因为自己还没修证到。但是本人现在出离心特别强（没啥特别感兴趣的事情，感觉没有什么意义，感觉世上充满了苦），也会因为别人的遭遇",
           "start": 742.56,
           "end": 822.075,
@@ -303,11 +323,11 @@
           }
         },
         {
-          "index": 12,
+          "index": 13,
           "question_id": "question-a9b4b0d49516",
           "questioner": "上官",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#12",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#13",
           "q_preview": "师父新年快乐！六时吉祥，弟子想请教：",
           "start": 822.075,
           "end": 887.76,
@@ -327,11 +347,11 @@
           }
         },
         {
-          "index": 13,
+          "index": 14,
           "question_id": "question-ae17741d0df7",
           "questioner": "上官",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#13",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#14",
           "q_preview": "2、师父，为什么修行者在人间精进修行三十年，就有机会进入二禅色界天，而欲界天的天人却要修行更长的时间呢？人身这个“法器”是不是诸天包括极乐世界在内，最快的修行工",
           "start": 887.76,
           "end": 936.52,
@@ -351,11 +371,11 @@
           }
         },
         {
-          "index": 14,
+          "index": 15,
           "question_id": "question-2bbf649093cc",
           "questioner": "上官",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#14",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#15",
           "q_preview": "3、师父我发愿往生极乐世界，也愿意度与我有缘的一切众生都可往生或者解脱，平常戒行、善行、修行都做，每天打坐超过两小时。",
           "start": 936.52,
           "end": 981.32,
@@ -375,11 +395,11 @@
           }
         },
         {
-          "index": 15,
+          "index": 16,
           "question_id": "question-c6d642f79de2",
           "questioner": "肖恩豪",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#15",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#16",
           "q_preview": "1、老师你说，鬼道众生除了人间的亲人为他们读经才能学习佛法。我想问下，如果我手机每日播放经文，并发愿让他们听，那他们是否能听到呢？这么做是否有功德呢？",
           "start": 981.32,
           "end": 1041.8,
@@ -399,11 +419,11 @@
           }
         },
         {
-          "index": 16,
+          "index": 17,
           "question_id": "question-93432e5dd63b",
           "questioner": "肖恩豪",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#16",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#17",
           "q_preview": "2、老师说“神通不敌业力，业力不敌愿力”。那一个人发愿替另一个人受报，这样的话另外一个人可以消业吗？",
           "start": 1041.8,
           "end": 1058.718,
@@ -423,11 +443,11 @@
           }
         },
         {
-          "index": 17,
+          "index": 18,
           "question_id": "question-85e14d71be98",
           "questioner": "肖恩豪",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#17",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#18",
           "q_preview": "3、老师有平行世界吗？如果有的话那平行世界的我和这个世界的我有什么区别和联系呢？菩萨在编写剧本的时候又都是怎样安排的呢？还是说每个世界都有每个世界的菩萨，那要是",
           "start": 1058.718,
           "end": 1208.48,
@@ -447,11 +467,11 @@
           }
         },
         {
-          "index": 18,
+          "index": 19,
           "question_id": "question-ab6a65b109f8",
           "questioner": "肖恩豪",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#18",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#19",
           "q_preview": "4、老师，菩萨有妄想，凡夫有著种种的执著与分别，从根本上来讲，这些都是空的。那是否有一个修行法门，可以跳过六根修持，也就是不再分灭下三根和上三根，而能够将他们一",
           "start": 1208.48,
           "end": 1327.69,
@@ -471,11 +491,11 @@
           }
         },
         {
-          "index": 19,
+          "index": 20,
           "question_id": "question-e7b9804a6f18",
           "questioner": "道心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#19",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#20",
           "q_preview": "Tai师父好，元旦快乐！",
           "start": 1327.69,
           "end": 1406.26,
@@ -495,11 +515,11 @@
           }
         },
         {
-          "index": 20,
+          "index": 21,
           "question_id": "question-a05d0c5fe746",
           "questioner": "道心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#20",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#21",
           "q_preview": "2、关于共修的问题。共修有哪些益处呢？想请问师父您以前有没有经常参加共修？我有时看到群里每天会发某人读多少遍经、磕多少个头，会觉得自己默默坚持做就好了，没必要晒",
           "start": 1406.26,
           "end": 1513.95,
@@ -519,11 +539,11 @@
           }
         },
         {
-          "index": 21,
+          "index": 22,
           "question_id": "question-e7dfb685b0da",
           "questioner": "灵山一笑",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#21",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#22",
           "q_preview": "顶礼师父！感恩师父的开示，获益良多！",
           "start": 1513.95,
           "end": 1533.58,
@@ -543,11 +563,11 @@
           }
         },
         {
-          "index": 22,
+          "index": 23,
           "question_id": "question-068c9c9d385c",
           "questioner": "灵山一笑",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#22",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#23",
           "q_preview": "2、念地藏圣号后，我回向的内容：回向自己所求（身体、工作、家庭相关），回向给自己的亲朋好友，回向给冤亲债主，最后回向法界。这样的回向方式是否如法？",
           "start": 1533.58,
           "end": 1591.94,
@@ -567,11 +587,11 @@
           }
         },
         {
-          "index": 23,
+          "index": 24,
           "question_id": "question-47f6e8782abb",
           "questioner": "灵山一笑",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#23",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#24",
           "q_preview": "3、从师父的书和问答录中，了解到了双盘对身体和修行的重要性，从上上周开始下定决心坚持双盘。",
           "start": 1591.94,
           "end": 1649.06,
@@ -591,11 +611,11 @@
           }
         },
         {
-          "index": 24,
+          "index": 25,
           "question_id": "question-7635acb8defa",
           "questioner": "月牙妞妞",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#24",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#25",
           "q_preview": "弟子女，三十二岁，半年前有幸遇到Tai师父的《坐禅》一书，七月开始尝试双盘。开始时，上双盘就像掰钢筋一样，有时候疼得睡不著，第二天醒来还是酸软。从十分钟、十五分",
           "start": 1649.06,
           "end": 1676.02,
@@ -615,11 +635,11 @@
           }
         },
         {
-          "index": 25,
+          "index": 26,
           "question_id": "question-330b4c6db73d",
           "questioner": "月牙妞妞",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#25",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#26",
           "q_preview": "2、我有次梦考戒肉，应该是没过，接下来考了我一个星期，是我太在意结果才导致我天天考的吧？",
           "start": 1676.02,
           "end": 1719.67,
@@ -639,11 +659,11 @@
           }
         },
         {
-          "index": 26,
+          "index": 27,
           "question_id": "question-d59ae5e42904",
           "questioner": "九转",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#26",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#27",
           "q_preview": "师父好！两个问题请开示：",
           "start": 1719.67,
           "end": 1742.28,
@@ -663,11 +683,11 @@
           }
         },
         {
-          "index": 27,
+          "index": 28,
           "question_id": "question-4d5d3193b070",
           "questioner": "九转",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#27",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#28",
           "q_preview": "2、磕大头有排出身体食物中毒素的作用。如果开始辟谷，每天不进饮食了，自然就不摄入毒素了，这个期间是否可以停止磕大头，只打坐就可以了？",
           "start": 1742.28,
           "end": 1811.68,
@@ -687,11 +707,11 @@
           }
         },
         {
-          "index": 28,
+          "index": 29,
           "question_id": "question-5589aff7ae54",
           "questioner": "上官星月",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#28",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#29",
           "q_preview": "Tai师父好，元旦快乐，吉祥如意！",
           "start": 1811.68,
           "end": 1905.19,
@@ -711,11 +731,11 @@
           }
         },
         {
-          "index": 29,
+          "index": 30,
           "question_id": "question-9e7de5c4ee9b",
           "questioner": "上官星月",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#29",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#30",
           "q_preview": "2、双盘达到三个小时以上不疼就是欲界定了吧。三个小时以上，身体应该很健康了，小毛小病都可以修复了吧？望师父开示！",
           "start": 1905.19,
           "end": 1952.79,
@@ -735,11 +755,11 @@
           }
         },
         {
-          "index": 30,
+          "index": 31,
           "question_id": "question-6410dea2073c",
           "questioner": "Wangguangying",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#30",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#31",
           "q_preview": "顶礼师父。",
           "start": 1952.79,
           "end": 2014.7,
@@ -759,11 +779,11 @@
           }
         },
         {
-          "index": 31,
+          "index": 32,
           "question_id": "question-ea4d1f71a565",
           "questioner": "Wangguangying",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#31",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#32",
           "q_preview": "2、打坐时候放著念佛机跟著默念佛也可以吗，也可以进去欲界定吗？",
           "start": 2014.7,
           "end": 2031.69,
@@ -783,11 +803,11 @@
           }
         },
         {
-          "index": 32,
+          "index": 33,
           "question_id": "question-60bd556eece6",
           "questioner": "Wangguangying",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#32",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#33",
           "q_preview": "3、碰到一个人，他的所有内脏是反著的和正常人，他打坐也可以一样修行吗？",
           "start": 2031.69,
           "end": 2037.4,
@@ -807,11 +827,11 @@
           }
         },
         {
-          "index": 33,
+          "index": 34,
           "question_id": "question-a881ea568138",
           "questioner": "Wangguangying",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#33",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#34",
           "q_preview": "4、不用枕头睡觉对身体好，但是侧著睡感觉头会歪到一边这样咋办，不会落枕吗？",
           "start": 2037.4,
           "end": 2048.8,
@@ -831,11 +851,11 @@
           }
         },
         {
-          "index": 34,
+          "index": 35,
           "question_id": "question-e7d3cd21a1a2",
           "questioner": "Wangguangying",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#34",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#35",
           "q_preview": "5、磕头习惯小腹先著地，不是胸部那样落下，手伸直后手背朝上也不翻转，都可以吗？",
           "start": 2048.8,
           "end": 2097.08,
@@ -855,11 +875,11 @@
           }
         },
         {
-          "index": 35,
+          "index": 36,
           "question_id": "question-5e309600ce13",
           "questioner": "灵山一笑",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#35",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#36",
           "q_preview": "顶礼师父！",
           "start": 2097.08,
           "end": 2117.38,
@@ -879,11 +899,11 @@
           }
         },
         {
-          "index": 36,
+          "index": 37,
           "question_id": "question-d63a4fad22fc",
           "questioner": "Yifang111",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#36",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#37",
           "q_preview": "师父新年好！精进念大悲咒和《地藏经》后，感觉总是压不住火。原来对周围的人冒犯欺负的情况我都是忍了，现在感觉忍不住了，直接怼回去了，而且想到原来受的冤枉气，还气得",
           "start": 2117.38,
           "end": 2154.71,
@@ -903,11 +923,11 @@
           }
         },
         {
-          "index": 37,
+          "index": 38,
           "question_id": "question-5fe8cdeff27e",
           "questioner": "兰星羽",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#37",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#38",
           "q_preview": "师父您好，祝福您新年吉祥如意！",
           "start": 2154.71,
           "end": 2213.15,
@@ -927,11 +947,11 @@
           }
         },
         {
-          "index": 38,
+          "index": 39,
           "question_id": "question-07a73609c838",
           "questioner": "Guangtz",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#38",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#39",
           "q_preview": "Tai师新年快乐！我2024年12月突发轻微脑梗，到了25年的7月份，右手食指和大拇指还不能完全展开。后来因缘巧合，到西安一家不大的寺庙里面学习内观，结果就展开",
           "start": 2213.15,
           "end": 2277.54,
@@ -951,11 +971,11 @@
           }
         },
         {
-          "index": 39,
+          "index": 40,
           "question_id": "question-2825bd7e543e",
           "questioner": "空空少年",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#39",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#40",
           "q_preview": "Tai师父，我经常半睡半醒能看到一些画面，有的像是快进的电影一样；有的只有一个画面，但是像在水面上一样，像水波一样不断晃动，往往只能看到一会，且画面我觉得没啥意",
           "start": 2277.54,
           "end": 2306.91,
@@ -975,11 +995,11 @@
           }
         },
         {
-          "index": 40,
+          "index": 41,
           "question_id": "question-717f6818e9ca",
           "questioner": "明月照我心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#40",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#41",
           "q_preview": "师父好，顶礼师父。",
           "start": 2306.91,
           "end": 2352.96,
@@ -999,11 +1019,11 @@
           }
         },
         {
-          "index": 41,
+          "index": 42,
           "question_id": "question-f661d0628f8e",
           "questioner": "明月照我心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#41",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#42",
           "q_preview": "2、关于思佛：上次师父建议思佛，目前能稍微感受到胸口断断续续的情绪，但并不知道这情绪是什么。我用了两个方法（1）之前先诱导，通过观想阿弥陀佛、念阿弥陀佛，有时候",
           "start": 2352.96,
           "end": 2440.3,
@@ -1023,11 +1043,11 @@
           }
         },
         {
-          "index": 42,
+          "index": 43,
           "question_id": "question-2825bd7e543e",
           "questioner": "空空少年",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#42",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#43",
           "q_preview": "Tai师父，我经常半睡半醒能看到一些画面，有的像是快进的电影一样；有的只有一个画面，但是像在水面上一样...…",
           "start": 2440.3,
           "end": 2480,
@@ -1047,11 +1067,11 @@
           }
         },
         {
-          "index": 43,
+          "index": 44,
           "question_id": "question-3df526d1ce1e",
           "questioner": "幻世浮生",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#43",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#44",
           "q_preview": "Tai师父好！顶礼师父！弟子福薄障重，2025年11月中旬才有机缘接触到您的讲法。从此开始按照您开示的方法在练习修行。有些问题想再请教师父，弟子理解执行的是不是",
           "start": 2480,
           "end": 2510.44,
@@ -1071,11 +1091,11 @@
           }
         },
         {
-          "index": 44,
+          "index": 45,
           "question_id": "question-8b144ece9e17",
           "questioner": "幻世浮生",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#44",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#45",
           "q_preview": "2、磕头拜佛：尽量一次完成一天的量，不要分成几次。否则达不到运动量。尽量前胸肚子拍地上以刺激内脏。磕头时间与双盘时间成正比。",
           "start": 2510.44,
           "end": 2569.22,
@@ -1095,11 +1115,11 @@
           }
         },
         {
-          "index": 45,
+          "index": 46,
           "question_id": "question-492d1811e7d5",
           "questioner": "幻世浮生",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#45",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#46",
           "q_preview": "3、双盘：尽量双盘。不能的先开胯，单盘，再慢慢双盘。弟子降魔坐右下左上的还可以坐一会儿，但是左腿腘窝处特别疼。开始是腘窝和左外侧脚踝处很疼，后来就整个大小腿骨头",
           "start": 2569.22,
           "end": 2605.634,
@@ -1119,11 +1139,11 @@
           }
         },
         {
-          "index": 46,
+          "index": 47,
           "question_id": "question-1aad08f4e9a8",
           "questioner": "幻世浮生",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#46",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#47",
           "q_preview": "4、师父书上说高丽、日本都是备份，日本好像和地藏王菩萨缘分深，我以前听人说是因为之前地藏王菩萨去那里降妖除魔来的。请问是真的吗？",
           "start": 2605.634,
           "end": 2622.06,
@@ -1143,11 +1163,11 @@
           }
         },
         {
-          "index": 47,
+          "index": 48,
           "question_id": "question-b58b29bcf1e4",
           "questioner": "幻世浮生",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#47",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#48",
           "q_preview": "5、请问未来的月光菩萨是《楞严经》里修水观的那位月光童子吗？",
           "start": 2622.06,
           "end": 2661.945,
@@ -1167,11 +1187,11 @@
           }
         },
         {
-          "index": 48,
+          "index": 49,
           "question_id": "question-bcb209cb0b7f",
           "questioner": "真如法界",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#48",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#49",
           "q_preview": "顶礼Tai师父！我父亲因为颅脑损伤住院在ICU昏迷了十几天，感恩吃饭群里的师兄们帮忙把念经功德回向给我父亲，他瞳孔扩散，能呼吸，医生说没有希望了，建议现在放弃治",
           "start": 2661.945,
           "end": 2735.585,
@@ -1191,11 +1211,11 @@
           }
         },
         {
-          "index": 49,
+          "index": 50,
           "question_id": "question-c69f9a8bd2e4",
           "questioner": "Zzx",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#49",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#50",
           "q_preview": "师父，为什么创造世界，不把素食（植物）弄得更营养更好吃，让众生对比下，就优先选择植物性饮食呢？",
           "start": 2735.585,
           "end": 2806.64,
@@ -1215,11 +1235,11 @@
           }
         },
         {
-          "index": 50,
+          "index": 51,
           "question_id": "question-f73be1adedf2",
           "questioner": "偶米大h",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#50",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#51",
           "q_preview": "顶礼师父：",
           "start": 2806.64,
           "end": 2890.7,
@@ -1239,11 +1259,11 @@
           }
         },
         {
-          "index": 51,
+          "index": 52,
           "question_id": "question-a1d38fa63b5d",
           "questioner": "Lol",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#51",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#52",
           "q_preview": "顶礼Tai师父！弟子在2021年有幸遇到您《坐禅1》，当时没有学佛的心思，草草读了一遍就放下了。2025年春节后因自身一些事开始学佛，自己散盘读《金刚经》和《心",
           "start": 2890.7,
           "end": 2946.81,
@@ -1263,11 +1283,11 @@
           }
         },
         {
-          "index": 52,
+          "index": 53,
           "question_id": "question-17a85727f394",
           "questioner": "Lol",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#52",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#53",
           "q_preview": "2、经常在持咒或者默念佛号打坐二十分钟后因腿疼，会翻出烦躁的情绪，没有经过思考会立刻下坐，思佛只能持续十几秒，只有把注意力放在呼吸或者眼前景象上，才能熬到三十分",
           "start": 2946.81,
           "end": 2997.21,
@@ -1287,11 +1307,11 @@
           }
         },
         {
-          "index": 53,
+          "index": 54,
           "question_id": "question-b55d53c687f1",
           "questioner": "莲花盛开",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#53",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#54",
           "q_preview": "Tai师父吉祥～。末学每天开车去公司通勤要一至二小时，想利用通勤时间念《地藏经》回向给已故父亲，就想了一个办法，用喜马拉雅边播放《地藏经》，边心里跟著默念《地藏",
           "start": 2997.21,
           "end": 3028.04,
@@ -1311,11 +1331,11 @@
           }
         },
         {
-          "index": 54,
+          "index": 55,
           "question_id": "question-f66c6e37442d",
           "questioner": "冷咖啡",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#54",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#55",
           "q_preview": "参思情，思念阿弥陀佛可以拿到阿弥陀佛的加持力，那思念观音菩萨能不能承接三十六万亿阿弥陀佛的加持呢？我记得Tai师说过等觉菩萨能百分百传递加持力。",
           "start": 3028.04,
           "end": 3070.158,
@@ -1335,11 +1355,11 @@
           }
         },
         {
-          "index": 55,
+          "index": 56,
           "question_id": "question-1aab455af232",
           "questioner": "无为心内起悲心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#55",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#56",
           "q_preview": "Tai师父好！为什么对佛以下的所有众生来说妄想一定有生灭？旧妄想一定会消失，新妄想一定会生起？如果像佛那样知道如何消除妄想，是不是就意味著可以自由控制妄想的生灭",
           "start": 3070.158,
           "end": 3282.12,
@@ -1359,11 +1379,11 @@
           }
         },
         {
-          "index": 56,
+          "index": 57,
           "question_id": "question-f6be4c7e3bef",
           "questioner": "无为心内起悲心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#56",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#57",
           "q_preview": "Tai师父好！1、为什么菩萨不对修行人大量使用反向的时空轮，让我们能用现实中短短的三天时间达成修行九十年的效果？",
           "start": 3282.12,
           "end": 3379.61,
@@ -1383,11 +1403,11 @@
           }
         },
         {
-          "index": 57,
+          "index": 58,
           "question_id": "question-307643553738",
           "questioner": "无为心内起悲心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#57",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#58",
           "q_preview": "2、安东尼威廉说未来当AI发展到一定程度的时候，会有邪恶的灵魂争抢进驻进去，这是事实吗？",
           "start": 3379.61,
           "end": 3463.76,
@@ -1407,11 +1427,11 @@
           }
         },
         {
-          "index": 58,
+          "index": 59,
           "question_id": "question-f1f6f02fc7ef",
           "questioner": "无为心内起悲心",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#58",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#59",
           "q_preview": "3、马斯克说未来几年后AI和机器人的发展，会使生产力提高到不需要让货币来作为衡量人类价值的工具，人会很容易得到自己想要的，未来人们不需要辛苦劳动去赚钱，也能生活",
           "start": 3463.76,
           "end": 3659.04,
@@ -1431,11 +1451,11 @@
           }
         },
         {
-          "index": 59,
+          "index": 60,
           "question_id": "question-36a7b812d4f6",
           "questioner": "2jue",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#59",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#60",
           "q_preview": "Tai师父好！顶礼师父！弟子静坐或比较清静时可以看到眼前有紫色光团变化大小，有时还会有黄色在里面，不知道是什么情况。后续应该如何做呢？",
           "start": 3659.04,
           "end": 3695.87,
@@ -1455,11 +1475,11 @@
           }
         },
         {
-          "index": 60,
+          "index": 61,
           "question_id": "question-825a5f483e15",
           "questioner": "自然",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#60",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#61",
           "q_preview": "顶礼师父，我想请师父帮我看看我是不是在通脉。我查了Tai学院资料，说通脉先从尾椎上升到头顶，从头顶再到前胸正中再到下丹田，然后连通尾椎，就是通了。我以前痛迷糊了",
           "start": 3695.87,
           "end": 3738.631,
@@ -1479,11 +1499,11 @@
           }
         },
         {
-          "index": 61,
+          "index": 62,
           "question_id": "question-966d81b3f0f5",
           "questioner": "娑婆客",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#61",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#62",
           "q_preview": "顶礼Tai师父：",
           "start": 3738.631,
           "end": 3873.01,
@@ -1503,11 +1523,11 @@
           }
         },
         {
-          "index": 62,
+          "index": 63,
           "question_id": "question-f75ceb803dfe",
           "questioner": "原油宝宝",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#62",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#63",
           "q_preview": "Tai师好，我想请教：1、如果一个人在出生在现代，虽然出身贫穷却也基本能吃饱穿暖，这是算消恶业还是消善业呢？",
           "start": 3873.01,
           "end": 3917.04,
@@ -1527,11 +1547,11 @@
           }
         },
         {
-          "index": 63,
+          "index": 64,
           "question_id": "question-1ac3102f6e7c",
           "questioner": "原油宝宝",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#63",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#64",
           "q_preview": "2、如果未来人类能将灵魂意识转移到机器人、克隆人身上可以活得很久很久吗？感谢回答！",
           "start": 3917.04,
           "end": 4026.66,
@@ -1551,11 +1571,11 @@
           }
         },
         {
-          "index": 64,
+          "index": 65,
           "question_id": "question-8cb9a3aa72b6",
           "questioner": "波罗蜜波罗蜜",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#64",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#65",
           "q_preview": "顶礼师父！从一开始持咒念佛，大概半年了，我就会连续打嗝，打哈欠流眼泪。打嗝最严重，这个一直都没有改善，只要持咒，持一阵就打嗝，然后接著念，这正常吗？这个要修行多",
           "start": 4026.66,
           "end": 4092.7,
@@ -1575,11 +1595,11 @@
           }
         },
         {
-          "index": 65,
+          "index": 66,
           "question_id": "question-1317b460b06e",
           "questioner": "李四挑灯",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#65",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#66",
           "q_preview": "顶礼Tai师父",
           "start": 4092.7,
           "end": 4170.33,
@@ -1599,11 +1619,11 @@
           }
         },
         {
-          "index": 66,
+          "index": 67,
           "question_id": "question-e2a2c4bfe0ec",
           "questioner": "津山豪寄",
           "question_time": "",
-          "stable_key": "2026nian-1yue-5ri-guan-wang#66",
+          "stable_key": "2026nian-1yue-5ri-guan-wang#67",
           "q_preview": "顶礼师父！",
           "start": 4170.33,
           "end": 4309.929,

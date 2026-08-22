@@ -85,7 +85,10 @@ TODAY_IS_DATE_RE = re.compile(
     r"(\d{1,2})\s*月\s*(\d{1,2})\s*[号日號]"
 )
 SHIFU_RE = re.compile(r"^师父说[：:]")
-ANSWER_RE = re.compile(r"^Taiguanglin[：:]")
+# 「Taiguanglin：」為回答標記；少數 PDF 抽字遺失冒號（2025-08-08 官网 3、/4、），
+# 僅剩裸「Taiguanglin」獨立一行，同樣視為回答標記。
+ANSWER_RE = re.compile(r"^Taiguanglin(?:[：:]|\s*$)")
+_ANSWER_STRIP_RE = re.compile(r"^Taiguanglin(?:[：:]\s*|\s*$)")
 # 提問者時間：貼吧多為「YYYY-MM-DD HH:MM」；微信公眾號後台常見「HH:MM:SS」
 # （2025-11-10 / 11-11），兩者皆須辨識，否則整段會被併進開場 <p>。
 QTIME_RE = re.compile(
@@ -383,7 +386,7 @@ def _recover_questioner_from_following_answer(
             break
         if not ANSWER_RE.match(t):
             continue
-        after = re.sub(r"^Taiguanglin[：:]\s*", "", t)
+        after = _ANSWER_STRIP_RE.sub("", t)
         parts = [after]
         for k in range(j + 1, min(j + 20, len(lines))):
             t2 = lines[k][1]
@@ -416,6 +419,9 @@ def _strip_leading_pdf_symbol_junk(text: str) -> str:
         or AMBIGUOUS_SUBQ_RE.match(t)
         or DUMPED_FOLLOWUP_BODY_RE.match(t)
     ):
+        return t
+    # 負數／正數的符號（如 -273.15）不是 PDF Symbol 殘渣，不可剝除。
+    if re.match(r"^[-−+]\s*\d", t):
         return t
     stripped = LEADING_PDF_SYMBOL_JUNK_RE.sub("", t, count=1).strip()
     if stripped and stripped != t and re.search(r"[\u4e00-\u9fffA-Za-z]", stripped):
@@ -1287,7 +1293,7 @@ class PDFParser:
 
             # 回答
             if ANSWER_RE.match(text):
-                after = re.sub(r"^Taiguanglin[：:]\s*", "", text)
+                after = _ANSWER_STRIP_RE.sub("", text)
                 start_card("answer")
                 if after:
                     add_line(after, indented=True)
@@ -1320,6 +1326,12 @@ class PDFParser:
             if qm:
                 name = _normalize_spaces(qm.group("name"))
                 qtime = qm.group("time").strip()
+                # 貼吧「XXX 发表于 time」是樓層標頭而非提問者（提問者已由前一行
+                # 「名字：」設定），應視為問題正文的開頭段落。
+                if "发表于" in name or "發表於" in name:
+                    add_line(text, indented)
+                    i += 1
+                    continue
                 card = state["card"]
                 # 上一張若是單行顯示名段落（如「咩咩」），而本行 name 是 emoji
                 if (
