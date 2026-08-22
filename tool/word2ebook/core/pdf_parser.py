@@ -153,6 +153,12 @@ DUMPED_FOLLOWUP_BODY_RE = re.compile(
     r"|还有我现在"
     r")"
 )
+# Tai restates a question someone asked earlier and answers it without a new
+# ``Taiguanglin：`` marker (2025-07-08 贴吧 咪了个喵xxx answer→「昨天还有人问…」).
+RESTATED_Q_RE = re.compile(r"^(?:昨天还有人问|昨天就有人问|昨天有人问)")
+# Wrapped nickname fragment like「(十念)：」after「言午」(2025-07-08 微信).
+# preclean strips the leading 「(」, leaving「十念)：」.
+WRAPPED_NAME_FRAGMENT_RE = re.compile(r"^[^\s：:]{1,8}[）)][：:]\s*$")
 CIRCLED_OPEN_RE = re.compile(r"^[①②③④⑤⑥⑦⑧⑨⑩]")
 SEP_RE = re.compile(r"^[—\-－_]{6,}$")
 LEAD_DASH_RE = re.compile(r"^([—\-－]{6,})(.*)$")
@@ -528,6 +534,38 @@ def _dumped_nameless_question_para(
     if not re.search(r"[？?]\s*$", para):
         return None
     return para
+
+
+def _restated_question_block(
+    lines: List[Tuple[float, str]], i: int
+) -> Optional[Tuple[str, int]]:
+    """A question Tai restates (「昨天还有人问…？」) and then answers without a
+    fresh ``Taiguanglin：`` marker.
+
+    Returns ``(question_text, next_index)`` where ``next_index`` is the line
+    right after the restated question (start of its unmarked answer), else
+    ``None``. The question ends at the first wrapped line whose joined text
+    finishes with a question mark.
+    """
+    t0 = (lines[i][1] or "").strip()
+    if not RESTATED_Q_RE.match(t0):
+        return None
+    parts = [lines[i][1]]
+    j = i + 1
+    n = len(lines)
+    while j < n:
+        x0, t = lines[j]
+        if _is_img_marker(t):
+            j += 1
+            continue
+        if x0 > INDENT_THRESHOLD or ANSWER_RE.match(t) or _is_structural_line(t):
+            break
+        parts.append(t)
+        if re.search(r"[？?]\s*$", "".join(parts).strip()):
+            return "".join(parts).strip(), j + 1
+        j += 1
+    # Question mark never arrived → not a restated question.
+    return None
 
 
 def _nameless_question_followed_by_answer(
@@ -1256,6 +1294,25 @@ class PDFParser:
                 i += 1
                 continue
 
+            # 「（贴下回复）」：貼吧「樓下回覆」標記，接在回答尾端（保留於回答文字），
+            # 其後是下一位提問者（如 2025-07-08 貼吧 心画世间 回答後接 净红）。
+            if text in ("（贴下回复）", "（貼下回復）", "贴下回复", "貼下回復"):
+                if state["card"] is not None and state["card"]["kind"] == "answer":
+                    add_line(text, indented=False)
+                finish_card()
+                i += 1
+                continue
+
+            # 折行名字的殘片（如「言午」之後的「(十念)：」），丟棄避免併入問題正文。
+            if (
+                WRAPPED_NAME_FRAGMENT_RE.match(text)
+                and state["card"] is not None
+                and state["card"]["kind"] == "question"
+                and not _text_paras_only(state["card"].get("paras") or [])
+            ):
+                i += 1
+                continue
+
             # 提問者（人名 + 時間）
             qm = QTIME_RE.match(text)
             if not qm:
@@ -1389,9 +1446,14 @@ class PDFParser:
                     continue
 
             # 編號子問題（阿拉伯數字、中文數字、或「第二个问题是，」複述）
+            # 非縮排行若為回答未結束的折行（如「六、七秒」＝六到七秒），不可誤判成子問題。
             if _is_subquestion_line(text) and (
                 indented
-                or (state["card"] is not None and state["card"]["kind"] == "answer")
+                or (
+                    state["card"] is not None
+                    and state["card"]["kind"] == "answer"
+                    and not _answer_expects_wrap(state)
+                )
             ):
                 card = state["card"]
                 if card is not None and card["kind"] == "question":
@@ -1431,6 +1493,21 @@ class PDFParser:
                 i += 1
                 continue
 
+            # Tai 複述提問（「昨天还有人问…？」）後，以未標記的回答直接接續
+            # （無新的 Taiguanglin 標記）。切成獨立問答卡，後續回答段落隨之接上。
+            restated = _restated_question_block(lines, i)
+            if (
+                restated is not None
+                and state["card"] is not None
+                and state["card"]["kind"] == "answer"
+            ):
+                q_text, j = restated
+                start_card("question", state["questioner"] or "", "")
+                add_line(q_text, indented=True)
+                start_card("answer")
+                i = j
+                continue
+
             # 無暱稱、以問號結尾的匿名提問正文（2025-07 腹股溝／李光耀／中東核戰…
             # 被併進上一則回答）。PDF 中該段之後緊接 Taiguanglin 回答 → 切為新問題卡。
             # 圈號 ①②③ 清單後的追問、以及其後還有其他問題行的 ？-段，留在原回答。
@@ -1446,11 +1523,9 @@ class PDFParser:
                 and not _answer_has_circled_para(card, state)
                 and _nameless_question_followed_by_answer(lines, i)
             ):
-                start_card(
-                    "question",
-                    _recover_questioner_from_following_answer(lines, i),
-                    "",
-                )
+                # 匿名／被併進回答的提問，提問者空白時「往上追溯」到
+                # 上一個有名字的提問者（此段即為該提問者的後續問題）。
+                start_card("question", state["questioner"] or "", "")
                 add_line(text, indented=True)
                 i += 1
                 continue

@@ -200,10 +200,44 @@ Numbered openers additionally include `第N、` (e.g. `第二、`), `问题N：`
 - GIVEN an answer with body, then a nameless paragraph ending in `？` (the `？`
   may fall on a wrapped line), then another `Taiguanglin：` answer
 - WHEN parsed
-- THEN a second, anonymous question card SHALL be produced for the paragraph,
+- THEN a second question card SHALL be produced for the paragraph,
   and it SHALL NOT remain inside the previous answer
 - AND a `名字 时间` line (space-separated, no colon) directly before such a
   paragraph SHALL be read as the questioner + timestamp
+- AND when the split question has no nickname line, its `questioner` SHALL
+  trace up to the previous named questioner (the split body is that person's
+  follow-up), rather than a topic phrase recovered from the next answer
+
+#### Scenario: 昨天还有人问 restated question answered without a new Taiguanglin
+- GIVEN an answer ending a wrap-up (`这个问题就说到这里。`), then an indented
+  `昨天还有人问，…？` (or `昨天就有人问`), then its answer paragraphs with no
+  intervening `Taiguanglin：`
+- WHEN parsed
+- THEN a new question card SHALL be produced for the restated question (named
+  by tracing up to the previous questioner), followed by an answer card for the
+  unmarked answer paragraphs
+
+#### Scenario: （贴下回复） marker stays in the answer, glued name follows
+- GIVEN an answer, then a left-margin `（贴下回复）`, then an indented glued
+  `净红：还是希望…`
+- WHEN parsed
+- THEN `（贴下回复）` SHALL be appended to the previous answer and SHALL NOT
+  become a questioner
+- AND a new question card SHALL be produced with questioner `净红` (the glued
+  name prefix stripped from the body)
+
+#### Scenario: X、Y数量 continuation is not a numbered sub-question
+- GIVEN an answer whose wrapped continuation begins `六、七秒` / `七、八成`
+  (a number range) mid-sentence
+- WHEN parsed
+- THEN that line SHALL remain in the answer and SHALL NOT open a new question
+  card (unlike a genuine indented `六、` sub-question opener)
+
+#### Scenario: wrapped nickname fragment is dropped
+- GIVEN a bare questioner name `言午` followed by an indented `(十念)：` fragment
+- WHEN parsed
+- THEN the fragment SHALL be dropped and SHALL NOT be glued into the question
+  text
 
 #### Scenario: ？-ending rhetoric stays in the answer
 - GIVEN an answer whose own paragraph ends in `？` followed by more answer

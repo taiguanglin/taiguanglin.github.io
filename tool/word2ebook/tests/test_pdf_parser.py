@@ -830,6 +830,125 @@ class TestNumberedQuestions:
         assert "李光耀先生的作为" not in answers[0]
 
 
+    def test_nameless_question_traces_up_to_previous_questioner(self, parser):
+        """A nameless dumped question inherits the previous named questioner
+        instead of recovering a topic phrase from Tai's answer (2025-07-07 微信)."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月7 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月7 号，回答微信公众号的问题。"),
+            (CONT, "自业自消："),
+            (IND,  "身体患病每天承受病痛折磨，请问师父这时该怎么办？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "自业自消，很疼的时候念佛吧。"),
+            (IND,  "师父，打坐后，腹股沟链接大腿的位置痛是正常吗？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "下一个问题，打坐腹股沟这个位置疼。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["自业自消", "自业自消"]
+
+    def test_restated_question_after_answer_opens_card_with_unmarked_answer(self, parser):
+        """「昨天还有人问…？」is a restated question answered without a fresh
+        ``Taiguanglin：`` marker (2025-07-08 贴吧 咪了个喵xxx)."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月8 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月8 号，先回答贴吧的问题。"),
+            (CONT, "咪了个喵xxx：2025-07-08 14:01"),
+            (IND,  "顶礼Tai师父，请问如何才能向佛菩萨求到启示？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "咪了个喵xxx，这个问题就说到这里。"),
+            (IND,  "昨天还有人问，为什么佛菩萨不显出化身，就跟着一个人，跟着"),
+            (CONT, "我们每个人一直全方位地进行保护和指导？"),
+            (IND,  "你自己想想看，这样的保护对你的发心有用吗？"),
+            (CONT, "———————————————————————————"),
+            (CONT, "心画世间：2025-07-08 14:55"),
+            (IND,  "师父，您觉得《瑜伽师地论》有没有必要加入讲经系列？"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["咪了个喵xxx", "咪了个喵xxx", "心画世间"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "昨天还有人问" in questions[1]
+        assert "你自己想想看" not in questions[1]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "你自己想想看" in answers[1]
+
+    def test_tiexia_huifu_marker_then_glued_name(self, parser):
+        """「（贴下回复）」stays in the answer text and does not become a
+        questioner; the following「净红：…」is a glued name-body card."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月8 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月8 号，先回答贴吧的问题。"),
+            (CONT, "心画世间：2025-07-08 14:55"),
+            (IND,  "师父，您觉得《瑜伽师地论》有没有必要加入讲经系列？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "心画世间，这位朋友今天没有提问。"),
+            (CONT, "（贴下回复）"),
+            (IND,  "净红：还是希望师父多讲一点高端法。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "净红，讲经会先把十三经讲完。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["心画世间", "净红"]
+        assert "（贴下回复）" in ch.content
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "还是希望师父多讲一点高端法" in questions[1]
+        assert "净红：还是希望" not in questions[1]
+
+    def test_liu_qi_miao_continuation_is_not_a_new_question(self, parser):
+        """「六、七秒」= 六到七秒, a wrapped answer continuation, not a numbered
+        sub-question (2025-07-10 贴吧 美小柒)."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月10 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月10 号，先回答贴吧的问题。"),
+            (CONT, "美小柒：2025-07-10 16:00"),
+            (IND,  "磕头的时候怎么配合练腹气呼吸？"),
+            (CONT, "Taiguanglin："),
+            (IND,  "美小柒，磕头的时候你正常呼吸就可以了，你可能磕一个头就"),
+            (CONT, "六、七秒，快的话五秒，那谁知道你的呼吸节奏点在哪里。"),
+            (IND,  "打坐、磕头练得好的话，呼吸会逐渐拉长。"),
+            (CONT, "jlxsh：2025-07-10 16:38"),
+            (IND,  "顶礼师父，对于堕到鬼道亲人。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["美小柒", "jlxsh"]
+        answers = re.findall(
+            r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "六、七秒" in answers[0]
+
+    def test_wrapped_name_fragment_is_dropped(self, parser):
+        """A wrapped nickname fragment「(十念)：」after「言午」is dropped, not
+        glued into the question text (2025-07-08 微信)."""
+        lines = [
+            (157.0, "Tai 师父2025 年7 月8 日答疑（文字版）"),
+            (IND,  "师父说：今天是2025 年7 月8 号，回答微信公众号的问题。"),
+            (CONT, "———————————————————————————"),
+            (CONT, "言午"),
+            (IND,  "十念)："),
+            (IND,  "顶礼Tai师，请问一下，最近这些年热天气越来越早。"),
+            (CONT, "Taiguanglin："),
+            (IND,  "我不是气象专家。"),
+        ]
+        ch = parser.parse_lines(lines, start_index=12)[0]
+        names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
+        assert names == ["言午"]
+        questions = re.findall(
+            r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
+        )
+        assert "十念)" not in questions[0]
+        assert "顶礼Tai师" in questions[0]
+
+
     def test_mid_answer_question_mark_stays_in_answer(self, parser):
         """An answer paragraph ending in ？ with NO following Taiguanglin opener
         stays inside the answer (rhetorical question, not a dumped turn)."""
