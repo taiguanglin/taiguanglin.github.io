@@ -4,6 +4,25 @@
 > Repo-wide rules: [`../AGENTS.md`](../AGENTS.md).  
 > Mapping JSON lives in `tool/word2ebook/data/audio_map/*.json` (not under this folder).
 
+## index2.html — Word-chapter proofreading UI
+
+`index2.html`（單一自包含檔）是 **Word 分類章節**地圖
+（`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面：
+
+- 每張卡片顯示信心分數 badge（≥0.8 綠、0.5–0.8 黃、**<0.5 紅底 ⚠ 低信心**，
+  整卡紅框提示需特別仔細聽）。
+- 可播放該段 opus 區間、微調起訖、設起始／結束、確認校對、
+  把 `missing` 標記為「人工確認沒有對應音頻」（`status:"none"` + `meta.confirmed`）。
+- 批次：本章 auto 且 conf≥門檻一鍵確認、review→auto 並確認、missing→確認無音頻。
+- 儲存走 GitHub Contents API（PAT 與 index.html 共用 localStorage key
+  `audioMapEditor:pat`）；也提供本機載入與下載變更 JSON。
+
+**校對完成才亮鈕**：Word 章節的播放按鈕只在 segment 同時滿足
+`status=="auto"` 且 `meta.confirmed`（或沿用 PDF 的 `meta.lastPlayed`）
+時才會注入（`inject_word_chapters` 的 `_is_confirmed`）。改完地圖後跑
+`tool/word2ebook/gen_all.py` 重建電子書。`status:"none"` 表示人工確認無音頻，
+永不產生按鈕。
+
 ---
 
 ## What this tool is

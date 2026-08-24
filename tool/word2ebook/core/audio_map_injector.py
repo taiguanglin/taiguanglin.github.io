@@ -17,6 +17,7 @@ from models.document_models import Chapter
 
 
 DEFAULT_MAP_DIR = Path(__file__).resolve().parent.parent / "data" / "audio_map"
+DEFAULT_WORD_MAP_DIR = Path(__file__).resolve().parent.parent / "data" / "audio_map_word"
 
 H2_RE = re.compile(
     r'<h2 id="([^"]+)">\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s+([^<]+?)'
@@ -24,6 +25,9 @@ H2_RE = re.compile(
     re.S,
 )
 QUESTION_OPEN_RE = re.compile(r'<div class="question"(?=[\s>])')
+QUESTION_ID_RE = re.compile(r'<div class="question" id="([^"]+)"')
+# A meta bar directly preceding a question div (already-injected marker)
+TRAILING_BAR_RE = re.compile(r'<div class="qa-meta-bar[^"]*"[^>]*>.*?</div>\s*\Z', re.S)
 
 
 def _has_been_listened(item: Optional[dict]) -> bool:
@@ -34,6 +38,22 @@ def _has_been_listened(item: Optional[dict]) -> bool:
     if not isinstance(meta, dict):
         return False
     return bool(meta.get("lastPlayed"))
+
+
+def _is_confirmed(item: Optional[dict]) -> bool:
+    """True when a human signed off this word-map segment.
+
+    Word chapters follow a proofread-gated flow: play buttons appear only
+    after the segment was confirmed in ``/audio_map/index2.html``
+    (``meta.confirmed``) — ``meta.lastPlayed`` counts too, mirroring the PDF
+    convention.
+    """
+    if not item or not isinstance(item, dict):
+        return False
+    if _has_been_listened(item):
+        return True
+    meta = item.get("meta")
+    return isinstance(meta, dict) and bool(meta.get("confirmed"))
 
 
 def _range_tuple(item: Optional[dict]) -> Optional[Tuple[float, float, str]]:
@@ -211,6 +231,98 @@ def inject_chapters(chapters: List[Chapter], map_dir: Optional[Path] = None) -> 
             continue
         # Only PDF month chapters contain date+source h2s we map
         new_content = inject_html(ch.content, by_section)
+        if new_content != ch.content:
+            ch.content = new_content
+            changed += 1
+    return changed
+
+
+# ---------------------------------------------------------------------------
+# Word-chapter injection (keyed by stable question id, no date h2 sections)
+# ---------------------------------------------------------------------------
+
+
+def load_word_maps(map_dir: Path = DEFAULT_WORD_MAP_DIR) -> Dict[str, dict]:
+    """Load word maps keyed by ``question_id`` → segment dict.
+
+    Word chapters have no per-date ``<h2>`` sections, so unlike
+    :func:`load_maps` the lookup key is the stable question id embedded in the
+    chapter HTML (``<div class="question" id="question-…">``).
+    """
+    by_qid: Dict[str, dict] = {}
+    if not map_dir.is_dir():
+        return by_qid
+    for path in sorted(map_dir.glob("word-*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for seg in data.get("segments") or []:
+            qid = seg.get("question_id")
+            if not qid:
+                continue
+            # First occurrence wins; duplicates share one range anyway.
+            by_qid.setdefault(qid, seg)
+    return by_qid
+
+
+def inject_word_html(content: str, by_qid: Dict[str, dict]) -> str:
+    """Insert a meta bar before every mapped question div in ``content``.
+
+    - Unmapped questions get nothing (they stay buttonless by design).
+    - A question already preceded by a meta bar is left untouched, so the pass
+      is idempotent and never disturbs PDF-injected bars.
+    """
+    if not by_qid or not content:
+        return content
+
+    out: List[str] = []
+    pos = 0
+    number = 0
+    inserted = False
+    for m in QUESTION_ID_RE.finditer(content):
+        number += 1
+        prefix = content[pos : m.start()]
+        out.append(prefix)
+        seg = by_qid.get(m.group(1))
+        # Proofread-gated flow: only confirmed auto segments get a button.
+        # status "review" (borderline alignment), "none" (human-confirmed no
+        # audio) and unconfirmed autos all stay buttonless.
+        if (
+            seg
+            and seg.get("status") == "auto"
+            and _is_confirmed(seg)
+            and not TRAILING_BAR_RE.search(out[-1][-2500:])
+        ):
+            bar = render_segment_meta_bar(
+                str(seg.get("index") or number),
+                _range_tuple(seg),
+                audio_url(seg.get("audio_file") or ""),
+                hide_if_missing=True,
+            )
+            if bar:
+                out.append(bar + "\n")
+                inserted = True
+        out.append(content[m.start() : m.end()])
+        pos = m.end()
+    if not inserted:
+        return content
+    out.append(content[pos:])
+    return "".join(out)
+
+
+def inject_word_chapters(
+    chapters: List[Chapter], map_dir: Optional[Path] = None
+) -> int:
+    """Apply word maps to chapter contents in-place. Returns #chapters modified."""
+    by_qid = load_word_maps(map_dir or DEFAULT_WORD_MAP_DIR)
+    if not by_qid:
+        return 0
+    changed = 0
+    for ch in chapters:
+        if not ch.content or 'class="question"' not in ch.content:
+            continue
+        new_content = inject_word_html(ch.content, by_qid)
         if new_content != ch.content:
             ch.content = new_content
             changed += 1

@@ -51,15 +51,16 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic/` | Assets | Concept PNGs for `infographic.html`. |
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
-| `audio_map/` | Editorial UI | Browser editor for month JSON; **SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
+| `audio_map/` | Editorial UI | Browser editor for month JSON (`index.html`) and Word chapter maps (`index2.html`, proofread-gated buttons); **SoT JSON lives in** `tool/word2ebook/data/audio_map/` + `data/audio_map_word/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)
 
 | Path | Purpose | Docs |
 |------|---------|------|
-| `tool/word2ebook/` | Word (+ PDF, optional `qa/`) → `wenda2_ebook/`. Also owns `data/audio_map/*.json`. | **`AGENTS.md`**, `README.md`, `openspec/` |
+| `tool/word2ebook/` | Word (+ PDF, optional `qa/`) → `wenda2_ebook/`. Also owns `data/audio_map/*.json` and `data/audio_map_word/word-NN.json`. | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio ranges → write audio_map JSON. | `README.md` |
+| `tool/word_audio_map/` | Align Word-chapter Q&A ↔ audio ranges (pinyin-stream matcher) → write `data/audio_map_word/`; also verifies built buttons. | `README.md` |
 | `tool/qa_resplit/` | Offline resplit / realign / reformat / TW-normalize of `qa/*.txt` against SRT. | (scripts only; no README) |
 | `tool/sense_voice/` | FunASR Chinese ASR → `.srt` + `.txt` (used by pdf_audio_map fill-misses). | `README.md` |
 | `tool/audio_denoiser/` | Facebook Denoiser preprocessing before ASR. | `README.md` |
@@ -85,10 +86,11 @@ tool/word2ebook/gen_all.py  (+ data/audio_map/*.json inject)
 Audio-map pipeline (optional but used for play buttons):
 
 ```
-SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json
+SRT / opus  →  tool/pdf_audio_map/   →  tool/word2ebook/data/audio_map/*.json       (PDF chapters 13–21)
+            ⇘  tool/word_audio_map/  ⇒  tool/word2ebook/data/audio_map_word/word-*.json (Word chapters 01–12)
                       ▲                         │
               /audio_map/ UI (tweak)            ▼
-                                    inject_chapters() at ebook build
+                       inject_chapters() / inject_word_chapters() at ebook build
 ```
 
 `qa/*.txt` feeds proofreading and (for 2025-11…2026-03) alignment hints; it is **not** an input to the default full rebuild.

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Word 音檔 Mapping 校稿（index2）</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --ink:#1c2330; --muted:#66708a; --line:#dfe3ec;
+  --accent:#2456c8; --ok:#1e9e63; --warn:#c07f00; --bad:#cc3344;
+  --radius:10px; --shadow:0 1px 3px rgba(20,30,60,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 -apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 10px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.danger{color:var(--bad);border-color:var(--bad)}
+input,select{font:inherit;padding:3px 6px;border:1px solid var(--line);border-radius:6px}
+input[type=number]{width:96px}
+.topbar{position:sticky;top:0;z-index:30;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:var(--panel);border-bottom:1px solid var(--line);padding:8px 12px;box-shadow:var(--shadow)}
+.topbar .title{font-weight:700;margin-right:auto}
+.pill{padding:2px 10px;border-radius:999px;background:#eef1f6;color:var(--muted);font-size:12px}
+.pill.ok{background:#e2f5ec;color:var(--ok)} .pill.err{background:#fdeaea;color:var(--bad)}
+.layout{display:flex;min-height:calc(100vh - 49px)}
+.sidebar{width:230px;flex:none;background:var(--panel);border-right:1px solid var(--line);
+  max-height:calc(100vh - 49px);overflow:auto;padding:10px}
+.chap-btn{display:flex;justify-content:space-between;gap:6px;width:100%;text-align:left;margin-bottom:6px}
+.chap-btn.active{outline:2px solid var(--accent)}
+.chap-btn .cnt{font-size:11px;color:var(--muted)}
+main{flex:1;padding:12px 16px 140px;min-width:0}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.bulkbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--panel);
+  border:1px dashed var(--line);border-radius:var(--radius);padding:8px 10px;margin-bottom:12px}
+.bulkbar input[type=number]{width:70px}
+.cards{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-left-width:5px;border-radius:var(--radius);
+  padding:10px 12px;box-shadow:var(--shadow)}
+.card.st-auto{border-left-color:var(--ok)} .card.st-review{border-left-color:var(--warn)}
+.card.st-none{border-left-color:#8a93a8} .card.st-missing{border-left-color:#b9c0cf}
+/* 低信心：整張卡紅框＋淡紅底，一眼可見 */
+.card.low-conf{border-color:var(--bad);border-width:2px;background:#fff5f6}
+.card.low-conf.unconfirmed{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(204,51,68,.0)}50%{box-shadow:0 0 0 5px rgba(204,51,68,.15)}}
+.card-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.seg-no{font-weight:700}
+.badge{font-size:11px;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.badge.conf-high{background:#e2f5ec;color:var(--ok)}
+.badge.conf-mid{background:#fdf3dc;color:var(--warn)}
+.badge.conf-low{background:var(--bad);color:#fff;font-weight:700}
+.badge.st-auto{background:#e2f5ec;color:var(--ok)}
+.badge.st-review{background:#fdf3dc;color:#8a6400}
+.badge.st-none{background:#eceff4;color:#5b6579}
+.badge.st-missing{background:#eceff4;color:#5b6579}
+.badge.confirmed{background:#e5edff;color:var(--accent)}
+.qtext{margin:6px 0;font-size:13px;color:#333}
+.srtprev{font-size:12px;color:var(--muted);background:#f4f6fa;border-radius:8px;padding:6px 8px;margin:6px 0;
+  white-space:pre-wrap;word-break:break-all;max-height:88px;overflow:auto}
+.times{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.times .tbox{display:flex;align-items:center;gap:3px}
+.times input{width:110px;font-variant-numeric:tabular-nums}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.hint{font-size:11px;color:var(--muted)}
+.player{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--panel);
+  border-top:1px solid var(--line);padding:8px 14px;display:none;box-shadow:0 -2px 8px rgba(20,30,60,.10)}
+.player.on{display:block}
+.player-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.player-title{max-width:38ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+#seekBar{flex:1;min-width:160px}
+.dialog-backdrop{position:fixed;inset:0;background:rgba(15,20,35,.45);z-index:60;display:none;
+  align-items:center;justify-content:center}
+.dialog-backdrop.on{display:flex}
+.dialog{background:#fff;border-radius:14px;padding:18px 20px;width:min(520px,92vw)}
+.empty{color:var(--muted);padding:24px;text-align:center}
+@media (max-width:760px){ .sidebar{display:none} main{padding:10px} }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="title">🎧 Word 音檔校稿（index2）</span>
+  <button id="ghLoadBtn" class="primary">從 GitHub 載入</button>
+  <label class="primary" style="display:inline-block;padding:4px 10px;background:var(--accent);color:#fff;border-radius:8px;cursor:pointer">
+    本機載入<input id="localInput" type="file" accept=".json" multiple hidden>
+  </label>
+  <span id="saveStatus" class="pill">尚未載入</span>
+  <button id="settingsBtn">⚙ 設定</button>
+  <button id="downloadBtn" disabled>⤓ 下載變更</button>
+  <button id="saveBtn" class="primary" disabled>💾 儲存到 GitHub</button>
+</div>
+
+<div class="layout">
+  <aside class="sidebar"><div id="chapterList" class="empty">尚未載入</div></aside>
+  <main>
+    <div class="toolbar">
+      <label>狀態
+        <select id="fStatus">
+          <option value="all">全部</option>
+          <option value="auto-unconf">auto・未確認</option>
+          <option value="auto-conf">auto・已確認</option>
+          <option value="review">review（邊際）</option>
+          <option value="none">none（確認無音頻）</option>
+          <option value="missing">missing（未找到）</option>
+        </select>
+      </label>
+      <label>信心
+        <select id="fConf">
+          <option value="all">全部</option>
+          <option value="low">低 &lt; 0.5 ⚠</option>
+          <option value="mid">中 0.5–0.8</option>
+          <option value="high">高 ≥ 0.8</option>
+        </select>
+      </label>
+      <label>搜尋 <input id="fSearch" type="search" placeholder="名字／問題／筆記"></label>
+      <span id="shownCount" class="pill"></span>
+    </div>
+
+    <div class="bulkbar" id="bulkbar" hidden>
+      <strong id="bulkTitle"></strong>
+      <span class="hint">一鍵確認：</span>
+      <label>auto 且信心 ≥ <input id="bulkConf" type="number" min="0" max="1" step="0.05" value="0"></label>
+      <button id="bulkAutoBtn" class="primary">確認為已校對</button>
+      <button id="bulkReviewBtn">review → 改 auto 並確認</button>
+      <span class="hint">｜無音頻：</span>
+      <button id="bulkNoneBtn" class="danger">missing → 人工確認無音頻</button>
+    </div>
+
+    <div id="cards" class="cards"><div class="empty">選擇章節開始校稿；播放按鈕確認後需重建電子書才會出現。</div></div>
+  </main>
+</div>
+
+<div class="player" id="player">
+  <div class="player-row">
+    <span class="player-title" id="pTitle">—</span>
+    <input id="seekBar" type="range" min="0" max="100" step="0.1" value="0">
+    <span id="pTime" style="font-variant-numeric:tabular-nums;font-size:12px">0:00 / 0:00</span>
+    <button data-seek="-5">−5s</button><button data-seek="5">+5s</button>
+    <button id="playBtn" class="primary">▶</button>
+    <label>倍速 <select id="rate">
+      <option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option>
+    </select></label>
+    <label class="hint"><input id="stopAtEnd" type="checkbox" checked> 段尾自停</label>
+    <button id="setStartBtn" title="以目前播放位置設為作用段落起始">設起始</button>
+    <button id="setEndBtn" title="以目前播放位置設為作用段落結束">設結束</button>
+    <button id="closePlayerBtn" title="關閉播放器">×</button>
+  </div>
+  <audio id="audio" preload="metadata"></audio>
+</div>
+
+<div class="dialog-backdrop" id="dlgBackdrop">
+  <div class="dialog">
+    <h3>設定 — GitHub Fine-grained PAT</h3>
+    <p class="hint">與 index.html 共用同一組 token（localStorage：<code>audioMapEditor:pat</code>）。需要此 repo 的 Contents: Read and write。</p>
+    <input id="patInput" type="password" style="width:100%" placeholder="github_pat_...">
+    <p style="display:flex;gap:8px;margin-top:12px">
+      <button id="patSave" class="primary">儲存</button>
+      <button id="patClear">清除</button>
+      <button id="patClose" style="margin-left:auto">關閉</button>
+    </p>
+    <p id="patMsg" class="hint"></p>
+  </div>
+</div>
+
+<script>
+'use strict';
+/* ================= 常數 ================= */
+const API='https://api.github.com';
+const CFG={owner:'taiguanglin',repo:'taiguanglin.github.io',branch:'main'};
+const MAP_DIR='tool/word2ebook/data/audio_map_word';
+const PAT_KEY='audioMapEditor:pat';           // 與 index.html 共用
+const AUDIO_BASE='../audio/';                  // 相對於 /audio_map/
+const LOW_CONF=0.5, MID_CONF=0.8;
+
+/* ================= 狀態 ================= */
+const files=new Map();        // name -> {data, sha, dirty}
+let order=[];                 // ['01','02',...]
+let current=null;             // '04'
+const filt={status:'all',conf:'all',q:''};
+const audio=document.getElementById('audio');
+let active=null;              // {name, seg}
+
+/* ================= 工具 ================= */
+const $=id=>document.getElementById(id);
+const pad=(n,w=2)=>String(n).padStart(w,'0');
+function fmtT(s){if(s==null||isNaN(s))return'—';s=Math.max(0,s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':':'')+pad(m)+':'+pad(x.toFixed(3),6);}
+function esc(t){return String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setStatus(msg,cls){const p=$('saveStatus');p.textContent=msg;p.className='pill'+(cls?' '+cls:'');}
+function now(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+function getPat(){return localStorage.getItem(PAT_KEY)||'';}
+function confClass(c){return c>=MID_CONF?'conf-high':c>=LOW_CONF?'conf-mid':'conf-low';}
+function effStatus(s){
+  if(s.status==='none')return 'none';
+  if(s.status==='review')return 'review';
+  if(s.status==='auto')return isConfirmed(s)?'auto-conf':'auto-unconf';
+  return 'missing';
+}
+function isConfirmed(s){const m=s.meta||{};return !!(m.confirmed||m.lastPlayed);}
+function audioUrl(f){return AUDIO_BASE+encodeURIComponent(f);}
+
+/* ================= GitHub ================= */
+async function gh(path,opts={}){
+  const tok=getPat();
+  const headers={Accept:'application/vnd.github+json',...(opts.body?{'Content-Type':'application/json'}:{})};
+  if(tok)headers.Authorization='Bearer '+tok;
+  const r=await fetch(API+path,{method:opts.method||'GET',headers,body:opts.body});
+  const j=await r.json().catch(()=>null);
+  if(!r.ok)throw new Error(j?.message||('HTTP '+r.status));
+  return j;
+}
+const enc=p=>p.split('/').map(encodeURIComponent).join('/');
+const b64d=v=>new TextDecoder().decode(Uint8Array.from(atob(v.replace(/\s/g,'')),c=>c.charCodeAt(0)));
+const b64e=t=>{const b=new TextEncoder().encode(t);let s='';b.forEach(x=>s+=String.fromCharCode(x));return btoa(s);};
+
+async function loadFromGitHub(){
+  setStatus('載入中…');
+  try{
+    const list=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(MAP_DIR)}?ref=${CFG.branch}`);
+    files.clear();
+    for(const it of list.filter(f=>/^word-\d+\.json$/.test(f.name))){
+      const j=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(MAP_DIR+'/'+it.name)}?ref=${CFG.branch}`);
+      files.set(it.name,{data:JSON.parse(b64d(j.content)),sha:j.sha,dirty:false});
+    }
+    order=[...files.keys()].map(n=>n.match(/\d+/)[0]).sort();
+    setStatus(`已載入 ${files.size} 章`,'ok');
+    renderChapters(); renderCards();
+  }catch(e){setStatus('載入失敗：'+e.message,'err');alert('載入失敗：'+e.message+'\n（若未填 PAT 請先到設定填入）');}
+}
+function loadLocal(input){
+  files.clear();
+  const done=[];const fs=[...input.files];
+  let pending=fs.length;
+  fs.forEach(f=>{
+    const r=new FileReader();
+    r.onload=()=>{try{
+      files.set(f.name,{data:JSON.parse(r.result),sha:null,dirty:false});
+    }catch(e){alert(f.name+' 解析失敗：'+e.message);}
+    if(--pending===0){
+      order=[...files.keys()].map(n=>n.match(/\d+/)[0]).sort();
+      setStatus(`本機載入 ${files.size} 章`,'ok');
+      renderChapters(); renderCards();
+    }};
+    r.readAsText(f);
+  });
+}
+async function saveToGitHub(){
+  if(!getPat()){openSettings();alert('請先在設定填入 GitHub PAT');return;}
+  const dirty=[...files.entries()].filter(([n,f])=>f.dirty);
+  if(!dirty.length){setStatus('沒有變更');return;}
+  setStatus(`儲存中… 0/${dirty.length}`,'ok');
+  let i=0,errs=0;
+  for(const [name,f] of dirty){
+    const path=`${MAP_DIR}/${name}`;
+    const body={message:`index2: proofread ${name}`,content:b64e(JSON.stringify(f.data,null,1)+'\n'),sha:f.sha,branch:CFG.branch};
+    try{
+      const res=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}`,{method:'PUT',body:JSON.stringify(body)});
+      f.sha=res.content.sha; f.dirty=false;
+    }catch(e){
+      // sha 過期 → 重抓後重試一次
+      try{
+        const cur=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}?ref=${CFG.branch}`);
+        body.sha=cur.sha;
+        const res=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}`,{method:'PUT',body:JSON.stringify(body)});
+        f.sha=res.content.sha; f.dirty=false;
+      }catch(e2){errs++;console.error(name,e2);}
+    }
+    setStatus(`儲存中… ${++i}/${dirty.length}${errs?`（失敗${errs}）`:''}`,'ok');
+  }
+  renderChapters(); renderCards();
+  setStatus(errs?`完成，但 ${errs} 個檔案失敗`:`已儲存 ${dirty.length} 個檔案`,errs?'err':'ok');
+}
+function downloadDirty(){
+  const dirty=[...files.entries()].filter(([n,f])=>f.dirty);
+  if(!dirty.length){setStatus('沒有變更');return;}
+  dirty.forEach(([n,f])=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(f.data,null,1)+'\n'],{type:'application/json'}));
+    a.download=n;a.click();URL.revokeObjectURL(a.href);
+  });
+}
+
+/* ================= 資料操作 ================= */
+function touch(name){const f=files.get(name);f.dirty=true;}
+function segConfirmed(name,seg){const m=seg.meta||(seg.meta={});m.confirmed=now();}
+function confirmSeg(seg){if(seg.status==='review')seg.status='auto';if(!seg.start&&seg.start!==0)return false;segConfirmed('',seg);return true;}
+function markNone(seg){seg.status='none';const m=seg.meta||(seg.meta={});m.confirmed=now();
+
+delete seg.miss_note;}
+
+/* ================= 渲染 ================= */
+function chapStats(name){
+  const d=files.get(name).data;const c={autoU:0,autoC:0,review:0,none:0,missing:0};
+  d.segments.forEach(s=>{c[effStatus(s)]++;});
+  return c;
+}
+function renderChapters(){
+  const el=$('chapterList');el.innerHTML='';el.className='';
+  for(const ch of order){
+    const name='word-'+ch+'.json';const c=chapStats(name);
+    const btn=document.createElement('button');
+    btn.className='chap-btn'+(current===ch?' active':'');
+    btn.innerHTML=`<span>第 ${ch} 章</span><span class="cnt">✅${c.autoC} ⏳${c.autoU} 🟡${c.review} 🚫${c.none} ❔${c.missing}</span>`;
+    btn.onclick=()=>{current=ch;$('bulkbar').hidden=false;$('bulkTitle').textContent=`第 ${ch} 章`;renderChapters();renderCards();};
+    el.appendChild(btn);
+  }
+  if(!order.length){el.innerHTML='<div class="empty">尚未載入</div>';el.className='empty';}
+}
+function passFilter(s){
+  const st=effStatus(s);
+  if(filt.status!=='all'&&filt.status!==st)return false;
+  const c=s.confidence??0;
+  if(filt.conf==='low'&&c>=LOW_CONF)return false;
+  if(filt.conf==='mid'&&(c<LOW_CONF||c>=MID_CONF))return false;
+  if(filt.conf==='high'&&c<MID_CONF)return false;
+  if(filt.q){const hay=`${s.questioner} ${s.q_preview||''} ${s.notes||''} ${s.stable_key}`.toLowerCase();
+    if(!hay.includes(filt.q.toLowerCase()))return false;}
+  return true;
+}
+function confBadge(s){
+  const c=s.confidence??0;const cls=c>=MID_CONF?'conf-high':c>=LOW_CONF?'conf-mid':'conf-low';
+  const tag=c<LOW_CONF?'⚠ 低信心':c>=MID_CONF?'信心':'信心';
+  return `<span class="badge ${cls}" title="自動對齊信心分數">${tag} ${c.toFixed(2)}</span>`;
+}
+function cardHTML(ch,name,s){
+  const st=effStatus(s);const low=(s.confidence??0)<LOW_CONF;
+  const hasRange=s.start!=null;
+  return `<article class="card st-${st.split('-')[0]} ${low?'low-conf':''} ${st==='auto-unconf'?'unconfirmed':''}" data-key="${esc(s.stable_key)}">
+    <div class="card-head">
+      <span class="seg-no">#${s.index}</span>
+      <span class="badge st-${st.split('-')[0]}">${st}</span>
+      ${confBadge(s)}
+      ${isConfirmed(s)?'<span class="badge confirmed">✔ 已校對</span>':''}
+      ${s.locked?'<span class="badge confirmed">🔒 鎖定</span>':''}
+      <span class="hint">${esc(s.questioner||'')}　提問 ${esc(s.question_date||'—')}${s.session_date?`　→ 回答 ${esc(s.session_date)} (${esc(s.source||'')})`:''}</span>
+    </div>
+    <div class="qtext">${esc((s.q_preview||'(無問題文字)').slice(0,180))}</div>
+    ${s.srt_preview?`<div class="srtprev">${esc(s.srt_preview.slice(0,220))}</div>`:''}
+    ${hasRange?`
+    <div class="times">
+      <span class="tbox">起 <input type="number" step="0.1" data-f="start" value="${s.start}"></span>
+      <span class="tbox">訖 <input type="number" step="0.1" data-f="end" value="${s.end}"></span>
+      <span class="hint">${fmtT(s.start)} – ${fmtT(s.end)}</span>
+      <button data-act="play">▶ 播放此段</button>
+      <button data-act="nudgeS" data-d="-0.5">起−0.5</button><button data-act="nudgeS" data-d="0.5">起+0.5</button>
+      <button data-act="setS">設起始</button><button data-act="setE">設結束</button>
+    </div>`:`<div class="hint">無時間軸${s.miss_note?`（${esc(s.miss_note)}）`:''}${s.notes?`　notes:${esc(s.notes)}`:''}</div>`}
+    <div class="actions">
+      ${hasRange&&st!=='none'?`<button data-act="confirm" class="${st==='review'||low?'primary':''}">${st==='review'?'聽過了→改 auto 並確認':'✔ 確認校對'}</button>`:''}
+      ${(st==='missing'||st==='review')?`<button data-act="marknone" class="danger">🚫 人工確認沒有對應音頻</button>`:''}
+      ${st==='none'?`<span class="hint">已確認：此段沒有對應音頻 ✔</span>`:''}
+      ${st==='auto-unconf'?`<span class="hint">尚未確認——確認後重建電子書才會出現播放鈕</span>`:''}
+      <label class="hint" style="margin-left:auto"><input type="checkbox" data-act="lock" ${s.locked?'checked':''}> 鎖定</label>
+    </div>
+    ${low?`<div class="hint" style="color:var(--bad)">⚠ 低信心配對：請特別仔細聽檔確認；必要時調整起訖或改判「無音頻」。</div>`:''}
+  </article>`;
+}
+function renderCards(){
+  const el=$('cards');
+  if(!current){el.innerHTML='<div class="empty">尚未載入</div>';$('shownCount').textContent='';return;}
+  const name='word-'+current+'.json';const f=files.get(name);if(!f)return;
+  const list=f.data.segments.filter(passFilter);
+  $('shownCount').textContent=`顯示 ${list.length} / ${f.data.segments.length} 段`;
+  el.innerHTML=list.map(s=>cardHTML(current,name,s)).join('')||'<div class="empty">沒有符合條件的段落</div>';
+}
+function findSeg(key){const name='word-'+current+'.json';const f=files.get(name);return {name,f,seg:f.data.segments.find(x=>x.stable_key===key)};}
+
+/* ================= 卡片事件（委派） ================= */
+$('cards').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]');if(!btn)return;
+  const card=e.target.closest('.card');if(!card)return;
+  const {seg,name,f}=findSeg(card.dataset.key);if(!seg)return;
+  const act=btn.dataset.act;
+  if(act==='play'){playSegment(name,seg);highlightActive(card);}
+  else if(act==='nudgeS'){seg.start=Math.max(0,+(seg.start+ +btn.dataset.d).toFixed(3));touch(name);refreshCard(card,seg);}
+  else if(act==='setS'){seg.start=round3(audio.currentTime);touch(name);refreshCard(card,seg);}
+  else if(act==='setE'){seg.end=round3(audio.currentTime);touch(name);refreshCard(card,seg);}
+  else if(act==='confirm'){if(confirmSeg(seg)){touch(name);refreshCard(card,seg);renderChapters();}}
+  else if(act==='marknone'){markNone(seg);touch(name);refreshCard(card,seg);renderChapters();}
+});
+$('cards').addEventListener('change',e=>{
+  const inp=e.target.closest('input[data-f],input[data-act]');if(!inp)return;
+  const card=e.target.closest('.card');if(!card)return;
+  const {seg,name}=findSeg(card.dataset.key);if(!seg)return;
+  if(inp.dataset.f==='start'){seg.start=round3(+inp.value||0);touch(name);refreshCard(card,seg);}
+  if(inp.dataset.f==='end'){seg.end=round3(+inp.value||0);touch(name);refreshCard(card,seg);}
+  if(inp.dataset.act==='lock'){seg.locked=inp.checked;touch(name);}
+});
+function refreshCard(card,seg){
+  const name='word-'+current+'.json';
+  const tmp=document.createElement('div');tmp.innerHTML=cardHTML(current,name,seg);
+  card.replaceWith(tmp.firstElementChild);
+}
+function round3(v){return Math.max(0,+v.toFixed(3));}
+
+/* ================= 批次動作 ================= */
+$('bulkAutoBtn').onclick=()=>{
+  const th=+$('bulkConf').value||0;let n=0;
+  iterChapter(s=>{if(effStatus(s)==='auto-unconf'&&(s.confidence??0)>=th){if(confirmSeg(s))n++;}});
+  afterBulk(`已確認 ${n} 段`);
+};
+$('bulkReviewBtn').onclick=()=>{
+  let n=0;iterChapter(s=>{if(s.status==='review'){s.status='auto';segConfirmed('',s);n++;}});
+  afterBulk(`review → auto 已確認 ${n} 段`);
+};
+$('bulkNoneBtn').onclick=()=>{
+  let n=0;iterChapter(s=>{if(s.status==='missing'||effStatus(s)==='missing'){markNone(s);n++;}});
+  afterBulk(`已標記「人工確認無音頻」${n} 段`);
+};
+function iterChapter(fn){
+  const name='word-'+current+'.json';const f=files.get(name);if(!f)return;
+  f.data.segments.forEach(s=>{if(passFilter(s)||true)fn(s);}); // 批次套用整章（不受篩選限制）
+  touch(name);
+}
+function afterBulk(msg){renderCards();renderChapters();setStatus(msg+'（記得儲存）','ok');}
+
+/* ================= 播放器 ================= */
+function playSegment(name,seg){
+  active={name,seg};
+  $('pTitle').textContent=`#${seg.index} ${seg.questioner||''} ${seg.audio_file||''}`;
+  audio.src=audioUrl(seg.audio_file);audio.playbackRate=+$('rate').value;
+  audio.currentTime=seg.start??0;
+  audio.play().catch(err=>alert('播放失敗：'+err.message+'\n請確認本機 audio/ 符號連結存在'));
+  $('player').classList.add('on');$('playBtn').textContent='⏸';
+}
+$('playBtn').onclick=()=>{if(audio.paused){audio.play();$('playBtn').textContent='⏸';}else{audio.pause();$('playBtn').textContent='▶';}};
+document.querySelectorAll('[data-seek]').forEach(b=>b.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime+ +b.dataset.seek);});
+$('rate').onchange=()=>{audio.playbackRate=+$('rate').value;};
+$('seekBar').oninput=()=>{if(audio.duration)audio.currentTime=audio.duration*$('seekBar').value/100;};
+$('closePlayerBtn').onclick=()=>$('player').classList.remove('on');
+$('setStartBtn').onclick=()=>{if(active){active.seg.start=round3(audio.currentTime);touch(active.name);rerenderIfVisible(active.seg);}};
+$('setEndBtn').onclick=()=>{if(active){active.seg.end=round3(audio.currentTime);touch(active.name);rerenderIfVisible(active.seg);}};
+function rerenderIfVisible(seg){
+  const card=document.querySelector(`.card[data-key="${CSS.escape(seg.stable_key)}"]`);
+  if(card)refreshCard(card,seg);
+}
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration)return;
+  $('seekBar').value=audio.currentTime/audio.duration*100;
+  $('pTime').textContent=fmtT(audio.currentTime)+' / '+fmtT(audio.duration);
+  if(active&&$('stopAtEnd').checked&&active.seg.end!=null&&audio.currentTime>=active.seg.end){
+    audio.pause();
+  }
+});
+
+/* ================= 篩選 ================= */
+$('fStatus').onchange=e=>{filt.status=e.target.value;renderCards();};
+$('fConf').onchange=e=>{filt.conf=e.target.value;renderCards();};
+$('fSearch').oninput=e=>{filt.q=e.target.value.trim();renderCards();};
+
+/* ================= 設定 / 啟動 ================= */
+function openSettings(){$('patInput').value=getPat();$('dlgBackdrop').classList.add('on');}
+$('settingsBtn').onclick=openSettings;
+$('patClose').onclick=()=>$('dlgBackdrop').classList.remove('on');
+$('patSave').onclick=()=>{localStorage.setItem(PAT_KEY,$('patInput').value.trim());$('patMsg').textContent='已儲存（與 index.html 共用）';setTimeout(()=>$('dlgBackdrop').classList.remove('on'),600);};
+$('patClear').onclick=()=>{localStorage.removeItem(PAT_KEY);$('patInput').value='';$('patMsg').textContent='已清除';};
+$('localInput').onchange=e=>loadLocal(e.target);
+$('ghLoadBtn').onclick=loadFromGitHub;
+$('saveBtn').onclick=saveToGitHub;
+$('downloadBtn').onclick=downloadDirty;
+
+// 自動帶入 index.html 已存的 PAT
+if(getPat())$('patInput').placeholder='已偵測到既有 token（未顯示）';
+</script>
+</body>
+</html>

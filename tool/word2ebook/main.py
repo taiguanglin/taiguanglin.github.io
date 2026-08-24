@@ -16,7 +16,7 @@ from utils.file_utils import FileManager, ImageHandler
 from core.document_parser import DocumentParser
 from core.pdf_parser import PDFParser
 from core.qa_parser import QAParser
-from core.audio_map_injector import inject_chapters
+from core.audio_map_injector import inject_chapters, inject_word_chapters
 from generators.html_generator import HTMLGenerator
 from generators.search_generator import SearchIndexGenerator
 from templates.static_assets import StaticAssetsManager
@@ -89,6 +89,11 @@ class Word2EBookConverter:
         injected = inject_chapters(chapters)
         if injected:
             print(f"🎧 已為 {injected} 個章節注入音檔播放鈕（audio_map）")
+
+        # 2.6. 依 word audio_map 為 Word 分類章節注入逐題播放鈕
+        word_injected = inject_word_chapters(chapters)
+        if word_injected:
+            print(f"🎧 已為 {word_injected} 個 Word 章節注入音檔播放鈕（word audio_map）")
         
         # 3. 生成HTML页面
         print("🔧 正在生成 HTML 页面...")
