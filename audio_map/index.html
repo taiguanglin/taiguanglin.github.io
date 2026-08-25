@@ -210,17 +210,32 @@ const enc=p=>p.split('/').map(encodeURIComponent).join('/');
 const b64d=v=>new TextDecoder().decode(Uint8Array.from(atob(v.replace(/\s/g,'')),c=>c.charCodeAt(0)));
 const b64e=t=>{const b=new TextEncoder().encode(t);let s='';b.forEach(x=>s+=String.fromCharCode(x));return btoa(s);};
 
+// 大檔（>1MB）的 Contents API 不回 content，改以 raw 格式取全文
+async function fetchRaw(path){
+  const tok=getPat();
+  const headers={Accept:'application/vnd.github.raw'};
+  if(tok)headers.Authorization='Bearer '+tok;
+  const r=await fetch(`${API}/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}?ref=${CFG.branch}`,{headers});
+  if(!r.ok)throw new Error(`HTTP ${r.status} ${path}`);
+  return await r.text();
+}
+
 async function loadFromGitHub(){
   setStatus('載入中…');
   try{
     const list=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(MAP_DIR)}?ref=${CFG.branch}`);
     files.clear();
+    let skipped=0;
     for(const it of list.filter(f=>/^word-\d+\.json$/.test(f.name))){
-      const j=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(MAP_DIR+'/'+it.name)}?ref=${CFG.branch}`);
-      files.set(it.name,{data:JSON.parse(b64d(j.content)),sha:j.sha,dirty:false});
+      try{
+        const text=await fetchRaw(`${MAP_DIR}/${it.name}`);
+        files.set(it.name,{data:JSON.parse(text),sha:it.sha,dirty:false});
+      }catch(e){
+        skipped++;console.error(it.name,e);
+      }
     }
     order=[...files.keys()].map(n=>n.match(/\d+/)[0]).sort();
-    setStatus(`已載入 ${files.size} 章`,'ok');
+    setStatus(`已載入 ${files.size} 章${skipped?`（略過 ${skipped} 個壞檔）`:''}`,'ok');
     renderChapters(); renderCards();
   }catch(e){setStatus('載入失敗：'+e.message,'err');alert('載入失敗：'+e.message+'\n（若未填 PAT 請先到設定填入）');}
 }
