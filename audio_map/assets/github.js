@@ -20,13 +20,32 @@ export async function getFile(path) {
     const file = await request(
         `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${encodePath(path)}?ref=${GITHUB_CONFIG.branch}`,
     );
+    // Files >1 MB come back with empty `content` — refetch raw text instead.
+    let text;
+    if (file.content) {
+        text = decodeBase64(file.content);
+    } else {
+        text = await getRawFile(path);
+    }
     return {
         path: file.path,
         name: file.name,
         sha: file.sha,
-        text: decodeBase64(file.content || ''),
+        text,
         htmlUrl: file.html_url,
     };
+}
+
+async function getRawFile(path) {
+    const token = getPat();
+    const headers = { Accept: 'application/vnd.github.raw' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+    const response = await fetch(
+        `${API_ROOT}/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${encodePath(path)}?ref=${GITHUB_CONFIG.branch}`,
+        { headers },
+    );
+    if (!response.ok) throw new Error(`HTTP ${response.status} ${path}`);
+    return response.text();
 }
 
 export async function putFile(path, text, sha, message, { force = false } = {}) {
