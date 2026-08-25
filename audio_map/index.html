@@ -305,7 +305,13 @@ async function loadFromGitHub(){
 
 /* ============ 章節切換 / 渲染 ============ */
 function enterChapter(){
+  // 切換面板：顯示校稿區、收起歡迎頁（index2 同款行為）
+  els.documentPanel.classList.remove('hidden');
+  els.welcomePanel.classList.add('hidden');
   if(!current){renderChapters();return;}
+  const _segCount=files.get('word-'+current+'.json')?.data?.segments?.length ?? 0;
+  console.log(`[wload] 開啟第 ${current} 章（${_segCount} 段）`);
+  
   const f=files.get('word-'+current+'.json');
   baseline=new Map((f.data.segments||[]).map(s=>[s.stable_key,{
     start:s.start,end:s.end,status:s.status,locked:!!s.locked,
@@ -328,7 +334,7 @@ function renderChapters(){
     btn.style.cssText='display:flex;justify-content:space-between;width:100%;text-align:left;margin-bottom:4px'+
       (current===ch?';outline:2px solid var(--accent)':'');
     btn.innerHTML=`<span>第 ${ch} 章</span><span style="font-size:.72rem;color:var(--muted)">✅${st.done} ⏳${st.autoU} 🟡${st.review} 🚫${st.none} ❔${st.missing}</span>`;
-    btn.onclick=()=>{current=ch;enterChapter();};
+    btn.onclick=()=>{console.log('[wload] 點擊章節按鈕：',ch);current=ch;enterChapter();};
     list.appendChild(btn);
   }
   if(!order.length)list.innerHTML='<div class="empty-state">尚未載入</div>';
@@ -443,7 +449,9 @@ function renderSegments(){
   const root=els.editorRoot;
   if(!current){root.innerHTML='';updateShownCount();return;}
   const f=files.get('word-'+current+'.json');
-  root.innerHTML=(f.data.segments||[]).filter(passFilter).map(segHTML).join('');
+  const list=(f.data.segments||[]).filter(passFilter);
+  root.innerHTML=list.map(segHTML).join('');
+  console.log(`[wload] 已渲染 ${list.length} 張卡片（章節 ${current}）`);
   updateShownCount();
 }
 
