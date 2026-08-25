@@ -83,3 +83,19 @@ rebuilds of the ebook.
 - GIVEN a word map built against the current docx
 - WHEN `gen_all.py` rebuilds the whole ebook
 - THEN the same questions SHALL be matched by id and keep their play buttons
+
+### Requirement: Fine Boundary Calibration
+`tool/word_audio_map/calibrate.py` SHALL refine every mapped segment's start
+to the spoken onset using the session SRT: prefer the「下一个问题」transition
+character position, else the name/answer onset with intra-cue interpolation;
+apply adaptive lead-in based on the preceding pause; chain ends
+(`end_i = start_{i+1}`). Locked/manual segments SHALL be preserved, shifts
+>90 s rejected as mis-anchors, and provenance recorded in `notes`
+(`;cal(lead=…,…)`). Re-running SHALL be idempotent.
+
+#### Scenario: Start lands on the spoken transition
+- GIVEN a segment whose previous start was mid-cue
+- WHEN calibration runs on its session
+- THEN the new start SHALL sit at (or just before) the「下一个问题」/ name
+  onset per the pause-based lead-in, and `end` SHALL equal the next
+  segment's refined start

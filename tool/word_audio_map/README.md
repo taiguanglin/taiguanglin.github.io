@@ -83,6 +83,22 @@ to `"auto"` (add `"locked": true`) and rebuild with `gen_all.py`.
 
 Retries never double-book an existing button's opening (~75 s start zone).
 
+### Fine boundary calibration
+
+`calibrate.py` refines every mapped segment's start to the actual spoken onset
+(audio_map/AGENTS.md principles): prefer the「下一个问题」transition character,
+else the name/answer onset with intra-cue interpolation; adaptive lead-in from
+the pause (0.5s…0.1s, never cutting previous speech); `end_i = start_{i+1}`.
+Locked/manual segments are untouched; shifts >90 s are rejected as mis-anchors.
+
+```bash
+./.venv/bin/python calibrate.py           # dry run + shift statistics
+./.venv/bin/python calibrate.py --apply   # write maps
+```
+
+Run it again after adding new matches; re-running is idempotent (shifts <50 ms
+are skipped). Provenance is recorded per segment as `notes=…;cal(lead=…,…)`.
+
 ### Re-transcription note
 
 Re-transcribing an mp3 with `tool/sense_voice` reproduces the backup SRTs
