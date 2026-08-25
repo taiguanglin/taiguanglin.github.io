@@ -51,7 +51,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic/` | Assets | Concept PNGs for `infographic.html`. |
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
-| `audio_map/` | Editorial UI | Browser editor for month JSON (`index.html`) and Word chapter maps (`index2.html`, proofread-gated buttons); **SoT JSON lives in** `tool/word2ebook/data/audio_map/` + `data/audio_map_word/`. Alignment rules: **`audio_map/AGENTS.md`**. |
+| `audio_map/` | Editorial UI | `index.html` = Word chapter maps proofreading（01–12，校對完成才亮鈕）; `index2.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/` + `data/audio_map_word/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)

@@ -1,12 +1,12 @@
 # audio_map — Agent / LLM Guide
 
-> Editorial UI for aligning PDF Q&A segments to session audio.  
+> Editorial UI for aligning Q&A segments to session audio.  
 > Repo-wide rules: [`../AGENTS.md`](../AGENTS.md).  
-> Mapping JSON lives in `tool/word2ebook/data/audio_map/*.json` (not under this folder).
+> Mapping JSON lives under `tool/word2ebook/data/` (not in this folder).
 
-## index2.html — Word-chapter proofreading UI
+## index.html — Word-chapter proofreading UI（第 01–12 章）
 
-`index2.html`（單一自包含檔）是 **Word 分類章節**地圖
+`index.html`（單一自包含檔）是 **Word 分類章節**地圖
 （`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面：
 
 - 每張卡片顯示信心分數 badge（≥0.8 綠、0.5–0.8 黃、**<0.5 紅底 ⚠ 低信心**，
@@ -14,7 +14,7 @@
 - 可播放該段 opus 區間、微調起訖、設起始／結束、確認校對、
   把 `missing` 標記為「人工確認沒有對應音頻」（`status:"none"` + `meta.confirmed`）。
 - 批次：本章 auto 且 conf≥門檻一鍵確認、review→auto 並確認、missing→確認無音頻。
-- 儲存走 GitHub Contents API（PAT 與 index.html 共用 localStorage key
+- 儲存走 GitHub Contents API（PAT 與 index2.html 共用 localStorage key
   `audioMapEditor:pat`）；也提供本機載入與下載變更 JSON。
 
 **校對完成才亮鈕**：Word 章節的播放按鈕只在 segment 同時滿足
@@ -33,6 +33,12 @@ these maps at build time (`tool/word2ebook` → `inject_chapters`); never hand-e
 `wenda2_ebook/` for timings.
 
 ---
+
+## index2.html — PDF month maps proofreading UI（第 13–21 章）
+
+原 `/audio_map/` 的 PDF 月份地圖編輯器現位於 **index2.html**
+（PDF 已全數校對完成，故退居次要檔名；檔名順序對應電子書章節順序：
+Word 01–12 → `index.html`，PDF 13–21 → `index2.html`）。
 
 ## Segment identity (what counts as a new play range)
 

@@ -1,260 +1,464 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>PDF 音檔 Mapping 校稿</title>
-    <meta name="description" content="微調 PDF 章節與音檔起訖時間；問題／回答文字來自 PDF 校對稿。">
-    <link rel="stylesheet" href="assets/editor.css">
-    <link rel="stylesheet" href="assets/overrides.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🎧 Word 音檔校稿</title>
+<style>
+:root{
+  --bg:#f5f6f8; --panel:#fff; --ink:#1c2330; --muted:#66708a; --line:#dfe3ec;
+  --accent:#2456c8; --ok:#1e9e63; --warn:#c07f00; --bad:#cc3344;
+  --radius:10px; --shadow:0 1px 3px rgba(20,30,60,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;font:14px/1.55 -apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;background:var(--bg);color:var(--ink)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;border-radius:8px;padding:4px 10px}
+button:hover{border-color:var(--accent)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button.danger{color:var(--bad);border-color:var(--bad)}
+input,select{font:inherit;padding:3px 6px;border:1px solid var(--line);border-radius:6px}
+input[type=number]{width:96px}
+.topbar{position:sticky;top:0;z-index:30;display:flex;gap:8px;align-items:center;flex-wrap:wrap;
+  background:var(--panel);border-bottom:1px solid var(--line);padding:8px 12px;box-shadow:var(--shadow)}
+.topbar .title{font-weight:700;margin-right:auto}
+.pill{padding:2px 10px;border-radius:999px;background:#eef1f6;color:var(--muted);font-size:12px}
+.pill.ok{background:#e2f5ec;color:var(--ok)} .pill.err{background:#fdeaea;color:var(--bad)}
+.layout{display:flex;min-height:calc(100vh - 49px)}
+.sidebar{width:230px;flex:none;background:var(--panel);border-right:1px solid var(--line);
+  max-height:calc(100vh - 49px);overflow:auto;padding:10px}
+.chap-btn{display:flex;justify-content:space-between;gap:6px;width:100%;text-align:left;margin-bottom:6px}
+.chap-btn.active{outline:2px solid var(--accent)}
+.chap-btn .cnt{font-size:11px;color:var(--muted)}
+main{flex:1;padding:12px 16px 140px;min-width:0}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.bulkbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;background:var(--panel);
+  border:1px dashed var(--line);border-radius:var(--radius);padding:8px 10px;margin-bottom:12px}
+.bulkbar input[type=number]{width:70px}
+.cards{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-left-width:5px;border-radius:var(--radius);
+  padding:10px 12px;box-shadow:var(--shadow)}
+.card.st-auto{border-left-color:var(--ok)} .card.st-review{border-left-color:var(--warn)}
+.card.st-none{border-left-color:#8a93a8} .card.st-missing{border-left-color:#b9c0cf}
+/* 低信心：整張卡紅框＋淡紅底，一眼可見 */
+.card.low-conf{border-color:var(--bad);border-width:2px;background:#fff5f6}
+.card.low-conf.unconfirmed{animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(204,51,68,.0)}50%{box-shadow:0 0 0 5px rgba(204,51,68,.15)}}
+.card-head{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.seg-no{font-weight:700}
+.badge{font-size:11px;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.badge.conf-high{background:#e2f5ec;color:var(--ok)}
+.badge.conf-mid{background:#fdf3dc;color:var(--warn)}
+.badge.conf-low{background:var(--bad);color:#fff;font-weight:700}
+.badge.st-auto{background:#e2f5ec;color:var(--ok)}
+.badge.st-review{background:#fdf3dc;color:#8a6400}
+.badge.st-none{background:#eceff4;color:#5b6579}
+.badge.st-missing{background:#eceff4;color:#5b6579}
+.badge.confirmed{background:#e5edff;color:var(--accent)}
+.qtext{margin:6px 0;font-size:13px;color:#333}
+.srtprev{font-size:12px;color:var(--muted);background:#f4f6fa;border-radius:8px;padding:6px 8px;margin:6px 0;
+  white-space:pre-wrap;word-break:break-all;max-height:88px;overflow:auto}
+.times{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.times .tbox{display:flex;align-items:center;gap:3px}
+.times input{width:110px;font-variant-numeric:tabular-nums}
+.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.hint{font-size:11px;color:var(--muted)}
+.player{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--panel);
+  border-top:1px solid var(--line);padding:8px 14px;display:none;box-shadow:0 -2px 8px rgba(20,30,60,.10)}
+.player.on{display:block}
+.player-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.player-title{max-width:38ch;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+#seekBar{flex:1;min-width:160px}
+.dialog-backdrop{position:fixed;inset:0;background:rgba(15,20,35,.45);z-index:60;display:none;
+  align-items:center;justify-content:center}
+.dialog-backdrop.on{display:flex}
+.dialog{background:#fff;border-radius:14px;padding:18px 20px;width:min(520px,92vw)}
+.empty{color:var(--muted);padding:24px;text-align:center}
+@media (max-width:760px){ .sidebar{display:none} main{padding:10px} }
+</style>
 </head>
 <body>
-    <div id="app" class="app-shell">
-        <header class="topbar">
-            <div class="topbar-left">
-                <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄"><span class="sidebar-toggle-icon">☰</span><span class="sidebar-toggle-label">檔案</span></button>
-                <div class="history-controls">
-                    <button id="undoButton" class="icon-button history-button" type="button" aria-label="復原上一步" title="復原上一步" disabled>↶</button>
-                    <button id="redoButton" class="icon-button history-button" type="button" aria-label="重做下一步" title="重做下一步" disabled>↷</button>
-                </div>
-            </div>
-            <div class="topbar-actions">
-                <span id="saveStatus" class="status-pill">尚未載入</span>
-                <button id="playerToggle" class="button button-secondary" type="button" aria-pressed="true" aria-label="隱藏播放器" title="隱藏／顯示播放器"><span class="btn-icon" aria-hidden="true">🎧</span><span class="btn-label">隱藏播放器</span></button>
-                <button id="settingsButton" class="button button-secondary" type="button" aria-label="設定"><span class="btn-icon" aria-hidden="true">⚙</span><span class="btn-label">設定</span></button>
-                <button id="savePlayedButton" class="button button-secondary save-played hidden" type="button" aria-label="存收聽進度" title="把目前的收聽進度（各段「最後播放」時間）單獨存回 GitHub，不影響校稿草稿"><span class="btn-icon" aria-hidden="true">⤓</span><span class="btn-label">存收聽進度</span></button>
-                <button id="saveButton" class="button button-primary" type="button" aria-label="儲存到 GitHub" disabled><span class="btn-icon" aria-hidden="true">💾</span><span class="btn-label">儲存到 GitHub</span></button>
-            </div>
-        </header>
+<div class="topbar">
+  <span class="title">🎧 Word 音檔校稿（第 01–12 章）</span>
+  <button id="ghLoadBtn" class="primary">從 GitHub 載入</button>
+  <label class="primary" style="display:inline-block;padding:4px 10px;background:var(--accent);color:#fff;border-radius:8px;cursor:pointer">
+    本機載入<input id="localInput" type="file" accept=".json" multiple hidden>
+  </label>
+  <span id="saveStatus" class="pill">尚未載入</span>
+  <button id="settingsBtn">⚙ 設定</button>
+  <button id="downloadBtn" disabled>⤓ 下載變更</button>
+  <button id="saveBtn" class="primary" disabled>💾 儲存到 GitHub</button>
+</div>
 
-        <aside id="sidebar" class="sidebar">
-            <div class="sidebar-toolbar">
-                <label class="field">
-                    <span>月份</span>
-                    <select id="monthSelect"></select>
-                </label>
-            </div>
-            <nav id="fileList" class="file-list" aria-label="Session 列表">
-                <div class="empty-state">正在載入…</div>
-            </nav>
-            <div id="sidebarResizer" class="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側邊欄寬度" title="拖曳調整寬度"></div>
-        </aside>
-
-        <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
-
-        <main class="workspace">
-            <section id="welcomePanel" class="welcome-panel">
-                <h2>選擇 session 開始校稿（手機請點左上角「檔案」）</h2>
-                <p>每段問題會做成一張卡片：標題為 PDF 問題，內文為 PDF 校對過的回答。時間標記格式為 <code>00:00:00.000</code>。</p>
-                <p>播放按鈕會串流 <code>audio/*.opus</code>，並可在段尾自動暫停。用「設起始／設結束」對齊音檔。鎖定或標記 manual 的段落在重跑 align 時不會被覆蓋。</p>
-                <p>首次儲存前請在「設定」中填入 GitHub Fine-grained PAT，權限只需要此 repo 的 <code>Contents: Read and write</code>。</p>
-            </section>
-
-            <section id="documentPanel" class="document-panel hidden">
-                <div class="document-header">
-                    <div>
-                        <p id="documentPath" class="document-path"></p>
-                        <h2 id="documentTitle"></h2>
-                        <div id="metaStrip" class="meta-strip">
-                            <span class="meta-chip">共 <strong id="metaTotalCount">0</strong> 段</span>
-                            <span class="meta-chip status-chip" data-status="both" title="已聽過（算完成）">完成 <strong id="metaBothCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="played" title="只聽過、尚未校過">已聽未校 <strong id="metaPlayedOnlyCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="edited" title="只校過、尚未聽過">已校 <strong id="metaEditedOnlyCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="none" title="未聽且未校">未處理 <strong id="metaNoneCount">0</strong></span>
-                        </div>
-                    </div>
-                    <div class="document-meta">
-                        <span id="segmentCount"></span>
-                        <span id="draftBadge" class="draft-badge hidden">本機草稿</span>
-                    </div>
-                </div>
-
-                <div id="opusWarning" class="warning hidden">
-                    目前瀏覽器可能無法播放 `.opus` 音檔，建議使用 Chrome、Edge 或 Firefox。
-                </div>
-
-                <div id="conflictBanner" class="warning hidden"></div>
-                <div id="editorRoot" class="segments"></div>
-            </section>
-        </main>
+<div class="layout">
+  <aside class="sidebar"><div id="chapterList" class="empty">尚未載入</div></aside>
+  <main>
+    <div class="toolbar">
+      <label>狀態
+        <select id="fStatus">
+          <option value="all">全部</option>
+          <option value="auto-unconf">auto・未確認</option>
+          <option value="auto-conf">auto・已確認</option>
+          <option value="review">review（邊際）</option>
+          <option value="none">none（確認無音頻）</option>
+          <option value="missing">missing（未找到）</option>
+        </select>
+      </label>
+      <label>信心
+        <select id="fConf">
+          <option value="all">全部</option>
+          <option value="low">低 &lt; 0.5 ⚠</option>
+          <option value="mid">中 0.5–0.8</option>
+          <option value="high">高 ≥ 0.8</option>
+        </select>
+      </label>
+      <label>搜尋 <input id="fSearch" type="search" placeholder="名字／問題／筆記"></label>
+      <span id="shownCount" class="pill"></span>
     </div>
 
-    <dialog id="settingsDialog" class="dialog">
-        <form method="dialog" class="dialog-card">
-            <header>
-                <h2>設定</h2>
-                <button class="icon-button" value="cancel" aria-label="關閉" type="submit">×</button>
-            </header>
+    <div class="bulkbar" id="bulkbar" hidden>
+      <strong id="bulkTitle"></strong>
+      <span class="hint">一鍵確認：</span>
+      <label>auto 且信心 ≥ <input id="bulkConf" type="number" min="0" max="1" step="0.05" value="0"></label>
+      <button id="bulkAutoBtn" class="primary">確認為已校對</button>
+      <button id="bulkReviewBtn">review → 改 auto 並確認</button>
+      <span class="hint">｜無音頻：</span>
+      <button id="bulkNoneBtn" class="danger">missing → 人工確認無音頻</button>
+    </div>
 
-            <fieldset class="settings-fieldset">
-                <legend>寬螢幕版面</legend>
-                <p class="hint">調整答疑段落寬度與位置，避免被右下角浮動播放器擋住。手機版忽略這些設定。</p>
-                <label class="checkbox-row">
-                    <input id="contentFillWidthInput" type="checkbox">
-                    <span>答疑段落填滿可用寬度</span>
-                </label>
-                <label class="field">
-                    <span>答疑段落最大寬度 <strong id="contentMaxWidthValue">1100</strong> px</span>
-                    <input id="contentMaxWidthRange" type="range" min="720" max="2000" step="20" value="1100">
-                </label>
-                <label class="field">
-                    <span>水平對齊</span>
-                    <select id="contentAlignSelect">
-                        <option value="center">置中</option>
-                        <option value="left">靠左</option>
-                    </select>
-                </label>
-                <label class="field">
-                    <span>右側預留（避開啟播器） <strong id="contentRightGutterValue">0</strong> px</span>
-                    <input id="contentRightGutterRange" type="range" min="0" max="480" step="10" value="0">
-                </label>
-            </fieldset>
+    <div id="cards" class="cards"><div class="empty">選擇章節開始校稿；播放按鈕確認後需重建電子書才會出現。</div></div>
+  </main>
+</div>
 
-            <fieldset class="settings-fieldset">
-                <legend>播放器</legend>
-                <label class="checkbox-row">
-                    <input id="autoShowMiniPlayerInput" type="checkbox" checked>
-                    <span>播放時自動顯示浮動播放器</span>
-                </label>
-                <p class="hint">關閉後，若你已隱藏播放器，點段落播放時不會再自動跳出（仍可用「顯示播放器」手動打開）。</p>
-            </fieldset>
+<div class="player" id="player">
+  <div class="player-row">
+    <span class="player-title" id="pTitle">—</span>
+    <input id="seekBar" type="range" min="0" max="100" step="0.1" value="0">
+    <span id="pTime" style="font-variant-numeric:tabular-nums;font-size:12px">0:00 / 0:00</span>
+    <button data-seek="-5">−5s</button><button data-seek="5">+5s</button>
+    <button id="playBtn" class="primary">▶</button>
+    <label>倍速 <select id="rate">
+      <option>0.75</option><option selected>1</option><option>1.25</option><option>1.5</option><option>2</option>
+    </select></label>
+    <label class="hint"><input id="stopAtEnd" type="checkbox" checked> 段尾自停</label>
+    <button id="setStartBtn" title="以目前播放位置設為作用段落起始">設起始</button>
+    <button id="setEndBtn" title="以目前播放位置設為作用段落結束">設結束</button>
+    <button id="closePlayerBtn" title="關閉播放器">×</button>
+  </div>
+  <audio id="audio" preload="metadata"></audio>
+</div>
 
-            <label class="field">
-                <span>GitHub Fine-grained PAT</span>
-                <input id="patInput" type="password" autocomplete="off" placeholder="github_pat_...">
-            </label>
-            <p class="hint">
-                建議建立 Fine-grained token，只授權 `taiguanglin.github.io`，權限選 `Contents: Read and write`。
-                Token 會存在此瀏覽器的 localStorage。
-            </p>
-            <menu class="dialog-actions">
-                <button id="clearPatButton" class="button button-secondary" type="button">移除 PAT</button>
-                <button id="testPatButton" class="button button-secondary" type="button">測試 PAT</button>
-                <button id="saveSettingsButton" class="button button-primary" value="default" type="submit">儲存設定</button>
-            </menu>
-            <p id="settingsMessage" class="settings-message"></p>
-        </form>
-    </dialog>
+<div class="dialog-backdrop" id="dlgBackdrop">
+  <div class="dialog">
+    <h3>設定 — GitHub Fine-grained PAT</h3>
+    <p class="hint">與 PDF 校稿頁（index2.html）共用同一組 token（localStorage：<code>audioMapEditor:pat</code>）。需要此 repo 的 Contents: Read and write。</p>
+    <input id="patInput" type="password" style="width:100%" placeholder="github_pat_...">
+    <p style="display:flex;gap:8px;margin-top:12px">
+      <button id="patSave" class="primary">儲存</button>
+      <button id="patClear">清除</button>
+      <button id="patClose" style="margin-left:auto">關閉</button>
+    </p>
+    <p id="patMsg" class="hint"></p>
+  </div>
+</div>
 
-    <dialog id="draftDialog" class="dialog">
-        <form method="dialog" class="dialog-card">
-            <header>
-                <h2>找到本機草稿</h2>
-            </header>
-            <p id="draftMessage"></p>
-            <menu class="dialog-actions">
-                <button id="discardDraftButton" class="button button-secondary" value="discard" type="submit">丟棄草稿</button>
-                <button id="loadRemoteButton" class="button button-secondary" value="remote" type="submit">先看遠端</button>
-                <button id="loadDraftButton" class="button button-primary" value="draft" type="submit">載入草稿</button>
-            </menu>
-        </form>
-    </dialog>
+<script>
+'use strict';
+/* ================= 常數 ================= */
+const API='https://api.github.com';
+const CFG={owner:'taiguanglin',repo:'taiguanglin.github.io',branch:'main'};
+const MAP_DIR='tool/word2ebook/data/audio_map_word';
+const PAT_KEY='audioMapEditor:pat';           // 與 index2.html（PDF 校稿）共用
+const AUDIO_BASE='../audio/';                  // 相對於 /audio_map/
+const LOW_CONF=0.5, MID_CONF=0.8;
 
-    <dialog id="conflictDialog" class="dialog">
-        <form method="dialog" class="dialog-card wide">
-            <header>
-                <h2>遠端檔案已更新</h2>
-            </header>
-            <p>GitHub 上的月份 mapping 已經和你開始編輯時不同。可以重新拉取遠端，或用目前內容覆蓋遠端最新版。</p>
-            <pre id="conflictPreview" class="diff-preview"></pre>
-            <menu class="dialog-actions">
-                <button id="reloadRemoteButton" class="button button-secondary" value="reload" type="submit">重新拉取遠端</button>
-                <button id="forceSaveButton" class="button button-danger" value="force" type="submit">以本地覆蓋</button>
-            </menu>
-        </form>
-    </dialog>
+/* ================= 狀態 ================= */
+const files=new Map();        // name -> {data, sha, dirty}
+let order=[];                 // ['01','02',...]
+let current=null;             // '04'
+const filt={status:'all',conf:'all',q:''};
+const audio=document.getElementById('audio');
+let active=null;              // {name, seg}
 
-    <aside id="miniPlayer" class="mini-player" aria-label="浮動播放控制">
-        <header class="mini-player-header" id="miniPlayerHandle">
-            <span class="mini-player-title" id="audioTitle">尚未播放</span>
-            <span class="mini-player-range" id="audioRange"></span>
-            <button id="miniPlayerExpand" class="icon-button mini-player-expand" type="button" aria-label="展開播放器" title="展開／收合播放器" aria-expanded="false">▴</button>
-            <button id="miniPlayerHide" class="icon-button mini-player-hide" type="button" aria-label="隱藏播放器" title="隱藏播放器">×</button>
-        </header>
-        <div class="mini-player-progress">
-            <input id="seekBar" type="range" min="0" max="0" step="0.1" value="0" aria-label="播放進度">
-        </div>
-        <div class="mini-player-time">
-            <span id="miniPlayerCurrent">00:00:00.000</span>
-            <span>/</span>
-            <span id="miniPlayerDuration">00:00:00.000</span>
-        </div>
-        <div class="mini-player-controls">
-            <button type="button" data-seek="-15" title="倒退 15 秒">-15s</button>
-            <button type="button" data-seek="-5" title="倒退 5 秒">-5s</button>
-            <button type="button" data-seek="-2" title="倒退 2 秒">-2s</button>
-            <button id="miniPlayerToggle" type="button" class="primary" aria-label="播放/暫停" title="播放／暫停（快捷鍵 P）；重頭播放 R；暫停 S">▶</button>
-            <button type="button" data-seek="2" title="前進 2 秒">+2s</button>
-            <button type="button" data-seek="5" title="前進 5 秒">+5s</button>
-            <button type="button" data-seek="15" title="前進 15 秒">+15s</button>
-        </div>
-        <div class="mini-player-nudge" role="group" aria-label="微調這一段的起始時間">
-            <span class="mini-player-nudge-label">起始</span>
-            <button type="button" data-nudge-start="-0.5" disabled title="起始 −0.5 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">−0.5s</button>
-            <button type="button" data-nudge-start="-0.3" disabled title="起始 −0.3 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">−0.3s</button>
-            <button type="button" data-nudge-start="-0.1" disabled title="起始 −0.1 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機或快捷鍵 ←：只試播 3 秒">−0.1s</button>
-            <button type="button" data-nudge-start="0.1" disabled title="起始 +0.1 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機或快捷鍵 →：只試播 3 秒">+0.1s</button>
-            <button type="button" data-nudge-start="0.3" disabled title="起始 +0.3 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">+0.3s</button>
-            <button type="button" data-nudge-start="0.5" disabled title="起始 +0.5 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">+0.5s</button>
-        </div>
-        <div class="mini-player-settings">
-            <label class="speed-control">
-                <span>倍速</span>
-                <select id="playbackRate">
-                    <option value="0.75">0.75x</option>
-                    <option value="1">1.0x</option>
-                    <option value="1.25">1.25x</option>
-                    <option value="1.5">1.5x</option>
-                    <option value="1.75">1.75x</option>
-                    <option value="2">2.0x</option>
-                    <option value="2.5">2.5x</option>
-                    <option value="3">3.0x</option>
-                </select>
-            </label>
-            <div class="mini-player-settime">
-                <button id="setStartButton" type="button" disabled title="把目前播放時間設為這一段的「起始」時間（同步上一段結束時間），並自動從新起點播放。右鍵／長按：只改這一段起始">設起始</button>
-                <button id="setEndButton" type="button" disabled title="把目前播放時間設為這一段的「結束」時間（同步下一段起始時間）。右鍵／長按：只改這一段結束">設結束</button>
-            </div>
-            <label class="checkbox-row compact">
-                <input id="stopAtRangeEnd" type="checkbox" checked>
-                <span>段尾自停</span>
-            </label>
-        </div>
-        <audio id="audioPlayer" preload="metadata"></audio>
-    </aside>
+/* ================= 工具 ================= */
+const $=id=>document.getElementById(id);
+const pad=(n,w=2)=>String(n).padStart(w,'0');
+function fmtT(s){if(s==null||isNaN(s))return'—';s=Math.max(0,s);const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+':':'')+pad(m)+':'+pad(x.toFixed(3),6);}
+function esc(t){return String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function setStatus(msg,cls){const p=$('saveStatus');p.textContent=msg;p.className='pill'+(cls?' '+cls:'');}
+function now(){const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+function getPat(){return localStorage.getItem(PAT_KEY)||'';}
+function effStatus(s){
+  if(s.status==='none')return 'none';
+  if(s.status==='review')return 'review';
+  if(s.status==='auto')return isConfirmed(s)?'auto-conf':'auto-unconf';
+  return 'missing';
+}
+function isConfirmed(s){const m=s.meta||{};return !!(m.confirmed||m.lastPlayed);}
+function audioUrl(f){return AUDIO_BASE+encodeURIComponent(f);}
 
-    <template id="segmentTemplate">
-        <article class="segment-card">
-            <header class="segment-header">
-                <div class="segment-topline">
-                    <button class="segment-edit-toggle" type="button" aria-label="編輯這一段" aria-expanded="false" title="編輯這一段">✎</button>
-                    <div class="segment-meta">
-                        <span class="segment-number"></span>
-                        <span class="seg-meta-chip">
-                            最後播放：<strong class="seg-meta-played">—</strong>
-                            <button class="seg-meta-clear hidden" type="button" data-field="played" aria-label="清除最後播放時間" title="清除最後播放時間">×</button>
-                        </span>
-                        <span class="seg-meta-chip">
-                            最後編輯：<strong class="seg-meta-edited">—</strong>
-                            <button class="seg-meta-clear hidden" type="button" data-field="edited" aria-label="清除最後編輯時間" title="清除最後編輯時間">×</button>
-                        </span>
-                    </div>
-                    <div class="segment-actions">
-                        <span class="segment-dirty hidden">未存</span>
-                        <label class="checkbox-row compact segment-op segment-lock" title="鎖定後重跑 align 不會覆蓋時間">
-                            <input type="checkbox" class="lock-input">
-                            <span>鎖定</span>
-                        </label>
-                        <button class="button button-secondary segment-op reset-segment" type="button" aria-label="回復原樣" title="回復原樣（捨棄這一段的修改，還原成上次儲存的內容）">↺</button>
-                        <button class="button button-secondary segment-op copy-segment" type="button" aria-label="複製這段回答" title="複製 PDF 回答內容">📋</button>
-                    </div>
-                </div>
-                <textarea class="segment-title" rows="1" spellcheck="false" aria-label="段落提問（標題）" title="PDF 問題（唯讀）" readonly></textarea>
-            </header>
-            <div class="segment-body"></div>
-        </article>
-    </template>
+/* ================= GitHub ================= */
+async function gh(path,opts={}){
+  const tok=getPat();
+  const headers={Accept:'application/vnd.github+json',...(opts.body?{'Content-Type':'application/json'}:{})};
+  if(tok)headers.Authorization='Bearer '+tok;
+  const r=await fetch(API+path,{method:opts.method||'GET',headers,body:opts.body});
+  const j=await r.json().catch(()=>null);
+  if(!r.ok)throw new Error(j?.message||('HTTP '+r.status));
+  return j;
+}
+const enc=p=>p.split('/').map(encodeURIComponent).join('/');
+const b64d=v=>new TextDecoder().decode(Uint8Array.from(atob(v.replace(/\s/g,'')),c=>c.charCodeAt(0)));
+const b64e=t=>{const b=new TextEncoder().encode(t);let s='';b.forEach(x=>s+=String.fromCharCode(x));return btoa(s);};
 
-    <script type="module" src="assets/editor.js"></script>
+async function loadFromGitHub(){
+  setStatus('載入中…');
+  try{
+    const list=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(MAP_DIR)}?ref=${CFG.branch}`);
+    files.clear();
+    for(const it of list.filter(f=>/^word-\d+\.json$/.test(f.name))){
+      const j=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(MAP_DIR+'/'+it.name)}?ref=${CFG.branch}`);
+      files.set(it.name,{data:JSON.parse(b64d(j.content)),sha:j.sha,dirty:false});
+    }
+    order=[...files.keys()].map(n=>n.match(/\d+/)[0]).sort();
+    setStatus(`已載入 ${files.size} 章`,'ok');
+    renderChapters(); renderCards();
+  }catch(e){setStatus('載入失敗：'+e.message,'err');alert('載入失敗：'+e.message+'\n（若未填 PAT 請先到設定填入）');}
+}
+function loadLocal(input){
+  files.clear();
+  const fs=[...input.files];let pending=fs.length;
+  fs.forEach(f=>{
+    const r=new FileReader();
+    r.onload=()=>{try{
+      files.set(f.name,{data:JSON.parse(r.result),sha:null,dirty:false});
+    }catch(e){alert(f.name+' 解析失敗：'+e.message);}
+    if(--pending===0){
+      order=[...files.keys()].map(n=>n.match(/\d+/)[0]).sort();
+      setStatus(`本機載入 ${files.size} 章`,'ok');
+      renderChapters(); renderCards();
+    }};
+    r.readAsText(f);
+  });
+}
+async function saveToGitHub(){
+  if(!getPat()){openSettings();alert('請先在設定填入 GitHub PAT');return;}
+  const dirty=[...files.entries()].filter(([n,f])=>f.dirty);
+  if(!dirty.length){setStatus('沒有變更');return;}
+  setStatus(`儲存中… 0/${dirty.length}`,'ok');
+  let i=0,errs=0;
+  for(const [name,f] of dirty){
+    const path=`${MAP_DIR}/${name}`;
+    const body={message:`word map proofread (${name})`,content:b64e(JSON.stringify(f.data,null,1)+'\n'),sha:f.sha,branch:CFG.branch};
+    try{
+      const res=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}`,{method:'PUT',body:JSON.stringify(body)});
+      f.sha=res.content.sha; f.dirty=false;
+    }catch(e){
+      // sha 過期 → 重抓後重試一次
+      try{
+        const cur=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}?ref=${CFG.branch}`);
+        body.sha=cur.sha;
+        const res=await gh(`/repos/${CFG.owner}/${CFG.repo}/contents/${enc(path)}`,{method:'PUT',body:JSON.stringify(body)});
+        f.sha=res.content.sha; f.dirty=false;
+      }catch(e2){errs++;console.error(name,e2);}
+    }
+    setStatus(`儲存中… ${++i}/${dirty.length}${errs?`（失敗${errs}）`:''}`,'ok');
+  }
+  renderChapters(); renderCards();
+  setStatus(errs?`完成，但 ${errs} 個檔案失敗`:`已儲存 ${dirty.length} 個檔案`,errs?'err':'ok');
+}
+function downloadDirty(){
+  const dirty=[...files.entries()].filter(([n,f])=>f.dirty);
+  if(!dirty.length){setStatus('沒有變更');return;}
+  dirty.forEach(([n,f])=>{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([JSON.stringify(f.data,null,1)+'\n'],{type:'application/json'}));
+    a.download=n;a.click();URL.revokeObjectURL(a.href);
+  });
+}
+
+/* ================= 資料操作 ================= */
+function touch(name){const f=files.get(name);f.dirty=true;}
+function segConfirmed(seg){const m=seg.meta||(seg.meta={});m.confirmed=now();}
+function confirmSeg(seg){if(seg.status==='review')seg.status='auto';if(!seg.start&&seg.start!==0)return false;segConfirmed(seg);return true;}
+function markNone(seg){seg.status='none';const m=seg.meta||(seg.meta={});m.confirmed=now();delete seg.miss_note;}
+
+/* ================= 渲染 ================= */
+function chapStats(name){
+  const d=files.get(name).data;const c={autoU:0,autoC:0,review:0,none:0,missing:0};
+  d.segments.forEach(s=>{c[effStatus(s)]++;});
+  return c;
+}
+function renderChapters(){
+  const el=$('chapterList');el.innerHTML='';el.className='';
+  for(const ch of order){
+    const name='word-'+ch+'.json';const c=chapStats(name);
+    const btn=document.createElement('button');
+    btn.className='chap-btn'+(current===ch?' active':'');
+    btn.innerHTML=`<span>第 ${ch} 章</span><span class="cnt">✅${c.autoC} ⏳${c.autoU} 🟡${c.review} 🚫${c.none} ❔${c.missing}</span>`;
+    btn.onclick=()=>{current=ch;$('bulkbar').hidden=false;$('bulkTitle').textContent=`第 ${ch} 章`;renderChapters();renderCards();};
+    el.appendChild(btn);
+  }
+  if(!order.length){el.innerHTML='<div class="empty">尚未載入</div>';el.className='empty';}
+}
+function passFilter(s){
+  const st=effStatus(s);
+  if(filt.status!=='all'&&filt.status!==st)return false;
+  const c=s.confidence??0;
+  if(filt.conf==='low'&&c>=LOW_CONF)return false;
+  if(filt.conf==='mid'&&(c<LOW_CONF||c>=MID_CONF))return false;
+  if(filt.conf==='high'&&c<MID_CONF)return false;
+  if(filt.q){const hay=`${s.questioner} ${s.q_preview||''} ${s.notes||''} ${s.stable_key}`.toLowerCase();
+    if(!hay.includes(filt.q.toLowerCase()))return false;}
+  return true;
+}
+function confBadge(s){
+  const c=s.confidence??0;const cls=c>=MID_CONF?'conf-high':c>=LOW_CONF?'conf-mid':'conf-low';
+  const tag=c<LOW_CONF?'⚠ 低信心':'信心';
+  return `<span class="badge ${cls}" title="自動對齊信心分數">${tag} ${c.toFixed(2)}</span>`;
+}
+function cardHTML(ch,name,s){
+  const st=effStatus(s);const low=(s.confidence??0)<LOW_CONF;
+  const hasRange=s.start!=null;
+  return `<article class="card st-${st.split('-')[0]} ${low?'low-conf':''} ${st==='auto-unconf'?'unconfirmed':''}" data-key="${esc(s.stable_key)}">
+    <div class="card-head">
+      <span class="seg-no">#${s.index}</span>
+      <span class="badge st-${st.split('-')[0]}">${st}</span>
+      ${confBadge(s)}
+      ${isConfirmed(s)?'<span class="badge confirmed">✔ 已校對</span>':''}
+      ${s.locked?'<span class="badge confirmed">🔒 鎖定</span>':''}
+      <span class="hint">${esc(s.questioner||'')}　提問 ${esc(s.question_date||'—')}${s.session_date?`　→ 回答 ${esc(s.session_date)} (${esc(s.source||'')})`:''}</span>
+    </div>
+    <div class="qtext">${esc((s.q_preview||'(無問題文字)').slice(0,180))}</div>
+    ${s.srt_preview?`<div class="srtprev">${esc(s.srt_preview.slice(0,220))}</div>`:''}
+    ${hasRange?`
+    <div class="times">
+      <span class="tbox">起 <input type="number" step="0.1" data-f="start" value="${s.start}"></span>
+      <span class="tbox">訖 <input type="number" step="0.1" data-f="end" value="${s.end}"></span>
+      <span class="hint">${fmtT(s.start)} – ${fmtT(s.end)}</span>
+      <button data-act="play">▶ 播放此段</button>
+      <button data-act="nudgeS" data-d="-0.5">起−0.5</button><button data-act="nudgeS" data-d="0.5">起+0.5</button>
+      <button data-act="setS">設起始</button><button data-act="setE">設結束</button>
+    </div>`:`<div class="hint">無時間軸${s.miss_note?`（${esc(s.miss_note)}）`:''}${s.notes?`　notes:${esc(s.notes)}`:''}</div>`}
+    <div class="actions">
+      ${hasRange&&st!=='none'?`<button data-act="confirm" class="${st==='review'||low?'primary':''}">${st==='review'?'聽過了→改 auto 並確認':'✔ 確認校對'}</button>`:''}
+      ${(st==='missing'||st==='review')?`<button data-act="marknone" class="danger">🚫 人工確認沒有對應音頻</button>`:''}
+      ${st==='none'?`<span class="hint">已確認：此段沒有對應音頻 ✔</span>`:''}
+      ${st==='auto-unconf'?`<span class="hint">尚未確認——確認後重建電子書才會出現播放鈕</span>`:''}
+      <label class="hint" style="margin-left:auto"><input type="checkbox" data-act="lock" ${s.locked?'checked':''}> 鎖定</label>
+    </div>
+    ${low?`<div class="hint" style="color:var(--bad)">⚠ 低信心配對：請特別仔細聽檔確認；必要時調整起訖或改判「無音頻」。</div>`:''}
+  </article>`;
+}
+function renderCards(){
+  const el=$('cards');
+  if(!current){el.innerHTML='<div class="empty">尚未載入</div>';$('shownCount').textContent='';return;}
+  const name='word-'+current+'.json';const f=files.get(name);if(!f)return;
+  const list=f.data.segments.filter(passFilter);
+  $('shownCount').textContent=`顯示 ${list.length} / ${f.data.segments.length} 段`;
+  el.innerHTML=list.map(s=>cardHTML(current,name,s)).join('')||'<div class="empty">沒有符合條件的段落</div>';
+}
+function findSeg(key){const name='word-'+current+'.json';const f=files.get(name);return {name,f,seg:f.data.segments.find(x=>x.stable_key===key)};}
+
+/* ================= 卡片事件（委派） ================= */
+$('cards').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]');if(!btn)return;
+  const card=e.target.closest('.card');if(!card)return;
+  const {seg,name}=findSeg(card.dataset.key);if(!seg)return;
+  const act=btn.dataset.act;
+  if(act==='play'){playSegment(name,seg);highlightActive(card);}
+  else if(act==='nudgeS'){seg.start=Math.max(0,+(seg.start+ +btn.dataset.d).toFixed(3));touch(name);refreshCard(card,seg);}
+  else if(act==='setS'){seg.start=round3(audio.currentTime);touch(name);refreshCard(card,seg);}
+  else if(act==='setE'){seg.end=round3(audio.currentTime);touch(name);refreshCard(card,seg);}
+  else if(act==='confirm'){if(confirmSeg(seg)){touch(name);refreshCard(card,seg);renderChapters();}}
+  else if(act==='marknone'){markNone(seg);touch(name);refreshCard(card,seg);renderChapters();}
+});
+$('cards').addEventListener('change',e=>{
+  const inp=e.target.closest('input[data-f],input[data-act]');if(!inp)return;
+  const card=e.target.closest('.card');if(!card)return;
+  const {seg,name}=findSeg(card.dataset.key);if(!seg)return;
+  if(inp.dataset.f==='start'){seg.start=round3(+inp.value||0);touch(name);refreshCard(card,seg);}
+  if(inp.dataset.f==='end'){seg.end=round3(+inp.value||0);touch(name);refreshCard(card,seg);}
+  if(inp.dataset.act==='lock'){seg.locked=inp.checked;touch(name);}
+});
+function highlightActive(card){
+  document.querySelectorAll('.card.active-seg').forEach(x=>x.classList.remove('active-seg'));
+  card.classList.add('active-seg');
+}
+function refreshCard(card,seg){
+  const name='word-'+current+'.json';
+  const tmp=document.createElement('div');tmp.innerHTML=cardHTML(current,name,seg);
+  card.replaceWith(tmp.firstElementChild);
+}
+function round3(v){return Math.max(0,+v.toFixed(3));}
+
+/* ================= 批次動作 ================= */
+$('bulkAutoBtn').onclick=()=>{
+  const th=+$('bulkConf').value||0;let n=0;
+  iterChapter(s=>{if(effStatus(s)==='auto-unconf'&&(s.confidence??0)>=th){if(confirmSeg(s))n++;}});
+  afterBulk(`已確認 ${n} 段`);
+};
+$('bulkReviewBtn').onclick=()=>{
+  let n=0;iterChapter(s=>{if(s.status==='review'){s.status='auto';segConfirmed(s);n++;}});
+  afterBulk(`review → auto 已確認 ${n} 段`);
+};
+$('bulkNoneBtn').onclick=()=>{
+  let n=0;iterChapter(s=>{if(effStatus(s)==='missing'){markNone(s);n++;}});
+  afterBulk(`已標記「人工確認無音頻」${n} 段`);
+};
+function iterChapter(fn){
+  const name='word-'+current+'.json';const f=files.get(name);if(!f)return;
+  f.data.segments.forEach(s=>fn(s)); // 批次套用整章
+  touch(name);
+}
+function afterBulk(msg){renderCards();renderChapters();setStatus(msg+'（記得儲存）','ok');}
+
+/* ================= 播放器 ================= */
+function playSegment(name,seg){
+  active={name,seg};
+  $('pTitle').textContent=`#${seg.index} ${seg.questioner||''} ${seg.audio_file||''}`;
+  audio.src=audioUrl(seg.audio_file);audio.playbackRate=+$('rate').value;
+  audio.currentTime=seg.start??0;
+  audio.play().catch(err=>alert('播放失敗：'+err.message+'\n請確認本機 audio/ 符號連結存在'));
+  $('player').classList.add('on');$('playBtn').textContent='⏸';
+}
+$('playBtn').onclick=()=>{if(audio.paused){audio.play();$('playBtn').textContent='⏸';}else{audio.pause();$('playBtn').textContent='▶';}};
+document.querySelectorAll('[data-seek]').forEach(b=>b.onclick=()=>{audio.currentTime=Math.max(0,audio.currentTime+ +b.dataset.seek);});
+$('rate').onchange=()=>{audio.playbackRate=+$('rate').value;};
+$('seekBar').oninput=()=>{if(audio.duration)audio.currentTime=audio.duration*$('seekBar').value/100;};
+$('closePlayerBtn').onclick=()=>$('player').classList.remove('on');
+$('setStartBtn').onclick=()=>{if(active){active.seg.start=round3(audio.currentTime);touch(active.name);rerenderIfVisible(active.seg);}};
+$('setEndBtn').onclick=()=>{if(active){active.seg.end=round3(audio.currentTime);touch(active.name);rerenderIfVisible(active.seg);}};
+function rerenderIfVisible(seg){
+  const card=document.querySelector(`.card[data-key="${CSS.escape(seg.stable_key)}"]`);
+  if(card)refreshCard(card,seg);
+}
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration)return;
+  $('seekBar').value=audio.currentTime/audio.duration*100;
+  $('pTime').textContent=fmtT(audio.currentTime)+' / '+fmtT(audio.duration);
+  if(active&&$('stopAtEnd').checked&&active.seg.end!=null&&audio.currentTime>=active.seg.end){
+    audio.pause();
+  }
+});
+
+/* ================= 篩選 ================= */
+$('fStatus').onchange=e=>{filt.status=e.target.value;renderCards();};
+$('fConf').onchange=e=>{filt.conf=e.target.value;renderCards();};
+$('fSearch').oninput=e=>{filt.q=e.target.value.trim();renderCards();};
+
+/* ================= 設定 / 啟動 ================= */
+function openSettings(){$('patInput').value=getPat();$('dlgBackdrop').classList.add('on');}
+$('settingsBtn').onclick=openSettings;
+$('patClose').onclick=()=>$('dlgBackdrop').classList.remove('on');
+$('patSave').onclick=()=>{localStorage.setItem(PAT_KEY,$('patInput').value.trim());$('patMsg').textContent='已儲存（與 index2.html 共用）';setTimeout(()=>$('dlgBackdrop').classList.remove('on'),600);};
+$('patClear').onclick=()=>{localStorage.removeItem(PAT_KEY);$('patInput').value='';$('patMsg').textContent='已清除';};
+$('localInput').onchange=e=>loadLocal(e.target);
+$('ghLoadBtn').onclick=loadFromGitHub;
+$('saveBtn').onclick=saveToGitHub;
+$('downloadBtn').onclick=downloadDirty;
+
+// 自動帶入 PDF 校稿頁已存的 PAT
+if(getPat())$('patInput').placeholder='已偵測到既有 token（未顯示）';
+</script>
 </body>
 </html>

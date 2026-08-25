@@ -44,7 +44,7 @@ def _is_confirmed(item: Optional[dict]) -> bool:
     """True when a human signed off this word-map segment.
 
     Word chapters follow a proofread-gated flow: play buttons appear only
-    after the segment was confirmed in ``/audio_map/index2.html``
+    after the segment was confirmed in ``/audio_map/index.html``
     (``meta.confirmed``) — ``meta.lastPlayed`` counts too, mirroring the PDF
     convention.
     """
