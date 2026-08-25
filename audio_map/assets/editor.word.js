@@ -742,6 +742,14 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         state.map = map;
         state.originalMap = cloneMap(map);
         state.currentSha = sha;
+        // 收集所有出現過的音檔名（供卡片下拉選單）
+        const known = new Set(allOpusFiles);
+        for (const sess of map.sessions || []) {
+            for (const sg of sess.segments || []) {
+                if (sg.audio_file) known.add(sg.audio_file);
+            }
+        }
+        allOpusFiles = [...known].sort();
         state.dirty = false;
         state.draftPaths = listDraftPaths();
         resetHistory();
@@ -1124,6 +1132,35 @@ function applyWordCardExtras(node, item) {
         banner.className = 'lowconf-banner';
         banner.textContent = '⚠ 低信心配對：請特別仔細聽檔；必要時微調起訖，或改判「人工確認無音頻」。';
         node.querySelector('.segment-body').appendChild(banner);
+    }
+
+    // 音檔來源下拉選單
+    if (allOpusFiles.length > 1) {
+        const fileRow = document.createElement('div');
+        fileRow.style.cssText = 'margin-top:.4rem;display:flex;gap:.3rem;align-items:center;flex-wrap:wrap';
+        const flabel = document.createElement('span');
+        flabel.className = 'hint';
+        flabel.textContent = '音檔來源：';
+        const sel = document.createElement('select');
+        sel.style.cssText = 'max-width:300px;font-size:.78rem';
+        const curFile = item.audio_file || '';
+        for (const f of allOpusFiles) {
+            const o = document.createElement('option');
+            o.value = f;
+            o.textContent = f.replace('.opus','').replace(/^(\d{4})年(\d{1,2})月(\d{1,2})日Tai師父/,'$1/$2/$3 ');
+            if (f === curFile) o.selected = true;
+            sel.appendChild(o);
+        }
+        sel.addEventListener('change', function() {
+            commitHistory();
+            ensureMeta(item);
+            item.audio_file = this.value;
+            const cardIdx = Number(node.dataset.segmentIndex);
+            onSegmentEdit(cardIdx);
+            setStatus('已切換音檔來源：' + this.value, 'ok');
+        });
+        fileRow.append(flabel, sel);
+        node.querySelector('.segment-body').append(fileRow);
     }
 
     const actions = node.querySelector('.segment-actions');
