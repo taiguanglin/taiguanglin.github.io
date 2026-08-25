@@ -106,7 +106,7 @@ def extract_questions(chapters) -> List[dict]:
                     "date": date,
                     "time_part": time_part,
                     "q_text": clean(qt.group(1)) if qt else "",
-                    "a_text": strip_html(at.group(1))[:400] if at else "",
+                    "a_text": strip_html(at.group(1)) if at else "",
                 }
             )
     return questions

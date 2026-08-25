@@ -6,13 +6,14 @@
 
 ## index.html — Word-chapter proofreading UI（第 01–12 章）
 
-`index.html`（單一自包含檔）是 **Word 分類章節**地圖
-（`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面。
+`index.html` 是 **Word 分類章節**地圖
+（`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面，
+**完整沿用 index2 的生態系**：版面／深淺色共用同一組 CSS，邏輯在
+`assets/editor.word.js`（由 editor.js 移植；讀取走 raw.githubusercontent main＋破快取、
+儲存 PUT 回 main，wordDoc ↔ 檢視模型以共用參照同步）。
 
-**版面與互動比照 index2.html**：共用 `assets/editor.css`＋`overrides.css`（深淺色自動切換）、
-相同的卡片結構／浮動播放器／快捷鍵（P 播放暫停、S 停止、R 重播、←→ 起始 ±0.1s、
-↑↓ 上下一段、⌘Z/⇧⌘Z 復原重做）；時間一律顯示與輸入 `hh:mm:ss.xxx`；
-「設起始／設結束」連動鄰段，右鍵可只改單邊。
+**版面與互動同 index2**：卡片結構、單行時間碼（`hh:mm:ss.xxx - hh:mm:ss.xxx`）、
+浮動播放器（拖曳／展開／nudge）、快捷鍵（P/S/R/←→/↑↓/⌘Z）、本機草稿、衝突對話框。
 
 Word 版專屬：
 
