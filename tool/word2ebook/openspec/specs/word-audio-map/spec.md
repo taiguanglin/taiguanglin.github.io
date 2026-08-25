@@ -86,12 +86,14 @@ rebuilds of the ebook.
 
 ### Requirement: Fine Boundary Calibration
 `tool/word_audio_map/calibrate.py` SHALL refine every mapped segment's start
-to the spoken onset using the session SRT: prefer the「下一个问题」transition
-character position, else the name/answer onset with intra-cue interpolation;
-apply adaptive lead-in based on the preceding pause; chain ends
-(`end_i = start_{i+1}`). Locked/manual segments SHALL be preserved, shifts
->90 s rejected as mis-anchors, and provenance recorded in `notes`
-(`;cal(lead=…,…)`). Re-running SHALL be idempotent.
+to the spoken onset with **sub-cue fractional precision**: prefer the
+「下一个问题」transition character; else a pinyin name occurrence (homophone
+names included); else the LCB-block onset of answer/question text on the
+session pinyin stream. Adaptive lead-in follows the preceding pause;
+`end_i = start_{i+1}`. Locked/manual segments SHALL be preserved, per-segment
+corrections clamped to `--limit` seconds (default 30) around the existing
+boundary, and provenance recorded in `notes` (`;cal2(…)`). Repeated runs
+SHALL converge (residual recalibrations approach zero).
 
 #### Scenario: Start lands on the spoken transition
 - GIVEN a segment whose previous start was mid-cue
@@ -99,3 +101,8 @@ apply adaptive lead-in based on the preceding pause; chain ends
 - THEN the new start SHALL sit at (or just before) the「下一个问题」/ name
   onset per the pause-based lead-in, and `end` SHALL equal the next
   segment's refined start
+
+#### Scenario: Repeated runs converge
+- GIVEN calibration has been applied once
+- WHEN it runs again without other map edits
+- THEN the number of recalibrated segments SHALL be near zero

@@ -190,15 +190,20 @@ class SessionStream:
         self.raw_cues = raw_cues or []
         parts = []
         owners: List[int] = []
+        self.cue_pys: List[str] = []          # pinyin text per cue (may be '')
+        self.cue_spans: List[Tuple[int, int]] = []  # (start_char, len) per cue
+        cursor = 0
         for ci, (_s, _e, body) in enumerate(cues):
             py = py_norm(body, converter)
             parts.append(py)
             owners.extend([ci] * len(py))
+            self.cue_pys.append(py)
+            self.cue_spans.append((cursor, len(py)))
+            cursor += len(py)
         self.py = "".join(parts)
         self.owners = owners
         self.boundaries = None
         if owners:
-            # first char index of each cue
             bounds = [0]
             for i in range(1, len(owners)):
                 if owners[i] != owners[i - 1]:
@@ -215,7 +220,30 @@ class SessionStream:
             return max(len(self.cues) - 1, 0)
         return self.owners[self.boundaries[i]]
 
+    def frac_time(self, char_pos: float) -> float:
+        """Sub-cue interpolated time for a pinyin-stream character position."""
+        pos = max(0, min(int(char_pos), len(self.py) - 1)) if self.py else 0
+        # locate cue whose span contains pos (spans are ordered, may be empty)
+        lo, hi = 0, len(self.cue_spans) - 1
+        ci = 0
+        while lo <= hi:
+            mid = (lo + hi) // 2
+            st, ln = self.cue_spans[mid]
+            if pos < st:
+                hi = mid - 1
+            elif pos >= st + ln and mid < len(self.cue_spans) - 1:
+                lo = mid + 1
+            else:
+                ci = mid
+                break
+        st, ln = self.cue_spans[ci]
+        into = max(0, pos - st)
+        frac = into / ln if ln else 0.0
+        cs, ce, _ = self.cues[ci]
+        return cs + (ce - cs) * frac
+
     def cue_start_time(self, char_pos: float) -> float:
+        """Cue-granular start time (legacy interface used by align passes)."""
         idx = self.cue_index(int(char_pos))
         return self.cues[idx][0]
 
