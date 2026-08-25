@@ -742,14 +742,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         state.map = map;
         state.originalMap = cloneMap(map);
         state.currentSha = sha;
-        // 收集所有出現過的音檔名（供卡片下拉選單）
-        const known = new Set(allOpusFiles);
-        for (const sess of map.sessions || []) {
-            for (const sg of sess.segments || []) {
-                if (sg.audio_file) known.add(sg.audio_file);
-            }
-        }
-        allOpusFiles = [...known].sort();
+
         state.dirty = false;
         state.draftPaths = listDraftPaths();
         resetHistory();
@@ -1101,6 +1094,16 @@ function it_name(path) {
     return String(path).split('/').pop() || path;
 }
 
+function getAllOpusFiles() {
+    const set = new Set();
+    for (const sess of state.map?.sessions || []) {
+        for (const sg of sess.segments || []) {
+            if (sg.audio_file) set.add(sg.audio_file);
+        }
+    }
+    return [...set].sort();
+}
+
 function applyWordCardExtras(node, item) {
     const conf = item.confidence ?? 1;
     const lv = conf >= MID_CONF_WORD ? 'high' : conf >= LOW_CONF_LOCAL ? 'mid' : 'low';
@@ -1135,7 +1138,8 @@ function applyWordCardExtras(node, item) {
     }
 
     // 音檔來源下拉選單
-    if (allOpusFiles.length > 1) {
+    const opusList = getAllOpusFiles();
+    if (opusList.length > 1) {
         const fileRow = document.createElement('div');
         fileRow.style.cssText = 'margin-top:.4rem;display:flex;gap:.3rem;align-items:center;flex-wrap:wrap';
         const flabel = document.createElement('span');
@@ -1144,7 +1148,7 @@ function applyWordCardExtras(node, item) {
         const sel = document.createElement('select');
         sel.style.cssText = 'max-width:300px;font-size:.78rem';
         const curFile = item.audio_file || '';
-        for (const f of allOpusFiles) {
+        for (const f of opusList) {
             const o = document.createElement('option');
             o.value = f;
             o.textContent = f.replace('.opus','').replace(/^(\d{4})年(\d{1,2})月(\d{1,2})日Tai師父/,'$1/$2/$3 ');
@@ -1292,8 +1296,8 @@ function renderSegmentCard(entry, segmentIndex) {
         timeInput.value = formatTimeMarker(item, kind);
         timeInput.dataset.startTc = item.start_label;
         timeInput.dataset.endTc = item.end_label;
-        if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
-        if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
+        /* Word 版不連動鄰段 */
+        /* Word 版不連動鄰段 */
         updatePlayButton(playButton, timeInput.value, segmentIndex, title);
         onSegmentEdit(segmentIndex);
         commitHistory();
@@ -1527,7 +1531,7 @@ function nudgeSegmentStart(delta, opts = {}) {
 
     const signed = next >= item.start ? `+${(next - item.start).toFixed(3)}` : (next - item.start).toFixed(3);
     setSegmentEdge(idx, 'start', next);
-    setSegmentEdge(idx - 1, 'end', next, { markEdited: false });
+    /* Word 版不連動鄰段 */
     const label = itemKindLabel(entry.kind, entry.number);
     const previewNote = opts.previewShort ? ' · 將試播 3 秒' : '';
     setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）${previewNote}`, 'ok');
@@ -1654,8 +1658,8 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
 function applyPlayerTime(segmentIndex, edge, seconds) {
     commitHistory();
     if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
-    if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds, { markEdited: false });
-    if (edge === 'end') setSegmentEdge(segmentIndex + 1, 'start', seconds, { markEdited: false });
+    /* Word 版不連動鄰段 */
+    /* Word 版不連動鄰段 */
     const entry = sessionItems()[segmentIndex];
     const label = edge === 'start' ? '起始' : '結束';
     setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
