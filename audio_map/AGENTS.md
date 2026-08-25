@@ -7,21 +7,22 @@
 ## index.html — Word-chapter proofreading UI（第 01–12 章）
 
 `index.html`（單一自包含檔）是 **Word 分類章節**地圖
-（`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面：
+（`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面。
+
+**版面與互動比照 index2.html**：共用 `assets/editor.css`＋`overrides.css`（深淺色自動切換）、
+相同的卡片結構／浮動播放器／快捷鍵（P 播放暫停、S 停止、R 重播、←→ 起始 ±0.1s、
+↑↓ 上下一段、⌘Z/⇧⌘Z 復原重做）；時間一律顯示與輸入 `hh:mm:ss.xxx`；
+「設起始／設結束」連動鄰段，右鍵可只改單邊。
+
+Word 版專屬：
 
 - 每張卡片顯示信心分數 badge（≥0.8 綠、0.5–0.8 黃、**<0.5 紅底 ⚠ 低信心**，
   整卡紅框提示需特別仔細聽）。
-- 可播放該段 opus 區間、微調起訖、設起始／結束、確認校對、
-  把 `missing` 標記為「人工確認沒有對應音頻」（`status:"none"` + `meta.confirmed`）。
+- 「✔ 確認校對」＝人工聽檔通過（`meta.confirmed`）；「🚫 人工確認沒有對應音頻」＝
+  `status:"none"`＋`meta.confirmed`——兩者皆需重建電子書才反映到播放鈕。
 - 批次：本章 auto 且 conf≥門檻一鍵確認、review→auto 並確認、missing→確認無音頻。
 - 儲存走 GitHub Contents API（PAT 與 index2.html 共用 localStorage key
-  `audioMapEditor:pat`）；也提供本機載入與下載變更 JSON。
-
-**校對完成才亮鈕**：Word 章節的播放按鈕只在 segment 同時滿足
-`status=="auto"` 且 `meta.confirmed`（或沿用 PDF 的 `meta.lastPlayed`）
-時才會注入（`inject_word_chapters` 的 `_is_confirmed`）。改完地圖後跑
-`tool/word2ebook/gen_all.py` 重建電子書。`status:"none"` 表示人工確認無音頻，
-永不產生按鈕。
+  `audioMapEditor:pat`）。
 
 ---
 
