@@ -815,15 +815,15 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
     _shingle_cache: dict = {}
     used_times: List[float] = []
 
-    for i in suspicious:
+    def gather(i: int):
+        """All evidence candidates for segment i (exact + fuzzy clusters)."""
         seg = segs_in[i]
         expect = expected_dur(i, rate)
         probe = normalize(
             (seg.get("q_text") or "") + " " + (seg.get("answer_text") or ""),
             converter,
         )[:150]
-
-        cands: List[tuple] = []   # exact anchors (time, prior, label)
+        cands: List[tuple] = []
 
         qname = seg.get("questioner") or ""
         if qname and qname not in name_hits_cache:
@@ -859,15 +859,13 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
             cands.append((t, METHOD_PRIOR["q_body"], "shingle"))
 
         # fuzzy content probes — survive mangled names / paraphrase / order.
-        # Hits from all probes are clustered by location; several probes
-        # agreeing on one neighbourhood is itself strong evidence.
         fuzzy_probes = [n for n in q_needles if len(n) >= 14]
         q_norm_full = normalize(seg.get("q_text") or "", converter)
         if len(q_norm_full) >= 20:
             fuzzy_probes.append(q_norm_full[:90])
         fuzzy_probes += [s for s in a_slices if len(s) >= 12]
         seen_probe = set()
-        loc_hits: List[tuple] = []  # (time, ratio)
+        loc_hits: List[tuple] = []
         for pr in fuzzy_probes:
             key = pr[:30]
             if key in seen_probe:
@@ -876,7 +874,55 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
             res = _bigram_locate(cues, pr, 0.0, audio_end, expect)
             if res:
                 loc_hits.extend(res)
+        return cands, loc_hits, probe, expect
 
+    def _fuzzy_rescue(i: int):
+        """Last-chance locate from the ANSWER's middle slice before clamping.
+
+        The main loop probes question openings + answer thirds; heavily
+        paraphrased openings sometimes only survive in the mid-answer text.
+        A single strong bigram cluster (r>=0.55) is accepted as evidence.
+        """
+        a_n = normalize(segs_in[i].get("answer_text") or "", converter)
+        if len(a_n) < 24:
+            return None
+        # window sized from the probe itself — an expect-based window
+        # balloons for long answers and dilutes the similarity ratio.
+        probes = [a_n[max(0, len(a_n) // 2 - 30):][:80]]
+        if len(a_n) >= 40:
+            probes.insert(0, a_n[:80])
+        hits: List[tuple] = []
+        for pr in probes:
+            if len(pr) < 12:
+                continue
+            hits.extend(_bigram_locate(
+                cues, pr, 0.0, audio_end, max(20.0, len(pr) / 3.0)
+            ) or [])
+        if not hits:
+            return None
+        clusters: dict = {}
+        for t, r in hits:
+            k = round(t / 45)
+            c = clusters.setdefault(k, [t, r])
+            if r > c[1]:
+                c[1] = r
+        ranked = sorted(clusters.values(), key=lambda c: -c[1])
+        top = ranked[0]
+        if top[1] >= 0.52:
+            return round(top[0], 3), top[1]
+        # two independent probes agreeing on one neighbourhood is evidence too
+        if (
+            len(ranked) >= 2
+            and ranked[1][1] >= 0.33
+            and abs(ranked[0][0] - ranked[1][0]) < 90.0
+        ):
+            t = min(ranked[0][0], ranked[1][0])
+            return round(t, 3), max(top[1], 0.56)
+        return None
+
+
+    for i in suspicious:
+        cands, loc_hits, probe, expect = gather(i)
         best_exact = None  # (score, t, label)
         all_scored = []  # (score, t) for runner-up margin
         seen_t = set()
@@ -938,23 +984,137 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
             used_times.append(t)
             repaired_total += 1
         elif (scores[i] / 12.0 if scores[i] else 0.25) < 0.5:
-            # No audio evidence found (question likely paraphrased away or
-            # answered on another day).  Clamp into the neighbouring gap
-            # proportionally so playback stays sane, and flag for review
-            # instead of leaving a red low-conf.
+            resc = _fuzzy_rescue(i)
+            if resc:
+                t, r = resc
+                resolved[i] = t
+                scores[i] = round(max(0.56, 0.40 + r * 0.45) * 12.0, 2)
+                methods[i] = f"repaired:fuzzy-mid({r:.2f})"
+                fill_notes[i] = ""
+                used_times.append(t)
+                repaired_total += 1
+            else:
+                # No audio evidence found (question likely paraphrased away or
+                # answered on another day).  Clamp into the neighbouring gap
+                # proportionally so playback stays sane, and flag for review
+                # instead of leaving a red low-conf.
+                lo_b = resolved[i - 1] if i > 0 else 0.0
+                hi_b = resolved[i + 1] if i + 1 < n else (
+                    closing_start if closing_start else audio_end
+                )
+                gap = max(0.0, hi_b - lo_b)
+                t = min(lo_b + max(2.0, gap * 0.25), max(lo_b + 0.5, hi_b - 3.0))
+                resolved[i] = round(t, 3)
+                scores[i] = round(0.5 * 12.0, 2)
+                methods[i] = "no-anchor:clamped"
+                fill_notes[i] = "未找到逐字對應，依前後段夾入（待人工確認）"
+                repaired_total += 1
+
+    # ── squeeze-fix sweep: anchors that still leave absurdly little time ──
+    # (e.g. three high-conf anchors stacked within 0.4s).  Try alternative
+    # candidates avoiding other segments' occupied windows; otherwise clamp
+    # into the local gap regardless of confidence.
+    def _cluster_end(i: int) -> int:
+        """Extend cluster past SOFT members while it lacks room."""
+        j = i
+        while True:
+            lo = resolved[i]
+            nxt = resolved[j + 1] if j + 1 < n else (
+                closing_start if closing_start else audio_end
+            )
+            tot = sum(e_all[i:j + 1])
+            if tot <= max(nxt - lo, tot * 0.999) or j + 1 >= n:
+                return j
+            nxt_soft = (
+                bool(methods[j + 1])
+                and ("clamped" in methods[j + 1] or "layout-spread" in methods[j + 1]
+                     or not fill_notes[j + 1] and methods[j + 1] == "")
+            ) or not methods[j + 1]
+            if not nxt_soft:
+                return j
+            j += 1
+
+    CLAMP_NOTE = "未找到逐字對應，依前後段夾入（待人工確認）"
+    ends = []
+    for i in range(n):
+        nxt = resolved[i + 1] if i + 1 < n else (
+            closing_start if closing_start else audio_end
+        )
+        ends.append(max(resolved[i] + 0.5, nxt))
+    squeezed = [
+        i for i in range(n)
+        if "clamped" not in (methods[i] or "")
+        and (ends[i] - resolved[i]) < 0.30 * expected_dur(i, rate)
+    ]
+    for i in squeezed:
+        cands, loc_hits, probe, expect = gather(i)
+        occ = []
+        for j in range(n):
+            if j == i:
+                continue
+            e_j = expected_dur(j, rate)
+            occ.append((resolved[j] + 4.0, resolved[j] + max(15.0, e_j * 0.6)))
+        best = None  # (score, t, label)
+        allsc = []
+        seen_t = set()
+        for t, prior, label in cands:
+            key = round(t, 1)
+            if key in seen_t:
+                continue
+            seen_t.add(key)
+            win = _cue_text_between(cues, t, t + min(expect * 1.35, 240.0))
+            cov = _content_cov(win, probe)
+            pen = 0.0
+            if any(lo <= t <= hi for lo, hi in occ):
+                pen += 0.25
+            if any(abs(t - u) < 12.0 for u in used_times):
+                pen += 0.18
+            sc = 0.62 * cov + 0.33 * prior - pen
+            allsc.append((sc, t))
+            if best is None or sc > best[0]:
+                best = (sc, t, label)
+        moved = False
+        if best and best[0] >= MIN_REPAIR_SCORE:
+            runner = max(
+                (s for s, t2 in allsc if abs(t2 - best[1]) >= 60.0),
+                default=0.0,
+            )
+            if best[0] >= 0.62 or best[0] - runner >= 0.08:
+                resolved[i] = round(best[1], 3)
+                scores[i] = round(min(1.0, best[0]) * 12.0, 2)
+                methods[i] = f"squeeze-fix:{best[2]}"
+                fill_notes[i] = ""
+                used_times.append(best[1])
+                repaired_total += 1
+                moved = True
+        if not moved:
+            resc = _fuzzy_rescue(i)
+            if resc:
+                t, r = resc
+                resolved[i] = t
+                scores[i] = round(max(0.56, 0.40 + r * 0.45) * 12.0, 2)
+                methods[i] = f"squeeze-fix:fuzzy-mid({r:.2f})"
+                fill_notes[i] = ""
+                used_times.append(t)
+                repaired_total += 1
+                moved = True
+        if not moved:
             lo_b = resolved[i - 1] if i > 0 else 0.0
             hi_b = resolved[i + 1] if i + 1 < n else (
                 closing_start if closing_start else audio_end
             )
             gap = max(0.0, hi_b - lo_b)
-            t = min(lo_b + max(2.0, gap * 0.25), max(lo_b + 0.5, hi_b - 3.0))
+            e_prev = expected_dur(i - 1, rate) if i > 0 else 8.0
+            base = lo_b + min(max(8.0, e_prev * 0.5), 60.0)
+            t = min(base + gap * 0.15, max(lo_b + 1.0, hi_b - 2.0))
             resolved[i] = round(t, 3)
             scores[i] = round(0.5 * 12.0, 2)
-            methods[i] = "no-anchor:clamped"
-            fill_notes[i] = "未找到逐字對應，依前後段夾入（待人工確認）"
+            methods[i] = "squeeze-fix:clamped"
+            fill_notes[i] = "錨點擠壓，依前後段夾入（待人工確認）"
             repaired_total += 1
 
-    # rebuild playback order by time (Word order may differ from audio order)
+    # ── sort to PLAYBACK (time) order BEFORE layout/donate: crushing pairs
+    # only make sense on the timeline, not in Word document order. ──
     perm = sorted(range(n), key=lambda k: (resolved[k], k))
     resolved = [resolved[k] for k in perm]
     scores = [scores[k] for k in perm]
@@ -965,6 +1125,123 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
     for i in range(1, n):
         if resolved[i] <= resolved[i - 1]:
             resolved[i] = resolved[i - 1] + 0.05
+
+    # ── layout pass: spread stacked clusters by text volume ──
+    # When several anchors land within seconds of each other, later members
+    # get ~0s playback.  Re-lay such clusters across their available span,
+    # proportionally to expected duration, flagging them for review.
+    # NOTE: arrays are in PLAYBACK order here but segs_in is still Word
+    # order — map expectations through perm so text lengths pair with the
+    # correct timeline slots.
+    e_all = [expected_dur(perm[i], rate) for i in range(n)]
+    i = 0
+    while i < n:
+        j = i
+        while (
+            j + 1 < n
+            and (resolved[j + 1] - resolved[j])
+            < max(3.0, 0.15 * e_all[j])
+        ):
+            j += 1
+        j = _cluster_end(i) if _cluster_end(i) > j else j
+        if j > i:
+            lo = resolved[i]
+            hi = resolved[j + 1] if j + 1 < n else (
+                closing_start if closing_start else audio_end
+            )
+            tot = sum(e_all[i:j + 1])
+            # distribute strictly within [lo, hi): proportional shares of the
+            # available gap — never overshoot into the next segment's time.
+            avail = max(hi - lo, 1.0)
+            t = lo
+            for k in range(i, j + 1):
+                resolved[k] = round(t, 3)
+                t += e_all[k] * (avail / tot)
+                scores[k] = min(scores[k], 6.0)
+                extra = "layout-spread（依文字量展開，待人工確認）"
+                fill_notes[k] = f"{fill_notes[k]}; {extra}" if fill_notes[k] else extra
+            repaired_total += 1
+        i = j + 1
+
+    # ── donate pass: a crushed segment borrows tail time from a neighbour ──
+    # whose own span is generously longer than its text needs.  Iterated:
+    # huge multi-question blocks may need several rounds of donations.
+    for _donate_round in range(4):
+        progressed = False
+        for i in range(n):
+            dur_i = (
+                (resolved[i + 1] - resolved[i]) if i + 1 < n
+                else ((closing_start if closing_start else audio_end) - resolved[i])
+            )
+            if dur_i >= 0.35 * e_all[i]:
+                continue
+            need = min(0.45 * e_all[i], 240.0)
+            for nb in (i + 1, i - 1):
+                if not (0 <= nb < n):
+                    continue
+                dur_nb = (
+                    (resolved[nb + 1] - resolved[nb]) if nb + 1 < n
+                    else ((closing_start if closing_start else audio_end) - resolved[nb])
+                )
+                if dur_nb < 1.25 * e_all[nb]:
+                    continue
+                give = min(need, dur_nb - 1.05 * e_all[nb])
+                if give < 3.0:
+                    continue
+                if nb == i + 1:
+                    # our end is neighbour's start — push it later
+                    resolved[nb] = round(resolved[nb] + give, 3)
+                else:
+                    # pull our own start earlier into left neighbour's slack
+                    resolved[i] = round(max(0.0, resolved[i] - give), 3)
+                scores[i] = min(scores[i], 6.0)
+                extra = "向相鄰段借時間（待人工確認）"
+                fill_notes[i] = f"{fill_notes[i]}; {extra}" if fill_notes[i] else extra
+                progressed = True
+                break
+        if not progressed:
+            break
+
+    # ── final consistency: re-sort by time, monotonic, re-spread crushes ──
+    order2 = sorted(range(n), key=lambda k: resolved[k])
+    if order2 != list(range(n)):
+        resolved = [resolved[k] for k in order2]
+        scores = [scores[k] for k in order2]
+        methods = [methods[k] for k in order2]
+        fill_notes = [fill_notes[k] for k in order2]
+        e_all = [e_all[k] for k in order2]
+        perm = [perm[k] for k in order2]
+    for i in range(1, n):
+        if resolved[i] <= resolved[i - 1]:
+            resolved[i] = resolved[i - 1] + 0.05
+    i = 0
+    while i < n:
+        j = i
+        while (
+            j + 1 < n
+            and (resolved[j + 1] - resolved[j])
+            < max(3.0, 0.15 * e_all[j])
+        ):
+            j += 1
+        j = _cluster_end(i) if _cluster_end(i) > j else j
+        if j > i:
+            lo = resolved[i]
+            hi = resolved[j + 1] if j + 1 < n else (
+                closing_start if closing_start else audio_end
+            )
+            tot = sum(e_all[i:j + 1])
+            # distribute strictly within [lo, hi): proportional shares of the
+            # available gap — never overshoot into the next segment's time.
+            avail = max(hi - lo, 1.0)
+            t = lo
+            for k in range(i, j + 1):
+                resolved[k] = round(t, 3)
+                t += e_all[k] * (avail / tot)
+                scores[k] = min(scores[k], 6.0)
+                extra = "layout-spread（依文字量展開，待人工確認）"
+                fill_notes[k] = f"{fill_notes[k]}; {extra}" if fill_notes[k] else extra
+        i = j + 1
+
     return resolved, scores, methods, fill_notes, perm, repaired_total
 
 
@@ -1035,7 +1312,10 @@ def align_part(part: Part, media: dict, converter, session_id: str) -> dict:
         pinfo["duration_est"] = round(dur, 3)
         spans.append((offset, offset + dur, pinfo))
         cues_norm.extend([(s + offset, e + offset, t) for (s, e, t) in pcues])
-        cues_raw_all.extend(praw)
+        # apply the SAME part offset to raw cues so srt_preview lookups work
+        # on the combined timeline (split 上/下 days previously showed blank
+        # previews for every second-half segment).
+        cues_raw_all.extend([(s + offset, e + offset, t) for s, e, t in praw])
         offset += dur
     audio_end = cues_norm[-1][1] if cues_norm else offset
 
@@ -1122,10 +1402,18 @@ def align_part(part: Part, media: dict, converter, session_id: str) -> dict:
     # Duration-aware repair: text volume vs assigned audio time must be
     # plausible; re-anchor suspicious segments by content over the whole
     # session (reading order may differ from Word order) and re-sort.
+    def _valid_closing(cs: Optional[float], res_list: List[float]) -> Optional[float]:
+        """A closing hit earlier than any segment start is a false positive."""
+        if cs is not None and res_list and cs <= max(res_list):
+            return None
+        return cs
+
+    closing_start = _valid_closing(closing_start, resolved)
     resolved, scores, methods, fill_notes, perm, n_repaired = _duration_repair(
         segs_in, cues, converter, resolved, scores, methods, fill_notes,
         closing_start, audio_end,
     )
+    closing_start = _valid_closing(closing_start, resolved)
     DIAG["repaired"] += n_repaired
     if perm != list(range(len(segs_in))):
         segs_in = [segs_in[k] for k in perm]
@@ -1318,7 +1606,9 @@ def main(argv: Optional[List[str]] = None) -> int:
                         st["low_conf"] += 1
                     if "interpolated" in (seg.get("notes") or ""):
                         st["interpolated"] += 1
-                    if "no-anchor:clamped" in (seg.get("notes") or ""):
+                    if "no-anchor:clamped" in (seg.get("notes") or "") or (
+                        "待人工確認" in (seg.get("notes") or "")
+                    ):
                         st["pending"] += 1
             if payload["opening"] and payload["opening"].get("start") is not None:
                 st["openings_ok"] += 1

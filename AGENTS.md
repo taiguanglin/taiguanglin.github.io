@@ -53,6 +53,8 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
 | `audio_map/` | Editorial UI | `index.html` = Word chapter maps proofreading（01–12，校對完成才亮鈕）; `index2.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/` + `data/audio_map_word/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；**不參考 `audio_map_word` 的時間**。Rules: **`audio_map2/AGENTS.md`**. |
+| `books/` | **Source** | 五本 PDF 原書（`01《坐禅》`…`05 圆觉经》讲记`）。 |
+| `ebook/` | **Generated** | 坐禅系列五本合集靜態電子書（簡/繁、全量搜尋）。Rebuild from `tool/books2ebook/gen_all.py`。 |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)
@@ -60,6 +62,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | Path | Purpose | Docs |
 |------|---------|------|
 | `tool/word2ebook/` | Word (+ PDF, optional `qa/`) → `wenda2_ebook/`. Also owns `data/audio_map/*.json` and `data/audio_map_word/word-NN.json`. | **`AGENTS.md`**, `README.md`, `openspec/` |
+| `tool/books2ebook/` | `books/` 五本 PDF → `ebook/` 坐禅系列电子书（簡/繁、全量搜尋）。沿用 `wenda2_ebook/assets` 風格。 | `README.md` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio ranges → write audio_map JSON. | `README.md` |
 | `tool/word_audio_map/` | Align Word-chapter Q&A ↔ audio ranges (pinyin-stream matcher) → write `data/audio_map_word/`; also verifies built buttons. | `README.md` |
 | `tool/word_audio_map2/` | Align **chronological** Word 彙總（2024-02…2025-05）↔ SRT → write `audio_map2/*.json`. Text from docx; times from SRT only; does **not** read `audio_map_word` times. | `README.md` |
@@ -83,6 +86,18 @@ tool/word2ebook/gen_all.py  (+ data/audio_map/*.json inject)
         │
         ▼
    wenda2_ebook/     ← published; do not hand-edit for features
+```
+
+### 坐禅系列电子书（books/ 五本合集）
+
+```
+books/*.pdf  (01《坐禅》…05《圆觉经》)
+        │
+        ▼
+tool/books2ebook/gen_all.py  （沿用 wenda2_ebook/assets 風格，含簡/繁與全量搜尋）
+        │
+        ▼
+   ebook/      ← published; do not hand-edit; see tool/books2ebook/README.md
 ```
 
 Audio-map pipeline (optional but used for play buttons):
@@ -132,6 +147,7 @@ mp3  →  (optional) tool/audio_denoiser
 | Want to change… | Edit… | Then… |
 |-----------------|-------|--------|
 | Ebook UI / behaviour / search / i18n | `tool/word2ebook/` | `python3 gen_all.py` (see tool `AGENTS.md`) |
+| 坐禅系列电子书 UI / 搜尋 / 簡繁 | `tool/books2ebook/` | `python3 gen_all.py`（同上；資產影印 wenda2_ebook 並附 books.css）|
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |
 | Play-button time ranges | `tool/word2ebook/data/audio_map/` (or `/audio_map/` UI / `pdf_audio_map`) | Rebuild ebook |
 | Site landing / nav / about | Root HTML + `script.js` / `style.css` | Commit |

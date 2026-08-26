@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>坐禪系列電子書</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/books.css">
+<script src="assets/js/i18n-text.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
+<script>
+// 備用CDN加載
+if (typeof MiniSearch === 'undefined') {
+  console.log('主CDN失敗，嘗試備用CDN...');
+  const script = document.createElement('script');
+  script.src = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js';
+  script.onload = function() {
+    if (typeof initSearch === 'function') { initSearch(); }
+  };
+  script.onerror = function() {
+    console.error('所有CDN都失敗了，搜索功能不可用');
+    const searchInput = document.getElementById('search-input');
+    const searchStatus = document.getElementById('search-status');
+    if (searchInput) searchInput.disabled = true;
+    if (searchStatus) searchStatus.textContent = getText('搜索功能暫不可用（網絡問題）', '搜尋功能暫不可用（網路問題）');
+  };
+  document.head.appendChild(script);
+}
+</script>
+<script src="assets/js/script.js" defer></script>
+</head>
+<body>
+<div id="top"></div>
+<div class="header-nav">
+<div class="nav-home">
+<a href="index.html">🌸 網站首頁</a>
+</div>
+<div class="lang-switch">
+<a href="index.html">簡體</a> | <a href="index_trad.html">繁體</a>
+</div>
+</div>
+<h1>坐禪系列電子書</h1>
+
+<!-- 搜索激活按鈕 -->
+<div class="search-activation">
+  <button class="search-activate-btn" id="search-activate-btn">
+    啓用全文搜索
+  </button>
+</div>
+
+<!-- 搜索功能（默認隱藏） -->
+<div class="search-container" id="search-container" style="display: none;">
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="搜索全文內容..." autocomplete="off">
+    <div class="search-scope" role="group" aria-label="搜索範圍">
+      <button type="button" class="search-scope-btn" data-scope="question" aria-pressed="false">問題</button>
+      <button type="button" class="search-scope-btn" data-scope="answer" aria-pressed="false">回答</button>
+      <button type="button" class="search-scope-btn is-active" data-scope="both" aria-pressed="true">全部</button>
+    </div>
+    <div class="search-status" id="search-status">正在初始化搜索功能...</div>
+  </div>
+
+  <!-- 搜索結果 -->
+  <div class="search-results" id="search-results" style="display: none;">
+    <div class="search-results-header">
+      <span class="search-results-count" id="search-results-count"></span>
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more" style="display: none;">顯示更多</button>
+        <button class="search-load-all" id="search-load-all" style="display: none;">顯示全部</button>
+        <button class="search-clear" id="search-clear">清除搜索</button>
+        <button class="search-collapse" id="search-collapse">收起搜索</button>
+      </div>
+    </div>
+    <ul class="search-results-list" id="search-results-list"></ul>
+
+    <!-- 底部控制按鈕 -->
+    <div class="search-results-footer">
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more-bottom" style="display: none;">顯示更多</button>
+        <button class="search-load-all" id="search-load-all-bottom" style="display: none;">顯示全部</button>
+        <button class="search-clear" id="search-clear-bottom">清除搜索</button>
+        <button class="search-collapse" id="search-collapse-bottom">收起搜索</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="toc-header-container"><h2 id="toc-header">目錄</h2><div class="toc-level-controls"><div class="toc-level-label">顯示層級</div><div class="toc-level-buttons-vertical"><button class="toc-level-btn active" data-level="1" title="顯示第1層">1</button><button class="toc-level-btn" data-level="2" title="顯示前2層">2</button><button class="toc-level-btn" data-level="3" title="顯示前3層">3</button><button class="toc-level-btn" data-level="4" title="顯示前4層">4</button></div></div></div><div class="toc" id="main-toc">
+<ul class='toc-level-1'>
+<li class="toc-item toc-chapter" data-level="1" data-chapter="0" data-default-visible="true"><span class="toc-expand-icon" data-level="1">▼</span><a href="01_trad.html" target="_blank" rel="noopener noreferrer">01《坐禪》</a><span class="toc-count">(1666)</span>
+<ul>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#s8b4ea6b1" target="_blank" rel="noopener noreferrer">推薦序</a><span class="toc-count">(7)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#s9c17b4d9" target="_blank" rel="noopener noreferrer">第一章 總 論</a><span class="toc-count">(324)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#s6b0317a8" target="_blank" rel="noopener noreferrer">第二章 From 零to 欲界禪定</a><span class="toc-count">(120)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#sdf7cecdb" target="_blank" rel="noopener noreferrer">第三章 From 欲界禪定to 四禪</a><span class="toc-count">(383)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#s9a8674fc" target="_blank" rel="noopener noreferrer">第四章 From 四禪 to 阿羅漢</a><span class="toc-count">(26)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#sa0153db2" target="_blank" rel="noopener noreferrer">第五章 帶師弟修行</a><span class="toc-count">(284)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#sda849d71" target="_blank" rel="noopener noreferrer">第六章 人 體</a><span class="toc-count">(351)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#saf1acf17" target="_blank" rel="noopener noreferrer">第七章 神 通</a><span class="toc-count">(105)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="0"><a href="01_trad.html#s08e86526" target="_blank" rel="noopener noreferrer">第八章 業 力</a><span class="toc-count">(66)</span></li>
+</ul></li>
+<li class="toc-item toc-chapter" data-level="1" data-chapter="1" data-default-visible="true"><span class="toc-expand-icon" data-level="1">▼</span><a href="02_trad.html" target="_blank" rel="noopener noreferrer">02《坐禪之問答錄》</a><span class="toc-count">(887)</span>
+<ul>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s1a4a8825" target="_blank" rel="noopener noreferrer">序 言</a><span class="toc-count">(10)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s06beb899" target="_blank" rel="noopener noreferrer">第01 章 Taiguanglin 的修行歷程</a><span class="toc-count">(24)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s8cfd32f1" target="_blank" rel="noopener noreferrer">第02 章 磕大頭</a><span class="toc-count">(23)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sf38e616f" target="_blank" rel="noopener noreferrer">第03 章 開胯壓腿</a><span class="toc-count">(17)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s31cacf69" target="_blank" rel="noopener noreferrer">第04 章 腹式呼吸</a><span class="toc-count">(47)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s37bc0093" target="_blank" rel="noopener noreferrer">第05 章 誦經、持咒、唸佛</a><span class="toc-count">(82)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#se17cb1c5" target="_blank" rel="noopener noreferrer">第06 章 消業</a><span class="toc-count">(29)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sc6912a59" target="_blank" rel="noopener noreferrer">第07 章 五辛、菸酒肉</a><span class="toc-count">(33)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s8abf5e32" target="_blank" rel="noopener noreferrer">第08 章 淫慾、煉精化氣</a><span class="toc-count">(29)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s80aaa636" target="_blank" rel="noopener noreferrer">第09 章 打坐時的身體反應</a><span class="toc-count">(178)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s63034e77" target="_blank" rel="noopener noreferrer">第10 章 打坐時的意識反應</a><span class="toc-count">(22)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sec42b1b9" target="_blank" rel="noopener noreferrer">第11 章 夢、加持</a><span class="toc-count">(26)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s5c134ea1" target="_blank" rel="noopener noreferrer">第12 章 陰神、陽神、出體、元神出竅</a><span class="toc-count">(22)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sef9b0b7f" target="_blank" rel="noopener noreferrer">第13 章 疾病</a><span class="toc-count">(47)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s8ffadd9f" target="_blank" rel="noopener noreferrer">第14 章 堅淨信</a><span class="toc-count">(18)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sa6bed659" target="_blank" rel="noopener noreferrer">第15 章 修行法門</a><span class="toc-count">(59)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s2ccdf707" target="_blank" rel="noopener noreferrer">第16 章 禪定、極樂世界、佛世界</a><span class="toc-count">(61)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sf1d6d9d9" target="_blank" rel="noopener noreferrer">第17 章 地獄、輪迴</a><span class="toc-count">(14)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s1203326d" target="_blank" rel="noopener noreferrer">第18 章 妄想、分別、執着、明心見性</a><span class="toc-count">(38)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sd60b7b68" target="_blank" rel="noopener noreferrer">第19 章 愛情、婚姻、家庭關係</a><span class="toc-count">(13)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s3af99e01" target="_blank" rel="noopener noreferrer">第20 章 出家</a><span class="toc-count">(11)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s29561df7" target="_blank" rel="noopener noreferrer">第21 章 善知識</a><span class="toc-count">(23)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s15a7cc35" target="_blank" rel="noopener noreferrer">第22 章 開光、供養、持戒</a><span class="toc-count">(13)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#scc405348" target="_blank" rel="noopener noreferrer">第23 章 與修行無關的問題</a><span class="toc-count">(6)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s72adf164" target="_blank" rel="noopener noreferrer">第24 章 Taiguanglin 道場</a><span class="toc-count">(24)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sa8bb0403" target="_blank" rel="noopener noreferrer">附 圖</a><span class="toc-count">(18)</span></li>
+</ul></li>
+<li class="toc-item toc-chapter" data-level="1" data-chapter="2" data-default-visible="true"><span class="toc-expand-icon" data-level="1">▼</span><a href="03_trad.html" target="_blank" rel="noopener noreferrer">03《坐禪2·次世代版終極佛法》</a><span class="toc-count">(1402)</span>
+<ul>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#sf7870e77" target="_blank" rel="noopener noreferrer">序章</a><span class="toc-count">(61)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#sec99a1d4" target="_blank" rel="noopener noreferrer">真相</a><span class="toc-count">(188)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#s582d75f3" target="_blank" rel="noopener noreferrer">羯磨</a><span class="toc-count">(166)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#sf19742d4" target="_blank" rel="noopener noreferrer">起源</a><span class="toc-count">(135)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#sba5fe5e4" target="_blank" rel="noopener noreferrer">創世</a><span class="toc-count">(158)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#sb08890a6" target="_blank" rel="noopener noreferrer">設計</a><span class="toc-count">(325)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#s7379c919" target="_blank" rel="noopener noreferrer">職業</a><span class="toc-count">(87)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#s5a0afc9d" target="_blank" rel="noopener noreferrer">其它</a><span class="toc-count">(259)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="2"><a href="03_trad.html#sad435954" target="_blank" rel="noopener noreferrer">總論</a><span class="toc-count">(22)</span></li>
+</ul></li>
+<li class="toc-item toc-chapter" data-level="1" data-chapter="3" data-default-visible="true"><span class="toc-expand-icon" data-level="1">▼</span><a href="04_trad.html" target="_blank" rel="noopener noreferrer">04《金剛經·心經講記》</a><span class="toc-count">(1006)</span>
+<ul>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s06f2b086" target="_blank" rel="noopener noreferrer">序</a><span class="toc-count">(31)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sb504979f" target="_blank" rel="noopener noreferrer">法會因由分第一</a><span class="toc-count">(14)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s709e8d56" target="_blank" rel="noopener noreferrer">善現啓請分第二</a><span class="toc-count">(22)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s55534245" target="_blank" rel="noopener noreferrer">大乘正宗分第三</a><span class="toc-count">(22)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sa0aea365" target="_blank" rel="noopener noreferrer">妙行無住分第四</a><span class="toc-count">(17)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s1f1a68c1" target="_blank" rel="noopener noreferrer">如理實見分第五</a><span class="toc-count">(10)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sd52f4ab8" target="_blank" rel="noopener noreferrer">正信希有分第六</a><span class="toc-count">(32)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s806310b7" target="_blank" rel="noopener noreferrer">無得無說分第七</a><span class="toc-count">(17)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s4029c135" target="_blank" rel="noopener noreferrer">依法出生分第八</a><span class="toc-count">(13)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s79adbfcf" target="_blank" rel="noopener noreferrer">一相無相分第九</a><span class="toc-count">(25)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#se3eb2935" target="_blank" rel="noopener noreferrer">莊嚴淨土分第十</a><span class="toc-count">(30)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sf05554da" target="_blank" rel="noopener noreferrer">無爲福勝分第十一</a><span class="toc-count">(14)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s99d299c8" target="_blank" rel="noopener noreferrer">尊重正教分第十二</a><span class="toc-count">(19)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sc1b8f5d3" target="_blank" rel="noopener noreferrer">如法受持分第十三</a><span class="toc-count">(44)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sb38aee38" target="_blank" rel="noopener noreferrer">離相寂滅分第十四</a><span class="toc-count">(104)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s9034a7f5" target="_blank" rel="noopener noreferrer">持經功德分第十五</a><span class="toc-count">(32)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s3a2a8795" target="_blank" rel="noopener noreferrer">能淨業障分第十六</a><span class="toc-count">(21)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s179b32f2" target="_blank" rel="noopener noreferrer">究竟無我分第十七</a><span class="toc-count">(57)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s9fc26937" target="_blank" rel="noopener noreferrer">一體同觀分第十八</a><span class="toc-count">(37)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sb7a07012" target="_blank" rel="noopener noreferrer">法界通化分第十九</a><span class="toc-count">(19)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sa54e79d0" target="_blank" rel="noopener noreferrer">離色離相分第二十</a><span class="toc-count">(18)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s723d4639" target="_blank" rel="noopener noreferrer">非說所說分第二十一</a><span class="toc-count">(20)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s8585365d" target="_blank" rel="noopener noreferrer">無法可得分第二十二</a><span class="toc-count">(8)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s6e2d4614" target="_blank" rel="noopener noreferrer">淨心行善分第二十三</a><span class="toc-count">(42)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s71359a7c" target="_blank" rel="noopener noreferrer">福智無比分第二十四</a><span class="toc-count">(8)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s67ccb73d" target="_blank" rel="noopener noreferrer">化無所化分第二十五</a><span class="toc-count">(23)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s541cf832" target="_blank" rel="noopener noreferrer">法身非相分第二十六</a><span class="toc-count">(22)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s64bbd2cb" target="_blank" rel="noopener noreferrer">無斷無滅分第二十七</a><span class="toc-count">(39)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s1222e9c9" target="_blank" rel="noopener noreferrer">不受不貪分第二十八</a><span class="toc-count">(12)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sd9c0414a" target="_blank" rel="noopener noreferrer">威儀寂淨分第二十九</a><span class="toc-count">(6)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s4bbd4848" target="_blank" rel="noopener noreferrer">一合理相分第三十</a><span class="toc-count">(18)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sd6c8efb4" target="_blank" rel="noopener noreferrer">知見不生分第三十一</a><span class="toc-count">(14)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sf210d148" target="_blank" rel="noopener noreferrer">應化非真分第三十二</a><span class="toc-count">(20)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s25f9c7fa" target="_blank" rel="noopener noreferrer">總結</a><span class="toc-count">(5)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s4818e250" target="_blank" rel="noopener noreferrer">般若波羅蜜多心經</a><span class="toc-count">(1)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s94540b9a" target="_blank" rel="noopener noreferrer">心經（1）</a><span class="toc-count">(66)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s8de77181" target="_blank" rel="noopener noreferrer">心經（2）</a><span class="toc-count">(104)</span></li>
+</ul></li>
+<li class="toc-item toc-chapter" data-level="1" data-chapter="4" data-default-visible="true"><span class="toc-expand-icon" data-level="1">▼</span><a href="05_trad.html" target="_blank" rel="noopener noreferrer">05《圓覺經》講記</a><span class="toc-count">(1500)</span>
+<ul>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#sdf368884" target="_blank" rel="noopener noreferrer">前言</a><span class="toc-count">(28)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s813da131" target="_blank" rel="noopener noreferrer">序分</a><span class="toc-count">(28)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#sac80f84e" target="_blank" rel="noopener noreferrer">一 文殊師利菩薩</a><span class="toc-count">(114)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s03f88b37" target="_blank" rel="noopener noreferrer">二 普賢菩薩</a><span class="toc-count">(82)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s42b7cc83" target="_blank" rel="noopener noreferrer">三 普眼菩薩</a><span class="toc-count">(282)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s32373b3d" target="_blank" rel="noopener noreferrer">四 金剛藏菩薩</a><span class="toc-count">(123)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s35d381b2" target="_blank" rel="noopener noreferrer">五 彌勒菩薩</a><span class="toc-count">(134)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s42dae128" target="_blank" rel="noopener noreferrer">六 清淨慧菩薩</a><span class="toc-count">(115)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s86dc06aa" target="_blank" rel="noopener noreferrer">七 威德自在菩薩</a><span class="toc-count">(86)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#sc43dab05" target="_blank" rel="noopener noreferrer">八 辯音菩薩</a><span class="toc-count">(92)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s1d5951e1" target="_blank" rel="noopener noreferrer">九 淨諸業障菩薩</a><span class="toc-count">(134)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s9c7e9d9c" target="_blank" rel="noopener noreferrer">十 普覺菩薩</a><span class="toc-count">(132)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s97c03fa7" target="_blank" rel="noopener noreferrer">十一 圓覺菩薩</a><span class="toc-count">(86)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#sa912d408" target="_blank" rel="noopener noreferrer">十二 賢善首菩薩</a><span class="toc-count">(61)</span></li>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="4"><a href="05_trad.html#s25f9c7fa" target="_blank" rel="noopener noreferrer">總結</a><span class="toc-count">(3)</span></li>
+</ul></li>
+</ul>
+</div>
+
+<!-- 懸浮操作按鈕 -->
+<div class="action-buttons">
+  <div class="action-menu">
+    <button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>
+    <div class="action-menu-items">
+      <button class="action-btn" data-action="toc" title="書籤">🔖</button>
+      <button class="action-btn" data-action="top" title="回到頂部">↑</button>
+      <button class="action-btn" data-action="settings" title="設置">⚙️</button>
+    </div>
+  </div>
+</div>
+
+<!-- 懸浮目錄 -->
+<div class="floating-toc" id="floating-toc">
+  <div class="floating-toc-header">
+    <div class="floating-toc-tabs">
+      <button class="floating-toc-tab active" data-tab="toc">📖 目錄</button>
+      <button class="floating-toc-tab" data-tab="bookmarks">🔖 書籤</button>
+    </div>
+    <button class="ctrl-btn" data-action="close-toc">✕</button>
+  </div>
+
+  <div class="floating-toc-content">
+    <h3 id="toc-title">📖 章節目錄</h3>
+    <ul id="toc-list">
+      <!-- 動態生成的內容 -->
+    </ul>
+    <ul id="bookmarks-list" style="display: none;">
+      <!-- 動態生成的書籤內容 -->
+    </ul>
+  </div>
+</div>
+
+<p class="source-filename" id="source-filename">Source: <a class="source-link" href="../books/01《坐禪》.pdf" download="01《坐禪》.pdf">01《坐禪》.pdf</a>、<a class="source-link" href="../books/02《坐禪之問答錄》.pdf" download="02《坐禪之問答錄》.pdf">02《坐禪之問答錄》.pdf</a>、<a class="source-link" href="../books/03《坐禪2·次世代版終極佛法》.pdf" download="03《坐禪2·次世代版終極佛法》.pdf">03《坐禪2·次世代版終極佛法》.pdf</a>、<a class="source-link" href="../books/04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf" download="04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf">04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf</a>、<a class="source-link" href="../books/05 TaiGuangLin禪師講《圓覺經》最終版.pdf" download="05 TaiGuangLin禪師講《圓覺經》最終版.pdf">05 TaiGuangLin禪師講《圓覺經》最終版.pdf</a></p>
+
+<!-- 滾動時顯示的浮動層級控制按鈕 -->
+<div class="floating-level-controls" id="floating-level-controls" style="display: none;">
+  <button class="floating-level-toggle" id="floating-level-toggle" title="收縮/展開層級控制">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">層級</div>
+    <div class="floating-level-buttons"><button class="floating-level-btn active" data-level="1" title="顯示第1層">1</button><button class="floating-level-btn" data-level="2" title="顯示前2層">2</button><button class="floating-level-btn" data-level="3" title="顯示前3層">3</button><button class="floating-level-btn" data-level="4" title="顯示前4層">4</button></div>
+  </div>
+</div>
+</body>
+</html>
