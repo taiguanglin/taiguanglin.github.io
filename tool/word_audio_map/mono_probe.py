@@ -152,21 +152,25 @@ def _candidates(idx: StreamIndex, probes: list, conv, asker: str,
                 if nm.find_longest_match(0, len(np_), lo, hi).size >= max(3, len(np_) - 2):
                     named = True
                     break
-        out.append((pos, size + (6 if named else 0)))
-    out.sort(key=lambda t: -t[1])
+        eff = size + (6 if named else 0)
+        out.append((pos, size, eff))
+    out.sort(key=lambda t: -t[2])
     return out[:top_k]
 
 
 def locate_dp(idx: StreamIndex, probes_per_block: list, conv,
               meta: list = None, skip_penalty: float = 7.0,
-              min_gap: int = 5):
+              min_gap: int = 5, min_raw: int = 12):
     """Monotone assignment maximising total evidence (DP over candidates).
 
     Returns [{pos, lcb}] with pos=None for blocks left unassigned."""
     n = len(probes_per_block)
     meta = meta or [""] * n
-    C = [_candidates(idx, probes_per_block[i], conv, meta[i])
-         for i in range(n)]
+    C_all = [_candidates(idx, probes_per_block[i], conv, meta[i])
+             for i in range(n)]
+    # assignment requires raw LCB evidence; bonus never substitutes for it
+    C = [[(pos, eff) for (pos, raw, eff) in cl if raw >= min_raw]
+         for cl in C_all]
     NEG = float("-inf")
     # dp[j] = (best_score, prev_j, action) while scanning blocks; state = chosen
     # candidate index of previous block (-1 = skipped)
