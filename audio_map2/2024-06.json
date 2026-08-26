@@ -763,7 +763,7 @@
      "confidence": 0.5,
      "status": "auto",
      "locked": false,
-     "notes": "squeeze-fix:clamped; 錨點擠壓，依前後段夾入（待人工確認）; layout-spread（依文字量展開，待人工確認）; layout-spread（依文字量展開，待人工確認）; 時長明顯短於文字量（待人工確認）",
+     "notes": "squeeze-fix:clamped+echain; 錨點擠壓，依前後段夾入（待人工確認）; layout-spread（依文字量展開，待人工確認）; layout-spread（依文字量展開，待人工確認）; 時長明顯短於文字量（待人工確認）",
      "srt_preview": "所以他肯定是有必要情况下采选的，而且花生肯定是要选给别人看的嘛。他不可能在没有任何人的地方，故意闲着玩儿，那不可能的。所以各种状态呃，什么你说的这种健康或者病啊，这种状态都会有的。根据情况啊，根据需要需求需求选选嘛，人工智",
      "question_id": "question-2813df0560ef",
      "stable_key": "2024-06-17-main#36",
