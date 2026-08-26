@@ -70,19 +70,27 @@ def _content_weight(block):
 
 
 def annotate(blocks):
-    """為標題區塊加上 sid（錨點）與 count（到下一個同層級以上標題的內容數）。"""
+    """為標題區塊加上 sid（錨點）與 count。
+
+    count 語意與 wenda2_ebook 一致：每個標題顯示「自己名下的直接內容數 +
+    所有子標題的計數」；每個內容區塊只會被最近的標題統計一次，不重複累加。
+    """
     idxs = [i for i, b in enumerate(blocks) if b["kind"] in _HEADING_KINDS]
+    # 直接內容數：相鄰兩個標題之間的內容歸前一個標題所有
     for pos, i in enumerate(idxs):
         blk = blocks[i]
-        lvl = int(blk["kind"][1])
-        end = len(blocks)
-        for j in idxs[pos + 1:]:
-            if int(blocks[j]["kind"][1]) <= lvl:
-                end = j
-                break
+        end = idxs[pos + 1] if pos + 1 < len(idxs) else len(blocks)
         blk["count"] = sum(_content_weight(b) for b in blocks[i + 1:end])
         # 錨點需在同一篇文章內唯一：文字相同時加入索引
         blk["sid"] = slug_id(f"{i}-{blk['text']}")
+    # 由深至淺，把子標題的計數累加到父標題
+    for pos in range(len(idxs) - 1, -1, -1):
+        i = idxs[pos]
+        lvl = int(blocks[i]["kind"][1])
+        j = pos + 1
+        while j < len(idxs) and int(blocks[idxs[j]]["kind"][1]) > lvl:
+            blocks[i]["count"] += blocks[idxs[j]]["count"]
+            j += 1
     for i, b in enumerate(blocks):
         if b["kind"] == "qa":
             b["qid"] = "question-" + slug_id(b["qa"].get("qtext", "") + str(i))

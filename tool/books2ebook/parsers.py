@@ -71,6 +71,14 @@ class ParseContext:
         self.blocks.append(blk)
         self._last_was_heading_same_level = False
 
+    def append_quote_line(self, text):
+        """引文行：連續引文合併為同一區塊（以換行分隔），例如一首詩。"""
+        prev = self.blocks[-1] if self.blocks else None
+        if prev is not None and prev["kind"] == "quote":
+            prev["text"] = prev["text"] + "\n" + text
+            return
+        self.append("quote", text)
+
     def add_images_for_page(self, pno):
         for xref, w, h in self.images_by_page.get(pno, []):
             if xref in self.seen_xrefs:
@@ -139,7 +147,7 @@ def parse_zuochan(ctx):
                 if _H4_PAT.match(t):
                     ctx.heading("h4", t)
                 else:
-                    ctx.append("quote", t)
+                    ctx.append_quote_line(t)
             elif f == "FZBYSK":
                 if body_left is None:
                     body_left = line.x0
@@ -297,7 +305,7 @@ def parse_zuochan2(ctx):
                 if _zuochan2_h4(t):
                     ctx.heading("h4", t)
                 else:
-                    ctx.append("quote", t)
+                    ctx.append_quote_line(t)
             elif f == "FZBYSK":
                 if body_left is None:
                     body_left = line.x0
@@ -319,14 +327,16 @@ def parse_jingang(ctx):
     body_left = None
     para = ""
     quote = ""
+    quote_left = None
 
     def flush():
-        nonlocal para, quote
+        nonlocal para, quote, quote_left
         if para.strip():
             ctx.append("para", para.strip())
         if quote.strip():
             ctx.append("quote", quote.strip())
         para, quote = "", ""
+        quote_left = None
 
     for pno, ls in _iter_pages(ctx):
         for line in ls:
@@ -344,6 +354,13 @@ def parse_jingang(ctx):
                 ctx.append("label", t.rstrip("：:"))
             elif f == "FZSHJW":
                 if para.strip():
+                    flush()
+                # 經文依原書縮排分段
+                if quote_left is None:
+                    quote_left = line.x0
+                else:
+                    quote_left = min(quote_left, line.x0)
+                if quote.strip() and _is_indent_start(line, quote_left):
                     flush()
                 quote = _join(quote, t)
             elif f == "FZHTJW":
@@ -385,14 +402,16 @@ def parse_yuanjue(ctx):
     para = ""
     quote = ""
     body_left = None
+    quote_left = None
 
     def flush():
-        nonlocal para, quote
+        nonlocal para, quote, quote_left
         if para.strip():
             ctx.append("para", para.strip())
         if quote.strip():
             ctx.append("quote", quote.strip())
         para, quote = "", ""
+        quote_left = None
 
     for pno, ls in _iter_pages(ctx):
         for line in ls:
@@ -416,6 +435,13 @@ def parse_yuanjue(ctx):
                 body_left = None
             elif f == "KaiTi":
                 if para.strip():
+                    flush()
+                # 經文依原書縮排分段
+                if quote_left is None:
+                    quote_left = line.x0
+                else:
+                    quote_left = min(quote_left, line.x0)
+                if quote.strip() and _is_indent_start(line, quote_left):
                     flush()
                 quote = _join(quote, t)
             elif bold:

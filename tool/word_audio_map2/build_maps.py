@@ -1242,6 +1242,124 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
         if not progressed:
             break
 
+    # ── boundary-probe: when a soft segment's spoken answer bleeds into the
+    # NEXT segment's slot, re-cut the boundary where the next segment's own
+    # evidence begins (its question needle or its name being called). ──
+    for i in range(n - 1):
+        m_i = methods[i] or ""
+        soft_i = (
+            "clamped" in m_i or "fuzzy-mid" in m_i or "layout-spread" in m_i
+            or bool(fill_notes[i])
+        )
+        if not soft_i:
+            continue
+        j = i + 1
+        segj = segs_in[perm[j]]  # segs_in is Word-order; arrays here are playback-order
+        lo = resolved[j] + 5.0
+        hi_j = (
+            resolved[j + 1] if j + 1 < n
+            else (closing_start if closing_start else audio_end)
+        )
+        hi = min(resolved[j] + min(hi_j - resolved[j], 160.0), hi_j - 1.0)
+        cands = []
+        qn_j = segj.get("questioner") or ""
+        if qn_j:
+            key = ("BP", qn_j)
+            if key not in name_hits_cache:
+                name_hits_cache[key] = _collect_name_hits(
+                    cues, normalize(qn_j, converter), converter
+                )
+            cands += [t for t, _ in name_hits_cache[key] if lo <= t <= hi]
+        for needle in question_needles(segj.get("q_text") or "", converter)[:2]:
+            nrm = normalize(needle, converter)
+            if len(nrm) < 4:
+                continue
+            for cs, ce, ct in cues:
+                if cs >= lo and cs <= hi and nrm[:4] in normalize(ct, converter):
+                    cands.append(cs)
+                    break
+        if not cands:
+            continue
+        t_star = min(cands)
+        if t_star - resolved[j] < 25.0:
+            continue
+        e_j = e_all[j]
+        new_dur_j = hi_j - t_star
+        dur_i = resolved[j] - resolved[i]
+        ok = new_dur_j >= max(8.0, 0.40 * e_j) or (
+            dur_i < 0.35 * e_all[i] and new_dur_j >= 0.25 * e_j
+        )
+        if not ok:
+            continue
+        resolved[j] = round(t_star, 3)
+        scores[j] = min(scores[j], 6.0)
+        extra = "邊界重切（待人工確認）"
+        fill_notes[j] = f"{fill_notes[j]}; {extra}" if fill_notes[j] else extra
+        methods[j] = (methods[j] or "") + "+bcut"
+        repaired_total += 1
+
+    # ── evidence-chain: a RUN of soft segments whose true answers lie
+    # further ahead gets re-anchored at each segment's earliest needle /
+    # name-read hit at-or-after a moving cursor; layout then resizes. ──
+    def _soft_idx(k: int) -> bool:
+        mk = methods[k] or ""
+        return (
+            "clamped" in mk or "fuzzy-mid" in mk or "layout-spread" in mk
+            or bool(fill_notes[k])
+        )
+
+    i = 0
+    while i < n:
+        if not _soft_idx(i):
+            i += 1
+            continue
+        j = i
+        while j + 1 < n and _soft_idx(j + 1):
+            j += 1
+        if j > i:
+            cursor = resolved[i]
+            moved = False
+            for k in range(i, j + 1):
+                segk = segs_in[perm[k]]
+                cands = []
+                qnk = segk.get("questioner") or ""
+                if qnk:
+                    key = ("EC", qnk)
+                    if key not in name_hits_cache:
+                        name_hits_cache[key] = _collect_name_hits(
+                            cues, normalize(qnk, converter), converter
+                        )
+                    cands = [t for t, _ in name_hits_cache[key] if t >= cursor]
+                if not cands:
+                    for nd in question_needles(
+                        segk.get("q_text") or "", converter
+                    )[:3]:
+                        nrm = normalize(nd, converter)
+                        if len(nrm) < 4:
+                            continue
+                        hit = None
+                        for cs, _ce, ct in cues:
+                            if cs >= cursor and nrm[:4] in normalize(ct, converter):
+                                hit = cs
+                                break
+                        if hit is not None:
+                            cands.append(hit)
+                limit = resolved[k] + max(300.0, 2.0 * e_all[k])
+                cands = [t for t in cands if t <= limit]
+                if cands:
+                    t = min(cands)
+                    if abs(t - resolved[k]) > 15:
+                        resolved[k] = round(t, 3)
+                        methods[k] = (methods[k] or "") + "+echain"
+                        scores[k] = min(scores[k], 6.0)
+                        moved = True
+                    cursor = max(cursor, t) + 5.0
+                else:
+                    cursor = resolved[k] + max(20.0, e_all[k] * 0.5)
+            if moved:
+                repaired_total += 1
+        i = j + 1
+
     # ── final consistency: re-sort by time, monotonic, re-spread crushes ──
     order2 = sorted(range(n), key=lambda k: resolved[k])
     if order2 != list(range(n)):
@@ -1281,6 +1399,43 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
                 extra = "layout-spread（依文字量展開，待人工確認）"
                 fill_notes[k] = f"{fill_notes[k]}; {extra}" if fill_notes[k] else extra
         i = j + 1
+
+    # ── honesty sweeps: surface residual anomalies for human review ──
+    for i in range(n):
+        nxt_i = (
+            resolved[i + 1] if i + 1 < n
+            else (closing_start if closing_start else audio_end)
+        )
+        short = (nxt_i - resolved[i]) < 0.45 * e_all[i]
+        if short:
+            extra = "時長明顯短於文字量（待人工確認）"
+            fill_notes[i] = f"{fill_notes[i]}; {extra}" if fill_notes[i] else extra
+            scores[i] = min(scores[i], 6.0)
+    for i in range(n - 1):
+        win_j = _cue_text_between(
+            cues, resolved[i + 1],
+            resolved[i + 1] + min(e_all[i + 1] * 1.2, 200.0),
+        )
+        if len(win_j) < 20:
+            continue
+        probe_j = normalize(
+            (segs_in[perm[i + 1]].get("q_text") or "")
+            + " " + (segs_in[perm[i + 1]].get("answer_text") or ""),
+            converter,
+        )[:150]
+        probe_i = normalize(
+            (segs_in[perm[i]].get("q_text") or "")
+            + " " + (segs_in[perm[i]].get("answer_text") or ""),
+            converter,
+        )[:150]
+        cov_j = _content_cov(win_j, probe_j)
+        cov_i = _content_cov(win_j, probe_i)
+        if cov_i - cov_j >= 0.15:
+            extra = "窗口開頭疑似前段內容（待人工確認）"
+            fill_notes[i + 1] = (
+                f"{fill_notes[i + 1]}; {extra}" if fill_notes[i + 1] else extra
+            )
+            scores[i + 1] = min(scores[i + 1], 6.0)
 
     return resolved, scores, methods, fill_notes, perm, repaired_total
 
