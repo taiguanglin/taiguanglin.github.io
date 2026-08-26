@@ -19,6 +19,165 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* 下載選擇彈窗 — 粉紅色系 */
+        .download-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(33, 37, 41, 0.48);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            padding: 20px;
+        }
+        .download-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .download-modal {
+            background: var(--white, #fff);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 28px 24px 24px;
+            box-shadow: 0 20px 48px rgba(255, 105, 180, 0.22), 0 8px 16px rgba(0,0,0,0.10);
+            border: 1.5px solid var(--soft-pink, #ffc0cb);
+            transform: translateY(14px) scale(0.97);
+            transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+        }
+        .download-modal-overlay.active .download-modal {
+            transform: translateY(0) scale(1);
+        }
+        .download-modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--pale-pink, #f8f4f6);
+            color: var(--gray, #6c757d);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .download-modal-close:hover {
+            background: var(--soft-pink, #ffc0cb);
+            color: var(--deep-pink, #ff1493);
+            transform: rotate(90deg);
+        }
+        .download-modal-header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-right: 20px;
+        }
+        .download-modal-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--pink-gradient, linear-gradient(135deg, #ffb6c1, #ff69b4));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 6px;
+        }
+        .download-modal-header p {
+            font-size: 0.88rem;
+            color: var(--gray, #6c757d);
+            line-height: 1.5;
+        }
+        .download-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .download-option {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border-radius: 14px;
+            border: 1.5px solid var(--soft-pink, #ffc0cb);
+            background: var(--white, #fff);
+            text-decoration: none;
+            transition: all 0.22s ease;
+            cursor: pointer;
+        }
+        .download-option:hover {
+            border-color: var(--primary-pink, #ff69b4);
+            background: var(--pale-pink, #f8f4f6);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 105, 180, 0.18);
+        }
+        .download-option:active {
+            transform: translateY(0);
+        }
+        .download-option-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            background: var(--soft-gradient, #fff);
+            border: 1px solid #f0e6ea;
+            overflow: hidden;
+        }
+        .download-option-icon.google {
+            background: #fff;
+        }
+        .download-option-icon.quark {
+            background: #1677ff;
+            border-color: #1677ff;
+        }
+        .download-option-text {
+            flex: 1;
+            text-align: left;
+        }
+        .download-option-text strong {
+            display: block;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--black, #212529);
+            margin-bottom: 2px;
+        }
+        .download-option-text span {
+            font-size: 0.8rem;
+            color: var(--gray, #6c757d);
+        }
+        .download-option:hover .download-option-text strong {
+            color: var(--deep-pink, #ff1493);
+        }
+        .download-option-arrow {
+            color: var(--light-pink, #ffb6c1);
+            font-size: 0.85rem;
+            transition: all 0.22s;
+        }
+        .download-option:hover .download-option-arrow {
+            color: var(--primary-pink, #ff69b4);
+            transform: translateX(3px);
+        }
+        .download-modal-tip {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.75rem;
+            color: #a0a0a0;
+        }
+        @media (max-width: 480px) {
+            .download-modal { padding: 24px 18px 18px; }
+        }
+    </style>
 </head>
 <body>
     <!-- 導覽列 -->
@@ -382,7 +541,7 @@
                     <h3>系列電子書</h3>
 
                     <p>完整的坐禪修行指南，包含理論基礎與實修方法。</p>
-                    <a href="https://drive.google.com/drive/folders/1qz1LoQeUorLM7K6h1yYVWFo8KrmQ0TxO?usp=drive_link" target="_blank" class="download-button">前往下載</a>
+                    <button type="button" class="download-button" data-download-trigger>前往下載</button>
                 </div>
                 <div class="download-card">
                     <div class="download-icon">
@@ -391,7 +550,7 @@
                     <h3>語音合集</h3>
 
                     <p>2024年後禪師講法的完整語音記錄，適合反覆聆聽學習。</p>
-                    <a href="https://drive.google.com/drive/folders/1qz1LoQeUorLM7K6h1yYVWFo8KrmQ0TxO?usp=drive_link" target="_blank" class="download-button">前往下載</a>
+                    <button type="button" class="download-button" data-download-trigger>前往下載</button>
                 </div>
                 <div class="download-card">
                     <div class="download-icon">
@@ -400,7 +559,7 @@
                     <h3>其它資料</h3>
 
                     <p>更多其他與次世代版終極佛法相關修學資料。</p>
-                    <a href="https://drive.google.com/drive/folders/1qz1LoQeUorLM7K6h1yYVWFo8KrmQ0TxO?usp=drive_link" target="_blank" class="download-button">前往下載</a>
+                    <button type="button" class="download-button" data-download-trigger>前往下載</button>
                 </div>
             </div>
         </div>
@@ -443,6 +602,84 @@
         </div>
     </footer>
 
+    <!-- 下載選擇彈窗 -->
+    <div class="download-modal-overlay" id="downloadModal" aria-hidden="true">
+        <div class="download-modal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
+            <button type="button" class="download-modal-close" id="downloadModalClose" aria-label="關閉"><i class="fas fa-times"></i></button>
+            <div class="download-modal-header">
+                <h3 id="downloadModalTitle">選擇下載方式</h3>
+                <p>請選擇您方便的網盤下載</p>
+            </div>
+            <div class="download-options">
+                <!-- Google Drive -->
+                <a href="https://drive.google.com/drive/folders/1qz1LoQeUorLM7K6h1yYVWFo8KrmQ0TxO?usp=drive_link" target="_blank" rel="noopener noreferrer" class="download-option">
+                    <span class="download-option-icon google" aria-hidden="true">
+                        <!-- Google Drive 官方三色圖標 -->
+                        <svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                            <!-- 黃 - 左 -->
+                            <path d="M5 11.5 L11 1.5 L16 9.5 L10 19.5 Z" fill="#FBBC04"/>
+                            <!-- 綠 - 右 -->
+                            <path d="M16 9.5 L21 1.5 L27 11.5 L22 19.5 Z" fill="#34A853"/>
+                            <!-- 藍 - 底 -->
+                            <path d="M10 19.5 L16 9.5 L22 19.5 L16 29.5 Z" fill="#4285F4"/>
+                        </svg>
+                    </span>
+                    <span class="download-option-text">
+                        <strong>Google Drive</strong>
+                        <span>適合海外用戶</span>
+                    </span>
+                    <i class="fas fa-external-link-alt download-option-arrow"></i>
+                </a>
+                <!-- 夸克网盘 -->
+                <a href="https://pan.quark.cn/g/33327748b1?way=group_code" target="_blank" rel="noopener noreferrer" class="download-option">
+                    <span class="download-option-icon quark" aria-hidden="true">
+                        <!-- 夸克网盘圖標 - 藍底白字 Q -->
+                        <svg width="28" height="28" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="夸克网盘">
+                            <rect width="28" height="28" rx="7" fill="#1677FF"/>
+                            <!-- 字母 Q 造型 -->
+                            <g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="13.2" cy="12.5" r="5.2" stroke-width="2.1"/>
+                                <path d="M16.4 15.7 L19.6 19.0" stroke-width="2.1"/>
+                            </g>
+                            <circle cx="13.2" cy="12.5" r="1.1" fill="white" stroke="none"/>
+                        </svg>
+                    </span>
+                    <span class="download-option-text">
+                        <strong>夸克网盘</strong>
+                        <span>適合大陸用戶 · 群號 752631191</span>
+                    </span>
+                    <i class="fas fa-external-link-alt download-option-arrow"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            var overlay = document.getElementById('downloadModal');
+            var closeBtn = document.getElementById('downloadModalClose');
+            function openModal() {
+                overlay.classList.add('active');
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                overlay.classList.remove('active');
+                overlay.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+            document.querySelectorAll('[data-download-trigger]').forEach(function(btn) {
+                btn.addEventListener('click', openModal);
+            });
+            closeBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', function(e) {
+                if (e.target === overlay) closeModal();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+            });
+        })();
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
