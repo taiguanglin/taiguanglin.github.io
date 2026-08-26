@@ -121,10 +121,6 @@ def copy_assets(out_dir):
         (": ['question', 'answer'];",
          ": ['question', 'answer', 'content', 'heading'];",
          "已調整搜尋範圍過濾"),
-        # 首頁目錄預設顯示第 1 層（章節頁維持第 3 層）
-        ("const defaultLevel = isChapterPage ? '3' : '2';",
-         "const defaultLevel = isChapterPage ? '3' : '1';",
-         "首頁目錄預設第 1 層"),
     ]
     for old, new, label in patches:
         if js.count(old) == 1:

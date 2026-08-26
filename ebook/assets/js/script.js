@@ -3404,7 +3404,7 @@ function addHomepageBookmarkEventListeners() {
     
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
-    const defaultLevel = isChapterPage ? '3' : '1'; // 章節頁面默認第3層，首頁默認第2層
+    const defaultLevel = isChapterPage ? '3' : '2'; // 章節頁面默認第3層，首頁默認第2層
     
     // 获取用户保存的偏好，使用對應的默認值
     const rawSavedLevel = localStorage.getItem('toc-display-level') || defaultLevel;

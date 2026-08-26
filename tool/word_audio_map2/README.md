@@ -106,7 +106,8 @@ confidence < 0.5 → 低信心（審核 UI 紅卡提示）；stats 的 `pending`
 
 > 工程註記：layout/donate 的期望時長曾誤用 Word 序文字配時間序位置
 > （`e_all` 未經 `perm` 映射），導致大區塊被鄰居擠壓——已修正為
-> `expected_dur(perm[i])`。
+> `expected_dur(perm[i])`。另：上下檔合併日的音檔預覽曾因 raw cues
+> 未加偏移而全空白（下半檔段落無法目視校對）——已同偏移修正。
 
 ## 輸出 JSON schema
 

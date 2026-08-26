@@ -81,7 +81,8 @@ def annotate(blocks):
                 end = j
                 break
         blk["count"] = sum(_content_weight(b) for b in blocks[i + 1:end])
-        blk["sid"] = slug_id(blk["text"])
+        # 錨點需在同一篇文章內唯一：文字相同時加入索引
+        blk["sid"] = slug_id(f"{i}-{blk['text']}")
     for i, b in enumerate(blocks):
         if b["kind"] == "qa":
             b["qid"] = "question-" + slug_id(b["qa"].get("qtext", "") + str(i))
@@ -429,6 +430,7 @@ def render_index(books_meta, source_pdfs, is_trad):
         blocks = bm["blocks"]
         total = sum(_content_weight(b) for b in blocks)
         f = bc.filename_trad if is_trad else bc.filename
+        # 書籍節點（第 1 層）
         lines.append(
             '<li class="toc-item toc-chapter" data-level="1" data-chapter="%d" '
             'data-default-visible="true">'
@@ -436,18 +438,52 @@ def render_index(books_meta, source_pdfs, is_trad):
             '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>'
             '<span class="toc-count">(%d)</span>' % (i, f, esc(bc.title), total)
         )
-        lines.append("<ul>")
-        for b in blocks:
-            if b["kind"] != "h2":
-                continue
-            lines.append(
-                '<li class="toc-item toc-level-2" data-level="2" '
-                'data-default-visible="True" data-chapter="%d">'
-                '<a href="%s#%s" target="_blank" rel="noopener noreferrer">%s</a>'
-                '<span class="toc-count">(%d)</span></li>'
-                % (i, f, b["sid"], esc(b["text"]), b["count"])
-            )
-        lines.append("</ul></li>")
+        # 收集該書的標題節點，映射 h2→2, h3→3, h4→4
+        headings = [b for b in blocks if b["kind"] in _HEADING_KINDS]
+        kind_to_level = {"h2": 2, "h3": 3, "h4": 4}
+        # 構建樹：每個節點 {block, children}
+        root_children = []
+        stack = []  # (level, node)
+        for b in headings:
+            lvl = kind_to_level[b["kind"]]
+            node = {"block": b, "children": [], "level": lvl}
+            # 找到父節點（level-1）
+            while stack and stack[-1][0] >= lvl:
+                stack.pop()
+            if stack:
+                stack[-1][1]["children"].append(node)
+            else:
+                root_children.append(node)
+            stack.append((lvl, node))
+
+        def _render_nodes(nodes):
+            if not nodes:
+                return
+            lines.append("<ul>")
+            for node in nodes:
+                b = node["block"]
+                lvl = node["level"]
+                has_children = len(node["children"]) > 0
+                # 預設顯示：只有第 2 層可見（對應首頁預設層級 2）
+                visible = "True" if lvl == 2 else "False"
+                icon = (
+                    '<span class="toc-expand-icon" data-level="%d">▼</span>' % lvl
+                    if has_children else ""
+                )
+                lines.append(
+                    '<li class="toc-item toc-level-%d" data-level="%d" '
+                    'data-default-visible="%s" data-chapter="%d">'
+                    '%s<a href="%s#%s" target="_blank" rel="noopener noreferrer">%s</a>'
+                    '<span class="toc-count">(%d)</span>'
+                    % (lvl, lvl, visible, i, icon, f, b["sid"], esc(b["text"]), b["count"])
+                )
+                if has_children:
+                    _render_nodes(node["children"])
+                lines.append("</li>")
+            lines.append("</ul>")
+
+        _render_nodes(root_children)
+        lines.append("</li>")
     lines.append("</ul>")
     main_toc = "\n".join(lines)
 
@@ -468,8 +504,7 @@ def render_index(books_meta, source_pdfs, is_trad):
     )
     html += "<h1>%s</h1>\n" % esc(SITE_TITLE)
     html += _INDEX_SEARCH_TMPL
-    # 首頁目錄預設只顯示第一層（五本書）
-    html += _toc_header_controls([1, 2, 3, 4], 1, "h2", "目录", "toc-header")
+    html += _toc_header_controls([1, 2, 3, 4], 2, "h2", "目录", "toc-header")
     html += '<div class="toc" id="main-toc">\n%s\n</div>\n' % main_toc
     html += _ACTION_BUTTONS_TMPL
     html += _FLOATING_TOC_TMPL
@@ -477,6 +512,6 @@ def render_index(books_meta, source_pdfs, is_trad):
         '\n<p class="source-filename" id="source-filename">Source: %s</p>\n'
         % "、".join(src_links)
     )
-    html += _floating_level_buttons([1, 2, 3, 4], 1)
+    html += _floating_level_buttons([1, 2, 3, 4], 2)
     html += "</body>\n</html>\n"
     return html

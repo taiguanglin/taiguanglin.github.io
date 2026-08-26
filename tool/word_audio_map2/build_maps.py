@@ -1113,6 +1113,46 @@ def _duration_repair(segs_in, cues, converter, resolved, scores, methods,
             fill_notes[i] = "錨點擠壓，依前後段夾入（待人工確認）"
             repaired_total += 1
 
+    # ── name-refine: common-word nicknames (慢慢/松/醒…) false-hit early.
+    # When several reads of the same name exist, keep the one whose
+    # following window actually matches this segment's content. ──
+    for i in range(n):
+        if "name" not in (methods[i] or ""):
+            continue
+        seg = segs_in[i]
+        qn = seg.get("questioner") or ""
+        if not qn:
+            continue
+        key = ("NR", qn)
+        if key not in name_hits_cache:
+            name_hits_cache[key] = _collect_name_hits(
+                cues, normalize(qn, converter), converter
+            )
+        hs = [t for t, _ in name_hits_cache[key]]
+        if len(hs) < 2:
+            continue
+        probe_n = normalize(
+            (seg.get("q_text") or "") + " " + (seg.get("answer_text") or ""),
+            converter,
+        )[:150]
+        e_i = expected_dur(i, rate)
+        win_len = min(e_i * 1.3, 240.0)
+
+        def _cov(t):
+            return _content_cov(_cue_text_between(cues, t, t + win_len), probe_n)
+
+        best = None  # (cov, t)
+        for t in hs:
+            c = _cov(t)
+            if best is None or c > best[0]:
+                best = (c, t)
+        cur_cov = _cov(resolved[i])
+        if best and best[0] - cur_cov >= 0.12 and abs(best[1] - resolved[i]) > 25:
+            resolved[i] = round(best[1], 3)
+            used_times.append(resolved[i])
+            methods[i] += "+name-refine"
+            repaired_total += 1
+
     # ── sort to PLAYBACK (time) order BEFORE layout/donate: crushing pairs
     # only make sense on the timeline, not in Word document order. ──
     perm = sorted(range(n), key=lambda k: (resolved[k], k))
