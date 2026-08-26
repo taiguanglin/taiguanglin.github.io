@@ -1,7 +1,8 @@
 # word_audio_map
 
-> 🗺️ **進行中**：[`PLAN_mono_realignment.md`](PLAN_mono_realignment.md) —
-> 以時間序 docx（2024-2025 答疑汇总）對 `data/audio_map_word/` 做單調重對齊的 AI 執行任務書。
+> 🗺️ **現行計劃（v2）**：[`PLAN_v2_docx_first.md`](PLAN_v2_docx_first.md) —
+> docx 為真相源的全量音頻定位＋直接覆寫（舊 json 對齊作廢）。
+> （v1 [`PLAN_mono_realignment.md`](PLAN_mono_realignment.md) 已被取代，僅留參考。）
 
 Align **Word-ebook Q&A** (chapters 01–12 of `wenda2_ebook/`, the categorised
 Word document) to audio time ranges, then let `word2ebook` inject per-question
