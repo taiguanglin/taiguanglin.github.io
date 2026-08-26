@@ -1,0 +1,2 @@
+pymupdf>=1.20
+opencc-python-reimplemented>=0.1.6
