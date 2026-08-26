@@ -83,14 +83,25 @@ def annotate(blocks):
         blk["count"] = sum(_content_weight(b) for b in blocks[i + 1:end])
         # 錨點需在同一篇文章內唯一：文字相同時加入索引
         blk["sid"] = slug_id(f"{i}-{blk['text']}")
-    # 由深至淺，把子標題的計數累加到父標題
+    # 孤立內容（第一個標題之前的插圖/段落）歸入第一個標題
+    if idxs:
+        first = idxs[0]
+        stray = sum(_content_weight(b) for b in blocks[:first])
+        if stray:
+            blocks[first]["count"] += stray
+    # 由深至淺，把直接子標題的計數累加到父標題（避免孫節點重複計算）
     for pos in range(len(idxs) - 1, -1, -1):
         i = idxs[pos]
         lvl = int(blocks[i]["kind"][1])
-        j = pos + 1
-        while j < len(idxs) and int(blocks[idxs[j]]["kind"][1]) > lvl:
-            blocks[i]["count"] += blocks[idxs[j]]["count"]
-            j += 1
+        # 找最近的前一個層級更小的標題作為父節點
+        parent_pos = None
+        for k in range(pos - 1, -1, -1):
+            parent_lvl = int(blocks[idxs[k]]["kind"][1])
+            if parent_lvl < lvl:
+                parent_pos = k
+                break
+        if parent_pos is not None:
+            blocks[idxs[parent_pos]]["count"] += blocks[i]["count"]
     for i, b in enumerate(blocks):
         if b["kind"] == "qa":
             b["qid"] = "question-" + slug_id(b["qa"].get("qtext", "") + str(i))

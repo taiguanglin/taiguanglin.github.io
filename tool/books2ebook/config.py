@@ -47,7 +47,7 @@ class BookConfig:
 BOOKS = [
     BookConfig(1, "01《坐禅》", "01《坐禅》.pdf", "zuochan"),
     BookConfig(2, "02《坐禅之问答录》", "02《坐禅之问答录》.pdf", "wendalu"),
-    BookConfig(3, "03《坐禅2·次世代版终极佛法》", "03《坐禅2·次世代版终极佛法》.pdf", "zuochan2",
+    BookConfig(3, "03《坐禅2》", "03《坐禅2·次世代版终极佛法》.pdf", "zuochan2",
                skip_pages=3),
     BookConfig(4, "04《金刚经·心经讲记》", "04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf", "jingang"),
     BookConfig(5, "05《圆觉经》讲记", "05 TaiGuangLin禅师讲《圆觉经》最终版.pdf", "yuanjue"),
