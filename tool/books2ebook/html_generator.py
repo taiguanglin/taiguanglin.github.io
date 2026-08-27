@@ -132,7 +132,7 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <div id="top"></div>
 <div class="header-nav">
 <div class="nav-home">
-<a href="index.html">🌸 {home_label}</a>
+<a href="{home_href}">🌸 {home_label}</a> | <a href="{cross_href}">{cross_label}</a>
 </div>
 <div class="lang-switch">
 <a href="{simp_file}">简体</a> | <a href="{trad_file}">繁體</a>
@@ -418,9 +418,15 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                          title_bits or cur_section, qa["atext"][:80])
             body.append("<hr/>")
 
+    # 互跳連結：ebook ↔ wenda2_ebook
+    _cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
+    _cross_label = "📚 問答錄2" if is_trad else "📚 问答录2"
     html = _HEAD_TMPL.format(
         title=esc(book.title),
-        home_label="回首页",
+        home_label="回首页" if not is_trad else "回首頁",
+        home_href=book.filename_trad if is_trad else book.filename,
+        cross_href=_cross_href,
+        cross_label=_cross_label,
         simp_file=book.filename,
         trad_file=book.filename_trad,
         extra_head="",
@@ -522,9 +528,15 @@ def render_index(books_meta, source_pdfs, is_trad):
             % (quoted, quoted, quoted)
         )
 
+    _idx_cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
+    _idx_cross_label = "📚 問答錄2" if is_trad else "📚 问答录2"
+    _idx_home_label = "回首頁" if is_trad else "回首页"
     html = _HEAD_TMPL.format(
         title=esc(SITE_TITLE),
-        home_label="网站首页",
+        home_label=_idx_home_label,
+        home_href="../index.html",
+        cross_href=_idx_cross_href,
+        cross_label=_idx_cross_label,
         simp_file="index.html",
         trad_file="index_trad.html",
         extra_head=_MINISEARCH_HEAD,

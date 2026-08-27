@@ -337,25 +337,6 @@ def parse_jingang(ctx):
     quote = ""
     quote_left = None
 
-    # 預先收集 FZSHJW 主經文語料，用於判斷解析中重引的經文句
-    _quote_corpus_parts = []
-    for _pno, _ls in sorted(ctx.lines_by_page.items()):
-        if _pno in ctx.toc_pages:
-            continue
-        for _line in _ls:
-            if _line.font == "FZSHJW":
-                _ct = _clean(_line.text)
-                if _ct:
-                    _quote_corpus_parts.append(_ct)
-    _quote_corpus = "".join(_quote_corpus_parts)
-
-    def _is_quote_substring(txt: str) -> bool:
-        stripped = re.sub(r"^\d+[．.]\s*", "", txt).strip()
-        if len(stripped) < 8:
-            return False
-        probe = stripped[:15]
-        return probe in _quote_corpus
-
     def flush():
         nonlocal para, quote, quote_left
         if para.strip():
@@ -391,25 +372,6 @@ def parse_jingang(ctx):
                     flush()
                 quote = _join(quote, t)
             elif f == "FZHTJW":
-                # 解析中重引經文：編號句且內容出現在主經文語料中，應為粗體獨立行（與 05 圓覺經一致）
-                _is_sutra = False
-                if re.match(r"^\d+[．.]\s*", t):
-                    if _is_quote_substring(t):
-                        _is_sutra = True
-                if not _is_sutra:
-                    prev = ctx.blocks[-1] if ctx.blocks else None
-                    if prev and prev["kind"] == "strong" and re.match(r"^\d+[．.]\s*", prev["text"]):
-                        # 連續行：編號經文被 PDF 換行切斷，後續行無編號但仍屬同一經句
-                        if not re.match(r"^\d+[．.]\s*", t):
-                            _is_sutra = True
-                    elif len(t) > 12 and _is_quote_substring(t) and prev and prev["kind"] == "strong":
-                        _is_sutra = True
-                if _is_sutra:
-                    if para.strip() or quote.strip():
-                        flush()
-                    ctx.append_strong_line(t)
-                    body_left = None
-                    continue
                 if quote.strip():
                     flush()
                 if re.match(r"^\d{1,2}[.．]", t):

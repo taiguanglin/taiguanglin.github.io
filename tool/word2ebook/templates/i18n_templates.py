@@ -54,6 +54,9 @@ class I18nTemplateManager:
         """獲取章節頁面的國際化文字"""
         return {
             'home_text': get_i18n_text('navigation.home', is_traditional, '🌸 回首頁'),
+            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 回首頁' if is_traditional else '🏠 回首页'),
+            'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
+            'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪系列' if is_traditional else '📚 坐禅系列'),
             'chapter_toc_title': get_i18n_text('navigation.chapter_toc', is_traditional, '本章目錄'),
             'previous_chapter': get_i18n_text('ui.previous_chapter', is_traditional, '上一章'),
             'next_chapter': get_i18n_text('ui.next_chapter', is_traditional, '下一章'),
@@ -86,6 +89,9 @@ class I18nTemplateManager:
             'function_menu': get_i18n_text('ui.function_menu', is_traditional, '功能選單'),
             'settings': get_i18n_text('ui.settings', is_traditional, '設置'),
             'back_to_top': get_i18n_text('ui.back_to_top', is_traditional, '回到頂部'),
+            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 回首頁' if is_traditional else '🏠 回首页'),
+            'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
+            'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪系列' if is_traditional else '📚 坐禅系列'),
         }
     
     def _get_chapter_template(self) -> str:
@@ -105,7 +111,7 @@ class I18nTemplateManager:
 <div id="top"></div>
 <div class="header-nav">
   <div class="nav-home">
-    <a href="{home_link}">{home_text}</a>
+    <a href="{home_link}">{home_text}</a> | <a href="../index.html">{site_home_text}</a> | <a href="{cross_href}">{cross_text}</a>
   </div>
   <div class="lang-switch">
     {lang_switch_links}
@@ -199,6 +205,9 @@ if (typeof MiniSearch === 'undefined') {{
 </head>
 <body>
 <div class="header-nav index-header">
+  <div class="nav-home">
+    <a href="../index.html">{site_home_text}</a> | <a href="{cross_href}">{cross_text}</a>
+  </div>
   <div class="lang-switch">
     {lang_switch_links}
   </div>
