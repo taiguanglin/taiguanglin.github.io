@@ -1,4 +1,4 @@
-"""HTML / 搜尋索引產生：輸出與 wenda2_ebook 同風格的電子書頁面。"""
+"""HTML / 搜索索引生成：输出与 wenda2_ebook 同风格的电子书页面。"""
 
 import hashlib
 
@@ -12,7 +12,7 @@ from config import (
 
 _HEADING_KINDS = ("h2", "h3", "h4")
 
-# 首頁搜尋需要 MiniSearch（章節頁不用）
+# 首页搜索需要 MiniSearch（章节页不用）
 _MINISEARCH_HEAD = (
     '<script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js">'
     "</script>\n"
@@ -40,7 +40,7 @@ _MINISEARCH_HEAD = (
 
 
 def slug_id(text):
-    """由標題產生穩定的元素 ID。"""
+    """由标题产生稳定的元素 ID。"""
     return "s" + hashlib.md5(text.encode("utf-8")).hexdigest()[:8]
 
 
@@ -82,9 +82,9 @@ def _content_weight(block):
 
 
 def annotate(blocks):
-    """為標題區塊加上 sid（錨點）與 count。
+    """为标题区块加上 sid(锚点)与 count。
 
-    count 語意與 wenda2_ebook 一致：每個標題顯示「自己名下的直接內容數 +
+    count 语意与 wenda2_ebook 一致：每个标题显示"自己名下的直接内容数 +
     所有子標題的計數」；每個內容區塊只會被最近的標題統計一次，不重複累加。
     """
     idxs = [i for i, b in enumerate(blocks) if b["kind"] in _HEADING_KINDS]
