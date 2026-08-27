@@ -4,6 +4,7 @@
 /* 經文與詩句引文 */
 .sutra-text {
   font-family: "Kaiti TC", "Kaiti SC", KaiTi, STKaiti, serif;
+  font-weight: 700;
   background: linear-gradient(135deg, #fdf6ec 0%, #fffdf8 100%);
   border-left: 4px solid var(--color-primary);
   padding: 12px 15px;
