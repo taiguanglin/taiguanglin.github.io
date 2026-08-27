@@ -144,3 +144,24 @@ end_label / confidence / status / locked / notes / srt_preview`。
 python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 # → http://localhost:8000/audio_map2/
 ```
+
+## 章節對齊分段（chapter-aligned segmentation）
+
+時間序 `汇总` docx 常把一個人的多個編號子題（`1、2、3、…`，各有
+`Taiguanglin：` 回答）併進單一段落。主題式 12 章（`wenda2_ebook`
+1–12 章 / `audio_map` 所用的 `tool/word2ebook/data/audio_map_word/word-*.json`）
+已把每個子題各自成段。為讓 `audio_map2` 與章節版具同樣分段粒度，
+`align_part` 在建段時呼叫 `_split_chunk_by_chapters()`：
+
+- **只在章節索引確認該 chunk 內含 ≥2 個相異題目時才拆**（用章節
+  q_text 的 normalized 子字串比對作門檻），避免誤拆單題。
+- **拆分依原始 docx 行的編號結構**（`ch.raw_lines` 文件順序）：
+  每個 `N、…` 開新段，其後 `Taiguanglin：` 回答歸它；序言（編號前的
+  引言／`师父说` 開場）併入第一段問題，**保留全部 `汇总` 原文**，不
+  掉字（此為章節文字不改寫原始 docx 文字的原因）。
+- 只以章節索引判斷「是否含多題」，**不寫入任何章節文字、不引用章節
+  時間**；文字仍全部來自 `汇总` docx、時間仍只由 SRT 產生。
+
+重生成後 14 個月總段數 4169 → 約 5400，`2018` 個被併段已拆開；
+`低信心=0`、時間無倒序。章節版的 `q_text` 無論寫略有差異（師傅／
+師父、簡繁體、TW→CN）者會對不上，屬預期。
