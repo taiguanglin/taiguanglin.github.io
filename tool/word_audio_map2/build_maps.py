@@ -255,6 +255,22 @@ def _split_chunk_by_chapters(ch, converter) -> Optional[List[Dict]]:
         return None
 
     name = ch.name or ""
+    # Leading content before the first numbered item (shared preamble, a
+    # 「师父说：」opening, or a greeting) — keep it as fragment[0] question
+    # so nothing in the 汇总 docx is dropped.
+    # Skip a trailing name+time header（「青鸾鲲：2024-02-20 19:59」）on the
+    # first raw line; the remaining pre-number lines are genuine content.
+    FIRST_RAW = lines[0] if lines else ""
+    m0 = re.search(r"[：:]\s*\d{4}[-/.]\d{1,2}", FIRST_RAW)
+    head_skip = 0
+    if m0:
+        head_skip = 1
+    preamble: List[str] = []
+    for ln in lines[head_skip: block_starts[0]]:
+        item = ln.strip()
+        if not item or ANSWER_MARKER_RE.match(item):
+            continue
+        preamble.append(item)
     frags: List[Dict] = []
     for bi, bstart in enumerate(block_starts):
         bend = block_starts[bi + 1] if bi + 1 < len(block_starts) else len(lines)
@@ -284,11 +300,14 @@ def _split_chunk_by_chapters(ch, converter) -> Optional[List[Dict]]:
                     a_paras.append(rest)
                 continue
             (a_paras if in_answer else q_paras).append(item)
-        frags.append({
+        seg = {
             "questioner": name,
             "q_text": "\n".join(q_paras).strip(),
             "answer_text": "\n\n".join(a_paras).strip(),
-        })
+        }
+        if bi == 0 and preamble:
+            seg["q_text"] = "\n".join(preamble + q_paras).strip()
+        frags.append(seg)
     return frags if len(frags) >= 2 else None
 
 

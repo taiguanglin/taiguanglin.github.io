@@ -46,11 +46,23 @@ def slug_id(text):
 
 def esc(text):
     return (
-        text.replace("&", "&amp;")
-        .replace("<", "&lt;")
-        .replace(">", "&gt;")
-        .replace('"', "&quot;")
+        text.replace("&", "&")
+        .replace("<", "<")
+        .replace(">", ">")
+        .replace('"', """)
     )
+
+
+def nl2br(text):
+    return text.replace("\n", "<br/>")
+
+
+def build_lang_switch_links(simp_file: str, trad_file: str, is_trad: bool) -> str:
+    """Build language switch links with i18n text (protected from OpenCC conversion)."""
+    if is_trad:
+        return f'<a href="{simp_file}">简体</a> | <a href="{trad_file}">繁體</a>'
+    else:
+        return f'<a href="{simp_file}">简体</a> | <a href="{trad_file}">繁體</a>'
 
 
 def nl2br(text):
@@ -131,11 +143,11 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <body>
 <div id="top"></div>
 <div class="{header_class}">
-<div class="nav-home">
-{nav_home_content}
+<div class="nav-left">
+{nav_left_content}
 </div>
-<div class="lang-switch">
-<a href="{simp_file}">简体</a> | <a href="{trad_file}">繁體</a>
+<div class="nav-right">
+{lang_switch_links}
 </div>
 </div>
 """
@@ -418,20 +430,20 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                          title_bits or cur_section, qa["atext"][:80])
             body.append("<hr/>")
 
-    # 互跳連結：ebook ↔ wenda2_ebook
+# 互跳連結：ebook ↔ wenda2_ebook
     _cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
     _cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
-    _home_link = book.filename_trad if is_trad else book.filename
-    _home_text = "🌸 回首頁" if is_trad else "🌸 回首页"
+    _site_home_href = "../index_trad.html" if is_trad else "../index.html"
     _site_home_text = "🏠 回首頁" if is_trad else "🏠 回首页"
+    _cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
     _header_class = "header-nav"
-    _nav_home_content = f'<a href="{_home_link}">{_home_text}</a> | <a href="../index.html">{_site_home_text}</a> | <a href="{_cross_href}">{_cross_text}</a>'
+    _nav_left_content = f'<a href="{_site_home_href}">{_site_home_text}</a> | <a href="{_cross_href}">{_cross_text}</a>'
+    _lang_switch_links = build_lang_switch_links(book.filename, book.filename_trad, is_trad)
     html = _HEAD_TMPL.format(
         title=esc(book.title),
         header_class=_header_class,
-        nav_home_content=_nav_home_content,
-        simp_file=book.filename,
-        trad_file=book.filename_trad,
+        nav_left_content=_nav_left_content,
+        lang_switch_links=_lang_switch_links,
         extra_head="",
     )
     html += (
@@ -533,15 +545,16 @@ def render_index(books_meta, source_pdfs, is_trad):
 
     _idx_cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
     _idx_cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
-    _idx_site_home_text = "🏠 回首頁" if is_trad else "🏠 回首页"
+    _site_home_text = "🏠 回首頁" if is_trad else "🏠 回首页"
     _header_class = "header-nav index-header"
-    _nav_home_content = f'<a href="../index.html">{_idx_site_home_text}</a> | <a href="{_idx_cross_href}">{_idx_cross_text}</a>'
+    _site_home_href = "index_trad.html" if is_trad else "index.html"
+    _nav_left_content = f'<a href="{_site_home_href}">{_site_home_text}</a> | <a href="{_idx_cross_href}">{_idx_cross_text}</a>'
+    _lang_switch_links = build_lang_switch_links("index.html", "index_trad.html", is_trad)
     html = _HEAD_TMPL.format(
         title=esc(SITE_TITLE),
         header_class=_header_class,
-        nav_home_content=_nav_home_content,
-        simp_file="index.html",
-        trad_file="index_trad.html",
+        nav_left_content=_nav_left_content,
+        lang_switch_links=_lang_switch_links,
         extra_head=_MINISEARCH_HEAD,
     )
     html += "<h1>%s</h1>\n" % esc(SITE_TITLE)
