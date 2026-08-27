@@ -333,14 +333,22 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     sid_counter = [0]
 
     def add_item(item_type, content, url, title, context=None):
+        # 書本名稱（TOC 第一層）前綴，便於搜尋結果辨識出處；去除 01/02 等編號
+        import re as _re
+        _pure_book = _re.sub(r"^\d+\s*", "", book.title).strip()
+        full_title = "%s | %s" % (_pure_book, title) if not title.startswith(_pure_book) and not title.startswith(book.title) else title
+        # 若 title 已含完整帶編號書名，也替換為純淨書名
+        if full_title.startswith(book.title):
+            full_title = _pure_book + full_title[len(book.title):]
         sid_counter[0] += 1
         search_items.append({
             "id": "%s-%d" % (fname, sid_counter[0]),
-            "title": title,
+            "title": full_title,
             "type": item_type,
             "content": content,
             "context": context if context is not None else content,
             "url": url,
+            "book": _pure_book,
         })
 
     cur_section = book.title

@@ -79,6 +79,14 @@ class ParseContext:
             return
         self.append("quote", text)
 
+    def append_strong_line(self, text):
+        """粗體行：連續粗體合併為同一區塊（避免 PDF 換行切斷經文）。"""
+        prev = self.blocks[-1] if self.blocks else None
+        if prev is not None and prev["kind"] == "strong":
+            prev["text"] = _join(prev["text"], text)
+            return
+        self.append("strong", text)
+
     def add_images_for_page(self, pno):
         for xref, w, h in self.images_by_page.get(pno, []):
             if xref in self.seen_xrefs:
@@ -396,6 +404,9 @@ def parse_jingang(ctx):
 
 _LABEL_RE = re.compile(r"(译文|注解|解析|本章大义|原经文)[:：\s]*$")
 _XJDU_RE = re.compile(r"^原文精读\s*\d*$")
+# 解析內重引經文（編號 + 作/任/止/滅病）應為粗體且獨立成行
+_SUTRA_NUM_RE = re.compile(r"^\d+\.\s*[一二三四]者.*病")
+_SUTRA_KEYWORDS = ("若复有人作如是言", "彼圆觉性", "欲求圆觉", "离四病者")
 
 
 def parse_yuanjue(ctx):
@@ -403,6 +414,26 @@ def parse_yuanjue(ctx):
     quote = ""
     body_left = None
     quote_left = None
+
+    # 預先收集全書 KaiTi 經文語料，用於判斷解析中重引的經文句（即使首行為常規字體）
+    _quote_corpus_parts = []
+    for _pno, _ls in sorted(ctx.lines_by_page.items()):
+        if _pno in ctx.toc_pages:
+            continue
+        for _line in _ls:
+            if _line.font == "KaiTi":
+                _ct = _clean(_line.text)
+                if _ct:
+                    _quote_corpus_parts.append(_ct)
+    _quote_corpus = "".join(_quote_corpus_parts)
+
+    def _is_quote_substring(txt: str) -> bool:
+        # 去編號後，取前 15 字判斷是否出現在原經文語料中
+        stripped = re.sub(r"^\d+\.\s*", "", txt).strip()
+        if len(stripped) < 8:
+            return False
+        probe = stripped[:15]
+        return probe in _quote_corpus
 
     def flush():
         nonlocal para, quote, quote_left
@@ -445,9 +476,40 @@ def parse_yuanjue(ctx):
                     flush()
                 quote = _join(quote, t)
             elif bold:
-                flush()
-                ctx.append("strong", t)
+                if para.strip() or quote.strip():
+                    flush()
+                ctx.append_strong_line(t)
             else:
+                # 譯文小標「1. 提问部分」「2. 佛答部分」應獨立成行，不與後續正文黏合
+                if re.match(r"^\d+\.\s*(提问部分|佛答部分)\s*$", t):
+                    if para.strip() or quote.strip():
+                        flush()
+                    ctx.append("para", t)
+                    body_left = None
+                    continue
+                # 解析中重引經文：編號「1. 一者作病…」或「1. 若诸菩萨…」等雖為常規字體，仍應視為粗體經文獨立成行
+                _is_sutra = _SUTRA_NUM_RE.match(t) is not None
+                if not _is_sutra and re.match(r"^\d+\.\s", t):
+                    if any(kw in t for kw in _SUTRA_KEYWORDS):
+                        _is_sutra = True
+                    elif "若诸菩萨" in t or "此菩萨者" in t or "名单修" in t:
+                        _is_sutra = True
+                    elif _is_quote_substring(t):
+                        _is_sutra = True
+                # 無編號但為經文片段的連續行（例如「彼实华生处...」被誤切為常規時）亦視為經文
+                if not _is_sutra and len(t) > 12 and _is_quote_substring(t):
+                    # 若前一區塊已是編號經文的強行，後續常規片段應合併
+                    prev = ctx.blocks[-1] if ctx.blocks else None
+                    if prev and prev["kind"] == "strong" and _SUTRA_NUM_RE.match(prev["text"][:10]) is None:
+                        # 檢查是否為同一經句的延續
+                        if any(kw in t for kw in ("彼", "此", "皆", "亦", "故")):
+                            _is_sutra = True
+                if _is_sutra:
+                    if para.strip() or quote.strip():
+                        flush()
+                    ctx.append_strong_line(t)
+                    body_left = None
+                    continue
                 if quote.strip():
                     flush()
                 if re.match(r"^\d{1,2}[.．]", t):
