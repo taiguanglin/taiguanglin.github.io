@@ -215,64 +215,81 @@ def _load_chapter_index() -> List[Dict]:
     return idx
 
 
-def _chunk_combined(ch) -> Tuple[str, str]:
-    """Concatenate a chunk's groups into two parallel strings (q, a)."""
-    qs, as_ = [], []
-    for gg in ch.groups:
-        qs.append("\n".join(gg.q_paras).strip())
-        as_.append("\n\n".join(gg.a_paras).strip())
-    return "\n".join(qs), "\n\n".join(as_)
-
-
 def _split_chunk_by_chapters(ch, converter) -> Optional[List[Dict]]:
     """Return sub-question fragments for a chunk, or None if not splittable.
 
-    The whole chunk (all groups flattened) is searched against the 12-chapter
-    reference.  When >=2 distinct chapter questions appear inside it, those
-    fragment boundaries are returned (text taken verbatim from the chapter map,
-    which is Word-sourced and identical to the 汇总 docx).
+    We split by the NUMBERED sub-question structure of the raw docx lines
+    (document order), which is exactly the granularity the 12-chapter maps
+    keep.  Each numbered item (「N、…」) opens a new fragment; the Taiguanglin：
+    answer that follows (plus any trailing follow-up text) belongs to it.  The
+    12-chapter index is used ONLY as a confirmation that this chunk genuinely
+    spans >=2 separate questions; no chapter text is ever written out — the 汇总
+    docx text (ch.raw_lines) is preserved verbatim, so no content is dropped.
+
+    Returns a list of {questioner, q_text, answer_text} in document order.
     """
-    q_all, a_all = _chunk_combined(ch)
-    joined = (q_all + "\n" + a_all)
-    njoin = normalize(joined)
+    # Raw docx text in document order.
+    lines = [ln.strip() for ln in ch.raw_lines if ln and ln.strip()]
+    njoin = normalize("\n".join(lines))
     if len(njoin) < 24:
         return None
+    # Only split when the chapter maps confirm >=2 distinct questions present.
     quoted = _load_chapter_index()
-    matches: List[Dict] = []
+    present = set()
     for ref in quoted:
-        if not ref["q"]:
-            continue
-        pq = njoin.find(ref["q"])
-        if pq >= 0:
-            pa = njoin.find(ref["a"], pq) if ref["a"] and len(ref["a"]) >= 8 else pq
-            pae = pa + len(ref["a"]) if pa >= 0 else pq + len(ref["q"])
-            matches.append({**ref, "pq": pq, "pae": pae})
-    if len(matches) < 2:
+        if ref["q"] and ref["q"] in njoin:
+            present.add(ref["skey"] or ref["q"][:16])
+    if len(present) < 2:
         return None
-    byq: dict = {}
-    for mt in matches:
-        key = mt["skey"] or id(mt)
-        if key not in byq or mt["pae"] > byq[key]["pae"]:
-            byq[key] = mt
-    uniq = sorted(byq.values(), key=lambda m: m["pq"])
-    pruned: List[Dict] = []
-    for mt in uniq:
-        if pruned and mt["pq"] < pruned[-1]["pae"]:
-            if (mt["pae"] - mt["pq"]) > (pruned[-1]["pae"] - pruned[-1]["pq"]):
-                pruned[-1] = mt
-            continue
-        pruned.append(mt)
-    if len(pruned) < 2:
+
+    # Numbered sub-question opening lines, matched on the RAW line so the
+    # 「、」marker is visible (normalize() would strip it).
+    NUM_HEAD = re.compile(
+        r"^\s*(?:（?(\d{1,3})[、.．,，]\s*|第(\d{1,3})问[:：]?[\s　]*)|^\s*(\d{1,3})[）)]"
+    )
+    block_starts: List[int] = []
+    for i, ln in enumerate(lines):
+        if NUM_HEAD.match(ln):
+            block_starts.append(i)
+    if len(block_starts) < 2:
         return None
-    frags = []
-    for mt in pruned:
+
+    name = ch.name or ""
+    frags: List[Dict] = []
+    for bi, bstart in enumerate(block_starts):
+        bend = block_starts[bi + 1] if bi + 1 < len(block_starts) else len(lines)
+        q_paras: List[str] = []
+        a_paras: List[str] = []
+        in_answer = False
+        for ln in lines[bstart:bend]:
+            item = ln.strip()
+            if not item:
+                continue
+            # answer marker line 「Taiguanglin：…」
+            if ANSWER_MARKER_RE.match(item):
+                in_answer = True
+                glued = ANSWER_MARKER_RE.sub("", item).strip()
+                if glued:
+                    a_paras.append(glued)
+                continue
+            # answer marker embedded mid-paragraph（「…问题？Taiguanglin：…」）
+            m_emb = ANSWER_MARKER_ANYWHERE.search(item)
+            if m_emb and m_emb.start() > 0:
+                pre = item[: m_emb.start()].strip()
+                rest = item[m_emb.end():].strip()
+                if pre:
+                    (a_paras if in_answer else q_paras).append(pre)
+                in_answer = True
+                if rest:
+                    a_paras.append(rest)
+                continue
+            (a_paras if in_answer else q_paras).append(item)
         frags.append({
-            "questioner": mt["qer"],
-            "skey": mt["skey"],
-            "q_text": (mt["raw_q"] or "").strip(),
-            "answer_text": (mt["raw_a"] or "").strip(),
+            "questioner": name,
+            "q_text": "\n".join(q_paras).strip(),
+            "answer_text": "\n\n".join(a_paras).strip(),
         })
-    return frags
+    return frags if len(frags) >= 2 else None
 
 
 

@@ -540,8 +540,34 @@ PARSERS = {
 
 
 def parse_book(parser_key, lines_by_page, toc_pages, images_by_page):
-    merge = parser_key == "wendalu"
+    merge = parser_key in ("wendalu", "zuochan2")
     ctx = ParseContext(lines_by_page, toc_pages, images_by_page,
                        merge_adjacent_headings=merge)
     ok = PARSERS[parser_key](ctx)
+    # 後處理：坐禅2 中「上半場第一個500年（公元前1000年」/「公元前500年)」等被 PDF 換行切成兩條同級標題，需合併且補「—」
+    if parser_key == "zuochan2" and ok:
+        merged = []
+        for blk in ctx.blocks:
+            if blk["kind"] in ("h2", "h3", "h4") and merged and merged[-1]["kind"] == blk["kind"]:
+                prev = merged[-1]
+                # 僅合併明顯斷裂的標題：前一條以「年」或「（」結尾，後一條以「公元」開頭
+                if re.match(r".*?[（(]\s*$|.*年\s*$", prev["text"]) and re.match(r"^\s*公元", blk["text"]):
+                    # 補上破折號避免「1000年公元前500年」黏連
+                    joiner = "—" if not prev["text"].endswith("—") and not blk["text"].startswith("—") else ""
+                    prev["text"] = prev["text"].rstrip(" \t") + joiner + blk["text"].lstrip(" \t")
+                    # 合併計數（若有）
+                    if "count" in prev and "count" in blk:
+                        prev["count"] = prev.get("count", 0) + blk.get("count", 0)
+                    continue
+            merged.append(blk)
+        ctx.blocks = merged
+        # 修復已透過 heading 合併但缺少破折號的標題（例如「1000 年公元前500」→「1000 年—公元前500」）
+        for blk in ctx.blocks:
+            if blk["kind"] in ("h2", "h3", "h4") and "年公元" in blk["text"] and "年—公元" not in blk["text"]:
+                blk["text"] = blk["text"].replace("年公元", "年—公元")
+            # 修復「500年）」等缺失右括號完整性的細節（已在 PDF 中正確，此處僅保底）
+            if blk["kind"] in ("h2", "h3", "h4") and blk["text"].endswith("年"):
+                # 若標題以「年」結尾且包含「（」但無「）」，補齊（極少見，防禦性）
+                if "（" in blk["text"] and "）" not in blk["text"]:
+                    blk["text"] = blk["text"] + "）"
     return ctx.blocks if ok else []
