@@ -44,6 +44,7 @@ sys.path.insert(0, str(ROOT / "tool" / "pdf_audio_map"))
 
 from common import (  # noqa: E402
     DEFAULT_SRT_ROOT,
+    PUNCT_RE,
     empty_range_fields,
     fmt_tc,
     get_converter,
@@ -169,6 +170,111 @@ class WordSession:
 
 
 CLOSE_WORDS = ("答完", "到这里", "結束", "结束")
+
+
+# ---------------------------------------------------------------------------
+# Chapter-map reference index (wenda2_ebook 1-12章 / audio_map segmentation)
+# ---------------------------------------------------------------------------
+# The chronological 汇总 docx sometimes merges several numbered sub-questions
+# (1、2、3、… with their own answers) into ONE Taiguanglin： answer group.  The
+# thematic 12-chapter maps (tool/word2ebook/data/audio_map_word/word-NN.json)
+# already keep each sub-question as its own segment.  We use those CHAPTER
+# boundaries as the reference to re-split the chronological segments so that
+# audio_map2 shares the same segmentation.  Only the chapter q_text/a_text
+# (identical, Word-sourced text) and their ORDER are used -- never their times.
+
+_CHAPTER_INDEX: Optional[List[Dict]] = None
+
+
+def _load_chapter_index() -> List[Dict]:
+    """Lazily load + normalize all word-*.json chapter segments."""
+    global _CHAPTER_INDEX
+    if _CHAPTER_INDEX is not None:
+        return _CHAPTER_INDEX
+    idx: List[Dict] = []
+    chap_root = ROOT / "tool" / "word2ebook" / "data" / "audio_map_word"
+    for f in sorted(chap_root.glob("word-*.json")):
+        try:
+            dd = json.loads(f.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        for seg in dd.get("segments", []):
+            q = normalize(seg.get("q_text") or "")
+            a = normalize(seg.get("a_text") or "")
+            if not q and not a:
+                continue
+            idx.append({
+                "q": q, "a": a,
+                "raw_q": seg.get("q_text") or "",
+                "raw_a": seg.get("a_text") or "",
+                "qer": seg.get("questioner") or "",
+                "sid": seg.get("session_id") or "",
+                "skey": seg.get("stable_key") or "",
+            })
+    _CHAPTER_INDEX = idx
+    return idx
+
+
+def _chunk_combined(ch) -> Tuple[str, str]:
+    """Concatenate a chunk's groups into two parallel strings (q, a)."""
+    qs, as_ = [], []
+    for gg in ch.groups:
+        qs.append("\n".join(gg.q_paras).strip())
+        as_.append("\n\n".join(gg.a_paras).strip())
+    return "\n".join(qs), "\n\n".join(as_)
+
+
+def _split_chunk_by_chapters(ch, converter) -> Optional[List[Dict]]:
+    """Return sub-question fragments for a chunk, or None if not splittable.
+
+    The whole chunk (all groups flattened) is searched against the 12-chapter
+    reference.  When >=2 distinct chapter questions appear inside it, those
+    fragment boundaries are returned (text taken verbatim from the chapter map,
+    which is Word-sourced and identical to the 汇总 docx).
+    """
+    q_all, a_all = _chunk_combined(ch)
+    joined = (q_all + "\n" + a_all)
+    njoin = normalize(joined)
+    if len(njoin) < 24:
+        return None
+    quoted = _load_chapter_index()
+    matches: List[Dict] = []
+    for ref in quoted:
+        if not ref["q"]:
+            continue
+        pq = njoin.find(ref["q"])
+        if pq >= 0:
+            pa = njoin.find(ref["a"], pq) if ref["a"] and len(ref["a"]) >= 8 else pq
+            pae = pa + len(ref["a"]) if pa >= 0 else pq + len(ref["q"])
+            matches.append({**ref, "pq": pq, "pae": pae})
+    if len(matches) < 2:
+        return None
+    byq: dict = {}
+    for mt in matches:
+        key = mt["skey"] or id(mt)
+        if key not in byq or mt["pae"] > byq[key]["pae"]:
+            byq[key] = mt
+    uniq = sorted(byq.values(), key=lambda m: m["pq"])
+    pruned: List[Dict] = []
+    for mt in uniq:
+        if pruned and mt["pq"] < pruned[-1]["pae"]:
+            if (mt["pae"] - mt["pq"]) > (pruned[-1]["pae"] - pruned[-1]["pq"]):
+                pruned[-1] = mt
+            continue
+        pruned.append(mt)
+    if len(pruned) < 2:
+        return None
+    frags = []
+    for mt in pruned:
+        frags.append({
+            "questioner": mt["qer"],
+            "skey": mt["skey"],
+            "q_text": (mt["raw_q"] or "").strip(),
+            "answer_text": (mt["raw_a"] or "").strip(),
+        })
+    return frags
+
+
 
 
 def _classify_marker(text: str) -> Optional[Tuple[str, str]]:
@@ -1445,6 +1551,18 @@ def align_part(part: Part, media: dict, converter, session_id: str) -> dict:
     segs_in = []
     gi = 0
     for ch in part.chunks:
+        frags = _split_chunk_by_chapters(ch, converter)
+        if frags:
+            for frag in frags:
+                gi += 1
+                segs_in.append({
+                    "index": gi,
+                    "questioner": frag.get("questioner") or ch.name,
+                    "question_time": ch.question_time,
+                    "q_text": frag.get("q_text") or "",
+                    "answer_text": frag.get("answer_text") or "",
+                })
+            continue
         for g in ch.groups:
             gi += 1
             q_text = "\n".join(g.q_paras).strip()
