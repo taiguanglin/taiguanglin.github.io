@@ -406,7 +406,9 @@ _LABEL_RE = re.compile(r"(译文|注解|解析|本章大义|原经文)[:：\s]*$
 _XJDU_RE = re.compile(r"^原文精读\s*\d*$")
 # 解析內重引經文（編號 + 作/任/止/滅病）應為粗體且獨立成行
 _SUTRA_NUM_RE = re.compile(r"^\d+\.\s*[一二三四]者.*病")
-_SUTRA_KEYWORDS = ("若复有人作如是言", "彼圆觉性", "欲求圆觉", "离四病者")
+# 解析中「若诸菩萨...」類編號經文
+_SUTRA_NUM_RE2 = re.compile(r"^\d+\.\s*若诸菩萨")
+_SUTRA_KEYWORDS = ("若复有人作如是言", "彼圆觉性", "欲求圆觉", "离四病者", "若诸菩萨")
 
 
 def parse_yuanjue(ctx):
@@ -488,13 +490,15 @@ def parse_yuanjue(ctx):
                     body_left = None
                     continue
                 # 解析中重引經文：編號「1. 一者作病…」或「1. 若诸菩萨…」等雖為常規字體，仍應視為粗體經文獨立成行
-                _is_sutra = _SUTRA_NUM_RE.match(t) is not None
-                if not _is_sutra and re.match(r"^\d+\.\s", t):
+                _is_sutra = _SUTRA_NUM_RE.match(t) is not None or _SUTRA_NUM_RE2.match(t) is not None
+                if not _is_sutra and re.match(r"^\d+\.", t):
                     if any(kw in t for kw in _SUTRA_KEYWORDS):
                         _is_sutra = True
                     elif "若诸菩萨" in t or "此菩萨者" in t or "名单修" in t:
                         _is_sutra = True
                     elif _is_quote_substring(t):
+                        _is_sutra = True
+                    elif "若经夏首" in t or "至安居日" in t or "踞菩萨乘" in t:
                         _is_sutra = True
                 # 無編號但為經文片段的連續行（例如「彼实华生处...」被誤切為常規時）亦視為經文
                 if not _is_sutra and len(t) > 12 and _is_quote_substring(t):
