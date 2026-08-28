@@ -216,9 +216,11 @@ Traditional Chinese variants of HTML files SHALL use the `_trad.html` suffix.
 ### Requirement: UI String Localisation
 All user-visible UI strings SHALL be defined in `config.yaml` under the `i18n`
 key, with `simplified` and `traditional` sub-keys for each string.
-Header navigation labels SHALL use `navigation.ebook_toc`,
-`navigation.site_home`, and `navigation.cross_ebook` so the ebook total,
-site-home, and sibling-ebook destinations remain unambiguous in both variants.
+Header navigation labels SHALL use `navigation.ebook_toc` on chapter pages
+and `navigation.site_home` plus `navigation.cross_ebook` on the top-level
+index, so the ebook total, site-home, and sibling-ebook destinations remain
+unambiguous in both variants. The sibling-ebook label SHALL appear only on
+the index, not on chapter pages.
 
 #### Scenario: i18n text retrieval
 - GIVEN `config.yaml` defines `i18n.navigation.home.simplified = "首页"`

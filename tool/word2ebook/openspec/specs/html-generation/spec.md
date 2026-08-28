@@ -32,19 +32,18 @@ Each chapter page SHALL include:
 The page header (`<div class="header-nav">`) SHALL lay the navigation links in a
 left-hand `<div class="nav-home">` and keep only the language-switch
 (`<div class="lang-switch">`) on the right, on both chapter pages and index pages.
-On chapter pages, the nav-home group SHALL contain two links:
+On chapter pages, the nav-home group SHALL contain only:
 - `📖 問答錄2總目錄` → the current ebook's own index (`index.html` /
   `index_trad.html`, same directory), via the `{home_link}` template slot and
   labelled by i18n `navigation.ebook_toc`.
+
+Chapter pages SHALL NOT link to the sibling ebook or the site landing page.
+On index pages (the top-level TOC), the nav-home group SHALL instead contain:
+- `🏠 網站首頁` → the single site landing page at `../index.html`, for both
+  simplified and traditional variants.
 - `<cross>` → the sibling ebook (`../ebook/index.html` /
   `../ebook/index_trad.html`), via `{cross_href}` — labelled `📚 坐禅系列` /
   `📚 坐禪系列`.
-
-Chapter pages SHALL NOT link directly to the site landing page. On index pages,
-the nav-home group SHALL instead contain:
-- `🏠 網站首頁` → the single site landing page at `../index.html`, for both
-  simplified and traditional variants.
-- The same language-appropriate sibling-ebook link described above.
 
 The `.index-header` index-page style SHALL keep the same `space-between`
 alignment so navigation links sit left and the language switch right.
@@ -140,7 +139,7 @@ print a warning.
 - TOC logic: `generators/toc_generator.py::TOCGenerator` (TOC HTML + QA count metadata)
 - Templates: `templates/i18n_templates.py::I18nTemplateManager` (sole template
   source; chapter template exposes a `{qa_banner}` slot defaulting to empty;
-  chapter nav uses `{home_link}` and `{cross_href}`, while index nav uses
+  chapter nav uses `{home_link}` only, while index nav uses
   `{site_home_href}` and `{cross_href}`; variant labels and targets are resolved
   in `_get_chapter_i18n_kwargs`/`_get_index_i18n_kwargs`;
   `html_templates.py` has been deleted)

@@ -58,8 +58,6 @@ class I18nTemplateManager:
                 is_traditional,
                 '📖 問答錄2總目錄' if is_traditional else '📖 问答录2总目录',
             ),
-            'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
-            'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪系列' if is_traditional else '📚 坐禅系列'),
             'chapter_toc_title': get_i18n_text('navigation.chapter_toc', is_traditional, '本章目錄'),
             'previous_chapter': get_i18n_text('ui.previous_chapter', is_traditional, '上一章'),
             'next_chapter': get_i18n_text('ui.next_chapter', is_traditional, '下一章'),
@@ -115,7 +113,7 @@ class I18nTemplateManager:
 <div id="top"></div>
 <div class="header-nav">
   <div class="nav-home">
-    <a href="{home_link}">{ebook_toc_text}</a> | <a href="{cross_href}">{cross_text}</a>
+    <a href="{home_link}">{ebook_toc_text}</a>
   </div>
   <div class="lang-switch">
     {lang_switch_links}

@@ -437,16 +437,11 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                          title_bits or cur_section, qa["atext"][:80])
             body.append("<hr/>")
 
-# 互跳連結：ebook ↔ wenda2_ebook
+# 單書內頁：只回本系列總目錄（跨書連結僅出現在首頁）
     _book_toc_href = "index_trad.html" if is_trad else "index.html"
-    _cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
-    _cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
     _book_toc_text = "📖 坐禪系列總目錄" if is_trad else "📖 坐禅系列总目录"
     _header_class = "header-nav"
-    _nav_left_content = (
-        f'<a href="{_book_toc_href}">{_book_toc_text}</a> | '
-        f'<a href="{_cross_href}">{_cross_text}</a>'
-    )
+    _nav_left_content = f'<a href="{_book_toc_href}">{_book_toc_text}</a>'
     _lang_switch_links = build_lang_switch_links(book.filename, book.filename_trad, is_trad)
     html = _HEAD_TMPL.format(
         title=esc(book.title),

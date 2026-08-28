@@ -125,7 +125,7 @@ class TestHTMLGeneratorChapterPages:
         )
         content = (output_dir / "01_trad.html").read_text(encoding="utf-8")
         assert '<a href="index_trad.html">📖 問答錄2總目錄</a>' in content
-        assert '<a href="../ebook/index_trad.html">📚 坐禪系列</a>' in content
+        assert 'href="../ebook/' not in content
         assert 'href="../index.html"' not in content
 
 
