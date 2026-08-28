@@ -25,14 +25,26 @@ traditional Chinese using the `opencc-python-reimplemented` library.
 ### Requirement: Taiwan-Standard Traditional Output
 `to_traditional` SHALL output Taiwan-standard traditional Chinese (台灣正體).
 The source documents are simplified Chinese, so the method SHALL normalise the
-input to simplified (`t2s`, a near no-op that also flattens any stray
-Hong-Kong / old-style glyphs), convert to Taiwan traditional (`s2tw`), then
-repair the inherent one-to-many mis-conversions of OpenCC's `s2tw` dictionary
+input to simplified (`t2s`, which also flattens any stray Hong-Kong /
+old-style glyphs), convert to Taiwan traditional with Taiwan
+regional vocabulary (`s2twp`), then
+repair the inherent one-to-many mis-conversions of OpenCC's `s2twp` dictionary
 (see below), apply curated context fixes, and finally apply the
 variant-character/word map. The one-to-many repairs are required because both
 `opencc` and `opencc-python-reimplemented` greedily segment ambiguous
 simplified characters (`只`, `发`, `后`, `里`, …) and pick the wrong traditional
 glyph in certain contexts.
+
+#### Scenario: Common Taiwan glyphs are selected
+- GIVEN text containing `才`, `群`, or legacy variants `纔`, `羣`, `爲`, `裏`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the output SHALL use the common Taiwan forms `才`, `群`, `為`, `裡`
+
+#### Scenario: Taiwan regional vocabulary is selected
+- GIVEN the simplified text `软件、鼠标、信息`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `軟體、滑鼠、資訊`
+- AND it SHALL NOT use Hong Kong or Mainland regional vocabulary
 
 #### Scenario: Over-converted "only" is corrected
 - GIVEN the text `隻能` (over-converted "only can")
@@ -54,10 +66,10 @@ glyph in certain contexts.
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL remain `一隻貓`
 
-### Requirement: Correct s2tw "only" Over-Conversion
-The bundled `opencc-python-reimplemented` `s2tw` dictionary over-converts the
+### Requirement: Correct s2twp "only" Over-Conversion
+The bundled `opencc-python-reimplemented` `s2twp` dictionary over-converts the
 adverb `只` (only) into the measure word `隻` after certain characters
-(e.g. `是只能` → `是隻能`). After the `s2tw` step `to_traditional` SHALL repair
+(e.g. `是只能` → `是隻能`). After the `s2twp` step `to_traditional` SHALL repair
 this: a `隻` whose following character is an adverb/verb/copula follower
 (`能`, `要`, `是`, `有`, `會`, …) and whose preceding character is not a
 number/quantifier SHALL be converted back to `只`. Fixed measure idioms such as
@@ -82,10 +94,10 @@ characters are not in the follower set.
 - THEN a curated context-fix map SHALL correct it to `那一只能回到自性`,
   while genuine measure-word usage such as `這一隻能飛` SHALL remain unchanged
 
-### Requirement: Correct s2tw "emit/hair" (發/髮) Over-Conversion
-Simplified `发` maps to both `發` (emit/issue) and `髮` (hair). `s2tw`
+### Requirement: Correct s2twp "emit/hair" (發/髮) Over-Conversion
+Simplified `发` maps to both `發` (emit/issue) and `髮` (hair). `s2twp`
 over-converts `發` into `髮` after characters that collocate with hair
-(e.g. `亂发愿` is read as `亂髮`+`願`; `眾生发願` as `生髮`+…). After `s2tw`,
+(e.g. `亂发愿` is read as `亂髮`+`願`; `眾生发願` as `生髮`+…). After `s2twp`,
 `to_traditional` SHALL convert a `髮` back to `發` when its following character
 is an emit/issue follower (`願`, `現`, `生`, `出`, `音`, `揮`, `作`, `展`, …),
 OR when its preceding character is not a hair modifier (`頭`, `白`, `脫`, `長`,
@@ -102,10 +114,10 @@ OR when its preceding character is not a hair modifier (`頭`, `白`, `脫`, `�
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL be `頭髮的顏色` (and `白髮變黑`, `髮際線`)
 
-### Requirement: Correct s2tw "after/queen" (後/后) Under-Conversion
-Simplified `后` maps to both `後` (after) and `后` (queen/empress). `s2tw`
+### Requirement: Correct s2twp "after/queen" (後/后) Under-Conversion
+Simplified `后` maps to both `後` (after) and `后` (queen/empress). `s2twp`
 leaves `后` unconverted in `天后`, `東西后`, `父母后`, `聊天后` etc. where it
-means "after". After `s2tw`, `to_traditional` SHALL convert `后` to `後` unless
+means "after". After `s2twp`, `to_traditional` SHALL convert `后` to `後` unless
 its preceding character is a queen modifier (`皇`, `太`, `呂`, `武`, `蟻`, `王`,
 …) or its following character is a queen noun (`宮`, `娘`, `妃`, `土`, …), so
 that `皇后`, `太后`, `呂后`, `蟻后`, `天后宮`, `后土` are preserved.
@@ -120,10 +132,10 @@ that `皇后`, `太后`, `呂后`, `蟻后`, `天后宮`, `后土` are preserved
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL contain `太后` (and `皇后`)
 
-### Requirement: Correct s2tw "inside" (裡/里) Under-Conversion
+### Requirement: Correct s2twp "inside" (裡/里) Under-Conversion
 Simplified `里` maps to both `裡` (inside) and `里` (li/mile/village/translit).
-`s2tw` converts `這裡`/`心裡` correctly but leaves `里` after certain phrases
-(`劇本里`, `知道里面`, `六道里`, `視角里`, `輪迴里`). After `s2tw`,
+`s2twp` converts `這裡`/`心裡` correctly but leaves `里` after certain phrases
+(`劇本里`, `知道里面`, `六道里`, `視角里`, `輪迴里`). After `s2twp`,
 `to_traditional` SHALL convert `里` to `裡` when preceded by an inside-context
 character (`本`, `道`, `會`, `角`, `方`, `場`, `子`, `迴`, `穴`, `識`, `經`,
 `向`). Distance/transliteration words (`公里`, `千里`, `鄰里`, `斯里蘭卡`)
@@ -141,7 +153,7 @@ SHALL be preserved because their preceding character is not in that set.
 
 ### Requirement: Sleepy "睏" Context Correction
 Simplified `困` covers both `困` (trapped/difficult) and `睏` (sleepy/drowsy).
-`s2tw` always produces `困`. Where a curated phrase unambiguously means sleepy,
+`s2twp` always produces `困`. Where a curated phrase unambiguously means sleepy,
 `to_traditional` SHALL correct it via the context-fix map, while genuine
 "trapped/difficult" usage (`困難`, `被困`) SHALL remain `困`.
 
@@ -159,7 +171,7 @@ Simplified `困` covers both `困` (trapped/difficult) and `睏` (sleepy/drowsy)
 Before and after OpenCC conversion the system SHALL apply a variant-character
 map to standardise uncommon glyphs (e.g. `衆 → 眾`, `喫 → 吃`). The same map
 SHALL also correct unambiguous word-level mis-conversions where the traditional
-form has only one correct spelling but `s2tw` picks the wrong one:
+form has only one correct spelling but `s2twp` picks the wrong one:
 `制造 → 製造`, `制作 → 製作`, `製度 → 制度`, `分鍾 → 分鐘`.
 
 #### Scenario: Variant character replaced
@@ -231,7 +243,10 @@ and the index template SHALL inject them into the scope control buttons.
 Before writing simplified search index entries, the system SHALL call
 `I18nProcessor.ensure_simplified` on each item's `title`, `content`, and
 `context` to guarantee that search index content is purely simplified Chinese
-regardless of the source document's original character set.
+regardless of the source document's original character set. To preserve the
+existing simplified edition's wording, `資訊` SHALL be normalized to `信息` only
+on the simplified-output path; this replacement SHALL NOT affect Taiwan
+traditional output.
 
 ## Technical Notes
 

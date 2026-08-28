@@ -72,6 +72,10 @@ class TestI18nProcessor:
         result = processor.to_simplified("你好世界")
         assert isinstance(result, str)
 
+    def test_to_simplified_keeps_existing_information_wording(self, processor):
+        assert processor.to_simplified("取得資訊") == "取得信息"
+        assert processor.ensure_simplified("取得資訊") == "取得信息"
+
     def test_to_traditional_empty(self, processor):
         assert processor.to_traditional("") == ""
 
@@ -133,6 +137,14 @@ class TestI18nProcessor:
     def test_to_traditional_from_simplified(self, processor):
         # 簡體來源也應得到正確台灣正體
         assert processor.to_traditional("只能干预") == "只能干預"
+
+    def test_to_traditional_uses_common_taiwan_variants(self, processor):
+        assert processor.to_traditional("人才群众因为里面") == "人才群眾因為裡面"
+        assert processor.to_traditional("纔羣爲裏衆") == "才群為裡眾"
+
+    def test_to_traditional_uses_taiwan_phrases(self, processor):
+        assert processor.to_traditional("软件和鼠标") == "軟體和滑鼠"
+        assert processor.to_traditional("获取信息") == "獲取資訊"
 
     # ---- 發 / 髮 (emit vs hair) ----
 
@@ -198,12 +210,11 @@ class TestI18nProcessor:
         # 分鐘（minute）不可寫成 分鍾
         assert processor.to_traditional("十几分钟") == "十幾分鐘"
 
-    def test_to_traditional_keeps_xinxi(self, processor):
-        # 「信息」在台灣通用，統一保留為「信息」（不轉成「資訊」）
-        assert processor.to_traditional("信息很多") == "信息很多"
-        assert processor.to_traditional("获取信息") == "獲取信息"
-        # 來源若為「资讯」也一併歸一成「信息」
-        assert processor.to_traditional("现在资讯传媒发达") == "現在信息傳媒發達"
+    def test_to_traditional_localizes_xinxi(self, processor):
+        # s2twp 將中國大陸慣用詞「信息」轉成台灣常用的「資訊」
+        assert processor.to_traditional("信息很多") == "資訊很多"
+        assert processor.to_traditional("获取信息") == "獲取資訊"
+        assert processor.to_traditional("现在资讯传媒发达") == "現在資訊傳媒發達"
 
     def test_to_traditional_context_fix_sleepy_kun(self, processor):
         # 「現在困才是更大的問題」的「困」是睡意「睏」（人工判斷的個案修正）

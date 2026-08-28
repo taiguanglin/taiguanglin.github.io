@@ -7,7 +7,9 @@
 """
 
 import argparse
+import importlib.util
 import os
+import re
 import shutil
 import sys
 
@@ -20,16 +22,47 @@ import html_generator
 import search_index
 
 
+def _load_i18n_processor():
+    """直接載入共用轉換模組，避開兩個工具各自的 ``config`` 套件名稱衝突。"""
+    path = os.path.abspath(os.path.join(
+        os.path.dirname(__file__), "..", "word2ebook", "utils", "i18n_utils.py"
+    ))
+    spec = importlib.util.spec_from_file_location("_shared_taiwan_i18n", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入共用台灣正體轉換器：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.I18nProcessor()
+
+
+_TAIWAN_CHINESE = _load_i18n_processor()
+_HTML_TAG_RE = re.compile(r"(<[^>]*>)", re.DOTALL)
+_HTML_RAW_BLOCK_RE = re.compile(
+    r"(<(?:script|style)\b[^>]*>.*?</(?:script|style)\s*>)",
+    re.IGNORECASE | re.DOTALL,
+)
+
+
 def _convert_s2t(text):
-    from opencc import OpenCC
-    if not hasattr(_convert_s2t, "_cc"):
-        _convert_s2t._cc = OpenCC("s2t")
-    return _convert_s2t._cc.convert(text)
+    """轉成台灣常用正體，與 wenda2_ebook 共用同一套規則。"""
+    return _TAIWAN_CHINESE.to_traditional(text)
 
 
 def convert_html_to_trad(html):
-    """把簡體 HTML 轉成繁體（標籤/屬性內的 ASCII 不受影響）。"""
-    return _convert_s2t(html)
+    """只轉換 HTML 文字節點，保留標籤、URL、屬性及 script/style 原文。"""
+    converted = []
+    for raw_or_html in _HTML_RAW_BLOCK_RE.split(html):
+        if not raw_or_html:
+            continue
+        if _HTML_RAW_BLOCK_RE.fullmatch(raw_or_html):
+            converted.append(raw_or_html)
+            continue
+        converted.extend(
+            part if part.startswith("<") else _convert_s2t(part)
+            for part in _HTML_TAG_RE.split(raw_or_html)
+            if part
+        )
+    return "".join(converted)
 
 
 def convert_items_to_trad(items):

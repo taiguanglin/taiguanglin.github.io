@@ -10,20 +10,20 @@
 <script src="assets/js/i18n-text.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js"></script>
 <script>
-// 備用CDN加載
+// 备用CDN加载
 if (typeof MiniSearch === 'undefined') {
-  console.log('主CDN失敗，嘗試備用CDN...');
+  console.log('主CDN失败，尝试备用CDN...');
   const script = document.createElement('script');
   script.src = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js';
   script.onload = function() {
     if (typeof initSearch === 'function') { initSearch(); }
   };
   script.onerror = function() {
-    console.error('所有CDN都失敗了，搜索功能不可用');
+    console.error('所有CDN都失败了，搜索功能不可用');
     const searchInput = document.getElementById('search-input');
     const searchStatus = document.getElementById('search-status');
     if (searchInput) searchInput.disabled = true;
-    if (searchStatus) searchStatus.textContent = getText('搜索功能暫不可用（網絡問題）', '搜尋功能暫不可用（網路問題）');
+    if (searchStatus) searchStatus.textContent = getText('搜索功能暂不可用（网络问题）', '搜尋功能暫不可用（網路問題）');
   };
   document.head.appendChild(script);
 }
@@ -42,50 +42,50 @@ if (typeof MiniSearch === 'undefined') {
 </div>
 <h1>坐禪系列電子書</h1>
 
-<!-- 搜索激活按鈕 -->
+<!-- 搜索激活按钮 -->
 <div class="search-activation">
   <button class="search-activate-btn" id="search-activate-btn">
-    啓用全文搜索
+    啟用全文搜尋
   </button>
 </div>
 
-<!-- 搜索功能（默認隱藏） -->
+<!-- 搜索功能（默认隐藏） -->
 <div class="search-container" id="search-container" style="display: none;">
   <div class="search-box">
-    <input type="text" id="search-input" placeholder="搜索全文內容..." autocomplete="off">
-    <div class="search-scope" role="group" aria-label="搜索範圍">
+    <input type="text" id="search-input" placeholder="搜索全文内容..." autocomplete="off">
+    <div class="search-scope" role="group" aria-label="搜索范围">
       <button type="button" class="search-scope-btn" data-scope="question" aria-pressed="false">問題</button>
       <button type="button" class="search-scope-btn" data-scope="answer" aria-pressed="false">回答</button>
       <button type="button" class="search-scope-btn is-active" data-scope="both" aria-pressed="true">全部</button>
     </div>
-    <div class="search-status" id="search-status">正在初始化搜索功能...</div>
+    <div class="search-status" id="search-status">正在初始化搜尋功能...</div>
   </div>
 
-  <!-- 搜索結果 -->
+  <!-- 搜索结果 -->
   <div class="search-results" id="search-results" style="display: none;">
     <div class="search-results-header">
       <span class="search-results-count" id="search-results-count"></span>
       <div class="search-results-actions">
         <button class="search-load-more" id="search-load-more" style="display: none;">顯示更多</button>
         <button class="search-load-all" id="search-load-all" style="display: none;">顯示全部</button>
-        <button class="search-clear" id="search-clear">清除搜索</button>
-        <button class="search-collapse" id="search-collapse">收起搜索</button>
+        <button class="search-clear" id="search-clear">清除搜尋</button>
+        <button class="search-collapse" id="search-collapse">收起搜尋</button>
       </div>
     </div>
     <ul class="search-results-list" id="search-results-list"></ul>
 
-    <!-- 底部控制按鈕 -->
+    <!-- 底部控制按钮 -->
     <div class="search-results-footer">
       <div class="search-results-actions">
         <button class="search-load-more" id="search-load-more-bottom" style="display: none;">顯示更多</button>
         <button class="search-load-all" id="search-load-all-bottom" style="display: none;">顯示全部</button>
-        <button class="search-clear" id="search-clear-bottom">清除搜索</button>
-        <button class="search-collapse" id="search-collapse-bottom">收起搜索</button>
+        <button class="search-clear" id="search-clear-bottom">清除搜尋</button>
+        <button class="search-collapse" id="search-collapse-bottom">收起搜尋</button>
       </div>
     </div>
   </div>
 </div>
-<div class="toc-header-container"><h2 id="toc-header">目錄</h2><div class="toc-level-controls"><div class="toc-level-label">顯示層級</div><div class="toc-level-buttons-vertical"><button class="toc-level-btn" data-level="1" title="顯示第1層">1</button><button class="toc-level-btn active" data-level="2" title="顯示前2層">2</button><button class="toc-level-btn" data-level="3" title="顯示前3層">3</button><button class="toc-level-btn" data-level="4" title="顯示前4層">4</button></div></div></div><div class="toc" id="main-toc">
+<div class="toc-header-container"><h2 id="toc-header">目錄</h2><div class="toc-level-controls"><div class="toc-level-label">顯示層級</div><div class="toc-level-buttons-vertical"><button class="toc-level-btn" data-level="1" title="显示第1层">1</button><button class="toc-level-btn active" data-level="2" title="显示前2层">2</button><button class="toc-level-btn" data-level="3" title="显示前3层">3</button><button class="toc-level-btn" data-level="4" title="显示前4层">4</button></div></div></div><div class="toc" id="main-toc">
 <ul class='toc-level-1'>
 <li class="toc-item toc-chapter" data-level="1" data-chapter="0" data-default-visible="true"><span class="toc-expand-icon" data-level="1">▼</span><a href="01_trad.html" target="_blank" rel="noopener noreferrer">01《坐禪》</a><span class="toc-count">(1663)</span>
 <ul>
@@ -95,7 +95,7 @@ if (typeof MiniSearch === 'undefined') {
 <ul>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="0"><span class="toc-expand-icon" data-level="3">▼</span><a href="01_trad.html#s98ae1c08" target="_blank" rel="noopener noreferrer">第01 節 終極佛法</a><span class="toc-count">(37)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s9c892266" target="_blank" rel="noopener noreferrer">1、妄想、分別、執着</a><span class="toc-count">(13)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s9c892266" target="_blank" rel="noopener noreferrer">1、妄想、分別、執著</a><span class="toc-count">(13)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s241ac5f1" target="_blank" rel="noopener noreferrer">2、三界二十八天——無色界四天</a><span class="toc-count">(10)</span>
 </li>
@@ -163,7 +163,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="0"><span class="toc-expand-icon" data-level="3">▼</span><a href="01_trad.html#s46aeea33" target="_blank" rel="noopener noreferrer">第02 節 修行法門</a><span class="toc-count">(150)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#sd099b111" target="_blank" rel="noopener noreferrer">1、禪定中要消滅的對象</a><span class="toc-count">(38)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#sd099b111" target="_blank" rel="noopener noreferrer">1、禪定中要消滅的物件</a><span class="toc-count">(38)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s522054ea" target="_blank" rel="noopener noreferrer">2、觀音菩薩的耳根圓通法門</a><span class="toc-count">(24)</span>
 </li>
@@ -241,7 +241,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="0"><a href="01_trad.html#scd778adb" target="_blank" rel="noopener noreferrer">第03 節 血壓</a><span class="toc-count">(23)</span>
 </li>
-<li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s775c62af" target="_blank" rel="noopener noreferrer">第04 節 血液循環</a><span class="toc-count">(24)</span>
+<li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s775c62af" target="_blank" rel="noopener noreferrer">第04 節 血液迴圈</a><span class="toc-count">(24)</span>
 </li>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="0"><span class="toc-expand-icon" data-level="3">▼</span><a href="01_trad.html#se35bba64" target="_blank" rel="noopener noreferrer">第05 節 神經與筋膜</a><span class="toc-count">(97)</span>
 <ul>
@@ -249,7 +249,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s7e79516b" target="_blank" rel="noopener noreferrer">2、筋膜</a><span class="toc-count">(33)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s6bb1b208" target="_blank" rel="noopener noreferrer">3、丹田裏的神經</a><span class="toc-count">(13)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="0"><a href="01_trad.html#s6bb1b208" target="_blank" rel="noopener noreferrer">3、丹田裡的神經</a><span class="toc-count">(13)</span>
 </li>
 </ul>
 </li>
@@ -327,7 +327,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s368aaca9" target="_blank" rel="noopener noreferrer">第17 章 地獄、輪迴</a><span class="toc-count">(14)</span>
 </li>
-<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s55bca5ed" target="_blank" rel="noopener noreferrer">第18 章 妄想、分別、執着、明心見性</a><span class="toc-count">(38)</span>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#s55bca5ed" target="_blank" rel="noopener noreferrer">第18 章 妄想、分別、執著、明心見性</a><span class="toc-count">(38)</span>
 </li>
 <li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="1"><a href="02_trad.html#sa933dfa9" target="_blank" rel="noopener noreferrer">第19 章 愛情、婚姻、家庭關係</a><span class="toc-count">(13)</span>
 </li>
@@ -497,13 +497,13 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s91eceb61" target="_blank" rel="noopener noreferrer">第02 節 毀滅</a><span class="toc-count">(20)</span>
 </li>
-<li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="2"><span class="toc-expand-icon" data-level="3">▼</span><a href="03_trad.html#s79ed1f7e" target="_blank" rel="noopener noreferrer">第03 節 衆生的輪轉</a><span class="toc-count">(77)</span>
+<li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="2"><span class="toc-expand-icon" data-level="3">▼</span><a href="03_trad.html#s79ed1f7e" target="_blank" rel="noopener noreferrer">第03 節 眾生的輪轉</a><span class="toc-count">(77)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s9a972927" target="_blank" rel="noopener noreferrer">1. 天道衆生</a><span class="toc-count">(22)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s9a972927" target="_blank" rel="noopener noreferrer">1. 天道眾生</a><span class="toc-count">(22)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#se634e93e" target="_blank" rel="noopener noreferrer">2. 人道、畜生道、餓鬼道衆生</a><span class="toc-count">(7)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#se634e93e" target="_blank" rel="noopener noreferrer">2. 人道、畜生道、餓鬼道眾生</a><span class="toc-count">(7)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sc0a1492e" target="_blank" rel="noopener noreferrer">3. 地獄道衆生</a><span class="toc-count">(5)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sc0a1492e" target="_blank" rel="noopener noreferrer">3. 地獄道眾生</a><span class="toc-count">(5)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s54fea6c6" target="_blank" rel="noopener noreferrer">4. 消業的去處</a><span class="toc-count">(11)</span>
 </li>
@@ -561,7 +561,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="2"><span class="toc-expand-icon" data-level="3">▼</span><a href="03_trad.html#sfb136c1e" target="_blank" rel="noopener noreferrer">第09 節 專制與民主</a><span class="toc-count">(44)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s91c6c1f3" target="_blank" rel="noopener noreferrer">經濟問題：以土地爲例</a><span class="toc-count">(6)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s91c6c1f3" target="_blank" rel="noopener noreferrer">經濟問題：以土地為例</a><span class="toc-count">(6)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s21060118" target="_blank" rel="noopener noreferrer">民族問題</a><span class="toc-count">(4)</span>
 </li>
@@ -581,7 +581,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-3" data-level="3" data-default-visible="False" data-chapter="2"><span class="toc-expand-icon" data-level="3">▼</span><a href="03_trad.html#sdc7dc2b9" target="_blank" rel="noopener noreferrer">第11 節 主角國的設計</a><span class="toc-count">(67)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s9f62b291" target="_blank" rel="noopener noreferrer">1. 一個硬件</a><span class="toc-count">(11)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s9f62b291" target="_blank" rel="noopener noreferrer">1. 一個硬體</a><span class="toc-count">(11)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s4920be70" target="_blank" rel="noopener noreferrer">2. 三個天賦（1）探索精神</a><span class="toc-count">(10)</span>
 </li>
@@ -603,17 +603,17 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sc63c409a" target="_blank" rel="noopener noreferrer">（2）僧團的組織和管理</a><span class="toc-count">(1)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s2b41dcb8" target="_blank" rel="noopener noreferrer">（3）大衆傳法</a><span class="toc-count">(1)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s2b41dcb8" target="_blank" rel="noopener noreferrer">（3）大眾傳法</a><span class="toc-count">(1)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sf4e843bd" target="_blank" rel="noopener noreferrer">2. 傳播</a><span class="toc-count">(1)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s54c926ee" target="_blank" rel="noopener noreferrer">（1）宏觀態傳法時，取信的方法</a><span class="toc-count">(1)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sfab202c4" target="_blank" rel="noopener noreferrer">Ⅰ）恩惠——以感恩之心爲前提</a><span class="toc-count">(10)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sfab202c4" target="_blank" rel="noopener noreferrer">Ⅰ）恩惠——以感恩之心為前提</a><span class="toc-count">(10)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s176f8190" target="_blank" rel="noopener noreferrer">Ⅱ）權威——以愚昧、謙虛爲前提</a><span class="toc-count">(8)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#s176f8190" target="_blank" rel="noopener noreferrer">Ⅱ）權威——以愚昧、謙虛為前提</a><span class="toc-count">(8)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sd53aa1e1" target="_blank" rel="noopener noreferrer">Ⅲ）邏輯——知識儲備和邏輯思維爲前提</a><span class="toc-count">(3)</span>
+<li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sd53aa1e1" target="_blank" rel="noopener noreferrer">Ⅲ）邏輯——知識儲備和邏輯思維為前提</a><span class="toc-count">(3)</span>
 </li>
 <li class="toc-item toc-level-4" data-level="4" data-default-visible="False" data-chapter="2"><a href="03_trad.html#sf19b0446" target="_blank" rel="noopener noreferrer">（2）微觀態傳法時，取信的方法</a><span class="toc-count">(1)</span>
 </li>
@@ -659,7 +659,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sf6257b6a" target="_blank" rel="noopener noreferrer">法會因由分第一</a><span class="toc-count">(14)</span>
 </li>
-<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s19a433ed" target="_blank" rel="noopener noreferrer">善現啓請分第二</a><span class="toc-count">(24)</span>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s19a433ed" target="_blank" rel="noopener noreferrer">善現啟請分第二</a><span class="toc-count">(24)</span>
 </li>
 <li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sbe801ed8" target="_blank" rel="noopener noreferrer">大乘正宗分第三</a><span class="toc-count">(22)</span>
 </li>
@@ -677,7 +677,7 @@ if (typeof MiniSearch === 'undefined') {
 </li>
 <li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s8661e3ea" target="_blank" rel="noopener noreferrer">莊嚴淨土分第十</a><span class="toc-count">(35)</span>
 </li>
-<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sb1929513" target="_blank" rel="noopener noreferrer">無爲福勝分第十一</a><span class="toc-count">(17)</span>
+<li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#sb1929513" target="_blank" rel="noopener noreferrer">無為福勝分第十一</a><span class="toc-count">(17)</span>
 </li>
 <li class="toc-item toc-level-2" data-level="2" data-default-visible="True" data-chapter="3"><a href="04_trad.html#s0b978ea6" target="_blank" rel="noopener noreferrer">尊重正教分第十二</a><span class="toc-count">(19)</span>
 </li>
@@ -914,19 +914,19 @@ if (typeof MiniSearch === 'undefined') {
 </ul>
 </div>
 
-<!-- 懸浮操作按鈕 -->
+<!-- 悬浮操作按钮 -->
 <div class="action-buttons">
   <div class="action-menu">
-    <button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜單">☰</button>
+    <button class="action-btn menu-btn" data-action="toggle-menu" title="功能菜单">☰</button>
     <div class="action-menu-items">
-      <button class="action-btn" data-action="toc" title="書籤">🔖</button>
-      <button class="action-btn" data-action="top" title="回到頂部">↑</button>
-      <button class="action-btn" data-action="settings" title="設置">⚙️</button>
+      <button class="action-btn" data-action="toc" title="书签">🔖</button>
+      <button class="action-btn" data-action="top" title="回到顶部">↑</button>
+      <button class="action-btn" data-action="settings" title="设置">⚙️</button>
     </div>
   </div>
 </div>
 
-<!-- 懸浮目錄 -->
+<!-- 悬浮目录 -->
 <div class="floating-toc" id="floating-toc">
   <div class="floating-toc-header">
     <div class="floating-toc-tabs">
@@ -939,22 +939,22 @@ if (typeof MiniSearch === 'undefined') {
   <div class="floating-toc-content">
     <h3 id="toc-title">📖 章節目錄</h3>
     <ul id="toc-list">
-      <!-- 動態生成的內容 -->
+      <!-- 动态生成的内容 -->
     </ul>
     <ul id="bookmarks-list" style="display: none;">
-      <!-- 動態生成的書籤內容 -->
+      <!-- 动态生成的书签内容 -->
     </ul>
   </div>
 </div>
 
-<p class="source-filename" id="source-filename">Source: <a class="source-link" href="../books/01《坐禪》.pdf" download="01《坐禪》.pdf">01《坐禪》.pdf</a>、<a class="source-link" href="../books/02《坐禪之問答錄》.pdf" download="02《坐禪之問答錄》.pdf">02《坐禪之問答錄》.pdf</a>、<a class="source-link" href="../books/03《坐禪2·次世代版終極佛法》.pdf" download="03《坐禪2·次世代版終極佛法》.pdf">03《坐禪2·次世代版終極佛法》.pdf</a>、<a class="source-link" href="../books/04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf" download="04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf">04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf</a>、<a class="source-link" href="../books/05 TaiGuangLin禪師講《圓覺經》最終版.pdf" download="05 TaiGuangLin禪師講《圓覺經》最終版.pdf">05 TaiGuangLin禪師講《圓覺經》最終版.pdf</a></p>
+<p class="source-filename" id="source-filename">Source: <a class="source-link" href="../books/01《坐禅》.pdf" download="01《坐禅》.pdf">01《坐禪》.pdf</a>、<a class="source-link" href="../books/02《坐禅之问答录》.pdf" download="02《坐禅之问答录》.pdf">02《坐禪之問答錄》.pdf</a>、<a class="source-link" href="../books/03《坐禅2·次世代版终极佛法》.pdf" download="03《坐禅2·次世代版终极佛法》.pdf">03《坐禪2·次世代版終極佛法》.pdf</a>、<a class="source-link" href="../books/04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf" download="04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf">04《次世代版終極佛法·TaiGuangLin禪師講金剛經 心經》.pdf</a>、<a class="source-link" href="../books/05 TaiGuangLin禅师讲《圆觉经》最终版.pdf" download="05 TaiGuangLin禅师讲《圆觉经》最终版.pdf">05 TaiGuangLin禪師講《圓覺經》最終版.pdf</a></p>
 
-<!-- 滾動時顯示的浮動層級控制按鈕 -->
+<!-- 滚动时显示的浮动层级控制按钮 -->
 <div class="floating-level-controls" id="floating-level-controls" style="display: none;">
-  <button class="floating-level-toggle" id="floating-level-toggle" title="收縮/展開層級控制">⇄</button>
+  <button class="floating-level-toggle" id="floating-level-toggle" title="收缩/展开层级控制">⇄</button>
   <div class="floating-level-content">
     <div class="floating-level-label">層級</div>
-    <div class="floating-level-buttons"><button class="floating-level-btn" data-level="1" title="顯示第1層">1</button><button class="floating-level-btn active" data-level="2" title="顯示前2層">2</button><button class="floating-level-btn" data-level="3" title="顯示前3層">3</button><button class="floating-level-btn" data-level="4" title="顯示前4層">4</button></div>
+    <div class="floating-level-buttons"><button class="floating-level-btn" data-level="1" title="显示第1层">1</button><button class="floating-level-btn active" data-level="2" title="显示前2层">2</button><button class="floating-level-btn" data-level="3" title="显示前3层">3</button><button class="floating-level-btn" data-level="4" title="显示前4层">4</button></div>
   </div>
 </div>
 </body>

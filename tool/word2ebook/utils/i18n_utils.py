@@ -94,6 +94,10 @@ _CONTEXT_FIXES = {
 # 予以保留，以免誤刪內文。
 # ---------------------------------------------------------------------------
 _OOXML_CONTROL_CHAR_RE = re.compile(r"_x00[01][0-9A-Fa-f]_|_x007[Ff]_")
+_SIMPLIFIED_WORD_NORMALIZATION = {
+    # 維持既有簡體版用詞；只在簡體輸出套用，不反向污染台灣正體版。
+    "資訊": "信息",
+}
 
 
 class I18nProcessor:
@@ -101,7 +105,7 @@ class I18nProcessor:
     
     def __init__(self):
         self._opencc_s2t = None
-        self._opencc_s2tw = None
+        self._opencc_s2twp = None
         self._opencc_t2s = None
         
         # 異體字標準化對照表（台灣正體收尾用，補 OpenCC s2tw 未涵蓋的港式／舊式用字）
@@ -144,9 +148,6 @@ class I18nProcessor:
             "制作": "製作",   # 製作 誤寫成 制作
             "製度": "制度",   # 制度（system）誤寫成 製度
             "分鍾": "分鐘",   # 分鐘（minute）誤寫成 分鍾（鍾 only for 鍾情/姓鍾）
-            # 「信息」在台灣已通用且看得懂，統一保留「信息」，不改成台灣慣用語「資訊」。
-            # （s2tw 本就保留「信息」，此處再把來源中少數「资讯→資訊」一併歸一為「信息」。）
-            "資訊": "信息",
             # OOXML 控制字元轉義（_x0001_、_x000B_ 等）改由 _OOXML_CONTROL_CHAR_RE
             # 統一移除，見 standardize_variant_chars。
             # 可以根據需要繼續添加
@@ -165,14 +166,19 @@ class I18nProcessor:
     
     @property
     def opencc_s2tw(self):
-        """懒加载 OpenCC 简体转台湾正体繁体"""
-        if self._opencc_s2tw is None:
+        """懶載入 OpenCC 簡體轉台灣正體（含台灣慣用詞）轉換器。
+
+        保留 ``opencc_s2tw`` 屬性名稱以相容既有呼叫端；實際使用較完整的
+        ``s2twp`` profile。它在台灣字形之外，也會把「軟件／鼠標／信息」
+        等地區詞彙轉成「軟體／滑鼠／資訊」。
+        """
+        if self._opencc_s2twp is None:
             try:
                 from opencc import OpenCC
-                self._opencc_s2tw = OpenCC('s2tw')
+                self._opencc_s2twp = OpenCC('s2twp')
             except ImportError:
                 raise ImportError("需要安装 opencc-python-reimplemented 来支持繁体转换")
-        return self._opencc_s2tw
+        return self._opencc_s2twp
 
     @property
     def opencc_t2s(self):
@@ -184,7 +190,7 @@ class I18nProcessor:
             except ImportError:
                 raise ImportError("需要安装 opencc-python-reimplemented 来支持简体转换")
         return self._opencc_t2s
-    
+
     def standardize_variant_chars(self, text: str) -> str:
         """標準化異體字，並移除 OOXML 控制字元轉義（_x0001_、_x000B_ 等雜訊）"""
         if not text:
@@ -206,8 +212,9 @@ class I18nProcessor:
         1. 先用 t2s 正規化成簡體 —— 讓 OpenCC 的片語字典處理語意歧義，
            例如「隻能」→「只能」、「幹預」→「干預」、「沖突」→「冲突」。
            合法的量詞「隻」（如「一隻貓」）會被片語字典保留。
-        2. 再用 s2tw 轉成台灣正體 —— 例如「裏」→「裡」、「冲突」→「衝突」。
-        3. 修正 s2tw 對一簡多繁字的語境誤轉（OpenCC 既有缺陷，兩個套件皆然）：
+        2. 再用 s2twp 轉成台灣正體與台灣慣用詞 —— 例如「裏」→「裡」、
+           「软件」→「軟體」、「鼠标」→「滑鼠」。
+        3. 修正 s2twp 對一簡多繁字的語境誤轉（OpenCC 既有缺陷，兩個套件皆然）：
            只／隻、發／髮、後／后、裡／里。
         4. 套用個別情境的人工修正（禪宗「那個一」、睡意「睏」等）。
         5. 最後套用異體字／字詞標準化表收尾（補 s2tw 未涵蓋的港式異體字與誤轉詞）。
@@ -217,9 +224,9 @@ class I18nProcessor:
 
         # 1. 正規化成簡體（消除港式繁體的語意歧義）
         simplified = self.opencc_t2s.convert(text)
-        # 2. 簡體轉台灣正體繁體
+        # 2. 簡體轉台灣正體繁體（含台灣慣用詞）
         traditional = self.opencc_s2tw.convert(simplified)
-        # 3. 修正 s2tw 對一簡多繁字的語境誤轉
+        # 3. 修正 s2twp 對一簡多繁字的語境誤轉
         traditional = self._fix_only_overconversion(traditional)   # 隻 → 只
         traditional = self._fix_fa_overconversion(traditional)     # 髮 → 發
         traditional = self._fix_hou_overconversion(traditional)    # 后 → 後
@@ -291,14 +298,15 @@ class I18nProcessor:
         return _LI_INSIDE_RE.sub("裡", text)
     
     def to_simplified(self, text: str) -> str:
-        """繁体转简体"""
+        """繁體轉簡體。"""
         if not text:
             return text
         
         # 先標準化異體字（確保轉換前字符統一）
         standardized = self.standardize_variant_chars(text)
         
-        # 然後進行繁體轉簡體
+        for traditional, simplified in _SIMPLIFIED_WORD_NORMALIZATION.items():
+            standardized = standardized.replace(traditional, simplified)
         return self.opencc_t2s.convert(standardized)
     
     def ensure_simplified(self, text: str) -> str:
@@ -306,9 +314,11 @@ class I18nProcessor:
         if not text:
             return text
         
-        # 無論輸入是什麼，都先轉成繁體再轉簡體，確保完全轉換
+        # 無論輸入是什麼，都先轉成繁體再轉簡體，確保完全轉換。
         traditional = self.opencc_s2t.convert(text)
         standardized = self.standardize_variant_chars(traditional)
+        for taiwan_word, mainland_word in _SIMPLIFIED_WORD_NORMALIZATION.items():
+            standardized = standardized.replace(taiwan_word, mainland_word)
         return self.opencc_t2s.convert(standardized)
     
     def get_traditional_filename(self, filename: str) -> str:

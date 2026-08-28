@@ -12,7 +12,7 @@
   D. 文字健全性：U+FFFD／控制字元／私用區、殘留目錄虛線、頁碼漏進正文、
      異常短段落、相鄰重複段落、《问答录》問答欄位異常
   E. 計數一致性：h1 總數 == 各頂層標題計數和；章內目錄與正文的錨點/計數一致
-  F. 簡繁對照：結構相同、繁版文字 == OpenCC(s2t)(簡版文字)、繁版無殘留簡體字
+  F. 簡繁對照：結構相同、繁版文字符合共用台灣正體規則、無少用異體字
 """
 
 import argparse
@@ -26,6 +26,8 @@ from html.parser import HTMLParser
 TOOL_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO_ROOT = os.path.abspath(os.path.join(TOOL_DIR, "..", ".."))
 DEFAULT_OUT = os.path.join(REPO_ROOT, "ebook")
+
+from main import _TAIWAN_CHINESE
 
 CHAPTERS = ["%02d" % n for n in range(1, 6)]
 HEAD_TAGS = {"h2", "h3", "h4"}
@@ -309,11 +311,10 @@ def check_qa_pairs(out):
 
 def check_trad_parity(out):
     try:
-        from opencc import OpenCC
+        converter = _TAIWAN_CHINESE
     except Exception:
         issue("skip", "-", "無 opencc，跳過簡繁比對")
         return
-    cc = OpenCC("s2t")
     pairs = [("index.html", "index_trad.html")] + \
             [("%s.html" % c, "%s_trad.html" % c) for c in CHAPTERS]
     for simp_f, trad_f in pairs:
@@ -322,21 +323,18 @@ def check_trad_parity(out):
             continue
         simp_txt = strip_tags(open(sp, encoding="utf-8").read())
         trad_txt = strip_tags(open(tp, encoding="utf-8").read())
-        expect = cc.convert(simp_txt)
+        expect = converter.to_traditional(simp_txt)
         if expect != trad_txt:
             # 找第一個差異位置供除錯
             i = next((k for k, (a, b) in enumerate(zip(expect, trad_txt)) if a != b),
                      min(len(expect), len(trad_txt)))
-            issue("warn", trad_f, "繁版文字 ≠ s2t(簡版) @%d …%s|%s…"
+            issue("warn", trad_f, "繁版文字 ≠ 台灣正體轉換(簡版) @%d …%s|%s…"
                   % (i, expect[i:i + 12], trad_txt[i:i + 12]))
-        # 殘留簡體字：s2t 後會改變的字不該出現在繁版
-        leftovers = {}
-        for ch in set(trad_txt):
-            if '\u3400' <= ch <= '\u9fff' and cc.convert(ch) != ch:
-                leftovers[ch] = leftovers.get(ch, 0) + 1
-        if leftovers:
-            issue("bad", trad_f, "疑似殘留簡體字：%s"
-                  % " ".join("%s×%d" % kv for kv in sorted(leftovers.items())[:20]))
+        uncommon = {ch: trad_txt.count(ch) for ch in "纔羣爲裏衆麪"
+                    if ch in trad_txt}
+        if uncommon:
+            issue("bad", trad_f, "含少用異體字：%s"
+                  % " ".join("%s×%d" % kv for kv in sorted(uncommon.items())))
 
 
 def check_http(fs_targets, base):

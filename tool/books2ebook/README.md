@@ -1,7 +1,10 @@
 # books2ebook — `books/` 五本 PDF → `ebook/` 靜態電子書
 
 與 `wenda2_ebook` 同款式（影印 `wenda2_ebook/assets`，並附 `books.css`）、
-同一套簡/繁、全量搜尋、懸浮目錄、閱讀設定與深色模式。
+同一套簡/繁、全量搜尋、懸浮目錄、閱讀設定與深色模式。繁體版與
+`word2ebook` 共用 `I18nProcessor`：以 OpenCC `s2twp` 產生台灣正體及台灣
+慣用詞（例如「才、群、為、裡、軟體、滑鼠、資訊」），再套用一簡多繁的
+語境修正，避免 `s2t` 產生「纔、羣、爲、裏」等少用異體字。
 
 ## 來源
 
