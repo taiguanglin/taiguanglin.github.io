@@ -22,6 +22,22 @@ body.dark-mode .sutra-text {
   border-left-color: var(--color-primary-light);
 }
 
+/* 回答的發文時間（沿用提問時間的樣式，色調偏師父側的淺粉） */
+.answer-time {
+  background: rgba(248, 200, 220, 0.3);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #fd7b7b;
+  border: 1px solid rgba(255, 142, 142, 0.15);
+}
+
+body.dark-mode .answer-time {
+  background: rgba(90, 45, 73, 0.4);
+  color: #d4a5b8;
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
 /* 「譯文 / 注解 / 解析」小標籤 */
 .label-heading {
   font-weight: 700;

@@ -17,6 +17,10 @@ _TIME_RE = re.compile(r"[（(](\d{4}-\d{1,2}-\d{1,2})[，,\s]+([\d:]{3,8})[)）]
 # 提問者暱稱：短、不含標點
 _SPEAKER_RE = re.compile(r"^([^：，。？！；、\s()（）]{1,24})：")
 _ANSWERER = "Taiguanglin"
+# 師父貼文的開頭。原書排版並不一致：除了「Taiguanglin：」，還有多出空格的
+# 「Taiguanglin ：」、誤植分號的「Taiguanglin；」，以及回覆特定網友的
+# 「Taiguanglin@ 某某：」（此時 @某某 屬於內文，只吃掉署名）。
+_ANSWER_LEAD_RE = re.compile(r"^%s\s*(?:[：:；;]\s*|(?=@))" % _ANSWERER)
 
 
 def _clean(text):
@@ -228,20 +232,29 @@ def parse_wendalu(ctx):
                 q_left = new_q_left
                 qa_text = ""
             elif f == "FZHTJW":
-                if t.startswith(_ANSWERER + "："):
-                    body = t[len(_ANSWERER) + 1:].strip()
+                lead = _ANSWER_LEAD_RE.match(t)
+                if lead:
+                    body = re.sub(r"^@\s+", "@", t[lead.end():].strip())
+                    # 每則署名貼文在原書中各自獨立（各有發文時間），連續多則
+                    # 時要各自成塊，不能併進上一則的回答。
                     if qa_text:
-                        qa_text += "\n" + body
+                        flush_qa()
                     else:
                         flush_para()
-                        if qa is None:
-                            qa = {"questioner": "", "qtext": ""}
-                        qa_text = body
+                    if qa is None:
+                        qa = {"questioner": "", "qtext": ""}
+                    qa_text = body
                     cont_left = line.x0 if cont_left is None else min(cont_left, line.x0)
                 elif qa is not None:
                     if cont_left is not None and line.x0 > cont_left + 4.0 \
                             and qa_text.strip():
-                        qa_text += "\n"
+                        # 上一段已經以發文時間收尾 → 這裡是師父的下一則貼文
+                        # （原書未再署名），同樣要獨立成塊。
+                        if _TIME_RE.search(qa_text.rstrip()):
+                            flush_qa()
+                            qa = {"questioner": "", "qtext": ""}
+                        else:
+                            qa_text += "\n"
                     qa_text = _join(qa_text, t)
                 else:
                     if cont_left is not None and line.x0 > cont_left + 4.0 \

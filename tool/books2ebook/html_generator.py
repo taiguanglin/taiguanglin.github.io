@@ -414,23 +414,29 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             if qa.get("qtime"):
                 meta_bits.append('<span class="question-time">%s</span>'
                                  % esc(qa["qtime"]))
-            qhtml = (
-                '<div class="question" id="%s">\n<div class="question-meta">\n%s\n'
-                '</div>\n<div class="question-text">%s</div>\n</div>'
-                % (b["qid"], "\n".join(meta_bits), nl2br(esc(qa.get("qtext", ""))))
-            )
             title_bits = qa.get("questioner") or ""
             if qa.get("qtime"):
                 title_bits += " " + qa["qtime"]
-            add_item(TYPE_QUESTION, qa.get("qtext", ""), "%s#%s" % (fname, b["qid"]),
-                     title_bits or cur_section, qa.get("qtext", "")[:80])
-            body.append(qhtml)
+            # 師父連續發帖時，後幾則沒有對應的提問，不輸出空的提問區塊
+            if meta_bits or qa.get("qtext"):
+                body.append(
+                    '<div class="question" id="%s">\n<div class="question-meta">\n%s\n'
+                    '</div>\n<div class="question-text">%s</div>\n</div>'
+                    % (b["qid"], "\n".join(meta_bits), nl2br(esc(qa.get("qtext", ""))))
+                )
+                add_item(TYPE_QUESTION, qa.get("qtext", ""),
+                         "%s#%s" % (fname, b["qid"]),
+                         title_bits or cur_section, qa.get("qtext", "")[:80])
             if qa.get("atext"):
+                ameta = ['<span class="answerer">Taiguanglin</span>']
+                if qa.get("atime"):
+                    ameta.append('<span class="answer-time">%s</span>'
+                                 % esc(qa["atime"]))
                 ahtml = (
                     '<div class="answer" id="%s">\n<div class="answer-meta">\n'
-                    '<span class="answerer">Taiguanglin</span>\n</div>\n'
+                    '%s\n</div>\n'
                     '<div class="answer-text">%s</div>\n</div>'
-                    % (b["aid"], nl2br(esc(qa["atext"])))
+                    % (b["aid"], "\n".join(ameta), nl2br(esc(qa["atext"])))
                 )
                 body.append(ahtml)
                 add_item(TYPE_ANSWER, qa["atext"], "%s#%s" % (fname, b["aid"]),
