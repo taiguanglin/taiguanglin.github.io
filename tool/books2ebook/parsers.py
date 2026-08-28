@@ -331,20 +331,95 @@ def parse_zuochan2(ctx):
 # 04 金刚经·心经讲记
 # ---------------------------------------------------------------------- #
 
+# 本書的字型分工：FZSHJW＝整段原經文、FZHTJW＝黑體強調、FZBYSK＝正文宋體。
+_JG_SUTRA_FONT = "FZSHJW"
+_JG_EMPH_FONT = "FZHTJW"
+_JG_BODY_FONT = "FZBYSK"
+_JG_LABEL_RE = re.compile(r"^(译文|注解|解析|本章大义)[：:]?$")
+_JG_NUM_RE = re.compile(r"^\s*\d{1,2}[.．]\s*")
+_CJK_RE = re.compile(r"[\u4e00-\u9fff]+")
+_JG_NGRAM = 4
+_JG_MIN_RATIO = 0.6
+
+
+def _cjk_only(text):
+    return "".join(_CJK_RE.findall(text))
+
+
+class _SutraCorpus:
+    """全書原經文語料，用來判斷「解析」裡重引的句子是否真為經文。
+
+    解析中的黑體段落有兩種：重引原經文（整段皆黑體），以及名相注釋的詞頭
+    （詞頭後緊接宋體說明，如「阿修罗：我们可以理解为……」）。字型分工可先
+    濾掉後者；剩下的仍混有少量白話講解（如「对于五眼有不同的解释。」、咒語
+    的白話翻譯），故再與原經文比對。書中重引時偶有省字（原文「以音声求我」
+    重引作「音声求我」）或異體字（著／着），因此用字元 n-gram 的重疊比例而
+    非完全比對。
+    """
+
+    def __init__(self, texts):
+        joined = _cjk_only("".join(texts))
+        self._text = joined
+        n = _JG_NGRAM
+        self._grams = {joined[i:i + n] for i in range(len(joined) - n + 1)}
+
+    def matches(self, text):
+        probe = _cjk_only(_JG_NUM_RE.sub("", text))
+        if not probe:
+            return False
+        n = _JG_NGRAM
+        if len(probe) < n:
+            return probe in self._text
+        grams = [probe[i:i + n] for i in range(len(probe) - n + 1)]
+        hit = sum(1 for g in grams if g in self._grams)
+        return hit / len(grams) >= _JG_MIN_RATIO
+
+
 def parse_jingang(ctx):
+    corpus = _SutraCorpus([
+        line.text for _pno, ls in _iter_pages(ctx) for line in ls
+        if line.font == _JG_SUTRA_FONT
+    ])
+
     body_left = None
     para = ""
+    para_emph = False      # 段落首行為黑體
+    para_has_body = False  # 段落中出現宋體 → 是名相注釋而非重引經文
     quote = ""
     quote_left = None
 
     def flush():
-        nonlocal para, quote, quote_left
-        if para.strip():
-            ctx.append("para", para.strip())
+        nonlocal para, para_emph, para_has_body, quote, quote_left
+        text = para.strip()
+        if text:
+            if para_emph and not para_has_body and _JG_LABEL_RE.match(text):
+                ctx.append("label", text.rstrip("：:"))
+            elif para_emph and not para_has_body and corpus.matches(text):
+                ctx.append("strong", text)
+            else:
+                ctx.append("para", text)
         if quote.strip():
             ctx.append("quote", quote.strip())
         para, quote = "", ""
+        para_emph, para_has_body = False, False
         quote_left = None
+
+    def add_text_line(line, text, emph):
+        """把正文/黑體行併入段落緩衝；是否為經文留到 flush 時整段判定。"""
+        nonlocal body_left, para, para_emph, para_has_body
+        if quote.strip():
+            flush()
+        if emph and _JG_NUM_RE.match(text):
+            flush()
+        body_left = line.x0 if body_left is None else min(body_left, line.x0)
+        if para.strip() and _is_indent_start(line, body_left):
+            flush()
+        if not para:
+            para_emph = emph
+            para_has_body = False
+        if not emph or _JG_BODY_FONT in line.fonts:
+            para_has_body = True
+        para = _join(para, text)
 
     for pno, ls in _iter_pages(ctx):
         for line in ls:
@@ -360,7 +435,7 @@ def parse_jingang(ctx):
             elif f == "FZLTHBJW":
                 flush()
                 ctx.append("label", t.rstrip("：:"))
-            elif f == "FZSHJW":
+            elif f == _JG_SUTRA_FONT:
                 if para.strip():
                     flush()
                 # 經文依原書縮排分段
@@ -371,28 +446,10 @@ def parse_jingang(ctx):
                 if quote.strip() and _is_indent_start(line, quote_left):
                     flush()
                 quote = _join(quote, t)
-            elif f == "FZHTJW":
-                if quote.strip():
-                    flush()
-                if re.match(r"^\d{1,2}[.．]", t):
-                    flush()
-                if body_left is None:
-                    body_left = line.x0
-                else:
-                    body_left = min(body_left, line.x0)
-                if para.strip() and _is_indent_start(line, body_left):
-                    flush()
-                para = _join(para, t)
-            elif f == "FZBYSK":
-                if quote.strip():
-                    flush()
-                if body_left is None:
-                    body_left = line.x0
-                else:
-                    body_left = min(body_left, line.x0)
-                if para.strip() and _is_indent_start(line, body_left):
-                    flush()
-                para = _join(para, t)
+            elif f == _JG_EMPH_FONT:
+                add_text_line(line, t, emph=True)
+            elif f == _JG_BODY_FONT:
+                add_text_line(line, t, emph=False)
         ctx.add_images_for_page(pno)
     flush()
     return True

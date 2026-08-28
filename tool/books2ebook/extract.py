@@ -11,14 +11,21 @@ _PAGE_NUM_RE = re.compile(r"^\s*\d{1,4}\s*$")
 
 
 class Line:
-    """PDF 上的一個視覺行。"""
+    """PDF 上的一個視覺行。
 
-    __slots__ = ("text", "size", "font", "page", "x0", "y0", "block_id")
+    ``font`` 是首個 span 的字型（多數解析器只需要它）；``fonts`` 保留整行用
+    到的所有字型，供需要分辨「整行同一字型」與「行內換字型」的解析器使用
+    （例如《金刚经》解析裡的重引經文 vs 名相注釋詞頭）。
+    """
 
-    def __init__(self, text, size, font, page, x0=0.0, y0=0.0, block_id=0):
+    __slots__ = ("text", "size", "font", "fonts", "page", "x0", "y0", "block_id")
+
+    def __init__(self, text, size, font, page, x0=0.0, y0=0.0, block_id=0,
+                 fonts=None):
         self.text = text
         self.size = size
         self.font = font
+        self.fonts = tuple(fonts) if fonts else (font,)
         self.page = page
         self.x0 = x0
         self.y0 = y0
@@ -58,10 +65,12 @@ def extract_lines(pdf_path, skip_pages=0):
                     continue
                 text = "".join(s["text"] for s in spans).strip()
                 size = round(max(s["size"] for s in spans), 1)
-                font = spans[0]["font"].split("--")[0]
+                fonts = tuple(dict.fromkeys(
+                    s["font"].split("--")[0] for s in spans))
+                font = fonts[0]
                 x0 = min(s["bbox"][0] for s in spans)
                 y0 = ln["bbox"][1]
-                line = Line(text, size, font, pno, x0, y0, b_idx)
+                line = Line(text, size, font, pno, x0, y0, b_idx, fonts)
                 if line.is_page_number:
                     continue
                 page_lines.append(line)
