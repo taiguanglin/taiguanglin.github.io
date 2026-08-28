@@ -13,6 +13,7 @@
      異常短段落、相鄰重複段落、《问答录》問答欄位異常
   E. 計數一致性：h1 總數 == 各頂層標題計數和；章內目錄與正文的錨點/計數一致
   F. 簡繁對照：結構相同、繁版文字符合共用台灣正體規則、無少用異體字
+  G. 目錄展開圖標：只有真的有子項的目錄項才帶三角形
 """
 
 import argparse
@@ -286,6 +287,33 @@ def check_counts(out, rel, html, p):
         issue("bad", rel, "頂層標題計數和 %d ≠ 全書總數 %d" % (root_sum, total))
 
 
+_TOC_LI_RE = re.compile(r'<li class="toc-item[^"]*"[^>]*data-level="(\d)"[^>]*>')
+
+
+def check_toc_icons(out, rel, html):
+    """三角形圖標只該出現在真的有子項的目錄項上。
+
+    首頁是嵌套 <ul>、章節頁是扁平清單，但兩者共通規則相同：文件順序中
+    下一個目錄項的層級更深，才代表本項可展開。
+    """
+    items = [(m.start(), int(m.group(1))) for m in _TOC_LI_RE.finditer(html)]
+    if not items:
+        return
+    bounds = [pos for pos, _ in items] + [len(html)]
+    missing = extra = 0
+    for i, (pos, lvl) in enumerate(items):
+        has_children = i + 1 < len(items) and items[i + 1][1] > lvl
+        has_icon = "toc-expand-icon" in html[pos:bounds[i + 1]]
+        if has_children and not has_icon:
+            missing += 1
+        elif has_icon and not has_children:
+            extra += 1
+    if extra:
+        issue("bad", rel, "%d 個無子項的目錄項帶展開三角形" % extra)
+    if missing:
+        issue("bad", rel, "%d 個有子項的目錄項缺少展開三角形" % missing)
+
+
 def check_qa_pairs(out):
     """《坐禅之问答录》：問答欄位健全性。"""
     path = os.path.join(out, "02.html")
@@ -406,6 +434,7 @@ def main():
         html, p = pages[rel]
         check_text_sanity(out, rel, html)
         check_counts(out, rel, html, p)
+        check_toc_icons(out, rel, html)
 
     check_qa_pairs(out)
     check_trad_parity(out)

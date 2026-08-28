@@ -318,18 +318,19 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     used_levels = sorted({int(b["kind"][1]) for b in headings})
     toc_levels = [lv for lv in (2, 3, 4) if lv in used_levels] or [2]
     active_level = 3 if 3 in toc_levels else toc_levels[0]
-    has_children = {int(b["kind"][1]) + 1 for b in headings}
-    max_level = max(toc_levels)
+
+    # 目錄是扁平結構（JS 以「後續層級更深的兄弟」當子項），所以逐項判斷：
+    # 只有緊接其後的標題層級更深時，該項才真的能展開。
+    heading_levels = [int(b["kind"][1]) for b in headings]
+    expandables = [
+        i + 1 < len(heading_levels) and heading_levels[i + 1] > lvl
+        for i, lvl in enumerate(heading_levels)
+    ]
 
     parts = []
     parts.append("<ul>\n")
     open_li = False
-    for b in headings:
-        lvl = int(b["kind"][1])
-        child_lv = lvl + 1
-        expandable = child_lv in has_children and child_lv in toc_levels and any(
-            int(h["kind"][1]) == child_lv for h in headings
-        )
+    for b, lvl, expandable in zip(headings, heading_levels, expandables):
         visible = "True" if lvl == toc_levels[0] or lvl <= active_level else "False"
         icon = ('<span class="toc-expand-icon" data-level="%d">▼</span>' % lvl) if expandable else ""
         if open_li:
@@ -488,17 +489,20 @@ def render_index(books_meta, source_pdfs, is_trad):
         blocks = bm["blocks"]
         total = sum(_content_weight(b) for b in blocks)
         f = bc.filename_trad if is_trad else bc.filename
-        # 書籍節點（第 1 層）
-        lines.append(
-            '<li class="toc-item toc-chapter" data-level="1" data-chapter="%d" '
-            'data-default-visible="true">'
-            '<span class="toc-expand-icon" data-level="1">▼</span>'
-            '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>'
-            '<span class="toc-count">(%d)</span>' % (i, f, esc(bc.title), total)
-        )
         # 收集該書的標題節點，映射 h2→2, h3→3, h4→4
         headings = [b for b in blocks if b["kind"] in _HEADING_KINDS]
         kind_to_level = {"h2": 2, "h3": 3, "h4": 4}
+        # 書籍節點（第 1 層）
+        book_icon = ('<span class="toc-expand-icon" data-level="1">▼</span>'
+                     if headings else "")
+        lines.append(
+            '<li class="toc-item toc-chapter" data-level="1" data-chapter="%d" '
+            'data-default-visible="true">'
+            '%s'
+            '<a href="%s" target="_blank" rel="noopener noreferrer">%s</a>'
+            '<span class="toc-count">(%d)</span>'
+            % (i, book_icon, f, esc(bc.title), total)
+        )
         # 構建樹：每個節點 {block, children}
         root_children = []
         stack = []  # (level, node)
