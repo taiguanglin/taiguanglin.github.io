@@ -82,6 +82,8 @@ def _should_merge_heading(prev_text, next_text):
 def _normalize_heading_text(text):
     """還原 PDF 標題常見的字距與中英黏連。"""
     text = _LETTERSPACED_RE.sub(lambda m: m.group(0).replace(" ", ""), text)
+    # 「第01 节」字距來自原書標題排版，顯示為「第01节」
+    text = re.sub(r"(第\d+)\s+([章节篇講讲])", r"\1\2", text)
     text = re.sub(r"([\u4e00-\u9fff])([A-Za-z])", r"\1 \2", text)
     text = re.sub(r"([A-Za-z])([\u4e00-\u9fff])", r"\1 \2", text)
     return text

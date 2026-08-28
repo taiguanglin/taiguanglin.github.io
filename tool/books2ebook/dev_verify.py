@@ -337,6 +337,8 @@ def check_heading_quality(rel, html):
             issue("bad", rel, "標題殘留字距空格：%r" % title)
         if _CJK_LATIN_STUCK_RE.search(title):
             issue("bad", rel, "標題中英黏連：%r" % title)
+        if re.search(r"第\d+\s+[章节篇講讲節]", title):
+            issue("bad", rel, "標題編號與「节/章」之間多餘空格：%r" % title)
 
 
 def check_qa_pairs(out):
