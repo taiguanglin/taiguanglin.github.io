@@ -4,7 +4,6 @@ const hamburger = document.getElementById('hamburger');
 const navMenu = document.getElementById('nav-menu');
 const navLinks = document.querySelectorAll('.nav-link');
 
-
 // Mobile menu toggle
 hamburger.addEventListener('click', () => {
     hamburger.classList.toggle('active');
@@ -14,8 +13,7 @@ hamburger.addEventListener('click', () => {
 
 // Close mobile menu when clicking on links (except dropdown toggles)
 navLinks.forEach(link => {
-    link.addEventListener('click', (e) => {
-        // Don't close menu if clicking dropdown toggle
+    link.addEventListener('click', () => {
         if (link.classList.contains('nav-dropdown-toggle')) {
             return;
         }
@@ -25,13 +23,12 @@ navLinks.forEach(link => {
     });
 });
 
-// Handle dropdown menu items click (close menu)
+// Close menu when a dropdown item is chosen
 document.querySelectorAll('.nav-dropdown-item').forEach(item => {
     item.addEventListener('click', () => {
         hamburger.classList.remove('active');
         navMenu.classList.remove('active');
         document.body.style.overflow = 'auto';
-        // Close all dropdowns
         document.querySelectorAll('.nav-dropdown').forEach(dropdown => {
             dropdown.classList.remove('active');
         });
@@ -43,16 +40,12 @@ document.querySelectorAll('.nav-dropdown-toggle').forEach(toggle => {
     toggle.addEventListener('click', (e) => {
         e.preventDefault();
         const dropdown = toggle.closest('.nav-dropdown');
-        
-        // Check if mobile view
         if (window.innerWidth <= 768) {
-            // Close other dropdowns
             document.querySelectorAll('.nav-dropdown').forEach(other => {
                 if (other !== dropdown) {
                     other.classList.remove('active');
                 }
             });
-            // Toggle current dropdown
             dropdown.classList.toggle('active');
         }
     });
@@ -67,277 +60,79 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Smooth scrolling for anchor links
+// Smooth scrolling for in-page anchor links
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
-        e.preventDefault();
-        const target = document.querySelector(this.getAttribute('href'));
+        const href = this.getAttribute('href');
+        if (!href || href === '#') {
+            return;
+        }
+        const target = document.querySelector(href);
         if (target) {
+            e.preventDefault();
             const headerOffset = 80;
-            const elementPosition = target.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            });
+            const offsetPosition = target.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
         }
     });
 });
 
-// Intersection Observer for animations
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -50px 0px'
-};
-
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Observe elements for animation
-const animateElements = document.querySelectorAll('.theory-card, .book-card, .teaching-card, .story-card, .community-card, .download-card');
-
-animateElements.forEach(element => {
-    element.style.opacity = '0';
-    element.style.transform = 'translateY(30px)';
-    element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    observer.observe(element);
-});
-
-
-// Button interactions
-document.addEventListener('DOMContentLoaded', () => {
-    // Add click events to all buttons
-    const buttons = document.querySelectorAll('button, .button');
-    
-    buttons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            // Create ripple effect
-            const ripple = document.createElement('span');
-            const rect = this.getBoundingClientRect();
-            const size = Math.max(rect.width, rect.height);
-            const x = e.clientX - rect.left - size / 2;
-            const y = e.clientY - rect.top - size / 2;
-            
-            ripple.style.width = ripple.style.height = size + 'px';
-            ripple.style.left = x + 'px';
-            ripple.style.top = y + 'px';
-            ripple.classList.add('ripple');
-            
-            this.appendChild(ripple);
-            
-            setTimeout(() => {
-                ripple.remove();
-            }, 600);
-        });
-    });
-    
-    // Handle CTA button clicks
-    const ctaButtons = document.querySelectorAll('.cta-button, .primary-button');
-    ctaButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Scroll to about section or show modal
-            const aboutSection = document.getElementById('about');
-            if (aboutSection) {
-                aboutSection.scrollIntoView({ behavior: 'smooth' });
-            }
-        });
-    });
-    
-    // Handle book buttons
-    const bookButtons = document.querySelectorAll('.book-button');
-    bookButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const buttonText = e.target.textContent;
-            if (buttonText.includes('購買') || buttonText.includes('立即購買')) {
-                // Redirect to purchase page or show purchase modal
-                // alert removed as requested
-            } else if (buttonText.includes('了解更多')) {
-                // Show more information
-                // alert removed as requested
-            }
-        });
-    });
-    
-    // Handle teaching buttons
-    const teachingButtons = document.querySelectorAll('.teaching-button');
-    teachingButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            // Open video or audio player
-            // alert removed as requested
-        });
-    });
-    
-    // Handle community buttons
-    const communityButtons = document.querySelectorAll('.community-button, .method-button');
-    communityButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const buttonText = e.target.textContent;
-            if (buttonText.includes('Facebook') || buttonText.includes('社團')) {
-                window.open('https://www.facebook.com/', '_blank');
-            } else if (buttonText.includes('微信') || buttonText.includes('公眾號')) {
-                // alert removed as requested - buttons now use their href links directly
-            } else if (buttonText.includes('QQ') || buttonText.includes('群組')) {
-                // alert removed as requested - buttons now use their href links directly
-            } else if (buttonText.includes('頻道') || buttonText.includes('收聽')) {
-                // alert removed as requested - buttons now use their href links directly
-            }
-        });
-    });
-    
-    // Handle download buttons
-    const downloadButtons = document.querySelectorAll('.download-button');
-    downloadButtons.forEach(button => {
-        button.addEventListener('click', (e) => {
-            const buttonText = e.target.textContent;
-            if (buttonText.includes('PDF')) {
-                // alert removed as requested - buttons now use their href links directly
-            } else if (buttonText.includes('音頻')) {
-                // alert removed as requested - buttons now use their href links directly
-            } else if (buttonText.includes('模板')) {
-                // alert removed as requested - buttons now use their href links directly
-            }
-        });
-    });
-});
-
-// Add ripple effect CSS dynamically
-const style = document.createElement('style');
-style.textContent = `
-    button, .button {
-        position: relative;
-        overflow: hidden;
-    }
-    
-    .ripple {
-        position: absolute;
-        border-radius: 50%;
-        background: rgba(255, 255, 255, 0.6);
-        transform: scale(0);
-        animation: ripple-animation 0.6s linear;
-        pointer-events: none;
-    }
-    
-    @keyframes ripple-animation {
-        to {
-            transform: scale(4);
-            opacity: 0;
-        }
-    }
-`;
-document.head.appendChild(style);
-
-// Lazy loading for images (if we add images later)
-const lazyImages = document.querySelectorAll('img[data-src]');
-if (lazyImages.length > 0) {
-    const imageObserver = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                const img = entry.target;
-                img.src = img.dataset.src;
-                img.classList.remove('lazy');
-                imageObserver.unobserve(img);
-            }
-        });
-    });
-    
-    lazyImages.forEach(img => imageObserver.observe(img));
-}
-
-// Scroll to top functionality
-let scrollToTopButton;
-
-// Create scroll to top button
-function createScrollToTopButton() {
-    scrollToTopButton = document.createElement('button');
-    scrollToTopButton.innerHTML = '<i class="fas fa-chevron-up"></i>';
-    scrollToTopButton.className = 'scroll-to-top';
-    scrollToTopButton.style.cssText = `
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #ffb6c1 0%, #ff69b4 100%);
-        border: none;
-        color: white;
-        font-size: 1.2rem;
-        cursor: pointer;
-        opacity: 0;
-        visibility: hidden;
-        transition: all 0.3s ease;
-        z-index: 999;
-        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
-    `;
-    
-    scrollToTopButton.addEventListener('click', () => {
-        window.scrollTo({
-            top: 0,
-            behavior: 'smooth'
-        });
-    });
-    
-    document.body.appendChild(scrollToTopButton);
-}
-
-// Show/hide scroll to top button
-function toggleScrollToTopButton() {
-    if (window.pageYOffset > 300) {
-        scrollToTopButton.style.opacity = '1';
-        scrollToTopButton.style.visibility = 'visible';
-    } else {
-        scrollToTopButton.style.opacity = '0';
-        scrollToTopButton.style.visibility = 'hidden';
-    }
-}
-
-// Initialize scroll to top button
-document.addEventListener('DOMContentLoaded', () => {
-    createScrollToTopButton();
-    window.addEventListener('scroll', toggleScrollToTopButton);
-});
-
-// Performance optimization: Throttle scroll events
+// Navbar background on scroll (throttled)
 function throttle(func, limit) {
     let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
+    return function () {
         if (!inThrottle) {
-            func.apply(context, args);
+            func.apply(this, arguments);
             inThrottle = true;
             setTimeout(() => (inThrottle = false), limit);
         }
     };
 }
 
-// Handle scroll-related effects
 function handleScroll() {
-    // Navbar scroll effect
     if (window.scrollY > 100) {
         navbar.classList.add('scrolled');
     } else {
         navbar.classList.remove('scrolled');
     }
-
-    // Parallax effect
-    const scrolled = window.pageYOffset;
-    const heroBackground = document.querySelector('.hero-background');
-    if (heroBackground) {
-        const speed = scrolled * 0.3;
-        heroBackground.style.transform = `translateY(${speed}px)`;
-    }
 }
 
-// Apply throttled scroll handler
-const throttledScroll = throttle(handleScroll, 16); // ~60fps
-window.addEventListener('scroll', throttledScroll);
-// Initialize state on load
+window.addEventListener('scroll', throttle(handleScroll, 16));
 handleScroll();
+
+// Download modal (index.html only)
+(function () {
+    const overlay = document.getElementById('downloadModal');
+    if (!overlay) {
+        return;
+    }
+    const closeBtn = document.getElementById('downloadModalClose');
+
+    function openModal() {
+        overlay.classList.add('active');
+        overlay.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+        overlay.classList.remove('active');
+        overlay.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('[data-download-trigger]').forEach(btn => {
+        btn.addEventListener('click', openModal);
+    });
+    if (closeBtn) {
+        closeBtn.addEventListener('click', closeModal);
+    }
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            closeModal();
+        }
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && overlay.classList.contains('active')) {
+            closeModal();
+        }
+    });
+})();

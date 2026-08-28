@@ -46,55 +46,6 @@
     --spacing-xl: 3rem;
     --spacing-xxl: 4rem;
     
-    /* Chapter Navigation Styles */
-    .chapter-navigation {
-        background: white;
-        border-radius: 12px;
-        padding: var(--spacing-md);
-        margin-bottom: var(--spacing-lg);
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: var(--spacing-sm);
-    }
-    
-    .nav-button {
-        display: inline-flex;
-        align-items: center;
-        padding: 10px 20px;
-        border-radius: 25px;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        min-width: fit-content;
-    }
-    
-    .nav-button.back,
-    .nav-button.next {
-        background: #f8f9fa;
-        color: var(--black);
-        border: 2px solid transparent;
-    }
-    
-    .nav-button.back:hover,
-    .nav-button.next:hover {
-        background: var(--primary-pink);
-        color: white;
-        border-color: var(--primary-pink);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
-    }
-    
-    .nav-button.next {
-        margin-left: auto;
-    }
-    
-    .nav-button i {
-        margin: 0 8px;
-    }
-    
     /* Border Radius */
     --radius-sm: 0.5rem;
     --radius-md: 1rem;
@@ -111,6 +62,55 @@
     --transition-fast: all 0.2s ease;
     --transition-normal: all 0.3s ease;
     --transition-slow: all 0.5s ease;
+}
+
+/* Chapter Navigation Styles (used by wenda/chapter-*.html) */
+.chapter-navigation {
+    background: white;
+    border-radius: 12px;
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-sm);
+}
+
+.nav-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: fit-content;
+}
+
+.nav-button.back,
+.nav-button.next {
+    background: #f8f9fa;
+    color: var(--black);
+    border: 2px solid transparent;
+}
+
+.nav-button.back:hover,
+.nav-button.next:hover {
+    background: var(--primary-pink);
+    color: white;
+    border-color: var(--primary-pink);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+}
+
+.nav-button.next {
+    margin-left: auto;
+}
+
+.nav-button i {
+    margin: 0 8px;
 }
 
 /* Base Typography */
@@ -481,6 +481,14 @@ html {
     color: var(--primary-pink);
 }
 
+.hero-buttons a.primary-button,
+.hero-buttons a.secondary-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+}
+
 .scroll-indicator {
     position: absolute;
     bottom: var(--spacing-lg);
@@ -731,6 +739,84 @@ html {
     }
 }
 
+/* Start-here Path Cards */
+.path-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.path-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid rgba(255, 105, 180, 0.1);
+    text-decoration: none;
+    color: inherit;
+    transition: var(--transition-normal);
+}
+
+.path-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--light-pink);
+}
+
+.path-icon {
+    width: 72px;
+    height: 72px;
+    background: var(--pink-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--spacing-md);
+}
+
+.path-icon i {
+    font-size: 1.8rem;
+    color: var(--white);
+}
+
+.path-card h3 {
+    font-size: 1.2rem;
+    font-weight: var(--font-weight-semibold);
+    color: var(--black);
+    margin-bottom: var(--spacing-sm);
+}
+
+.path-card p {
+    color: var(--gray);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-md);
+    flex: 1;
+}
+
+.path-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    color: var(--primary-pink);
+    font-weight: var(--font-weight-semibold);
+}
+
+.path-card:hover .path-link {
+    color: var(--deep-pink);
+}
+
+.path-link i {
+    transition: var(--transition-fast);
+}
+
+.path-card:hover .path-link i {
+    transform: translateX(3px);
+}
+
 /* Books Section */
 .books-grid {
     display: grid;
@@ -811,7 +897,41 @@ html {
     flex: 1;
 }
 
+a.book-card {
+    text-decoration: none;
+    color: inherit;
+}
 
+.book-read {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin-top: var(--spacing-md);
+    color: var(--primary-pink);
+    font-weight: var(--font-weight-semibold);
+    font-size: 0.95rem;
+}
+
+a.book-card:hover .book-read {
+    color: var(--deep-pink);
+}
+
+.book-read i {
+    transition: var(--transition-fast);
+}
+
+a.book-card:hover .book-read i {
+    transform: translateX(3px);
+}
+
+.books-cta {
+    text-align: center;
+    margin-top: var(--spacing-xl);
+}
+
+.community-button i {
+    margin-right: var(--spacing-xs);
+}
 
 /* QA Section */
 .qa-content {
@@ -1023,6 +1143,17 @@ html {
     font-size: 0.5rem;
     color: var(--primary-pink);
     margin-right: var(--spacing-sm);
+}
+
+a.topic-item {
+    text-decoration: none;
+    border-radius: var(--radius-sm);
+    transition: var(--transition-fast);
+}
+
+a.topic-item:hover {
+    background: var(--pale-pink);
+    color: var(--primary-pink);
 }
 
 /* Teachings Section */
@@ -1458,6 +1589,30 @@ html {
 .download-button:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+
+.download-single {
+    max-width: 620px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    border: 1px solid rgba(255, 105, 180, 0.1);
+}
+
+.download-single h3 {
+    font-size: 1.3rem;
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--spacing-sm);
+    color: var(--black);
+}
+
+.download-single p {
+    color: var(--gray);
+    line-height: 1.7;
+    margin-bottom: var(--spacing-lg);
 }
 
 /* Footer */
@@ -3066,5 +3221,190 @@ html {
     .mm-chart-label,
     .mm-chart-total {
         font-size: 0.78rem;
+    }
+}
+
+/* ================================
+   Download Modal (index.html)
+   ================================ */
+.download-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(33, 37, 41, 0.48);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    padding: 20px;
+}
+
+.download-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.download-modal {
+    background: var(--white, #fff);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 420px;
+    padding: 28px 24px 24px;
+    box-shadow: 0 20px 48px rgba(255, 105, 180, 0.22), 0 8px 16px rgba(0, 0, 0, 0.10);
+    border: 1.5px solid var(--soft-pink, #ffc0cb);
+    transform: translateY(14px) scale(0.97);
+    transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+}
+
+.download-modal-overlay.active .download-modal {
+    transform: translateY(0) scale(1);
+}
+
+.download-modal-close {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--pale-pink, #f8f4f6);
+    color: var(--gray, #6c757d);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.download-modal-close:hover {
+    background: var(--soft-pink, #ffc0cb);
+    color: var(--deep-pink, #ff1493);
+    transform: rotate(90deg);
+}
+
+.download-modal-header {
+    text-align: center;
+    margin-bottom: 20px;
+    padding-right: 20px;
+}
+
+.download-modal-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    background: var(--pink-gradient, linear-gradient(135deg, #ffb6c1, #ff69b4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 6px;
+}
+
+.download-modal-header p {
+    font-size: 0.88rem;
+    color: var(--gray, #6c757d);
+    line-height: 1.5;
+}
+
+.download-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.download-option {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1.5px solid var(--soft-pink, #ffc0cb);
+    background: var(--white, #fff);
+    text-decoration: none;
+    transition: all 0.22s ease;
+    cursor: pointer;
+}
+
+.download-option:hover {
+    border-color: var(--primary-pink, #ff69b4);
+    background: var(--pale-pink, #f8f4f6);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(255, 105, 180, 0.18);
+}
+
+.download-option:active {
+    transform: translateY(0);
+}
+
+.download-option-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    background: var(--soft-gradient, #fff);
+    border: 1px solid #f0e6ea;
+    overflow: hidden;
+}
+
+.download-option-icon.google {
+    background: #fff;
+}
+
+.download-option-icon.quark {
+    background: #1677ff;
+    border-color: #1677ff;
+}
+
+.download-option-text {
+    flex: 1;
+    text-align: left;
+}
+
+.download-option-text strong {
+    display: block;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--black, #212529);
+    margin-bottom: 2px;
+}
+
+.download-option-text span {
+    font-size: 0.8rem;
+    color: var(--gray, #6c757d);
+}
+
+.download-option:hover .download-option-text strong {
+    color: var(--deep-pink, #ff1493);
+}
+
+.download-option-arrow {
+    color: var(--light-pink, #ffb6c1);
+    font-size: 0.85rem;
+    transition: all 0.22s;
+}
+
+.download-option:hover .download-option-arrow {
+    color: var(--primary-pink, #ff69b4);
+    transform: translateX(3px);
+}
+
+.download-modal-tip {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 0.75rem;
+    color: #a0a0a0;
+}
+
+@media (max-width: 480px) {
+    .download-modal {
+        padding: 24px 18px 18px;
     }
 }
