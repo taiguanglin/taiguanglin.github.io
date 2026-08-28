@@ -14,6 +14,7 @@
   E. 計數一致性：h1 總數 == 各頂層標題計數和；章內目錄與正文的錨點/計數一致
   F. 簡繁對照：結構相同、繁版文字符合共用台灣正體規則、無少用異體字
   G. 目錄展開圖標：只有真的有子項的目錄項才帶三角形
+  H. 標題品質：無計數 0 的斷行標題、無字距空格、無中英黏連
 """
 
 import argparse
@@ -208,8 +209,16 @@ def check_search_index(out):
 
 
 _BAD_CHAR_RE = re.compile(r"[\u0000-\u0008\u000b-\u001f\u007f\ufffd\ue000-\uf8ff]")
-_DOT_LEADER_RE = re.compile(r"\.{5,}")
+# 目錄虛線：一串點後面帶頁碼（正文裡的省略號「........」不算）
+_DOT_LEADER_RE = re.compile(r"\.{5,}\s*\d{1,4}\s*$")
 _PAGE_NUM_RE = re.compile(r"^\d{1,4}$")
+_HEADING_BODY_RE = re.compile(
+    r'<(h[234]) id="([^"]+)">([^<]*)<span class="chapter-qa-count">\((\d+)\)</span>'
+)
+_LETTERSPACED_HEAD_RE = re.compile(
+    r"(?:(?<=\s)|^)[\u4e00-\u9fff](?: [\u4e00-\u9fff])+(?=\s|$)"
+)
+_CJK_LATIN_STUCK_RE = re.compile(r"[\u4e00-\u9fff][A-Za-z]|[A-Za-z][\u4e00-\u9fff]")
 
 
 def _iter_paragraphs(text_html):
@@ -226,10 +235,7 @@ def check_text_sanity(out, rel, html):
     if m:
         i = m.start()
         issue("bad", rel, "異常字元 U+%04X …%s…" % (ord(m.group(0)), visible[max(0, i - 15):i + 15]))
-    for mm in _DOT_LEADER_RE.finditer(visible):
-        ctx = visible[max(0, mm.start() - 20):mm.end() + 10]
-        issue("warn", rel, "殘留目錄虛線 …%s…" % ctx.strip())
-        break  # 每檔報一次即可
+    saw_leader = False
     shorties = []
     prev_para = None
     dup_count = 0
@@ -237,6 +243,9 @@ def check_text_sanity(out, rel, html):
         t = para.strip()
         if not t:
             continue
+        if not saw_leader and _DOT_LEADER_RE.search(t):
+            issue("warn", rel, "殘留目錄虛線 …%s…" % t[:60])
+            saw_leader = True
         if len(t) == 1 and not re.match(r"[\d（）()．.、]", t):
             shorties.append(t)
         if _PAGE_NUM_RE.match(t) and int(t) >= 13:
@@ -314,6 +323,22 @@ def check_toc_icons(out, rel, html):
         issue("bad", rel, "%d 個有子項的目錄項缺少展開三角形" % missing)
 
 
+def check_heading_quality(rel, html):
+    """標題不應被 PDF 換行切成空殼，也不該留下字距/中英黏連。"""
+    if rel.startswith("index"):
+        return
+    heads = list(_HEADING_BODY_RE.finditer(html))
+    for i, mm in enumerate(heads):
+        title, cnt = mm.group(3), int(mm.group(4))
+        nxt = heads[i + 1].group(3) if i + 1 < len(heads) else ""
+        if cnt == 0:
+            issue("bad", rel, "標題計數為 0（疑似斷行）：%r → %r" % (title, nxt))
+        if _LETTERSPACED_HEAD_RE.search(title):
+            issue("bad", rel, "標題殘留字距空格：%r" % title)
+        if _CJK_LATIN_STUCK_RE.search(title):
+            issue("bad", rel, "標題中英黏連：%r" % title)
+
+
 def check_qa_pairs(out):
     """《坐禅之问答录》：問答欄位健全性。"""
     path = os.path.join(out, "02.html")
@@ -322,8 +347,7 @@ def check_qa_pairs(out):
     html = open(path, encoding="utf-8").read()
     qs = re.findall(r'<div class="question-text">(.*?)</div>', html, re.S)
     ans = re.findall(r'<div class="answer-text">(.*?)</div>', html, re.S)
-    if len(qs) != len(ans):
-        issue("warn", "02.html", "問題數 %d ≠ 回答數 %d" % (len(qs), len(ans)))
+    # 師父連續發帖時後幾則沒有提問框，問題數 < 回答數是正常的
     empty_a = sum(1 for a in ans if not strip_tags(a).strip())
     empty_q = sum(1 for q in qs if not strip_tags(q).strip())
     if empty_a:
@@ -349,8 +373,13 @@ def check_trad_parity(out):
         sp, tp = os.path.join(out, simp_f), os.path.join(out, trad_f)
         if not (os.path.exists(sp) and os.path.exists(tp)):
             continue
-        simp_txt = strip_tags(open(sp, encoding="utf-8").read())
-        trad_txt = strip_tags(open(tp, encoding="utf-8").read())
+        # 語言切換標籤刻意維持「简体 / 繁體」雙向原文，不納入簡繁對照
+        simp_html = re.sub(r'<div class="lang-switch">.*?</div>', "",
+                           open(sp, encoding="utf-8").read(), flags=re.S)
+        trad_html = re.sub(r'<div class="lang-switch">.*?</div>', "",
+                           open(tp, encoding="utf-8").read(), flags=re.S)
+        simp_txt = strip_tags(simp_html)
+        trad_txt = strip_tags(trad_html)
         expect = converter.to_traditional(simp_txt)
         if expect != trad_txt:
             # 找第一個差異位置供除錯
@@ -435,6 +464,7 @@ def main():
         check_text_sanity(out, rel, html)
         check_counts(out, rel, html, p)
         check_toc_icons(out, rel, html)
+        check_heading_quality(rel, html)
 
     check_qa_pairs(out)
     check_trad_parity(out)

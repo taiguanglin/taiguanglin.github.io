@@ -41,31 +41,79 @@ def _join(a, b):
     return a + b
 
 
+# 下一行看起來像「新的一條標題」而非上一條的換行續寫。
+_NEW_HEADING_RE = re.compile(
+    r"^(?:"
+    r"第\s*\d+\s*[章节篇講讲]|"
+    r"第[一二三四五六七八九十百零〇]+\s*[章节篇講讲]|"
+    r"[（(]?\d+[）.、．]|"
+    r"[（(]\d+[）)]|"
+    r"[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]|"
+    r"原文精读"
+    r")"
+)
+# 「总 论」「序 言」這類標題字距拉開的兩個（以上）單字
+_LETTERSPACED_RE = re.compile(
+    r"(?:(?<=\s)|^)[\u4e00-\u9fff](?: [\u4e00-\u9fff])+(?=\s|$)"
+)
+
+
+def _is_new_heading_start(text):
+    return bool(_NEW_HEADING_RE.match(text.strip()))
+
+
+def _should_merge_heading(prev_text, next_text):
+    """緊接的同級標題要不要併成同一條。
+
+    一般：次行不像新條目（例如「尘不」+「可出」）就合併。
+    例外：原書把「2. 七级发心」與第一個子項「（1）求道心」印成兩行，
+    仍視為同一條標題；「（2）」起才是下一條。
+    """
+    nxt = next_text.strip()
+    if not _is_new_heading_start(nxt):
+        return True
+    prev = prev_text.strip()
+    if re.match(r"^[（(]1[）)]", nxt) and re.match(r"^\d+[．.、]", prev) \
+            and "（" not in prev and "(" not in prev:
+        return True
+    return False
+
+
+def _normalize_heading_text(text):
+    """還原 PDF 標題常見的字距與中英黏連。"""
+    text = _LETTERSPACED_RE.sub(lambda m: m.group(0).replace(" ", ""), text)
+    text = re.sub(r"([\u4e00-\u9fff])([A-Za-z])", r"\1 \2", text)
+    text = re.sub(r"([A-Za-z])([\u4e00-\u9fff])", r"\1 \2", text)
+    return text
+
+
 class ParseContext:
     """單本書解析時的共同狀態。"""
 
-    def __init__(self, lines_by_page, toc_pages, images_by_page,
-                 merge_adjacent_headings=False):
+    def __init__(self, lines_by_page, toc_pages, images_by_page):
         self.lines_by_page = lines_by_page
         self.toc_pages = toc_pages
         self.images_by_page = images_by_page
         self.blocks = []
         self.seen_xrefs = set()
-        self.merge_adjacent_headings = merge_adjacent_headings
-        self._last_was_heading_same_level = False
+        self._last_was_heading = False
 
     def heading(self, level, text, space_join=False):
         text = _clean(text)
         if not text or re.fullmatch(r"\d{1,4}", text):
             return
+        text = _normalize_heading_text(text)
         prev = self.blocks[-1] if self.blocks else None
-        if (self.merge_adjacent_headings and self._last_was_heading_same_level
-                and prev is not None and prev["kind"] == level):
-            joiner = " " if space_join else ""
-            prev["text"] = prev["text"] + joiner + text
+        # 同級標題緊接出現、且次行不像新條目 → PDF 把同一標題切成兩行
+        if (self._last_was_heading and prev is not None and prev["kind"] == level
+                and _should_merge_heading(prev["text"], text)):
+            if space_join:
+                prev["text"] = _normalize_heading_text(prev["text"] + " " + text)
+            else:
+                prev["text"] = _normalize_heading_text(_join(prev["text"], text))
             return
         self.blocks.append({"kind": level, "text": text})
-        self._last_was_heading_same_level = True
+        self._last_was_heading = True
 
     def append(self, kind, text=None, **extra):
         blk = {"kind": kind}
@@ -73,7 +121,7 @@ class ParseContext:
             blk["text"] = text
         blk.update(extra)
         self.blocks.append(blk)
-        self._last_was_heading_same_level = False
+        self._last_was_heading = False
 
     def append_quote_line(self, text):
         """引文行：連續引文合併為同一區塊（以換行分隔），例如一首詩。"""
@@ -97,7 +145,7 @@ class ParseContext:
                 continue
             self.seen_xrefs.add(xref)
             self.append("img", xref=xref, page=pno, w=w, h=h)
-            self._last_was_heading_same_level = False
+            self._last_was_heading = False
 
 
 # ---------------------------------------------------------------------- #
@@ -610,9 +658,7 @@ PARSERS = {
 
 
 def parse_book(parser_key, lines_by_page, toc_pages, images_by_page):
-    merge = parser_key in ("wendalu", "zuochan2")
-    ctx = ParseContext(lines_by_page, toc_pages, images_by_page,
-                       merge_adjacent_headings=merge)
+    ctx = ParseContext(lines_by_page, toc_pages, images_by_page)
     ok = PARSERS[parser_key](ctx)
     # 後處理：坐禅2 中「上半場第一個500年（公元前1000年」/「公元前500年)」等被 PDF 換行切成兩條同級標題，需合併且補「—」
     if parser_key == "zuochan2" and ok:
