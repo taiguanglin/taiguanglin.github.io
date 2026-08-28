@@ -25,6 +25,18 @@ i18n:
     home:
       simplified: "🌸 回首页"
       traditional: "🌸 回首頁"
+
+    ebook_toc:
+      simplified: "📖 问答录2总目录"
+      traditional: "📖 問答錄2總目錄"
+
+    site_home:
+      simplified: "🏠 网站首页"
+      traditional: "🏠 網站首頁"
+
+    cross_ebook:
+      simplified: "📚 坐禅系列"
+      traditional: "📚 坐禪系列"
     
     chapter_toc:
       simplified: "本章目录"

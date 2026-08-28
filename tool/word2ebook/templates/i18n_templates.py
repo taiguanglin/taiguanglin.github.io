@@ -53,9 +53,11 @@ class I18nTemplateManager:
     def _get_chapter_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
         """獲取章節頁面的國際化文字"""
         return {
-            'home_text': get_i18n_text('navigation.home', is_traditional, '🌸 回首頁'),
-            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 回首頁' if is_traditional else '🏠 回首页'),
-            'site_home_href': "../index_trad.html" if is_traditional else "../index.html",
+            'ebook_toc_text': get_i18n_text(
+                'navigation.ebook_toc',
+                is_traditional,
+                '📖 問答錄2總目錄' if is_traditional else '📖 问答录2总目录',
+            ),
             'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
             'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪系列' if is_traditional else '📚 坐禅系列'),
             'chapter_toc_title': get_i18n_text('navigation.chapter_toc', is_traditional, '本章目錄'),
@@ -90,8 +92,8 @@ class I18nTemplateManager:
             'function_menu': get_i18n_text('ui.function_menu', is_traditional, '功能選單'),
             'settings': get_i18n_text('ui.settings', is_traditional, '設置'),
             'back_to_top': get_i18n_text('ui.back_to_top', is_traditional, '回到頂部'),
-            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 回首頁' if is_traditional else '🏠 回首页'),
-            'site_home_href': "../index_trad.html" if is_traditional else "../index.html",
+            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 網站首頁' if is_traditional else '🏠 网站首页'),
+            'site_home_href': "../index.html",
             'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
             'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪系列' if is_traditional else '📚 坐禅系列'),
         }
@@ -113,7 +115,7 @@ class I18nTemplateManager:
 <div id="top"></div>
 <div class="header-nav">
   <div class="nav-home">
-    <a href="{home_link}">{home_text}</a> | <a href="{site_home_href}">{site_home_text}</a> | <a href="{cross_href}">{cross_text}</a>
+    <a href="{home_link}">{ebook_toc_text}</a> | <a href="{cross_href}">{cross_text}</a>
   </div>
   <div class="lang-switch">
     {lang_switch_links}

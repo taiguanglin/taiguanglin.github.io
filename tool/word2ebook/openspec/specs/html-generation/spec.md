@@ -32,21 +32,22 @@ Each chapter page SHALL include:
 The page header (`<div class="header-nav">`) SHALL lay the navigation links in a
 left-hand `<div class="nav-home">` and keep only the language-switch
 (`<div class="lang-switch">`) on the right, on both chapter pages and index pages.
-The nav-home group SHALL contain three links:
-- `🌸 回首頁` → the current ebook's own index (`index.html` / `index_trad.html`, same
-  directory), via the `{home_link}` template slot — labelled by i18n
-  `navigation.home` (`🌸 回首页` // `🌸 回首頁`).
-- `🏠 回首頁` → the site landing page (`../index.html` / `../index_trad.html`),
-  via the `{site_home_href}` i18n slot — labelled by i18n `navigation.site_home`
-  (`🏠 回首页` // `🏠 回首頁`).
-- `<cross>` → the cross-listed sibling ebook (`../ebook/index.html` /
+On chapter pages, the nav-home group SHALL contain two links:
+- `📖 問答錄2總目錄` → the current ebook's own index (`index.html` /
+  `index_trad.html`, same directory), via the `{home_link}` template slot and
+  labelled by i18n `navigation.ebook_toc`.
+- `<cross>` → the sibling ebook (`../ebook/index.html` /
   `../ebook/index_trad.html`), via `{cross_href}` — labelled `📚 坐禅系列` /
   `📚 坐禪系列`.
 
-The site-home `href` SHALL resolve to the language-appropriate variant
-(`../index.html` for simplified, `../index_trad.html` for traditional) — it must not
-be hardcoded to `../index.html`. The `.index-header` index-page style SHALL keep the
-same `space-between` alignment so home links sit left and the language switch right.
+Chapter pages SHALL NOT link directly to the site landing page. On index pages,
+the nav-home group SHALL instead contain:
+- `🏠 網站首頁` → the single site landing page at `../index.html`, for both
+  simplified and traditional variants.
+- The same language-appropriate sibling-ebook link described above.
+
+The `.index-header` index-page style SHALL keep the same `space-between`
+alignment so navigation links sit left and the language switch right.
 
 ### Requirement: Index Page Generation
 The system SHALL generate `index.html` (simplified) and `index_trad.html` (traditional)
@@ -139,8 +140,9 @@ print a warning.
 - TOC logic: `generators/toc_generator.py::TOCGenerator` (TOC HTML + QA count metadata)
 - Templates: `templates/i18n_templates.py::I18nTemplateManager` (sole template
   source; chapter template exposes a `{qa_banner}` slot defaulting to empty;
-  nav-home uses `{home_link}`, `{site_home_href}`, `{cross_href}` slots that are
-  resolved per variant in `_get_chapter_i18n_kwargs`/`_get_index_i18n_kwargs`;
+  chapter nav uses `{home_link}` and `{cross_href}`, while index nav uses
+  `{site_home_href}` and `{cross_href}`; variant labels and targets are resolved
+  in `_get_chapter_i18n_kwargs`/`_get_index_i18n_kwargs`;
   `html_templates.py` has been deleted)
 - Chapter file naming: zero-padded index (`utils/file_utils.py::safe_filename`)
 - Traditional conversion: `utils/i18n_utils.py::I18nProcessor.to_traditional`

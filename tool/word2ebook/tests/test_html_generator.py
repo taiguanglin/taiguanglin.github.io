@@ -117,6 +117,17 @@ class TestHTMLGeneratorChapterPages:
         content = (output_dir / "01.html").read_text(encoding="utf-8")
         assert "style.css" in content
 
+    def test_chapter_header_links_to_ebook_toc_not_site(
+        self, html_gen, sample_chapters, output_dir
+    ):
+        html_gen.generate_chapter_pages(
+            sample_chapters, generate_traditional=True, generate_simplified=False
+        )
+        content = (output_dir / "01_trad.html").read_text(encoding="utf-8")
+        assert '<a href="index_trad.html">📖 問答錄2總目錄</a>' in content
+        assert '<a href="../ebook/index_trad.html">📚 坐禪系列</a>' in content
+        assert 'href="../index.html"' not in content
+
 
 # ---------------------------------------------------------------------------
 # HTMLGenerator - index page generation
@@ -166,6 +177,21 @@ class TestHTMLGeneratorIndexPages:
         )
         content = (output_dir / "index.html").read_text(encoding="utf-8")
         assert "01.html" in content or "第一章" in content
+
+    def test_traditional_index_header_uses_single_site_home(
+        self, html_gen, sample_chapters, output_dir, tmp_path
+    ):
+        fake_input = tmp_path / "book.docx"
+        fake_input.touch()
+        cfg = ConversionConfig(input_file=fake_input, output_folder=output_dir)
+        html_gen.generate_index_pages(
+            sample_chapters, cfg,
+            generate_traditional=True, generate_simplified=False,
+        )
+        content = (output_dir / "index_trad.html").read_text(encoding="utf-8")
+        assert '<a href="../index.html">🏠 網站首頁</a>' in content
+        assert '<a href="../ebook/index_trad.html">📚 坐禪系列</a>' in content
+        assert "../index_trad.html" not in content
 
 
 # ---------------------------------------------------------------------------

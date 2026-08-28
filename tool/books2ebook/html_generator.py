@@ -441,13 +441,10 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     _book_toc_href = "index_trad.html" if is_trad else "index.html"
     _cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
     _cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
-    _site_home_href = "../index_trad.html" if is_trad else "../index.html"
-    _site_home_text = "🏠 回首頁" if is_trad else "🏠 回首页"
-    _book_home_text = "🌸 回首頁" if is_trad else "🌸 回首页"
+    _book_toc_text = "📖 坐禪系列總目錄" if is_trad else "📖 坐禅系列总目录"
     _header_class = "header-nav"
     _nav_left_content = (
-        f'<a href="{_book_toc_href}">{_book_home_text}</a> | '
-        f'<a href="{_site_home_href}">{_site_home_text}</a> | '
+        f'<a href="{_book_toc_href}">{_book_toc_text}</a> | '
         f'<a href="{_cross_href}">{_cross_text}</a>'
     )
     _lang_switch_links = build_lang_switch_links(book.filename, book.filename_trad, is_trad)
@@ -557,9 +554,9 @@ def render_index(books_meta, source_pdfs, is_trad):
 
     _idx_cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
     _idx_cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
-    _site_home_text = "🌸 回首頁" if is_trad else "🌸 回首页"
+    _site_home_text = "🏠 網站首頁" if is_trad else "🏠 网站首页"
     _header_class = "header-nav index-header"
-    _site_home_href = "../index_trad.html" if is_trad else "../index.html"
+    _site_home_href = "../index.html"
     _nav_left_content = f'<a href="{_site_home_href}">{_site_home_text}</a> | <a href="{_idx_cross_href}">{_idx_cross_text}</a>'
     _lang_switch_links = build_lang_switch_links("index.html", "index_trad.html", is_trad)
     html = _HEAD_TMPL.format(
