@@ -317,9 +317,9 @@ body.dark-mode .lang-switch a:hover { color: var(--color-primary-light); }
 body.dark-mode .nav-home a { color: #ff91af; }
 body.dark-mode .nav-home a:hover { color: var(--color-primary-light); }
 
-/* 首頁頭部樣式 */
+/* 首頁頭部樣式：回首頁靠左、簡繁切換靠右（與章節頁一致） */
 .index-header {
-    justify-content: flex-end;
+    justify-content: space-between;
 }
 
 /* 夜間模式按鈕已移至閱讀設置中 */
