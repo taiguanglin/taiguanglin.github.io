@@ -3,98 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Word 時間序 · 音檔 Mapping 審核</title>
-    <meta name="description" content="審核依時間順序版 Word 彙總產生的音檔 mapping：文字以 Word 為準，SRT 只供對照播放時間。">
-    <link rel="stylesheet" href="../audio_map/assets/editor.css">
-    <link rel="stylesheet" href="../audio_map/assets/overrides.css">
+    <title>Word 時間序 音檔 Mapping 校稿（audio_map2）</title>
+    <meta name="description" content="微調時間序 Word 彙總段落與音檔起訖時間；含信心分數、SRT 對照、三態 review 標記（已校／未校／無音頻）並存回 GitHub。">
+    <link rel="stylesheet" href="assets/editor.css">
+    <link rel="stylesheet" href="assets/overrides.css">
     <style>
-    /* ── audio_map2 擴充（沿用 index2 生態系，僅補時間序專屬樣式）────────── */
-    #app .file-list .session-stats {
-        display: block;
-        color: var(--muted);
-        font-size: 0.76rem;
-        line-height: 1.35;
-        margin-top: 0.2rem;
-        word-break: break-word;
-    }
-    #app .file-list .session-flags {
-        display: inline-flex;
-        gap: 0.25rem;
-        margin-left: 0.35rem;
-    }
-    .conf-badge {
-        border-radius: 999px;
-        display: inline-block;
-        font-size: 0.72rem;
-        font-variant-numeric: tabular-nums;
-        font-weight: 600;
-        line-height: 1;
-        padding: 0.2rem 0.5rem;
-        vertical-align: middle;
-    }
-    .conf-badge.bad { background: #fee2e2; color: #b42318; }
-    .conf-badge.warn { background: #fff2cc; color: #8a5a00; }
-    .conf-badge.good { background: #d6f0dd; color: #1f7a3f; }
-    @media (prefers-color-scheme: dark) {
-        .conf-badge.bad { background: #3d1517; color: #ff8a80; }
-        .conf-badge.warn { background: #372b12; color: #ffc078; }
-        .conf-badge.good { background: #14321f; color: #8ce99a; }
-    }
-    .seg-source-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; }
-    .seg-source-line .q-name { font-weight: 650; }
-    .seg-source-line .q-time { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
-    .q-text-block {
-        border-left: 3px solid var(--accent);
-        background: var(--panel-strong);
-        border-radius: 0 0.6rem 0.6rem 0;
-        color: var(--text);
-        font: inherit;
-        line-height: 1.7;
-        margin: 0.4rem 0 0.7rem;
-        padding: 0.6rem 0.8rem;
-        white-space: pre-wrap;
-        word-break: break-word;
-    }
-    .notes-line {
-        color: var(--muted);
-        font-size: 0.78rem;
-        margin-top: 0.5rem;
-        word-break: break-all;
-    }
-    .notes-line.pending { color: var(--warn, #8a5a00); }
-    .play-on-click { cursor: pointer; }
-    .play-on-click:hover { outline: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
-    .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
-    .filter-group button {
-        background: var(--panel-strong);
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        color: var(--muted);
-        cursor: pointer;
-        font: inherit;
-        font-size: 0.78rem;
-        padding: 0.25rem 0.7rem;
-    }
-    .filter-group button.on { background: color-mix(in srgb, var(--accent) 18%, transparent); border-color: var(--accent); color: var(--accent-strong); font-weight: 600; }
-    details.srt { margin-top: 0.5rem; }
-    details.srt summary { color: var(--muted); cursor: pointer; font-size: 0.8rem; user-select: none; }
-    details.srt .srt-body {
-        background: var(--panel-strong);
-        border: 1px solid var(--border);
-        border-radius: 0.6rem;
-        color: var(--muted);
-        font-size: 0.8rem;
-        line-height: 1.6;
-        margin-top: 0.4rem;
-        max-height: 220px;
-        overflow-y: auto;
-        padding: 0.55rem 0.7rem;
-        white-space: pre-wrap;
-    }
-    .seg-meta-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; }
-    .tc-label { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
-    .low-card { box-shadow: inset 0 0 0 2px var(--danger, #b42318); }
-    .empty-tip { color: var(--muted); padding: 3rem 0; text-align: center; }
+    .seg-conf{font-size:.8rem;padding:.15rem .5rem;border-radius:999px;font-weight:600;white-space:nowrap}
+    .seg-conf.high{background:color-mix(in srgb,var(--status-both) 20%,transparent);color:var(--status-both)}
+    .seg-conf.mid{background:color-mix(in srgb,var(--status-edited) 22%,transparent);color:var(--status-edited)}
+    .seg-conf.low{background:var(--danger);color:#fff}
+    .segment-card.low-conf{border-color:var(--danger);border-width:2px;
+      background:color-mix(in srgb,var(--danger) 8%,var(--panel-strong))}
+    .segment-card.low-conf.unconfirmed{animation:wlpulse 2.4s ease-in-out infinite}
+    @keyframes wlpulse{0%,100%{box-shadow:0 0 0 0 rgba(180,35,24,0)}50%{box-shadow:0 0 0 6px rgba(255,138,128,.16)}}
+    .lowconf-banner{font-size:.78rem;color:var(--danger);margin-top:.4rem}
+    .am2-notes{font-size:.78rem;color:var(--muted);margin-top:.4rem;white-space:pre-wrap;word-break:break-word}
+    .am2-notes--pending{color:var(--warn,#8a5a00)}
+    .am2-srt{font-size:.8rem;color:var(--muted);margin-top:.4rem}
+    .am2-srt summary{cursor:pointer;color:var(--muted)}
+    .am2-srt-body{white-space:pre-wrap;word-break:break-all;background:var(--panel);
+      border-radius:6px;padding:.4rem .5rem;margin-top:.35rem;max-height:120px;overflow:auto}
+    .segment-card[data-status="both"]{border-left-color:var(--status-both)}
+    .bulkbar{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;
+      background:var(--panel);border:1px solid var(--border);border-radius:8px;
+      padding:.5rem .65rem;margin-bottom:.75rem;font-size:.85rem}
+    .bulkbar .hint{color:var(--muted)}
+    .bulkbar input[type=number]{width:4.2rem;padding:.15rem .3rem}
     </style>
 </head>
 <body>
@@ -102,10 +36,17 @@
         <header class="topbar">
             <div class="topbar-left">
                 <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄"><span class="sidebar-toggle-icon">☰</span><span class="sidebar-toggle-label">檔案</span></button>
+                <div class="history-controls">
+                    <button id="undoButton" class="icon-button history-button" type="button" aria-label="復原上一步" title="復原上一步" disabled>↶</button>
+                    <button id="redoButton" class="icon-button history-button" type="button" aria-label="重做下一步" title="重做下一步" disabled>↷</button>
+                </div>
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
                 <button id="playerToggle" class="button button-secondary" type="button" aria-pressed="true" aria-label="隱藏播放器" title="隱藏／顯示播放器"><span class="btn-icon" aria-hidden="true">🎧</span><span class="btn-label">隱藏播放器</span></button>
+                <button id="settingsButton" class="button button-secondary" type="button" aria-label="設定"><span class="btn-icon" aria-hidden="true">⚙</span><span class="btn-label">設定</span></button>
+                <button id="savePlayedButton" class="button button-secondary save-played hidden" type="button" aria-label="存收聽進度" title="把目前的收聽進度（各段「最後播放」時間）單獨存回 GitHub，不影響校稿草稿"><span class="btn-icon" aria-hidden="true">⤓</span><span class="btn-label">存收聽進度</span></button>
+                <button id="saveButton" class="button button-primary" type="button" aria-label="儲存到 GitHub" disabled><span class="btn-icon" aria-hidden="true">💾</span><span class="btn-label">儲存到 GitHub</span></button>
             </div>
         </header>
 
@@ -115,13 +56,6 @@
                     <span>月份</span>
                     <select id="monthSelect"></select>
                 </label>
-                <div class="filter-group" id="filterGroup" role="group" aria-label="過濾器">
-                    <button data-filter="all" class="on" type="button">全部</button>
-                    <button data-filter="low" type="button">⚠ 低信心</button>
-                    <button data-filter="interp" type="button">插補</button>
-                    <button data-filter="pending" type="button">待人工</button>
-                    <button data-filter="nottime" type="button">缺時間</button>
-                </div>
             </div>
             <nav id="fileList" class="file-list" aria-label="Session 列表">
                 <div class="empty-state">正在載入…</div>
@@ -133,10 +67,10 @@
 
         <main class="workspace">
             <section id="welcomePanel" class="welcome-panel">
-                <h2>選擇 session 開始審核（手機請點左上角「檔案」）</h2>
-                <p>每段問題會做成一張卡片：文字以 Word 為準，SRT 只取播放時間。時間標記格式為 <code>00:00:00.000</code>。</p>
-                <p>播放按鈕串流 <code>../audio/*.opus</code>，並可在段尾自動暫停。雙檔日會自動換檔播放（合併時間軸）。</p>
-                <p>快捷鍵：<kbd>P</kbd> 播放／暫停、<kbd>R</kbd> 重播、<kbd>S</kbd> 暫停、<kbd>↑</kbd>/<kbd>↓</kbd> 上／下一段。</p>
+                <h2>選擇 session 開始校稿（手機請點左上角「檔案」）——時間序 Word 彙總</h2>
+                <p>每段一張卡片：標題為提問（Word 文字），內文為回答（Word 文字）。卡片標題旁有<b>自動對齊信心分數</b>——紅色「⚠ 低信心」請特別仔細聽檔。有三態標記：<b>✔ 確認校對（已校）</b>／<b>↺ 未校</b>／<b>🚫 無音頻</b>；只有「已校」且有時間軸的段，重建電子書後前 12 章對應段落才會出現播放鈕。</p>
+                <p>播放按鈕會串流 <code>audio/*.opus</code>，並可在段尾自動暫停。用「設起始／設結束」與「起始 ±N 秒」微調對齊音檔。時間標記格式為 <code>00:00:00.000</code>。</p>
+                <p>SRT 對照僅供時間參考（非校對稿）。首次儲存前請在「設定」中填入 GitHub Fine-grained PAT，權限只需要此 repo 的 <code>Contents: Read and write</code>。</p>
             </section>
 
             <section id="documentPanel" class="document-panel hidden">
@@ -146,14 +80,15 @@
                         <h2 id="documentTitle"></h2>
                         <div id="metaStrip" class="meta-strip">
                             <span class="meta-chip">共 <strong id="metaTotalCount">0</strong> 段</span>
-                            <span class="meta-chip status-chip" data-status="both" title="已聽過／已校驗">完成 <strong id="metaBothCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="played" title="低信心需特別聽">低信心 <strong id="metaPlayedOnlyCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="edited" title="插補">插補 <strong id="metaEditedOnlyCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="none" title="缺時間">缺時間 <strong id="metaNoneCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="both" title="已 review（manual／reviewed）；電子書前 12 章會出現播放鈕">已校 <strong id="metaBothCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="played" title="人工確認沒有對應音頻（status=missing）">無音頻 <strong id="metaPlayedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="edited" title="信心 &lt; 0.5 的段落，請特別仔細聽">⚠ 低信心 <strong id="metaEditedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="none" title="尚未 review（status=auto）">未校 <strong id="metaNoneCount">0</strong></span>
                         </div>
                     </div>
                     <div class="document-meta">
                         <span id="segmentCount"></span>
+                        <span id="draftBadge" class="draft-badge hidden">本機草稿</span>
                     </div>
                 </div>
 
@@ -161,10 +96,106 @@
                     目前瀏覽器可能無法播放 `.opus` 音檔，建議使用 Chrome、Edge 或 Firefox。
                 </div>
 
+                <div id="conflictBanner" class="warning hidden"></div>
+                <div class="bulkbar" id="bulkbar" hidden>
+                    <strong id="bulkTitle"></strong>
+                    <span class="hint">批次處理本 session：</span>
+                    <label>auto 且信心 ≥ <input id="bulkConf" type="number" min="0" max="1" step="0.05" value="0.8"></label>
+                    <button id="bulkAutoBtn" class="button button-primary" type="button">確認為已校</button>
+                    <button id="bulkReviewBtn" class="button button-secondary" type="button">已校 → 改回未校</button>
+                    <span class="hint">｜</span>
+                    <button id="bulkNoneBtn" class="button button-danger" type="button">缺時間 → 無音頻</button>
+                </div>
+
                 <div id="editorRoot" class="segments"></div>
             </section>
         </main>
     </div>
+
+    <dialog id="settingsDialog" class="dialog">
+        <form method="dialog" class="dialog-card">
+            <header>
+                <h2>設定</h2>
+                <button class="icon-button" value="cancel" aria-label="關閉" type="submit">×</button>
+            </header>
+
+            <fieldset class="settings-fieldset">
+                <legend>寬螢幕版面</legend>
+                <p class="hint">調整答疑段落寬度與位置，避免被右下角浮動播放器擋住。手機版忽略這些設定。</p>
+                <label class="checkbox-row">
+                    <input id="contentFillWidthInput" type="checkbox">
+                    <span>答疑段落填滿可用寬度</span>
+                </label>
+                <label class="field">
+                    <span>答疑段落最大寬度 <strong id="contentMaxWidthValue">1100</strong> px</span>
+                    <input id="contentMaxWidthRange" type="range" min="720" max="2000" step="20" value="1100">
+                </label>
+                <label class="field">
+                    <span>水平對齊</span>
+                    <select id="contentAlignSelect">
+                        <option value="center">置中</option>
+                        <option value="left">靠左</option>
+                    </select>
+                </label>
+                <label class="field">
+                    <span>右側預留（避開啟播器） <strong id="contentRightGutterValue">0</strong> px</span>
+                    <input id="contentRightGutterRange" type="range" min="0" max="480" step="10" value="0">
+                </label>
+            </fieldset>
+
+            <fieldset class="settings-fieldset">
+                <legend>播放器</legend>
+                <label class="checkbox-row">
+                    <input id="autoShowMiniPlayerInput" type="checkbox" checked>
+                    <span>播放時自動顯示浮動播放器</span>
+                </label>
+                <p class="hint">關閉後，若你已隱藏播放器，點段落播放時不會再自動跳出（仍可用「顯示播放器」手動打開）。</p>
+            </fieldset>
+
+            <label class="field">
+                <span>GitHub Fine-grained PAT</span>
+                <input id="patInput" type="password" autocomplete="off" placeholder="github_pat_...">
+            </label>
+            <p class="hint">
+                建議建立 Fine-grained token，只授權 `taiguanglin.github.io`，權限選 `Contents: Read and write`。
+                Token 會存在此瀏覽器的 localStorage。
+            </p>
+            <menu class="dialog-actions">
+                <button id="clearPatButton" class="button button-secondary" type="button">移除 PAT</button>
+                <button id="testPatButton" class="button button-secondary" type="button">測試 PAT</button>
+                <button id="saveSettingsButton" class="button button-primary" value="default" type="submit">儲存設定</button>
+            </menu>
+            <p id="settingsMessage" class="settings-message"></p>
+        </form>
+    </dialog>
+
+    <dialog id="draftDialog" class="dialog">
+        <form method="dialog" class="dialog-card">
+            <header>
+                <h2>找到本機草稿</h2>
+            </header>
+            <p id="draftMessage"></p>
+            <menu class="dialog-actions">
+                <button id="discardDraftButton" class="button button-secondary" value="discard" type="submit">丟棄草稿</button>
+                <button id="loadRemoteButton" class="button button-secondary" value="remote" type="submit">先看遠端</button>
+                <button id="loadDraftButton" class="button button-primary" value="draft" type="submit">載入草稿</button>
+            </menu>
+        </form>
+    </dialog>
+
+    <dialog id="conflictDialog" class="dialog">
+        <form method="dialog" class="dialog-card wide">
+            <header>
+                <h2>遠端檔案已更新</h2>
+            </header>
+            <p>GitHub 上的月份 mapping 已經和你開始編輯時不同。可以重新拉取遠端，或用目前內容覆蓋遠端最新版。</p>
+            <pre id="conflictPreview" class="diff-preview"></pre>
+            <menu class="dialog-actions">
+                <button id="reloadRemoteButton" class="button button-secondary" value="reload" type="submit">重新拉取遠端</button>
+                <button id="forceSaveButton" class="button button-danger" value="force" type="submit">以本地覆蓋</button>
+            </menu>
+        </form>
+    </dialog>
 
     <aside id="miniPlayer" class="mini-player" aria-label="浮動播放控制">
         <header class="mini-player-header" id="miniPlayerHandle">
@@ -190,6 +221,15 @@
             <button type="button" data-seek="5" title="前進 5 秒">+5s</button>
             <button type="button" data-seek="15" title="前進 15 秒">+15s</button>
         </div>
+        <div class="mini-player-nudge" role="group" aria-label="微調這一段的起始時間">
+            <span class="mini-player-nudge-label">起始</span>
+            <button type="button" data-nudge-start="-0.5" disabled title="起始 −0.5 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">−0.5s</button>
+            <button type="button" data-nudge-start="-0.3" disabled title="起始 −0.3 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">−0.3s</button>
+            <button type="button" data-nudge-start="-0.1" disabled title="起始 −0.1 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機或快捷鍵 ←：只試播 3 秒">−0.1s</button>
+            <button type="button" data-nudge-start="0.1" disabled title="起始 +0.1 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機或快捷鍵 →：只試播 3 秒">+0.1s</button>
+            <button type="button" data-nudge-start="0.3" disabled title="起始 +0.3 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">+0.3s</button>
+            <button type="button" data-nudge-start="0.5" disabled title="起始 +0.5 秒（同步上一段結束），停手後自動重播。桌機按住 Alt／⌥／⌘／Ctrl、手機：只試播 3 秒">+0.5s</button>
+        </div>
         <div class="mini-player-settings">
             <label class="speed-control">
                 <span>倍速</span>
@@ -204,6 +244,10 @@
                     <option value="3">3.0x</option>
                 </select>
             </label>
+            <div class="mini-player-settime">
+                <button id="setStartButton" type="button" disabled title="把目前播放時間設為這一段的「起始」時間（同步上一段結束時間），並自動從新起點播放。右鍵／長按：只改這一段起始">設起始</button>
+                <button id="setEndButton" type="button" disabled title="把目前播放時間設為這一段的「結束」時間（同步下一段起始時間）。右鍵／長按：只改這一段結束">設結束</button>
+            </div>
             <label class="checkbox-row compact">
                 <input id="stopAtRangeEnd" type="checkbox" checked>
                 <span>段尾自停</span>
@@ -212,498 +256,38 @@
         <audio id="audioPlayer" preload="metadata"></audio>
     </aside>
 
-    <script type="module">
-    'use strict';
-
-    const AUDIO_BASE = '../audio/';
-    const MONTHS = [
-        '2024-02','2024-03','2024-04','2024-05','2024-06',
-        '2024-07','2024-08','2024-09','2024-11','2024-12',
-        '2025-01','2025-02','2025-03','2025-05',
-    ];
-
-    const $ = (id) => document.getElementById(id);
-    const els = {
-        monthSelect: $('monthSelect'),
-        filterGroup: $('filterGroup'),
-        fileList: $('fileList'),
-        sidebarToggle: $('sidebarToggle'),
-        sidebarBackdrop: $('sidebarBackdrop'),
-        sidebarResizer: $('sidebarResizer'),
-        documentPanel: $('documentPanel'),
-        welcomePanel: $('welcomePanel'),
-        documentPath: $('documentPath'),
-        documentTitle: $('documentTitle'),
-        segmentCount: $('segmentCount'),
-        metaTotalCount: $('metaTotalCount'),
-        metaBothCount: $('metaBothCount'),
-        metaPlayedOnlyCount: $('metaPlayedOnlyCount'),
-        metaEditedOnlyCount: $('metaEditedOnlyCount'),
-        metaNoneCount: $('metaNoneCount'),
-        editorRoot: $('editorRoot'),
-        opusWarning: $('opusWarning'),
-        saveStatus: $('saveStatus'),
-        playerToggle: $('playerToggle'),
-        miniPlayer: $('miniPlayer'),
-        miniPlayerToggle: $('miniPlayerToggle'),
-        miniPlayerHide: $('miniPlayerHide'),
-        miniPlayerExpand: $('miniPlayerExpand'),
-        audioTitle: $('audioTitle'),
-        audioRange: $('audioRange'),
-        seekBar: $('seekBar'),
-        miniPlayerCurrent: $('miniPlayerCurrent'),
-        miniPlayerDuration: $('miniPlayerDuration'),
-        playbackRate: $('playbackRate'),
-        stopAtRangeEnd: $('stopAtRangeEnd'),
-        audio: $('audioPlayer'),
-    };
-
-    const state = {
-        month: null,
-        map: null,
-        sessionId: null,
-        filter: 'all',
-        activeIndex: null,   // index in visible list
-        playingKey: null,
-        partFiles: [],
-        partDur: [],
-        sidebarOpen: true,
-    };
-
-    /* ── helpers ─────────────────────────── */
-    function fmtTC(sec) {
-        if (!Number.isFinite(sec)) return '--';
-        const s = Math.max(0, sec);
-        const h = Math.floor(s / 3600);
-        const m = Math.floor((s % 3600) / 60);
-        const x = s % 60;
-        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${x.toFixed(3).padStart(6,'0')}`;
-    }
-    function esc(t) {
-        return String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    }
-    function getSession() {
-        return state.map?.sessions?.find(s => s.session_id === state.sessionId) || null;
-    }
-    function setStatus(text, kind) {
-        els.saveStatus.textContent = text || '';
-        els.saveStatus.dataset.type = kind || 'ok';
-    }
-
-    /* split-combined timeline support */
-    function resolvePart(startSec) {
-        if (state.partFiles.length <= 1) return { fileIndex: 0, offset: 0 };
-        let acc = 0;
-        for (let i = 0; i < state.partDur.length; i++) {
-            acc += state.partDur[i];
-            if (startSec < acc || i === state.partDur.length - 1) {
-                return { fileIndex: i, offset: acc - state.partDur[i] };
-            }
-        }
-        return { fileIndex: 0, offset: 0 };
-    }
-    function setupSessionMedia(session) {
-        const parts = session.media_parts || [];
-        state.partFiles = parts.map(p => p.audio_file);
-        state.partDur = parts.map(p => p.duration_est || 0);
-        if (!state.partDur.length) {
-            state.partFiles = session.audio_file ? [session.audio_file] : [];
-            state.partDur = [0];
-        }
-    }
-
-    /* ── data load ───────────────────────── */
-    async function loadMonth(month) {
-        state.month = month;
-        state.map = null;
-        state.sessionId = null;
-        renderSessionList();
-        els.editorRoot.innerHTML = '';
-        setStatus('正在載入…', 'loading');
-        let res;
-        try {
-            res = await fetch(`./${month}.json`, { cache: 'no-store' });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            state.map = await res.json();
-        } catch (err) {
-            setStatus('載入失敗', 'error');
-            els.editorRoot.innerHTML = `<div class="empty-tip">讀取 ${esc(month)}.json 失敗（${esc(err.message)}）。<br>請用本機 server 開啟：<code>python3 -m http.server -d taiguanglin.github.io 8000</code> → <code>http://localhost:8000/audio_map2/</code></div>`;
-            return;
-        }
-        els.welcomePanel.classList.remove('hidden');
-        els.documentPanel.classList.add('hidden');
-        renderSessionList();
-        setStatus(`已載入 ${month}（${state.map.sessions?.length || 0} sessions）`, 'ok');
-    }
-
-    /* ── sidebar ─────────────────────────── */
-    function segStats(session) {
-        const segs = session.segments || [];
-        let total = segs.length, low = 0, interp = 0, missing = 0, pending = 0;
-        for (const s of segs) {
-            if (s.start == null) { missing++; continue; }
-            if ((s.confidence ?? 0) < 0.5) low++;
-            if (/interpolated/.test(s.notes || '')) interp++;
-            if (/no-anchor:clamped|待人工/.test(s.notes || '')) pending++;
-        }
-        return { total, low, interp, missing, pending };
-    }
-    function renderSessionList() {
-        if (!state.map) { els.fileList.innerHTML = '<div class="empty-state">請選擇月份</div>'; return; }
-        const rows = (state.map.sessions || []).map(s => {
-            const st = segStats(s);
-            const flags = [
-                st.low ? `<span class="flag" style="color:var(--danger)">⚠${st.low}</span>` : '',
-                st.interp ? `<span class="flag" style="color:var(--warn,#8a5a00)">插${st.interp}</span>` : '',
-                st.pending ? `<span class="flag" style="color:var(--warn,#8a5a00)">待${st.pending}</span>` : '',
-            ].join('');
-            return `<div class="file-row"><button type="button" class="file-item${s.session_id === state.sessionId ? ' active' : ''}" data-status="${st.missing ? 'partial' : (st.total ? 'all' : 'none')}" data-sid="${esc(s.session_id)}">
-                <span class="draft-dot hidden"></span>
-                <div class="file-item-body">
-                    <span class="file-name">${esc(s.date)} ${esc(s.resolved_source || s.source || '')} ${flags}</span>
-                    <span class="file-stats">${st.total} 段${st.missing ? ` · 缺 ${st.missing}` : ''}${s.media_kind === 'split' ? ' · 雙檔合併時間軸' : ''}</span>
-                </div>
-            </button></div>`;
-        }).join('');
-        const stats = state.map.stats || {};
-        els.fileList.innerHTML = rows +
-            `<div class="empty-state" style="font-size:12px;margin-top:10px">
-                月統計：${stats.sessions ?? '—'} sessions / ${stats.segments ?? '—'} 段<br>
-                低信心 ${stats.low_conf ?? 0} · 插補 ${stats.interpolated ?? 0} · 待人工 ${stats.pending ?? 0}</div>`;
-    }
-
-    /* ── filter / visibility ─────────────── */
-    function badgeFor(seg) {
-        if (seg.start == null) return '<span class="conf-badge bad">缺時間</span>';
-        const c = seg.confidence ?? 0;
-        if (c >= 0.8) return '<span class="conf-badge good">高信心</span>';
-        if (c >= 0.5) return '<span class="conf-badge warn">中信心</span>';
-        return '<span class="conf-badge bad">⚠ 低信心</span>';
-    }
-    function passesFilter(seg) {
-        switch (state.filter) {
-            case 'all': return true;
-            case 'low': return seg.start != null && (seg.confidence ?? 0) < 0.5;
-            case 'interp': return /interpolated/.test(seg.notes || '');
-            case 'pending': return /no-anchor:clamped|待人工/.test(seg.notes || '');
-            case 'nottime': return seg.start == null;
-            default: return true;
-        }
-    }
-    function visibleSegments(session) {
-        return (session.segments || []).map((s, i) => ({ seg: s, i })).filter(x => passesFilter(x.seg));
-    }
-    function segMetaChips(seg) {
-        let status = '';
-        if (seg.status === 'manual' || seg.status === 'reviewed') status = '<span class="conf-badge good">已校驗</span>';
-        else if (seg.status === 'missing') status = '<span class="conf-badge bad">無音頻</span>';
-        return status;
-    }
-
-    /* ── workspace render ────────────────── */
-    function renderWorkspace() {
-        const session = getSession();
-        if (!session) {
-            els.welcomePanel.classList.remove('hidden');
-            els.documentPanel.classList.add('hidden');
-            return;
-        }
-        els.welcomePanel.classList.add('hidden');
-        els.documentPanel.classList.remove('hidden');
-        setupSessionMedia(session);
-        const st = segStats(session);
-
-        els.documentPath.textContent = `${state.month}.json`;
-        els.documentTitle.textContent = `${session.date} ${session.resolved_source || session.source || ''}`;
-        els.segmentCount.textContent = `${session.segments?.length || 0} 段 · ${session.session_id}`;
-        els.metaTotalCount.textContent = st.total;
-        els.metaBothCount.textContent = st.total - st.missing;
-        els.metaPlayedOnlyCount.textContent = st.low;
-        els.metaEditedOnlyCount.textContent = st.interp;
-        els.metaNoneCount.textContent = st.missing;
-
-        const docSub = [
-            session.docx_heading ? `Word：${session.docx_heading}` : '',
-            session.audio_file ? `音檔：${session.audio_file}` : '',
-            (session.media_parts || []).length > 1
-                ? `合併時間軸（${session.media_parts.length} 檔）：` + session.media_parts.map((p, idx) => `${idx + 1}. ${esc(p.stem)} ≈${Math.round(p.duration_est || 0)}s`).join(' ＋ ')
-                : '',
-        ].filter(Boolean).join('<br>');
-
-        const openingCard = session.opening ? `
-            <article class="segment-card">
-                <header class="segment-header">
-                    <div class="segment-topline">
-                        <span class="segment-number">開場</span>
-                        <div class="segment-meta"><span class="tc-label">${esc(session.opening.start_label || fmtTC(session.opening.start))} – ${esc(session.opening.end_label || fmtTC(session.opening.end))}</span></div>
-                        <div class="segment-actions">
-                            <button class="button button-secondary play-range" data-play-opening="${esc(session.session_id)}" type="button">▶ 試聽開場</button>
-                        </div>
+    <template id="segmentTemplate">
+        <article class="segment-card">
+            <header class="segment-header">
+                <div class="segment-topline">
+                    <button class="segment-edit-toggle" type="button" aria-label="編輯這一段" aria-expanded="false" title="編輯這一段">✎</button>
+                    <div class="segment-meta">
+                        <span class="segment-number"></span>
+                        <span class="seg-meta-chip">
+                            最後播放：<strong class="seg-meta-played">—</strong>
+                            <button class="seg-meta-clear hidden" type="button" data-field="played" aria-label="清除最後播放時間" title="清除最後播放時間">×</button>
+                        </span>
+                        <span class="seg-meta-chip">
+                            最後編輯：<strong class="seg-meta-edited">—</strong>
+                            <button class="seg-meta-clear hidden" type="button" data-field="edited" aria-label="清除最後編輯時間" title="清除最後編輯時間">×</button>
+                        </span>
                     </div>
-                </header>
-                <div class="segment-body">
-                    ${session.opening.text || session.opening.text_preview ? `<div class="q-text-block play-on-click" data-play-opening="${esc(session.session_id)}">${esc(session.opening.text || session.opening.text_preview)}</div>` : '<div class="q-text-block" style="color:var(--muted)">（Word 無開場文字）</div>'}
-                </div>
-            </article>` : '';
-
-        const closingCard = session.closing ? `
-            <article class="segment-card">
-                <header class="segment-header">
-                    <div class="segment-topline">
-                        <span class="segment-number">收場</span>
-                        <div class="segment-meta"><span class="tc-label">${esc(session.closing.start_label || fmtTC(session.closing.start))} – ${esc(session.closing.end_label || fmtTC(session.closing.end))}</span></div>
-                        <div class="segment-actions">
-                            <button class="button button-secondary play-range" data-play-closing="${esc(session.session_id)}" type="button">▶ 試聽收場</button>
-                        </div>
+                    <div class="segment-actions">
+                        <span class="segment-dirty hidden">未存</span>
+                        <label class="checkbox-row compact segment-op segment-lock" title="鎖定後重跑 align 不會覆蓋時間">
+                            <input type="checkbox" class="lock-input">
+                            <span>鎖定</span>
+                        </label>
+                        <button class="button button-secondary segment-op reset-segment" type="button" aria-label="回復原樣" title="回復原樣（捨棄這一段的修改，還原成上次儲存的內容）">↺</button>
+                        <button class="button button-secondary segment-op copy-segment" type="button" aria-label="複製這段回答" title="複製 PDF 回答內容">📋</button>
                     </div>
-                </header>
-                <div class="segment-body">
-                    ${session.closing.text || session.closing.text_preview ? `<div class="q-text-block play-on-click" data-play-closing="${esc(session.session_id)}">${esc(session.closing.text || session.closing.text_preview)}</div>` : '<div class="q-text-block" style="color:var(--muted)">（Word 無收場文字）</div>'}
                 </div>
-            </article>` : '';
+                <textarea class="segment-title" rows="1" spellcheck="false" aria-label="段落提問（標題）" title="PDF 問題（唯讀）" readonly></textarea>
+            </header>
+            <div class="segment-body"></div>
+        </article>
+    </template>
 
-        const cards = visibleSegments(session).map(({ seg, i }) => {
-            const isLow = seg.start != null && (seg.confidence ?? 0) < 0.5;
-            const hasTime = seg.start != null;
-            const rangeLabel = hasTime ? `${seg.start_label || fmtTC(seg.start)} - ${seg.end_label || fmtTC(seg.end)}` : '00:00:00.000 - 00:00:00.000';
-            const key = `${session.session_id}#${i}`;
-            const title = seg.q_text || seg.q_preview || seg.answer_preview || '';
-            const answer = seg.answer_text || seg.answer_preview || '';
-            const playBtn = hasTime
-                ? `<button type="button" class="button button-secondary play-range" data-play-seg="${i}" data-key="${esc(key)}" aria-label="播放這一段">▶ ${esc(rangeLabel)}</button>`
-                : `<button type="button" class="button button-secondary play-range" disabled>▶ 缺時間</button>`;
-            return `<article class="segment-card${isLow ? ' low-card' : ''}" data-seg="${i}" data-segment-index="${i}">
-                <header class="segment-header">
-                    <div class="segment-topline">
-                        <span class="segment-number">#${seg.index ?? i + 1}</span>
-                        <div class="segment-meta">
-                            ${badgeFor(seg)}
-                            ${segMetaChips(seg)}
-                        </div>
-                        <div class="segment-actions">${playBtn}</div>
-                    </div>
-                </header>
-                <div class="segment-body">
-                    <div class="seg-source-line">
-                        ${seg.questioner ? `<span class="q-name">${esc(seg.questioner)}</span>` : '<span class="q-name" style="color:var(--warn,#8a5a00)">（未取得提問人）</span>'}
-                        ${seg.question_time ? `<span class="q-time">· ${esc(seg.question_time)}</span>` : ''}
-                    </div>
-                    ${title ? `<div class="q-text-block play-on-click" data-play-seg="${i}">${esc(title)}</div>` : `<div class="q-text-block play-on-click" data-play-seg="${i}" style="color:var(--warn,#8a5a00)">（此段沒有抓到問題文字）</div>`}
-                    ${answer ? `<div class="q-text-block answer-body play-on-click" data-play-seg="${i}" style="border-left-color:var(--muted)">${esc(answer)}</div>` : `<div class="q-text-block answer-body play-on-click" data-play-seg="${i}" style="border-left-color:var(--muted);color:var(--muted)">（無回答文字）</div>`}
-                    ${seg.srt_preview ? `<details class="srt"><summary>SRT 對照（僅供時間參考，非校對稿）</summary><div class="srt-body">${esc(seg.srt_preview)}</div></details>` : ''}
-                    ${seg.notes ? `<div class="notes-line${/待人工|no-anchor:clamped/.test(seg.notes) ? ' pending' : ''}">notes: ${esc(seg.notes)}</div>` : ''}
-                </div>
-            </article>`;
-        }).join('');
-
-        els.editorRoot.innerHTML = `
-            <div class="document-header-sub" style="color:var(--muted);font-size:0.82rem;margin:0.4rem 0 1rem 1px;line-height:1.6">${docSub}</div>
-            ${openingCard}
-            ${cards || '<div class="empty-tip">這個過濾條件下沒有段落。</div>'}
-            ${closingCard}`;
-    }
-
-    /* ── playback ────────────────────────── */
-    let activeRange = null;
-    let activeSrc = '';
-
-    els.audio.addEventListener('timeupdate', () => {
-        els.miniPlayerCurrent.textContent = fmtTC(els.audio.currentTime);
-        els.seekBar.value = Number.isFinite(els.audio.duration) && els.audio.duration > 0
-            ? Math.round((els.audio.currentTime / els.audio.duration) * 1000) : 0;
-        if (activeRange && els.stopAtRangeEnd.checked && Number.isFinite(activeRange.endLocal)
-            && els.audio.currentTime >= activeRange.endLocal) {
-            els.audio.pause();
-            els.audio.currentTime = activeRange.endLocal;
-            clearPlayHighlight();
-        }
-    });
-    els.audio.addEventListener('play', () => { els.miniPlayerToggle.textContent = '⏸'; });
-    els.audio.addEventListener('pause', () => { els.miniPlayerToggle.textContent = '▶'; });
-    els.audio.addEventListener('loadedmetadata', () => {
-        els.miniPlayerDuration.textContent = fmtTC(els.audio.duration || 0);
-        els.seekBar.max = 1000;
-    });
-    els.seekBar.addEventListener('input', () => {
-        if (!Number.isFinite(els.audio.duration)) return;
-        els.audio.currentTime = (els.seekBar.value / 1000) * els.audio.duration;
-    });
-    els.playbackRate.addEventListener('change', () => { els.audio.playbackRate = Number(els.playbackRate.value) || 1; });
-
-    function clearPlayHighlight() {
-        document.querySelectorAll('.playing').forEach(b => b.classList.remove('playing'));
-        state.playingKey = null;
-    }
-    function revealPlayer() {
-        if (els.miniPlayer.classList.contains('mini-player--hidden')) setMiniPlayerHidden(false);
-    }
-    function setMiniPlayerHidden(hidden) {
-        els.miniPlayer.classList.toggle('mini-player--hidden', hidden);
-        els.playerToggle.setAttribute('aria-pressed', String(!hidden));
-        els.playerToggle.querySelector('.btn-label').textContent = hidden ? '顯示播放器' : '隱藏播放器';
-    }
-
-    async function playRange({ startTime, endTime, label, key }) {
-        const { fileIndex, offset } = resolvePart(startTime);
-        const file = state.partFiles[Math.min(fileIndex, state.partFiles.length - 1)];
-        if (!file) return;
-        const src = new URL(AUDIO_BASE + encodeURIComponent(file.split('/').pop()), document.baseURI).href;
-        if (activeSrc !== src) {
-            activeSrc = src;
-            els.audio.src = src;
-        }
-        activeRange = {
-            startLocal: Math.max(0, startTime - offset),
-            endLocal: Number.isFinite(endTime) ? endTime - offset : Infinity,
-        };
-        revealPlayer();
-        els.audioTitle.textContent = label;
-        els.audioTitle.title = label;
-        els.audioRange.textContent = `${fmtTC(startTime)} – ${fmtTC(endTime)}`;
-        els.audio.playbackRate = Number(els.playbackRate.value) || 1;
-        els.audio.currentTime = activeRange.startLocal;
-        try { await els.audio.play(); } catch (e) { /* autoplay denied */ }
-        clearPlayHighlight();
-        if (key) {
-            state.playingKey = key;
-            const btn = document.querySelector(`[data-key="${CSS.escape(key)}"]`);
-            if (btn) btn.classList.add('playing');
-        }
-    }
-    function playSegment(i) {
-        const session = getSession();
-        if (!session) return;
-        const seg = (session.segments || [])[i];
-        if (!seg || seg.start == null) return;
-        playRange({
-            startTime: seg.start,
-            endTime: seg.end,
-            label: `#${seg.index ?? i + 1} ${seg.questioner || ''}`,
-            key: `${session.session_id}#${i}`,
-        });
-        setActive(i);
-    }
-    function playOpening() {
-        const s = getSession();
-        if (s?.opening?.start != null)
-            playRange({ startTime: s.opening.start, endTime: s.opening.end, label: '開場' });
-    }
-    function playClosing() {
-        const s = getSession();
-        if (s?.closing?.start != null)
-            playRange({ startTime: s.closing.start, endTime: s.closing.end, label: '收場' });
-    }
-    function visList() {
-        const s = getSession();
-        return s ? visibleSegments(s).map(x => x.i) : [];
-    }
-    function setActive(i) {
-        state.activeIndex = i;
-        document.querySelectorAll('[data-seg]').forEach(c => {
-            c.style.outline = Number(c.dataset.seg) === i ? '2px solid var(--accent)' : '';
-        });
-        const card = document.querySelector(`[data-seg="${i}"]`);
-        if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-    }
-    function stepSegment(delta) {
-        const list = visList();
-        if (!list.length) return;
-        let pos = list.indexOf(state.activeIndex);
-        pos = pos === -1 ? 0 : Math.min(list.length - 1, Math.max(0, pos + delta));
-        const i = list[pos];
-        setActive(i);
-        playSegment(i);
-    }
-    function selectSession(sid) {
-        state.sessionId = sid;
-        state.activeIndex = null;
-        clearPlayHighlight();
-        renderSessionList();
-        renderWorkspace();
-        if (window.innerWidth <= 900) setSidebarOpen(false);
-    }
-
-    /* ── sidebar open/toggle/resize (index2 UX) ── */
-    function setSidebarOpen(open) {
-        state.sidebarOpen = open;
-        document.querySelector('#app').classList.toggle('sidebar-collapsed', !open);
-        els.sidebarBackdrop.hidden = open;
-    }
-    els.sidebarToggle.addEventListener('click', () => setSidebarOpen(!state.sidebarOpen));
-    els.sidebarBackdrop.addEventListener('click', () => setSidebarOpen(false));
-
-    /* ── events ──────────────────────────── */
-    MONTHS.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m; opt.textContent = m;
-        els.monthSelect.appendChild(opt);
-    });
-    els.monthSelect.addEventListener('change', () => loadMonth(els.monthSelect.value));
-
-    els.filterGroup.addEventListener('click', e => {
-        const btn = e.target.closest('[data-filter]');
-        if (!btn) return;
-        state.filter = btn.dataset.filter;
-        els.filterGroup.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
-        renderWorkspace();
-    });
-
-    els.fileList.addEventListener('click', e => {
-        const item = e.target.closest('[data-sid]');
-        if (item) selectSession(item.dataset.sid);
-    });
-
-    els.editorRoot.addEventListener('click', e => {
-        // ▶ 播放按鈕
-        const segBtn = e.target.closest('[data-play-seg]');
-        if (segBtn) { playSegment(Number(segBtn.dataset.playSeg)); return; }
-        // 點擊問題／回答文字 → 自動播放該段（同 index2 的 click-to-play）
-        const textBlock = e.target.closest('.play-on-click[data-play-seg]');
-        if (textBlock) {
-            const sel = window.getSelection();
-            if (sel && !sel.isCollapsed && (textBlock.contains(sel.anchorNode) || textBlock.contains(sel.focusNode))) {
-                return; // 正在選字，別觸發播放
-            }
-            if (document.activeElement?.matches?.('input, textarea, select')) {
-                try { document.activeElement.blur(); } catch { /* noop */ }
-            }
-            playSegment(Number(textBlock.dataset.playSeg));
-            return;
-        }
-        if (e.target.closest('[data-play-opening]')) { playOpening(); return; }
-        if (e.target.closest('[data-play-closing]')) { playClosing(); }
-    });
-
-    els.miniPlayerToggle.addEventListener('click', () => {
-        if (els.audio.paused) els.audio.play(); else els.audio.pause();
-    });
-    els.miniPlayerHide.addEventListener('click', () => { setMiniPlayerHidden(true); });
-    els.playerToggle.addEventListener('click', () => setMiniPlayerHidden(!els.miniPlayer.classList.contains('mini-player--hidden')));
-    document.querySelectorAll('[data-seek]').forEach(b => {
-        b.addEventListener('click', () => {
-            els.audio.currentTime = Math.max(0, els.audio.currentTime + Number(b.dataset.seek));
-        });
-    });
-
-    document.addEventListener('keydown', e => {
-        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-        if (e.key === 'p' || e.key === 'P') {
-            e.preventDefault();
-            if (els.audio.paused) els.audio.play(); else els.audio.pause();
-        } else if (e.key === 's' || e.key === 'S') {
-            e.preventDefault(); els.audio.pause();
-        } else if (e.key === 'r' || e.key === 'R') {
-            e.preventDefault();
-            if (activeRange) { els.audio.currentTime = activeRange.startLocal; els.audio.play(); }
-        } else if (e.key === 'ArrowDown' || e.key === 'j') {
-            e.preventDefault(); stepSegment(1);
-        } else if (e.key === 'ArrowUp' || e.key === 'k') {
-            e.preventDefault(); stepSegment(-1);
-        }
-    });
-
-    /* boot */
-    loadMonth(MONTHS[0]);
-    </script>
+    <script type="module" src="assets/editor.js"></script>
 </body>
 </html>
