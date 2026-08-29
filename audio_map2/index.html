@@ -1,628 +1,709 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Word 時間序 音檔 Mapping 審核</title>
-<meta name="description" content="審核依時間順序版 Word 彙總產生的音檔 mapping：文字以 Word 為準，SRT 只供對照播放時間。">
-<style>
-:root {
-    --bg: #f5f6f8;
-    --panel: #ffffff;
-    --ink: #1c2330;
-    --ink-soft: #5b6472;
-    --line: #e3e6ec;
-    --accent: #2563eb;
-    --accent-soft: #dbeafe;
-    --good: #16a34a;
-    --good-bg: #dcfce7;
-    --warn: #b45309;
-    --warn-bg: #fef3c7;
-    --bad: #dc2626;
-    --bad-bg: #fee2e2;
-    --chip: #eef1f6;
-    --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-}
-@media (prefers-color-scheme: dark) {
-    :root {
-        --bg: #12161d;
-        --panel: #1a2029;
-        --ink: #e6e9ef;
-        --ink-soft: #98a2b3;
-        --line: #2a323e;
-        --accent: #60a5fa;
-        --accent-soft: #1e3a5f;
-        --good: #4ade80;
-        --good-bg: #14321f;
-        --warn: #fbbf24;
-        --warn-bg: #3a2c07;
-        --bad: #f87171;
-        --bad-bg: #3d1517;
-        --chip: #232b36;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Word 時間序 · 音檔 Mapping 審核</title>
+    <meta name="description" content="審核依時間順序版 Word 彙總產生的音檔 mapping：文字以 Word 為準，SRT 只供對照播放時間。">
+    <link rel="stylesheet" href="../audio_map/assets/editor.css">
+    <link rel="stylesheet" href="../audio_map/assets/overrides.css">
+    <style>
+    /* ── audio_map2 擴充（沿用 index2 生態系，僅補時間序專屬樣式）────────── */
+    #app .file-list .session-stats {
+        display: block;
+        color: var(--muted);
+        font-size: 0.76rem;
+        line-height: 1.35;
+        margin-top: 0.2rem;
+        word-break: break-word;
     }
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; height: 100%; }
-body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
-    font-size: 15px;
-    line-height: 1.55;
-}
-#app { display: flex; flex-direction: column; height: 100%; }
-
-/* ── topbar ─────────────────────────────── */
-.topbar {
-    display: flex; align-items: center; gap: 12px;
-    padding: 10px 16px;
-    background: var(--panel);
-    border-bottom: 1px solid var(--line);
-    flex: none;
-}
-.topbar h1 { font-size: 16px; margin: 0; font-weight: 650; }
-.topbar .spacer { flex: 1; }
-select, button {
-    font: inherit; color: inherit;
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: 8px; padding: 6px 10px;
-}
-button { cursor: pointer; }
-button:hover { border-color: var(--accent); }
-button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-.filter-group { display: flex; gap: 6px; flex-wrap: wrap; }
-.filter-group button.on {
-    background: var(--accent-soft); border-color: var(--accent); color: var(--accent);
-    font-weight: 600;
-}
-#loadHint { color: var(--ink-soft); font-size: 13px; }
-
-/* ── layout ─────────────────────────────── */
-.main { display: flex; flex: 1; min-height: 0; }
-.sidebar {
-    width: 300px; flex: none;
-    background: var(--panel);
-    border-right: 1px solid var(--line);
-    overflow-y: auto;
-    padding: 10px;
-}
-.session-list { display: flex; flex-direction: column; gap: 4px; }
-.session-item {
-    text-align: left; padding: 8px 10px; border-radius: 10px;
-    border: 1px solid transparent; background: none; width: 100%;
-}
-.session-item:hover { background: var(--chip); }
-.session-item.on { background: var(--accent-soft); border-color: var(--accent); }
-.session-item .s-date { font-weight: 650; }
-.session-item .s-src { color: var(--ink-soft); font-size: 12.5px; margin-left: 6px; }
-.session-item .s-stats { display: block; font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
-.session-item .flag { margin-left: 4px; }
-
-.workspace { flex: 1; overflow-y: auto; padding: 18px 22px 140px; min-width: 0; }
-.doc-header { max-width: 980px; margin: 0 auto 14px; }
-.doc-header h2 { margin: 0 0 4px; font-size: 20px; }
-.doc-sub { color: var(--ink-soft); font-size: 13px; word-break: break-all; }
-.meta-strip { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.chip {
-    background: var(--chip); border-radius: 999px;
-    padding: 3px 12px; font-size: 12.5px; color: var(--ink-soft);
-}
-.chip strong { color: var(--ink); }
-.chip.bad strong { color: var(--bad); }
-.chip.warn strong { color: var(--warn); }
-
-/* ── cards ──────────────────────────────── */
-.cards { max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; }
-.card {
-    background: var(--panel); border: 1px solid var(--line);
-    border-radius: 14px; padding: 14px 16px;
-}
-.card.low { border-color: var(--bad); box-shadow: 0 0 0 1px var(--bad) inset; }
-.card-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
-.seg-no { font-weight: 700; color: var(--ink-soft); min-width: 34px; }
-.badge {
-    font-size: 12px; border-radius: 999px; padding: 2px 10px; font-weight: 600;
-}
-.badge.good { background: var(--good-bg); color: var(--good); }
-.badge.warn { background: var(--warn-bg); color: var(--warn); }
-.badge.bad { background: var(--bad-bg); color: var(--bad); }
-.tc { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); }
-.playbtn { white-space: nowrap; }
-.playbtn.playing { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-.card-role { font-size: 11.5px; letter-spacing: .08em; color: var(--ink-soft); }
-.q-name { font-weight: 650; }
-.q-time { font-family: var(--mono); font-size: 12px; color: var(--ink-soft); }
-.q-text {
-    margin: 6px 0 10px; padding: 8px 12px;
-    border-left: 3px solid var(--accent);
-    background: var(--chip); border-radius: 0 8px 8px 0;
-    white-space: pre-wrap;
-}
-.a-text { white-space: pre-wrap; }
-.notes-line { margin-top: 8px; font-size: 12px; color: var(--ink-soft); word-break: break-all; }
-details.srt { margin-top: 8px; }
-details.srt summary { cursor: pointer; font-size: 12.5px; color: var(--ink-soft); user-select: none; }
-details.srt .srt-body {
-    margin-top: 6px; padding: 8px 12px;
-    background: var(--chip); border-radius: 8px;
-    font-size: 13px; color: var(--ink-soft);
-    white-space: pre-wrap; max-height: 220px; overflow-y: auto;
-}
-.card.opening, .card.closing { background: transparent; border-style: dashed; }
-.empty-tip { color: var(--ink-soft); text-align: center; margin-top: 80px; }
-
-/* ── mini player ────────────────────────── */
-.player {
-    position: fixed; left: 0; right: 0; bottom: 0;
-    background: var(--panel); border-top: 1px solid var(--line);
-    padding: 10px 16px 12px;
-    display: none;
-    z-index: 30;
-}
-.player.show { display: block; }
-.player-row { display: flex; align-items: center; gap: 10px; max-width: 1080px; margin: 0 auto; flex-wrap: wrap; }
-.player-title { font-weight: 600; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.player-range { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
-.player-time { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
-#seekBar { flex: 1; min-width: 160px; }
-.pbtn { padding: 4px 9px; font-size: 13px; }
-.hidden { display: none !important; }
-
-@media (max-width: 900px) {
-    .sidebar { width: 220px; }
-    .workspace { padding: 12px 12px 150px; }
-}
-</style>
+    #app .file-list .session-flags {
+        display: inline-flex;
+        gap: 0.25rem;
+        margin-left: 0.35rem;
+    }
+    .conf-badge {
+        border-radius: 999px;
+        display: inline-block;
+        font-size: 0.72rem;
+        font-variant-numeric: tabular-nums;
+        font-weight: 600;
+        line-height: 1;
+        padding: 0.2rem 0.5rem;
+        vertical-align: middle;
+    }
+    .conf-badge.bad { background: #fee2e2; color: #b42318; }
+    .conf-badge.warn { background: #fff2cc; color: #8a5a00; }
+    .conf-badge.good { background: #d6f0dd; color: #1f7a3f; }
+    @media (prefers-color-scheme: dark) {
+        .conf-badge.bad { background: #3d1517; color: #ff8a80; }
+        .conf-badge.warn { background: #372b12; color: #ffc078; }
+        .conf-badge.good { background: #14321f; color: #8ce99a; }
+    }
+    .seg-source-line { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; }
+    .seg-source-line .q-name { font-weight: 650; }
+    .seg-source-line .q-time { color: var(--muted); font-size: 0.82rem; font-variant-numeric: tabular-nums; }
+    .q-text-block {
+        border-left: 3px solid var(--accent);
+        background: var(--panel-strong);
+        border-radius: 0 0.6rem 0.6rem 0;
+        color: var(--text);
+        font: inherit;
+        line-height: 1.7;
+        margin: 0.4rem 0 0.7rem;
+        padding: 0.6rem 0.8rem;
+        white-space: pre-wrap;
+        word-break: break-word;
+    }
+    .notes-line {
+        color: var(--muted);
+        font-size: 0.78rem;
+        margin-top: 0.5rem;
+        word-break: break-all;
+    }
+    .notes-line.pending { color: var(--warn, #8a5a00); }
+    .play-on-click { cursor: pointer; }
+    .play-on-click:hover { outline: 1px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
+    .filter-group { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.7rem; }
+    .filter-group button {
+        background: var(--panel-strong);
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        color: var(--muted);
+        cursor: pointer;
+        font: inherit;
+        font-size: 0.78rem;
+        padding: 0.25rem 0.7rem;
+    }
+    .filter-group button.on { background: color-mix(in srgb, var(--accent) 18%, transparent); border-color: var(--accent); color: var(--accent-strong); font-weight: 600; }
+    details.srt { margin-top: 0.5rem; }
+    details.srt summary { color: var(--muted); cursor: pointer; font-size: 0.8rem; user-select: none; }
+    details.srt .srt-body {
+        background: var(--panel-strong);
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        color: var(--muted);
+        font-size: 0.8rem;
+        line-height: 1.6;
+        margin-top: 0.4rem;
+        max-height: 220px;
+        overflow-y: auto;
+        padding: 0.55rem 0.7rem;
+        white-space: pre-wrap;
+    }
+    .seg-meta-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.4rem; }
+    .tc-label { color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.8rem; font-variant-numeric: tabular-nums; }
+    .low-card { box-shadow: inset 0 0 0 2px var(--danger, #b42318); }
+    .empty-tip { color: var(--muted); padding: 3rem 0; text-align: center; }
+    </style>
 </head>
 <body>
-<div id="app">
-    <header class="topbar">
-        <h1>Word 時間序 · 音檔 Mapping 審核</h1>
-        <span id="loadHint">文字以 Word 為準 · SRT 僅供對照</span>
-        <span class="spacer"></span>
-        <label>月份
-            <select id="monthSelect"><option value="">載入中…</option></select>
-        </label>
-        <div class="filter-group" id="filterGroup">
-            <button data-filter="all" class="on">全部</button>
-            <button data-filter="low">⚠ 低信心</button>
-            <button data-filter="interp">插補</button>
-            <button data-filter="pending">待人工</button>
-            <button data-filter="noanswer">無對應</button>
-        </div>
-    </header>
+    <div id="app" class="app-shell">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button id="sidebarToggle" class="icon-button sidebar-toggle" type="button" aria-label="收起／展開側邊欄" title="收起／展開側邊欄"><span class="sidebar-toggle-icon">☰</span><span class="sidebar-toggle-label">檔案</span></button>
+            </div>
+            <div class="topbar-actions">
+                <span id="saveStatus" class="status-pill">尚未載入</span>
+                <button id="playerToggle" class="button button-secondary" type="button" aria-pressed="true" aria-label="隱藏播放器" title="隱藏／顯示播放器"><span class="btn-icon" aria-hidden="true">🎧</span><span class="btn-label">隱藏播放器</span></button>
+            </div>
+        </header>
 
-    <div class="main">
-        <aside class="sidebar">
-            <nav id="sessionList" class="session-list"><div class="empty-tip">請選擇月份</div></nav>
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-toolbar">
+                <label class="field">
+                    <span>月份</span>
+                    <select id="monthSelect"></select>
+                </label>
+                <div class="filter-group" id="filterGroup" role="group" aria-label="過濾器">
+                    <button data-filter="all" class="on" type="button">全部</button>
+                    <button data-filter="low" type="button">⚠ 低信心</button>
+                    <button data-filter="interp" type="button">插補</button>
+                    <button data-filter="pending" type="button">待人工</button>
+                    <button data-filter="nottime" type="button">缺時間</button>
+                </div>
+            </div>
+            <nav id="fileList" class="file-list" aria-label="Session 列表">
+                <div class="empty-state">正在載入…</div>
+            </nav>
+            <div id="sidebarResizer" class="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="調整側邊欄寬度" title="拖曳調整寬度"></div>
         </aside>
-        <main class="workspace" id="workspace">
-            <div class="empty-tip">左側選一個 session 開始審核。</div>
+
+        <div id="sidebarBackdrop" class="sidebar-backdrop" hidden></div>
+
+        <main class="workspace">
+            <section id="welcomePanel" class="welcome-panel">
+                <h2>選擇 session 開始審核（手機請點左上角「檔案」）</h2>
+                <p>每段問題會做成一張卡片：文字以 Word 為準，SRT 只取播放時間。時間標記格式為 <code>00:00:00.000</code>。</p>
+                <p>播放按鈕串流 <code>../audio/*.opus</code>，並可在段尾自動暫停。雙檔日會自動換檔播放（合併時間軸）。</p>
+                <p>快捷鍵：<kbd>P</kbd> 播放／暫停、<kbd>R</kbd> 重播、<kbd>S</kbd> 暫停、<kbd>↑</kbd>/<kbd>↓</kbd> 上／下一段。</p>
+            </section>
+
+            <section id="documentPanel" class="document-panel hidden">
+                <div class="document-header">
+                    <div>
+                        <p id="documentPath" class="document-path"></p>
+                        <h2 id="documentTitle"></h2>
+                        <div id="metaStrip" class="meta-strip">
+                            <span class="meta-chip">共 <strong id="metaTotalCount">0</strong> 段</span>
+                            <span class="meta-chip status-chip" data-status="both" title="已聽過／已校驗">完成 <strong id="metaBothCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="played" title="低信心需特別聽">低信心 <strong id="metaPlayedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="edited" title="插補">插補 <strong id="metaEditedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="none" title="缺時間">缺時間 <strong id="metaNoneCount">0</strong></span>
+                        </div>
+                    </div>
+                    <div class="document-meta">
+                        <span id="segmentCount"></span>
+                    </div>
+                </div>
+
+                <div id="opusWarning" class="warning hidden">
+                    目前瀏覽器可能無法播放 `.opus` 音檔，建議使用 Chrome、Edge 或 Firefox。
+                </div>
+
+                <div id="editorRoot" class="segments"></div>
+            </section>
         </main>
     </div>
 
-    <div class="player" id="player">
-        <div class="player-row">
-            <button class="pbtn" id="prevSegBtn" title="上一段（↑）">⏮</button>
-            <button class="pbtn primary" id="toggleBtn" title="播放／暫停（P）">▶</button>
-            <button class="pbtn" id="nextSegBtn" title="下一段（↓）">⏭</button>
-            <span class="player-title" id="playerTitle"></span>
-            <span class="player-range" id="playerRange"></span>
-            <input type="range" id="seekBar" min="0" max="1000" step="1" value="0">
-            <span class="player-time"><span id="curTime">00:00:00.000</span> / <span id="durTime">00:00:00.000</span></span>
-            <button class="pbtn" data-seek="-15">−15s</button>
-            <button class="pbtn" data-seek="-5">−5s</button>
-            <button class="pbtn" data-seek="5">+5s</button>
-            <button class="pbtn" data-seek="15">+15s</button>
-            <label>倍速
-                <select id="rateSelect">
+    <aside id="miniPlayer" class="mini-player" aria-label="浮動播放控制">
+        <header class="mini-player-header" id="miniPlayerHandle">
+            <span class="mini-player-title" id="audioTitle">尚未播放</span>
+            <span class="mini-player-range" id="audioRange"></span>
+            <button id="miniPlayerExpand" class="icon-button mini-player-expand" type="button" aria-label="展開播放器" title="展開／收合播放器" aria-expanded="false">▴</button>
+            <button id="miniPlayerHide" class="icon-button mini-player-hide" type="button" aria-label="隱藏播放器" title="隱藏播放器">×</button>
+        </header>
+        <div class="mini-player-progress">
+            <input id="seekBar" type="range" min="0" max="0" step="0.1" value="0" aria-label="播放進度">
+        </div>
+        <div class="mini-player-time">
+            <span id="miniPlayerCurrent">00:00:00.000</span>
+            <span>/</span>
+            <span id="miniPlayerDuration">00:00:00.000</span>
+        </div>
+        <div class="mini-player-controls">
+            <button type="button" data-seek="-15" title="倒退 15 秒">-15s</button>
+            <button type="button" data-seek="-5" title="倒退 5 秒">-5s</button>
+            <button type="button" data-seek="-2" title="倒退 2 秒">-2s</button>
+            <button id="miniPlayerToggle" type="button" class="primary" aria-label="播放/暫停" title="播放／暫停（快捷鍵 P）；重頭播放 R；暫停 S">▶</button>
+            <button type="button" data-seek="2" title="前進 2 秒">+2s</button>
+            <button type="button" data-seek="5" title="前進 5 秒">+5s</button>
+            <button type="button" data-seek="15" title="前進 15 秒">+15s</button>
+        </div>
+        <div class="mini-player-settings">
+            <label class="speed-control">
+                <span>倍速</span>
+                <select id="playbackRate">
                     <option value="0.75">0.75x</option>
-                    <option value="1" selected>1.0x</option>
+                    <option value="1">1.0x</option>
                     <option value="1.25">1.25x</option>
                     <option value="1.5">1.5x</option>
+                    <option value="1.75">1.75x</option>
                     <option value="2">2.0x</option>
+                    <option value="2.5">2.5x</option>
                     <option value="3">3.0x</option>
                 </select>
             </label>
-            <label><input type="checkbox" id="stopAtEnd" checked> 段尾自停</label>
-            <audio id="audioPlayer" preload="metadata"></audio>
+            <label class="checkbox-row compact">
+                <input id="stopAtRangeEnd" type="checkbox" checked>
+                <span>段尾自停</span>
+            </label>
         </div>
-    </div>
-</div>
+        <audio id="audioPlayer" preload="metadata"></audio>
+    </aside>
 
-<script>
-'use strict';
-const AUDIO_BASE = '../audio/';
-const MONTHS = [
-    '2024-02','2024-03','2024-04','2024-05','2024-06',
-    '2024-07','2024-08','2024-09','2024-11','2024-12',
-    '2025-01','2025-02','2025-03','2025-05',
-];
+    <script type="module">
+    'use strict';
 
-const els = {
-    monthSelect: document.querySelector('#monthSelect'),
-    filterGroup: document.querySelector('#filterGroup'),
-    sessionList: document.querySelector('#sessionList'),
-    workspace: document.querySelector('#workspace'),
-    player: document.querySelector('#player'),
-    playerTitle: document.querySelector('#playerTitle'),
-    playerRange: document.querySelector('#playerRange'),
-    seekBar: document.querySelector('#seekBar'),
-    curTime: document.querySelector('#curTime'),
-    durTime: document.querySelector('#durTime'),
-    toggleBtn: document.querySelector('#toggleBtn'),
-    prevSegBtn: document.querySelector('#prevSegBtn'),
-    nextSegBtn: document.querySelector('#nextSegBtn'),
-    rateSelect: document.querySelector('#rateSelect'),
-    stopAtEnd: document.querySelector('#stopAtEnd'),
-    audio: document.querySelector('#audioPlayer'),
-};
+    const AUDIO_BASE = '../audio/';
+    const MONTHS = [
+        '2024-02','2024-03','2024-04','2024-05','2024-06',
+        '2024-07','2024-08','2024-09','2024-11','2024-12',
+        '2025-01','2025-02','2025-03','2025-05',
+    ];
 
-const state = {
-    month: null,
-    map: null,
-    sessionId: null,
-    filter: 'all',
-    activeIndex: null,   // index within visible seg list
-    playingKey: null,    // `${sessionId}#${segIndex}` currently highlighted
-    partDur: [],         // combined-timeline split points (durations per part)
-    partFiles: [],
-};
+    const $ = (id) => document.getElementById(id);
+    const els = {
+        monthSelect: $('monthSelect'),
+        filterGroup: $('filterGroup'),
+        fileList: $('fileList'),
+        sidebarToggle: $('sidebarToggle'),
+        sidebarBackdrop: $('sidebarBackdrop'),
+        sidebarResizer: $('sidebarResizer'),
+        documentPanel: $('documentPanel'),
+        welcomePanel: $('welcomePanel'),
+        documentPath: $('documentPath'),
+        documentTitle: $('documentTitle'),
+        segmentCount: $('segmentCount'),
+        metaTotalCount: $('metaTotalCount'),
+        metaBothCount: $('metaBothCount'),
+        metaPlayedOnlyCount: $('metaPlayedOnlyCount'),
+        metaEditedOnlyCount: $('metaEditedOnlyCount'),
+        metaNoneCount: $('metaNoneCount'),
+        editorRoot: $('editorRoot'),
+        opusWarning: $('opusWarning'),
+        saveStatus: $('saveStatus'),
+        playerToggle: $('playerToggle'),
+        miniPlayer: $('miniPlayer'),
+        miniPlayerToggle: $('miniPlayerToggle'),
+        miniPlayerHide: $('miniPlayerHide'),
+        miniPlayerExpand: $('miniPlayerExpand'),
+        audioTitle: $('audioTitle'),
+        audioRange: $('audioRange'),
+        seekBar: $('seekBar'),
+        miniPlayerCurrent: $('miniPlayerCurrent'),
+        miniPlayerDuration: $('miniPlayerDuration'),
+        playbackRate: $('playbackRate'),
+        stopAtRangeEnd: $('stopAtRangeEnd'),
+        audio: $('audioPlayer'),
+    };
 
-/* ── helpers ─────────────────────────── */
-function fmtTC(sec) {
-    if (!Number.isFinite(sec)) return '--';
-    const s = Math.max(0, sec);
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const x = s % 60;
-    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${x.toFixed(3).padStart(6,'0')}`;
-}
-function esc(t) {
-    return String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-}
-function getSession() {
-    return state.map?.sessions?.find(s => s.session_id === state.sessionId) || null;
-}
+    const state = {
+        month: null,
+        map: null,
+        sessionId: null,
+        filter: 'all',
+        activeIndex: null,   // index in visible list
+        playingKey: null,
+        partFiles: [],
+        partDur: [],
+        sidebarOpen: true,
+    };
 
-/* split-combined timeline support */
-function resolvePart(startSec) {
-    // returns {fileIndex, offset} for the audio file covering combined-time startSec
-    if (state.partFiles.length <= 1) return { fileIndex: 0, offset: 0 };
-    let acc = 0;
-    for (let i = 0; i < state.partDur.length; i++) {
-        acc += state.partDur[i];
-        if (startSec < acc || i === state.partDur.length - 1) {
-            return { fileIndex: i, offset: acc - state.partDur[i] };
+    /* ── helpers ─────────────────────────── */
+    function fmtTC(sec) {
+        if (!Number.isFinite(sec)) return '--';
+        const s = Math.max(0, sec);
+        const h = Math.floor(s / 3600);
+        const m = Math.floor((s % 3600) / 60);
+        const x = s % 60;
+        return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${x.toFixed(3).padStart(6,'0')}`;
+    }
+    function esc(t) {
+        return String(t ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    }
+    function getSession() {
+        return state.map?.sessions?.find(s => s.session_id === state.sessionId) || null;
+    }
+    function setStatus(text, kind) {
+        els.saveStatus.textContent = text || '';
+        els.saveStatus.dataset.type = kind || 'ok';
+    }
+
+    /* split-combined timeline support */
+    function resolvePart(startSec) {
+        if (state.partFiles.length <= 1) return { fileIndex: 0, offset: 0 };
+        let acc = 0;
+        for (let i = 0; i < state.partDur.length; i++) {
+            acc += state.partDur[i];
+            if (startSec < acc || i === state.partDur.length - 1) {
+                return { fileIndex: i, offset: acc - state.partDur[i] };
+            }
+        }
+        return { fileIndex: 0, offset: 0 };
+    }
+    function setupSessionMedia(session) {
+        const parts = session.media_parts || [];
+        state.partFiles = parts.map(p => p.audio_file);
+        state.partDur = parts.map(p => p.duration_est || 0);
+        if (!state.partDur.length) {
+            state.partFiles = session.audio_file ? [session.audio_file] : [];
+            state.partDur = [0];
         }
     }
-    return { fileIndex: 0, offset: 0 };
-}
-function setupSessionMedia(session) {
-    const parts = session.media_parts || [];
-    state.partFiles = parts.map(p => p.audio_file);
-    state.partDur = parts.map(p => p.duration_est || 0);
-    if (!state.partDur.length) { state.partFiles = session.audio_file ? [session.audio_file] : []; state.partDur = [0]; }
-}
 
-/* ── data load ───────────────────────── */
-async function loadMonth(month) {
-    state.month = month;
-    state.map = null;
-    state.sessionId = null;
-    renderSessionList();
-    els.workspace.innerHTML = '<div class="empty-tip">載入中…</div>';
-    let res;
-    try {
-        res = await fetch(`./${month}.json`, { cache: 'no-store' });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        state.map = await res.json();
-    } catch (err) {
-        els.workspace.innerHTML =
-            `<div class="empty-tip">讀取 ${esc(month)}.json 失敗（${esc(err.message)}）。<br>` +
-            `請用本機 server 開啟，例如：<code>python3 -m http.server -d taiguanglin.github.io 8000</code> → ` +
-            `<code>http://localhost:8000/audio_map2/</code></div>`;
-        return;
+    /* ── data load ───────────────────────── */
+    async function loadMonth(month) {
+        state.month = month;
+        state.map = null;
+        state.sessionId = null;
+        renderSessionList();
+        els.editorRoot.innerHTML = '';
+        setStatus('正在載入…', 'loading');
+        let res;
+        try {
+            res = await fetch(`./${month}.json`, { cache: 'no-store' });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            state.map = await res.json();
+        } catch (err) {
+            setStatus('載入失敗', 'error');
+            els.editorRoot.innerHTML = `<div class="empty-tip">讀取 ${esc(month)}.json 失敗（${esc(err.message)}）。<br>請用本機 server 開啟：<code>python3 -m http.server -d taiguanglin.github.io 8000</code> → <code>http://localhost:8000/audio_map2/</code></div>`;
+            return;
+        }
+        els.welcomePanel.classList.remove('hidden');
+        els.documentPanel.classList.add('hidden');
+        renderSessionList();
+        setStatus(`已載入 ${month}（${state.map.sessions?.length || 0} sessions）`, 'ok');
     }
-    renderSessionList();
-    const first = state.map.sessions?.[0];
-    if (first) selectSession(first.session_id);
-}
 
-/* ── sidebar ─────────────────────────── */
-function segStats(session) {
-    const segs = session.segments || [];
-    let low = 0, interp = 0, missing = 0, pending = 0;
-    for (const s of segs) {
-        if (s.start == null) { missing++; continue; }
-        if ((s.confidence ?? 0) < 0.5) low++;
-        if (/interpolated/.test(s.notes || '')) interp++;
-        if (/no-anchor:clamped|待人工/.test(s.notes || '')) pending++;
+    /* ── sidebar ─────────────────────────── */
+    function segStats(session) {
+        const segs = session.segments || [];
+        let total = segs.length, low = 0, interp = 0, missing = 0, pending = 0;
+        for (const s of segs) {
+            if (s.start == null) { missing++; continue; }
+            if ((s.confidence ?? 0) < 0.5) low++;
+            if (/interpolated/.test(s.notes || '')) interp++;
+            if (/no-anchor:clamped|待人工/.test(s.notes || '')) pending++;
+        }
+        return { total, low, interp, missing, pending };
     }
-    return { total: segs.length, low, interp, missing, pending };
-}
-function renderSessionList() {
-    if (!state.map) { els.sessionList.innerHTML = '<div class="empty-tip">請選擇月份</div>'; return; }
-    const rows = (state.map.sessions || []).map(s => {
-        const st = segStats(s);
-        const flags = [
-            st.low ? `<span class="flag" style="color:var(--bad)">⚠${st.low}</span>` : '',
-            st.interp ? `<span class="flag" style="color:var(--warn)">插${st.interp}</span>` : '',
-            st.pending ? `<span class="flag" style="color:var(--warn)">待${st.pending}</span>` : '',
-        ].join('');
-        return `<button class="session-item${s.session_id === state.sessionId ? ' on' : ''}" data-sid="${esc(s.session_id)}">
-            <span class="s-date">${esc(s.date)}</span><span class="s-src">${esc(s.resolved_source || s.source || '')}</span>${flags}
-            <span class="s-stats">${st.total} 段 · ${st.missing ? `缺 ${st.missing} · ` : ''}${esc(s.media_kind === 'split' ? '雙檔合併時間軸' : '')}</span>
-        </button>`;
-    }).join('');
-    const stats = state.map.stats || {};
-    els.sessionList.innerHTML = rows +
-        `<div class="empty-tip" style="font-size:12px;margin-top:10px">
-            月統計：${stats.sessions ?? '—'} sessions / ${stats.segments ?? '—'} 段<br>
-            低信心 ${stats.low_conf ?? 0} · 插補 ${stats.interpolated ?? 0} · 待人工 ${stats.pending ?? 0}</div>`;
-}
+    function renderSessionList() {
+        if (!state.map) { els.fileList.innerHTML = '<div class="empty-state">請選擇月份</div>'; return; }
+        const rows = (state.map.sessions || []).map(s => {
+            const st = segStats(s);
+            const flags = [
+                st.low ? `<span class="flag" style="color:var(--danger)">⚠${st.low}</span>` : '',
+                st.interp ? `<span class="flag" style="color:var(--warn,#8a5a00)">插${st.interp}</span>` : '',
+                st.pending ? `<span class="flag" style="color:var(--warn,#8a5a00)">待${st.pending}</span>` : '',
+            ].join('');
+            return `<div class="file-row"><button type="button" class="file-item${s.session_id === state.sessionId ? ' active' : ''}" data-status="${st.missing ? 'partial' : (st.total ? 'all' : 'none')}" data-sid="${esc(s.session_id)}">
+                <span class="draft-dot hidden"></span>
+                <div class="file-item-body">
+                    <span class="file-name">${esc(s.date)} ${esc(s.resolved_source || s.source || '')} ${flags}</span>
+                    <span class="file-stats">${st.total} 段${st.missing ? ` · 缺 ${st.missing}` : ''}${s.media_kind === 'split' ? ' · 雙檔合併時間軸' : ''}</span>
+                </div>
+            </button></div>`;
+        }).join('');
+        const stats = state.map.stats || {};
+        els.fileList.innerHTML = rows +
+            `<div class="empty-state" style="font-size:12px;margin-top:10px">
+                月統計：${stats.sessions ?? '—'} sessions / ${stats.segments ?? '—'} 段<br>
+                低信心 ${stats.low_conf ?? 0} · 插補 ${stats.interpolated ?? 0} · 待人工 ${stats.pending ?? 0}</div>`;
+    }
 
-/* ── workspace ───────────────────────── */
-function badgeFor(seg) {
-    if (seg.start == null) return '<span class="badge bad">缺時間</span>';
-    const c = seg.confidence ?? 0;
-    if (c >= 0.8) return '<span class="badge good">高信心</span>';
-    if (c >= 0.5) return '<span class="badge warn">中信心</span>';
-    return '<span class="badge bad">⚠ 低信心</span>';
-}
-function passesFilter(seg) {
-    if (state.filter === 'all') return true;
-    if (state.filter === 'low') return seg.start != null && (seg.confidence ?? 0) < 0.5;
-    if (state.filter === 'interp') return /interpolated/.test(seg.notes || '');
-    if (state.filter === 'pending') return /no-anchor:clamped|待人工/.test(seg.notes || '');
-    if (state.filter === 'noanswer') return seg.start == null;
-    return true;
-}
-function visibleSegments(session) {
-    return (session.segments || []).map((s, i) => ({ seg: s, i })).filter(x => passesFilter(x.seg));
-}
+    /* ── filter / visibility ─────────────── */
+    function badgeFor(seg) {
+        if (seg.start == null) return '<span class="conf-badge bad">缺時間</span>';
+        const c = seg.confidence ?? 0;
+        if (c >= 0.8) return '<span class="conf-badge good">高信心</span>';
+        if (c >= 0.5) return '<span class="conf-badge warn">中信心</span>';
+        return '<span class="conf-badge bad">⚠ 低信心</span>';
+    }
+    function passesFilter(seg) {
+        switch (state.filter) {
+            case 'all': return true;
+            case 'low': return seg.start != null && (seg.confidence ?? 0) < 0.5;
+            case 'interp': return /interpolated/.test(seg.notes || '');
+            case 'pending': return /no-anchor:clamped|待人工/.test(seg.notes || '');
+            case 'nottime': return seg.start == null;
+            default: return true;
+        }
+    }
+    function visibleSegments(session) {
+        return (session.segments || []).map((s, i) => ({ seg: s, i })).filter(x => passesFilter(x.seg));
+    }
+    function segMetaChips(seg) {
+        let status = '';
+        if (seg.status === 'manual' || seg.status === 'reviewed') status = '<span class="conf-badge good">已校驗</span>';
+        else if (seg.status === 'missing') status = '<span class="conf-badge bad">無音頻</span>';
+        return status;
+    }
 
-function renderWorkspace() {
-    const session = getSession();
-    if (!session) { els.workspace.innerHTML = '<div class="empty-tip">左側選一個 session。</div>'; return; }
-    setupSessionMedia(session);
-    const st = segStats(session);
+    /* ── workspace render ────────────────── */
+    function renderWorkspace() {
+        const session = getSession();
+        if (!session) {
+            els.welcomePanel.classList.remove('hidden');
+            els.documentPanel.classList.add('hidden');
+            return;
+        }
+        els.welcomePanel.classList.add('hidden');
+        els.documentPanel.classList.remove('hidden');
+        setupSessionMedia(session);
+        const st = segStats(session);
 
-    const openingCard = session.opening ? `
-        <article class="card opening">
-            <div class="card-head">
-                <span class="card-role">開場</span>
-                <span class="tc">${esc(fmtTC(session.opening.start))} – ${esc(fmtTC(session.opening.end))}</span>
-                <button class="playbtn" data-play-opening="${esc(session.session_id)}">▶ 試聽開場</button>
-            </div>
-            <div class="q-text">${esc(session.opening.text || session.opening.text_preview || '（Word 無開場文字）')}</div>
-        </article>` : '';
+        els.documentPath.textContent = `${state.month}.json`;
+        els.documentTitle.textContent = `${session.date} ${session.resolved_source || session.source || ''}`;
+        els.segmentCount.textContent = `${session.segments?.length || 0} 段 · ${session.session_id}`;
+        els.metaTotalCount.textContent = st.total;
+        els.metaBothCount.textContent = st.total - st.missing;
+        els.metaPlayedOnlyCount.textContent = st.low;
+        els.metaEditedOnlyCount.textContent = st.interp;
+        els.metaNoneCount.textContent = st.missing;
 
-    const closingCard = session.closing ? `
-        <article class="card closing">
-            <div class="card-head">
-                <span class="card-role">收場</span>
-                <span class="tc">${esc(fmtTC(session.closing.start))} – ${esc(fmtTC(session.closing.end))}</span>
-                <button class="playbtn" data-play-closing="${esc(session.session_id)}">▶ 試聽收場</button>
-            </div>
-            <div class="q-text">${esc(session.closing.text || session.closing.text_preview || '（Word 無收場文字）')}</div>
-        </article>` : '';
+        const docSub = [
+            session.docx_heading ? `Word：${session.docx_heading}` : '',
+            session.audio_file ? `音檔：${session.audio_file}` : '',
+            (session.media_parts || []).length > 1
+                ? `合併時間軸（${session.media_parts.length} 檔）：` + session.media_parts.map((p, idx) => `${idx + 1}. ${esc(p.stem)} ≈${Math.round(p.duration_est || 0)}s`).join(' ＋ ')
+                : '',
+        ].filter(Boolean).join('<br>');
 
-    const cards = visibleSegments(session).map(({ seg, i }) => {
-        const isLow = seg.start != null && (seg.confidence ?? 0) < 0.5;
-        const key = `${session.session_id}#${i}`;
-        return `<article class="card${isLow ? ' low' : ''}" data-seg="${i}">
-            <div class="card-head">
-                <span class="seg-no">#${seg.index ?? i + 1}</span>
-                ${badgeFor(seg)}
-                <span class="tc">${esc(seg.start_label || fmtTC(seg.start))} – ${esc(seg.end_label || fmtTC(seg.end))}</span>
-                <span class="spacer" style="flex:1"></span>
-                <button class="playbtn" data-play-seg="${i}" data-key="${esc(key)}">▶ 播放此段</button>
-            </div>
-            <div>
-                ${seg.questioner ? `<span class="q-name">${esc(seg.questioner)}</span>` : '<span class="q-name" style="color:var(--warn)">（未取得提問人）</span>'}
-                ${seg.question_time ? `<span class="q-time">· ${esc(seg.question_time)}</span>` : ''}
-            </div>
-            ${seg.q_text ? `<div class="q-text">${esc(seg.q_text)}</div>`
-                         : '<div class="q-text" style="color:var(--warn)">（此段沒有抓到問題文字）</div>'}
-            <div class="a-text">${esc(seg.answer_text || seg.answer_preview || '（無回答文字）')}</div>
-            <details class="srt"><summary>SRT 對照（僅供時間參考，非校對稿）</summary>
-                <div class="srt-body">${esc(seg.srt_preview || '—')}</div>
-            </details>
-            ${seg.notes ? `<div class="notes-line">notes: ${esc(seg.notes)}</div>` : ''}
-        </article>`;
-    }).join('');
+        const openingCard = session.opening ? `
+            <article class="segment-card">
+                <header class="segment-header">
+                    <div class="segment-topline">
+                        <span class="segment-number">開場</span>
+                        <div class="segment-meta"><span class="tc-label">${esc(session.opening.start_label || fmtTC(session.opening.start))} – ${esc(session.opening.end_label || fmtTC(session.opening.end))}</span></div>
+                        <div class="segment-actions">
+                            <button class="button button-secondary play-range" data-play-opening="${esc(session.session_id)}" type="button">▶ 試聽開場</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="segment-body">
+                    ${session.opening.text || session.opening.text_preview ? `<div class="q-text-block play-on-click" data-play-opening="${esc(session.session_id)}">${esc(session.opening.text || session.opening.text_preview)}</div>` : '<div class="q-text-block" style="color:var(--muted)">（Word 無開場文字）</div>'}
+                </div>
+            </article>` : '';
 
-    els.workspace.innerHTML = `
-        <div class="doc-header">
-            <h2>${esc(session.date)} ${esc(session.resolved_source || session.source || '')}</h2>
-            <div class="doc-sub">
-                Word：${esc(session.docx_heading || '')}<br>
-                音檔：${esc(session.audio_file || '—')}
-                ${(session.media_parts || []).length > 1 ? `<br>合併時間軸（${(session.media_parts).length} 檔）：` +
-                    session.media_parts.map((p, idx) =>
-                        `${idx + 1}. ${esc(p.stem)} ≈${Math.round(p.duration_est || 0)}s`).join(' ＋ ') : ''}
-            </div>
-            <div class="meta-strip">
-                <span class="chip">共 <strong>${st.total}</strong> 段</span>
-                <span class="chip bad">低信心 <strong>${st.low}</strong></span>
-                <span class="chip warn">插補 <strong>${st.interp}</strong></span>
-                <span class="chip bad">缺時間 <strong>${st.missing}</strong></span>
-            </div>
-        </div>
-        <div class="cards">
+        const closingCard = session.closing ? `
+            <article class="segment-card">
+                <header class="segment-header">
+                    <div class="segment-topline">
+                        <span class="segment-number">收場</span>
+                        <div class="segment-meta"><span class="tc-label">${esc(session.closing.start_label || fmtTC(session.closing.start))} – ${esc(session.closing.end_label || fmtTC(session.closing.end))}</span></div>
+                        <div class="segment-actions">
+                            <button class="button button-secondary play-range" data-play-closing="${esc(session.session_id)}" type="button">▶ 試聽收場</button>
+                        </div>
+                    </div>
+                </header>
+                <div class="segment-body">
+                    ${session.closing.text || session.closing.text_preview ? `<div class="q-text-block play-on-click" data-play-closing="${esc(session.session_id)}">${esc(session.closing.text || session.closing.text_preview)}</div>` : '<div class="q-text-block" style="color:var(--muted)">（Word 無收場文字）</div>'}
+                </div>
+            </article>` : '';
+
+        const cards = visibleSegments(session).map(({ seg, i }) => {
+            const isLow = seg.start != null && (seg.confidence ?? 0) < 0.5;
+            const hasTime = seg.start != null;
+            const rangeLabel = hasTime ? `${seg.start_label || fmtTC(seg.start)} - ${seg.end_label || fmtTC(seg.end)}` : '00:00:00.000 - 00:00:00.000';
+            const key = `${session.session_id}#${i}`;
+            const title = seg.q_text || seg.q_preview || seg.answer_preview || '';
+            const answer = seg.answer_text || seg.answer_preview || '';
+            const playBtn = hasTime
+                ? `<button type="button" class="button button-secondary play-range" data-play-seg="${i}" data-key="${esc(key)}" aria-label="播放這一段">▶ ${esc(rangeLabel)}</button>`
+                : `<button type="button" class="button button-secondary play-range" disabled>▶ 缺時間</button>`;
+            return `<article class="segment-card${isLow ? ' low-card' : ''}" data-seg="${i}" data-segment-index="${i}">
+                <header class="segment-header">
+                    <div class="segment-topline">
+                        <span class="segment-number">#${seg.index ?? i + 1}</span>
+                        <div class="segment-meta">
+                            ${badgeFor(seg)}
+                            ${segMetaChips(seg)}
+                        </div>
+                        <div class="segment-actions">${playBtn}</div>
+                    </div>
+                </header>
+                <div class="segment-body">
+                    <div class="seg-source-line">
+                        ${seg.questioner ? `<span class="q-name">${esc(seg.questioner)}</span>` : '<span class="q-name" style="color:var(--warn,#8a5a00)">（未取得提問人）</span>'}
+                        ${seg.question_time ? `<span class="q-time">· ${esc(seg.question_time)}</span>` : ''}
+                    </div>
+                    ${title ? `<div class="q-text-block play-on-click" data-play-seg="${i}">${esc(title)}</div>` : `<div class="q-text-block play-on-click" data-play-seg="${i}" style="color:var(--warn,#8a5a00)">（此段沒有抓到問題文字）</div>`}
+                    ${answer ? `<div class="q-text-block answer-body play-on-click" data-play-seg="${i}" style="border-left-color:var(--muted)">${esc(answer)}</div>` : `<div class="q-text-block answer-body play-on-click" data-play-seg="${i}" style="border-left-color:var(--muted);color:var(--muted)">（無回答文字）</div>`}
+                    ${seg.srt_preview ? `<details class="srt"><summary>SRT 對照（僅供時間參考，非校對稿）</summary><div class="srt-body">${esc(seg.srt_preview)}</div></details>` : ''}
+                    ${seg.notes ? `<div class="notes-line${/待人工|no-anchor:clamped/.test(seg.notes) ? ' pending' : ''}">notes: ${esc(seg.notes)}</div>` : ''}
+                </div>
+            </article>`;
+        }).join('');
+
+        els.editorRoot.innerHTML = `
+            <div class="document-header-sub" style="color:var(--muted);font-size:0.82rem;margin:0.4rem 0 1rem 1px;line-height:1.6">${docSub}</div>
             ${openingCard}
             ${cards || '<div class="empty-tip">這個過濾條件下沒有段落。</div>'}
-            ${closingCard}
-        </div>`;
-}
+            ${closingCard}`;
+    }
 
-/* ── playback ────────────────────────── */
-let activeRange = null;
+    /* ── playback ────────────────────────── */
+    let activeRange = null;
+    let activeSrc = '';
 
-function stopAtEnd() { return els.stopAtEnd.checked; }
+    els.audio.addEventListener('timeupdate', () => {
+        els.miniPlayerCurrent.textContent = fmtTC(els.audio.currentTime);
+        els.seekBar.value = Number.isFinite(els.audio.duration) && els.audio.duration > 0
+            ? Math.round((els.audio.currentTime / els.audio.duration) * 1000) : 0;
+        if (activeRange && els.stopAtRangeEnd.checked && Number.isFinite(activeRange.endLocal)
+            && els.audio.currentTime >= activeRange.endLocal) {
+            els.audio.pause();
+            els.audio.currentTime = activeRange.endLocal;
+            clearPlayHighlight();
+        }
+    });
+    els.audio.addEventListener('play', () => { els.miniPlayerToggle.textContent = '⏸'; });
+    els.audio.addEventListener('pause', () => { els.miniPlayerToggle.textContent = '▶'; });
+    els.audio.addEventListener('loadedmetadata', () => {
+        els.miniPlayerDuration.textContent = fmtTC(els.audio.duration || 0);
+        els.seekBar.max = 1000;
+    });
+    els.seekBar.addEventListener('input', () => {
+        if (!Number.isFinite(els.audio.duration)) return;
+        els.audio.currentTime = (els.seekBar.value / 1000) * els.audio.duration;
+    });
+    els.playbackRate.addEventListener('change', () => { els.audio.playbackRate = Number(els.playbackRate.value) || 1; });
 
-els.audio.addEventListener('timeupdate', () => {
-    els.curTime.textContent = fmtTC(els.audio.currentTime);
-    if (activeRange && stopAtEnd() && Number.isFinite(activeRange.endLocal)
-        && els.audio.currentTime >= activeRange.endLocal) {
-        els.audio.pause();
-        els.audio.currentTime = activeRange.endLocal;
+    function clearPlayHighlight() {
+        document.querySelectorAll('.playing').forEach(b => b.classList.remove('playing'));
+        state.playingKey = null;
+    }
+    function revealPlayer() {
+        if (els.miniPlayer.classList.contains('mini-player--hidden')) setMiniPlayerHidden(false);
+    }
+    function setMiniPlayerHidden(hidden) {
+        els.miniPlayer.classList.toggle('mini-player--hidden', hidden);
+        els.playerToggle.setAttribute('aria-pressed', String(!hidden));
+        els.playerToggle.querySelector('.btn-label').textContent = hidden ? '顯示播放器' : '隱藏播放器';
+    }
+
+    async function playRange({ startTime, endTime, label, key }) {
+        const { fileIndex, offset } = resolvePart(startTime);
+        const file = state.partFiles[Math.min(fileIndex, state.partFiles.length - 1)];
+        if (!file) return;
+        const src = new URL(AUDIO_BASE + encodeURIComponent(file.split('/').pop()), document.baseURI).href;
+        if (activeSrc !== src) {
+            activeSrc = src;
+            els.audio.src = src;
+        }
+        activeRange = {
+            startLocal: Math.max(0, startTime - offset),
+            endLocal: Number.isFinite(endTime) ? endTime - offset : Infinity,
+        };
+        revealPlayer();
+        els.audioTitle.textContent = label;
+        els.audioTitle.title = label;
+        els.audioRange.textContent = `${fmtTC(startTime)} – ${fmtTC(endTime)}`;
+        els.audio.playbackRate = Number(els.playbackRate.value) || 1;
+        els.audio.currentTime = activeRange.startLocal;
+        try { await els.audio.play(); } catch (e) { /* autoplay denied */ }
         clearPlayHighlight();
+        if (key) {
+            state.playingKey = key;
+            const btn = document.querySelector(`[data-key="${CSS.escape(key)}"]`);
+            if (btn) btn.classList.add('playing');
+        }
     }
-});
-els.audio.addEventListener('play', () => { els.toggleBtn.textContent = '⏸'; });
-els.audio.addEventListener('pause', () => { els.toggleBtn.textContent = '▶'; });
-els.audio.addEventListener('loadedmetadata', () => {
-    els.durTime.textContent = fmtTC(els.audio.duration || 0);
-});
-els.seekBar.addEventListener('input', () => {
-    if (!Number.isFinite(els.audio.duration)) return;
-    els.audio.currentTime = (els.seekBar.value / 1000) * els.audio.duration;
-});
-
-function clearPlayHighlight() {
-    document.querySelectorAll('.playbtn.playing').forEach(b => b.classList.remove('playing'));
-    state.playingKey = null;
-}
-
-async function playRange({ startTime, endTime, label, key }) {
-    const { fileIndex, offset } = resolvePart(startTime);
-    const file = state.partFiles[Math.min(fileIndex, state.partFiles.length - 1)];
-    if (!file) return;
-    const src = new URL(AUDIO_BASE + encodeURIComponent(file.split('/').pop()), document.baseURI).href;
-    if (!els.audio.src || els.audio.src !== src) els.audio.src = src;
-    activeRange = {
-        startLocal: Math.max(0, startTime - offset),
-        endLocal: Number.isFinite(endTime) ? endTime - offset : Infinity,
-    };
-    els.player.classList.add('show');
-    els.playerTitle.textContent = label;
-    els.playerTitle.title = label;
-    els.playerRange.textContent = `${fmtTC(startTime)} – ${fmtTC(endTime)}`;
-    els.audio.playbackRate = Number(els.rateSelect.value) || 1;
-    els.audio.currentTime = activeRange.startLocal;
-    try { await els.audio.play(); } catch (e) { /* autoplay denied */ }
-    clearPlayHighlight();
-    if (key) {
-        state.playingKey = key;
-        const btn = document.querySelector(`[data-key="${CSS.escape(key)}"]`);
-        if (btn) btn.classList.add('playing');
+    function playSegment(i) {
+        const session = getSession();
+        if (!session) return;
+        const seg = (session.segments || [])[i];
+        if (!seg || seg.start == null) return;
+        playRange({
+            startTime: seg.start,
+            endTime: seg.end,
+            label: `#${seg.index ?? i + 1} ${seg.questioner || ''}`,
+            key: `${session.session_id}#${i}`,
+        });
+        setActive(i);
     }
-}
+    function playOpening() {
+        const s = getSession();
+        if (s?.opening?.start != null)
+            playRange({ startTime: s.opening.start, endTime: s.opening.end, label: '開場' });
+    }
+    function playClosing() {
+        const s = getSession();
+        if (s?.closing?.start != null)
+            playRange({ startTime: s.closing.start, endTime: s.closing.end, label: '收場' });
+    }
+    function visList() {
+        const s = getSession();
+        return s ? visibleSegments(s).map(x => x.i) : [];
+    }
+    function setActive(i) {
+        state.activeIndex = i;
+        document.querySelectorAll('[data-seg]').forEach(c => {
+            c.style.outline = Number(c.dataset.seg) === i ? '2px solid var(--accent)' : '';
+        });
+        const card = document.querySelector(`[data-seg="${i}"]`);
+        if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    }
+    function stepSegment(delta) {
+        const list = visList();
+        if (!list.length) return;
+        let pos = list.indexOf(state.activeIndex);
+        pos = pos === -1 ? 0 : Math.min(list.length - 1, Math.max(0, pos + delta));
+        const i = list[pos];
+        setActive(i);
+        playSegment(i);
+    }
+    function selectSession(sid) {
+        state.sessionId = sid;
+        state.activeIndex = null;
+        clearPlayHighlight();
+        renderSessionList();
+        renderWorkspace();
+        if (window.innerWidth <= 900) setSidebarOpen(false);
+    }
 
-function playSegment(i) {
-    const session = getSession();
-    if (!session) return;
-    const seg = (session.segments || [])[i];
-    if (!seg || seg.start == null) return;
-    playRange({
-        startTime: seg.start,
-        endTime: seg.end,
-        label: `#${seg.index ?? i + 1} ${seg.questioner || ''}`,
-        key: `${session.session_id}#${i}`,
+    /* ── sidebar open/toggle/resize (index2 UX) ── */
+    function setSidebarOpen(open) {
+        state.sidebarOpen = open;
+        document.querySelector('#app').classList.toggle('sidebar-collapsed', !open);
+        els.sidebarBackdrop.hidden = open;
+    }
+    els.sidebarToggle.addEventListener('click', () => setSidebarOpen(!state.sidebarOpen));
+    els.sidebarBackdrop.addEventListener('click', () => setSidebarOpen(false));
+
+    /* ── events ──────────────────────────── */
+    MONTHS.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m; opt.textContent = m;
+        els.monthSelect.appendChild(opt);
     });
-    setActive(i);
-}
-function playOpening() {
-    const s = getSession();
-    if (s?.opening?.start != null)
-        playRange({ startTime: s.opening.start, endTime: s.opening.end, label: '開場' });
-}
-function playClosing() {
-    const s = getSession();
-    if (s?.closing?.start != null)
-        playRange({ startTime: s.closing.start, endTime: s.closing.end, label: '收場' });
-}
+    els.monthSelect.addEventListener('change', () => loadMonth(els.monthSelect.value));
 
-/* ── active segment navigation ───────── */
-function visList() {
-    const s = getSession();
-    return s ? visibleSegments(s).map(x => x.i) : [];
-}
-function setActive(i) {
-    state.activeIndex = i;
-    document.querySelectorAll('.card[data-seg]').forEach(c => {
-        c.style.outline = Number(c.dataset.seg) === i ? '2px solid var(--accent)' : '';
+    els.filterGroup.addEventListener('click', e => {
+        const btn = e.target.closest('[data-filter]');
+        if (!btn) return;
+        state.filter = btn.dataset.filter;
+        els.filterGroup.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
+        renderWorkspace();
     });
-    const card = document.querySelector(`.card[data-seg="${i}"]`);
-    if (card) card.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-}
-function stepSegment(delta) {
-    const list = visList();
-    if (!list.length) return;
-    let pos = list.indexOf(state.activeIndex);
-    pos = pos === -1 ? 0 : Math.min(list.length - 1, Math.max(0, pos + delta));
-    const i = list[pos];
-    setActive(i);
-    playSegment(i);
-}
 
-/* ── events ──────────────────────────── */
-MONTHS.forEach(m => {
-    const opt = document.createElement('option');
-    opt.value = m; opt.textContent = m;
-    els.monthSelect.appendChild(opt);
-});
-els.monthSelect.addEventListener('change', () => loadMonth(els.monthSelect.value));
-
-els.filterGroup.addEventListener('click', e => {
-    const btn = e.target.closest('[data-filter]');
-    if (!btn) return;
-    state.filter = btn.dataset.filter;
-    els.filterGroup.querySelectorAll('button').forEach(b => b.classList.toggle('on', b === btn));
-    renderWorkspace();
-});
-
-els.sessionList.addEventListener('click', e => {
-    const item = e.target.closest('[data-sid]');
-    if (item) selectSession(item.dataset.sid);
-});
-
-function selectSession(sid) {
-    state.sessionId = sid;
-    state.activeIndex = null;
-    clearPlayHighlight();
-    renderSessionList();
-    renderWorkspace();
-    els.workspace.scrollTop = 0;
-}
-
-els.workspace.addEventListener('click', e => {
-    const segBtn = e.target.closest('[data-play-seg]');
-    if (segBtn) { playSegment(Number(segBtn.dataset.playSeg)); return; }
-    if (e.target.closest('[data-play-opening]')) { playOpening(); return; }
-    if (e.target.closest('[data-play-closing]')) { playClosing(); }
-});
-
-els.toggleBtn.addEventListener('click', () => {
-    if (els.audio.paused) els.audio.play(); else els.audio.pause();
-});
-document.querySelectorAll('[data-seek]').forEach(b => {
-    b.addEventListener('click', () => {
-        els.audio.currentTime = Math.max(0, els.audio.currentTime + Number(b.dataset.seek));
+    els.fileList.addEventListener('click', e => {
+        const item = e.target.closest('[data-sid]');
+        if (item) selectSession(item.dataset.sid);
     });
-});
-els.rateSelect.addEventListener('change', () => {
-    els.audio.playbackRate = Number(els.rateSelect.value) || 1;
-});
-els.prevSegBtn.addEventListener('click', () => stepSegment(-1));
-els.nextSegBtn.addEventListener('click', () => stepSegment(1));
 
-document.addEventListener('keydown', e => {
-    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
-    if (e.key === 'p' || e.key === 'P' || e.code === 'Space') {
-        e.preventDefault();
+    els.editorRoot.addEventListener('click', e => {
+        // ▶ 播放按鈕
+        const segBtn = e.target.closest('[data-play-seg]');
+        if (segBtn) { playSegment(Number(segBtn.dataset.playSeg)); return; }
+        // 點擊問題／回答文字 → 自動播放該段（同 index2 的 click-to-play）
+        const textBlock = e.target.closest('.play-on-click[data-play-seg]');
+        if (textBlock) {
+            const sel = window.getSelection();
+            if (sel && !sel.isCollapsed && (textBlock.contains(sel.anchorNode) || textBlock.contains(sel.focusNode))) {
+                return; // 正在選字，別觸發播放
+            }
+            if (document.activeElement?.matches?.('input, textarea, select')) {
+                try { document.activeElement.blur(); } catch { /* noop */ }
+            }
+            playSegment(Number(textBlock.dataset.playSeg));
+            return;
+        }
+        if (e.target.closest('[data-play-opening]')) { playOpening(); return; }
+        if (e.target.closest('[data-play-closing]')) { playClosing(); }
+    });
+
+    els.miniPlayerToggle.addEventListener('click', () => {
         if (els.audio.paused) els.audio.play(); else els.audio.pause();
-    } else if (e.key === 'ArrowDown' || e.key === 'j') {
-        e.preventDefault(); stepSegment(1);
-    } else if (e.key === 'ArrowUp' || e.key === 'k') {
-        e.preventDefault(); stepSegment(-1);
-    }
-});
+    });
+    els.miniPlayerHide.addEventListener('click', () => { setMiniPlayerHidden(true); });
+    els.playerToggle.addEventListener('click', () => setMiniPlayerHidden(!els.miniPlayer.classList.contains('mini-player--hidden')));
+    document.querySelectorAll('[data-seek]').forEach(b => {
+        b.addEventListener('click', () => {
+            els.audio.currentTime = Math.max(0, els.audio.currentTime + Number(b.dataset.seek));
+        });
+    });
 
-/* boot */
-loadMonth(MONTHS[0]);
-</script>
+    document.addEventListener('keydown', e => {
+        if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)) return;
+        if (e.key === 'p' || e.key === 'P') {
+            e.preventDefault();
+            if (els.audio.paused) els.audio.play(); else els.audio.pause();
+        } else if (e.key === 's' || e.key === 'S') {
+            e.preventDefault(); els.audio.pause();
+        } else if (e.key === 'r' || e.key === 'R') {
+            e.preventDefault();
+            if (activeRange) { els.audio.currentTime = activeRange.startLocal; els.audio.play(); }
+        } else if (e.key === 'ArrowDown' || e.key === 'j') {
+            e.preventDefault(); stepSegment(1);
+        } else if (e.key === 'ArrowUp' || e.key === 'k') {
+            e.preventDefault(); stepSegment(-1);
+        }
+    });
+
+    /* boot */
+    loadMonth(MONTHS[0]);
+    </script>
 </body>
 </html>

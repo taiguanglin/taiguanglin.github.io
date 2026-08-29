@@ -18,6 +18,9 @@ from models.document_models import Chapter
 
 DEFAULT_MAP_DIR = Path(__file__).resolve().parent.parent / "data" / "audio_map"
 DEFAULT_WORD_MAP_DIR = Path(__file__).resolve().parent.parent / "data" / "audio_map_word"
+# Reviewed chronological Word↔audio maps (audio_map2/) now replace the legacy
+# data/audio_map_word/*.json as the source for Word chapters 01–12.
+DEFAULT_AUDIO_MAP2_DIR = Path(__file__).resolve().parents[3] / "audio_map2"
 
 H2_RE = re.compile(
     r'<h2 id="([^"]+)">\s*(\d{4})年(\d{1,2})月(\d{1,2})日\s+([^<]+?)'
@@ -54,6 +57,21 @@ def _is_confirmed(item: Optional[dict]) -> bool:
         return True
     meta = item.get("meta")
     return isinstance(meta, dict) and bool(meta.get("confirmed"))
+
+
+def _is_audio_map2_reviewed(item: Optional[dict]) -> bool:
+    """True when a human reviewed this audio_map2 segment.
+
+    audio_map2 encodes review state in ``status`` (no ``meta`` field):
+      ``manual`` / ``reviewed``  → human listened/aligned → show button
+      ``auto``                   → machine-aligned, not yet reviewed → no button
+      ``missing``                → human confirmed no audio → no button
+    """
+    if not item or not isinstance(item, dict):
+        return False
+    if item.get("start") is None:
+        return False
+    return item.get("status") in ("manual", "reviewed")
 
 
 def _range_tuple(item: Optional[dict]) -> Optional[Tuple[float, float, str]]:
@@ -311,18 +329,106 @@ def inject_word_html(content: str, by_qid: Dict[str, dict]) -> str:
     return "".join(out)
 
 
+def load_word_maps_from_audio_map2(
+    map_dir: Path = DEFAULT_AUDIO_MAP2_DIR,
+) -> Dict[str, dict]:
+    """Load the reviewed chronological maps (audio_map2/*.json) keyed by ebook
+    ``question_id`` → segment (with ``audio_file`` resolved from its session).
+
+    audio_map2 segments carry ``chapter_question_ids`` (a list of ebook theme-
+    chapter question ids produced by ``tool/word_audio_map2/link_chapters.py``).
+    Every question id in that list maps to the same reviewed segment/range.
+    """
+    by_qid: Dict[str, dict] = {}
+    if not map_dir.is_dir():
+        return by_qid
+    for path in sorted(map_dir.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for session in data.get("sessions") or []:
+            audio_file = session.get("audio_file") or ""
+            media_parts = session.get("media_parts") or []
+            if not audio_file and media_parts:
+                audio_file = media_parts[0].get("audio_file") or ""
+            for seg in session.get("segments") or []:
+                qids = seg.get("chapter_question_ids") or []
+                if not qids:
+                    continue
+                resolved = dict(seg)
+                resolved["audio_file"] = audio_file
+                for qid in qids:
+                    # First occurrence wins; duplicates share one range anyway.
+                    by_qid.setdefault(qid, resolved)
+    return by_qid
+
+
+def inject_word_html_from_audio_map2(content: str, by_qid: Dict[str, dict]) -> str:
+    """Insert a meta bar before every mapped question div in ``content``.
+
+    Same shape as :func:`inject_word_html`, but the gate is the audio_map2
+    review state (``status`` ∈ {manual, reviewed}) rather than the legacy word
+    map's ``status=="auto" + meta.confirmed``.
+    """
+    if not by_qid or not content:
+        return content
+
+    out: List[str] = []
+    pos = 0
+    number = 0
+    inserted = False
+    for m in QUESTION_ID_RE.finditer(content):
+        number += 1
+        prefix = content[pos : m.start()]
+        out.append(prefix)
+        seg = by_qid.get(m.group(1))
+        if (
+            seg
+            and _is_audio_map2_reviewed(seg)
+            and not TRAILING_BAR_RE.search(out[-1][-2500:])
+        ):
+            bar = render_segment_meta_bar(
+                str(seg.get("index") or number),
+                _range_tuple(seg),
+                audio_url(seg.get("audio_file") or ""),
+                hide_if_missing=True,
+            )
+            if bar:
+                out.append(bar + "\n")
+                inserted = True
+        out.append(content[m.start() : m.end()])
+        pos = m.end()
+    if not inserted:
+        return content
+    out.append(content[pos:])
+    return "".join(out)
+
+
 def inject_word_chapters(
     chapters: List[Chapter], map_dir: Optional[Path] = None
 ) -> int:
-    """Apply word maps to chapter contents in-place. Returns #chapters modified."""
-    by_qid = load_word_maps(map_dir or DEFAULT_WORD_MAP_DIR)
-    if not by_qid:
-        return 0
+    """Apply word maps to chapter contents in-place. Returns #chapters modified.
+
+    Uses the reviewed chronological maps (audio_map2/). Falls back to the
+    legacy ``data/audio_map_word/word-*.json`` only when an explicit ``map_dir``
+    is passed (for tests / the old flow).
+    """
+    if map_dir is not None:
+        by_qid = load_word_maps(map_dir)
+        if not by_qid:
+            return 0
+        injector = inject_word_html
+    else:
+        by_qid = load_word_maps_from_audio_map2(DEFAULT_AUDIO_MAP2_DIR)
+        if not by_qid:
+            return 0
+        injector = inject_word_html_from_audio_map2
     changed = 0
     for ch in chapters:
         if not ch.content or 'class="question"' not in ch.content:
             continue
-        new_content = inject_word_html(ch.content, by_qid)
+        new_content = injector(ch.content, by_qid)
         if new_content != ch.content:
             ch.content = new_content
             changed += 1

@@ -11,6 +11,22 @@
 - **JSON 內所有文字（問題／回答／提問人／開收場）來自 Word 檔**；
   SRT 只用來取播放起訖與 `srt_preview` 對照 —— 不是校對稿。
 - 完全不參考 `audio_map_word/word-*.json` 的時間。
+- **已 review 的段**會以 `chapter_question_ids`（清單，見下）對應到
+  `wenda2_ebook` 前 12 章；電子書前 12 章的播放鈕改由此注入（不再讀
+  `audio_map_word/`）。對應由 `tool/word_audio_map2/link_chapters.py --apply`
+  寫回，欄位只在段上**新增**、不改文字／時間／status。
+
+## 對應到電子書前 12 章（chapter_question_ids）
+
+每個 segment 的欄位（由 link_chapters 寫回後新增）：
+
+- `chapter_question_ids`：這個段對應的電子書 stable question id 清單
+  （一個段可能對應多個主題子題，因彙總 docx 把 2–3 個子題併成一段）。
+- `chapter_indexes`：對應的章節編號（1–12）。
+
+review 狀態編碼在 `status`（無 `meta` 欄位）：`manual`/`reviewed`＝已聽過、
+`auto`＝尚未人工 review、`missing`＝人工確認無音頻。電子書播放鈕只在
+`status ∈ {manual, reviewed}` 且 `start != null` 時出現。
 
 ## 使用
 

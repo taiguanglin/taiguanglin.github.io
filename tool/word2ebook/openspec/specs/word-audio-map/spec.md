@@ -4,34 +4,57 @@
 
 Attach per-question audio playback to Word-sourced ebook chapters
 (`wenda2_ebook/01.html`–`12.html`, the categorised Word document) without
-changing their prose. A JSON mapping under `data/audio_map_word/` stores time
-ranges keyed by stable question id; the build injects `.qa-play` buttons.
-Alignment is produced by `tool/word_audio_map/` (see its README for the
-pinyin-stream matching model).
+changing their prose.
+
+As of the reviewed-chronological workflow, the **injection source of truth is
+`audio_map2/*.json`** (the chronological Word 彙總 alignment reviewed in
+`/audio_map2/index.html`), not the older thematic `data/audio_map_word/`
+maps. `tool/word_audio_map2/link_chapters.py` writes `chapter_question_ids`
+(the ebook's stable question ids) onto the reviewed audio_map2 segments, and
+`inject_word_chapters()` keys off those. The legacy `data/audio_map_word/`
+path is retained only when an explicit `map_dir` is passed (tests / the old
+`word_audio_map` flow, which still produces those files).
 
 ## Requirements
 
-### Requirement: Independent Mapping Store
-The system SHALL store chapter-level JSON files at
-`tool/word2ebook/data/audio_map_word/word-NN.json` (one per Word chapter).
-Each segment SHALL carry `question_id`, `stable_key`
-(`"<chapter>#q<number>"`), timing fields (`start`, `end`, `start_label`,
-`end_label`), `confidence`, `status`, `locked`, `notes`, and the resolved
-`audio_file` (an opus stem). Re-alignment (`word_align.py --apply`) SHALL
-preserve segments with `locked: true` or `status: "manual"`.
+### Requirement: Reviewed Chronological Mapping Store
+The system SHALL read reviewed play ranges from `audio_map2/*.json`. Each
+segment that maps to one or more theme-chapter questions SHALL carry
+`chapter_question_ids` (a list of ebook stable question ids) and
+`chapter_indexes`, produced by `tool/word_audio_map2/link_chapters.py`. A
+segment's review state is encoded in `status` (`manual` / `reviewed` =
+human-reviewed; `auto` = machine-aligned; `missing` = human-confirmed no
+audio); there is no `meta` field in audio_map2.
 
-#### Scenario: Manual times survive re-align
-- GIVEN a segment with `locked: true`
-- WHEN `word_align.py --apply` runs again
-- THEN that segment's `start`/`end` and `audio_file` SHALL remain unchanged
+#### Scenario: One chronological segment maps to several chapter questions
+- GIVEN the 彙總 docx merged two sub-questions the chapter version keeps separate
+- WHEN `link_chapters.py --apply` runs
+- THEN both stable question ids SHALL appear in that segment's
+  `chapter_question_ids` and SHALL share the segment's reviewed range
 
-### Requirement: Question-ID Keyed Injection
-The build (`main.py`) SHALL call `inject_word_chapters()` after the PDF
-`inject_chapters()` step. The injector SHALL scan chapter HTML for
-`<div class="question" id="…">`, look each id up in the word maps, and insert
-a `qa-meta-bar` with a `.qa-play` button **before** the question div. The bar
-SHALL use the shared markup from `core/qa_play_markup.py` so styling and the
-mini-player behave exactly like PDF/QA play buttons.
+### Requirement: Reviewed-Gated Injection
+`inject_word_chapters()` SHALL insert a `.qa-play` `qa-meta-bar` **only** for
+segments that are human-reviewed **and** carry a non-null range
+(`status` ∈ {`manual`, `reviewed`} and `start` is not null). `auto` (not yet
+reviewed) and `missing` (confirmed no audio) segments SHALL produce no button.
+
+#### Scenario: Reviewed segment gets a button
+- GIVEN an audio_map2 segment with `chapter_question_ids` = `["question-X"]`,
+  `status: "manual"`, and a non-null range, resolved to an opus `audio_file`
+- WHEN the chapter containing `question-X` is built
+- THEN a `.qa-play` button with `data-audio`/`data-start`/`data-end` SHALL
+  appear immediately before that question div
+
+#### Scenario: Auto segment stays buttonless
+- GIVEN an audio_map2 segment with `status: "auto"` (not yet reviewed) and a range
+- WHEN the chapter is built
+- THEN no play button SHALL be emitted for that question
+
+### Requirement: Question-ID Keyed Injection (legacy fallback)
+When an explicit `map_dir` is passed, `inject_word_chapters()` SHALL retain the
+legacy `data/audio_map_word/word-NN.json` flow: key by `question_id`, gate on
+`status == "auto"` plus `meta.confirmed`/`lastPlayed`, and insert the same
+`qa-meta-bar` markup via `core/qa_play_markup.py`.
 
 #### Scenario: Mapped question gets a button
 - GIVEN a word map contains a segment with a non-null range for `question-X`

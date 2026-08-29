@@ -90,10 +90,10 @@ class Word2EBookConverter:
         if injected:
             print(f"🎧 已為 {injected} 個章節注入音檔播放鈕（audio_map）")
 
-        # 2.6. 依 word audio_map 為 Word 分類章節注入逐題播放鈕
+        # 2.6. 依 audio_map2 已 review 段為 Word 分類章節注入逐題播放鈕
         word_injected = inject_word_chapters(chapters)
         if word_injected:
-            print(f"🎧 已為 {word_injected} 個 Word 章節注入音檔播放鈕（word audio_map）")
+            print(f"🎧 已為 {word_injected} 個 Word 章節注入音檔播放鈕（audio_map2）")
         
         # 3. 生成HTML页面
         print("🔧 正在生成 HTML 页面...")
