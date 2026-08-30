@@ -22,9 +22,11 @@ The system SHALL read reviewed play ranges from `audio_map2/*.json`. Each
 segment that maps to one or more theme-chapter questions SHALL carry
 `chapter_question_ids` (a list of ebook stable question ids) and
 `chapter_indexes`, produced by `tool/word_audio_map2/link_chapters.py`. A
-segment's review state is encoded in `status` (`manual` / `reviewed` =
-human-reviewed; `auto` = machine-aligned; `missing` = human-confirmed no
-audio); there is no `meta` field in audio_map2.
+segment's review state is encoded by the editorial UI's listen record in
+`meta.lastPlayed` (present = human actually listened; absent = not yet
+listened / only machine-aligned). The legacy `status` field (`manual` /
+`reviewed` / `auto` / `missing`) remains produced by the aligner but is **no
+longer the injection gate**.
 
 #### Scenario: One chronological segment maps to several chapter questions
 - GIVEN the 彙總 docx merged two sub-questions the chapter version keeps separate
@@ -34,19 +36,21 @@ audio); there is no `meta` field in audio_map2.
 
 ### Requirement: Reviewed-Gated Injection
 `inject_word_chapters()` SHALL insert a `.qa-play` `qa-meta-bar` **only** for
-segments that are human-reviewed **and** carry a non-null range
-(`status` ∈ {`manual`, `reviewed`} and `start` is not null). `auto` (not yet
-reviewed) and `missing` (confirmed no audio) segments SHALL produce no button.
+segments that a human actually listened to **and** carry a non-null range
+(`meta.lastPlayed` present and `start` is not null). Machine-aligned segments
+without a listen record (`meta.lastPlayed` absent — regardless of `status`)
+SHALL produce no button.
 
-#### Scenario: Reviewed segment gets a button
+#### Scenario: Listened segment gets a button
 - GIVEN an audio_map2 segment with `chapter_question_ids` = `["question-X"]`,
-  `status: "manual"`, and a non-null range, resolved to an opus `audio_file`
+  a `meta.lastPlayed` listen record, and a non-null range, resolved to an opus
+  `audio_file`
 - WHEN the chapter containing `question-X` is built
 - THEN a `.qa-play` button with `data-audio`/`data-start`/`data-end` SHALL
   appear immediately before that question div
 
-#### Scenario: Auto segment stays buttonless
-- GIVEN an audio_map2 segment with `status: "auto"` (not yet reviewed) and a range
+#### Scenario: Unlistened segment stays buttonless
+- GIVEN an audio_map2 segment lacking `meta.lastPlayed` (never listened) with a range
 - WHEN the chapter is built
 - THEN no play button SHALL be emitted for that question
 

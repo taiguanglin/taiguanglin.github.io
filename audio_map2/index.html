@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Word 時間序 音檔 Mapping 校稿（audio_map2）</title>
-    <meta name="description" content="微調時間序 Word 彙總段落與音檔起訖時間；含信心分數、SRT 對照、三態 review 標記（已校／未校／無音頻）並存回 GitHub。">
+    <meta name="description" content="微調時間序 Word 彙總段落與音檔起訖時間；含信心分數、SRT 對照；完成判定以「最後播放」為準，實際聽過才計完成並存回 GitHub。">
     <link rel="stylesheet" href="assets/editor.css">
     <link rel="stylesheet" href="assets/overrides.css">
     <style>
@@ -24,11 +24,6 @@
     .am2-srt-body{white-space:pre-wrap;word-break:break-all;background:var(--panel);
       border-radius:6px;padding:.4rem .5rem;margin-top:.35rem;max-height:120px;overflow:auto}
     .segment-card[data-status="both"]{border-left-color:var(--status-both)}
-    .bulkbar{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;
-      background:var(--panel);border:1px solid var(--border);border-radius:8px;
-      padding:.5rem .65rem;margin-bottom:.75rem;font-size:.85rem}
-    .bulkbar .hint{color:var(--muted)}
-    .bulkbar input[type=number]{width:4.2rem;padding:.15rem .3rem}
     </style>
 </head>
 <body>
@@ -68,9 +63,9 @@
         <main class="workspace">
             <section id="welcomePanel" class="welcome-panel">
                 <h2>選擇 session 開始校稿（手機請點左上角「檔案」）——時間序 Word 彙總</h2>
-                <p>每段一張卡片：標題為提問（Word 文字），內文為回答（Word 文字）。卡片標題旁有<b>自動對齊信心分數</b>——紅色「⚠ 低信心」請特別仔細聽檔。有三態標記：<b>✔ 確認校對（已校）</b>／<b>↺ 未校</b>／<b>🚫 無音頻</b>；只有「已校」且有時間軸的段，重建電子書後前 12 章對應段落才會出現播放鈕。</p>
+                <p>每段一張卡片：標題為提問（Word 文字），內文為回答（Word 文字）。卡片標題旁有<b>自動對齊信心分數</b>——紅色「⚠ 低信心」請特別仔細聽檔。</p>
                 <p>播放按鈕會串流 <code>audio/*.opus</code>，並可在段尾自動暫停。用「設起始／設結束」與「起始 ±N 秒」微調對齊音檔。時間標記格式為 <code>00:00:00.000</code>。</p>
-                <p>SRT 對照僅供時間參考（非校對稿）。首次儲存前請在「設定」中填入 GitHub Fine-grained PAT，權限只需要此 repo 的 <code>Contents: Read and write</code>。</p>
+                <p><b>完成判定以「最後播放」為準</b>：只有實際聽過（有「最後播放」記錄）的段落才計為完成；側邊欄綠色＝已全部聽完。SRT 對照僅供時間參考（非校對稿）。首次儲存前請在「設定」中填入 GitHub Fine-grained PAT，權限只需要此 repo 的 <code>Contents: Read and write</code>。</p>
             </section>
 
             <section id="documentPanel" class="document-panel hidden">
@@ -80,10 +75,10 @@
                         <h2 id="documentTitle"></h2>
                         <div id="metaStrip" class="meta-strip">
                             <span class="meta-chip">共 <strong id="metaTotalCount">0</strong> 段</span>
-                            <span class="meta-chip status-chip" data-status="both" title="已 review（manual／reviewed）；電子書前 12 章會出現播放鈕">已校 <strong id="metaBothCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="played" title="人工確認沒有對應音頻（status=missing）">無音頻 <strong id="metaPlayedOnlyCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="edited" title="信心 &lt; 0.5 的段落，請特別仔細聽">⚠ 低信心 <strong id="metaEditedOnlyCount">0</strong></span>
-                            <span class="meta-chip status-chip" data-status="none" title="尚未 review（status=auto）">未校 <strong id="metaNoneCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="both" title="已聽過（算完成）">完成 <strong id="metaBothCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="played" title="只聽過、尚未校過">已聽未校 <strong id="metaPlayedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="edited" title="只校過、尚未聽過">已校 <strong id="metaEditedOnlyCount">0</strong></span>
+                            <span class="meta-chip status-chip" data-status="none" title="未聽且未校">未處理 <strong id="metaNoneCount">0</strong></span>
                         </div>
                     </div>
                     <div class="document-meta">
@@ -97,16 +92,6 @@
                 </div>
 
                 <div id="conflictBanner" class="warning hidden"></div>
-                <div class="bulkbar" id="bulkbar" hidden>
-                    <strong id="bulkTitle"></strong>
-                    <span class="hint">批次處理本 session：</span>
-                    <label>auto 且信心 ≥ <input id="bulkConf" type="number" min="0" max="1" step="0.05" value="0.8"></label>
-                    <button id="bulkAutoBtn" class="button button-primary" type="button">確認為已校</button>
-                    <button id="bulkReviewBtn" class="button button-secondary" type="button">已校 → 改回未校</button>
-                    <span class="hint">｜</span>
-                    <button id="bulkNoneBtn" class="button button-danger" type="button">缺時間 → 無音頻</button>
-                </div>
-
                 <div id="editorRoot" class="segments"></div>
             </section>
         </main>

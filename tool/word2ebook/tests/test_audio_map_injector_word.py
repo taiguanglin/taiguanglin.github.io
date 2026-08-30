@@ -198,7 +198,7 @@ class TestInjectWordChapters:
 # ---------------------------------------------------------------------------
 
 
-def _am2_seg(qids, index, start, end, status="manual",
+def _am2_seg(qids, index, start, end, status="manual", listened=False,
              audio="2024年3月1日Tai師父答疑.opus"):
     seg = {
         "index": index,
@@ -212,6 +212,8 @@ def _am2_seg(qids, index, start, end, status="manual",
         "status": status,
         "notes": "",
     }
+    if listened:
+        seg["meta"] = {"lastPlayed": "2026-08-24 11:00"}
     return seg
 
 
@@ -241,12 +243,15 @@ class TestAudioMap2Injection:
         return seg
 
     def test_review_state_gate(self):
-        assert _is_audio_map2_reviewed(self._seg(status="manual"))
-        assert _is_audio_map2_reviewed(self._seg(status="reviewed"))
+        # Reviewed = human actually listened → meta.lastPlayed present
+        assert _is_audio_map2_reviewed(self._seg(listened=True))
+        # machine-aligned status does NOT count (no listened record)
+        assert not _is_audio_map2_reviewed(self._seg(status="manual"))
+        assert not _is_audio_map2_reviewed(self._seg(status="reviewed"))
         assert not _is_audio_map2_reviewed(self._seg(status="auto"))
         assert not _is_audio_map2_reviewed(self._seg(status="missing"))
-        # status manual but no start → no button
-        assert not _is_audio_map2_reviewed(self._seg(status="manual", start=None))
+        # listened but no start → no button
+        assert not _is_audio_map2_reviewed(self._seg(listened=True, start=None))
 
     def test_loads_by_chapter_question_id(self, tmp_path):
         d = _am2_dir(tmp_path, [_am2_session([_am2_seg(["question-aaa"], 1, 10.0, 20.0)])])
@@ -263,8 +268,8 @@ class TestAudioMap2Injection:
 
     def test_inject_only_reviewed(self, tmp_path):
         segs = [
-            _am2_seg(["question-aaa"], 1, 10.0, 20.0, status="manual"),
-            _am2_seg(["question-bbb"], 2, 30.0, 40.0, status="auto"),
+            _am2_seg(["question-aaa"], 1, 10.0, 20.0, listened=True),
+            _am2_seg(["question-bbb"], 2, 30.0, 40.0),
         ]
         d = _am2_dir(tmp_path, [_am2_session(segs)])
         maps = load_word_maps_from_audio_map2(d)
@@ -277,7 +282,7 @@ class TestAudioMap2Injection:
 
     def test_inject_word_chapters_defaults_to_audio_map2(self, tmp_path, monkeypatch):
         # monkeypatch the default dir to a temp audio_map2 directory
-        d = _am2_dir(tmp_path, [_am2_session([_am2_seg(["question-aaa"], 1, 10.0, 20.0)])])
+        d = _am2_dir(tmp_path, [_am2_session([_am2_seg(["question-aaa"], 1, 10.0, 20.0, listened=True)])])
         import core.audio_map_injector as ami
         monkeypatch.setattr(ami, "DEFAULT_AUDIO_MAP2_DIR", d)
         ch = Chapter(title="01", filename="01.html", content=WORD_CHAPTER)

@@ -24,9 +24,11 @@
   （一個段可能對應多個主題子題，因彙總 docx 把 2–3 個子題併成一段）。
 - `chapter_indexes`：對應的章節編號（1–12）。
 
-review 狀態編碼在 `status`（無 `meta` 欄位）：`manual`/`reviewed`＝已聽過、
-`auto`＝尚未人工 review、`missing`＝人工確認無音頻。電子書播放鈕只在
-`status ∈ {manual, reviewed}` 且 `start != null` 時出現。
+**完成／review 判定以「最後播放」為準**：審核 UI 在實際播放某段時寫入
+`meta.lastPlayed`（時間戳）。只有「有 `meta.lastPlayed` 記錄」且 `start != null`
+的段，重建電子書後前 12 章對應段落才會出現播放鈕。align 器產出的 `status`
+（`manual`/`reviewed`/`auto`/`missing`）**不再是注入閘門**——`status=manual`
+但沒真正聽過的段一樣不亮鈕。
 
 ## 使用
 
@@ -39,6 +41,10 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 
 操作：左側選月份 → session；卡片 ▶ 播放該段（`../audio/*.opus`）；
 過濾器可只看 ⚠低信心／插補／待人工／缺時間。快捷鍵 `P` 播放暫停、`↑↓` 段落導覽。
+
+**完成＝實際聽過**：點 ▶／點文字播放該段後，會寫入「最後播放」記錄
+（`meta.lastPlayed`），側邊欄 session 才會變綠色（完成）；只微調時間不算完成。
+要持久化進度（寫回 GitHub JSON），按底部的「💾 儲存」或「存收聽進度」。
 
 ## 卡片顏色
 

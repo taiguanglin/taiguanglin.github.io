@@ -60,18 +60,19 @@ def _is_confirmed(item: Optional[dict]) -> bool:
 
 
 def _is_audio_map2_reviewed(item: Optional[dict]) -> bool:
-    """True when a human reviewed this audio_map2 segment.
+    """True when a human actually listened to this audio_map2 segment.
 
-    audio_map2 encodes review state in ``status`` (no ``meta`` field):
-      ``manual`` / ``reviewed``  → human listened/aligned → show button
-      ``auto``                   → machine-aligned, not yet reviewed → no button
-      ``missing``                → human confirmed no audio → no button
+    audio_map2 completion is now keyed on the editorial UI's 「最後播放」 record
+    (``meta.lastPlayed``), not on ``status``: machine-aligned (``status=auto``/
+    ``manual``) segments without a listen record must NOT show a button.
+      ``meta.lastPlayed`` present  → human listened → show button
+      ``meta.lastPlayed`` absent   → not yet listened → no button
     """
     if not item or not isinstance(item, dict):
         return False
     if item.get("start") is None:
         return False
-    return item.get("status") in ("manual", "reviewed")
+    return _has_been_listened(item)
 
 
 def _range_tuple(item: Optional[dict]) -> Optional[Tuple[float, float, str]]:

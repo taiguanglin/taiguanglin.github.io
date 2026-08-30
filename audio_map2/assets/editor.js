@@ -124,12 +124,6 @@ const els = {
     discardDraftButton: document.querySelector('#discardDraftButton'),
     loadRemoteButton: document.querySelector('#loadRemoteButton'),
     loadDraftButton: document.querySelector('#loadDraftButton'),
-    bulkbar: document.querySelector('#bulkbar'),
-    bulkTitle: document.querySelector('#bulkTitle'),
-    bulkConf: document.querySelector('#bulkConf'),
-    bulkAutoBtn: document.querySelector('#bulkAutoBtn'),
-    bulkReviewBtn: document.querySelector('#bulkReviewBtn'),
-    bulkNoneBtn: document.querySelector('#bulkNoneBtn'),
 };
 
 const audio = createAudioController({
@@ -169,10 +163,6 @@ function bindEvents() {
     });
     els.saveButton.addEventListener('click', () => saveCurrentMap());
     els.savePlayedButton?.addEventListener('click', () => saveCurrentMap({ reason: 'played' }));
-    // audio_map2 批次 review
-    els.bulkAutoBtn?.addEventListener('click', () => am2BulkConfirm());
-    els.bulkReviewBtn?.addEventListener('click', () => am2BulkUnconfirm());
-    els.bulkNoneBtn?.addEventListener('click', () => am2BulkMissing());
     els.settingsButton.addEventListener('click', () => openSettings());
     els.saveSettingsButton.addEventListener('click', () => {
         setPat(els.patInput.value);
@@ -697,26 +687,6 @@ function itemKindLabel(kind, number) {
     return `第 ${number} 段`;
 }
 
-/* ── audio_map2：review 狀態語義（無 meta 欄位，直接寫 status） ──
-   status: manual / reviewed ＝ 已聽過（審核通過）
-           auto ＝ 尚未人工 review
-           missing ＝ 人工確認無對應音頻
-   電子書前12章播放鈕只在 status ∈ {manual, reviewed} 且 start != null 時出現。 */
-
-function isReviewed(item) {
-    if (!item) return false;
-    return item.status === 'manual' || item.status === 'reviewed';
-}
-function reviewedCount(items) {
-    return items.filter(isReviewed).length;
-}
-const am2StatusRank = { reviewed: 0, manual: 1, missing: 2, auto: 3 };
-function am2StatusSort(a, b) {
-    const ra = am2StatusRank[a.status] ?? 9;
-    const rb = am2StatusRank[b.status] ?? 9;
-    return ra - rb;
-}
-
 async function loadMonth(month, { forceRemote = false } = {}) {
     if (state.dirty && !forceRemote) {
         const ok = window.confirm('目前有未儲存變更，確定要切換月份並丟棄嗎？');
@@ -900,20 +870,29 @@ function countSessionMeta(session) {
 
     const mustItems = mustCalibrateItems(session);
     let completed = 0;
+    let both = 0;
+    let played = 0;
+    let edited = 0;
+    let none = 0;
     for (const item of mustItems) {
-        // audio_map2「完成」＝ status manual / reviewed（已聽過）
-        const st = item?.status || 'auto';
-        if (st === 'manual' || st === 'reviewed') completed += 1;
+        const hasPlayed = Boolean(item?.meta?.lastPlayed);
+        const hasEdited = Boolean(item?.meta?.lastEdited);
+        // 「完成」= 必須項已聽過（含收場；不含開場）
+        if (hasPlayed) completed += 1;
+        if (hasPlayed && hasEdited) both += 1;
+        else if (hasPlayed) played += 1;
+        else if (hasEdited) edited += 1;
+        else none += 1;
     }
     return {
         matched,
         missing,
         total: session.segments?.length || 0,
         completed,
-        both: completed,
-        played: completed,
-        edited: 0,
-        none: 0,
+        both,
+        played,
+        edited,
+        none,
         all: rangeItems.length,
         mustTotal: mustItems.length,
         hasClosing: Boolean(session.closing),
@@ -935,14 +914,14 @@ function selectSession(sessionId) {
     if (isMobileDock()) setSidebarOpen(false);
 }
 
-/** 「完成」= 已 review（status manual/reviewed）。捲到最後一段完成處；都沒完成則捲到頂。 */
+/** 「完成」= 聽過（有 lastPlayed）。捲到最後一段完成處；都沒完成則捲到頂。 */
 function scrollEditorToProgress() {
     const workspace = els.workspace;
     if (!workspace) return;
     const items = sessionItems();
     let lastCompleted = -1;
     for (let i = 0; i < items.length; i += 1) {
-        if (isReviewed(items[i].item)) lastCompleted = i;
+        if (items[i].item?.meta?.lastPlayed) lastCompleted = i;
     }
     const apply = () => {
         if (lastCompleted < 0) {
@@ -975,12 +954,6 @@ function renderEditor() {
     els.segmentCount.textContent = session.audio_file || '';
     els.conflictBanner.classList.add('hidden');
 
-    // audio_map2：顯示批次 review bar，標題帶 session 段數
-    if (els.bulkbar) {
-        els.bulkbar.hidden = false;
-        if (els.bulkTitle) els.bulkTitle.textContent = `${session.date} ${session.source} · ${session.segments?.length || 0} 段`;
-    }
-
     const items = sessionItems();
     updateMetaStrip(items);
     els.editorRoot.innerHTML = '';
@@ -992,25 +965,25 @@ function renderEditor() {
 }
 
 function updateMetaStrip(items) {
-    // audio_map2：追蹤全部段落（segments + 收場）。語義以 status 為準，
-    // 不再有 meta.lastPlayed/lastEdited。
+    // Meta strip tracks must-calibrate items only (segments + 收場).
     const must = items.filter((e) => e.kind === 'segment' || e.kind === 'closing');
-    let reviewed = 0;
-    let missing = 0;
-    let lowc = 0;
-    let auto = 0;
+    let completed = 0;
+    let played = 0;
+    let edited = 0;
+    let none = 0;
     for (const { item } of must) {
-        const st = item?.status || 'auto';
-        if (st === 'manual' || st === 'reviewed') reviewed += 1;
-        else if (st === 'missing') missing += 1;
-        else auto += 1;
-        if (st !== 'missing' && item?.start != null && (item.confidence ?? 1) < 0.5) lowc += 1;
+        const hasPlayed = Boolean(item?.meta?.lastPlayed);
+        const hasEdited = Boolean(item?.meta?.lastEdited);
+        if (hasPlayed) completed += 1;
+        if (hasPlayed && !hasEdited) played += 1;
+        else if (!hasPlayed && hasEdited) edited += 1;
+        else if (!hasPlayed && !hasEdited) none += 1;
     }
     els.metaTotalCount.textContent = String(must.length);
-    els.metaBothCount.textContent = String(reviewed);
-    els.metaPlayedOnlyCount.textContent = String(missing);
-    els.metaEditedOnlyCount.textContent = String(lowc);
-    els.metaNoneCount.textContent = String(auto);
+    els.metaBothCount.textContent = String(completed);
+    els.metaPlayedOnlyCount.textContent = String(played);
+    els.metaEditedOnlyCount.textContent = String(edited);
+    els.metaNoneCount.textContent = String(none);
 }
 
 function renderSegmentCard(entry, segmentIndex) {
@@ -1125,7 +1098,7 @@ function renderSegmentCard(entry, segmentIndex) {
     }
     body.append(answerEl);
 
-    // ── audio_map2 特有欄位：信心度 / 狀態 / notes / SRT 對照 / 章節對應 ──
+    // audio_map2 特有欄位（純顯示，不含 review 按鈕）：信心度 / 狀態 / notes / SRT / 章節對應
     applyAm2CardExtras(node, item, kind);
 
     // Click question / answer to play (same as ▶); keep text selection for copy.
@@ -1142,20 +1115,15 @@ function renderSegmentCard(entry, segmentIndex) {
     return node;
 }
 
-/* ── audio_map2 卡片附加欄位 ── */
+/* ── audio_map2 卡片附加欄位（純顯示） ── */
 function applyAm2CardExtras(node, item, kind) {
-    if (kind !== 'segment') {
-        // 開場／收場：附加文字區用 item.text（上方已處理），不需信心度/章節。
-        return;
-    }
+    if (kind !== 'segment') return; // 開場／收場不需信心度等
     const conf = item.confidence ?? 1;
     const lv = conf >= 0.8 ? 'high' : conf >= 0.5 ? 'mid' : 'low';
     const st = item.status || 'auto';
 
-    // 低信心整卡紅框 + banner
     node.classList.toggle('low-conf', lv === 'low');
 
-    // 信心度 chip
     const metaRow = node.querySelector('.segment-meta');
     if (metaRow) {
         const confChip = document.createElement('span');
@@ -1169,31 +1137,26 @@ function applyAm2CardExtras(node, item, kind) {
         stChip.textContent = `狀態：${st}`;
         metaRow.appendChild(stChip);
 
-        if (item.chapter_indexes?.length || (item.chapter_question_ids?.length && !item.chapter_indexes?.length)) {
-            const idx = item.chapter_indexes?.length
-                ? `第 ${[...new Set(item.chapter_indexes)].sort((a, b) => a - b).join('、')} 章`
-                : `章節待定`;
+        if (item.chapter_indexes?.length) {
+            const idx = [...new Set(item.chapter_indexes)].sort((a, b) => a - b).join('、');
             const chChip = document.createElement('span');
             chChip.className = 'seg-meta-chip';
             chChip.title = '對應電子書前 12 章（由 link_chapters.py 寫回）';
-            chChip.textContent = `對應 ${idx}`;
+            chChip.textContent = `對應第 ${idx} 章`;
             metaRow.appendChild(chChip);
         }
     }
 
     const body = node.querySelector('.segment-body');
 
-    // notes（低信心/待人工/插補 等線索）
     if (item.notes) {
         const notesEl = document.createElement('div');
         notesEl.className = 'am2-notes';
-        const pending = /待人工|no-anchor:clamped/.test(item.notes);
-        notesEl.className += pending ? ' am2-notes--pending' : '';
+        if (/待人工|no-anchor:clamped/.test(item.notes)) notesEl.classList.add('am2-notes--pending');
         notesEl.textContent = `notes：${item.notes}`;
         body.appendChild(notesEl);
     }
 
-    // SRT 對照（僅供時間參考，非校對稿）
     if (item.srt_preview) {
         const det = document.createElement('details');
         det.className = 'am2-srt';
@@ -1209,140 +1172,9 @@ function applyAm2CardExtras(node, item, kind) {
     if (lv === 'low') {
         const banner = document.createElement('div');
         banner.className = 'lowconf-banner';
-        banner.textContent = '⚠ 低信心配對：請特別仔細聽檔；必要時微調起訖，或改判「無音頻」。';
+        banner.textContent = '⚠ 低信心配對：請特別仔細聽檔，必要時微調起訖時間。';
         body.appendChild(banner);
     }
-
-    // 三態 review 按鈕（寫 status；無 meta）
-    const actions = node.querySelector('.segment-actions');
-    if (actions) {
-        const hasRange = item.start != null;
-        if (hasRange && st !== 'missing') {
-            const btn = document.createElement('button');
-            btn.type = 'button';
-            const isDone = st === 'manual' || st === 'reviewed';
-            btn.className = isDone
-                ? 'button button-primary segment-op'
-                : 'button button-secondary segment-op';
-            btn.textContent = isDone ? '✔ 已校（取消可改回未校）' : '✔ 確認校對';
-            btn.title = '聽檔無誤後確認；重建電子書後前 12 章對應段落才會出現播放鈕';
-            btn.addEventListener('click', () => am2Confirm(Number(node.dataset.segmentIndex)));
-            actions.prepend(btn);
-        }
-        const nb = document.createElement('button');
-        nb.type = 'button';
-        nb.className = st === 'missing'
-            ? 'button button-primary segment-op'
-            : 'button button-danger segment-op';
-        nb.title = '聽過相關錄音後，確認此段沒有對應音頻';
-        nb.textContent = st === 'missing' ? '🚫 已標無音頻（點擊解除）' : '🚫 無音頻';
-        nb.addEventListener('click', () => am2MarkMissing(Number(node.dataset.segmentIndex)));
-        actions.prepend(nb);
-
-        // 未校（auto）重置
-        const ab = document.createElement('button');
-        ab.type = 'button';
-        ab.className = 'button button-secondary segment-op';
-        ab.textContent = '↺ 未校';
-        ab.title = '重設為尚未 review（auto）';
-        ab.addEventListener('click', () => am2MarkAuto(Number(node.dataset.segmentIndex)));
-        actions.prepend(ab);
-    }
-}
-
-function am2Confirm(segmentIndex) {
-    const entry = sessionItems()[segmentIndex];
-    if (!entry) return;
-    if (entry.item.start == null) { setStatus('此段沒有時間軸可確認', 'error'); return; }
-    commitHistory();
-    entry.item.status = 'reviewed';
-    refreshSegmentMetaChips(segmentIndex);
-    updateMetaStrip(sessionItems());
-    recomputeDirty();
-    setStatus('已確認校對 ✔（status=reviewed，重建電子書後出現播放鈕）', 'ok');
-    commitHistory();
-    renderSessionList();
-    renderEditor();
-}
-
-function am2MarkMissing(segmentIndex) {
-    const entry = sessionItems()[segmentIndex];
-    if (!entry) return;
-    commitHistory();
-    if (entry.item.status === 'missing') {
-        entry.item.status = 'auto';
-        setStatus('已解除「無音頻」標記（→ auto）', 'ok');
-    } else {
-        entry.item.status = 'missing';
-        setStatus('已標記「人工確認無對應音頻」🚫（status=missing）', 'ok');
-    }
-    refreshSegmentMetaChips(segmentIndex);
-    updateMetaStrip(sessionItems());
-    recomputeDirty();
-    commitHistory();
-    renderSessionList();
-    renderEditor();
-}
-
-function am2MarkAuto(segmentIndex) {
-    const entry = sessionItems()[segmentIndex];
-    if (!entry) return;
-    commitHistory();
-    entry.item.status = 'auto';
-    refreshSegmentMetaChips(segmentIndex);
-    updateMetaStrip(sessionItems());
-    recomputeDirty();
-    setStatus('已重設為未校（auto）', 'ok');
-    commitHistory();
-    renderSessionList();
-    renderEditor();
-}
-
-/* ── audio_map2 批次 review ── */
-function am2BulkConfirm() {
-    const th = Number(els.bulkConf?.value ?? 0.8) || 0;
-    commitHistory();
-    let n = 0;
-    for (const seg of currentSession()?.segments || []) {
-        if (seg.status === 'auto' && seg.start != null && (seg.confidence ?? 1) >= th) {
-            seg.status = 'reviewed';
-            n += 1;
-        }
-    }
-    setStatus(`已批次確認 ${n} 段（auto 且信心 ≥ ${th}）——記得儲存`, 'ok');
-    if (n && state.sessionId) renderEditor();
-    commitHistory();
-    renderSessionList();
-}
-
-function am2BulkUnconfirm() {
-    commitHistory();
-    let n = 0;
-    for (const seg of currentSession()?.segments || []) {
-        if (seg.status === 'manual' || seg.status === 'reviewed') {
-            seg.status = 'auto';
-            n += 1;
-        }
-    }
-    setStatus(`已把 ${n} 段改回未校（auto）——記得儲存`, 'ok');
-    if (n && state.sessionId) renderEditor();
-    commitHistory();
-    renderSessionList();
-}
-
-function am2BulkMissing() {
-    commitHistory();
-    let n = 0;
-    for (const seg of currentSession()?.segments || []) {
-        if (!seg.locked && (seg.status === 'missing' || (seg.start == null && seg.status !== 'missing'))) {
-            seg.status = 'missing';
-            n += 1;
-        }
-    }
-    setStatus(`已標記「人工確認無音頻」${n} 段（missing）——記得儲存`, 'ok');
-    if (n && state.sessionId) renderEditor();
-    commitHistory();
-    renderSessionList();
 }
 
 /** Click-to-play on read-only Q/A text; skip if the user was selecting text. */
@@ -1712,17 +1544,20 @@ function nowStamp() {
 }
 
 function onSegmentPlayed(segmentIndex) {
-    // audio_map2：播放本身不算 review，不改 status。僅刷新（保留 meta 欄位為空）。
     const entry = sessionItems()[segmentIndex];
     if (!entry) return;
+    ensureMeta(entry.item).lastPlayed = nowStamp();
     refreshSegmentMetaChips(segmentIndex);
     updateMetaStrip(sessionItems());
+    scheduleDraft();
+    recomputeDirty();
+    renderSessionList();
 }
 
 function onSegmentEdit(segmentIndex) {
-    // 時間編輯已由 applyRangeToItem 將 status 標為 manual；此處只刷新。
     const entry = sessionItems()[segmentIndex];
     if (!entry) return;
+    ensureMeta(entry.item).lastEdited = nowStamp();
     refreshSegmentMetaChips(segmentIndex);
     updateMetaStrip(sessionItems());
     scheduleDraft();
@@ -1730,25 +1565,35 @@ function onSegmentEdit(segmentIndex) {
 }
 
 function clearSegmentMeta(segmentIndex, field) {
-    // audio_map2 無 meta 欄位；此按鈕（最後播放/最後編輯清除）不作用。
     const entry = sessionItems()[segmentIndex];
     if (!entry) return;
+    commitHistory();
+    const meta = ensureMeta(entry.item);
+    if (field === 'played') meta.lastPlayed = '';
+    if (field === 'edited') meta.lastEdited = '';
     refreshSegmentMetaChips(segmentIndex);
     updateMetaStrip(sessionItems());
+    setStatus(field === 'played' ? '已清除最後播放時間' : '已清除最後編輯時間', 'ok');
+    commitHistory();
+    renderSessionList();
 }
 
 function updateSegmentMetaChips(card, item) {
-    // audio_map2：不顯示「最後播放／編輯」meta chip（無 meta 欄位）；
-    // 改以 status chip（applyAm2CardExtras 已插入）。
     const played = card.querySelector('.seg-meta-played');
     const edited = card.querySelector('.seg-meta-edited');
-    if (played) played.textContent = '—';
-    if (edited) edited.textContent = '—';
+    const hasPlayed = Boolean(item?.meta?.lastPlayed);
+    const hasEdited = Boolean(item?.meta?.lastEdited);
+    if (played) played.textContent = item?.meta?.lastPlayed || '—';
+    if (edited) edited.textContent = item?.meta?.lastEdited || '—';
     const clearPlayed = card.querySelector('.seg-meta-clear[data-field="played"]');
     const clearEdited = card.querySelector('.seg-meta-clear[data-field="edited"]');
-    if (clearPlayed) clearPlayed.classList.add('hidden');
-    if (clearEdited) clearEdited.classList.add('hidden');
-    card.dataset.status = isReviewed(item) ? 'both' : 'none';
+    if (clearPlayed) clearPlayed.classList.toggle('hidden', !hasPlayed);
+    if (clearEdited) clearEdited.classList.toggle('hidden', !hasEdited);
+    let status = 'none';
+    if (hasPlayed && hasEdited) status = 'both';
+    else if (hasPlayed) status = 'played';
+    else if (hasEdited) status = 'edited';
+    card.dataset.status = status;
 }
 
 function refreshSegmentMetaChips(segmentIndex) {
@@ -1918,8 +1763,8 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         const payload = normalizeMapTimes(cloneMap(state.map));
         const text = serializeMap(payload);
         const message = reason === 'played'
-            ? `Update audio_map2 ${state.month}`
-            : `Update audio_map2 ${state.month}`;
+            ? `Update audio_map listen progress ${state.month}`
+            : `Update audio_map ${state.month}`;
         const result = await putFile(path, text, state.currentSha, message, { force });
         state.currentSha = result.content?.sha || state.currentSha;
         state.map = payload;
