@@ -1009,17 +1009,6 @@ function renderSegmentCard(entry, segmentIndex) {
         copySegmentAnswer(segmentIndex, event.currentTarget);
     });
 
-    const lockInput = node.querySelector('.lock-input');
-    if (lockInput) {
-        lockInput.checked = Boolean(item.locked);
-        lockInput.addEventListener('change', () => {
-            commitHistory();
-            item.locked = lockInput.checked;
-            onSegmentEdit(segmentIndex);
-            commitHistory();
-        });
-    }
-
     const body = node.querySelector('.segment-body');
 
     // Time marker line (qa style)
@@ -1120,7 +1109,6 @@ function applyAm2CardExtras(node, item, kind) {
     if (kind !== 'segment') return; // 開場／收場不需信心度等
     const conf = item.confidence ?? 1;
     const lv = conf >= 0.8 ? 'high' : conf >= 0.5 ? 'mid' : 'low';
-    const st = item.status || 'auto';
 
     node.classList.toggle('low-conf', lv === 'low');
 
@@ -1131,11 +1119,6 @@ function applyAm2CardExtras(node, item, kind) {
         confChip.title = '自動對齊信心分數（低者請仔細聽檔）';
         confChip.textContent = (lv === 'low' ? '⚠ 低信心 ' : '') + conf.toFixed(2);
         metaRow.insertBefore(confChip, metaRow.children[1] || null);
-
-        const stChip = document.createElement('span');
-        stChip.className = 'seg-meta-chip';
-        stChip.textContent = `狀態：${st}`;
-        metaRow.appendChild(stChip);
 
         if (item.chapter_indexes?.length) {
             const idx = [...new Set(item.chapter_indexes)].sort((a, b) => a - b).join('、');

@@ -1889,6 +1889,13 @@ def build_session_payload(sess: WordSession, converter) -> Optional[dict]:
             ap = seg.get("answer_text") or ""
             seg["q_preview"] = qp[:100] + ("…" if len(qp) > 100 else "")
             seg["answer_preview"] = ap[:160] + ("…" if len(ap) > 160 else "")
+        # `locked` is a dead legacy field (align 不再讀取、審核 UI 不再顯示)——
+        # 硬性移除，避免誤導。
+        for part in (payload["opening"], payload["closing"]):
+            if part:
+                part.pop("locked", None)
+        for seg in payload["segments"]:
+            seg.pop("locked", None)
         sessions_out.append(payload)
     return sessions_out
 

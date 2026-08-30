@@ -51,8 +51,8 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic/` | Assets | Concept PNGs for `infographic.html`. |
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
-| `audio_map/` | Editorial UI | `index.html` = Word chapter maps proofreading（01–12，校對完成才亮鈕）; `index2.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/` + `data/audio_map_word/`. Alignment rules: **`audio_map/AGENTS.md`**. |
-| `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；**不參考 `audio_map_word` 的時間**。Rules: **`audio_map2/AGENTS.md`**. |
+| `audio_map/` | Editorial UI | `index2.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
+| `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
 | `books/` | **Source** | 五本 PDF 原書（`01《坐禅》`…`05 圆觉经》讲记`）。 |
 | `ebook/` | **Generated** | 坐禅系列五本合集靜態電子書（簡/繁、全量搜尋）。Rebuild from `tool/books2ebook/gen_all.py`。 |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
@@ -61,11 +61,10 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 
 | Path | Purpose | Docs |
 |------|---------|------|
-| `tool/word2ebook/` | Word (+ PDF, optional `qa/`) → `wenda2_ebook/`. Also owns `data/audio_map/*.json` and `data/audio_map_word/word-NN.json`. | **`AGENTS.md`**, `README.md`, `openspec/` |
+| `tool/word2ebook/` | Word (+ PDF, optional `qa/`) → `wenda2_ebook/`. Also owns `data/audio_map/*.json` (PDF months 13–21). Word chapters 01–12 source play buttons from `audio_map2/*.json`. | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/books2ebook/` | `books/` 五本 PDF → `ebook/` 坐禅系列电子书（簡/繁、全量搜尋）。沿用 `wenda2_ebook/assets` 風格。 | `README.md` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio ranges → write audio_map JSON. | `README.md` |
-| `tool/word_audio_map/` | Align Word-chapter Q&A ↔ audio ranges (pinyin-stream matcher) → write `data/audio_map_word/`; also verifies built buttons. | `README.md` |
-| `tool/word_audio_map2/` | Align **chronological** Word 彙總（2024-02…2025-05）↔ SRT → write `audio_map2/*.json`. Text from docx; times from SRT only; does **not** read `audio_map_word` times. | `README.md` |
+| `tool/word_audio_map2/` | Align **chronological** Word 彙總（2024-02…2025-05）↔ SRT → write `audio_map2/*.json`. Text from docx; times from SRT only. Replaces the removed thematic `word_audio_map` aligner + `data/audio_map_word/`. | `README.md` |
 | `tool/qa_resplit/` | Offline resplit / realign / reformat / TW-normalize of `qa/*.txt` against SRT. | (scripts only; no README) |
 | `tool/sense_voice/` | FunASR Chinese ASR → `.srt` + `.txt` (used by pdf_audio_map fill-misses). | `README.md` |
 | `tool/audio_denoiser/` | Facebook Denoiser preprocessing before ASR. | `README.md` |

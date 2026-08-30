@@ -4,19 +4,6 @@
     margin-top: 0.65rem;
 }
 
-.segment-lock {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.85rem;
-    color: var(--muted);
-    white-space: nowrap;
-}
-
-.segment-lock input {
-    margin: 0;
-}
-
 .marker-input {
     font-variant-numeric: tabular-nums;
 }

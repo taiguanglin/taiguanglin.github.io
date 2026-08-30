@@ -131,7 +131,7 @@ session 內 opening/segments/closing），另加：
 
 segment 欄位：`index / question_id / stable_key / questioner / question_time /
 q_text / q_preview / answer_text / answer_preview / start / end / start_label /
-end_label / confidence / status / locked / notes / srt_preview`。
+end_label / confidence / status / notes / srt_preview`。
 
 ## 審核 UI
 
