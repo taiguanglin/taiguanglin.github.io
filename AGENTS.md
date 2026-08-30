@@ -102,11 +102,11 @@ tool/books2ebook/gen_all.py  （沿用 wenda2_ebook/assets 風格，含簡/繁�
 Audio-map pipeline (optional but used for play buttons):
 
 ```
-SRT / opus  →  tool/pdf_audio_map/   →  tool/word2ebook/data/audio_map/*.json       (PDF chapters 13–21)
-            ⇘  tool/word_audio_map/  ⇒  tool/word2ebook/data/audio_map_word/word-*.json (Word chapters 01–12)
-                      ▲                         │
-              /audio_map/ UI (tweak)            ▼
-                       inject_chapters() / inject_word_chapters() at ebook build
+SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json   (PDF chapters 13–21)
+                                          ▲
+                                /audio_map/index2.html (tweak) + inject_chapters() at build
+              audio_map2/*.json  →  inject_word_chapters()  →  Word chapters 01–12 play buttons
+              (audio_map2/index.html  review;  tool/word_audio_map2/  align)
 ```
 
 `qa/*.txt` feeds proofreading and (for 2025-11…2026-03) alignment hints; it is **not** an input to the default full rebuild.

@@ -10,7 +10,7 @@
 - **文字以 Word 為準**：`q_text` / `answer_text` / `questioner` / `question_time` /
   opening / closing 文字全部取自 docx。
 - **SRT 只用於時間**：`start` / `end` / `srt_preview`（僅供對照，不是校對稿）。
-- 不參考 `tool/word2ebook/data/audio_map_word/` 的既有時間（錯誤率高）。
+- 不參考過往併入電子書的音檔時間；所有時間皆由 SRT 重新推導。
 
 ## 指令
 
@@ -146,6 +146,11 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 ```
 
 ## 章節對齊分段（chapter-aligned segmentation）
+
+> **已凍結**：`_split_chunk_by_chapters()` 原本用章節版
+> `tool/word2ebook/data/audio_map_word/word-*.json` 當索引，該檔與
+> `word_audio_map` 對齊器已移除；如今索引讀空、不再拆分。現有
+> `audio_map2/*.json` 已是最終分段，勿再重跑 `build_maps.py --all`。
 
 時間序 `汇总` docx 常把一個人的多個編號子題（`1、2、3、…`，各有
 `Taiguanglin：` 回答）併進單一段落。主題式 12 章（`wenda2_ebook`

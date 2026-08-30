@@ -4,43 +4,23 @@
 > Repo-wide rules: [`../AGENTS.md`](../AGENTS.md).  
 > Mapping JSON lives under `tool/word2ebook/data/` (not in this folder).
 
-## index.html — Word-chapter proofreading UI（第 01–12 章）
-
-`index.html` 是 **Word 分類章節**地圖
-（`tool/word2ebook/data/audio_map_word/word-*.json`，question_id 為鍵）的校稿／審核介面，
-**完整沿用 index2 的生態系**：版面／深淺色共用同一組 CSS，邏輯在
-`assets/editor.word.js`（由 editor.js 移植；讀取走 raw.githubusercontent main＋破快取、
-儲存 PUT 回 main，wordDoc ↔ 檢視模型以共用參照同步）。
-
-**版面與互動同 index2**：卡片結構、單行時間碼（`hh:mm:ss.xxx - hh:mm:ss.xxx`）、
-浮動播放器（拖曳／展開／nudge）、快捷鍵（P/S/R/←→/↑↓/⌘Z）、本機草稿、衝突對話框。
-
-Word 版專屬：
-
-- 每張卡片顯示信心分數 badge（≥0.8 綠、0.5–0.8 黃、**<0.5 紅底 ⚠ 低信心**，
-  整卡紅框提示需特別仔細聽）。
-- 「✔ 確認校對」＝人工聽檔通過（`meta.confirmed`）；「🚫 人工確認沒有對應音頻」＝
-  `status:"none"`＋`meta.confirmed`——兩者皆需重建電子書才反映到播放鈕。
-- 批次：本章 auto 且 conf≥門檻一鍵確認、review→auto 並確認、missing→確認無音頻。
-- 儲存走 GitHub Contents API（PAT 與 index2.html 共用 localStorage key
-  `audioMapEditor:pat`）。
-
----
-
 ## What this tool is
 
-Browser proofreading UI at `/audio_map/` for setting each segment’s **play range**
-(`start` / `end`) against local opus + SRT. Ebook play buttons are injected from
-these maps at build time (`tool/word2ebook` → `inject_chapters`); never hand-edit
-`wenda2_ebook/` for timings.
+Browser proofreading UI at `/audio_map/` for setting each PDF segment’s
+**play range** (`start` / `end`) against local opus + SRT. Ebook play buttons are
+injected from these maps at build time (`tool/word2ebook` → `inject_chapters`);
+never hand-edit `wenda2_ebook/` for timings.
+
+> **Word-chapter (01–12) proofreading has moved to `/audio_map2/`** (the
+> chronological Word 彙總), driven by `audio_map2/*.json`. The old
+> `audio_map/index.html` Word editor (`assets/editor.word.js` +
+> `tool/word2ebook/data/audio_map_word/word-*.json`) has been removed.
 
 ---
 
 ## index2.html — PDF month maps proofreading UI（第 13–21 章）
 
-原 `/audio_map/` 的 PDF 月份地圖編輯器現位於 **index2.html**
-（PDF 已全數校對完成，故退居次要檔名；檔名順序對應電子書章節順序：
-Word 01–12 → `index.html`，PDF 13–21 → `index2.html`）。
+`index2.html` 是 **PDF 月份地圖**編輯器（PDF 已全數校對完成）。
 
 ## Segment identity (what counts as a new play range)
 
