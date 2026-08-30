@@ -812,12 +812,20 @@ function askDraftChoice(path, draft) {
     });
 }
 
+/** 側邊欄／標題共用的 session 顯示名稱：`date` + 來源；但單音檔日
+    的 `source` 是佔位值 `main`（主頻道，無貼吧／微信之分），只顯示日期。 */
+function sessionLabel(session) {
+    const source = session?.source;
+    if (!source || source === 'main') return session?.date || '';
+    return `${session.date} ${source}`;
+}
+
 function renderSessionList() {
     els.fileList.innerHTML = '';
     const sessions = state.map?.sessions || [];
     let shown = 0;
     for (const session of sessions) {
-        const label = `${session.date} ${session.source}`;
+        const label = sessionLabel(session);
         shown += 1;
         const stats = countSessionMeta(session);
         const row = document.createElement('div');
@@ -950,7 +958,7 @@ function renderEditor() {
     els.welcomePanel.classList.add('hidden');
     els.documentPanel.classList.remove('hidden');
     els.documentPath.textContent = mapPath(state.month);
-    els.documentTitle.textContent = `${session.date} ${session.source}`;
+    els.documentTitle.textContent = sessionLabel(session);
     els.segmentCount.textContent = session.audio_file || '';
     els.conflictBanner.classList.add('hidden');
 
