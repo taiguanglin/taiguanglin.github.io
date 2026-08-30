@@ -9,6 +9,12 @@ from config import (
     TYPE_HEADING,
     TYPE_QUESTION,
 )
+try:
+    from audio_map import AUDIO_MAP, AUDIO_BASE, audio_duration
+except ImportError:  # 供 -c 單獨載入等邊界情境
+    AUDIO_MAP, AUDIO_BASE = {}, "../audio/jiangjing/"
+    def audio_duration(series, n):  # noqa: E306
+        return None
 
 _HEADING_KINDS = ("h2", "h3", "h4")
 
@@ -76,9 +82,45 @@ def nl2br(text):
     return text.replace("\n", "<br/>")
 
 
-# ---------------------------------------------------------------------- #
-# 區塊分析：元素 ID 與每個標題的內容計數
-# ---------------------------------------------------------------------- #
+# 講經系列播放按鈕：與 wenda2_ebook 的 .qa-play 共用同一套 JS/CSS（assets 影印過來的
+# 08-qa-audio.js / 04c-qa-audio.css）。每個「講次」章節一把完整音檔，data-start=0、
+# data-end=時長（空著則播到檔尾）。
+_SPEAKER_SVG = (
+    '<svg class="qa-play-speaker" viewBox="0 0 24 24" width="1em" height="1em" '
+    'aria-hidden="true" focusable="false">'
+    '<path fill="currentColor" d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29'
+    '-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s'
+    '-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>'
+    '</svg>'
+)
+
+
+def _fmt_hms(seconds):
+    s = int(seconds or 0)
+    h, rem = divmod(s, 3600)
+    m, sec = divmod(rem, 60)
+    return "%02d:%02d:%02d" % (h, m, sec)
+
+
+def lecture_play_button(series, n, label):
+    """回傳講次 N 的播放按鈕 HTML；無音檔映射則回傳空字串。"""
+    if not series or series not in AUDIO_MAP or n not in AUDIO_MAP[series]:
+        return ""
+    fn = AUDIO_MAP[series][n]
+    import html as _html
+    from urllib.parse import quote
+    url = "%s%s/%s.opus" % (AUDIO_BASE, series, quote(fn))
+    dur = audio_duration(series, n)
+    end_attr = (' data-end="%.3f"' % dur) if dur else ""
+    range_label = "00:00:00 - %s" % (_fmt_hms(dur) if dur else "??:??:??")
+    return (
+        '<button class="qa-play" type="button" data-audio="%s" '
+        'data-start="0.000"%s data-label="%s">'
+        '<span class="qa-play-icon">%s</span>'
+        '<span class="qa-play-label">%s</span></button>'
+        % (_html.escape(url, quote=True), end_attr,
+           _html.escape(range_label, quote=True), _SPEAKER_SVG, esc(label))
+    )
 
 
 def _content_weight(block):
@@ -377,9 +419,13 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         if k in _HEADING_KINDS:
             tag = k
             cur_section = b["text"]
+            play = ""
+            n = b.get("lecture")
+            if n is not None:
+                play = lecture_play_button(getattr(book, "series", None), n, b["text"])
             body.append(
-                '<%s id="%s">%s<span class="chapter-qa-count">(%d)</span></%s>'
-                % (tag, b["sid"], esc(b["text"]), b["count"], tag)
+                '<%s id="%s">%s%s<span class="chapter-qa-count">(%d)</span></%s>'
+                % (tag, b["sid"], esc(b["text"]), play, b["count"], tag)
             )
             add_item(TYPE_HEADING, "%s(%d)" % (b["text"], b["count"]),
                      "%s#%s" % (fname, b["sid"]), "%s(%d)" % (b["text"], b["count"]))
