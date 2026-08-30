@@ -17,13 +17,14 @@ exactly the reviewer's intent (one spoken unit).
 
 Sources (read-only; **frozen** — the thematic ``word_audio_map`` aligner that
 produced them has been removed, so these gitignored ``build/`` artifacts are no
-longer regenerated):
-  * ebook questions … ``tool/word_audio_map/build/questions.json``
+longer regenerated; they were moved into ``word_audio_map2/build/`` when
+``word_audio_map/`` was deleted):
+  * ebook questions … ``tool/word_audio_map2/build/questions.json``
       (``question_id`` + ``chapter_index`` + ``q_text`` / ``a_text``).
-  * optional bridge … ``tool/word_audio_map/build/qid_bridge_v2.json``
+  * optional bridge … ``tool/word_audio_map2/build/qid_bridge_v2.json``
       (ebook ``question_id`` → chronological ``session_id``), used to *narrow*
       candidates; content still decides.
-  * chronological sessions … ``tool/word_audio_map/build/chrono_sessions.json``.
+  * chronological sessions … ``tool/word_audio_map2/build/chrono_sessions.json``.
 
 Matching is content-based (normalize: strip Word ``_x0001_``/``_x000D_``
 artifacts, unify 繁/簡 via OpenCC is NOT done here — instead we normalize
@@ -261,8 +262,8 @@ def find_candidates(
 def main() -> int:
     ap = argparse.ArgumentParser(description="Link audio_map2 → ebook chapters")
     ap.add_argument("--apply", action="store_true", help="write chapter_question_id back into audio_map2 JSON")
-    ap.add_argument("--report", default="tool/word_audio_map2/build/link_report.json",
-                    help="where to dump the link report (default under tool/word_audio_map2/build/)")
+    ap.add_argument("--report", default=str(ROOT / "tool" / "word_audio_map2" / "build" / "link_report.json"),
+                    help="where to dump the link report (absolute path under repo root)")
     args = ap.parse_args()
 
     questions = load_questions()
