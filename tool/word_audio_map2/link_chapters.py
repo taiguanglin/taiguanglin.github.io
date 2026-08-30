@@ -52,9 +52,9 @@ from typing import Dict, List, Optional, Tuple
 
 ROOT = Path(__file__).resolve().parents[2]
 AUDIO_MAP2_DIR = ROOT / "audio_map2"
-QUESTIONS = ROOT / "tool" / "word_audio_map" / "build" / "questions.json"
-BRIDGE = ROOT / "tool" / "word_audio_map" / "build" / "qid_bridge_v2.json"
-CHRONO = ROOT / "tool" / "word_audio_map" / "build" / "chrono_sessions.json"
+QUESTIONS = ROOT / "tool" / "word_audio_map2" / "build" / "questions.json"
+BRIDGE = ROOT / "tool" / "word_audio_map2" / "build" / "qid_bridge_v2.json"
+CHRONO = ROOT / "tool" / "word_audio_map2" / "build" / "chrono_sessions.json"
 
 
 _CC_SENTINEL = object()
