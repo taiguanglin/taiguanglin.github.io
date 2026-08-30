@@ -15,14 +15,15 @@ questions (the 汇总 docx merged 2–3 sub-questions that the 12-chapter versio
 kept separate).  Both questions share the segment's reviewed start/end, which is
 exactly the reviewer's intent (one spoken unit).
 
-Sources (read-only):
+Sources (read-only; **frozen** — the thematic ``word_audio_map`` aligner that
+produced them has been removed, so these gitignored ``build/`` artifacts are no
+longer regenerated):
   * ebook questions … ``tool/word_audio_map/build/questions.json``
-      (``question_id`` + ``chapter_index`` + ``q_text`` / ``a_text``),
-      produced by ``tool/word_audio_map/extract_questions.py`` from the same
-      .docx the ebook parser reads.
+      (``question_id`` + ``chapter_index`` + ``q_text`` / ``a_text``).
   * optional bridge … ``tool/word_audio_map/build/qid_bridge_v2.json``
       (ebook ``question_id`` → chronological ``session_id``), used to *narrow*
       candidates; content still decides.
+  * chronological sessions … ``tool/word_audio_map/build/chrono_sessions.json``.
 
 Matching is content-based (normalize: strip Word ``_x0001_``/``_x000D_``
 artifacts, unify 繁/簡 via OpenCC is NOT done here — instead we normalize

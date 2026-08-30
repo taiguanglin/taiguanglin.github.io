@@ -16,7 +16,8 @@ description: >-
 ## 鐵律（先讀)
 
 1. **文字以 Word 為準，SRT 只取時間。** `q_text / answer_text / questioner / opening / closing`
-   全部來自 docx，決不新寫、決不參考 `audio_map_word/*.json` 的時間。
+   全部來自 docx，決不新寫、決不參考任何主題式章節地圖的時間（`data/audio_map_word/`
+   已移除）。
 2. **只改 `start / end / confidence / notes / 陣列順序`。** index 是 Word 順序參照，永遠保留；
    其他文字欄位一字不動（改前先 diff 驗證）。
 3. **`segments[]` 陣列順序 = 播放（audio）順序**；`index` = Word 順序參照。
@@ -148,4 +149,5 @@ cov = sum(m.size for m in sm.get_matching_blocks()) / max(1, len(probe))
 - `<month>.json`（直接用 `<month>.json.new` 覆寫；git 有原版可回溯）。
 - 回報：重排了哪些 block、修正了哪些段、7（或 N）段誠實空缺的理由、最終 stats。
 
-詳細 helper 腳本在 `tools/`（`readspan.py`、`xscan.py`、`audit.py`、`seqloc.py`、`finalize.py`、`merge_done.py`）。
+詳細 helper 腳本在 `tools/`（`readspan.py`、`xscan.py`、`audit.py`、`seqloc.py`、
+`session_overview.py`、`finalize.py`）。
