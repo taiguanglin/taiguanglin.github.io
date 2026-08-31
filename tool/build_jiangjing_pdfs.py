@@ -12,6 +12,7 @@ TOC 條目以「標題 …… 頁碼」呈現，文字右側附實際頁碼；�
 跳轉到正確頁 + set_toc 建立 PDF 大綱（bookmarks）。
 """
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -32,6 +33,12 @@ TOC_GAP = 6
 TOC_FIRST_ENTRY_Y = 102
 TOC_LINE_HEIGHT = 21
 TOC_BOTTOM_MARGIN = 60
+
+# 正文頁碼：置中於頁尾，數字用 Helvetica（books2ebook 依此字型濾掉頁碼行）。
+PAGE_NUM_FONT = "helv"
+PAGE_NUM_SIZE = 9
+PAGE_NUM_FROM_BOTTOM = 30
+_DIGITS_ONLY_RE = re.compile(r"^\d{1,4}$")
 
 LENGQIE_STARTS = {1:5,2:16,3:29,4:41,5:54,6:69,7:89,8:101,9:112,10:124,
     11:138,12:151,13:166,14:182,15:197,16:210,17:224,18:240,19:253,20:267,
@@ -148,6 +155,47 @@ def toc_page_count(entry_count, page_height):
     return max(1, -(-entry_count // per_page))
 
 
+def clear_source_page_numbers(doc, skip):
+    """移除來源殘留的頁碼（楞嚴各講 docx 各自從 1 起算），避免與統一頁碼並存。"""
+    removed = 0
+    for index in range(skip, doc.page_count):
+        page = doc[index]
+        found = []
+        for block in page.get_text("dict")["blocks"]:
+            for line in block.get("lines", ()):
+                spans = [s for s in line["spans"] if s["text"].strip()]
+                if not spans:
+                    continue
+                text = "".join(s["text"] for s in spans).strip()
+                if not _DIGITS_ONLY_RE.match(text):
+                    continue
+                if max(s["size"] for s in spans) >= 11.5:
+                    continue
+                if line["bbox"][1] < page.rect.height * 0.85:
+                    continue
+                found.append(pymupdf.Rect(line["bbox"]))
+        if not found:
+            continue
+        for rect in found:
+            page.add_redact_annot(rect)
+        page.apply_redactions(images=pymupdf.PDF_REDACT_IMAGE_NONE)
+        removed += len(found)
+    return removed
+
+
+def stamp_page_numbers(doc, skip):
+    """在正文頁尾置中標上實體頁碼；TOC 頁本身不標。"""
+    for index in range(skip, doc.page_count):
+        page = doc[index]
+        number = str(index + 1)
+        width = pymupdf.get_text_length(number, fontname=PAGE_NUM_FONT,
+                                        fontsize=PAGE_NUM_SIZE)
+        page.insert_text(
+            ((page.rect.width - width) / 2,
+             page.rect.height - PAGE_NUM_FROM_BOTTOM),
+            number, fontsize=PAGE_NUM_SIZE, fontname=PAGE_NUM_FONT)
+
+
 def write_toc_links(out, toc_entries, title, page_size=(595, 842)):
     """toc_entries: [(text, target_page_1based)]。在最前插 TOC 頁、寫「標題 …… 頁碼」、
     加 internal link。target_page_1based 為最終輸出頁碼（已含 TOC 頁數）。"""
@@ -194,11 +242,15 @@ def write_toc_links(out, toc_entries, title, page_size=(595, 842)):
 def build_single(entry_texts, srcdoc_path, out_pdf, title):
     """entry_texts: [(text, src_page_1based)]。TOC + 內容。"""
     src = pymupdf.open(srcdoc_path)
-    toc_num = toc_page_count(len(entry_texts), 842)
+    body_rect = src[0].rect
+    toc_num = toc_page_count(len(entry_texts), body_rect.height)
     toc_entries = [(t, toc_num + sp) for t, sp in entry_texts]
     out = pymupdf.open()
     out.insert_pdf(src)
-    write_toc_links(out, toc_entries, title)
+    write_toc_links(out, toc_entries, title,
+                    page_size=(body_rect.width, body_rect.height))
+    clear_source_page_numbers(out, toc_num)
+    stamp_page_numbers(out, toc_num)
     out.set_toc([[1, t, target] for t, target in toc_entries])
     out.save(out_pdf)
     out.close(); src.close()
@@ -233,6 +285,8 @@ def build_tanjing(out_pdf):
         out, toc_entries, "Tai师父讲《六祖坛经》",
         page_size=(target_rect.width, target_rect.height),
     )
+    clear_source_page_numbers(out, toc_num)
+    stamp_page_numbers(out, toc_num)
     out.set_toc([[1, t, target] for t, target in toc_entries])
     out.save(out_pdf)
     out.close(); src1.close(); src2.close()
@@ -285,11 +339,15 @@ def build_lengyan(out_pdf):
         merged.insert_pdf(d)
         acc += d.page_count
         d.close()
-    toc_num = toc_page_count(len(starts), 842)
+    body_rect = merged[0].rect
+    toc_num = toc_page_count(len(starts), body_rect.height)
     toc_entries = [("《楞严经》第%d讲" % n, toc_num + sp) for n, sp in starts]
     out = pymupdf.open()
     out.insert_pdf(merged)
-    write_toc_links(out, toc_entries, "Tai师父讲《楞严经》(未完)")
+    write_toc_links(out, toc_entries, "Tai师父讲《楞严经》(未完)",
+                    page_size=(body_rect.width, body_rect.height))
+    clear_source_page_numbers(out, toc_num)
+    stamp_page_numbers(out, toc_num)
     out.set_toc([[1, t, target] for t, target in toc_entries])
     out.save(out_pdf)
     out.close(); merged.close()
