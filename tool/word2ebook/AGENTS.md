@@ -53,7 +53,8 @@ main.py
 **Audio play buttons are never hand-patched under `wenda2_ebook/`.**  
 PDF month maps live in `data/audio_map/` (built by `tool/pdf_audio_map/`);  
 Word chapter maps (前 12 章) come from the **reviewed** `audio_map2/*.json`
-(via `chapter_question_ids`, written by `tool/word_audio_map2/link_chapters.py`).
+(via `chapter_question_ids`, which are already frozen into those JSONs — the
+script that wrote them has been removed).
 The legacy `data/audio_map_word/word-*.json` flow has been removed. Only
 the injectors inside this converter insert `.qa-play`; then step 4 writes the
 ebook. Regenerate with `gen_all.py` / `main.py` after mapping changes.

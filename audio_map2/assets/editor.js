@@ -1132,7 +1132,7 @@ function applyAm2CardExtras(node, item, kind) {
             const idx = [...new Set(item.chapter_indexes)].sort((a, b) => a - b).join('、');
             const chChip = document.createElement('span');
             chChip.className = 'seg-meta-chip';
-            chChip.title = '對應電子書前 12 章（由 link_chapters.py 寫回）';
+            chChip.title = '對應電子書前 12 章（已固化在 JSON）';
             chChip.textContent = `對應第 ${idx} 章`;
             metaRow.appendChild(chChip);
         }

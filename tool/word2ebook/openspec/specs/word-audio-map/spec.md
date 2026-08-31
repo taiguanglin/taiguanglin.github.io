@@ -9,17 +9,18 @@ changing their prose.
 The **injection source of truth is `audio_map2/*.json`** — the chronological
 Word 彙總 alignments reviewed in `/audio_map2/index.html`. The older
 thematic `data/audio_map_word/word-*.json` flow and its `tool/word_audio_map/`
-aligner have been removed. `tool/word_audio_map2/link_chapters.py` writes
-`chapter_question_ids` (the ebook's stable question ids) onto the reviewed
-audio_map2 segments, and `inject_word_chapters()` keys off those.
+aligner have been removed. `chapter_question_ids` (the ebook's stable question
+ids) are now frozen onto the reviewed audio_map2 segments, and
+`inject_word_chapters()` keys off those.
 
 ## Requirements
 
 ### Requirement: Reviewed Chronological Mapping Store
 The system SHALL read play ranges from `audio_map2/*.json`. Each segment that
 maps to one or more theme-chapter questions SHALL carry `chapter_question_ids`
-(a list of ebook stable question ids) and `chapter_indexes`, produced by
-`tool/word_audio_map2/link_chapters.py`. A segment's review state is encoded by
+(a list of ebook stable question ids) and `chapter_indexes`; these fields are
+now frozen in the JSONs (the script that wrote them has been removed). A
+segment's review state is encoded by
 the editorial UI's listen record in `meta.lastPlayed` (present = human actually
 listened; absent = not yet listened / machine-aligned only). The `status` field
 (`manual` / `reviewed` / `auto` / `missing`) remains produced by the aligner but
@@ -27,7 +28,7 @@ is **not** the injection gate.
 
 #### Scenario: One chronological segment maps to several chapter questions
 - GIVEN the 彙總 docx merged two sub-questions the chapter version keeps separate
-- WHEN `link_chapters.py --apply` runs
+- WHEN the segment carries its frozen `chapter_question_ids`
 - THEN both stable question ids SHALL appear in that segment's
   `chapter_question_ids` and SHALL share the segment's reviewed range
 
