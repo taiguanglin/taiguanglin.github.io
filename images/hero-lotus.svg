@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520" role="img" aria-label="蓮花禪坐圖">
+  <defs>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fde2ee" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffb6c1" stop-opacity="0.55"/>
+    </linearGradient>
+    <linearGradient id="petal" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff69b4"/>
+      <stop offset="0.55" stop-color="#ff8fc9"/>
+      <stop offset="1" stop-color="#ffd3e6"/>
+    </linearGradient>
+    <linearGradient id="petalInner" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#ff8fc9"/>
+      <stop offset="1" stop-color="#fff0f6"/>
+    </linearGradient>
+    <radialGradient id="aura" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0.6" stop-color="#ffb6c1" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ff69b4" stop-opacity="0.16"/>
+    </radialGradient>
+  </defs>
+
+  <!-- 光暈 -->
+  <circle cx="300" cy="234" r="210" fill="url(#aura)"/>
+
+  <!-- 蓮花花瓣：外層 -->
+  <g fill="url(#petal)">
+    <path d="M300 470 C 250 400 222 330 226 250 C 278 300 300 360 300 470 Z"/>
+    <path d="M300 470 C 350 400 378 330 374 250 C 322 300 300 360 300 470 Z"/>
+    <path d="M300 472 C 205 420 180 340 196 262 C 240 318 278 380 300 472 Z" transform="rotate(0 300 300)" opacity="0.9"/>
+    <path d="M300 472 C 395 420 420 340 404 262 C 360 318 322 380 300 472 Z" opacity="0.9"/>
+  </g>
+
+  <!-- 蓮花花瓣：內層 -->
+  <g fill="url(#petalInner)">
+    <path d="M300 430 C 268 388 252 340 250 292 C 282 320 300 356 300 430 Z"/>
+    <path d="M300 430 C 332 388 348 340 350 292 C 318 320 300 356 300 430 Z"/>
+    <path d="M300 434 C 236 398 226 344 234 300 C 268 336 292 376 300 434 Z"/>
+    <path d="M300 434 C 364 398 374 344 366 300 C 332 336 308 376 300 434 Z"/>
+  </g>
+
+  <!-- 禪坐剪影 -->
+  <g fill="#8a4b66">
+    <ellipse cx="300" cy="248" rx="52" ry="30"/>
+    <path d="M300 214 c -14 -26 -22 -52 -22 -80 a22 22 0 0 1 44 0 c 0 28 -8 54 -22 80 Z"/>
+    <path d="M276 250 c -10 14 -26 20 -40 18 c -2 10 2 20 12 26 l 30 12 Z" opacity="0.96"/>
+    <path d="M324 250 c 10 14 26 20 40 18 c 2 10 -2 20 -12 26 l -30 12 Z" opacity="0.96"/>
+    <path d="M284 288 l -20 40 l 14 18 l 18 -58 Z"/>
+    <path d="M316 288 l 20 40 l -14 18 l -18 -58 Z"/>
+  </g>
+
+  <!-- 蓮座底部微光 -->
+  <ellipse cx="300" cy="472" rx="130" ry="18" fill="url(#glow)"/>
+</svg>
