@@ -109,7 +109,7 @@ def lecture_play_button(series, n, label):
     fn = AUDIO_MAP[series][n]
     import html as _html
     from urllib.parse import quote
-    url = "%s%s/%s.opus" % (AUDIO_BASE, series, quote(fn))
+    url = "%s%s.opus" % (AUDIO_BASE, quote(fn))
     dur = audio_duration(series, n)
     end_attr = (' data-end="%.3f"' % dur) if dur else ""
     range_label = "00:00:00 - %s" % (_fmt_hms(dur) if dur else "??:??:??")

@@ -31,13 +31,17 @@
 
 - 講次標題字型比正文大（≥15.5），匹配 `<經名>（N）`，支援字距拉開（「楞 伽 经（42）」）
   或拆成兩行（壇經「坛」＋「经（1）」）；編號可為中文數字（楞嚴 12–21）。
-- 原經文用楷體（`KaiTi` / `HYKaiTiKW`）排，對應 `quote` 區塊（`.sutra-text`），與《圆觉经》
-  一致；楷體大字的「品」名（如「断食肉品第八」）為 `h3` 導覽。
+- 原經文用楷體（`KaiTi` / `HYKaiTiKW` / `PingFangSC-Semibold` / `STKaiti`）排，對應 `quote`
+  區塊（`.sutra-text`），與《圆觉经》一致；楷體大字的「品」名（如「断食肉品第八」）為 `h3`
+  導覽。楷/黑混排的一行（楞嚴 docx 轉 PDF 後經文結尾+解說開頭黏在同一視覺行）由
+  `_split_mixed_line` 依字型 class 切開；康熙部首異體（⼆→二、⾳→音…）在 `_clean` 做 NFKC 正規化。
 - 頁碼（字型 < 11.5 的純數字）與「时间：…／完整音频请关注…」metadata 行跳過；正文段落依
   首行縮排切分。
 
-音檔綁定在 `audio_map.py` 的 `AUDIO_MAP`（`series → {N: NN_str}`）與 `AUDIO_BASE`；播放鈕
-`data-audio` 指向 `../audio/jiangjing/<series>/<NN>.opus`，`data-end` 由 ffprobe 實測時長代入。
+音檔綁定在 `audio_map.py` 的 `AUDIO_MAP`（`series → {N: 含日期的檔名}`）與 `AUDIO_BASE`。
+音檔檔名含錄音日期（如「2025年7月7日Tai师父讲经·六祖坛经(1).opus」），全部平放在
+`audio/jiangjing/` 下（不分系列子資料夾）。播放鈕 `data-audio` 指向 `../audio/jiangjing/<檔名>.opus`，
+`data-end` 由 ffprobe 實測時長代入。
 
 單本 PDF 的組裝（合併、補 TOC、docx→PDF）另見 `tool/build_jiangjing_pdfs.py`，音源轉檔
 `tool/jiangjing2audio.py`、音量正規化 `tool/normalize_jiangjing_audio.py`。

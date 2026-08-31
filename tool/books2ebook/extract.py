@@ -18,10 +18,11 @@ class Line:
     （例如《金刚经》解析裡的重引經文 vs 名相注釋詞頭）。
     """
 
-    __slots__ = ("text", "size", "font", "fonts", "page", "x0", "y0", "block_id")
+    __slots__ = ("text", "size", "font", "fonts", "page", "x0", "y0",
+                 "block_id", "spans")
 
     def __init__(self, text, size, font, page, x0=0.0, y0=0.0, block_id=0,
-                 fonts=None):
+                 fonts=None, spans=None):
         self.text = text
         self.size = size
         self.font = font
@@ -30,6 +31,8 @@ class Line:
         self.x0 = x0
         self.y0 = y0
         self.block_id = block_id
+        # 各 span 的 (text, font, size)；用於行內楷/黑混排拆分（楞嚴）。
+        self.spans = tuple(spans) if spans else ((text, font, size),)
 
     @property
     def is_page_number(self):
@@ -70,7 +73,10 @@ def extract_lines(pdf_path, skip_pages=0):
                 font = fonts[0]
                 x0 = min(s["bbox"][0] for s in spans)
                 y0 = ln["bbox"][1]
-                line = Line(text, size, font, pno, x0, y0, b_idx, fonts)
+                span_info = tuple(
+                    (s["text"], s["font"].split("--")[0], round(s["size"], 1))
+                    for s in spans)
+                line = Line(text, size, font, pno, x0, y0, b_idx, fonts, span_info)
                 if line.is_page_number:
                     continue
                 page_lines.append(line)

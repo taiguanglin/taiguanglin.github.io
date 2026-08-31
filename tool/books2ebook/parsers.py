@@ -11,6 +11,7 @@
 """
 
 import re
+import unicodedata
 
 _DOT_LEADER_RE = re.compile(r"\.{4,}\s*\d{0,4}\s*$")
 _TIME_RE = re.compile(r"[（(](\d{4}-\d{1,2}-\d{1,2})[，,\s]+([\d:]{3,8})[)）]\s*$")
@@ -29,7 +30,13 @@ def _clean(text):
         return None
     text = text.replace("\t", " ")
     text = re.sub(r" {2,}", " ", text)
-    return text.strip()
+    # 康熙部首（U+2F00–U+2FDF）是 PDF 楷體抽取出的異體碼位（如 ⼆→二、⾳→音），
+    # 逐一 NFKC 正規化回通用漢字；其餘字元不動。
+    out = []
+    for ch in text:
+        cp = ord(ch)
+        out.append(unicodedata.normalize("NFKC", ch) if 0x2F00 <= cp <= 0x2FDF else ch)
+    return "".join(out).strip()
 
 
 def _join(a, b):
@@ -218,7 +225,7 @@ def parse_zuochan(ctx):
                 if para.strip() and _is_indent_start(line, body_left):
                     flush()
                 para = _join(para, t)
-        ctx.add_images_for_page(pno)
+            ctx.add_images_for_page(pno)
     flush()
     return True
 
@@ -555,7 +562,25 @@ _PINRE = re.compile(r"^[^，。；：]{2,20}[品第][一二三四五六七八九
 _META_RE = re.compile(r"^(时间[：:]|完整.频请关注)")
 
 # 各書楷體（原經文）字型集合
-_SUTRA_FONTS_STD = {"KaiTi", "HYKaiTiKW"}
+_SUTRA_FONTS_STD = {"KaiTi", "HYKaiTiKW", "PingFangSC-Semibold", "STKaiti"}
+# 正文（解說）字型集合
+_BODY_FONTS_STD = {"MicrosoftYaHei", "HYQiHei-EES", "HYQiHeiKW-EES",
+                   "HYQiHeiKW-HES", "PingFangSC-Regular", "DengXian-Regular"}
+# 中性字型（數字/西文/標點，不算楷也不算黑）：只認 Times*/Helvetica/Arial 等，
+# 用於行內拆分的「空」字型，不觸發楷↔黑切分。
+_NEUTRAL_FONTS = {"TimesNewRomanPSMT", "TimesNewRomanPS-BoldMT",
+                  "Helvetica", "Arial", "Courier", "Times-Roman",
+                  "TimesNewRomanPS-ItalicMT"}
+
+
+def _font_class(f):
+    """把字型歸類為 sutra / body / neutral 三類，供行內拆分。"""
+    if f in _SUTRA_FONTS_STD:
+        return "sutra"
+    if f in _BODY_FONTS_STD:
+        return "body"
+    # 已知中性字型（數字/西文）之外，非楷字型一律先視為 body（楷體才是原經文）。
+    return "neutral"
 
 
 def _de_space(text):
@@ -575,6 +600,71 @@ def _is_page_number_line(line, text):
     """小字純數字（頁碼）。新書頁碼用 MicrosoftYaHei / Times 等字型，extract.py
     的 is_page_number 只認 Helvetica/Arial，故此處以「字型 < 11.5 且純數字」補抓。"""
     return line.size < 11.5 and re.fullmatch(r"\d{1,4}", text.strip())
+
+
+def _split_mixed_line(line):
+    """把一行內「楷(經文)/黑(解說)」混排的 PDF 行切成多個子行。
+
+    楞嚴 docx 轉 PDF 後，經文結尾 + 解說開頭常被合併到同一視覺行。行內
+    的數字/西文常落在 TimesNewRoman 等字型（如「坛经（6）」的「6」），
+    這些中性字型只併入相鄰段，不觸發切分；只有楷↔黑字型交界才切。
+    """
+    spans = line.spans
+    if not spans or len(spans) < 2:
+        return [line]
+    from collections import namedtuple
+    Sub = namedtuple("SubLine", ["text", "font", "size", "fonts",
+                                 "page", "x0", "y0", "block_id", "spans"])
+    # 依字型 class 合併相鄰 span；中性 span 併入「後續」有 class 的段
+    # （若開頭就中性，併入下一段；若結尾中性，併入上一段）。
+    segments = []  # list of [text, class, first_real_font]
+    cur_text = ""
+    cur_cls = None
+    cur_font = None
+    for txt, f, sz in spans:
+        cls = _font_class(f)
+        if not txt.strip():
+            # 空白 span：先併入當前段（若無則保留到下一段）
+            cur_text += txt
+            continue
+        if cls == "neutral":
+            # 中性字型：併入當前段（若無則暫時累積，稍後併入下一段）
+            cur_text += txt
+            if cur_font is None:
+                cur_font = f
+            continue
+        if cur_cls is None or cls == cur_cls:
+            cur_text += txt
+            cur_cls = cls
+            if cur_font is None:
+                cur_font = f
+        else:
+            segments.append((cur_text, cur_cls, cur_font))
+            cur_text = txt
+            cur_cls = cls
+            cur_font = f
+    if cur_cls is not None:
+        segments.append((cur_text, cur_cls, cur_font))
+    # 若只剩一段或沒有楷↔黑交界，回原行
+    if len(segments) < 2:
+        return [line]
+    classes = [c for _, c, _ in segments]
+    if not (("sutra" in classes) and ("body" in classes)):
+        return [line]
+    # 構造 SubLine：中性字型併入的段，font 取該段第一個「非中性」字型；
+    # 若整段皆中性（極少見），用原 line.font。
+    subs = []
+    for stxt, scls, sfont in segments:
+        stxt_clean = stxt.strip()
+        if not stxt_clean:
+            continue
+        use_font = sfont if sfont and sfont not in _NEUTRAL_FONTS else line.font
+        subs.append(Sub(text=stxt, font=use_font,
+                        size=line.size, fonts=(use_font,),
+                        page=line.page, x0=line.x0, y0=line.y0,
+                        block_id=line.block_id,
+                        spans=((stxt, use_font, line.size),)))
+    return subs or [line]
 
 
 def _parse_jiangjing(ctx, with_chapters=False):
@@ -620,77 +710,102 @@ def _parse_jiangjing(ctx, with_chapters=False):
             t = _clean(line.text)
             if not t:
                 continue
-            ds = _de_space(t)
-            # 頁碼 / metadata 行
-            if _is_page_number_line(line, t):
-                continue
-            if _META_RE.match(ds):
-                continue
-            s = line.size
-            f = line.font
-            is_sutra = f in _SUTRA_FONTS_STD
-            # 1. 講次標題（直接匹配，例如「楞伽经（1）」整行）
-            if s >= 15.5 and not is_sutra and _JIANGJING_LECTURE_RE.match(ds):
-                flush_title()
-                flush()
-                m = _JIANGJING_LECTURE_RE.match(ds)
-                n = _lecture_int(m.group(1))
-                if isinstance(n, int):
-                    ds = re.sub(r"([（(])\s*[一二三四五六七八九十百]+\s*([)）])",
-                                lambda mm: "%s%d%s" % (mm.group(1), n, mm.group(2)), ds)
-                ctx.append("h2", ds, lecture=n)
-                continue
-            # 2. 楷體大字 = 品/卷名標題（KaiTi ≥15.5，如「断食肉品第八」「卷一」「卷二」）。
-            #    四十二章 的「经序/序分」楷體大字實為正文標題的重複渲染，交由步驟 3
-            #    以正文大字處理，此處不重複視為 h3。
-            if is_sutra and s >= 15.5 and not with_chapters:
-                flush_title()
-                flush()
-                ctx.heading("h3", ds)
-                continue
-            # 3. 章/節標題（四十二章「第X章」「前言」「经序」「序分」等，正文大字）
-            if (not is_sutra and s >= 15.5 and with_chapters
-                    and (_SISHIER_CHAPTER_RE.match(ds) or ds in {"前言", "经序", "序分"})
-                    and len(ds) <= _SISHIER_CH_TITLE_MAX):
-                flush_title()
-                flush()
-                ctx.heading("h3", ds)
-                continue
-            # 4. 其餘大字行 → 累積（供拆成多行的講次標題，如壇經「坛」＋「经（1）」）
-            if s >= 15.5 and not is_sutra:
-                flush()
-                title_buf.append(ds)
-                continue
-            if title_buf:
-                flush_title()
-            # 5. 楷體 = 原經文（quote）
-            if is_sutra:
-                # 四十二章 的「经序/序分」楷體行是章節標題的裝飾性重複（右側邊），略過
-                if with_chapters and ds in {"经序", "序分", "前言"}:
+            # 行內楷/黑混排拆分（楞嚴 docx 轉 PDF 後的常見問題）：
+            # 把同一行裡不同字型的相鄰 span 切成多個子行，後續主流程逐個處理。
+            sub_lines = _split_mixed_line(line)
+            for sub in sub_lines:
+                t = _clean(sub.text)
+                if not t:
                     continue
-                if para.strip():
+                line = sub
+                ds = _de_space(t)
+                # 頁碼 / metadata 行
+                if _is_page_number_line(line, t):
+                    continue
+                if _META_RE.match(ds):
+                    continue
+                s = line.size
+                f = line.font
+                is_sutra = f in _SUTRA_FONTS_STD
+                # 1. 講次標題（直接匹配，例如「楞伽经（1）」整行）— 不限字型
+                if s >= 15.5 and _JIANGJING_LECTURE_RE.match(ds):
+                    flush_title()
                     flush()
-                if quote_left is None:
-                    quote_left = line.x0
+                    m = _JIANGJING_LECTURE_RE.match(ds)
+                    n = _lecture_int(m.group(1))
+                    if isinstance(n, int):
+                        ds = re.sub(r"([（(])\s*[一二三四五六七八九十百]+\s*([)）])",
+                                    lambda mm: "%s%d%s" % (mm.group(1), n, mm.group(2)), ds)
+                    ctx.append("h2", ds, lecture=n)
+                    continue
+                # 2. 楷體大字 = 品/卷名標題（KaiTi ≥15.5，如「断食肉品第八」「卷一」「卷二」）。
+                #    四十二章 的「经序/序分」楷體大字實為正文標題的重複渲染，交由步驟 3
+                #    以正文大字處理，此處不重複視為 h3。
+                if is_sutra and s >= 15.5 and not with_chapters:
+                    flush_title()
+                    flush()
+                    ctx.heading("h3", ds)
+                    continue
+                # 3. 章/節標題（四十二章「第X章」「前言」「经序」「序分」等，正文大字）
+                if (not is_sutra and s >= 15.5 and with_chapters
+                        and (_SISHIER_CHAPTER_RE.match(ds) or ds in {"前言", "经序", "序分"})
+                        and len(ds) <= _SISHIER_CH_TITLE_MAX):
+                    flush_title()
+                    flush()
+                    ctx.heading("h3", ds)
+                    continue
+                # 4. 其餘大字行 → 累積（供拆成多行的講次標題，如壇經「坛」＋「经（1）」）
+                if s >= 15.5 and not is_sutra:
+                    flush()
+                    title_buf.append(ds)
+                    continue
+                if title_buf:
+                    flush_title()
+                # 5. 楷體 = 原經文（quote）
+                if is_sutra:
+                    # 四十二章 的「经序/序分」楷體行是章節標題的裝飾性重複（右側邊），略過
+                    if with_chapters and ds in {"经序", "序分", "前言"}:
+                        continue
+                    if para.strip():
+                        flush()
+                    if quote_left is None:
+                        quote_left = line.x0
+                    else:
+                        quote_left = min(quote_left, line.x0)
+                    if quote.strip() and _is_indent_start(line, quote_left):
+                        flush()
+                    quote = _join(quote, t)
+                    continue
+                # 6. 正文段落
+                if quote.strip():
+                    flush()
+                if body_left is None:
+                    body_left = line.x0
                 else:
-                    quote_left = min(quote_left, line.x0)
-                if quote.strip() and _is_indent_start(line, quote_left):
+                    body_left = min(body_left, line.x0)
+                if para.strip() and _is_indent_start(line, body_left):
                     flush()
-                quote = _join(quote, t)
-                continue
-            # 6. 正文段落
-            if quote.strip():
-                flush()
-            if body_left is None:
-                body_left = line.x0
-            else:
-                body_left = min(body_left, line.x0)
-            if para.strip() and _is_indent_start(line, body_left):
-                flush()
-            para = _join(para, t)
+                para = _join(para, t)
         ctx.add_images_for_page(pno)
     flush_title()
     flush()
+    # 後處理：四十二章 的章標題（h3）與下一講的講次標題（h2）印在同一行
+    # （章名居左、講次居右），PDF 抽出時章名先於講次，導致章（h3）緊接在
+    # 講次（h2）之前、名下內容為 0。把這種「h3 緊接 h2 且中間無內容」的
+    # 成對順序對調，讓講次當父、章當子。
+    out = []
+    i = 0
+    n = len(ctx.blocks)
+    while i < n:
+        b = ctx.blocks[i]
+        if (b["kind"] == "h3" and i + 1 < n and ctx.blocks[i + 1]["kind"] == "h2"):
+            out.append(ctx.blocks[i + 1])
+            out.append(b)
+            i += 2
+        else:
+            out.append(b)
+            i += 1
+    ctx.blocks = out
     return True
 
 
