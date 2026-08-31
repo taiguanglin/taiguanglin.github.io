@@ -453,11 +453,12 @@
             block: 'center'
           });
           
-          // 添加臨時高亮效果
-          targetElement.style.transition = 'background-color 0.3s ease';
-          targetElement.style.backgroundColor = 'rgba(255, 105, 180, 0.2)';
+          // 添加臨時高亮效果；使用 class，避免經文的漸層背景蓋住 background-color。
+          targetElement.classList.remove('anchor-target-highlight');
+          void targetElement.offsetWidth;
+          targetElement.classList.add('anchor-target-highlight');
           setTimeout(() => {
-            targetElement.style.backgroundColor = '';
+            targetElement.classList.remove('anchor-target-highlight');
           }, 3000);
         }, 300);
       }

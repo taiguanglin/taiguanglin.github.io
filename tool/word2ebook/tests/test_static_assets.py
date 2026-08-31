@@ -295,6 +295,13 @@ class TestStaticAssetsManagerRealModules:
         assert "getDefaultFontSize" in js
         assert "applyReadingSettings" in js
         assert "handleInitialAnchor" in js
+        assert "classList.add('anchor-target-highlight')" in js
+
+    def test_real_css_has_anchor_target_highlight(self):
+        css = StaticAssetsManager().get_full_css_content()
+        assert ".anchor-target-highlight" in css
+        assert "@keyframes anchor-target-pulse" in css
+        assert "inset 0 0 0 9999px" in css
 
     def test_real_js_module_order_search_init_before_core(self):
         js = StaticAssetsManager().get_full_js_content()

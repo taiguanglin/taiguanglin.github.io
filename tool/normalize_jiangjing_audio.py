@@ -52,7 +52,7 @@ def normalize(path):
 
 
 def main():
-    files = sorted(f for f in glob.glob(os.path.join(ROOT, "*", "*.opus"))
+    files = sorted(f for f in glob.glob(os.path.join(ROOT, "*.opus"))
                    if not f.endswith(".tmp.opus"))
     print("共 %d 支" % len(files), flush=True)
     done = 0

@@ -2,7 +2,10 @@
 
 import re
 
-import pymupdf
+try:
+    import pymupdf
+except ImportError:  # PyMuPDF < 1.24 only exposes the legacy module name.
+    import fitz as pymupdf
 
 # 目錄頁的虛線引導（例如 「第01节 终极佛法.........................13」）
 _DOT_LEADER_RE = re.compile(r"\.{5,}\s*\d{0,4}\s*$")

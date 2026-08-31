@@ -94,6 +94,19 @@ be skipped and a short cache-loading message MAY be shown instead.
 The system SHALL read `localStorage['darkMode']` on page load and add the
 `dark-mode` class to `<body>` if the value is `'true'`.
 
+### Requirement: Initial Anchor Highlight
+When a chapter page loads with a valid URL fragment, `handleInitialAnchor`
+SHALL scroll the matching element into view and apply the
+`anchor-target-highlight` class for three seconds. The highlight SHALL be
+class-based so it remains visible on elements such as `.sutra-text` that
+already have a gradient background.
+
+#### Scenario: Search result opens a scripture paragraph
+- GIVEN a search result URL targets a `.sutra-text` element in a new tab
+- WHEN the chapter page loads
+- THEN the scripture paragraph SHALL scroll into view
+- AND a temporary red highlight SHALL remain visible for three seconds
+
 ### Requirement: Stable Q&A IDs
 JavaScript IDs for Q&A elements SHALL be computed using the same algorithm as
 the Python side: `MD5(questioner + normalized_time + first_50_chars)[0:12]`.

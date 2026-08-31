@@ -17,8 +17,8 @@
 | `tool/audio_denoiser/` | Facebook Denoiser 語音去雜音（ASR 前處理）。 | mp3/wav → mp3/wav | `README.md` |
 | `tool/stories2html/` | 實修故事原始檔 → HTML 閱讀頁 + index/sitemap 補丁。 | `stories/<原始檔>` → `stories/<slug>.html` | `README.md`（metadata SoT：`docs.py`） |
 | `tool/build_jiangjing_pdfs.py` | 組裝講經系列 PDF：合併（六祖壇經 2 PDF、楞嚴 docx→PDF）、四十二章/楞伽直接複製原檔（已含目錄）、其餘補檔首可點擊 TOC（含頁數）。 | 來源 PDF/docx → `books/06…09*.pdf` + 感恩 | 檔首 docstring |
-| `tool/jiangjing2audio.py` | 講經系列 mp3 → opus（16kbps / mono / 48kHz / voip），輸出到 `audio/jiangjing/<系列>/<NN>.opus`，供 `books2ebook` 播放鈕。 | mp3 → `audio/jiangjing/*/*.opus` | 檔首 docstring |
-| `tool/normalize_jiangjing_audio.py` | 對齊既有答疑 opus 的平均音量（mean_volume ≈ -11 dB）：`volumedetect` 量平均音量 → `volume` + `alimiter` 補增益並重新編碼 opus。**原地更新** `audio/jiangjing/`。 | `audio/jiangjing/*/*.opus`（原位） | 檔首 docstring |
+| `tool/jiangjing2audio.py` | 講經系列 mp3 → opus（16kbps / mono / 48kHz / voip），檔名含錄音日期，輸出到 `audio/jiangjing/<日期>Tai师父讲经·<系列>(<N>).opus`（平放，不分系列子資料夾）。 | mp3 → `audio/jiangjing/*.opus` | 檔首 docstring |
+| `tool/normalize_jiangjing_audio.py` | 對齊既有答疑 opus 的平均音量（mean_volume ≈ -11 dB）：`volumedetect` 量平均音量 → `volume` + `alimiter` 補增益並重新編碼 opus。**原地更新** `audio/jiangjing/`。 | `audio/jiangjing/*.opus`（原位） | 檔首 docstring |
 
 ### 已移除（不再保留）
 
@@ -48,7 +48,7 @@ books/*.pdf ── tool/books2ebook/gen_all.py ──► ebook/
 
 講經系列（工具鏈，皆為一次性組裝流程）：
 來源 PDF / docx ── tool/build_jiangjing_pdfs.py ──► books/06…09*.pdf（+ 感恩）
-mp3 ── tool/jiangjing2audio.py ──► audio/jiangjing/<系列>/<NN>.opus
+mp3 ── tool/jiangjing2audio.py ──► audio/jiangjing/<日期>Tai师父讲经·<系列>(<N>).opus（平放）
                                         │
                                         ▼ tool/normalize_jiangjing_audio.py（對齊答疑響度）
                                 （原地更新 audio/jiangjing/）

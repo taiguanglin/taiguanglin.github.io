@@ -49,6 +49,11 @@ Every component that has a light-mode appearance SHOULD have a corresponding
 dark-mode override, avoiding the use of `!important` except where strictly
 necessary for specificity.
 
+### Requirement: Initial Anchor Highlight
+`.anchor-target-highlight` SHALL show a three-second red inset highlight that
+remains visible over existing solid or gradient backgrounds, including
+`.sutra-text`, and SHALL fade to transparent before it is removed.
+
 ### Requirement: Responsive Design
 The CSS SHOULD define responsive breakpoints for at least `768px`, `600px`,
 and `400px` viewport widths to support mobile reading.
