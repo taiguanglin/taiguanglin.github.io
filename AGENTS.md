@@ -52,8 +52,8 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
 | `audio_map/` | Editorial UI | `index2.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
-| `books/` | **Source** | 五本 PDF 原書（`01《坐禅》`…`05 圆觉经》讲记`）。 |
-| `ebook/` | **Generated** | 坐禅系列五本合集靜態電子書（簡/繁、全量搜尋）。Rebuild from `tool/books2ebook/gen_all.py`。 |
+| `books/` | **Source** | 十本 PDF 原書（`01《坐禅》`…`05《圆觉经》` 坐禅系列 + `06…09`、感恩 講經系列）。 |
+| `ebook/` | **Generated** | 坐禅系列 + 講經系列共十本合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)
@@ -64,7 +64,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | Path | Purpose | Docs |
 |------|---------|------|
 | `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook/`（含前 12/13–21 章播放鈕注入） | **`AGENTS.md`**, `README.md`, `openspec/` |
-| `tool/books2ebook/` | `books/` 五本 PDF → `ebook/` 坐禅系列电子书 | `README.md` |
+| `tool/books2ebook/` | `books/` 十本 PDF → `ebook/` 坐禅+講經系列电子书 | `README.md` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | Align 時間序 Word 彙總 ↔ SRT → `audio_map2/*.json` | `README.md` |
 | `tool/sense_voice/` | Chinese ASR → `.srt`/`.txt` | `README.md` |
@@ -87,10 +87,10 @@ tool/word2ebook/gen_all.py  (+ data/audio_map/*.json inject)
    wenda2_ebook/     ← published; do not hand-edit for features
 ```
 
-### 坐禅系列电子书（books/ 五本合集）
+### 坐禅系列 + 講經系列电子书（books/ 十本合集）
 
 ```
-books/*.pdf  (01《坐禅》…05《圆觉经》)
+books/*.pdf  (01《坐禅》…09《楞严经》 等十本)
         │
         ▼
 tool/books2ebook/gen_all.py  （沿用 wenda2_ebook/assets 風格，含簡/繁與全量搜尋）

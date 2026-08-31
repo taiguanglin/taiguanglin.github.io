@@ -1,28 +1,18 @@
 #!/usr/bin/env python3
-"""講經系列 PDF 組裝：合併 + 檔首可點擊 TOC。
+"""講經系列 PDF 組裝：合併 + 檔首可點擊 TOC（含頁數）。
 
 產出到 books/：
-  - 感恩与讲经（單一 PDF，補檔首 TOC）
-  - 四十二章經（單一 PDF，補 TOC）
-  - 楞伽經（單一 PDF，補 TOC）
-  - 六祖壇經（兩 PDF 合併，補 TOC 對應合併後頁數）
-  - 楞嚴經（21 個 docx→PDF→合併，補 TOC）
+  - 感恩与讲经：單一 PDF，補檔首 TOC（含頁數）
+  - 四十二章經：原 PDF 已含目錄 → 直接複製，不再加 TOC（避免兩份目錄）
+  - 楞伽經：原 PDF 已含目錄 → 直接複製，不再加 TOC
+  - 六祖壇經：兩 PDF 合併 → 新增檔首 TOC（含頁數）
+  - 楞嚴經：21 個 docx→PDF→合併 → 新增檔首 TOC（含頁數）
 
-策略：
-1. 先計算 TOC 頁數 toc_num（依條目數，每頁約 36 條；不足一頁也佔一頁）。
-2. 新建輸出 doc → 先 insert_pdf(內容) → 再在前方插入 TOC 頁（複製頁面語意較繁，改為：
-   新建 doc → 依序 insert 空白 TOC 頁 + insert_pdf(內容)，最後在 TOC 頁上填文字與 link）。
-   因 insert_link 需目標頁存在，故「先 insert 內容、再寫 TOC 頁文字與連結」。
-
-實際做法：
-   out = open()
-   out.insert_pdf(content_doc)              # content 先進來，頁 0..N-1
-   然後用 out.insert_page(-1, width,height) 在「最前面」插 TOC 頁 → 覆蓋頁序
-   （insert_page 在指定 index 插空白頁，會把後續往後推）
-   最後對 TOC 頁（index 0..toc_num-1）寫文字 + insert_link（此時內容頁都在，頁碼有效）。
+TOC 條目以「標題 …… 頁碼」呈現，文字右側附實際頁碼；同時以 internal link
+跳轉到正確頁 + set_toc 建立 PDF 大綱（bookmarks）。
 """
 import os
-import re
+import shutil
 import subprocess
 import time
 
@@ -45,27 +35,27 @@ TANJING2_STARTS = {19:1,20:16,21:33,22:47,23:61,24:83,25:98,26:113,27:128}
 
 
 def write_toc_links(out, toc_entries, title):
-    """toc_entries: [(text, target_page_1based)]。在 out 最前插 TOC 頁並寫文字+連結。
-    target_page_1based 是「內容頁在最終輸出中的 1-based 頁碼」（TOC 頁數已算入）。
-    """
+    """toc_entries: [(text, target_page_1based)]。在最前插 TOC 頁、寫「標題 …… 頁碼」、
+    加 internal link。target_page_1based 為最終輸出頁碼（已含 TOC 頁數）。"""
     toc_num = max(1, (len(toc_entries) + 36) // 36)
-    # 在最前面插入 toc_num 張空白頁
     for _ in range(toc_num):
         out.insert_page(0, width=595, height=842)
 
-    # 寫 TOC 文字與連結（此時內容已在，頁碼 0-based = target-1）
     y = 60
     pidx = 0
     page = out[0]
-    page.insert_text((220, y), title, fontsize=18, fontname=TITLE_FONT)
-    y += 40
+    page.insert_text((210, y), title, fontsize=17, fontname=TITLE_FONT)
+    y += 42
     for text, target in toc_entries:
         if y > 800:
             pidx += 1
             page = out[pidx]
             y = 50
-        page.insert_text((70, y), text, fontsize=11, fontname=TITLE_FONT)
-        rect = pymupdf.Rect(70, y - 11, 420, y + 2)
+        # 標題（左）+ 虛線引導 + 頁碼（右）
+        title_text = "%s %s" % (text, "." * max(3, 42 - len(text) * 1))
+        page.insert_text((70, y), title_text, fontsize=11, fontname=TITLE_FONT)
+        page.insert_text((500, y), str(target), fontsize=11, fontname=TITLE_FONT)
+        rect = pymupdf.Rect(70, y - 11, 520, y + 2)
         page.insert_link({
             "kind": pymupdf.LINK_GOTO,
             "from": rect,
@@ -76,21 +66,26 @@ def write_toc_links(out, toc_entries, title):
 
 
 def build_single(entry_texts, srcdoc_path, out_pdf, title):
-    """entry_texts: [(text, src_page_1based)]。"""
+    """entry_texts: [(text, src_page_1based)]。TOC + 內容。"""
     src = pymupdf.open(srcdoc_path)
     toc_num = max(1, (len(entry_texts) + 36) // 36)
-    # 目標頁（最終 1-based）= TOC 頁數 + 原始頁碼
     toc_entries = [(t, toc_num + sp) for t, sp in entry_texts]
     out = pymupdf.open()
     out.insert_pdf(src)
     write_toc_links(out, toc_entries, title)
-    # 設定 PDF 大綱（bookmarks）
-    outline = [[1, t, target] for t, target in toc_entries]
-    out.set_toc(outline)
+    out.set_toc([[1, t, target] for t, target in toc_entries])
     out.save(out_pdf)
-    out.close()
-    src.close()
-    print("✅ %s (%d pages)" % (os.path.basename(out_pdf), pymupdf.open(out_pdf).page_count))
+    out.close(); src.close()
+    n = pymupdf.open(out_pdf).page_count
+    pymupdf.open(out_pdf).close()
+    print("✅ %s (%d pages)" % (os.path.basename(out_pdf), n))
+
+
+def copy_original(src, out_pdf):
+    """原 PDF 已含目錄 → 直接複製，不新增 TOC。"""
+    shutil.copyfile(src, out_pdf)
+    n = pymupdf.open(out_pdf).page_count
+    print("✅ %s (%d pages, 保留原目錄)" % (os.path.basename(out_pdf), n))
 
 
 def build_tanjing(out_pdf):
@@ -114,11 +109,7 @@ def build_tanjing(out_pdf):
 
 
 def word_to_pdf(docx_path, out_path):
-    """用 Microsoft Word (AppleScript) 把 docx/doc 轉成 PDF。
-    寫成 .applescript 檔，再用 osascript 執行（避免 -e 對中文路徑/全形括號轉義問題）。
-
-    每次呼叫都用 Documents.Open（明確物件），結束後關閉，盡量不重用同一個 process 跨次。
-    若 Connection is invalid 則先 killall Word 再重試一次。"""
+    """Microsoft Word (AppleScript) → PDF。寫成 .applescript 再執行。"""
     script = (
         'tell application "Microsoft Word"\n'
         '  open POSIX file "%s"\n' % docx_path +
@@ -134,7 +125,6 @@ def word_to_pdf(docx_path, out_path):
     try:
         subprocess.run(["osascript", tmp_script], check=True, timeout=60)
     except subprocess.CalledProcessError:
-        # Word 連線可能掉了，killall 重試一次
         subprocess.run(["killall", "Microsoft Word"], check=False)
         time.sleep(2)
         subprocess.run(["osascript", tmp_script], check=True, timeout=60)
@@ -178,20 +168,19 @@ def build_lengyan(out_pdf):
 def main():
     os.makedirs(BOOKSDIR, exist_ok=True)
 
+    # 感恩与讲经：補 TOC（單一講，頁數 2）
     g = os.path.join(SRC, "2024年4月14日Tai师父讲经 · 感恩与讲经（群文件版）.pdf")
-    build_single([("感恩与讲经（2024年4月14日）", 1)], g,
+    build_single([("感恩与讲经", 1)], g,
                  os.path.join(BOOKSDIR, "感恩与讲经（2024年4月14日）.pdf"),
                  "感恩与讲经")
 
+    # 四十二章經：原 PDF 已含目錄 → 直接複製
     s = os.path.join(SRC, "Tai师父讲《四十二章经》/文本/2024年Tai师父讲 《四十二章经》（群文件版）24-12-15.pdf")
-    entries = [("《四十二章经》第%d讲" % n, sp) for n, sp in sorted(SISHIER_STARTS.items())]
-    build_single(entries, s, os.path.join(BOOKSDIR, "06 Tai师父讲《四十二章经》.pdf"),
-                 "Tai师父讲《四十二章经》")
+    copy_original(s, os.path.join(BOOKSDIR, "06 Tai师父讲《四十二章经》.pdf"))
 
+    # 楞伽經：原 PDF 已含目錄 → 直接複製
     l = os.path.join(SRC, "Tai师父讲《楞伽经》/楞伽经文字（1-42）/2024-2025Tai师父讲《楞伽经》（群文件版）-25.8.6.pdf")
-    entries = [("《楞伽经》第%d讲" % n, sp) for n, sp in sorted(LENGQIE_STARTS.items())]
-    build_single(entries, l, os.path.join(BOOKSDIR, "07 Tai师父讲《楞伽经》.pdf"),
-                 "Tai师父讲《楞伽经》")
+    copy_original(l, os.path.join(BOOKSDIR, "07 Tai师父讲《楞伽经》.pdf"))
 
     build_tanjing(os.path.join(BOOKSDIR, "08 Tai师父讲《六祖坛经》.pdf"))
     build_lengyan(os.path.join(BOOKSDIR, "09 Tai师父讲《楞严经》(未完).pdf"))

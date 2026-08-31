@@ -1,4 +1,4 @@
-# books2ebook — `books/` 五本 PDF → `ebook/` 靜態電子書
+# books2ebook — `books/` 十本 PDF → `ebook/` 靜態電子書
 
 與 `wenda2_ebook` 同款式（影印 `wenda2_ebook/assets`，並附 `books.css`）、
 同一套簡/繁、全量搜尋、懸浮目錄、閱讀設定與深色模式。繁體版與
@@ -13,10 +13,34 @@
 | 01 | `01《坐禅》.pdf` (244pp) | 01《坐禅》 | `zuochan` |
 | 02 | `02《坐禅之问答录》.pdf` (381pp) | 02《坐禅之问答录》 | `wendalu` |
 | 03 | `03《坐禅2·次世代版终极佛法》.pdf` (352pp) | 03《坐禅2·次世代版终极佛法》 | `zuochan2` |
-| 04 | `04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf` (192pp) | 04《金刚经·心经讲记》 | `jingang` |
-| 05 | `05 TaiGuangLin禅师讲《圆觉经》最终版.pdf` (211pp) | 05《圆觉经》讲记 | `yuanjue` |
+| 04 | `感恩与讲经（2024年4月14日）.pdf` | 感恩与讲经 | `ganen` |
+| 05 | `04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf` (192pp) | 04《金刚经·心经讲记》 | `jingang` |
+| 06 | `05 TaiGuangLin禅师讲《圆觉经》最终版.pdf` (211pp) | 05《圆觉经》讲记 | `yuanjue` |
+| 07 | `06 Tai师父讲《四十二章经》.pdf` | 06 讲《四十二章经》 | `sishierzhang` |
+| 08 | `07 Tai师父讲《楞伽经》.pdf` | 07 讲《楞伽经》 | `lengqie` |
+| 09 | `08 Tai师父讲《六祖坛经》.pdf` | 08 讲《六祖坛经》 | `liuzutanjing` |
+| 10 | `09 Tai师父讲《楞严经》(未完).pdf` | 09 讲《楞严经》(未完) | `lengyanjing` |
 
 文字全數取自 PDF；TOC 僅擷取書內真實章節（不抄書前小目錄的殘頁標題）。
+
+### 講經系列（04、07–10）
+
+這五本以「講次（期）」為章節：每講是 `h2`（含該講音檔的播放鈕），如「楞伽经（1）」…
+「楞伽经（42）」。共同解析器是 `parsers.py` 的 `_parse_jiangjing`（`sishierzhang` 額外指
+派 `with_chapters=True` 以切出「第X章」等 `h3`）：
+
+- 講次標題字型比正文大（≥15.5），匹配 `<經名>（N）`，支援字距拉開（「楞 伽 经（42）」）
+  或拆成兩行（壇經「坛」＋「经（1）」）；編號可為中文數字（楞嚴 12–21）。
+- 原經文用楷體（`KaiTi` / `HYKaiTiKW`）排，對應 `quote` 區塊（`.sutra-text`），與《圆觉经》
+  一致；楷體大字的「品」名（如「断食肉品第八」）為 `h3` 導覽。
+- 頁碼（字型 < 11.5 的純數字）與「时间：…／完整音频请关注…」metadata 行跳過；正文段落依
+  首行縮排切分。
+
+音檔綁定在 `audio_map.py` 的 `AUDIO_MAP`（`series → {N: NN_str}`）與 `AUDIO_BASE`；播放鈕
+`data-audio` 指向 `../audio/jiangjing/<series>/<NN>.opus`，`data-end` 由 ffprobe 實測時長代入。
+
+單本 PDF 的組裝（合併、補 TOC、docx→PDF）另見 `tool/build_jiangjing_pdfs.py`，音源轉檔
+`tool/jiangjing2audio.py`、音量正規化 `tool/normalize_jiangjing_audio.py`。
 
 ## 一鍵重建
 
@@ -33,8 +57,8 @@
 
 | 路徑 | 內容 |
 |---|---|
-| `ebook/index.html` / `index_trad.html` | 首頁目錄（搜尋入口→5 本書→各章小節） |
-| `ebook/01.html` … `05.html`（各附 `_trad`）| 單書正文 |
+| `ebook/index.html` / `index_trad.html` | 首頁目錄（搜尋入口→10 本書→各章小節） |
+| `ebook/01.html` … `10.html`（各附 `_trad`）| 單書正文 |
 | `ebook/assets/css/style.css` | 由 `wenda2_ebook/assets` 影印 |
 | `ebook/assets/css/books.css` | 經文/標籤/插圖等附加樣式（本工具自有） |
 | `ebook/assets/js/*` | 同上；`script.js` 的搜尋範圍過濾在複製後打一個 patch：`['question','answer']` → `['question','answer','content','heading']`，使散文段落也可被搜到 |
