@@ -28,12 +28,13 @@ class BookConfig:
     skip_pages :略過前面 N 頁（封面/裝飾頁）
     """
 
-    def __init__(self, number, title, pdf, parser, skip_pages=0):
-        self.number = number            # 1-based 序號
+    def __init__(self, number, title, pdf, parser, skip_pages=0, series=None):
+        self.number = number            # 1-based 序號（決定檔名 01..10 與顯示順序）
         self.title = title
         self.pdf = pdf
         self.parser = parser
         self.skip_pages = skip_pages
+        self.series = series            # 音檔系列 key（audio_map.AUDIO_MAP 的主鍵）; None=無音檔
 
     @property
     def filename(self):
@@ -49,6 +50,16 @@ BOOKS = [
     BookConfig(2, "02《坐禅之问答录》", "02《坐禅之问答录》.pdf", "wendalu"),
     BookConfig(3, "03《坐禅2》", "03《坐禅2·次世代版终极佛法》.pdf", "zuochan2",
                skip_pages=3),
-    BookConfig(4, "04 讲《金刚经 心经》", "04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf", "jingang"),
-    BookConfig(5, "05 讲《圆觉经》", "05 TaiGuangLin禅师讲《圆觉经》最终版.pdf", "yuanjue"),
+    BookConfig(4, "感恩与讲经", "感恩与讲经（2024年4月14日）.pdf",
+               "ganen", skip_pages=1, series="ganen"),
+    BookConfig(5, "04 讲《金刚经 心经》", "04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf", "jingang"),
+    BookConfig(6, "05 讲《圆觉经》", "05 TaiGuangLin禅师讲《圆觉经》最终版.pdf", "yuanjue"),
+    BookConfig(7, "06 讲《四十二章经》", "06 Tai师父讲《四十二章经》.pdf",
+               "sishierzhang", skip_pages=1, series="sishierzhang"),
+    BookConfig(8, "07 讲《楞伽经》", "07 Tai师父讲《楞伽经》.pdf",
+               "lengqie", skip_pages=1, series="lengqie"),
+    BookConfig(9, "08 讲《六祖坛经》", "08 Tai师父讲《六祖坛经》.pdf",
+               "liuzutanjing", skip_pages=1, series="liuzutanjing"),
+    BookConfig(10, "09 讲《楞严经》(未完)", "09 Tai师父讲《楞严经》(未完).pdf",
+               "lengyanjing", skip_pages=1, series="lengyanjing"),
 ]

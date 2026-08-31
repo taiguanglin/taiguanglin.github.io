@@ -519,6 +519,176 @@ def parse_jingang(ctx):
 
 
 # ---------------------------------------------------------------------- #
+# 講經系列（06 四十二章 / 07 楞伽 / 08 六祖壇經 / 09 楞嚴 / 感恩）
+# ---------------------------------------------------------------------- #
+# 這些書皆以「講次（期）」為章節，每講對應一把音檔。講次標題的字型
+# 統一比正文大（≥15.5），且匹配 "<經名>（N）"；正文約 13.9–14.1。
+# 標題可能字距拉開（「楞 伽 经（42）」）或拆成兩行（壇經的「坛」＋
+# 「经（1）」），故先累積 ≥15.5 的連續大字行、去空白後再合併比對。
+# 講次編號可能是阿拉伯數字或中文數字（楞嚴 12–21 用「十二」…）。
+
+_CN_NUM = {"一":1,"二":2,"三":3,"四":4,"五":5,"六":6,"七":7,"八":8,"九":9,
+           "十":10,"十一":11,"十二":12,"十三":13,"十四":14,"十五":15,
+           "十六":16,"十七":17,"十八":18,"十九":19,"二十":20,"二十一":21,
+           "二十二":22,"二十三":23,"二十四":24,"二十五":25,"二十六":26,
+           "二十七":27,"二十八":28,"二十九":29,"三十":30,"三十一":31,
+           "三十二":32,"三十三":33,"三十四":34,"三十五":35,"三十六":36,
+           "三十七":37,"三十八":38,"三十九":39,"四十":40,"四十一":41,
+           "四十二":42}
+
+_JIANGJING_NAME_ALT = "(?:四十二章经|楞伽经|坛经|楞严经)"
+_JIANGJING_LECTURE_RE = re.compile(
+    r"^(?:四十二章经|楞伽经|坛经|楞严经)\s*[（(]\s*(\d+|[一二三四五六七八九十百]+)\s*[)）]"
+)
+# 四十二章經 的章級標題：「第X章<名>」（標題字型較大 ≥15.5；14.1 的
+# 「第X章…」重複行實為正文句首，應視為段落）。
+_SISHIER_CHAPTER_RE = re.compile(r"^第[一二三四五六七八九十百零〇\d]+章")
+_SISHIER_CH_TITLE_MAX = 20
+
+
+def _de_space(text):
+    """去掉字距拉開標題的內部空白（如「楞 伽 经（42）」→「楞伽经（42）」）。"""
+    return re.sub(r"\s+", "", text)
+
+
+def _lecture_int(num_text):
+    """把講次（阿拉伯/中文數字）轉成 int。"""
+    num_text = num_text.strip()
+    if num_text.isdigit():
+        return int(num_text)
+    return _CN_NUM.get(num_text, num_text)
+
+
+def parse_sishierzhang(ctx):
+    """四十二章經：h2=講次（四十二章经（N）→音檔），h3=章（第X章，≥15.5）。"""
+    para = ""
+
+    def flush():
+        nonlocal para
+        if para.strip():
+            ctx.append("para", para.strip())
+        para = ""
+
+    for pno, ls in _iter_pages(ctx):
+        for line in ls:
+            t = _clean(line.text)
+            if not t:
+                continue
+            s = line.size
+            ds = _de_space(t)
+            m = _JIANGJING_LECTURE_RE.match(ds)
+            if m and s >= 15.5:
+                flush()
+                ctx.append("h2", ds, lecture=_lecture_int(m.group(1)))
+                continue
+            if s >= 15.5 and _SISHIER_CHAPTER_RE.match(ds) and len(ds) <= _SISHIER_CH_TITLE_MAX:
+                flush()
+                ctx.heading("h3", ds)
+                continue
+            # 正文（略過封面/目錄點行已由 _clean 濾除）
+            para = _join(para, t)
+        ctx.add_images_for_page(pno)
+    flush()
+    return True
+
+
+def _parse_jianjing_simple(ctx):
+    """楞伽/壇經/楞嚴：h2=講次（XX经（N）→音檔），其餘皆正文段落。
+
+    標題可能拆成多行大字（壇經的「坛」＋「经（N）」），先累積連續
+    ≥15.5 的大字行，遇到正文（<15.5）行時合併比對；比對成功發 h2，
+    否則把累積字樣當作正文接回。"""
+    para = ""
+    title_buf = []
+
+    def flush_para():
+        nonlocal para
+        if para.strip():
+            ctx.append("para", para.strip())
+        para = ""
+
+    def flush_title():
+        nonlocal para, title_buf
+        if not title_buf:
+            return
+        ds = _de_space("".join(title_buf))
+        m = _JIANGJING_LECTURE_RE.match(ds)
+        if m:
+            n = _lecture_int(m.group(1))
+            # 顯示統一用阿拉伯數字（楞嚴 12–21 為中文數字）
+            if isinstance(n, int):
+                ds = re.sub(r"([（(])\s*[一二三四五六七八九十百]+\s*([)）])",
+                            lambda mm: "%s%d%s" % (mm.group(1), n, mm.group(2)), ds)
+            ctx.append("h2", ds, lecture=n)
+        else:
+            # 誤判為標題的大字（例：封面），回灌為正文
+            para = _join(para, "".join(title_buf))
+        title_buf = []
+
+    for pno, ls in _iter_pages(ctx):
+        for line in ls:
+            t = _clean(line.text)
+            if not t:
+                continue
+            s = line.size
+            if s >= 15.5:
+                flush_para()
+                title_buf.append(_de_space(t))
+            else:
+                flush_title()
+                para = _join(para, t)
+        ctx.add_images_for_page(pno)
+    flush_title()
+    flush_para()
+    return True
+
+
+def parse_lengqie(ctx):
+    return _parse_jianjing_simple(ctx)
+
+
+def parse_liuzutanjing(ctx):
+    return _parse_jianjing_simple(ctx)
+
+
+def parse_lengyanjing(ctx):
+    return _parse_jianjing_simple(ctx)
+
+
+def parse_ganen(ctx):
+    """感恩与讲经：單一章節（無講次編號），標題為封面標題，音檔 ganen/01。"""
+    para = ""
+
+    def flush():
+        nonlocal para
+        if para.strip():
+            ctx.append("para", para.strip())
+        para = ""
+
+    first_heading = False
+    for pno, ls in _iter_pages(ctx):
+        for line in ls:
+            t = _clean(line.text)
+            if not t:
+                continue
+            s = line.size
+            ds = _de_space(t)
+            # 標題「感 恩 与 讲 经」為最大字型（≥15.5），僅出現一次
+            if ds == "感恩与讲经" and s >= 15.5 and not first_heading:
+                flush()
+                ctx.append("h2", "感恩与讲经", lecture=1)
+                first_heading = True
+                continue
+            # 略過時間行與公眾號行
+            if re.match(r"^时间[：:]", ds) or ds.startswith("完整音频"):
+                continue
+            para = _join(para, t)
+        ctx.add_images_for_page(pno)
+    flush()
+    return True
+
+
+# ---------------------------------------------------------------------- #
 # 05 圆觉经讲记
 # ---------------------------------------------------------------------- #
 
@@ -656,6 +826,11 @@ PARSERS = {
     "zuochan2": parse_zuochan2,
     "jingang": parse_jingang,
     "yuanjue": parse_yuanjue,
+    "ganen": parse_ganen,
+    "sishierzhang": parse_sishierzhang,
+    "lengqie": parse_lengqie,
+    "liuzutanjing": parse_liuzutanjing,
+    "lengyanjing": parse_lengyanjing,
 }
 
 
