@@ -12,13 +12,13 @@
   SRT 只用來取播放起訖與 `srt_preview` 對照 —— 不是校對稿。
 - **已 review 的段**會以 `chapter_question_ids`（清單，見下）對應到
   `wenda2_ebook` 前 12 章；電子書前 12 章的播放鈕改由此注入（舊的
-  `data/audio_map_word/word-*.json` 主題式地圖已移除）。對應由
-  `tool/word_audio_map2/link_chapters.py --apply` 寫回，欄位只在段上**新增**、
-  不改文字／時間／status。
+  `data/audio_map_word/word-*.json` 主題式地圖已移除）。對應**已固化**在
+  月份 JSON 的段上（原本由已移除的 `link_chapters.py` 寫回，不再重新產生），
+  欄位只在段上**新增**、不改文字／時間／status。
 
 ## 對應到電子書前 12 章（chapter_question_ids）
 
-每個 segment 的欄位（由 link_chapters 寫回後新增）：
+每個 segment 的欄位（已固化，不再重新產生）：
 
 - `chapter_question_ids`：這個段對應的電子書 stable question id 清單
   （一個段可能對應多個主題子題，因彙總 docx 把 2–3 個子題併成一段）。

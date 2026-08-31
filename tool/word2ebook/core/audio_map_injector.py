@@ -255,7 +255,8 @@ def load_word_maps_from_audio_map2(
     ``question_id`` → segment (with ``audio_file`` resolved from its session).
 
     audio_map2 segments carry ``chapter_question_ids`` (a list of ebook theme-
-    chapter question ids produced by ``tool/word_audio_map2/link_chapters.py``).
+    chapter question ids, already frozen into the JSONs — the script that wrote
+    them, ``tool/word_audio_map2/link_chapters.py``, has been removed).
     Every question id in that list maps to the same reviewed segment/range.
     """
     by_qid: Dict[str, dict] = {}
