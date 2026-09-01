@@ -21,14 +21,43 @@
 from __future__ import annotations
 
 import argparse
+import os
 import subprocess
 import sys
 from pathlib import Path
+
+# 專案全域唯一裝有 docx / opencc / slugify / yaml / jieba / pymupdf 的環境。
+# 若目前直譯器不是這個 venv，就自動 re-exec 一次，讓用戶無論用
+# `python3 gen_all_and_push.py` 或 `./gen_all_and_push.py` 都能直接跑。
+_VENV_DIR = Path(__file__).resolve().parent.parent / "word_audio_map2" / ".venv"
+VENV_PYTHON = _VENV_DIR / "bin" / "python"
 
 TOOL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = TOOL_DIR.parent.parent
 
 DEFAULT_COMMIT_MESSAGE = "Rebuild wenda2_ebook from Word + PDFs"
+
+
+def _ensure_venv() -> None:
+    """若當前直譯器非 canonical venv，自動以該 venv python 重新執行自己。
+
+    venv 的 ``bin/python`` 是 symlink 指向 base python，因此不能用 realpath 比對
+    執行檔；改用 ``sys.prefix``（venv 內會指到 .venv 目錄本身）來判斷。
+    """
+    venv_prefix = _VENV_DIR.resolve()
+    current_prefix = Path(sys.prefix).resolve()
+    if VENV_PYTHON.exists():
+        if current_prefix != venv_prefix:
+            os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), str(Path(__file__).resolve()), *sys.argv[1:]])
+    else:
+        print(
+            f"⚠️  找不到 canonical venv：{VENV_PYTHON}\n"
+            "   將沿用當前直譯器執行；若缺少 docx 等相依套件，請先建立該 venv。",
+            file=sys.stderr,
+        )
+
+
+_ensure_venv()
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
