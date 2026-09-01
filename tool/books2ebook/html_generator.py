@@ -619,7 +619,7 @@ def render_index(books_meta, source_pdfs, is_trad):
     )
     html += "<h1>%s</h1>\n" % esc(SITE_TITLE)
     html += _INDEX_SEARCH_TMPL
-    html += _toc_header_controls([1, 2, 3, 4], 2, "h2", "目录", "toc-header")
+    html += _toc_header_controls([1, 2, 3, 4, 5], 2, "h2", "目录", "toc-header")
     html += '<div class="toc" id="main-toc">\n%s\n</div>\n' % main_toc
     html += _ACTION_BUTTONS_TMPL
     html += _FLOATING_TOC_TMPL
@@ -627,6 +627,6 @@ def render_index(books_meta, source_pdfs, is_trad):
         '\n<p class="source-filename" id="source-filename">Source: %s</p>\n'
         % "、".join(src_links)
     )
-    html += _floating_level_buttons([1, 2, 3, 4], 2)
+    html += _floating_level_buttons([1, 2, 3, 4, 5], 2)
     html += "</body>\n</html>\n"
     return html
