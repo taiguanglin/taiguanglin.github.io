@@ -11,14 +11,77 @@
     <meta property="og:title" content="坐禪之問答錄2 主題目錄｜TaiGuangLin 禪師佛法修行問答">
     <meta property="og:description" content="TaiGuangLin禪師佛法修行問答錄，包含自性意識、業力、發心、戒行、禪定等12個章節的詳細問答">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://taiguanglin.info/wenda.html">
+    <meta property="og:url" content="https://taiguanglin.info/wenda2.html">
     <meta property="og:image" content="https://taiguanglin.info/images/taiguanglin.png">
-    <link rel="canonical" href="https://taiguanglin.info/wenda.html">
+    <link rel="canonical" href="https://taiguanglin.info/wenda2.html">
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root{
+            --pink-50:#fdf3f7; --pink-100:#fbe3ec; --pink-200:#f7c9db; --pink-300:#f0a6c3;
+            --pink-400:#e978a7; --pink-500:#e04f8c; --pink-600:#c93672; --pink-700:#a82a5d; --pink-800:#7a1f45;
+            --rose-ink:#6b2f4a; --ink:#2f1b26; --muted:#8a6a78; --cream:#fdf6f9;
+            --grad-main:linear-gradient(135deg,#f7c9db 0%,#e978a7 55%,#c93672 100%);
+            --grad-soft:linear-gradient(180deg,#fdf6f9 0%,#fbe3ec 100%);
+            --shadow-sm:0 2px 10px rgba(201,54,114,.08); --shadow-md:0 8px 30px rgba(201,54,114,.14); --shadow-lg:0 20px 60px rgba(201,54,114,.20);
+            --r-sm:10px; --r-md:18px; --r-lg:28px; --r-xl:38px;
+            --serif:'Noto Serif TC',serif; --sans:'Noto Sans TC',sans-serif;
+        }
+        body{font-family:var(--sans); color:var(--ink); background:var(--cream);}
+        a{text-decoration:none;color:inherit;}
+        .container{max-width:1140px; margin:0 auto; padding:0 24px;}
+        .navbar{position:fixed; top:0; left:0; width:100%; z-index:100; transition:background .35s ease, box-shadow .35s ease, backdrop-filter .35s ease;}
+        .navbar.scrolled{background:rgba(255,255,255,.86); backdrop-filter:blur(14px); box-shadow:0 4px 24px rgba(201,54,114,.10);}
+        .nav-container{max-width:1180px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between;}
+        .nav-logo{display:flex; flex-direction:column; line-height:1.15;}
+        .nav-logo .logo-name{font-family:var(--serif); font-weight:700; font-size:22px; letter-spacing:.5px; color:var(--ink); transition:color .3s;}
+        .nav-logo .logo-sub{font-size:11px; color:var(--muted); letter-spacing:3px;}
+        .navbar.scrolled .logo-name{color:var(--pink-600);}
+        .nav-menu{display:flex; align-items:center; gap:6px;}
+        .nav-link{position:relative; padding:9px 15px; font-size:15px; font-weight:500; color:var(--ink); border-radius:999px; transition:color .25s, background .25s;}
+        .nav-link:hover{color:var(--pink-600); background:rgba(224,79,140,.08);}
+        .nav-dropdown{position:relative;}
+        .nav-dropdown-menu{position:absolute; top:110%; right:0; min-width:210px; background:#fff; border-radius:16px; box-shadow:var(--shadow-md); padding:8px; opacity:0; visibility:hidden; transform:translateY(8px); transition:all .28s ease; z-index:99;}
+        .nav-dropdown:hover .nav-dropdown-menu{opacity:1; visibility:visible; transform:translateY(0);}
+        .nav-dropdown-item{display:block; padding:10px 14px; border-radius:10px; font-size:14px; color:var(--ink);}
+        .nav-dropdown-item:hover{background:var(--pink-50); color:var(--pink-600);}
+        .hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer; padding:6px; z-index:101;}
+        .hamburger span{width:24px; height:2px; background:var(--ink); border-radius:2px; transition:all .3s;}
+        .footer{background:#2f1b26; color:#e9d5dd; padding:70px 0 32px;}
+        .footer-top{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px;}
+        .footer-brand .logo-name{font-family:var(--serif); font-size:24px; color:#fff; margin-bottom:8px;}
+        .footer-brand p{font-size:14px; color:#b493a4; line-height:1.8; margin-bottom:4px;}
+        .footer-col h4{color:#f0a6c3; font-size:14px; letter-spacing:2px; margin-bottom:18px; font-weight:700;}
+        .footer-col ul{list-style:none;}
+        .footer-col li{margin-bottom:11px;}
+        .footer-col a{font-size:14px; color:#c9aebc; transition:color .25s; text-decoration:none;}
+        .footer-col a:hover{color:#fff;}
+        .footer-bottom{border-top:1px solid #4a2f3a; padding-top:26px; text-align:center; font-size:13.5px; color:#a98696;}
+        .footer-bottom p{margin-bottom:6px;}
+        .dharma-section{position:relative; padding:100px 0; overflow:hidden; background:var(--grad-main);}
+        .dharma-section .bg-symbols{position:absolute; inset:0; opacity:.12; font-size:200px; line-height:1; color:#fff; display:flex; align-items:center; justify-content:center; font-family:var(--serif); pointer-events:none;}
+        .dharma-content{max-width:860px; margin:0 auto; text-align:center; position:relative; z-index:2; color:#fff;}
+        .dharma-quote{font-family:var(--serif); font-size:clamp(17px,2.4vw,22px); line-height:2; margin-bottom:24px;}
+        .dharma-quote::before{content:'“'; font-size:60px; line-height:0; vertical-align:-18px; opacity:.7;}
+        .dharma-quote::after{content:'”'; font-size:60px; line-height:0; vertical-align:-18px; opacity:.7;}
+        .dharma-author{font-size:14px; letter-spacing:2px; opacity:.9;}
+        @media (max-width:960px){ .footer-top{grid-template-columns:1fr 1fr;} }
+        @media (max-width:768px){
+            .nav-menu{position:fixed; top:0; right:-100%; width:76%; max-width:320px; height:100vh; background:#fff; flex-direction:column; align-items:flex-start; padding:90px 28px 30px; gap:4px; transition:right .35s ease; box-shadow:-10px 0 40px rgba(0,0,0,.1);}
+            .nav-menu.active{right:0;}
+            .nav-link{font-size:17px; padding:14px 6px; width:100%;}
+            .nav-dropdown-menu{position:static; opacity:1; visibility:visible; transform:none; box-shadow:none; padding:0 0 0 14px; min-width:0; display:none;}
+            .nav-dropdown.active .nav-dropdown-menu{display:block;}
+            .hamburger{display:flex;}
+            .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+            .hamburger.active span:nth-child(2){opacity:0;}
+            .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        }
+        @media (max-width:520px){ .footer-top{grid-template-columns:1fr;} }
+    </style>
     <style>
         .wenda-hero {
             background: var(--pink-gradient);
@@ -166,17 +229,18 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <h2>TaiGuangLin</h2>
-                <span>次世代終極佛法</span>
+                <span class="logo-name">TaiGuangLin</span>
+                <span class="logo-sub">次世代終極佛法</span>
             </div>
             <div class="nav-menu" id="nav-menu">
                 <a href="index.html#home" class="nav-link">首頁</a>
                 <a href="index.html#about" class="nav-link">禪師</a>
+                <a href="index.html#start" class="nav-link">入門路徑</a>
                 <a href="index.html#books" class="nav-link">著作</a>
-                <a href="wenda.html" class="nav-link">問答錄</a>
+                <a href="wenda2.html" class="nav-link">問答錄2</a>
                 <a href="stories.html" class="nav-link">故事</a>
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-link nav-dropdown-toggle">圖解 <i class="fas fa-chevron-down"></i></a>
+                <div class="nav-dropdown" id="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
                         <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
                         <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
@@ -185,9 +249,7 @@
                 <a href="index.html#downloads" class="nav-link">下載</a>
             </div>
             <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </div>
         </div>
     </nav>
@@ -409,12 +471,13 @@
             </div>
 
             <!-- 禪師法語 -->
-            <section class="dharma-teaching-section" style="margin-top: var(--spacing-xxl);">
-                <div class="dharma-teaching-content">
-                    <blockquote class="dharma-quote">
-                        "在大菩提心之上還有兩個更高級的發心，如果你能發這兩種發心，佛菩薩會為你開小灶，無限的加持和無限的福報資源都會湧來，你缺什麼就給什麼，用最高效的方法把你引入阿耨多羅三藐三菩提。"
-                    </blockquote>
-                    <cite class="dharma-author">- TaiGuangLin 禪師</cite>
+            <section class="dharma-section">
+                <div class="bg-symbols">卍</div>
+                <div class="container">
+                    <div class="dharma-content">
+                        <blockquote class="dharma-quote">在大菩提心之上，還有兩個更高級的發心——若你能發這兩種發心，佛菩薩會為你開小灶，無限的加持與福報資源都將湧來，你缺什麼就給什麼，以最高效的方法把你引入阿耨多羅三藐三菩提。</blockquote>
+                        <cite class="dharma-author">— TaiGuangLin 禪師</cite>
+                    </div>
                 </div>
             </section>
         </div>
@@ -423,27 +486,27 @@
     <!-- 頁尾 -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>TaiGuangLin</h3>
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo-name">TaiGuangLin</div>
                     <p>次世代終極版佛法</p>
-                    <p>用現代通俗易懂的語言，傳承純正佛法智慧</p>
+                    <p>用現代通俗易懂的語言，傳承純正佛法智慧。</p>
                 </div>
-                <div class="footer-section">
+                <div class="footer-col">
                     <h4>著作與電子書</h4>
                     <ul>
-                        <li><a href="index.html#books">五本著作</a></li>
+                        <li><a href="index.html#books">全部著作</a></li>
                         <li><a href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer">坐禪系列電子書</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
+                <div class="footer-col">
                     <h4>問答錄2</h4>
                     <ul>
-                        <li><a href="wenda.html">主題目錄（12 章）</a></li>
+                        <li><a href="wenda2.html">主題目錄（12 章）</a></li>
                         <li><a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer">完整電子書</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
+                <div class="footer-col">
                     <h4>更多資源</h4>
                     <ul>
                         <li><a href="infographic.html">名詞圖解</a></li>
