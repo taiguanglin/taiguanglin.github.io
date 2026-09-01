@@ -73,17 +73,13 @@ def _should_merge_heading(prev_text, next_text):
     """緊接的同級標題要不要併成同一條。
 
     一般：次行不像新條目（例如「尘不」+「可出」）就合併。
-    例外：原書把「2. 七级发心」與第一個子項「（1）求道心」印成兩行，
-    仍視為同一條標題；「（2）」起才是下一條。
+    若次行開頭是「（N）」這種子項編號，視為下一條標題，不合併，
+    以免把「1. 传承」與其第一個子項「（1）佛经」黏成同一條。
     """
     nxt = next_text.strip()
-    if not _is_new_heading_start(nxt):
-        return True
-    prev = prev_text.strip()
-    if re.match(r"^[（(]1[）)]", nxt) and re.match(r"^\d+[．.、]", prev) \
-            and "（" not in prev and "(" not in prev:
-        return True
-    return False
+    if _is_new_heading_start(nxt):
+        return False
+    return True
 
 
 def _normalize_heading_text(text):
@@ -339,6 +335,8 @@ def parse_wendalu(ctx):
 # ---------------------------------------------------------------------- #
 
 _H4_PAT = re.compile(r"^（?\d+[）.、．]")
+# 「（1）佛经」「(2) 僧团」這種括號編號的子項，比「1. 传承」深一層。
+_H5_PAT = re.compile(r"^[（(]\d+[）)]")
 _SHORT_HEAD_MAX = 22
 
 
@@ -348,6 +346,11 @@ def _zuochan2_h4(t):
     if len(t) <= _SHORT_HEAD_MAX and not re.search(r"[，。；：,；]$", t):
         return True
     return False
+
+
+def _zuochan2_h5(t):
+    """括號編號子項（（1）…／(2)…）→ h5。"""
+    return bool(_H5_PAT.match(t))
 
 
 def parse_zuochan2(ctx):
@@ -380,7 +383,9 @@ def parse_zuochan2(ctx):
                 ctx.heading("h4", t)
             elif f == "FZYANS_ZHONGJW" and 12.5 <= s <= 13.4:
                 flush()
-                if _zuochan2_h4(t):
+                if _zuochan2_h5(t):
+                    ctx.heading("h5", t)
+                elif _zuochan2_h4(t):
                     ctx.heading("h4", t)
                 else:
                     ctx.append_quote_line(t)

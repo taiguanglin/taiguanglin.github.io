@@ -16,7 +16,7 @@ except ImportError:  # 供 -c 單獨載入等邊界情境
     def audio_duration(series, n):  # noqa: E306
         return None
 
-_HEADING_KINDS = ("h2", "h3", "h4")
+_HEADING_KINDS = ("h2", "h3", "h4", "h5")
 
 # 首页搜索需要 MiniSearch（章节页不用）
 _MINISEARCH_HEAD = (
@@ -358,7 +358,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
 
     # ---- 章內目錄 ----
     used_levels = sorted({int(b["kind"][1]) for b in headings})
-    toc_levels = [lv for lv in (2, 3, 4) if lv in used_levels] or [2]
+    toc_levels = [lv for lv in (2, 3, 4, 5) if lv in used_levels] or [2]
     active_level = 3 if 3 in toc_levels else toc_levels[0]
 
     # 目錄是扁平結構（JS 以「後續層級更深的兄弟」當子項），所以逐項判斷：
@@ -537,7 +537,7 @@ def render_index(books_meta, source_pdfs, is_trad):
         f = bc.filename_trad if is_trad else bc.filename
         # 收集該書的標題節點，映射 h2→2, h3→3, h4→4
         headings = [b for b in blocks if b["kind"] in _HEADING_KINDS]
-        kind_to_level = {"h2": 2, "h3": 3, "h4": 4}
+        kind_to_level = {"h2": 2, "h3": 3, "h4": 4, "h5": 5}
         # 書籍節點（第 1 層）
         book_icon = ('<span class="toc-expand-icon" data-level="1">▼</span>'
                      if headings else "")

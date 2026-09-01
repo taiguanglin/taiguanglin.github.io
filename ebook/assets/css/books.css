@@ -65,3 +65,31 @@ figure.book-img img {
 body.dark-mode figure.book-img img {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
 }
+
+/* h5（坐禅2 的「（1）佛经」等括號編號子項）—— 比 h4 再深一層 */
+h5 {
+  color: var(--color-h4);
+  font-size: 15px;
+  margin-top: 12px;
+  padding-left: 16px;
+  font-weight: 600;
+}
+
+body.dark-mode h5 { color: #ffd1e0; }
+
+/* 目錄第 5 層縮排（chapter-toc 與 main-toc） */
+#chapter-toc .toc-item.toc-level-5 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 70px;
+}
+#chapter-toc .toc-item.toc-level-5 .toc-expand-icon { left: 72px; }
+#main-toc .toc-item.toc-level-5 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 100px;
+}
+#main-toc .toc-item.toc-level-5 .toc-expand-icon { left: 102px; }
+body.dark-mode .toc-item.toc-level-5 > a { color: #ffd1e0; }
