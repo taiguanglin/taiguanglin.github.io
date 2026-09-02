@@ -344,6 +344,9 @@ def inject_word_chapters(chapters: List[Chapter]) -> int:
 
     Returns the number of chapters modified. Word chapters 01–12 always source
     play buttons from the reviewed chronological maps (audio_map2/).
+    PDF month chapters (13–21) are handled by :func:`inject_chapters` and
+    contain date+source ``<h2>`` sections; they SHALL be skipped here so this
+    pass does not strip the inline buttons the PDF pass already added.
     """
     by_qid = load_word_maps_from_audio_map2(DEFAULT_AUDIO_MAP2_DIR)
     if not by_qid:
@@ -351,6 +354,9 @@ def inject_word_chapters(chapters: List[Chapter]) -> int:
     changed = 0
     for ch in chapters:
         if not ch.content or 'class="question"' not in ch.content:
+            continue
+        # Skip PDF-sourced month chapters — they carry date+source h2 headings.
+        if H2_RE.search(ch.content):
             continue
         new_content = inject_word_html_from_audio_map2(ch.content, by_qid)
         if new_content != ch.content:

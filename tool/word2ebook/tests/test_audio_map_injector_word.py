@@ -139,3 +139,26 @@ class TestAudioMap2Injection:
 
     def test_missing_dir_empty(self, tmp_path):
         assert load_word_maps_from_audio_map2(tmp_path / "nope") == {}
+
+
+class TestWordSkipsPdfChapters:
+    def test_pdf_month_chapter_not_stripped(self, tmp_path, monkeypatch):
+        # A PDF chapter carries a date+source h2 and an already-injected inline
+        # button from the PDF pass; the word pass must leave it untouched.
+        pdf_chapter = """<h2 id="2025nian-6yue-9ri-tie-ba">2025年6月9日 贴吧</h2>
+<div class="question" id="question-x">
+<div class="question-text">q</div>
+</div>
+<div class="answer" id="answer-x">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span><button class="qa-play qa-play--inline" data-audio="../audio/x.opus" data-start="1.0" data-end="2.0" type="button">x</button></div>
+<div class="answer-text">a</div>
+</div>
+"""
+        d = _am2_dir(tmp_path, [_am2_session([_am2_seg(["question-x"], 1, 10.0, 20.0, listened=True)])])
+        import core.audio_map_injector as ami
+        monkeypatch.setattr(ami, "DEFAULT_AUDIO_MAP2_DIR", d)
+        ch = Chapter(title="13", filename="13.html", content=pdf_chapter)
+        changed = inject_word_chapters([ch])
+        assert changed == 0
+        # the PDF-pass inline button is preserved (not stripped by the word pass)
+        assert ch.content.count("qa-play--inline") == 1
