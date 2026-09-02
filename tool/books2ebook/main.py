@@ -41,6 +41,12 @@ _HTML_RAW_BLOCK_RE = re.compile(
     r"(<(?:script|style)\b[^>]*>.*?</(?:script|style)\s*>)",
     re.IGNORECASE | re.DOTALL,
 )
+# 標籤內「可能含中文、需要轉繁」的屬性（alt/title/placeholder/aria-label/data-label）。
+# 值用單引號或雙引號包住皆可比對。
+_HTML_ATTR_RE = re.compile(
+    r"""\b(alt|title|placeholder|aria-label|data-label)\s*=\s*(")(.*?)\2""",
+    re.DOTALL,
+)
 
 
 def _convert_s2t(text):
@@ -48,8 +54,17 @@ def _convert_s2t(text):
     return _TAIWAN_CHINESE.to_traditional(text)
 
 
+def _convert_tag_attrs(tag):
+    """轉換標籤內指定屬性的中文（alt/title/placeholder 等），其餘原樣保留。"""
+    return _HTML_ATTR_RE.sub(
+        lambda m: '%s=%s%s%s' % (
+            m.group(1), m.group(2), _convert_s2t(m.group(3)), m.group(2)),
+        tag,
+    )
+
+
 def convert_html_to_trad(html):
-    """只轉換 HTML 文字節點，保留標籤、URL、屬性及 script/style 原文。"""
+    """只轉換 HTML 文字節點與可含中文的屬性值，保留標籤、URL 及 script/style 原文。"""
     converted = []
     for raw_or_html in _HTML_RAW_BLOCK_RE.split(html):
         if not raw_or_html:
@@ -58,7 +73,7 @@ def convert_html_to_trad(html):
             converted.append(raw_or_html)
             continue
         converted.extend(
-            part if part.startswith("<") else _convert_s2t(part)
+            _convert_tag_attrs(part) if part.startswith("<") else _convert_s2t(part)
             for part in _HTML_TAG_RE.split(raw_or_html)
             if part
         )

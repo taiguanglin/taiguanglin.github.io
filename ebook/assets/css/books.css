@@ -77,6 +77,17 @@ h5 {
 
 body.dark-mode h5 { color: #ffd1e0; }
 
+/* h6（坐禅2 的「Ⅰ）恩惠」等羅馬數字子項）—— 比 h5 再深一層 */
+h6 {
+  color: var(--color-h4);
+  font-size: 14px;
+  margin-top: 10px;
+  padding-left: 32px;
+  font-weight: 500;
+}
+
+body.dark-mode h6 { color: #ffd1e0; }
+
 /* 目錄第 5 層縮排（chapter-toc 與 main-toc） */
 #chapter-toc .toc-item.toc-level-5 > a {
   font-weight: 400;
@@ -93,3 +104,21 @@ body.dark-mode h5 { color: #ffd1e0; }
 }
 #main-toc .toc-item.toc-level-5 .toc-expand-icon { left: 102px; }
 body.dark-mode .toc-item.toc-level-5 > a { color: #ffd1e0; }
+
+/* 目錄第 6 層縮排（比第 5 層更深；「顯示層級」不新增第 6 按鈕，
+   展開第 5 層時由 JS 一併顯示） */
+#chapter-toc .toc-item.toc-level-6 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 92px;
+}
+#chapter-toc .toc-item.toc-level-6 .toc-expand-icon { left: 94px; }
+#main-toc .toc-item.toc-level-6 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 122px;
+}
+#main-toc .toc-item.toc-level-6 .toc-expand-icon { left: 124px; }
+body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }

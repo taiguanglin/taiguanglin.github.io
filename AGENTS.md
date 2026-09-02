@@ -31,7 +31,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | Path | Role |
 |------|------|
 | `index.html` | Landing page. Stories cards may be patched by `tool/stories2html/build_index.py`. |
-| `wenda.html` | Landing for the 12 thematic chapters under `wenda/`. |
+| `wenda2.html` | Landing for the 12 thematic chapters under `wenda/`. |
 | `stories.html` | Stories list shell; list block updated by `build_index.py`. |
 | `infographic.html` | Gallery of PNGs in `infographic/`. |
 | `mindmap.html` | Self-contained interactive mind map (hand-edited). |
@@ -113,7 +113,7 @@ SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json
 
 | CTA on `index.html` | Target | Nature |
 |---------------------|--------|--------|
-| 查看目錄 | `wenda.html` → `wenda/chapter-*.html` | Hand TOC (12 themes) |
+| 查看目錄 | `wenda2.html` → `wenda/chapter-*.html` | Hand TOC (12 themes) |
 | 進入電子書 | `wenda2_ebook/index_trad.html` | Generated full ebook |
 
 Do not assume these stay content-synced automatically.
@@ -148,7 +148,7 @@ mp3  →  (optional) tool/audio_denoiser
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |
 | Play-button time ranges | `tool/word2ebook/data/audio_map/` (or `/audio_map/` UI / `pdf_audio_map`) | Rebuild ebook |
 | Site landing / nav / about | Root HTML + `script.js` / `style.css` | Commit |
-| 12-theme TOC pages | `wenda.html`, `wenda/` | Commit (no ebook rebuild) |
+| 12-theme TOC pages | `wenda2.html`, `wenda/` | Commit (no ebook rebuild) |
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
 | Infographic / mindmap | `infographic/`, `infographic.html`, `mindmap.html` | Commit |
 

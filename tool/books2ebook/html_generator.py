@@ -16,7 +16,7 @@ except ImportError:  # 供 -c 單獨載入等邊界情境
     def audio_duration(series, n):  # noqa: E306
         return None
 
-_HEADING_KINDS = ("h2", "h3", "h4", "h5")
+_HEADING_KINDS = ("h2", "h3", "h4", "h5", "h6")
 
 # 首页搜索需要 MiniSearch（章节页不用）
 _MINISEARCH_HEAD = (
@@ -250,12 +250,22 @@ _INDEX_SEARCH_TMPL = """
 
 def _toc_header_controls(levels, active, header_tag, header_text, header_id):
     btns = []
+    deepest = levels[-1] if levels else 0
     for lv in levels:
         act = " active" if lv == active else ""
-        title = "显示第%d层" % lv if lv == levels[0] else "显示前%d层" % lv
+        if lv == deepest:
+            # 最深層按鈕 = 「全部」，點擊時連同更深的葉層（如 h6）一起展開
+            title = "显示全部层级"
+            label = "All"
+        elif lv == levels[0]:
+            title = "显示第%d层" % lv
+            label = str(lv)
+        else:
+            title = "显示前%d层" % lv
+            label = str(lv)
         btns.append(
-            '<button class="toc-level-btn%s" data-level="%d" title="%s">%d</button>'
-            % (act, lv, title, lv)
+            '<button class="toc-level-btn%s" data-level="%d" title="%s">%s</button>'
+            % (act, lv, title, label)
         )
     return (
         '<div class="toc-header-container">'
@@ -281,12 +291,21 @@ _FLOATING_LEVEL_TMPL = """
 
 def _floating_level_buttons(levels, active):
     btns = []
+    deepest = levels[-1] if levels else 0
     for lv in levels:
         act = " active" if lv == active else ""
-        title = "显示第%d层" % lv if lv == levels[0] else "显示前%d层" % lv
+        if lv == deepest:
+            title = "显示全部层级"
+            label = "All"
+        elif lv == levels[0]:
+            title = "显示第%d层" % lv
+            label = str(lv)
+        else:
+            title = "显示前%d层" % lv
+            label = str(lv)
         btns.append(
-            '<button class="floating-level-btn%s" data-level="%d" title="%s">%d</button>'
-            % (act, lv, title, lv)
+            '<button class="floating-level-btn%s" data-level="%d" title="%s">%s</button>'
+            % (act, lv, title, label)
         )
     return _FLOATING_LEVEL_TMPL % "".join(btns)
 
@@ -537,7 +556,7 @@ def render_index(books_meta, source_pdfs, is_trad):
         f = bc.filename_trad if is_trad else bc.filename
         # 收集該書的標題節點，映射 h2→2, h3→3, h4→4
         headings = [b for b in blocks if b["kind"] in _HEADING_KINDS]
-        kind_to_level = {"h2": 2, "h3": 3, "h4": 4, "h5": 5}
+        kind_to_level = {"h2": 2, "h3": 3, "h4": 4, "h5": 5, "h6": 6}
         # 書籍節點（第 1 層）
         book_icon = ('<span class="toc-expand-icon" data-level="1">▼</span>'
                      if headings else "")

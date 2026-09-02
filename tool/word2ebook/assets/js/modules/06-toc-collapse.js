@@ -185,6 +185,16 @@
     const allItems = tocContainer.querySelectorAll('.toc-item');
     const targetLevel = parseInt(level);
     
+    // 最深的「顯示層級」（按鈕只到這一層；更深層如第 6 層不出現在按鈕中）。
+    // 當選到最深顯示層級時，一併顯示更深一層的子項（例如坐禅2 的羅馬數字 h6，
+    // 只有這處有第 6 層，不值得獨立成一個「顯示層級」按鈕）。
+    let deepestButtonLevel = 0;
+    document.querySelectorAll('.toc-level-btn, .floating-level-btn').forEach(btn => {
+      const lv = parseInt(btn.getAttribute('data-level'));
+      if (!isNaN(lv) && lv > deepestButtonLevel) deepestButtonLevel = lv;
+    });
+    const showDeeper = deepestButtonLevel > 0 && targetLevel >= deepestButtonLevel;
+    
     // 清除所有手動標記，讓層級控制重新接管
     allItems.forEach(item => {
       item.removeAttribute('data-user-toggled');
@@ -194,8 +204,8 @@
     allItems.forEach(item => {
       const itemLevel = parseInt(item.getAttribute('data-level'));
       
-      // 根據層級控制顯示/隱藏
-      if (itemLevel <= targetLevel) {
+      // 根據層級控制顯示/隱藏；選到最深層時連更深層（第 6 層）一起顯示
+      if (itemLevel <= targetLevel || (showDeeper && itemLevel > targetLevel)) {
         item.classList.remove('hidden');
       } else {
         item.classList.add('hidden');

@@ -10,9 +10,6 @@ Allow: /script.js
 Allow: /images/
 Allow: /stories/
 
-# Internal proofreading/editor tool — not for indexing
-Disallow: /qa/
-
 # Primary pages optimized for: 佛法,修行,打坐,雙盤,TaiGuangLin
 # Main page: https://taiguanglin.info/
 # Stories page: https://taiguanglin.info/stories.html 

@@ -48,13 +48,24 @@
 
 ## 一鍵重建
 
+依照機器上裝有 pymupdf/opencc 的環境，取用其中一種 python（兩台機器可能不同）：
+
 ```bash
-# 建議用系統 python（/usr/bin/python3 已含 pymupdf/opencc）
+# 1) 內建系統 python（/usr/bin/python3，某些機器已含 pymupdf/opencc）
 /usr/bin/python3 tool/books2ebook/gen_all.py
+
+# 2) framework 版 python 3.13（/Library/Frameworks/.../3.13/bin/python3，
+#    另一台機器用的是這個，含 pymupdf/opencc）
+/Library/Frameworks/Python.framework/Versions/3.13/bin/python3 tool/books2ebook/gen_all.py
+```
+
+兩者擇一即可，三種等價寫法：
+
+```bash
 # 等價：
-/usr/bin/python3 tool/books2ebook/main.py
+<PYTHON> tool/books2ebook/main.py
 # 其它路徑：
-/usr/bin/python3 tool/books2ebook/main.py --books-dir books --out ebook
+<PYTHON> tool/books2ebook/main.py --books-dir books --out ebook
 ```
 
 ## 輸出

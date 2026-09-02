@@ -335,8 +335,10 @@ def parse_wendalu(ctx):
 # ---------------------------------------------------------------------- #
 
 _H4_PAT = re.compile(r"^（?\d+[）.、．]")
-# 「（1）佛经」「(2) 僧团」這種括號編號的子項，比「1. 传承」深一層。
+# 「（1）佛经」「(2) 僧团」這種括號編號子項，比「1. 传承」深一層。
 _H5_PAT = re.compile(r"^[（(]\d+[）)]")
+# 「Ⅰ）恩惠」「Ⅱ）权威」這種羅馬數字子項，又比括號編號子項（（1）…）深一層。
+_H6_PAT = re.compile(r"^[ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩ]+[）)]")
 _SHORT_HEAD_MAX = 22
 
 
@@ -351,6 +353,11 @@ def _zuochan2_h4(t):
 def _zuochan2_h5(t):
     """括號編號子項（（1）…／(2)…）→ h5。"""
     return bool(_H5_PAT.match(t))
+
+
+def _zuochan2_h6(t):
+    """羅馬數字子項（Ⅰ）…／Ⅱ）…）→ h6。"""
+    return bool(_H6_PAT.match(t))
 
 
 def parse_zuochan2(ctx):
@@ -383,7 +390,9 @@ def parse_zuochan2(ctx):
                 ctx.heading("h4", t)
             elif f == "FZYANS_ZHONGJW" and 12.5 <= s <= 13.4:
                 flush()
-                if _zuochan2_h5(t):
+                if _zuochan2_h6(t):
+                    ctx.heading("h6", t)
+                elif _zuochan2_h5(t):
                     ctx.heading("h5", t)
                 elif _zuochan2_h4(t):
                     ctx.heading("h4", t)

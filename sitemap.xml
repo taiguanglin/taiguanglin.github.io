@@ -354,7 +354,133 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- ============ 坐禪系列電子書（books/ 五本合集） ============ -->
+  <!-- 二〇二五年六月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/13.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/13_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二五年七月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/14.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/14_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二五年八月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/15.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/15_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二五年九月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/16.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/16_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二五年十一月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/17.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/17_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二五年十二月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/18.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/18_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二六年一月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/19.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/19_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二六年二月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/20.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/20_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- 二〇二六年三月 - 簡體 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/21.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/wenda2_ebook/21_trad.html</loc>
+    <lastmod>2026-06-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- ============ 坐禪系列電子書（books/ 十本合集） ============ -->
   <!-- 系列首頁 - 簡體 -->
   <url>
     <loc>https://taiguanglin.info/ebook/index.html</loc>
@@ -399,7 +525,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 03《坐禪2》 -->
+  <!-- 03《坐禪2·次世代版終極佛法》 -->
   <url>
     <loc>https://taiguanglin.info/ebook/03.html</loc>
     <lastmod>2026-08-26</lastmod>
@@ -413,7 +539,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 04《金剛經·心經講記》 -->
+  <!-- 04 感恩与讲经 -->
   <url>
     <loc>https://taiguanglin.info/ebook/04.html</loc>
     <lastmod>2026-08-26</lastmod>
@@ -427,7 +553,7 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 05《圓覺經》講記 -->
+  <!-- 05 讲《金刚经 心经》 -->
   <url>
     <loc>https://taiguanglin.info/ebook/05.html</loc>
     <lastmod>2026-08-26</lastmod>
@@ -436,6 +562,76 @@
   </url>
   <url>
     <loc>https://taiguanglin.info/ebook/05_trad.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 06 讲《圆觉经》 -->
+  <url>
+    <loc>https://taiguanglin.info/ebook/06.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/ebook/06_trad.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 07 讲《四十二章经》 -->
+  <url>
+    <loc>https://taiguanglin.info/ebook/07.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/ebook/07_trad.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 08 讲《楞伽经》 -->
+  <url>
+    <loc>https://taiguanglin.info/ebook/08.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/ebook/08_trad.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 09 讲《六祖坛经》 -->
+  <url>
+    <loc>https://taiguanglin.info/ebook/09.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/ebook/09_trad.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 10 讲《楞严经》(未完) -->
+  <url>
+    <loc>https://taiguanglin.info/ebook/10.html</loc>
+    <lastmod>2026-08-26</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://taiguanglin.info/ebook/10_trad.html</loc>
     <lastmod>2026-08-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
