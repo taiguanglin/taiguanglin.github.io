@@ -245,13 +245,59 @@ def _is_questioner_line(line: str) -> bool:
     return False
 
 
+QUESTION_TRAIL_RE = re.compile(r"[?？]$|[吗嗎呢呢吧啊呀么麼]$")
+QUESTION_LEAD_RE = re.compile(r"^\s*(?:[0-9一二三四五六七八九十]{1,3}\s*[、.．,，)]|"
+                              r"第[0-9一二三四五六七八九十]{1,3}\s*[问問])")
+QUESTION_HINT_RE = re.compile(r"请问|請問|请教|請教|求教|怎么|怎麼|如何|为什么|為什麼|"
+                              r"是吗|是嗎|对吗|對嗎|感恩|頂禮|顶礼|想确认|想確認|指点|指點")
+
+
+def _is_followup_question(text: str) -> bool:
+    """Heuristic: does this non-marker paragraph read like a NEW question
+    (rather than a continuation of the current answer)?
+
+    Used inside a multi-``Taiguanglin：`` block to decide whether a paragraph
+    that appears after an answer but before the next marker should open a new
+    group's ``q_paras`` instead of being glued onto the current answer.  This is
+    what the original design intended ("paragraphs after an answer but before
+    the next marker are the next follow-up question") but never implemented —
+    the mode stayed "a" forever, which merged follow-up questions (and later
+    even their answers) into one answer blob (audio_map2 2025-05-17 极乐是我家).
+    """
+    t = text.strip()
+    if not t:
+        return False
+    if QUESTION_TRAIL_RE.search(t):
+        return True
+    if QUESTION_LEAD_RE.match(t) and not _looks_like_answer_continuation(t):
+        return True
+    if len(t) < 40 and QUESTION_HINT_RE.search(t):
+        return True
+    return False
+
+
+def _looks_like_answer_continuation(text: str) -> bool:
+    """Guard against mis-firing: numbered lines that are actually Tai's own
+    enumerated explanation (「第一…第二…」) or answer-openers (「下一个问题…」).
+    """
+    t = text.strip()
+    if re.match(r"^\s*下一个问题|^\s*下一個問題", t):
+        return True
+    # answers often restate the question as 「你说…」/「你问…」 then explain.
+    if re.match(r"^\s*[你您][说說问问問]", t):
+        return True
+    return False
+
+
 def _block_to_chunk(lines: List[str]) -> Chunk:
     """Split block lines into answer groups.
 
     Text before the first Taiguanglin： marker = question; each marker opens a
     new group whose text is the answer until the next marker.  Paragraphs that
     appear AFTER an answer but BEFORE the next marker are the next (follow-up)
-    question — they become the new group's q_paras.
+    question — they open a new group's q_paras.  (Post-answer paragraphs are
+    classified with :func:`_is_followup_question`; plain continuation prose is
+    still appended to the current answer.)
     """
     nonempty = [l for l in lines if l.strip()]
     ch = Chunk(raw_lines=nonempty)
@@ -305,6 +351,15 @@ def _block_to_chunk(lines: List[str]) -> Chunk:
                 if rest:
                     ch.groups[-1].a_paras.append(rest)
             elif mode == "q":
+                ch.groups[-1].q_paras.append(line)
+            elif _is_followup_question(line):
+                # Post-answer paragraph that reads like a NEW question (e.g. a
+                # staggered multi-question post: Q1→A1→Q2→A2…).  Open a fresh
+                # group so the next Taiguanglin： marker answers THIS question,
+                # not the previous one.  Fixes 2025-05-17 极乐是我家 (Q2 熬腿
+                # was glued onto A1 往生愿's answer, Q3/A3 dropped entirely).
+                ch.groups.append(Group())
+                mode = "q"
                 ch.groups[-1].q_paras.append(line)
             else:
                 ch.groups[-1].a_paras.append(line)
