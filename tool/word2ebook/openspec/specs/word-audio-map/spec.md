@@ -33,7 +33,7 @@ is **not** the injection gate.
   `chapter_question_ids` and SHALL share the segment's reviewed range
 
 ### Requirement: Reviewed-Gated Injection
-`inject_word_chapters()` SHALL insert a `.qa-play` `qa-meta-bar` **only** for
+`inject_word_chapters()` SHALL insert an inline `.qa-play` button **only** for
 segments that a human actually listened to **and** carry a non-null range
 (`meta.lastPlayed` present and `start` is not null). Machine-aligned segments
 without a listen record (no `meta.lastPlayed`, regardless of `status`) SHALL
@@ -45,7 +45,8 @@ produce no button.
   `audio_file`
 - WHEN the chapter containing `question-X` is built
 - THEN a `.qa-play` button with `data-audio`/`data-start`/`data-end` SHALL
-  appear immediately before that question div
+  appear inline immediately after the answer's `<span class="answerer">`
+  (no number, no separate meta-bar line)
 
 #### Scenario: Unlistened segment stays buttonless
 - GIVEN an audio_map2 segment with no `meta.lastPlayed` (never listened) and a
@@ -54,8 +55,8 @@ produce no button.
 - THEN no play button SHALL be emitted for that question
 
 ### Requirement: Injection Is Idempotent And Non-Destructive
-Injecting twice SHALL NOT duplicate bars. A question already preceded by a meta
-bar (e.g. injected by the PDF pass) SHALL NOT receive a second bar.
+Injecting twice SHALL NOT duplicate buttons. An answer whose answerer name is
+already followed by an inline play button SHALL NOT receive a second button.
 
 #### Scenario: Re-run adds nothing
 - GIVEN chapter content already processed by `inject_word_html_from_audio_map2`

@@ -121,11 +121,11 @@ class TestAudioMap2Injection:
         d = _am2_dir(tmp_path, [_am2_session(segs)])
         maps = load_word_maps_from_audio_map2(d)
         out = inject_word_html_from_audio_map2(WORD_CHAPTER, maps)
-        assert out.count('<div class="qa-meta-bar">') == 1
-        # only question-aaa gets a button
-        head, tail = out.split('id="question-bbb"', 1)
-        assert "<button class=\"qa-play\"" in head
-        assert "qa-play" not in tail[:300]
+        assert out.count('class="qa-play qa-play--inline"') == 1
+        # only question-aaa's answer gets an inline button after its answerer
+        assert 'class="qa-number"' not in out
+        head, _ = out.split('id="question-bbb"', 1)
+        assert 'class="qa-play qa-play--inline"' in head
 
     def test_inject_word_chapters_defaults_to_audio_map2(self, tmp_path, monkeypatch):
         # monkeypatch the default dir to a temp audio_map2 directory

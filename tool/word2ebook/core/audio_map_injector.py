@@ -14,8 +14,8 @@ from typing import Dict, List, Optional, Tuple
 from core.qa_play_markup import (
     audio_url,
     render_closing_meta_bar,
+    render_inline_answerer_play,
     render_opening_meta_bar,
-    render_segment_meta_bar,
 )
 from models.document_models import Chapter
 
@@ -32,8 +32,9 @@ H2_RE = re.compile(
 )
 QUESTION_OPEN_RE = re.compile(r'<div class="question"(?=[\s>])')
 QUESTION_ID_RE = re.compile(r'<div class="question" id="([^"]+)"')
-# A meta bar directly preceding a question div (already-injected marker)
-TRAILING_BAR_RE = re.compile(r'<div class="qa-meta-bar[^"]*"[^>]*>.*?</div>\s*\Z', re.S)
+# The answerer name span (Taiguanglin) inside an answer block; the play button is
+# inserted inline right after it, on the same line, adding no vertical height.
+ANSWERER_RE = re.compile(r'<span class="answerer">([^<]*)</span>')
 
 
 def _has_been_listened(item: Optional[dict]) -> bool:
@@ -125,9 +126,16 @@ def inject_html(content: str, by_section: Dict[str, dict]) -> str:
 
 
 def _inject_section(section: str, session: dict) -> str:
-    # Strip any previously injected meta bars so rebuild is idempotent
+    # Strip any previously injected meta bars and inline answerer buttons so
+    # rebuild is idempotent.
     section = re.sub(
         r'<div class="qa-meta-bar[^"]*"[^>]*>.*?</div>\s*',
+        "",
+        section,
+        flags=re.S,
+    )
+    section = re.sub(
+        r'<button class="qa-play qa-play--inline"[^>]*>.*?</button>\s*',
         "",
         section,
         flags=re.S,
@@ -154,33 +162,33 @@ def _inject_section(section: str, session: dict) -> str:
     # Build lookup by question_id and by index order
     by_qid = {s.get("question_id"): s for s in segments if s.get("question_id")}
 
-    # Walk questions in document order
-    out = []
-    pos = 0
-    q_index = 0
-    for qm in QUESTION_OPEN_RE.finditer(section):
-        out.append(section[pos:qm.start()])
-        q_index += 1
-        # Identify question id
+    # Walk questions in document order. For each listened segment, insert an
+    # inline play button right after the answerer name (Taiguanglin) of the
+    # answer that follows that question — no separate meta-bar line, no number.
+    q_matches = list(QUESTION_OPEN_RE.finditer(section))
+    injections: List[Tuple[int, str]] = []
+    for q_index, qm in enumerate(q_matches, start=1):
         id_m = re.match(r'<div class="question" id="([^"]+)"', section[qm.start():])
         qid = id_m.group(1) if id_m else None
         seg = by_qid.get(qid)
         if seg is None and q_index <= len(segments):
             seg = segments[q_index - 1]
-        bar = ""
-        if seg and _has_been_listened(seg):
-            bar = render_segment_meta_bar(
-                str(seg.get("index") or q_index),
-                _range_tuple(seg),
-                audio_rel,
-                hide_if_missing=True,
-            )
-        if bar:
-            out.append(bar + "\n")
-        out.append(section[qm.start():qm.end()])
-        pos = qm.end()
-    out.append(section[pos:])
-    section = "".join(out)
+        if not (seg and _has_been_listened(seg)):
+            continue
+        answer_end = q_matches[q_index].start() if q_index < len(q_matches) else len(section)
+        answer_region = section[qm.end():answer_end]
+        am = ANSWERER_RE.search(answer_region)
+        if not am:
+            continue
+        button = render_inline_answerer_play(
+            _range_tuple(seg), audio_rel, hide_if_missing=True
+        )
+        if button:
+            abs_pos = qm.end() + am.end()
+            injections.append((abs_pos, button))
+    # Apply in reverse order so earlier offsets stay valid
+    for pos, button in sorted(injections, reverse=True):
+        section = section[:pos] + button + section[pos:]
 
     # Closing play button: require closing itself to have been listened to.
     # Insert *above* the closing paragraph(s), mirroring opening (bar then text).
@@ -285,43 +293,50 @@ def load_word_maps_from_audio_map2(
 
 
 def inject_word_html_from_audio_map2(content: str, by_qid: Dict[str, dict]) -> str:
-    """Insert a meta bar before every mapped question div in ``content``.
+    """Insert an inline play button after every mapped answer's answerer name.
 
     The gate is the audio_map2 review state: a segment counts only when a human
     actually listened to it (``meta.lastPlayed``) and it has a non-null range.
+    The button is placed directly after ``<span class="answerer">Taiguanglin</span>``
+    — no separate meta-bar line, no number — so page height is unchanged.
     """
     if not by_qid or not content:
         return content
 
-    out: List[str] = []
-    pos = 0
-    number = 0
-    inserted = False
-    for m in QUESTION_ID_RE.finditer(content):
-        number += 1
-        prefix = content[pos : m.start()]
-        out.append(prefix)
+    # Strip any previously injected inline buttons for idempotency.
+    content = re.sub(
+        r'<button class="qa-play qa-play--inline"[^>]*>.*?</button>\s*',
+        "",
+        content,
+        flags=re.S,
+    )
+
+    # Collect (absolute position, button) injections keyed to answers that
+    # follow a matched question, then apply in reverse order.
+    q_matches = list(QUESTION_ID_RE.finditer(content))
+    injections: List[Tuple[int, str]] = []
+    for i, m in enumerate(q_matches):
         seg = by_qid.get(m.group(1))
-        if (
-            seg
-            and _is_audio_map2_reviewed(seg)
-            and not TRAILING_BAR_RE.search(out[-1][-2500:])
-        ):
-            bar = render_segment_meta_bar(
-                str(seg.get("index") or number),
-                _range_tuple(seg),
-                audio_url(seg.get("audio_file") or ""),
-                hide_if_missing=True,
-            )
-            if bar:
-                out.append(bar + "\n")
-                inserted = True
-        out.append(content[m.start() : m.end()])
-        pos = m.end()
-    if not inserted:
+        if not (seg and _is_audio_map2_reviewed(seg)):
+            continue
+        answer_end = q_matches[i + 1].start() if i + 1 < len(q_matches) else len(content)
+        answer_region = content[m.end():answer_end]
+        am = ANSWERER_RE.search(answer_region)
+        if not am:
+            continue
+        button = render_inline_answerer_play(
+            _range_tuple(seg),
+            audio_url(seg.get("audio_file") or ""),
+            hide_if_missing=True,
+        )
+        if button:
+            injections.append((m.end() + am.end(), button))
+
+    if not injections:
         return content
-    out.append(content[pos:])
-    return "".join(out)
+    for pos, button in sorted(injections, reverse=True):
+        content = content[:pos] + button + content[pos:]
+    return content
 
 
 def inject_word_chapters(chapters: List[Chapter]) -> int:

@@ -55,24 +55,25 @@ record `media_fallback` / `resolved_source` on the session. The emitted
 
 ### Requirement: Build-Time Injection
 After Word/PDF/QA parsing, the converter SHALL call `inject_chapters` before
-HTML generation. Injection SHALL insert
-`<div class="qa-meta-bar">…<button class="qa-play" …>` before each matched
-`.question` **that has been listened to** in `/audio_map/`
-(`meta.lastPlayed` present) and has a valid time range, and an opening meta bar
-after the section `<h2>` when the opening has a range **and** the first Q&A
-segment of that session has been listened to. When a closing has a range **and**
-`meta.lastPlayed` on the closing itself, a closing meta bar
-(`.qa-meta-bar--closing`) SHALL be inserted before the section footer.
+HTML generation. Injection SHALL insert an inline
+`.qa-play` button immediately after the answer's `<span class="answerer">`
+(no number, no separate line) for each matched `.question` **that has been
+listened to** in `/audio_map/` (`meta.lastPlayed` present) and has a valid time
+range, and an opening meta bar after the section `<h2>` when the opening has a
+range **and** the first Q&A segment of that session has been listened to. When a
+closing has a range **and** `meta.lastPlayed` on the closing itself, a closing
+meta bar (`.qa-meta-bar--closing`) SHALL be inserted before the section footer.
 Unmatched questions, missing ranges, and unlistened segments/closing SHALL
 receive **no** play control (not a disabled button). Injection SHALL be
-idempotent (strips prior meta bars first).
+idempotent (strips prior meta bars and inline buttons first).
 
 #### Scenario: Matched listened question gets play data
 - GIVEN a mapping segment with start=10.5 end=20.0, audio `X.opus`, and
   `meta.lastPlayed` set
 - WHEN the chapter HTML is injected
-- THEN a `.qa-play` button SHALL appear before that question with
-  `data-start="10.500"`, `data-end="20.000"`, and percent-encoded `data-audio`
+- THEN a `.qa-play` button SHALL appear inline after that question's answerer
+  name with `data-start="10.500"`, `data-end="20.000"`, and percent-encoded
+  `data-audio`
 
 #### Scenario: Missing segment omitted
 - GIVEN a mapping segment with `status: "missing"`
@@ -106,7 +107,9 @@ Play-button HTML SHALL be produced by `core/qa_play_markup.py` so QA chapters
 and PDF audio-map injection share the same `data-*` contract consumed by
 `08-qa-audio.js`. Visible labels SHALL use `HH:MM:SS` (no milliseconds); the
 editorial `/audio_map/` UI keeps millisecond precision. Each `.qa-play` button
-SHALL include a speaker SVG icon (`.qa-play-speaker`).
+SHALL include a speaker SVG icon (`.qa-play-speaker`). The inline answerer
+variant (`.qa-play--inline`, used for matched Q&A answers) SHALL omit the
+`qa-number` prefix for a compact same-line placement.
 
 ### Requirement: Alignment Sources
 For months 2025-11 through 2026-03, alignment SHALL prefer times from

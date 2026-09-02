@@ -80,6 +80,25 @@ def render_play(
     )
 
 
+def render_inline_answerer_play(
+    range_tuple: Optional[Tuple[float, float, str]],
+    audio_rel: str,
+    *,
+    hide_if_missing: bool = False,
+) -> str:
+    """Return an inline play button placed right after the answerer name.
+
+    Unlike :func:`render_segment_meta_bar`, this emits **only** the ``<button>``
+    (no ``qa-meta-bar`` wrapper, no ``qa-number``) so the control sits on the
+    same line as ``Taiguanglin`` and adds no vertical height to the page.
+    """
+    play = render_play(range_tuple, audio_rel, disabled_if_missing=not hide_if_missing)
+    if play is None:
+        return ""
+    # Add the --inline modifier so CSS can zero the surrounding block margins.
+    return play.replace('class="qa-play"', 'class="qa-play qa-play--inline"', 1)
+
+
 def render_opening_meta_bar(
     range_tuple: Optional[Tuple[float, float, str]],
     audio_rel: str,

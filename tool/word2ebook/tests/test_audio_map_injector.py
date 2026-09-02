@@ -116,13 +116,16 @@ class TestInjectHtml:
         by_section = {"2025nian-11yue-10ri-guan-wang": _session()}
         out = inject_html(SAMPLE_SECTION, by_section)
         assert 'class="qa-meta-bar qa-meta-bar--opening"' in out
-        assert out.count('button class="qa-play"') == 2  # opening + q1 (listened)
+        assert out.count('button class="qa-play') == 2  # opening + q1 (listened)
         assert 'data-start="10.000"' in out
         assert 'data-end="20.500"' in out
-        # question-bbb is missing → no meta bar immediately before it
+        # q1's button is inline after its answerer name (no number, no meta bar).
+        assert 'class="qa-play qa-play--inline"' in out
+        assert 'class="qa-number"' not in out
+        # question-bbb is missing → no inline button after its answerer
         idx_b = out.index('id="question-bbb"')
-        before = out[max(0, idx_b - 120) : idx_b]
-        assert "qa-meta-bar" not in before
+        between = out[idx_b:]
+        assert out.count('class="qa-play qa-play--inline"') == 1
 
     def test_hides_unlistened_segment_even_with_range(self):
         session = _session(
@@ -150,16 +153,12 @@ class TestInjectHtml:
             ]
         )
         out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
-        # First segment not listened → no opening, no play before question-aaa
+        # First segment not listened → no opening, no button for question-aaa
         assert "qa-meta-bar--opening" not in out
-        idx_a = out.index('id="question-aaa"')
-        before_a = out[max(0, idx_a - 160) : idx_a]
-        assert "qa-play" not in before_a
-        # Second segment listened → play before question-bbb
-        idx_b = out.index('id="question-bbb"')
-        before_b = out[max(0, idx_b - 800) : idx_b]
-        assert 'class="qa-play"' in before_b
-        assert out.count('button class="qa-play"') == 1
+        assert out.count('class="qa-play qa-play--inline"') == 1
+        # Second segment listened → inline button after question-bbb's answerer
+        assert 'class="qa-play qa-play--inline"' in out
+        assert out.count('button class="qa-play') == 1
 
     def test_opening_follows_first_segment_listened(self):
         session = _session(
@@ -188,7 +187,7 @@ class TestInjectHtml:
         )
         out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
         assert "qa-meta-bar--opening" in out
-        assert out.count('button class="qa-play"') == 2  # opening + q1 only
+        assert out.count('button class="qa-play') == 2  # opening + q1 only
         assert "qa-meta-bar--closing" not in out
 
     def test_closing_requires_own_listen(self):
@@ -246,6 +245,7 @@ class TestInjectHtml:
         once = inject_html(SAMPLE_SECTION, by_section)
         twice = inject_html(once, by_section)
         assert once.count("qa-meta-bar") == twice.count("qa-meta-bar")
+        assert once.count("qa-play--inline") == twice.count("qa-play--inline")
 
     def test_inject_chapters(self, tmp_path: Path):
         map_dir = tmp_path / "maps"
