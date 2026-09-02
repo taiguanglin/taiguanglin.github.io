@@ -258,22 +258,44 @@ def _is_followup_question(text: str) -> bool:
 
     Used inside a multi-``Taiguanglin：`` block to decide whether a paragraph
     that appears after an answer but before the next marker should open a new
-    group's ``q_paras`` instead of being glued onto the current answer.  This is
-    what the original design intended ("paragraphs after an answer but before
-    the next marker are the next follow-up question") but never implemented —
-    the mode stayed "a" forever, which merged follow-up questions (and later
-    even their answers) into one answer blob (audio_map2 2025-05-17 极乐是我家).
+    group's ``q_paras`` instead of being glued onto the current answer.
+
+    This is what the original design intended ("paragraphs after an answer but
+    before the next marker are the next follow-up question") but never
+    implemented — the mode stayed "a" forever, which merged follow-up questions
+    (and later even their answers) into one answer blob (audio_map2
+    2025-05-17 极乐是我家).
+
+    Only the self-contained, near-unambiguous signals live here (a numbered lead
+    like「1、」「3、」「第N问」— Tai never opens an answer paragraph with a bare
+    number-enumerator).  The weaker "ends with ?" / "short + question word"
+    signals are far too prone to firing on Tai's own rhetorical questions and
+    short answer-restatements (「每日念八百遍是如何计数的？拿佛珠来计数。」), so
+    those are exposed separately (see :func:`_is_followup_question_trail` and
+    :func:`_is_followup_question_hint`) and only trusted by ``_block_to_chunk``
+    when the very next non-empty line is a ``Taiguanglin：`` marker.
     """
     t = text.strip()
     if not t:
         return False
-    if QUESTION_TRAIL_RE.search(t):
-        return True
     if QUESTION_LEAD_RE.match(t) and not _looks_like_answer_continuation(t):
         return True
-    if len(t) < 40 and QUESTION_HINT_RE.search(t):
-        return True
     return False
+
+
+def _is_followup_question_trail(text: str) -> bool:
+    """The "ends with ?" arm of follow-up detection, isolated so the caller can
+    gate it on a marker-lookahead (see :func:`_block_to_chunk`)."""
+    t = text.strip()
+    return bool(t) and bool(QUESTION_TRAIL_RE.search(t))
+
+
+def _is_followup_question_hint(text: str) -> bool:
+    """The "short line carrying a question word" arm, isolated for the same
+    marker-lookahead gating (short answer-restatements like「每日念八百遍是如何
+    计数的？拿佛珠来计数。」would otherwise misfire)."""
+    t = text.strip()
+    return bool(t) and len(t) < 40 and bool(QUESTION_HINT_RE.search(t))
 
 
 def _looks_like_answer_continuation(text: str) -> bool:
@@ -344,6 +366,11 @@ def _block_to_chunk(lines: List[str]) -> Chunk:
                 if pre:
                     if mode == "q":
                         ch.groups[-1].q_paras.append(pre)
+                    elif _is_followup_question(pre):
+                        # Glued「3、…问题。Taiguanglin：」in answer mode — the
+                        # numbered pre-text is the next follow-up question, not
+                        # answer prose; open a fresh q group for it.
+                        ch.groups.append(Group(q_paras=[pre]))
                     else:
                         ch.groups[-1].a_paras.append(pre)
                 ch.groups.append(Group())
@@ -352,12 +379,17 @@ def _block_to_chunk(lines: List[str]) -> Chunk:
                     ch.groups[-1].a_paras.append(rest)
             elif mode == "q":
                 ch.groups[-1].q_paras.append(line)
-            elif _is_followup_question(line):
+            elif _is_followup_question(line) or (
+                (_is_followup_question_trail(line) or _is_followup_question_hint(line))
+                and _next_marker_within(nonempty, idx, lookahead=1)
+            ):
                 # Post-answer paragraph that reads like a NEW question (e.g. a
                 # staggered multi-question post: Q1→A1→Q2→A2…).  Open a fresh
                 # group so the next Taiguanglin： marker answers THIS question,
                 # not the previous one.  Fixes 2025-05-17 极乐是我家 (Q2 熬腿
                 # was glued onto A1 往生愿's answer, Q3/A3 dropped entirely).
+                # The "ends with ?" arm is gated on an imminent marker so Tai's
+                # rhetorical「…吗？」answer paragraphs are never split.
                 ch.groups.append(Group())
                 mode = "q"
                 ch.groups[-1].q_paras.append(line)
@@ -365,6 +397,22 @@ def _block_to_chunk(lines: List[str]) -> Chunk:
                 ch.groups[-1].a_paras.append(line)
         idx += 1
     return ch
+
+
+def _next_marker_within(nonempty: List[str], idx: int, lookahead: int = 1) -> bool:
+    """True if a *standalone* Taiguanglin： marker line appears within the next
+    `lookahead` non-empty lines (exclusive of the current line at `idx`).
+
+    Only a line that STARTS with the marker counts (``ANSWER_MARKER_RE.match``).
+    A line with an *embedded* marker（「…問題？Taiguanglin：」）means the next
+    question is glued onto the same line, so it must NOT count as "a marker sits
+    immediately after this paragraph" — otherwise a short answer-restatement
+    right before a glued Q+marker would be mis-split (2025-05-16 椰子糕不错).
+    """
+    for j in range(idx + 1, min(idx + 1 + lookahead, len(nonempty))):
+        if ANSWER_MARKER_RE.match(nonempty[j]):
+            return True
+    return False
 
 
 def _scan_body_events(body: List[str]) -> List[tuple]:
