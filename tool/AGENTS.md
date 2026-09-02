@@ -12,7 +12,7 @@
 | `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；13–21 章（PDF）播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/books2ebook/` | 坐禅系列 + 講經系列共十本原書 → 靜態電子書（簡/繁、全量搜尋、每講播放鈕）。 | `books/*.pdf` → `ebook/` | `README.md` |
 | `tool/pdf_audio_map/` | 對齊 PDF 章節（13–21）↔ 音檔時間 → 音訊映射 JSON（SoT：`tool/word2ebook/data/audio_map/`）。 | SRT/opus → `data/audio_map/*.json` | `README.md` |
-| `tool/word_audio_map2/` | 對齊**時間序** Word 彙總（2024-02…2025-05）↔ SRT → `audio_map2/*.json`（`build_maps.py`）。段上的 `chapter_question_ids` 已固化，供前 12 章注入。 | docx + SRT → `audio_map2/*.json` | `README.md` |
+| `tool/word_audio_map2/` | 對齊**時間序** Word 彙總（2024-02…2025-05）↔ SRT → `audio_map2/*.json`（`build_maps.py`）。段上的 `chapter_question_ids` 供前 12 章注入；**分段會隨 `build_maps.py` 的 Q&A 偵測調整**，重分段後以 `link_chapters.py` 重新寫回章節對應（詳見「分段與章節對應」）。 | docx + SRT → `audio_map2/*.json` | `README.md` |
 | `tool/sense_voice/` | FunASR 中文 ASR → `.srt`/`.txt`（被 `pdf_audio_map/fill_misses.py` 呼叫做補漏）。 | mp3/wav → srt/txt | `README.md` |
 | `tool/audio_denoiser/` | Facebook Denoiser 語音去雜音（ASR 前處理）。 | mp3/wav → mp3/wav | `README.md` |
 | `tool/stories2html/` | 實修故事原始檔 → HTML 閱讀頁 + index/sitemap 補丁。 | `stories/<原始檔>` → `stories/<slug>.html` | `README.md`（metadata SoT：`docs.py`） |
