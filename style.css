@@ -64,7 +64,7 @@
     --transition-slow: all 0.5s ease;
 }
 
-/* Chapter Navigation Styles (used by wenda/chapter-*.html) */
+/* Chapter Navigation Styles (used by wenda2/chapter-*.html) */
 .chapter-navigation {
     background: white;
     border-radius: 12px;
@@ -1715,6 +1715,51 @@ a.topic-item:hover {
 .footer-bottom p {
     margin-bottom: var(--spacing-xs);
 }
+
+/* Public-site chrome — mirrors index.html's current design system.
+   Kept here so hand-maintained chapter pages and generated story readers
+   share the same navigation, typography, and footer treatment. */
+:root {
+    --primary-pink: #e04f8c;
+    --light-pink: #f7c9db;
+    --soft-pink: #fbe3ec;
+    --pale-pink: #fdf3f7;
+    --deep-pink: #c93672;
+    --white: #ffffff;
+    --light-gray: #fdf6f9;
+    --gray: #8a6a78;
+    --dark-gray: #6b2f4a;
+    --black: #2f1b26;
+    --pink-gradient: linear-gradient(135deg, #f7c9db 0%, #e978a7 55%, #c93672 100%);
+    --soft-gradient: linear-gradient(180deg, #fdf6f9 0%, #fbe3ec 100%);
+    --font-primary: 'Noto Sans TC', sans-serif;
+}
+
+body { background: #fdf6f9; color: #2f1b26; }
+.navbar { background: transparent; backdrop-filter: none; box-shadow: none; padding: 0; transition: background .35s ease, box-shadow .35s ease, backdrop-filter .35s ease; }
+.navbar.scrolled { background: rgba(255,255,255,.86); backdrop-filter: blur(14px); box-shadow: 0 4px 24px rgba(201,54,114,.10); }
+.nav-container { max-width: 1180px; padding: 16px 24px; }
+.nav-logo { display: flex; flex-direction: column; line-height: 1.15; }
+.nav-logo h2, .nav-logo .logo-name { margin: 0; color: #2f1b26; font-family: 'Noto Serif TC', serif; font-size: 22px; font-weight: 700; letter-spacing: .5px; }
+.nav-logo span, .nav-logo .logo-sub { color: #8a6a78; font-size: 11px; font-weight: 400; letter-spacing: 3px; }
+.navbar.scrolled .nav-logo h2, .navbar.scrolled .nav-logo .logo-name { color: #c93672; }
+.nav-menu { gap: 6px; }
+.nav-link { padding: 9px 15px; color: #2f1b26; border-radius: 999px; font-size: 15px; font-weight: 500; }
+.nav-link:hover { color: #c93672; background: rgba(224,79,140,.08); }
+.nav-link::after { display: none; }
+.nav-dropdown-toggle { gap: 0; }
+.nav-dropdown-toggle i { display: none; }
+.nav-dropdown-menu { top: calc(100% + 8px); left: 50%; min-width: 180px; margin: 0; padding: 8px; border: 1px solid #f7c9db; border-radius: 14px; box-shadow: 0 12px 35px rgba(201,54,114,.16); }
+.nav-dropdown-menu::before { display: none; }
+.nav-dropdown-item { padding: 9px 12px; border-radius: 8px; color: #6b2f4a; font-size: 14px; font-weight: 500; }
+.nav-dropdown-item:hover { color: #c93672; background: #fdf3f7; }
+.hamburger span { width: 24px; height: 2px; background: #c93672; }
+.footer { background: #2f1b26; padding: 56px 0 24px; }
+.footer-section h3, .footer-section h4 { color: #f7c9db; }
+.footer-section p, .footer-section ul li a { color: rgba(255,255,255,.68); }
+.footer-section ul li a:hover { color: #f7c9db; }
+.footer-bottom { border-color: rgba(255,255,255,.13); color: rgba(255,255,255,.48); }
+.chapter-hero .hero-title, .story-hero h1 { font-family: 'Noto Serif TC', serif; }
 
 /* Dharma Teaching Section */
 .dharma-teaching-section {

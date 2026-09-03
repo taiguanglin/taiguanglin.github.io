@@ -19,17 +19,18 @@ SITE = "https://taiguanglin.info"
 NAV = """    <nav class="navbar" id="navbar">
         <div class="nav-container">
             <div class="nav-logo">
-                <h2>TaiGuangLin</h2>
-                <span>次世代終極佛法</span>
+                <span class="logo-name">TaiGuangLin</span>
+                <span class="logo-sub">次世代終極佛法</span>
             </div>
             <div class="nav-menu" id="nav-menu">
                 <a href="../index.html#home" class="nav-link">首頁</a>
                 <a href="../index.html#about" class="nav-link">禪師</a>
+                <a href="../index.html#start" class="nav-link">入門路徑</a>
                 <a href="../index.html#books" class="nav-link">著作</a>
                 <a href="../wenda2.html" class="nav-link">問答錄2</a>
                 <a href="../stories.html" class="nav-link">故事</a>
-                <div class="nav-dropdown">
-                    <a href="#" class="nav-link nav-dropdown-toggle">圖解 <i class="fas fa-chevron-down"></i></a>
+                <div class="nav-dropdown" id="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
                         <a href="../infographic.html" class="nav-dropdown-item">名詞圖解</a>
                         <a href="../mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
@@ -275,7 +276,7 @@ PAGE = """<!DOCTYPE html>
     <link rel="shortcut icon" type="image/x-icon" href="../images/favicon.ico">
     <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="assets/story.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script type="application/ld+json">
 {jsonld}

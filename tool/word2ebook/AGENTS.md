@@ -70,7 +70,7 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 ## Source vs generated output (`wenda2_ebook/`)
 
 `../../wenda2_ebook/` is **build output**, not the place to implement features.  
-(Repo-wide: also see root `AGENTS.md` — `wenda/` is a separate hand TOC, not this output.)
+(Repo-wide: also see root `AGENTS.md` — `wenda2/` is a separate hand TOC, not this output.)
 
 | Edit here (source of truth) | Do **not** hand-edit (regenerated / overwritten) |
 |-------------------------------|--------------------------------------------------|
