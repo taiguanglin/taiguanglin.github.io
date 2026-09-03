@@ -759,8 +759,12 @@
           "status": "manual",
           "notes": "已人工校驗（ASR變形較大）",
           "srt_preview": "我这样外人告诉你的都是指根据我们的经经验和听来的来告诉你的就是进攻不行的时候可以试着外攻啊动攻这个可以的嗯长tz六七八啊念地藏金嗯花钱导致打哈欠流眼泪嗯这下面有人说了是净化心灵的过程嗯如果你认为这是圆心在做那也可以也也有这个现象而且看那些请负级的出马线啊都是降经之前先求地",
-          "chapter_question_ids": [],
-          "chapter_indexes": [],
+          "chapter_question_ids": [
+            "question-e59fca8c2159"
+          ],
+          "chapter_indexes": [
+            7
+          ],
           "index": 24,
           "question_id": "question-67f7079febd9",
           "stable_key": "2024-04-22-main#24",
@@ -6061,8 +6065,12 @@
           "status": "manual",
           "notes": "已人工校驗",
           "srt_preview": "但是你你血清嗯世间各教育各教教育戒杀但却有门派都争斗甚至宗教战争怎么看这个情况啊因为人本来就是喜欢杀的啊众生本来就有很强烈的杀戮之心杀戮的习气所以不管什么理论给他们都会拿来作为杀生的呃杀戮的战争的理由的所以你给的这宗教哪怕他是戒杀的宗教他后面也会被拿来作为一个杀戮的一个呃理论根据我者宗教理由吧啊所以这是指众生的问题啊并",
-          "chapter_question_ids": [],
-          "chapter_indexes": [],
+          "chapter_question_ids": [
+            "question-885155b21ce0"
+          ],
+          "chapter_indexes": [
+            4
+          ],
           "index": 37,
           "question_id": "question-f75e5d118706",
           "stable_key": "2024-04-27-main#37",

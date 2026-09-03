@@ -37,8 +37,15 @@ Ambiguities are resolved by answer_text overlap; anything still ambiguous or
 unmatched is left unlinked and reported for manual review.
 
 Usage (from the repo root or tool/word_audio_map2):
-    python3 tool/word_audio_map2/link_chapters.py --apply            # write back
+    python3 tool/word_audio_map2/link_chapters.py --apply            # fill ONLY unlinked segments
+    python3 tool/word_audio_map2/link_chapters.py --apply --overwrite # REPLACE every segment's links
     python3 tool/word_audio_map2/link_chapters.py                    # dry-run report
+
+By default (no --overwrite) writeback is FILL-EMPTY-ONLY: segments that already
+carry ``chapter_question_ids`` (frozen / manually reviewed) are never touched;
+only segments with no chapter link receive the fresh match.  ``--overwrite``
+re-derives the whole mapping and drops any existing qid it does not re-match —
+use only when you intend to trust content matching over the frozen links.
 """
 
 from __future__ import annotations
@@ -262,6 +269,11 @@ def find_candidates(
 def main() -> int:
     ap = argparse.ArgumentParser(description="Link audio_map2 → ebook chapters")
     ap.add_argument("--apply", action="store_true", help="write chapter_question_id back into audio_map2 JSON")
+    ap.add_argument("--overwrite", action="store_true",
+                    help="with --apply: REPLACE each segment's chapter links with the fresh match "
+                         "(drop any existing qid that is not re-matched). Default is FILL-EMPTY-ONLY: "
+                         "only segments with NO existing chapter_question_ids get linked; "
+                         "already-linked (frozen/verified) segments are never touched.")
     ap.add_argument("--report", default=str(ROOT / "tool" / "word_audio_map2" / "build" / "link_report.json"),
                     help="where to dump the link report (absolute path under repo root)")
     args = ap.parse_args()
@@ -319,7 +331,21 @@ def main() -> int:
             by_seg[(info["session_id"], info["seg_index"])].append(
                 (qid, info["chapter_index"])
             )
+        # Global set of qids ALREADY assigned anywhere, so fill-empty-only can
+        # avoid re-assigning a qid that already lives on another session
+        # (content matching is global, so identical questions asked across two
+        # days would otherwise get the same qid on both — breaking the frozen
+        # one-qid-one-session convention).
+        already_assigned: set = set()
+        for p in sorted(AUDIO_MAP2_DIR.glob("*.json")):
+            d = json.loads(p.read_text(encoding="utf-8"))
+            for s in d.get("sessions") or []:
+                for g in s.get("segments") or []:
+                    already_assigned.update(g.get("chapter_question_ids") or [])
+
         written = 0
+        added = 0
+        removed = 0
         for path in sorted(AUDIO_MAP2_DIR.glob("*.json")):
             data = json.loads(path.read_text(encoding="utf-8"))
             touched = False
@@ -327,18 +353,54 @@ def main() -> int:
                 sid = s["session_id"]
                 for seg in s.get("segments") or []:
                     idx = seg.get("index")
-                    qids = by_seg.get((sid, idx))
-                    if qids:
-                        seg["chapter_question_ids"] = [q for q, _ in qids]
-                        seg["chapter_indexes"] = [ci for _, ci in qids]
-                        seg.pop("chapter_question_id", None)  # legacy cleanup
-                        seg.pop("chapter_index", None)
-                        touched = True
-                        written += len(qids)
-                        by_seg[(sid, idx)] = []
+                    matched = by_seg.get((sid, idx))
+                    existing_qids = list(seg.get("chapter_question_ids") or [])
+                    existing_idx = list(seg.get("chapter_indexes") or [])
+                    if args.overwrite:
+                        # REPLACE the whole list with the fresh match.
+                        if not matched and existing_qids:
+                            removed += len(existing_qids)
+                        new_qids = [q for q, _ in matched]
+                        new_idx = [ci for _, ci in matched]
+                        removed += len([q for q in existing_qids if q not in new_qids])
+                    else:
+                        # FILL-EMPTY-ONLY (safe default): a segment that already
+                        # carries frozen/manually-verified chapter links is left
+                        # untouched — content matching is too prone to false
+                        # positives on generic greetings / long answers to risk
+                        # appending extras.  Only segments with NO chapter link
+                        # get the fresh match, and only qids not already claimed
+                        # on some other segment (avoids cross-session duplicates
+                        # from a question asked verbatim on two days).
+                        if existing_qids:
+                            continue
+                        if not matched:
+                            continue
+                        new_qids = []
+                        new_idx = []
+                        for q, ci in matched:
+                            if q in already_assigned:
+                                continue
+                            new_qids.append(q)
+                            new_idx.append(ci)
+                            already_assigned.add(q)
+                        if not new_qids:
+                            continue
+                        added += len(new_qids)
+                    seg["chapter_question_ids"] = new_qids
+                    seg["chapter_indexes"] = new_idx
+                    seg.pop("chapter_question_id", None)  # legacy cleanup
+                    seg.pop("chapter_index", None)
+                    touched = True
+                    written += len(new_qids)
+                by_seg[(sid, idx)] = []
             if touched:
                 path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         print(f"wrote chapter_question_ids linking {written} question(s) onto segments")
+        if not args.overwrite:
+            print(f"  fill-empty-only: ADDED {added} link(s) to previously-unlinked segments (linked segments untouched)")
+        else:
+            print(f"  overwrite mode: dropped {removed} existing link(s)")
     else:
         print("(dry run — pass --apply to write chapter_question_ids)")
 

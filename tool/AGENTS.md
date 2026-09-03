@@ -26,7 +26,6 @@
 
 - ~~`tool/qa_resplit/`~~ — 對 `qa/*.txt`（校對轉錄稿，2025-11~2026-03）做 resplit/realign/TW-normalize；`qa/` 已刪，不再使用。
 - ~~`tool/word_audio_map/`~~ — 主題式對齊器（舊 `data/audio_map_word/` 流程），源碼已刪。其 `.venv` 已搬至 `tool/word_audio_map2/`（供 `build_maps.py` 與 word2ebook 生成使用）。
-- ~~`tool/word_audio_map2/link_chapters.py`~~ — 把 `chapter_question_ids` 寫回 audio_map2 段的工具；其產出已固化在 `audio_map2/*.json`，連同三個 frozen 輸入（`build/{questions,chrono_sessions,qid_bridge_v2}.json`）一併移除。
 - ~~`tool/video_creator/`~~ — 離線 ffmpeg（聲音 + `animation.mp4` → 影片），站外獨立用途，已移除。
 
 ---
@@ -40,7 +39,7 @@
 tool/word2ebook/  (gen_all.py)
    ├─ inject_chapters():           讀 tool/word2ebook/data/audio_map/*.json  (← tool/pdf_audio_map/)
    └─ inject_word_chapters():      讀 audio_map2/*.json 的 chapter_question_ids
-        │                            (已固化在 audio_map2 JSON)
+        │                            (由 link_chapters.py 寫回；分段調整後需重跑)
         ▼
 wenda2_ebook/  ← 建構產物，勿手改
 
@@ -57,7 +56,16 @@ SRT / opus ── tool/pdf_audio_map/ ──► tool/word2ebook/data/audio_map/*
                                         (補漏時經 tool/sense_voice/ 重新轉寫)
 
 audio_map2/*.json 的產生：問答錄2 docx + SRT ── tool/word_audio_map2/build_maps.py ──► audio_map2/*.json
+                                       └── 重分段後：link_chapters.py ──► 寫回 chapter_question_ids / chapter_indexes
 ```
+
+### 分段與章節對應（word_audio_map2）
+
+`build_maps.py` 把 Word 彙總切成「問答段」時，段數會隨 Q&A／後續題偵測邏輯調整；例如跨多個 `Taiguanglin：` 標記的同一作者貼文，可能被拆成多個子問答段。**過去假設「`audio_map2/*.json` 的分段不會再調整、`chapter_question_ids` 一次凍結即可」已不成立** —— 拆分邏輯會持續修正，所以：
+
+- 重分段（`build_maps.py` 調整後）應以 `link_chapters.py` **為主**重新寫回每段的 `chapter_question_ids` / `chapter_indexes`（內容比對 `build/questions.json`）。預設 `--apply` 為 **fill-empty-only**——只補「缺章節」的段、絕不改已有人工校對連結的段、且只補尚未被任何段認領的 qid；`--apply --overwrite` 才整份重導（會丟掉未重新比到的既有 qid，慎用）。
+- `link_chapters.py` 因過去假定「分段不再變」而被移除，現已**自 git 歷史恢復**（`tool/word_audio_map2/link_chapters.py`），供未來重跑。對帳驗證用 `validate_relink.py`（凍結 qid 零遺失 + 無新增跨 session 重複 qid）。
+- 已人工校對的 `start`/`end`、`meta.lastPlayed` 等欄位在重分段時應**按內容比對搬移保留**，不要整份重建而遺失。
 
 > 註：若未來不再新增/修改講經 PDF 或音檔，**上述標記【可刪除】的三個講經工具（`build_jiangjing_pdfs.py`、`jiangjing2audio.py`、`normalize_jiangjing_audio.py`）可整包移除**；`gen_all.py` 重建電子書時只需：讀 `books/*.pdf` → 解析/分段 → 產生 HTML → 依 `audio_map.py` 映射插入播放鈕，不再涉及 PDF 組裝與音檔轉檔。
 

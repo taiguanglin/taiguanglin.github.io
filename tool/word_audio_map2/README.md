@@ -145,11 +145,93 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 # → http://localhost:8000/audio_map2/
 ```
 
-## 章節對齊分段（chapter-aligned segmentation）— 已移除
+## 重分段 → 重對應章節（resplit + relink）
 
-> 舊版 `build_maps.py` 曾用主題式章節地圖
-> `tool/word2ebook/data/audio_map_word/word-*.json` 當索引，把時間序彙總裡
-> 被併的編號子題（`1、2、3、…`）拆開。該索引與其 `word_audio_map` 對齊器
-> 已徹底移除，`_split_chunk_by_chapters()` 也已刪除：現在 `align_part` 每個
-> chunk 直接成一整段、**不再拆子題**。現有 `audio_map2/*.json` 已是最終分段，
-> 勿再重跑 `build_maps.py --all`（會失去原本的拆分粒度）。
+> **先講結論**：過去曾假定「`audio_map2/*.json` 的分段已是最終版、不再調整，
+> `chapter_question_ids` 凍結一次即可」。這個假定**已不成立** ——
+> `build_maps.py` 的 Q&A／後續題偵測（`_is_followup_question`）會持續修正；
+> 每次改了分段邏輯，就必須重分段，並以 `link_chapters.py` **為主**重寫回
+> 每段的 `chapter_question_ids` / `chapter_indexes`。
+
+### 背景
+
+舊版 parser 只看「問題」不看「回答」，跨多個 `Taiguanglin：` 標記的同一作者
+貼文（例：`2025-05-17 極樂是我家`）的四組子問答會被黏成一團。`build_maps.py`
+現在會把後續子題拆成獨立段。拆分邏輯屬長期演進，因此需要一套「重分段不遺失
+已校對資料」的流程。
+
+### 兩個層面
+
+| 層面 | 工具 | 做什麼 |
+|------|------|--------|
+| 保留已校對時間/對應 | `apply_resplit.py` | 用**新的** `_block_to_chunk` 重跑 parser 產出文字分段，再**按內容比對**（q_text 精確 → answer_text 包含 → 模糊）把舊段的 `start/end`、`meta.lastPlayed`、`status/confidence/notes`、`chapter_question_ids` 搬過去 |
+| 重新建立章節對應 | `link_chapters.py` | 內容比對 `build/questions.json`，把每段的 `chapter_question_ids` / `chapter_indexes` 寫回（來源見檔首 docstring） |
+
+**推薦順序**（以 `link_chapters.py` 為章節對應之主；`apply_resplit.py` 只負責
+「拆文字 + 搬已校對欄位」，而新拆出的子題章節對應統一交給 `link_chapters.py`）：
+
+```bash
+cd tool/word_audio_map2
+
+# 1) dry-run 先看每月段數變化與 match 統計
+.venv/bin/python apply_resplit.py
+
+# 2) 重分段 + 搬移已校對欄位（只寫有變動的月份）
+.venv/bin/python apply_resplit.py --apply
+
+# 3) 以 link_chapters.py 為主，補齊章節對應
+.venv/bin/python link_chapters.py                    # dry-run（報表 → build/link_report.json）
+.venv/bin/python link_chapters.py --apply            # 填「缺章節」的段（預設 fill-empty-only）
+# 若真要整份重導章節對應（會用內容比對取代凍結對應，慎用）：
+# .venv/bin/python link_chapters.py --apply --overwrite
+
+# 4) 驗證（段數/章節覆蓋/時間單調/index 連續/凍結 qid 零遺失/無跨月誤填）
+.venv/bin/python validate_resplit.py
+.venv/bin/python validate_relink.py
+```
+
+> **`link_chapters.py` 寫回語意**（重要）：
+> - 預設 `--apply` 是 **fill-empty-only**——只對「完全沒有 `chapter_question_ids`」
+>   的段做內容比對補章節；已有人工校對連結的段**絕不更動**，且只補「尚未被任何
+>   段認領」的 qid（避免同一問題在兩天各問一次時，把同一 qid 誤掛到兩段、造成
+>   跨 session 重複）。
+> - `--apply --overwrite` 才做**整份重導**：以內容比對結果取代每段既有 qid，
+>   未重新比到的既有 qid 會被丟掉。除非你確定要相信內容比對、放棄凍結對應，
+>   否則不要用。
+> - `link_chapters.py` 只加 join key（`chapter_question_ids`/`chapter_indexes`），
+>   不改任何文字/時間/狀態。
+
+> 只改某個月：`apply_resplit.py --month 2025-05`（可重複）；
+> `link_chapters.py` 對全部月份比對（它不改文字/時間/狀態，預設只補缺章節的段）。
+> 驗證時把 `validate_relink.py` 一併跑：它會對 git `HEAD` 逐月比對，強制
+> 「凍結 qid 零遺失」與「無新增跨 session 重複 qid」（即誤填訊號）。
+
+### 輔助腳本（`apply_resplit.py` 與 `link_chapters.py` 之間的墊補）
+
+如果你**不想整份重跑 `link_chapters.py`**，而只想保留原有凍結章節對應、只把
+「新拆出的子題」補上章節，可用以下三支（依序、各帶 `--apply` 才寫檔，皆
+dry-run 預設）：
+
+1. `fill_orphan_chapters.py` —— 為 `notes` 帶 `resplit` 且缺章節的新子題，
+   依 q_text（再 fallback answer_text）比對 `build/questions.json` 補上
+   `chapter_question_ids`。
+2. `redistribute_chapters.py` —— 舊段若把多個子題凍結在同一段
+   （`chapter_question_ids=[A,B,…]`），重分段後同一份清單會被複製到每個子段；
+   此腳本把清單**按內容重新分配**回各子段（保證任一 frozen qid 都不丟）。
+3. `reconcile_qids.py` —— 最終對帳：比對 git `HEAD` 與重分段後結果，任何
+   在原始凍結映射裡出現、但重分段後消失的 qid，掛回最匹配的段。
+
+三者加上 `validate_resplit.py` 就是我前次「只重拆文字、保留已校對時間與對應」
+所採用的流程；若未來改成分段邏輯為主，直接以 `link_chapters.py --apply` 取代
+第 2、3 步即可。
+
+### 注意
+
+- **絕對不要**整份重建 `audio_map2/*.json` 而丟掉人工校對的 `start/end` 與
+  `meta.lastPlayed`；重分段一律走內容比對遷移（`apply_resplit.py`）。
+- `build/questions.json` 為 `link_chapters.py` 的內容比對來源；它是從
+  `wenda2_ebook/01.html…12.html` 重建的（5746 題）。目前有極少數（39 筆）
+  frozen qid 不在其中，`reconcile_qids.py` 即以凍結段的 `chapter_indexes`
+  兜底，不因缺題目而遺失對應。
+- 重分段後務必跑 `validate_resplit.py`；它會回報 index 非連續（`2025-03-12`
+  合併時間軸為已知既有）、跨 session 重複 qid（已知既有）等告警。

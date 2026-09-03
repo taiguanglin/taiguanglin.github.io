@@ -616,6 +616,27 @@ def _is_page_number_line(line, text):
     return line.size < 11.5 and re.fullmatch(r"\d{1,4}", text.strip())
 
 
+_HANZI_RE = re.compile(r"[\u4e00-\u9fff]")
+
+
+def _has_inline_sutra_body_mix(line):
+    """判斷一行是否「經文（楷體）與講解（黑體）緊連混排」。
+
+    講經系列（如楞伽）中，講解者常於一句白話裡引述原經文，且經文
+    引用與講解文字被排在**同一個視覺行**（楷體 span 與黑體 span 交
+    替出現，兩者都含漢字）。這種經文引用前後都不滿足「獨立成段（前後
+    都是換行）」的條件，不應被拆成獨立的經文區塊；反觀純粹的標點符號
+    用黑體（如「藏识大海境界风动，转识浪起，」的句尾逗號）不算混排。
+
+    回傳 True 表示該行是「經文緊連講解」，應整行歸入講解正文。
+    """
+    body_hanzi = any(_HANZI_RE.search(sp[0]) for sp in line.spans
+                     if sp[1] in _BODY_FONTS_STD)
+    sutra_hanzi = any(_HANZI_RE.search(sp[0]) for sp in line.spans
+                      if sp[1] in _SUTRA_FONTS_STD)
+    return body_hanzi and sutra_hanzi
+
+
 def _split_mixed_line(line):
     """把一行內「楷(經文)/黑(解說)」混排的 PDF 行切成多個子行。
 
@@ -681,18 +702,29 @@ def _split_mixed_line(line):
     return subs or [line]
 
 
-def _parse_jiangjing(ctx, with_chapters=False):
+def _parse_jiangjing(ctx, with_chapters=False, inline_sutra_to_body=False):
     """講經系列通用解析：h2=講次（含音檔）、h3=章/品、quote=楷體原經文、
-    para=正文段落（依縮排切分）。"""
+    para=正文段落（依縮排切分）。
+
+    ``inline_sutra_to_body``：講解文字中**引述**原經文（楷體）且與講解
+    緊連在同一視覺行時，整行歸入講解正文（para），不拆成獨立經文區塊。
+    只有「前後都是換行、獨立成段」的原經文才分段為 quote。楞伽（lengqie）
+    開此選項；楞嚴（lengyanjing）因 docx 轉 PDF 後「經文結尾 + 解說開頭」
+    黏同行，仍需行內拆分，維持舊行為。
+    """
 
     para = ""
     quote = ""
     body_left = None
     quote_left = None
     title_buf = []
+    # 講解引述經文的「連續流」狀態：講解文字中引述的原經文（楷體）緊連
+    # 講解、前後無換行/段落分隔時，這些楷體片段（含跨行的純楷體續行）應
+    # 整段併入講解正文，而非拆成獨立 quote。縮排行（新段落）會結束該狀態。
+    inline_cite = False
 
     def flush():
-        nonlocal para, quote, quote_left, body_left
+        nonlocal para, quote, quote_left, body_left, inline_cite
         if para.strip():
             ctx.append("para", para.strip())
         if quote.strip():
@@ -700,6 +732,7 @@ def _parse_jiangjing(ctx, with_chapters=False):
         para, quote = "", ""
         quote_left = None
         body_left = None
+        inline_cite = False
 
     def flush_title():
         nonlocal title_buf, para, body_left
@@ -723,6 +756,31 @@ def _parse_jiangjing(ctx, with_chapters=False):
         for line in ls:
             t = _clean(line.text)
             if not t:
+                continue
+            # 講解引述經文、經文與講解緊連同行（楷+黑漢字混排）→ 整行併入正文，
+            # 不拆成獨立經文；否則經文引用會錯斷成 quote 而切開講解。並進入
+            # 「引述流」狀態，讓其後緊接的純楷體續行也併入講解。
+            if inline_sutra_to_body and _has_inline_sutra_body_mix(line):
+                if title_buf:
+                    flush_title()
+                if quote.strip():
+                    flush()
+                ds = _de_space(t)
+                if _is_page_number_line(line, t) or _META_RE.match(ds):
+                    continue
+                if body_left is None:
+                    body_left = line.x0
+                else:
+                    body_left = min(body_left, line.x0)
+                if para.strip() and _is_indent_start(line, body_left):
+                    flush()
+                    # flush 會重置 body_left，此處重新錨定為本行縮排量，
+                    # 使後續緊連的楷體引述續行（頂格）能被正確判為「非縮排」。
+                    body_left = line.x0
+                para = _join(para, t)
+                # 引述流狀態：此行（無論縮排與否）都引述了經文並緊連講解，
+                # 故在 flush 之後才設 True，讓其後的純楷體續行也併入講解。
+                inline_cite = True
                 continue
             # 行內楷/黑混排拆分（楞嚴 docx 轉 PDF 後的常見問題）：
             # 把同一行裡不同字型的相鄰 span 切成多個子行，後續主流程逐個處理。
@@ -780,6 +838,12 @@ def _parse_jiangjing(ctx, with_chapters=False):
                     # 四十二章 的「经序/序分」楷體行是章節標題的裝飾性重複（右側邊），略過
                     if with_chapters and ds in {"经序", "序分", "前言"}:
                         continue
+                    # 引述流中的頂格楷體 = 講解引述經文的跨行續行（前一行是
+                    # 楷/黑混排或引述續行），緊連講解、無段落分隔 → 併入講解。
+                    if (inline_sutra_to_body and inline_cite and body_left is not None
+                            and not _is_indent_start(line, body_left)):
+                        para = _join(para, t)
+                        continue
                     if para.strip():
                         flush()
                     if quote_left is None:
@@ -791,6 +855,7 @@ def _parse_jiangjing(ctx, with_chapters=False):
                     quote = _join(quote, t)
                     continue
                 # 6. 正文段落
+                inline_cite = False
                 if quote.strip():
                     flush()
                 if body_left is None:
@@ -824,7 +889,7 @@ def _parse_jiangjing(ctx, with_chapters=False):
 
 
 def parse_lengqie(ctx):
-    return _parse_jiangjing(ctx)
+    return _parse_jiangjing(ctx, inline_sutra_to_body=True)
 
 
 def parse_liuzutanjing(ctx):

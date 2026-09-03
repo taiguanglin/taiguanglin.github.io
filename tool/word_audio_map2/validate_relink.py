@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+"""Month-by-month validation of audio_map2/*.json after a relink.
+
+Compares the working tree against git HEAD (the frozen baseline) and reports, per
+month and globally:
+
+  1. JSON parses; sessions/segments well-formed.
+  2. index contiguous 1..N (flagged, not failed, for the known 2025-03-12
+     combined-timeline quirk).
+  3. stable_key / question_id unique within the month.
+  4. FROZEN-QID INVARIANT: every chapter qid present in git HEAD still appears
+     somewhere in the tree (no curated link lost).
+  5. NEW cross-session qid (a qid that spans two sessions AFTER relink but did
+     not before) — the tell-tale of a false-positive fill.
+  6. meta.lastPlayed count preserved vs git HEAD.
+  7. per-month chapter coverage delta (segments gaining a chapter link).
+
+Exit 0 only when hard invariants (JSON, contiguity, uniqueness, zero frozen qid
+loss, no new cross-session qid, lastPlayed preserved) all hold.
+"""
+
+from __future__ import annotations
+
+import json
+import subprocess
+import sys
+from collections import Counter, defaultdict
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+AUDIO_MAP2_DIR = ROOT / "audio_map2"
+KNOWN_NONCONTIG = {"2025-03-12-tieba", "2025-03-12-wechat"}
+
+
+def git_show(rel: str) -> dict:
+    out = subprocess.run(["git", "show", f"HEAD:{rel}"],
+                         capture_output=True, text=True).stdout
+    return json.loads(out) if out else {}
+
+
+def main() -> int:
+    errors: list[str] = []
+    warnings: list[str] = []
+
+    total_segs = 0
+    total_with_ch = 0
+    new_lp = 0
+    orig_lp = 0
+    frozen_qids: Counter = Counter()   # qid -> n segments at HEAD
+    new_qids: Counter = Counter()
+    # qid -> set(session_id) at HEAD vs now, to detect NEW cross-session qid
+    frozen_qid_sess: dict[str, set] = defaultdict(set)
+    new_qid_sess: dict[str, set] = defaultdict(set)
+
+    print(f"{'month':10} {'segs':>5} {'+ch':>5} {'Δcoverage':>10}  notes")
+    print("-" * 60)
+
+    for path in sorted(AUDIO_MAP2_DIR.glob("*.json")):
+        rel = path.relative_to(ROOT).as_posix()
+        month = path.stem
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as e:
+            errors.append(f"{month}: unreadable/invalid JSON: {e}")
+            continue
+        base = git_show(rel)
+
+        sks: set = set()
+        qids: set = set()
+        nseg = 0
+        nch = 0
+        for s in data.get("sessions") or []:
+            sid = s.get("session_id", "?")
+            segs = s.get("segments") or []
+            idx = [g.get("index") for g in segs]
+            if idx != list(range(1, len(segs) + 1)):
+                if sid in KNOWN_NONCONTIG:
+                    warnings.append(f"{sid}: non-contiguous index (pre-existing)")
+                else:
+                    errors.append(f"{sid}: index not contiguous")
+            for g in segs:
+                nseg += 1
+                sk = g.get("stable_key")
+                qi = g.get("question_id")
+                if sk in sks:
+                    errors.append(f"{sid}: dup stable_key {sk}")
+                if qi in qids:
+                    errors.append(f"{sid}: dup question_id {qi}")
+                sks.add(sk)
+                qids.add(qi)
+                ch = g.get("chapter_question_ids") or []
+                if ch:
+                    nch += 1
+                for qid in ch:
+                    new_qids[qid] += 1
+                    new_qid_sess[qid].add(sid)
+                if (g.get("meta") or {}).get("lastPlayed"):
+                    new_lp += 1
+
+        # baseline
+        bnseg = 0
+        for s in base.get("sessions") or []:
+            segs = s.get("segments") or []
+            sid = s.get("session_id", "?")
+            bnseg += len(segs)
+            for g in segs:
+                for qid in (g.get("chapter_question_ids") or []):
+                    frozen_qids[qid] += 1
+                    frozen_qid_sess[qid].add(sid)
+                if (g.get("meta") or {}).get("lastPlayed"):
+                    orig_lp += 1
+
+        total_segs += nseg
+        total_with_ch += nch
+        delta = nch - sum(1 for s in base.get("sessions") or [] for g in s.get("segments") or [] if g.get("chapter_question_ids"))
+        flag = f"{'+' if delta else ''}{delta}"
+        print(f"{month:10} {nseg:>5} {nch:>5} {flag:>10}")
+
+    print("-" * 60)
+    print(f"{'TOTAL':10} {total_segs:>5} {total_with_ch:>5}")
+
+    # frozen qid loss
+    lost = set(frozen_qids) - set(new_qids)
+    print()
+    print(f"frozen qids (HEAD): {len(frozen_qids)}")
+    print(f"qids now:           {len(new_qids)}")
+    print(f"frozen qids LOST:   {len(lost)}")
+    for q in sorted(lost)[:30]:
+        errors.append(f"LOST frozen qid {q}")
+
+    # NEW cross-session qid (a qid spanning 2 sessions now, but 1 before)
+    new_cross = 0
+    for qid, sess in new_qid_sess.items():
+        if len(sess) > 1 and len(frozen_qid_sess.get(qid, set())) <= 1:
+            new_cross += 1
+            if new_cross <= 20:
+                warnings.append(f"NEW cross-session qid {qid}: {sorted(sess)}")
+    print(f"NEW cross-session qids (false-positive signal): {new_cross}")
+    if new_cross:
+        errors.append(f"{new_cross} new cross-session qid(s) — potential false-positive fills")
+
+    print(f"meta.lastPlayed: HEAD={orig_lp} now={new_lp}")
+    if orig_lp != new_lp:
+        errors.append(f"meta.lastPlayed mismatch: {orig_lp} -> {new_lp}")
+
+    print()
+    if warnings:
+        print("WARNINGS:")
+        for w in warnings:
+            print("  -", w)
+    print()
+    if errors:
+        print(f"ERRORS ({len(errors)}):")
+        for e in errors[:60]:
+            print("  -", e)
+        return 1
+    print("ALL INVARIANTS HOLD ✓")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
