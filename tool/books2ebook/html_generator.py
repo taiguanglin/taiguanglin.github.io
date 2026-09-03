@@ -249,11 +249,20 @@ _INDEX_SEARCH_TMPL = """
 
 
 def _toc_header_controls(levels, active, header_tag, header_text, header_id):
+    # 單層目錄無切換必要：只留標題，不渲染「顯示層級」控制列
+    if len(levels) <= 1:
+        return (
+            '<div class="toc-header-container">'
+            '<%s id="%s">%s</%s>'
+            "</div>" % (header_tag, header_id, header_text, header_tag)
+        )
     btns = []
     deepest = levels[-1] if levels else 0
+    # 「All（显示全部层级）」只在存在第五層（h5）時出現；h6 視為 All 展開時的葉子
+    show_all = 5 in levels
     for lv in levels:
         act = " active" if lv == active else ""
-        if lv == deepest:
+        if lv == deepest and show_all:
             # 最深層按鈕 = 「全部」，點擊時連同更深的葉層（如 h6）一起展開
             title = "显示全部层级"
             label = "All"
@@ -290,11 +299,16 @@ _FLOATING_LEVEL_TMPL = """
 
 
 def _floating_level_buttons(levels, active):
+    # 單層目錄無切換必要：整個浮動控制列都不輸出
+    if len(levels) <= 1:
+        return ""
     btns = []
     deepest = levels[-1] if levels else 0
+    # 與 _toc_header_controls 同步：All 只在存在第五層（h5）時出現
+    show_all = 5 in levels
     for lv in levels:
         act = " active" if lv == active else ""
-        if lv == deepest:
+        if lv == deepest and show_all:
             title = "显示全部层级"
             label = "All"
         elif lv == levels[0]:
