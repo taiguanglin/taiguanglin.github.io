@@ -617,6 +617,20 @@ def _is_page_number_line(line, text):
 
 
 _HANZI_RE = re.compile(r"[\u4e00-\u9fff]")
+_ALNUM_RE = re.compile(r"[0-9A-Za-z]")
+
+
+def _is_punct_only(text):
+    """回傳該 span 是否「只含標點符號」（無漢字/西文字母/數字）。
+
+    用於行內拆分：PDF 抽取時，句尾標點有時被單獨用楷體（KaiTi）或黑體
+    排出（如「…一时，」的逗號用 KaiTi）。這類純標點 span 不該觸發楷↔黑
+    切分、更不該獨立成段，應併入相鄰的文字段（與中性字型同待遇）。
+    """
+    t = text.strip()
+    if not t:
+        return False
+    return not (_HANZI_RE.search(t) or _ALNUM_RE.search(t))
 
 
 def _has_inline_sutra_body_mix(line):
@@ -664,6 +678,13 @@ def _split_mixed_line(line):
             continue
         if cls == "neutral":
             # 中性字型：併入當前段（若無則暫時累積，稍後併入下一段）
+            cur_text += txt
+            if cur_font is None:
+                cur_font = f
+            continue
+        if _is_punct_only(txt):
+            # 純標點 span（如楷體逗號「，」）：不觸發切分，併入當前累積段，
+            # 否則會被誤拆成孤立的 quote/para（如單獨的「，」「”」）。
             cur_text += txt
             if cur_font is None:
                 cur_font = f
