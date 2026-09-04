@@ -689,12 +689,12 @@ def _split_mixed_line(line):
             if cur_font is None:
                 cur_font = f
             continue
-        if _is_punct_only(txt):
-            # 純標點 span（如講解裡的楷體逗號「，」或行首的開引號「“」）：
-            # 不觸發切分、也不代表段內文字字型。有前段就併入前段；段首則
-            # 先併入當前累積，等後續實質文字確定段字型——避免楷體標點把
-            # 講解誤判成經文（或黑體標點把經文誤判成講解），也避免拆出
-            # 孤立的「，」「」」「“」等 quote/para。
+        if _is_punct_only(txt) and cur_cls is not None:
+            # 純標點 span（如講解裡的楷體逗號「，」、段中引述的開引號「“」）
+            # 且同行前面已有實質文字段：併入前段、不觸發切分、不改段字型——
+            # 否則會被誤拆成孤立的 quote/para。段首的純標點（跨行的經文尾
+            # 句號「。」等）則**不在此合併**，走下方正常 class 切分，靠主流程
+            # _join 把它併回上一行的經文。
             cur_text += txt
             continue
         if cur_cls is None or cls == cur_cls:
