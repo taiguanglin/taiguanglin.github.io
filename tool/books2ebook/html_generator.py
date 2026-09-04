@@ -116,10 +116,9 @@ def lecture_play_button(series, n, label):
     return (
         '<button class="qa-play" type="button" data-audio="%s" '
         'data-start="0.000"%s data-label="%s">'
-        '<span class="qa-play-icon">%s</span>'
-        '<span class="qa-play-label">%s</span></button>'
+        '<span class="qa-play-icon">%s</span></button>'
         % (_html.escape(url, quote=True), end_attr,
-           _html.escape(range_label, quote=True), _SPEAKER_SVG, esc(label))
+           _html.escape(range_label, quote=True), _SPEAKER_SVG)
     )
 
 

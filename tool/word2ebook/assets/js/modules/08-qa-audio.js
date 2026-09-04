@@ -109,6 +109,15 @@
       return base;
     }
 
+    function fmtHMS(seconds) {
+      var s = Math.max(0, Math.floor(seconds || 0));
+      var h = Math.floor(s / 3600);
+      var m = Math.floor((s % 3600) / 60);
+      var sec = s % 60;
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      return pad(h) + ':' + pad(m) + ':' + pad(sec);
+    }
+
     function absoluteUrl(url) {
       try { return new URL(url, window.location.href).href; } catch (e) { return url; }
     }
@@ -199,6 +208,12 @@
       fillEl.style.width = pct + '%';
       thumbEl.style.left = pct + '%';
       progressEl.setAttribute('aria-valuenow', String(Math.round(pct)));
+      // 動態顯示「目前播放進度時間 - 段落結束時間」，取代靜態起訖 label
+      if (activeButton) {
+        var endLabel = (segEnd != null) ? segEnd
+          : (isFinite(audio.duration) ? audio.duration : end);
+        rangeEl.textContent = fmtHMS(currentTime) + ' - ' + fmtHMS(endLabel);
+      }
     }
 
     function showBar() {

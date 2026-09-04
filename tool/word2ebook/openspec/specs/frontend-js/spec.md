@@ -125,7 +125,11 @@ Bookmarks SHALL be stored in `localStorage` under language-specific keys:
 On pages containing `.qa-play` buttons, the system SHALL play the segment's audio
 clip from `data-start` to `data-end` (seconds) using the URL in `data-audio`, and
 SHALL display a bottom floating mini-player showing the decoded audio filename and
-the `data-label` time range. The mini-player SHALL provide:
+the `data-label` time range. During playback the time-range label SHALL update to
+the current playback position followed by the segment end time (e.g.
+`00:12:34 - 00:36:39`), replacing the static start–end label so the user always
+sees the live position; when loading it SHALL temporarily show a loading message
+instead. The mini-player SHALL provide:
 
 - A play/pause toggle button
 - A draggable progress bar (pointer drag on the track) to seek within the current
@@ -190,6 +194,14 @@ intentional:
 - THEN the play button and mini-player SHALL enter a loading state (spinner /
   loading message, optional buffer percent) until the `playing` event fires
   (or an `error` clears loading with a failure message)
+
+#### Scenario: Live playback position in the time-range label
+- GIVEN the mini-player is visible and audio is playing
+- WHEN the audio emits `timeupdate`
+- THEN the time-range label SHALL show `HH:MM:SS - HH:MM:SS` where the left value
+  is the current playback position (formatted from `audio.currentTime`) and the
+  right value is the segment end time (`data-end`, falling back to the audio
+  duration when `data-end` is absent)
 
 #### Scenario: Volume control, mute toggle, and persistence
 - GIVEN a QA chapter page with the mini-player
