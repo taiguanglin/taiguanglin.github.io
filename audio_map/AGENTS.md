@@ -12,15 +12,16 @@ injected from these maps at build time (`tool/word2ebook` → `inject_chapters`)
 never hand-edit `wenda2_ebook/` for timings.
 
 > **Word-chapter (01–12) proofreading has moved to `/audio_map2/`** (the
-> chronological Word 彙總), driven by `audio_map2/*.json`. The old
-> `audio_map/index.html` Word editor (`assets/editor.word.js` +
-> `tool/word2ebook/data/audio_map_word/word-*.json`) has been removed.
+> chronological Word 彙總), driven by `audio_map2/*.json`. The previous
+> Word editor at this same path (`assets/editor.word.js` +
+> `tool/word2ebook/data/audio_map_word/word-*.json`) has been removed;
+> the current `index.html` is renamed from `index2.html` (PDF editor).
 
 ---
 
-## index2.html — PDF month maps proofreading UI（第 13–21 章）
+## index.html — PDF month maps proofreading UI（第 13–21 章）
 
-`index2.html` 是 **PDF 月份地圖**編輯器（PDF 已全數校對完成）。
+`index.html` 是 **PDF 月份地圖**編輯器（PDF 已全數校對完成）。
 
 ## Segment identity (what counts as a new play range)
 

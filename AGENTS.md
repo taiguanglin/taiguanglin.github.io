@@ -50,7 +50,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic/` | Assets | Concept PNGs for `infographic.html`. |
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. |
-| `audio_map/` | Editorial UI | `index2.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
+| `audio_map/` | Editorial UI | `index.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
 | `books/` | **Source** | 十本 PDF 原書（`01《坐禅》`…`05《圆觉经》` 坐禅系列 + `06…09`、感恩 講經系列）。 |
 | `ebook/` | **Generated** | 坐禅系列 + 講經系列共十本合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
@@ -104,7 +104,7 @@ Audio-map pipeline (optional but used for play buttons):
 ```
 SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json   (PDF chapters 13–21)
                                           ▲
-                                /audio_map/index2.html (tweak) + inject_chapters() at build
+                                /audio_map/index.html (tweak) + inject_chapters() at build
               audio_map2/*.json  →  inject_word_chapters()  →  Word chapters 01–12 play buttons
               (audio_map2/index.html  review;  tool/word_audio_map2/  align)
 ```
