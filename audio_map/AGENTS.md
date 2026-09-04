@@ -13,9 +13,8 @@ never hand-edit `wenda2_ebook/` for timings.
 
 > **Word-chapter (01–12) proofreading has moved to `/audio_map2/`** (the
 > chronological Word 彙總), driven by `audio_map2/*.json`. The previous
-> Word editor at this same path (`assets/editor.word.js` +
-> `tool/word2ebook/data/audio_map_word/word-*.json`) has been removed;
-> the current `index.html` is renamed from `index2.html` (PDF editor).
+> Word editor (`assets/editor.word.js` +
+> `tool/word2ebook/data/audio_map_word/word-*.json`) has been removed.
 
 ---
 
