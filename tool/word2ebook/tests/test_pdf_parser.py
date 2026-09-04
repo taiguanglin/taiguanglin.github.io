@@ -848,9 +848,10 @@ class TestNumberedQuestions:
         names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
         assert names == ["自业自消", "自业自消"]
 
-    def test_restated_question_after_answer_opens_card_with_unmarked_answer(self, parser):
-        """「昨天还有人问…？」is a restated question answered without a fresh
-        ``Taiguanglin：`` marker (2025-07-08 贴吧 咪了个喵xxx)."""
+    def test_restated_question_stays_in_answer_without_new_card(self, parser):
+        """「昨天还有人问…？」after an answer is not a new question — it is the
+        answerer's own continuation (自問自答). It must stay inside the same
+        answer, not open a second question card (2025-07-08 贴吧 咪了个喵xxx)."""
         lines = [
             (157.0, "Tai 师父2025 年7 月8 日答疑（文字版）"),
             (IND,  "师父说：今天是2025 年7 月8 号，先回答贴吧的问题。"),
@@ -867,16 +868,20 @@ class TestNumberedQuestions:
         ]
         ch = parser.parse_lines(lines, start_index=12)[0]
         names = re.findall(r'<span class="questioner">([^<]+)</span>', ch.content)
-        assert names == ["咪了个喵xxx", "咪了个喵xxx", "心画世间"]
+        # Only two question cards: 咪了个喵xxx and 心画世间. The「昨天还有人问」
+        # continuation does NOT become a third card.
+        assert names == ["咪了个喵xxx", "心画世间"]
         questions = re.findall(
             r'<div class="question"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
         )
-        assert "昨天还有人问" in questions[1]
-        assert "你自己想想看" not in questions[1]
+        assert len(questions) == 2
+        assert "昨天还有人问" not in questions[0]
         answers = re.findall(
             r'<div class="answer"[^>]*>.*?</div>\s*</div>', ch.content, flags=re.S
         )
-        assert "你自己想想看" in answers[1]
+        # The master's continuation stays inside the first answer.
+        assert "昨天还有人问" in answers[0]
+        assert "你自己想想看" in answers[0]
 
     def test_tiexia_huifu_marker_then_glued_name(self, parser):
         """「（贴下回复）」stays in the answer text and does not become a

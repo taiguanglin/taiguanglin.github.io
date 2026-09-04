@@ -62,6 +62,7 @@ When PDF swallowed a later numbered item into the previous answer (Chinese `二�
 ### Do not split
 
 - Mid-answer recap of the **same** question.
+- The answerer's self-answered continuation「昨天还有人问…？」(also `昨天就有人问` / `昨天有人问`) — the master referencing a past question as part of the **same** answer, **not** a new question. Keep it inside the current answer (2025-07-08 贴吧 咪了个喵xxx).
 - Declining a later number in the same breath (「第三个问题就不用回答了」) — stay on the current segment.
 - Reading the next question’s body (`二、关于疾病…`) **before** the spoken `第二个问题…` — that body is `q_text` of the **next** segment, not a third range.
 - Opening (`今天是…先回答官网/贴吧/微信`) and closing (`官网的答疑就到这里`) are not Q&A segments.

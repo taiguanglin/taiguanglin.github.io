@@ -36,6 +36,10 @@ answer opening** — floor (`第N楼` / `N楼`), `下一个问题` + new name/fl
 same-person follow-up (`第二个问题` / `下面的问题` / `最后问` / …). Full taxonomy:
 [`audio_map/AGENTS.md`](../../audio_map/AGENTS.md). Split PDF-merged cards when
 the speaker starts a new numbered unit; do not invent a global time offset.
+The answerer's self-answered continuation「昨天还有人问…？」stays in the answer
+(never a new segment). If an already-split answer remnant slipped into the map,
+re-merge it with `merge_split_answer.py` (append the remnant's q_text+answer onto
+the prior segment, renumber, regenerate `stable_key`).
 
 - **2025-11 … 2026-03**: prefer times from `qa/*.txt`, fill gaps via SRT.
 - **2025-06 … 2025-09**: SRT ordered fuzzy match against PDF question/answer text.

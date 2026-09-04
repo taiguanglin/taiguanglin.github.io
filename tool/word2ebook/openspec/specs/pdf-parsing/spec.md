@@ -208,14 +208,15 @@ Numbered openers additionally include `第N、` (e.g. `第二、`), `问题N：`
   trace up to the previous named questioner (the split body is that person's
   follow-up), rather than a topic phrase recovered from the next answer
 
-#### Scenario: 昨天还有人问 restated question answered without a new Taiguanglin
+#### Scenario: 昨天还有人问 continuation stays in the answer (no new card)
 - GIVEN an answer ending a wrap-up (`这个问题就说到这里。`), then an indented
   `昨天还有人问，…？` (or `昨天就有人问`), then its answer paragraphs with no
   intervening `Taiguanglin：`
 - WHEN parsed
-- THEN a new question card SHALL be produced for the restated question (named
-  by tracing up to the previous questioner), followed by an answer card for the
-  unmarked answer paragraphs
+- THEN the `昨天还有人问，…？` SHALL stay inside the same answer and SHALL NOT
+  open a new question card (it is the answerer's own self-answered continuation,
+  not a question posted by the previous questioner)
+- AND no extra `questioner` span SHALL be emitted for that continuation
 
 #### Scenario: （贴下回复） marker stays in the answer, glued name follows
 - GIVEN an answer, then a left-margin `（贴下回复）`, then an indented glued

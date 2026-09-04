@@ -156,9 +156,6 @@ DUMPED_FOLLOWUP_BODY_RE = re.compile(
     r"|还有我现在"
     r")"
 )
-# Tai restates a question someone asked earlier and answers it without a new
-# ``Taiguanglin：`` marker (2025-07-08 贴吧 咪了个喵xxx answer→「昨天还有人问…」).
-RESTATED_Q_RE = re.compile(r"^(?:昨天还有人问|昨天就有人问|昨天有人问)")
 # 音檔有問答但 PDF 未收錄原提問文字（2025-06-09「答案同上」／06-10「未找到原提问」）。
 MISSING_Q_MARKER_RE = re.compile(r"^(?:未找到原提[问問]|原[问問]题未收录|原問題未收錄)")
 ANSWER_SAME_AS_ABOVE_RE = re.compile(r"^下一个问题[，,]?\s*答案(?:还是和上边|還是和上邊|同上)")
@@ -543,38 +540,6 @@ def _dumped_nameless_question_para(
     if not re.search(r"[？?]\s*$", para):
         return None
     return para
-
-
-def _restated_question_block(
-    lines: List[Tuple[float, str]], i: int
-) -> Optional[Tuple[str, int]]:
-    """A question Tai restates (「昨天还有人问…？」) and then answers without a
-    fresh ``Taiguanglin：`` marker.
-
-    Returns ``(question_text, next_index)`` where ``next_index`` is the line
-    right after the restated question (start of its unmarked answer), else
-    ``None``. The question ends at the first wrapped line whose joined text
-    finishes with a question mark.
-    """
-    t0 = (lines[i][1] or "").strip()
-    if not RESTATED_Q_RE.match(t0):
-        return None
-    parts = [lines[i][1]]
-    j = i + 1
-    n = len(lines)
-    while j < n:
-        x0, t = lines[j]
-        if _is_img_marker(t):
-            j += 1
-            continue
-        if x0 > INDENT_THRESHOLD or ANSWER_RE.match(t) or _is_structural_line(t):
-            break
-        parts.append(t)
-        if re.search(r"[？?]\s*$", "".join(parts).strip()):
-            return "".join(parts).strip(), j + 1
-        j += 1
-    # Question mark never arrived → not a restated question.
-    return None
 
 
 def _nameless_question_followed_by_answer(
@@ -1523,19 +1488,8 @@ class PDFParser:
                 continue
 
             # Tai 複述提問（「昨天还有人问…？」）後，以未標記的回答直接接續
-            # （無新的 Taiguanglin 標記）。切成獨立問答卡，後續回答段落隨之接上。
-            restated = _restated_question_block(lines, i)
-            if (
-                restated is not None
-                and state["card"] is not None
-                and state["card"]["kind"] == "answer"
-            ):
-                q_text, j = restated
-                start_card("question", state["questioner"] or "", "")
-                add_line(q_text, indented=True)
-                start_card("answer")
-                i = j
-                continue
+            # （無新的 Taiguanglin 標記）。—— 這其實是同一則答案的延續（師父以
+            # 「昨天还有人问」起頭自問自答），不是新提問，故不切卡，留在原答案內。
 
             # 無暱稱、以問號結尾的匿名提問正文（2025-07 腹股溝／李光耀／中東核戰…
             # 被併進上一則回答）。PDF 中該段之後緊接 Taiguanglin 回答 → 切為新問題卡。
