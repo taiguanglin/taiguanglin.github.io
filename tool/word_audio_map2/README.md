@@ -225,13 +225,30 @@ dry-run 預設）：
 所採用的流程；若未來改成分段邏輯為主，直接以 `link_chapters.py --apply` 取代
 第 2、3 步即可。
 
+另有兩支**針對剩餘缺口／分段錯誤**的腳本（皆帶 `--apply` 才寫檔、dry-run 預設、
+列印每筆待人工複核）：
+
+4. `fill_resolvable.py` —— 為「有實質問答、但分類檔找不到對應」的段，以
+   **q_text**（包含關係優先、再 fuzzy ratio ≥ 0.6，並有最短字數護欄，避免
+   「感恩师父！」這類問候被誤掛多題）補上最相近的分類題。其**故意不用
+   answer_text**——那正是先前把 57 個 qid 誤掛到一個問候段的來源。適合人工
+   審核後再 `--apply`。
+5. `merge_split_artifacts.py` —— 一次性修正「單一問答塊被拆成『問題 stub＋
+   答案殘片』」的 split-artifact（典型：`2025-05-17` 業力/能力、`2024-11-15`
+   求財等 4 案），合併後依 `build_maps.py` 的公式重排 index 並重生
+   `stable_key`/`question_id`（`sha1(sid#index#q[:80])`）。
+
 ### 注意
 
 - **絕對不要**整份重建 `audio_map2/*.json` 而丟掉人工校對的 `start/end` 與
   `meta.lastPlayed`；重分段一律走內容比對遷移（`apply_resplit.py`）。
+- 有「最後播放」(`meta.lastPlayed`) 紀錄的段**任何腳本都不應改動**——那是
+  音檔時間人工校對的完成判定；前述 merge/fill 都只處理 `lastPlayed` 為空的段。
 - `build/questions.json` 為 `link_chapters.py` 的內容比對來源；它是從
   `wenda2_ebook/01.html…12.html` 重建的（5746 題）。目前有極少數（39 筆）
   frozen qid 不在其中，`reconcile_qids.py` 即以凍結段的 `chapter_indexes`
   兜底，不因缺題目而遺失對應。
-- 重分段後務必跑 `validate_resplit.py`；它會回報 index 非連續（`2025-03-12`
-  合併時間軸為已知既有）、跨 session 重複 qid（已知既有）等告警。
+- 重分段後務必跑 `validate_resplit.py` + `validate_relink.py`；前者回報 index
+  非連續（`2025-03-12` 合併時間軸為已知既有）等告警，後者強制「凍結 qid 零
+  遺失」與「`meta.lastPlayed` 不變」，並把跨 session qid 區分為**逐字重複／
+  合併題子段（合理）**與**q 與答案皆不同（誤填）**兩類。

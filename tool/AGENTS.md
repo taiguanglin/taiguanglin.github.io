@@ -64,8 +64,22 @@ audio_map2/*.json 的產生：問答錄2 docx + SRT ── tool/word_audio_map2/
 `build_maps.py` 把 Word 彙總切成「問答段」時，段數會隨 Q&A／後續題偵測邏輯調整；例如跨多個 `Taiguanglin：` 標記的同一作者貼文，可能被拆成多個子問答段。**過去假設「`audio_map2/*.json` 的分段不會再調整、`chapter_question_ids` 一次凍結即可」已不成立** —— 拆分邏輯會持續修正，所以：
 
 - 重分段（`build_maps.py` 調整後）應以 `link_chapters.py` **為主**重新寫回每段的 `chapter_question_ids` / `chapter_indexes`（內容比對 `build/questions.json`）。預設 `--apply` 為 **fill-empty-only**——只補「缺章節」的段、絕不改已有人工校對連結的段、且只補尚未被任何段認領的 qid；`--apply --overwrite` 才整份重導（會丟掉未重新比到的既有 qid，慎用）。
-- `link_chapters.py` 因過去假定「分段不再變」而被移除，現已**自 git 歷史恢復**（`tool/word_audio_map2/link_chapters.py`），供未來重跑。對帳驗證用 `validate_relink.py`（凍結 qid 零遺失 + 無新增跨 session 重複 qid）。
-- 已人工校對的 `start`/`end`、`meta.lastPlayed` 等欄位在重分段時應**按內容比對搬移保留**，不要整份重建而遺失。
+- `link_chapters.py` 因過去假定「分段不再變」而被移除，現已**自 git 歷史恢復**（`tool/word_audio_map2/link_chapters.py`），供未來重跑。
+
+`tool/word_audio_map2/` 內的腳本分工（詳見該目錄 `README.md`）：
+
+| 腳本 | 用途 |
+|------|------|
+| `build_maps.py` | 主產生器：時間序 Word 彙總 → `audio_map2/*.json`（問答分段）。 |
+| `link_chapters.py` | 章節對應之主：以內容比對把 `chapter_question_ids`/`chapter_indexes` 寫回；預設 fill-empty-only。 |
+| `apply_resplit.py` | 用改過的分段邏輯重跑 parser，並按內容比對搬移舊段 `start/end`、`meta.lastPlayed` 等已校對欄位。 |
+| `validate_resplit.py` | 結構驗證：index 連續、`stable_key`/`question_id` 唯一、章節覆蓋、時間單調。 |
+| `validate_relink.py` | 對帳驗證：比對 git `HEAD`，強制「凍結 qid 零遺失」+「無新增 spurious 跨 session qid」+「`meta.lastPlayed` 不變」。 |
+| `fill_orphan_chapters.py` / `redistribute_chapters.py` / `reconcile_qids.py` | 重分段與重對應之間的墊補（補孤兒章節 / 重分配多 qid 清單 / 掛回遺失 qid）。 |
+| `fill_resolvable.py` | 為「有實質問答卻未對應」的段，以 q_text（include/ratio，並有最短字數護欄）補上分類題；列印每筆待人工複核。 |
+| `merge_split_artifacts.py` | 一次性修正「單一問答塊被拆成問題 stub＋答案殘片」的 merge（如 `2025-05-17` 業力/能力案），合併後重排 index 並重生 `stable_key`/`question_id`。 |
+
+> 有「最後播放」(`meta.lastPlayed`) 紀錄的段**任何腳本都不應改動**——人工校對音檔時間的完成判定以此為準。
 
 > 註：若未來不再新增/修改講經 PDF 或音檔，**上述標記【可刪除】的三個講經工具（`build_jiangjing_pdfs.py`、`jiangjing2audio.py`、`normalize_jiangjing_audio.py`）可整包移除**；`gen_all.py` 重建電子書時只需：讀 `books/*.pdf` → 解析/分段 → 產生 HTML → 依 `audio_map.py` 映射插入播放鈕，不再涉及 PDF 組裝與音檔轉檔。
 

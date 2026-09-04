@@ -618,6 +618,14 @@ def _is_page_number_line(line, text):
 
 _HANZI_RE = re.compile(r"[\u4e00-\u9fff]")
 _ALNUM_RE = re.compile(r"[0-9A-Za-z]")
+# 前導（開）引號/括號：語義上「開啟」後面的引述，應併入後段。
+_OPEN_QUOTE_CHARS = set('“‘「『（(【[')
+
+
+def _is_open_quote_only(text):
+    """純標點 span 是否只含「開引號/開括號」字元（如單獨的「“」）。"""
+    t = text.strip()
+    return bool(t) and all(c in _OPEN_QUOTE_CHARS for c in t)
 
 
 def _is_punct_only(text):
@@ -689,14 +697,22 @@ def _split_mixed_line(line):
             if cur_font is None:
                 cur_font = f
             continue
-        if _is_punct_only(txt) and cur_cls is not None:
-            # 純標點 span（如講解裡的楷體逗號「，」、段中引述的開引號「“」）
-            # 且同行前面已有實質文字段：併入前段、不觸發切分、不改段字型——
-            # 否則會被誤拆成孤立的 quote/para。段首的純標點（跨行的經文尾
-            # 句號「。」等）則**不在此合併**，走下方正常 class 切分，靠主流程
-            # _join 把它併回上一行的經文。
-            cur_text += txt
-            continue
+        if _is_punct_only(txt):
+            # 純標點 span。 開引號（如單獨的「“」）是「前導」標點，併入**後段**
+            # （後方經文/講解的引述開頭）；閉標點/句讀（逗號、句號、閉引號等）
+            # 是「結尾」標點，段中則併入**前段**。
+            if _is_open_quote_only(txt):
+                # 開引號：併入當前累積、不設 cur_cls/cur_font；下一個實質文字
+                # 確定段 class 時，開引號自然落在該段開頭。
+                cur_text += txt
+                continue
+            if cur_cls is not None:
+                # 段中閉標點/句讀（如講解裡的楷體逗號「，」）：併入前段，不觸發
+                # 切分、不改段字型，避免拆出孤立的 quote/para。
+                cur_text += txt
+                continue
+            # 段首閉標點（跨行的經文尾句號「。」等）：走下方正常 class 切分，
+            # 靠主流程 _join 把它併回上一行的經文。
         if cur_cls is None or cls == cur_cls:
             cur_text += txt
             cur_cls = cls
