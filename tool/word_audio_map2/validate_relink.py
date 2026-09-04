@@ -10,21 +10,25 @@ month and globally:
   3. stable_key / question_id unique within the month.
   4. FROZEN-QID INVARIANT: every chapter qid present in git HEAD still appears
      somewhere in the tree (no curated link lost).
-  5. NEW cross-session qid (a qid that spans two sessions AFTER relink but did
-     not before) — the tell-tale of a false-positive fill.
+  5. cross-session qid: a qid spanning two sessions AFTER relink that did not
+     before. Split into (a) verbatim day-over-day repeats (near-identical q_text)
+     — legitimate; and (b) spurious matches (different q_text) — the error signal
+     of a false-positive fill.
   6. meta.lastPlayed count preserved vs git HEAD.
   7. per-month chapter coverage delta (segments gaining a chapter link).
 
 Exit 0 only when hard invariants (JSON, contiguity, uniqueness, zero frozen qid
-loss, no new cross-session qid, lastPlayed preserved) all hold.
+loss, no spurious cross-session qid, lastPlayed preserved) all hold.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import sys
 from collections import Counter, defaultdict
+from difflib import SequenceMatcher
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -51,6 +55,11 @@ def main() -> int:
     # qid -> set(session_id) at HEAD vs now, to detect NEW cross-session qid
     frozen_qid_sess: dict[str, set] = defaultdict(set)
     new_qid_sess: dict[str, set] = defaultdict(set)
+    # qid -> list[(session_id, q_text, answer_text)] of the segments carrying it (now),
+    # to tell a legitimate day-over-day repeat (near-identical q_text) or a
+    # legitimate merged-question sub-part (different q_text but matching answer
+    # text) from a spurious match (both differ).
+    qid_qt_ext: dict[str, list] = defaultdict(list)
 
     print(f"{'month':10} {'segs':>5} {'+ch':>5} {'Δcoverage':>10}  notes")
     print("-" * 60)
@@ -94,6 +103,7 @@ def main() -> int:
                 for qid in ch:
                     new_qids[qid] += 1
                     new_qid_sess[qid].add(sid)
+                    qid_qt_ext[qid].append((sid, g.get("q_text") or "", g.get("answer_text") or ""))
                 if (g.get("meta") or {}).get("lastPlayed"):
                     new_lp += 1
 
@@ -128,16 +138,44 @@ def main() -> int:
     for q in sorted(lost)[:30]:
         errors.append(f"LOST frozen qid {q}")
 
-    # NEW cross-session qid (a qid spanning 2 sessions now, but 1 before)
+    # NEW cross-session qid: a qid spanning 2 sessions now, but 1 before.
+    # A day-over-day repeat of the SAME question (near-identical q_text) is
+    # legitimate; a cross-session qid whose segments carry DIFFERENT question
+    # text is the true false-positive signal.
+    def _qn(s: str) -> str:
+        return re.sub(r"[^\u4e00-\u9fff\w]", "", s or "").lower()
+
     new_cross = 0
+    repeat_cross = 0
     for qid, sess in new_qid_sess.items():
-        if len(sess) > 1 and len(frozen_qid_sess.get(qid, set())) <= 1:
+        if len(sess) <= 1 or len(frozen_qid_sess.get(qid, set())) > 1:
+            continue
+        recs = qid_qt_ext[qid]
+        qts = [t for _, t, _ in recs]
+        ans = [a for _, _, a in recs]
+        # max pairwise q_text similarity AND answer_text similarity across sessions
+        qsim = asim = 0.0
+        for i in range(len(recs)):
+            for j in range(i + 1, len(recs)):
+                qsim = max(qsim, SequenceMatcher(None, _qn(qts[i]), _qn(qts[j])).ratio())
+                asim = max(asim, SequenceMatcher(None, _qn(ans[i]), _qn(ans[j])).ratio())
+        if qsim >= 0.9:
+            repeat_cross += 1
+            warnings.append(f"cross-session qid {qid} (verbatim day-over-day repeat, qsim={qsim:.2f}): {sorted(sess)}")
+        elif asim >= 0.9:
+            # merged multi-part question: two segments answer the SAME classified
+            # question with (near-)identical answer text but different sub-question
+            # phrasing — legitimate.
+            repeat_cross += 1
+            warnings.append(f"cross-session qid {qid} (merged-question sub-parts, asim={asim:.2f}): {sorted(sess)}")
+        else:
             new_cross += 1
             if new_cross <= 20:
-                warnings.append(f"NEW cross-session qid {qid}: {sorted(sess)}")
-    print(f"NEW cross-session qids (false-positive signal): {new_cross}")
+                warnings.append(f"NEW cross-session qid {qid} (different q AND answer, qsim={qsim:.2f} asim={asim:.2f}): {sorted(sess)}")
+    print(f"cross-session qids — verbatim/merged repeat (OK): {repeat_cross}")
+    print(f"cross-session qids — spurious (different q AND answer, error): {new_cross}")
     if new_cross:
-        errors.append(f"{new_cross} new cross-session qid(s) — potential false-positive fills")
+        errors.append(f"{new_cross} spurious cross-session qid(s) — potential false-positive fills")
 
     print(f"meta.lastPlayed: HEAD={orig_lp} now={new_lp}")
     if orig_lp != new_lp:

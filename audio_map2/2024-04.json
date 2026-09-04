@@ -6056,8 +6056,12 @@
           "status": "manual",
           "notes": "已人工校驗",
           "srt_preview": "但是你你血清嗯世间各教育各教教育戒杀但却有门派都争斗甚至宗教战争怎么看这个情况啊因为人本来就是喜欢杀的啊众生本来就有很强烈的杀戮之心杀戮的习气所以不管什么理论给他们都会拿来作为杀生的呃杀戮的战争的理由的所以你给的这宗教哪怕他是戒杀的宗教他后面也会被拿来作为一个杀戮的一个呃理论根据我者宗教理由吧啊所以这是指众生的问题啊并",
-          "chapter_question_ids": [],
-          "chapter_indexes": [],
+          "chapter_question_ids": [
+            "question-c7d01b6ca5ef"
+          ],
+          "chapter_indexes": [
+            4
+          ],
           "index": 36,
           "question_id": "question-16308dd3d7d9",
           "stable_key": "2024-04-27-main#36",

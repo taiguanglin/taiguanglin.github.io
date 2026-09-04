@@ -664,6 +664,13 @@ def _split_mixed_line(line):
     from collections import namedtuple
     Sub = namedtuple("SubLine", ["text", "font", "size", "fonts",
                                  "page", "x0", "y0", "block_id", "spans"])
+
+    def _mk(stxt, sfont):
+        use_font = sfont if sfont and sfont not in _NEUTRAL_FONTS else line.font
+        return Sub(text=stxt, font=use_font, size=line.size, fonts=(use_font,),
+                   page=line.page, x0=line.x0, y0=line.y0,
+                   block_id=line.block_id, spans=((stxt, use_font, line.size),))
+
     # 依字型 class 合併相鄰 span；中性 span 併入「後續」有 class 的段
     # （若開頭就中性，併入下一段；若結尾中性，併入上一段）。
     segments = []  # list of [text, class, first_real_font]
@@ -683,11 +690,12 @@ def _split_mixed_line(line):
                 cur_font = f
             continue
         if _is_punct_only(txt):
-            # 純標點 span（如楷體逗號「，」）：不觸發切分，併入當前累積段，
-            # 否則會被誤拆成孤立的 quote/para（如單獨的「，」「”」）。
+            # 純標點 span（如講解裡的楷體逗號「，」或行首的開引號「“」）：
+            # 不觸發切分、也不代表段內文字字型。有前段就併入前段；段首則
+            # 先併入當前累積，等後續實質文字確定段字型——避免楷體標點把
+            # 講解誤判成經文（或黑體標點把經文誤判成講解），也避免拆出
+            # 孤立的「，」「」」「“」等 quote/para。
             cur_text += txt
-            if cur_font is None:
-                cur_font = f
             continue
         if cur_cls is None or cls == cur_cls:
             cur_text += txt
@@ -701,25 +709,30 @@ def _split_mixed_line(line):
             cur_font = f
     if cur_cls is not None:
         segments.append((cur_text, cur_cls, cur_font))
-    # 若只剩一段或沒有楷↔黑交界，回原行
+    # 若只剩一段或沒有楷↔黑交界，本不需切分，但該段可能含有純標點 span（其
+    # 字型不反映段內文字），故仍需依 cur_font 構造 SubLine 校正 font，避免
+    # 原行首 span 的楷體標點把整段講解誤判成經文。
     if len(segments) < 2:
-        return [line]
+        if not segments:
+            return [line]
+        stxt, scls, sfont = segments[0]
+        if _mk(stxt, sfont).font == line.font and not _is_punct_only(stxt.strip()):
+            return [line]
+        return [_mk(stxt, sfont)]
     classes = [c for _, c, _ in segments]
     if not (("sutra" in classes) and ("body" in classes)):
-        return [line]
-    # 構造 SubLine：中性字型併入的段，font 取該段第一個「非中性」字型；
-    # 若整段皆中性（極少見），用原 line.font。
+        if not segments:
+            return [line]
+        stxt, scls, sfont = segments[0]
+        if _mk(stxt, sfont).font == line.font and not _is_punct_only(stxt.strip()):
+            return [line]
+        return [_mk(stxt, sfont)]
     subs = []
     for stxt, scls, sfont in segments:
         stxt_clean = stxt.strip()
         if not stxt_clean:
             continue
-        use_font = sfont if sfont and sfont not in _NEUTRAL_FONTS else line.font
-        subs.append(Sub(text=stxt, font=use_font,
-                        size=line.size, fonts=(use_font,),
-                        page=line.page, x0=line.x0, y0=line.y0,
-                        block_id=line.block_id,
-                        spans=((stxt, use_font, line.size),)))
+        subs.append(_mk(stxt, sfont))
     return subs or [line]
 
 
