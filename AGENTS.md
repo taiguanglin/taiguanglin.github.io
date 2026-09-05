@@ -21,6 +21,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
 5. **Do not confuse site chrome with ebook assets** — root `script.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`).
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
+7. **AI-generated content disclaimer** — `infographic.html` and `mindmap.html` must both display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
 
 ---
 
