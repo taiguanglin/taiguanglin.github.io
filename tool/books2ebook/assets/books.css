@@ -181,14 +181,17 @@ body.dark-mode .sutra-text.para-block:hover {
   z-index: 5;
 }
 
-/* 透明熱區：向下延伸、與段落頂端重疊，撐大可 hover 的連續區域 */
+/* 透明熱區（加大命中範圍）：向右上角移動時，滑鼠不必精準對到 ⋯ 氣泡。
+   往左延伸為 ⋯ 氣泡寬度（22px）的 3 倍，並向下、向上各貼近段落與按鈕列，
+   使「段落 → ⋯ → 按鈕」的移動過程維持連續命中，不會半途消失。 */
 .para-block .qa-actions::before {
   content: "";
   position: absolute;
-  top: 100%;
-  left: 0;
+  top: -6px;
+  bottom: -18px;
+  left: auto;
   right: 0;
-  height: 12px;
+  width: 66px; /* 22px × 3 */
 }
 
 /* 「⋯」提示氣泡（預設狀態）：低對比、小佔位，僅作為「這裡有動作」的線索 */
