@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaiGuangLin 禪師｜次世代終極佛法・禪修打坐｜從零到四禪</title>
+    <meta name="description" content="TaiGuangLin 禪師以現代通俗語言，講授次世代終極佛法：從宇宙起源到底層邏輯，提供零基礎到四禪的完整打坐方法、功德迴向與菩提心開示。">
+    <meta name="keywords" content="佛法,修行,打坐,TaiGuangLin,禪修,坐禪,四禪,淨土禪,菩提心,功德迴向,善業果報,磕大頭,雙盤">
+    <meta name="author" content="TaiGuangLin">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="TaiGuangLin 禪師｜次世代終極佛法・禪修打坐">
+    <meta property="og:description" content="用現代通俗易懂的語言，探索佛法的底層邏輯與禪修原理，從零基礎學會打坐。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://taiguanglin.info">
+    <meta property="og:image" content="https://taiguanglin.info/images/taiguanglin.png">
+    <link rel="canonical" href="https://taiguanglin.info">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* ============ 設計系統 (Design Tokens) ============ */
+        :root{
+            --pink-50:#fdf3f7;
+            --pink-100:#fbe3ec;
+            --pink-200:#f7c9db;
+            --pink-300:#f0a6c3;
+            --pink-400:#e978a7;
+            --pink-500:#e04f8c;
+            --pink-600:#c93672;
+            --pink-700:#a82a5d;
+            --pink-800:#7a1f45;
+            --rose-ink:#6b2f4a;
+            --ink:#2f1b26;
+            --muted:#8a6a78;
+            --cream:#fdf6f9;
+            --white:#ffffff;
+
+            --grad-main:linear-gradient(135deg,#f7c9db 0%,#e978a7 55%,#c93672 100%);
+            --grad-soft:linear-gradient(180deg,#fdf6f9 0%,#fbe3ec 100%);
+
+            --shadow-sm:0 2px 10px rgba(201,54,114,.08);
+            --shadow-md:0 8px 30px rgba(201,54,114,.14);
+            --shadow-lg:0 20px 60px rgba(201,54,114,.20);
+
+            --r-sm:10px; --r-md:18px; --r-lg:28px; --r-xl:38px;
+            --serif:'Noto Serif TC',serif;
+            --sans:'Noto Sans TC',sans-serif;
+        }
+
+        *{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{
+            font-family:var(--sans);
+            color:var(--ink);
+            background:var(--cream);
+            line-height:1.7;
+            -webkit-font-smoothing:antialiased;
+            overflow-x:hidden;
+        }
+        a{text-decoration:none;color:inherit;}
+        img{max-width:100%;display:block;}
+        ::selection{background:#f0a6c3;color:#fff;}
+
+        .container{max-width:1140px;margin:0 auto;padding:0 24px;}
+
+        /* ============ 導覽列 ============ */
+        .navbar{
+            position:fixed;top:0;left:0;width:100%;z-index:100;
+            transition:background .35s ease, box-shadow .35s ease, backdrop-filter .35s ease;
+        }
+        .navbar.scrolled{
+            background:rgba(255,255,255,.86);
+            backdrop-filter:blur(14px);
+            box-shadow:0 4px 24px rgba(201,54,114,.10);
+        }
+        .nav-container{max-width:1180px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;}
+        .nav-logo{display:flex;flex-direction:column;line-height:1.15;}
+        .nav-logo .logo-name{
+            font-family:var(--serif);font-weight:700;font-size:22px;letter-spacing:.5px;
+            color:var(--ink);transition:color .3s;
+        }
+        .nav-logo .logo-sub{font-size:11px;color:var(--muted);letter-spacing:3px;}
+        .navbar.scrolled .logo-name{color:var(--pink-600);}
+        .nav-menu{display:flex;align-items:center;gap:6px;}
+        .nav-link{
+            position:relative;padding:9px 15px;font-size:15px;font-weight:500;color:var(--ink);
+            border-radius:999px;transition:color .25s, background .25s;
+        }
+        .nav-link:hover{color:var(--pink-600);background:rgba(224,79,140,.08);}
+        .nav-dropdown{position:relative;}
+        .nav-dropdown-menu{
+            position:absolute;top:110%;right:0;min-width:210px;background:#fff;border-radius:16px;
+            box-shadow:var(--shadow-md);padding:8px;opacity:0;visibility:hidden;transform:translateY(8px);
+            transition:all .28s ease;z-index:99;
+        }
+        .nav-dropdown:hover .nav-dropdown-menu{opacity:1;visibility:visible;transform:translateY(0);}
+        .nav-dropdown-item{display:block;padding:10px 14px;border-radius:10px;font-size:14px;color:var(--ink);}
+        .nav-dropdown-item:hover{background:var(--pink-50);color:var(--pink-600);}
+        .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;z-index:101;}
+        .hamburger span{width:24px;height:2px;background:var(--ink);border-radius:2px;transition:all .3s;}
+
+        /* ============ Hero ============ */
+        .hero{
+            position:relative;min-height:100vh;display:flex;align-items:center;
+            padding:140px 0 90px;
+            background:
+                radial-gradient(900px 560px at 82% 20%, #fbe3ec 0%, transparent 60%),
+                radial-gradient(700px 500px at 12% 82%, #f7c9db 0%, transparent 55%),
+                var(--grad-soft);
+            overflow:hidden;
+        }
+        .hero::after{
+            content:'';position:absolute;left:0;right:0;bottom:-1px;height:140px;
+            background:linear-gradient(180deg,transparent,var(--cream));
+            pointer-events:none;
+        }
+        .hero-blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;}
+        .blob-1{width:320px;height:320px;background:#f0a6c3;top:-80px;left:-60px;}
+        .blob-2{width:260px;height:260px;background:#ffd3e6;bottom:40px;right:6%;}
+        .hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:50px;align-items:center;position:relative;z-index:2;}
+        .eyebrow{
+            display:inline-flex;align-items:center;gap:9px;font-size:13px;letter-spacing:2px;
+            color:var(--pink-600);background:#fff;padding:8px 18px;border-radius:999px;
+            box-shadow:var(--shadow-sm);margin-bottom:22px;font-weight:600;
+        }
+        .eyebrow .dot{width:7px;height:7px;border-radius:50%;background:var(--pink-500);}
+        .hero-title{
+            font-family:var(--serif);font-size:clamp(38px,6vw,66px);font-weight:700;line-height:1.18;
+            letter-spacing:1px;margin-bottom:20px;
+        }
+        .hero-title .grad{
+            background:var(--grad-main);
+            -webkit-background-clip:text;background-clip:text;color:transparent;
+        }
+        .hero-subtitle{
+            font-size:clamp(16px,2vw,19px);color:var(--rose-ink);max-width:520px;margin-bottom:28px;
+            font-weight:300;
+        }
+        .hero-quote{
+            border-left:3px solid var(--pink-300);padding:14px 20px;margin-bottom:34px;
+            background:rgba(255,255,255,.55);border-radius:0 14px 14px 0;
+        }
+        .hero-quote blockquote{font-family:var(--serif);font-size:15.5px;color:var(--pink-800);line-height:1.8;}
+        .hero-quote cite{display:block;margin-top:8px;font-style:normal;font-size:13px;color:var(--pink-600);font-weight:600;}
+        .hero-buttons{display:flex;flex-wrap:wrap;gap:14px;}
+        .btn{
+            display:inline-flex;align-items:center;gap:10px;padding:15px 30px;border-radius:999px;
+            font-size:15px;font-weight:600;letter-spacing:.5px;transition:transform .25s, box-shadow .25s;
+        }
+        .btn-primary{background:var(--grad-main);color:#fff;box-shadow:var(--shadow-md);}
+        .btn-primary:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);}
+        .btn-ghost{background:#fff;color:var(--pink-600);border:1.5px solid var(--pink-200);}
+        .btn-ghost:hover{transform:translateY(-3px);border-color:var(--pink-400);}
+        .hero-art{position:relative;display:flex;justify-content:center;}
+        .hero-art svg{width:100%;max-width:500px;height:auto;filter:drop-shadow(0 24px 50px rgba(201,54,114,.22));}
+        .hero-art .ring{
+            position:absolute;inset:6%;border-radius:50%;border:1.5px dashed rgba(224,79,140,.28);
+            animation:spin 40s linear infinite;
+        }
+        @keyframes spin{to{transform:rotate(360deg);}}
+        .scroll-indicator{
+            position:absolute;bottom:30px;left:50%;transform:translateX(-50%);z-index:3;
+            display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--pink-500);
+            font-size:12px;letter-spacing:2px;
+        }
+        .scroll-indicator .mouse{
+            width:24px;height:38px;border:2px solid var(--pink-400);border-radius:14px;position:relative;
+        }
+        .scroll-indicator .mouse::after{
+            content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
+            width:4px;height:8px;border-radius:4px;background:var(--pink-500);
+            animation:wheel 1.8s ease-in-out infinite;
+        }
+        @keyframes wheel{0%{opacity:1;top:6px;}60%{opacity:0;top:20px;}100%{opacity:0;top:6px;}}
+
+        /* ============ 通用區塊 ============ */
+        .section{padding:90px 0;}
+        .section.alt{background:var(--white);}
+        .section-head{text-align:center;max-width:640px;margin:0 auto 54px;}
+        .section-kicker{font-size:13px;letter-spacing:4px;color:var(--pink-500);font-weight:700;text-transform:uppercase;}
+        .section-title{font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:700;margin:12px 0 16px;}
+        .section-title .grad{background:var(--grad-main);-webkit-background-clip:text;background-clip:text;color:transparent;}
+        .section-desc{color:var(--muted);font-size:16px;font-weight:300;}
+        .divider-mark{display:flex;justify-content:center;margin:18px 0;}
+
+        /* ============ 關於禪師 ============ */
+        .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+        .about-portrait{position:relative;display:flex;justify-content:center;}
+        .about-portrait .frame{
+            position:relative;padding:14px;border-radius:var(--r-lg);background:#fff;box-shadow:var(--shadow-lg);
+        }
+        .about-portrait .frame::before{
+            content:'';position:absolute;inset:-16px;border-radius:var(--r-lg);
+            background:var(--grad-soft);z-index:-1;
+        }
+        .about-portrait img{border-radius:var(--r-md);width:320px;height:320px;object-fit:cover;}
+        .about-portrait .badge{
+            position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+            background:var(--grad-main);color:#fff;padding:10px 22px;border-radius:999px;
+            font-family:var(--serif);font-weight:600;font-size:14px;box-shadow:var(--shadow-md);white-space:nowrap;
+        }
+        .about-content h3{font-family:var(--serif);font-size:24px;margin-bottom:18px;color:var(--pink-700);}
+        .about-content p{color:var(--rose-ink);margin-bottom:16px;font-size:15.5px;}
+        .about-content .lead{font-size:17px;font-weight:500;color:var(--ink);}
+        .feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:26px;}
+        .feature-card{
+            background:var(--cream);border:1px solid var(--pink-100);border-radius:var(--r-md);
+            padding:18px;text-align:center;transition:transform .3s, box-shadow .3s;
+        }
+        .feature-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-md);}
+        .feature-card .ico{
+            width:48px;height:48px;border-radius:14px;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;
+            background:var(--grad-main);color:#fff;font-size:20px;box-shadow:var(--shadow-sm);
+        }
+        .feature-card h4{font-size:15px;font-family:var(--serif);margin-bottom:4px;}
+        .feature-card p{font-size:12.5px;color:var(--muted);line-height:1.5;}
+
+        /* ============ 從這裡開始 ============ */
+        .path-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+        .path-card{
+            position:relative;background:#fff;border-radius:var(--r-lg);padding:30px 24px;
+            border:1px solid var(--pink-100);box-shadow:var(--shadow-sm);
+            transition:transform .3s, box-shadow .3s;display:flex;flex-direction:column;
+        }
+        .path-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+        .path-card .num{
+            position:absolute;top:18px;right:20px;font-family:var(--serif);font-size:34px;font-weight:700;
+            color:var(--pink-100);
+        }
+        .path-icon{
+            width:60px;height:60px;border-radius:18px;background:var(--grad-soft);color:var(--pink-600);
+            display:flex;align-items:center;justify-content:center;font-size:26px;margin-bottom:18px;
+        }
+        .path-card h3{font-family:var(--serif);font-size:19px;margin-bottom:8px;}
+        .path-card p{font-size:14px;color:var(--muted);flex:1;margin-bottom:20px;}
+        .path-link{font-weight:600;font-size:14px;color:var(--pink-600);display:inline-flex;align-items:center;gap:8px;}
+        .path-card:hover .path-link{gap:12px;transition:gap .3s;}
+
+        /* ============ 著作 ============ */
+        .books-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-bottom:44px;}
+        .book-card{
+            background:#fff;border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--pink-100);
+            box-shadow:var(--shadow-sm);transition:transform .3s, box-shadow .3s;display:flex;flex-direction:column;
+        }
+        .book-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+        .book-cover{position:relative;aspect-ratio:1/1;background:var(--grad-soft);overflow:hidden;}
+        .book-cover img{width:100%;height:100%;object-fit:cover;transition:transform .6s;}
+        .book-card:hover .book-cover img{transform:scale(1.06);}
+        .book-cover .tag{
+            position:absolute;top:14px;left:14px;background:rgba(255,255,255,.85);backdrop-filter:blur(6px);
+            color:var(--pink-700);font-size:11px;font-weight:700;letter-spacing:1px;padding:5px 12px;border-radius:999px;
+        }
+        .book-info{padding:22px 24px 26px;display:flex;flex-direction:column;flex:1;}
+        .book-info .book-subtitle{font-size:12px;color:var(--pink-500);letter-spacing:2px;font-weight:600;margin-bottom:6px;}
+        .book-info h3{font-family:var(--serif);font-size:18.5px;line-height:1.4;margin-bottom:10px;}
+        .book-info p{font-size:13.5px;color:var(--muted);flex:1;margin-bottom:18px;}
+        .book-read{font-weight:600;font-size:14px;color:var(--pink-600);display:inline-flex;align-items:center;gap:8px;}
+        .book-card:hover .book-read{gap:12px;transition:gap .3s;}
+        .books-cta{text-align:center;}
+
+        /* ============ 問答錄2 ============ */
+        .wenda-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:40px;align-items:start;}
+        .wenda-card{
+            background:#fff;border-radius:var(--r-lg);padding:34px 30px;text-align:center;
+            border:1px solid var(--pink-100);box-shadow:var(--shadow-sm);height:100%;
+            display:flex;flex-direction:column;align-items:center;justify-content:center;
+        }
+        .wenda-icon{
+            width:68px;height:68px;border-radius:50%;background:var(--grad-main);color:#fff;
+            display:flex;align-items:center;justify-content:center;font-size:28px;margin-bottom:18px;box-shadow:var(--shadow-md);
+        }
+        .wenda-card h3{font-family:var(--serif);font-size:21px;margin-bottom:10px;}
+        .wenda-card p{font-size:14.5px;color:var(--muted);margin-bottom:22px;}
+        .wenda-btn{
+            display:inline-flex;align-items:center;gap:8px;padding:12px 26px;border-radius:999px;
+            background:var(--grad-main);color:#fff;font-weight:600;font-size:14px;box-shadow:var(--shadow-sm);
+            transition:transform .25s, box-shadow .25s;
+        }
+        .wenda-btn:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+        .wenda-btn.ghost{background:#fff;color:var(--pink-600);border:1.5px solid var(--pink-200);box-shadow:none;}
+        .wenda-topics{background:#fff;border-radius:var(--r-lg);border:1px solid var(--pink-100);box-shadow:var(--shadow-sm);padding:30px;}
+        .wenda-topics h3{font-family:var(--serif);font-size:20px;margin-bottom:20px;display:flex;align-items:center;gap:10px;}
+        .wenda-topics h3::before{content:'';width:8px;height:24px;border-radius:4px;background:var(--grad-main);}
+        .topics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+        .topic-item{
+            display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;font-size:14.5px;
+            color:var(--ink);transition:background .25s, color .25s;
+        }
+        .topic-item i{font-size:8px;color:var(--pink-400);transition:transform .25s;}
+        .topic-item:hover{background:var(--pink-50);color:var(--pink-700);}
+        .topic-item:hover i{transform:scale(1.5);}
+
+        /* ============ 實修故事 ============ */
+        .stories-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;}
+        .story-card{
+            background:#fff;border-radius:var(--r-lg);padding:30px 26px;border:1px solid var(--pink-100);
+            box-shadow:var(--shadow-sm);transition:transform .3s, box-shadow .3s;display:flex;flex-direction:column;
+        }
+        .story-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+        .story-author{display:flex;align-items:center;gap:12px;margin-bottom:18px;}
+        .author-avatar{
+            width:46px;height:46px;border-radius:50%;background:var(--grad-main);color:#fff;
+            display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;font-weight:600;
+        }
+        .story-author h4{font-family:var(--serif);font-size:15.5px;}
+        .story-author span{font-size:12.5px;color:var(--muted);}
+        .story-card h3{font-family:var(--serif);font-size:18px;line-height:1.45;margin-bottom:10px;}
+        .story-card p{font-size:14px;color:var(--muted);flex:1;margin-bottom:20px;}
+        .story-button{
+            display:inline-flex;align-items:center;gap:8px;font-weight:600;font-size:14px;color:var(--pink-600);
+        }
+        .more-stories{text-align:center;margin-top:44px;}
+
+        /* ============ 語音與諮詢 ============ */
+        .community-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+        .community-card{
+            background:#fff;border-radius:var(--r-lg);padding:36px 26px;text-align:center;
+            border:1px solid var(--pink-100);box-shadow:var(--shadow-sm);transition:transform .3s, box-shadow .3s;
+        }
+        .community-card:hover{transform:translateY(-8px);box-shadow:var(--shadow-lg);}
+        .community-icon{
+            width:84px;height:84px;margin:0 auto 20px;border-radius:24px;object-fit:cover;box-shadow:var(--shadow-md);
+            border:3px solid #fff;outline:1.5px solid var(--pink-200);
+        }
+        .community-card h3{font-family:var(--serif);font-size:20px;margin-bottom:6px;}
+        .community-card p{font-size:14px;color:var(--muted);margin-bottom:22px;}
+        .community-btn{
+            display:inline-flex;align-items:center;gap:8px;padding:11px 24px;border-radius:999px;
+            background:var(--pink-50);color:var(--pink-700);font-weight:600;font-size:14px;
+            border:1.5px solid var(--pink-200);transition:all .25s;
+        }
+        .community-btn:hover{background:var(--grad-main);color:#fff;border-color:transparent;}
+
+        /* ============ 下載 ============ */
+        .download-panel{
+            max-width:720px;margin:0 auto;background:#fff;border-radius:var(--r-lg);padding:50px 44px;
+            text-align:center;border:1px solid var(--pink-100);box-shadow:var(--shadow-lg);
+        }
+        .download-icon{
+            width:80px;height:80px;border-radius:24px;margin:0 auto 22px;background:var(--grad-main);color:#fff;
+            display:flex;align-items:center;justify-content:center;font-size:34px;box-shadow:var(--shadow-md);
+        }
+        .download-panel h3{font-family:var(--serif);font-size:24px;margin-bottom:14px;}
+        .download-panel p{color:var(--muted);margin-bottom:30px;}
+
+        /* ============ 法語 ============ */
+        .dharma-section{
+            position:relative;padding:100px 0;overflow:hidden;
+            background:var(--grad-main);
+        }
+        .dharma-section .bg-symbols{
+            position:absolute;inset:0;opacity:.12;font-size:200px;line-height:1;color:#fff;
+            display:flex;align-items:center;justify-content:center;font-family:var(--serif);pointer-events:none;
+        }
+        .dharma-content{max-width:860px;margin:0 auto;text-align:center;position:relative;z-index:2;color:#fff;}
+        .dharma-quote{font-family:var(--serif);font-size:clamp(17px,2.4vw,22px);line-height:2;margin-bottom:24px;}
+        .dharma-quote::before{content:'“';font-size:60px;line-height:0;vertical-align:-18px;opacity:.7;}
+        .dharma-quote::after{content:'”';font-size:60px;line-height:0;vertical-align:-18px;opacity:.7;}
+        .dharma-author{font-size:14px;letter-spacing:2px;opacity:.9;}
+
+        /* ============ 頁尾 ============ */
+        .footer{background:#2f1b26;color:#e9d5dd;padding:70px 0 32px;}
+        .footer-top{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;}
+        .footer-brand .logo-name{font-family:var(--serif);font-size:24px;color:#fff;margin-bottom:8px;}
+        .footer-brand p{font-size:14px;color:#b493a4;line-height:1.8;margin-bottom:4px;}
+        .footer-col h4{color:#f0a6c3;font-size:14px;letter-spacing:2px;margin-bottom:18px;font-weight:700;}
+        .footer-col ul{list-style:none;}
+        .footer-col li{margin-bottom:11px;}
+        .footer-col a{font-size:14px;color:#c9aebc;transition:color .25s;}
+        .footer-col a:hover{color:#fff;}
+        .footer-bottom{border-top:1px solid #4a2f3a;padding-top:26px;text-align:center;font-size:13.5px;color:#a98696;}
+        .footer-bottom p{margin-bottom:6px;}
+
+        /* ============ 下載彈窗 ============ */
+        .modal-overlay{
+            position:fixed;inset:0;z-index:200;background:rgba(47,27,38,.5);backdrop-filter:blur(4px);
+            display:flex;align-items:center;justify-content:center;padding:20px;
+            opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;
+        }
+        .modal-overlay.active{opacity:1;visibility:visible;}
+        .modal{
+            background:#fff;border-radius:var(--r-lg);padding:40px 34px;max-width:460px;width:100%;
+            position:relative;box-shadow:var(--shadow-lg);transform:translateY(16px);transition:transform .3s;
+        }
+        .modal-overlay.active .modal{transform:translateY(0);}
+        .modal-close{
+            position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:50%;border:none;
+            background:var(--pink-50);color:var(--pink-700);font-size:16px;cursor:pointer;transition:background .25s;
+        }
+        .modal-close:hover{background:var(--pink-100);}
+        .modal h3{font-family:var(--serif);font-size:22px;margin-bottom:8px;}
+        .modal .modal-sub{color:var(--muted);font-size:14px;margin-bottom:24px;}
+        .download-option{
+            display:flex;align-items:center;gap:14px;padding:16px;border-radius:16px;margin-bottom:12px;
+            border:1.5px solid var(--pink-100);transition:border-color .25s, background .25s;
+        }
+        .download-option:hover{border-color:var(--pink-400);background:var(--pink-50);}
+        .download-option .d-icon{width:44px;height:44px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:12px;}
+        .download-option .d-icon.google{background:#fff;border:1px solid #eee;}
+        .download-option .d-icon.quark{background:#1677ff;}
+        .download-option .d-text{flex:1;}
+        .download-option .d-text strong{display:block;font-size:15px;color:var(--ink);}
+        .download-option .d-text span{font-size:13px;color:var(--muted);}
+        .download-option .d-arrow{color:var(--pink-400);}
+        .modal-tip{font-size:12.5px;color:var(--muted);text-align:center;margin-top:8px;}
+
+        /* ============ 響應式 ============ */
+        @media (max-width:960px){
+            .hero-grid{grid-template-columns:1fr;text-align:center;gap:40px;}
+            .hero-subtitle{margin-left:auto;margin-right:auto;}
+            .hero-quote{text-align:left;}
+            .hero-buttons{justify-content:center;}
+            .hero-art{order:-1;max-width:380px;margin:0 auto;}
+            .about-grid{grid-template-columns:1fr;gap:50px;}
+            .path-grid{grid-template-columns:1fr 1fr;}
+            .books-grid{grid-template-columns:1fr 1fr;}
+            .wenda-wrap{grid-template-columns:1fr;}
+            .stories-grid{grid-template-columns:1fr 1fr;}
+            .community-grid{grid-template-columns:1fr;}
+            .footer-top{grid-template-columns:1fr 1fr;}
+            .feature-grid{grid-template-columns:1fr 1fr;}
+        }
+        @media (max-width:768px){
+            .section{padding:64px 0;}
+            .nav-menu{
+                position:fixed;top:0;right:-100%;width:76%;max-width:320px;height:100vh;
+                background:#fff;flex-direction:column;align-items:flex-start;padding:90px 28px 30px;
+                gap:4px;transition:right .35s ease;box-shadow:-10px 0 40px rgba(0,0,0,.1);
+            }
+            .nav-menu.active{right:0;}
+            .nav-link{font-size:17px;padding:14px 6px;width:100%;}
+            .nav-dropdown-menu{position:static;opacity:1;visibility:visible;transform:none;box-shadow:none;padding:0 0 0 14px;min-width:0;display:none;}
+            .nav-dropdown.active .nav-dropdown-menu{display:block;}
+            .hamburger{display:flex;}
+            .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+            .hamburger.active span:nth-child(2){opacity:0;}
+            .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+        }
+        @media (max-width:520px){
+            .path-grid,.books-grid,.stories-grid,.feature-grid,.footer-top{grid-template-columns:1fr;}
+            .topics-grid{grid-template-columns:1fr;}
+            .hero{padding:120px 0 70px;}
+            .download-panel{padding:38px 26px;}
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ 導覽列 ============ -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-name">TaiGuangLin</span>
+                <span class="logo-sub">次世代終極佛法</span>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <a href="#home" class="nav-link">首頁</a>
+                <a href="#about" class="nav-link">禪師</a>
+                <a href="#start" class="nav-link">入門路徑</a>
+                <a href="#books" class="nav-link">著作</a>
+                <a href="#wenda" class="nav-link">問答錄2</a>
+                <a href="stories.html" class="nav-link">故事</a>
+                <div class="nav-dropdown" id="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
+                    <div class="nav-dropdown-menu">
+                        <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
+                        <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
+                    </div>
+                </div>
+                <a href="#downloads" class="nav-link">下載</a>
+            </div>
+            <div class="hamburger" id="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ============ Hero ============ -->
+    <section class="hero" id="home">
+        <div class="hero-blob blob-1"></div>
+        <div class="hero-blob blob-2"></div>
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-copy">
+                    <span class="eyebrow"><span class="dot"></span>次世代終極版佛法・實修真傳</span>
+                    <h1 class="hero-title">用現代語言，<br>走一條<span class="grad">究竟解脫</span>之路</h1>
+                    <p class="hero-subtitle">從宇宙起源、業力底層邏輯講起，帶你以通俗易懂的方式理解佛法原理，並以實修實證的方法，從零基礎一路修到四禪。</p>
+                    <div class="hero-quote">
+                        <blockquote>「大家現在能在這裡學習佛法、追求真理和解脫，都是上輩子修來的福報——能遇此妙法，皆是佛前大種福田之人。」</blockquote>
+                        <cite>— Tai 師父</cite>
+                    </div>
+                    <div class="hero-buttons">
+                        <a href="#start" class="btn btn-primary">開始修行之路</a>
+                        <a href="#books" class="btn btn-ghost">閱讀著作</a>
+                    </div>
+                </div>
+                <div class="hero-art">
+                    <div class="ring"></div>
+                    <img src="images/hero-lotus.svg" alt="蓮花禪坐意境圖" width="500" height="433">
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <div class="mouse"></div>
+            <span>SCROLL</span>
+        </div>
+    </section>
+
+    <!-- ============ 關於禪師 ============ -->
+    <section class="section" id="about">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-kicker">About the Teacher</div>
+                <h2 class="section-title">認識 <span class="grad">TaiGuangLin</span> 禪師</h2>
+                <div class="divider-mark"><img src="images/lotus-divider.svg" alt="" width="120" height="24"></div>
+            </div>
+            <div class="about-grid">
+                <div class="about-portrait">
+                    <div class="frame">
+                        <img src="images/zazen.jpg" alt="TaiGuangLin 禪師坐禪">
+                        <div class="badge">淨土禪・傳法者</div>
+                    </div>
+                </div>
+                <div class="about-content">
+                    <h3>以邏輯貫通佛法，以實證接引大眾</h3>
+                    <p class="lead">TaiGuangLin 禪師是一位淨土禪傳法者，早在 2014 年便於網路起步，用親身修行的體證，從宇宙與各層天界的起源開始，逐層剖析佛法的底層邏輯。</p>
+                    <p>他提供了一套從零基礎一路修到四禪的完整方法，並悉心回答修行者各式問題，內容由大眾集結成《坐禪》與《坐禪之問答錄》兩部經典著作，廣受追隨。</p>
+                    <p>2024 年禪師復出傳法，進一步開示功德迴向為何有效、善業為何有善報、加持的原理等深層義理，以邏輯通暢、語言現代的講法，接引了許多在家居士與初學者入門。</p>
+                    <div class="feature-grid">
+                        <div class="feature-card">
+                            <div class="ico">◆</div>
+                            <h4>純淨傳承</h4>
+                            <p>承繼正統佛法精神，融合現代理解</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="ico">◈</div>
+                            <h4>邏輯清晰</h4>
+                            <p>以理性思辨的方式闡明佛法原理</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="ico">♥</div>
+                            <h4>慈悲度眾</h4>
+                            <p>發大菩提心，普度一切有情眾生</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 從這裡開始 ============ -->
+    <section class="section alt" id="start">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-kicker">Where to Begin</div>
+                <h2 class="section-title">從這裡<span class="grad">開始</span></h2>
+                <p class="section-desc">四條清晰路徑，無論你是初學或老參，都能找到切入點。</p>
+            </div>
+            <div class="path-grid">
+                <a class="path-card" href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer">
+                    <span class="num">01</span>
+                    <div class="path-icon">📖</div>
+                    <h3>坐禪系列電子書</h3>
+                    <p>九本著作全文合集，支援全文檢索、簡繁雙語與離線閱讀。</p>
+                    <span class="path-link">線上閱讀 →</span>
+                </a>
+                <a class="path-card" href="wenda2.html">
+                    <span class="num">02</span>
+                    <div class="path-icon">💬</div>
+                    <h3>坐禪之問答錄2</h3>
+                    <p>依主題分章的修行問答，快速找到你關心的問題與解答。</p>
+                    <span class="path-link">查看目錄 →</span>
+                </a>
+                <a class="path-card" href="infographic.html">
+                    <span class="num">03</span>
+                    <div class="path-icon">🗺️</div>
+                    <h3>名詞圖解與心智圖</h3>
+                    <p>以視覺化圖解與互動心智圖，理解妄想、分別、執著與禪定。</p>
+                    <span class="path-link">開始探索 →</span>
+                </a>
+                <a class="path-card" href="stories.html">
+                    <span class="num">04</span>
+                    <div class="path-icon">🌱</div>
+                    <h3>實修故事</h3>
+                    <p>弟子們真實的打坐、磕大頭與誦經修行經歷，借鏡前行。</p>
+                    <span class="path-link">閱讀故事 →</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 著作 ============ -->
+    <section class="section" id="books">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-kicker">Teachings &amp; Books</div>
+                <h2 class="section-title">佛法修行<span class="grad">著作</span></h2>
+                <p class="section-desc">坐禪系列與講經系列，涵蓋從入門到深層義理的全方位內容。</p>
+            </div>
+            <div class="books-grid">
+                <a class="book-card" href="ebook/01_trad.html" target="_blank" rel="noopener noreferrer">
+                    <div class="book-cover">
+                        <span class="tag">坐禪系列</span>
+                        <img src="images/坐禪1.png" alt="坐禪：次世代版終極佛法">
+                    </div>
+                    <div class="book-info">
+                        <span class="book-subtitle">第一部經典</span>
+                        <h3>坐禪：次世代版終極佛法</h3>
+                        <p>從宇宙起源講起，建立完整的禪修理論與方法，是入門佛法的必讀之作。</p>
+                        <span class="book-read">線上閱讀 →</span>
+                    </div>
+                </a>
+                <a class="book-card" href="ebook/02_trad.html" target="_blank" rel="noopener noreferrer">
+                    <div class="book-cover">
+                        <span class="tag">坐禪系列</span>
+                        <img src="images/坐禪之問答錄.png" alt="坐禪之問答錄：次世代版終極佛法">
+                    </div>
+                    <div class="book-info">
+                        <span class="book-subtitle">修行疑問解答</span>
+                        <h3>坐禪之問答錄</h3>
+                        <p>收錄禪師回答修行者各類問題的精華，是修行路上不可或缺的參考。</p>
+                        <span class="book-read">線上閱讀 →</span>
+                    </div>
+                </a>
+                <a class="book-card" href="ebook/03_trad.html" target="_blank" rel="noopener noreferrer">
+                    <div class="book-cover">
+                        <span class="tag">坐禪系列</span>
+                        <img src="images/坐禪2.png" alt="坐禪2：次世代版終極佛法">
+                    </div>
+                    <div class="book-info">
+                        <span class="book-subtitle">2024 最新開示</span>
+                        <h3>坐禪 2：次世代版終極佛法</h3>
+                        <p>深入探討業的複雜性，含打死山貓公案等深層佛法內容，接引在家居士。</p>
+                        <span class="book-read">線上閱讀 →</span>
+                    </div>
+                </a>
+                <a class="book-card" href="ebook/05_trad.html" target="_blank" rel="noopener noreferrer">
+                    <div class="book-cover">
+                        <span class="tag">講經系列</span>
+                        <img src="images/講金剛經 心經.png" alt="講金剛經 心經">
+                    </div>
+                    <div class="book-info">
+                        <span class="book-subtitle">經典佛經解說</span>
+                        <h3>講金剛經・心經</h3>
+                        <p>深入解析金剛經與心經的核心義理，以現代語言闡釋甚深智慧。</p>
+                        <span class="book-read">線上閱讀 →</span>
+                    </div>
+                </a>
+                <a class="book-card" href="ebook/06_trad.html" target="_blank" rel="noopener noreferrer">
+                    <div class="book-cover">
+                        <span class="tag">講經系列</span>
+                        <img src="images/講圓覺經.jpg" alt="講圓覺經" style="object-fit:cover;">
+                    </div>
+                    <div class="book-info">
+                        <span class="book-subtitle">經典佛經解說</span>
+                        <h3>講圓覺經</h3>
+                        <p>深入解析圓覺經核心義理，闡釋「圓覺妙心」的甚深智慧與修行指歸。</p>
+                        <span class="book-read">線上閱讀 →</span>
+                    </div>
+                </a>
+                <a class="book-card" href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer">
+                    <div class="book-cover">
+                        <span class="tag">合集</span>
+                        <img src="images/合集.svg" alt="九本合集電子書">
+                    </div>
+                    <div class="book-info">
+                        <span class="book-subtitle">全部著作合集</span>
+                        <h3>九本合集・線上電子書</h3>
+                        <p>一處收齊九本著作，支援全量搜尋、簡繁切換，隨時隨地深入研讀。</p>
+                        <span class="book-read">進入合集 →</span>
+                    </div>
+                </a>
+            </div>
+            <div class="books-cta">
+                <a href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary">📖 九本合集・線上閱讀電子書</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 問答錄2 ============ -->
+    <section class="section alt" id="wenda">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-kicker">Q&amp;A Record 2</div>
+                <h2 class="section-title">坐禪之<span class="grad">問答錄2</span></h2>
+                <p class="section-desc">收錄禪師針對修行者疑問的圓滿開示，涵蓋十二大主題，是修行路上不可或缺的參考資料。</p>
+            </div>
+            <div class="wenda-wrap">
+                <div class="wenda-card">
+                    <div class="wenda-icon">🗂️</div>
+                    <h3>主題目錄</h3>
+                    <p>依主題分成 12 章的問答目錄，快速找到你關心的修行問題。</p>
+                    <a href="wenda2.html" class="wenda-btn">查看目錄 →</a>
+                </div>
+                <div class="wenda-card" style="align-items:flex-start;text-align:left;">
+                    <h3 style="display:flex;align-items:center;gap:10px;">十二章主題</h3>
+                    <div class="topics-grid" style="width:100%;grid-template-columns:1fr 1fr;gap:6px;">
+                        <a class="topic-item" href="wenda2/chapter-01.html"><i>●</i> 自性與意識</a>
+                        <a class="topic-item" href="wenda2/chapter-02.html"><i>●</i> 羯磨（業）</a>
+                        <a class="topic-item" href="wenda2/chapter-03.html"><i>●</i> 發心</a>
+                        <a class="topic-item" href="wenda2/chapter-04.html"><i>●</i> 世界起源與輪轉</a>
+                        <a class="topic-item" href="wenda2/chapter-05.html"><i>●</i> 戒行</a>
+                        <a class="topic-item" href="wenda2/chapter-06.html"><i>●</i> 修福積功德</a>
+                        <a class="topic-item" href="wenda2/chapter-07.html"><i>●</i> 念誦經咒</a>
+                        <a class="topic-item" href="wenda2/chapter-08.html"><i>●</i> 腹式呼吸</a>
+                        <a class="topic-item" href="wenda2/chapter-09.html"><i>●</i> 磕大頭</a>
+                        <a class="topic-item" href="wenda2/chapter-10.html"><i>●</i> 雙盤</a>
+                        <a class="topic-item" href="wenda2/chapter-11.html"><i>●</i> 禪定</a>
+                        <a class="topic-item" href="wenda2/chapter-12.html"><i>●</i> 佛門修行</a>
+                    </div>
+                    <a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer" class="wenda-btn ghost" style="margin-top:20px;">進入完整電子書 →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 實修故事 ============ -->
+    <section class="section" id="stories">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-kicker">Practice Stories</div>
+                <h2 class="section-title">禪修打坐<span class="grad">實修故事</span></h2>
+                <p class="section-desc">真實弟子的修行歷程，是前行路上最動人的燈塔。</p>
+            </div>
+            <div class="stories-grid">
+                <div class="story-card">
+                    <div class="story-author">
+                        <div class="author-avatar">安</div>
+                        <div><h4>安徽師兄</h4><span>2023年</span></div>
+                    </div>
+                    <h3>5年3000遍地藏經的修行奇蹟</h3>
+                    <p>歷時 5 年多完成 3000 遍地藏經，其中半年發願千遍助夫治癌的真實故事。</p>
+                    <a href="stories/anhui-3000-dizangjing.html" class="story-button">閱讀全文 →</a>
+                </div>
+                <div class="story-card">
+                    <div class="story-author">
+                        <div class="author-avatar">話</div>
+                        <div><h4>話頭禪師兄</h4><span>2016年</span></div>
+                    </div>
+                    <h3>為了雙盤而奮鬥的日子</h3>
+                    <p>記錄一位修行者從無法雙盤，到能長時間雙盤坐禪的艱辛歷程。</p>
+                    <a href="stories/huatouchan-weile-shuangpan.html" class="story-button">閱讀全文 →</a>
+                </div>
+                <div class="story-card">
+                    <div class="story-author">
+                        <div class="author-avatar">小</div>
+                        <div><h4>小夕師兄</h4><span>2017年</span></div>
+                    </div>
+                    <h3>從30分鐘到180分鐘的進步</h3>
+                    <p>詳細記錄坐禪時間從 30 分鐘逐步延長到 180 分鐘的心得與體會。</p>
+                    <a href="stories/xiaoxi-shuangpan-riji.html" class="story-button">閱讀全文 →</a>
+                </div>
+            </div>
+            <div class="more-stories">
+                <a href="stories.html" class="btn btn-ghost">更多實修故事 →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 語音與諮詢 ============ -->
+    <section class="section alt" id="community">
+        <div class="container">
+            <div class="section-head">
+                <div class="section-kicker">Audio &amp; Guidance</div>
+                <h2 class="section-title">語音與<span class="grad">諮詢</span></h2>
+                <p class="section-desc">透過語音開示與 AI 圖書館，隨時親近佛法、解惑增長。</p>
+            </div>
+            <div class="community-grid">
+                <div class="community-card">
+                    <img src="images/buddha.png" alt="禪說新語語音收錄" class="community-icon">
+                    <h3>禪說新語</h3>
+                    <p>Tai 師父語音收錄</p>
+                    <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzU4MjAyMTY4Ng%3D%3D&action=getalbum&album_id=3328822407461076995&scene=173&subscene=189&sessionid=svr_da762490854&enterid=1726721665&from_msgid=2247488070&from_itemidx=1&count=3&nolastread=1#wechat_redirect" target="_blank" rel="noopener noreferrer" class="community-btn">前往收聽 ↗</a>
+                </div>
+                <div class="community-card">
+                    <img src="images/buddha.png" alt="Tai法語開示語音" class="community-icon">
+                    <h3>Tai 法語</h3>
+                    <p>Tai 師父語音收錄</p>
+                    <a href="https://mp.weixin.qq.com/mp/appmsgalbum?__biz=MzU4MjAyMTY4Ng%3D%3D&action=getalbum&album_id=3327378602933354504&scene=173#wechat_redirect" target="_blank" rel="noopener noreferrer" class="community-btn">前往收聽 ↗</a>
+                </div>
+                <div class="community-card">
+                    <img src="images/tai_library.png" alt="Tai學院圖書館 AI 諮詢" class="community-icon">
+                    <h3>Tai 學院圖書館</h3>
+                    <p>任何問題，我們都有答案</p>
+                    <a href="https://chatglm.cn/main/gdetail/66eb9cb60c1e2f25584cd114?lang=zh" target="_blank" rel="noopener noreferrer" class="community-btn">立即諮詢 ↗</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 下載 ============ -->
+    <section class="section" id="downloads">
+        <div class="container">
+            <div class="download-panel">
+                <div class="download-icon">⬇</div>
+                <h3>電子書・語音・修學資料</h3>
+                <p>坐禪系列電子書、2024 年後禪師講法的完整語音，以及其他與次世代終極佛法相關的修學資料，皆彙整於雲端網盤，歡迎自由下載取用。</p>
+                <button type="button" class="btn btn-primary" data-download-trigger>選擇下載網盤 ↘</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 法語 ============ -->
+    <section class="dharma-section">
+        <div class="bg-symbols">卍</div>
+        <div class="container">
+            <div class="dharma-content">
+                <blockquote class="dharma-quote">在大菩提心之上，還有兩個更高級的發心——若你能發這兩種發心，佛菩薩會為你開小灶，無限的加持與福報資源都將湧來，你缺什麼就給什麼，以最高效的方法把你引入阿耨多羅三藐三菩提。先拜眾生再拜佛，無量眾生無量佛，眾生拜我如真佛，我渡眾生共成佛。常念常憶，能讓你速發菩提心。</blockquote>
+                <cite class="dharma-author">— TaiGuangLin・2024.2.10</cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 頁尾 ============ -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo-name">TaiGuangLin</div>
+                    <p>次世代終極版佛法</p>
+                    <p>用現代通俗易懂的語言，傳承純正佛法智慧。</p>
+                </div>
+                <div class="footer-col">
+                    <h4>著作與電子書</h4>
+                    <ul>
+                        <li><a href="#books">全部著作</a></li>
+                        <li><a href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer">坐禪系列電子書</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>問答錄2</h4>
+                    <ul>
+                        <li><a href="wenda2.html">主題目錄（12 章）</a></li>
+                        <li><a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer">完整電子書</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>更多資源</h4>
+                    <ul>
+                        <li><a href="infographic.html">名詞圖解</a></li>
+                        <li><a href="mindmap.html">名詞關聯心智圖</a></li>
+                        <li><a href="stories.html">實修故事</a></li>
+                        <li><a href="#downloads">資料下載</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>歡迎分享給更多人結法緣</p>
+                <p>願一切眾生離苦得樂，早證菩提</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ============ 下載彈窗 ============ -->
+    <div class="modal-overlay" id="downloadModal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
+            <button type="button" class="modal-close" id="downloadModalClose" aria-label="關閉">✕</button>
+            <h3 id="downloadModalTitle">選擇下載方式</h3>
+            <p class="modal-sub">請選擇您方便的網盤下載</p>
+            <a href="https://drive.google.com/drive/folders/1qz1LoQeUorLM7K6h1yYVWFo8KrmQ0TxO?usp=drive_link" target="_blank" rel="noopener noreferrer" class="download-option">
+                <span class="d-icon google">
+                    <svg width="28" height="28" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <path d="M5 11.5 L11 1.5 L16 9.5 L10 19.5 Z" fill="#FBBC04"/>
+                        <path d="M16 9.5 L21 1.5 L27 11.5 L22 19.5 Z" fill="#34A853"/>
+                        <path d="M10 19.5 L16 9.5 L22 19.5 L16 29.5 Z" fill="#4285F4"/>
+                    </svg>
+                </span>
+                <span class="d-text">
+                    <strong>Google Drive</strong>
+                    <span>適合海外用戶</span>
+                </span>
+                <span class="d-arrow">↗</span>
+            </a>
+            <a href="https://pan.quark.cn/g/33327748b1?way=group_code" target="_blank" rel="noopener noreferrer" class="download-option">
+                <span class="d-icon quark">
+                    <svg width="26" height="26" viewBox="0 0 28 28" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="夸克网盘">
+                        <rect width="28" height="28" rx="7" fill="#1677FF"/>
+                        <g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="13.2" cy="12.5" r="5.2" stroke-width="2.1"/>
+                            <path d="M16.4 15.7 L19.6 19.0" stroke-width="2.1"/>
+                        </g>
+                        <circle cx="13.2" cy="12.5" r="1.1" fill="white" stroke="none"/>
+                    </svg>
+                </span>
+                <span class="d-text">
+                    <strong>夸克网盘</strong>
+                    <span>適合大陸用戶・群號 752631191</span>
+                </span>
+                <span class="d-arrow">↗</span>
+            </a>
+            <p class="modal-tip">點擊上方選項將於新分頁開啟網盤</p>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const navbar = document.getElementById('navbar');
+            const hamburger = document.getElementById('hamburger');
+            const navMenu = document.getElementById('nav-menu');
+            const dropdown = document.getElementById('nav-dropdown');
+            const dropdownToggle = document.getElementById('dropdown-toggle');
+
+            // 漢堡選單開關
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+            });
+
+            // 行動端圖解下拉選單
+            dropdownToggle.addEventListener('click', (e) => {
+                if (window.innerWidth <= 768) {
+                    e.preventDefault();
+                    dropdown.classList.toggle('active');
+                }
+            });
+
+            // 點擊任一「非下拉」連結後關閉選單
+            navMenu.querySelectorAll('a').forEach(link => {
+                if (link === dropdownToggle) return;
+                link.addEventListener('click', () => {
+                    navMenu.classList.remove('active');
+                    hamburger.classList.remove('active');
+                    dropdown.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+
+            // 捲動時導覽列改變樣式
+            window.addEventListener('scroll', () => {
+                navbar.classList.toggle('scrolled', window.scrollY > 40);
+            });
+
+            // 下載彈窗
+            const overlay = document.getElementById('downloadModal');
+            const closeBtn = document.getElementById('downloadModalClose');
+            function openModal() {
+                overlay.classList.add('active');
+                overlay.setAttribute('aria-hidden', 'false');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                overlay.classList.remove('active');
+                overlay.setAttribute('aria-hidden', 'true');
+                document.body.style.overflow = '';
+            }
+            document.querySelectorAll('[data-download-trigger]').forEach(btn => btn.addEventListener('click', openModal));
+            if (closeBtn) closeBtn.addEventListener('click', closeModal);
+            overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
+            });
+        })();
+    </script>
+</body>
+</html>

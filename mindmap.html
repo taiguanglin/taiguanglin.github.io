@@ -43,9 +43,19 @@
 
     <!-- Hero 區塊 -->
     <section class="page-hero">
-        <div class="hero-content">
-            
-
+        <div class="container">
+            <nav class="crumbs" aria-label="位置">
+                <a href="index.html">首頁</a><span class="crumbs-sep">/</span>
+                <span aria-current="page">心智圖</span>
+            </nav>
+            <span class="kicker">CONCEPT MAP</span>
+            <h1 class="display">名詞關聯心智圖</h1>
+            <p class="lede">五冊著作、1,608 頁原文，把核心名詞串成一張可互動的關聯圖：三大初始設定、意識三層、果位次第、經典依據、三界二十八天、禪定階梯、實修工程、業與世界。</p>
+        </div>
+    </section>
+    <!-- 統計 -->
+    <section class="section" style="padding-top: var(--spacing-lg); padding-bottom: 0;">
+        <div class="container">
             <div class="mm-stats">
                 <div class="mm-stat">
                     <span class="mm-stat-icon" aria-hidden="true"></span>
@@ -1060,7 +1070,7 @@
                 g.appendChild(el('path', {
                     d: edgePath(BOX_BY_ID[b.parent], b),
                     fill: 'none',
-                    stroke: lit ? '#ff1493' : '#e6c8d6',
+                    stroke: lit ? '#a23a6f' : '#e6c8d6',
                     'stroke-width': lit ? 1.8 : 1,
                     opacity: lit ? 0.9 : 0.5
                 }));
@@ -1072,7 +1082,7 @@
                 g.appendChild(el('path', {
                     d: relPath(selBox, t),
                     fill: 'none',
-                    stroke: '#ff1493',
+                    stroke: '#a23a6f',
                     'stroke-width': 1.4,
                     'stroke-dasharray': '5 4',
                     opacity: 0.7
@@ -1099,8 +1109,8 @@
                 });
                 group.appendChild(el('rect', {
                     x: b.x, y: b.y, width: b.w, height: b.h, rx: isRoot ? 9 : 5,
-                    fill: active ? '#ff1493' : (isRoot ? '#ff69b4' : (isHub ? '#ffe4ee' : '#ffffff')),
-                    stroke: active ? '#ff1493' : (isRoot || isHub ? '#ff69b4' : '#f0cfdd'),
+                    fill: active ? '#a23a6f' : (isRoot ? '#e68fb5' : (isHub ? '#ffe4ee' : '#ffffff')),
+                    stroke: active ? '#a23a6f' : (isRoot || isHub ? '#e68fb5' : '#f0cfdd'),
                     'stroke-width': (active || isRoot) ? 1.8 : 1
                 }));
 
@@ -1263,7 +1273,7 @@
         }
 
         var BOOKS = [
-            { name: '坐禪1', color: '#ff2d87' },
+            { name: '坐禪1', color: '#d8639a' },
             { name: '坐禪之問答錄', color: '#ff85be' },
             { name: '坐禪2', color: '#c44fb0' },
             { name: '講金剛經 心經', color: '#8f5bd6' },

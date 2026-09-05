@@ -3674,3 +3674,33 @@ body { background: #fdf6f9; color: #2f1b26; }
 .dust-layer { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 0; }
 .dust-dot { position: absolute; border-radius: 50%; background: var(--rose-200); opacity: .5; animation: dust-float 12s ease-in-out infinite; }
 @keyframes dust-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+
+/* ---------- 全站下載彈窗（dl-*） ---------- */
+.dl-overlay { position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(36, 16, 28, .48); backdrop-filter: blur(8px); opacity: 0; visibility: hidden; transition: opacity .32s var(--ease), visibility .32s; }
+.dl-overlay.active { opacity: 1; visibility: visible; }
+.dl-card { position: relative; width: min(520px, 94vw); background: var(--white); border: 1px solid var(--hairline); border-radius: var(--radius-lg); padding: 26px; box-shadow: 0 30px 80px rgba(69, 23, 49, .3); transform: translateY(14px) scale(.97); transition: transform .3s var(--ease); }
+.dl-overlay.active .dl-card { transform: none; }
+.dl-card::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 5px; border-radius: 24px 24px 0 0; background: var(--pink-gradient-strong); }
+.dl-close { position: absolute; top: 14px; right: 14px; width: 34px; height: 34px; border: 0; border-radius: 50%; background: var(--rose-50); color: var(--rose-600); font-size: 18px; line-height: 1; cursor: pointer; transition: background .2s, transform .2s; }
+.dl-close:hover { background: var(--rose-100); transform: rotate(90deg); }
+.dl-card h3 { font-family: var(--font-serif); font-size: 20px; font-weight: 700; color: var(--ink); margin-bottom: 4px; }
+.dl-sub { font-size: 13px; color: var(--muted-2); margin-bottom: 18px; }
+.dl-list { display: grid; gap: 10px; }
+.dl-item { display: flex; align-items: center; gap: 14px; padding: 14px 16px; border: 1.5px solid var(--hairline); border-radius: var(--radius-md); transition: border-color .25s, transform .25s, box-shadow .25s; background: var(--surface, #fff); }
+.dl-item:hover { border-color: var(--rose-400); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.dl-item-icon { width: 42px; height: 42px; flex: none; display: grid; place-items: center; background: var(--rose-50); border-radius: 12px; }
+.dl-item-icon svg { width: 22px; height: 22px; }
+.dl-item-text { flex: 1; text-align: left; }
+.dl-item-text strong { display: block; font-family: var(--font-serif); font-size: 15px; color: var(--ink); }
+.dl-item-text small { font-size: 12.5px; color: var(--muted-2); }
+.dl-item-arr { color: var(--rose-400); font-size: 14px; }
+.dl-item:hover .dl-item-arr { transform: translateX(4px); }
+.dl-tip { text-align: center; font-size: 12.5px; color: var(--muted-2); margin-top: 14px; }
+
+/* ---------- 首頁「下載」區塊小按鈕 ---------- */
+.dl-linklist { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+
+/* Lightbox 空按鈕加上純 CSS 圖示（已移除 Font Awesome） */
+.lightbox-close::before { content: '✕'; font-size: 18px; }
+.lightbox-prev::before { content: '‹'; font-size: 30px; line-height: 1; }
+.lightbox-next::before { content: '›'; font-size: 30px; line-height: 1; }

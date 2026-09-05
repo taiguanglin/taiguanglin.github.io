@@ -3309,13 +3309,14 @@ function addHomepageBookmarkEventListeners() {
       const target = bookmarkItem.dataset.target;
       const element = document.querySelector(target);
       if (element) {
-        // 添加臨時高亮效果
-        element.style.transition = 'background-color 0.3s ease';
-        element.style.backgroundColor = 'rgba(255, 105, 180, 0.2)';
+        // 添加臨時高亮效果；使用 class，避免經文的漸層背景蓋住 background-color。
+        element.classList.remove('anchor-target-highlight');
+        void element.offsetWidth;
+        element.classList.add('anchor-target-highlight');
         setTimeout(() => {
-          element.style.backgroundColor = '';
-        }, 2000);
-        
+          element.classList.remove('anchor-target-highlight');
+        }, 3000);
+
         element.scrollIntoView({ behavior: 'smooth', block: 'center' });
         // 移除自動關閉側邊欄，讓用戶可以連續瀏覽書籤
         // floatingTOC.classList.remove('visible');

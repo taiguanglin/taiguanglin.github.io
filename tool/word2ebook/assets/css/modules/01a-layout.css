@@ -114,7 +114,7 @@
 .qa-btn:hover { background: var(--color-primary); color: white; transform: scale(1.1); }
 
 /* ---- Toast 通知 ----------------------------------------- */
-.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 20px; border-radius: 25px; font-size: 14px; z-index: 9999; transition: transform 0.3s ease; }
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px); background: #333; color: white; padding: 12px 20px; border-radius: 25px; font-size: 14px; z-index: 10002; transition: transform 0.3s ease; }
 .toast.show { transform: translateX(-50%) translateY(0); }
 
 /* ---- 暗色模式適配 --------------------------------------- */
