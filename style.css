@@ -2306,7 +2306,8 @@ body { background: #fdf6f9; color: #2f1b26; }
     transform: scale(1.02);
 }
 
-.infographic-overlay {
+.infographic-overlay,
+.is-overlay {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -2320,7 +2321,8 @@ body { background: #fdf6f9; color: #2f1b26; }
     transition: var(--transition-normal);
 }
 
-.infographic-item:hover .infographic-overlay {
+.infographic-item:hover .infographic-overlay,
+.infographic-item:hover .is-overlay {
     opacity: 1;
 }
 
@@ -3600,16 +3602,41 @@ body { background: #fdf6f9; color: #2f1b26; }
    相容覆寫（舊頁 class 視覺對齊新系統；不改 HTML）
    ============================================================ */
 
-/* 舊導覽列 nav-logo（無 .logo-mark SVG 的頁面）加蓮花色塊 */
+/* 新導覽列 nav-logo（含 .logo-mark SVG 子元素）：圖文橫排 */
+.nav-logo:has(.logo-mark) { display: flex; flex-direction: row; align-items: center; gap: 12px; }
+/* 舊導覽列 nav-logo（無 .logo-mark SVG 子元素的頁面，如 index.html）加蓮花色塊 */
 @media (min-width: 769px) {
-  .nav-logo:not(.logo-mark) { display: flex; align-items: center; gap: 12px; }
-  .nav-logo:not(.logo-mark) h2, .nav-logo:not(.logo-mark) .logo-name { order: 2; margin: 0; }
-  .nav-logo:not(.logo-mark) span:not(.logo-mark), .nav-logo:not(.logo-mark) .logo-sub { order: 3; font-weight: 500; }
-  .nav-logo:not(.logo-mark)::before { content: ''; order: 1; width: 38px; height: 38px; flex: none; border-radius: 12px; background: var(--pink-gradient-strong); box-shadow: 0 6px 16px rgba(216,99,154,.3); }
+  .nav-logo:not(:has(.logo-mark)) { display: flex; align-items: center; gap: 12px; }
+  .nav-logo:not(:has(.logo-mark)) h2, .nav-logo:not(:has(.logo-mark)) .logo-name { order: 2; margin: 0; }
+  .nav-logo:not(:has(.logo-mark)) span:not(.logo-mark), .nav-logo:not(:has(.logo-mark)) .logo-sub { order: 3; font-weight: 500; }
+  .nav-logo:not(:has(.logo-mark))::before { content: ''; order: 1; width: 38px; height: 38px; flex: none; border-radius: 12px; background: var(--pink-gradient-strong); box-shadow: 0 6px 16px rgba(216,99,154,.3); }
 }
 .logo-mark { width: 40px; height: 40px; flex: none; border-radius: 13px; background: var(--pink-gradient-strong); display: grid; place-items: center; box-shadow: 0 8px 18px rgba(216,99,154,.32); }
 .logo-mark svg { width: 24px; height: 24px; }
 .logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+
+/* 新頁尾網格（.footer-top；與 index.html 內嵌設計系統同視覺） */
+.footer-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+.footer-brand .logo-name { font-family: var(--font-serif); font-size: 24px; color: #fff; margin-bottom: 8px; }
+.footer-brand .logo-sub { display: block; font-size: 12px; letter-spacing: 3px; color: #b493a4; margin-bottom: 12px; }
+.footer-brand p { font-size: 14px; color: #b493a4; line-height: 1.8; margin-bottom: 4px; }
+.footer-col h4 { color: #f0a6c3; font-size: 14px; letter-spacing: 2px; margin-bottom: 18px; font-weight: 700; }
+.footer-col ul { list-style: none; }
+.footer-col li { margin-bottom: 11px; }
+.footer-col a { font-size: 14px; color: #c9aebc; text-decoration: none; transition: color .25s; }
+.footer-col a:hover { color: #fff; }
+@media (max-width: 960px) { .footer-top { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 520px) { .footer-top { grid-template-columns: 1fr; } }
+
+/* 法語區（.dharma-section；與 index.html 內嵌設計系統同視覺） */
+.dharma-section { position: relative; padding: 100px 0; overflow: hidden; background: var(--pink-gradient-strong); }
+.dharma-section .bg-symbols { position: absolute; inset: 0; opacity: .12; font-size: 200px; line-height: 1; color: #fff; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); pointer-events: none; }
+.dharma-content { max-width: 860px; margin: 0 auto; text-align: center; position: relative; z-index: 2; color: #fff; }
+.dharma-section .dharma-quote::before { content: '\201C'; font-size: 60px; line-height: 0; vertical-align: -18px; opacity: .7; }
+.dharma-section .dharma-quote::after { content: '\201D'; font-size: 60px; line-height: 0; vertical-align: -18px; opacity: .7; }
+
+/* 舊命名 token 別名（供 stories.html 法語卡等行內樣式使用） */
+:root { --serif: var(--font-serif); --muted: var(--muted-2); --sp-3: 16px; --sp-5: 28px; --sp-7: 48px; }
 
 /* 新導覽 active 態與 CTA */
 .nav-link.active { color: var(--rose-700); background: var(--rose-100); }

@@ -22,6 +22,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 5. **Do not confuse site chrome with ebook assets** — root `script.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`).
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
 7. **AI-generated content disclaimer** — `infographic.html` and `mindmap.html` must both display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
+8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
 
 ---
 

@@ -1179,7 +1179,7 @@
             var node = NODES[selected];
             var box = BOX_BY_ID[selected];
             var tag = selected === 'root' ? '中心' : (node.branch || '主幹分支');
-            var headIcon = iconHtml(selected) || '<i class="fas fa-bookmark"></i>';
+            var headIcon = iconHtml(selected) || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v16l-5-3.6L7 20z"/></svg>';
             if (!NODE_ICON_SVG[selected] && node.branch) {
                 for (var i = 0; i < BRANCHES.length; i++) {
                     if (BRANCHES[i].label === node.branch) {
@@ -1199,23 +1199,23 @@
 
             if (node.points && node.points.length) {
                 html += '<div class="mm-detail-block">' +
-                        '<h4><i class="fas fa-list-ul"></i> 書中要點</h4><ul class="mm-detail-points">';
+                        '<h4><i aria-hidden="true">☰</i> 書中要點</h4><ul class="mm-detail-points">';
                 node.points.forEach(function (p) { html += '<li>' + p + '</li>'; });
                 html += '</ul></div>';
             }
 
             if (node.quote) {
                 html += '<blockquote class="mm-detail-quote">' +
-                        '<span class="mm-quote-mark" aria-hidden="true"><i class="fas fa-quote-left"></i></span>' +
+                        '<span class="mm-quote-mark" aria-hidden="true">❝</span>' +
                         '<p>' + node.quote.t + '</p>' +
                         '<cite>' + node.quote.s + '</cite>' +
                         '</blockquote>';
             }
 
-            html += '<p class="mm-detail-src"><i class="fas fa-book"></i> 出處：' + node.src + '</p>';
+            html += '<p class="mm-detail-src"><i aria-hidden="true">✦</i> 出處：' + node.src + '</p>';
 
             if (node.rel && node.rel.length) {
-                html += '<div class="mm-detail-rel"><span><i class="fas fa-link"></i> 關聯名詞</span>';
+                html += '<div class="mm-detail-rel"><span><i aria-hidden="true">↔</i> 關聯名詞</span>';
                 node.rel.forEach(function (r) {
                     html += '<button type="button" class="mm-rel-chip" data-id="' + r + '">' +
                             (NODES[r] ? NODES[r].label : r) + '</button>';
