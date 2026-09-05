@@ -141,6 +141,24 @@ body.dark-mode .para-block:hover {
   background-color: rgba(255, 105, 180, 0.12);
 }
 
+/* 經文段落（.sutra-text）本身是漸層背景，background-color 會被蓋掉；
+   因此改用 background 取代漸層 + 邊框/陰影強化，讓 hover 時有清楚顏色變化。 */
+.sutra-text.para-block {
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sutra-text.para-block:hover {
+  background: linear-gradient(135deg, #f7e8d8 0%, #fff2e0 100%);
+  border-left-color: var(--color-primary);
+  box-shadow: 0 4px 14px rgba(231, 84, 128, 0.25);
+}
+
+body.dark-mode .sutra-text.para-block:hover {
+  background: #5b3a4c;
+  border-left-color: #ff91af;
+  box-shadow: 0 4px 14px rgba(255, 105, 180, 0.35);
+}
+
 /* 按鈕組：置於段落上方、靠右（負 top 使其突出於段落之外） */
 .para-block .qa-actions {
   top: -30px;
