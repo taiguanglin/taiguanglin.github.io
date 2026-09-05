@@ -126,7 +126,10 @@ body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
 /* ---- .para-block 內文段落互動按鈕（複製 / 書籤 / 分享） ----------------
    沿用 wenda2_ebook 的 .qa-actions 按鈕，但位置改到段落「外右上角」上方，
    避免遮住滑鼠所在的段落文字（可能遮到上一段，但不遮當下段落）。
-   滑鼠移入時整段高亮，讓使用者知道這三個按鈕對應到哪一段。 */
+
+   互動改為「⋯」disclosure menu：滑鼠移入段落時，只出現一個低對比、小佔位的
+   「⋯」提示氣泡，不再直接亮出三個按鈕；唯有滑鼠移上該 ⋯（或用鍵盤聚焦）才
+   展開完整按鈕（複製 / 書籤 / 分享），大幅降低單純移動滑鼠時的閱讀干擾。 */
 .para-block {
   position: relative;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
@@ -134,13 +137,13 @@ body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
 }
 
 .para-block:hover {
-  background-color: rgba(231, 84, 128, 0.06);
-  box-shadow: 0 4px 14px rgba(231, 84, 128, 0.25);
+  background-color: rgba(231, 84, 128, 0.05);
+  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.12);
 }
 
 body.dark-mode .para-block:hover {
-  background-color: rgba(255, 105, 180, 0.12);
-  box-shadow: 0 4px 14px rgba(255, 105, 180, 0.35);
+  background-color: rgba(255, 105, 180, 0.10);
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.20);
 }
 
 /* 經文段落（.sutra-text）本身是漸層背景，background-color 會被蓋掉；
@@ -152,24 +155,26 @@ body.dark-mode .para-block:hover {
 .sutra-text.para-block:hover {
   background: linear-gradient(135deg, #f7e8d8 0%, #fff2e0 100%);
   border-left-color: var(--color-primary);
-  box-shadow: 0 4px 14px rgba(231, 84, 128, 0.25);
+  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.12);
 }
 
 body.dark-mode .sutra-text.para-block:hover {
   background: #5b3a4c;
   border-left-color: #ff91af;
-  box-shadow: 0 4px 14px rgba(255, 105, 180, 0.35);
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.20);
 }
 
-/* 按鈕組：置於段落正上方、靠右。用 bottom:100% 讓按鈕組下緣貼齊段落頂端，
-   消除段落與按鈕之間的縫隙；並以 ::before 延伸一段透明熱區向下與段落重疊，
-   使滑鼠從段落移到按鈕的過程永遠不離開命中區，避免按鈕突然消失。 */
+/* 按鈕容器：置於段落正上方、靠右。用 bottom:100% 讓容器下緣貼齊段落頂端，
+   消除段落與容器之間的縫隙；並以 ::before 延伸一段透明熱區向下與段落重疊，
+   使滑鼠從段落移到容器（⋯ → 按鈕）的過程永遠不離開命中區，避免突然消失。 */
 .para-block .qa-actions {
   top: auto;
   bottom: 100%;
   right: 0;
   display: flex;
+  align-items: center;
   gap: 6px;
+  height: 28px;
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
@@ -186,10 +191,49 @@ body.dark-mode .sutra-text.para-block:hover {
   height: 12px;
 }
 
+/* 「⋯」提示氣泡（預設狀態）：低對比、小佔位，僅作為「這裡有動作」的線索 */
+.para-block .qa-actions::after {
+  content: "⋯";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  color: rgba(120, 120, 120, 0.55);
+  background: rgba(0, 0, 0, 0.04);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode .para-block .qa-actions::after {
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位 */
+.para-block .qa-actions .qa-btn {
+  display: none;
+}
+
+/* 段落 hover → 顯示 ⋯（container 取得 pointer-events） */
 .para-block:hover .qa-actions,
-.para-block .qa-actions:hover {
+.para-block .qa-actions:hover,
+.para-block .qa-actions:focus-within {
   opacity: 1;
   pointer-events: auto;
+}
+
+/* ⋯ hover / 聚焦 → 隱藏 ⋯、展開完整按鈕 */
+.para-block .qa-actions:hover::after,
+.para-block .qa-actions:focus-within::after {
+  display: none;
+}
+
+.para-block .qa-actions:hover .qa-btn,
+.para-block .qa-actions:focus-within .qa-btn {
+  display: flex;
 }
 
 /* 避免書籤視覺標識（.bookmark-indicator）與上方按鈕組重疊 */
