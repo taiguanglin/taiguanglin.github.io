@@ -215,9 +215,13 @@ body.dark-mode .para-block .qa-actions::after {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位 */
+/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位。
+   展開後按鈕需疊在 ::before 透明熱區「之上」（position + z-index），
+   否則寬熱區會蓋住 書籤/分享 按鈕，導致無法點擊。 */
 .para-block .qa-actions .qa-btn {
   display: none;
+  position: relative;
+  z-index: 1;
 }
 
 /* 段落 hover → 顯示 ⋯（container 取得 pointer-events） */
