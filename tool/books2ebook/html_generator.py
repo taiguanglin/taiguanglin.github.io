@@ -445,10 +445,17 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             "book": _pure_book,
         })
 
+    # 「回到目錄」連結：仿 wenda2_ebook 的 insert_back_to_top，於每個章節
+    # （各層級標題）之間插入，讓讀者回到本章目錄；單書內頁改叫「回到目錄」。
+    _back_to_toc = '<div class="back-to-top"><a href="#top">🔝 回到目录</a></div>'
+    _seen_heading = False
     cur_section = book.title
     for b in blocks:
         k = b["kind"]
         if k in _HEADING_KINDS:
+            if _seen_heading:
+                body.append(_back_to_toc)
+            _seen_heading = True
             tag = k
             cur_section = b["text"]
             play = ""
@@ -462,16 +469,17 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             add_item(TYPE_HEADING, "%s(%d)" % (b["text"], b["count"]),
                      "%s#%s" % (fname, b["sid"]), "%s(%d)" % (b["text"], b["count"]))
         elif k == "para":
-            body.append('<p id="%s">%s</p>' % (b["pid"], nl2br(esc(b["text"]))))
+            body.append('<p id="%s" class="para-block">%s</p>'
+                        % (b["pid"], nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section, b["text"][:80])
         elif k == "strong":
-            body.append('<p id="%s"><strong>%s</strong></p>'
+            body.append('<p id="%s" class="para-block"><strong>%s</strong></p>'
                         % (b["pid"], nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section, b["text"][:80])
         elif k == "quote":
-            body.append('<div class="sutra-text" id="%s">%s</div>'
+            body.append('<div class="sutra-text para-block" id="%s">%s</div>'
                         % (b["pid"], nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section, b["text"][:80])
@@ -524,7 +532,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
 
 # 單書內頁：只回本系列總目錄（跨書連結僅出現在首頁）
     _book_toc_href = "index_trad.html" if is_trad else "index.html"
-    _book_toc_text = "📖 坐禪系列總目錄" if is_trad else "📖 坐禅系列总目录"
+    _book_toc_text = "📖 坐禪與講經系列總目錄" if is_trad else "📖 坐禅与讲经系列总目录"
     _header_class = "header-nav"
     _nav_left_content = f'<a href="{_book_toc_href}">{_book_toc_text}</a>'
     _lang_switch_links = build_lang_switch_links(book.filename, book.filename_trad, is_trad)
@@ -545,7 +553,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     html += '<div class="toc" id="chapter-toc">\n%s\n</div>\n' % chapter_toc_html
     html += _floating_level_buttons(toc_levels, active_level)
     html += "\n".join(body)
-    html += '\n<div class="back-to-top"><a href="#top">🔝 回到本章目录</a></div>\n'
+    html += '\n<div class="back-to-top"><a href="#top">🔝 回到目录</a></div>\n'
     html += '<div class="nav-footer">%s%s</div>\n' % (
         nav_prev + "\n" if nav_prev else "",
         nav_next,

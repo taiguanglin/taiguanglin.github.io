@@ -1,53 +1,65 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520" role="img" aria-label="蓮花禪坐圖">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520" role="img" aria-label="蓮花禪坐意境圖">
   <defs>
-    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fde2ee" stop-opacity="0"/>
-      <stop offset="1" stop-color="#ffb6c1" stop-opacity="0.55"/>
+    <linearGradient id="hl-petal" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4c3d4"/>
+      <stop offset=".55" stop-color="#e089ac"/>
+      <stop offset="1" stop-color="#c45883"/>
     </linearGradient>
-    <linearGradient id="petal" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#ff69b4"/>
-      <stop offset="0.55" stop-color="#ff8fc9"/>
-      <stop offset="1" stop-color="#ffd3e6"/>
+    <linearGradient id="hl-petal-deep" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e089ac"/>
+      <stop offset="1" stop-color="#a63e6a"/>
     </linearGradient>
-    <linearGradient id="petalInner" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#ff8fc9"/>
-      <stop offset="1" stop-color="#fff0f6"/>
-    </linearGradient>
-    <radialGradient id="aura" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0.6" stop-color="#ffb6c1" stop-opacity="0"/>
-      <stop offset="1" stop-color="#ff69b4" stop-opacity="0.16"/>
+    <radialGradient id="hl-glow" cx=".5" cy=".42" r=".55">
+      <stop offset="0" stop-color="#f8e7ec" stop-opacity=".95"/>
+      <stop offset=".6" stop-color="#f4d2de" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#f4d2de" stop-opacity="0"/>
     </radialGradient>
+    <linearGradient id="hl-water" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#d9b98a" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#b98c52" stop-opacity=".55"/>
+      <stop offset="1" stop-color="#d9b98a" stop-opacity="0"/>
+    </linearGradient>
   </defs>
 
-  <!-- 光暈 -->
-  <circle cx="300" cy="234" r="210" fill="url(#aura)"/>
+  <circle cx="300" cy="240" r="235" fill="url(#hl-glow)"/>
+  <circle cx="300" cy="240" r="188" fill="none" stroke="#f0d2dd" stroke-width="1.2" stroke-dasharray="2 7"/>
+  <circle cx="300" cy="240" r="216" fill="none" stroke="#f0d2dd" stroke-width="1"/>
 
-  <!-- 蓮花花瓣：外層 -->
-  <g fill="url(#petal)">
-    <path d="M300 470 C 250 400 222 330 226 250 C 278 300 300 360 300 470 Z"/>
-    <path d="M300 470 C 350 400 378 330 374 250 C 322 300 300 360 300 470 Z"/>
-    <path d="M300 472 C 205 420 180 340 196 262 C 240 318 278 380 300 472 Z" transform="rotate(0 300 300)" opacity="0.9"/>
-    <path d="M300 472 C 395 420 420 340 404 262 C 360 318 322 380 300 472 Z" opacity="0.9"/>
+  <!-- 蓮花 -->
+  <g stroke-linejoin="round">
+    <!-- 中央直立花瓣 -->
+    <path d="M300 118c34 42 52 96 52 162-52-12-86-58-104-116-18 58-52 104-104 116 0-66 18-120 52-162 14 22 32 38 52 46 20-8 38-24 52-46z" fill="url(#hl-petal)" opacity=".9"/>
+    <!-- 兩側花瓣 -->
+    <path d="M232 170c-56 26-92 74-102 132 62 6 116-20 150-66-18-24-32-44-48-66z" fill="url(#hl-petal-deep)" opacity=".8"/>
+    <path d="M368 170c56 26 92 74 102 132-62 6-116-20-150-66 18-24 32-44 48-66z" fill="url(#hl-petal-deep)" opacity=".8"/>
+    <!-- 外側花瓣 -->
+    <path d="M150 236c-58 20-96 60-108 110 64 16 122 2 164-36-20-28-36-50-56-74z" fill="#e5b3c5" opacity=".75"/>
+    <path d="M450 236c58 20 96 60 108 110-64 16-122 2-164-36 20-28 36-50 56-74z" fill="#e5b3c5" opacity=".75"/>
+    <!-- 花心 -->
+    <path d="M196 336c20-26 58-44 104-44s84 18 104 44c-22 14-58 22-104 22s-82-8-104-22z" fill="#c45883"/>
+    <path d="M234 346c12-16 36-24 66-24s54 8 66 24c-16 8-40 12-66 12s-50-4-66-12z" fill="#43182f" opacity=".3"/>
   </g>
 
-  <!-- 蓮花花瓣：內層 -->
-  <g fill="url(#petalInner)">
-    <path d="M300 430 C 268 388 252 340 250 292 C 282 320 300 356 300 430 Z"/>
-    <path d="M300 430 C 332 388 348 340 350 292 C 318 320 300 356 300 430 Z"/>
-    <path d="M300 434 C 236 398 226 344 234 300 C 268 336 292 376 300 434 Z"/>
-    <path d="M300 434 C 364 398 374 344 366 300 C 332 336 308 376 300 434 Z"/>
+  <!-- 金色花蕊 -->
+  <g fill="#b98c52">
+    <circle cx="300" cy="324" r="4"/>
+    <circle cx="278" cy="332" r="3"/>
+    <circle cx="322" cy="332" r="3"/>
+    <circle cx="258" cy="344" r="2.5"/>
+    <circle cx="342" cy="344" r="2.5"/>
   </g>
 
-  <!-- 禪坐剪影 -->
-  <g fill="#8a4b66">
-    <ellipse cx="300" cy="248" rx="52" ry="30"/>
-    <path d="M300 214 c -14 -26 -22 -52 -22 -80 a22 22 0 0 1 44 0 c 0 28 -8 54 -22 80 Z"/>
-    <path d="M276 250 c -10 14 -26 20 -40 18 c -2 10 2 20 12 26 l 30 12 Z" opacity="0.96"/>
-    <path d="M324 250 c 10 14 26 20 40 18 c 2 10 -2 20 -12 26 l -30 12 Z" opacity="0.96"/>
-    <path d="M284 288 l -20 40 l 14 18 l 18 -58 Z"/>
-    <path d="M316 288 l 20 40 l -14 18 l -18 -58 Z"/>
+  <!-- 水面波紋 -->
+  <g stroke="url(#hl-water)" fill="none" stroke-linecap="round">
+    <path d="M120 428c60-12 120-12 180 0s120 12 180 0" stroke-width="2.5"/>
+    <path d="M170 456c45-8 86-8 130 0s85 8 130 0" stroke-width="1.8" opacity=".7"/>
+    <path d="M230 478c30-5 50-5 70 0s40 5 70 0" stroke-width="1.4" opacity=".5"/>
   </g>
 
-  <!-- 蓮座底部微光 -->
-  <ellipse cx="300" cy="472" rx="130" ry="18" fill="url(#glow)"/>
+  <!-- 飄落花瓣 -->
+  <g fill="#e089ac">
+    <path d="M104 110c10-8 22-8 30 0-8 10-20 12-30 4z" opacity=".65"/>
+    <path d="M478 140c9-9 22-10 31-3-7 11-19 14-31 9z" opacity=".5"/>
+    <path d="M430 84c7-7 17-8 24-2-6 8-15 10-24 6z" opacity=".4"/>
+  </g>
 </svg>

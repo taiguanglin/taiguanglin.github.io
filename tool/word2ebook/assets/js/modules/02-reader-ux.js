@@ -110,12 +110,38 @@
   
   // 生成分享URL
   function generateShareUrl(targetElement) {
-    const prefix = targetElement.classList.contains('question') ? 'question' : 'answer';
+    let prefix;
+    if (targetElement.classList.contains('question')) {
+      prefix = 'question';
+    } else if (targetElement.classList.contains('answer')) {
+      prefix = 'answer';
+    } else if (targetElement.classList.contains('para-block')) {
+      prefix = 'paragraph';
+    } else {
+      prefix = 'element';
+    }
     const elementId = ensureElementId(targetElement, prefix);
     const baseUrl = window.location.origin + window.location.pathname;
     return baseUrl + '#' + elementId;
   }
-  
+
+  // 取得段落純文字（ebook 的 para-block 沒有問答結構）
+  function getParagraphText(element) {
+    return (element.textContent || '').trim();
+  }
+
+  // 向上找最近的前一個章節標題，作為段落書籤的歸屬標題
+  function findHeadingForParagraph(element) {
+    let cur = element.previousElementSibling;
+    while (cur) {
+      if (/^H[2-6]$/.test(cur.tagName)) {
+        return cur.textContent.trim();
+      }
+      cur = cur.previousElementSibling;
+    }
+    return '';
+  }
+
   // 找到問答配對
   function findQuestionForAnswer(answerElement) {
     let currentElement = answerElement.previousElementSibling;
@@ -455,10 +481,17 @@
 
   // 為問答添加互動按鈕
   function addQAActions() {
-    const qaElements = document.querySelectorAll('.question, .answer');
+    const qaElements = document.querySelectorAll('.question, .answer, .para-block');
     qaElements.forEach((element) => {
       // 確保元素有唯一ID（用於分享功能）
-      const prefix = element.classList.contains('question') ? 'question' : 'answer';
+      let prefix;
+      if (element.classList.contains('question')) {
+        prefix = 'question';
+      } else if (element.classList.contains('answer')) {
+        prefix = 'answer';
+      } else {
+        prefix = 'paragraph';
+      }
       ensureElementId(element, prefix);
       
       element.style.position = 'relative';
@@ -467,6 +500,7 @@
       
       const isQuestion = element.classList.contains('question');
       const isAnswer = element.classList.contains('answer');
+      const isParagraph = element.classList.contains('para-block');
       
       // 首頁不顯示書籤按鈕
       let actionsHtml = '';
@@ -483,6 +517,13 @@
           actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
         }
         actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
+      } else if (isParagraph) {
+        // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
+        actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
+        if (!currentChapter.isHomepage) {
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+        }
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
       }
       
       actions.innerHTML = actionsHtml;

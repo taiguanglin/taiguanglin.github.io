@@ -1,10 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 24" width="120" height="24" role="presentation">
-  <g fill="none" stroke="#ff8fc9" stroke-width="1.6" stroke-linecap="round">
-    <path d="M8 20 C 18 14 26 8 30 3"/>
-    <path d="M112 20 C 102 14 94 8 90 3"/>
-    <path d="M22 20 C 30 16 36 12 40 8" opacity="0.7"/>
-    <path d="M98 20 C 90 16 84 12 80 8" opacity="0.7"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 28" width="160" height="28" role="presentation">
+  <g fill="none" stroke="#b98c52" stroke-width="1" stroke-linecap="round">
+    <path d="M6 14 H62" opacity=".55"/>
+    <path d="M98 14 H154" opacity=".55"/>
+    <circle cx="69" cy="14" r="1.4" fill="#b98c52" stroke="none"/>
+    <circle cx="91" cy="14" r="1.4" fill="#b98c52" stroke="none"/>
   </g>
-  <circle cx="60" cy="12" r="4" fill="#ff69b4"/>
-  <circle cx="60" cy="12" r="8" fill="none" stroke="#ffb6c1" stroke-width="1.2"/>
+  <!-- 蓮苞 -->
+  <g fill="none" stroke="#c45883" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M80 5c4 4 6 8 6 12-4 2-8 2-12 0 0-4 2-8 6-12z"/>
+    <path d="M70 17c-2-4-2-8 1-11"/>
+    <path d="M90 17c2-4 2-8-1-11"/>
+    <path d="M80 21v4"/>
+  </g>
+  <circle cx="80" cy="24" r="3" fill="#e5b3c5"/>
 </svg>

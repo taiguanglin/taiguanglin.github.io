@@ -210,6 +210,44 @@ function toggleQAPairBookmark(answerElement) {
   showBookmarkAddedFeedback();
 }
 
+// 段落書籤（ebook 的 .para-block）：切換某段內文的書籤狀態
+function toggleParagraphBookmark(element) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  element.id = element.id || ('bookmark-' + Date.now());
+  const id = element.id;
+  const existing = bookmarks.find(b => b.elementId === id);
+
+  if (existing) {
+    removeBookmarkVisualIndicator(element);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== id));
+    renderBookmarks();
+    showToast('已從書籤移除');
+    return;
+  }
+
+  const heading = findHeadingForParagraph(element);
+  const preview = (getParagraphText(element)).substring(0, 100) + '...';
+
+  bookmarks.push({
+    id: 'bookmark-' + Date.now(),
+    elementId: id,
+    type: 'paragraph',
+    questioner: heading || currentChapter.title,
+    time: '',
+    preview: preview,
+    chapter: findChapterForElement(element),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(element);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
 function removeBookmark(bookmarkId) {
   const bookmarks = getBookmarks();
   const bookmark = bookmarks.find(b => b.id === bookmarkId);

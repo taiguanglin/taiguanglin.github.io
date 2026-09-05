@@ -10,7 +10,7 @@ DEFAULT_OUTPUT_DIR = os.path.join(REPO_ROOT, "ebook")
 # 樣式資產的來源：直接沿用 wenda2_ebook 的 CSS/JS bundle（單一風格來源）
 STYLE_ASSETS_SRC = os.path.join(REPO_ROOT, "wenda2_ebook", "assets")
 
-SITE_TITLE = "坐禅系列电子书"
+SITE_TITLE = "坐禅与讲经系列电子书"
 
 # 搜尋類型（與 word2ebook 的 search_index.json 相容）
 TYPE_HEADING = "heading"

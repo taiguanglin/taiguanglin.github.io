@@ -183,13 +183,26 @@
           }
         }
         break;
+      case 'copy-para':
+        const copyParaElement = e.target.closest('.para-block');
+        if (copyParaElement) {
+          copyText(getParagraphText(copyParaElement));
+        }
+        break;
+      case 'bookmark-para':
+        const paraBookmarkElement = e.target.closest('.para-block');
+        if (paraBookmarkElement) {
+          toggleParagraphBookmark(paraBookmarkElement);
+        }
+        break;
       case 'share':
-        const shareElement = e.target.closest('.question, .answer');
+        const shareElement = e.target.closest('.question, .answer, .para-block');
         if (shareElement) {
-          // 直接分享點擊的區塊（問題或回答）
+          // 直接分享點擊的區塊（問題、回答或段落）
           const shareUrl = generateShareUrl(shareElement);
           const isQuestion = shareElement.classList.contains('question');
-          const toastMessage = isQuestion ? '問題鏈接已複製' : '回答鏈接已複製';
+          const isParagraph = shareElement.classList.contains('para-block');
+          const toastMessage = isParagraph ? '段落鏈接已複製' : (isQuestion ? '問題鏈接已複製' : '回答鏈接已複製');
           
           if (navigator.share) {
             navigator.share({
@@ -315,8 +328,13 @@
     // 書籤標記點擊 - 移除書籤
     if (e.target.classList.contains('bookmark-indicator')) {
       e.stopPropagation();
-      const bookmarkedElement = e.target.closest('.question, .answer');
+      const bookmarkedElement = e.target.closest('.question, .answer, .para-block');
       if (bookmarkedElement) {
+        // 段落書籤：直接切換移除
+        if (bookmarkedElement.classList.contains('para-block')) {
+          toggleParagraphBookmark(bookmarkedElement);
+          return;
+        }
         // 首先檢查是否為問答書籤（通過檢查配對元素）
         let isQAPairBookmark = false;
         let answerElement = null;

@@ -29,23 +29,23 @@ def stories_list_html():
         if not items:
             continue
         out.append('            <!-- %s -->' % cat)
-        out.append('            <div class="story-category">')
-        out.append('                <h2 class="category-title">%s</h2>' % CATEGORY_TITLES[cat])
-        out.append('                <div class="stories-list">')
+        out.append('            <div class="st-cat reveal">')
+        out.append('                <h2 class="st-cat-title">%s</h2>' % CATEGORY_TITLES[cat])
+        out.append('                <div class="st-list">')
         for d in items:
             kind = os.path.splitext(d["source"])[1].lstrip(".").upper()
-            out.append('                    <div class="story-item">')
-            out.append('                        <div class="story-header">')
+            out.append('                    <div class="st-item">')
+            out.append('                        <div class="st-head">')
             out.append('                            <h3><a href="stories/%s.html">%s</a></h3>'
                        % (d["slug"], d["title"]))
-            out.append('                            <span class="story-author">%s</span>' % d["author"])
+            out.append('                            <span class="st-author">%s</span>' % d["author"])
             out.append('                        </div>')
-            out.append('                        <p class="story-description">%s</p>' % d["summary"])
-            out.append('                        <div class="story-meta">')
-            out.append('                            <span class="file-type">HTML</span>')
-            out.append('                            <a href="stories/%s.html" class="download-link">線上閱讀</a>'
+            out.append('                        <p class="st-desc">%s</p>' % d["summary"])
+            out.append('                        <div class="st-meta">')
+            out.append('                            <span class="st-type">HTML</span>')
+            out.append('                            <a href="stories/%s.html" class="st-link">線上閱讀</a>'
                        % d["slug"])
-            out.append('                            <a href="stories/%s" class="download-link download-link-muted" download>下載原檔（%s）</a>'
+            out.append('                            <a href="stories/%s" class="st-link st-link--muted" download>下載原檔（%s）</a>'
                        % (d["source"].split("/", 1)[1].replace(" ", "%20"), kind))
             out.append('                        </div>')
             out.append('                    </div>')
@@ -60,10 +60,17 @@ def patch_stories_page():
     with open(path, encoding="utf-8") as fh:
         html = fh.read()
 
-    # 從第一個分類區塊起、到禪師法語區塊前，整段換掉（可重複執行）
-    end = html.index("            <!-- 禪師法語 -->")
-    start = html.rindex("\n", 0, html.index('<div class="story-category">')) + 1
-    html = html[:start] + stories_list_html() + html[end:]
+    # 換掉 STORIES-LIST 標記之間的整段清單（可重複執行）
+    begin = '<!-- STORIES-LIST:BEGIN -->'
+    end_marker = '<!-- STORIES-LIST:END -->'
+    if begin in html and end_marker in html:
+        i = html.index(begin) + len(begin)
+        j = html.index(end_marker)
+        html = html[:i] + "\n" + stories_list_html() + "\n      " + html[j:]
+    else:  # legacy page: 從第一個分類區塊起、到禪師法語區塊前
+        end = html.index("            <!-- 禪師法語 -->")
+        start = html.rindex("\n", 0, html.index('<div class="story-category">')) + 1
+        html = html[:start] + stories_list_html() + html[end:]
 
     with open(path, "w", encoding="utf-8") as fh:
         fh.write(html)

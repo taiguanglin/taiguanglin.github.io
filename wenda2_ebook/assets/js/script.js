@@ -1393,12 +1393,38 @@ if (isIndexPage()) {
   
   // 生成分享URL
   function generateShareUrl(targetElement) {
-    const prefix = targetElement.classList.contains('question') ? 'question' : 'answer';
+    let prefix;
+    if (targetElement.classList.contains('question')) {
+      prefix = 'question';
+    } else if (targetElement.classList.contains('answer')) {
+      prefix = 'answer';
+    } else if (targetElement.classList.contains('para-block')) {
+      prefix = 'paragraph';
+    } else {
+      prefix = 'element';
+    }
     const elementId = ensureElementId(targetElement, prefix);
     const baseUrl = window.location.origin + window.location.pathname;
     return baseUrl + '#' + elementId;
   }
-  
+
+  // 取得段落純文字（ebook 的 para-block 沒有問答結構）
+  function getParagraphText(element) {
+    return (element.textContent || '').trim();
+  }
+
+  // 向上找最近的前一個章節標題，作為段落書籤的歸屬標題
+  function findHeadingForParagraph(element) {
+    let cur = element.previousElementSibling;
+    while (cur) {
+      if (/^H[2-6]$/.test(cur.tagName)) {
+        return cur.textContent.trim();
+      }
+      cur = cur.previousElementSibling;
+    }
+    return '';
+  }
+
   // 找到問答配對
   function findQuestionForAnswer(answerElement) {
     let currentElement = answerElement.previousElementSibling;
@@ -1738,10 +1764,17 @@ if (isIndexPage()) {
 
   // 為問答添加互動按鈕
   function addQAActions() {
-    const qaElements = document.querySelectorAll('.question, .answer');
+    const qaElements = document.querySelectorAll('.question, .answer, .para-block');
     qaElements.forEach((element) => {
       // 確保元素有唯一ID（用於分享功能）
-      const prefix = element.classList.contains('question') ? 'question' : 'answer';
+      let prefix;
+      if (element.classList.contains('question')) {
+        prefix = 'question';
+      } else if (element.classList.contains('answer')) {
+        prefix = 'answer';
+      } else {
+        prefix = 'paragraph';
+      }
       ensureElementId(element, prefix);
       
       element.style.position = 'relative';
@@ -1750,6 +1783,7 @@ if (isIndexPage()) {
       
       const isQuestion = element.classList.contains('question');
       const isAnswer = element.classList.contains('answer');
+      const isParagraph = element.classList.contains('para-block');
       
       // 首頁不顯示書籤按鈕
       let actionsHtml = '';
@@ -1766,6 +1800,13 @@ if (isIndexPage()) {
           actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
         }
         actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
+      } else if (isParagraph) {
+        // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
+        actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
+        if (!currentChapter.isHomepage) {
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+        }
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
       }
       
       actions.innerHTML = actionsHtml;
@@ -1981,6 +2022,44 @@ function toggleQAPairBookmark(answerElement) {
   saveBookmarks(bookmarks);
   addBookmarkVisualIndicator(answerElement);
   if (questionElement) addBookmarkVisualIndicator(questionElement);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
+// 段落書籤（ebook 的 .para-block）：切換某段內文的書籤狀態
+function toggleParagraphBookmark(element) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  element.id = element.id || ('bookmark-' + Date.now());
+  const id = element.id;
+  const existing = bookmarks.find(b => b.elementId === id);
+
+  if (existing) {
+    removeBookmarkVisualIndicator(element);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== id));
+    renderBookmarks();
+    showToast('已從書籤移除');
+    return;
+  }
+
+  const heading = findHeadingForParagraph(element);
+  const preview = (getParagraphText(element)).substring(0, 100) + '...';
+
+  bookmarks.push({
+    id: 'bookmark-' + Date.now(),
+    elementId: id,
+    type: 'paragraph',
+    questioner: heading || currentChapter.title,
+    time: '',
+    preview: preview,
+    chapter: findChapterForElement(element),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(element);
   renderBookmarks();
   showBookmarkAddedFeedback();
 }
@@ -3110,13 +3189,26 @@ function addHomepageBookmarkEventListeners() {
           }
         }
         break;
+      case 'copy-para':
+        const copyParaElement = e.target.closest('.para-block');
+        if (copyParaElement) {
+          copyText(getParagraphText(copyParaElement));
+        }
+        break;
+      case 'bookmark-para':
+        const paraBookmarkElement = e.target.closest('.para-block');
+        if (paraBookmarkElement) {
+          toggleParagraphBookmark(paraBookmarkElement);
+        }
+        break;
       case 'share':
-        const shareElement = e.target.closest('.question, .answer');
+        const shareElement = e.target.closest('.question, .answer, .para-block');
         if (shareElement) {
-          // 直接分享點擊的區塊（問題或回答）
+          // 直接分享點擊的區塊（問題、回答或段落）
           const shareUrl = generateShareUrl(shareElement);
           const isQuestion = shareElement.classList.contains('question');
-          const toastMessage = isQuestion ? '問題鏈接已複製' : '回答鏈接已複製';
+          const isParagraph = shareElement.classList.contains('para-block');
+          const toastMessage = isParagraph ? '段落鏈接已複製' : (isQuestion ? '問題鏈接已複製' : '回答鏈接已複製');
           
           if (navigator.share) {
             navigator.share({
@@ -3242,8 +3334,13 @@ function addHomepageBookmarkEventListeners() {
     // 書籤標記點擊 - 移除書籤
     if (e.target.classList.contains('bookmark-indicator')) {
       e.stopPropagation();
-      const bookmarkedElement = e.target.closest('.question, .answer');
+      const bookmarkedElement = e.target.closest('.question, .answer, .para-block');
       if (bookmarkedElement) {
+        // 段落書籤：直接切換移除
+        if (bookmarkedElement.classList.contains('para-block')) {
+          toggleParagraphBookmark(bookmarkedElement);
+          return;
+        }
         // 首先檢查是否為問答書籤（通過檢查配對元素）
         let isQAPairBookmark = false;
         let answerElement = null;

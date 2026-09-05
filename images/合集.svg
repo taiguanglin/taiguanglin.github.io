@@ -1,98 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348 348" width="348" height="348" role="img" aria-label="九本合集電子書">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fbe3ec"/>
-      <stop offset="0.5" stop-color="#f7c9db"/>
-      <stop offset="1" stop-color="#f0a6c3"/>
+    <linearGradient id="hj-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fbf2f5"/>
+      <stop offset="1" stop-color="#f0d2dd"/>
     </linearGradient>
-    <linearGradient id="bookA" x1="0" y1="0" x2="0" y2="1">
+    <linearGradient id="hj-book1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e089ac"/>
+      <stop offset="1" stop-color="#a63e6a"/>
+    </linearGradient>
+    <linearGradient id="hj-book2" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#fbe3ec"/>
+      <stop offset="1" stop-color="#f8e7ec"/>
     </linearGradient>
-    <linearGradient id="bookB" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffd3e6"/>
-      <stop offset="1" stop-color="#e978a7"/>
+    <linearGradient id="hj-book3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#632445"/>
+      <stop offset="1" stop-color="#43182f"/>
     </linearGradient>
-    <linearGradient id="bookC" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#fde2ee"/>
-      <stop offset="1" stop-color="#d95690"/>
-    </linearGradient>
-    <linearGradient id="bookD" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f0a6c3"/>
-    </linearGradient>
-    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
-      <stop offset="0" stop-color="#ffffff" stop-opacity="0.9"/>
-      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
-    </radialGradient>
   </defs>
 
-  <!-- 背景 -->
-  <rect width="348" height="348" fill="url(#bgGrad)"/>
-  <circle cx="174" cy="150" r="120" fill="url(#glow)" opacity="0.5"/>
+  <rect width="348" height="348" rx="28" fill="url(#hj-bg)"/>
+  <circle cx="174" cy="168" r="128" fill="none" stroke="#e5b3c5" stroke-width="1.2" stroke-dasharray="2 7"/>
 
-  <!-- 光點裝飾 -->
-  <g fill="#ffffff" opacity="0.5">
-    <circle cx="52" cy="70" r="3"/>
-    <circle cx="304" cy="88" r="4"/>
-    <circle cx="40" cy="250" r="3"/>
-    <circle cx="316" cy="258" r="4"/>
-    <circle cx="90" cy="40" r="2"/>
-    <circle cx="262" cy="300" r="2.5"/>
+  <!-- 三冊疊放書籍 -->
+  <g stroke-linejoin="round">
+    <g transform="translate(174 236) rotate(-4) translate(-88 -66)">
+      <rect x="0" y="0" width="176" height="118" rx="10" fill="url(#hj-book3)"/>
+      <rect x="0" y="0" width="14" height="118" rx="7" fill="rgba(0,0,0,.22)"/>
+    </g>
+    <g transform="translate(174 210) rotate(3) translate(-86 -60)">
+      <rect x="0" y="0" width="172" height="112" rx="10" fill="url(#hj-book2)" stroke="#f0d2dd"/>
+      <rect x="0" y="0" width="13" height="112" rx="6.5" fill="#f0d2dd"/>
+      <rect x="32" y="22" width="110" height="6" rx="3" fill="#e5b3c5"/>
+      <rect x="32" y="40" width="84" height="6" rx="3" fill="#f0d2dd"/>
+    </g>
+    <g transform="translate(174 166) rotate(-2) translate(-84 -58)">
+      <rect x="0" y="0" width="168" height="108" rx="10" fill="url(#hj-book1)"/>
+      <rect x="0" y="0" width="13" height="108" rx="6.5" fill="rgba(255,255,255,.18)"/>
+      <!-- 書面蓮花印記 -->
+      <g transform="translate(96 54)" fill="none" stroke="#fdeef3" stroke-width="2.4" stroke-linecap="round">
+        <path d="M0-20c7 7 10 15 10 23-7 4-13 4-20 0 0-8 3-16 10-23z" transform="scale(.9)"/>
+        <path d="M-16 6c-4-7-4-14 2-20"/>
+        <path d="M16 6c4-7 4-14-2-20"/>
+      </g>
+    </g>
   </g>
 
-  <!-- 蓮花裝飾（頂部） -->
-  <g fill="#e978a7" opacity="0.85">
-    <path d="M174 40 c -6 -12 -14 -12 -16 0 c 12 4 20 4 32 0 z" transform="translate(0,0)"/>
-  </g>
-
-  <!-- 底部大書（坐禪系列根基） -->
-  <rect x="58" y="212" width="232" height="34" rx="7" fill="url(#bookD)" stroke="#e978a7" stroke-width="1.5"/>
-  <line x1="86" y1="222" x2="118" y2="222" stroke="#c93672" stroke-width="2" stroke-linecap="round"/>
-  <line x1="86" y1="234" x2="112" y2="234" stroke="#e978a7" stroke-width="1.5" stroke-linecap="round"/>
-
-  <!-- 左側堆疊書 -->
-  <g>
-    <rect x="74" y="150" width="20" height="64" rx="4" fill="url(#bookA)" stroke="#e978a7" stroke-width="1.2"/>
-    <rect x="94" y="158" width="20" height="56" rx="4" fill="url(#bookC)" stroke="#c93672" stroke-width="1.2"/>
-  </g>
-
-  <!-- 右側堆疊書 -->
-  <g>
-    <rect x="254" y="150" width="20" height="64" rx="4" fill="url(#bookB)" stroke="#c93672" stroke-width="1.2"/>
-    <rect x="234" y="158" width="20" height="56" rx="4" fill="url(#bookA)" stroke="#e978a7" stroke-width="1.2"/>
-  </g>
-
-  <!-- 中央主書 -->
-  <g>
-    <rect x="132" y="128" width="84" height="112" rx="9" fill="url(#bookB)" stroke="#c93672" stroke-width="2"/>
-    <rect x="142" y="100" width="64" height="28" rx="4" fill="#ffffff"/>
-    <!-- 書脊裝飾 -->
-    <line x1="150" y1="168" x2="198" y2="168" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.85"/>
-    <line x1="150" y1="180" x2="184" y2="180" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-    <line x1="150" y1="192" x2="194" y2="192" stroke="#ffffff" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
-    <!-- 蓮花圖示 -->
-    <circle cx="174" cy="146" r="14" fill="#e978a7" opacity="0.22"/>
-    <path d="M174 138 c -3 5 -10 5 -10 1 c 0 -3 4 -5 5 -3 c 1 -3 6 -6 10 -4 c 3 1 4 4 1 5 c -2 1 -4 1 -6 1 z" fill="#ffffff"/>
-  </g>
-
-  <!-- 頂部小書 -->
-  <g>
-    <rect x="150" y="86" width="48" height="16" rx="4" fill="#ffffff" stroke="#c93672" stroke-width="1.2"/>
-  </g>
-
-  <!-- 蓮花分隔線 -->
-  <g fill="none" stroke="#c93672" stroke-width="1.6" stroke-linecap="round" opacity="0.7">
-    <path d="M120 270 C 140 262 156 256 166 252"/>
-    <path d="M228 270 C 208 262 192 256 182 252"/>
-  </g>
-
-  <!-- 蓮花標記 -->
-  <g transform="translate(174,284)">
-    <path d="M0 0 c -8 -7 -6 -15 0 -16 c 4 -1 8 3 8 7 c 0 4 -4 6 -8 9 z" fill="#c93672" opacity="0.9" transform="rotate(-90)"/>
-    <path d="M0 0 c 8 -7 6 -15 0 -16 c -4 -1 -8 3 -8 7 c 0 4 4 6 8 9 z" fill="#e978a7" opacity="0.9" transform="rotate(90)"/>
-  </g>
-
-  <!-- 九本字樣 -->
-  <text x="174" y="322" text-anchor="middle" font-family="'Noto Serif TC', serif" font-size="20" font-weight="600" fill="#a82a5d">九本・合集</text>
+  <text x="174" y="318" text-anchor="middle" font-family="'Noto Serif TC', serif" font-size="21" font-weight="700" fill="#632445" letter-spacing="6">九本合集</text>
 </svg>
