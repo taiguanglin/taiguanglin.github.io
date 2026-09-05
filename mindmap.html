@@ -17,144 +17,43 @@
     <link rel="icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root{
-            --pink-50:#fdf3f7; --pink-100:#fbe3ec; --pink-200:#f7c9db; --pink-300:#f0a6c3;
-            --pink-400:#e978a7; --pink-500:#e04f8c; --pink-600:#c93672; --pink-700:#a82a5d; --pink-800:#7a1f45;
-            --rose-ink:#6b2f4a; --ink:#2f1b26; --muted:#8a6a78; --cream:#fdf6f9;
-            --grad-main:linear-gradient(135deg,#f7c9db 0%,#e978a7 55%,#c93672 100%);
-            --grad-soft:linear-gradient(180deg,#fdf6f9 0%,#fbe3ec 100%);
-            --shadow-sm:0 2px 10px rgba(201,54,114,.08); --shadow-md:0 8px 30px rgba(201,54,114,.14); --shadow-lg:0 20px 60px rgba(201,54,114,.20);
-            --r-sm:10px; --r-md:18px; --r-lg:28px; --r-xl:38px;
-            --serif:'Noto Serif TC',serif; --sans:'Noto Sans TC',sans-serif;
-        }
-        body{font-family:var(--sans); color:var(--ink); background:var(--cream);}
-        a{text-decoration:none;color:inherit;}
-        .container{max-width:1140px; margin:0 auto; padding:0 24px;}
-        .navbar{position:fixed; top:0; left:0; width:100%; z-index:100; transition:background .35s ease, box-shadow .35s ease, backdrop-filter .35s ease;}
-        .navbar.scrolled{background:rgba(255,255,255,.86); backdrop-filter:blur(14px); box-shadow:0 4px 24px rgba(201,54,114,.10);}
-        .nav-container{max-width:1180px; margin:0 auto; padding:16px 24px; display:flex; align-items:center; justify-content:space-between;}
-        .nav-logo{display:flex; flex-direction:column; line-height:1.15;}
-        .nav-logo .logo-name{font-family:var(--serif); font-weight:700; font-size:22px; letter-spacing:.5px; color:var(--ink); transition:color .3s;}
-        .nav-logo .logo-sub{font-size:11px; color:var(--muted); letter-spacing:3px;}
-        .navbar.scrolled .logo-name{color:var(--pink-600);}
-        .nav-menu{display:flex; align-items:center; gap:6px;}
-        .nav-link{position:relative; padding:9px 15px; font-size:15px; font-weight:500; color:var(--ink); border-radius:999px; transition:color .25s, background .25s;}
-        .nav-link:hover{color:var(--pink-600); background:rgba(224,79,140,.08);}
-        .nav-dropdown{position:relative;}
-        .nav-dropdown-menu{position:absolute; top:110%; right:0; min-width:210px; background:#fff; border-radius:16px; box-shadow:var(--shadow-md); padding:8px; opacity:0; visibility:hidden; transform:translateY(8px); transition:all .28s ease; z-index:99;}
-        .nav-dropdown:hover .nav-dropdown-menu{opacity:1; visibility:visible; transform:translateY(0);}
-        .nav-dropdown-item{display:block; padding:10px 14px; border-radius:10px; font-size:14px; color:var(--ink);}
-        .nav-dropdown-item:hover{background:var(--pink-50); color:var(--pink-600);}
-        .hamburger{display:none; flex-direction:column; gap:5px; cursor:pointer; padding:6px; z-index:101;}
-        .hamburger span{width:24px; height:2px; background:var(--ink); border-radius:2px; transition:all .3s;}
-        .footer{background:#2f1b26; color:#e9d5dd; padding:70px 0 32px;}
-        .footer-top{display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:40px; margin-bottom:48px;}
-        .footer-brand .logo-name{font-family:var(--serif); font-size:24px; color:#fff; margin-bottom:8px;}
-        .footer-brand p{font-size:14px; color:#b493a4; line-height:1.8; margin-bottom:4px;}
-        .footer-col h4{color:#f0a6c3; font-size:14px; letter-spacing:2px; margin-bottom:18px; font-weight:700;}
-        .footer-col ul{list-style:none;}
-        .footer-col li{margin-bottom:11px;}
-        .footer-col a{font-size:14px; color:#c9aebc; transition:color .25s; text-decoration:none;}
-        .footer-col a:hover{color:#fff;}
-        .footer-bottom{border-top:1px solid #4a2f3a; padding-top:26px; text-align:center; font-size:13.5px; color:#a98696;}
-        .footer-bottom p{margin-bottom:6px;}
-        @media (max-width:960px){ .footer-top{grid-template-columns:1fr 1fr;} }
-        @media (max-width:768px){
-            .nav-menu{position:fixed; top:0; right:-100%; width:76%; max-width:320px; height:100vh; background:#fff; flex-direction:column; align-items:flex-start; padding:90px 28px 30px; gap:4px; transition:right .35s ease; box-shadow:-10px 0 40px rgba(0,0,0,.1);}
-            .nav-menu.active{right:0;}
-            .nav-link{font-size:17px; padding:14px 6px; width:100%;}
-            .nav-dropdown-menu{position:static; opacity:1; visibility:visible; transform:none; box-shadow:none; padding:0 0 0 14px; min-width:0; display:none;}
-            .nav-dropdown.active .nav-dropdown-menu{display:block;}
-            .hamburger{display:flex;}
-            .hamburger.active span:nth-child(1){transform:translateY(7px) rotate(45deg);}
-            .hamburger.active span:nth-child(2){opacity:0;}
-            .hamburger.active span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
-        }
-        @media (max-width:520px){ .footer-top{grid-template-columns:1fr;} }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- 導覽列 -->
-    <!-- 導覽列 -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <span class="logo-name">TaiGuangLin</span>
-                <span class="logo-sub">次世代終極佛法</span>
-            </div>
-            <div class="nav-menu" id="nav-menu">
-                <a href="index.html#home" class="nav-link">首頁</a>
-                <a href="index.html#about" class="nav-link">禪師</a>
-                <a href="index.html#start" class="nav-link">入門路徑</a>
-                <a href="index.html#books" class="nav-link">著作</a>
-                <a href="wenda2.html" class="nav-link">問答錄2</a>
-                <a href="stories.html" class="nav-link">故事</a>
-                <div class="nav-dropdown" id="nav-dropdown">
-                    <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
-                    <div class="nav-dropdown-menu">
-                        <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
-                        <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
-                    </div>
-                </div>
-                <a href="index.html#downloads" class="nav-link">下載</a>
-            </div>
-            <div class="hamburger" id="hamburger">
-                <span></span><span></span><span></span>
-            </div>
-        </div>
-    </nav>
+    <header class="navbar" id="navbar">
+      <div class="nav-container">
+        <a href="index.html" class="nav-logo">
+          <span class="logo-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4c2.2 2.2 3.2 4.6 3.2 6.8-2.1 1.3-4.3 1.3-6.4 0C8.8 8.6 9.8 6.2 12 4z"/><path d="M4.5 12.5c1.8-.8 3.8-.7 5.2.6M19.5 12.5c-1.8-.8-3.8-.7-5.2.6"/><path d="M5 16c1.8 1.6 4.2 2.4 7 2.4s5.2-.8 7-2.4"/></svg>
+          </span>
+          <span class="logo-text"><span class="logo-name">TaiGuangLin</span><span class="logo-sub">次世代終極佛法</span></span>
+        </a>
+        <nav class="nav-menu" id="nav-menu" aria-label="主選單">          <a class="nav-link" href="index.html">首頁</a>
+          <a class="nav-link" href="wenda2.html">問答錄 2</a>
+          <a class="nav-link" href="stories.html">實修故事</a>
+          <a class="nav-link" href="infographic.html">名詞圖解</a>
+          <a class="nav-link active" href="mindmap.html">心智圖</a>
+          <a class="nav-link nav-cta" href="index.html#downloads">下載</a>
+        </nav>
+        <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false"><span></span><span></span><span></span></button>
+      </div>
+    </header>
+    <div id="site-menu-veil" aria-hidden="true"></div>
+
 
     <!-- Hero 區塊 -->
-    <section class="hero mm-hero" style="height: 50vh; background: var(--pink-gradient); padding-top: 80px;">
-        <div class="hero-background"></div>
+    <section class="page-hero">
         <div class="hero-content">
-            <div class="mm-hero-icon animate-fade-in" aria-hidden="true">
-                <svg viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="36" cy="36" r="10" fill="rgba(255,255,255,0.95)"/>
-                    <circle cx="36" cy="14" r="5.5" fill="rgba(255,255,255,0.85)"/>
-                    <circle cx="56" cy="28" r="5.5" fill="rgba(255,255,255,0.85)"/>
-                    <circle cx="56" cy="48" r="5.5" fill="rgba(255,255,255,0.85)"/>
-                    <circle cx="36" cy="58" r="5.5" fill="rgba(255,255,255,0.85)"/>
-                    <circle cx="16" cy="48" r="5.5" fill="rgba(255,255,255,0.85)"/>
-                    <circle cx="16" cy="28" r="5.5" fill="rgba(255,255,255,0.85)"/>
-                    <path d="M36 26V19.5M44.5 31.5L51 29M44.5 42.5L51 45M36 46V52.5M27.5 42.5L21 45M27.5 31.5L21 29" stroke="rgba(255,255,255,0.9)" stroke-width="2.2" stroke-linecap="round"/>
-                    <circle cx="36" cy="36" r="3.2" fill="#ff2d87"/>
-                </svg>
-            </div>
-            <h1 class="hero-title animate-fade-in">名詞關聯心智圖</h1>
-            <p class="hero-subtitle animate-fade-in delay-1">一張圖看懂五冊著作的關鍵名詞，以及它們彼此的關聯</p>
-        </div>
-    </section>
-
-    <!-- 導言 -->
-    <section class="section infographic-nav-section">
-        <div class="container">
-            <div class="back-to-home">
-                <a href="index.html" class="back-button">
-                    <i class="fas fa-arrow-left"></i> 返回首頁
-                </a>
-            </div>
-
-            <div class="mm-notice">
-                <div class="mm-notice-icon"><i class="fas fa-robot"></i></div>
-                <div class="mm-notice-body">
-                    <strong>本頁內容由 AI 整理，請以原著書本為準</strong>
-                    <p>這張心智圖、每個節點的說明與「書中要點」，都是 AI 讀完 Tai 師父五冊著作共 1,608 頁原文之後所做的歸納與改寫，目的是幫助讀者快速看出名詞之間的關係。AI 的歸納可能有錯漏、過度簡化或誤讀，任何一句話若與原著不符，一律以原著為準。</p>
-                    <p>節點中的「原文摘句」為原文引用，其餘文字皆為 AI 改寫。每個節點都附有出處章節，請務必回到原書對照閱讀，再據以修行。</p>
-                </div>
-            </div>
+            
 
             <div class="mm-stats">
                 <div class="mm-stat">
-                    <span class="mm-stat-icon" aria-hidden="true"><i class="fas fa-book"></i></span>
+                    <span class="mm-stat-icon" aria-hidden="true"></span>
                     <strong>5</strong>
                     <span>冊著作</span>
                 </div>
                 <div class="mm-stat">
-                    <span class="mm-stat-icon" aria-hidden="true"><i class="fas fa-file-alt"></i></span>
+                    <span class="mm-stat-icon" aria-hidden="true"></span>
                     <strong>1,608</strong>
                     <span>頁原文</span>
                 </div>
@@ -166,7 +65,7 @@
                     <span>條主幹</span>
                 </div>
                 <div class="mm-stat">
-                    <span class="mm-stat-icon" aria-hidden="true"><i class="fas fa-diagram-project"></i></span>
+                    <span class="mm-stat-icon" aria-hidden="true"></span>
                     <strong>48</strong>
                     <span>個名詞節點</span>
                 </div>
@@ -192,7 +91,7 @@
     <section class="section">
         <div class="container">
             <h2 class="section-title mm-section-title">
-                <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-sitemap"></i></span>
+                <span class="mm-section-icon" aria-hidden="true"></span>
                 名詞關聯圖
             </h2>
             <p class="mm-lead">點選圖中任一名詞，可展開它的釋義、依原著整理的書中要點、原文摘句、出處章節，以及跨分支的關聯（以虛線標示）。手機請左右滑動圖面。</p>
@@ -202,7 +101,7 @@
             <div class="mm-canvas-wrap">
                 <div class="mm-canvas-inner" id="mm-canvas"></div>
             </div>
-            <p class="mm-hint"><i class="fas fa-hand-pointer"></i> 中心為「自性」；右側四條主幹為義理 <i class="fas fa-arrow-right mm-hint-side"></i>，左側四條主幹為修證與世界觀 <i class="fas fa-arrow-left mm-hint-side"></i>。</p>
+            <p class="mm-hint"> 中心為「自性」；右側四條主幹為義理 ，左側四條主幹為修證與世界觀 。</p>
 
             <div class="mm-detail" id="mm-detail"></div>
         </div>
@@ -212,7 +111,7 @@
     <section class="section bg-light">
         <div class="container">
             <h2 class="section-title mm-section-title">
-                <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                <span class="mm-section-icon" aria-hidden="true"></span>
                 核心對應軸
             </h2>
             <p class="mm-lead">這是整套書最具原創性的地方——把果位、四相、五蘊全部重新定義為「意識裡還剩幾層東西」的讀數。橫著讀任一列，就能把散在不同經典裡的名詞對上。</p>
@@ -230,9 +129,9 @@
                     </tbody>
                 </table>
             </div>
-            <p class="mm-source"><i class="fas fa-book-open"></i> 出處：《坐禪1》第一章第01、06節；《坐禪2》意識篇第01、02節；《講金剛經》總結。</p>
+            <p class="mm-source"> 出處：《坐禪1》第一章第01、06節；《坐禪2》意識篇第01、02節；《講金剛經》總結。</p>
 
-            <h3 class="mm-subtitle"><i class="fas fa-dharmachakra"></i> 五乘佛法與五般若智的對位</h3>
+            <h3 class="mm-subtitle"> 五乘佛法與五般若智的對位</h3>
             <div class="mm-table-wrap">
                 <table class="mm-table">
                     <thead>
@@ -247,7 +146,7 @@
                     </tbody>
                 </table>
             </div>
-            <p class="mm-source"><i class="fas fa-book-open"></i> 出處：《坐禪1》第一章第07節 五乘佛法、第08節 五般若。每一乘講的都是下位如何升到上位的方法。</p>
+            <p class="mm-source"> 出處：《坐禪1》第一章第07節 五乘佛法、第08節 五般若。每一乘講的都是下位如何升到上位的方法。</p>
         </div>
     </section>
 
@@ -267,17 +166,17 @@
                         <tr><th>次第</th><th>心的變化</th><th>可檢驗的基準</th><th>此階段的功課</th></tr>
                     </thead>
                     <tbody>
-                        <tr><td><i class="fas fa-flag mm-td-icon"></i>起點</td><td>滅八成淫欲、滅八成文字妄想</td><td>三氣歸元、打通任督二脈</td><td>持戒消業、腹式呼吸、磕大頭</td></tr>
-                        <tr><td><i class="fas fa-spa mm-td-icon"></i>欲界禪定</td><td>滅除一切文字妄想</td><td>2 小時以上無文字妄想</td><td>跏趺坐打通全身筋脈、觀丹田</td></tr>
-                        <tr><td><i class="fas fa-fire mm-td-icon"></i>初禪</td><td>淫欲滅盡，開始收斂注意力</td><td>集中注意力 4 小時</td><td>改參思情／疑情</td></tr>
-                        <tr><td><i class="fas fa-bullseye mm-td-icon"></i>二禪</td><td>高度集中注意力</td><td>一點上 10 小時以上不跳動</td><td>耳根圓通、話頭禪</td></tr>
-                        <tr class="mm-row-mark"><td><i class="fas fa-exclamation-triangle mm-td-icon"></i>三禪</td><td>注意力破滅、五根脫落，進入陽神</td><td>入定 24 小時以上</td><td>必須參情緒，否則堵死在此</td></tr>
-                        <tr><td><i class="fas fa-sun mm-td-icon"></i>四禪</td><td>苦情破滅，陽神向虛空擴散</td><td>通常 3 天以上，理論無上限</td><td>疑問破滅即開悟</td></tr>
-                        <tr class="mm-row-goal"><td><i class="fas fa-dove mm-td-icon"></i>四空定 → 阿羅漢</td><td>滅喜情，再滅無內容的情緒</td><td>跳過二十八天所有天界</td><td>發心度眾生</td></tr>
+                        <tr><td>起點</td><td>滅八成淫欲、滅八成文字妄想</td><td>三氣歸元、打通任督二脈</td><td>持戒消業、腹式呼吸、磕大頭</td></tr>
+                        <tr><td>欲界禪定</td><td>滅除一切文字妄想</td><td>2 小時以上無文字妄想</td><td>跏趺坐打通全身筋脈、觀丹田</td></tr>
+                        <tr><td>初禪</td><td>淫欲滅盡，開始收斂注意力</td><td>集中注意力 4 小時</td><td>改參思情／疑情</td></tr>
+                        <tr><td>二禪</td><td>高度集中注意力</td><td>一點上 10 小時以上不跳動</td><td>耳根圓通、話頭禪</td></tr>
+                        <tr class="mm-row-mark"><td>三禪</td><td>注意力破滅、五根脫落，進入陽神</td><td>入定 24 小時以上</td><td>必須參情緒，否則堵死在此</td></tr>
+                        <tr><td>四禪</td><td>苦情破滅，陽神向虛空擴散</td><td>通常 3 天以上，理論無上限</td><td>疑問破滅即開悟</td></tr>
+                        <tr class="mm-row-goal"><td>四空定 → 阿羅漢</td><td>滅喜情，再滅無內容的情緒</td><td>跳過二十八天所有天界</td><td>發心度眾生</td></tr>
                     </tbody>
                 </table>
             </div>
-            <p class="mm-source"><i class="fas fa-book-open"></i> 出處：《坐禪1》第三章第06節・3〈禪定次第與放鬆次第〉、第四章，及書末〈坐禪之修行路線圖〉。</p>
+            <p class="mm-source"> 出處：《坐禪1》第三章第06節・3〈禪定次第與放鬆次第〉、第四章，及書末〈坐禪之修行路線圖〉。</p>
         </div>
     </section>
 
@@ -285,12 +184,12 @@
     <section class="section bg-light">
         <div class="container">
             <h2 class="section-title mm-section-title">
-                <span class="mm-section-icon" aria-hidden="true"><i class="fas fa-chart-bar"></i></span>
+                <span class="mm-section-icon" aria-hidden="true"></span>
                 名詞的書冊分布
             </h2>
             <p class="mm-lead">同一套名詞在五本書裡的權重差異，說明了各書的分工：《坐禪1》《問答錄》偏身體工程，《坐禪2》偏業與世界，兩本經典講解則集中在分別心與圓覺。滑鼠移到色塊上可看各書明細。</p>
             <div class="mm-chart" id="mm-chart"></div>
-            <p class="mm-source"><i class="fas fa-calculator"></i> 數值為該名詞在該書全文出現次數（次）。統計自五冊 PDF 全文（共 1,608 頁）。</p>
+            <p class="mm-source"> 數值為該名詞在該書全文出現次數（次）。統計自五冊 PDF 全文（共 1,608 頁）。</p>
         </div>
     </section>
 
@@ -300,61 +199,57 @@
             <div class="infographic-cta">
                 <div class="infographic-cta-content">
                     <div class="infographic-cta-icon">
-                        <i class="fas fa-images"></i>
+                        
                     </div>
                     <div class="infographic-cta-text">
                         <h3>佛法名詞圖解</h3>
                         <p>想看單一名詞的詳細圖解？前往「名詞圖解」頁面，逐張認識妄想、分別、執著與各禪定境界。</p>
                     </div>
                     <a href="infographic.html" class="infographic-cta-button">
-                        查看圖解 <i class="fas fa-arrow-right"></i>
+                        查看圖解 
                     </a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 頁尾 -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <div class="logo-name">TaiGuangLin</div>
-                    <p>次世代終極版佛法</p>
-                    <p>用現代通俗易懂的語言，傳承純正佛法智慧。</p>
-                </div>
-                <div class="footer-col">
-                    <h4>著作與電子書</h4>
-                    <ul>
-                        <li><a href="index.html#books">全部著作</a></li>
-                        <li><a href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer">坐禪系列電子書</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>問答錄2</h4>
-                    <ul>
-                        <li><a href="wenda2.html">主題目錄（12 章）</a></li>
-                        <li><a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer">完整電子書</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>更多資源</h4>
-                    <ul>
-                        <li><a href="infographic.html">名詞圖解</a></li>
-                        <li><a href="mindmap.html">名詞關聯心智圖</a></li>
-                        <li><a href="stories.html">實修故事</a></li>
-                        <li><a href="index.html#downloads">資料下載</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>歡迎分享給更多人結法緣</p>
-                <p>願一切眾生離苦得樂，早證菩提</p>
-            </div>
+        <footer class="footer">
+      <div class="container">
+        <div class="footer-top">
+          <div class="footer-brand">
+            <div class="logo-name">TaiGuangLin</div>
+            <span class="logo-sub">次世代終極佛法</span>
+            <p>以現代淺白的語言，講解禪定實修與佛法深義。<br>願此妙法，利益一切尋求真理之人。</p>
+          </div>
+          <div class="footer-col">
+            <h4>著作</h4>
+            <ul>
+              <li><a href="index.html#books">全部著作</a></li>
+              <li><a href="wenda2.html">問答錄 2（十二主題）</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>資源</h4>
+            <ul>
+              <li><a href="stories.html">實修故事</a></li>
+              <li><a href="infographic.html">名詞圖解</a></li>
+              <li><a href="mindmap.html">名詞心智圖</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h4>下載</h4>
+            <ul><li><a href="index.html#downloads">電子書與語音</a></li></ul>
+          </div>
         </div>
+        <div class="footer-bottom">
+          <p>歡迎轉載流通，標明出處即可</p>
+          <p>願一切眾生離苦得樂，早證菩提</p>
+        </div>
+      </div>
     </footer>
 
-    <script src="script.js"></script>
+
+    <script src="shared.js" defer></script>
     <script>
     (function () {
         'use strict';

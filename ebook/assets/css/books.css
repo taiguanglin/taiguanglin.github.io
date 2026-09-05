@@ -129,16 +129,18 @@ body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
    滑鼠移入時整段高亮，讓使用者知道這三個按鈕對應到哪一段。 */
 .para-block {
   position: relative;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
   border-radius: 6px;
 }
 
 .para-block:hover {
   background-color: rgba(231, 84, 128, 0.06);
+  box-shadow: 0 4px 14px rgba(231, 84, 128, 0.25);
 }
 
 body.dark-mode .para-block:hover {
   background-color: rgba(255, 105, 180, 0.12);
+  box-shadow: 0 4px 14px rgba(255, 105, 180, 0.35);
 }
 
 /* 經文段落（.sutra-text）本身是漸層背景，background-color 會被蓋掉；
@@ -159,15 +161,29 @@ body.dark-mode .sutra-text.para-block:hover {
   box-shadow: 0 4px 14px rgba(255, 105, 180, 0.35);
 }
 
-/* 按鈕組：置於段落上方、靠右（負 top 使其突出於段落之外） */
+/* 按鈕組：置於段落正上方、靠右。用 bottom:100% 讓按鈕組下緣貼齊段落頂端，
+   消除段落與按鈕之間的縫隙；並以 ::before 延伸一段透明熱區向下與段落重疊，
+   使滑鼠從段落移到按鈕的過程永遠不離開命中區，避免按鈕突然消失。 */
 .para-block .qa-actions {
-  top: -30px;
+  top: auto;
+  bottom: 100%;
   right: 0;
   display: flex;
   gap: 6px;
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
+  z-index: 5;
+}
+
+/* 透明熱區：向下延伸、與段落頂端重疊，撐大可 hover 的連續區域 */
+.para-block .qa-actions::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 12px;
 }
 
 .para-block:hover .qa-actions,
