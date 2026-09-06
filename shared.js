@@ -45,7 +45,7 @@
     /* ---------- Dropdown (mobile tap) ---------- */
     document.querySelectorAll('.nav-dropdown-toggle').forEach(function (toggle) {
         toggle.addEventListener('click', function (e) {
-            if (window.innerWidth > 820) return;
+            if (window.innerWidth > 768) return;
             e.preventDefault();
             var dd = toggle.closest('.nav-dropdown');
             if (dd) dd.classList.toggle('active');

@@ -1777,12 +1777,12 @@ body { background: #fdf6f9; color: #2f1b26; }
 .nav-link::after { display: none; }
 .nav-dropdown-toggle { gap: 0; }
 .nav-dropdown-toggle i { display: none; }
-.nav-dropdown-menu { top: calc(100% + 8px); left: 50%; min-width: 180px; margin: 0; padding: 8px; border: 1px solid #f7c9db; border-radius: 14px; box-shadow: 0 12px 35px rgba(201,54,114,.16); }
+.nav-dropdown-menu { top: 110%; right: 0; left: auto; min-width: 210px; margin: 0; padding: 8px; border: none; border-radius: 16px; background: #fff; box-shadow: var(--shadow-md); }
 .nav-dropdown-menu::before { display: none; }
-.nav-dropdown-item { padding: 9px 12px; border-radius: 8px; color: #6b2f4a; font-size: 14px; font-weight: 500; }
+.nav-dropdown-item { padding: 10px 14px; border-radius: 10px; color: var(--ink); font-size: 14px; }
 .nav-dropdown-item:hover { color: #c93672; background: #fdf3f7; }
-.hamburger span { width: 24px; height: 2px; background: #c93672; }
-.footer { background: #2f1b26; padding: 56px 0 24px; }
+.hamburger span { width: 24px; height: 2px; background: var(--ink); }
+.footer { background: #2f1b26; color: #e9d5dd; padding: 70px 0 32px; }
 .footer-section h3, .footer-section h4 { color: #f7c9db; }
 .footer-section p, .footer-section ul li a { color: rgba(255,255,255,.68); }
 .footer-section ul li a:hover { color: #f7c9db; }
@@ -3602,23 +3602,9 @@ body { background: #fdf6f9; color: #2f1b26; }
    相容覆寫（舊頁 class 視覺對齊新系統；不改 HTML）
    ============================================================ */
 
-/* 新導覽列 nav-logo（含 .logo-mark SVG 子元素）：圖文橫排 */
-.nav-logo:has(.logo-mark) { display: flex; flex-direction: row; align-items: center; gap: 12px; }
-/* 舊導覽列 nav-logo（無 .logo-mark SVG 子元素的頁面，如 index.html）加蓮花色塊 */
-@media (min-width: 769px) {
-  .nav-logo:not(:has(.logo-mark)) { display: flex; align-items: center; gap: 12px; }
-  .nav-logo:not(:has(.logo-mark)) h2, .nav-logo:not(:has(.logo-mark)) .logo-name { order: 2; margin: 0; }
-  .nav-logo:not(:has(.logo-mark)) span:not(.logo-mark), .nav-logo:not(:has(.logo-mark)) .logo-sub { order: 3; font-weight: 500; }
-  .nav-logo:not(:has(.logo-mark))::before { content: ''; order: 1; width: 38px; height: 38px; flex: none; border-radius: 12px; background: var(--pink-gradient-strong); box-shadow: 0 6px 16px rgba(216,99,154,.3); }
-}
-.logo-mark { width: 40px; height: 40px; flex: none; border-radius: 13px; background: var(--pink-gradient-strong); display: grid; place-items: center; box-shadow: 0 8px 18px rgba(216,99,154,.32); }
-.logo-mark svg { width: 24px; height: 24px; }
-.logo-text { display: flex; flex-direction: column; line-height: 1.2; }
-
-/* 新頁尾網格（.footer-top；與 index.html 內嵌設計系統同視覺） */
+/* 頁尾網格（.footer-top；與 index.html 內嵌設計系統同視覺） */
 .footer-top { display: grid; grid-template-columns: 1.4fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
 .footer-brand .logo-name { font-family: var(--font-serif); font-size: 24px; color: #fff; margin-bottom: 8px; }
-.footer-brand .logo-sub { display: block; font-size: 12px; letter-spacing: 3px; color: #b493a4; margin-bottom: 12px; }
 .footer-brand p { font-size: 14px; color: #b493a4; line-height: 1.8; margin-bottom: 4px; }
 .footer-col h4 { color: #f0a6c3; font-size: 14px; letter-spacing: 2px; margin-bottom: 18px; font-weight: 700; }
 .footer-col ul { list-style: none; }
@@ -3637,19 +3623,6 @@ body { background: #fdf6f9; color: #2f1b26; }
 
 /* 舊命名 token 別名（供 stories.html 法語卡等行內樣式使用） */
 :root { --serif: var(--font-serif); --muted: var(--muted-2); --sp-3: 16px; --sp-5: 28px; --sp-7: 48px; }
-
-/* 新導覽 active 態與 CTA */
-.nav-link.active { color: var(--rose-700); background: var(--rose-100); }
-.nav-link.nav-cta { background: var(--pink-gradient-strong); color: #fff; box-shadow: 0 6px 16px rgba(216,99,154,.32); }
-.nav-link.nav-cta:hover { color: #fff; filter: brightness(1.05); transform: translateY(-1px); }
-
-/* 行動版選單外掛 veil */
-#site-menu-veil { position: fixed; inset: 0; background: rgba(69,23,49,.38); backdrop-filter: blur(2px); opacity: 0; pointer-events: none; transition: opacity .3s; z-index: 90; }
-#site-menu-veil.active { opacity: 1; pointer-events: auto; }
-@media (min-width: 769px) { #site-menu-veil { display: none; } }
-@media (max-width: 768px) {
-  .navbar { background: rgba(253,247,249,.92); backdrop-filter: blur(14px) saturate(1.05); box-shadow: 0 6px 26px rgba(69,23,49,.08); }
-}
 
 /* ---------- 問答錄2首頁（wd-*） ---------- */
 .wd-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 26px; }
