@@ -1,5 +1,4 @@
-# Regenerable intermediates (build_quotes.py + scoring); not committed.
-candidates.json
-candidates_sample.json
+# Regenerable temporary batch splits (build_quotes.py --sample splits before AI scoring);
+# not committed. candidates.json / candidates_sample.json / scores/ ARE tracked —
+# they are the reusable candidate pool + already-scored AI scores for enlarging the quote set.
 batches/
-scores/

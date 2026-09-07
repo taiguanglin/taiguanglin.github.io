@@ -19,6 +19,16 @@
 `gen_all.py` 重建電子書後重跑 `build_quotes.py`；新增落進精選的候選需重新
 AI 評分（人工或 subagent 批評，每批約 100 條），再跑 `finalize.py`。
 
+## 擴充語料（361 → 730 / 1065 條）
+
+`candidates.json`（16,382 條完整候選池）、`candidates_sample.json`（已評分的 2400 條）、
+`scores/`（這 2400 條的 0–10 分數）**三者都納入版控**，供未來擴充重複使用：
+
+1. 從 `candidates.json` 用不同/更大的固定種子額外抽樣（e.g. 再抽 1700 條），
+   只對「新增」的條目做 AI 評分（沿用原兩來源比例原則）。
+2. 把新分數與既有 `scores/` 合併，改 `finalize.py` 的 `TARGET` / `MIN_SCORE`
+   再跑一次即可。**不需重評已評的 2400 條**，省下大規模評分成本。
+
 ## 前端（`index.html`）
 
 - `fetch('daily_quotes.json')`，`idx = (dayNum * 2654435761 + 97) % len`
