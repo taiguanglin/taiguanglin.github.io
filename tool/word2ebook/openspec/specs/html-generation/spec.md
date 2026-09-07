@@ -122,6 +122,9 @@ Every generated HTML page SHALL reference:
 - `assets/css/style.css` via a `<link>` tag
 - `assets/js/script.js` via a `<script>` tag
 - `assets/js/i18n-text.js`, `assets/js/search-cache.js` via `<script>` tags
+- `/lang-switch.js` (site root) via a `<script defer>` tag — the sitewide 繁/簡
+  switcher: on ebook pages it redirects `XX.html` ↔ `XX_trad.html` to match the
+  stored/browser preference instead of converting in place
 - Favicon via a `<link rel="icon">` tag if a favicon was found
 
 ### Requirement: Favicon Handling

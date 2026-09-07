@@ -16,6 +16,12 @@ except ImportError:  # 供 -c 單獨載入等邊界情境
     def audio_duration(series, n):  # noqa: E306
         return None
 
+try:
+    from para_audio_map import para_time_attrs
+except ImportError:  # 供 -c 單獨載入等邊界情境
+    def para_time_attrs(series, pid):  # noqa: E306
+        return ""
+
 _HEADING_KINDS = ("h2", "h3", "h4", "h5", "h6")
 
 # 首页搜索需要 MiniSearch（章节页不用）
@@ -187,6 +193,7 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <script src="assets/js/i18n-text.js"></script>
 {extra_head}
 <script src="assets/js/script.js" defer></script>
+<script src="/lang-switch.js" defer></script>
 </head>
 <body>
 <div id="top"></div>
@@ -450,6 +457,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     _back_to_toc = '<div class="back-to-top"><a href="#top">🔝 回到目录</a></div>'
     _seen_heading = False
     cur_section = book.title
+    _series = getattr(book, "series", None)  # 講經系列：段落級 data-start/data-end 注入
     for b in blocks:
         k = b["kind"]
         if k in _HEADING_KINDS:
@@ -469,18 +477,21 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             add_item(TYPE_HEADING, "%s(%d)" % (b["text"], b["count"]),
                      "%s#%s" % (fname, b["sid"]), "%s(%d)" % (b["text"], b["count"]))
         elif k == "para":
-            body.append('<p id="%s" class="para-block">%s</p>'
-                        % (b["pid"], nl2br(esc(b["text"]))))
+            body.append('<p id="%s" class="para-block"%s>%s</p>'
+                        % (b["pid"], para_time_attrs(_series, b["pid"]),
+                           nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section, b["text"][:80])
         elif k == "strong":
-            body.append('<p id="%s" class="para-block"><strong>%s</strong></p>'
-                        % (b["pid"], nl2br(esc(b["text"]))))
+            body.append('<p id="%s" class="para-block"%s><strong>%s</strong></p>'
+                        % (b["pid"], para_time_attrs(_series, b["pid"]),
+                           nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section, b["text"][:80])
         elif k == "quote":
-            body.append('<div class="sutra-text para-block" id="%s">%s</div>'
-                        % (b["pid"], nl2br(esc(b["text"]))))
+            body.append('<div class="sutra-text para-block" id="%s"%s>%s</div>'
+                        % (b["pid"], para_time_attrs(_series, b["pid"]),
+                           nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section, b["text"][:80])
         elif k == "label":

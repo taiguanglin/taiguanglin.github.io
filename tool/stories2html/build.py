@@ -281,6 +281,7 @@ PAGE = """<!DOCTYPE html>
     <script type="application/ld+json">
 {jsonld}
     </script>
+    <script src="/lang-switch.js" defer></script>
 </head>
 <body class="story-body">
     <div class="reading-progress" aria-hidden="true"></div>

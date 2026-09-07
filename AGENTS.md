@@ -38,6 +38,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic.html` | Gallery of PNGs in `infographic/`. |
 | `mindmap.html` | Self-contained interactive mind map (hand-edited). |
 | `script.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
+| `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；`/wenda2_ebook/`、`/ebook/` 依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
 | `robots.txt`, `CNAME` | Crawl / domain config. |
 
@@ -55,6 +56,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `audio_map/` | Editorial UI | `index.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
 | `books/` | **Source** | 十本 PDF 原書（`01《坐禅》`…`05《圆觉经》` 坐禅系列 + `06…09`、感恩 講經系列）。 |
+| `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。 |
 | `ebook/` | **Generated** | 坐禅系列 + 講經系列共十本合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 

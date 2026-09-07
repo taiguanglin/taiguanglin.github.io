@@ -1775,6 +1775,66 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
     to { transform: rotate(360deg); }
 }
 
+/* 段落跟播（講經書頁，由 09b-para-track.js 動態插入/操作） */
+.para-track-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    padding: 4px 9px;
+    border: 1.5px solid var(--color-primary);
+    background: transparent;
+    color: var(--color-primary-deep);
+    border-radius: 999px;
+    font-size: 0.8em;
+    line-height: 1;
+    font-family: inherit;
+    cursor: pointer;
+    vertical-align: middle;
+    opacity: 0.55;
+    transition: all 0.2s ease;
+}
+.para-track-toggle.on {
+    background: var(--gradient-primary);
+    border-color: transparent;
+    color: #fff;
+    opacity: 1;
+    box-shadow: var(--shadow-sm);
+}
+.para-track-toggle:hover {
+    opacity: 1;
+    box-shadow: var(--shadow-md);
+}
+
+/* 段末自停切換（播放器進度條列，沿用 .qa-player-skip 尺寸） */
+.para-autostop-toggle {
+    opacity: 0.45;
+    transition: opacity 0.2s ease, color 0.2s ease;
+}
+.para-autostop-toggle.on {
+    opacity: 1;
+    color: var(--color-primary);
+}
+.para-autostop-toggle:hover {
+    opacity: 1;
+}
+
+/* 播放中段落高亮：暖光暈背景 + 左側 inset 提示線（不造成版面位移）；
+   字體以 transform 微放大，避免改變 font-size 造成回流 */
+.para-block.para-active {
+    background: linear-gradient(135deg, rgba(255, 226, 170, 0.42) 0%, rgba(255, 244, 222, 0.28) 100%);
+    border-radius: var(--radius-sm);
+    box-shadow: inset 3px 0 0 var(--color-primary), 0 0 14px rgba(255, 190, 100, 0.35);
+    font-weight: 600;
+    transform: scale(1.02);
+    transform-origin: 0 0;
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+.para-block.para-prev {
+    opacity: 0.62;
+    transition: opacity 0.25s ease;
+}
+
 .qa-play--disabled {
     display: inline-flex;
     align-items: center;
@@ -2188,6 +2248,21 @@ body.dark-mode .qa-play-icon--spinner {
     border-top-color: #fff;
 }
 body.dark-mode .qa-play--disabled { background: #3b2330; color: #7c6470; }
+body.dark-mode .para-track-toggle {
+    background: transparent;
+    border-color: #ff91af;
+    color: #ffb3c6;
+}
+body.dark-mode .para-track-toggle.on {
+    background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
+    border-color: transparent;
+    color: #fff;
+}
+body.dark-mode .para-autostop-toggle.on { color: #ff91af; }
+body.dark-mode .para-block.para-active {
+    background: linear-gradient(135deg, rgba(255, 179, 102, 0.14) 0%, rgba(255, 145, 175, 0.10) 100%);
+    box-shadow: inset 3px 0 0 #ff91af, 0 0 14px rgba(255, 145, 175, 0.22);
+}
 body.dark-mode .qa-status--proofread {
     background: rgba(76, 175, 80, 0.22);
     color: #9bd39e;

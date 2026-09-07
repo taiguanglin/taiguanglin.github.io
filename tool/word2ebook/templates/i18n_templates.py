@@ -108,6 +108,7 @@ class I18nTemplateManager:
 <link rel="stylesheet" href="assets/css/style.css">
 <script src="assets/js/i18n-text.js"></script>
 <script src="assets/js/script.js" defer></script>
+<script src="/lang-switch.js" defer></script>
 </head>
 <body>
 <div id="top"></div>
@@ -204,6 +205,7 @@ if (typeof MiniSearch === 'undefined') {{
 <script src="assets/js/i18n-text.js"></script>
 <script src="assets/js/search-cache.js"></script>
 <script src="assets/js/script.js" defer></script>
+<script src="/lang-switch.js" defer></script>
 </head>
 <body>
 <div class="header-nav index-header">
