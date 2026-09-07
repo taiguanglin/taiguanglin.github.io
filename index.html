@@ -927,8 +927,9 @@
             .then(function (data) {
                 var quotes = data.quotes || data;
                 if (!quotes.length) return;
-                // 以 UTC 日期為種子；加固定鹽值打散順序
-                var dayNum = Math.floor(Date.now() / 86400000);
+                // 以使用者「本地時區」日期為種子（午夜本地時間切換）；加固定鹽值打散順序
+                var now = new Date();
+                var dayNum = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
                 var idx = (dayNum * 2654435761 + 97) % quotes.length;
                 var q = quotes[idx];
 

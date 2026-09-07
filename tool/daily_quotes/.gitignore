@@ -1,0 +1,5 @@
+# Regenerable intermediates (build_quotes.py + scoring); not committed.
+candidates.json
+candidates_sample.json
+batches/
+scores/
