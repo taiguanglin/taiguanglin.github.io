@@ -596,4 +596,16 @@
       bar.classList.remove('visible');
       bar.setAttribute('aria-hidden', 'true');
     });
+
+    // ---- 對外介面：供 09b-para-track.js（講經段落跟播）掛接 ----
+    // play(btn) 觸發與點擊章節喇叭相同的播放流程（含載入、進度條）；
+    // seekAbs(t) 直接 seek 到音檔絕對秒數（不做段落 clamp）。
+    W2E.qaAudio = {
+      audio: audio,
+      play: playSegment,
+      seekAbs: function (t) {
+        try { audio.currentTime = Math.max(0, t); } catch (e) {}
+      },
+      getActiveButton: function () { return activeButton; }
+    };
   })();

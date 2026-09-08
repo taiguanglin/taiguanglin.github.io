@@ -41,6 +41,15 @@ priority order:
   `.qa-source-banner`) and the bundled JS SHALL contain the QA audio behaviour
   (`qa-play`, `qa-player`), with no build-config change required
 
+#### Scenario: Para-track follow-play module is auto-included
+- GIVEN `assets/js/modules/09b-para-track.js`
+- WHEN `get_full_js_content()` is called
+- THEN the bundled JS SHALL contain the para-track behaviour
+  (`paraTrackEnabled`, `para-block[data-start]`) AFTER the `08-qa-audio.js`
+  block (`W2E.qaAudio = {`), and the bundled CSS SHALL contain
+  `.para-track-toggle` / `.para-block.para-active`, with no build-config
+  change required
+
 #### Scenario: Image lightbox modules are auto-included
 - GIVEN `assets/css/modules/04d-image-lightbox.css` and
   `assets/js/modules/09-image-lightbox.js`

@@ -342,6 +342,18 @@ window.I18N_TEXT = {
     }
   },
 
+  // 講經段落跟播
+  paraTrack: {
+    toggle: {
+      simplified: '段落跟播',
+      traditional: '段落跟播'
+    },
+    autoStop: {
+      simplified: '段末自停',
+      traditional: '段末自停'
+    }
+  },
+
   // 功能說明
   instructions: {
     bookmarkHelp: {

@@ -28,7 +28,7 @@ try:
 except ImportError:
     pass
 
-AUDIO_EXTS = {".mp3", ".wav", ".m4a", ".flac", ".ogg", ".aac", ".mp4"}
+AUDIO_EXTS = {".mp3", ".wav", ".m4a", ".flac", ".ogg", ".aac", ".mp4", ".opus"}
 
 
 def parse_args() -> argparse.Namespace:

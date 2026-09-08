@@ -323,3 +323,19 @@ class TestStaticAssetsManagerRealModules:
         pos_render_index = js.find("function renderIndexTOC")
         pos_font = js.find("function getDefaultFontSize")
         assert pos_render_index < pos_font, "03b-bookmark-ui.js should come before 03c-reading-settings.js"
+
+    def test_real_js_has_para_track_after_qa_audio(self):
+        """09b-para-track.js（講經段落跟播）串接在 08-qa-audio.js 之後，
+        且 qa-audio 暴露 W2E.qaAudio 介面供其掛接。"""
+        js = StaticAssetsManager().get_full_js_content()
+        assert "09b-para-track.js" in js
+        assert "W2E.qaAudio = {" in js
+        pos_api = js.find("W2E.qaAudio = {")
+        pos_track = js.find("paraTrackEnabled")
+        assert pos_api < pos_track, "08-qa-audio.js exposure must precede 09b-para-track.js"
+
+    def test_real_css_has_para_track_styles(self):
+        css = StaticAssetsManager().get_full_css_content()
+        assert ".para-track-toggle" in css
+        assert ".para-block.para-active" in css
+        assert "body.dark-mode .para-block.para-active" in css

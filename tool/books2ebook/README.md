@@ -46,6 +46,30 @@
 單本 PDF 的組裝（合併、補 TOC、docx→PDF）另見 `tool/build_jiangjing_pdfs.py`，音源轉檔
 `tool/jiangjing2audio.py`、音量正規化 `tool/normalize_jiangjing_audio.py`。
 
+### 講經段落跟播（audio_map3 段落時間注入）
+
+`para_audio_map.py` 在建置時讀取 **repo 根目錄**的 `audio_map3/<series>.json`
+（由 `tool/jiangjing_para_map/` 對齊產生；格式為
+`{"lectures": {"1": {"paragraphs": [{"pid", "start", "end", ...}]}}}`，pid 即段落
+元素 id，`start`/`end` 為音檔秒數）。`html_generator.render_chapter` 對 `para` /
+`strong` / `quote` 三種 `.para-block` 區塊，凡 pid 命中對齊表就附加
+`data-start="%.3f" data-end="%.3f"` 屬性；**JSON 缺檔或 pid 未命中時靜默略過**
+（不加屬性、不報錯、不打斷 build）。
+
+前端行為由 `tool/word2ebook/assets/js/modules/09b-para-track.js` 提供（經
+`wenda2_ebook/assets` bundle 影印到 ebook；樣式在 `04c-qa-audio.css`）。頁面上出現
+帶 `data-start` 的段落時：
+
+- 每個講次 h2 的播放鈕旁出現 🎯「段落跟播」開關（localStorage `paraTrackEnabled`，
+  預設 ON）。ON 時播放中即時高亮當前段落（`.para-active` 暖光暈＋微放大，前一段
+  `.para-prev` 淡化），並平滑捲動使當前段停在視窗上方且保留上一段底部可見。
+- 跟播 ON 時點擊任一段落 → 直接從該段起點播放（para 模式）。
+- 播放器進度條列有 ⏹「段末自停」開關（localStorage `paraAutoStop`，預設 ON）：
+  僅「點段落觸發」的播放會在段末自動暫停；按章節喇叭的整講順播永不自停。
+
+改前端行為 → 改 `tool/word2ebook` 模組後重建 `wenda2_ebook/assets`（word2ebook
+gen_all 或重跑 StaticAssetsManager 打包），再跑本工具的 `gen_all.py` 影印資產。
+
 ## 一鍵重建
 
 依照機器上裝有 pymupdf/opencc 的環境，取用其中一種 python（兩台機器可能不同）：
