@@ -189,8 +189,8 @@ class TestHTMLGeneratorIndexPages:
             generate_traditional=True, generate_simplified=False,
         )
         content = (output_dir / "index_trad.html").read_text(encoding="utf-8")
-        assert '<a href="../index.html">🏠 網站首頁</a>' in content
-        assert '<a href="../ebook/index_trad.html">📚 坐禪與講經系列</a>' in content
+        assert '<a href="../index.html">🏠 首頁</a>' in content
+        assert '<a href="../ebook/index_trad.html">📚 坐禪與講經</a>' in content
         assert "../index_trad.html" not in content
 
 

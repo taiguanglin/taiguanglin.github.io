@@ -309,22 +309,18 @@ class HTMLGenerator:
         return Path(rel).as_posix()
 
     def _build_lang_switch_links(self, current_filename: str, is_traditional: bool) -> str:
-        """生成语言切换 HTML 片段。"""
-        simplified_text = get_i18n_text("language_switch.simplified", False, "简体")
-        traditional_text = get_i18n_text("language_switch.traditional", True, "繁體")
+        """生成语言切换 HTML 片段。
 
+        每頁只顯示「切到另一語系」的單一連結：繁頁顯示「简体」、簡頁顯示「繁體」。
+        """
         if is_traditional:
+            simplified_text = get_i18n_text("language_switch.simplified", False, "简体")
             simplified_fn = self.i18n_processor.get_simplified_filename(current_filename)
-            return (
-                f'<a href="{simplified_fn}">{simplified_text}</a> | '
-                f'<a href="{current_filename}">{traditional_text}</a>'
-            )
+            return f'<a href="{simplified_fn}">{simplified_text}</a>'
         else:
+            traditional_text = get_i18n_text("language_switch.traditional", True, "繁體")
             traditional_fn = self.i18n_processor.get_traditional_filename(current_filename)
-            return (
-                f'<a href="{current_filename}">{simplified_text}</a> | '
-                f'<a href="{traditional_fn}">{traditional_text}</a>'
-            )
+            return f'<a href="{traditional_fn}">{traditional_text}</a>'
 
     def _process_i18n_placeholders(self, content: str, is_traditional: bool) -> str:
         """替换内容中的 i18n 占位符（如 {{back_to_chapter_toc}}）。

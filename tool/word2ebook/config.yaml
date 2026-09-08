@@ -31,12 +31,12 @@ i18n:
       traditional: "📖 問答錄2總目錄"
 
     site_home:
-      simplified: "🏠 网站首页"
-      traditional: "🏠 網站首頁"
+      simplified: "🏠 首页"
+      traditional: "🏠 首頁"
 
     cross_ebook:
-      simplified: "📚 坐禅与讲经系列"
-      traditional: "📚 坐禪與講經系列"
+      simplified: "📚 坐禅与讲经"
+      traditional: "📚 坐禪與講經"
     
     chapter_toc:
       simplified: "本章目录"

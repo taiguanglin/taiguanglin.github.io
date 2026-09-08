@@ -175,7 +175,8 @@ def parse_ebook(path: Path):
                 continue
             text = strip_html(b.group(3))
             if text:
-                paras.append({"pid": pid.group(1), "text": text})
+                paras.append({"pid": pid.group(1), "text": text,
+                              "cls": cls.group(1)})
         lectures.append({"basename": basename, "title": title,
                          "btn_end": btn_end, "paragraphs": paras})
     return lectures

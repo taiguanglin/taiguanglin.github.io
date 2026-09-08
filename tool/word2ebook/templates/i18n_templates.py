@@ -90,10 +90,10 @@ class I18nTemplateManager:
             'function_menu': get_i18n_text('ui.function_menu', is_traditional, '功能選單'),
             'settings': get_i18n_text('ui.settings', is_traditional, '設置'),
             'back_to_top': get_i18n_text('ui.back_to_top', is_traditional, '回到頂部'),
-            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 網站首頁' if is_traditional else '🏠 网站首页'),
+            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 首頁' if is_traditional else '🏠 首页'),
             'site_home_href': "../index.html",
             'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
-            'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪與講經系列' if is_traditional else '📚 坐禅与讲经系列'),
+            'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪與講經' if is_traditional else '📚 坐禅与讲经'),
         }
     
     def _get_chapter_template(self) -> str:

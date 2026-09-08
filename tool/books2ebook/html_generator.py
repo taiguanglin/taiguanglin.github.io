@@ -70,9 +70,10 @@ def nl2br(text):
 
 
 def build_lang_switch_links(simp_file: str, trad_file: str, is_trad: bool) -> str:
-    """Build language switch links with per-language labels.
+    """Build the language switch link with a single per-page target label.
 
-    對照 wenda2_ebook：繁頁的「简体」標籤維持簡體字（不隨頁面轉繁），「繁體」
+    繁頁只顯示「简体」（指向簡體檔）、簡頁只顯示「繁體」（指向繁體檔），節省空間。
+    對照 wenda2_ebook：繁頁的「简体」標籤維持簡體字（不隨頁面轉繁）、簡頁的「繁體」
     維持繁體字。ebook 的繁頁在 main.py 會對整頁跑 OpenCC s2t，因此這裡用數字
     HTML 實體輸出標籤文字，讓 OpenCC（只作用於字元）不會誤轉它們，瀏覽器仍會
     正確顯示「简体 / 繁體」。
@@ -80,8 +81,9 @@ def build_lang_switch_links(simp_file: str, trad_file: str, is_trad: bool) -> st
     # &#31616;&#20307; = "简体"（簡體字）, &#32321;&#39636; = "繁體"（繁體字）
     simp_entity = "&#31616;&#20307;"
     trad_entity = "&#32321;&#39636;"
-    return (f'<a href="{simp_file}">{simp_entity}</a> | '
-            f'<a href="{trad_file}">{trad_entity}</a>')
+    if is_trad:
+        return f'<a href="{simp_file}">{simp_entity}</a>'
+    return f'<a href="{trad_file}">{trad_entity}</a>'
 
 
 def nl2br(text):
@@ -543,7 +545,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
 
 # 單書內頁：只回本系列總目錄（跨書連結僅出現在首頁）
     _book_toc_href = "index_trad.html" if is_trad else "index.html"
-    _book_toc_text = "📖 坐禪與講經系列總目錄" if is_trad else "📖 坐禅与讲经系列总目录"
+    _book_toc_text = "📖 坐禪與講經總目錄" if is_trad else "📖 坐禅与讲经总目录"
     _header_class = "header-nav"
     _nav_left_content = f'<a href="{_book_toc_href}">{_book_toc_text}</a>'
     _lang_switch_links = build_lang_switch_links(book.filename, book.filename_trad, is_trad)
@@ -656,7 +658,7 @@ def render_index(books_meta, source_pdfs, is_trad):
 
     _idx_cross_href = "../wenda2_ebook/index_trad.html" if is_trad else "../wenda2_ebook/index.html"
     _idx_cross_text = "📚 問答錄2" if is_trad else "📚 问答录2"
-    _site_home_text = "🏠 網站首頁" if is_trad else "🏠 网站首页"
+    _site_home_text = "🏠 首頁" if is_trad else "🏠 首页"
     _header_class = "header-nav index-header"
     _site_home_href = "../index.html"
     _nav_left_content = f'<a href="{_site_home_href}">{_site_home_text}</a> | <a href="{_idx_cross_href}">{_idx_cross_text}</a>'

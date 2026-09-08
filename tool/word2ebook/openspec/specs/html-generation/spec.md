@@ -39,11 +39,15 @@ On chapter pages, the nav-home group SHALL contain only:
 
 Chapter pages SHALL NOT link to the sibling ebook or the site landing page.
 On index pages (the top-level TOC), the nav-home group SHALL instead contain:
-- `🏠 網站首頁` → the single site landing page at `../index.html`, for both
+- `🏠 首頁` → the single site landing page at `../index.html`, for both
   simplified and traditional variants.
 - `<cross>` → the sibling ebook (`../ebook/index.html` /
-  `../ebook/index_trad.html`), via `{cross_href}` — labelled `📚 坐禅系列` /
-  `📚 坐禪系列`.
+  `../ebook/index_trad.html`), via `{cross_href}` — labelled `📚 坐禅与讲经` /
+  `📚 坐禪與講經`.
+
+The language-switch group SHALL contain exactly one link — the button to the
+*other* variant: on a traditional page only `简体` (→ the simplified file), and
+on a simplified page only `繁體` (→ the traditional file).
 
 The `.index-header` index-page style SHALL keep the same `space-between`
 alignment so navigation links sit left and the language switch right.
