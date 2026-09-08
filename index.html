@@ -453,8 +453,10 @@
             font-size:22px;font-family:var(--serif);
         }
         .daily-quote-body{flex:1;min-width:0;}
+        /* 標題列固定高度：日切換按鈕固定在上方，不會隨內容長度上下跳動 */
         .daily-quote-head{
-            display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;
+            display:flex;align-items:center;justify-content:space-between;
+            gap:12px;flex-wrap:wrap;min-height:30px;
         }
         .daily-quote-label{
             font-size:12px;letter-spacing:3px;color:var(--pink-500);font-weight:700;
@@ -467,7 +469,7 @@
         .daily-quote-text.collapsed{
             display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
         }
-        .daily-quote-actions{margin-top:10px;display:flex;gap:16px;align-items:center;}
+        .daily-quote-actions{margin-top:10px;display:flex;gap:16px;align-items:center;flex-wrap:wrap;}
         .daily-quote-toggle{
             background:none;border:none;cursor:pointer;padding:0;
             color:var(--pink-600);font-size:13.5px;font-weight:600;font-family:var(--sans);
@@ -478,6 +480,19 @@
             border-bottom:1px dashed var(--pink-300);
         }
         .daily-quote-link:hover{color:var(--pink-800);border-bottom-style:solid;}
+        /* 日切換按鈕：`min-width` 讓「前一天 / 今日 / 後一天」寬度一致，
+           避免 label 文字（今日精選→昨日精選）或按鈕內容變化造成水平位移 */
+        .daily-quote-pager{display:flex;gap:6px;align-items:center;}
+        .dq-nav{
+            background:none;border:1px solid var(--pink-200);border-radius:8px;
+            height:28px;cursor:pointer;color:var(--pink-600);font-size:13px;line-height:1;
+            display:flex;align-items:center;justify-content:center;
+            font-family:var(--sans);white-space:nowrap;padding:0 8px;
+            transition:background .2s,color .2s;
+        }
+        .dq-nav:hover{background:var(--pink-100);color:var(--pink-800);}
+        .dq-nav:disabled{opacity:.4;cursor:default;pointer-events:none;}
+        .dq-nav.dq-nav-today{font-weight:700;border-color:var(--pink-300);}
         @media (max-width:520px){
             .daily-quote{padding:96px 0 0;}
             .daily-quote-card{padding:18px 18px;gap:12px;}
@@ -523,20 +538,25 @@
         </div>
     </nav>
 
-    <!-- ============ 每日複習 ============ -->
+    <!-- ============ 每日精選 ============ -->
     <section class="daily-quote" id="daily-quote" hidden>
         <div class="container">
             <div class="daily-quote-card">
                 <div class="daily-quote-icon">句</div>
                 <div class="daily-quote-body">
                     <div class="daily-quote-head">
-                        <span class="daily-quote-label">今日複習</span>
-                        <span class="daily-quote-src" id="dailyQuoteSrc"></span>
+                        <span class="daily-quote-label" id="dailyQuoteDay">今日精選</span>
+                        <div class="daily-quote-pager">
+                            <button class="dq-nav" id="dailyQuotePrev" type="button" aria-label="前一天">◀ 前一天</button>
+                            <button class="dq-nav dq-nav-today" id="dailyQuoteToday" type="button" aria-label="回到今日">今日</button>
+                            <button class="dq-nav" id="dailyQuoteNext" type="button" aria-label="後一天">後一天 ▶</button>
+                        </div>
                     </div>
-                    <p class="daily-quote-text collapsed" id="dailyQuoteText" title="點擊展開／收合"></p>
+                    <p class="daily-quote-text collapsed" id="dailyQuoteText"></p>
                     <div class="daily-quote-actions">
                         <button class="daily-quote-toggle" id="dailyQuoteToggle" type="button">展開全文 ▾</button>
                         <a class="daily-quote-link" id="dailyQuoteLink" href="#" target="_blank" rel="noopener">前往原文 ↗</a>
+                        <span class="daily-quote-src" id="dailyQuoteSrc"></span>
                     </div>
                 </div>
             </div>
@@ -920,7 +940,7 @@
     </footer>
 
     <script>
-    // ============ 每日複習：依日期播種，所有訪客同一天看到同一條 ============
+    // ============ 每日精選：依日期播種，支援前後日切換與回今日 ============
     (function () {
         var section = document.getElementById('daily-quote');
         fetch('daily_quotes.json')
@@ -928,32 +948,66 @@
             .then(function (data) {
                 var quotes = data.quotes || data;
                 if (!quotes.length) return;
-                // 以使用者「本地時區」日期為種子（午夜本地時間切換）；加固定鹽值打散順序
-                var now = new Date();
-                var dayNum = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
-                var idx = (dayNum * 2654435761 + 97) % quotes.length;
-                var q = quotes[idx];
 
                 var src = document.getElementById('dailyQuoteSrc');
                 var text = document.getElementById('dailyQuoteText');
                 var toggle = document.getElementById('dailyQuoteToggle');
                 var link = document.getElementById('dailyQuoteLink');
+                var dayEl = document.getElementById('dailyQuoteDay');
+                var prevBtn = document.getElementById('dailyQuotePrev');
+                var nextBtn = document.getElementById('dailyQuoteNext');
+                var todayBtn = document.getElementById('dailyQuoteToday');
 
-                text.textContent = q.text;
-                src.textContent = q.title ? '— ' + q.title : '';
-                link.href = q.url;
+                // 以使用者「本地時區」日期為種子（午夜本地時間切換）；加固定鹽值打散順序
+                var now = new Date();
+                var today = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+                // offset: 0=今日、-1=昨日、+1=明日…（可自由前後切換）
+                var offset = 0;
+
+                function dayLabel(off) {
+                    if (off === 0) return '今日精選';
+                    if (off === -1) return '昨日精選';
+                    if (off === 1) return '明日精選';
+                    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + off);
+                    return (d.getMonth() + 1) + '/' + d.getDate() + ' 精選';
+                }
 
                 function setExpanded(expanded) {
                     text.classList.toggle('collapsed', !expanded);
                     toggle.textContent = expanded ? '收合 ▴' : '展開全文 ▾';
                 }
+
+                function render() {
+                    var day = today + offset;
+                    var idx = (((day * 2654435761 + 97) % quotes.length) + quotes.length) % quotes.length;
+                    var q = quotes[idx];
+                    text.textContent = q.text;
+                    src.textContent = q.title ? '— ' + q.title : '';
+                    link.href = q.url;
+                    dayEl.textContent = dayLabel(offset);
+                    setExpanded(false);
+
+                    // 內容只佔兩行以內時（無摺疊空間），隱藏展開/收合鈕
+                    toggle.style.display = 'none';
+                    void text.offsetWidth; /* 強制 reflow，確保 collapsed 量測正確 */
+                    if (text.scrollHeight > text.clientHeight + 2) {
+                        toggle.style.display = '';
+                    }
+                }
+
+                prevBtn.addEventListener('click', function () { offset--; render(); });
+                nextBtn.addEventListener('click', function () { offset++; render(); });
+                todayBtn.addEventListener('click', function () { if (offset !== 0) { offset = 0; render(); } });
                 toggle.addEventListener('click', function () {
                     setExpanded(text.classList.contains('collapsed'));
                 });
                 text.addEventListener('click', function () {
-                    setExpanded(text.classList.contains('collapsed'));
+                    if (toggle.style.display !== 'none') {
+                        setExpanded(text.classList.contains('collapsed'));
+                    }
                 });
 
+                render();
                 section.hidden = false;
             })
             .catch(function () { /* 無資料時靜默隱藏 */ });
