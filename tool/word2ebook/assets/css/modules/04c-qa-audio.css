@@ -166,6 +166,12 @@
     box-shadow: var(--shadow-md);
 }
 
+/* 跟播開啟時（body.para-track-on 由 09b-para-track.js 隨開關同步），
+   可點播的段落顯示手形游標，提示點擊即播；關閉跟播時恢復文字游標 */
+body.para-track-on .para-block[data-start] {
+    cursor: pointer;
+}
+
 /* 播放器進度條列不再設段末自停開關（功能已移除）。 */
 
 /* 播放中段落高亮：暖光暈背景 + 左側 inset 提示線 + 加粗，不造成版面位移。

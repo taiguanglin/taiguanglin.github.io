@@ -105,7 +105,9 @@ class TestQaPlayMarkup:
         html = render_play((10.0, 20.5, "ignored"), "../audio/x.opus")
         assert "qa-play-speaker" in html
         assert 'data-label="00:00:10 - 00:00:20"' in html
-        assert ">00:00:10 - 00:00:20<" in html
+        # Button shows only the speaker icon — no visible time label.
+        assert "qa-play-label" not in html
+        assert ">00:00:10 - 00:00:20<" not in html
         assert 'data-start="10.000"' in html  # playback attrs keep precision
         assert 'data-end="20.500"' in html
         assert ".500" not in html.split('data-label="')[1].split('"')[0]

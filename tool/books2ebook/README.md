@@ -64,6 +64,7 @@
   預設 ON）。ON 時播放中即時高亮當前段落（`.para-active` 暖光暈＋加粗，上一段不變），
   並平滑捲動使當前段停在視窗上方且保留上一段底部可見。
 - 跟播 ON 時點擊任一段落 → 直接從該段起點播放，之後一路順播到底，不在段末自停。
+  拖選／反白選取文字、點擊段落內按鈕連結時不觸發；可點播段落顯示手形游標。
 
 改前端行為 → 改 `tool/word2ebook` 模組後重建 `wenda2_ebook/assets`（word2ebook
 gen_all 或重跑 StaticAssetsManager 打包），再跑本工具的 `gen_all.py` 影印資產。

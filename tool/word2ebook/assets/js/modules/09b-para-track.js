@@ -13,7 +13,8 @@
   //      目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，
   //      使上一段底部仍貼近視窗頂端可見。僅在段落切換時捲動。
   //   2. 跟播 ON 時點擊任一段落 → 播放所屬講次音檔並 seek 至該段起點，
-  //      之後一路順播到底，不在段末自停。
+  //      之後一路順播到底，不在段末自停。拖選文字、有反白選區，或點到
+  //      段落內按鈕/連結時不觸發；可點播段落顯示手形游標（body.para-track-on）。
   //   3. toggle 即時生效、不需重新載入；只操作 .para-active
   //      一個 class，不與搜尋高亮等其他模組衝突。
   //
@@ -125,6 +126,8 @@
         var box = t.querySelector('input[type="checkbox"]');
         if (box && box.checked !== trackOn) box.checked = trackOn;
       });
+      // 跟播開關同步到 body，供 CSS 把可點播段落切成手形游標
+      if (document.body) document.body.classList.toggle('para-track-on', trackOn);
     }
 
     syncToggleUI();
@@ -208,12 +211,34 @@
     });
 
     // ---- 點段落即播（僅跟播 ON 時） ------------------------------------
+    // 誤觸排除：拖選文字（按下/放開距離過大或放開時有反白選區）、
+    // 點到段落內的互動元件（⋯ 按鈕列、書籤標識、連結、按鈕）都不觸發播放。
+    var downPos = null;
+    document.addEventListener('mousedown', function (e) {
+      if (!trackOn) { downPos = null; return; }
+      downPos = (e.target && e.target.closest && e.target.closest('.para-block[data-start]'))
+        ? { x: e.clientX, y: e.clientY }
+        : null;
+    }, true);
     document.addEventListener('click', function (e) {
       if (!trackOn) return;
       var el = e.target && e.target.closest
         ? e.target.closest('.para-block[data-start]')
         : null;
       if (!el) return;
+      // 段落內的操作元件：交給各自的處理，不觸發播放
+      if (e.target.closest('.qa-actions, .bookmark-indicator, a, button')) return;
+      // 拖選：按下與放開距離超過 8px，視為選取操作
+      if (downPos) {
+        var dx = e.clientX - downPos.x;
+        var dy = e.clientY - downPos.y;
+        if (dx * dx + dy * dy > 64) return;
+      }
+      // 放開時有反白選區：視為選取文字，不播放
+      try {
+        var sel = window.getSelection();
+        if (sel && !sel.isCollapsed && String(sel).length > 0) return;
+      } catch (err) { /* 取不到選區時照常走播放流程 */ }
       var sec = paraSection.get(el);
       if (!sec) return;
       var start = parseFloat(el.getAttribute('data-start'));

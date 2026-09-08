@@ -35,7 +35,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
 | `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle, Bilibili-style volume control — hovering the speaker button shows a popup with a vertical slider persisted in `localStorage`, moving away hides it, clicking the speaker toggles mute/unmute), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
 | `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
-| `09b-para-track.js` | 講經「段落跟播」（講經書頁，段落帶 `data-start`/`data-end` 時啟動；經 `08-qa-audio.js` 暴露的 `W2E.qaAudio` 掛接）：講次 h2 旁插入「段落跟播」toggle（`paraTrackEnabled`，預設 ON）— ON 時播放中依 `audio.currentTime` 高亮當前段落（`.para-active`，上一段不做任何視覺改變）並平滑捲動（目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，僅段落切換時觸發，timeupdate 節流 250ms）；跟播 ON 時點擊段落即播放所屬講次並 seek 至段首，之後一路順播到底（無段末自停）；isolated IIFE |
+| `09b-para-track.js` | 講經「段落跟播」（講經書頁，段落帶 `data-start`/`data-end` 時啟動；經 `08-qa-audio.js` 暴露的 `W2E.qaAudio` 掛接）：講次 h2 旁插入「段落跟播」toggle（`paraTrackEnabled`，預設 ON）— ON 時播放中依 `audio.currentTime` 高亮當前段落（`.para-active`，上一段不做任何視覺改變）並平滑捲動（目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，僅段落切換時觸發，timeupdate 節流 250ms）；跟播 ON 時點擊段落即播放所屬講次並 seek 至段首，之後一路順播到底（無段末自停；拖選／反白選取文字、點擊段落內按鈕連結時不觸發）；isolated IIFE |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.js` files (sorted by
