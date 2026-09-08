@@ -465,7 +465,9 @@
         .daily-quote-text{
             font-family:var(--serif);font-size:16px;line-height:1.9;color:var(--ink);
             margin-top:8px;cursor:pointer;
+            transition:opacity .25s ease;
         }
+        .daily-quote-text.fade-out{opacity:0;}
         .daily-quote-text.collapsed{
             display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
         }
@@ -539,7 +541,7 @@
     </nav>
 
     <!-- ============ 每日精選 ============ -->
-    <section class="daily-quote" id="daily-quote" hidden>
+    <section class="daily-quote ignore-opencc" id="daily-quote" hidden>
         <div class="container">
             <div class="daily-quote-card">
                 <div class="daily-quote-icon">句</div>
@@ -949,6 +951,9 @@
                 var quotes = data.quotes || data;
                 if (!quotes.length) return;
 
+                // 本區塊 `ignore-opencc`，由 tgl_lang API 自行轉換，掌握「轉換完才顯示」
+                var TG = (window.tgl_lang) || null;
+
                 var src = document.getElementById('dailyQuoteSrc');
                 var text = document.getElementById('dailyQuoteText');
                 var toggle = document.getElementById('dailyQuoteToggle');
@@ -958,11 +963,23 @@
                 var nextBtn = document.getElementById('dailyQuoteNext');
                 var todayBtn = document.getElementById('dailyQuoteToday');
 
+                // 靜態按鈕文字的「繁體原稿」，切繁簡時整批重上
+                var T_PREV = '◀ 前一天', T_TODAY = '今日', T_NEXT = '後一天 ▶';
+                var T_LINK = '前往原文 ↗', T_MORE = '展開全文 ▾', T_LESS = '收合 ▴';
+
                 // 以使用者「本地時區」日期為種子（午夜本地時間切換）；加固定鹽值打散順序
                 var now = new Date();
                 var today = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
-                // offset: 0=今日、-1=昨日、+1=明日…（可自由前後切換）
-                var offset = 0;
+                var offset = 0;      // 0=今日、-1=昨日、+1=明日…
+                var cur = null;      // 目前顯示的 quote 物件（trad 原文）
+                var expanded = false;
+
+                /* 把繁體原稿轉成目前 variant；OpenCC 未就緒時回 null（先用 trad） */
+                function conv(s) {
+                    if (!TG || !TG.convertTW) return null;
+                    return TG.convertTW(s);
+                }
+                function T(s) { var c = conv(s); return c != null ? c : s; }
 
                 function dayLabel(off) {
                     if (off === 0) return '今日精選';
@@ -972,21 +989,27 @@
                     return (d.getMonth() + 1) + '/' + d.getDate() + ' 精選';
                 }
 
-                function setExpanded(expanded) {
-                    text.classList.toggle('collapsed', !expanded);
-                    toggle.textContent = expanded ? '收合 ▴' : '展開全文 ▾';
+                /* 依目前 variant 填滿所有可見文字（今日/昨日/明日、按鈕、內文、標題） */
+                function applyLang() {
+                    prevBtn.textContent = T(T_PREV);
+                    todayBtn.textContent = T(T_TODAY);
+                    nextBtn.textContent = T(T_NEXT);
+                    link.textContent = T(T_LINK);
+                    toggle.textContent = T(expanded ? T_LESS : T_MORE);
+                    dayEl.textContent = T(dayLabel(offset));
+                    if (cur) {
+                        text.textContent = T(cur.text);
+                        src.textContent = cur.title ? T('— ' + cur.title) : '';
+                    }
                 }
 
-                function render() {
-                    var day = today + offset;
-                    var idx = (((day * 2654435761 + 97) % quotes.length) + quotes.length) % quotes.length;
-                    var q = quotes[idx];
-                    text.textContent = q.text;
-                    src.textContent = q.title ? '— ' + q.title : '';
-                    link.href = q.url;
-                    dayEl.textContent = dayLabel(offset);
-                    setExpanded(false);
+                function setExpanded(v) {
+                    expanded = v;
+                    text.classList.toggle('collapsed', !v);
+                    toggle.textContent = T(v ? T_LESS : T_MORE);
+                }
 
+                function updateToggleVisibility() {
                     // 內容只佔兩行以內時（無摺疊空間），隱藏展開/收合鈕
                     toggle.style.display = 'none';
                     void text.offsetWidth; /* 強制 reflow，確保 collapsed 量測正確 */
@@ -995,9 +1018,30 @@
                     }
                 }
 
-                prevBtn.addEventListener('click', function () { offset--; render(); });
-                nextBtn.addEventListener('click', function () { offset++; render(); });
-                todayBtn.addEventListener('click', function () { if (offset !== 0) { offset = 0; render(); } });
+                function render() {
+                    var day = today + offset;
+                    var idx = (((day * 2654435761 + 97) % quotes.length) + quotes.length) % quotes.length;
+                    cur = quotes[idx];
+                    link.href = cur.url;
+                    setExpanded(false);
+                    applyLang();          /* 內容在此即已是最終 script，無繁簡跳閃 */
+                    updateToggleVisibility();
+                }
+
+                /* 前/後/今日切換：先漸隱，swap 後漸現（內容已按 variant 轉好才顯示） */
+                function switchDay(nextOffset) {
+                    if (nextOffset === offset) return;   // 已在今日
+                    text.classList.add('fade-out');
+                    setTimeout(function () {
+                        offset = nextOffset;
+                        render();
+                        text.classList.remove('fade-out');
+                    }, 250);
+                }
+
+                prevBtn.addEventListener('click', function () { switchDay(offset - 1); });
+                nextBtn.addEventListener('click', function () { switchDay(offset + 1); });
+                todayBtn.addEventListener('click', function () { switchDay(0); });
                 toggle.addEventListener('click', function () {
                     setExpanded(text.classList.contains('collapsed'));
                 });
@@ -1007,12 +1051,13 @@
                     }
                 });
 
-                render();
-                // 先讓 section 可見，render 才能在非 hidden 狀態下正確量測高度
-                // （否則首次載入 scrollHeight 量不到，展開鈕會被誤判為不需要）
+                // 首次：先讓 section 可見，render 才能在非 hidden 狀態下量測高度
                 section.hidden = false;
-                // 可見後重新量一次，確保展開/收合鈕可見性正確
                 render();
+
+                // 語系變更時重上文字（繁→簡/簡→繁）；OpenCC 就緒後補一次
+                if (TG && TG.onChange) TG.onChange(applyLang);
+                if (TG && TG.onReady) TG.onReady(applyLang);
             })
             .catch(function () { /* 無資料時靜默隱藏 */ });
     })();

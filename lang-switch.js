@@ -174,6 +174,8 @@
             document.documentElement.lang = target === 'simp' ? 'zh-CN' : 'zh-TW';
             startObserver();
             updateButton();
+            fireReady();
+            fireChange();
         };
         // Serialise conversions so a rapid click can't interleave walks.
         var prev = working;
@@ -264,6 +266,27 @@
         btn.setAttribute('aria-label', isSimp ? '切換為繁體中文' : '切换为简体中文');
         btn.title = isSimp ? '切換為繁體中文' : '切换为简体中文';
     }
+
+    /* ---------- 對外 API：供「每日精選」等自行管控轉換的區塊使用 ----------
+     * 該類區塊加 class="ignore-opencc"（lang-switch 不代為轉換），改由 JS 呼叫
+     * convertTW() 自行轉換，好掌握「內容已轉換才顯示」的時機。 */
+    var readyHandlers = [];
+    var changeHandlers = [];
+    window.tgl_lang = {
+        /* 目前顯示的 variant（'simp' | 'trad'） */
+        getVariant: function () { return variant; },
+        /* 將一份「繁體」字串轉成目前 variant；OpenCC 尚未載入時回 null */
+        convertTW: function (s) {
+            if (!window.OpenCC) return null;
+            ensureConverters();
+            return (variant === 'simp' ? tw2cn : cn2tw)(s);
+        },
+        /* 註冊「載入完成」「語系變更」回呼（可多次） */
+        onReady: function (cb) { readyHandlers.push(cb); if (window.OpenCC) cb(); },
+        onChange: function (cb) { changeHandlers.push(cb); }
+    };
+    function fireReady() { for (var i = 0; i < readyHandlers.length; i++) { try { readyHandlers[i](); } catch (e) {} } }
+    function fireChange() { for (var i = 0; i < changeHandlers.length; i++) { try { changeHandlers[i](); } catch (e) {} } }
 
     function init() {
         ensureButton();
