@@ -1,13 +1,13 @@
 {
   "series": "ganen",
   "book_number": 4,
-  "generated_at": "2026-09-08T06:33:41.768Z",
+  "generated_at": "2026-09-08T07:57:06.184Z",
   "lectures": {
     "1": {
       "audio": "2024年4月14日Tai师父讲经·感恩与讲经(1).opus",
       "title": "感恩与讲经",
       "duration": 2518.407,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-sf06e8f4f",
