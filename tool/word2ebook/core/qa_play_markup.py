@@ -54,8 +54,10 @@ def render_play(
 
     Args:
         range_tuple: ``(start_sec, end_sec, label)`` or ``None``.
-            The third element is ignored for display; the visible label is always
-            ``HH:MM:SS - HH:MM:SS`` derived from start/end.
+            The third element is ignored for display — the button shows only the
+            speaker icon (no visible time label); the ``HH:MM:SS - HH:MM:SS``
+            range derived from start/end is still carried in ``data-label`` so the
+            floating mini-player can display it on the progress row.
         audio_rel: already-encoded audio URL
         disabled_if_missing: if True (QA parser legacy), emit disabled span;
             if False (PDF audio map), return ``None`` so the caller omits the bar
@@ -75,7 +77,6 @@ def render_play(
         f'data-start="{start:.3f}" data-end="{end:.3f}" '
         f'data-label="{escape(label, quote=True)}">'
         f'<span class="qa-play-icon">{_SPEAKER_SVG}</span>'
-        f'<span class="qa-play-label">{escape(label)}</span>'
         f"</button>"
     )
 

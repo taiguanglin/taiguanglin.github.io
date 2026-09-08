@@ -1814,18 +1814,7 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
     box-shadow: var(--shadow-md);
 }
 
-/* 段末自停切換（播放器進度條列，沿用 .qa-player-skip 尺寸） */
-.para-autostop-toggle {
-    opacity: 0.45;
-    transition: opacity 0.2s ease, color 0.2s ease;
-}
-.para-autostop-toggle.on {
-    opacity: 1;
-    color: var(--color-primary);
-}
-.para-autostop-toggle:hover {
-    opacity: 1;
-}
+/* 播放器進度條列不再設段末自停開關（功能已移除）。 */
 
 /* 播放中段落高亮：暖光暈背景 + 左側 inset 提示線 + 加粗，不造成版面位移。
    注意：不可用 transform: scale() 做微放大——它會連寬度一起放大，
@@ -2262,7 +2251,6 @@ body.dark-mode .para-track-toggle.on {
 body.dark-mode .para-track-toggle input[type="checkbox"] {
     accent-color: #ff91af;
 }
-body.dark-mode .para-autostop-toggle.on { color: #ff91af; }
 body.dark-mode .para-block.para-active {
     background: linear-gradient(135deg, rgba(255, 179, 102, 0.14) 0%, rgba(255, 145, 175, 0.10) 100%);
     box-shadow: inset 3px 0 0 #ff91af, 0 0 14px rgba(255, 145, 175, 0.22);

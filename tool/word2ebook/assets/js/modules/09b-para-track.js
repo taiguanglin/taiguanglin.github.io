@@ -9,15 +9,13 @@
   //   1. 每個含段落時間的講次 h2 旁插入「段落跟播」文字 checkbox
   //      （localStorage
   //      paraTrackEnabled，預設 ON）。ON 時播放中依 audio.currentTime
-  //      高亮當前段落（.para-active，前一段 .para-prev 淡化），並平滑捲動：
+  //      高亮當前段落（.para-active，上一段不做任何視覺改變），並平滑捲動：
   //      目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，
   //      使上一段底部仍貼近視窗頂端可見。僅在段落切換時捲動。
-  //   2. 跟播 ON 時點擊任一段落 → 播放所屬講次音檔並 seek 至該段起點。
-  //      此為「para 模式」：若「段末自停」toggle（localStorage paraAutoStop，
-  //      預設 ON）開啟，播到該段 end 即自動暫停並結束 para 模式。由章節
-  //      喇叭觸發的整講播放永不自停。
-  //   3. toggle 即時生效、不需重新載入；只操作 .para-active/.para-prev
-  //      兩個 class，不與搜尋高亮等其他模組衝突。
+  //   2. 跟播 ON 時點擊任一段落 → 播放所屬講次音檔並 seek 至該段起點，
+  //      之後一路順播到底，不在段末自停。
+  //   3. toggle 即時生效、不需重新載入；只操作 .para-active
+  //      一個 class，不與搜尋高亮等其他模組衝突。
   //
   // 以具名 IIFE 隔離作用域（本檔被串接進共用的 DOMContentLoaded 函式中）。
   // ============================================================
@@ -29,7 +27,6 @@
     if (!window.W2E || !W2E.qaAudio) return;
 
     var TRACK_KEY = 'paraTrackEnabled';
-    var AUTOSTOP_KEY = 'paraAutoStop';
     var SCROLL_THROTTLE_MS = 250;
 
     var qa = W2E.qaAudio;
@@ -49,7 +46,6 @@
     }
 
     var trackOn = loadState(TRACK_KEY, true);
-    var autoStopOn = loadState(AUTOSTOP_KEY, true);
 
     function isTrad() {
       return typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
@@ -118,7 +114,6 @@
         syncToggleUI();
         if (!trackOn) {
           clearParaClasses();
-          paraMode = null;
         }
       });
     });
@@ -132,37 +127,11 @@
       });
     }
 
-    // ---- 播放器進度條列的「段末自停」toggle ---------------------------
-    var autoStopLabel = ptText('paraTrack.autoStop', '段末自停');
-    var seekRow = document.querySelector('.qa-player-seek-row');
-    var autoStopBtn = null;
-    if (seekRow) {
-      autoStopBtn = document.createElement('button');
-      autoStopBtn.type = 'button';
-      autoStopBtn.className = 'qa-player-skip para-autostop-toggle';
-      autoStopBtn.textContent = '⏹';
-      autoStopBtn.setAttribute('aria-label', autoStopLabel);
-      autoStopBtn.title = autoStopLabel;
-      seekRow.appendChild(autoStopBtn);
-      autoStopBtn.addEventListener('click', function () {
-        autoStopOn = !autoStopOn;
-        saveState(AUTOSTOP_KEY, autoStopOn);
-        syncAutoStopUI();
-      });
-    }
-    function syncAutoStopUI() {
-      if (!autoStopBtn) return;
-      autoStopBtn.classList.toggle('on', autoStopOn);
-      autoStopBtn.setAttribute('aria-pressed', autoStopOn ? 'true' : 'false');
-    }
-
     syncToggleUI();
-    syncAutoStopUI();
 
     // ---- 段落高亮與捲動 -----------------------------------------------
     var activePara = null;   // 目前高亮的段落元素
-    var prevPara = null;     // 目前淡化的上一段
-    var paraMode = null;     // 點段落觸發的播放：{el, end}，段末自停用
+    var prevPara = null;     // 上一段（僅供捲動定位保留可見，不做視覺改變）
 
     function clearParaClasses() {
       if (activePara) activePara.classList.remove('para-active');
@@ -220,32 +189,22 @@
       setActivePara(cur.el, idx > 0 ? sec.paras[idx - 1].el : null);
     }
 
-    // ---- timeupdate：節流的高亮跟播 + 段末自停 -------------------------
+    // ---- timeupdate：節流的高亮跟播 -------------------------------------
     var lastTrackTs = 0;
     audio.addEventListener('timeupdate', function () {
-      if (paraMode && autoStopOn && audio.currentTime >= paraMode.end) {
-        // 段末自停：僅「點段落觸發」的播放才生效；暫停後結束 para 模式
-        paraMode = null;
-        audio.pause();
-        return;
-      }
       if (!trackOn || audio.paused) return;
       var now = Date.now();
       if (now - lastTrackTs < SCROLL_THROTTLE_MS) return;
       lastTrackTs = now;
       updateTracking();
     });
-    audio.addEventListener('ended', function () { paraMode = null; });
-
-    // 切換講次（點章節喇叭）→ 脫離 para 模式（整講順播，絕不自停）
+    // 切換講次（點章節喇叭）→ 清掉段落高亮，等 timeupdate 重新定位
     sections.forEach(function (sec) {
       sec.btn.addEventListener('click', function () {
-        paraMode = null;
         if (!trackOn) return;
         // 章節鈕播放從頭開始：清掉前一段落高亮，等 timeupdate 重新定位
         clearParaClasses();
       });
-      // 播放中點同一鈕也會暫停，這裡已先清模式，行為一致
     });
 
     // ---- 點段落即播（僅跟播 ON 時） ------------------------------------
@@ -258,9 +217,7 @@
       var sec = paraSection.get(el);
       if (!sec) return;
       var start = parseFloat(el.getAttribute('data-start'));
-      var end = parseFloat(el.getAttribute('data-end'));
-      if (!isFinite(start) || !isFinite(end)) return;
-      paraMode = { el: el, end: end };
+      if (!isFinite(start)) return;
 
       function doSeek() { qa.seekAbs(start); }
 

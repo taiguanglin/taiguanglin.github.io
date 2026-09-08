@@ -60,12 +60,10 @@
 `wenda2_ebook/assets` bundle 影印到 ebook；樣式在 `04c-qa-audio.css`）。頁面上出現
 帶 `data-start` 的段落時：
 
-- 每個講次 h2 的播放鈕旁出現 🎯「段落跟播」開關（localStorage `paraTrackEnabled`，
-  預設 ON）。ON 時播放中即時高亮當前段落（`.para-active` 暖光暈＋微放大，前一段
-  `.para-prev` 淡化），並平滑捲動使當前段停在視窗上方且保留上一段底部可見。
-- 跟播 ON 時點擊任一段落 → 直接從該段起點播放（para 模式）。
-- 播放器進度條列有 ⏹「段末自停」開關（localStorage `paraAutoStop`，預設 ON）：
-  僅「點段落觸發」的播放會在段末自動暫停；按章節喇叭的整講順播永不自停。
+- 每個講次 h2 的播放鈕旁出現「段落跟播」文字 checkbox（localStorage `paraTrackEnabled`，
+  預設 ON）。ON 時播放中即時高亮當前段落（`.para-active` 暖光暈＋加粗，上一段不變），
+  並平滑捲動使當前段停在視窗上方且保留上一段底部可見。
+- 跟播 ON 時點擊任一段落 → 直接從該段起點播放，之後一路順播到底，不在段末自停。
 
 改前端行為 → 改 `tool/word2ebook` 模組後重建 `wenda2_ebook/assets`（word2ebook
 gen_all 或重跑 StaticAssetsManager 打包），再跑本工具的 `gen_all.py` 影印資產。

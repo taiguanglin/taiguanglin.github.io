@@ -347,10 +347,6 @@ window.I18N_TEXT = {
     toggle: {
       simplified: '段落跟播',
       traditional: '段落跟播'
-    },
-    autoStop: {
-      simplified: '段末自停',
-      traditional: '段末自停'
     }
   },
 
