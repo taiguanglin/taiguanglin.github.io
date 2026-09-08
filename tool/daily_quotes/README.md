@@ -17,8 +17,7 @@
    - `url` 含頁內錨點（如 `ebook/03_trad.html#p-sc436a366`），已驗證與電子書
      HTML 的 id 對應。
 
-> `finalize.py`（早期 361 條版）已被 `select_1095.py` 取代。`score` 欄 = AI 分；
-> `heuristic` 欄 = 啟發式分（無 AI 分的條目才帶）。
+> `score` 欄 = AI 分；`heuristic` 欄 = 啟發式分（無 AI 分的條目才帶）。
 
 ## 擴充 / 提升品質
 

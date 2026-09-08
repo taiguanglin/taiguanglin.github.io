@@ -78,7 +78,6 @@ audio_map2/*.json 的產生：問答錄2 docx + SRT ── tool/word_audio_map2/
 | `validate_relink.py` | 對帳驗證：比對 git `HEAD`，強制「凍結 qid 零遺失」+「無新增 spurious 跨 session qid」+「`meta.lastPlayed` 不變」。 |
 | `fill_orphan_chapters.py` / `redistribute_chapters.py` / `reconcile_qids.py` | 重分段與重對應之間的墊補（補孤兒章節 / 重分配多 qid 清單 / 掛回遺失 qid）。 |
 | `fill_resolvable.py` | 為「有實質問答卻未對應」的段，以 q_text（include/ratio，並有最短字數護欄）補上分類題；列印每筆待人工複核。 |
-| `merge_split_artifacts.py` | 一次性修正「單一問答塊被拆成問題 stub＋答案殘片」的 merge（如 `2025-05-17` 業力/能力案），合併後重排 index 並重生 `stable_key`/`question_id`。 |
 
 > 有「最後播放」(`meta.lastPlayed`) 紀錄的段**任何腳本都不應改動**——人工校對音檔時間的完成判定以此為準。
 
