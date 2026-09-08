@@ -36,6 +36,14 @@ def normalize(s: str) -> str:
 
 LEAD_TS_PATTERN = re.compile(r'^\s*\d{1,2}:\d{2}(?::\d{2})?\s*[-–—~]\s*\d{1,2}:\d{2}(?::\d{2})?\s+')
 
+# 原經文（文言段落）偵測：古典對話標記＋幾乎無現代語助詞
+SCRIPT_DIALOG = re.compile(r'曰\s*[：:“"‘’]|佛[言問]|問曰|對曰|[師祖]曰|如是我聞|爾時|世尊|沙門')
+STRONG_MODERN = '的了我你他這那們嗎呢吧啦呦噢啊呀耶'
+def _strong_count(t): return sum(1 for ch in t if ch in STRONG_MODERN)
+def is_scripture(t):
+    """純原文經文段落（相對於師父的現代講解／翻譯）應排除。"""
+    return bool(SCRIPT_DIALOG.search(t)) and _strong_count(t) <= 2
+
 def clean(s: str) -> str:
     # 去掉 answer 開頭常見的 "Taiguanglin " 署名
     s = normalize(s)
@@ -74,6 +82,8 @@ def collect():
         d = date_prefix_len(c)
         if d is not None:
             c = normalize(c[d:])
+        if is_scripture(c):
+            continue
         if not ok(c):
             continue
         h = hashlib.md5(c.encode()).hexdigest()
@@ -90,6 +100,8 @@ def collect():
         if x.get('type') not in ('content', 'answer'):
             continue
         c = clean(x['content'])
+        if is_scripture(c):
+            continue
         if not ok(c):
             continue
         h = hashlib.md5(c.encode()).hexdigest()

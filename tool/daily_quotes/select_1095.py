@@ -30,6 +30,14 @@ NUM_RATIO = re.compile(r'\d')
 TEACH = ('所以', '因此', '也就是', '其實', '就是說', '換句話', '總之', '記住',
          '關鍵', '重點', '簡單說', '簡單來', '反過來', '由此', '可見', '這就是')
 
+# 原經文（文言段落）偵測：古典對話標記＋幾乎無現代語助詞
+SCRIPT_DIALOG = re.compile(r'曰\s*[：:“"‘’]|佛[言問]|問曰|對曰|[師祖]曰|如是我聞|爾時|世尊|沙門')
+STRONG_MODERN = '的了我你他這那們嗎呢吧啦呦噢啊呀耶'
+def _strong_count(t): return sum(1 for ch in t if ch in STRONG_MODERN)
+def is_scripture(t):
+    """純原文經文段落（相對於師父的現代講解／翻譯）應排除。"""
+    return bool(SCRIPT_DIALOG.search(t)) and _strong_count(t) <= 2
+
 def heuristic(t):
     s = 4.0
     n = len(t)
@@ -61,6 +69,8 @@ def main():
         for x in json.load(open(TD / f'scores/batch_{i:02d}.json')):
             if x['score'] >= MIN_SCORE:
                 it = sample[x['idx']]
+                if is_scripture(it['text']):
+                    continue
                 scored.append({
                     'text': it['text'], 'url': it['url'], 'title': it['title'],
                     'source': it['source'], 'score': x['score'],
@@ -77,6 +87,8 @@ def main():
     for it in pool:
         h = hashlib.md5(it['text'].encode()).hexdigest()
         if h in seen:
+            continue
+        if is_scripture(it['text']):
             continue
         rest.append((heuristic(it['text']), it['text'], it['url'], it['title'], it['source']))
     rest.sort(key=lambda r: -r[0])

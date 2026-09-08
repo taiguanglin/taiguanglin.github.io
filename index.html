@@ -498,7 +498,8 @@
         @media (max-width:520px){
             .daily-quote{padding:96px 0 0;}
             .daily-quote-card{padding:18px 18px;gap:12px;}
-            .daily-quote-icon{width:36px;height:36px;font-size:18px;}
+            .daily-quote-icon{display:none;}  /* 窄版隱藏「句」圓形圖示，騰出文字寬度 */
+            .daily-quote-text.collapsed{-webkit-line-clamp:5;}  /* 窄版預設顯示更多行（資訊太少） */
         }
         @media (max-width:520px){
             .path-grid,.books-grid,.stories-grid,.feature-grid,.footer-top{grid-template-columns:1fr;}
