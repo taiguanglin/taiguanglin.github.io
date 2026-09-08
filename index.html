@@ -1008,7 +1008,11 @@
                 });
 
                 render();
+                // 先讓 section 可見，render 才能在非 hidden 狀態下正確量測高度
+                // （否則首次載入 scrollHeight 量不到，展開鈕會被誤判為不需要）
                 section.hidden = false;
+                // 可見後重新量一次，確保展開/收合鈕可見性正確
+                render();
             })
             .catch(function () { /* 無資料時靜默隱藏 */ });
     })();

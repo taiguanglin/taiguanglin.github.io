@@ -34,10 +34,14 @@ def normalize(s: str) -> str:
     s = re.sub(r'\s+', ' ', s).strip()
     return s
 
+LEAD_TS_PATTERN = re.compile(r'^\s*\d{1,2}:\d{2}(?::\d{2})?\s*[-–—~]\s*\d{1,2}:\d{2}(?::\d{2})?\s+')
+
 def clean(s: str) -> str:
     # 去掉 answer 開頭常見的 "Taiguanglin " 署名
     s = normalize(s)
     s = re.sub(r'^Taiguanglin[ 　]*', '', s)
+    # 去掉開頭時間段落（如 "00:12:55 - 00:13:33 白瀑印龍，…"）
+    s = LEAD_TS_PATTERN.sub('', s, count=1)
     return s
 
 def date_prefix_len(s: str):

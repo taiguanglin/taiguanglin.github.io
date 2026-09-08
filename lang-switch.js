@@ -186,9 +186,11 @@
 
     /* dynamic content (e.g. mindmap) re-converts while in target mode */
     var observerTimer = null;
+    var converting = false;   /* reentrancy guard: our own writes must not re-trigger */
     function startObserver() {
         if (observer || !window.MutationObserver) return;
         observer = new MutationObserver(function (muts) {
+            if (converting) return;
             var relevant = false;
             for (var i = 0; i < muts.length; i++) {
                 if (muts[i].addedNodes && muts[i].addedNodes.length) { relevant = true; break; }
@@ -198,11 +200,23 @@
             clearTimeout(observerTimer);
             observerTimer = setTimeout(function () {
                 var cv = currentTargetConverter();
-                for (var i = 0; i < muts.length; i++) {
-                    if (!muts[i].addedNodes) continue;
-                    for (var j = 0; j < muts[i].addedNodes.length; j++) {
-                        if (muts[i].addedNodes[j].nodeType === 1) convertNode(muts[i].addedNodes[j], cv);
+                converting = true;
+                try {
+                    for (var i = 0; i < muts.length; i++) {
+                        var m = muts[i];
+                        if (m.addedNodes && m.addedNodes.length) {
+                            for (var j = 0; j < m.addedNodes.length; j++) {
+                                var n = m.addedNodes[j];
+                                /* 元素與文字節點都要轉（textContent= 會新增 TEXT_NODE） */
+                                if (n.nodeType === 1 || n.nodeType === 3) convertNode(n, cv);
+                            }
+                        } else if (m.type === 'characterData' && m.target && m.target.nodeType === 3) {
+                            var p = m.target.parentNode;
+                            if (p && p.tagName && !SKIP_TAGS[p.tagName]) convertNode(m.target, cv);
+                        }
                     }
+                } finally {
+                    converting = false;
                 }
             }, 50);
         });
