@@ -1044,8 +1044,46 @@ function renderEditor() {
     items.forEach((entry, index) => {
         els.editorRoot.append(renderSegmentCard(entry, index));
     });
+    // 最下面一段之下：講次層級「已校對（reviewed）」checkbox，
+    // 對應 JSON `lectures.{N}.reviewed`，勾選後 gen html 才會注入本講跟播。
+    els.editorRoot.append(renderSessionReview(session));
     recomputeDirty();
     updateHistoryButtons();
+}
+
+/** 講次層級「reviewed」控制列：切換 `session.reviewed` → 存檔寫回 `lectures.{N}.reviewed`。 */
+function renderSessionReview(session) {
+    const wrap = document.createElement('div');
+    wrap.className = 'session-review' + (session.reviewed ? ' is-reviewed' : '');
+
+    const label = document.createElement('label');
+    label.className = 'checkbox-row';
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.checked = Boolean(session.reviewed);
+    checkbox.setAttribute('aria-label', '本講已完成校對（reviewed）');
+    const labelText = document.createElement('span');
+    labelText.textContent = '本講已完成校對（reviewed）';
+    label.append(checkbox, labelText);
+
+    const hint = document.createElement('div');
+    hint.className = 'session-review-hint';
+    hint.textContent = '勾選即把此講標為 reviewed=true（寫回 JSON「lectures」數字鍵的 "reviewed" 欄位）。'
+        + '只有 reviewed 的講次，生成 HTML（gen html）時才會注入隨段跟播時間；儲存後需重跑 books2ebook gen_all.py。';
+
+    checkbox.addEventListener('change', () => {
+        const current = currentSession();
+        if (!current) return;
+        commitHistory();
+        current.reviewed = checkbox.checked;
+        wrap.classList.toggle('is-reviewed', checkbox.checked);
+        renderSessionList();
+        commitHistory();
+        setStatus(checkbox.checked ? '已標記本講為已校對（reviewed）' : '已取消本講 reviewed 標記', 'ok');
+    });
+
+    wrap.append(label, hint);
+    return wrap;
 }
 
 function updateMetaStrip(items) {

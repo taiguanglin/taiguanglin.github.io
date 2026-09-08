@@ -428,6 +428,46 @@ textarea {
     gap: 1rem;
 }
 
+/* 講次層級「已校對（reviewed）」控制列，置於最後一段卡片之下。 */
+.session-review {
+    align-items: center;
+    background: var(--panel-strong);
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-left-color: var(--status-both);
+    border-radius: 1rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    padding: 1rem 1.1rem;
+}
+
+.session-review .checkbox-row {
+    align-items: center;
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.session-review input[type="checkbox"] {
+    accent-color: var(--accent);
+    height: 1.05rem;
+    width: 1.05rem;
+}
+
+.session-review .session-review-hint {
+    color: var(--muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    width: 100%;
+}
+
+.session-review.is-reviewed {
+    border-left-color: var(--status-both);
+    background: color-mix(in srgb, var(--status-both) 8%, var(--panel-strong));
+}
+
 .segment-card {
     border-left-width: 4px;
     overflow: hidden;
