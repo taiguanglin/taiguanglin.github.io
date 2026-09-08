@@ -94,8 +94,9 @@ are truncated for ebook display). Precise bounds remain in `data-start` /
 `QA_AUDIO_BASE` defaults to `../audio/`. Percent-encoding keeps the URL ASCII so
 OpenCC simplified/traditional conversion cannot corrupt the CJK filename. A
 segment with no parseable time range SHALL render a disabled, non-button control.
-Each play button SHALL include a speaker icon (`.qa-play-speaker`) so the control
-is visually distinct from surrounding text.
+Each play button SHALL include only a speaker icon (`.qa-play-speaker`) and SHALL
+NOT render a visible time label (`.qa-play-label`); the time range is shown on the
+mini-player's progress row via `data-label`.
 
 #### Scenario: Audio filename derived from txt stem
 - GIVEN `2025年11月10日Tai師父官網答疑.txt`

@@ -6,7 +6,8 @@
   // 08-qa-audio.js 提供，本模組透過其暴露的 W2E.qaAudio 介面掛接。
   //
   // 功能：
-  //   1. 每個含段落時間的講次 h2 旁插入「段落跟播」toggle（🎯，localStorage
+  //   1. 每個含段落時間的講次 h2 旁插入「段落跟播」文字 checkbox
+  //      （localStorage
   //      paraTrackEnabled，預設 ON）。ON 時播放中依 audio.currentTime
   //      高亮當前段落（.para-active，前一段 .para-prev 淡化），並平滑捲動：
   //      目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，
@@ -93,19 +94,26 @@
     if (!sections.length) return;
 
     // ---- 講次 h2 旁的「段落跟播」toggle -------------------------------
+    // 文字 checkbox（取代舊 🎯 純圖示按鈕，好理解用途）：
+    // <label class="para-track-toggle"><input type="checkbox"><span>段落跟播</span></label>
     var toggleLabel = ptText('paraTrack.toggle', '段落跟播');
     var toggles = [];
     sections.forEach(function (sec) {
-      var t = document.createElement('button');
-      t.type = 'button';
+      var t = document.createElement('label');
       t.className = 'para-track-toggle';
-      t.textContent = '🎯';
-      t.setAttribute('aria-label', toggleLabel);
       t.title = toggleLabel;
+      var box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = trackOn;
+      box.setAttribute('aria-label', toggleLabel);
+      var txt = document.createElement('span');
+      txt.textContent = toggleLabel;
+      t.appendChild(box);
+      t.appendChild(txt);
       sec.btn.parentNode.insertBefore(t, sec.btn.nextSibling);
       toggles.push(t);
-      t.addEventListener('click', function () {
-        trackOn = !trackOn;
+      box.addEventListener('change', function () {
+        trackOn = box.checked;
         saveState(TRACK_KEY, trackOn);
         syncToggleUI();
         if (!trackOn) {
@@ -119,6 +127,8 @@
       toggles.forEach(function (t) {
         t.classList.toggle('on', trackOn);
         t.setAttribute('aria-pressed', trackOn ? 'true' : 'false');
+        var box = t.querySelector('input[type="checkbox"]');
+        if (box && box.checked !== trackOn) box.checked = trackOn;
       });
     }
 

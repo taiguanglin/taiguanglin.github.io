@@ -134,6 +134,40 @@ body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
   position: relative;
   transition: background-color 0.2s ease, box-shadow 0.2s ease;
   border-radius: 6px;
+  /* 預留左側指示線空間：跟播高亮（inset 豎線）與書籤（border-left）
+     若無此 padding / 透明邊框，豎線會直接壓到段落首字（深色模式最明顯）。
+     經文段落 .sutra-text 自帶 border + padding，不在此列。 */
+  border-left: 4px solid transparent;
+  padding-left: 12px;
+}
+
+/* 經文段落自帶 4px 邊框與 15px 左右 padding，沿用自身設定即可 */
+.sutra-text.para-block {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 15px;
+}
+
+body.dark-mode .sutra-text.para-block {
+  border-left-color: var(--color-primary-light);
+}
+
+/* 跟播高亮的 inset 豎線落在上方的 padding 區，不再壓字 */
+.para-block.para-active {
+  padding-left: 12px;
+}
+
+.sutra-text.para-block.para-active {
+  padding-left: 15px;
+}
+
+/* 書籤僅改變預留邊框的顏色，不再因新增邊框造成位移或壓字 */
+.para-block.bookmarked {
+  border-left-color: var(--color-primary-light);
+  padding-left: 12px;
+}
+
+.sutra-text.para-block.bookmarked {
+  padding-left: 15px;
 }
 
 .para-block:hover {
@@ -243,10 +277,14 @@ body.dark-mode .para-block .qa-actions::after {
   display: flex;
 }
 
-/* 避免書籤視覺標識（.bookmark-indicator）與上方按鈕組重疊 */
+/* 書籤圖示移到段落左上角，下緣貼齊段落頂端（`bottom: 100%`），高度 10px
+   使圖示貼近文字，與右上 `.qa-actions` 按鈕列的視覺距離一致。 */
 .para-block.bookmarked .bookmark-indicator {
-  bottom: auto;
-  top: -30px;
+  top: auto;
+  bottom: 100%;
   right: auto;
   left: 0;
+  display: flex;
+  align-items: center;
+  height: 10px;
 }

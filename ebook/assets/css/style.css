@@ -1734,8 +1734,7 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
     transition: width 0.2s ease;
     pointer-events: none;
 }
-.qa-play .qa-play-icon,
-.qa-play .qa-play-label {
+.qa-play .qa-play-icon {
     position: relative;
     z-index: 1;
 }
@@ -1757,7 +1756,6 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
     width: 1.2em;
     height: 1.2em;
 }
-.qa-play .qa-play-label { font-variant-numeric: tabular-nums; letter-spacing: 0.02em; }
 .qa-play-icon--spinner {
     display: inline-block;
     width: 1em;
@@ -1780,19 +1778,29 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
     margin-left: 6px;
-    padding: 4px 9px;
+    padding: 4px 10px;
     border: 1.5px solid var(--color-primary);
     background: transparent;
     color: var(--color-primary-deep);
     border-radius: 999px;
     font-size: 0.8em;
-    line-height: 1;
+    line-height: 1.4;
     font-family: inherit;
     cursor: pointer;
     vertical-align: middle;
     opacity: 0.55;
     transition: all 0.2s ease;
+    user-select: none;
+}
+.para-track-toggle input[type="checkbox"] {
+    margin: 0;
+    width: 1em;
+    height: 1em;
+    flex-shrink: 0;
+    accent-color: var(--color-primary);
+    cursor: pointer;
 }
 .para-track-toggle.on {
     background: var(--gradient-primary);
@@ -1819,21 +1827,17 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
     opacity: 1;
 }
 
-/* 播放中段落高亮：暖光暈背景 + 左側 inset 提示線（不造成版面位移）；
-   字體以 transform 微放大，避免改變 font-size 造成回流 */
+/* 播放中段落高亮：暖光暈背景 + 左側 inset 提示線 + 加粗，不造成版面位移。
+   注意：不可用 transform: scale() 做微放大——它會連寬度一起放大，
+   以左為原點向右撐出 2%，在窄畫面造成右側截斷。 */
 .para-block.para-active {
     background: linear-gradient(135deg, rgba(255, 226, 170, 0.42) 0%, rgba(255, 244, 222, 0.28) 100%);
     border-radius: var(--radius-sm);
     box-shadow: inset 3px 0 0 var(--color-primary), 0 0 14px rgba(255, 190, 100, 0.35);
     font-weight: 600;
-    transform: scale(1.02);
-    transform-origin: 0 0;
     transition: background 0.25s ease, box-shadow 0.25s ease;
 }
-.para-block.para-prev {
-    opacity: 0.62;
-    transition: opacity 0.25s ease;
-}
+/* 上一段落不做任何視覺改變（曾有 .para-prev 變灰，已移除）。 */
 
 .qa-play--disabled {
     display: inline-flex;
@@ -1864,9 +1868,6 @@ body.dark-mode .bookmark-time { color: #a99; opacity: 0.7; }
 .qa-play--inline .qa-play-speaker {
     width: 1em;
     height: 1em;
-}
-.qa-play--inline .qa-play-label {
-    letter-spacing: 0.01em;
 }
 
 /* 校稿狀態徽章 */
@@ -2257,6 +2258,9 @@ body.dark-mode .para-track-toggle.on {
     background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
     border-color: transparent;
     color: #fff;
+}
+body.dark-mode .para-track-toggle input[type="checkbox"] {
+    accent-color: #ff91af;
 }
 body.dark-mode .para-autostop-toggle.on { color: #ff91af; }
 body.dark-mode .para-block.para-active {
@@ -2649,7 +2653,6 @@ p.source-filename a:active {
     transform: translateY(140%);
   }
   .qa-player.visible { transform: translateY(0); }
-  .qa-play .qa-play-label { font-size: 0.95em; }
 }
 
 /* ============================================================

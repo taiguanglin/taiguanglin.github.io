@@ -176,7 +176,6 @@ p.source-filename a:active {
     transform: translateY(140%);
   }
   .qa-player.visible { transform: translateY(0); }
-  .qa-play .qa-play-label { font-size: 0.95em; }
 }
 
 /* ============================================================
