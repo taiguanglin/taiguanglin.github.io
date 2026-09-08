@@ -1,0 +1,235 @@
+{
+  "note": "2024-11 alignment work-in-progress. NOT yet applied to 2024-11.json (file still at HEAD). Apply then strip 已人工校驗 then finalize.",
+  "corrections": {
+    "2024-11-13": [
+      {
+        "index": 29,
+        "end": 3838.6
+      },
+      {
+        "index": 30,
+        "start": 3838.6,
+        "end": 3942.4,
+        "confidence": 0.9,
+        "notes": "answer_opening"
+      },
+      {
+        "index": 31,
+        "start": 3942.4,
+        "end": 3960.1,
+        "confidence": 0.9,
+        "notes": "q_body"
+      },
+      {
+        "index": 32,
+        "start": 3960.1,
+        "end": 4006.4,
+        "confidence": 0.9,
+        "notes": "q_body"
+      },
+      {
+        "index": 36,
+        "start": 4228.0,
+        "end": 4313.3,
+        "confidence": 0.9,
+        "notes": "name"
+      },
+      {
+        "index": 37,
+        "start": 4313.3,
+        "end": 4350.2,
+        "confidence": 0.9,
+        "notes": "name"
+      }
+    ],
+    "2024-11-12": [
+      {
+        "index": 50,
+        "end": 4432.6
+      },
+      {
+        "index": 18,
+        "end": 1988.9
+      },
+      {
+        "index": 19,
+        "start": 1988.9
+      },
+      {
+        "index": 52,
+        "start": 4434.0,
+        "end": 4478.1
+      },
+      {
+        "index": 53,
+        "start": 4478.1,
+        "end": 4537.3
+      },
+      {
+        "index": 54,
+        "start": 4539.3
+      },
+      {
+        "index": 56,
+        "end": 4860.8
+      },
+      {
+        "index": 57,
+        "start": 4860.8,
+        "end": 4944.7
+      },
+      {
+        "index": 58,
+        "start": 4944.7
+      }
+    ],
+    "2024-11-11": [
+      {
+        "index": 8,
+        "start": 445.6,
+        "end": 545.0,
+        "confidence": 0.9,
+        "notes": "name"
+      },
+      {
+        "index": 9,
+        "start": 545.0,
+        "end": 570.7,
+        "confidence": 0.9,
+        "notes": "answer_opening"
+      },
+      {
+        "index": 10,
+        "start": 571.1,
+        "end": 658.04,
+        "confidence": 0.9,
+        "notes": "name"
+      },
+      {
+        "index": 29,
+        "end": 2234.1
+      },
+      {
+        "index": 30,
+        "start": 2276.0,
+        "end": 2327.4,
+        "confidence": 0.9,
+        "notes": "q_body"
+      },
+      {
+        "index": 31,
+        "start": 2328.7,
+        "end": 2388.4,
+        "confidence": 0.9,
+        "notes": "q_body"
+      },
+      {
+        "index": 54,
+        "end": 4492.9
+      },
+      {
+        "index": 55,
+        "start": 4494.8,
+        "end": 4555.0,
+        "confidence": 1.0,
+        "notes": "q_body"
+      },
+      {
+        "index": 56,
+        "start": 4555.0,
+        "end": 4692.0,
+        "confidence": 1.0,
+        "notes": "q_body"
+      },
+      {
+        "index": 57,
+        "start": 4694.4,
+        "end": 4777.58,
+        "confidence": 1.0,
+        "notes": "name"
+      }
+    ],
+    "_null": {
+      "2024-11-11": [
+        {
+          "index": 2,
+          "reason": "opening body in q_text, answer empty -> null"
+        }
+      ],
+      "2024-11-12": [],
+      "2024-11-13": [],
+      "2024-11-14": [
+        {
+          "index": 18,
+          "reason": "session bridge, no answer"
+        },
+        {
+          "index": 20,
+          "reason": "line云流水Q2 自性重叠 not answered in audio"
+        }
+      ],
+      "2024-11-15": [],
+      "2024-11-16": []
+    },
+    "2024-11-14": [
+      {
+        "index": 8,
+        "start": 428.0,
+        "end": 487.1,
+        "confidence": 1.0,
+        "notes": "name"
+      },
+      {
+        "index": 9,
+        "start": 487.1,
+        "end": 548.7,
+        "confidence": 1.0,
+        "notes": "answer_opening"
+      },
+      {
+        "index": 10,
+        "start": 548.7,
+        "end": 594.8,
+        "confidence": 1.0,
+        "notes": "answer_opening"
+      },
+      {
+        "index": 11,
+        "start": 594.8,
+        "end": 630.4,
+        "confidence": 0.85,
+        "notes": "q_body"
+      },
+      {
+        "index": 12,
+        "end": 707.3
+      },
+      {
+        "index": 13,
+        "start": 707.3,
+        "end": 746.9,
+        "confidence": 1.0,
+        "notes": "name"
+      },
+      {
+        "index": 17,
+        "end": 1042.8
+      },
+      {
+        "index": 18,
+        "null": true
+      },
+      {
+        "index": 19,
+        "start": 1055.2,
+        "end": 1177.7,
+        "confidence": 0.9,
+        "notes": "answer_opening"
+      },
+      {
+        "index": 20,
+        "null": true
+      }
+    ]
+  }
+}
