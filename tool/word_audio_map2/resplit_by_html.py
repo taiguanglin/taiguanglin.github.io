@@ -575,20 +575,31 @@ def main() -> int:
             sess["segments"] = new_segs
 
         tot_segs = sum(len(s["segments"]) for s in data["sessions"])
-        pending = sum(1 for s in data["sessions"] for g in s["segments"]
-                      if "待人工" in (g.get("notes") or ""))
-        low = sum(1 for s in data["sessions"] for g in s["segments"]
-                  if (g.get("confidence") or 1) < 0.5)
-        print(f"{m}: old stats {data['stats'].get('segments')} seg -> {tot_segs};"
+        stats = data.setdefault("stats", {})
+        matched = missing = low = interpolated = pending = 0
+        for s in data["sessions"]:
+            for g in s["segments"]:
+                note = g.get("notes") or ""
+                if g.get("start") is None:
+                    missing += 1
+                else:
+                    matched += 1
+                    if (g.get("confidence") or 0) < 0.5:
+                        low += 1
+                    if "interpolated" in note:
+                        interpolated += 1
+                    if "待人工確認" in note or "no-anchor:clamped" in note:
+                        pending += 1
+        stats.update({"segments": tot_segs, "matched": matched,
+                      "missing": missing, "low_conf": low,
+                      "interpolated": interpolated, "pending": pending})
+        print(f"{m}: seg -> {tot_segs};"
               f" changed-runs {tot['changed']}, split {tot['split']},"
               f" merged-members {tot['merged']}, lastPlayed erased {tot['erased']},"
               f" unresolved {tot['unres']}, pending {pending}, low_conf {low}")
 
         if not args.apply or not month_changed:
             continue
-        data["stats"]["segments"] = tot_segs
-        data["stats"]["pending"] = pending
-        data["stats"]["low_conf"] = low
         data.pop("version_marker", None)
         path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n",
                         encoding="utf-8")

@@ -495,7 +495,8 @@ def align_lecture(paras, dump, duration, verbose=False):
             frag = (d_f, t0, _t_of(times, jl_c), p_jf, max(p_jf + 4, p_jl))
             break
         if d_full >= 0.65 and (frag is None or
-                               abs(frag[1] - _t_of(times, jf)) < 30):
+                               abs(frag[1] - _t_of(times, jf)) < 60):
+            # coherent contiguous read starting at/near the title
             t_start = _t_of(times, jf)
             anchor(idx, norm, t_start, d_full, False, "dtw",
                    t_end=_t_of(times, jl), force_end_fix=(pat_len == len(norm)))
@@ -516,11 +517,6 @@ def align_lecture(paras, dump, duration, verbose=False):
                 print(f"    [sutra-head] p{idx} PARTIAL d={d_f:.2f} "
                       f"full={d_full:.2f} t={t0:.1f}")
             return True
-        # not read contiguously at the head: defer to resolve_sutra, whose
-        # whole-stream scan finds woven reads and scores the skip honestly
-        if verbose:
-            print(f"    [sutra-head] p{idx} deferred d={d_full:.2f}")
-        return False
 
     # ---------------- pass 1: sequential anchoring (commentary only) -----
     # Sutra blocks are DEFERRED to pass 1.5: a false fragment anchor inside
@@ -588,8 +584,10 @@ def align_lecture(paras, dump, duration, verbose=False):
             cursor = pos + max(ndl_len, 4)
 
     # ------------- pass 1.5: resolve sutra blocks within gaps -------------
-    def resolve_sutra(idx, norm):
+    def resolve_sutra(idx, norm, lo_override=None):
         lo_pos, hi_pos = 0, len(stream_norm)
+        if lo_override is not None:
+            lo_pos = max(lo_pos, lo_override)
         for a, (p, l) in anchor_pos.items():
             if a < idx:
                 lo_pos = max(lo_pos, p + l)
@@ -805,9 +803,7 @@ def align_lecture(paras, dump, duration, verbose=False):
         if is_sutra[idx]:
             results[idx] = None
             anchor_pos.pop(idx, None)
-            anchor_pos.setdefault("__min__", prev_end_pos)
-            resolve_sutra(idx, para_norms[idx])
-            anchor_pos.pop("__min__", None)
+            resolve_sutra(idx, para_norms[idx], lo_override=prev_end_pos)
         else:
             jf_min_char = (int(idx_map[min(prev_end_pos, len(idx_map) - 1)])
                            if prev_end_pos < len(idx_map) else n_total)
