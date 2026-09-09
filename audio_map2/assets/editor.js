@@ -1148,6 +1148,8 @@ function applyAm2CardExtras(node, item, kind) {
         body.appendChild(notesEl);
     }
 
+    applyAm2HtmlLinks(body, item);
+
     if (item.srt_preview) {
         const det = document.createElement('details');
         det.className = 'am2-srt';
@@ -1166,6 +1168,74 @@ function applyAm2CardExtras(node, item, kind) {
         banner.textContent = '⚠ 低信心配對：請特別仔細聽檔，必要時微調起訖時間。';
         body.appendChild(banner);
     }
+}
+
+/** Build a row of links to the exact HTML question/answer anchors in
+ *  wenda2_ebook (simplified `NN.html` + traditional `NN_trad.html`), so the
+ *  reviewer can jump to the canonical block while aligning audio. */
+function applyAm2HtmlLinks(body, item) {
+    const qids = item.chapter_question_ids || [];
+    const aids = item.chapter_answer_ids || [];
+    const chapters = [...new Set(item.chapter_indexes || [])].sort((a, b) => a - b);
+    if (!qids.length && !aids.length) return;
+
+    const row = document.createElement('div');
+    row.className = 'am2-html-links';
+
+    const label = document.createElement('span');
+    label.className = 'am2-html-links-label';
+    label.textContent = 'HTML 對應';
+    row.appendChild(label);
+
+    // chapter number for the link path (first chapter; multi-select shows per-pair)
+    const chapter = chapters[0] || null;
+
+    qids.forEach((qid, i) => {
+        const aid = aids[i] || null;
+        const ch = chapters[i] ?? chapter;
+        if (!qid || !ch) return;
+        const pair = document.createElement('span');
+        pair.className = 'am2-html-link-pair';
+
+        const makeLink = (href, txt, title) => {
+            const a = document.createElement('a');
+            a.className = 'am2-html-link';
+            a.href = href;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = txt;
+            a.title = title;
+            a.addEventListener('click', (ev) => ev.stopPropagation());
+            return a;
+        };
+
+        const qn = String(ch).padStart(2, '0');
+        pair.append(makeLink(
+            `/wenda2_ebook/${qn}.html#${qid}`, '問', `在簡體電子書開啟問題 ${qid}`
+        ));
+        if (aid) {
+            pair.append(makeLink(
+                `/wenda2_ebook/${qn}.html#${aid}`, '答', `在簡體電子書開啟答案 ${aid}`
+            ));
+        }
+        row.appendChild(pair);
+    });
+
+    // a single 繁 switch for the whole row (first pair's chapter is enough)
+    if (chapter) {
+        const qn = String(chapter).padStart(2, '0');
+        const trad = document.createElement('a');
+        trad.className = 'am2-html-link am2-html-link--trad';
+        trad.href = `/wenda2_ebook/${qn}_trad.html${qids[0] ? `#${qids[0]}` : ''}`;
+        trad.target = '_blank';
+        trad.rel = 'noopener';
+        trad.textContent = '繁';
+        trad.title = '在繁體電子書開啟';
+        trad.addEventListener('click', (ev) => ev.stopPropagation());
+        row.appendChild(trad);
+    }
+
+    body.appendChild(row);
 }
 
 /** Click-to-play on read-only Q/A text; skip if the user was selecting text. */

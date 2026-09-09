@@ -23,6 +23,15 @@
     .am2-srt summary{cursor:pointer;color:var(--muted)}
     .am2-srt-body{white-space:pre-wrap;word-break:break-all;background:var(--panel);
       border-radius:6px;padding:.4rem .5rem;margin-top:.35rem;max-height:120px;overflow:auto}
+    .am2-html-links{display:flex;align-items:center;flex-wrap:wrap;gap:.35rem;margin-top:.5rem;font-size:.78rem}
+    .am2-html-links-label{color:var(--muted);font-weight:600;margin-right:.15rem}
+    .am2-html-link{display:inline-flex;align-items:center;gap:.2rem;padding:.1rem .5rem;border-radius:999px;
+      border:1px solid color-mix(in srgb,var(--accent,#8b4f22) 40%,transparent);
+      color:var(--accent,#8b4f22);background:transparent;text-decoration:none;cursor:pointer}
+    .am2-html-link:hover{background:color-mix(in srgb,var(--accent,#8b4f22) 12%,transparent)}
+    .am2-html-link-pair{display:inline-flex;gap:.25rem;align-items:center}
+    .am2-html-link-pair+.am2-html-link-pair::before{content:"·";color:var(--muted);margin:0 .15rem}
+    .am2-html-link--trad{opacity:.85}
     .segment-card[data-status="both"]{border-left-color:var(--status-both)}
     </style>
 </head>
