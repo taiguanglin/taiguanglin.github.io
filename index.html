@@ -495,6 +495,18 @@
         .dq-nav:hover{background:var(--pink-100);color:var(--pink-800);}
         .dq-nav:disabled{opacity:.4;cursor:default;pointer-events:none;}
         .dq-nav.dq-nav-today{font-weight:700;border-color:var(--pink-300);}
+        /* 載入骨架：先佔位避免 CLS，內容就緒前顯示脈動提示 */
+        .daily-quote-card[data-state="loading"] .daily-quote-actions{visibility:hidden;}
+        .daily-quote-card[data-state="loading"] .dq-nav{opacity:.45;pointer-events:none;}
+        .daily-quote-text.is-loading{
+            min-height:3.8em; /* 預留摺疊 2 行高度，載入後不撐開版面 */
+            color:var(--muted);
+            animation:dq-pulse 1.2s ease-in-out infinite;
+        }
+        @keyframes dq-pulse{0%,100%{opacity:.55;}50%{opacity:1;}}
+        @media (max-width:520px){
+            .daily-quote-text.is-loading{min-height:9.5em;} /* 窄版摺疊 5 行，同步加高佔位 */
+        }
         @media (max-width:520px){
             .daily-quote{padding:96px 0 0;}
             .daily-quote-card{padding:18px 18px;gap:12px;}
@@ -541,21 +553,21 @@
         </div>
     </nav>
 
-    <!-- ============ 每日精選 ============ -->
-    <section class="daily-quote ignore-opencc" id="daily-quote" hidden>
+    <!-- ============ 每日精選（骨架屏預留空間，避免載入後撐開版面） ============ -->
+    <section class="daily-quote ignore-opencc" id="daily-quote" aria-busy="true">
         <div class="container">
-            <div class="daily-quote-card">
+            <div class="daily-quote-card" id="dailyQuoteCard" data-state="loading">
                 <div class="daily-quote-icon">句</div>
                 <div class="daily-quote-body">
                     <div class="daily-quote-head">
                         <span class="daily-quote-label" id="dailyQuoteDay">今日精選</span>
                         <div class="daily-quote-pager">
-                            <button class="dq-nav" id="dailyQuotePrev" type="button" aria-label="前一天">◀ 前一天</button>
-                            <button class="dq-nav dq-nav-today" id="dailyQuoteToday" type="button" aria-label="回到今日">今日</button>
-                            <button class="dq-nav" id="dailyQuoteNext" type="button" aria-label="後一天">後一天 ▶</button>
+                            <button class="dq-nav" id="dailyQuotePrev" type="button" aria-label="前一天" disabled>◀ 前一天</button>
+                            <button class="dq-nav dq-nav-today" id="dailyQuoteToday" type="button" aria-label="回到今日" disabled>今日</button>
+                            <button class="dq-nav" id="dailyQuoteNext" type="button" aria-label="後一天" disabled>後一天 ▶</button>
                         </div>
                     </div>
-                    <p class="daily-quote-text collapsed" id="dailyQuoteText"></p>
+                    <p class="daily-quote-text collapsed is-loading" id="dailyQuoteText" aria-live="polite">載入中…</p>
                     <div class="daily-quote-actions">
                         <button class="daily-quote-toggle" id="dailyQuoteToggle" type="button">展開全文 ▾</button>
                         <a class="daily-quote-link" id="dailyQuoteLink" href="#" target="_blank" rel="noopener">前往原文 ↗</a>
@@ -692,7 +704,7 @@
                 <a class="book-card" href="ebook/01_trad.html" target="_blank" rel="noopener noreferrer">
                     <div class="book-cover">
                         <span class="tag">坐禪系列</span>
-                        <img src="images/坐禪1.png" alt="坐禪：次世代版終極佛法">
+                        <img src="images/坐禪1.webp" alt="坐禪：次世代版終極佛法">
                     </div>
                     <div class="book-info">
                         <span class="book-subtitle">第一部經典</span>
@@ -704,7 +716,7 @@
                 <a class="book-card" href="ebook/02_trad.html" target="_blank" rel="noopener noreferrer">
                     <div class="book-cover">
                         <span class="tag">坐禪系列</span>
-                        <img src="images/坐禪之問答錄.png" alt="坐禪之問答錄：次世代版終極佛法">
+                        <img src="images/坐禪之問答錄.webp" alt="坐禪之問答錄：次世代版終極佛法">
                     </div>
                     <div class="book-info">
                         <span class="book-subtitle">修行疑問解答</span>
@@ -716,7 +728,7 @@
                 <a class="book-card" href="ebook/03_trad.html" target="_blank" rel="noopener noreferrer">
                     <div class="book-cover">
                         <span class="tag">坐禪系列</span>
-                        <img src="images/坐禪2.png" alt="坐禪2：次世代版終極佛法">
+                        <img src="images/坐禪2.webp" alt="坐禪2：次世代版終極佛法">
                     </div>
                     <div class="book-info">
                         <span class="book-subtitle">2024 最新開示</span>
@@ -728,7 +740,7 @@
                 <a class="book-card" href="ebook/05_trad.html" target="_blank" rel="noopener noreferrer">
                     <div class="book-cover">
                         <span class="tag">講經系列</span>
-                        <img src="images/講金剛經 心經.png" alt="講金剛經 心經">
+                        <img src="images/講金剛經 心經.webp" alt="講金剛經 心經">
                     </div>
                     <div class="book-info">
                         <span class="book-subtitle">經典佛經解說</span>
@@ -740,7 +752,7 @@
                 <a class="book-card" href="ebook/06_trad.html" target="_blank" rel="noopener noreferrer">
                     <div class="book-cover">
                         <span class="tag">講經系列</span>
-                        <img src="images/講圓覺經.jpg" alt="講圓覺經" style="object-fit:cover;">
+                        <img src="images/講圓覺經.webp" alt="講圓覺經" style="object-fit:cover;">
                     </div>
                     <div class="book-info">
                         <span class="book-subtitle">經典佛經解說</span>
@@ -944,123 +956,139 @@
 
     <script>
     // ============ 每日精選：依日期播種，支援前後日切換與回今日 ============
+    // 骨架屏：HTML 預設即顯示「載入中」佔位，避免 fetch 回來才撐開版面（CLS）
     (function () {
         var section = document.getElementById('daily-quote');
+        var card = document.getElementById('dailyQuoteCard');
+        var src = document.getElementById('dailyQuoteSrc');
+        var text = document.getElementById('dailyQuoteText');
+        var toggle = document.getElementById('dailyQuoteToggle');
+        var link = document.getElementById('dailyQuoteLink');
+        var dayEl = document.getElementById('dailyQuoteDay');
+        var prevBtn = document.getElementById('dailyQuotePrev');
+        var nextBtn = document.getElementById('dailyQuoteNext');
+        var todayBtn = document.getElementById('dailyQuoteToday');
+
+        // 本區塊 `ignore-opencc`，由 tgl_lang API 自行轉換，掌握「轉換完才顯示」
+        var TG = (window.tgl_lang) || null;
+
+        // 靜態按鈕文字的「繁體原稿」，切繁簡時整批重上
+        var T_PREV = '◀ 前一天', T_TODAY = '今日', T_NEXT = '後一天 ▶';
+        var T_LINK = '前往原文 ↗', T_MORE = '展開全文 ▾', T_LESS = '收合 ▴';
+        var T_LOADING = '載入中…';
+
+        var quotes = null;
+        // 以使用者「本地時區」日期為種子（午夜本地時間切換）；加固定鹽值打散順序
+        var now = new Date();
+        var today = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
+        var offset = 0;      // 0=今日、-1=昨日、+1=明日…
+        var cur = null;      // 目前顯示的 quote 物件（trad 原文）
+        var expanded = false;
+
+        /* 把繁體原稿轉成目前 variant；OpenCC 未就緒時回 null（先用 trad） */
+        function conv(s) {
+            if (!TG || !TG.convertTW) return null;
+            return TG.convertTW(s);
+        }
+        function T(s) { var c = conv(s); return c != null ? c : s; }
+
+        function dayLabel(off) {
+            if (off === 0) return '今日精選';
+            if (off === -1) return '昨日精選';
+            if (off === 1) return '明日精選';
+            var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + off);
+            return (d.getMonth() + 1) + '/' + d.getDate() + ' 精選';
+        }
+
+        /* 依目前 variant 填滿所有可見文字；尚未載入時顯示轉換後的「載入中」 */
+        function applyLang() {
+            prevBtn.textContent = T(T_PREV);
+            todayBtn.textContent = T(T_TODAY);
+            nextBtn.textContent = T(T_NEXT);
+            link.textContent = T(T_LINK);
+            toggle.textContent = T(expanded ? T_LESS : T_MORE);
+            dayEl.textContent = T(dayLabel(offset));
+            if (cur) {
+                text.textContent = T(cur.text);
+                src.textContent = cur.title ? T('— ' + cur.title) : '';
+            } else {
+                text.textContent = T(T_LOADING);
+            }
+        }
+
+        function setExpanded(v) {
+            expanded = v;
+            text.classList.toggle('collapsed', !v);
+            toggle.textContent = T(v ? T_LESS : T_MORE);
+        }
+
+        function updateToggleVisibility() {
+            if (!cur) return; // 載入中 actions 隱藏佔位，不量測
+            // 內容只佔兩行以內時（無摺疊空間），隱藏展開/收合鈕
+            toggle.style.display = 'none';
+            void text.offsetWidth; /* 強制 reflow，確保 collapsed 量測正確 */
+            if (text.scrollHeight > text.clientHeight + 2) {
+                toggle.style.display = '';
+            }
+        }
+
+        function setLoaded() {
+            card.setAttribute('data-state', 'loaded');
+            section.setAttribute('aria-busy', 'false');
+            text.classList.remove('is-loading');
+            prevBtn.disabled = false;
+            todayBtn.disabled = false;
+            nextBtn.disabled = false;
+        }
+
+        function render() {
+            var day = today + offset;
+            var idx = (((day * 2654435761 + 97) % quotes.length) + quotes.length) % quotes.length;
+            cur = quotes[idx];
+            link.href = cur.url;
+            setExpanded(false);
+            applyLang();          /* 內容在此即已是最終 script，無繁簡跳閃 */
+            updateToggleVisibility();
+        }
+
+        /* 前/後/今日切換：先漸隱，swap 後漸現（內容已按 variant 轉好才顯示） */
+        function switchDay(nextOffset) {
+            if (!quotes) return;
+            if (nextOffset === offset) return;   // 已在今日
+            text.classList.add('fade-out');
+            setTimeout(function () {
+                offset = nextOffset;
+                render();
+                text.classList.remove('fade-out');
+            }, 250);
+        }
+
+        prevBtn.addEventListener('click', function () { switchDay(offset - 1); });
+        nextBtn.addEventListener('click', function () { switchDay(offset + 1); });
+        todayBtn.addEventListener('click', function () { switchDay(0); });
+        toggle.addEventListener('click', function () {
+            setExpanded(text.classList.contains('collapsed'));
+        });
+        text.addEventListener('click', function () {
+            if (toggle.style.display !== 'none') {
+                setExpanded(text.classList.contains('collapsed'));
+            }
+        });
+
+        // 語系變更時重上文字（繁→簡/簡→繁）；OpenCC 就緒後補一次（載入中文字也會轉）
+        if (TG && TG.onChange) TG.onChange(applyLang);
+        if (TG && TG.onReady) TG.onReady(applyLang);
+        applyLang(); // 先以預設語系顯示載入文字，骨架屏已在 HTML 中可見
+
         fetch('daily_quotes.json')
             .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
             .then(function (data) {
-                var quotes = data.quotes || data;
-                if (!quotes.length) return;
-
-                // 本區塊 `ignore-opencc`，由 tgl_lang API 自行轉換，掌握「轉換完才顯示」
-                var TG = (window.tgl_lang) || null;
-
-                var src = document.getElementById('dailyQuoteSrc');
-                var text = document.getElementById('dailyQuoteText');
-                var toggle = document.getElementById('dailyQuoteToggle');
-                var link = document.getElementById('dailyQuoteLink');
-                var dayEl = document.getElementById('dailyQuoteDay');
-                var prevBtn = document.getElementById('dailyQuotePrev');
-                var nextBtn = document.getElementById('dailyQuoteNext');
-                var todayBtn = document.getElementById('dailyQuoteToday');
-
-                // 靜態按鈕文字的「繁體原稿」，切繁簡時整批重上
-                var T_PREV = '◀ 前一天', T_TODAY = '今日', T_NEXT = '後一天 ▶';
-                var T_LINK = '前往原文 ↗', T_MORE = '展開全文 ▾', T_LESS = '收合 ▴';
-
-                // 以使用者「本地時區」日期為種子（午夜本地時間切換）；加固定鹽值打散順序
-                var now = new Date();
-                var today = Math.floor(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) / 86400000);
-                var offset = 0;      // 0=今日、-1=昨日、+1=明日…
-                var cur = null;      // 目前顯示的 quote 物件（trad 原文）
-                var expanded = false;
-
-                /* 把繁體原稿轉成目前 variant；OpenCC 未就緒時回 null（先用 trad） */
-                function conv(s) {
-                    if (!TG || !TG.convertTW) return null;
-                    return TG.convertTW(s);
-                }
-                function T(s) { var c = conv(s); return c != null ? c : s; }
-
-                function dayLabel(off) {
-                    if (off === 0) return '今日精選';
-                    if (off === -1) return '昨日精選';
-                    if (off === 1) return '明日精選';
-                    var d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + off);
-                    return (d.getMonth() + 1) + '/' + d.getDate() + ' 精選';
-                }
-
-                /* 依目前 variant 填滿所有可見文字（今日/昨日/明日、按鈕、內文、標題） */
-                function applyLang() {
-                    prevBtn.textContent = T(T_PREV);
-                    todayBtn.textContent = T(T_TODAY);
-                    nextBtn.textContent = T(T_NEXT);
-                    link.textContent = T(T_LINK);
-                    toggle.textContent = T(expanded ? T_LESS : T_MORE);
-                    dayEl.textContent = T(dayLabel(offset));
-                    if (cur) {
-                        text.textContent = T(cur.text);
-                        src.textContent = cur.title ? T('— ' + cur.title) : '';
-                    }
-                }
-
-                function setExpanded(v) {
-                    expanded = v;
-                    text.classList.toggle('collapsed', !v);
-                    toggle.textContent = T(v ? T_LESS : T_MORE);
-                }
-
-                function updateToggleVisibility() {
-                    // 內容只佔兩行以內時（無摺疊空間），隱藏展開/收合鈕
-                    toggle.style.display = 'none';
-                    void text.offsetWidth; /* 強制 reflow，確保 collapsed 量測正確 */
-                    if (text.scrollHeight > text.clientHeight + 2) {
-                        toggle.style.display = '';
-                    }
-                }
-
-                function render() {
-                    var day = today + offset;
-                    var idx = (((day * 2654435761 + 97) % quotes.length) + quotes.length) % quotes.length;
-                    cur = quotes[idx];
-                    link.href = cur.url;
-                    setExpanded(false);
-                    applyLang();          /* 內容在此即已是最終 script，無繁簡跳閃 */
-                    updateToggleVisibility();
-                }
-
-                /* 前/後/今日切換：先漸隱，swap 後漸現（內容已按 variant 轉好才顯示） */
-                function switchDay(nextOffset) {
-                    if (nextOffset === offset) return;   // 已在今日
-                    text.classList.add('fade-out');
-                    setTimeout(function () {
-                        offset = nextOffset;
-                        render();
-                        text.classList.remove('fade-out');
-                    }, 250);
-                }
-
-                prevBtn.addEventListener('click', function () { switchDay(offset - 1); });
-                nextBtn.addEventListener('click', function () { switchDay(offset + 1); });
-                todayBtn.addEventListener('click', function () { switchDay(0); });
-                toggle.addEventListener('click', function () {
-                    setExpanded(text.classList.contains('collapsed'));
-                });
-                text.addEventListener('click', function () {
-                    if (toggle.style.display !== 'none') {
-                        setExpanded(text.classList.contains('collapsed'));
-                    }
-                });
-
-                // 首次：先讓 section 可見，render 才能在非 hidden 狀態下量測高度
-                section.hidden = false;
+                quotes = data.quotes || data;
+                if (!quotes.length) { section.hidden = true; return; }
+                setLoaded();
                 render();
-
-                // 語系變更時重上文字（繁→簡/簡→繁）；OpenCC 就緒後補一次
-                if (TG && TG.onChange) TG.onChange(applyLang);
-                if (TG && TG.onReady) TG.onReady(applyLang);
             })
-            .catch(function () { /* 無資料時靜默隱藏 */ });
+            .catch(function () { section.hidden = true; /* 無資料時隱藏骨架屏 */ });
     })();
     </script>
 
