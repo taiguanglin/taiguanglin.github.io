@@ -398,11 +398,16 @@ def align_lecture(paras, dump, duration, verbose=False):
         w_hi = min(n_total, char_pos + 2 * pat_len + extra)
         return w_lo, chars[w_lo:w_hi]
 
-    def eval_candidates(idx, norm, cands, pat=None, jf_char_min=0):
+    def eval_candidates(idx, norm, cands, pat=None, jf_char_min=0,
+                        earliest=False):
         """DTW-verify anchor candidates; returns (d_norm, t_start, jf_char,
         jl_char, exact) for the best, or None. `pat` overrides the default
         head pattern; `jf_char_min` forbids the pattern from starting before
-        that char index (used when re-anchoring past a read sutra block)."""
+        that char index (used when re-anchoring past a read sutra block).
+        `earliest`: prefer the EARLIEST candidate within 0.1 of the best
+        score — the sutra is quoted in text order, so a later hit of the
+        same words is an echo (the teacher re-reading a quote line while
+        discussing a LATER paragraph), not this paragraph's anchor."""
         if pat is None:
             pat_len = min(HEAD_DTW, len(norm))
             pat = list(norm[:pat_len])
@@ -424,7 +429,10 @@ def align_lecture(paras, dump, duration, verbose=False):
             if span_s > 0.5 and not 1.0 <= pat_len / span_s <= 12.0:
                 continue
             d_norm = d_score / max(1, len(pat))
-            if best is None or d_norm > best[0]:
+            better = (best is None or d_norm > best[0]
+                      or (earliest and d_norm >= best[0] - 0.05
+                          and w_lo + jf < best[2]))
+            if better:
                 best = (d_norm, _t_of(times, w_lo + jf), w_lo + jf, w_lo + jl,
                         score >= 0.99)
         return best
@@ -461,7 +469,11 @@ def align_lecture(paras, dump, duration, verbose=False):
         modern-Chinese retelling shares syllables but not characters) marks
         the paragraph start. Search bounded to [lo_pos, hi_pos).
         Returns (t_start, d_norm, pos_jf, pos_jl) or None."""
-        for off in range(0, max(1, len(norm) - FRAG_STRIDE), FRAG_STRIDE):
+        # HEAD chunks only: the first ~20 chars of the block. A mid-paragraph
+        # chunk can match shared words inside the PREVIOUS paragraph's read
+        # (e.g. 有无非有无常无常 appears in both the verse and the chapter
+        # heading) and would fabricate a start at someone else's read time.
+        for off in (0, FRAG_STRIDE):
             chunk = norm[off:off + FRAG_SIZE]
             if len(chunk) < 6:
                 break
@@ -534,9 +546,10 @@ def align_lecture(paras, dump, duration, verbose=False):
                 "end": round(t1, 3),
                 "conf": _conf_of(d_f, False), "method": "dtw-frag",
                 "end_fixed": True}
-            # the whole block is the territory: commentary matching verse
-            # words LATER in the block must still be redone past the read
-            anchor_pos[idx] = (p_jf, len(norm))
+            # territory = the READ span (not the whole block): the block's
+            # later lines are spoken much later, and a whole-block territory
+            # would push the NEXT paragraph's correct anchor past them
+            anchor_pos[idx] = (p_jf, max(4, p_jl - p_jf))
             if verbose:
                 print(f"    [sutra-head] p{idx} PARTIAL d={d_f:.2f} "
                       f"full={d_full:.2f} t={t0:.1f}")
@@ -573,7 +586,8 @@ def align_lecture(paras, dump, duration, verbose=False):
                 seen[pos] = score
         cands = sorted(((s, p) for p, s in seen.items()),
                        key=lambda t: (-t[0], t[1]))[:3]
-        best = eval_candidates(idx, norm, cands, jf_char_min=jf_char_min)
+        best = eval_candidates(idx, norm, cands, jf_char_min=jf_char_min,
+                               earliest=True)
         if best is None:
             return False
         d_norm, t_start, jf_char, jl_char, exact = best
@@ -592,11 +606,58 @@ def align_lecture(paras, dump, duration, verbose=False):
         anchor_pos[idx] = (pos_jf, max(4, pos_jl - pos_jf))
         return True
 
+    preludes = set()
     for idx, norm in enumerate(para_norms):
         if len(norm) < 3:
             continue
         if idx == 0 and is_sutra[idx]:
-            if try_head_sutra(idx, norm):
+            # Resolve the head read first so its position bounds the prelude
+            # search: episode-intro lines are spoken BEFORE/AT the head read
+            # (ebook text order inverts audio order here), while real
+            # commentary starts after it.
+            head_anchored = try_head_sutra(idx, norm)
+            head_pos = (anchor_pos[idx][0]
+                        if head_anchored and idx in anchor_pos else None)
+            for j in range(idx + 1, min(idx + 24, len(para_norms))):
+                if is_sutra[j]:
+                    continue  # verse run between head and the intro
+                nj = para_norms[j]
+                if len(nj) >= 3 and try_anchor_commentary(
+                        j, nj, 0, -1, hi_pos=head_pos):
+                    preludes.add(j)
+                    pos, ndl_len = anchor_pos[j]
+                    last_pos = max(last_pos, pos)
+                    cursor = max(cursor, pos + max(ndl_len, 4))
+                else:
+                    break
+            # HEAD-YIELD: when the head read is only PARTIAL (title/first
+            # sentence) and a later sutra paragraph duplicates the head's
+            # text, the duplicate claims the read in its own gap and the
+            # head block becomes a zero-width marker at the prelude (the
+            # ebook split one quote into two entries).
+            dup = None
+            if head_anchored and results[idx].get("method") == "dtw-frag":
+                cmt = 0
+                for j in range(idx + 1, min(idx + 30, len(para_norms))):
+                    if is_sutra[j]:
+                        if para_norms[j][:24] == norm[:24]:
+                            dup = j
+                            break
+                    else:
+                        cmt += 1
+                        if cmt > 1:
+                            break
+            if dup is not None:
+                if preludes:
+                    t0 = round(min(results[k]["start"] for k in preludes), 3)
+                else:
+                    t0 = results[idx]["start"]
+                results[idx] = {"start": t0, "end": t0, "conf": 0.85,
+                                "method": "skipped-sutra"}
+                anchor_pos.pop(idx, None)
+                if verbose:
+                    print(f"    [sutra-head] p{idx} YIELD to p{dup} @{t0:.1f}")
+            elif head_anchored:
                 pos, ndl_len = anchor_pos[idx]
                 last_pos = pos
                 cursor = pos + max(ndl_len, 4)
@@ -784,8 +845,14 @@ def align_lecture(paras, dump, duration, verbose=False):
         jf = anchor_pos[idx][0]
         for _si, s_lo, s_hi, s_t in sutra_reads:
             if s_lo <= jf < s_hi:
+                # CHALLENGE, not overwrite: a paragraph whose text IS the
+                # next lines of the same quote anchors legitimately inside
+                # the read (idx22-style), while a commentary needle that
+                # matched the verse words scores worse on its full pattern
+                # at the read than at its true position. Re-anchor past the
+                # read and keep whichever full-pattern score is higher.
                 if verbose:
-                    print(f"    [redo] p{idx} inside sutra p{_si} "
+                    print(f"    [redo?] p{idx} inside sutra p{_si} "
                           f"[{s_lo},{s_hi})")
                 lastp = -1
                 for a, (p, l) in sorted(anchor_pos.items()):
@@ -793,12 +860,33 @@ def align_lecture(paras, dump, duration, verbose=False):
                         lastp = max(lastp, p)
                 jf_min_char = (int(idx_map[min(s_hi, len(idx_map) - 1)])
                                if s_hi < len(idx_map) else n_total)
-                if try_anchor_commentary(idx, norm, s_hi, lastp,
-                                         tag="dtw",
-                                         jf_char_min=jf_min_char):
-                    pos, ndl_len = anchor_pos[idx]
-                    last_pos = max(last_pos, pos)
-                    cursor = max(cursor, pos + ndl_len)
+                old_r = dict(results[idx])
+                old_ap = anchor_pos.get(idx)
+                redone = try_anchor_commentary(idx, norm, s_hi, lastp,
+                                               tag="dtw",
+                                               jf_char_min=jf_min_char)
+                if redone:
+                    new_conf = results[idx]["conf"]
+                    if new_conf < old_r["conf"] - 0.05:
+                        # the read matched better: keep the original anchor
+                        results[idx] = old_r
+                        if old_ap is not None:
+                            anchor_pos[idx] = old_ap
+                        if verbose:
+                            print(f"    [redo] p{idx} kept original "
+                                  f"conf={old_r['conf']:.2f} "
+                                  f"> past-read {new_conf:.2f}")
+                    else:
+                        if verbose:
+                            print(f"    [redo] p{idx} moved past read "
+                                  f"conf={new_conf:.2f}")
+                        pos, ndl_len = anchor_pos[idx]
+                        last_pos = max(last_pos, pos)
+                        cursor = max(cursor, pos + ndl_len)
+                else:
+                    results[idx] = old_r
+                    if old_ap is not None:
+                        anchor_pos[idx] = old_ap
                 break
 
     # ---------------- pass 2: converge misses between neighbors ----------
@@ -861,6 +949,8 @@ def align_lecture(paras, dump, duration, verbose=False):
     for k, idx in enumerate(order):
         if k == 0:
             continue
+        if idx in preludes:
+            continue  # intro-before-head-read inversion is expected
         prev = order[k - 1]
         prev_end_pos = (anchor_pos[prev][0] + anchor_pos[prev][1])
         prev_end_t = None
@@ -965,6 +1055,9 @@ def align_lecture(paras, dump, duration, verbose=False):
         t_end = results[i]["end"]
         j = i + 1
         while j < len(results) and results[j]["start"] < t_end - 0.05:
+            if results[j]["start"] < results[i]["start"] - 0.05:
+                j += 1  # starts before this read: prelude inversion, not inside
+                continue
             j_end = results[j].get("end")
             if (results[j].get("end_fixed") and j_end is not None
                     and j_end > t_end + 0.05):
@@ -1010,6 +1103,124 @@ def align_lecture(paras, dump, duration, verbose=False):
     if results:
         results[-1]["end"] = (round(duration, 3) if duration
                               else results[-1]["start"])
+    last_t = 0.0
+    for r in results:
+        r["start"] = max(r["start"], last_t)
+        if r["end"] < r["start"]:
+            r["end"] = r["start"]
+        last_t = r["end"]
+
+    # ---------------- head-verification repair ---------------------------
+    # A commentary anchor whose head text does NOT verify inside its own
+    # window but verifies strongly elsewhere is a late chain anchor (the
+    # predecessor's span/territory swallowed the true start). Runs BEFORE
+    # the final monotonic clamp, in sweeps: a corrected anchor lowers the
+    # bound for earlier ones, and cascade chains need multiple passes.
+    def next_timed_start(i):
+        for j in range(i + 1, len(results)):
+            rj = results[j]
+            if rj is not None and rj["method"] in TIMED:
+                return rj["start"]
+        return duration or (results[i]["start"] + 30.0)
+
+    def prev_timed(i):
+        for j in range(i - 1, -1, -1):
+            rj = results[j]
+            if rj is not None and rj["method"] in TIMED:
+                return j
+        return -1
+
+    def repair_one(i, r):
+        norm_head = para_norms[i][:30]
+        if len(norm_head) < 12:
+            return False
+        hi_t = next_timed_start(i)
+        lo_c = next((c for c in range(len(chars))
+                     if times[c][0] >= r["start"] - 0.5), 0)
+        hi_c = next((c for c in range(len(chars))
+                     if times[c][0] >= hi_t + 0.5), len(chars))
+        win = chars[lo_c:hi_c]
+        if len(win) < 10:
+            return False
+        d_chk, jf_chk, _jl = dtw_span(list(norm_head), win)
+        d_chk_n = d_chk / max(1, len(norm_head))
+        pj0 = prev_timed(i)
+        lo_bound0 = results[pj0]["start"] + 0.1 if pj0 >= 0 else 0.0
+        if d_chk_n >= 0.35 and (hi_t - r["start"]) >= 25.0:
+            # Head IS in the window but may sit deep inside it (a digression
+            # between the previous paragraph and this one got absorbed).
+            # Tighten the start to where the head's speech actually begins.
+            t_head = _t_of(times, lo_c + jf_chk)
+            if t_head - r["start"] <= 10.0:
+                # DTW's free skip-in may pin the head at the window start
+                # (syllable soup) while the real occurrence sits later. A
+                # pattern is spoken once: if an equally strong alignment
+                # exists 12s+ later, that later one is the true start.
+                c_late = next((c for c in range(len(chars))
+                               if times[c][0] >= t_head + 12.0
+                               and times[c][0] < hi_t), None)
+                if c_late is not None:
+                    win3 = chars[c_late:hi_c]
+                    if len(win3) >= 12:
+                        d3, jf3, _x3 = dtw_span(list(norm_head), win3)
+                        d3_n = d3 / max(1, len(norm_head))
+                        t3 = _t_of(times, c_late + jf3)
+                        if (jf3 >= 0 and d3_n >= d_chk_n - 0.12
+                                and t3 - r["start"] > 10.0
+                                and lo_bound0 <= t3 < hi_t - 0.5):
+                            t_head = t3
+            if t_head - r["start"] > 10.0 and lo_bound0 <= t_head \
+                    < hi_t - 0.5:
+                if verbose:
+                    print(f"    [tighten] p{i} {r['start']:.1f} -> "
+                          f"{t_head:.1f} d={d_chk_n:.2f}")
+                r["start"] = round(max(0.0, t_head - LEAD_BACK), 3)
+                if pj0 >= 0 and results[pj0].get("end_fixed") \
+                        and results[pj0]["end"] > t_head:
+                    results[pj0]["end"] = round(t_head, 3)
+                return True
+            return False
+        if d_chk_n >= 0.3:
+            return False
+        pl = len(norm_head)
+        best_d, best_c = 0.0, -1
+        w = 0
+        while w + max(12, pl // 2) < n_total:
+            win2 = chars[w:min(n_total, w + 2 * pl)]
+            d2, jf2, _jl2 = dtw_span(list(norm_head), win2)
+            if d2 / pl > best_d:
+                best_d, best_c = d2 / pl, w + jf2
+            w += 15
+        if best_d < 0.5 or best_c < 0:
+            return False
+        t_new = _t_of(times, best_c)
+        if abs(t_new - r["start"]) <= 8.0:
+            return False
+        pj = prev_timed(i)
+        lo_bound = results[pj]["start"] + 0.1 if pj >= 0 else 0.0
+        if t_new < lo_bound or t_new >= hi_t - 0.5:
+            return False
+        if verbose:
+            print(f"    [repair] p{i} {r['start']:.1f} -> {t_new:.1f} "
+                  f"d={best_d:.2f}")
+        r["start"] = round(max(0.0, t_new - LEAD_BACK), 3)
+        r["conf"] = _conf_of(best_d, False)
+        # cap a predecessor whose generous read span swallowed this start
+        if pj >= 0 and results[pj].get("end_fixed") \
+                and results[pj]["end"] > t_new + 6.0:
+            results[pj]["end"] = round(t_new, 3)
+        return True
+
+    for _sweep in range(3):
+        changed = False
+        for i, r in enumerate(results):
+            if r is None or r["method"] not in ("dtw", "dtw2"):
+                continue
+            if repair_one(i, r):
+                changed = True
+        if not changed:
+            break
+    # re-establish monotonicity after repairs
     last_t = 0.0
     for r in results:
         r["start"] = max(r["start"], last_t)
@@ -1071,6 +1282,50 @@ def main():
 
         old_lect = old_lectures.get(str(n), {})
         old_by_pid = {p["pid"]: p for p in old_lect.get("paragraphs", [])}
+
+        # Human-confirmed paragraphs are IMMUTABLE: a re-run must never move
+        # their boundaries (method may be re-labelled, but start/end/conf
+        # stay exactly as the human verified them). Neighbouring computed
+        # entries are locally reconciled against the pinned boundaries so
+        # the lecture stays monotonic and gap-free.
+        pinned = []
+        for i, (p, r) in enumerate(zip(lec["paragraphs"], res)):
+            o = old_by_pid.get(p["pid"], {})
+            if o.get("confirmed") and o.get("start") is not None:
+                r["start"] = o["start"]
+                r["end"] = o.get("end", o["start"])
+                r["conf"] = o.get("conf", r["conf"])
+                r["method"] = o.get("method", r["method"])
+                pinned.append(i)
+        if pinned:
+            pin_set = set(pinned)
+            for i in pinned:
+                # computed predecessor must not run into a pinned span
+                j = i - 1
+                while j >= 0 and j not in pin_set:
+                    if res[j]["end"] > res[i]["start"]:
+                        res[j]["end"] = res[i]["start"]
+                        if res[j]["start"] > res[j]["end"]:
+                            res[j]["start"] = res[j]["end"]
+                    if res[j]["start"] >= res[i]["start"] - 0.05 \
+                            and res[j]["end"] <= res[j]["start"] + 0.05:
+                        res[j]["start"] = res[j]["end"] = res[i]["start"]
+                    j -= 1
+                # computed successor must not start before the pinned end
+                k = i + 1
+                while k < len(res) and k not in pin_set:
+                    if res[k]["start"] < res[i]["end"]:
+                        res[k]["start"] = res[i]["end"]
+                        if res[k]["end"] < res[k]["start"]:
+                            res[k]["end"] = res[k]["start"]
+                    k += 1
+            last_t = 0.0
+            for r in res:
+                r["start"] = max(r["start"], last_t)
+                if r["end"] < r["start"]:
+                    r["end"] = r["start"]
+                last_t = r["end"]
+
         paras_out = []
         for p, r in zip(lec["paragraphs"], res):
             o = old_by_pid.get(p["pid"], {})
