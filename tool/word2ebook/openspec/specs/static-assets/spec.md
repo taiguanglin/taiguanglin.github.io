@@ -50,6 +50,16 @@ priority order:
   `.para-track-toggle` / `.para-block.para-active`, with no build-config
   change required
 
+#### Scenario: Sutra-pin module is auto-included after para-track
+- GIVEN `assets/js/modules/09c-sutra-pin.js`
+- WHEN `get_full_js_content()` / `get_full_css_content()` are called
+- THEN the bundled JS SHALL contain the sutra-pin behaviour
+  (`sutraPinEnabled`, `sutra-pin-group`) AFTER the `09b-para-track.js`
+  block (`paraTrackEnabled`), and the bundled CSS SHALL contain the sticky
+  `.sutra-pin-host` / bounding `.sutra-pin-group` / `.sutra-pin-toggle`
+  rules (incl. `body.sutra-pin-off` / `body.sutra-pin-suppress` static
+  fallbacks), with no build-config change required
+
 #### Scenario: Image lightbox modules are auto-included
 - GIVEN `assets/css/modules/04d-image-lightbox.css` and
   `assets/js/modules/09-image-lightbox.js`

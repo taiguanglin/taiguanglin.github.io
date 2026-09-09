@@ -8,10 +8,10 @@
   // 功能：
   //   1. 每個含段落時間的講次 h2 旁插入「段落跟播」文字 checkbox
   //      （localStorage
-  //      paraTrackEnabled，預設 ON）。ON 時播放中依 audio.currentTime
-  //      高亮當前段落（.para-active，上一段不做任何視覺改變），並平滑捲動：
-  //      目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，
-  //      使上一段底部仍貼近視窗頂端可見。僅在段落切換時捲動。
+  //      paraTrackEnabled，預設 ON）。ON 時播放中依 audio.currentTime    //      高亮當前段落（.para-active，上一段不做任何視覺改變），並平滑捲動：
+    //      目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，
+    //      再以「當前段頂 − 停留經文高 − 24px」為上限（經文置頂開啟時，
+    //      使高亮段落永遠落在停留經文下方）。僅在段落切換時捲動。
   //   2. 跟播 ON 時點擊任一段落 → 播放所屬講次音檔並 seek 至該段起點，
   //      之後一路順播到底，不在段末自停。拖選文字、有反白選區，或點到
   //      段落內按鈕/連結時不觸發；可點播段落顯示手形游標（body.para-track-on）。
@@ -161,6 +161,13 @@
       if (prevEl) {
         var prevH = prevEl.getBoundingClientRect().height;
         target = Math.min(target, y - prevH - 24);
+      }
+      // 經文置頂（09c-sutra-pin）：目標段落所在的 sticky 群經文捲動後會停在
+      // 視窗頂（top:0、佔高 reserve），捲動上限取「段頂 − reserve − 24px」，
+      // 確保高亮段落捲動後永遠落在停留經文下方、不被蓋住。
+      if (window.W2E && W2E.sutraPin && W2E.sutraPin.reserveFor) {
+        var reserve = W2E.sutraPin.reserveFor(el);
+        if (reserve > 0) target = Math.min(target, y - reserve - 24);
       }
       window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
     }

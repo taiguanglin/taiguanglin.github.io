@@ -339,3 +339,26 @@ class TestStaticAssetsManagerRealModules:
         assert ".para-track-toggle" in css
         assert ".para-block.para-active" in css
         assert "body.dark-mode .para-block.para-active" in css
+
+    def test_real_js_has_sutra_pin_after_para_track(self):
+        """09c-sutra-pin.js（講經經文置頂）串接在 09b-para-track.js 之後。"""
+        js = StaticAssetsManager().get_full_js_content()
+        assert "09c-sutra-pin.js" in js
+        assert "sutraPinEnabled" in js
+        assert "sutra-pin-group" in js
+        assert "W2E.sutraPin" in js
+        pos_track = js.find("paraTrackEnabled")
+        pos_pin = js.find("sutraPinEnabled")
+        assert pos_track != -1
+        assert pos_pin != -1
+        assert pos_track < pos_pin, "09b-para-track.js must precede 09c-sutra-pin.js"
+
+    def test_real_css_has_sutra_pin_styles(self):
+        css = StaticAssetsManager().get_full_css_content()
+        assert ".sutra-pin-host" in css
+        assert "position: sticky" in css
+        assert ".sutra-pin-group" in css
+        assert ".sutra-pin-toggle" in css
+        assert "body.sutra-pin-off .sutra-pin-host" in css
+        assert "body.sutra-pin-suppress .sutra-pin-host" in css
+        assert "body.dark-mode .sutra-pin-toggle" in css

@@ -66,6 +66,19 @@
 - 跟播 ON 時點擊任一段落 → 直接從該段起點播放，之後一路順播到底，不在段末自停。
   拖選／反白選取文字、點擊段落內按鈕連結時不觸發；可點播段落顯示手形游標。
 
+### 講經經文置頂（原經文原尺寸停留）
+
+前端行為由 `tool/word2ebook/assets/js/modules/09c-sutra-pin.js` 提供（同一 bundle；
+樣式在 `04c-qa-audio.css`，books.css 無須改動——停留中的經文就是原版 `.sutra-text`
+本身）。頁面出現 `.sutra-text` 時：向下捲動（不管有沒有跟播）會讓「即將捲出視窗頂」
+的那段原經文以原生 `position: sticky` 停在視窗最上方（原尺寸、原樣式、無白邊；
+Confluence 表格固定表頭概念），講解段落從其下方滑過。停留範圍由
+`.sutra-pin-group` 限制在「該經文 → 下一邊界（下一段經文、h1–h6 章節名/品名、
+圖片）」之間，因此天生不會蓋住經文、章節名或圖片——會遮住之前就先讓位歸位；
+進入新章節自然失效。過長（> 60% 視窗高）的經文不停留。講次 h2 旁有「經文置頂」
+toggle（localStorage `sutraPinEnabled`，預設 ON）；錨點跳轉時短暫停停留避免蓋住
+目標；段落跟播的自動捲動經 `W2E.sutraPin.reserveFor` 以「當前段頂 − 停留經文高 − 24px」為捲動上限，高亮段落永遠落在停留經文下方不被蓋住。
+
 改前端行為 → 改 `tool/word2ebook` 模組後重建 `wenda2_ebook/assets`（word2ebook
 gen_all 或重跑 StaticAssetsManager 打包），再跑本工具的 `gen_all.py` 影印資產。
 

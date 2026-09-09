@@ -141,7 +141,9 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse and level filtering |
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
-| `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback (isolated IIFE) |
+| `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback; exposes `W2E.qaAudio` (isolated IIFE) |
+| `09b-para-track.js` | 講經「段落跟播」：講次 h2 旁「段落跟播」toggle（`paraTrackEnabled`），播放中高亮當前段落並平滑捲動、點段落即播（經 `W2E.qaAudio` 掛接；isolated IIFE） |
+| `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留）：頁面含 `.sutra-text` 時啟動；以原生 `position: sticky` 讓即將捲出視窗頂的經文停在視窗頂（原尺寸、無白邊），`.sutra-pin-group` 以「下一段經文/標題 h1–h6/圖片」為界限制停留範圍，天生不遮這些內容；過長經文不停留；`sutraPinEnabled` toggle、錨點跳轉暫停、`W2E.sutraPin.reserveFor` 供跟播讓位（isolated IIFE） |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 
@@ -168,7 +170,7 @@ All CSS modules live in `assets/css/modules/` and are concatenated (in numeric o
 | `03-search.css` | Search panel, results, highlight styles, dark-mode search overrides |
 | `04a-toc-levels.css` | TOC level-display buttons, floating level panel, expand/collapse icons, level-specific link colours, collapse animations |
 | `04b-toc-dark.css` | Dark-mode overrides for TOC controls, floating TOC, bookmark items inside the TOC panel |
-| `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), opening/closing bars, `qa-opening`, bottom floating `qa-player`, loading states; dark-mode variants. Loads before `05` so its responsive overrides win |
+| `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), opening/closing bars, `qa-opening`, bottom floating `qa-player`, loading states; 講經「段落跟播」（`.para-track-toggle`、`body.para-track-on`、`.para-block.para-active`）與「經文置頂」（`.sutra-pin-toggle`、sticky `.sutra-pin-host`、範圍容器 `.sutra-pin-group`，`body.sutra-pin-off`/`-suppress` 止停留）styles; dark-mode variants. Loads before `05` so its responsive overrides win |
 | `05-responsive.css` | **All** `@media` breakpoints: height-based toolbar, ≤768px tablet, ≥800px wide, ≤600px mobile (incl. QA player full-width), ≤400px small-phone |
 
 **Design-token rule:** always use `var(--color-primary)`, `var(--radius-sm)`, etc. (defined in `00-base.css`) — never hardcode raw hex or pixel values in new CSS.

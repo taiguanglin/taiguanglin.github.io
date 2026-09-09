@@ -176,6 +176,8 @@ p.source-filename a:active {
     transform: translateY(140%);
   }
   .qa-player.visible { transform: translateY(0); }
+
+  /* 經文置頂為原生 sticky（原尺寸、無白邊），行動版不需另外縮排 */
 }
 
 /* ============================================================

@@ -350,6 +350,14 @@ window.I18N_TEXT = {
     }
   },
 
+  // 講經經文置頂（原經文停留）
+  sutraPin: {
+    toggle: {
+      simplified: '经文置顶',
+      traditional: '經文置頂'
+    }
+  },
+
   // 功能說明
   instructions: {
     bookmarkHelp: {

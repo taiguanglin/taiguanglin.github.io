@@ -1,6 +1,7 @@
 /* ============================================================
-   04c-qa-audio.css — QA 答疑章節專屬樣式
-   來源橫幅、逐段 meta bar（播放鈕 + 校稿徽章）、開場白、底部浮動播放器。
+   04c-qa-audio.css — QA 答疑章節專屬樣式 + 講經（books2ebook）樣式
+   來源橫幅、逐段 meta bar（播放鈕 + 校稿徽章）、開場白、底部浮動播放器；
+   講經書頁的「段落跟播」與「經文置頂」toggle、經文置頂浮動條也在此。
    沿用 00-base.css 的設計 token，並提供暗色模式對應。
    置於 05-responsive.css 之前，讓其 @media 覆寫規則（如 .qa-player 行動版定位）
    能正確生效（同特異度時後者覆寫前者）。
@@ -125,8 +126,10 @@
     to { transform: rotate(360deg); }
 }
 
-/* 段落跟播（講經書頁，由 09b-para-track.js 動態插入/操作） */
-.para-track-toggle {
+/* 段落跟播 / 經文置頂 toggle（講經書頁，分別由 09b-para-track.js /
+   09c-sutra-pin.js 動態插入/操作，共用同一款膠囊樣式） */
+.para-track-toggle,
+.sutra-pin-toggle {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -146,7 +149,8 @@
     transition: all 0.2s ease;
     user-select: none;
 }
-.para-track-toggle input[type="checkbox"] {
+.para-track-toggle input[type="checkbox"],
+.sutra-pin-toggle input[type="checkbox"] {
     margin: 0;
     width: 1em;
     height: 1em;
@@ -154,14 +158,16 @@
     accent-color: var(--color-primary);
     cursor: pointer;
 }
-.para-track-toggle.on {
+.para-track-toggle.on,
+.sutra-pin-toggle.on {
     background: var(--gradient-primary);
     border-color: transparent;
     color: #fff;
     opacity: 1;
     box-shadow: var(--shadow-sm);
 }
-.para-track-toggle:hover {
+.para-track-toggle:hover,
+.sutra-pin-toggle:hover {
     opacity: 1;
     box-shadow: var(--shadow-md);
 }
@@ -185,6 +191,46 @@ body.para-track-on .para-block[data-start] {
     transition: background 0.25s ease, box-shadow 0.25s ease;
 }
 /* 上一段落不做任何視覺改變（曾有 .para-prev 變灰，已移除）。 */
+
+/* ============================================================
+   經文置頂（09c-sutra-pin.js）：講經書頁向下捲動時，把「即將捲出
+   視窗頂」的原經文以原生 position: sticky 停在視窗最上方（原尺寸、
+   原樣式、無白邊），呈現「畫面繼續捲動、上方經文卻停留」的效果
+   （Confluence 固定表頭概念）。
+   停留範圍被 .sutra-pin-group 限制在「該經文 → 下一邊界（下一段經文、
+   章節名 h1–h6、圖片）」之間，因此停留中的經文天生不會蓋住這些內容；
+   會遮住之前就先讓位（歸位隨畫面捲走）。
+   ============================================================ */
+
+/* sticky 群：經文 → 下一邊界的正常流容器（透明 div，不改變排版）。
+   內容照常排版，只提供 sticky 的移動範圍。 */
+.sutra-pin-group {
+    /* 不設 padding/border/overflow，讓上下游 margin 照常穿透合併 */
+}
+
+/* 停留中的經文本體：sticky 於視窗頂。不另加任何樣式——原尺寸、
+   原底色、原邊框（無白邊、無陰影、無縮放）。z-index 抬升：
+   .para-block 為 position:relative（⋯ 選單定位用），與 sticky 同層
+   painted，後者在樹序較早會被滑過的段落蓋字——抬高讓講解段落
+   從停留經文的「下方」滑過（被經文底色遮住，如表格列滑過表頭）。
+   取 6：高於段落 ⋯ 選單（z-index: 5），低於浮動目錄/工具列（800+）。 */
+.sutra-pin-host {
+    position: sticky;
+    top: 0;
+    z-index: 6;
+}
+
+/* 過長（> 60% 視窗高）的經文整段不停留，避免看不到其餘內容 */
+.sutra-pin-group.sutra-pin-tall .sutra-pin-host {
+    position: static;
+}
+
+/* toggle 關閉（body.sutra-pin-off）或錨點跳轉期間
+   （body.sutra-pin-suppress）：全部照常捲動 */
+body.sutra-pin-off .sutra-pin-host,
+body.sutra-pin-suppress .sutra-pin-host {
+    position: static;
+}
 
 .qa-play--disabled {
     display: inline-flex;
@@ -596,17 +642,20 @@ body.dark-mode .qa-play-icon--spinner {
     border-top-color: #fff;
 }
 body.dark-mode .qa-play--disabled { background: #3b2330; color: #7c6470; }
-body.dark-mode .para-track-toggle {
+body.dark-mode .para-track-toggle,
+body.dark-mode .sutra-pin-toggle {
     background: transparent;
     border-color: #ff91af;
     color: #ffb3c6;
 }
-body.dark-mode .para-track-toggle.on {
+body.dark-mode .para-track-toggle.on,
+body.dark-mode .sutra-pin-toggle.on {
     background: linear-gradient(135deg, #5a2d49 0%, var(--color-primary-light) 100%);
     border-color: transparent;
     color: #fff;
 }
-body.dark-mode .para-track-toggle input[type="checkbox"] {
+body.dark-mode .para-track-toggle input[type="checkbox"],
+body.dark-mode .sutra-pin-toggle input[type="checkbox"] {
     accent-color: #ff91af;
 }
 body.dark-mode .para-block.para-active {
