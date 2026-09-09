@@ -291,20 +291,51 @@ def session_pieces(segments: List[dict], qmap: dict) -> Tuple[List[Piece], List[
         return nxt if p >= 0 else None
 
     for seg in segments:
-        missing_frozens = [q for q in (seg.get("chapter_question_ids") or []) if q not in qmap]
+        frz_all = list(seg.get("chapter_question_ids") or [])
+        missing_frozens = [q for q in frz_all if q not in qmap]
+        frz_map = [q for q in frz_all if q in qmap]
+
         if missing_frozens:
-            frz = list(seg.get("chapter_question_ids") or [])
-            claimed_qids.update(frz)
+            claimed_qids.update(frz_all)
             pieces.append(Piece(None, seg,
                                 seg.get("q_text") or "", seg.get("answer_text") or "",
-                                whole=True, qids=frz))
+                                whole=True, qids=frz_all))
             continue
+
+        if len(frz_map) >= 2:
+            # multi-qid segment: split at the located question boundaries;
+            # unlocatable qids are dropped only if claimed elsewhere, otherwise
+            # the segment stays unresolved with every frozen qid preserved.
+            sp, dropped = split_segment(seg, frz_map, qmap)
+            if sp is None:
+                unresolved.append(seg)
+                claimed_qids.update(frz_all)
+                pieces.append(Piece(None, seg, seg.get("q_text") or "",
+                                    seg.get("answer_text") or "", whole=True,
+                                    qids=frz_all))
+                continue
+            safe_drop = all(q in claimed_qids or any(
+                q in (p.seg.get("chapter_question_ids") or []) for p in pieces)
+                for q in dropped)
+            if not safe_drop:
+                unresolved.append(seg)
+                claimed_qids.update(frz_all)
+                pieces.append(Piece(None, seg, seg.get("q_text") or "",
+                                    seg.get("answer_text") or "", whole=True,
+                                    qids=frz_all))
+                continue
+            for q in dropped:
+                print(f"      (spurious-link dropped {q} from one segment)")
+            claimed_qids.update(p.qid for p in sp if p.qid)
+            pieces.extend(sp)
+            continue
+
+        # single-qid segment
         located = locate_own(seg)
-        if not located and len([q for q in (seg.get("chapter_question_ids") or []) if q in qmap]) == 1:
-            # continuation segment carrying the middle/tail of its question (the
-            # head lives in the previous segment): trust the frozen link so it
-            # merges with the preceding same-qid segment.
-            located = [q for q in (seg.get("chapter_question_ids") or []) if q in qmap]
+        if not located:
+            # continuation segment carrying the middle/tail of its question:
+            # trust the frozen link so it merges with the preceding same-qid seg.
+            located = frz_map if len(frz_map) == 1 else []
         if len(located) <= 1:
             own_qid = located[0] if located else None
             succ = successor_starting_here(seg, own_qid)
@@ -316,27 +347,15 @@ def session_pieces(segments: List[dict], qmap: dict) -> Tuple[List[Piece], List[
                                 seg.get("q_text") or "", seg.get("answer_text") or "",
                                 whole=True, qids=list(located)))
             continue
+        # a successor question starts mid-segment (and its own qid too)
         sp, dropped = split_segment(seg, located, qmap)
         if sp is None:
-            # nothing locatable at all -> must not lose these qids
             unresolved.append(seg)
-            claimed_qids.update(q for q in (seg.get("chapter_question_ids") or []))
+            claimed_qids.update(frz_all)
             pieces.append(Piece(None, seg, seg.get("q_text") or "",
-                                seg.get("answer_text") or "", whole=True))
+                                seg.get("answer_text") or "", whole=True,
+                                qids=frz_all))
             continue
-        # only drop a qid if it is already claimed by another segment/piece,
-        # otherwise keep recomposing -> preserve the link by staying unresolved.
-        safe_drop = all(q in claimed_qids or any(
-            q in (p.seg.get("chapter_question_ids") or []) for p in pieces)
-            for q in dropped)
-        if not safe_drop:
-            unresolved.append(seg)
-            claimed_qids.update(qids)
-            pieces.append(Piece(None, seg, seg.get("q_text") or "",
-                                seg.get("answer_text") or "", whole=True))
-            continue
-        for q in dropped:
-            print(f"      (spurious-link dropped {q} from one segment)")
         claimed_qids.update(p.qid for p in sp if p.qid)
         pieces.extend(sp)
     return pieces, unresolved
@@ -447,6 +466,8 @@ def apply_spillover(segs: List[dict], qmap: dict) -> int:
         nqid = (nxt.get("chapter_question_ids") or [None])[0]
         if not (qid and nqid):
             continue
+        if "html-resplit:答案溢出" in (cur.get("notes") or ""):
+            continue  # already fixed (idempotent)
         a = qmap.get(qid)
         if not a:
             continue

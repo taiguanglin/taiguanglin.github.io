@@ -392,7 +392,9 @@ def align_lecture(paras, dump, duration, verbose=False):
     anchor_pos = {}   # para idx -> (norm_pos, needle_len)
 
     def dtw_window(pat_len, char_pos, extra=80):
-        w_lo = max(0, char_pos - 40)
+        # generous lookback: the needle may hit mid-sentence (paraphrase
+        # splits), and the true sentence start can sit well before it
+        w_lo = max(0, char_pos - max(40, pat_len))
         w_hi = min(n_total, char_pos + 2 * pat_len + extra)
         return w_lo, chars[w_lo:w_hi]
 
@@ -413,24 +415,36 @@ def align_lecture(paras, dump, duration, verbose=False):
             w_lo, win = dtw_window(pat_len, char_pos)
             d_score, jf, jl = dtw_span(pat, win,
                                        jf_min=max(0, jf_char_min - w_lo))
+            if jf < 0:
+                continue
+            # speech-rate sanity: a real read of `pat_len` chars cannot take
+            # less than ~1 char/s or more than ~12 char/s; paths outside are
+            # phantoms stitching unrelated mentions together
+            span_s = _t_of(times, w_lo + jl) - _t_of(times, w_lo + jf)
+            if span_s > 0.5 and not 1.0 <= pat_len / span_s <= 12.0:
+                continue
             d_norm = d_score / max(1, len(pat))
             if best is None or d_norm > best[0]:
                 best = (d_norm, _t_of(times, w_lo + jf), w_lo + jf, w_lo + jl,
                         score >= 0.99)
         return best
 
+    ANCHOR_LOG = []
+
     def anchor(idx, norm, t_start, d_norm, exact, method, t_end=None,
                force_end_fix=False):
         conf = _conf_of(d_norm, exact)
+        ANCHOR_LOG.append((idx, method, t_start, t_end, len(norm),
+                           force_end_fix))
         r = {"start": round(max(0.0, t_start - LEAD_BACK), 3),
              "end": None, "conf": conf, "method": method}
-        # Short paragraphs fully covered by the DTW pattern have a real,
-        # evidence-based end (last pattern consumption); keep it against
-        # end-chaining so the read span is not absorbed by the next entry.
-        if (t_end is not None and t_end > t_start
-                and (force_end_fix or len(norm) <= HEAD_DTW * 1.2)):
+        # DTW evidence end: last pattern consumption is a real lower bound
+        # on the spoken span — keep it against end-chaining (for short
+        # paragraphs it IS the end; for long ones it anchors the head read).
+        if t_end is not None and t_end > t_start:
             r["end"] = round(t_end, 3)
             r["end_fixed"] = True
+            r["_ev_end"] = round(t_end, 3)
         results[idx] = r
 
     def anchor_sutra_fragments(idx, norm, lo_pos, hi_pos):
@@ -494,8 +508,10 @@ def align_lecture(paras, dump, duration, verbose=False):
                                               side="right")) - 1)
             frag = (d_f, t0, _t_of(times, jl_c), p_jf, max(p_jf + 4, p_jl))
             break
-        if d_full >= 0.65 and (frag is None or
-                               abs(frag[1] - _t_of(times, jf)) < 60):
+        span_s = _t_of(times, jl) - _t_of(times, jf)
+        rate = pat_len / span_s if span_s > 0.5 else 99.0
+        if d_full >= 0.65 and 1.0 <= rate <= 12.0 and (
+                frag is None or abs(frag[1] - _t_of(times, jf)) < 60):
             # coherent contiguous read starting at/near the title
             t_start = _t_of(times, jf)
             anchor(idx, norm, t_start, d_full, False, "dtw",
@@ -609,7 +625,12 @@ def align_lecture(paras, dump, duration, verbose=False):
         if len(win) >= max(10, len(pat) // 3):
             d_score, jf, jl = dtw_span(pat, win)
             d_full = d_score / max(1, len(pat))
-            if d_full >= SUTRA_COV_MIN:
+            span_s = (_t_of(times, c_lo + jl) - _t_of(times, c_lo + jf)
+                      ) if jf >= 0 else -1.0
+            rate = pat_len / span_s if span_s > 0.5 else 99.0
+            # sutra reads are often fragmented (commentary interleaved), so
+            # only reject the absurd stretches here, not slow real ones
+            if d_full >= SUTRA_COV_MIN and 0.3 <= rate <= 12.0:
                 anchor(idx, norm, _t_of(times, c_lo + jf), d_full, False,
                        "dtw", t_end=_t_of(times, c_lo + jl),
                        force_end_fix=(pat_len == len(norm)))
@@ -626,10 +647,24 @@ def align_lecture(paras, dump, duration, verbose=False):
         frag = anchor_sutra_fragments(idx, norm, lo_pos, hi_pos)
         if frag is not None:
             t_start, d_norm, p_jf, p_jl = frag
-            anchor(idx, norm, t_start, d_norm, False, "dtw-frag")
-            anchor_pos[idx] = (p_jf, max(4, p_jl - p_jf))
+            # fragment start confirmed; refine the read end with a full-block
+            # DTW from the fragment (the read may continue past the 10-char
+            # chunk even when a contiguous full-block anchor failed)
+            t_end = None
+            c_jf = int(idx_map[min(p_jf, len(idx_map) - 1)])
+            win2 = chars[c_jf:min(n_total, c_jf + 2 * pat_len + 120)]
+            if len(win2) >= 12:
+                d2, _jf2, jl2 = dtw_span(pat, win2)
+                if d2 / max(1, pat_len) >= 0.5:
+                    t_end = _t_of(times, c_jf + jl2)
+            anchor(idx, norm, t_start, d_norm, False, "dtw-frag",
+                   t_end=t_end)
+            # span covers the whole verse: a following commentary anchored
+            # inside it is matching the verse's words and must be redone
+            anchor_pos[idx] = (p_jf, max(len(norm), p_jl - p_jf))
             if verbose:
-                print(f"    [sutra] p{idx} READ-frag d={d_norm:.2f}")
+                print(f"    [sutra] p{idx} READ-frag d={d_norm:.2f} "
+                      f"t_end={t_end}")
             return
         # 3. whole-stream scan: the read may sit outside the bracketing gap
         # (neighbor anchored late / before the lecture's first anchor).
@@ -687,9 +722,16 @@ def align_lecture(paras, dump, duration, verbose=False):
             print(f"    [sutra] p{idx} skipped d={d_full:.2f} "
                   f"scan={best_d:.2f}")
 
-    for idx, norm in enumerate(para_norms):
-        if is_sutra[idx] and results[idx] is None and len(norm) >= 3:
-            resolve_sutra(idx, norm)
+    # Resolve exact verse blocks BEFORE the lecture-head full-chapter block:
+    # the head text subsumes mid-lecture verses, and if the head block were
+    # resolved first its whole-stream scan would steal the verse's read (the
+    # verse paragraph then gets clash-rejected into a bogus "skipped").
+    sutra_todo = [i for i, n_ in enumerate(para_norms)
+                  if is_sutra[i] and len(n_) >= 3]
+    sutra_todo.sort(key=lambda i: (i == 0, i))
+    for idx in sutra_todo:
+        if results[idx] is None:
+            resolve_sutra(idx, para_norms[idx])
 
     # Re-anchor commentaries whose head DTW landed inside a *read* sutra
     # block: classic/pattern verse shares syllables with the teacher's
@@ -698,13 +740,15 @@ def align_lecture(paras, dump, duration, verbose=False):
     # sutra spans are known, forcing the search past the block.
     sutra_reads = []
     for i, r in enumerate(results):
-        if is_sutra[i] and r is not None and r["method"] in ("dtw", "dtw2"):
+        if is_sutra[i] and r is not None and r["method"] in (
+                "dtw", "dtw2", "dtw-frag", "dtw-scan"):
             p, l = anchor_pos[i]
             sutra_reads.append((i, p, p + max(l, 4), r["start"]))
     for idx, norm in enumerate(para_norms):
         if is_sutra[idx] or results[idx] is None:
             continue
-        if results[idx]["method"] not in ("dtw", "dtw2", "dtw-frag"):
+        if results[idx]["method"] not in (
+                "dtw", "dtw2", "dtw-frag", "dtw-scan"):
             continue
         jf = anchor_pos[idx][0]
         for _si, s_lo, s_hi, s_t in sutra_reads:
@@ -812,12 +856,16 @@ def align_lecture(paras, dump, duration, verbose=False):
                                        jf_char_min=jf_min_char,
                                        hi_pos=hi_pos)
             if not ok:
-                t0 = prev_end_t if prev_end_t is not None \
-                    else results[prev]["start"]
-                results[idx] = {"start": round(t0, 3), "end": round(t0, 3),
-                                "conf": 0.6, "method": "interp"}
-                if verbose:
-                    print(f"    [reconcile] p{idx} -> interp @{t0:.1f}")
+                if results[idx]["method"] == "interp":
+                    t0 = prev_end_t if prev_end_t is not None \
+                        else results[prev]["start"]
+                    results[idx] = {"start": round(t0, 3), "end": round(t0, 3),
+                                    "conf": 0.6, "method": "interp"}
+                    if verbose:
+                        print(f"    [reconcile] p{idx} -> interp @{t0:.1f}")
+                # else: keep the original evidence-based anchor — its slight
+                # overlap with the predecessor is real speech (e.g. the next
+                # paragraph starts while the previous quote is still echoing)
 
     # ---------------- boundary chaining & gap filling ---------------------
     # Anchored paragraphs (any class) delimit gaps. Interpolation weight is
@@ -866,10 +914,39 @@ def align_lecture(paras, dump, duration, verbose=False):
         # stretch over the following commentary (the player highlights by
         # time window and would light it up wrongly)
         if results[i].get("end_fixed"):
+            # evidence end wins over chaining when chaining would truncate
+            # the read (next anchor is a skip/interp marker placed at this
+            # paragraph's own start)
+            ev = results[i].get("_ev_end")
+            if ev is not None:
+                results[i]["end"] = round(max(results[i + 1]["start"], ev), 3)
             continue
         if results[i]["method"] == "skipped-sutra":
             continue
         results[i]["end"] = results[i + 1]["start"]
+    # end_fixed chaining can zero out the following paragraphs when a short
+    # read is spoken twice (idx0 verse-title read = idx2 verse repeat): only
+    # entries that START after the fixed end may be clamped into it.
+    for i in range(len(results) - 1):
+        if not results[i].get("end_fixed"):
+            continue
+        t_end = results[i]["end"]
+        j = i + 1
+        while j < len(results) and results[j]["start"] < t_end - 0.05:
+            j_end = results[j].get("end")
+            if (results[j].get("end_fixed") and j_end is not None
+                    and j_end > t_end + 0.05):
+                j += 1
+                continue
+            if j_end is not None and j_end <= t_end + 0.05:
+                results[j] = {"start": round(t_end, 3), "end": round(t_end, 3),
+                              "conf": results[j]["conf"],
+                              "method": "subsumed-dup"}
+            else:
+                results[j]["start"] = round(t_end, 3)
+                if j_end is None:
+                    results[j]["end"] = round(t_end, 3)
+            j += 1
     if results:
         results[-1]["end"] = (round(duration, 3) if duration
                               else results[-1]["start"])
@@ -880,7 +957,7 @@ def align_lecture(paras, dump, duration, verbose=False):
             r["end"] = r["start"]
         last_t = r["end"]
 
-    return results
+    return results, ANCHOR_LOG
 
 
 def pat_len_ok(norm: str) -> bool:
@@ -929,8 +1006,8 @@ def main():
         dump = load_dump(dump_path)
         duration = (dump["duration"] or
                     old_lectures.get(str(n), {}).get("duration"))
-        res = align_lecture(lec["paragraphs"], dump, duration,
-                            verbose=args.verbose)
+        res, anchor_log = align_lecture(lec["paragraphs"], dump, duration,
+                                        verbose=args.verbose)
 
         old_lect = old_lectures.get(str(n), {})
         old_by_pid = {p["pid"]: p for p in old_lect.get("paragraphs", [])}
