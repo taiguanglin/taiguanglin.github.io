@@ -466,8 +466,6 @@ def apply_spillover(segs: List[dict], qmap: dict) -> int:
         nqid = (nxt.get("chapter_question_ids") or [None])[0]
         if not (qid and nqid):
             continue
-        if "html-resplit:答案溢出" in (cur.get("notes") or ""):
-            continue  # already fixed (idempotent)
         a = qmap.get(qid)
         if not a:
             continue
@@ -476,7 +474,7 @@ def apply_spillover(segs: List[dict], qmap: dict) -> int:
             continue
         cur_ans, _ = kept_stream(cur.get("answer_text") or "")
         if tail_conv[:24] in cur_ans or tail_conv[:12] in cur_ans:
-            continue  # answer is self-contained in this segment
+            continue  # answer is self-contained (already relocated); idempotent
         nxt_ans, nxt_idx = kept_stream(nxt.get("answer_text") or "")
         if not nxt_ans:
             continue
@@ -485,22 +483,100 @@ def apply_spillover(segs: List[dict], qmap: dict) -> int:
             p = nxt_ans.find(tail_conv[:16])
         if p < 0:
             continue
-        # proportionally extend cur.end into nxt's range at the tail's END.
-        probe_end = p + len(tail_conv)
-        frac = min(1.0, probe_end / len(nxt_ans))
+        # (B) relocate the leaked answer prefix out of nxt: everything before
+        # the located tail actually belongs to cur's answer (the master finished
+        # cur's answer, then turned to nxt).  Move it and push nxt's start past
+        # the overflow so its answer is not replayed with foreign content.
+        cut_raw = nxt_idx[min(p + len(tail_conv) - 1, len(nxt_idx) - 1)] + 1 if nxt_idx else 0
+        leaked = (nxt.get("answer_text") or "")[:cut_raw].strip()
+        rest = (nxt.get("answer_text") or "")[cut_raw:]
+        # swallow trailing punctuation (。、！？… etc.) into the leaked tail so
+        # the next segment does not start with a dangling period.
+        if rest:
+            lead = ""
+            while rest and rest[0] in "。，、；：！？…\u3000":
+                lead += rest[0]
+                rest = rest[1:]
+            leaked = (leaked + lead).strip()
+        rest = rest.strip()
+        if not leaked:
+            continue
+        # Only relocate when a genuine remainder stays in the next segment.
+        # If the "leak" spans the next segment's ENTIRE answer, this is a
+        # duplicate/overlapping question (the ebook maps two qids to the same
+        # audio) — relocating would empty the next segment and is a false
+        # positive, so leave it untouched.
+        if not rest:
+            continue
+        cur["answer_text"] = ((cur.get("answer_text") or "").rstrip()
+                              + "\n\n" + leaked).strip()
+        nxt["answer_text"] = rest
+        # proportionally extend cur.end / push nxt.start at the tail's END.
+        frac = min(1.0, (p + len(tail_conv)) / len(nxt_ans))
         cs, ce = cur.get("start"), cur.get("end")
         ns, ne = nxt.get("start"), nxt.get("end")
-        if None in (cs, ce, ns, ne) or not (ne > ns):
-            continue
-        new_end = ns + (ne - ns) * frac
-        if new_end > ce:
-            cur["end"] = new_end
-            cur["end_label"] = fmt_label(new_end)
+        if all(v is not None for v in (cs, ce, ns, ne)) and ne > ns:
+            new_end = ns + (ne - ns) * frac
+            if new_end > ce:
+                cur["end"] = new_end
+                cur["end_label"] = fmt_label(new_end)
+            nxt["start"] = max(nxt["start"] or 0, new_end)
+            nxt["start_label"] = fmt_label(nxt["start"])
         for g, tag in ((cur, "答案溢出至下一段"), (nxt, "開頭為前題答案溢出")):
+            if f"html-resplit:{tag}" in (g.get("notes") or ""):
+                continue
             g["notes"] = (g.get("notes") or "") + f" | html-resplit:{tag}，待人工確認"
             g["meta"] = {k: v for k, v in (g.get("meta") or {}).items()
                          if k != "lastPlayed"}
             g["status"] = "auto"
+        fixed += 1
+    return fixed
+
+
+def fix_question_readback(segs: List[dict], qmap: dict) -> int:
+    """(A) Move a question read-back at the END of an answer into q_text.
+
+    The master often answers a sub-question, then repeats that last sub-question
+    verbatim (which the Word splitter folded into the answer).  Detected by
+    matching the HTML question's LAST paragraph against the END of the segment's
+    answer; the matched chunk is moved from answer to q_text.  Idempotent.
+    """
+    fixed = 0
+    for g in segs:
+        qid = (g.get("chapter_question_ids") or [None])[0]
+        if not qid or qid not in qmap:
+            continue
+        hq = qmap[qid].get("q_text") or ""
+        last_line = next((ln for ln in reversed(hq.splitlines()) if ln.strip()),
+                         "")
+        if not last_line:
+            continue
+        probe, _ = kept_stream(last_line.strip()[:80])
+        if len(probe) < 10:
+            continue
+        a_text = g.get("answer_text") or ""
+        if not a_text:
+            continue
+        astream, aidx = kept_stream(a_text)
+        pos = astream.rfind(probe)
+        if pos < 0:
+            continue
+        # require the match to sit at the very END of the answer (a trailing
+        # read-back), not mid-answer.
+        if pos + len(probe) < len(astream) - 6:
+            continue
+        cut = aidx[pos]
+        moved = a_text[cut:].strip()
+        remainder = a_text[:cut].strip()
+        if not moved or not remainder:
+            continue
+        g["answer_text"] = remainder
+        g["q_text"] = ((g.get("q_text") or "").rstrip() + "\n" + moved).strip()
+        tag = "問題複述移至問題"
+        if f"html-resplit:{tag}" not in (g.get("notes") or ""):
+            g["notes"] = (g.get("notes") or "") + f" | html-resplit:{tag}，待人工確認"
+        g["meta"] = {k: v for k, v in (g.get("meta") or {}).items()
+                     if k != "lastPlayed"}
         fixed += 1
     return fixed
 
@@ -528,6 +604,9 @@ def resplit_session(sess: dict, qmap: dict) -> Tuple[List[dict], dict]:
             erased += 1
         new.append(seg)
 
+    fixed_q = fix_question_readback(new, qmap)
+    if fixed_q:
+        changed += fixed_q
     fixed = apply_spillover(new, qmap)
     if fixed:
         changed += fixed
