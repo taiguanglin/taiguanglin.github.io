@@ -1177,6 +1177,16 @@ function applyAm2HtmlLinks(body, item) {
     const qids = item.chapter_question_ids || [];
     const aids = item.chapter_answer_ids || [];
     const chapters = [...new Set(item.chapter_indexes || [])].sort((a, b) => a - b);
+
+    // 與 HTML 用字略異 (cosmetic / reword)：保留 Word 原文，僅標註供人工參考。
+    if (qids.length === 1 && item.html_verbatim === false) {
+        const hint = document.createElement('div');
+        hint.className = 'am2-html-hint';
+        hint.textContent = '⚠ 與 HTML 用字略異（問題或答案措辭與電子書不同，Word 原文為準）';
+        hint.title = '此段文字與對應電子書段落並非逐字相同（可能是口語改述、子題併段或著/着、薰/熏等用字差異）';
+        body.appendChild(hint);
+    }
+
     if (!qids.length && !aids.length) return;
 
     const row = document.createElement('div');

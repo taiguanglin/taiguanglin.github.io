@@ -52,6 +52,8 @@ def nstream(raw: str) -> Tuple[str, List[int]]:
     for i, ch in enumerate(raw or ""):
         if ch.isspace():
             continue
+        if ch in "\u200b\u200c\u200d\ufeff":   # zero-width / BOM artifacts
+            continue
         chars.append(nc(ch))
         idx.append(i)
     return "".join(chars), idx
@@ -348,6 +350,57 @@ def fix_session(sess: dict, truly_orphan: set, force_lastplayed: bool = False) -
                 cur["end"] = round(new_end, 2); cur["end_label"] = fmt_label(new_end)
                 nxt["start"] = round(new_end, 2); nxt["start_label"] = fmt_label(new_end)
         fixed["spill"] += 1
+
+    # pass 5: forward read-back — part of the NEXT question was read at the END
+    # of this segment's answer, while the next segment's q_text holds the rest
+    # (often a trailing greeting).  Rejoin: nxt.q_text = cur.answer-tail read-back
+    # + nxt's old q_text, so it exactly equals the html q_text.
+    for k in range(len(new) - 1):
+        cur, nxt = new[k], new[k + 1]
+        cq = cur.get("chapter_question_ids") or [None]
+        nq = nxt.get("chapter_question_ids") or [None]
+        if not (cq[0] and nq[0]) or ((has_listen(cur) or has_listen(nxt)) and not force_lastplayed):
+            continue
+        nhq, nha = htext(nq[0])
+        if not nhq:
+            continue
+        if norm(nxt.get("q_text") or "") == nhq:
+            continue  # already correct
+        nxt_q_old = norm(nxt.get("q_text") or "")
+        # the old q_text must be the TAIL of html q_text (read-back head is missing)
+        if nxt_q_old and not nhq.endswith(nxt_q_old):
+            # maybe old q_text is empty-ish greeting; try empty case below
+            if nxt_q_old.strip():
+                continue
+        missing_head = nhq[:-len(nxt_q_old)] if nxt_q_old else nhq
+        if not missing_head:
+            continue
+        ca = norm(cur.get("answer_text") or "")
+        if not ca.endswith(missing_head):
+            continue
+        cut = len(ca) - len(missing_head)
+        raw_cur = cur.get("answer_text")
+        _, cidx = nstream(raw_cur)
+        raw_cut = cidx[cut] if cut < len(cidx) else len(raw_cur)
+        readback = raw_cur[raw_cut:].strip()
+        remainder = raw_cur[:raw_cut].strip()
+        if not readback or not remainder:
+            continue
+        old_nxt_q = nxt.get("q_text") or ""
+        cur["answer_text"] = remainder
+        nxt["q_text"] = (readback + ("\n" + old_nxt_q if old_nxt_q else "")).strip()
+        ok = (norm(cur["answer_text"]) == htext(cq[0])[1]
+              and norm(nxt["q_text"]) == nhq)
+        if not ok:
+            cur["answer_text"] = raw_cur
+            nxt["q_text"] = old_nxt_q
+            continue
+        qp = nxt.get("q_text") or ""
+        nxt["q_preview"] = qp[:100] + ("…" if len(qp) > 100 else "")
+        for g, tag in ((cur, "前題複述移回後段"), (nxt, "補回問題文字")):
+            add_note(g, tag)
+            strip_listen(g)
+        fixed["readback"] += 1
 
     return new, fixed
 
