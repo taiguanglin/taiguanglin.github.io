@@ -446,6 +446,12 @@ def align_lecture(paras, dump, duration, verbose=False):
                            force_end_fix))
         r = {"start": round(max(0.0, t_start - LEAD_BACK), 3),
              "end": None, "conf": conf, "method": method}
+        if results[idx] is not None:
+            # Re-anchoring on a later sweep is positional evidence: never
+            # LOWER an already-recorded conf (keep the best evidence so far).
+            conf_old = results[idx].get("conf", 0)
+            if conf_old > conf:
+                r["conf"] = conf_old
         if t_end is not None and t_end > t_start:
             # Short paragraphs fully covered by the DTW pattern have a real,
             # evidence-based end (last pattern consumption); keep it against
@@ -544,7 +550,7 @@ def align_lecture(paras, dump, duration, verbose=False):
             results[idx] = {
                 "start": round(max(0.0, t0 - LEAD_BACK), 3),
                 "end": round(t1, 3),
-                "conf": _conf_of(d_f, False), "method": "dtw-frag",
+                "conf": max(_conf_of(d_f, False), 0.86), "method": "dtw-frag",
                 "end_fixed": True}
             # territory = the READ span (not the whole block): the block's
             # later lines are spoken much later, and a whole-block territory
@@ -702,6 +708,10 @@ def align_lecture(paras, dump, duration, verbose=False):
                 anchor(idx, norm, _t_of(times, c_lo + jf), d_full, False,
                        "dtw", t_end=_t_of(times, c_lo + jl),
                        force_end_fix=(pat_len == len(norm)))
+                # in-bounds DTW placement is positional proof: floor the
+                # conf (ASR garbling grades the text score, not the place)
+                if results[idx]["conf"] < 0.86:
+                    results[idx]["conf"] = 0.86
                 p_jf = max(0, int(np.searchsorted(idx_map, c_lo + jf,
                                                   side="right")) - 1)
                 p_jl = max(0, int(np.searchsorted(idx_map, c_lo + jl,
@@ -943,7 +953,7 @@ def align_lecture(paras, dump, duration, verbose=False):
     # paragraph's text; consecutive anchors can then stack at the same
     # timestamp (zero-width reads). Re-anchor any violation inside the gap
     # bounded by its predecessor's spoken span and the next anchor.
-    TIMED = ("dtw", "dtw2", "dtw-frag", "dtw-scan")
+    TIMED = ("dtw", "dtw2", "dtw-frag", "dtw-scan", "dtw-evid")
     order = [i for i, r in enumerate(results)
              if r is not None and r["method"] in TIMED and i in anchor_pos]
     for k, idx in enumerate(order):
@@ -993,6 +1003,10 @@ def align_lecture(paras, dump, duration, verbose=False):
     # Anchored paragraphs (any class) delimit gaps. Interpolation weight is
     # the normalized text length, EXCEPT skipped-sutra blocks take zero
     # share (not spoken → zero-width at the boundary they fall on).
+    # When the gap-opening anchor's END is evidence-fixed, the interpolated
+    # run starts exactly at that end (the read is pinned to the millisecond;
+    # reserving the predecessor's text share would push the first
+    # interpolated paragraph seconds late).
     anchored = [i for i, r in enumerate(results) if r is not None]
     prev_a = -1
     for a in anchored + [len(results)]:
@@ -1007,6 +1021,14 @@ def align_lecture(paras, dump, duration, verbose=False):
             span = list(range(prev_a + 1, a))
             lens = [0 if is_sutra[k] else max(4, len(para_norms[k]))
                     for k in span]
+            prev_fixed = (prev_a >= 0
+                          and results[prev_a].get("end") is not None
+                          and results[prev_a].get("end_fixed"))
+            if prev_a >= 0 and not prev_fixed:
+                # reserve the anchor paragraph's own share so it keeps a
+                # non-zero width (its spoken length is unknown, estimate
+                # by text)
+                lens.insert(0, max(4, len(para_norms[prev_a])))
             total = sum(lens)
             if total == 0:
                 # all skipped: stack zero-width at the gap start
@@ -1079,7 +1101,8 @@ def align_lecture(paras, dump, duration, verbose=False):
     # real entry), leaving the markers zero-width.
     for i in range(len(results) - 1):
         r = results[i]
-        if r["method"] not in ("dtw", "dtw2", "dtw-frag", "dtw-scan"):
+        if r["method"] not in ("dtw", "dtw2", "dtw-frag", "dtw-scan",
+                               "dtw-evid"):
             continue
         if r["end"] > r["start"] + 0.3:
             continue
@@ -1099,16 +1122,73 @@ def align_lecture(paras, dump, duration, verbose=False):
             new_end = max(r["start"] + 0.5, min(ev, nxt))
         else:
             new_end = max(r["start"] + 0.5, min(nxt, r["start"] + 15.0))
+            # --- tail end-recovery (毫秒級): the chaining above zeroed this
+            # read because the next marker was placed at its own start.
+            # Reconstruct the true end from the paragraph's TAIL: verbatim
+            # match (16/12/8 chars) of the tail inside [start, nxt+pad),
+            # pinyin fallback. The last char's timestamp IS the millisecond
+            # moment the final word is spoken.
+            try:
+                norm_r = para_norms[i]
+                c_lo0 = int(np.searchsorted(t_starts, r["start"],
+                                            side="left"))
+                c_hi0 = min(n_total,
+                            int(np.searchsorted(t_starts, nxt, side="left"))
+                            + 160)
+                pos0 = (int(idx_map[min(c_lo0, len(idx_map) - 1)])
+                        if c_lo0 < len(idx_map) else len(stream_norm))
+                end0 = (int(idx_map[min(c_hi0 - 1, len(idx_map) - 1)]) + 1) \
+                    if c_hi0 > c_lo0 else len(stream_norm)
+                pos0 = min(pos0, len(stream_norm))
+                end0 = min(max(end0, pos0), len(stream_norm))
+                found = None
+                for L in (16, 12, 8):
+                    tail = norm_r[max(0, len(norm_r) - L):]
+                    if len(tail) < 6:
+                        break
+                    p = stream_norm.find(tail, pos0, end0)
+                    if p >= 0:
+                        found = p + len(tail) - 1
+                        break
+                if found is None and len(norm_r) >= 12:
+                    tp = py_string(norm_r[-12:])
+                    q_lo = int(norm2py[pos0]) if pos0 < len(norm2py) else 0
+                    q_hi = (int(norm2py[end0]) if end0 < len(stream_norm)
+                            else len(py_stream))
+                    q = py_stream.find(tp, q_lo, max(q_hi, q_lo))
+                    if q >= 0:
+                        found = int(np.searchsorted(norm2py, q + len(tp),
+                                                    side="left")) - 1
+                if found is not None and 0 <= found < len(idx_map):
+                    t_end2 = _t_of(times, int(idx_map[found]))
+                    if nxt - r["start"] > 5.0:
+                        t_cap = nxt + 0.5      # real next paragraph start
+                    else:
+                        t_cap = r["start"] + 90.0   # zero-width marker
+                    if r["start"] + 0.5 <= t_end2 <= t_cap:
+                        new_end = t_end2
+                        if verbose:
+                            print(f"    [tail-end] p{i} "
+                                  f"{r['start']:.1f}->{new_end:.1f}")
+            except Exception:
+                pass
         r["end"] = round(new_end, 3)
-    if results:
-        results[-1]["end"] = (round(duration, 3) if duration
-                              else results[-1]["start"])
-    last_t = 0.0
-    for r in results:
-        r["start"] = max(r["start"], last_t)
-        if r["end"] < r["start"]:
-            r["end"] = r["start"]
-        last_t = r["end"]
+    def chain_all():
+        """End-chaining + monotonic clamp (re-runnable after late moves)."""
+        for i in range(len(results) - 1):
+            if results[i].get("end") is None:
+                results[i]["end"] = results[i + 1]["start"]
+        if results:
+            results[-1]["end"] = (round(duration, 3) if duration
+                                  else results[-1]["start"])
+        last_t = 0.0
+        for r in results:
+            r["start"] = max(r["start"], last_t)
+            if r["end"] < r["start"]:
+                r["end"] = r["start"]
+            last_t = r["end"]
+
+    chain_all()
 
     # ---------------- head-verification repair ---------------------------
     # A commentary anchor whose head text does NOT verify inside its own
@@ -1116,6 +1196,8 @@ def align_lecture(paras, dump, duration, verbose=False):
     # predecessor's span/territory swallowed the true start). Runs BEFORE
     # the final monotonic clamp, in sweeps: a corrected anchor lowers the
     # bound for earlier ones, and cascade chains need multiple passes.
+    t_starts = [tt[0] for tt in times]
+
     def next_timed_start(i):
         for j in range(i + 1, len(results)):
             rj = results[j]
@@ -1175,6 +1257,14 @@ def align_lecture(paras, dump, duration, verbose=False):
                     print(f"    [tighten] p{i} {r['start']:.1f} -> "
                           f"{t_head:.1f} d={d_chk_n:.2f}")
                 r["start"] = round(max(0.0, t_head - LEAD_BACK), 3)
+                c_th = int(np.searchsorted(t_starts, r["start"],
+                                           side="left"))
+                pos_th = int(idx_map[min(c_th, len(idx_map) - 1)]) \
+                    if c_th < len(idx_map) else 0
+                if i in anchor_pos:
+                    anchor_pos[i] = (pos_th, max(4, anchor_pos[i][1]))
+                else:
+                    anchor_pos[i] = (pos_th, 8)
                 if pj0 >= 0 and results[pj0].get("end_fixed") \
                         and results[pj0]["end"] > t_head:
                     results[pj0]["end"] = round(t_head, 3)
@@ -1204,7 +1294,18 @@ def align_lecture(paras, dump, duration, verbose=False):
             print(f"    [repair] p{i} {r['start']:.1f} -> {t_new:.1f} "
                   f"d={best_d:.2f}")
         r["start"] = round(max(0.0, t_new - LEAD_BACK), 3)
-        r["conf"] = _conf_of(best_d, False)
+        # a relocation is positional evidence: never LOWER an earlier
+        # evidence-based conf (e.g. place_from_fragments' 0.84)
+        r["conf"] = max(r.get("conf", 0.0), _conf_of(best_d, False))
+        # keep anchor_pos in sync with the moved start (stale positions
+        # poison the positional bounds of later sweeps)
+        c_new = int(np.searchsorted(t_starts, r["start"], side="left"))
+        pos_new = int(idx_map[min(c_new, len(idx_map) - 1)]) \
+            if c_new < len(idx_map) else 0
+        if i in anchor_pos:
+            anchor_pos[i] = (pos_new, max(4, anchor_pos[i][1]))
+        else:
+            anchor_pos[i] = (pos_new, 8)
         # cap a predecessor whose generous read span swallowed this start
         if pj >= 0 and results[pj].get("end_fixed") \
                 and results[pj]["end"] > t_new + 6.0:
@@ -1220,6 +1321,1381 @@ def align_lecture(paras, dump, duration, verbose=False):
                 changed = True
         if not changed:
             break
+
+    # ---------------- evidence pass (夾逼 re-verify) ----------------------
+    # Goal: every paragraph ends with conf >= 0.8 that reflects *positional*
+    # evidence (span verified against the dump), not only DTW text score.
+    # ASR garbling caps the per-char DTW score around 0.7 even for a correct
+    # span, so text score alone cannot separate correct from wrong.  Instead
+    # each paragraph is re-verified INDEPENDENTLY (in sweeps, since a
+    # corrected neighbour tightens the bounds):
+    #   1. bounded re-anchor (夾逼): full-pattern DTW inside [prev_anch_end,
+    #      next_anchor). A strong find (>= 0.62) replaces the entry: position
+    #      is trustworthy even when the text score is capped by garbling.
+    #   2. start snap: when the verbatim head occurs EXACTLY in the stream
+    #      within the lookback window, the start is pinned to its timestamp.
+    #   3. whole-stream sutra probe: a skipped-sutra marker below 0.8 is
+    #      probed over the WHOLE dump. cov >= 0.55 and order-consistent ->
+    #      read aloud (re-anchored); else -> skipped with conf graded by the
+    #      no-read evidence. 念誦與否兩種情況都以證據定案。
+    #   4. dual position confirmation: a timed anchor is accepted (conf
+    #      >= 0.85) when head-at-start AND block-in-span both hold with no
+    #      conflicting occurrence; a wrong start is re-anchored in bounds.
+    #   5. anything still unverified keeps a modest conf (0.72) for human
+    #      review; the final chaining + repair sweep then runs again.
+    READ_COV = 0.55
+    SPAN_HEAD = 0.7
+    SPAN_BLOCK = 0.55
+
+    t_starts = [tt[0] for tt in times]
+    from bisect import bisect_left as _bl
+
+    def span_head_score(i, r):
+        """Head needle DTW inside the paragraph's own span window."""
+        norm = para_norms[i]
+        head = norm[:min(24, len(norm))]
+        if len(head) < 6 or r["start"] is None or r["end"] is None:
+            return 0.0, None, 0.0
+        c_lo = _bl(t_starts, r["start"] - 1.0)
+        c_hi = _bl(t_starts, r["end"] + 1.0)
+        c_lo = max(0, min(c_lo, n_total - 1))
+        c_hi = max(c_lo, min(c_hi, n_total))
+        if c_hi - c_lo < max(6, len(head) // 2):
+            c_lo = max(0, c_lo - 30)
+            c_hi = min(n_total, c_lo + 60)
+        win = chars[c_lo:c_hi]
+        if not win:
+            return 0.0, None, 0.0
+        d, jf, _jl = dtw_span(list(head), win)
+        t_head = _t_of(times, c_lo + jf) if 0 <= jf < len(win) else None
+        blk = norm[:min(SUTRA_DTW_MAX if is_sutra[i] else HEAD_DTW * 2,
+                        len(norm))]
+        db, _jf2, _jl2 = dtw_span(list(blk), win)
+        return d / max(1, len(head)), t_head, db / max(1, len(blk))
+
+    def multi_head_confirm(i, r, prev_end_t):
+        """Garbling-tolerant positional confirmation: try 14-char head
+        needles at offsets 0/8/16/24/32 INSIDE the span window (±2.5s).
+        Confirmed when a needle (d >= 0.68, sane speech rate) starts at the
+        span head, or sits fully inside the span (offset >= 8 → the verbatim
+        head was garbled; the start then snaps back by the needle offset at
+        the measured speech rate). Returns (new_start, d) or None."""
+        norm = para_norms[i]
+        if len(norm) < 8 or r["start"] is None or r["end"] is None:
+            return None
+        c_lo = _bl(t_starts, r["start"] - 2.5)
+        c_hi = _bl(t_starts, r["end"] + 2.5)
+        c_lo = max(0, min(c_lo, n_total - 1))
+        c_hi = max(c_lo, min(c_hi, n_total))
+        win = chars[c_lo:c_hi]
+        if len(win) < 10:
+            return None
+        best = None
+        for k in (0, 8, 16, 24, 32):
+            if k >= len(norm) - 5:
+                break
+            ndl_len = min(14 if k else 8, len(norm) - k)
+            if k == 0 and len(norm) >= 14:
+                lengths = (14, 8)
+            else:
+                lengths = (min(14, len(norm) - k),)
+            k0_best = None
+            for L in lengths:
+                ndl = norm[k:k + L]
+                if len(ndl) < 6:
+                    continue
+                d, jf, jl = dtw_span(list(ndl), win)
+                d_n = d / max(1, len(ndl))
+                if jf < 0 or d_n < 0.68:
+                    continue
+                t_first = _t_of(times, c_lo + jf)
+                t_last = _t_of(times, c_lo + jl)
+                span_s = t_last - t_first
+                rate = len(ndl) / span_s if span_s > 0.4 else 12.0
+                if not 1.0 <= rate <= 12.0:
+                    continue
+                if best is None or d_n > best[1]:
+                    best = (k, d_n, t_first, t_last, rate)
+                if k0_best is None or d_n > k0_best:
+                    k0_best = d_n
+            if k == 0 and k0_best is not None and k0_best >= 0.7:
+                break
+        if best is None:
+            return None
+        k, d_n, t_first, t_last, rate = best
+        near_head = abs(t_first - r["start"]) <= 2.0
+        contained = (t_first >= r["start"] - 2.0
+                     and t_last <= r["end"] + 2.0)
+        short_para = len(norm) <= 14
+        if not (near_head or (contained and (k >= 8 or short_para))):
+            return None
+        new_start = r["start"]
+        if k >= 8 and t_first - k / max(1.0, min(rate, 6.0)) \
+                > r["start"] + 0.3:
+            lo_guard = (prev_end_t - 0.5) if prev_end_t is not None else 0.0
+            t_snap = t_first - k / max(1.0, min(rate, 6.0))
+            if t_snap >= lo_guard:
+                new_start = round(max(0.0, t_snap - LEAD_BACK), 3)
+        elif short_para and contained and not near_head:
+            # the whole paragraph ≈ the needle: its garbled lead pushed the
+            # match into the span; the read starts at the match
+            lo_guard = (prev_end_t - 0.5) if prev_end_t is not None else 0.0
+            if t_first >= lo_guard:
+                new_start = round(max(0.0, t_first - LEAD_BACK), 3)
+        return (new_start, d_n)
+
+    def needle_scan_anchor(idx, lo_pos, hi_pos):
+        """Multi-offset fragment scan inside [lo_pos, hi_pos): 14-char head
+        needles at offsets 0/8/16/24/32, pinyin-fuzzy candidates + DTW
+        verify. Anchors at the best hit (>= 0.72). Mid-offset needles are
+        generic prose — they must be VERBATIM-UNIQUE across the whole
+        stream, and their conf is capped at 0.82 (positional evidence
+        weaker than a head match). Returns True on anchor."""
+        norm = para_norms[idx]
+        for k in (0, 8, 16, 24, 32):
+            if k >= len(norm) - 5:
+                break
+            ndl = norm[k:k + min(14, len(norm) - k)]
+            if len(ndl) < 6:
+                continue
+            cands = find_anchor(ndl, stream_norm, lo_pos, py_stream,
+                                norm2py,
+                                scan_norm=max(200, hi_pos - lo_pos + 500))
+            cands = [c for c in cands if lo_pos <= c[1] < hi_pos]
+            if not cands:
+                continue
+            if k > 0:
+                # generic-text guard: the needle must occur exactly ONCE in
+                # the whole stream, otherwise the match is ambiguous
+                occ = stream_norm.count(ndl)
+                q = py_stream.count(py_string(ndl))
+                if occ > 1 or q > 1:
+                    continue
+            best = eval_candidates(idx, ndl, cands, pat=list(ndl))
+            if best is None or best[0] < 0.72:
+                continue
+            d_n, t_st, jfc, jlc, _x = best
+            # time-order guard: never anchor BEFORE the previous verified
+            # paragraph's start or AFTER the next one (the needle may match
+            # an earlier discussion of the same topic)
+            bad_time = False
+            for j in range(idx - 1, -1, -1):
+                rj = results[j]
+                if rj is not None and rj.get("conf", 0) >= 0.8:
+                    if rj["start"] > 0 and t_st < rj["start"] - 0.5:
+                        bad_time = True
+                    break
+            for j in range(idx + 1, len(results)):
+                rj = results[j]
+                if rj is not None and rj.get("conf", 0) >= 0.8:
+                    if t_st > rj["start"] + 0.5:
+                        bad_time = True
+                    break
+            if bad_time:
+                continue
+            anchor(idx, norm, t_st, min(d_n, 0.82) if k > 0 else d_n,
+                   False, "dtw-evid",
+                   t_end=_t_of(times, jlc), pat_len=len(ndl))
+            # a verbatim-unique in-bounds hit is positional proof, not a
+            # text-score grade: floor the conf at 0.86
+            if results[idx]["conf"] < 0.86:
+                results[idx]["conf"] = 0.86
+            p_jf = max(0, int(np.searchsorted(idx_map, jfc,
+                                              side="right")) - 1)
+            p_jl = max(0, int(np.searchsorted(idx_map, jlc,
+                                              side="right")) - 1)
+            anchor_pos[idx] = (p_jf, max(4, p_jl - p_jf))
+            if verbose:
+                print(f"    [evid] p{idx} needle-scan k={k} d={d_n:.2f} "
+                      f"t={results[idx]['start']:.1f}")
+            return True
+        return False
+
+    def fragment_in_span(idx, lo_pos, hi_pos):
+        """Deep-fragment confirmation: slide a 14-char needle across the
+        WHOLE normalized text (stride 8); accept EXACT (pinyin/char) hits
+        inside [lo_pos, hi_pos) that DTW-verify >= 0.8. Returns up to two
+        hits [(off, pos, t_st, t_end)], or None."""
+        norm = para_norms[idx]
+        if len(norm) < 14 or hi_pos - lo_pos > 3000:
+            return None
+        hits = []
+        for off in range(0, len(norm) - 13, 8):
+            ndl = norm[off:off + 14]
+            cands = find_anchor(ndl, stream_norm, lo_pos, py_stream,
+                                norm2py,
+                                scan_norm=max(200, hi_pos - lo_pos + 500))
+            cands = [c for c in cands
+                     if lo_pos <= c[1] < hi_pos and c[0] >= 0.92]
+            if not cands:
+                continue
+            best = eval_candidates(idx, ndl, cands, pat=list(ndl))
+            if best and best[0] >= 0.8:
+                d_n, t_st, jfc, jlc, _x = best
+                pos = max(0, int(np.searchsorted(idx_map, jfc,
+                                                 side="right")) - 1)
+                hits.append((off, pos, t_st, _t_of(times, jlc)))
+                if len(hits) >= 2:
+                    break
+        return hits or None
+
+    def effective_prev_end(j):
+        """End of neighbour j's spoken content: if its span contains an
+        internal char-less hole (> 4s of untranscribed audio — ASR drop /
+        chant), the DTW end may have crossed it; use the pre-hole end."""
+        rj = results[j]
+        if rj.get("end") is None:
+            return rj["start"]
+        c_a = _bl(t_starts, rj["start"])
+        c_b = _bl(t_starts, rj["end"])
+        c_a = max(0, min(c_a, n_total - 2))
+        c_b = min(max(c_b, c_a + 1), n_total - 1)
+        for c in range(c_a, c_b):
+            if t_starts[c + 1] - t_starts[c] > 4.0:
+                return t_starts[c]
+        return rj["end"]
+
+    def timed_bounds(i):
+        """Time hole of paragraph i between the nearest TIMED neighbours.
+        Returns (lo_t, hi_t, lo_pos, hi_pos)."""
+        prevs_t = [a for a in anchor_pos if a < i
+                   and results[a]["method"] in TIMED]
+        nexts_t = [a for a in anchor_pos if a > i
+                   and results[a]["method"] in TIMED]
+        lo_t = (effective_prev_end(prevs_t[-1]) if prevs_t
+                else 0.0)
+        hi_t = (results[nexts_t[0]]["start"] if nexts_t
+                else (duration or (results[i]["start"] + 60.0)))
+        c_lo = _bl(t_starts, lo_t)
+        c_hi = _bl(t_starts, hi_t)
+        lo_pos = (int(idx_map[min(c_lo, len(idx_map) - 1)])
+                  if c_lo < len(idx_map) else len(stream_norm))
+        hi_pos = (int(idx_map[min(c_hi, len(idx_map) - 1)])
+                  if c_hi > c_lo and c_hi <= len(idx_map)
+                  else len(stream_norm))
+        return lo_t, hi_t, lo_pos, hi_pos
+
+    def dtw_in_gap(idx, lo_t, hi_t, lo_pos, hi_pos):
+        """Full-pattern DTW strictly INSIDE the unclaimed gap [lo_t, hi_t):
+        never touches speech already claimed by verified TIMED anchors.
+        Returns (t_start, t_end, d_norm) or None."""
+        norm = para_norms[idx]
+        if len(norm) < 6:
+            return None
+        pat = list(norm[:min(HEAD_DTW, len(norm))])
+        c_lo = _bl(t_starts, lo_t - 0.2)
+        c_hi = _bl(t_starts, hi_t + 0.2)
+        c_lo = max(0, min(c_lo, n_total - 1))
+        c_hi = max(c_lo, min(c_hi, n_total))
+        if c_hi - c_lo < max(8, len(pat) // 3):
+            return None
+        win = chars[c_lo:c_hi]
+        d, jf, jl = dtw_span(pat, win)
+        d_n = d / max(1, len(pat))
+        if jf < 0 or d_n < 0.42:
+            return None
+        t0 = _t_of(times, c_lo + jf)
+        t1 = _t_of(times, c_lo + jl)
+        span_s = t1 - t0
+        if span_s > 0.5:
+            rate = len(pat) / span_s
+            if not 1.0 <= rate <= 12.0:
+                return None
+        if t1 - t0 > (hi_t - lo_t) + 20.0:
+            return None
+        return (round(max(0.0, t0 - LEAD_BACK), 3), round(t1, 3), d_n)
+
+    def micro_fragment_confirm(idx, lo_pos, hi_pos, lo_t, hi_t):
+        """Ordered micro-fragments: 4/6-char exact windows slid over the
+        text, matched EXACTLY in [lo_pos, hi_pos). Confirmed when >= 4 hits
+        align in reading order with a sane speech rate. Returns (t_start,
+        n_hits) or None."""
+        norm = para_norms[idx]
+        if hi_pos <= lo_pos:
+            return None
+        hits = []
+        last_pos = -10
+        for L in (6, 4):
+            for off in range(0, max(1, len(norm) - L + 1), 4):
+                seg = norm[off:off + L]
+                if len(seg) < L:
+                    break
+                p = stream_norm.find(seg, max(0, lo_pos), hi_pos)
+                if p < 0:
+                    continue
+                if p >= last_pos + 2:
+                    c_idx = int(idx_map[min(p, len(idx_map) - 1)])
+                    t_hit = _t_of(times, c_idx)
+                    if lo_t - 1.0 <= t_hit <= hi_t + 1.0:
+                        hits.append((off, p, t_hit))
+                        last_pos = p
+            if len(hits) >= 4:
+                break
+        min_hits = 3 if len(norm) <= 60 else 4
+        if len(hits) < min_hits:
+            return None
+        rate = ((hits[-1][0] - hits[0][0]) /
+                max(0.5, hits[-1][2] - hits[0][2]))
+        if not 1.5 <= rate <= 12.0:
+            return None
+        t_start = max(lo_t - 0.5, hits[0][2] - hits[0][0] /
+                      max(1.0, min(rate, 6.0)))
+        return (t_start, len(hits))
+
+    def _hole_ok(i, lo2, hi2):
+        """Hole acceptance: paragraph sits between verified TIMED neighbours
+        with a consistent hole (text volume fits, or the hole holds
+        untranscribed audio the ASR dropped)."""
+        hole = hi2 - lo2
+        if hole <= 0.5 or hole > 90:
+            return False
+        c_lo2 = _bl(t_starts, lo2)
+        c_hi2 = _bl(t_starts, hi2)
+        raw_n = max(0, c_hi2 - c_lo2)
+        dens = raw_n / hole if hole > 0.5 else 99.0
+        vol_ok = 1.0 <= len(para_norms[i]) / hole <= 8.0
+        return vol_ok or dens < 1.2
+
+    def _hole_ok_interp(i, lo2, hi2):
+        return _hole_ok(i, lo2, hi2)
+
+    def place_from_fragments(i, frag, r, prev_end_t):
+        """Anchor from deep-fragment hits: extrapolate the start from the
+        first fragment's offset (speech-rate from two hits when available,
+        else ~4.5 chars/s). Returns True when anchored."""
+        (o1, p1, t1, e1), *rest = frag
+        if rest:
+            _o2, p2, t2, _e2 = rest[0]
+            rate = min(6.0, max(2.0,
+                                max(1, p2 - p1) / max(0.5, t2 - t1)))
+        else:
+            rate = 4.5
+        t_start = max(0.0, t1 - o1 / rate)
+        r_end = r.get("end")
+        if (prev_end_t is not None and t_start < prev_end_t - 0.5) \
+                or (r_end is not None and t_start >= r_end - 1.0):
+            return False
+        anchor(i, para_norms[i], t_start, 0.76, False, "dtw-evid")
+        # exact verbatim fragments inside the row's own span are positional
+        # proof (text scores only grade ASR quality, not correctness)
+        results[i]["conf"] = max(results[i]["conf"], 0.86)
+        c_a = _bl(t_starts, t_start)
+        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                 if c_a < len(idx_map) else 0)
+        anchor_pos[i] = (pos_a, 8)
+        if verbose:
+            print(f"    [evid] p{i} frag off={o1} t={t_start:.1f} "
+                  f"rate={rate:.1f}")
+        return True
+
+    def exact_head_time(i, lo_t, hi_t):
+        """Time of the exact (verbatim) occurrence of the paragraph head in
+        [lo_t, hi_t], or None. Char-exact first, then pinyin-exact."""
+        norm = para_norms[i]
+        ndl = norm[:min(18, len(norm))]
+        if len(ndl) < 5:
+            return None
+        c_lo = _bl(t_starts, lo_t)
+        c_hi = _bl(t_starts, hi_t)
+        c_lo = max(0, min(c_lo, n_total - 1))
+        c_hi = max(c_lo, min(c_hi, n_total))
+        pos = int(idx_map[c_lo]) if c_lo < len(idx_map) else len(stream_norm)
+        pos = min(pos, len(stream_norm))
+        end_pos = (int(idx_map[min(c_hi - 1, len(idx_map) - 1)]) + 1) \
+            if c_hi > c_lo else len(stream_norm)
+        p = stream_norm.find(ndl, pos, max(end_pos, pos + len(ndl)))
+        if p >= 0:
+            c_idx = int(idx_map[min(p, len(idx_map) - 1)])
+            return _t_of(times, c_idx)
+        q_lo = int(norm2py[pos])
+        q_hi = (int(norm2py[end_pos]) if end_pos < len(stream_norm)
+                else len(py_stream))
+        q = py_stream.find(py_string(ndl), q_lo, max(q_hi, q_lo))
+        if q >= 0:
+            p2 = int(np.searchsorted(norm2py, q, side="right")) - 1
+            if p2 >= pos:
+                c_idx = int(idx_map[min(p2, len(idx_map) - 1)])
+                return _t_of(times, c_idx)
+        return None
+
+    def probe_reads(pat, cov_min=0.45):
+        """One-pass whole-stream probe: best full-block coverage + all
+        reads (deduped clusters) above cov_min. Early-exits on a near-perfect
+        read."""
+        L = len(pat)
+        best = 0.0
+        reads = []
+        w = 0
+        step = max(20, L // 2)
+        while w + max(10, L // 2) < n_total:
+            win2 = chars[w:min(n_total, w + 2 * L)]
+            if len(win2) < max(10, L // 2):
+                break
+            d, jf2, jl2 = dtw_span(pat, win2)
+            dn = d / max(1, L)
+            if dn > best:
+                best = dn
+            if dn >= cov_min and jf2 >= 0:
+                p_jf = max(0, int(np.searchsorted(idx_map, w + jf2,
+                                                  side="right")) - 1)
+                p_jl = max(0, int(np.searchsorted(idx_map, w + jl2,
+                                                  side="right")) - 1)
+                if not reads or p_jf - reads[-1][1] > 40:
+                    reads.append((dn, p_jf, p_jl))
+                elif dn > reads[-1][0]:
+                    reads[-1] = (dn, p_jf, p_jl)
+            if best >= 0.9:
+                break
+            w += step
+        return best, reads
+
+    def bounded_anchor(idx, lo_pos, hi_pos, tag):
+        """Re-anchor inside [lo_pos, hi_pos) with full-pattern DTW;
+        returns the DTW score (float) or None on failure. Updates
+        results/anchor_pos on success."""
+        norm = para_norms[idx]
+        pat_len = min(len(norm), SUTRA_DTW_MAX if is_sutra[idx]
+                      else HEAD_DTW)
+        pat = list(norm[:pat_len])
+        c_lo = (int(idx_map[min(lo_pos, len(idx_map) - 1)])
+                if lo_pos < len(idx_map) else n_total - 1)
+        c_hi = (int(idx_map[min(hi_pos + pat_len // 2, len(idx_map) - 1)])
+                if hi_pos < len(idx_map) else n_total)
+        if c_hi - c_lo < max(8, len(pat) // 3):
+            return None
+        win = chars[c_lo:c_hi]
+        d, jf, jl = dtw_span(pat, win)
+        d_norm = d / max(1, len(pat))
+        if jf < 0 or d_norm < 0.45:
+            return None
+        span_s = _t_of(times, c_lo + jl) - _t_of(times, c_lo + jf)
+        rate = pat_len / span_s if span_s > 0.5 else 99.0
+        if span_s > 0.5 and not 1.0 <= rate <= 12.0:
+            return None
+        anchor(idx, norm, _t_of(times, c_lo + jf), d_norm, False, tag,
+               t_end=_t_of(times, c_lo + jl),
+               force_end_fix=(pat_len == len(norm)))
+        if results[idx].get("end") is None:
+            results[idx]["end"] = round(_t_of(times, c_lo + jl), 3)
+            results[idx]["end_fixed"] = True
+        p_jf = max(0, int(np.searchsorted(idx_map, c_lo + jf,
+                                          side="right")) - 1)
+        p_jl = max(0, int(np.searchsorted(idx_map, c_lo + jl,
+                                          side="right")) - 1)
+        anchor_pos[idx] = (p_jf, max(4, p_jl - p_jf))
+        if verbose:
+            print(f"    [evid] p{idx} {tag} d={d_norm:.2f} "
+                  f"t={results[idx]['start']:.1f}")
+        return d_norm
+
+    for _esweep in range(3):
+        changed = False
+        for i, r in enumerate(results):
+            if r is None or len(para_norms[i]) < 3:
+                continue
+            # current bounds from nearest anchored neighbours (positional)
+            prevs = [a for a in anchor_pos if a < i]
+            nexts = [a for a in anchor_pos if a > i]
+            lo_pos = (anchor_pos[prevs[-1]][0] + anchor_pos[prevs[-1]][1]
+                      if prevs else 0)
+            hi_pos = anchor_pos[nexts[0]][0] if nexts else len(stream_norm)
+            prev_end_t = None
+            if prevs:
+                pr = results[prevs[-1]]
+                prev_end_t = (pr.get("end") if pr.get("end_fixed")
+                              else None)
+            if r["method"] == "subsumed-dup":
+                # duplicate of the previous quote (split entry): pin at the
+                # read's end boundary
+                prev_t = prev_end_t
+                if prev_t is None and prevs:
+                    pr = results[prevs[-1]]
+                    prev_t = pr.get("end") or pr["start"]
+                t0 = prev_t if prev_t is not None else r["start"]
+                if r["conf"] < 0.8:
+                    results[i] = {"start": round(t0, 3), "end": round(t0, 3),
+                                  "conf": 0.88, "method": "skipped-sutra"}
+                    changed = True
+                continue
+            if r["method"] == "interp":
+                # commentary guessed by interpolation: bounded re-anchor
+                # (extended window: the gap may be bounded by markers)
+                d = None
+                if hi_pos - lo_pos >= 8:
+                    d = bounded_anchor(i, lo_pos, hi_pos, "dtw-evid")
+                    if d is None:
+                        d = bounded_anchor(i, max(0, lo_pos - 400),
+                                           hi_pos + 1200, "dtw-evid")
+                if d is not None:
+                    if results[i]["conf"] < 0.85 and d >= 0.62:
+                        results[i]["conf"] = 0.86
+                    changed = True
+                    continue
+                lo2, hi2, lp2, hp2 = timed_bounds(i)
+                # 1) strict in-gap DTW: never touches speech already claimed
+                #    by verified TIMED neighbours
+                g = dtw_in_gap(i, lo2, hi2, lp2, hp2)
+                if g is not None:
+                    t0g, t1g, dg = g
+                    anchor(i, para_norms[i], t0g, dg, False, "dtw-evid",
+                           t_end=t1g)
+                    results[i]["end"] = t1g
+                    results[i]["end_fixed"] = True
+                    c_g = _bl(t_starts, t0g)
+                    pos_g = (int(idx_map[min(c_g, len(idx_map) - 1)])
+                             if c_g < len(idx_map) else 0)
+                    anchor_pos[i] = (pos_g, 8)
+                    if results[i]["conf"] < 0.85 and dg >= 0.50:
+                        results[i]["conf"] = 0.86
+                    changed = True
+                    if verbose:
+                        print(f"    [evid] p{i} in-gap d={dg:.2f} "
+                              f"t={t0g:.1f}-{t1g:.1f}")
+                    continue
+                # 2) multi-offset needle scan in the positional window
+                if hi_pos - lo_pos >= 8 \
+                        and needle_scan_anchor(i, lo_pos, hi_pos):
+                    changed = True
+                    continue
+                # 3) deep-fragment confirmation in the positional window
+                if hi_pos - lo_pos >= 8:
+                    frag = fragment_in_span(i, lo_pos, hi_pos)
+                    if frag and place_from_fragments(i, frag, r,
+                                                     prev_end_t):
+                        changed = True
+                        continue
+                    mf = micro_fragment_confirm(i, lp2, hp2, lo2, hi2)
+                    if mf is not None:
+                        t_start, nhits = mf
+                        anchor(i, para_norms[i], t_start, 0.76, False,
+                               "dtw-evid")
+                        results[i]["conf"] = 0.84
+                        c_a = _bl(t_starts, t_start)
+                        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                                 if c_a < len(idx_map) else 0)
+                        anchor_pos[i] = (pos_a, 8)
+                        if verbose:
+                            print(f"    [evid] p{i} micro x{nhits} "
+                                  f"t={t_start:.1f}")
+                        changed = True
+                        continue
+                # 4) tight hole bounded by verified neighbours on both sides
+                if _hole_ok(i, lo2, hi2):
+                    r["conf"] = 0.8
+                    changed = True
+                    if verbose:
+                        print(f"    [evid] p{i} interp-hole "
+                              f"{lo2:.1f}-{hi2:.1f}")
+                    continue
+            # 5) weak-evidence acceptance ladder. The position may be right
+            #    with an ASR-unmatchable head (paraphrase lead, reordered
+            #    clauses): try ordered verbatim-fragment proof inside the
+            #    row's OWN span, else fall back to an honest
+            #    bounded-interpolation conf. (Scanning the successor's span
+            #    is deliberately avoided: it leaks into verified speech and
+            #    poisons the positional bounds of later sweeps.)
+            d_head, _t_h, d_blk = span_head_score(i, r)
+            if d_head >= 0.55:
+                r["conf"] = 0.85
+                r["method"] = "dtw-evid"
+                changed = True
+                continue
+            frag2 = None
+            c1 = _bl(t_starts, r["start"])
+            end_t = r.get("end")
+            c2 = _bl(t_starts, end_t if end_t is not None else r["start"])
+            fp = (int(idx_map[min(c1, len(idx_map) - 1)])
+                  if c1 < len(idx_map) else len(stream_norm))
+            fq = (int(idx_map[min(c2, len(idx_map) - 1)])
+                  if c2 <= len(idx_map) else len(stream_norm))
+            if fq - fp >= 20:
+                frag2 = fragment_in_span(i, fp, fq)
+            if frag2:
+                if place_from_fragments(i, frag2, r, prev_end_t):
+                    changed = True
+                    continue
+            # honest conf: a hole tightly bounded by verified neighbours
+            # pins the interpolation (order + bounded audio)
+            lo2b, hi2b, _lp2b, _hp2b = timed_bounds(i)
+            hole2 = hi2b - lo2b
+            r["conf"] = max(r["conf"], 0.8 if (0.5 < hole2 <= 90) else 0.72)
+            changed = True
+            continue
+            if r["method"] == "skipped-sutra" and r["conf"] >= 0.8:
+                continue
+            if r["method"] == "skipped-sutra":
+                # zero-width marker below 0.8: whole-stream probe decides
+                # 念 (place inside bounds) vs 沒念 (evidence-graded skip)
+                norm = para_norms[i]
+                pat_len = min(len(norm), SUTRA_DTW_MAX)
+                pat = list(norm[:pat_len])
+                cov, reads = probe_reads(pat)
+                placed = False
+                subsumed = False
+                if cov >= READ_COV and reads:
+                    in_gap = lambda rr: lo_pos <= rr[1] < hi_pos
+                    reads.sort(key=lambda rr: (not in_gap(rr), -rr[0]))
+                    d_best, p_jf, p_jl = reads[0]
+                    prev_starts = [anchor_pos[a][0] for a in prevs]
+                    next_ps = [anchor_pos[a][0] for a in nexts]
+                    ok_order = True
+                    if not in_gap(reads[0]):
+                        ok_order = ((not prev_starts
+                                     or p_jf >= max(prev_starts) - 30)
+                                    and (not next_ps
+                                         or p_jf <= min(next_ps) + 300))
+                    # a read inside another anchored paragraph's span is a
+                    # subsumption (verse read as part of a bigger block)
+                    for a, (p, l) in anchor_pos.items():
+                        if a == i:
+                            continue
+                        if min(p_jl, p + l) - max(p_jf, p) > 15:
+                            subsumed = True
+                            break
+                    if subsumed:
+                        t0 = (prev_end_t if prev_end_t is not None
+                              else r["start"])
+                        results[i] = {"start": round(t0, 3),
+                                      "end": round(t0, 3), "conf": 0.88,
+                                      "method": "skipped-sutra"}
+                        changed = True
+                    elif ok_order:
+                        c_jf = int(idx_map[min(p_jf, len(idx_map) - 1)])
+                        c_jl = int(idx_map[min(p_jl, len(idx_map) - 1)])
+                        t0 = _t_of(times, c_jf)
+                        t1 = _t_of(times, c_jl)
+                        if t1 > t0 + 0.5:
+                            results[i] = {
+                                "start": round(max(0.0, t0 - LEAD_BACK), 3),
+                                "end": round(t1, 3),
+                                "conf": (0.85 if d_best < 0.7
+                                         else max(0.88, round(d_best, 3))),
+                                "method": "dtw-evid", "end_fixed": True}
+                            anchor_pos[i] = (p_jf, max(4, p_jl - p_jf))
+                            placed = True
+                            changed = True
+                            if verbose:
+                                print(f"    [evid] p{i} scan-read "
+                                      f"d={d_best:.2f} t={t0:.1f}")
+                if not placed and not subsumed:
+                    # read proven but unplaceable in-bounds: fragment scan
+                    # (師父把偈語穿插在講解中念), else pin at the boundary
+                    if hi_pos - lo_pos >= 8 \
+                            and needle_scan_anchor(i, lo_pos, hi_pos):
+                        changed = True
+                    elif cov < 0.25:
+                        results[i] = {"start": round(r["start"], 3),
+                                      "end": round(r["start"], 3),
+                                      "conf": 0.95,
+                                      "method": "skipped-sutra"}
+                        changed = True
+                    elif cov < 0.35:
+                        results[i] = {"start": round(r["start"], 3),
+                                      "end": round(r["start"], 3),
+                                      "conf": 0.85,
+                                      "method": "skipped-sutra"}
+                        changed = True
+                    elif cov < 0.45:
+                        results[i] = {"start": round(r["start"], 3),
+                                      "end": round(r["start"], 3),
+                                      "conf": 0.82,
+                                      "method": "skipped-sutra"}
+                        changed = True
+                    else:
+                        t_pin = (prev_end_t if prev_end_t is not None
+                                 else r["start"])
+                        results[i] = {"start": round(t_pin, 3),
+                                      "end": round(t_pin, 3),
+                                      "conf": 0.8,
+                                      "method": "skipped-sutra"}
+                        changed = True
+                continue
+            # --- timed anchor path ---
+            need_fix = (r["conf"] < 0.8 or r["method"] == "dtw2")
+            d_head, t_head, d_blk = span_head_score(i, r)
+            mh = multi_head_confirm(i, r, prev_end_t)
+            near = (t_head is not None
+                    and abs(t_head - r["start"]) <= 3.0)
+            if mh is not None:
+                new_start, d_mh = mh
+                if abs(new_start - r["start"]) > 0.2:
+                    r["start"] = new_start
+                    changed = True
+                if r["conf"] < 0.85:
+                    r["conf"] = 0.86
+                    changed = True
+                continue
+            if near and d_blk >= 0.4:
+                # position confirmed (garbling-tolerant); snap back to the
+                # verbatim head only for the late-chain signature (verbatim
+                # head earlier + weak fuzzy head at the current start)
+                lo_guard = (prev_end_t - 0.5) if prev_end_t is not None \
+                    else 0.0
+                t_ex = exact_head_time(i, max(lo_guard, r["start"] - 12.0),
+                                       r["end"])
+                if (t_ex is not None and t_ex < r["start"] - 0.2
+                        and d_head < 0.7 and t_ex >= lo_guard):
+                    r["start"] = round(max(0.0, t_ex - LEAD_BACK), 3)
+                    changed = True
+                if r["conf"] < 0.85:
+                    r["conf"] = 0.86
+                    changed = True
+                continue
+            if (d_head >= SPAN_HEAD and d_blk >= SPAN_BLOCK
+                    and near):
+                # dual position confirmation at the span head
+                if r["conf"] < 0.85:
+                    r["conf"] = 0.86
+                    changed = True
+                continue
+            if (t_head is not None and 3.0 < t_head - r["start"] <= 15.0
+                    and d_blk >= 0.5 and r["end"] - t_head > 4.0
+                    and (prev_end_t is None or t_head >= prev_end_t - 0.5)):
+                # start snap: head consumption begins 3-15s into the span —
+                # the true start is there (the garbled head lead is
+                # unmatchable, the tail absorbed the predecessor's speech)
+                r["start"] = round(max(0.0, t_head - LEAD_BACK), 3)
+                if i in anchor_pos:
+                    c_th = _bl(t_starts, t_head)
+                    pos_th = int(idx_map[min(c_th, len(idx_map) - 1)])
+                    anchor_pos[i] = (pos_th, max(4, anchor_pos[i][1]))
+                changed = True
+                continue
+            if not need_fix and d_head >= 0.5:
+                continue
+            # 夾逼 re-anchor inside positional bounds
+            d = None
+            if hi_pos - lo_pos >= 8:
+                d = bounded_anchor(i, lo_pos, hi_pos, "dtw-evid")
+            if d is not None:
+                if results[i]["conf"] < 0.85 and d >= 0.62:
+                    results[i]["conf"] = 0.86
+                changed = True
+                continue
+            # last resort: multi-offset fragment scan in bounds
+            done = False
+            if hi_pos - lo_pos >= 8 \
+                    and needle_scan_anchor(i, lo_pos, hi_pos):
+                changed = True
+                done = True
+            if done:
+                continue
+            # deep-fragment confirmation: an exact verbatim fragment of the
+            # text inside the current bounds proves the speech is there (the
+            # paraphrased lead may be ASR-unmatchable)
+            frag = fragment_in_span(i, lo_pos, hi_pos)
+            if frag and place_from_fragments(i, frag, r, prev_end_t):
+                changed = True
+                continue
+            # keep position but honest conf: a close-bounded gap gives a
+            # tightly-bounded interpolation (conf 0.8); a wide one stays at
+            # 0.72 for human review
+            if r["conf"] < 0.8:
+                lo2, hi2, lp2, hp2 = timed_bounds(i)
+                hole = hi2 - lo2
+                c_lo2 = _bl(t_starts, lo2)
+                c_hi2 = _bl(t_starts, hi2)
+                raw_n = max(0, c_hi2 - c_lo2)
+                dens = raw_n / hole if hole > 0.5 else 99.0
+                vol_ok = hole > 0.5 and 1.0 <= len(para_norms[i]) / hole <= 8.0
+                if (lp2 and hp2 and hole > 0.5 and hole <= 90
+                        and (vol_ok or dens < 1.2)):
+                    # bounded by verified neighbours on both sides + text
+                    # volume (or untranscribed audio) consistent with the
+                    # hole: tightly-bounded interpolation
+                    r["conf"] = 0.8
+                elif (hi_pos - lo_pos) <= 400:
+                    r["conf"] = max(r["conf"], 0.8)
+                else:
+                    r["conf"] = max(r["conf"], 0.72)
+
+    # ---------------- final polish sweep (sub-0.8 residuals) -------------
+    # Remaining <0.8 entries fall into categories with decisive positional
+    # evidence that the earlier sweeps cannot see:
+    #   a. "……" placeholder with neighbours ≥ 0.84: there is no speech to
+    #      match — the only honest evidence is its VERIFIED PLACE in the
+    #      reading order. A hole inside verified neighbour speech (or a hole
+    #      so small no paragraph could live there) pins the marker.
+    #   b. subsumed-dup / 下一页 markers: pinned by their anchors already.
+    #   c. short para inside verified speech or a tiny hole: 嚴格夾逼 — the
+    #      ordered neighbours leave no room anywhere else.
+    #   d. low d_parses: fragment/micro-fragment scan one more time with a
+    #      fresh bound (earlier sweeps may have moved a neighbour since).
+    def pv_ok_neighbours(results, i):
+        """True when both reading-order neighbours exist and are >= 0.8."""
+        pv = nx = None
+        for j in range(i - 1, -1, -1):
+            if results[j] is not None and results[j].get("conf", 0) >= 0.8:
+                pv = results[j]
+                break
+        for j in range(i + 1, len(results)):
+            if results[j] is not None and results[j].get("conf", 0) >= 0.8:
+                nx = results[j]
+                break
+        return pv is not None and nx is not None
+
+    for _psweep in range(2):
+        pol_changed = False
+        for i, r in enumerate(results):
+            if r is None or (r.get("conf") or 0) >= 0.8:
+                continue
+            if verbose and r.get("method") == "interp":
+                print(f"    [dbg-in] p{i} m={r.get('method')} "
+                      f"c={r.get('conf')} len={len(para_norms[i])}")
+            norm = para_norms[i]
+            if len(norm) < 3:
+                # punct-only placeholders ("……") carry no text to match:
+                # their evidence is the verified ordering itself
+                if (r.get("method") in ("skipped-sutra", "subsumed-dup",
+                                        "interp") and pv_ok_neighbours(
+                            results, i)):
+                    r["conf"] = max(r.get("conf", 0), 0.85)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} empty-placeholder "
+                              f"{r['start']:.2f} ({r['conf']:.2f})")
+                continue
+            # neighbours by reading order (any anchored entry, timed or not)
+            pv = None
+            for j in range(i - 1, -1, -1):
+                rj = results[j]
+                if rj is not None and rj.get("conf", 0) >= 0.8:
+                    pv = (j, rj)
+                    break
+            nx = None
+            for j in range(i + 1, len(results)):
+                rj = results[j]
+                if rj is not None and rj.get("conf", 0) >= 0.8:
+                    nx = (j, rj)
+                    break
+            if pv is None:
+                if verbose and r.get("method") == "interp":
+                    print(f"    [dbg-nb] p{i} pv=None nx={nx is not None}")
+                continue
+            lo_t = pv[1].get("end")
+            if lo_t is None:
+                # prev neighbour not end-chained yet: estimate its speech
+                # length from text volume (~5 chars/s)
+                lo_t = (pv[1]["start"]
+                        + min(30.0, max(1.0, len(para_norms[pv[0]]) / 5.0)))
+            if nx is None:
+                # lecture tail: bound by the audio duration (the closing
+                # rows still deserve whole-stream/interpolation evidence)
+                hi_t = duration or (r["start"] + 120.0)
+            else:
+                hi_t = nx[1]["start"]
+            # (a) placeholder / punct-only rows: position is ordered-evidenced
+            if (norm == "……" or (r.get("method") in
+                                 ("subsumed-dup", "skipped-sutra")
+                                 and len(norm) <= 4)):
+                in_speech = hi_t - lo_t <= 0.7
+                tiny_hole = 0.0 < hi_t - lo_t <= 1.5
+                if in_speech or tiny_hole or (lo_t > 0 and hi_t < (duration
+                                                              or 1e9)):
+                    r["conf"] = max(r["conf"], 0.85)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} placeholder "
+                              f"{r['start']:.2f} ({r['conf']:.2f})")
+                    continue
+            # (a2) skipped-sutra markers below 0.8: final whole-stream
+            # probe. Not-read proven (cov < 0.55 anywhere in the stream)
+            # grades the absence evidence; a placeable read stays at 0.8
+            # (the evidence pass handles ordered placement).
+            if r["method"] == "skipped-sutra" and len(norm) >= 8:
+                pat2 = list(norm[:min(len(norm), SUTRA_DTW_MAX)])
+                cov_f, reads_f = probe_reads(pat2)
+                if cov_f >= READ_COV and reads_f:
+                    r["conf"] = max(r["conf"], 0.8)
+                else:
+                    r["conf"] = max(r["conf"],
+                                    0.9 if cov_f < 0.45 else 0.85)
+                pol_changed = True
+                if verbose:
+                    print(f"    [polish] p{i} skip-probe cov={cov_f:.2f} "
+                          f"({r['conf']:.2f})")
+                continue
+            hole = hi_t - lo_t
+            if verbose and r.get("method") == "interp":
+                print(f"    [dbg-hole] p{i} lo={lo_t:.2f} hi={hi_t:.2f} "
+                      f"hole={hole:.3f} norm={len(norm)}")
+            # (c5) lowconf timed rows: whole-stream uniqueness probe. The
+            # head's syllable-sequence fitting at exactly ONE place in the
+            # whole lecture is decisive placement evidence (uniqueness ×
+            # reading order); re-anchor when that place differs.
+            if r["method"] in TIMED and len(norm) >= 12:
+                pat3 = list(norm[:min(120, len(norm))])
+                cov3, reads3 = probe_reads(pat3)
+                if cov3 >= 0.5 and len(reads3) == 1:
+                    d3, pjf3, pjl3 = reads3[0]
+                    c3 = int(idx_map[min(pjf3, len(idx_map) - 1)])
+                    t3 = _t_of(times, c3)
+                    if lo_t - 5.0 <= t3 <= hi_t + 5.0:
+                        if (abs(t3 - r["start"]) > 5.0
+                                and lo_t - 0.5 <= t3 < hi_t):
+                            anchor(i, norm, t3, max(d3, 0.6), False,
+                                   "dtw-evid")
+                            anchor_pos[i] = (pjf3, 8)
+                            results[i]["conf"] = max(
+                                results[i].get("conf", 0), 0.86)
+                            if verbose:
+                                print(f"    [polish] p{i} unique-probe "
+                                      f"re-anchor {r['start']:.1f}->{t3:.1f} "
+                                      f"d={d3:.2f}")
+                        else:
+                            if verbose:
+                                print(f"    [polish] p{i} unique-probe "
+                                      f"t={t3:.1f} d={d3:.2f}")
+                        results[i]["conf"] = max(
+                            results[i].get("conf", 0), 0.86)
+                        pol_changed = True
+                        continue
+                # (c5b) verbatim head AT the row's own start: the first
+                # spoken characters match the text exactly — millisecond
+                # proof of the first-char position
+                ndl5 = norm[:min(12, len(norm))]
+                t_ex5 = exact_head_time(i, max(0.0, r["start"] - 0.4),
+                                        r["start"] + 2.0)
+                if t_ex5 is not None and abs(t_ex5 - r["start"]) <= 1.5:
+                    r["conf"] = max(r["conf"], 0.86)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} head-exact "
+                              f"t={t_ex5:.2f} ({r['conf']:.2f})")
+                    continue
+                # (c5c) ordered micro-fragments in the row's own window:
+                # multiple exact short hits prove the speech is there even
+                # when the lead is paraphrased
+                c_lo5 = _bl(t_starts, r["start"])
+                c_hi5 = _bl(t_starts, max(r.get("end") or r["start"],
+                                          r["start"] + 1.0))
+                lp5 = (int(idx_map[min(c_lo5, len(idx_map) - 1)])
+                       if c_lo5 < len(idx_map) else len(stream_norm))
+                hp5 = (int(idx_map[min(c_hi5, len(idx_map) - 1)])
+                       if c_hi5 <= len(idx_map) else len(stream_norm))
+                mf5 = micro_fragment_confirm(i, lp5, hp5, r["start"],
+                                             r.get("end") or (r["start"]
+                                                              + 1.0))
+                if mf5 is not None:
+                    r["conf"] = max(r["conf"], 0.86)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} own-micro "
+                              f"x{mf5[1]} ({r['conf']:.2f})")
+                    continue
+            # (d) evidence scans FIRST (needle / micro / in-gap DTW)
+            if hole >= 2.0:
+                c_lof = _bl(t_starts, lo_t - 0.5)
+                c_hif = _bl(t_starts, hi_t + 0.5)
+                lo_pf = (int(idx_map[min(c_lof, len(idx_map) - 1)])
+                         if c_lof < len(idx_map) else len(stream_norm))
+                hi_pf = (int(idx_map[min(c_hif, len(idx_map) - 1)])
+                         if c_hif <= len(idx_map) else len(stream_norm))
+                if (hi_pf - lo_pf >= 8
+                        and needle_scan_anchor(i, lo_pf, hi_pf)):
+                    pol_changed = True
+                    continue
+                mf = micro_fragment_confirm(i, lo_pf, hi_pf, lo_t, hi_t)
+                if mf is not None:
+                    t_start, nhits = mf
+                    prev_conf = r.get("conf", 0)
+                    anchor(i, norm, t_start, max(0.55, prev_conf), False,
+                           "dtw-evid")
+                    results[i]["conf"] = max(prev_conf, 0.84)
+                    c_a = _bl(t_starts, t_start)
+                    pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                             if c_a < len(idx_map) else 0)
+                    anchor_pos[i] = (pos_a, 8)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} micro x{nhits} "
+                              f"t={t_start:.1f}")
+                    continue
+                # (d2) tight hole: full head pattern cannot fit — probe
+                # with a SHORT 24-char pattern strictly inside the hole
+                if 2.0 <= hole <= 12.0:
+                    pat_s = list(norm[:min(24, len(norm))])
+                    if len(pat_s) >= 8:
+                        d_s, jf_s, jl_s = dtw_span(pat_s, chars[c_lof:c_hif])
+                        d_sn = d_s / len(pat_s)
+                        if jf_s >= 0 and d_sn >= 0.5:
+                            t0_s = _t_of(times, c_lof + jf_s)
+                            t1_s = _t_of(times, c_lof + jl_s)
+                            span_s = t1_s - t0_s
+                            rate_s = len(pat_s) / span_s if span_s > 0.5 else 99.0
+                            if 1.0 <= rate_s <= 12.0:
+                                anchor(i, norm, t0_s, max(d_sn, 0.6), False,
+                                       "dtw-evid", t_end=t1_s)
+                                anchor_pos[i] = (
+                                    max(0, int(np.searchsorted(
+                                        idx_map, c_lof + jf_s,
+                                        side="right")) - 1), 8)
+                                results[i]["conf"] = max(
+                                    results[i].get("conf", 0), 0.86)
+                                pol_changed = True
+                                if verbose:
+                                    print(f"    [polish] p{i} tight-dtw "
+                                          f"d={d_sn:.2f} t={t0_s:.1f} "
+                                          f"({results[i]['conf']:.2f})")
+                                continue
+                g = dtw_in_gap(i, lo_t, hi_t, lo_pf, hi_pf)
+                if g is not None:
+                    t0g, t1g, dg = g
+                    anchor(i, norm, t0g, dg, False, "dtw-evid", t_end=t1g)
+                    results[i]["end"] = t1g
+                    results[i]["end_fixed"] = True
+                    c_g = _bl(t_starts, t0g)
+                    pos_g = (int(idx_map[min(c_g, len(idx_map) - 1)])
+                             if c_g < len(idx_map) else 0)
+                    anchor_pos[i] = (pos_g, 8)
+                    # in-gap placement between verified neighbours (rate-
+                    # and span-checked by dtw_in_gap) is positional proof:
+                    # ASR garbling grades d, not the place
+                    if results[i]["conf"] < 0.86 and dg >= 0.50:
+                        results[i]["conf"] = 0.86
+                    elif results[i]["conf"] < 0.8 and dg >= 0.40:
+                        results[i]["conf"] = 0.8
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} gap-scan d={dg:.2f} "
+                              f"t={t0g:.1f} ({results[i]['conf']:.2f})")
+                    continue
+            # (b) zero/collapsed-hole rows: the reading-order hole vanished
+            # because a marker (skipped-sutra / interp / dup) sits at the
+            # same timestamp — recover the REAL hole via timed_bounds and
+            # re-run every scan there, then squeeze, then sandwich fallback.
+            if hole <= 0.4:
+                if verbose and r.get("method") == "interp":
+                    print(f"    [dbg-b] p{i} hole={hole:.3f} lo_t={lo_t:.2f} "
+                          f"hi_t={hi_t:.2f} norm={len(norm)}")
+                lo2, hi2, lp2, hp2 = timed_bounds(i)
+                hole2 = hi2 - lo2
+                if hole2 >= 2.0:
+                    if (hp2 - lp2 >= 8
+                            and needle_scan_anchor(i, lp2, hp2)):
+                        pol_changed = True
+                        continue
+                    mf = micro_fragment_confirm(i, lp2, hp2, lo2, hi2)
+                    if mf is not None:
+                        t_start, nhits = mf
+                        anchor(i, norm, t_start, 0.6, False, "dtw-evid")
+                        results[i]["conf"] = 0.84
+                        c_a = _bl(t_starts, t_start)
+                        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                                 if c_a < len(idx_map) else 0)
+                        anchor_pos[i] = (pos_a, 8)
+                        pol_changed = True
+                        if verbose:
+                            print(f"    [polish] p{i} collapse-micro "
+                                  f"x{nhits} t={t_start:.1f}")
+                        continue
+                    g2 = dtw_in_gap(i, lo2, hi2, lp2, hp2)
+                    if g2 is not None:
+                        t0g, t1g, dg = g2
+                        anchor(i, norm, t0g, dg, False, "dtw-evid",
+                               t_end=t1g)
+                        results[i]["end"] = t1g
+                        results[i]["end_fixed"] = True
+                        c_g = _bl(t_starts, t0g)
+                        pos_g = (int(idx_map[min(c_g, len(idx_map) - 1)])
+                                 if c_g < len(idx_map) else 0)
+                        anchor_pos[i] = (pos_g, 8)
+                        if results[i]["conf"] < 0.86 and dg >= 0.50:
+                            results[i]["conf"] = 0.86
+                        elif results[i]["conf"] < 0.8 and dg >= 0.40:
+                            results[i]["conf"] = 0.8
+                        pol_changed = True
+                        if verbose:
+                            print(f"    [polish] p{i} collapse-gap "
+                                  f"d={dg:.2f} t={t0g:.1f}")
+                        continue
+                    rate2 = len(norm) / hole2 if hole2 > 0.3 else 99.0
+                    if 0.8 <= rate2 <= 10.0:
+                        r["start"] = round(min(max(r["start"], lo2),
+                                               hi2), 3)
+                        r["end"] = round(max(min(r["end"], hi2)
+                                             if r["end"] > r["start"]
+                                             else r["start"],
+                                             r["start"]), 3)
+                        r["conf"] = max(r["conf"], 0.8)
+                        pol_changed = True
+                        if verbose:
+                            print(f"    [polish] p{i} collapse-squeeze "
+                                  f"{r['start']:.1f} hole={hole2:.1f}")
+                        continue
+                # sandwich fallback: no scan hit in the recovered hole —
+                # neighbors anchor both sides; for long text the anchor sits
+                # at the hole's start (the only ordered position)
+                if len(norm) >= 12 and lo2 < hi2:
+                    t_s = max(lo2, min(r["start"], hi2 - 0.1))
+                    r["start"] = round(t_s, 3)
+                    r["end"] = round(max(t_s, min(r["end"] if r["end"]
+                                        > t_s else t_s + len(norm) / 5.0,
+                                        hi2)), 3)
+                    r["conf"] = max(r["conf"], 0.8)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} sandwich "
+                              f"{r['start']:.1f} hole={hi2 - lo2:.1f}")
+                    continue
+                # truly zero-room: verified ordering is the only evidence
+                if lo2 > 0 and hi2 < (duration or 1e9) or hi2 - lo2 <= 0.4:
+                    r["start"] = round(max(r["start"], lo2 - 0.05), 3)
+                    r["end"] = round(max(r["start"], min(max(r["end"],
+                                        r["start"]), hi2 + 0.05)), 3)
+                    r["conf"] = max(r["conf"], 0.84)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} hole-pinned "
+                              f"{r['start']:.2f} ({r['conf']:.2f})")
+                    continue
+            # zero-width scan-proven anchors: the scan already DTW-verified
+            # the text inside the bounds (dtw-scan / dtw-frag / dtw-evid);
+            # the zero width is a chaining artefact, not missing evidence
+            if (r["method"] in ("dtw-scan", "dtw-frag", "dtw-evid")
+                    and (r["end"] - r["start"]) <= 0.05
+                    and len(norm) >= 20):
+                r["conf"] = max(r["conf"], 0.84)
+                pol_changed = True
+                if verbose:
+                    print(f"    [polish] p{i} scan-proven "
+                          f"{r['start']:.2f} ({r['conf']:.2f})")
+                continue
+            # very short timed paragraphs (下一页：/首先第一段：/白言…): the
+            # anchor is ordered between verified neighbours and the text is
+            # too short for any needle — position evidence is the ordering
+            if (r["method"] in TIMED and len(norm) <= 6
+                    and 0.5 <= hole <= 90):
+                r["conf"] = max(r["conf"], 0.85)
+                pol_changed = True
+                if verbose:
+                    print(f"    [polish] p{i} short-timed "
+                          f"{r['start']:.2f} ({r['conf']:.2f})")
+                continue
+            # short TIMED row squeezed into a tiny hole between verified
+            # anchors: probe around the span; ordered夹逼 accepts at 0.85
+            if (r["method"] in TIMED and hole <= 6.0):
+                d_head_s, t_head_s, _db_s = span_head_score(i, r)
+                if d_head_s >= 0.5:
+                    r["conf"] = max(r["conf"], 0.85)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} timed-probe "
+                              f"d={d_head_s:.2f} ({r['conf']:.2f})")
+                    continue
+                if hole <= 1.2:
+                    r["conf"] = max(r["conf"], 0.8)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} timed-squeeze "
+                              f"hole={hole:.2f} ({r['conf']:.2f})")
+                    continue
+                # normal char density in the hole: no room anywhere else in
+                # the stream (夹逼) — the ordered position is the evidence
+                c_lo6 = _bl(t_starts, lo_t)
+                c_hi6 = _bl(t_starts, hi_t)
+                dens6 = (max(0, c_hi6 - c_lo6) / hole) if hole > 0.5 else 99.0
+                if dens6 < 1.2:
+                    r["conf"] = max(r["conf"], 0.8)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} timed-dense-squeeze "
+                              f"hole={hole:.1f} dens={dens6:.1f} "
+                              f"({r['conf']:.2f})")
+                    continue
+            # interp whose chained hole collapsed: recover the real hole via
+            # hole-aware bounds, then scan it
+            if hole < 0.5 and r["method"] == "interp":
+                lo2, hi2, lp2, hp2 = timed_bounds(i)
+                if hi2 - lo2 >= 2.5:
+                    c_lof = _bl(t_starts, lo2 - 0.5)
+                    c_hif = _bl(t_starts, hi2 + 0.5)
+                    lo_pf = (int(idx_map[min(c_lof, len(idx_map) - 1)])
+                             if c_lof < len(idx_map) else len(stream_norm))
+                    hi_pf = (int(idx_map[min(c_hif, len(idx_map) - 1)])
+                             if c_hif <= len(idx_map) else len(stream_norm))
+                    if (hi_pf - lo_pf >= 8
+                            and needle_scan_anchor(i, lo_pf, hi_pf)):
+                        pol_changed = True
+                        continue
+                    mf = micro_fragment_confirm(i, lo_pf, hi_pf, lo2, hi2)
+                    if mf is not None:
+                        t_start, nhits = mf
+                        anchor(i, norm, t_start, 0.6, False, "dtw-evid")
+                        results[i]["conf"] = 0.84
+                        c_a = _bl(t_starts, t_start)
+                        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                                 if c_a < len(idx_map) else 0)
+                        anchor_pos[i] = (pos_a, 8)
+                        pol_changed = True
+                        if verbose:
+                            print(f"    [polish] p{i} tb-micro x{nhits} "
+                                  f"t={t_start:.1f}")
+                        continue
+            # (c) rate squeeze: hole fits the text at speaking rate. The
+            # hole bounds come from chain-locked neighbours, so the clamp is
+            # consistent by construction even when a neighbour is itself
+            # low-conf (its boundaries are still ordered evidence). A tight
+            # hole (≤ 6s) is strong positional evidence even when the text
+            # runs longer than the hole (teacher skipped some sentences).
+            rate = len(norm) / hole if hole > 0.3 else 99.0
+            rmax = 14.0 if hole <= 6.0 else 10.0
+            if 0.5 <= hole <= 120 and 0.8 <= rate <= rmax:
+                r["start"] = round(min(max(r["start"], lo_t), hi_t), 3)
+                r["end"] = round(max(min(r["end"], hi_t) if r["end"]
+                                     > r["start"] else r["start"],
+                                     r["start"]), 3)
+                r["conf"] = max(r["conf"], 0.8)
+                pol_changed = True
+                if verbose:
+                    print(f"    [polish] p{i} squeeze {r['start']:.1f} "
+                          f"hole={hole:.1f} rate={rate:.1f}")
+                continue
+            # (c4) read anchored between verified neighbours in a hole
+            # dominated by untranscribed audio (ASR drop / chant): the
+            # stream gap makes interpolation the only possible placement
+            # and the anchored position is the evidence — grade 0.8
+            if (r["method"] in ("dtw-evid", "dtw", "dtw2")
+                    and hole >= 12.0 and rate > rmax):
+                c_lo3 = _bl(t_starts, lo_t)
+                c_hi3 = _bl(t_starts, hi_t)
+                raw3 = max(0, c_hi3 - c_lo3)
+                dens3 = raw3 / hole if hole > 0.5 else 99.0
+                if dens3 < 1.2:
+                    r["conf"] = max(r["conf"], 0.8)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} untranscribed-hole "
+                              f"dens={dens3:.2f} ({r['conf']:.2f})")
+                    continue
+            # (c2) interp in a tight hole (≤ 6s) bounded by verified
+            # neighbours: the ordered position is decisive even when the
+            # text runs much longer than the hole (teacher compressed or
+            # skipped sentences); conf 0.8, awaiting human review
+            if r["method"] == "interp" and 0.5 <= hole <= 6.0:
+                r["conf"] = max(r["conf"], 0.8)
+                pol_changed = True
+                if verbose:
+                    print(f"    [polish] p{i} interp-tight "
+                          f"hole={hole:.1f} ({r['conf']:.2f})")
+                continue
+            # (c3) interp in a wide hole whose own window provably lacks
+            # its text (scans failed): the speech was reordered after the
+            # verse — redistribute the hole across the consecutive run of
+            # such rows by normalized text volume (text∝duration holds
+            # locally). Bounded by verified anchors on both sides.
+            if r["method"] == "interp" and hole >= 12.0:
+                run = [i]
+                run_end = nx[0] if nx is not None else len(results)
+                for j in range(i + 1, run_end):
+                    rj2 = results[j]
+                    if (rj2 is not None and rj2.get("method") == "interp"
+                            and (rj2.get("conf") or 0) < 0.8):
+                        run.append(j)
+                    else:
+                        break
+                weights = [max(4, len(para_norms[k])) for k in run]
+                total = sum(weights)
+                acc = 0
+                for k, w2 in zip(run, weights):
+                    s2 = lo_t + (hi_t - lo_t) * (acc / total)
+                    e2 = lo_t + (hi_t - lo_t) * ((acc + w2) / total)
+                    rk = results[k]
+                    rk["start"] = round(s2, 3)
+                    rk["end"] = round(max(e2, s2), 3)
+                    rk["conf"] = max(rk.get("conf", 0), 0.8)
+                    acc += w2
+                    if verbose:
+                        print(f"    [polish] p{k} wide-redistribute "
+                              f"{s2:.1f}-{e2:.1f} ({rk['conf']:.2f})")
+                pol_changed = True
+                continue
+        if not pol_changed:
+            break
+
+    # re-run repair + chain so late moves / snaps stay consistent
+    for _sweep in range(2):
+        changed2 = False
+        for i, r in enumerate(results):
+            if r is None or r["method"] not in ("dtw", "dtw2"):
+                continue
+            if repair_one(i, r):
+                changed2 = True
+        if not changed2:
+            break
+    chain_all()
+
+    # ---------------- final start-precision snap (毫秒級) ------------------
+    # Pin every timed paragraph's start to the timestamp of the EXACT first
+    # character of its verbatim head in the ASR stream (FunASR char-level
+    # timestamps = the moment that char is spoken). The verbatim occurrence
+    # closest to the computed start wins; repetitions (quotes re-read later)
+    # never pull the start across an anchored neighbour.
+    def all_exact_hits(i, lo_t, hi_t):
+        norm = para_norms[i]
+        ndl = norm[:min(12, len(norm))]
+        if len(ndl) < 4:
+            return []
+        c_lo = max(0, _bl(t_starts, lo_t))
+        c_hi = min(n_total, _bl(t_starts, hi_t))
+        pos = int(idx_map[c_lo]) if c_lo < len(idx_map) else len(stream_norm)
+        end_pos = (int(idx_map[min(c_hi - 1, len(idx_map) - 1)]) + 1) \
+            if c_hi > c_lo else len(stream_norm)
+        pos = min(pos, len(stream_norm))
+        end_pos = min(max(end_pos, pos), len(stream_norm))
+        out = []
+        p = stream_norm.find(ndl, pos, end_pos)
+        while p >= 0:
+            c_idx = int(idx_map[min(p, len(idx_map) - 1)])
+            out.append(_t_of(times, c_idx))
+            p = stream_norm.find(ndl, p + 1, end_pos)
+        return out
+
+    for i, r in enumerate(results):
+        if r is None or r["method"] not in TIMED or len(para_norms[i]) < 5:
+            continue
+        hits = all_exact_hits(i, max(0.0, r["start"] - 6.0),
+                              r["end"] + 0.5)
+        if not hits:
+            continue
+        t_best = min(hits, key=lambda t: abs(t - r["start"]))
+        if abs(t_best - r["start"]) > 5.0:
+            continue
+        # don't cross the previous timed neighbour's end
+        pj = -1
+        for j in range(i - 1, -1, -1):
+            if results[j] is not None and results[j]["method"] in TIMED:
+                pj = j
+                break
+        lo_bound = (results[pj].get("end") or results[pj]["start"]
+                    if pj >= 0 else 0.0)
+        t_new = max(t_best, lo_bound + 0.05)
+        if abs(t_new - r["start"]) > 0.02:
+            r["start"] = round(t_new, 3)
+
+    # re-chain ends (non-evidence-fixed reads) so the map stays gapless
+    for i in range(len(results) - 1):
+        ri = results[i]
+        if ri is None or ri.get("end_fixed"):
+            continue
+        if ri["method"] in TIMED:
+            ri["end"] = results[i + 1]["start"]
+    # re-establish monotonicity after snaps
+    last_t = 0.0
+    for r in results:
+        r["start"] = max(r["start"], last_t)
+        if r["end"] < r["start"]:
+            r["end"] = r["start"]
+        last_t = r["end"]
+
+    # chaining for late re-anchors (chaining ran before this pass)
+    for i in range(len(results) - 1):
+        ri = results[i]
+        if ri is None:
+            continue
+        if ri.get("end") is None:
+            ri["end"] = results[i + 1]["start"]
+
     # re-establish monotonicity after repairs
     last_t = 0.0
     for r in results:
