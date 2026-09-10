@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import re
 import sys
 from bisect import bisect_right
@@ -439,6 +440,11 @@ def align_lecture(paras, dump, duration, verbose=False):
 
     ANCHOR_LOG = []
 
+    def _trace(i, tag):
+        if os.environ.get("TRACE_PARA") \
+                and int(os.environ["TRACE_PARA"]) == i:
+            print(f"    [TRACE:{tag}] p{i}: {results[i]}")
+
     def anchor(idx, norm, t_start, d_norm, exact, method, t_end=None,
                force_end_fix=False, pat_len=None):
         conf = _conf_of(d_norm, exact)
@@ -466,6 +472,7 @@ def align_lecture(paras, dump, duration, verbose=False):
             elif pat_len is not None and pat_len <= HEAD_DTW:
                 r["_ev_end"] = round(t_end, 3)
         results[idx] = r
+        _trace(idx, f"anchor:{method}")
 
     def anchor_sutra_fragments(idx, norm, lo_pos, hi_pos):
         """Verses are sometimes read in fragments with commentary
@@ -962,6 +969,10 @@ def align_lecture(paras, dump, duration, verbose=False):
         if idx in preludes:
             continue  # intro-before-head-read inversion is expected
         prev = order[k - 1]
+        if prev not in anchor_pos:
+            # prev was a sutra block demoted to skipped-sutra during this
+            # loop (its territory was popped): nothing to reconcile against
+            continue
         prev_end_pos = (anchor_pos[prev][0] + anchor_pos[prev][1])
         prev_end_t = None
         if results[prev].get("end_fixed"):
@@ -1135,9 +1146,9 @@ def align_lecture(paras, dump, duration, verbose=False):
                 c_hi0 = min(n_total,
                             int(np.searchsorted(t_starts, nxt, side="left"))
                             + 160)
-                pos0 = (int(idx_map[min(c_lo0, len(idx_map) - 1)])
+                pos0 = (int(np.searchsorted(idx_map, c_lo0))
                         if c_lo0 < len(idx_map) else len(stream_norm))
-                end0 = (int(idx_map[min(c_hi0 - 1, len(idx_map) - 1)]) + 1) \
+                end0 = (int(np.searchsorted(idx_map, c_hi0 - 1)) + 1) \
                     if c_hi0 > c_lo0 else len(stream_norm)
                 pos0 = min(pos0, len(stream_norm))
                 end0 = min(max(end0, pos0), len(stream_norm))
@@ -1259,7 +1270,7 @@ def align_lecture(paras, dump, duration, verbose=False):
                 r["start"] = round(max(0.0, t_head - LEAD_BACK), 3)
                 c_th = int(np.searchsorted(t_starts, r["start"],
                                            side="left"))
-                pos_th = int(idx_map[min(c_th, len(idx_map) - 1)]) \
+                pos_th = int(np.searchsorted(idx_map, c_th)) \
                     if c_th < len(idx_map) else 0
                 if i in anchor_pos:
                     anchor_pos[i] = (pos_th, max(4, anchor_pos[i][1]))
@@ -1300,7 +1311,7 @@ def align_lecture(paras, dump, duration, verbose=False):
         # keep anchor_pos in sync with the moved start (stale positions
         # poison the positional bounds of later sweeps)
         c_new = int(np.searchsorted(t_starts, r["start"], side="left"))
-        pos_new = int(idx_map[min(c_new, len(idx_map) - 1)]) \
+        pos_new = int(np.searchsorted(idx_map, c_new)) \
             if c_new < len(idx_map) else 0
         if i in anchor_pos:
             anchor_pos[i] = (pos_new, max(4, anchor_pos[i][1]))
@@ -1568,9 +1579,9 @@ def align_lecture(paras, dump, duration, verbose=False):
                 else (duration or (results[i]["start"] + 60.0)))
         c_lo = _bl(t_starts, lo_t)
         c_hi = _bl(t_starts, hi_t)
-        lo_pos = (int(idx_map[min(c_lo, len(idx_map) - 1)])
+        lo_pos = (int(np.searchsorted(idx_map, c_lo))
                   if c_lo < len(idx_map) else len(stream_norm))
-        hi_pos = (int(idx_map[min(c_hi, len(idx_map) - 1)])
+        hi_pos = (int(np.searchsorted(idx_map, c_hi))
                   if c_hi > c_lo and c_hi <= len(idx_map)
                   else len(stream_norm))
         return lo_t, hi_t, lo_pos, hi_pos
@@ -1680,7 +1691,7 @@ def align_lecture(paras, dump, duration, verbose=False):
         # proof (text scores only grade ASR quality, not correctness)
         results[i]["conf"] = max(results[i]["conf"], 0.86)
         c_a = _bl(t_starts, t_start)
-        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+        pos_a = (int(np.searchsorted(idx_map, c_a))
                  if c_a < len(idx_map) else 0)
         anchor_pos[i] = (pos_a, 8)
         if verbose:
@@ -1699,10 +1710,12 @@ def align_lecture(paras, dump, duration, verbose=False):
         c_hi = _bl(t_starts, hi_t)
         c_lo = max(0, min(c_lo, n_total - 1))
         c_hi = max(c_lo, min(c_hi, n_total))
-        pos = int(idx_map[c_lo]) if c_lo < len(idx_map) else len(stream_norm)
+        pos = (int(np.searchsorted(idx_map, c_lo))
+               if c_lo < len(idx_map) else len(stream_norm))
         pos = min(pos, len(stream_norm))
-        end_pos = (int(idx_map[min(c_hi - 1, len(idx_map) - 1)]) + 1) \
-            if c_hi > c_lo else len(stream_norm)
+        end_pos = (int(np.searchsorted(idx_map, c_hi))
+                   if c_hi > c_lo else len(stream_norm)
+                   if c_hi <= len(idx_map) else len(stream_norm))
         p = stream_norm.find(ndl, pos, max(end_pos, pos + len(ndl)))
         if p >= 0:
             c_idx = int(idx_map[min(p, len(idx_map) - 1)])
@@ -1871,7 +1884,7 @@ def align_lecture(paras, dump, duration, verbose=False):
                                "dtw-evid")
                         results[i]["conf"] = 0.84
                         c_a = _bl(t_starts, t_start)
-                        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                        pos_a = (int(np.searchsorted(idx_map, c_a))
                                  if c_a < len(idx_map) else 0)
                         anchor_pos[i] = (pos_a, 8)
                         if verbose:
@@ -1904,9 +1917,9 @@ def align_lecture(paras, dump, duration, verbose=False):
             c1 = _bl(t_starts, r["start"])
             end_t = r.get("end")
             c2 = _bl(t_starts, end_t if end_t is not None else r["start"])
-            fp = (int(idx_map[min(c1, len(idx_map) - 1)])
+            fp = (int(np.searchsorted(idx_map, c1))
                   if c1 < len(idx_map) else len(stream_norm))
-            fq = (int(idx_map[min(c2, len(idx_map) - 1)])
+            fq = (int(np.searchsorted(idx_map, c2))
                   if c2 <= len(idx_map) else len(stream_norm))
             if fq - fp >= 20:
                 frag2 = fragment_in_span(i, fp, fq)
@@ -1960,8 +1973,8 @@ def align_lecture(paras, dump, duration, verbose=False):
                                       "method": "skipped-sutra"}
                         changed = True
                     elif ok_order:
-                        c_jf = int(idx_map[min(p_jf, len(idx_map) - 1)])
-                        c_jl = int(idx_map[min(p_jl, len(idx_map) - 1)])
+                        c_jf = int(np.searchsorted(idx_map, p_jf))
+                        c_jl = int(np.searchsorted(idx_map, p_jl))
                         t0 = _t_of(times, c_jf)
                         t1 = _t_of(times, c_jl)
                         if t1 > t0 + 0.5:
@@ -2057,7 +2070,7 @@ def align_lecture(paras, dump, duration, verbose=False):
                 r["start"] = round(max(0.0, t_head - LEAD_BACK), 3)
                 if i in anchor_pos:
                     c_th = _bl(t_starts, t_head)
-                    pos_th = int(idx_map[min(c_th, len(idx_map) - 1)])
+                    pos_th = int(np.searchsorted(idx_map, c_th))
                     anchor_pos[i] = (pos_th, max(4, anchor_pos[i][1]))
                 changed = True
                 continue
@@ -2121,6 +2134,57 @@ def align_lecture(paras, dump, duration, verbose=False):
     #      ordered neighbours leave no room anywhere else.
     #   d. low d_parses: fragment/micro-fragment scan one more time with a
     #      fresh bound (earlier sweeps may have moved a neighbour since).
+    def stream_gram_scan(i):
+        """Whole-stream EXACT scan of the head's 4-grams: for each
+        occurrence of the first gram, chain the following grams by nearest
+        order-consistent occurrence with a speaking-rate check. A dense
+        chain (>=60% grams matched) marks the true read. Returns
+        (t0, t1) or None."""
+        norm = para_norms[i]
+        if len(norm) < 8:
+            return None
+        grams = [norm[k:k + 4]
+                 for k in range(0, min(40, len(norm) - 3), 4)]
+        grams = [g for g in grams if len(g) == 4]
+        if not grams:
+            return None
+        occ = {}
+        for g in grams:
+            lst = []
+            p = stream_norm.find(g)
+            while p >= 0 and len(lst) < 200:
+                lst.append(p)
+                p = stream_norm.find(g, p + 1)
+            occ[g] = lst
+            if not lst:
+                return None
+        best = None
+        for p0 in occ[grams[0]][:80]:
+            if p0 + len(grams) * 4 >= len(stream_norm):
+                continue
+            c_idx0 = int(idx_map[min(p0, len(idx_map) - 1)])
+            t0p = _t_of(times, c_idx0)
+            prev_p = p0
+            last_t = t0p
+            matched = 1
+            for g in grams[1:]:
+                cands = [q for q in occ[g] if prev_p < q <= prev_p + 48]
+                if not cands:
+                    continue
+                q = cands[0]
+                tq = _t_of(times, int(idx_map[min(q, len(idx_map) - 1)]))
+                if tq - last_t > 5.0:  # 4 chars in >5s = not one flow
+                    continue
+                prev_p = q
+                last_t = tq
+                matched += 1
+            if matched >= max(2, int(len(grams) * 0.6)):
+                if best is None or matched > best[0]:
+                    best = (matched, t0p, last_t)
+        if best is None:
+            return None
+        return best[1], best[2]
+
     def pv_ok_neighbours(results, i):
         """True when both reading-order neighbours exist and are >= 0.8."""
         pv = nx = None
@@ -2202,7 +2266,7 @@ def align_lecture(paras, dump, duration, verbose=False):
             # probe. Not-read proven (cov < 0.55 anywhere in the stream)
             # grades the absence evidence; a placeable read stays at 0.8
             # (the evidence pass handles ordered placement).
-            if r["method"] == "skipped-sutra" and len(norm) >= 8:
+            if r["method"] == "skipped-sutra" and len(norm) >= 6:
                 pat2 = list(norm[:min(len(norm), SUTRA_DTW_MAX)])
                 cov_f, reads_f = probe_reads(pat2)
                 if cov_f >= READ_COV and reads_f:
@@ -2219,6 +2283,63 @@ def align_lecture(paras, dump, duration, verbose=False):
             if verbose and r.get("method") == "interp":
                 print(f"    [dbg-hole] p{i} lo={lo_t:.2f} hi={hi_t:.2f} "
                       f"hole={hole:.3f} norm={len(norm)}")
+            # (c1.5) stack-unwind: a short/connective TIMED row whose head
+            # phrase is generic ("下一句就，" / "这个也知道。") can anchor at
+            # a LATER verbatim occurrence (the next discussion's
+            # connective), and everything behind it chains into a stack.
+            # The chain-locked hole [lo_t, hi_t) is the row's only honest
+            # territory: a verbatim 4-gram of its head inside that hole is
+            # decisive ordered evidence — pull the start back to it.
+            if (r["method"] in TIMED and hole > 0.4
+                    and r.get("end") is not None
+                    and r["end"] - r["start"] > 4.0
+                    and len(norm) >= 4):
+                t_occ = None
+                for k5 in range(0, min(12, max(1, len(norm) - 3)), 4):
+                    g5 = norm[k5:k5 + 4]
+                    if len(g5) < 4:
+                        break
+                    c_lo5b = max(0, _bl(t_starts, lo_t))
+                    c_hi5b = min(n_total, _bl(t_starts, hi_t))
+                    pos5 = (int(np.searchsorted(idx_map, c_lo5b))
+                            if c_lo5b < len(idx_map) else len(stream_norm))
+                    end5 = (int(np.searchsorted(idx_map, c_hi5b))
+                            if c_hi5b > c_lo5b else len(stream_norm))
+                    pos5 = min(pos5, len(stream_norm))
+                    end5 = min(max(end5, pos5), len(stream_norm))
+                    q5 = stream_norm.find(g5, pos5, end5)
+                    if q5 >= 0:
+                        c_idx5 = int(idx_map[min(q5, len(idx_map) - 1)])
+                        t_occ = _t_of(times, c_idx5)
+                        break
+                if t_occ is not None and lo_t - 0.5 <= t_occ < hi_t \
+                        and abs(t_occ - r["start"]) > 0.5:
+                    r["start"] = round(t_occ, 3)
+                    e_new = round(min(max(r["end"], t_occ + 0.5), hi_t), 3)
+                    if e_new <= r["start"]:
+                        e_new = round(min(hi_t, t_occ
+                                          + max(0.5, len(norm) / 5.0)), 3)
+                    r["end"] = e_new
+                    r["conf"] = max(r["conf"], 0.86)
+                    pol_changed = True
+                    if verbose:
+                        print(f"    [polish] p{i} stack-unwind "
+                              f"{t_occ:.1f} ({r['conf']:.2f})")
+                    continue
+            # (c4.5) sandwich-feasibility: after every repair pass, a
+            # TIMED row whose chain-locked hole can physically hold its
+            # speech (speaking-rate check) and whose start already sits
+            # inside that ordered territory is sandwich-proven: the strict
+            # reading order admits no other placement for it.
+            if (r["method"] in TIMED
+                    and hole >= max(0.8, len(norm) / 14.0)
+                    and lo_t - 0.5 <= r["start"] < hi_t):
+                r["conf"] = max(r["conf"], 0.85)
+                pol_changed = True
+                if verbose:
+                    print(f"    [polish] p{i} sandwich {r['start']:.2f} "
+                          f"hole={hole:.1f} ({r['conf']:.2f})")
+                continue
             # (c5) lowconf timed rows: whole-stream uniqueness probe. The
             # head's syllable-sequence fitting at exactly ONE place in the
             # whole lecture is decisive placement evidence (uniqueness ×
@@ -2269,9 +2390,9 @@ def align_lecture(paras, dump, duration, verbose=False):
                 c_lo5 = _bl(t_starts, r["start"])
                 c_hi5 = _bl(t_starts, max(r.get("end") or r["start"],
                                           r["start"] + 1.0))
-                lp5 = (int(idx_map[min(c_lo5, len(idx_map) - 1)])
+                lp5 = (int(np.searchsorted(idx_map, c_lo5))
                        if c_lo5 < len(idx_map) else len(stream_norm))
-                hp5 = (int(idx_map[min(c_hi5, len(idx_map) - 1)])
+                hp5 = (int(np.searchsorted(idx_map, c_hi5))
                        if c_hi5 <= len(idx_map) else len(stream_norm))
                 mf5 = micro_fragment_confirm(i, lp5, hp5, r["start"],
                                              r.get("end") or (r["start"]
@@ -2283,8 +2404,32 @@ def align_lecture(paras, dump, duration, verbose=False):
                         print(f"    [polish] p{i} own-micro "
                               f"x{mf5[1]} ({r['conf']:.2f})")
                     continue
-            # (d) evidence scans FIRST (needle / micro / in-gap DTW)
-            if hole >= 2.0:
+                # (c5d) whole-stream ordered gram-scan: exact 4-gram chain
+                # (rate-checked) found OUTSIDE the row's span — the row's
+                # text was verbatim spoken there; reading order then pins
+                # it between the same neighbours. Re-anchor.
+                g_scan = stream_gram_scan(i) if len(norm) >= 8 else None
+                if g_scan is not None:
+                    t0g5, t1g5 = g_scan
+                    span5 = t1g5 - t0g5
+                    rate5 = len(norm) / span5 if span5 > 0.5 else 99.0
+                    if (1.0 <= rate5 <= 12.0
+                            and lo_t - 5.0 <= t0g5 < hi_t
+                            and abs(t0g5 - r["start"]) > 3.0):
+                        anchor(i, norm, t0g5, 0.86, False, "dtw-evid",
+                               t_end=t1g5)
+                        c_g5 = _bl(t_starts, t0g5)
+                        pos_g5 = (int(idx_map[min(c_g5, len(idx_map) - 1)])
+                                  if c_g5 < len(idx_map) else 0)
+                        anchor_pos[i] = (pos_g5, 8)
+                        results[i]["conf"] = max(
+                            results[i].get("conf", 0), 0.86)
+                        pol_changed = True
+                        if verbose:
+                            print(f"    [polish] p{i} gram-scan "
+                                  f"{t0g5:.1f} ({results[i]['conf']:.2f})")
+                        continue
+            # (d) evidence scans FIRST (needle / micro / in-gap DTW)                if hole >= 2.0:
                 c_lof = _bl(t_starts, lo_t - 0.5)
                 c_hif = _bl(t_starts, hi_t + 0.5)
                 lo_pf = (int(idx_map[min(c_lof, len(idx_map) - 1)])
@@ -2345,7 +2490,7 @@ def align_lecture(paras, dump, duration, verbose=False):
                     results[i]["end"] = t1g
                     results[i]["end_fixed"] = True
                     c_g = _bl(t_starts, t0g)
-                    pos_g = (int(idx_map[min(c_g, len(idx_map) - 1)])
+                    pos_g = (int(np.searchsorted(idx_map, c_g))
                              if c_g < len(idx_map) else 0)
                     anchor_pos[i] = (pos_g, 8)
                     # in-gap placement between verified neighbours (rate-
@@ -2381,7 +2526,7 @@ def align_lecture(paras, dump, duration, verbose=False):
                         anchor(i, norm, t_start, 0.6, False, "dtw-evid")
                         results[i]["conf"] = 0.84
                         c_a = _bl(t_starts, t_start)
-                        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                        pos_a = (int(np.searchsorted(idx_map, c_a))
                                  if c_a < len(idx_map) else 0)
                         anchor_pos[i] = (pos_a, 8)
                         pol_changed = True
@@ -2524,7 +2669,7 @@ def align_lecture(paras, dump, duration, verbose=False):
                         anchor(i, norm, t_start, 0.6, False, "dtw-evid")
                         results[i]["conf"] = 0.84
                         c_a = _bl(t_starts, t_start)
-                        pos_a = (int(idx_map[min(c_a, len(idx_map) - 1)])
+                        pos_a = (int(np.searchsorted(idx_map, c_a))
                                  if c_a < len(idx_map) else 0)
                         anchor_pos[i] = (pos_a, 8)
                         pol_changed = True
@@ -2613,6 +2758,117 @@ def align_lecture(paras, dump, duration, verbose=False):
         if not pol_changed:
             break
 
+    # ---------------- skipped-sutra hole-read rescue ---------------------
+    # A quote marked not-read whose zero-width seat opens a gap wide enough
+    # for its own recitation: scan that gap for the head's exact 3-grams.
+    # The head gram plus another chaining within speaking rate is the READ
+    # (FunASR char timestamps = millisecond-true) — decisive verbatim
+    # evidence that the teacher did recite this copy after all.
+    for i, r in enumerate(results):
+        if r is None or r.get("method") != "skipped-sutra":
+            continue
+        norm = para_norms[i]
+        if len(norm) < 6 or (r.get("end") or 0) - r["start"] > 0.3:
+            continue
+        nx_t = None
+        for j in range(i + 1, len(results)):
+            rj = results[j]
+            if rj is not None:
+                nx_t = rj["start"]
+                break
+        hi_t = nx_t if nx_t is not None else (duration or r["start"] + 30.0)
+        if hi_t != hi_t or hi_t < r["start"]:
+            continue
+        need = len(norm) / 7.0
+        if hi_t - r["start"] < max(1.2, need * 0.6):
+            continue
+        grams = [norm[k:k + 3] for k in range(0, min(24, len(norm) - 2), 3)]
+        grams = [g for g in grams if len(g) == 3]
+        if not grams:
+            continue
+        c_lo = max(0, _bl(t_starts, r["start"]))
+        c_hi = min(n_total, _bl(t_starts, hi_t))
+        if verbose:
+            print(f"    [hole-chk] p{i} s={r['start']:.2f} hi={hi_t:.2f} "
+                  f"g0={grams[0]}")
+        # char index -> norm index: idx_map is norm->char, so invert with
+        # searchsorted (idx_map[c_lo] would misread a char index as a norm
+        # index and shove the window hundreds of chars past the gap)
+        pos = int(np.searchsorted(idx_map, c_lo))
+        pos_hi = int(np.searchsorted(
+            idx_map, min(c_hi - 1, len(idx_map) - 1)))
+        # +8 norm chars: the read may begin just past the successor's
+        # nominal start (that start is often the chained boundary)
+        end_pos = min(len(stream_norm), pos_hi + 8)
+        end_pos = max(end_pos, pos)
+        head_q = stream_norm.find(grams[0], pos, end_pos)
+        if verbose:
+            print(f"    [hole-chk] p{i} win={pos}:{end_pos} "
+                  f"{stream_norm[pos:min(end_pos, pos + 30)]!r} "
+                  f"head_q={head_q}")
+        if head_q < 0:
+            continue  # head garbled/absent in this gap: stay conservative
+        c_hi_ch = (int(idx_map[min(c_hi - 1, len(idx_map) - 1)])
+                   if c_hi > c_lo else min(len(stream_norm), pos + 60))
+        # exact gram chaining is too brittle against ASR homophones
+        # (璧/毕, 此/辞): confirm with a garble-tolerant short DTW of the
+        # 8-char head against the gap window instead.
+        hc0 = int(idx_map[min(head_q, len(idx_map) - 1)])
+        hc1 = min(n_total, hc0 + 40)
+        win = chars[hc0:hc1]
+        pat = list(norm[:min(8, len(norm))])
+        if len(win) < max(4, len(pat) // 2):
+            continue
+        d_sc, jf, jl = dtw_span(pat, win)
+        if d_sc / max(1, len(pat)) < 0.45:
+            continue
+        t_first = _t_of(times, hc0 + jf)
+        t_last = _t_of(times, hc0 + jl)
+        matched = 2
+        if verbose:
+            print(f"    [hole-chk] p{i} dtw d={d_sc / max(1, len(pat)):.2f} "
+                  f"t={t_first:.2f}")
+        if matched >= 2 and t_first is not None \
+                and t_last - t_first <= max(4.0, len(norm) / 4.0) \
+                and t_first <= hi_t + 8.0:
+            # true read extent: tail gram's last occurrence near the head
+            tail_g = norm[-3:]
+            w_end = min(len(stream_norm), hc0 + max(60, len(norm) + 20))
+            t_end_raw = t_first + need
+            q2 = stream_norm.find(tail_g, hc0, w_end)
+            while q2 >= 0:
+                t_end_raw = _t_of(times,
+                                  int(idx_map[min(q2, len(idx_map) - 1)]))
+                q2 = stream_norm.find(tail_g, q2 + 1, w_end)
+            new_start = round(t_first, 3)
+            new_end = round(min(t_end_raw + 0.6,
+                                new_start + max(need * 2.0, need + 10.0)),
+                            3)
+            if new_end <= new_start:
+                new_end = round(new_start + max(0.6, need), 3)
+            r["start"] = new_start
+            r["end"] = new_end
+            r["method"] = "dtw-evid"
+            r["conf"] = max(r.get("conf", 0), 0.86)
+            # the read may straddle the successor's nominal start: re-seat
+            # that row at the first char at/after the read's end
+            for j in range(i + 1, len(results)):
+                rj = results[j]
+                if rj is None:
+                    continue
+                if rj["start"] < r["end"]:
+                    cj = _bl(t_starts, r["end"])
+                    if cj < n_total:
+                        rj["start"] = round(max(t_starts[cj],
+                                                r["end"]), 3)
+                        if rj.get("end") is not None \
+                                and rj["end"] < rj["start"]:
+                            rj["end"] = rj["start"]
+                break
+            if verbose:
+                print(f"    [hole-read] p{i} {t_first:.2f}-"
+                      f"{r['end']:.2f} ({r['conf']:.2f})")
+
     # re-run repair + chain so late moves / snaps stay consistent
     for _sweep in range(2):
         changed2 = False
@@ -2633,22 +2889,32 @@ def align_lecture(paras, dump, duration, verbose=False):
     # never pull the start across an anchored neighbour.
     def all_exact_hits(i, lo_t, hi_t):
         norm = para_norms[i]
-        ndl = norm[:min(12, len(norm))]
-        if len(ndl) < 4:
+        if len(norm) < 4:
             return []
         c_lo = max(0, _bl(t_starts, lo_t))
         c_hi = min(n_total, _bl(t_starts, hi_t))
-        pos = int(idx_map[c_lo]) if c_lo < len(idx_map) else len(stream_norm)
-        end_pos = (int(idx_map[min(c_hi - 1, len(idx_map) - 1)]) + 1) \
+        # _bl yields a CHAR index; convert char -> norm via searchsorted
+        pos = int(np.searchsorted(idx_map, c_lo)) if c_lo < n_total \
+            else len(stream_norm)
+        end_pos = (int(np.searchsorted(idx_map, c_hi - 1)) + 1) \
             if c_hi > c_lo else len(stream_norm)
         pos = min(pos, len(stream_norm))
         end_pos = min(max(end_pos, pos), len(stream_norm))
         out = []
-        p = stream_norm.find(ndl, pos, end_pos)
-        while p >= 0:
-            c_idx = int(idx_map[min(p, len(idx_map) - 1)])
-            out.append(_t_of(times, c_idx))
-            p = stream_norm.find(ndl, p + 1, end_pos)
+        # try needle lengths 12 -> 8 -> 6: ASR garbling breaks long exact
+        # matches, a 6-gram survives almost everywhere
+        for L in (12, 8, 6):
+            if L > len(norm):
+                continue
+            ndl = norm[:L]
+            out = []
+            p = stream_norm.find(ndl, pos, end_pos)
+            while p >= 0:
+                c_idx = int(idx_map[min(p, len(idx_map) - 1)])
+                out.append(_t_of(times, c_idx))
+                p = stream_norm.find(ndl, p + 1, end_pos)
+            if out:
+                break
         return out
 
     for i, r in enumerate(results):
@@ -2658,9 +2924,6 @@ def align_lecture(paras, dump, duration, verbose=False):
                               r["end"] + 0.5)
         if not hits:
             continue
-        t_best = min(hits, key=lambda t: abs(t - r["start"]))
-        if abs(t_best - r["start"]) > 5.0:
-            continue
         # don't cross the previous timed neighbour's end
         pj = -1
         for j in range(i - 1, -1, -1):
@@ -2669,6 +2932,14 @@ def align_lecture(paras, dump, duration, verbose=False):
                 break
         lo_bound = (results[pj].get("end") or results[pj]["start"]
                     if pj >= 0 else 0.0)
+        # occurrences inside the predecessor's tail are its echo/repeat —
+        # the true head is the first hit at/after the neighbour bound
+        fwd = [t for t in hits if t >= lo_bound + 0.05]
+        if not fwd:
+            continue
+        t_best = min(fwd, key=lambda t: abs(t - r["start"]))
+        if abs(t_best - r["start"]) > 10.0:
+            continue
         t_new = max(t_best, lo_bound + 0.05)
         if abs(t_new - r["start"]) > 0.02:
             r["start"] = round(t_new, 3)
@@ -2704,6 +2975,11 @@ def align_lecture(paras, dump, duration, verbose=False):
             r["end"] = r["start"]
         last_t = r["end"]
 
+    if os.environ.get("TRACE_PARA"):
+        _tp = int(os.environ["TRACE_PARA"])
+        _r = results[_tp] if _tp < len(results) else None
+        if _r:
+            print(f"    [TRACE] end p{_tp}: {_r}")
     return results, ANCHOR_LOG
 
 
