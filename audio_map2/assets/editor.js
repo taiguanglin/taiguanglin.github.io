@@ -1187,6 +1187,17 @@ function applyAm2HtmlLinks(body, item) {
         body.appendChild(hint);
     }
 
+    // 兩段式播放標記：此段與同 group 的另一段合為同一問答（播放時跳過中段、連播）。
+    if (item.two_part_group) {
+        const tp = document.createElement('div');
+        tp.className = 'am2-two-part';
+        tp.textContent = item.two_part_role === 'start'
+            ? '🔗 兩段式播放（前段，與後段連播、跳過中段）'
+            : '🔗 兩段式播放（後段，與前段連播）';
+        tp.title = '此問答在音檔中分成兩段（中間夾了另一個問題），校對時分段，播放時連播成一段';
+        body.appendChild(tp);
+    }
+
     if (!qids.length && !aids.length) return;
 
     const row = document.createElement('div');

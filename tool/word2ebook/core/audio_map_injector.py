@@ -270,6 +270,11 @@ def load_word_maps_from_audio_map2(
     by_qid: Dict[str, dict] = {}
     if not map_dir.is_dir():
         return by_qid
+    # Two-part playback: a question answered in two non-contiguous audio spans
+    # (with an unrelated question in between) is split into segments sharing the
+    # same ``two_part_group``; the injector re-joins their ranges so the single
+    # play button plays front→back, skipping the interleaved segment.
+    two_part_groups: Dict[str, List[dict]] = {}
     for path in sorted(map_dir.glob("*.json")):
         try:
             data = json.loads(path.read_text(encoding="utf-8"))
@@ -286,9 +291,27 @@ def load_word_maps_from_audio_map2(
                     continue
                 resolved = dict(seg)
                 resolved["audio_file"] = audio_file
+                if seg.get("two_part_group"):
+                    two_part_groups.setdefault(seg["two_part_group"], []).append(
+                        resolved
+                    )
                 for qid in qids:
                     # First occurrence wins; duplicates share one range anyway.
                     by_qid.setdefault(qid, resolved)
+    # Re-join two-part ranges onto the "start" segment (they map to one qid:
+    # both parts carry the same question id, so ``by_qid`` holds the start).
+    for group, members in two_part_groups.items():
+        parts = [
+            (m.get("start"), m.get("end"))
+            for m in members
+            if m.get("start") is not None and m.get("end") is not None
+        ]
+        parts.sort(key=lambda p: p[0] if p[0] is not None else float("inf"))
+        if len(parts) >= 2:
+            # find the start-role member (it wins in by_qid via first occurrence)
+            qids0 = members[0].get("chapter_question_ids") or []
+            if qids0 and qids0[0] in by_qid:
+                by_qid[qids0[0]]["parts"] = parts
     return by_qid
 
 
@@ -328,6 +351,7 @@ def inject_word_html_from_audio_map2(content: str, by_qid: Dict[str, dict]) -> s
             _range_tuple(seg),
             audio_url(seg.get("audio_file") or ""),
             hide_if_missing=True,
+            parts=[(p[0], p[1]) for p in seg.get("parts") or [] if p[0] is not None and p[1] is not None] or None,
         )
         if button:
             injections.append((m.end() + am.end(), button))

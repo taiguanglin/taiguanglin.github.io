@@ -5,8 +5,9 @@ Used by :class:`~core.qa_parser.QAParser` and :mod:`core.audio_map_injector`.
 
 from __future__ import annotations
 
+import json
 from html import escape
-from typing import Optional, Tuple
+from typing import List, Optional, Tuple
 from urllib.parse import quote
 
 from config.settings import Constants
@@ -49,6 +50,7 @@ def render_play(
     audio_rel: str,
     *,
     disabled_if_missing: bool = True,
+    parts: Optional[List[Tuple[float, float]]] = None,
 ) -> Optional[str]:
     """Return play-button HTML, or ``None`` when range is missing and hiding.
 
@@ -71,10 +73,16 @@ def render_play(
         return None
     start, end, _ignored_label = range_tuple
     label = format_range_label(start, end)
+    parts_attr = ""
+    if parts:
+        parts_attr = (
+            f'data-segments="{escape(json.dumps(parts, separators=(",", ":")), quote=True)}" '
+        )
     return (
         f'<button class="qa-play" type="button" '
         f'data-audio="{escape(audio_rel, quote=True)}" '
         f'data-start="{start:.3f}" data-end="{end:.3f}" '
+        f'{parts_attr}'
         f'data-label="{escape(label, quote=True)}">'
         f'<span class="qa-play-icon">{_SPEAKER_SVG}</span>'
         f"</button>"
@@ -86,6 +94,7 @@ def render_inline_answerer_play(
     audio_rel: str,
     *,
     hide_if_missing: bool = False,
+    parts: Optional[List[Tuple[float, float]]] = None,
 ) -> str:
     """Return an inline play button placed right after the answerer name.
 
@@ -93,7 +102,8 @@ def render_inline_answerer_play(
     (no ``qa-meta-bar`` wrapper, no ``qa-number``) so the control sits on the
     same line as ``Taiguanglin`` and adds no vertical height to the page.
     """
-    play = render_play(range_tuple, audio_rel, disabled_if_missing=not hide_if_missing)
+    play = render_play(range_tuple, audio_rel, disabled_if_missing=not hide_if_missing,
+                       parts=parts)
     if play is None:
         return ""
     # Add the --inline modifier so CSS can zero the surrounding block margins.
