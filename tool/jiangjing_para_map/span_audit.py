@@ -113,6 +113,16 @@ def main() -> int:
 
             if len(norm) < 3:
                 verdict = "tiny"
+            elif is_sutra and zero:
+                # Zero-width canon/verse block (skipped-sutra): the ONLY
+                # meaningful question is whether the canon was read VERBATIM.
+                # The teacher paraphrases canon into colloquial commentary
+                # that shares syllables, so pinyin-fuzzy DTW is a false
+                # "read" signal. Char-exact presence is authoritative.
+                # (Lesson from sishierzhang golden L1/L2.)
+                verbatim = (len(norm) >= 8) and (norm in stream_norm)
+                ev["verbatim"] = verbatim
+                verdict = "span_bad" if verbatim else "skip_ok"
             else:
                 head = list(norm[:min(24, len(norm))])
                 c_lo = char_at(t_starts, start - 1.5, n_total)
@@ -176,7 +186,25 @@ def main() -> int:
                                 break
                             w += step
                         ev["probe"] = round(best, 3)
-                        if best < PROBE_MIN and (zero or is_sutra):
+                        # Verbatim (char-exact) read check for sutra blocks.
+                        # Lesson from the golden samples (sishierzhang L1/L2):
+                        # classical canon / verse is almost never read
+                        # VERBATIM — the teacher paraphrases it into colloquial
+                        # commentary, which shares syllables with the canon. A
+                        # pinyin-fuzzy probe therefore always scores ~0.45-0.85
+                        # on correctly-skipped canon and produces false
+                        # "read exists" span_bad verdicts. The authoritative
+                        # test is char-exact: if the normalized block text is
+                        # NOT present verbatim in the ASR stream, the block
+                        # was NOT read (skip_ok when zero-width).
+                        if is_sutra and zero:
+                            verbatim = len(norm) >= 8 and norm in stream_norm
+                            ev["verbatim"] = verbatim
+                            if verbatim:
+                                verdict = "span_bad"   # canon was read verbatim
+                            else:
+                                verdict = "skip_ok"    # canon not read verbatim
+                        elif best < PROBE_MIN and (zero or is_sutra):
                             verdict = "skip_ok" if zero else "span_bad"
                         elif best >= PROBE_MIN and zero:
                             verdict = "span_bad"   # read exists, span empty

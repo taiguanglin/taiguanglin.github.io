@@ -181,11 +181,17 @@ tool/sense_voice/.venv/bin/python tool/jiangjing_para_map/span_audit.py --series
 | verdict | 意義 | 對策 |
 |---------|------|------|
 | `span_ok` | 頭在 start（±3s）＋塊在 span 內 → 位置可信 | 目標：越高越好 |
-| `skip_ok` | 零寬＋全塊遍掃 cov<0.45 → 確實沒念 | 正確 |
+| `skip_ok` | 零寬＋**逐字**遍掃無命中 → 確實沒念 | 正確 |
 | `span_bad` | 證據與記錄位置矛盾 → **真的錯** | 要修 |
 | `unknown` | 位置可能對但字太弱（ASR 錯字） → 需人工眼 | 記錄 |
 
 目標：`span_bad` 逼近 0；`unknown` 是 ASR 上限，接受並保留低 conf 供人工。
+
+> **重要（span_audit.py 已內建）**：零寬 `skipped-sutra` 段落用**逐字（char-exact）**
+> 而非拼音模糊判「有沒有念」。文言經文被白話講解替代時共享音節，拼音模糊 probe
+> 會誤判成「有念」產生大量假 `span_bad`。逐字判定的效果：把楞伽/壇經/楞嚴三系列的
+> `span_bad` 假警報一舉消除（skip_ok 從 212/163/46 升到 710/777/579），剩下來的
+> `span_bad` 才是真的位置錯。**改動此邏輯時務必保留逐字優先**。
 
 ### 6b. pin_check.py（毫秒級 pin 對不對）
 
@@ -266,6 +272,24 @@ tool/sense_voice/.venv/bin/python tool/jiangjing_para_map/pin_check.py <series>
 5. **重複/回音陷阱**：短句（「佛言」「下一句」）在全經大量重複，若 gain 不到唯一
    位置，就**不硬錨**，標低 conf 讓人看。
 
+### 8a. pinyin 容錯層級（`sim_char` 的梯度設計，勿越界）
+
+`sim_char`（字元相似度）分級如下，**不要加「同聲母／同韻母」這類弱分級**（已實證
+反而在全系列製造回音假錨點、讓 span_bad 上升）：
+
+| 分數 | 條件 |
+|------|------|
+| 1.0 | 逐字相同 |
+| 0.9 | 同拼音（zh/ch/sh 已摺疊為 z/c/s） |
+| 0.8 | 同聲母＋同韻母，僅鼻韻尾（in/ing、en/eng、an/ang、on/ong）或 n/l、f/h 相混 |
+| 0.0 | 其餘 |
+
+**必修 bug**：`py_cached` 的翹舌摺疊原本是 `v[1:]`（把 zh/ch/sh 誤刪成「h…」），
+導致 中(zhong)/宗(zong)、争(zheng)/增(zeng) 無法同類匹配。已修正為 `zh→z / ch→c /
+sh→s`。這是「改匹配器」這條路上唯一真正有淨收益的 pinyin 容錯；量測結果：修正後
+span_bad 下降、skip_ok 上升（楞伽 257→151、壇經 420→256、楞嚴 816→578），
+bad+unknown 在壇經/楞嚴各降約 1–2pp。
+
 **「全段落高信心」的誠實定義**：`conf ≥ 0.8` 且 `method ∈ {dtw-evid, dtw, dtw2, dtw-frag,
 dtw-scan, skipped-sutra}`（有證據）；`interp` 是無證據插值，最多給 0.8 下限並標
 `method=interp` 供人工。**不要**把 `interp`/`skipped-sutra` 的 conf 灌到跟 `dtw-evid`
@@ -294,3 +318,21 @@ cd tool/books2ebook && python3 gen_all.py   # books2ebook 只注入 reviewed=tru
    快速帶讀的同音錯字使 ~80% 段落無法逐字錨定，只能 pinyin 模糊 DTW（±0.5–3s）。
 2. **楞嚴咒等長咒語/快速咒念**：ASR 幾乎無有效輸出，該區段落只能插值（`interp`）。
 3. 遇到這兩類，誠實標低 conf / `interp`，交付時說明，而非灌 conf 假裝「全高信心」。
+
+### 10a. 「換更好的 ASR」並不能突破這個天花板（已實證，別再花重工）
+
+用 **Qwen3-ASR-0.6B + ForcedAligner**（LLM-based、對文言明顯更準、可輸出字級 timestamp）
+在 MPS 上 A/B 對照過 4 講 / ~700 段（四十二章 L4、楞伽 L6、楞嚴 L21、壇經 L23）：
+
+| 指標（段落頭 6 字逐字命中率） | paraformer-zh | Qwen3-ASR |
+|---|---|---|
+| 講解段（commentary） | 22–44% | 10–41% |
+| 經文段（sutra） | 6–13% | 4–9% |
+
+**結論：換 LLM-ASR 讓對齊「更差」，不是更好。** 原因不是 Qwen 轉寫較差（它逐字品質
+明顯較好），而是 `realign_dtw.py` 靠「逐字/pinyin 精確」的段落頭來錨定；LLM-ASR 會把
+語音「整理成流暢文字」、改寫掉段落那 6–8 字的**精確字串**。paraformer-zh 是純聲學
+encoder，輸出更貼近逐字（即便同音錯字）→ 反而保留更多可錨定的連續字頭。
+
+- **因此「毫秒級」的唯一可靠來源仍是人工 golden sample**；要縮小剩餘 ±0.5–3s 誤差，
+  方向應是**改匹配器**（更寬容的 pinyin/語意匹配 + forced-alignment 收斂），而非換 ASR。

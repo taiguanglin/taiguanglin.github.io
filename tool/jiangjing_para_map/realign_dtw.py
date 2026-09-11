@@ -100,20 +100,90 @@ def py_cached(ch: str) -> str:
                 v = lazy_pinyin(ch, style=Style.NORMAL, errors="default")[0]
                 v = v.lower().replace("ü", "v")
                 if v[:2] in ("zh", "ch", "sh"):
-                    v = v[1:]
+                    # collapse retroflex to the matching dental: zh→z, ch→c,
+                    # sh→s so 中↔宗, 争↔增, 长↔常↔桑 become one class.
+                    v = {"zh": "z", "ch": "c", "sh": "s"}[v[:2]] + v[2:]
             except Exception:
                 v = ""
         _PY_CACHE[ch] = v
     return v
 
 
+_INITIALS = ("zh", "ch", "sh", "b", "p", "m", "f", "d", "t", "n", "l",
+             "g", "k", "h", "j", "q", "x", "z", "c", "s", "r", "y", "w")
+
+# nasal coda collapse classes (shared base final so the pair maps together)
+_NASAL_COLLAPSE = {"in": "in", "ing": "in",
+                   "en": "en", "eng": "en",
+                   "an": "an", "ang": "an",
+                   "on": "ong", "ong": "ong",
+                   "un": "en", "uen": "en",   # un == uen, ASR-confusable with en
+                   "iong": "ong", "ian": "an", "uan": "an",
+                   "uang": "an", "iang": "an"}
+
+
+def _syllable(v: str):
+    """Split classed pinyin into (initial, final). e.g. 'zhong' -> ('zh','ong'),
+    'ni' -> ('n','i'), 'a' -> ('','a'). Nasal coda is collapsed: -in/-ing,
+    -en/-eng, -an/-ang, -on/-ong are ASR-confusable and map to one class."""
+    v = v.lower()
+    for ini in _INITIALS:
+        if v.startswith(ini):
+            fin = v[len(ini):]
+            break
+    else:
+        ini, fin = "", v
+    # collapse nasal coda (paraformer-zh frequently confuses these pairs):
+    # -in/-ing, -en/-eng, -an/-ang, -on/-ong, -un/-ong all share one class.
+    fin = _NASAL_COLLAPSE.get(fin, fin)
+    return ini, fin
+
+
+# nasal-coda collapses done in _syllable keep the SHARED base final so that
+# in vs ing → both "in", en vs eng → "en", an vs ang → "an", on vs ong → "ong".
+_SYL_CACHE: dict[str, tuple] = {}
+
+
+def _syl_cached(ch: str):
+    v = _SYL_CACHE.get(ch)
+    if v is None:
+        p = py_cached(ch)
+        v = _syllable(p) if p else ("", "")
+        _SYL_CACHE[ch] = v
+    return v
+
+
+_NL_CONFUSE = {"n": "l", "l": "n"}   # 南/兰, 内/类 — southern/Mandarin ASR
+_FH_CONFUSE = {"f": "h", "h": "f"}   # 佛/huó, 分/hun — common in paraformer
+
+
 def sim_char(a: str, b: str) -> float:
-    """Char similarity: exact 1.0, same classed pinyin 0.9, else 0."""
+    """Gradient char similarity (pinyin-tolerant, tiered).
+
+    Tiers (所以 DTW 能在同音/近音錯字時仍找到錨點):
+      1.0  exact char
+      0.9  same classed pinyin (retroflex zh/ch/sh already collapsed)
+      0.8  same initial + same final, differing only in nasal coda
+           (in/ing, en/eng, an/ang, on/ong) or confusable initials (n/l, f/h)
+      0.0  unrelated
+    Deliberately NO weak tiers (same-initial-only / same-final-only): ~400
+    Mandarin syllables share initials/finals, so those raise the DTW noise
+    floor and fabricate false anchors on repeated phrases (echo).
+    """
     if a == b:
         return 1.0
     pa, pb = py_cached(a), py_cached(b)
     if pa and pa == pb:
         return 0.9
+    if not pa or not pb:
+        return 0.0
+    ia, fa = _syl_cached(a)
+    ib, fb = _syl_cached(b)
+    same_ini = (ia == ib) or (ia and _NL_CONFUSE.get(ia) == ib) \
+               or (ia and _FH_CONFUSE.get(ia) == ib)
+    same_fin = (fa == fb) and bool(fa)
+    if same_ini and same_fin:
+        return 0.8
     return 0.0
 
 
