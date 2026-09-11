@@ -3072,7 +3072,16 @@ def main():
                             res[k]["end"] = res[k]["start"]
                     k += 1
             last_t = 0.0
-            for r in res:
+            for i, r in enumerate(res):
+                if i in pin_set:
+                    # Confirmed paragraphs are IMMUTABLE golden pins: their
+                    # start/end stay exactly as the human verified them. The
+                    # monotonic clamp must flow *around* them, never push
+                    # them. (A predecessor's overlong end would otherwise
+                    # shove the pinned start forward and corrupt golden
+                    # samples on re-run.)
+                    last_t = r["end"]
+                    continue
                 r["start"] = max(r["start"], last_t)
                 if r["end"] < r["start"]:
                     r["end"] = r["start"]
