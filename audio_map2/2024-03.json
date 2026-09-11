@@ -3303,14 +3303,12 @@
           "end_label": "00:33:04.020",
           "confidence": 0.92,
           "status": "manual",
-          "notes": "answer_opening; reconciled:qid",
+          "notes": "answer_opening; reconciled:qid | html-resplit: 修正章節對應（去掉錯掛子題），待人工確認",
           "srt_preview": "至于临终的时候吧应该如果他修为到的话可能几个月前人家就是提前来告诉他了什么时候而且肯定不是打坐的时候一般是呃你这个打坐一两个小时内是看进进不着就入定的状态下是看不到的那可能是梦境吧只能是梦境不过关个梦境当事人是记得非常清楚的而且那个梦境看似",
           "chapter_question_ids": [
-            "question-2cde32dea4de",
-            "question-b1c87e71c18e"
+            "question-2cde32dea4de"
           ],
           "chapter_indexes": [
-            4,
             4
           ],
           "index": 32,
@@ -3319,8 +3317,7 @@
           "q_preview": "3、临终看到的阿弥陀佛是真的，告诉什么时间来接引的阿弥陀佛是真的，其他时间看到的阿弥陀佛都不用管吧？",
           "answer_preview": "至于临终的时候，如果她修为到了，可能几个月前，人家就提前来告诉她什么时候。而且肯定不是打坐的时候，一般打坐一两个小时进不了入定的状态，是看不到的。\n\n可能是梦境，只能是梦境。不过这个梦境，当事人是记得非常清楚的。而且那个梦境看似梦，但是完全清醒，有些加持梦就是这样，完全清醒，在当下是记得非常清楚的。但出来之后，有些会变…",
           "chapter_answer_ids": [
-            "answer-2dfea846717d",
-            "answer-75d2d93f5997"
+            "answer-2dfea846717d"
           ]
         },
         {
@@ -8739,14 +8736,12 @@
           "end_label": "00:19:12.080",
           "confidence": 0.85,
           "status": "manual",
-          "notes": "q_body; reconciled:qid",
+          "notes": "q_body; reconciled:qid | html-resplit: 修正章節對應（去掉錯掛子題），待人工確認",
           "srt_preview": "总是很多东西说不出口啊，这个是需要练的啊。你不是什么，一开始就谁都这样啊啊，我小时候也不也是不特么爱说话的。嗯，但是怎么样迫练练呗？嗯，也而且我小时候也是呃喜欢挖苦别的呢。呃这个小孩子啊经常那种那种叫什么呢？啊，我们就是小时候，就，所以我也…",
           "chapter_question_ids": [
-            "question-ab85d352dfb7",
-            "question-aecc340d6b8a"
+            "question-ab85d352dfb7"
           ],
           "chapter_indexes": [
-            4,
             4
           ],
           "index": 17,
@@ -8755,8 +8750,7 @@
           "q_preview": "2、人的性格也是被设计好的吗？性格决定命运还是命运决定性格？比如我不爱说话，特别是对着众人说话，总是很多东西说不出口。",
           "answer_preview": "你说的这个人的性格设计，性格是你的习气，可以这么说，就是你的习气，你的妄想、分别、执着多了之后就变成习气。\n\n性格决定命运这个不好说的。有些人就性格很不好，但是他还很成功，很有钱，也有这样的人，有些人性格很好，但是还是很穷。所以说性格决定命运这个说法，性格决定他所做事的风格，这是对的，但是能不能决定成功，我是不那么相信…",
           "chapter_answer_ids": [
-            "answer-debf78ee3c84",
-            "answer-8aa5c8ab8149"
+            "answer-debf78ee3c84"
           ]
         },
         {

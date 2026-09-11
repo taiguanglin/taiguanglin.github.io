@@ -130,6 +130,18 @@ def _pieces_match_html(pieces: List[dict]) -> bool:
     return True
 
 
+def _single_matches_html(seg: dict) -> bool:
+    """True if a single-qid segment's q_text AND answer_text exactly match HTML."""
+    qids = seg.get("chapter_question_ids") or []
+    if len(qids) != 1:
+        return False
+    h = HTML_QA.get(qids[0])
+    if not h:
+        return False
+    return (norm(seg.get("q_text") or "") == norm(h["q_text"])
+            and norm(seg.get("answer_text") or "") == norm(h["a_text"]))
+
+
 def split_segment(seg: dict, qids: List[str]) -> Optional[List[dict]]:
     """Split one segment into per-qid segments at exact boundaries.
 
@@ -238,7 +250,7 @@ def split_segment(seg: dict, qids: List[str]) -> Optional[List[dict]]:
 
 def fix_session(sess: dict, truly_orphan: set, force_lastplayed: bool = False) -> dict:
     segs = sess.get("segments") or []
-    fixed = {"split_multi": 0, "split_orphan": 0, "readback": 0, "spill": 0, "skipped_listen": 0}
+    fixed = {"split_multi": 0, "split_orphan": 0, "readback": 0, "spill": 0, "spurious_drop": 0, "skipped_listen": 0}
     new: List[dict] = []
     if not force_lastplayed:
         fixed["skipped_listen"] = sum(1 for g in segs if has_listen(g))
@@ -268,6 +280,42 @@ def fix_session(sess: dict, truly_orphan: set, force_lastplayed: bool = False) -
                 a_found = as_.find(ha[:40]) >= 0
                 if q_found and a_found and oq not in combined_qids:
                     combined_qids.append(oq)
+
+        # pass 1a: spurious-qid drop.  A multi-qid segment where some qid's text
+        # is entirely absent (its question+answer never appear) → drop that qid's
+        # link, keeping only the qid(s) actually present.  Guarded: only drop if
+        # the resulting single-qid segment matches its HTML exactly.
+        if len(combined_qids) >= 2 and (not locked or force_lastplayed):
+            rawa = seg.get("answer_text") or ""
+            rawq = seg.get("q_text") or ""
+            as_, aidx = nstream(rawa)
+            qs, _ = nstream(rawq)
+            present = []
+            for q in combined_qids:
+                hq, ha = htext(q)
+                q_here = (hq and (qs.find(hq[:40]) >= 0 or as_.find(hq[:40]) >= 0))
+                if q_here:
+                    present.append(q)
+            # keep present ones; if exactly one remains and it differs from qids,
+            # rewrite the link (no text/time change).
+            if len(present) == 1 and present != qids:
+                candidate = dict(seg)
+                candidate["chapter_question_ids"] = present
+                candidate["chapter_indexes"] = [chapter_of(present[0])]
+                aid = HTML_QA.get(present[0], {}).get("answer_id")
+                candidate["chapter_answer_ids"] = [aid] if aid else []
+                if _single_matches_html(candidate):
+                    if "html-resplit: 修正章節對應" not in (candidate.get("notes") or ""):
+                        candidate["notes"] = (candidate.get("notes") or "") + " | html-resplit: 修正章節對應（去掉錯掛子題），待人工確認"
+                    # keep text/times/status as-is; only qid list changed
+                    candidate["chapter_question_ids"] = present
+                    candidate["chapter_indexes"] = [chapter_of(present[0])]
+                    new.append(candidate)
+                    fixed["split_multi"] += 0
+                    fixed["spurious_drop"] = fixed.get("spurious_drop", 0) + 1
+                    i += 1
+                    continue
+
         if len(combined_qids) > 1 and (not locked or force_lastplayed):
             sp = split_segment(seg, combined_qids)
             if sp is not None and _pieces_match_html(sp):
