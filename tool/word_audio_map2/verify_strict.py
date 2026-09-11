@@ -53,6 +53,7 @@ def norm(s: str) -> str:
         s = _CC.convert(s)               # traditional → simplified (禮→礼 etc.)
     s = s.replace("著", "着")            # ebook verb-suffix variant
     s = s.replace("\u200b", "")          # zero-width space (Word artifact)
+    s = s.replace("\uFE0F", "").replace("\u20E3", "")  # emoji digit "2️⃣"→"2"
     s = re.sub(r"\s+", "", s)            # collapse all whitespace
     s = s.translate(HW2FW)               # halfwidth punct → fullwidth
     return s

@@ -42,17 +42,31 @@ HTML_QA = json.loads((TOOL / "build" / "html_qa_simp.json").read_text(encoding="
 HW2FW = {",": "，", ".": "。", "!": "！", "?": "？", ":": "：", ";": "；",
          "(": "（", ")": "）", "[": "【", "]": "】"}
 
+try:
+    from opencc import OpenCC
+    _CC = OpenCC("t2s")
+except Exception:
+    _CC = None
+
+# Emoji-digit & other non-printing joining marks to DROP (so "2️⃣" == "2").
+# U+FE0F variation selector, U+20E3 keycap, plus zero-width/BOM artifacts.
+_SKIP = set("\u200b\u200c\u200d\ufeff\uFE0F\u20E3")
+
+
+def _drop(c: str) -> bool:
+    return c.isspace() or c in _SKIP
+
+
 def nc(c: str) -> str:
     if c == "著":
         return "着"
     return HW2FW.get(c, c)
 
+
 def nstream(raw: str) -> Tuple[str, List[int]]:
     chars, idx = [], []
     for i, ch in enumerate(raw or ""):
-        if ch.isspace():
-            continue
-        if ch in "\u200b\u200c\u200d\ufeff":   # zero-width / BOM artifacts
+        if _drop(ch):
             continue
         chars.append(nc(ch))
         idx.append(i)

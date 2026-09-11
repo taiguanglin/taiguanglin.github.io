@@ -41,6 +41,7 @@ def norm(s: str) -> str:
     if _CC is not None:
         s = _CC.convert(s)
     s = s.replace("著", "着").replace("\u200b", "")
+    s = s.replace("\uFE0F", "").replace("\u20E3", "")   # emoji digit "2️⃣"→"2"
     s = re.sub(r"\s+", "", s)
     return s.translate(HW2FW)
 
