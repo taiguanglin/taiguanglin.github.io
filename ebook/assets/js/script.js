@@ -4261,6 +4261,8 @@ function addHomepageBookmarkEventListeners() {
 
     var segEnd = null;       // 目前段落的結束秒數（到此自動停止）
     var segStart = 0;        // 目前段落的起始秒數
+    var segParts = null;     // 多段播放：[[start,end],...]，依序播放（兩段式跳過中段）
+    var segPartIndex = 0;    // 目前播到第幾段
     var activeButton = null; // 目前播放中的按鈕
     var isDragging = false;  // 拖拉進度條中
     var isLoading = false;   // 正在等待音檔可播放
@@ -4623,6 +4625,20 @@ function addHomepageBookmarkEventListeners() {
       segStart = parseFloat(btn.getAttribute('data-start')) || 0;
       var end = parseFloat(btn.getAttribute('data-end'));
       segEnd = isNaN(end) ? null : end;
+      segPartIndex = 0;
+      segParts = null;
+      var rawParts = btn.getAttribute('data-segments');
+      if (rawParts) {
+        try {
+          var parsed = JSON.parse(rawParts);
+          if (Array.isArray(parsed) && parsed.length) {
+            segParts = parsed.map(function (p) { return [parseFloat(p[0]), parseFloat(p[1])]; });
+            // first segment becomes the active [segStart, segEnd]
+            segStart = segParts[0][0];
+            segEnd = segParts[0][1];
+          }
+        } catch (e) { segParts = null; }
+      }
       activeButton = btn;
 
       savedRangeLabel = btn.getAttribute('data-label') || '';
@@ -4675,6 +4691,15 @@ function addHomepageBookmarkEventListeners() {
     audio.addEventListener('timeupdate', function () {
       if (isDragging || isLoading) return;
       if (segEnd != null && audio.currentTime >= segEnd) {
+        // 多段播放：跳到下一段（跳過中段），直到最末段才停止
+        if (segParts && segPartIndex + 1 < segParts.length) {
+          segPartIndex += 1;
+          segStart = segParts[segPartIndex][0];
+          segEnd = segParts[segPartIndex][1];
+          seekTo(segStart);
+          updateProgressUI(segStart);
+          return;
+        }
         stopPlayback();
         updateProgressUI(segEnd);
         return;
