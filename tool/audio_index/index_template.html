@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Tai 師父音檔串流</title>
+<style>
+  :root {
+    --bg: #fff5f8;
+    --panel: #ffffff;
+    --panel-2: #fdedf4;
+    --border: #f7d3e2;
+    --text: #3b1f2c;
+    --muted: #9a7186;
+    --accent: #d6336c;
+    --accent-2: #f06595;
+    --chip: #fce6ef;
+    --chip-active: #f9cadf;
+    --danger: #d6336c;
+    --ok: #a61e4d;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: linear-gradient(180deg, #ffeaf3 0, var(--bg) 320px);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
+                 "Microsoft JhengHei", "Noto Sans TC", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in oklab, var(--bg) 88%, transparent);
+    backdrop-filter: saturate(180%) blur(10px);
+    border-bottom: 1px solid var(--border);
+  }
+  .container { max-width: 980px; margin: 0 auto; padding: 16px 20px; }
+  h1 {
+    margin: 0 0 6px;
+    font-size: 20px;
+    letter-spacing: 0.3px;
+  }
+  .sub { color: var(--muted); font-size: 13px; }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    margin-top: 12px; align-items: center;
+  }
+  .search {
+    flex: 1 1 220px;
+    display: flex; align-items: center;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .search input {
+    flex: 1; background: transparent; border: 0; outline: 0;
+    color: var(--text); font-size: 14px;
+  }
+  .chip {
+    background: var(--chip);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 12px;
+    font-size: 13px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .chip.active { background: var(--chip-active); border-color: var(--accent); }
+  .chip:hover { filter: brightness(1.08); }
+  .stats { color: var(--muted); font-size: 13px; margin-left: auto; }
+  .picker {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 4px 10px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .picker select {
+    background: transparent;
+    border: 0; outline: 0;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+    max-width: 62vw;
+    padding: 4px 2px;
+    cursor: pointer;
+  }
+  .picker select option { color: var(--text); background: var(--panel); }
+
+  main { padding: 16px 0 140px; }
+  .group {
+    margin: 18px 20px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .group-header {
+    padding: 12px 16px;
+    background: var(--panel-2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 14px;
+  }
+  .group-count {
+    margin-left: auto;
+    color: var(--muted); font-weight: 400; font-size: 12px;
+  }
+  .item {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .item:first-child { border-top: 0; }
+  .item-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px;
+  }
+  .item-title .date {
+    color: var(--muted); font-variant-numeric: tabular-nums;
+    min-width: 76px;
+  }
+  .item-title .name { flex: 1; word-break: break-all; }
+  .badge {
+    font-size: 11px; padding: 2px 8px; border-radius: 999px;
+    background: var(--chip); color: var(--muted); border: 1px solid var(--border);
+  }
+  .badge.gz  { background: rgba(214,51,108,0.10); color: #c2255c; border-color: rgba(214,51,108,0.30); }
+  .badge.tb  { background: rgba(134,46,156,0.10); color: #862e9c; border-color: rgba(134,46,156,0.30); }
+  .badge.wx  { background: rgba(181,23,158,0.10); color: #b5179e; border-color: rgba(181,23,158,0.30); }
+  .badge.web { background: rgba(166,30,77,0.10); color: #a61e4d; border-color: rgba(166,30,77,0.30); }
+  .badge.jj  { background: rgba(224,49,90,0.10); color: #e0315a; border-color: rgba(224,49,90,0.30); }
+  .badge.yl  { background: rgba(156,54,181,0.10); color: #9c36b5; border-color: rgba(156,54,181,0.30); }
+
+  audio {
+    width: 100%;
+    height: 36px;
+    accent-color: var(--accent);
+  }
+
+  .now-playing {
+    position: fixed; left: 0; right: 0; bottom: 0;
+    background: color-mix(in oklab, var(--panel) 92%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+    display: none;
+    z-index: 20;
+  }
+  .now-playing.show { display: block; }
+  .np-row { max-width: 980px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .np-art {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex: 0 0 auto;
+    border: 1px solid var(--border);
+    display: none;
+  }
+  .now-playing.show.dabei-np .np-art { display: block; }
+  .np-label { color: var(--muted); font-size: 12px; }
+  .np-title { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .empty {
+    margin: 60px 20px; text-align: center; color: var(--muted);
+  }
+  .footer-note {
+    margin: 24px 20px 0; color: var(--muted); font-size: 12px; line-height: 1.6;
+  }
+  a { color: var(--accent); }
+
+  .featured {
+    margin: 16px 20px 0;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+  .featured .group-header {
+    flex-wrap: wrap;
+  }
+  .featured-hint {
+    width: 100%;
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  .featured-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+  }
+  .featured-actions .chip {
+    flex: 1 1 140px;
+    text-align: center;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .featured-actions .chip.active {
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  .featured-player {
+    padding: 0 0 14px;
+    position: relative;
+  }
+  .featured-player audio {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .dabei-art {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    max-height: none;
+    aspect-ratio: 16 / 9;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 0;
+    margin: 0 0 10px;
+    background: #f3e6b0;
+    border: 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .dabei-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin: 0 16px;
+    padding: 8px 10px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .dabei-play {
+    width: 36px; height: 36px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--chip);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1;
+  }
+  .dabei-play:hover { filter: brightness(1.06); }
+  .dabei-time {
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    min-width: 9.5em;
+  }
+  .dabei-seek {
+    flex: 1 1 160px;
+    min-width: 120px;
+    accent-color: var(--accent);
+    height: 28px;
+    cursor: pointer;
+    touch-action: none;
+  }
+  .dabei-seek:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .dabei-vol {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex: 0 1 140px;
+    min-width: 90px;
+    cursor: pointer;
+  }
+  .dabei-vol-icon {
+    flex: 0 0 auto;
+    color: var(--muted);
+  }
+  .dabei-volume {
+    flex: 1;
+    min-width: 60px;
+    accent-color: var(--accent);
+    height: 28px;
+    cursor: pointer;
+  }
+  .featured-status {
+    margin: 8px 16px 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+    min-height: 1.5em;
+  }
+  .badge.dabei {
+    background: rgba(230,73,128,0.14);
+    color: #c2255c;
+    border-color: rgba(230,73,128,0.38);
+  }
+  .back-home {
+    display: inline-block;
+    margin: 0 0 8px;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+  }
+  .back-home:hover { color: var(--accent); }
+
+  @media (min-width: 720px) {
+    .item { grid-template-columns: minmax(0, 1fr) minmax(280px, 460px); align-items: center; gap: 16px; }
+    audio { height: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <a class="back-home" href="../index.html">← 回 TaiGuangLin 主站</a>
+    <h1>Tai 師父音檔串流</h1>
+    <div class="sub">共 <span id="totalCount">0</span> 個音檔 · 點擊播放即時串流（無需下載）</div>
+    <div class="toolbar">
+      <label class="picker" for="category">
+        <span>類別</span>
+        <select id="category" aria-label="選擇類別"></select>
+      </label>
+      <div class="search">
+        <input id="search" type="search" placeholder="搜尋日期或關鍵字，例如：2025年3月、楞伽經、義理" autocomplete="off" />
+      </div>
+      <button class="chip active" id="sortNewest">最新優先</button>
+      <button class="chip" id="sortOldest">最舊優先</button>
+      <div class="stats" id="stats"></div>
+    </div>
+  </div>
+</header>
+
+<section class="featured" id="dabei">
+  <div class="group-header">
+    <span>大悲咒</span>
+    <span class="badge dabei">置頂</span>
+    <span class="group-count">關螢幕可持續循環</span>
+    <div class="featured-hint">
+      用手機播放後可關掉螢幕；請維持瀏覽器在背景、勿強制結束分頁。清單循環請用 Chrome / Edge / Firefox（Safari 對 Opus 與背景切歌支援較差）。
+    </div>
+  </div>
+  <div class="featured-actions">
+    <button class="chip" type="button" data-dabei-mode="normal" id="btnLoopNormal">一般版 · 單曲循環</button>
+    <button class="chip" type="button" data-dabei-mode="fast" id="btnLoopFast">快速版 · 單曲循環</button>
+    <button class="chip" type="button" data-dabei-mode="playlist" id="btnLoopPlaylist">兩版清單循環</button>
+    <button class="chip" type="button" id="btnDabeiStop">停止</button>
+  </div>
+  <div class="featured-player">
+    <img
+      class="dabei-art"
+      src="西方三聖.jpg"
+      alt="西方三聖：南無阿彌陀佛、南無觀世音菩薩、南無大勢至菩薩"
+      width="1920"
+      height="1080"
+      decoding="async"
+      fetchpriority="low"
+    />
+    <audio id="dabeiAudio" playsinline preload="auto"></audio>
+    <audio id="dabeiAudioB" playsinline preload="auto"></audio>
+    <div class="dabei-controls" id="dabeiControls">
+      <button type="button" class="dabei-play" id="dabeiPlayBtn" aria-label="播放或暫停" disabled>▶</button>
+      <span class="dabei-time" id="dabeiTime">0:00 / 0:00</span>
+      <input class="dabei-seek" id="dabeiSeek" type="range" min="0" max="1000" value="0" step="1" disabled aria-label="播放進度" />
+      <label class="dabei-vol" title="音量">
+        <svg class="dabei-vol-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+          <path d="M3 9v6h4l5 5V4L7 9H3z" />
+          <path id="dabeiVolWave" d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" />
+          <path id="dabeiVolMuted" d="M17.5 9.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none" style="display:none" />
+        </svg>
+        <input class="dabei-volume" id="dabeiVolume" type="range" min="0" max="1" step="0.01" value="1" aria-label="音量" />
+      </label>
+    </div>
+    <div class="featured-status" id="dabeiStatus">選擇上方模式開始播放</div>
+  </div>
+</section>
+
+<main id="list"></main>
+
+<div class="now-playing" id="np">
+  <div class="np-row">
+    <img class="np-art" id="npArt" src="西方三聖-96.jpg" alt="" width="96" height="96" />
+    <span class="np-label">正在播放</span>
+    <span class="np-title" id="npTitle">—</span>
+    <button class="chip" id="npStop">停止</button>
+  </div>
+</div>
+
+<div class="footer-note container">
+  提示：本頁為靜態網頁，音檔以 HTML5 原生播放器串流播放 <code>*.opus</code>。
+  上方「類別」可依答疑／講經／義理系列篩選，並可搭配搜尋與日期排序。
+  請用 <code>python3 serve.py</code> 啟動（需支援 HTTP Range，否則拖曳進度條會卡住）。
+  若使用 Safari 無法播放 <code>.opus</code>，請改用 Chrome、Edge 或 Firefox。
+  大悲咒循環播放時，關掉螢幕後仍會繼續；若系統省電殺死後台，請把瀏覽器加入不受限／允許背景活動。
+</div>
+
+<script>
+// === 大悲咒（置頂，支援關螢幕循環）===
+// duration 為檔案真實長度（秒）；Ogg/Opus 在瀏覽器拖到結尾時 duration 會膨脹，故鎖定此值
+const DABEI = [
+  { id: "normal", file: "Tai師父大悲咒108遍.opus", title: "大悲咒 · 一般速度版 108遍", duration: 5120.74 },
+  { id: "fast", file: "Tai師父大悲咒快速版108遍.opus", title: "大悲咒 · 快速版 108遍", duration: 4368.94 }
+];
+
+const DABEI_ARTWORK = [
+  { src: "西方三聖-96.jpg", sizes: "96x96", type: "image/jpeg" },
+  { src: "西方三聖-256.jpg", sizes: "256x256", type: "image/jpeg" },
+  { src: "西方三聖-512.jpg", sizes: "512x512", type: "image/jpeg" },
+  { src: "西方三聖.jpg", sizes: "1920x1080", type: "image/jpeg" }
+];
+
+function absoluteArtwork() {
+  return DABEI_ARTWORK.map((item) => ({
+    src: new URL(item.src, window.location.href).href,
+    sizes: item.sizes,
+    type: item.type
+  }));
+}
+
+// === 檔案清單 ===
+// 由 tool/audio_index/build_index.py 掃描 audio/ 實際內容產生；build 時下列兩段會被整段覆寫：
+//   CATEGORIES = { <cat>: { label, cls, group, order } }
+//   FILES      = [{ path, cat }, ...]   （path 為相對 audio/ 的路徑，可含子資料夾）
+const CATEGORIES = /*__CATEGORIES__*/{};
+const FILES = [
+  "2024年11月11日Tai師父答疑.opus",
+  "2024年11月12日Tai師父答疑.opus",
+  "2024年11月13日Tai師父答疑.opus",
+  "2024年11月14日Tai師父答疑.opus",
+  "2024年11月15日Tai師父答疑.opus",
+  "2024年11月16日Tai師父答疑.opus",
+  "2024年12月10日Tai師父公眾號答疑.opus",
+  "2024年12月10日Tai師父貼吧答疑.opus",
+  "2024年12月11日Tai師父公眾號答疑.opus",
+  "2024年12月11日Tai師父貼吧答疑.opus",
+  "2024年12月12日Tai師父公眾號答疑.opus",
+  "2024年12月12日Tai師父貼吧答疑.opus",
+  "2024年12月13日Tai師父公眾號答疑.opus",
+  "2024年12月13日Tai師父貼吧答疑.opus",
+  "2024年12月14日Tai師父公眾號答疑.opus",
+  "2024年12月14日Tai師父貼吧答疑.opus",
+  "2024年12月9日Tai師父公眾號答疑（上）.opus",
+  "2024年12月9日Tai師父公眾號答疑（下）.opus",
+  "2024年12月9日Tai師父貼吧答疑.opus",
+  "2024年2月11日Tai師父答疑.opus",
+  "2024年2月12日Tai師父答疑.opus",
+  "2024年2月13日Tai師父答疑.opus",
+  "2024年2月14日Tai師父答疑.opus",
+  "2024年2月15日Tai師父答疑.opus",
+  "2024年2月17日Tai師父答疑.opus",
+  "2024年2月18日Tai師父答疑.opus",
+  "2024年2月19日Tai師父答疑.opus",
+  "2024年2月20日Tai師父答疑.opus",
+  "2024年2月21日Tai師父答疑.opus",
+  "2024年2月22日Tai師父答疑.opus",
+  "2024年2月23日Tai師父答疑.opus",
+  "2024年2月25日Tai師父答疑.opus",
+  "2024年2月26日Tai師父答疑.opus",
+  "2024年2月27日Tai師父答疑.opus",
+  "2024年2月28日Tai師父答疑.opus",
+  "2024年2月29日Tai師父答疑.opus",
+  "2024年3月01日Tai師父答疑.opus",
+  "2024年3月02日Tai師父答疑.opus",
+  "2024年3月03日Tai師父答疑.opus",
+  "2024年3月05日Tai師父答疑.opus",
+  "2024年3月06日Tai師父答疑.opus",
+  "2024年3月07日Tai師父答疑.opus",
+  "2024年3月08日Tai師父答疑.opus",
+  "2024年3月09日Tai師父答疑.opus",
+  "2024年3月11日Tai師父答疑.opus",
+  "2024年3月12日Tai師父答疑.opus",
+  "2024年3月13日Tai師父答疑.opus",
+  "2024年3月14日Tai師父答疑.opus",
+  "2024年3月15日Tai師父答疑.opus",
+  "2024年3月16日Tai師父答疑.opus",
+  "2024年3月18日Tai師父答疑.opus",
+  "2024年3月19日Tai師父答疑.opus",
+  "2024年3月20日Tai師父答疑.opus",
+  "2024年3月21日Tai師父答疑.opus",
+  "2024年3月22日Tai師父答疑.opus",
+  "2024年3月23日Tai師父答疑.opus",
+  "2024年3月26日Tai師父答疑.opus",
+  "2024年3月27日Tai師父答疑.opus",
+  "2024年3月28日Tai師父答疑.opus",
+  "2024年3月29日Tai師父答疑.opus",
+  "2024年3月30日Tai師父答疑.opus",
+  "2024年4月08日Tai師父答疑.opus",
+  "2024年4月22日Tai師父答疑.opus",
+  "2024年4月23日Tai師父答疑.opus",
+  "2024年4月24日Tai師父答疑.opus",
+  "2024年4月25日Tai師父答疑.opus",
+  "2024年4月26日Tai師父答疑.opus",
+  "2024年4月27日Tai師父答疑.opus",
+  "2024年5月20日Tai師父答疑.opus",
+  "2024年5月21日Tai師父答疑.opus",
+  "2024年5月22日Tai師父答疑.opus",
+  "2024年5月23日Tai師父答疑.opus",
+  "2024年5月24日Tai師父答疑.opus",
+  "2024年5月25日Tai師父答疑.opus",
+  "2024年6月17日Tai師父答疑.opus",
+  "2024年6月18日Tai師父答疑.opus",
+  "2024年6月19日Tai師父答疑.opus",
+  "2024年6月20日Tai師父答疑.opus",
+  "2024年6月21日Tai師父答疑.opus",
+  "2024年6月22日Tai師父答疑.opus",
+  "2024年7月15日Tai師父答疑.opus",
+  "2024年7月16日Tai師父答疑.opus",
+  "2024年7月17日Tai師父答疑.opus",
+  "2024年7月18日Tai師父答疑.opus",
+  "2024年7月19日Tai師父答疑.opus",
+  "2024年7月20日Tai師父答疑.opus",
+  "2024年8月12日Tai師父答疑.opus",
+  "2024年8月13日Tai師父答疑.opus",
+  "2024年8月14日Tai師父答疑.opus",
+  "2024年8月15日Tai師父答疑.opus",
+  "2024年8月16日Tai師父答疑.opus",
+  "2024年8月17日Tai師父答疑.opus",
+  "2024年9月10日Tai師父答疑.opus",
+  "2024年9月11日Tai師父答疑.opus",
+  "2024年9月12日Tai師父答疑.opus",
+  "2024年9月13日Tai師父答疑.opus",
+  "2024年9月14日Tai師父答疑.opus",
+  "2024年9月9日Tai師父答疑.opus",
+  "2025年11月10日Tai師父官網答疑.opus",
+  "2025年11月10日Tai師父微信公眾號答疑.opus",
+  "2025年11月11日Tai師父官網答疑.opus",
+  "2025年11月11日Tai師父微信公眾號答疑.opus",
+  "2025年11月12日Tai師父官網答疑.opus",
+  "2025年11月12日Tai師父微信公眾號答疑.opus",
+  "2025年11月13日Tai師父官網答疑.opus",
+  "2025年11月13日Tai師父微信公眾號答疑.opus",
+  "2025年11月14日Tai師父官網答疑.opus",
+  "2025年11月14日Tai師父微信公眾號答疑.opus",
+  "2025年11月15日Tai師父官網答疑.opus",
+  "2025年11月15日Tai師父微信公眾號答疑.opus",
+  "2025年12月10日Tai師父官網答疑.opus",
+  "2025年12月10日Tai師父微信公眾號答疑.opus",
+  "2025年12月11日Tai師父官網答疑.opus",
+  "2025年12月11日Tai師父微信公眾號答疑.opus",
+  "2025年12月12日Tai師父官網答疑.opus",
+  "2025年12月12日Tai師父微信公眾號答疑.opus",
+  "2025年12月13日Tai師父官網答疑.opus",
+  "2025年12月13日Tai師父微信公眾號答疑.opus",
+  "2025年12月8日Tai師父官網答疑.opus",
+  "2025年12月8日Tai師父微信公眾號答疑.opus",
+  "2025年12月9日Tai師父官網答疑.opus",
+  "2025年12月9日Tai師父微信公眾號答疑.opus",
+  "2025年1月13日Tai師父微信公眾號答疑.opus",
+  "2025年1月13日Tai師父貼吧答疑.opus",
+  "2025年1月14日Tai師父微信公眾號答疑.opus",
+  "2025年1月14日Tai師父貼吧答疑.opus",
+  "2025年1月15日Tai師父微信公眾號答疑.opus",
+  "2025年1月15日Tai師父貼吧答疑.opus",
+  "2025年1月16日Tai師父微信公眾號答疑.opus",
+  "2025年1月16日Tai師父貼吧答疑.opus",
+  "2025年1月17日Tai師父微信公眾號答疑 .opus",
+  "2025年1月17日Tai師父貼吧答疑 .opus",
+  "2025年1月18日Tai師父微信公眾號答疑.opus",
+  "2025年1月18日Tai師父貼吧答疑.opus",
+  "2025年2月10日Tai師父微信公眾號答疑.opus",
+  "2025年2月10日Tai師父貼吧答疑.opus",
+  "2025年2月11日Tai師父微信公眾號答疑.opus",
+  "2025年2月11日Tai師父貼吧答疑.opus",
+  "2025年2月12日Tai師父微信公眾號答疑.opus",
+  "2025年2月12日Tai師父貼吧答疑.opus",
+  "2025年2月13日Tai師父微信公眾號答疑.opus",
+  "2025年2月13日Tai師父貼吧答疑.opus",
+  "2025年2月14日Tai師父微信公眾號答疑.opus",
+  "2025年2月14日Tai師父貼吧答疑.opus",
+  "2025年2月15日Tai師父微信公眾號答疑.opus",
+  "2025年2月15日Tai師父貼吧答疑.opus",
+  "2025年3月10日Tai師父微信公眾號答疑.opus",
+  "2025年3月10日Tai師父貼吧答疑.opus",
+  "2025年3月11日Tai師父微信公眾號答疑.opus",
+  "2025年3月11日Tai師父貼吧答疑.opus",
+  "2025年3月12日Tai師父微信公眾號答疑.opus",
+  "2025年3月12日Tai師父貼吧答疑.opus",
+  "2025年3月13日Tai師父微信公眾號答疑.opus",
+  "2025年3月13日Tai師父貼吧答疑.opus",
+  "2025年3月14日Tai師父微信公眾號答疑.opus",
+  "2025年3月14日Tai師父貼吧答疑.opus",
+  "2025年3月15日Tai師父微信公眾號答疑.opus",
+  "2025年3月15日Tai師父貼吧答疑.opus",
+  "2025年5月12日Tai師父微信公眾號答疑.opus",
+  "2025年5月12日Tai師父貼吧答疑.opus",
+  "2025年5月13日Tai師父微信公眾號答疑.opus",
+  "2025年5月13日Tai師父貼吧答疑.opus",
+  "2025年5月14日Tai師父微信公眾號答疑.opus",
+  "2025年5月14日Tai師父貼吧答疑.opus",
+  "2025年5月15日Tai師父微信公眾號答疑.opus",
+  "2025年5月15日Tai師父貼吧答疑.opus",
+  "2025年5月16日Tai師父微信公眾號答疑.opus",
+  "2025年5月16日Tai師父貼吧答疑.opus",
+  "2025年5月17日Tai師父微信公眾號答疑.opus",
+  "2025年5月17日Tai師父貼吧答疑.opus",
+  "2025年6月10日Tai師父微信公眾號答疑.opus",
+  "2025年6月10日Tai師父貼吧答疑.opus",
+  "2025年6月11日Tai師父微信公眾號答疑.opus",
+  "2025年6月11日Tai師父貼吧答疑.opus",
+  "2025年6月12日Tai師父微信公眾號答疑.opus",
+  "2025年6月12日Tai師父貼吧答疑.opus",
+  "2025年6月13日Tai師父微信公眾號答疑.opus",
+  "2025年6月13日Tai師父貼吧答疑.opus",
+  "2025年6月14日Tai師父微信公眾號答疑.opus",
+  "2025年6月14日Tai師父貼吧答疑.opus",
+  "2025年6月9日Tai師父微信公眾號答疑.opus",
+  "2025年6月9日Tai師父貼吧答疑.opus",
+  "2025年7月10日Tai師父微信公眾號答疑.opus",
+  "2025年7月10日Tai師父貼吧答疑.opus",
+  "2025年7月11日Tai師父微信公眾號答疑.opus",
+  "2025年7月11日Tai師父貼吧答疑.opus",
+  "2025年7月12日Tai師父微信公眾號答疑.opus",
+  "2025年7月12日Tai師父貼吧答疑.opus",
+  "2025年7月7日Tai師父微信公眾號答疑.opus",
+  "2025年7月7日Tai師父貼吧答疑.opus",
+  "2025年7月8日Tai師父微信公眾號答疑.opus",
+  "2025年7月8日Tai師父貼吧答疑.opus",
+  "2025年7月9日Tai師父微信公眾號答疑.opus",
+  "2025年7月9日Tai師父貼吧答疑.opus",
+  "2025年8月4日Tai師父微信公眾號答疑.opus",
+  "2025年8月4日Tai師父貼吧答疑.opus",
+  "2025年8月5日Tai師父微信公眾號答疑.opus",
+  "2025年8月5日Tai師父貼吧答疑.opus",
+  "2025年8月6日Tai師父微信公眾號答疑.opus",
+  "2025年8月6日Tai師父貼吧答疑.opus",
+  "2025年8月7日Tai師父微信公眾號答疑.opus",
+  "2025年8月7日Tai師父貼吧答疑.opus",
+  "2025年8月8日Tai師父微信公眾號答疑.opus",
+  "2025年8月8日Tai師父貼吧答疑.opus",
+  "2025年8月9日Tai師父微信公眾號答疑.opus",
+  "2025年8月9日Tai師父貼吧答疑.opus",
+  "2025年9月1日Tai師父微信公眾號答疑.opus",
+  "2025年9月1日Tai師父貼吧答疑.opus",
+  "2025年9月2日Tai師父微信公眾號答疑.opus",
+  "2025年9月2日Tai師父貼吧答疑.opus",
+  "2025年9月3日Tai師父微信公眾號答疑.opus",
+  "2025年9月3日Tai師父貼吧答疑.opus",
+  "2025年9月4日Tai師父微信公眾號答疑.opus",
+  "2025年9月4日Tai師父貼吧答疑.opus",
+  "2025年9月5日Tai師父微信公眾號答疑.opus",
+  "2025年9月5日Tai師父貼吧答疑.opus",
+  "2025年9月6日Tai師父微信公眾號答疑.opus",
+  "2025年9月6日Tai師父貼吧答疑.opus",
+  "2026年1月10日Tai師父官網答疑.opus",
+  "2026年1月10日Tai師父微信公眾號答疑.opus",
+  "2026年1月5日Tai師父官網答疑.opus",
+  "2026年1月5日Tai師父微信公眾號答疑.opus",
+  "2026年1月6日Tai師父官網答疑.opus",
+  "2026年1月6日Tai師父微信公眾號答疑.opus",
+  "2026年1月7日Tai師父官網答疑.opus",
+  "2026年1月7日Tai師父微信公眾號答疑.opus",
+  "2026年1月8日Tai師父官網答疑.opus",
+  "2026年1月8日Tai師父微信公眾號答疑.opus",
+  "2026年1月9日Tai師父官網答疑.opus",
+  "2026年1月9日Tai師父微信公眾號答疑.opus",
+  "2026年2月2日Tai師父官網答疑.opus",
+  "2026年2月2日Tai師父微信公眾號答疑.opus",
+  "2026年2月3日Tai師父官網答疑.opus",
+  "2026年2月3日Tai師父微信公眾號答疑.opus",
+  "2026年2月4日Tai師父官網答疑.opus",
+  "2026年2月4日Tai師父微信公眾號答疑.opus",
+  "2026年2月5日Tai師父官網答疑.opus",
+  "2026年2月5日Tai師父微信公眾號答疑.opus",
+  "2026年2月6日Tai師父官網答疑.opus",
+  "2026年2月6日Tai師父微信公眾號答疑.opus",
+  "2026年2月7日Tai師父官網答疑.opus",
+  "2026年2月7日Tai師父微信公眾號答疑.opus",
+  "2026年3月2日Tai師父官網答疑.opus",
+  "2026年3月2日Tai師父微信公眾號答疑.opus",
+  "2026年3月3日Tai師父官網答疑.opus",
+  "2026年3月3日Tai師父微信公眾號答疑.opus",
+  "2026年3月4日Tai師父官網答疑.opus",
+  "2026年3月4日Tai師父微信公眾號答疑.opus",
+  "2026年3月5日Tai師父官網答疑.opus",
+  "2026年3月5日Tai師父微信公眾號答疑.opus",
+  "2026年3月6日Tai師父官網答疑.opus",
+  "2026年3月6日Tai師父微信公眾號答疑.opus",
+  "2026年3月7日Tai師父官網答疑.opus",
+  "2026年3月7日Tai師父微信公眾號答疑.opus"
+];
+
+const dateRe = /^(\d{4})年(\d{1,2})月(\d{1,2})日/;
+function parseDate(name) {
+  const m = name.match(dateRe);
+  if (!m) return null;
+  return { y: +m[1], mo: +m[2], d: +m[3] };
+}
+
+// 逐段編碼路徑，保留 / 分隔才能指向 audio/jiangjing/… 等子資料夾
+function encodePath(path) {
+  return path.split("/").map(encodeURIComponent).join("/");
+}
+
+const items = FILES.map((f) => {
+  const base = f.path.split("/").pop();
+  const d = parseDate(base) || { y: 0, mo: 0, d: 0 };
+  const cat = CATEGORIES[f.cat] || { label: f.cat, cls: "gz", group: "其他", order: 999 };
+  const sortKey = d.y * 10000 + d.mo * 100 + d.d;
+  return {
+    path: f.path,
+    base,
+    d,
+    cat: f.cat,
+    catLabel: cat.label,
+    catCls: cat.cls,
+    key: `${cat.order}|${d.y}-${String(d.mo).padStart(2, "0")}`,
+    monthLabel: d.y ? `${d.y} 年 ${d.mo} 月` : "未知日期",
+    sortKey
+  };
+});
+
+const totalCount = items.length + DABEI.length;
+document.getElementById("totalCount").textContent = totalCount;
+
+const $list = document.getElementById("list");
+const $search = document.getElementById("search");
+const $category = document.getElementById("category");
+const $stats = document.getElementById("stats");
+const $sortNew = document.getElementById("sortNewest");
+const $sortOld = document.getElementById("sortOldest");
+const $np = document.getElementById("np");
+const $npTitle = document.getElementById("npTitle");
+const $npStop = document.getElementById("npStop");
+
+const $dabeiAudio = document.getElementById("dabeiAudio");
+const $dabeiAudioB = document.getElementById("dabeiAudioB");
+const $dabeiStatus = document.getElementById("dabeiStatus");
+const $dabeiPlayBtn = document.getElementById("dabeiPlayBtn");
+const $dabeiTime = document.getElementById("dabeiTime");
+const $dabeiSeek = document.getElementById("dabeiSeek");
+const $btnLoopNormal = document.getElementById("btnLoopNormal");
+const $btnLoopFast = document.getElementById("btnLoopFast");
+const $btnLoopPlaylist = document.getElementById("btnLoopPlaylist");
+const $btnDabeiStop = document.getElementById("btnDabeiStop");
+const $dabeiVolume = document.getElementById("dabeiVolume");
+const $dabeiVolWave = document.getElementById("dabeiVolWave");
+const $dabeiVolMuted = document.getElementById("dabeiVolMuted");
+
+// --- 大悲咒音量（可調整，記住上次設定）---
+const DABEI_VOLUME_KEY = "dabeiVolume";
+function applyDabeiVolume(v) {
+  v = Math.min(Math.max(Number(v) || 0, 0), 1);
+  $dabeiAudio.volume = v;
+  $dabeiAudioB.volume = v;
+  const muted = v <= 0.001;
+  $dabeiVolWave.style.display = muted ? "none" : "";
+  $dabeiVolMuted.style.display = muted ? "" : "none";
+}
+(function initDabeiVolume() {
+  let saved = 1; // 預設最大音量
+  try {
+    const raw = localStorage.getItem(DABEI_VOLUME_KEY);
+    if (raw !== null) {
+      const n = Number(raw);
+      if (Number.isFinite(n)) saved = n;
+    }
+  } catch (_) {}
+  saved = Math.min(Math.max(saved, 0), 1);
+  $dabeiVolume.value = String(saved);
+  applyDabeiVolume(saved);
+})();
+$dabeiVolume.addEventListener("input", () => {
+  applyDabeiVolume($dabeiVolume.value);
+  try { localStorage.setItem(DABEI_VOLUME_KEY, $dabeiVolume.value); } catch (_) {}
+});
+
+let sortDir = "desc"; // desc = newest first
+
+function pauseAllAnswerAudios() {
+  document.querySelectorAll("#list audio").forEach(a => { if (!a.paused) a.pause(); });
+}
+
+function formatTime(sec) {
+  if (!Number.isFinite(sec) || sec < 0) sec = 0;
+  sec = Math.floor(sec);
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function prepareAudioEl(el) {
+  el.setAttribute("playsinline", "");
+  el.setAttribute("webkit-playsinline", "");
+  el.preload = "auto";
+  el.loop = false;
+}
+
+// --- 大悲咒播放器 ---
+// 清單循環用兩顆 audio 固定各載一首，點擊時先解鎖；關螢幕後不改 src，只切換播放。
+const dabeiPlayer = {
+  mode: null, // "normal" | "fast" | "playlist"
+  index: 0,
+  playing: false,
+  lockedDuration: 0,
+  scrubbing: false,
+  ending: false,
+  switching: false,
+  seekCooldownUntil: 0,
+  SEEK_MAX: 1000,
+  END_EPSILON: 0.35,
+  SEEK_END_MARGIN: 1.0,
+  els: [$dabeiAudio, $dabeiAudioB],
+
+  trackById(id) {
+    return DABEI.find(t => t.id === id) || DABEI[0];
+  },
+  current() {
+    if (this.mode === "playlist") return DABEI[this.index % DABEI.length];
+    if (this.mode === "fast") return this.trackById("fast");
+    return this.trackById("normal");
+  },
+  activeEl() {
+    return this.els[this.index % this.els.length];
+  },
+  otherEl() {
+    return this.els[(this.index + 1) % this.els.length];
+  },
+  setActiveButtons() {
+    for (const [el, mode] of [
+      [$btnLoopNormal, "normal"],
+      [$btnLoopFast, "fast"],
+      [$btnLoopPlaylist, "playlist"]
+    ]) {
+      el.classList.toggle("active", this.mode === mode && this.playing);
+    }
+  },
+  statusText() {
+    if (!this.mode) return "選擇上方模式開始播放";
+    if (!this.playing) return `已暫停：${this.current().title}（可再按模式或播放器繼續）`;
+    const t = this.current();
+    if (this.mode === "playlist") {
+      return `清單循環中：${t.title}（播完自動接下一段）`;
+    }
+    return `單曲循環中：${t.title}`;
+  },
+  updateUI() {
+    $dabeiStatus.textContent = this.statusText();
+    this.setActiveButtons();
+    $dabeiPlayBtn.textContent = this.playing ? "❚❚" : "▶";
+    $dabeiPlayBtn.disabled = !this.mode;
+    $dabeiSeek.disabled = !this.mode || this.lockedDuration <= 0;
+    if (this.playing) {
+      $np.classList.add("show", "dabei-np");
+      $npTitle.textContent = this.current().title + (this.mode === "playlist" ? " · 清單循環" : " · 單曲循環");
+    } else if (!this.mode) {
+      $np.classList.remove("dabei-np");
+    }
+    this.syncScrubber();
+  },
+  syncScrubber() {
+    const el = this.activeEl();
+    const dur = this.lockedDuration || 0;
+    const t = Math.min(Math.max(el.currentTime || 0, 0), dur || 0);
+    $dabeiTime.textContent = `${formatTime(t)} / ${formatTime(dur)}`;
+    if (!this.scrubbing && dur > 0) {
+      $dabeiSeek.value = String(Math.round((t / dur) * this.SEEK_MAX));
+    }
+  },
+  updateMediaSession() {
+    if (!("mediaSession" in navigator)) return;
+    const t = this.current();
+    const el = this.activeEl();
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: t.title,
+      artist: "Tai 師父 · 西方三聖",
+      album: this.mode === "playlist" ? "大悲咒清單循環" : "大悲咒單曲循環",
+      artwork: absoluteArtwork()
+    });
+    navigator.mediaSession.playbackState = this.playing ? "playing" : "paused";
+    try {
+      if (this.lockedDuration > 0) {
+        navigator.mediaSession.setPositionState({
+          duration: this.lockedDuration,
+          playbackRate: el.playbackRate || 1,
+          position: Math.min(el.currentTime || 0, this.lockedDuration)
+        });
+      }
+    } catch (_) { /* unsupported */ }
+  },
+  bindSource(el, track) {
+    const url = encodeURI(track.file);
+    if (el.getAttribute("src") !== url) {
+      el.src = url;
+      el.load();
+    }
+    el.loop = false;
+  },
+  async unlock(el) {
+    const prevMuted = el.muted;
+    el.muted = true;
+    try {
+      await el.play();
+      el.pause();
+      try { el.currentTime = 0; } catch (_) {}
+    } catch (_) { /* 部分瀏覽器仍可能擋；點擊當下已盡力解鎖 */ }
+    el.muted = prevMuted;
+  },
+  async primeSources() {
+    this.els.forEach((el, i) => this.bindSource(el, DABEI[i]));
+    await Promise.all(this.els.map((el) => this.unlock(el)));
+  },
+  seekToRatio(ratio) {
+    if (!this.lockedDuration) return;
+    const el = this.activeEl();
+    const maxT = Math.max(0, this.lockedDuration - this.SEEK_END_MARGIN);
+    const t = Math.min(Math.max(Number(ratio) || 0, 0), 1) * maxT;
+    const wasPlaying = !el.paused && !el.ended;
+    const apply = () => {
+      try {
+        if (typeof el.fastSeek === "function") el.fastSeek(t);
+        else el.currentTime = t;
+      } catch (_) {
+        try { el.currentTime = t; } catch (__) {}
+      }
+      this.seekCooldownUntil = performance.now() + 1200;
+      this.scrubbing = false;
+      this.syncScrubber();
+      if (wasPlaying && el.paused) {
+        el.play().catch(() => {});
+      }
+    };
+    if (el.readyState >= 1) apply();
+    else el.addEventListener("loadedmetadata", apply, { once: true });
+  },
+  commitSeek() {
+    if (!this.mode || !this.lockedDuration) {
+      this.scrubbing = false;
+      return;
+    }
+    const ratio = Number($dabeiSeek.value) / this.SEEK_MAX;
+    this.seekToRatio(ratio);
+  },
+  async playMode(mode) {
+    pauseAllAnswerAudios();
+    this.mode = mode;
+    this.index = mode === "fast" ? 1 : 0;
+    this.ending = false;
+    this.switching = false;
+    try {
+      await this.primeSources();
+    } catch (_) {}
+    this.els.forEach((el, i) => {
+      if (i !== this.index) {
+        el.pause();
+        try { el.currentTime = 0; } catch (_) {}
+      }
+    });
+    this.lockedDuration = Number(this.current().duration) || 0;
+    try {
+      const el = this.activeEl();
+      try { el.currentTime = 0; } catch (_) {}
+      await el.play();
+      this.playing = true;
+      this.updateUI();
+      this.updateMediaSession();
+    } catch (err) {
+      this.playing = false;
+      $dabeiStatus.textContent = "無法播放：請點擊按鈕後再試，或確認瀏覽器支援 Opus。";
+      this.setActiveButtons();
+      console.warn(err);
+    }
+  },
+  async togglePlay() {
+    if (!this.mode) return;
+    const el = this.activeEl();
+    if (el.paused) {
+      pauseAllAnswerAudios();
+      try {
+        await el.play();
+        this.playing = true;
+        this.updateUI();
+        this.updateMediaSession();
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      el.pause();
+    }
+  },
+  async advancePlaylist() {
+    if (this.mode !== "playlist" || this.ending) return;
+    this.ending = true;
+    this.switching = true;
+    const prevEl = this.activeEl();
+    this.index = (this.index + 1) % DABEI.length;
+    const nextEl = this.activeEl();
+    this.lockedDuration = Number(this.current().duration) || 0;
+    try {
+      try { nextEl.currentTime = 0; } catch (_) {}
+      await nextEl.play();
+      prevEl.pause();
+      try { prevEl.currentTime = 0; } catch (_) {}
+      this.playing = true;
+      this.updateUI();
+      this.updateMediaSession();
+    } catch (err) {
+      try {
+        await new Promise((r) => setTimeout(r, 120));
+        await nextEl.play();
+        prevEl.pause();
+        this.playing = true;
+        this.updateUI();
+        this.updateMediaSession();
+      } catch (err2) {
+        this.playing = false;
+        $dabeiStatus.textContent = "清單切歌失敗，請再點「兩版清單循環」繼續。";
+        this.setActiveButtons();
+        console.warn(err2);
+      }
+    } finally {
+      this.switching = false;
+      setTimeout(() => { this.ending = false; }, 800);
+    }
+  },
+  async onEnded(fromEl) {
+    if (fromEl && fromEl !== this.activeEl()) return;
+    if (performance.now() < this.seekCooldownUntil) {
+      try {
+        const back = Math.max(0, (this.lockedDuration || 0) - this.SEEK_END_MARGIN);
+        this.activeEl().currentTime = back;
+      } catch (_) {}
+      return;
+    }
+    if (this.mode !== "playlist") {
+      if (this.ending) return;
+      this.ending = true;
+      const el = this.activeEl();
+      try { el.currentTime = 0; } catch (_) {}
+      try {
+        await el.play();
+        this.playing = true;
+        this.updateUI();
+        this.updateMediaSession();
+      } catch (_) {}
+      setTimeout(() => { this.ending = false; }, 400);
+      return;
+    }
+    await this.advancePlaylist();
+  },
+  maybeHandleNearEnd() {
+    if (!this.mode || !this.lockedDuration || this.scrubbing || this.ending) return;
+    if (performance.now() < this.seekCooldownUntil) return;
+    const el = this.activeEl();
+    if (el.paused) return;
+    const remain = this.lockedDuration - (el.currentTime || 0);
+    if (this.mode === "playlist") {
+      // 結尾前提早接上已解鎖的下一首，避免關螢幕後空檔被系統擋 play()
+      if (remain <= 0.45) this.advancePlaylist();
+      return;
+    }
+    if (remain <= this.END_EPSILON) this.onEnded(el);
+  },
+  stop() {
+    this.playing = false;
+    this.mode = null;
+    this.lockedDuration = 0;
+    this.scrubbing = false;
+    this.ending = false;
+    this.switching = false;
+    this.seekCooldownUntil = 0;
+    this.els.forEach((el) => {
+      el.pause();
+      try { el.currentTime = 0; } catch (_) {}
+    });
+    $dabeiSeek.value = "0";
+    $dabeiTime.textContent = "0:00 / 0:00";
+    this.updateUI();
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "none";
+      try { navigator.mediaSession.metadata = null; } catch (_) {}
+    }
+    const anyPlaying = Array.from(document.querySelectorAll("#list audio")).some(o => !o.paused);
+    if (!anyPlaying) $np.classList.remove("show");
+  }
+};
+
+dabeiPlayer.els.forEach((el) => {
+  prepareAudioEl(el);
+  el.addEventListener("timeupdate", () => {
+    if (el !== dabeiPlayer.activeEl()) return;
+    dabeiPlayer.syncScrubber();
+    dabeiPlayer.maybeHandleNearEnd();
+    if (dabeiPlayer.playing) dabeiPlayer.updateMediaSession();
+  });
+  el.addEventListener("loadedmetadata", () => {
+    if (el === dabeiPlayer.activeEl()) dabeiPlayer.syncScrubber();
+  });
+  el.addEventListener("durationchange", () => {
+    if (el === dabeiPlayer.activeEl()) dabeiPlayer.syncScrubber();
+  });
+  el.addEventListener("play", () => {
+    if (el !== dabeiPlayer.activeEl()) return;
+    pauseAllAnswerAudios();
+    if (dabeiPlayer.mode) {
+      dabeiPlayer.playing = true;
+      dabeiPlayer.updateUI();
+      dabeiPlayer.updateMediaSession();
+    }
+  });
+  el.addEventListener("pause", () => {
+    if (dabeiPlayer.switching || dabeiPlayer.ending) return;
+    if (el !== dabeiPlayer.activeEl()) return;
+    if (el.ended) return;
+    if (!dabeiPlayer.mode) return;
+    dabeiPlayer.playing = false;
+    dabeiPlayer.updateUI();
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
+    const anyPlaying = Array.from(document.querySelectorAll("#list audio")).some(o => !o.paused);
+    if (!anyPlaying) $np.classList.remove("show");
+  });
+  el.addEventListener("ended", () => { dabeiPlayer.onEnded(el); });
+});
+
+$dabeiPlayBtn.addEventListener("click", () => dabeiPlayer.togglePlay());
+$dabeiSeek.addEventListener("pointerdown", () => { dabeiPlayer.scrubbing = true; });
+$dabeiSeek.addEventListener("touchstart", () => { dabeiPlayer.scrubbing = true; }, { passive: true });
+$dabeiSeek.addEventListener("pointerup", () => { dabeiPlayer.commitSeek(); });
+$dabeiSeek.addEventListener("pointercancel", () => {
+  dabeiPlayer.scrubbing = false;
+  dabeiPlayer.syncScrubber();
+});
+$dabeiSeek.addEventListener("input", () => {
+  dabeiPlayer.scrubbing = true;
+  const ratio = Number($dabeiSeek.value) / dabeiPlayer.SEEK_MAX;
+  const dur = dabeiPlayer.lockedDuration || 0;
+  const preview = ratio * Math.max(0, dur - dabeiPlayer.SEEK_END_MARGIN);
+  $dabeiTime.textContent = `${formatTime(preview)} / ${formatTime(dur)}`;
+});
+$dabeiSeek.addEventListener("change", () => { dabeiPlayer.commitSeek(); });
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  if (dabeiPlayer.mode !== "playlist" || !dabeiPlayer.playing) return;
+  const el = dabeiPlayer.activeEl();
+  if (el.ended || (el.paused && !dabeiPlayer.switching)) {
+    dabeiPlayer.advancePlaylist();
+  }
+});
+
+$btnLoopNormal.addEventListener("click", () => dabeiPlayer.playMode("normal"));
+$btnLoopFast.addEventListener("click", () => dabeiPlayer.playMode("fast"));
+$btnLoopPlaylist.addEventListener("click", () => dabeiPlayer.playMode("playlist"));
+$btnDabeiStop.addEventListener("click", () => dabeiPlayer.stop());
+
+if ("mediaSession" in navigator) {
+  try {
+    navigator.mediaSession.setActionHandler("play", () => {
+      dabeiPlayer.activeEl().play().then(() => {
+        dabeiPlayer.playing = true;
+        dabeiPlayer.updateUI();
+        dabeiPlayer.updateMediaSession();
+      }).catch(() => {});
+    });
+    navigator.mediaSession.setActionHandler("pause", () => { dabeiPlayer.activeEl().pause(); });
+    navigator.mediaSession.setActionHandler("stop", () => dabeiPlayer.stop());
+    navigator.mediaSession.setActionHandler("seekto", (details) => {
+      if (!dabeiPlayer.lockedDuration || details.seekTime == null) return;
+      const maxT = Math.max(0, dabeiPlayer.lockedDuration - dabeiPlayer.END_EPSILON);
+      try { dabeiPlayer.activeEl().currentTime = Math.min(Math.max(details.seekTime, 0), maxT); } catch (_) {}
+      dabeiPlayer.syncScrubber();
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", async () => {
+      if (dabeiPlayer.mode !== "playlist") return;
+      await dabeiPlayer.advancePlaylist();
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", async () => {
+      if (dabeiPlayer.mode === "playlist") {
+        if (dabeiPlayer.ending) return;
+        dabeiPlayer.index = (dabeiPlayer.index - 2 + DABEI.length) % DABEI.length;
+        await dabeiPlayer.advancePlaylist();
+      } else {
+        dabeiPlayer.activeEl().currentTime = 0;
+        dabeiPlayer.syncScrubber();
+      }
+    });
+  } catch (_) { /* older browsers */ }
+}
+
+function buildCategoryOptions() {
+  const counts = new Map();
+  for (const it of items) counts.set(it.cat, (counts.get(it.cat) || 0) + 1);
+
+  $category.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "all";
+  all.textContent = `全部（${items.length}）`;
+  $category.appendChild(all);
+
+  const groups = new Map();
+  for (const it of items) {
+    const c = CATEGORIES[it.cat] || { group: "其他", order: 999 };
+    if (!groups.has(c.group)) groups.set(c.group, { order: c.order, cats: [] });
+    const g = groups.get(c.group);
+    g.order = Math.min(g.order, c.order);
+    if (!g.cats.includes(it.cat)) g.cats.push(it.cat);
+  }
+
+  const sorted = Array.from(groups.entries()).sort((a, b) => a[1].order - b[1].order);
+  for (const [gname, g] of sorted) {
+    const og = document.createElement("optgroup");
+    og.label = gname;
+    g.cats.sort((a, b) => (CATEGORIES[a].order || 0) - (CATEGORIES[b].order || 0));
+    for (const cat of g.cats) {
+      const o = document.createElement("option");
+      o.value = cat;
+      o.textContent = `${CATEGORIES[cat].label}（${counts.get(cat) || 0}）`;
+      og.appendChild(o);
+    }
+    $category.appendChild(og);
+  }
+}
+
+function render() {
+  const q = $search.value.trim().toLowerCase();
+  const cat = $category.value || "all";
+  const filtered = items.filter(it =>
+    (cat === "all" || it.cat === cat) &&
+    (!q || it.base.toLowerCase().includes(q) || it.catLabel.toLowerCase().includes(q))
+  );
+
+  filtered.sort((a, b) =>
+    sortDir === "desc" ? b.sortKey - a.sortKey : a.sortKey - b.sortKey
+  );
+
+  const groups = new Map();
+  for (const it of filtered) {
+    if (!groups.has(it.key)) groups.set(it.key, []);
+    groups.get(it.key).push(it);
+  }
+
+  const groupKeys = Array.from(groups.keys()).sort((a, b) => {
+    const cmp = a.split("|")[1].localeCompare(b.split("|")[1]);
+    if (cmp !== 0) return sortDir === "desc" ? -cmp : cmp;
+    return Number(a.split("|")[0]) - Number(b.split("|")[0]);
+  });
+
+  $list.innerHTML = "";
+  $stats.textContent = `顯示 ${filtered.length} / ${items.length}`;
+
+  if (filtered.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "找不到符合的音檔";
+    $list.appendChild(empty);
+    return;
+  }
+
+  for (const gk of groupKeys) {
+    const list = groups.get(gk);
+    const groupEl = document.createElement("section");
+    groupEl.className = "group";
+    groupEl.innerHTML = `
+      <div class="group-header">
+        <span>${escapeHtml(list[0].catLabel)} · ${escapeHtml(list[0].monthLabel)}</span>
+        <span class="group-count">${list.length} 個音檔</span>
+      </div>
+    `;
+    for (const it of list) {
+      const url = encodePath(it.path);
+      const dateLabel = it.d.y
+        ? `${String(it.d.mo).padStart(2, "0")}/${String(it.d.d).padStart(2, "0")}`
+        : "—";
+      const itemEl = document.createElement("div");
+      itemEl.className = "item";
+      itemEl.innerHTML = `
+        <div class="item-title">
+          <span class="date">${it.d.y || ""} ${dateLabel}</span>
+          <span class="name">${escapeHtml(it.base)}</span>
+          <span class="badge ${it.catCls}">${escapeHtml(it.catLabel)}</span>
+        </div>
+        <audio controls preload="none" src="${url}" data-title="${escapeAttr(it.base)}"></audio>
+      `;
+      groupEl.appendChild(itemEl);
+    }
+    $list.appendChild(groupEl);
+  }
+
+  wireAudio();
+}
+
+function escapeHtml(s) {
+  return s.replace(/[&<>"']/g, c => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+  }[c]));
+}
+function escapeAttr(s) { return escapeHtml(s); }
+
+function wireAudio() {
+  const audios = document.querySelectorAll("#list audio");
+  audios.forEach(a => {
+    a.addEventListener("play", () => {
+      dabeiPlayer.stop();
+      audios.forEach(o => { if (o !== a && !o.paused) o.pause(); });
+      $np.classList.add("show");
+      $np.classList.remove("dabei-np");
+      $npTitle.textContent = a.dataset.title || "";
+    });
+    a.addEventListener("pause", () => {
+      const anyPlaying = Array.from(audios).some(o => !o.paused) || (dabeiPlayer.playing && !dabeiPlayer.activeEl().paused);
+      if (!anyPlaying) $np.classList.remove("show");
+    });
+    a.addEventListener("ended", () => {
+      const anyPlaying = Array.from(audios).some(o => !o.paused) || (dabeiPlayer.playing && !dabeiPlayer.activeEl().paused);
+      if (!anyPlaying) $np.classList.remove("show");
+    });
+  });
+}
+
+$search.addEventListener("input", render);
+$category.addEventListener("change", render);
+$sortNew.addEventListener("click", () => {
+  sortDir = "desc";
+  $sortNew.classList.add("active");
+  $sortOld.classList.remove("active");
+  render();
+});
+$sortOld.addEventListener("click", () => {
+  sortDir = "asc";
+  $sortOld.classList.add("active");
+  $sortNew.classList.remove("active");
+  render();
+});
+$npStop.addEventListener("click", () => {
+  dabeiPlayer.stop();
+  document.querySelectorAll("#list audio").forEach(a => { if (!a.paused) a.pause(); });
+  $np.classList.remove("show");
+});
+
+buildCategoryOptions();
+render();
+</script>
+</body>
+</html>
