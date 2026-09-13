@@ -889,6 +889,7 @@ ul, ol { list-style-position: outside; }
 
 .hero-art img {
     width: min(460px, 88vw);
+    height: auto;
     filter: drop-shadow(0 30px 60px rgba(168, 64, 106, .26));
 }
 
@@ -1097,6 +1098,7 @@ ul, ol { list-style-position: outside; }
 .daily-quote { position: relative; padding: 0 0 12px; margin-top: -46px; z-index: 4; }
 
 .daily-quote-card {
+    position: relative;
     display: flex;
     align-items: flex-start;
     gap: 20px;
@@ -1105,6 +1107,33 @@ ul, ol { list-style-position: outside; }
     border-radius: var(--r-lg);
     background: linear-gradient(135deg, #ffffff 0%, #fdf4f8 100%);
     box-shadow: var(--sh-2);
+    overflow: hidden;
+}
+
+/* 右下角開示小點綴（純裝飾，不影響精選文字佈局）：
+   images/開示.png 原圖四周含大量全透明留白，可見主體僅佔約 22% 寬、
+   32% 高；內層 img 放大 449% 並以 translate 把主體（原圖約 48.9% /
+   68% 處）對準容器，使人物剛好填滿 55×60 外框。 */
+.daily-quote-art {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    width: 55px;
+    aspect-ratio: 875 / 951;
+    overflow: hidden;
+    border-radius: 10px;
+    opacity: .4;
+    pointer-events: none;
+}
+
+.daily-quote-art img {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 449%;
+    max-width: none;
+    height: auto;
+    transform: translate(-37.8%, -52.2%);
 }
 
 .daily-quote-icon {
@@ -1121,7 +1150,8 @@ ul, ol { list-style-position: outside; }
     box-shadow: 0 14px 30px -16px rgba(168, 64, 106, .9);
 }
 
-.daily-quote-body { flex: 1; min-width: 0; }
+/* 精選文字維持原佈局（全寬），僅以 z-index 浮於插圖之上 */
+.daily-quote-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
 
 .daily-quote-head {
     display: flex;
