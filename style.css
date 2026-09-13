@@ -573,9 +573,12 @@ ul, ol { list-style-position: outside; }
     background: rgba(239, 188, 210, .22);
 }
 
-.nav-link.active {
+.nav-link.active,
+.nav-dropdown-toggle.active,
+.nav-dropdown.is-current > .nav-dropdown-toggle {
     color: var(--sakura-700);
-    background: rgba(239, 188, 210, .3);
+    background: var(--sakura-100);
+    font-weight: 600;
 }
 
 /* 目前頁面的指示點 */
@@ -583,12 +586,19 @@ ul, ol { list-style-position: outside; }
     content: '';
     position: absolute;
     left: 50%;
-    bottom: 1px;
+    bottom: 3px;
     width: 4px;
     height: 4px;
     margin-left: -2px;
     border-radius: 50%;
     background: var(--sakura-500);
+}
+
+/* 下拉子項目前頁：與主 nav 同色系 */
+.nav-dropdown-item.active {
+    background: var(--sakura-50);
+    color: var(--sakura-700);
+    font-weight: 600;
 }
 
 .nav-link.nav-cta,
@@ -602,6 +612,10 @@ ul, ol { list-style-position: outside; }
 
 .nav-link.nav-cta:hover,
 .nav-menu > a[href$="#downloads"]:hover { color: #fff; background: var(--grad-rose); transform: translateY(-1px); }
+
+/* CTA（下載資料）捲到該段時維持漸層底，僅以白點指示位置 */
+.nav-link.nav-cta.active { background: var(--grad-rose); color: #fff; }
+.nav-link.nav-cta.active::after { background: #fff; }
 
 .nav-dropdown { position: relative; }
 
