@@ -87,9 +87,11 @@
                     <div class="daily-quote-head">
                         <span class="daily-quote-label" id="dailyQuoteDay">今日精選</span>
                         <div class="daily-quote-pager">
-                            <button class="dq-nav" id="dailyQuotePrev" type="button" aria-label="前一天" disabled>◀ 前一天</button>
+                            <button class="dq-nav" id="dailyQuotePrevMonth" type="button" aria-label="往前一個月" title="往前一個月" disabled>◀◀</button>
+                            <button class="dq-nav" id="dailyQuotePrev" type="button" aria-label="前一天" title="前一天" disabled>◀</button>
                             <button class="dq-nav dq-nav-today" id="dailyQuoteToday" type="button" aria-label="回到今日" disabled>今日</button>
-                            <button class="dq-nav" id="dailyQuoteNext" type="button" aria-label="後一天" disabled>後一天 ▶</button>
+                            <button class="dq-nav" id="dailyQuoteNext" type="button" aria-label="後一天" title="後一天" disabled>▶</button>
+                            <button class="dq-nav" id="dailyQuoteNextMonth" type="button" aria-label="往後一個月" title="往後一個月" disabled>▶▶</button>
                         </div>
                     </div>
                     <p class="daily-quote-text collapsed is-loading" id="dailyQuoteText" aria-live="polite">載入中…</p>
@@ -519,13 +521,16 @@
         var dayEl = document.getElementById('dailyQuoteDay');
         var prevBtn = document.getElementById('dailyQuotePrev');
         var nextBtn = document.getElementById('dailyQuoteNext');
+        var prevMonthBtn = document.getElementById('dailyQuotePrevMonth');
+        var nextMonthBtn = document.getElementById('dailyQuoteNextMonth');
         var todayBtn = document.getElementById('dailyQuoteToday');
 
         // 本區塊 `ignore-opencc`，由 tgl_lang API 自行轉換，掌握「轉換完才顯示」
         var TG = (window.tgl_lang) || null;
 
         // 靜態按鈕文字的「繁體原稿」，切繁簡時整批重上
-        var T_PREV = '◀ 前一天', T_TODAY = '今日', T_NEXT = '後一天 ▶';
+        var T_PREV = '◀', T_TODAY = '今日', T_NEXT = '▶';
+        var T_PREVM = '◀◀', T_NEXTM = '▶▶';
         var T_LINK = '前往原文 ↗', T_MORE = '展開全文 ▾', T_LESS = '收合 ▴';
         var T_LOADING = '載入中…';
 
@@ -557,6 +562,8 @@
             prevBtn.textContent = T(T_PREV);
             todayBtn.textContent = T(T_TODAY);
             nextBtn.textContent = T(T_NEXT);
+            prevMonthBtn.textContent = T(T_PREVM);
+            nextMonthBtn.textContent = T(T_NEXTM);
             link.textContent = T(T_LINK);
             toggle.textContent = T(expanded ? T_LESS : T_MORE);
             dayEl.textContent = T(dayLabel(offset));
@@ -591,6 +598,8 @@
             prevBtn.disabled = false;
             todayBtn.disabled = false;
             nextBtn.disabled = false;
+            prevMonthBtn.disabled = false;
+            nextMonthBtn.disabled = false;
         }
 
         function render() {
@@ -615,8 +624,21 @@
             }, 250);
         }
 
+        /* 整月跳轉：同日 ±1 個月，遇小月自動取月底（5/31→6/30、2/28→3/28） */
+        function shiftMonth(dir) {
+            if (!quotes) return;
+            var base = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+            var day = base.getDate();
+            var target = new Date(base.getFullYear(), base.getMonth() + dir, 1);
+            target.setDate(Math.min(day, new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate()));
+            var todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            switchDay(Math.round((target - todayMid) / 86400000));
+        }
+
         prevBtn.addEventListener('click', function () { switchDay(offset - 1); });
         nextBtn.addEventListener('click', function () { switchDay(offset + 1); });
+        prevMonthBtn.addEventListener('click', function () { shiftMonth(-1); });
+        nextMonthBtn.addEventListener('click', function () { shiftMonth(1); });
         todayBtn.addEventListener('click', function () { switchDay(0); });
         toggle.addEventListener('click', function () {
             setExpanded(text.classList.contains('collapsed'));
