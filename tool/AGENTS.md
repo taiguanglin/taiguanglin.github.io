@@ -18,6 +18,8 @@
 | `tool/stories2html/` | 實修故事原始檔 → HTML 閱讀頁 + index/sitemap 補丁。 | `stories/<原始檔>` → `stories/<slug>.html` | `README.md`（metadata SoT：`docs.py`） |
 | `tool/jiangjing_para_map/` | 講經系列「段落 ↔ SRT 字元時間流」對齊 → `audio_map3/<series>.json`；重跑保留已 confirmed 段落與 reviewed 講次。books2ebook 只注入 reviewed 講次的段落時間。 | ebook HTML 段落 + `audio/srt/jiangjing/*.srt` → `audio_map3/*.json` | `README.md` |
 | `tool/build_jiangjing_pdfs.py` | 【一次性已完成】組裝講經系列 PDF：合併（六祖壇經 2 PDF、楞嚴 docx→PDF）、四十二章/楞伽直接複製原檔（已含目錄）、其餘補檔首可點擊 TOC（含頁數）。**講經 5 本 PDF 已產出且驗證無誤，若未來不再新增/修改講經 PDF，此工具與下方兩個音檔工具可一併刪除。** | 來源 PDF/docx → `books/06…09*.pdf` + 感恩 | 檔首 docstring |
+| `tool/series2audio.py` | 新錄音系列（義理／圓覺經／心經／金剛經）mp3·m4a → **去雜音（DNS64）+ 音量正規化** → opus（16kbps / mono / 48kHz / voip），輸出 `audio/yili/` 與 `audio/jiangjing/`。等於把 `jiangjing2audio.py` + `audio_denoiser/denoise_jiangjing.py` + `normalize_jiangjing_audio.py` 三步併成一步（模型每個 worker 只載入一次）。 | `~/Downloads/Tai师父*/音頻/*.mp3|m4a` → `audio/{yili,jiangjing}/*.opus` | 檔首 docstring |
+| `tool/audio_index/` | 掃描整個 `audio/` 目錄產生入口頁 `audio/index.html`（粉色系、置頂大悲咒、類別下拉篩選）；新增任何 `*.opus` 都會自動進清單。 | `audio/**/*.opus` → `audio/index.html` | **`README.md`** + `index_template.html` |
 | `tool/jiangjing2audio.py` | 【一次性已完成】講經系列 mp3 → opus（16kbps / mono / 48kHz / voip），檔名含錄音日期，輸出到 `audio/jiangjing/<日期>Tai师父讲经·<系列>(<N>).opus`（平放）。**105 支 opus 已轉檔、正規化完畢；若講經音檔不再新增，可刪除。** | mp3 → `audio/jiangjing/*.opus` | 檔首 docstring |
 | `tool/normalize_jiangjing_audio.py` | 【一次性已完成】對齊既有答疑 opus 的平均音量（mean_volume ≈ -11 dB）：`volumedetect` 量平均音量 → `volume` + `alimiter` 補增益並重新編碼 opus。**原地更新** `audio/jiangjing/`。**已完成；若講經音檔不再新增，可刪除。** | `audio/jiangjing/*.opus`（原位） | 檔首 docstring |
 
@@ -52,6 +54,15 @@ mp3 ── tool/jiangjing2audio.py ──► audio/jiangjing/<日期>Tai师父�
                                         │
                                         ▼ tool/normalize_jiangjing_audio.py（對齊答疑響度）【可刪除】
                                 （原地更新 audio/jiangjing/）
+
+新錄音（後續新增系列，取代上面兩支）：
+~/Downloads/Tai师父*/音頻/*.mp3|m4a
+        │
+        ▼ tool/series2audio.py（DNS64 去雜音 + 音量對齊 -11 dB + opus 16kbps）
+   audio/yili/*.opus（義理系列）、audio/jiangjing/*.opus（圓覺經／心經／金剛經…）
+        │
+        ▼ tool/audio_index/build_index.py（掃描全部 *.opus）
+   audio/index.html（入口頁；audio/ 本身不在本 repo git 內）
 
 SRT / opus ── tool/pdf_audio_map/ ──► tool/word2ebook/data/audio_map/*.json
                                         (補漏時經 tool/sense_voice/ 重新轉寫)

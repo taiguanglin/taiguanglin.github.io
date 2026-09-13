@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="color-scheme" content="light" />
+<meta name="description" content="Tai 師父音檔線上串流：大悲咒置頂循環播放（可關螢幕），答疑、貼吧／微信／官網答疑、講經系列與義理音檔，可搜尋、可依類別與年份篩選。" />
+<title>Tai 師父音檔串流</title>
+<style>
+  /* ==========================================================================
+     素瓷緋櫻 · 音檔串流頁（與主站 style.css 同一套色票；本頁刻意自成一體，
+     不依賴 /style.css 與 /shared.js，因為 audio/ 是獨立部署的音檔庫）
+     ========================================================================== */
+  :root {
+    --sakura-50: #fdf6f9;
+    --sakura-100: #fbeaf2;
+    --sakura-200: #f7d8e5;
+    --sakura-300: #efbcd2;
+    --sakura-400: #e79dbe;
+    --sakura-500: #cf6b96;
+    --sakura-600: #b54d78;
+    --sakura-700: #953a60;
+    --sakura-800: #732b49;
+    --sakura-900: #541d35;
+    --paper: #fdfafb;
+    --paper-tint: #f8eef2;
+    --surface: #ffffff;
+    --ink: #33202a;
+    --ink-soft: #5a414c;
+    --ink-mute: #8d7180;
+    --line: #f0dde5;
+    --line-deep: #e3c4d3;
+    --gold: #b58a56;
+    --gold-soft: #dcc39b;
+    --grad-rose: linear-gradient(120deg, #e79dbe, #cf6b96 55%, #a8406a);
+    --grad-ink: linear-gradient(155deg, #3d1e2f, #24121c);
+    --sh-1: 0 2px 10px rgba(149, 58, 96, .06);
+    --sh-2: 0 10px 30px rgba(149, 58, 96, .10);
+    --sh-3: 0 18px 46px rgba(149, 58, 96, .16);
+    --r-sm: 10px;
+    --r-md: 14px;
+    --r-lg: 20px;
+    --r-xl: 26px;
+    --topbar-h: 62px;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang TC",
+                 "Microsoft JhengHei", "Noto Sans TC", Helvetica, Arial, sans-serif;
+    --font-serif: "Noto Serif TC", "Songti TC", "PingFang TC", Georgia, serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background-color: var(--paper);
+    background-image:
+      repeating-linear-gradient(135deg, rgba(207, 107, 150, .026) 0 1px, transparent 1px 8px),
+      radial-gradient(1100px 520px at 8% -8%, #fbeaf2 0, rgba(251, 234, 242, 0) 62%),
+      radial-gradient(900px 460px at 100% 0, #f7e3ec 0, rgba(247, 227, 236, 0) 58%);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  img { max-width: 100%; }
+  a { color: var(--sakura-600); text-decoration: none; }
+  a:hover { color: var(--sakura-700); text-decoration: underline; text-underline-offset: 3px; }
+  :focus-visible { outline: 2px solid var(--sakura-500); outline-offset: 2px; border-radius: 6px; }
+
+  .skip {
+    position: absolute; left: -9999px; top: 0; z-index: 99;
+    padding: 10px 16px; background: var(--sakura-700); color: #fff; border-radius: 0 0 10px 0;
+  }
+  .skip:focus { left: 0; }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+  }
+
+  /* ---------- 頂列 ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 40;
+    height: var(--topbar-h);
+    background: rgba(253, 250, 251, .86);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1100px; margin: 0 auto; height: 100%;
+    padding: 0 18px; display: flex; align-items: center; gap: 14px;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; color: inherit; }
+  .brand:hover { text-decoration: none; }
+  /* 蓮花印記：與主站導覽列同一手法，用 CSS 畫，不必放圖 */
+  .brand-mark {
+    position: relative; flex: 0 0 auto; width: 34px; height: 34px;
+    border-radius: 11px; background: var(--grad-rose);
+    box-shadow: 0 4px 12px rgba(168, 64, 106, .28);
+  }
+  .brand-mark::before,
+  .brand-mark::after {
+    content: ''; position: absolute; left: 50%; top: 50%;
+    border-radius: 50% 50% 50% 50% / 62% 62% 38% 38%;
+    background: rgba(255, 255, 255, .92);
+  }
+  .brand-mark::before { width: 9px; height: 15px; transform: translate(-50%, -58%); }
+  .brand-mark::after {
+    width: 7px; height: 12px; transform: translate(-172%, -38%) rotate(-26deg);
+    opacity: .72; box-shadow: 12px 0 0 rgba(255, 255, 255, .72);
+  }
+  .brand-text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+  .brand-name { font-family: var(--font-serif); font-weight: 700; font-size: 16px; letter-spacing: .04em; }
+  .brand-sub { font-size: 11.5px; color: var(--ink-mute); letter-spacing: .1em; }
+  .brand-meta { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .count-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: var(--sakura-100); border: 1px solid var(--sakura-200);
+    font-size: 12.5px; color: var(--sakura-700); white-space: nowrap;
+  }
+  .count-pill strong { font-family: var(--font-serif); font-size: 14px; }
+  .back-home { font-size: 13px; color: var(--ink-mute); white-space: nowrap; }
+  .back-home:hover { color: var(--sakura-700); }
+  @media (max-width: 520px) {
+    .brand-sub { display: none; }
+    .back-home { font-size: 12.5px; }
+  }
+
+  /* ---------- 大悲咒（置頂） ---------- */
+  .hero {
+    position: relative;
+    padding: 40px 18px 26px;
+    background: linear-gradient(168deg, #fdf6f9 0%, #f7e3ec 58%, #f5dce7 100%);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; right: -90px; top: -110px;
+    width: 380px; height: 380px; border-radius: 50%;
+    border: 1px solid rgba(207, 107, 150, .22);
+    box-shadow: inset 0 0 0 26px rgba(207, 107, 150, .05);
+    pointer-events: none;
+  }
+  .hero-inner { position: relative; max-width: 1100px; margin: 0 auto; }
+  .hero-head { text-align: center; margin-bottom: 22px; }
+  .kicker {
+    display: inline-block; font-size: 11.5px; letter-spacing: .34em;
+    color: var(--sakura-600); text-transform: uppercase;
+  }
+  .hero-title {
+    margin: 8px 0 6px; font-family: var(--font-serif); font-weight: 700;
+    font-size: clamp(26px, 5.4vw, 40px); letter-spacing: .1em; color: var(--sakura-800);
+  }
+  .hero-lede {
+    margin: 0 auto; max-width: 46em; font-size: 14.5px; color: var(--ink-soft);
+  }
+  .hero-lede b { color: var(--sakura-700); font-weight: 600; }
+
+  .player-card {
+    display: grid; grid-template-columns: 1fr; overflow: hidden;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--r-xl); box-shadow: var(--sh-3);
+  }
+  @media (min-width: 900px) {
+    .player-card { grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr); align-items: stretch; }
+  }
+  .art-frame {
+    position: relative; display: block; width: 100%; cursor: pointer;
+    background: #f3e6b0; border: 0; padding: 0;
+  }
+  @media (min-width: 900px) { .art-frame { height: 100%; min-height: 300px; } }
+  .dabei-art {
+    display: block; width: 100%; height: auto; aspect-ratio: 16 / 9;
+    object-fit: cover; object-position: center;
+  }
+  @media (min-width: 900px) { .dabei-art { height: 100%; aspect-ratio: auto; } }
+  .art-scrim {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(180deg, rgba(55, 18, 31, .10) 0%, rgba(55, 18, 31, 0) 34%, rgba(55, 18, 31, .42) 100%);
+  }
+  .art-badge {
+    position: absolute; left: 14px; top: 14px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 5px 12px; border-radius: 999px;
+    background: rgba(255, 255, 255, .88); backdrop-filter: blur(6px);
+    color: var(--sakura-700); font-size: 12px; letter-spacing: .12em;
+  }
+  .art-hint {
+    position: absolute; left: 14px; right: 14px; bottom: 12px;
+    color: #fff; font-size: 12.5px; letter-spacing: .04em;
+    text-shadow: 0 1px 6px rgba(55, 18, 31, .6);
+    pointer-events: none;
+  }
+  .art-frame .art-ring {
+    position: absolute; left: 50%; top: 50%; width: 68px; height: 68px;
+    transform: translate(-50%, -50%); border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(255, 255, 255, .9); color: var(--sakura-700);
+    box-shadow: 0 10px 26px rgba(55, 18, 31, .28);
+    transition: transform .18s ease, background .18s ease;
+    font-size: 20px; line-height: 1;
+  }
+  .art-frame:hover .art-ring { transform: translate(-50%, -50%) scale(1.06); }
+  .art-frame.is-playing .art-ring { background: rgba(253, 246, 249, .94); }
+
+  .player-body {
+    padding: 20px 20px 22px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .modes { display: flex; flex-wrap: wrap; gap: 8px; }
+  .transport { display: flex; align-items: center; gap: 14px; }
+  .play-big {
+    flex: 0 0 auto; width: 58px; height: 58px; border: 0; border-radius: 50%;
+    background: var(--grad-rose); color: #fff; font-size: 19px; line-height: 1;
+    display: grid; place-items: center; cursor: pointer;
+    box-shadow: 0 10px 24px rgba(168, 64, 106, .32);
+    transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+  }
+  .play-big:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(168, 64, 106, .4); }
+  .play-big:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; }
+  .track { flex: 1 1 auto; min-width: 0; }
+  .track-top { display: flex; align-items: baseline; gap: 10px; margin-bottom: 4px; }
+  .track-title {
+    font-family: var(--font-serif); font-size: 15px; font-weight: 700; color: var(--sakura-800);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .dabei-time {
+    margin-left: auto; font-size: 12px; color: var(--ink-mute);
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .player-foot {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px;
+    padding-top: 14px; border-top: 1px dashed var(--line-deep);
+  }
+  .dabei-vol {
+    display: flex; align-items: center; gap: 8px; flex: 0 1 190px; min-width: 120px;
+    color: var(--ink-mute);
+  }
+  .dabei-vol-icon { flex: 0 0 auto; }
+  .featured-status {
+    flex: 1 1 200px; min-width: 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-soft);
+  }
+  .featured-hint {
+    margin: 0; font-size: 12px; line-height: 1.75; color: var(--ink-mute);
+    padding-left: 14px; border-left: 2px solid var(--sakura-200);
+  }
+  .featured-hint b { color: var(--sakura-700); font-weight: 600; }
+  .player-card audio { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+  /* ---------- 按鈕（chip） ---------- */
+  .chip {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 8px 15px; border-radius: 999px; cursor: pointer;
+    background: var(--sakura-100); color: var(--sakura-800);
+    border: 1px solid var(--sakura-200);
+    font-family: inherit; font-size: 13px; line-height: 1.3;
+    transition: background .16s ease, border-color .16s ease, color .16s ease, transform .16s ease;
+  }
+  .chip:hover { background: var(--sakura-200); transform: translateY(-1px); }
+  .chip.active {
+    background: var(--grad-rose); border-color: transparent; color: #fff;
+    box-shadow: 0 6px 16px rgba(168, 64, 106, .26);
+  }
+  .chip-ghost { background: transparent; color: var(--ink-soft); border-color: var(--line-deep); }
+  .chip-ghost:hover { background: var(--paper-tint); }
+  .modes .chip { flex: 1 1 auto; }
+
+  /* ---------- 滑桿 ---------- */
+  input[type="range"] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 24px; background: transparent; cursor: pointer; margin: 0;
+  }
+  input[type="range"]::-webkit-slider-runnable-track,
+  input[type="range"]::-moz-range-track {
+    height: 6px; border-radius: 999px; background: var(--sakura-100);
+  }
+  .dabei-seek::-webkit-slider-runnable-track,
+  .dabei-seek::-moz-range-track {
+    background: linear-gradient(90deg, var(--sakura-500) var(--fill, 0%), var(--sakura-100) var(--fill, 0%));
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; appearance: none;
+    width: 16px; height: 16px; margin-top: -5px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--sakura-500);
+    box-shadow: 0 1px 5px rgba(149, 58, 96, .35);
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 2px solid var(--sakura-500);
+    box-shadow: 0 1px 5px rgba(149, 58, 96, .35);
+  }
+  input[type="range"]:disabled { opacity: .4; cursor: not-allowed; }
+  input[type="range"]:disabled::-webkit-slider-thumb { border-color: var(--line-deep); }
+
+  /* ---------- 工具列（搜尋／類別／排序，黏在頂列下） ---------- */
+  .toolbar {
+    position: sticky; top: var(--topbar-h); z-index: 30;
+    background: rgba(253, 250, 251, .93);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .toolbar-inner {
+    max-width: 1100px; margin: 0 auto; padding: 11px 18px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px;
+  }
+  .field { display: flex; align-items: center; gap: 8px; }
+  .field-label { font-size: 12px; color: var(--ink-mute); white-space: nowrap; }
+  .picker {
+    padding: 5px 10px 5px 12px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-deep);
+  }
+  .picker select {
+    appearance: none; -webkit-appearance: none;
+    background: transparent; border: 0; outline: 0; cursor: pointer;
+    color: var(--ink); font-family: inherit; font-size: 13.5px; font-weight: 600;
+    padding: 3px 18px 3px 0; max-width: 52vw;
+    background-image: linear-gradient(45deg, transparent 50%, var(--sakura-600) 50%),
+                      linear-gradient(135deg, var(--sakura-600) 50%, transparent 50%);
+    background-position: right 6px center, right 1px center;
+    background-size: 5px 5px, 5px 5px; background-repeat: no-repeat;
+  }
+  .picker select option { color: var(--ink); background: var(--surface); }
+  .search {
+    flex: 1 1 260px; min-width: 190px;
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 14px; border-radius: 999px;
+    background: var(--surface); border: 1px solid var(--line-deep);
+    transition: border-color .16s ease, box-shadow .16s ease;
+  }
+  .search:focus-within { border-color: var(--sakura-400); box-shadow: 0 0 0 3px rgba(231, 157, 190, .22); }
+  .search svg { flex: 0 0 auto; color: var(--sakura-500); }
+  .search input {
+    flex: 1; min-width: 0; background: transparent; border: 0; outline: 0;
+    color: var(--ink); font-family: inherit; font-size: 14px;
+  }
+  .search input::placeholder { color: var(--ink-mute); }
+  .sorts { display: flex; gap: 6px; margin-left: auto; }
+  @media (max-width: 560px) {
+    .search { flex: 1 1 100%; order: -1; min-width: 0; }
+    .sorts { margin-left: auto; }
+  }
+
+  /* ---------- 年份快篩 ---------- */
+  .years-bar {
+    max-width: 1100px; margin: 0 auto; padding: 18px 18px 0;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+  }
+  .years-label { font-size: 12px; letter-spacing: .18em; color: var(--ink-mute); margin-right: 4px; }
+  .years { display: flex; flex-wrap: wrap; gap: 8px; }
+  .years .chip { padding: 7px 14px; font-variant-numeric: tabular-nums; }
+  .stats { margin-left: auto; font-size: 12.5px; color: var(--ink-mute); font-variant-numeric: tabular-nums; }
+  @media (max-width: 560px) { .stats { margin-left: 0; flex-basis: 100%; } }
+
+  /* ---------- 清單 ---------- */
+  main { padding: 6px 0 132px; }
+  .group {
+    margin: 20px 18px; background: var(--surface);
+    border: 1px solid var(--line); border-radius: var(--r-lg);
+    box-shadow: var(--sh-1); overflow: hidden;
+    scroll-margin-top: 150px;
+  }
+  .group-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 13px 16px; border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, #fdf6f9, #fbeaf2);
+    font-size: 14px; font-weight: 600; color: var(--sakura-800);
+    font-family: var(--font-serif); letter-spacing: .03em;
+  }
+  .group-header::before {
+    content: ''; width: 3px; height: 16px; border-radius: 2px;
+    background: var(--grad-rose); flex: 0 0 auto;
+  }
+  .group-count { margin-left: auto; font-family: var(--font-sans); font-weight: 400; font-size: 12px; color: var(--ink-mute); }
+  .item {
+    display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px;
+    padding: 13px 16px; border-top: 1px solid var(--line);
+  }
+  .item:first-child { border-top: 0; }
+  .item:nth-child(even) { background: #fffcfd; }
+  .item-main { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .date {
+    flex: 0 0 auto; font-size: 11.5px; font-variant-numeric: tabular-nums;
+    color: var(--sakura-700); background: var(--sakura-50);
+    border: 1px solid var(--sakura-100); border-radius: 7px; padding: 3px 8px;
+    white-space: nowrap;
+  }
+  .name {
+    flex: 1 1 auto; min-width: 0; font-size: 14px; color: var(--ink);
+    line-height: 1.5; word-break: break-word;
+  }
+  .badge {
+    flex: 0 0 auto; font-size: 11px; padding: 3px 10px; border-radius: 999px;
+    background: var(--sakura-50); color: var(--ink-mute); border: 1px solid var(--line);
+    white-space: nowrap;
+  }
+  .badge.gz  { background: rgba(207,107,150,.10); color: #b54d78; border-color: rgba(207,107,150,.30); }
+  .badge.tb  { background: rgba(140,74,158,.10);  color: #80459a; border-color: rgba(140,74,158,.28); }
+  .badge.wx  { background: rgba(181,23,158,.09);  color: #a3208f; border-color: rgba(181,23,158,.26); }
+  .badge.web { background: rgba(166,30,77,.09);   color: #953a60; border-color: rgba(166,30,77,.26); }
+  .badge.jj  { background: rgba(224,49,90,.09);   color: #c2304f; border-color: rgba(224,49,90,.26); }
+  .badge.yl  { background: rgba(156,54,181,.09);  color: #8f34a3; border-color: rgba(156,54,181,.26); }
+  .item audio { width: 100%; height: 34px; accent-color: var(--sakura-500); }
+  @media (min-width: 760px) {
+    .item { grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); align-items: center; gap: 16px; }
+  }
+
+  .empty {
+    margin: 56px 18px; padding: 44px 24px; text-align: center;
+    background: var(--surface); border: 1px dashed var(--line-deep); border-radius: var(--r-lg);
+    color: var(--ink-mute);
+  }
+  .empty p { margin: 0 0 16px; font-size: 14px; }
+  .footer-note {
+    max-width: 1100px; margin: 26px auto 0; padding: 0 18px;
+    color: var(--ink-mute); font-size: 12px; line-height: 1.9;
+  }
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .94em; background: var(--paper-tint); border: 1px solid var(--line);
+    border-radius: 5px; padding: 1px 5px; color: var(--sakura-700);
+  }
+  .noscript {
+    margin: 24px 18px; padding: 18px 20px; border-radius: var(--r-md);
+    background: #fff7fa; border: 1px solid var(--sakura-200); color: var(--sakura-800); font-size: 14px;
+  }
+
+  /* ---------- 底部正在播放列 ---------- */
+  .now-playing {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    display: none;
+    background: rgba(255, 255, 255, .95);
+    backdrop-filter: saturate(180%) blur(14px);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 24px rgba(149, 58, 96, .10);
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  }
+  .now-playing.show { display: block; }
+  .np-row { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 12px; }
+  .np-art {
+    width: 42px; height: 42px; border-radius: 10px; object-fit: cover;
+    flex: 0 0 auto; border: 1px solid var(--line-deep); display: none;
+  }
+  .now-playing.show.dabei-np .np-art { display: block; }
+  .np-label {
+    flex: 0 0 auto; font-size: 10.5px; letter-spacing: .16em; color: var(--sakura-600);
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .np-label::before {
+    content: ''; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--sakura-500); animation: np-pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes np-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+  .np-title {
+    flex: 1; min-width: 0; font-size: 13.5px; color: var(--ink);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+
+  /* ---------- 回到播放器 ---------- */
+  .jump {
+    position: fixed; right: 16px; bottom: 84px; z-index: 45;
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 16px; border: 0; border-radius: 999px; cursor: pointer;
+    background: var(--grad-rose); color: #fff; font-family: inherit; font-size: 13px;
+    box-shadow: 0 10px 26px rgba(168, 64, 106, .34);
+    transition: transform .18s ease, opacity .18s ease;
+  }
+  .jump:hover { transform: translateY(-2px); }
+  .jump[hidden] { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: .001ms !important; animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#list">跳到音檔清單</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span class="brand-text">
+        <span class="brand-name">Tai 師父音檔</span>
+        <span class="brand-sub">線上串流 · 無需下載</span>
+      </span>
+    </a>
+    <div class="brand-meta">
+      <span class="count-pill">共 <strong id="totalCount">0</strong> 個音檔</span>
+      <a class="back-home" href="../index.html">回主站 →</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 大悲咒（置頂） ============ -->
+<section class="hero" id="dabei">
+  <div class="hero-inner">
+    <div class="hero-head">
+      <span class="kicker">Great Compassion Mantra</span>
+      <h1 class="hero-title">大悲咒 · 置頂播放</h1>
+      <p class="hero-lede">
+        點一下就開始，<b>關掉螢幕仍會繼續</b>。一般版與快速版各 108 遍，可單曲循環，也可兩版接力。
+      </p>
+    </div>
+
+    <div class="player-card">
+      <button class="art-frame" id="dabeiArtBtn" type="button"
+              aria-label="點擊開始或暫停大悲咒播放">
+        <img
+          class="dabei-art"
+          src="西方三聖.jpg"
+          alt="西方三聖：南無阿彌陀佛、南無觀世音菩薩、南無大勢至菩薩"
+          width="1920"
+          height="1080"
+          decoding="async"
+          fetchpriority="high"
+        />
+        <span class="art-scrim" aria-hidden="true"></span>
+        <span class="art-badge">置頂 · 循環</span>
+        <span class="art-ring" id="dabeiArtIcon" aria-hidden="true">▶</span>
+        <span class="art-hint">點擊此圖即可播放／暫停</span>
+      </button>
+
+      <div class="player-body">
+        <div class="modes" role="group" aria-label="播放模式">
+          <button class="chip" type="button" data-dabei-mode="normal" id="btnLoopNormal">一般版 · 單曲循環</button>
+          <button class="chip" type="button" data-dabei-mode="fast" id="btnLoopFast">快速版 · 單曲循環</button>
+          <button class="chip" type="button" data-dabei-mode="playlist" id="btnLoopPlaylist">兩版清單循環</button>
+          <button class="chip chip-ghost" type="button" id="btnDabeiStop">停止</button>
+        </div>
+
+        <div class="transport">
+          <button type="button" class="play-big" id="dabeiPlayBtn" aria-label="播放或暫停" disabled>▶</button>
+          <div class="track">
+            <div class="track-top">
+              <span class="track-title" id="dabeiTrackTitle">請先選擇播放模式</span>
+              <span class="dabei-time" id="dabeiTime">0:00 / 0:00</span>
+            </div>
+            <input class="dabei-seek" id="dabeiSeek" type="range" min="0" max="1000" value="0" step="1"
+                   disabled aria-label="播放進度" style="--fill: 0%" />
+          </div>
+        </div>
+
+        <div class="player-foot">
+          <label class="dabei-vol" title="音量">
+            <svg class="dabei-vol-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+              <path d="M3 9v6h4l5 5V4L7 9H3z" />
+              <path id="dabeiVolWave" d="M16.5 12a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" />
+              <path id="dabeiVolMuted" d="M17.5 9.5l5 5m0-5l-5 5" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" fill="none" style="display:none" />
+            </svg>
+            <input class="dabei-volume" id="dabeiVolume" type="range" min="0" max="1" step="0.01" value="1"
+                   aria-label="音量" />
+          </label>
+          <div class="featured-status" id="dabeiStatus" role="status" aria-live="polite">選擇上方模式，或點擊圖片開始播放</div>
+        </div>
+
+        <p class="featured-hint">
+          手機播放後可關掉螢幕，請讓瀏覽器留在背景、勿強制結束分頁。
+          清單循環請用 <b>Chrome / Edge / Firefox</b>（Safari 對 Opus 與背景切歌支援較差）。
+        </p>
+      </div>
+
+      <audio id="dabeiAudio" playsinline preload="auto"></audio>
+      <audio id="dabeiAudioB" playsinline preload="auto"></audio>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 工具列 ============ -->
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <label class="field picker" for="category">
+      <span class="field-label">類別</span>
+      <select id="category" aria-label="選擇類別"></select>
+    </label>
+    <div class="search">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+           stroke-width="2.1" stroke-linecap="round" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" /><path d="M16.5 16.5L21 21" />
+      </svg>
+      <input id="search" type="search" autocomplete="off"
+             placeholder="搜尋日期或關鍵字，例如：2025年3月、楞伽經、義理"
+             aria-label="搜尋音檔" />
+    </div>
+    <div class="sorts" role="group" aria-label="排序">
+      <button class="chip active" id="sortNewest" type="button">新→舊</button>
+      <button class="chip" id="sortOldest" type="button">舊→新</button>
+    </div>
+  </div>
+</div>
+
+<div class="years-bar">
+  <span class="years-label">年份</span>
+  <div class="years" id="years" role="group" aria-label="依年份篩選"></div>
+  <div class="stats" id="stats"></div>
+</div>
+
+<noscript>
+  <p class="noscript">此頁的清單與播放器需要 JavaScript。請開啟 JavaScript 後重新整理；或直接以檔案總管播放 <code>*.opus</code>。</p>
+</noscript>
+
+<main id="list" aria-live="polite"></main>
+
+<div class="footer-note">
+  <p>
+    本頁為靜態網頁，音檔以 HTML5 原生播放器串流 <code>*.opus</code>，不需下載。
+    清單由 <code>tool/audio_index/build_index.py</code> 掃描音檔庫自動產生，新錄音會自動出現。
+    本機預覽請用 <code>python3 serve.py</code> 啟動（需支援 HTTP Range，否則拖曳進度條會卡住）；
+    若 Safari 無法播放 <code>.opus</code>，請改用 Chrome、Edge 或 Firefox。
+  </p>
+</div>
+
+<div class="now-playing" id="np" role="region" aria-label="正在播放">
+  <div class="np-row">
+    <img class="np-art" id="npArt" src="西方三聖-96.jpg" alt="" width="96" height="96" />
+    <span class="np-label">正在播放</span>
+    <span class="np-title" id="npTitle">—</span>
+    <button class="chip" id="npStop" type="button">停止</button>
+  </div>
+</div>
+
+<button class="jump" id="jumpTop" type="button" hidden aria-label="回到大悲咒播放器">
+  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+       stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 19V5M5.5 11.5L12 5l6.5 6.5" />
+  </svg>
+  大悲咒
+</button>
+
+<script>
+// === 大悲咒（置頂，支援關螢幕循環）===
+// duration 為檔案真實長度（秒）；Ogg/Opus 在瀏覽器拖到結尾時 duration 會膨脹，故鎖定此值
+const DABEI = [
+  { id: "normal", file: "Tai師父大悲咒108遍.opus", title: "大悲咒 · 一般速度版 108遍", duration: 5120.74 },
+  { id: "fast", file: "Tai師父大悲咒快速版108遍.opus", title: "大悲咒 · 快速版 108遍", duration: 4368.94 }
+];
+
+const DABEI_ARTWORK = [
+  { src: "西方三聖-96.jpg", sizes: "96x96", type: "image/jpeg" },
+  { src: "西方三聖-256.jpg", sizes: "256x256", type: "image/jpeg" },
+  { src: "西方三聖-512.jpg", sizes: "512x512", type: "image/jpeg" },
+  { src: "西方三聖.jpg", sizes: "1920x1080", type: "image/jpeg" }
+];
+
+function absoluteArtwork() {
+  return DABEI_ARTWORK.map((item) => ({
+    src: new URL(item.src, window.location.href).href,
+    sizes: item.sizes,
+    type: item.type
+  }));
+}
+
+// === 檔案清單 ===
+// 由 tool/audio_index/build_index.py 掃描 audio/ 實際內容產生；build 時下列兩段會被整段覆寫：
+//   CATEGORIES = { <cat>: { label, cls, group, order } }
+//   FILES      = [{ path, cat }, ...]   （path 為相對 audio/ 的路徑，可含子資料夾）
+const CATEGORIES = /*__CATEGORIES__*/{};
+const FILES = [
+  { "path": "2024年11月11日Tai師父答疑.opus", "cat": "dayi" }
+];
+
+const dateRe = /^(\d{4})年(\d{1,2})月(\d{1,2})日/;
+function parseDate(name) {
+  const m = name.match(dateRe);
+  if (!m) return null;
+  return { y: +m[1], mo: +m[2], d: +m[3] };
+}
+
+// 逐段編碼路徑，保留 / 分隔才能指向 audio/jiangjing/… 等子資料夾
+function encodePath(path) {
+  return path.split("/").map(encodeURIComponent).join("/");
+}
+
+const items = FILES.map((f) => {
+  const base = f.path.split("/").pop();
+  const d = parseDate(base) || { y: 0, mo: 0, d: 0 };
+  const cat = CATEGORIES[f.cat] || { label: f.cat, cls: "gz", group: "其他", order: 999 };
+  const sortKey = d.y * 10000 + d.mo * 100 + d.d;
+  // 標題只留「日期之後」的部分，日期另行顯示成標籤，列表讀起來乾淨很多
+  const title = base.replace(/\.opus$/i, "").replace(dateRe, "").trim() || base.replace(/\.opus$/i, "");
+  return {
+    path: f.path,
+    base,
+    title,
+    d,
+    cat: f.cat,
+    catLabel: cat.label,
+    catCls: cat.cls,
+    key: `${cat.order}|${d.y}-${String(d.mo).padStart(2, "0")}`,
+    monthLabel: d.y ? `${d.y} 年 ${d.mo} 月` : "未知日期",
+    sortKey
+  };
+});
+
+const totalCount = items.length + DABEI.length;
+document.getElementById("totalCount").textContent = totalCount;
+
+const $list = document.getElementById("list");
+const $search = document.getElementById("search");
+const $category = document.getElementById("category");
+const $stats = document.getElementById("stats");
+const $sortNew = document.getElementById("sortNewest");
+const $sortOld = document.getElementById("sortOldest");
+const $np = document.getElementById("np");
+const $npTitle = document.getElementById("npTitle");
+const $npStop = document.getElementById("npStop");
+
+const $dabeiAudio = document.getElementById("dabeiAudio");
+const $dabeiAudioB = document.getElementById("dabeiAudioB");
+const $dabeiStatus = document.getElementById("dabeiStatus");
+const $dabeiPlayBtn = document.getElementById("dabeiPlayBtn");
+const $dabeiTime = document.getElementById("dabeiTime");
+const $dabeiSeek = document.getElementById("dabeiSeek");
+const $btnLoopNormal = document.getElementById("btnLoopNormal");
+const $btnLoopFast = document.getElementById("btnLoopFast");
+const $btnLoopPlaylist = document.getElementById("btnLoopPlaylist");
+const $btnDabeiStop = document.getElementById("btnDabeiStop");
+const $dabeiVolume = document.getElementById("dabeiVolume");
+const $dabeiVolWave = document.getElementById("dabeiVolWave");
+const $dabeiVolMuted = document.getElementById("dabeiVolMuted");
+const $dabeiTrackTitle = document.getElementById("dabeiTrackTitle");
+const $dabeiArtBtn = document.getElementById("dabeiArtBtn");
+const $dabeiArtIcon = document.getElementById("dabeiArtIcon");
+const $jumpTop = document.getElementById("jumpTop");
+
+// --- 大悲咒音量（可調整，記住上次設定）---
+const DABEI_VOLUME_KEY = "dabeiVolume";
+function applyDabeiVolume(v) {
+  v = Math.min(Math.max(Number(v) || 0, 0), 1);
+  $dabeiAudio.volume = v;
+  $dabeiAudioB.volume = v;
+  const muted = v <= 0.001;
+  $dabeiVolWave.style.display = muted ? "none" : "";
+  $dabeiVolMuted.style.display = muted ? "" : "none";
+}
+(function initDabeiVolume() {
+  let saved = 1; // 預設最大音量
+  try {
+    const raw = localStorage.getItem(DABEI_VOLUME_KEY);
+    if (raw !== null) {
+      const n = Number(raw);
+      if (Number.isFinite(n)) saved = n;
+    }
+  } catch (_) {}
+  saved = Math.min(Math.max(saved, 0), 1);
+  $dabeiVolume.value = String(saved);
+  applyDabeiVolume(saved);
+})();
+$dabeiVolume.addEventListener("input", () => {
+  applyDabeiVolume($dabeiVolume.value);
+  try { localStorage.setItem(DABEI_VOLUME_KEY, $dabeiVolume.value); } catch (_) {}
+});
+
+let sortDir = "desc"; // desc = newest first
+let yearFilter = "all";
+
+function pauseAllAnswerAudios() {
+  document.querySelectorAll("#list audio").forEach(a => { if (!a.paused) a.pause(); });
+}
+
+function formatTime(sec) {
+  if (!Number.isFinite(sec) || sec < 0) sec = 0;
+  sec = Math.floor(sec);
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = sec % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
+
+function prepareAudioEl(el) {
+  el.setAttribute("playsinline", "");
+  el.setAttribute("webkit-playsinline", "");
+  el.preload = "auto";
+  el.loop = false;
+}
+
+// --- 大悲咒播放器 ---
+// 清單循環用兩顆 audio 固定各載一首，點擊時先解鎖；關螢幕後不改 src，只切換播放。
+const dabeiPlayer = {
+  mode: null, // "normal" | "fast" | "playlist"
+  index: 0,
+  playing: false,
+  lockedDuration: 0,
+  scrubbing: false,
+  ending: false,
+  switching: false,
+  seekCooldownUntil: 0,
+  SEEK_MAX: 1000,
+  END_EPSILON: 0.35,
+  SEEK_END_MARGIN: 1.0,
+  els: [$dabeiAudio, $dabeiAudioB],
+
+  trackById(id) {
+    return DABEI.find(t => t.id === id) || DABEI[0];
+  },
+  current() {
+    if (this.mode === "playlist") return DABEI[this.index % DABEI.length];
+    if (this.mode === "fast") return this.trackById("fast");
+    return this.trackById("normal");
+  },
+  activeEl() {
+    return this.els[this.index % this.els.length];
+  },
+  otherEl() {
+    return this.els[(this.index + 1) % this.els.length];
+  },
+  setActiveButtons() {
+    for (const [el, mode] of [
+      [$btnLoopNormal, "normal"],
+      [$btnLoopFast, "fast"],
+      [$btnLoopPlaylist, "playlist"]
+    ]) {
+      el.classList.toggle("active", this.mode === mode && this.playing);
+    }
+  },
+  statusText() {
+    if (!this.mode) return "選擇上方模式，或點擊圖片開始播放";
+    if (!this.playing) return `已暫停：${this.current().title}（再按播放即可繼續）`;
+    const t = this.current();
+    if (this.mode === "playlist") {
+      return `清單循環中：${t.title}（播完自動接下一段）`;
+    }
+    return `單曲循環中：${t.title}`;
+  },
+  updateUI() {
+    $dabeiStatus.textContent = this.statusText();
+    this.setActiveButtons();
+    $dabeiPlayBtn.textContent = this.playing ? "❚❚" : "▶";
+    $dabeiArtIcon.textContent = this.playing ? "❚❚" : "▶";
+    $dabeiArtBtn.classList.toggle("is-playing", this.playing);
+    if ($dabeiTrackTitle) {
+      $dabeiTrackTitle.textContent = this.mode ? this.current().title : "請先選擇播放模式";
+    }
+    $dabeiPlayBtn.disabled = !this.mode;
+    $dabeiSeek.disabled = !this.mode || this.lockedDuration <= 0;
+    if (this.playing) {
+      $np.classList.add("show", "dabei-np");
+      $npTitle.textContent = this.current().title + (this.mode === "playlist" ? " · 清單循環" : " · 單曲循環");
+    } else if (!this.mode) {
+      $np.classList.remove("dabei-np");
+    }
+    this.syncScrubber();
+  },
+  syncScrubber() {
+    const el = this.activeEl();
+    const dur = this.lockedDuration || 0;
+    const t = Math.min(Math.max(el.currentTime || 0, 0), dur || 0);
+    $dabeiTime.textContent = `${formatTime(t)} / ${formatTime(dur)}`;
+    if (dur > 0) {
+      const pct = Math.min(100, Math.max(0, (t / dur) * 100));
+      $dabeiSeek.style.setProperty("--fill", pct.toFixed(2) + "%");
+      if (!this.scrubbing) {
+        $dabeiSeek.value = String(Math.round((t / dur) * this.SEEK_MAX));
+      }
+    } else {
+      $dabeiSeek.style.setProperty("--fill", "0%");
+    }
+  },
+  updateMediaSession() {
+    if (!("mediaSession" in navigator)) return;
+    const t = this.current();
+    const el = this.activeEl();
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: t.title,
+      artist: "Tai 師父 · 西方三聖",
+      album: this.mode === "playlist" ? "大悲咒清單循環" : "大悲咒單曲循環",
+      artwork: absoluteArtwork()
+    });
+    navigator.mediaSession.playbackState = this.playing ? "playing" : "paused";
+    try {
+      if (this.lockedDuration > 0) {
+        navigator.mediaSession.setPositionState({
+          duration: this.lockedDuration,
+          playbackRate: el.playbackRate || 1,
+          position: Math.min(el.currentTime || 0, this.lockedDuration)
+        });
+      }
+    } catch (_) { /* unsupported */ }
+  },
+  bindSource(el, track) {
+    const url = encodeURI(track.file);
+    if (el.getAttribute("src") !== url) {
+      el.src = url;
+      el.load();
+    }
+    el.loop = false;
+  },
+  async unlock(el) {
+    const prevMuted = el.muted;
+    el.muted = true;
+    try {
+      await el.play();
+      el.pause();
+      try { el.currentTime = 0; } catch (_) {}
+    } catch (_) { /* 部分瀏覽器仍可能擋；點擊當下已盡力解鎖 */ }
+    el.muted = prevMuted;
+  },
+  async primeSources() {
+    this.els.forEach((el, i) => this.bindSource(el, DABEI[i]));
+    await Promise.all(this.els.map((el) => this.unlock(el)));
+  },
+  seekToRatio(ratio) {
+    if (!this.lockedDuration) return;
+    const el = this.activeEl();
+    const maxT = Math.max(0, this.lockedDuration - this.SEEK_END_MARGIN);
+    const t = Math.min(Math.max(Number(ratio) || 0, 0), 1) * maxT;
+    const wasPlaying = !el.paused && !el.ended;
+    const apply = () => {
+      try {
+        if (typeof el.fastSeek === "function") el.fastSeek(t);
+        else el.currentTime = t;
+      } catch (_) {
+        try { el.currentTime = t; } catch (__) {}
+      }
+      this.seekCooldownUntil = performance.now() + 1200;
+      this.scrubbing = false;
+      this.syncScrubber();
+      if (wasPlaying && el.paused) {
+        el.play().catch(() => {});
+      }
+    };
+    if (el.readyState >= 1) apply();
+    else el.addEventListener("loadedmetadata", apply, { once: true });
+  },
+  commitSeek() {
+    if (!this.mode || !this.lockedDuration) {
+      this.scrubbing = false;
+      return;
+    }
+    const ratio = Number($dabeiSeek.value) / this.SEEK_MAX;
+    this.seekToRatio(ratio);
+  },
+  async playMode(mode) {
+    pauseAllAnswerAudios();
+    this.mode = mode;
+    this.index = mode === "fast" ? 1 : 0;
+    this.ending = false;
+    this.switching = false;
+    try {
+      await this.primeSources();
+    } catch (_) {}
+    this.els.forEach((el, i) => {
+      if (i !== this.index) {
+        el.pause();
+        try { el.currentTime = 0; } catch (_) {}
+      }
+    });
+    this.lockedDuration = Number(this.current().duration) || 0;
+    try {
+      const el = this.activeEl();
+      try { el.currentTime = 0; } catch (_) {}
+      await el.play();
+      this.playing = true;
+      this.updateUI();
+      this.updateMediaSession();
+    } catch (err) {
+      this.playing = false;
+      $dabeiStatus.textContent = "無法播放：請點一下頁面後再試，或確認瀏覽器支援 Opus。";
+      this.setActiveButtons();
+      console.warn(err);
+    }
+  },
+  async togglePlay() {
+    if (!this.mode) return;
+    const el = this.activeEl();
+    if (el.paused) {
+      pauseAllAnswerAudios();
+      try {
+        await el.play();
+        this.playing = true;
+        this.updateUI();
+        this.updateMediaSession();
+      } catch (err) {
+        console.warn(err);
+      }
+    } else {
+      el.pause();
+    }
+  },
+  async advancePlaylist() {
+    if (this.mode !== "playlist" || this.ending) return;
+    this.ending = true;
+    this.switching = true;
+    const prevEl = this.activeEl();
+    this.index = (this.index + 1) % DABEI.length;
+    const nextEl = this.activeEl();
+    this.lockedDuration = Number(this.current().duration) || 0;
+    try {
+      try { nextEl.currentTime = 0; } catch (_) {}
+      await nextEl.play();
+      prevEl.pause();
+      try { prevEl.currentTime = 0; } catch (_) {}
+      this.playing = true;
+      this.updateUI();
+      this.updateMediaSession();
+    } catch (err) {
+      try {
+        await new Promise((r) => setTimeout(r, 120));
+        await nextEl.play();
+        prevEl.pause();
+        this.playing = true;
+        this.updateUI();
+        this.updateMediaSession();
+      } catch (err2) {
+        this.playing = false;
+        $dabeiStatus.textContent = "清單切歌失敗，請再點「兩版清單循環」繼續。";
+        this.setActiveButtons();
+        console.warn(err2);
+      }
+    } finally {
+      this.switching = false;
+      setTimeout(() => { this.ending = false; }, 800);
+    }
+  },
+  async onEnded(fromEl) {
+    if (fromEl && fromEl !== this.activeEl()) return;
+    const el0 = this.activeEl();
+    if (performance.now() < this.seekCooldownUntil) {
+      /* 剛拖曳過進度條（含拖到最尾端）：不把這次的 ended 當成曲終，
+       * 退回尾端前一點並續播；真正的曲終交給之後的 timeupdate／ended。
+       * （若不續播，播放器會停在尾端卻仍顯示「循環中」。）*/
+      try {
+        el0.currentTime = Math.max(0, (this.lockedDuration || 0) - this.SEEK_END_MARGIN);
+      } catch (_) {}
+      if (this.playing) {
+        try { await el0.play(); } catch (_) {}
+      }
+      return;
+    }
+    if (this.mode !== "playlist") {
+      if (this.ending) return;
+      this.ending = true;
+      const el = this.activeEl();
+      try { el.currentTime = 0; } catch (_) {}
+      try {
+        await el.play();
+        this.playing = true;
+        this.updateUI();
+        this.updateMediaSession();
+      } catch (_) {}
+      setTimeout(() => { this.ending = false; }, 400);
+      return;
+    }
+    await this.advancePlaylist();
+  },
+  maybeHandleNearEnd() {
+    if (!this.mode || !this.lockedDuration || this.scrubbing || this.ending) return;
+    if (performance.now() < this.seekCooldownUntil) return;
+    const el = this.activeEl();
+    if (el.paused) return;
+    const remain = this.lockedDuration - (el.currentTime || 0);
+    if (this.mode === "playlist") {
+      // 結尾前提早接上已解鎖的下一首，避免關螢幕後空檔被系統擋 play()
+      if (remain <= 0.45) this.advancePlaylist();
+      return;
+    }
+    if (remain <= this.END_EPSILON) this.onEnded(el);
+  },
+  stop() {
+    this.playing = false;
+    this.mode = null;
+    this.lockedDuration = 0;
+    this.scrubbing = false;
+    this.ending = false;
+    this.switching = false;
+    this.seekCooldownUntil = 0;
+    this.els.forEach((el) => {
+      el.pause();
+      try { el.currentTime = 0; } catch (_) {}
+    });
+    $dabeiSeek.value = "0";
+    $dabeiSeek.style.setProperty("--fill", "0%");
+    $dabeiTime.textContent = "0:00 / 0:00";
+    this.updateUI();
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.playbackState = "none";
+      try { navigator.mediaSession.metadata = null; } catch (_) {}
+    }
+    const anyPlaying = Array.from(document.querySelectorAll("#list audio")).some(o => !o.paused);
+    if (!anyPlaying) $np.classList.remove("show");
+  }
+};
+
+dabeiPlayer.els.forEach((el) => {
+  prepareAudioEl(el);
+  el.addEventListener("timeupdate", () => {
+    if (el !== dabeiPlayer.activeEl()) return;
+    dabeiPlayer.syncScrubber();
+    dabeiPlayer.maybeHandleNearEnd();
+    if (dabeiPlayer.playing) dabeiPlayer.updateMediaSession();
+  });
+  el.addEventListener("loadedmetadata", () => {
+    if (el === dabeiPlayer.activeEl()) dabeiPlayer.syncScrubber();
+  });
+  el.addEventListener("durationchange", () => {
+    if (el === dabeiPlayer.activeEl()) dabeiPlayer.syncScrubber();
+  });
+  el.addEventListener("play", () => {
+    if (el !== dabeiPlayer.activeEl()) return;
+    pauseAllAnswerAudios();
+    if (dabeiPlayer.mode) {
+      dabeiPlayer.playing = true;
+      dabeiPlayer.updateUI();
+      dabeiPlayer.updateMediaSession();
+    }
+  });
+  el.addEventListener("pause", () => {
+    if (dabeiPlayer.switching || dabeiPlayer.ending) return;
+    if (el !== dabeiPlayer.activeEl()) return;
+    if (el.ended) return;
+    if (!dabeiPlayer.mode) return;
+    dabeiPlayer.playing = false;
+    dabeiPlayer.updateUI();
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
+    const anyPlaying = Array.from(document.querySelectorAll("#list audio")).some(o => !o.paused);
+    if (!anyPlaying) $np.classList.remove("show");
+  });
+  el.addEventListener("ended", () => { dabeiPlayer.onEnded(el); });
+});
+
+$dabeiPlayBtn.addEventListener("click", () => dabeiPlayer.togglePlay());
+// 點圖即可開始：尚未選模式時直接播一般版（也順便符合瀏覽器對使用者手勢的要求）
+$dabeiArtBtn.addEventListener("click", () => {
+  if (!dabeiPlayer.mode) dabeiPlayer.playMode("normal");
+  else dabeiPlayer.togglePlay();
+});
+$dabeiSeek.addEventListener("pointerdown", () => { dabeiPlayer.scrubbing = true; });
+$dabeiSeek.addEventListener("touchstart", () => { dabeiPlayer.scrubbing = true; }, { passive: true });
+$dabeiSeek.addEventListener("pointerup", () => { dabeiPlayer.commitSeek(); });
+$dabeiSeek.addEventListener("pointercancel", () => {
+  dabeiPlayer.scrubbing = false;
+  dabeiPlayer.syncScrubber();
+});
+$dabeiSeek.addEventListener("input", () => {
+  dabeiPlayer.scrubbing = true;
+  const ratio = Number($dabeiSeek.value) / dabeiPlayer.SEEK_MAX;
+  const dur = dabeiPlayer.lockedDuration || 0;
+  const preview = ratio * Math.max(0, dur - dabeiPlayer.SEEK_END_MARGIN);
+  $dabeiTime.textContent = `${formatTime(preview)} / ${formatTime(dur)}`;
+  $dabeiSeek.style.setProperty("--fill", (ratio * 100).toFixed(2) + "%");
+});
+$dabeiSeek.addEventListener("change", () => { dabeiPlayer.commitSeek(); });
+
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState !== "visible") return;
+  if (dabeiPlayer.mode !== "playlist" || !dabeiPlayer.playing) return;
+  const el = dabeiPlayer.activeEl();
+  if (el.ended || (el.paused && !dabeiPlayer.switching)) {
+    dabeiPlayer.advancePlaylist();
+  }
+});
+
+$btnLoopNormal.addEventListener("click", () => dabeiPlayer.playMode("normal"));
+$btnLoopFast.addEventListener("click", () => dabeiPlayer.playMode("fast"));
+$btnLoopPlaylist.addEventListener("click", () => dabeiPlayer.playMode("playlist"));
+$btnDabeiStop.addEventListener("click", () => dabeiPlayer.stop());
+
+if ("mediaSession" in navigator) {
+  try {
+    navigator.mediaSession.setActionHandler("play", () => {
+      dabeiPlayer.activeEl().play().then(() => {
+        dabeiPlayer.playing = true;
+        dabeiPlayer.updateUI();
+        dabeiPlayer.updateMediaSession();
+      }).catch(() => {});
+    });
+    navigator.mediaSession.setActionHandler("pause", () => { dabeiPlayer.activeEl().pause(); });
+    navigator.mediaSession.setActionHandler("stop", () => dabeiPlayer.stop());
+    navigator.mediaSession.setActionHandler("seekto", (details) => {
+      if (!dabeiPlayer.lockedDuration || details.seekTime == null) return;
+      const maxT = Math.max(0, dabeiPlayer.lockedDuration - dabeiPlayer.END_EPSILON);
+      try { dabeiPlayer.activeEl().currentTime = Math.min(Math.max(details.seekTime, 0), maxT); } catch (_) {}
+      dabeiPlayer.syncScrubber();
+    });
+    navigator.mediaSession.setActionHandler("nexttrack", async () => {
+      if (dabeiPlayer.mode !== "playlist") return;
+      await dabeiPlayer.advancePlaylist();
+    });
+    navigator.mediaSession.setActionHandler("previoustrack", async () => {
+      if (dabeiPlayer.mode === "playlist") {
+        if (dabeiPlayer.ending) return;
+        dabeiPlayer.index = (dabeiPlayer.index - 2 + DABEI.length) % DABEI.length;
+        await dabeiPlayer.advancePlaylist();
+      } else {
+        dabeiPlayer.activeEl().currentTime = 0;
+        dabeiPlayer.syncScrubber();
+      }
+    });
+  } catch (_) { /* older browsers */ }
+}
+
+function buildCategoryOptions() {
+  const counts = new Map();
+  for (const it of items) counts.set(it.cat, (counts.get(it.cat) || 0) + 1);
+
+  $category.innerHTML = "";
+  const all = document.createElement("option");
+  all.value = "all";
+  all.textContent = `全部（${items.length}）`;
+  $category.appendChild(all);
+
+  const groups = new Map();
+  for (const it of items) {
+    const c = CATEGORIES[it.cat] || { group: "其他", order: 999 };
+    if (!groups.has(c.group)) groups.set(c.group, { order: c.order, cats: [] });
+    const g = groups.get(c.group);
+    g.order = Math.min(g.order, c.order);
+    if (!g.cats.includes(it.cat)) g.cats.push(it.cat);
+  }
+
+  const sorted = Array.from(groups.entries()).sort((a, b) => a[1].order - b[1].order);
+  for (const [gname, g] of sorted) {
+    const og = document.createElement("optgroup");
+    og.label = gname;
+    g.cats.sort((a, b) => (CATEGORIES[a].order || 0) - (CATEGORIES[b].order || 0));
+    for (const cat of g.cats) {
+      const o = document.createElement("option");
+      o.value = cat;
+      o.textContent = `${CATEGORIES[cat].label}（${counts.get(cat) || 0}）`;
+      og.appendChild(o);
+    }
+    $category.appendChild(og);
+  }
+}
+
+// --- 年份快篩（音檔橫跨數年，用年份比用月份快得多） ---
+const prefersReducedMotion = window.matchMedia
+  && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+function buildYearChips() {
+  const counts = new Map();
+  for (const it of items) {
+    if (!it.d.y) continue;
+    counts.set(it.d.y, (counts.get(it.d.y) || 0) + 1);
+  }
+  const box = document.getElementById("years");
+  box.innerHTML = "";
+  const add = (value, label) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "chip";
+    b.dataset.year = String(value);
+    b.textContent = label;
+    b.addEventListener("click", () => {
+      yearFilter = value === "all" ? "all" : Number(value);
+      syncYearChips();
+      render();
+      $list.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+    });
+    box.appendChild(b);
+  };
+  add("all", `全部 ${items.length}`);
+  Array.from(counts.keys()).sort((a, b) => b - a).forEach((y) => add(y, `${y}（${counts.get(y)}）`));
+  syncYearChips();
+}
+
+function syncYearChips() {
+  document.querySelectorAll("#years .chip").forEach((c) => {
+    c.classList.toggle("active", String(yearFilter) === c.dataset.year);
+  });
+}
+
+function resetFilters() {
+  $search.value = "";
+  $category.value = "all";
+  yearFilter = "all";
+  syncYearChips();
+  render();
+}
+
+function render() {
+  const q = $search.value.trim().toLowerCase();
+  const cat = $category.value || "all";
+  const year = yearFilter === "all" ? null : Number(yearFilter);
+  const filtered = items.filter(it =>
+    (cat === "all" || it.cat === cat) &&
+    (year === null || it.d.y === year) &&
+    (!q || it.base.toLowerCase().includes(q) || it.catLabel.toLowerCase().includes(q) ||
+     it.title.toLowerCase().includes(q))
+  );
+
+  filtered.sort((a, b) =>
+    sortDir === "desc" ? b.sortKey - a.sortKey : a.sortKey - b.sortKey
+  );
+
+  const groups = new Map();
+  for (const it of filtered) {
+    if (!groups.has(it.key)) groups.set(it.key, []);
+    groups.get(it.key).push(it);
+  }
+
+  const groupKeys = Array.from(groups.keys()).sort((a, b) => {
+    const cmp = a.split("|")[1].localeCompare(b.split("|")[1]);
+    if (cmp !== 0) return sortDir === "desc" ? -cmp : cmp;
+    return Number(a.split("|")[0]) - Number(b.split("|")[0]);
+  });
+
+  $list.innerHTML = "";
+  $stats.textContent = filtered.length === items.length
+    ? `共 ${items.length} 個`
+    : `顯示 ${filtered.length} / ${items.length}`;
+
+  if (filtered.length === 0) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    const p = document.createElement("p");
+    p.textContent = "找不到符合的音檔，試試其他關鍵字或年份。";
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip";
+    btn.textContent = "清除全部篩選";
+    btn.addEventListener("click", resetFilters);
+    empty.appendChild(p);
+    empty.appendChild(btn);
+    $list.appendChild(empty);
+    return;
+  }
+
+  for (const gk of groupKeys) {
+    const list = groups.get(gk);
+    const groupEl = document.createElement("section");
+    groupEl.className = "group";
+    const head = document.createElement("div");
+    head.className = "group-header";
+    const title = document.createElement("span");
+    title.textContent = `${list[0].catLabel} · ${list[0].monthLabel}`;
+    const count = document.createElement("span");
+    count.className = "group-count";
+    count.textContent = `${list.length} 個音檔`;
+    head.appendChild(title);
+    head.appendChild(count);
+    groupEl.appendChild(head);
+
+    for (const it of list) {
+      const url = encodePath(it.path);
+      const dateLabel = it.d.y
+        ? `${it.d.y}/${String(it.d.mo).padStart(2, "0")}/${String(it.d.d).padStart(2, "0")}`
+        : "未標日期";
+      const itemEl = document.createElement("div");
+      itemEl.className = "item";
+      const main = document.createElement("div");
+      main.className = "item-main";
+      const date = document.createElement("span");
+      date.className = "date";
+      date.textContent = dateLabel;
+      const name = document.createElement("span");
+      name.className = "name";
+      name.textContent = it.title;
+      name.title = it.base;
+      const badge = document.createElement("span");
+      badge.className = "badge " + it.catCls;
+      badge.textContent = it.catLabel;
+      main.appendChild(date);
+      main.appendChild(name);
+      main.appendChild(badge);
+      const audio = document.createElement("audio");
+      audio.controls = true;
+      audio.preload = "none";
+      audio.src = url;
+      audio.dataset.title = `${dateLabel}　${it.title}`;
+      itemEl.appendChild(main);
+      itemEl.appendChild(audio);
+      groupEl.appendChild(itemEl);
+    }
+    $list.appendChild(groupEl);
+  }
+
+  wireAudio();
+}
+
+function wireAudio() {
+  const audios = document.querySelectorAll("#list audio");
+  audios.forEach(a => {
+    a.addEventListener("play", () => {
+      dabeiPlayer.stop();
+      audios.forEach(o => { if (o !== a && !o.paused) o.pause(); });
+      $np.classList.add("show");
+      $np.classList.remove("dabei-np");
+      $npTitle.textContent = a.dataset.title || "";
+    });
+    a.addEventListener("pause", () => {
+      const anyPlaying = Array.from(audios).some(o => !o.paused) || (dabeiPlayer.playing && !dabeiPlayer.activeEl().paused);
+      if (!anyPlaying) $np.classList.remove("show");
+    });
+    a.addEventListener("ended", () => {
+      const anyPlaying = Array.from(audios).some(o => !o.paused) || (dabeiPlayer.playing && !dabeiPlayer.activeEl().paused);
+      if (!anyPlaying) $np.classList.remove("show");
+    });
+  });
+}
+
+$search.addEventListener("input", render);
+$search.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { $search.value = ""; render(); }
+});
+$category.addEventListener("change", render);
+$sortNew.addEventListener("click", () => {
+  sortDir = "desc";
+  $sortNew.classList.add("active");
+  $sortOld.classList.remove("active");
+  render();
+});
+$sortOld.addEventListener("click", () => {
+  sortDir = "asc";
+  $sortOld.classList.add("active");
+  $sortNew.classList.remove("active");
+  render();
+});
+$npStop.addEventListener("click", () => {
+  dabeiPlayer.stop();
+  document.querySelectorAll("#list audio").forEach(a => { if (!a.paused) a.pause(); });
+  $np.classList.remove("show");
+});
+$jumpTop.addEventListener("click", () => {
+  const behavior = prefersReducedMotion ? "auto" : "smooth";
+  try { window.scrollTo({ top: 0, behavior: behavior }); }
+  catch (_) { window.scrollTo(0, 0); }
+});
+
+// 捲過大悲咒區塊之後，右下角出現「回大悲咒」快捷鈕
+(function watchHero() {
+  const hero = document.getElementById("dabei");
+  if (!("IntersectionObserver" in window)) { $jumpTop.hidden = false; return; }
+  new IntersectionObserver((entries) => {
+    $jumpTop.hidden = entries[0].isIntersecting;
+  }, { rootMargin: "-120px 0px 0px 0px" }).observe(hero);
+})();
+
+buildCategoryOptions();
+buildYearChips();
+render();
+</script>
+</body>
+</html>

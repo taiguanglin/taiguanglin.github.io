@@ -18,17 +18,17 @@ SITE = "https://taiguanglin.info"
 
 NAV = """    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
+            <a href="../index.html" class="nav-logo">
                 <span class="logo-name">TaiGuangLin</span>
                 <span class="logo-sub">次世代終極佛法</span>
-            </div>
+            </a>
             <div class="nav-menu" id="nav-menu">
-                <a href="../index.html#home" class="nav-link">首頁</a>
+                <a href="../index.html" class="nav-link">首頁</a>
                 <a href="../index.html#about" class="nav-link">禪師</a>
                 <a href="../index.html#start" class="nav-link">入門路徑</a>
                 <a href="../index.html#books" class="nav-link">著作</a>
-                <a href="../wenda2.html" class="nav-link">問答錄2</a>
-                <a href="../stories.html" class="nav-link">故事</a>
+                <a href="../wenda2.html" class="nav-link">問答錄 2</a>
+                <a href="../stories.html" class="nav-link active">實修故事</a>
                 <div class="nav-dropdown" id="nav-dropdown">
                     <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
@@ -36,39 +36,39 @@ NAV = """    <nav class="navbar" id="navbar">
                         <a href="../mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
                     </div>
                 </div>
-                <a href="../index.html#downloads" class="nav-link">下載</a>
+                <a href="../index.html#downloads" class="nav-link nav-cta">下載資料</a>
             </div>
-            <div class="hamburger" id="hamburger">
+            <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
         </div>
     </nav>"""
 
 FOOTER = """    <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>TaiGuangLin</h3>
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo-name">TaiGuangLin</div>
                     <p>次世代終極版佛法</p>
-                    <p>用現代通俗易懂的語言，傳承純正佛法智慧</p>
+                    <p>用現代通俗易懂的語言，傳承純正佛法智慧。</p>
                 </div>
-                <div class="footer-section">
+                <div class="footer-col">
                     <h4>著作與電子書</h4>
                     <ul>
-                        <li><a href="../index.html#books">五本著作</a></li>
+                        <li><a href="../index.html#books">全部著作</a></li>
                         <li><a href="../ebook/index_trad.html" target="_blank" rel="noopener noreferrer">坐禪系列電子書</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
-                    <h4>問答錄2</h4>
+                <div class="footer-col">
+                    <h4>問答錄 2</h4>
                     <ul>
                         <li><a href="../wenda2.html">主題目錄（12 章）</a></li>
                         <li><a href="../wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer">完整電子書</a></li>
                     </ul>
                 </div>
-                <div class="footer-section">
+                <div class="footer-col">
                     <h4>更多資源</h4>
                     <ul>
                         <li><a href="../infographic.html">名詞圖解</a></li>
@@ -337,7 +337,7 @@ PAGE = """<!DOCTYPE html>
     <!-- 頁尾 -->
 {footer}
 
-    <script src="../script.js"></script>
+    <script src="../shared.js" defer></script>
     <script src="assets/story.js"></script>
 </body>
 </html>

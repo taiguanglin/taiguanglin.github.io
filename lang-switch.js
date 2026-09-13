@@ -144,6 +144,10 @@
 
     function convertNode(node, cv) {
         if (node.nodeType === 3) {           /* TEXT_NODE */
+            /* 文字節點本身沒有 class，需看父元素：.ignore-opencc 底下的字一律保留原樣
+             * （例如切換鈕上的「繁體／简体」必須永遠顯示目標語系的正確字形）。 */
+            var tp = node.parentNode;
+            if (tp && tp.classList && tp.classList.contains('ignore-opencc')) return;
             node.nodeValue = cv(captureText(node));
         } else if (node.nodeType === 1) {    /* ELEMENT_NODE */
             var tag = node.tagName;
@@ -251,6 +255,9 @@
         btn = document.createElement('button');
         btn.id = BTN_ID;
         btn.type = 'button';
+        /* 按鈕文字刻意「不」隨頁面轉換：在簡體頁面顯示繁體「繁體」，
+         * 在繁體頁面顯示簡體「简体」，標示的是「按下去會切到哪一種字」。 */
+        btn.className = 'ignore-opencc';
         btn.addEventListener('click', function () {
             var target = variant === 'simp' ? 'trad' : 'simp';
             pref = target; setStored(target);

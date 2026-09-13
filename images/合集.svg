@@ -1,49 +1,143 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348 348" width="348" height="348" role="img" aria-label="九本合集電子書">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348 348" width="348" height="348"
+     role="img" aria-label="九本合集電子書">
+  <title>九本合集・線上電子書</title>
   <defs>
-    <linearGradient id="hj-bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#fbf2f5"/>
-      <stop offset="1" stop-color="#f0d2dd"/>
+    <linearGradient id="hj-bg" x1="0" y1="0" x2=".6" y2="1">
+      <stop offset="0" stop-color="#fffafc"/>
+      <stop offset=".55" stop-color="#fbeaf2"/>
+      <stop offset="1" stop-color="#f7d8e5"/>
     </linearGradient>
-    <linearGradient id="hj-book1" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#e089ac"/>
-      <stop offset="1" stop-color="#a63e6a"/>
+    <linearGradient id="hj-shelf" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cf6b96" stop-opacity="0"/>
+      <stop offset=".18" stop-color="#cf6b96" stop-opacity=".5"/>
+      <stop offset=".5" stop-color="#953a60" stop-opacity=".7"/>
+      <stop offset=".82" stop-color="#cf6b96" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#cf6b96" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="hj-book2" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#ffffff"/>
-      <stop offset="1" stop-color="#f8e7ec"/>
+    <linearGradient id="hj-gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b58a56" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#b58a56" stop-opacity=".65"/>
+      <stop offset="1" stop-color="#b58a56" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="hj-book3" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#632445"/>
-      <stop offset="1" stop-color="#43182f"/>
+    <linearGradient id="hj-b1" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f4aecb"/><stop offset="1" stop-color="#dc85ac"/>
+    </linearGradient>
+    <linearGradient id="hj-b2" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#f7e3ec"/>
+    </linearGradient>
+    <linearGradient id="hj-b3" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d97aa3"/><stop offset="1" stop-color="#b54d78"/>
+    </linearGradient>
+    <linearGradient id="hj-b4" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fdf6f9"/><stop offset="1" stop-color="#f2d6e2"/>
+    </linearGradient>
+    <linearGradient id="hj-b5" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#b54d78"/><stop offset="1" stop-color="#8d3355"/>
+    </linearGradient>
+    <linearGradient id="hj-b6" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f9dfe9"/><stop offset="1" stop-color="#e79dbe"/>
+    </linearGradient>
+    <linearGradient id="hj-b7" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#953a60"/><stop offset="1" stop-color="#6d2341"/>
+    </linearGradient>
+    <linearGradient id="hj-b8" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#fbeaf2"/>
+    </linearGradient>
+    <linearGradient id="hj-b9" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c8608b"/><stop offset="1" stop-color="#953a60"/>
+    </linearGradient>
+    <!-- 書脊左緣的窄高光，讓九本立書有厚度 -->
+    <linearGradient id="hj-edge" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".45"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
     </linearGradient>
   </defs>
 
-  <rect width="348" height="348" rx="28" fill="url(#hj-bg)"/>
-  <circle cx="174" cy="168" r="128" fill="none" stroke="#e5b3c5" stroke-width="1.2" stroke-dasharray="2 7"/>
+  <rect width="348" height="348" rx="26" fill="url(#hj-bg)"/>
+  <circle cx="174" cy="152" r="122" fill="none" stroke="#e5b3c5"
+          stroke-width="1.2" stroke-dasharray="2 7" opacity=".9"/>
+  <circle cx="174" cy="152" r="102" fill="none" stroke="#f7d8e5" stroke-width="1"/>
 
-  <!-- 三冊疊放書籍 -->
+  <!-- 九本並列（底端一律落在 y=268 的書架上） -->
   <g stroke-linejoin="round">
-    <g transform="translate(174 236) rotate(-4) translate(-88 -66)">
-      <rect x="0" y="0" width="176" height="118" rx="10" fill="url(#hj-book3)"/>
-      <rect x="0" y="0" width="14" height="118" rx="7" fill="rgba(0,0,0,.22)"/>
+    <!-- 1 -->
+    <g>
+      <rect x="47" y="82" width="24" height="186" rx="4" fill="url(#hj-b1)"/>
+      <rect x="47" y="82" width="7" height="186" rx="3.5" fill="url(#hj-edge)"/>
+      <rect x="52" y="100" width="14" height="24" rx="2" fill="#ffffff" opacity=".4"/>
+      <circle cx="59" cy="252" r="2" fill="#b58a56" opacity=".7"/>
     </g>
-    <g transform="translate(174 210) rotate(3) translate(-86 -60)">
-      <rect x="0" y="0" width="172" height="112" rx="10" fill="url(#hj-book2)" stroke="#f0d2dd"/>
-      <rect x="0" y="0" width="13" height="112" rx="6.5" fill="#f0d2dd"/>
-      <rect x="32" y="22" width="110" height="6" rx="3" fill="#e5b3c5"/>
-      <rect x="32" y="40" width="84" height="6" rx="3" fill="#f0d2dd"/>
+    <!-- 2 -->
+    <g transform="rotate(-3 87 268)">
+      <rect x="74" y="58" width="26" height="210" rx="4" fill="url(#hj-b2)" stroke="#f2d6e2"/>
+      <rect x="79" y="76" width="16" height="28" rx="2" fill="#e79dbe" opacity=".5"/>
+      <circle cx="87" cy="248" r="2" fill="#b58a56" opacity=".7"/>
     </g>
-    <g transform="translate(174 166) rotate(-2) translate(-84 -58)">
-      <rect x="0" y="0" width="168" height="108" rx="10" fill="url(#hj-book1)"/>
-      <rect x="0" y="0" width="13" height="108" rx="6.5" fill="rgba(255,255,255,.18)"/>
-      <!-- 書面蓮花印記 -->
-      <g transform="translate(96 54)" fill="none" stroke="#fdeef3" stroke-width="2.4" stroke-linecap="round">
-        <path d="M0-20c7 7 10 15 10 23-7 4-13 4-20 0 0-8 3-16 10-23z" transform="scale(.9)"/>
-        <path d="M-16 6c-4-7-4-14 2-20"/>
-        <path d="M16 6c4-7 4-14-2-20"/>
+    <!-- 3 -->
+    <g>
+      <rect x="103" y="90" width="22" height="178" rx="4" fill="url(#hj-b3)"/>
+      <rect x="103" y="90" width="6" height="178" rx="3" fill="url(#hj-edge)"/>
+      <rect x="108" y="108" width="12" height="22" rx="2" fill="#ffffff" opacity=".28"/>
+      <circle cx="114" cy="250" r="2" fill="#b58a56" opacity=".7"/>
+    </g>
+    <!-- 4 -->
+    <g>
+      <rect x="128" y="42" width="28" height="226" rx="4" fill="url(#hj-b4)" stroke="#f2d6e2"/>
+      <rect x="134" y="62" width="16" height="30" rx="2" fill="#cf6b96" opacity=".3"/>
+      <circle cx="142" cy="250" r="2" fill="#b58a56" opacity=".7"/>
+    </g>
+    <!-- 5 -->
+    <g transform="rotate(2 171 268)">
+      <rect x="159" y="72" width="24" height="196" rx="4" fill="url(#hj-b5)"/>
+      <rect x="159" y="72" width="7" height="196" rx="3.5" fill="url(#hj-edge)"/>
+      <rect x="164" y="90" width="14" height="26" rx="2" fill="#ffffff" opacity=".28"/>
+      <circle cx="171" cy="248" r="2" fill="#f7d8e5" opacity=".85"/>
+    </g>
+    <!-- 6：最高，帶蓮花印記 -->
+    <g>
+      <rect x="186" y="34" width="30" height="234" rx="5" fill="url(#hj-b6)"/>
+      <rect x="186" y="34" width="8" height="234" rx="4" fill="url(#hj-edge)"/>
+      <rect x="192" y="54" width="18" height="30" rx="2" fill="#ffffff" opacity=".5"/>
+      <g transform="translate(201 130) scale(.74)" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+        <path d="M-19 6c-4-9-1-17 7-21 4 8 3 15-2 22z"
+              fill="#fdf6f9" stroke="#b54d78" stroke-width="2"/>
+        <path d="M19 6c4-9 1-17-7-21-4 8-3 15 2 22z"
+              fill="#fdf6f9" stroke="#b54d78" stroke-width="2"/>
+        <path d="M0-26c7 9 10 16 10 22 0 6-4 10-10 10s-10-4-10-10c0-6 3-13 10-22z"
+              fill="#fffafc" stroke="#8d3355" stroke-width="2.2"/>
+        <path d="M-15 18c5-4 10-6 15-6s10 2 15 6"
+              fill="none" stroke="#b54d78" stroke-width="2"/>
       </g>
+      <circle cx="201" cy="248" r="2.2" fill="#b58a56" opacity=".75"/>
+    </g>
+    <!-- 7 -->
+    <g>
+      <rect x="219" y="84" width="23" height="184" rx="4" fill="url(#hj-b7)"/>
+      <rect x="219" y="84" width="7" height="184" rx="3.5" fill="url(#hj-edge)"/>
+      <rect x="224" y="102" width="13" height="24" rx="2" fill="#ffffff" opacity=".24"/>
+      <circle cx="230" cy="250" r="2" fill="#f7d8e5" opacity=".85"/>
+    </g>
+    <!-- 8 -->
+    <g transform="rotate(-2 258 268)">
+      <rect x="245" y="54" width="26" height="214" rx="4" fill="url(#hj-b8)" stroke="#f2d6e2"/>
+      <rect x="250" y="72" width="16" height="28" rx="2" fill="#e79dbe" opacity=".45"/>
+      <circle cx="258" cy="248" r="2" fill="#b58a56" opacity=".7"/>
+    </g>
+    <!-- 9 -->
+    <g>
+      <rect x="274" y="76" width="25" height="192" rx="4" fill="url(#hj-b9)"/>
+      <rect x="274" y="76" width="7" height="192" rx="3.5" fill="url(#hj-edge)"/>
+      <rect x="279" y="94" width="15" height="24" rx="2" fill="#ffffff" opacity=".28"/>
+      <circle cx="286" cy="250" r="2" fill="#f7d8e5" opacity=".85"/>
     </g>
   </g>
 
-  <text x="174" y="318" text-anchor="middle" font-family="'Noto Serif TC', serif" font-size="21" font-weight="700" fill="#632445" letter-spacing="6">九本合集</text>
+  <!-- 書架 -->
+  <rect x="34" y="266" width="280" height="6" rx="3" fill="url(#hj-shelf)"/>
+  <ellipse cx="174" cy="278" rx="116" ry="6" fill="#cf6b96" opacity=".13"/>
+
+  <!-- 題字 -->
+  <path d="M104 304h140" stroke="url(#hj-gold)" stroke-width="1.2" stroke-linecap="round"/>
+  <text x="174" y="332" text-anchor="middle" font-family="'Noto Serif TC', 'Songti TC', serif"
+        font-size="22" font-weight="700" fill="#632445" letter-spacing="7">九本合集</text>
 </svg>
