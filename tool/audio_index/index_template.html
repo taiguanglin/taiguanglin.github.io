@@ -240,11 +240,6 @@
   .featured-status {
     flex: 1 1 200px; min-width: 0; font-size: 12.5px; line-height: 1.6; color: var(--ink-soft);
   }
-  .featured-hint {
-    margin: 0; font-size: 12px; line-height: 1.75; color: var(--ink-mute);
-    padding-left: 14px; border-left: 2px solid var(--sakura-200);
-  }
-  .featured-hint b { color: var(--sakura-700); font-weight: 600; }
   .player-card audio { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
   /* ---------- 按鈕（chip） ---------- */
@@ -411,9 +406,54 @@
     color: var(--ink-mute);
   }
   .empty p { margin: 0 0 16px; font-size: 14px; }
-  .footer-note {
-    max-width: 1100px; margin: 26px auto 0; padding: 0 18px;
-    color: var(--ink-mute); font-size: 12px; line-height: 1.9;
+  /* ---------- 頁尾 ---------- */
+  footer.site-footer {
+    margin-top: 48px;
+    border-top: 1px solid var(--line);
+    background:
+      radial-gradient(700px 220px at 50% 0, rgba(231, 157, 190, .10) 0, rgba(231, 157, 190, 0) 70%),
+      linear-gradient(180deg, rgba(253, 250, 251, 0) 0, var(--paper-tint) 100%);
+  }
+  .footer-inner {
+    max-width: 1100px; margin: 0 auto; padding: 40px 18px 32px;
+    display: grid; grid-template-columns: 1fr; gap: 28px;
+  }
+  .footer-brand {
+    display: flex; flex-direction: column; gap: 10px;
+  }
+  .footer-brand .f-row { display: flex; align-items: center; gap: 11px; }
+  .footer-brand .brand-mark {
+    width: 30px; height: 30px; border-radius: 10px;
+    background: var(--grad-rose);
+    box-shadow: 0 4px 12px rgba(168, 64, 106, .28);
+  }
+  .footer-brand .f-name { font-family: var(--font-serif); font-size: 17px; color: var(--ink); font-weight: 600; letter-spacing: .02em; }
+  .footer-brand .f-tagline { font-size: 12.5px; color: var(--ink-mute); line-height: 1.7; max-width: 46ch; }
+  .footer-cols {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 24px;
+  }
+  .footer-col h3 {
+    margin: 0 0 12px; font-size: 12px; font-weight: 600; letter-spacing: .18em;
+    text-transform: uppercase; color: var(--ink-mute);
+  }
+  .footer-col ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .footer-col a {
+    font-size: 13.5px; color: var(--ink-soft); text-decoration: none; line-height: 1.5;
+  }
+  .footer-col a:hover { color: var(--sakura-600); text-decoration: underline; text-underline-offset: 3px; }
+  .footer-col .ext { margin-left: 4px; font-size: 10.5px; color: var(--ink-mute); }
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto; padding: 16px 18px;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-mute); font-size: 12px;
+  }
+  .footer-bottom .sep { margin: 0 6px; opacity: .5; }
+  @media (min-width: 820px) {
+    .footer-inner { grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr); align-items: start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    footer.site-footer { transition: none; }
   }
   code {
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -559,11 +599,6 @@
           </label>
           <div class="featured-status" id="dabeiStatus" role="status" aria-live="polite">選擇上方模式，或點擊圖片開始播放</div>
         </div>
-
-        <p class="featured-hint">
-          手機播放後可關掉螢幕，請讓瀏覽器留在背景、勿強制結束分頁。
-          清單循環請用 <b>Chrome / Edge / Firefox</b>（Safari 對 Opus 與背景切歌支援較差）。
-        </p>
       </div>
 
       <audio id="dabeiAudio" playsinline preload="auto"></audio>
@@ -607,14 +642,51 @@
 
 <main id="list" aria-live="polite"></main>
 
-<div class="footer-note">
-  <p>
-    本頁為靜態網頁，音檔以 HTML5 原生播放器串流 <code>*.opus</code>，不需下載。
-    清單由 <code>tool/audio_index/build_index.py</code> 掃描音檔庫自動產生，新錄音會自動出現。
-    本機預覽請用 <code>python3 serve.py</code> 啟動（需支援 HTTP Range，否則拖曳進度條會卡住）；
-    若 Safari 無法播放 <code>.opus</code>，請改用 Chrome、Edge 或 Firefox。
-  </p>
-</div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="f-row">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="f-name">Tai 師父音檔串流</span>
+      </div>
+      <p class="f-tagline">
+        大悲咒植頂循環，答疑、貼吧／微信／官網答疑、講經系列與義理音檔，
+        皆可直接在線上串流收聽，無需下載。
+      </p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h3>瀏覽</h3>
+        <ul>
+          <li><a href="#dabei">置頂大悲咒</a></li>
+          <li><a href="#list">音檔清單</a></li>
+          <li><a href="../index.html">回主站<span class="ext">↗</span></a></li>
+          <li><a href="../sitemap.xml">網站地圖<span class="ext">↗</span></a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>類別</h3>
+        <ul>
+          <li><a href="#list">答疑</a></li>
+          <li><a href="#list">講經系列</a></li>
+          <li><a href="#list">義理</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>關於</h3>
+        <ul>
+          <li><a href="../index.html">TaiGuangLin 官網</a></li>
+          <li><a href="../stories.html">實修故事</a></li>
+          <li><a href="../wenda2.html">問答錄</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>Tai 師父 · 法音流通</span>
+    <span>南無阿彌陀佛</span>
+  </div>
+</footer>
 
 <div class="now-playing" id="np" role="region" aria-label="正在播放">
   <div class="np-row">
