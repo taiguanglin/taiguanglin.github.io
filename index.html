@@ -526,7 +526,9 @@
         var todayBtn = document.getElementById('dailyQuoteToday');
 
         // 本區塊 `ignore-opencc`，由 tgl_lang API 自行轉換，掌握「轉換完才顯示」
-        var TG = (window.tgl_lang) || null;
+        // lang-switch.js 是 defer 載入，行內腳本執行時 tgl_lang 尚不存在，
+        // 故每次使用時才即時取值（啟動時就緩存會永遠拿到 null，同步轉換失效）
+        function tglApi() { return window.tgl_lang || null; }
 
         // 靜態按鈕文字的「繁體原稿」，切繁簡時整批重上
         var T_PREV = '◀', T_TODAY = '今日', T_NEXT = '▶';
@@ -544,8 +546,9 @@
 
         /* 把繁體原稿轉成目前 variant；OpenCC 未就緒時回 null（先用 trad） */
         function conv(s) {
-            if (!TG || !TG.convertTW) return null;
-            return TG.convertTW(s);
+            var api = tglApi();
+            if (!api || !api.convertTW) return null;
+            return api.convertTW(s);
         }
         function T(s) { var c = conv(s); return c != null ? c : s; }
 
@@ -612,15 +615,15 @@
             updateToggleVisibility();
         }
 
-        /* 前/後/今日切換：先漸隱，swap 後漸現（內容已按 variant 轉好才顯示） */
+        /* 前/後/今日/整月切換：整組先漸隱，swap（已按 variant 轉好）後再漸現 */
         function switchDay(nextOffset) {
             if (!quotes) return;
-            if (nextOffset === offset) return;   // 已在今日
-            text.classList.add('fade-out');
+            if (nextOffset === offset) return;   // 目標與目前相同時不動作
+            card.classList.add('is-switching');
             setTimeout(function () {
                 offset = nextOffset;
                 render();
-                text.classList.remove('fade-out');
+                card.classList.remove('is-switching');
             }, 250);
         }
 
@@ -650,8 +653,18 @@
         });
 
         // 語系變更時重上文字（繁→簡/簡→繁）；OpenCC 就緒後補一次（載入中文字也會轉）
-        if (TG && TG.onChange) TG.onChange(applyLang);
-        if (TG && TG.onReady) TG.onReady(applyLang);
+        // defer 腳本保證在 DOMContentLoaded 前執行完畢，此時 tgl_lang 已就緒
+        function registerLang() {
+            var api = tglApi();
+            if (!api) return;
+            if (api.onChange) api.onChange(applyLang);
+            if (api.onReady) api.onReady(applyLang);
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', registerLang);
+        } else {
+            registerLang();
+        }
         applyLang(); // 先以預設語系顯示載入文字，骨架屏已在 HTML 中可見
 
         fetch('daily_quotes.json')

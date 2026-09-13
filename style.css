@@ -1184,6 +1184,18 @@ ul, ol { list-style-position: outside; }
 
 .daily-quote-text.fade-out { opacity: 0; }
 
+/* 切換日期時，文字區整組淡出、換好（已轉換完畢）才淡入，避免繁簡閃爍 */
+.daily-quote-label,
+.daily-quote-src,
+.daily-quote-toggle,
+.daily-quote-link { transition: opacity .25s var(--ease); }
+
+.daily-quote-card.is-switching .daily-quote-label,
+.daily-quote-card.is-switching .daily-quote-src,
+.daily-quote-card.is-switching .daily-quote-text,
+.daily-quote-card.is-switching .daily-quote-toggle,
+.daily-quote-card.is-switching .daily-quote-link { opacity: 0; }
+
 .daily-quote-text.collapsed {
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -1231,19 +1243,19 @@ ul, ol { list-style-position: outside; }
     justify-content: center;
     height: 30px;
     padding: 0 12px;
-    border: 1px solid var(--line-deep);
+    border: 1px solid var(--line);
     border-radius: var(--r-pill);
-    background: rgba(255, 255, 255, .8);
-    color: var(--sakura-600);
+    background: rgba(255, 255, 255, .55);
+    color: var(--ink-mute);
     font-size: 12.5px;
     white-space: nowrap;
     cursor: pointer;
     transition: background .2s var(--ease), color .2s var(--ease), border-color .2s var(--ease);
 }
 
-.dq-nav:hover { background: var(--sakura-100); color: var(--sakura-800); border-color: var(--sakura-300); }
+.dq-nav:hover { background: rgba(251, 234, 242, .6); color: var(--ink-soft); border-color: var(--line-deep); }
 .dq-nav:disabled { opacity: .42; cursor: default; pointer-events: none; }
-.dq-nav.dq-nav-today { font-weight: 700; border-color: var(--sakura-300); }
+.dq-nav.dq-nav-today { font-weight: 700; border-color: var(--line-deep); color: var(--ink-soft); }
 
 .daily-quote-card[data-state="loading"] .daily-quote-actions { visibility: hidden; }
 .daily-quote-card[data-state="loading"] .dq-nav { opacity: .45; pointer-events: none; }
