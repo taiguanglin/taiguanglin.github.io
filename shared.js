@@ -274,6 +274,28 @@
         document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
     }
 
+    /* ---------- Dharma quotes：隨機只顯示其中一則 ---------- */
+    /* footer 法語區預設放兩則（.dharma-content / .qa-quote），太長故每次只留一則 */
+    (function randomDharmaQuote() {
+        function pickOne(container, quoteSel, citeSel) {
+            var quotes = container.querySelectorAll(quoteSel);
+            if (quotes.length < 2) return;
+            var cites = container.querySelectorAll(citeSel);
+            var keep = Math.floor(Math.random() * quotes.length);
+            for (var i = 0; i < quotes.length; i++) {
+                if (i === keep) continue;
+                quotes[i].style.display = 'none';
+                if (cites[i]) cites[i].style.display = 'none';
+            }
+        }
+        document.querySelectorAll('.dharma-content').forEach(function (el) {
+            pickOne(el, 'blockquote.dharma-quote', 'cite.dharma-author');
+        });
+        document.querySelectorAll('.qa-quote').forEach(function (el) {
+            pickOne(el, 'blockquote.q', 'cite.cite');
+        });
+    })();
+
     /* ---------- Download modal (index) ---------- */
     var overlay = document.getElementById('downloadModal');
     if (overlay) {
