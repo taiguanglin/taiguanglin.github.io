@@ -21,19 +21,19 @@
 <script src="/lang-switch.js" defer></script>
 </head>
 <body>
-    <nav class="navbar" id="navbar" data-chrome="index">
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
+            <a href="index.html" class="nav-logo">
                 <span class="logo-name">TaiGuangLin</span>
                 <span class="logo-sub">次世代終極佛法</span>
-            </div>
+            </a>
             <div class="nav-menu" id="nav-menu">
-                <a href="index.html#home" class="nav-link">首頁</a>
+                <a href="index.html" class="nav-link">首頁</a>
                 <a href="index.html#about" class="nav-link">禪師</a>
                 <a href="index.html#start" class="nav-link">入門路徑</a>
                 <a href="index.html#books" class="nav-link">著作</a>
-                <a href="wenda2.html" class="nav-link">問答錄2</a>
-                <a href="stories.html" class="nav-link">故事</a>
+                <a href="wenda2.html" class="nav-link">問答錄 2</a>
+                <a href="stories.html" class="nav-link">實修故事</a>
                 <div class="nav-dropdown" id="nav-dropdown">
                     <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
@@ -41,13 +41,14 @@
                         <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
                     </div>
                 </div>
-                <a href="index.html#downloads" class="nav-link">下載</a>
+                <a href="index.html#downloads" class="nav-link nav-cta" data-download-trigger>下載資料</a>
             </div>
-            <div class="hamburger" id="hamburger">
+            <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">
                 <span></span><span></span><span></span>
-            </div>
+            </button>
         </div>
     </nav>
+    <div class="site-menu-veil" id="site-menu-veil"></div>
 
 
 
@@ -66,17 +67,21 @@
     <!-- 統計 -->
     <section class="section" style="padding-top: var(--spacing-lg); padding-bottom: 0;">
         <div class="container">
-            <div class="chip" style="margin-bottom: 16px;">
+            <div class="note-ai" style="margin-bottom: 20px;">
                 <span>本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。</span>
             </div>
             <div class="mm-stats" style="margin-top: 0;">
                 <div class="mm-stat">
-                    <span class="mm-stat-icon" aria-hidden="true"></span>
+                    <span class="mm-stat-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.4A2.4 2.4 0 016.4 3H19v14.6H6.4A2.4 2.4 0 004 20.2z"/><path d="M19 17.6V21H6.4"/></svg>
+                    </span>
                     <strong>5</strong>
                     <span>冊著作</span>
                 </div>
                 <div class="mm-stat">
-                    <span class="mm-stat-icon" aria-hidden="true"></span>
+                    <span class="mm-stat-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10a2 2 0 012 2v14H9a2 2 0 01-2-2z"/><path d="M7 4a2 2 0 00-2 2v12a2 2 0 012 2"/><path d="M11 8h4M11 11.5h4"/></svg>
+                    </span>
                     <strong>1,608</strong>
                     <span>頁原文</span>
                 </div>
@@ -88,7 +93,9 @@
                     <span>條主幹</span>
                 </div>
                 <div class="mm-stat">
-                    <span class="mm-stat-icon" aria-hidden="true"></span>
+                    <span class="mm-stat-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2.6"/><circle cx="5" cy="6" r="2.2"/><circle cx="19" cy="6" r="2.2"/><circle cx="5" cy="18" r="2.2"/><circle cx="19" cy="18" r="2.2"/><path d="M6.8 7.3l3.4 3.2M17.2 7.3l-3.4 3.2M6.8 16.7l3.4-3.2M17.2 16.7l-3.4-3.2"/></svg>
+                    </span>
                     <strong>48</strong>
                     <span>個名詞節點</span>
                 </div>
@@ -114,7 +121,9 @@
     <section class="section">
         <div class="container">
             <h2 class="section-title mm-section-title">
-                <span class="mm-section-icon" aria-hidden="true"></span>
+                <span class="mm-section-icon" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20 20l-11-9M20 20l11-9M20 20l-11 9M20 20l11 9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".6"/><circle cx="20" cy="20" r="4.6" fill="currentColor"/><circle cx="9" cy="11" r="3.4" fill="currentColor" opacity=".55"/><circle cx="31" cy="11" r="3.4" fill="currentColor" opacity=".55"/><circle cx="9" cy="29" r="3.4" fill="currentColor" opacity=".55"/><circle cx="31" cy="29" r="3.4" fill="currentColor" opacity=".55"/></svg>
+                </span>
                 名詞關聯圖
             </h2>
             <p class="mm-lead">點選圖中任一名詞，可展開它的釋義、依原著整理的書中要點、原文摘句、出處章節，以及跨分支的關聯（以虛線標示）。手機請左右滑動圖面。</p>
@@ -134,7 +143,9 @@
     <section class="section bg-light">
         <div class="container">
             <h2 class="section-title mm-section-title">
-                <span class="mm-section-icon" aria-hidden="true"></span>
+                <span class="mm-section-icon" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 7v26h24" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/><rect x="14" y="20" width="6" height="9" rx="1.6" fill="currentColor" opacity=".5"/><rect x="23" y="14" width="6" height="15" rx="1.6" fill="currentColor" opacity=".8"/><circle cx="26" cy="9" r="3" fill="currentColor"/></svg>
+                </span>
                 核心對應軸
             </h2>
             <p class="mm-lead">這是整套書最具原創性的地方——把果位、四相、五蘊全部重新定義為「意識裡還剩幾層東西」的讀數。橫著讀任一列，就能把散在不同經典裡的名詞對上。</p>
@@ -207,7 +218,9 @@
     <section class="section bg-light">
         <div class="container">
             <h2 class="section-title mm-section-title">
-                <span class="mm-section-icon" aria-hidden="true"></span>
+                <span class="mm-section-icon" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="6" y="21" width="7" height="13" rx="2" fill="currentColor" opacity=".4"/><rect x="17" y="15" width="7" height="19" rx="2" fill="currentColor" opacity=".7"/><rect x="28" y="8" width="7" height="26" rx="2" fill="currentColor"/></svg>
+                </span>
                 名詞的書冊分布
             </h2>
             <p class="mm-lead">同一套名詞在五本書裡的權重差異，說明了各書的分工：《坐禪1》《問答錄》偏身體工程，《坐禪2》偏業與世界，兩本經典講解則集中在分別心與圓覺。滑鼠移到色塊上可看各書明細。</p>
@@ -219,17 +232,17 @@
     <!-- 延伸閱讀 -->
     <section class="section">
         <div class="container">
-            <div class="infographic-cta">
+            <div class="infographic-cta reveal">
                 <div class="infographic-cta-content">
                     <div class="infographic-cta-icon">
-                        
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4.2L3.5 6.6v13.2L9 17.4l6 2.4 5.5-2.4V4.2L15 6.6z"/><path d="M9 4.2v13.2M15 6.6v13.2"/></svg>
                     </div>
                     <div class="infographic-cta-text">
                         <h3>佛法名詞圖解</h3>
                         <p>想看單一名詞的詳細圖解？前往「名詞圖解」頁面，逐張認識妄想、分別、執著與各禪定境界。</p>
                     </div>
                     <a href="infographic.html" class="infographic-cta-button">
-                        查看圖解 
+                        查看圖解<span class="arr">→</span>
                     </a>
                 </div>
             </div>
@@ -1097,7 +1110,7 @@
                 g.appendChild(el('path', {
                     d: edgePath(BOX_BY_ID[b.parent], b),
                     fill: 'none',
-                    stroke: lit ? '#a23a6f' : '#e6c8d6',
+                    stroke: lit ? '#b54d78' : '#e3c4d3',
                     'stroke-width': lit ? 1.8 : 1,
                     opacity: lit ? 0.9 : 0.5
                 }));
@@ -1109,7 +1122,7 @@
                 g.appendChild(el('path', {
                     d: relPath(selBox, t),
                     fill: 'none',
-                    stroke: '#a23a6f',
+                    stroke: '#b54d78',
                     'stroke-width': 1.4,
                     'stroke-dasharray': '5 4',
                     opacity: 0.7
@@ -1124,7 +1137,7 @@
                 var related = !!fam[b.id];
                 var isRoot = b.kind === 'root', isHub = b.kind === 'hub';
                 var hasIcon = !!(NODE_ICON_SVG[b.id]);
-                var fillColor = (active || isRoot) ? '#ffffff' : (isHub ? '#c2185b' : '#3d3d3d');
+                var fillColor = (active || isRoot) ? '#ffffff' : (isHub ? '#541d35' : '#33202a');
                 var padX = isRoot ? 14 : 12;
 
                 var group = el('g', {
@@ -1136,8 +1149,8 @@
                 });
                 group.appendChild(el('rect', {
                     x: b.x, y: b.y, width: b.w, height: b.h, rx: isRoot ? 9 : 5,
-                    fill: active ? '#a23a6f' : (isRoot ? '#e68fb5' : (isHub ? '#ffe4ee' : '#ffffff')),
-                    stroke: active ? '#a23a6f' : (isRoot || isHub ? '#e68fb5' : '#f0cfdd'),
+                    fill: active ? '#b54d78' : (isRoot ? '#e79dbe' : (isHub ? '#fbeaf2' : '#ffffff')),
+                    stroke: active ? '#b54d78' : (isRoot || isHub ? '#e79dbe' : '#f0dde5'),
                     'stroke-width': (active || isRoot) ? 1.8 : 1
                 }));
 
@@ -1300,11 +1313,11 @@
         }
 
         var BOOKS = [
-            { name: '坐禪1', color: '#d8639a' },
-            { name: '坐禪之問答錄', color: '#ff85be' },
-            { name: '坐禪2', color: '#c44fb0' },
-            { name: '講金剛經 心經', color: '#8f5bd6' },
-            { name: '講圓覺經', color: '#5f6fd9' }
+            { name: '坐禪1', color: '#e79dbe' },
+            { name: '坐禪之問答錄', color: '#cf6b96' },
+            { name: '坐禪2', color: '#b54d78' },
+            { name: '講金剛經 心經', color: '#953a60' },
+            { name: '講圓覺經', color: '#c9a86a' }
         ];
         var TERM_COUNTS = [
             { term: '妄想',    data: [205, 213, 290, 128, 369] },

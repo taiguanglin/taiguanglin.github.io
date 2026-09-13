@@ -1,16 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 28" width="160" height="28" role="presentation">
-  <g fill="none" stroke="#b98c52" stroke-width="1" stroke-linecap="round">
-    <path d="M6 14 H62" opacity=".55"/>
-    <path d="M98 14 H154" opacity=".55"/>
-    <circle cx="69" cy="14" r="1.4" fill="#b98c52" stroke="none"/>
-    <circle cx="91" cy="14" r="1.4" fill="#b98c52" stroke="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 32" width="180" height="32" role="presentation">
+  <defs>
+    <linearGradient id="ld-rule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#cf6b96" stop-opacity="0"/>
+      <stop offset=".2" stop-color="#cf6b96" stop-opacity=".5"/>
+      <stop offset=".5" stop-color="#cf6b96" stop-opacity=".7"/>
+      <stop offset=".8" stop-color="#cf6b96" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#cf6b96" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 左右細線（中央留白給蓮苞） -->
+  <path d="M0 17h64M116 17h64" stroke="url(#ld-rule)" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- 中央蓮苞 -->
+  <g fill="none" stroke="#b54d78" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M90 6c5 5 8 10 8 15-5 3-11 3-16 0 0-5 3-10 8-15z" fill="#fbeaf2"/>
+    <path d="M78 19c-2-5-1-9 3-12"/>
+    <path d="M102 19c2-5 1-9-3-12"/>
+    <path d="M90 24v3"/>
   </g>
-  <!-- 蓮苞 -->
-  <g fill="none" stroke="#c45883" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M80 5c4 4 6 8 6 12-4 2-8 2-12 0 0-4 2-8 6-12z"/>
-    <path d="M70 17c-2-4-2-8 1-11"/>
-    <path d="M90 17c2-4 2-8-1-11"/>
-    <path d="M80 21v4"/>
-  </g>
-  <circle cx="80" cy="24" r="3" fill="#e5b3c5"/>
+  <circle cx="90" cy="29" r="2.6" fill="#e79dbe"/>
+  <circle cx="70" cy="17" r="1.6" fill="#cf6b96"/>
+  <circle cx="110" cy="17" r="1.6" fill="#cf6b96"/>
 </svg>

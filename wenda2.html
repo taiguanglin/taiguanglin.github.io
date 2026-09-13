@@ -18,22 +18,23 @@
     <link rel="shortcut icon" type="image/x-icon" href="images/favicon.ico">
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;500;600;700;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-<script src="/lang-switch.js" defer></script>
+    <script src="/lang-switch.js" defer></script>
 </head>
 <body>
-    <nav class="navbar" id="navbar" data-chrome="index">
+    <!-- ============ 導覽列 ============ -->
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
+            <a href="index.html" class="nav-logo">
                 <span class="logo-name">TaiGuangLin</span>
                 <span class="logo-sub">次世代終極佛法</span>
-            </div>
+            </a>
             <div class="nav-menu" id="nav-menu">
-                <a href="index.html#home" class="nav-link">首頁</a>
+                <a href="index.html" class="nav-link">首頁</a>
                 <a href="index.html#about" class="nav-link">禪師</a>
                 <a href="index.html#start" class="nav-link">入門路徑</a>
                 <a href="index.html#books" class="nav-link">著作</a>
-                <a href="wenda2.html" class="nav-link">問答錄2</a>
-                <a href="stories.html" class="nav-link">故事</a>
+                <a href="wenda2.html" class="nav-link active">問答錄 2</a>
+                <a href="stories.html" class="nav-link">實修故事</a>
                 <div class="nav-dropdown" id="nav-dropdown">
                     <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
@@ -41,44 +42,39 @@
                         <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
                     </div>
                 </div>
-                <a href="index.html#downloads" class="nav-link">下載</a>
+                <a href="index.html#downloads" class="nav-link nav-cta" data-download-trigger>下載資料</a>
             </div>
-            <div class="hamburger" id="hamburger">
+            <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">
                 <span></span><span></span><span></span>
-            </div>
+            </button>
         </div>
     </nav>
+    <div class="site-menu-veil" id="site-menu-veil"></div>
 
-
-
-    <!-- Hero 區塊 -->
+    <!-- ============ 頁首 ============ -->
     <section class="page-hero">
         <div class="container">
-            <span class="kicker">Q&amp;A RECORD · INDEX</span>
-            <h1 class="display">問答錄 2 目錄</h1>
-            <p class="lede">七十餘則共分 12 大主題的修行問答記錄，涵蓋自性、業、發心、禪定等核心義理。</p>
-            <div class="wd-stats reveal">
-                    <div class="wd-stat-card"><strong>12</strong><span>主題章節</span></div>
-                    <div class="wd-stat-card"><strong>70+</strong><span>問答集錦</span></div>
-                    <div class="wd-stat-card"><strong>2025.03</strong><span>收錄時間</span></div>
-                </div>
+            <nav class="crumbs" aria-label="位置">
+                <a href="index.html">首頁</a><span class="crumbs-sep">／</span>
+                <span aria-current="page">問答錄 2</span>
+            </nav>
+            <span class="kicker">Q&amp;A Record · Index</span>
+            <h1 class="display">問答錄 2 <span class="grad">主題目錄</span></h1>
+            <p class="lede">七十餘則問答，依義理與實修分成十二個主題。想找答案，先從最貼近你當下困惑的那一章開始。</p>
+            <div class="wd-stats">
+                <div class="wd-stat-card"><strong>12</strong><span>主題章節</span></div>
+                <div class="wd-stat-card"><strong>70+</strong><span>問答集錦</span></div>
+                <div class="wd-stat-card"><strong>2025.03</strong><span>收錄時間</span></div>
+            </div>
         </div>
     </section>
 
-    <!-- 主要內容 -->
+    <!-- ============ 章節列表 ============ -->
     <section class="section">
         <div class="container">
-            <nav class="crumbs" aria-label="位置">
-                <a href="index.html">首頁</a><span class="crumbs-sep">/</span>
-                <span aria-current="page">問答錄 2</span>
-            </nav>
-
-
-
-            <!-- 章節列表 -->
             <div class="wd-grid">
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第01章</div>
+                    <div class="wd-chapter-num">第 01 章</div>
                     <h3 class="wd-chapter-title">自性與意識</h3>
                     <p class="wd-chapter-desc">探討自性的恆常性、不生不滅特性、與意識的關係，以及妄想分別執著的根源。</p>
                     <div class="wd-chips">
@@ -87,13 +83,11 @@
                         <span class="wd-chip">妄想執著</span>
                         <span class="wd-chip">分別心</span>
                     </div>
-                    <a href="wenda2/chapter-01.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-01.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第02章</div>
+                    <div class="wd-chapter-num">第 02 章</div>
                     <h3 class="wd-chapter-title">羯磨（業）</h3>
                     <p class="wd-chapter-desc">深入講解業的原理、產生機制、性質數量，以及業與習氣、加持的關係。</p>
                     <div class="wd-chips">
@@ -102,13 +96,11 @@
                         <span class="wd-chip">業與習氣</span>
                         <span class="wd-chip">加持原理</span>
                     </div>
-                    <a href="wenda2/chapter-02.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-02.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第03章</div>
+                    <div class="wd-chapter-num">第 03 章</div>
                     <h3 class="wd-chapter-title">發心</h3>
                     <p class="wd-chapter-desc">闡述菩提心的重要性、發心的層次，以及如何正確發大菩提心度化眾生。</p>
                     <div class="wd-chips">
@@ -117,13 +109,11 @@
                         <span class="wd-chip">度化眾生</span>
                         <span class="wd-chip">慈悲心</span>
                     </div>
-                    <a href="wenda2/chapter-03.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-03.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第04章</div>
+                    <div class="wd-chapter-num">第 04 章</div>
                     <h3 class="wd-chapter-title">世界起源與輪轉</h3>
                     <p class="wd-chapter-desc">探索宇宙世界的起源、輪迴的機制，以及三界六道的運行法則。</p>
                     <div class="wd-chips">
@@ -132,13 +122,11 @@
                         <span class="wd-chip">三界六道</span>
                         <span class="wd-chip">生死輪轉</span>
                     </div>
-                    <a href="wenda2/chapter-04.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-04.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第05章</div>
+                    <div class="wd-chapter-num">第 05 章</div>
                     <h3 class="wd-chapter-title">戒行</h3>
                     <p class="wd-chapter-desc">講解持戒的重要性、戒律的原理，以及在修行中如何正確理解和實踐戒行。</p>
                     <div class="wd-chips">
@@ -147,13 +135,11 @@
                         <span class="wd-chip">修行戒行</span>
                         <span class="wd-chip">清淨心</span>
                     </div>
-                    <a href="wenda2/chapter-05.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-05.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第06章</div>
+                    <div class="wd-chapter-num">第 06 章</div>
                     <h3 class="wd-chapter-title">修福積功德</h3>
                     <p class="wd-chapter-desc">說明功德的累積方法、福報的產生機制，以及如何正確修福迴向。</p>
                     <div class="wd-chips">
@@ -162,13 +148,11 @@
                         <span class="wd-chip">修福方法</span>
                         <span class="wd-chip">迴向原理</span>
                     </div>
-                    <a href="wenda2/chapter-06.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-06.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第07章</div>
+                    <div class="wd-chapter-num">第 07 章</div>
                     <h3 class="wd-chapter-title">念誦經咒</h3>
                     <p class="wd-chapter-desc">解釋經咒的力量來源、正確的念誦方法，以及念經持咒的修行要點。</p>
                     <div class="wd-chips">
@@ -177,13 +161,11 @@
                         <span class="wd-chip">持咒要點</span>
                         <span class="wd-chip">經典學習</span>
                     </div>
-                    <a href="wenda2/chapter-07.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-07.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第08章</div>
+                    <div class="wd-chapter-num">第 08 章</div>
                     <h3 class="wd-chapter-title">腹式呼吸</h3>
                     <p class="wd-chapter-desc">詳細介紹腹式呼吸的原理、練習方法，以及在打坐修行中的應用技巧。</p>
                     <div class="wd-chips">
@@ -192,13 +174,11 @@
                         <span class="wd-chip">打坐應用</span>
                         <span class="wd-chip">身心調節</span>
                     </div>
-                    <a href="wenda2/chapter-08.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-08.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第09章</div>
+                    <div class="wd-chapter-num">第 09 章</div>
                     <h3 class="wd-chapter-title">磕大頭</h3>
                     <p class="wd-chapter-desc">闡述大禮拜的修行意義、正確的練習方法，以及磕大頭的殊勝功德。</p>
                     <div class="wd-chips">
@@ -207,13 +187,11 @@
                         <span class="wd-chip">修行意義</span>
                         <span class="wd-chip">殊勝功德</span>
                     </div>
-                    <a href="wenda2/chapter-09.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-09.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第10章</div>
+                    <div class="wd-chapter-num">第 10 章</div>
                     <h3 class="wd-chapter-title">雙盤</h3>
                     <p class="wd-chapter-desc">指導雙盤的練習技巧、階段性進步方法，以及雙盤對修行的重要作用。</p>
                     <div class="wd-chips">
@@ -222,28 +200,24 @@
                         <span class="wd-chip">修行作用</span>
                         <span class="wd-chip">身體調節</span>
                     </div>
-                    <a href="wenda2/chapter-10.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-10.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第11章</div>
+                    <div class="wd-chapter-num">第 11 章</div>
                     <h3 class="wd-chapter-title">禪定</h3>
-                    <p class="wd-chapter-desc">深入講解禪定的境界層次、修證方法，以及從初禪到四禪的修行次第。</p>
+                    <p class="wd-chapter-desc">深入講解禪定的境界層次、修證方法，以及從初禪到四禪的修次第。</p>
                     <div class="wd-chips">
                         <span class="wd-chip">禪定境界</span>
                         <span class="wd-chip">修證方法</span>
                         <span class="wd-chip">四禪次第</span>
                         <span class="wd-chip">定慧修行</span>
                     </div>
-                    <a href="wenda2/chapter-11.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-11.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
 
                 <div class="wd-chapter-card card reveal">
-                    <div class="wd-chapter-num">第12章</div>
+                    <div class="wd-chapter-num">第 12 章</div>
                     <h3 class="wd-chapter-title">佛門修行</h3>
                     <p class="wd-chapter-desc">總結佛門修行的完整體系、修學次第，以及實踐佛法的根本要點。</p>
                     <div class="wd-chips">
@@ -252,24 +226,28 @@
                         <span class="wd-chip">實踐要點</span>
                         <span class="wd-chip">證悟之道</span>
                     </div>
-                    <a href="wenda2/chapter-12.html" class="wd-go">
-                        開始閱讀
-                    </a>
+                    <a href="wenda2/chapter-12.html" class="wd-go">開始閱讀<span class="arr">→</span></a>
                 </div>
             </div>
 
-            <!-- 禪師法語 -->
-        <div class="container" style="padding-top:0;">
-            <section class="dharma-section" style="border-radius: var(--radius-xl); margin: 48px auto 0; max-width: 1080px;">
-                <div class="bg-symbols">卍</div>
-                <div class="dharma-content" style="padding: 40px 24px;">
-                    <blockquote class="dharma-quote">在大菩提心之上，還有兩個更高級的發心——若你能發這兩種發心，佛菩薩會為你開小灶，無限的加持與福報資源都將湧來，你缺什麼就給什麼，以最高效的方法把你引入阿耨多羅三藐三菩提。先拜眾生再拜佛，無量眾生無量佛，眾生拜我如真佛，我渡眾生共成佛。常念常憶，能讓你速發菩提心。</blockquote>
-                    <cite class="dharma-author">— TaiGuangLin 禪師・2024.2.10</cite>
-                </div>
-            </section>
-        </div>
+            <div class="more-stories">
+                <a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer" class="btn btn-primary">進入完整電子書<span class="arr">→</span></a>
+            </div>
         </div>
     </section>
+
+    <!-- ============ 法語 ============ -->
+    <section class="dharma-section">
+        <div class="bg-symbols">卍</div>
+        <div class="container">
+            <div class="dharma-content">
+                <blockquote class="dharma-quote">在大菩提心之上，還有兩個更高級的發心——若你能發這兩種發心，佛菩薩會為你開小灶，無限的加持與福報資源都將湧來，你缺什麼就給什麼，以最高效的方法把你引入阿耨多羅三藐三菩提。先拜眾生再拜佛，無量眾生無量佛，眾生拜我如真佛，我渡眾生共成佛。常念常憶，能讓你速發菩提心。</blockquote>
+                <cite class="dharma-author">— TaiGuangLin 禪師・2024.2.10</cite>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ 頁尾 ============ -->
     <footer class="footer">
         <div class="container">
             <div class="footer-top">
@@ -286,7 +264,7 @@
                     </ul>
                 </div>
                 <div class="footer-col">
-                    <h4>問答錄2</h4>
+                    <h4>問答錄 2</h4>
                     <ul>
                         <li><a href="wenda2.html">主題目錄（12 章）</a></li>
                         <li><a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer">完整電子書</a></li>
@@ -309,9 +287,6 @@
         </div>
     </footer>
 
-
-
     <script src="shared.js" defer></script>
-
 </body>
 </html>

@@ -1,65 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 520" width="600" height="520" role="img" aria-label="蓮花禪坐意境圖">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 580" width="620" height="580" role="img" aria-label="圓相中禪坐的身影與蓮花">
   <defs>
-    <linearGradient id="hl-petal" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#f4c3d4"/>
-      <stop offset=".55" stop-color="#e089ac"/>
-      <stop offset="1" stop-color="#c45883"/>
+    <linearGradient id="hg-ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#efbcd2"/>
+      <stop offset=".55" stop-color="#cf6b96"/>
+      <stop offset="1" stop-color="#953a60"/>
     </linearGradient>
-    <linearGradient id="hl-petal-deep" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#e089ac"/>
-      <stop offset="1" stop-color="#a63e6a"/>
+    <linearGradient id="hg-back" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#b54d78"/>
+      <stop offset="1" stop-color="#efbcd2"/>
     </linearGradient>
-    <radialGradient id="hl-glow" cx=".5" cy=".42" r=".55">
-      <stop offset="0" stop-color="#f8e7ec" stop-opacity=".95"/>
-      <stop offset=".6" stop-color="#f4d2de" stop-opacity=".45"/>
-      <stop offset="1" stop-color="#f4d2de" stop-opacity="0"/>
+    <linearGradient id="hg-front" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#cf6b96"/>
+      <stop offset="1" stop-color="#fbeaf2"/>
+    </linearGradient>
+    <linearGradient id="hg-figure" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#732b49"/>
+      <stop offset="1" stop-color="#37121f"/>
+    </linearGradient>
+    <radialGradient id="hg-glow" cx=".5" cy=".4" r=".62">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
+      <stop offset=".58" stop-color="#fbeaf2" stop-opacity=".7"/>
+      <stop offset="1" stop-color="#f7d8e5" stop-opacity="0"/>
     </radialGradient>
-    <linearGradient id="hl-water" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0" stop-color="#d9b98a" stop-opacity="0"/>
-      <stop offset=".5" stop-color="#b98c52" stop-opacity=".55"/>
-      <stop offset="1" stop-color="#d9b98a" stop-opacity="0"/>
+    <linearGradient id="hg-water" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b58a56" stop-opacity="0"/>
+      <stop offset=".5" stop-color="#b58a56" stop-opacity=".5"/>
+      <stop offset="1" stop-color="#b58a56" stop-opacity="0"/>
     </linearGradient>
+
+    <!-- 單片蓮瓣：尖端朝上，繞蓮座中心旋轉成扇 -->
+    <path id="hg-petal" d="M0 -68c13 19 20 41 20 64-13 7-27 7-40 0 0-23 7-45 20-64z"/>
   </defs>
 
-  <circle cx="300" cy="240" r="235" fill="url(#hl-glow)"/>
-  <circle cx="300" cy="240" r="188" fill="none" stroke="#f0d2dd" stroke-width="1.2" stroke-dasharray="2 7"/>
-  <circle cx="300" cy="240" r="216" fill="none" stroke="#f0d2dd" stroke-width="1"/>
+  <!-- 柔光底 -->
+  <circle cx="310" cy="278" r="268" fill="url(#hg-glow)"/>
 
-  <!-- 蓮花 -->
-  <g stroke-linejoin="round">
-    <!-- 中央直立花瓣 -->
-    <path d="M300 118c34 42 52 96 52 162-52-12-86-58-104-116-18 58-52 104-104 116 0-66 18-120 52-162 14 22 32 38 52 46 20-8 38-24 52-46z" fill="url(#hl-petal)" opacity=".9"/>
-    <!-- 兩側花瓣 -->
-    <path d="M232 170c-56 26-92 74-102 132 62 6 116-20 150-66-18-24-32-44-48-66z" fill="url(#hl-petal-deep)" opacity=".8"/>
-    <path d="M368 170c56 26 92 74 102 132-62 6-116-20-150-66 18-24 32-44 48-66z" fill="url(#hl-petal-deep)" opacity=".8"/>
-    <!-- 外側花瓣 -->
-    <path d="M150 236c-58 20-96 60-108 110 64 16 122 2 164-36-20-28-36-50-56-74z" fill="#e5b3c5" opacity=".75"/>
-    <path d="M450 236c58 20 96 60 108 110-64 16-122 2-164-36 20-28 36-50 56-74z" fill="#e5b3c5" opacity=".75"/>
-    <!-- 花心 -->
-    <path d="M196 336c20-26 58-44 104-44s84 18 104 44c-22 14-58 22-104 22s-82-8-104-22z" fill="#c45883"/>
-    <path d="M234 346c12-16 36-24 66-24s54 8 66 24c-16 8-40 12-66 12s-50-4-66-12z" fill="#43182f" opacity=".3"/>
+  <!-- 圓相：一筆，右上留缺口 -->
+  <path d="M310 42c92 0 170 56 198 138 26 78-8 158-80 196-70 37-158 24-212-32-46-48-56-120-26-180 14-28 34-52 56-70"
+        fill="none" stroke="url(#hg-ring)" stroke-width="3.2" stroke-linecap="round" opacity=".6"/>
+  <circle cx="310" cy="278" r="240" fill="none" stroke="#f0dde5" stroke-width="1" stroke-dasharray="2 9" opacity=".85"/>
+  <circle cx="310" cy="278" r="208" fill="none" stroke="#f7d8e5" stroke-width="1"/>
+
+  <!-- 飄落的花瓣 -->
+  <g fill="#efbcd2" opacity=".7">
+    <path d="M112 122c14-6 23 2 21 12-2 9-13 12-23 8 2-8 1-14 2-20z"/>
+    <path d="M508 96c16-4 24 6 20 16-4 9-17 10-27 4 4-8 5-14 7-20z"/>
+    <circle cx="72" cy="268" r="3.4" fill="#e79dbe"/>
+    <circle cx="552" cy="322" r="4" fill="#e79dbe" opacity=".6"/>
+    <circle cx="146" cy="196" r="2.6" fill="#cf6b96" opacity=".55"/>
   </g>
 
-  <!-- 金色花蕊 -->
-  <g fill="#b98c52">
-    <circle cx="300" cy="324" r="4"/>
-    <circle cx="278" cy="332" r="3"/>
-    <circle cx="322" cy="332" r="3"/>
-    <circle cx="258" cy="344" r="2.5"/>
-    <circle cx="342" cy="344" r="2.5"/>
+  <!-- 蓮座：後排三瓣、前排兩瓣 -->
+  <g transform="translate(310 450)">
+    <use href="#hg-petal" fill="#f7d8e5" transform="translate(-78 26) rotate(-32) scale(.84)"/>
+    <use href="#hg-petal" fill="url(#hg-back)" transform="translate(-46 11) rotate(-17) scale(.94)"/>
+    <use href="#hg-petal" fill="url(#hg-front)" transform="translate(-15 0) scale(1.02)"/>
+    <use href="#hg-petal" fill="url(#hg-front)" transform="translate(15 0) scale(1.02)"/>
+    <use href="#hg-petal" fill="url(#hg-back)" transform="translate(46 11) rotate(17) scale(.94)"/>
+    <use href="#hg-petal" fill="#f7d8e5" transform="translate(78 26) rotate(32) scale(.84)"/>
   </g>
 
-  <!-- 水面波紋 -->
-  <g stroke="url(#hl-water)" fill="none" stroke-linecap="round">
-    <path d="M120 428c60-12 120-12 180 0s120 12 180 0" stroke-width="2.5"/>
-    <path d="M170 456c45-8 86-8 130 0s85 8 130 0" stroke-width="1.8" opacity=".7"/>
-    <path d="M230 478c30-5 50-5 70 0s40 5 70 0" stroke-width="1.4" opacity=".5"/>
+  <!-- 禪坐身影 -->
+  <g fill="none" stroke="url(#hg-figure)" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="310" cy="184" r="30" fill="#ffffff" stroke-width="4.6"/>
+    <path d="M310 218c-30 0-52 20-58 50-5 22-1 42 9 58h98c10-16 14-36 9-58-6-30-28-50-58-50z"
+          fill="rgba(255,255,255,.62)" stroke-width="4.4"/>
+    <path d="M244 330c-7 17 1 30 20 36 32 9 60 9 92 0 19-6 27-19 20-36" stroke-width="4.2"/>
+    <path d="M252 344c18 9 38 13 58 13s40-4 58-13" stroke-width="2.6" opacity=".45"/>
   </g>
 
-  <!-- 飄落花瓣 -->
-  <g fill="#e089ac">
-    <path d="M104 110c10-8 22-8 30 0-8 10-20 12-30 4z" opacity=".65"/>
-    <path d="M478 140c9-9 22-10 31-3-7 11-19 14-31 9z" opacity=".5"/>
-    <path d="M430 84c7-7 17-8 24-2-6 8-15 10-24 6z" opacity=".4"/>
-  </g>
+  <!-- 金線・水面 -->
+  <path d="M84 486H332" stroke="url(#hg-water)" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M368 486h168" stroke="url(#hg-water)" stroke-width="1.6" stroke-linecap="round"/>
+  <circle cx="350" cy="486" r="3.2" fill="#b58a56" opacity=".65"/>
 </svg>

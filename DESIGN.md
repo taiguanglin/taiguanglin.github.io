@@ -1,142 +1,136 @@
-# TaiGuangLin Site Redesign —「絹本・粉韻」Design System v2.0
+# TaiGuangLin Site Redesign —「素瓷緋櫻」Design System v3.0
 
-整站視覺系統規格。所有根目錄行銷頁（index、wenda2、stories、infographic、mindmap）與 `wenda2/` 十二章
-必須以此為準。目標感受：高級、柔和、現代、有文化氣質的粉紅；不是廉價少女粉。
+整站視覺系統規格。所有**非電子書**頁面（根目錄 `index.html`、`wenda2.html`、`stories.html`、
+`infographic.html`、`mindmap.html`、`wenda2/chapter-*.html`、`stories/*.html`）共用
+根目錄 `style.css`；故事閱讀頁再加 `stories/assets/story.css`。
 
-## 1. 色彩（CSS Custom Properties，style.css 已定義）
+> `ebook/` 與 `wenda2_ebook/` 各自使用 `assets/css/style.css`，**與本系統無關，不要動**。
+
+目標感受：素瓷紙底、緋櫻為色、深梅為墨——安靜、克制、有文化氣質的粉，而不是甜膩少女粉。
+
+---
+
+## 1. 色彩（`style.css` `:root` 已定義）
 
 | Token | 值 | 用途 |
 |---|---|---|
-| `--rose-50` | #fbf2f5 | 最淡粉，區塊底 |
-| `--rose-100` | #f8e7ec | 淡粉背景 |
-| `--rose-200` | #f0d2dd | 淺粉容器、邊框 hover |
-| `--rose-300` | #e5b3c5 | 裝飾線、淡強調 |
-| `--rose-400` | #d689a6 | 強調粉 |
-| `--rose-500` | #c45883 | **主粉紅**（CTA、重點） |
-| `--rose-600` | #a63e6a | 深粉 hover、重點字 |
-| `--rose-700` | #853058 | 深玫瑰文字 |
-| `--rose-800` | #632445 | 暗玫瑰 |
-| `--rose-900` | #43182f | 最深玫瑰墨 |
-| `--paper` | #fcf8f7 | 全站底色（暖白帶粉） |
-| `--porcelain` | #f6edec | 次級底（象牙粉，交替區塊） |
+| `--sakura-50` | #fdf6f9 | 最淡粉，區塊底 |
+| `--sakura-100` | #fbeaf2 | 淡粉背景、chip 底 |
+| `--sakura-200` | #f7d8e5 | 邊框、淡強調 |
+| `--sakura-300` | #efbcd2 | 裝飾、指示點 |
+| `--sakura-400` | #e79dbe | 中間粉、細線 |
+| `--sakura-500` | #cf6b96 | **主粉紅** |
+| `--sakura-600` | #b54d78 | 深粉、hover |
+| `--sakura-700` | #953a60 | 深玫瑰文字 |
+| `--sakura-800` | #732b49 | 標題強調 |
+| `--sakura-900` | #541d35 | 深底上的粉字 |
+| `--sakura-950` | #37121f | 最深 |
+| `--paper` | #fdfafb | 全站底色（暖瓷白）；body 另加兩層極淡紙紋 |
+| `--paper-tint` / `--paper-deep` | #f8eef2 / #f3e4ea | 淡底區塊 |
 | `--surface` | #ffffff | 卡片面 |
-| `--ink` | #36222c | 主文字（玫瑰墨） |
-| `--ink-soft` | #5c4250 | 次級文字 |
-| `--muted` | #967380 | 弱文字 |
-| `--hairline` | #ecd9df | 細分線 |
-| `--hairline-deep` | #dcc0cb | 稍深細線 |
-| `--gold` | #b98c52 | 點綴金（少量！kicker 線、徽章、書籤帶） |
-| `--gold-soft` | #d9b98a | 深底上的金字 |
-| `--grad-rose` | linear-gradient(120deg,#e089ac,#c45883 55%,#a63e6a) | 主按鈕／強調漸層 |
-| `--grad-petal` | linear-gradient(165deg,#fbf2f5,#f4dde5) | hero 淡底漸層 |
-| `--grad-ink` | linear-gradient(160deg,#3c2433,#2a1522) | 深色區（quote band / footer） |
-| `--shadow-xs/sm/md/lg` | 見 style.css | 玫瑰色調陰影 |
-| `--r-sm/md/lg/pill` | 10/16/24/999px | 圓角（不要超過 24，禁止大圓球感） |
+| `--ink` | #33202a | 主文字（玫瑰墨） |
+| `--ink-soft` | #5a414c | 次級文字 |
+| `--ink-mute` | #8d7180 | 弱文字 |
+| `--line` / `--line-deep` | #f0dde5 / #e3c4d3 | 細線 |
+| `--gold` / `--gold-soft` | #b58a56 / #dcc39b | 點綴金（kicker 線、問答「答」、深底 cite，<5% 畫面） |
+| `--grad-rose` | linear-gradient(120deg,#e79dbe,#cf6b96 55%,#a8406a) | 主按鈕／強調 |
+| `--grad-petal` | linear-gradient(168deg,#fdf6f9,#f7e3ec,#f5dce7) | page-hero 淡底 |
+| `--grad-ink` | linear-gradient(155deg,#3d1e2f,#24121c) | 法語帶（深梅墨） |
+| `--sh-1/2/3` | 玫瑰調柔陰影 | 卡片／彈窗 |
+| `--r-xs…xl` / `--r-pill` | 8/12/16/22/30/999px | 圓角（勿超過 30） |
 
-語感：paper 為底、白色卡片、hairline 細線分隔；深粉只用於文字與小面積強調；**大面積粉紅背景只允許淡階（rose-50~200）**；金色僅作為細節點綴（<5% 畫面）。
+**舊命名別名**：`--rose-*`、`--pink-*`、`--spacing-*`、`--radius-*`、`--shadow-*`、
+`--primary-pink`、`--light-pink`、`--soft-pink`、`--pale-pink`、`--deep-pink`、
+`--primary-color`、`--accent-color`、`--text-muted`、`--pink-gradient`、`--soft-gradient`
+全部保留下來（指向新值），所以各頁行內樣式與舊元件不必改動。
 
-## 2. 字體
-- 全文 `'Noto Serif TC'`（標題）與 `'Noto Sans TC'`（內文）。Google Fonts <link> 保留。
-- Display：`.display`，serif 700，行高 1.22。其中用 `<em>` 或 `.accent` 可得到玫瑰漸層字。
-- `.kicker`：12.5px、字距 .42em、大寫英文＋左側金線。每個 section 標頭模式：
-```html
-<div class="section-head">
-  <span class="kicker">LOREM IPSUM</span>
-  <h2>主標題 <em>漸層字</em></h2>
-  <p>一行副標</p>
-</div>
-```
-- 中文段章可用 `.zh-numeral`（壹、貳、參…）作裝飾編號。
+語感：paper 為底、白卡、hairline 細線；深粉只用在文字與小面積強調；
+**大面積粉紅只允許淡階（sakura-50~200）**；金色僅作細節。
 
-## 3. 必用共用元件（style.css 已實作，勿重寫）
-- `.container`（max 1160, padding 28）、`.container--narrow`
-- `.section`、`.section--tint`、`.section-head`
-- `.btn` + `.btn-primary` / `.btn-ghost` / `.btn-light`；按鈕結尾箭頭用 `<span class="arr">→</span>`
-- `.card`、`.chip`
-- `.quote-band > .inner > blockquote + cite`（深色法語帶；深色背景金色 cite）
-- `.footer`（見下）
-- `.reveal`（+`.reveal-d1/2/3` 延遲）— shared.js 的 IntersectionObserver 會加 `.in`
+## 2. 字體與排版
+- 標題 `'Noto Serif TC'`（`--font-serif`）、內文 `'Noto Sans TC'`（`--font-sans` / `--font-primary`）。Google Fonts `<link>` 保留。
+- `.display`（內頁大標）、`.hero-title`（首頁）、`.section-title`（區塊標題，置中，下緣 74px 漸層細線）、`.lede`、`.lead`、`.section-desc`。
+- `.kicker` / `.section-kicker`：11.5px、字距 .38em、大寫英文＋左側金線（`.section-kicker::before` 已關閉）。
+- 漸層字：`<span class="grad">…</span>`（套在 `.section-title` / `.display` / `.hero-title` 內）。
+- `<div class="section-head">` = kicker + h2.section-title + p.section-desc（置中）。
 
-## 4. 導覽列與頁尾（所有頁面統一，逐字使用）
+## 3. 共用元件（style.css 已實作，勿重寫）
+`.container`（1160）/`.container--narrow`、`.section`、`.section--tint`（＝`.section.alt`＝`.section.bg-light`，
+上緣有花瓣波浪）、`.card`、`.chip`、`.pill-nav-wrap > .pill-nav > .chip`、`.crumbs`、
+`.btn` + `.btn-primary` / `.btn-ghost` / `.btn-outline` / `.btn-light` / `.btn-sm`（結尾箭頭用 `<span class="arr">→</span>`）、
+`.dharma-section > .dharma-content > blockquote.dharma-quote + cite.dharma-author`（深梅墨帶，上下花瓣邊）、
+`.footer`、`.reveal` / `.reveal-d1..d3`（`shared.js` 的 IntersectionObserver 會加 `.in`，尊重 `prefers-reduced-motion`）、
+`.modal-overlay` / `.modal` / `.download-option`（首頁下載彈窗）、`.lightbox`（圖解頁）。
+
+## 4. 導覽列與頁尾（所有頁面統一；`wenda2/`、`stories/` 內頁加 `../`）
 
 ```html
-<header class="navbar" id="navbar">
+<nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="index.html" class="nav-logo"><!-- wenda2/*.html 用 ../index.html -->
-      <span class="logo-mark" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 4c2.2 2.2 3.2 4.6 3.2 6.8-2.1 1.3-4.3 1.3-6.4 0C8.8 8.6 9.8 6.2 12 4z"/>
-          <path d="M4.5 12.5c1.8-.8 3.8-.7 5.2.6M19.5 12.5c-1.8-.8-3.8-.7-5.2.6"/>
-          <path d="M5 16c1.8 1.6 4.2 2.4 7 2.4s5.2-.8 7-2.4"/>
-        </svg>
-      </span>
-      <span class="logo-text">
-        <span class="logo-name">TaiGuangLin</span>
-        <span class="logo-sub">次世代終極佛法</span>
-      </span>
+    <a href="index.html" class="nav-logo">
+      <span class="logo-name">TaiGuangLin</span>
+      <span class="logo-sub">次世代終極佛法</span>
     </a>
-    <nav class="nav-menu" id="nav-menu" aria-label="主選單">
-      <a class="nav-link" href="index.html">首頁</a>
-      <a class="nav-link" href="wenda2.html">問答錄 2</a>
-      <a class="nav-link" href="stories.html">實修故事</a>
-      <a class="nav-link" href="infographic.html">名詞圖解</a>
-      <a class="nav-link" href="mindmap.html">心智圖</a>
-      <a class="nav-link nav-cta" href="#downloads" data-download-trigger>下載</a>
-    </nav>
-    <button class="hamburger" id="hamburger" aria-label="開啟選單"><span></span><span></span><span></span></button>
+    <div class="nav-menu" id="nav-menu">
+      <a href="index.html" class="nav-link">首頁</a>              <!-- 目前頁加 class active -->
+      <a href="index.html#about" class="nav-link">禪師</a>
+      <a href="index.html#start" class="nav-link">入門路徑</a>
+      <a href="index.html#books" class="nav-link">著作</a>
+      <a href="wenda2.html" class="nav-link">問答錄 2</a>
+      <a href="stories.html" class="nav-link">實修故事</a>
+      <div class="nav-dropdown" id="nav-dropdown">
+        <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
+        <div class="nav-dropdown-menu">
+          <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
+          <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
+        </div>
+      </div>
+      <a href="index.html#downloads" class="nav-link nav-cta" data-download-trigger>下載資料</a>
+    </div>
+    <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-</header>
+</nav>
+<div class="site-menu-veil" id="site-menu-veil"></div>  <!-- shared.js 會在缺少時自動補上 -->
 ```
-- `wenda2/*.html`：所有相對路徑加 `../`；下載連結指向 `../index.html#downloads`。
-- 目前在的頁面的對應 `.nav-link` 加 class `active`。
+
+- 導覽列是**浮動膠囊**（`.nav-container` 圓角＋毛玻璃）；`.navbar.scrolled` 加深。
+- 蓮花印記由 `.nav-logo::before` 以 CSS 繪製 → 所有頁面一致，**不必在 HTML 放 logo SVG**。
+- 最後一個指向 `#downloads` 的連結會自動得到 CTA 樣式（`.nav-link.nav-cta` 或 `a[href$="#downloads"]`）。
+- 舊頁面留著的 `<div class="nav-logo">`、`下載`（無 `nav-cta`）也能正確顯示，不必逐頁改。
 
 ```html
 <footer class="footer">
   <div class="container">
     <div class="footer-top">
-      <div class="footer-brand">
-        <div class="logo-name">TaiGuangLin</div>
-        <span class="logo-sub">次世代終極佛法</span>
-        <p>以現代淺白的語言，講解禪定實修與佛法深義。<br>願此妙法，利益一切尋求真理之人。</p>
-      </div>
-      <div class="footer-col">
-        <h4>著作</h4>
-        <ul>
-          <li><a href="index.html#books">全部著作</a></li>
-          <li><a href="wenda2.html">問答錄 2（十二主題）</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>資源</h4>
-        <ul>
-          <li><a href="stories.html">實修故事</a></li>
-          <li><a href="infographic.html">名詞圖解</a></li>
-          <li><a href="mindmap.html">名詞心智圖</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>下載</h4>
-        <ul>
-          <li><a href="index.html#downloads">電子書與語音</a></li>
-        </ul>
-      </div>
+      <div class="footer-brand"><div class="logo-name">TaiGuangLin</div><p>次世代終極版佛法</p><p>用現代通俗易懂的語言，傳承純正佛法智慧。</p></div>
+      <div class="footer-col"><h4>著作與電子書</h4><ul>…</ul></div>
+      <div class="footer-col"><h4>問答錄 2</h4><ul>…</ul></div>
+      <div class="footer-col"><h4>更多資源</h4><ul>…</ul></div>
     </div>
-    <div class="footer-bottom">
-      <p>歡迎轉載流通，標明出處即可</p>
-      <p>願一切眾生離苦得樂，早證菩提</p>
-    </div>
+    <div class="footer-bottom"><p>歡迎分享給更多人結法緣</p><p>願一切眾生離苦得樂，早證菩提</p></div>
   </div>
 </footer>
-<script src="shared.js" defer></script>  <!-- wenda2/ 用 ../shared.js -->
+<script src="shared.js" defer></script>
 ```
 
-## 5. Hero / 頁首規範
-- 全站頁首以 `.grad-petal` 淡粉為底，上方留白 >= nav-h；主標 `.display`、副標 `.lede`。
-- index.html hero 右側放 `images/hero-lotus.svg`；`images/lotus-divider.svg` 可用於 section 分隔。
-- 動效克制：僅 `.reveal` 淡入；禁止持續旋轉／漂浮的多餘動畫。
+- 頁尾為**淺瓷底**（不是深色）；深色只留給法語帶。舊的 `footer-content` / `footer-section`
+  結構（`tool/stories2html` 產出的故事頁）亦有對應樣式。
 
-## 6. 內容守則
-- 保留 SEO meta、canonical、og 標籤；title 可精修。
-- 保留所有 functional 連結（電子書、stories/*.html、wenda2/chapter-*.html、微信、下載）。
-- 文案可重寫，但資訊架構不變。
-- 禁止 emoji-heavy 介面；圖示用簡潔 inline SVG（線條風、stroke 為主）。
+## 5. 頁首與動效
+- 內頁：`section.page-hero`（淡粉漸層＋圓相水印）＋ `.crumbs` ＋ `.kicker` ＋ `h1.display` ＋ `p.lede`。
+- 首頁：`.hero`（`hero-copy` / `hero-art`）＋ `images/hero-lotus.svg`（圓相中的禪坐身影與蓮花，可重畫）。
+  「每日精選」卡片（`.daily-quote`）以負 margin 疊在 hero 下緣。
+- 頁首裝飾細線用 `images/lotus-divider.svg`（`divider-mark`）。
+- 動效只有 `.reveal` 淡入與:hover 微抬；嚴禁持續旋轉／漂浮的裝飾動畫。
+
+## 6. 內容與流程守則
+- 保留 SEO meta、canonical、og 標籤；保留所有功能連結（電子書、`stories/*.html`、
+  `wenda2/chapter-*.html`、語音、下載網盤）。
+- `infographic.html` 與 `mindmap.html` 必顯示
+  `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。`（樣式用 `.note-ai`）。
+- 文案可重寫，資訊架構不變；圖示用簡潔 inline SVG（線條風），**不用 emoji**。
+- `stories.html` 的清單區塊由 `tool/stories2html/build_index.py` 產生（保留
+  `<!-- STORIES-LIST:BEGIN/END -->` 標記與 `st-*` class）；故事閱讀頁（`stories/*.html`）
+  由 `tool/stories2html/build.py` 產生（`stories/assets/story.css` + `story.js`）。

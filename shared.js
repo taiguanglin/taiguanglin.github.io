@@ -16,7 +16,14 @@
     var hamburger = document.getElementById('hamburger');
     var navMenu = document.getElementById('nav-menu');
     if (hamburger && navMenu) {
+        /* 頁面沒放遮罩時就補一個，抽屜開啟時才有背景壓暗 */
         var veil = document.getElementById('site-menu-veil');
+        if (!veil) {
+            veil = document.createElement('div');
+            veil.id = 'site-menu-veil';
+            veil.className = 'site-menu-veil';
+            document.body.appendChild(veil);
+        }
         function closeMenu() {
             navMenu.classList.remove('active');
             hamburger.classList.remove('active');
