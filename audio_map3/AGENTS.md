@@ -5,8 +5,43 @@
 > 全段落高信心，並正確處理經文/偈語「念誦」與「不念」兩種情況。
 >
 > SoT JSON 位置：`audio_map3/<series>.json`（series ∈ `ganen / sishierzhang /
-> lengqie / liuzutanjing / lengyanjing`）。產出由 `tool/jiangjing_para_map/`
-> 的 DTW 對齊器產生；books2ebook 只注入 `reviewed=true` 講次的段落時間。
+> lengqie / liuzutanjing / lengyanjing`）。books2ebook 只注入 `reviewed=true`
+> 講次的段落時間。
+
+---
+
+## 0a. 產線現實（四十二章經 1–8 期人工確認後、2026-09 定稿，**最優先讀**）
+
+**「毫秒級對齊」的最終產出是三種東西疊出來的，不是單一對齊器：**
+
+| 階段 | 工具 | 角色 | 對 `sishierzhang` 的實證 |
+|------|------|------|--------------------------|
+| ① 粗對 | `build_maps.py`（`method=ngram`，SRT 字元流 + difflib/bigram，Python 標準庫） | SoT 產出器、也是唯一「reviewed/confirmed」標籤寫入者 | 品質不均：L1 avg_conf 0.378（35 低）、L5 0.175（42 低）、L3/L4/L6 0.80+。**單靠 ngram 搞不定硬講次** |
+| ② 精修 | `realign_dtw.py`（FunASR 字級 dump + DTW，需 numpy/pypinyin/opencc） | 高訊號元一級對齊器，產出 `dtw-evid/dtw/interp/skipped-sutra` | L9 dry-run：avg 0.855 `{skipped-sutra:8, dtw-evid:52, dtw:1, interp:1}`，遠勝 ngram 的 0.312 |
+| ③ 人工確認 | `audio_map3/index.html` UI（試聽＋段尾自停＋「最後播放」寫回 `confirmed`＋講層 `reviewed=true`） | **毫秒級的最終裁判** | 1–8 期每段 `confirmed=true`、`reviewed=true` |
+
+**⚠ 最重要的三條教訓（別再踩）：**
+
+1. **`method` 標籤 ≠ 實際對齊演算法。** 1–8 期確認後 committed JSON 的 `method`
+   **統一為 `ngram`**（git 歷史：DTW 兩度套用又被 revert `dtw=903→0`、`dtw=823→0`，
+   最終 `ngram=1006` 定稿）。但硬經文段的**位置**實際來自 DTW 精修——光靠
+   `build_maps.py` 重跑只會吐出 avg_conf≈0.3、37+ 段 `low`（實測 L9）。所以
+   **不要把 `method=ngram` 讀成「這位置是 ngram 算的」**；看 `conf`＋§6 客觀稽核，
+   不看 method 字串。
+
+2. **「經文不念」沒有 `skipped-sutra` 這個 persisted method。** 它表現為 `start == end`
+   （零寬）的段落，仍標 `method=ngram`。判斷「不念 vs 沒對到」用 §6a 的
+   `is_sutra`＋`verbatim=false`→`skip_ok`，而不是看 method。
+
+3. **重跑安全靠 `confirmed` 旗標、不靠 method。** `build_maps.py` 的 `merge_existing`
+   在 `confirmed` 為真時原樣保留 `start/end`；`realign_dtw.py` 也有 pin 保護（§5）。
+   已確認的 1–8 期是**鐵錨**，任何重跑前後都要驗證其 byte-level 不變（§5 命令）。
+
+**本文件 §1–§10 是 DTW 精修路線（`realign_dtw.py`）的詳細程序**，仍有效，但要放在
+上面三階段框架下理解：`build_maps.py` 是 SoT/注入寫入者；`realign_dtw.py` 是把
+`miss/short/low-conf` 段落救回來的精修器；UI 是人工終審。對齊新講次的順序：
+① `build_maps.py` 保底（寫 SoT、保留 confirmed）→ ② 對低 conf 段落跑
+`realign_dtw.py` 精修 → ③ 人工試聽終審。
 
 ---
 
@@ -38,6 +73,25 @@
 
 4. golden（人工 confirmed）段落是**不可侵犯的鐵錨**：重跑對齊器時，其
    `start/end/conf/confirmed` 必須**完全不變**。這是最容易出 bug 的地方（見 §5 已修的 bug）。
+
+5. **「講首整章經文塊」的結構慣例（golden L2 定出的鐵律，`realign_dtw.py` 會犯錯）：**
+   每一講開頭電子書依序是三段：`[整章經文塊（含標題 + 佛言全文）]` →
+   `[導言白話段（「《四十二章經》第X期，原文第X章…這也是一句話」）]` →
+   `[經文重複段（佛言：「…」讀出的部分）]`。**人工確認的正確對齊是**：
+
+   | 段落 | golden L2 的對齊 | 說明 |
+   |------|-----------------|------|
+   | 整章經文塊（i=0） | **零寬 `start==end`**（`method` 標 ngram / skipped-sutra 皆可） | 整章**不是**獨立念一遍，只是供參考的印刷文字；標題在導言裡念、內文一段段拆開在講解裡念 |
+   | 導言白話段（i=1） | **真實 span** `[講頭, 佛言念起]` | 師父先念「第X期…原文第X章…這也是一句話」 |
+   | 經文重複段（i=2） | **真實 span** `[佛言念起, 佛言念止]` | 短經文／偈子師父**逐字念** |
+
+   **`realign_dtw.py` 的系統性錯誤**：短章（整章只有 1–2 句、cov ≥ 0.5）它會把 i=0
+   整章塊誤判成「有念」而給**真實 span**，於是吞掉 i=1 導言、把導言壓成零寬
+   （`span_audit` 對 i=1 報 `span_bad`，`probe` 分數高於 `d_head`）。實證受害講次：
+   四十二章 L10/L12/L13/L14（L9/L11 的整章塊較長、被正確判 `skipped-sutra` 沒受害）。
+   **校對新講次時務必檢查講首三段是否符合上表**；違反即照 golden L2 修回去：
+   i=0→零寬、i=1→導言 real span、i=2→讀出的經文 real span。這是「前後逼近」之外
+   最常見的一整類結構性 span_bad。
 
 ---
 
@@ -299,6 +353,10 @@ dtw-scan, skipped-sutra}`（有證據）；`interp` 是無證據插值，最多�
 
 ## 9. 完成判定與注入
 
+- **注入器（`tool/books2ebook/para_audio_map.py`）只讀 `reviewed` + `start`/`end`，**
+  **完全不讀 `method`/`conf`/`confirmed`**。跟播的閘門 = 講層 `reviewed=true`；
+  且 `end <= start`（零寬，即「不念」的經文段）會被 `_norm_entry` 跳過、不注入。
+  所以 `method`/`conf` 純屬人工校對與稽核用的 metadata，不影響電子書產出。
 - 想要「跟播」生效：把該講 `reviewed` 設 `true`（可手改 JSON 或在 `audio_map3/index.html`
   的 UI 勾「本講校對完成」並用 PAT 存回）。
 - 重新注入段落時間到電子書：
@@ -336,3 +394,30 @@ encoder，輸出更貼近逐字（即便同音錯字）→ 反而保留更多可
 
 - **因此「毫秒級」的唯一可靠來源仍是人工 golden sample**；要縮小剩餘 ±0.5–3s 誤差，
   方向應是**改匹配器**（更寬容的 pinyin/語意匹配 + forced-alignment 收斂），而非換 ASR。
+
+### 10b. 三硬系列（楞伽/壇經/楞嚴）的誠實底線 + 主導殘餘型態
+
+四十二章經只有單章白話導讀、span_audit `bad+unknown` ≈ 5.8%；楞伽/壇經/楞嚴是
+**長篇文言義疏 + 楞嚴咒密集朗誦**，ASR 同音錯字（「阿难白佛言」→「啊南白佛严」）大量
+灌爆段落頭，`span_audit` 的 `bad+unknown` 高得**驚人但誠實**，重跑不會變好（deterministic）：
+
+| 系列 | 段數 | span_bad | unknown | bad+unknown | 主導殘餘 |
+|------|------|----------|---------|-------------|---------|
+| lengqie（楞伽） | 4265 | （見報告） | | | 待 dump 補齊後量 |
+| liuzutanjing（壇經） | 3636 | | | | 待 dump 補齊後量 |
+| lengyanjing（楞嚴） | 2784 | 578 | 360 | **33.69%** | 525 段**零寬 commentary**（`dtw/dtw-evid/interp` 標零寬、但 probe 找到正文被念過） |
+
+**主導殘餘型態「零寬 commentary span_bad」= ASR 天花板的具體化**，不是可修的結構 bug：
+這些是「講解段」，`d_head`（段頭逐字命中）低到 0.1–0.3（開頭被 ASR 打成同音錯字、逐字
+找不到），而 `probe`（整段 pinyin 模糊遍掃）高到 0.7–0.9（正文確實有念）——所以被
+`realign_dtw.py` 標零寬 / `interp`。重跑 `realign_dtw.py` **結果完全相同**（已用最新
+commit `34401f9` 的程式驗證過：楞嚴 578 span_bad 兩次重跑數字不變），因為程式未改、
+dump 重產是 deterministic 的。
+
+- **這不是「改對齊器」能救的**，唯一可靠出路是 §10a 反證過的「改匹配器往更寬容
+  pinyin/語意」方向（但要小心 §8a 的回音假錨點）。
+- **不要**逐段手灌時間硬湊「全高信心」——那是造假。誠實做法：保留 DTW/`interp` 的低
+  證據標記，把 `zero-width` 講解段列為「待人工試聽」清單（`key = series + pid`），
+  由人工在 UI 試聽後寫回 `confirmed`（此時才會真正毫秒級對齊）。
+- 對齊這些系列前，務必先補齊 `/tmp/funasr_cache/<series>/` 的 dump（`funasr_dump.py`，
+  每講 CPU ASR 約 1–2 分鐘）；`/tmp` 會清空，dump 是 ephemeral 的，必要時重產。
