@@ -1,76 +1,168 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 580" width="620" height="580" role="img" aria-label="圓相中禪坐的身影與蓮花">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 580" width="620" height="580"
+     role="img" aria-label="圓相之中，禪坐的身影端坐蓮台，花瓣輕落">
+  <title>圓相 · 禪坐 · 蓮台</title>
   <defs>
-    <linearGradient id="hg-ring" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#efbcd2"/>
-      <stop offset=".55" stop-color="#cf6b96"/>
-      <stop offset="1" stop-color="#953a60"/>
+    <linearGradient id="hg-ring" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#f7d8e5"/>
+      <stop offset=".42" stop-color="#cf6b96"/>
+      <stop offset="1" stop-color="#8d3355"/>
     </linearGradient>
     <linearGradient id="hg-back" x1="0" y1="1" x2="0" y2="0">
-      <stop offset="0" stop-color="#b54d78"/>
+      <stop offset="0" stop-color="#a8406a"/>
       <stop offset="1" stop-color="#efbcd2"/>
     </linearGradient>
-    <linearGradient id="hg-front" x1="0" y1="1" x2="0" y2="0">
+    <linearGradient id="hg-front" x1="0" y1=".9" x2="0" y2="0">
       <stop offset="0" stop-color="#cf6b96"/>
-      <stop offset="1" stop-color="#fbeaf2"/>
+      <stop offset=".7" stop-color="#fbeaf2"/>
+      <stop offset="1" stop-color="#ffffff"/>
+    </linearGradient>
+    <linearGradient id="hg-petalsoft" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0" stop-color="#efbcd2"/>
+      <stop offset="1" stop-color="#fdf6f9"/>
     </linearGradient>
     <linearGradient id="hg-figure" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="#732b49"/>
+      <stop offset="0" stop-color="#7a2f4e"/>
       <stop offset="1" stop-color="#37121f"/>
     </linearGradient>
-    <radialGradient id="hg-glow" cx=".5" cy=".4" r=".62">
-      <stop offset="0" stop-color="#ffffff" stop-opacity=".95"/>
-      <stop offset=".58" stop-color="#fbeaf2" stop-opacity=".7"/>
+    <radialGradient id="hg-glow" cx=".5" cy=".42" r=".62">
+      <stop offset="0" stop-color="#ffffff" stop-opacity=".96"/>
+      <stop offset=".55" stop-color="#fbeaf2" stop-opacity=".72"/>
       <stop offset="1" stop-color="#f7d8e5" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="hg-aura" cx=".5" cy=".5" r=".5">
+      <stop offset=".55" stop-color="#efbcd2" stop-opacity="0"/>
+      <stop offset=".82" stop-color="#e79dbe" stop-opacity=".26"/>
+      <stop offset="1" stop-color="#cf6b96" stop-opacity="0"/>
     </radialGradient>
     <linearGradient id="hg-water" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0" stop-color="#b58a56" stop-opacity="0"/>
-      <stop offset=".5" stop-color="#b58a56" stop-opacity=".5"/>
+      <stop offset=".45" stop-color="#b58a56" stop-opacity=".55"/>
       <stop offset="1" stop-color="#b58a56" stop-opacity="0"/>
     </linearGradient>
 
-    <!-- 單片蓮瓣：尖端朝上，繞蓮座中心旋轉成扇 -->
-    <path id="hg-petal" d="M0 -68c13 19 20 41 20 64-13 7-27 7-40 0 0-23 7-45 20-64z"/>
+    <!-- 單片蓮瓣：尖端朝上，繞蓮座中心展開成扇 -->
+    <path id="hg-petal"
+          d="M0-84C13-61 21-35 21-10 21 3 11 11 0 11-11 11-21 3-21-10-21-35-13-61 0-84Z"/>
+    <path id="hg-fall" d="M0-11c7-4 13 0 12 6-1 5-8 7-13 4 1-4 0-7 1-10z"/>
   </defs>
 
+  <style>
+    /* 全部動效皆極輕微；使用者要求減少動態時一律停用。 */
+    @keyframes hg-draw { from { stroke-dashoffset: 100; } to { stroke-dashoffset: 0; } }
+    @keyframes hg-fade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes hg-breathe { 0%,100% { opacity: .34; } 50% { opacity: .62; } }
+    @keyframes hg-shadow { 0%,100% { opacity: .1; } 50% { opacity: .2; } }
+    @keyframes hg-hover { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    @keyframes hg-bloom { 0%,100% { transform: scale(.985); } 50% { transform: scale(1.015); } }
+    @keyframes hg-drift {
+      0%   { transform: translate(0,0) rotate(0deg);      opacity: 0; }
+      16%  { opacity: .78; }
+      80%  { opacity: .5; }
+      100% { transform: translate(-14px,52px) rotate(-58deg); opacity: 0; }
+    }
+    @keyframes hg-spin { to { transform: rotate(360deg); } }
+    @keyframes hg-lap { 0%,100% { opacity: .55; } 50% { opacity: .95; } }
+
+    .hg-ring   { stroke-dasharray: 100; stroke-dashoffset: 0; animation: hg-draw 2.8s cubic-bezier(.4,.05,.2,1) both; }
+    .hg-soft   { animation: hg-fade 1.6s ease-out .1s both; }
+    .hg-lotus  { animation: hg-fade 1.4s ease-out .9s both; }
+    .hg-bloom  { transform-box: fill-box; transform-origin: 50% 100%; animation: hg-bloom 11s ease-in-out 2.4s infinite; }
+    .hg-figure { animation: hg-fade 1.4s ease-out .5s both; }
+    .hg-hover  { animation: hg-hover 9.5s ease-in-out 1.8s infinite; }
+    .hg-aura   { animation: hg-breathe 9.5s ease-in-out infinite; }
+    .hg-dashed { transform-origin: 310px 274px; animation: hg-spin 150s linear infinite; }
+    .hg-lap    { animation: hg-lap 6.5s ease-in-out infinite; }
+    .hg-shadow { animation: hg-shadow 9.5s ease-in-out infinite; }
+    .hg-fall1  { transform-box: fill-box; transform-origin: center; animation: hg-drift 13s ease-in-out 1.2s infinite; }
+    .hg-fall2  { transform-box: fill-box; transform-origin: center; animation: hg-drift 17s ease-in-out 5.5s infinite; }
+    .hg-fall3  { transform-box: fill-box; transform-origin: center; animation: hg-drift 15s ease-in-out 9.5s infinite; }
+
+    @media (prefers-reduced-motion: reduce) {
+      .hg-ring, .hg-soft, .hg-lotus, .hg-bloom, .hg-figure, .hg-hover,
+      .hg-aura, .hg-dashed, .hg-lap, .hg-shadow, .hg-fall1, .hg-fall2, .hg-fall3 {
+        animation: none;
+      }
+    }
+  </style>
+
   <!-- 柔光底 -->
-  <circle cx="310" cy="278" r="268" fill="url(#hg-glow)"/>
+  <circle cx="310" cy="272" r="270" fill="url(#hg-glow)"/>
+
+  <!-- 內圈：極慢旋轉的細點環 -->
+  <circle class="hg-dashed" cx="310" cy="274" r="204" fill="none"
+          stroke="#f0dde5" stroke-width="1.4" stroke-dasharray="1.5 10" stroke-linecap="round"/>
+  <circle cx="310" cy="274" r="222" fill="none" stroke="#f7d8e5" stroke-width="1"/>
 
   <!-- 圓相：一筆，右上留缺口 -->
-  <path d="M310 42c92 0 170 56 198 138 26 78-8 158-80 196-70 37-158 24-212-32-46-48-56-120-26-180 14-28 34-52 56-70"
-        fill="none" stroke="url(#hg-ring)" stroke-width="3.2" stroke-linecap="round" opacity=".6"/>
-  <circle cx="310" cy="278" r="240" fill="none" stroke="#f0dde5" stroke-width="1" stroke-dasharray="2 9" opacity=".85"/>
-  <circle cx="310" cy="278" r="208" fill="none" stroke="#f7d8e5" stroke-width="1"/>
+  <path class="hg-soft" d="M536.9 225.8A232 232 0 1 1 358.2 47.1" fill="none"
+        stroke="#efbcd2" stroke-width="11" stroke-linecap="round" opacity=".18"/>
+  <path class="hg-ring" pathLength="100" d="M536.9 225.8A232 232 0 1 1 358.2 47.1" fill="none"
+        stroke="url(#hg-ring)" stroke-width="5" stroke-linecap="round" opacity=".8"/>
+  <path class="hg-soft" d="M528 236A224 224 0 1 1 366 58" fill="none"
+        stroke="#e79dbe" stroke-width="1.4" stroke-linecap="round" opacity=".5"/>
 
-  <!-- 飄落的花瓣 -->
-  <g fill="#efbcd2" opacity=".7">
-    <path d="M112 122c14-6 23 2 21 12-2 9-13 12-23 8 2-8 1-14 2-20z"/>
-    <path d="M508 96c16-4 24 6 20 16-4 9-17 10-27 4 4-8 5-14 7-20z"/>
-    <circle cx="72" cy="268" r="3.4" fill="#e79dbe"/>
-    <circle cx="552" cy="322" r="4" fill="#e79dbe" opacity=".6"/>
-    <circle cx="146" cy="196" r="2.6" fill="#cf6b96" opacity=".55"/>
-  </g>
+  <!-- 光暈（極淡的呼吸） -->
+  <circle class="hg-aura" cx="310" cy="272" r="196" fill="url(#hg-aura)"/>
 
-  <!-- 蓮座：後排三瓣、前排兩瓣 -->
-  <g transform="translate(310 450)">
-    <use href="#hg-petal" fill="#f7d8e5" transform="translate(-78 26) rotate(-32) scale(.84)"/>
-    <use href="#hg-petal" fill="url(#hg-back)" transform="translate(-46 11) rotate(-17) scale(.94)"/>
-    <use href="#hg-petal" fill="url(#hg-front)" transform="translate(-15 0) scale(1.02)"/>
-    <use href="#hg-petal" fill="url(#hg-front)" transform="translate(15 0) scale(1.02)"/>
-    <use href="#hg-petal" fill="url(#hg-back)" transform="translate(46 11) rotate(17) scale(.94)"/>
-    <use href="#hg-petal" fill="#f7d8e5" transform="translate(78 26) rotate(32) scale(.84)"/>
+  <!-- 蓮座：後五瓣、前兩瓣（外層固定位置，內層才做縮放，避免 CSS transform 蓋掉定位） -->
+  <g transform="translate(310 452)">
+    <ellipse class="hg-shadow" cx="0" cy="44" rx="102" ry="9" fill="#cf6b96" opacity=".14"/>
+   <g class="hg-lotus">
+    <g class="hg-bloom">
+      <g stroke-linejoin="round">
+        <use href="#hg-petal" fill="#f7d8e5" stroke="#e79dbe" stroke-width="1.6"
+             transform="translate(-62 26) rotate(-34) scale(.78)"/>
+        <use href="#hg-petal" fill="#fbeaf2" stroke="#e79dbe" stroke-width="1.7"
+             transform="translate(-34 14) rotate(-18) scale(.9)"/>
+        <use href="#hg-petal" fill="#ffffff" stroke="#cf6b96" stroke-width="2"
+             transform="translate(0 2) scale(1.06)"/>
+        <use href="#hg-petal" fill="#fbeaf2" stroke="#e79dbe" stroke-width="1.7"
+             transform="translate(34 14) rotate(18) scale(.9)"/>
+        <use href="#hg-petal" fill="#f7d8e5" stroke="#e79dbe" stroke-width="1.6"
+             transform="translate(62 26) rotate(34) scale(.78)"/>
+        <use href="#hg-petal" fill="#ffffff" stroke="#cf6b96" stroke-width="2"
+             transform="translate(-19 26) rotate(-7) scale(.94)"/>
+        <use href="#hg-petal" fill="#ffffff" stroke="#cf6b96" stroke-width="2"
+             transform="translate(19 26) rotate(7) scale(.94)"/>
+      </g>
+      <circle cx="0" cy="34" r="3.2" fill="#b58a56" opacity=".45"/>
+    </g>
+   </g>
   </g>
 
   <!-- 禪坐身影 -->
-  <g fill="none" stroke="url(#hg-figure)" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="310" cy="184" r="30" fill="#ffffff" stroke-width="4.6"/>
-    <path d="M310 218c-30 0-52 20-58 50-5 22-1 42 9 58h98c10-16 14-36 9-58-6-30-28-50-58-50z"
-          fill="rgba(255,255,255,.62)" stroke-width="4.4"/>
-    <path d="M244 330c-7 17 1 30 20 36 32 9 60 9 92 0 19-6 27-19 20-36" stroke-width="4.2"/>
-    <path d="M252 344c18 9 38 13 58 13s40-4 58-13" stroke-width="2.6" opacity=".45"/>
+  <g class="hg-figure">
+   <g class="hg-hover">
+    <g fill="none" stroke="url(#hg-figure)" stroke-linecap="round" stroke-linejoin="round">
+      <!-- 髮髻與頭 -->
+      <path d="M294 150c5-13 26-13 31 0" stroke-width="3.4"/>
+      <circle cx="310" cy="180" r="29" fill="#ffffff" stroke-width="4.6"/>
+      <circle cx="299" cy="176" r="1.7" fill="#37121f" stroke="none" opacity=".5"/>
+      <circle cx="321" cy="176" r="1.7" fill="#37121f" stroke="none" opacity=".5"/>
+      <!-- 肩與身 -->
+      <path d="M310 211c-33 0-57 22-63 54-4 20-2 40 6 58h114c8-18 10-38 6-58-6-32-30-54-63-54z"
+            fill="rgba(255,255,255,.66)" stroke-width="4.4"/>
+      <!-- 法衣襟線 -->
+      <path class="hg-lap" d="M288 226c6 22 6 44 0 64M332 226c-6 22-6 44 0 64" stroke-width="2" opacity=".55"/>
+      <!-- 結印的雙手 -->
+      <path d="M254 290c13 27 41 40 56 40s43-13 56-40" stroke-width="4.2"/>
+      <path d="M284 314c9 8 43 8 52 0" stroke-width="3"/>
+      <!-- 盤坐的雙腿 -->
+      <path d="M236 328c-9 16 1 31 22 37 32 10 72 10 104 0 21-6 31-21 22-37" stroke-width="4.2"/>
+      <path d="M244 343c20 10 44 14 66 14s46-4 66-14" stroke-width="2.4" opacity=".38"/>
+    </g>
+   </g>
+  </g>
+
+  <!-- 飄落的花瓣（極慢、循環） -->
+  <g fill="#efbcd2">
+    <g transform="translate(132 216) scale(1.15)"><use class="hg-fall1" href="#hg-fall"/></g>
+    <g transform="translate(492 176) scale(1.3)" fill="#e79dbe"><use class="hg-fall2" href="#hg-fall"/></g>
+    <g transform="translate(438 330) scale(1.05)" fill="#f7d8e5"><use class="hg-fall3" href="#hg-fall"/></g>
   </g>
 
   <!-- 金線・水面 -->
-  <path d="M84 486H332" stroke="url(#hg-water)" stroke-width="1.6" stroke-linecap="round"/>
-  <path d="M368 486h168" stroke="url(#hg-water)" stroke-width="1.6" stroke-linecap="round"/>
-  <circle cx="350" cy="486" r="3.2" fill="#b58a56" opacity=".65"/>
+  <path d="M76 490H320" stroke="url(#hg-water)" stroke-width="1.6" stroke-linecap="round"/>
+  <path d="M364 490h180" stroke="url(#hg-water)" stroke-width="1.6" stroke-linecap="round"/>
+  <circle class="hg-lap" cx="342" cy="490" r="3.2" fill="#b58a56" opacity=".6"/>
 </svg>

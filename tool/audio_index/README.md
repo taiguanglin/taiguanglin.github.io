@@ -1,7 +1,22 @@
 # audio_index — `audio/index.html` 產生器
 
 掃描本機音檔庫 `/Users/paul/tai/audio/`（repo 內的 `audio` 是 symlink，未進 git），
-產生該目錄的入口頁 `audio/index.html`：粉色系版面、置頂大悲咒播放器、類別下拉篩選。
+產生該目錄的入口頁 `audio/index.html`：粉色系版面、置頂大悲咒播放器、類別／年份篩選。
+
+## 版面（改樣板就好）
+
+由上而下：
+
+1. **黏頂標題列**：CSS 畫的蓮花印記、站名、音檔總數、回主站連結。
+2. **大悲咒（置頂）**：西方三聖圖（**點圖即可播放／暫停**）＋ 一般版／快速版／兩版清單循環／停止，
+   自訂進度條（已播比例填色、顯示 mm:ss）、音量（記住上次設定）、狀態列與提示。
+3. **黏頂工具列**：類別下拉（原生 `<select>`，含 optgroup 分組與數量）＋ 關鍵字搜尋 ＋ 新→舊／舊→新。
+4. **年份快篩**：`全部 426`、`2026（54）`… 一鍵縮小範圍；右側統計顯示 `顯示 N / 總數`。
+5. **清單**：依「類別＋年月」分組，每列 ＝ 日期標籤 ＋ 標題（已去掉 `YYYY年M月D日` 前綴與 `.opus`）＋ 類別徽章 ＋ 原生播放器。
+6. **底部正在播放條** 與右下「回大悲咒」快捷鈕（捲過大悲咒區塊才出現）。
+
+篩選彼此可疊加；找不到結果時會顯示提示與「清除全部篩選」按鈕。
+`prefers-reduced-motion` 會關閉過場動畫。
 
 ## 為什麼要產生
 
@@ -18,6 +33,13 @@
 
 `build_index.py` 只覆寫樣板中的兩段程式碼（`const CATEGORIES = …` 與 `const FILES = […]`），
 其餘 HTML/CSS/JS 原樣輸出；因此**版面要改就改樣板，不要改 `audio/index.html`**。
+改樣板時必須保留：
+
+- `const CATEGORIES = /*__CATEGORIES__*/…;` 與 `const FILES = [` … `\n];`（腳本的比對字串）。
+- 播放器用到的 id：`dabeiAudio`、`dabeiAudioB`、`dabeiArtBtn`、`dabeiPlayBtn`、`dabeiSeek`、`dabeiTime`、
+  `dabeiStatus`、`dabeiVolume`、`btnLoopNormal/Fast/Playlist`、`btnDabeiStop`、`totalCount`、`list`、`search`、
+  `category`、`sortNewest/Oldest`、`stats`、`years`、`np`、`npTitle`、`npStop`、`jumpTop`。
+- 大悲咒仍以「兩顆 `<audio>` 各載一首、關螢幕時切換播放」的方式接力，`DABEI` 的 `duration` 為檔案真實長度。
 
 ## 使用
 

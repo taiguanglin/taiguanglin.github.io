@@ -1919,6 +1919,22 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
     color: var(--gold-soft);
 }
 
+/* 法語帶裡的第二段（偈語）：以一條置中金線隔開，並分享同一個深底背景 */
+.dharma-verse {
+    margin-top: 40px;
+    padding-top: 36px;
+    background-image: linear-gradient(90deg, transparent, var(--gold), transparent);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 104px 1px;
+    font-size: clamp(16px, 2.05vw, 20px);
+    line-height: 2.3;
+    letter-spacing: .09em;
+    color: #fdeff5;
+}
+
+.dharma-verse + .dharma-author { margin-top: 22px; }
+
 /* ==========================================================================
    11. 頁尾（淺瓷底）
    ========================================================================== */
@@ -2512,6 +2528,21 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
     color: var(--gold-soft);
 }
 
+/* 第二則（偈語）：金線分隔、字距略放，讀起來像一段獨立的偈 */
+.qa-quote .q-verse {
+    margin-top: 30px;
+    padding-top: 30px;
+    background-image: linear-gradient(90deg, transparent, var(--gold), transparent);
+    background-repeat: no-repeat;
+    background-position: top center;
+    background-size: 92px 1px;
+    font-size: clamp(16.5px, 2.3vw, 20px);
+    line-height: 2.2;
+    letter-spacing: .09em;
+}
+
+.qa-quote .q-verse + .cite { margin-top: 14px; }
+
 /* 章節頁其他舊元件 */
 .blessing-box {
     padding: 26px 28px;
@@ -2570,12 +2601,12 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 16px;
-    max-width: 620px;
+    max-width: 680px;
     margin-top: 30px;
 }
 
 .wd-stat-card {
-    padding: 20px 16px;
+    padding: 20px 12px;
     border: 1px solid var(--line);
     border-radius: var(--r-md);
     background: rgba(255, 255, 255, .76);
@@ -2592,6 +2623,22 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
 }
 
 .wd-stat-card span { display: block; margin-top: 4px; font-size: 12.5px; color: var(--ink-mute); }
+
+/* 收錄時間是一段區間（2024.02 – 2026.03），字級收小以求三張卡片視覺平衡 */
+.wd-stat-card--range strong {
+    font-size: clamp(15px, 4vw, 18px);
+    padding: 6px 0 2px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+/* 窄螢幕放不下「2024.02 – 2026.03」，改成 2 欄並讓這一張自成一行 */
+@media (max-width: 560px) {
+    .wd-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .wd-stat-card--range { grid-column: 1 / -1; }
+    .wd-stat-card--range strong { font-size: 20px; padding: 4px 0 2px; }
+}
 
 .wd-grid {
     display: grid;

@@ -58,7 +58,9 @@
 `.container`（1160）/`.container--narrow`、`.section`、`.section--tint`（＝`.section.alt`＝`.section.bg-light`，
 上緣有花瓣波浪）、`.card`、`.chip`、`.pill-nav-wrap > .pill-nav > .chip`、`.crumbs`、
 `.btn` + `.btn-primary` / `.btn-ghost` / `.btn-outline` / `.btn-light` / `.btn-sm`（結尾箭頭用 `<span class="arr">→</span>`）、
-`.dharma-section > .dharma-content > blockquote.dharma-quote + cite.dharma-author`（深梅墨帶，上下花瓣邊）、
+`.dharma-section > .dharma-content > blockquote.dharma-quote + cite.dharma-author`（深梅墨帶，上下花瓣邊；
+同帶有第二段法語時，第二段加 `.dharma-verse`＝上方置中金線分隔、字距略放；`wenda2/chapter-*.html`
+的 `.qa-quote` 同理用 `.q-verse`）、
 `.footer`、`.reveal` / `.reveal-d1..d3`（`shared.js` 的 IntersectionObserver 會加 `.in`，尊重 `prefers-reduced-motion`）、
 `.modal-overlay` / `.modal` / `.download-option`（首頁下載彈窗）、`.lightbox`（圖解頁）。
 
@@ -120,10 +122,32 @@
 
 ## 5. 頁首與動效
 - 內頁：`section.page-hero`（淡粉漸層＋圓相水印）＋ `.crumbs` ＋ `.kicker` ＋ `h1.display` ＋ `p.lede`。
-- 首頁：`.hero`（`hero-copy` / `hero-art`）＋ `images/hero-lotus.svg`（圓相中的禪坐身影與蓮花，可重畫）。
+- 首頁：`.hero`（`hero-copy` / `hero-art`）＋ `images/hero-lotus.svg`（圓相中的禪坐身影與蓮花）。
   「每日精選」卡片（`.daily-quote`）以負 margin 疊在 hero 下緣。
 - 頁首裝飾細線用 `images/lotus-divider.svg`（`divider-mark`）。
-- 動效只有 `.reveal` 淡入與:hover 微抬；嚴禁持續旋轉／漂浮的裝飾動畫。
+- 著作／電子書卡片封面用 `images/合集.svg`（九本並列的書脊＋蓮花印記）。
+- **動效**：網頁層只保留 `.reveal` 淡入與 :hover 微抬（禁止版面層的持續動畫）。
+  唯一例外是 hero 插圖本身：`images/hero-lotus.svg` 在檔案內用 CSS `@keyframes` 做極輕微的
+  動畫（圓相一筆畫出、蓮座綻放、身姿微浮、光暈呼吸、花瓣慢落、細點環極慢旋轉）。
+  該檔以 `<img>` 載入，動畫必須**自成一體**（只准用檔內 `<style>`，不得依賴外部 CSS/JS），
+  且務必在檔內以 `@media (prefers-reduced-motion: reduce)` 全部停用，並讓「基線狀態」
+  就是完整靜態畫面（動畫只是加分，關掉也完全不缺角）。
+  撰寫時注意：CSS transform 會蓋掉 `transform` 屬性，被定位的元素要先 `translate(...)` 到外層 `<g>`，
+  要動的 `<g>` 自己不要帶 `transform` 屬性。
+
+## 5b. 音檔串流頁（`/audio/`，獨立部署，不在本 repo）
+
+`audio/` 是連到音檔庫的 symlink（未進 git），該頁自帶一整套行內 CSS/JS，**不載入本 repo 的
+`style.css` / `shared.js`**，但色票與版面語彙刻意沿用本系統（同 `--sakura-*`、同紙底與浮動膠囊感）。
+
+- 產生器：`tool/audio_index/build_index.py`（掃描 `*.opus` → 填 `CATEGORIES` / `FILES` → 寫出
+  `audio/index.html`）。**改版面一律改樣板 `tool/audio_index/index_template.html`，不要改產物。**
+- 版面順序：置頂**大悲咒播放器**（西方三聖圖可點擊播放／暫停、模式分段鈕、進度與音量）→
+  黏頂工具列（類別＋搜尋＋新舊排序）→ 年份快篩＋統計 → 依類別／年月分組的清單 → 底部「正在播放」條。
+- UX 重點：檔名拆成「日期標籤＋標題」（去掉 `YYYY年M月D日` 與 `.opus`）、426 筆可用年份快篩、
+  空結果提供「清除全部篩選」、捲過大悲咒後右下出現回頂快捷鈕、`prefers-reduced-motion` 一併關閉過場。
+- 播放器行為（關螢幕循環、Media Session、Opus 尾端 duration 膨脹）都在樣板內的 `dabeiPlayer`，
+  修改時請保留既有 id 與「雙 `audio` 元素接力」的作法。
 
 ## 6. 內容與流程守則
 - 保留 SEO meta、canonical、og 標籤；保留所有功能連結（電子書、`stories/*.html`、
