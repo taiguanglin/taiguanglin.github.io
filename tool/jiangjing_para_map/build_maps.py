@@ -376,6 +376,21 @@ def merge_existing(old_lect, new_lect):
                 p["confirmed"] = True
             if "confirmed" in o and not o["confirmed"]:
                 p["confirmed"] = False
+            # 「零長度」標記（audio_map3 UI checkbox：師父沒念，音檔長度為零）
+            # 跨重跑保留；起訖永遠壓回相等，錨點以舊值為準（重跑穩定，
+            # 不被本輪重算值漂移），完全無時間時落在 0。
+            if o.get("zero"):
+                p["zero"] = True
+                t = o.get("start")
+                if t is None:
+                    t = o.get("end")
+                if t is None:
+                    t = p.get("start")
+                if t is None:
+                    t = p.get("end")
+                if t is None:
+                    t = 0.0
+                p["start"] = p["end"] = t
     return new_lect
 
 

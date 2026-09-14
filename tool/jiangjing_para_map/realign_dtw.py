@@ -3113,7 +3113,20 @@ def main():
         pinned = []
         for i, (p, r) in enumerate(zip(lec["paragraphs"], res)):
             o = old_by_pid.get(p["pid"], {})
-            if o.get("confirmed") and o.get("start") is not None:
+            if o.get("zero"):
+                # 「零長度」段落（audio_map3 UI checkbox：師父沒念，音檔長度為零）
+                # 與 confirmed 鐵錨同等保護：collapse 成零寬並鎖住，重跑不會被
+                # 重算結果拉開；相鄰計算段會被夾逼貼上來（下方 pin 調和邏輯）。
+                t = o.get("start")
+                if t is None:
+                    t = o.get("end")
+                if t is None:
+                    t = r["start"] if r.get("start") is not None else 0.0
+                r["start"] = r["end"] = t
+                r["method"] = o.get("method", r["method"])
+                r["zero"] = True
+                pinned.append(i)
+            elif o.get("confirmed") and o.get("start") is not None:
                 r["start"] = o["start"]
                 r["end"] = o.get("end", o["start"])
                 r["conf"] = o.get("conf", r["conf"])
@@ -3160,12 +3173,15 @@ def main():
         paras_out = []
         for p, r in zip(lec["paragraphs"], res):
             o = old_by_pid.get(p["pid"], {})
-            paras_out.append({
+            entry = {
                 "pid": p["pid"], "text": p["text"],
                 "start": r["start"], "end": r["end"],
                 "conf": r["conf"], "method": r["method"],
                 "confirmed": bool(o.get("confirmed", False)),
-            })
+            }
+            if r.get("zero"):
+                entry["zero"] = True
+            paras_out.append(entry)
         out_doc["lectures"][str(n)] = {
             "audio": basename + ".opus",
             "title": lec["title"],

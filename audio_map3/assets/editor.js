@@ -617,22 +617,27 @@ function flushEditorTimesIntoMap() {
         const prevEnd = roundSeconds(entry.item.end);
         const changed = prevStart !== nextStart || prevEnd !== nextEnd;
         const linkNeighbors = state.prefs.linkNeighborTimes !== false;
-        const prevItem = items[idx - 1]?.item;
-        const nextItem = items[idx + 1]?.item;
-        applyRangeToItem(entry.item, range, { markManual: changed || entry.item.status === 'manual' });
-        if (linkNeighbors) {
-            if (changed && nextStart !== prevStart && prevItem) {
-                setSegmentEdge(idx - 1, 'end', nextStart, { markEdited: false });
+        const zeroLocked = isZeroItem(entry.item);
+        if (zeroLocked) {
+            // 零長度段：起訖強制相等（以輸入的結束值為準）。
+            applyRangeToItem(entry.item, { ...range, start: range.end }, { markManual: changed || entry.item.status === 'manual' });
+            collapseToZero(entry.item);
+        } else {
+            applyRangeToItem(entry.item, range, { markManual: changed || entry.item.status === 'manual' });
+        }
+        if (linkNeighbors && !zeroLocked) {
+            if (changed && nextStart !== prevStart) {
+                propagateEdgeThroughZero(idx, 'start', roundSeconds(range.start));
             }
-            if (changed && nextEnd !== prevEnd && nextItem) {
-                setSegmentEdge(idx + 1, 'start', nextEnd, { markEdited: false });
+            if (changed && nextEnd !== prevEnd) {
+                propagateEdgeThroughZero(idx, 'end', roundSeconds(range.end));
             }
         }
         input.value = formatTimeMarker(entry.item, entry.kind);
         input.dataset.startTc = entry.item.start_label;
         input.dataset.endTc = entry.item.end_label;
         const playButton = input.closest('.marker-line')?.querySelector('.play-range');
-        if (playButton) updatePlayButton(playButton, input.value, idx, entry.title);
+        if (playButton) updatePlayButton(playButton, input.value, idx, entry.title, zeroLocked);
     }
     normalizeMapTimes(state.map);
     return { ok: true };
@@ -643,6 +648,61 @@ function prepareMapForSave() {
     if (!flush.ok) return flush;
     normalizeMapTimes(state.map);
     return { ok: true };
+}
+
+// ---- 「音檔長度為零」段落（師父沒念）--------------------------------------
+// 勾選卡片右上角「零長度」＝這一段完全沒有對應音檔（長度為零）。行為：
+//   * 起訖永遠相等（零寬），手動輸入會被壓回同一點；
+//   * 調整前／後段落時，本段邊界自動吸附（不會被拉開，可穿越連續多個零段）；
+//   * 不可點播（無音可播）；電子書注入時跳過（等同零寬段）。
+function isZeroItem(item) {
+    return item?.zero === true;
+}
+
+/** 把段落壓成零寬 [t, t]；尚無任何時間時落在 0（錨點恆以起始為優先）。 */
+function collapseToZero(item) {
+    if (!item) return;
+    const t = Number.isFinite(item.start) ? item.start
+        : Number.isFinite(item.end) ? item.end : 0;
+    item.start = t;
+    item.end = t;
+    item.start_label = secondsToTimecode(t);
+    item.end_label = secondsToTimecode(t);
+}
+
+/** 從 idx 出發往 dir 方向找第一個「非零長度」段落的 index；找不到回 null。 */
+function resolveZeroChain(items, idx, dir) {
+    for (let i = idx + dir; i >= 0 && i < items.length; i += dir) {
+        if (!isZeroItem(items[i].item)) return i;
+    }
+    return null;
+}
+
+/**
+ * 把 segmentIndex 一側的時間同步給相鄰段落（可穿越中間的零長度段）：
+ * 改 start → 上一個非零段的 end；改 end → 下一個非零段的 start；
+ * 夾在中間的零長度段兩邊一起吸到同一點。沒有零長度段時，行為與
+ * 「同步緊鄰段落」完全相同。
+ */
+function propagateEdgeThroughZero(segmentIndex, edge, seconds) {
+    const items = sessionItems();
+    if (edge === 'start') {
+        const target = resolveZeroChain(items, segmentIndex, -1);
+        if (target == null) return;
+        for (let k = segmentIndex - 1; k > target; k -= 1) {
+            setSegmentEdge(k, 'start', seconds, { markEdited: false });
+            setSegmentEdge(k, 'end', seconds, { markEdited: false });
+        }
+        setSegmentEdge(target, 'end', seconds, { markEdited: false });
+    } else {
+        const target = resolveZeroChain(items, segmentIndex, +1);
+        if (target == null) return;
+        for (let k = segmentIndex + 1; k < target; k += 1) {
+            setSegmentEdge(k, 'start', seconds, { markEdited: false });
+            setSegmentEdge(k, 'end', seconds, { markEdited: false });
+        }
+        setSegmentEdge(target, 'start', seconds, { markEdited: false });
+    }
 }
 
 function currentSession() {
@@ -742,6 +802,8 @@ function map3ToMap2(data) {
                 status: p.confirmed ? 'reviewed' : (p.method === 'miss' ? 'missing' : 'auto'),
                 confidence: Number.isFinite(p.conf) ? p.conf : 1,
                 notes: p.method === 'miss' || p.conf < 0.5 ? '待人工確認' : '',
+                // 「音檔長度為零」：師父沒念這段（經文不念誦），行為等同零寬段。
+                zero: p.zero === true,
                 meta: p.confirmed ? { lastPlayed: p.confirmed } : {},
             };
             return seg;
@@ -767,15 +829,20 @@ function map2ToMap3(map) {
             title: s.session_label || '',
             duration: s.duration ?? null,
             reviewed: !!s.reviewed,
-            paragraphs: (s.segments || []).map((seg) => ({
-                pid: seg.stable_key,
-                text: seg.q_text || seg.answer_text || '',
-                start: seg.start ?? null,
-                end: seg.end ?? null,
-                conf: Number.isFinite(seg.confidence) ? seg.confidence : 1,
-                method: seg.notes?.includes('待人工') ? 'miss' : 'ngram',
-                confirmed: Boolean(seg.meta?.lastPlayed),
-            })),
+            paragraphs: (s.segments || []).map((seg) => {
+                const para = {
+                    pid: seg.stable_key,
+                    text: seg.q_text || seg.answer_text || '',
+                    start: seg.start ?? null,
+                    end: seg.end ?? null,
+                    conf: Number.isFinite(seg.confidence) ? seg.confidence : 1,
+                    method: seg.notes?.includes('待人工') ? 'miss' : 'ngram',
+                    confirmed: Boolean(seg.meta?.lastPlayed),
+                };
+                // 只在勾選時寫入，避免整份 JSON 每段多出一個 "zero": false 欄位。
+                if (seg.zero === true) para.zero = true;
+                return para;
+            }),
         };
     }
     return {
@@ -1172,7 +1239,7 @@ function renderSegmentCard(entry, segmentIndex) {
     const playButton = document.createElement('button');
     playButton.type = 'button';
     playButton.className = 'button button-secondary play-range';
-    updatePlayButton(playButton, timeInput.value, segmentIndex, title);
+    updatePlayButton(playButton, timeInput.value, segmentIndex, title, isZeroItem(item));
     timeInput.addEventListener('change', () => {
         const range = parseTimeMarkerValue(timeInput.value);
         if (!range) {
@@ -1184,26 +1251,37 @@ function renderSegmentCard(entry, segmentIndex) {
         const endChanged = range.endLabel !== timeInput.dataset.endTc;
         commitHistory();
         applyRangeToItem(item, range);
+        if (isZeroItem(item)) {
+            // 零長度段：起訖強制相等（以手動輸入的結束值為準）。
+            collapseToZero(item);
+            timeInput.value = formatTimeMarker(item, kind);
+            timeInput.dataset.startTc = item.start_label;
+            timeInput.dataset.endTc = item.end_label;
+            updatePlayButton(playButton, timeInput.value, segmentIndex, title, true);
+            onSegmentEdit(segmentIndex);
+            commitHistory();
+            return;
+        }
         timeInput.value = formatTimeMarker(item, kind);
         timeInput.dataset.startTc = item.start_label;
         timeInput.dataset.endTc = item.end_label;
         if (startChanged) {
             if (state.prefs.linkNeighborTimes !== false) {
-                setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
+                propagateEdgeThroughZero(segmentIndex, 'start', range.start);
             }
         }
         if (endChanged) {
             if (state.prefs.linkNeighborTimes !== false) {
-                setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
+                propagateEdgeThroughZero(segmentIndex, 'end', range.end);
             }
         }
-        updatePlayButton(playButton, timeInput.value, segmentIndex, title);
+        updatePlayButton(playButton, timeInput.value, segmentIndex, title, isZeroItem(item));
         onSegmentEdit(segmentIndex);
         commitHistory();
         renderSessionList();
     });
     timeInput.addEventListener('input', () => {
-        updatePlayButton(playButton, timeInput.value, segmentIndex, title);
+        updatePlayButton(playButton, timeInput.value, segmentIndex, title, isZeroItem(item));
     });
     // ←→ 只移動游標，不要冒泡到微調快捷鍵；↑↓／P／R／S 仍可冒泡生效。
     timeInput.addEventListener('keydown', (event) => {
@@ -1211,6 +1289,54 @@ function renderSegmentCard(entry, segmentIndex) {
     });
     timeLine.append(timeInput, playButton);
     body.append(timeLine);
+
+    // 「零長度」checkbox：卡片右上角。勾選＝這一段完全沒有對應音檔（師父沒念），
+    // 起訖壓成相等，前後段落調整時自動吸附此段邊界，且不可點播。
+    if (kind === 'segment') {
+        const zeroLabel = document.createElement('label');
+        zeroLabel.className = 'checkbox-row compact segment-zero-toggle';
+        zeroLabel.title = '勾選表示此段音檔長度為零（師父未念）：起訖永遠相等、'
+            + '調整前後段落時自動吸附此段、不可點播，電子書注入時也會跳過此段。';
+        const zeroBox = document.createElement('input');
+        zeroBox.type = 'checkbox';
+        zeroBox.checked = isZeroItem(item);
+        zeroLabel.classList.toggle('on', zeroBox.checked);
+        zeroBox.addEventListener('change', () => {
+            commitHistory();
+            item.zero = zeroBox.checked;
+            zeroLabel.classList.toggle('on', zeroBox.checked);
+            if (zeroBox.checked) {
+                collapseToZero(item);
+                timeInput.value = formatTimeMarker(item, kind);
+                timeInput.dataset.startTc = item.start_label;
+                timeInput.dataset.endTc = item.end_label;
+            }
+            updatePlayButton(playButton, timeInput.value, segmentIndex, title, zeroBox.checked);
+            node.classList.toggle('zero-seg', zeroBox.checked);
+            applySegmentEditability(node);
+            onSegmentEdit(segmentIndex);
+            // 勾選零長度＝確認此段（無音可聽，等同「已聽過」）；取消則須重新確認。
+            const meta = ensureMeta(item);
+            if (zeroBox.checked) {
+                meta.lastPlayed = nowStamp();
+            } else {
+                meta.lastPlayed = '';
+            }
+            refreshSegmentMetaChips(segmentIndex);
+            updateMetaStrip(sessionItems());
+            renderSessionList();
+            commitHistory();
+            setStatus(zeroBox.checked ? '已標記本段「零長度」（師父未念）：起訖相等、不可點播，並確認此段'
+                : '已取消「零長度」標記（此段須重新確認）', 'ok');
+        });
+        const zeroText = document.createElement('span');
+        zeroText.textContent = '零長度';
+        zeroLabel.append(zeroBox, zeroText);
+        const actions = node.querySelector('.segment-actions');
+        if (actions) actions.insertBefore(zeroLabel, actions.firstChild);
+        node.classList.toggle('zero-seg', isZeroItem(item));
+        applySegmentEditability(node);
+    }
 
     // PDF answer (or opening text) — read-only block (div, not textarea) so
     // mouse wheel scrolls the page instead of an inner scrollbar.
@@ -1242,8 +1368,9 @@ function renderSegmentCard(entry, segmentIndex) {
     applyAm2CardExtras(node, item, kind);
 
     // Click question / answer to play (same as ▶); keep text selection for copy.
-    bindPlayOnTextClick(titleField, playButton, '點擊播放這一段');
-    bindPlayOnTextClick(answerEl, playButton, '點擊播放這一段');
+    const playHint = isZeroItem(item) ? '此段為零長度（師父未念），無音可播' : '點擊播放這一段';
+    bindPlayOnTextClick(titleField, playButton, playHint);
+    bindPlayOnTextClick(answerEl, playButton, playHint);
     // Ensure Q/A surfaces never keep form focus that would swallow P / ← / →.
     for (const surface of [titleField, answerEl]) {
         surface.addEventListener('pointerdown', () => {
@@ -1384,7 +1511,13 @@ function formatTimeMarker(item, kind) {
     return `${prefix}：${start} - ${end}`;
 }
 
-function updatePlayButton(button, markerText, segmentIndex, title) {
+function updatePlayButton(button, markerText, segmentIndex, title, zeroLocked = false) {
+    if (zeroLocked) {
+        button.textContent = '☐ 零長度（師父未念，無音可播）';
+        button.disabled = true;
+        button.onclick = null;
+        return;
+    }
     const range = parseTimeMarkerValue(markerText);
     if (!range) {
         button.textContent = '▶ 時間格式無效';
@@ -1417,13 +1550,21 @@ function updatePlayButton(button, markerText, segmentIndex, title) {
 function playSegmentByIndex(segmentIndex) {
     const items = sessionItems();
     if (segmentIndex == null || !items[segmentIndex]) return false;
-    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
+    // 零長度段（師父未念）不可播：改播下一個非零段。
+    const target = isZeroItem(items[segmentIndex].item)
+        ? resolveZeroChain(items, segmentIndex, +1)
+        : segmentIndex;
+    if (target == null) {
+        setStatus('此段標記為零長度（師父未念），且後面已無可播放的段落', 'ok');
+        return true;
+    }
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${target}"]`);
     const playBtn = card?.querySelector('.play-range');
     blurIfBlocksShortcuts(document.activeElement);
     if (playBtn && !playBtn.disabled) {
         playBtn.click();
     } else {
-        replaySegment(segmentIndex);
+        replaySegment(target);
     }
     card?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     return true;
@@ -1470,7 +1611,12 @@ function nudgeSegmentStart(delta, opts = {}) {
     if (!Number.isFinite(delta) || delta === 0) return;
 
     const prev = items[idx - 1]?.item;
-    const minStart = prev?.start != null && Number.isFinite(prev.start) ? prev.start : 0;
+    // 起始下限：跳過上一側的零長度段，取「上一個非零段」的起始（零長度段被前一段壓成零寬，不能當下限）。
+    let limitItem = prev;
+    for (let k = idx - 1; k >= 0 && limitItem && isZeroItem(limitItem); k -= 1) {
+        limitItem = items[k - 1]?.item;
+    }
+    const minStart = limitItem?.start != null && Number.isFinite(limitItem.start) ? limitItem.start : 0;
     const maxStart = item.end != null && Number.isFinite(item.end) ? item.end : Infinity;
     const next = roundSeconds(clamp(item.start + delta, minStart, maxStart));
     if (next === roundSeconds(item.start)) {
@@ -1490,7 +1636,8 @@ function nudgeSegmentStart(delta, opts = {}) {
 
     const signed = next >= item.start ? `+${(next - item.start).toFixed(3)}` : (next - item.start).toFixed(3);
     setSegmentEdge(idx, 'start', next);
-    setSegmentEdge(idx - 1, 'end', next, { markEdited: false });
+    // 上一側是零長度段時，穿越它把「上一個非零段」的結束一併同步（連續多段零長度也一次穿過）。
+    propagateEdgeThroughZero(idx, 'start', next);
     const label = itemKindLabel(entry.kind, entry.number);
     const previewNote = opts.previewShort ? ' · 將試播 3 秒' : '';
     setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）${previewNote}`, 'ok');
@@ -1533,6 +1680,8 @@ async function replaySegment(segmentIndex, { maxDuration } = {}) {
     const entry = sessionItems()[segmentIndex];
     const session = currentSession();
     if (!entry || (!session?.audio_file && !session?.media_parts?.length)) return;
+    // 零長度段（師父未念）：無音可播，直接略過。
+    if (isZeroItem(entry.item)) return;
     const start = entry.item.start;
     const end = entry.item.end;
     if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) return;
@@ -1584,17 +1733,19 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
     if (!entry || seconds == null || !Number.isFinite(seconds)) return false;
     const item = entry.item;
     const value = roundSeconds(seconds);
+    // 零長度段（師父沒念）：起訖永遠相等，不可被拉開。
+    const zero = isZeroItem(item);
     if (edge === 'start') {
         item.start = value;
         item.start_label = secondsToTimecode(value);
-        if (item.end == null || item.end < value) {
+        if (zero || item.end == null || item.end < value) {
             item.end = value;
             item.end_label = secondsToTimecode(value);
         }
     } else {
         item.end = value;
         item.end_label = secondsToTimecode(value);
-        if (item.start == null || item.start > value) {
+        if (zero || item.start == null || item.start > value) {
             item.start = value;
             item.start_label = secondsToTimecode(value);
         }
@@ -1618,11 +1769,14 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
 function applyPlayerTime(segmentIndex, edge, seconds) {
     commitHistory();
     if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
-    if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds, { markEdited: false });
-    if (edge === 'end') setSegmentEdge(segmentIndex + 1, 'start', seconds, { markEdited: false });
+    // 連動相鄰段（可穿越中間的零長度段）；遇零長度段即穿越，設到下一個非零段。
+    propagateEdgeThroughZero(segmentIndex, edge, seconds);
     const entry = sessionItems()[segmentIndex];
     const label = edge === 'start' ? '起始' : '結束';
-    setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
+    const items = sessionItems();
+    const hit = resolveZeroChain(items, segmentIndex, edge === 'start' ? -1 : +1);
+    const note = hit != null ? `（連動至第 ${items[hit].number} 段，穿越零長度段）` : '';
+    setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}${note}`, 'ok');
     commitHistory();
     renderSessionList();
     if (edge === 'start') replaySegment(segmentIndex);
@@ -1658,7 +1812,8 @@ function applySegmentEditability(card) {
     if (!card) return;
     const editable = !isMobileDock() || card.classList.contains('editing');
     for (const field of card.querySelectorAll('.segment-title, .marker-input')) {
-        if (field.dataset.locked === '1') {
+        if (field.dataset.locked === '1' || (field.classList.contains('marker-input') && card.classList.contains('zero-seg'))) {
+            // 零長度段：時間輸入框鎖定唯讀（起訖恆等，無意義可編）。
             field.readOnly = true;
         } else {
             field.readOnly = !editable;

@@ -10,6 +10,10 @@ liuzutanjing / lengyanjing）。內容是「段落元素 pid → 起訖秒數」
 * ``{"paragraphs": [{"id"|"pid": "p-sXXX", "start": ..., "end": ...}, ...]}``
 * ``{"lectures": {"1": {"paragraphs": [{"pid","start","end",...}, ...]}, ...}}``
   （``tool/jiangjing_para_map`` 產出的正式格式；跨講次展平成單一 pid 映射）
+
+段落可帶 ``"zero": true``（audio_map3 校稿 UI 的「零長度」checkbox：師父沒念的
+經文段，音檔長度為零）。此類段落一律不注入 ``data-start``/``data-end``，行為與
+``end <= start`` 的零寬段相同（電子書前端不可點播、不跟播）。
 """
 
 import json
@@ -30,6 +34,10 @@ def _norm_entry(pid, val):
         return None
     start = end = None
     if isinstance(val, dict):
+        if val.get("zero") is True:
+            # audio_map3 UI「零長度」標記：師父沒念這段，等同零寬（end<=start），
+            # 不注入時間 → 前端 09b-para-track 不可點播、不會高亮跟播。
+            return None
         start, end = val.get("start"), val.get("end")
     elif isinstance(val, (list, tuple)) and len(val) >= 2:
         start, end = val[0], val[1]

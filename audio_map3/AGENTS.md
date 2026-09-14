@@ -37,6 +37,14 @@
    在 `confirmed` 為真時原樣保留 `start/end`；`realign_dtw.py` 也有 pin 保護（§5）。
    已確認的 1–8 期是**鐵錨**，任何重跑前後都要驗證其 byte-level 不變（§5 命令）。
 
+3b. **「零長度」標記（`"zero": true`，2026-09 新增）。** audio_map3 UI 段落卡片右上角
+   有「零長度」checkbox：勾選＝此段音檔長度為零（師父沒念）。行為：起訖強制相等、
+   時間欄唯讀、不可點播；調整前後段落時其邊界自動吸附（可連續穿越多個零長度段）；
+   注入器 `para_audio_map.py` 遇 `zero: true` 直接跳過（等同零寬段）。管線保護：
+   `build_maps.py` `merge_existing` 會保留 `zero` 並把起訖壓回相等；`realign_dtw.py`
+   把 zero 段與 confirmed 鐵錨同等 pin 住。人工校正時「誤留極短長度的沒念經文段」
+   就用這個勾選修復（四十二章經已把 31 段這類段落 `confirmed` 翻回 false，見 git 歷史）。
+
 **本文件 §1–§10 是 DTW 精修路線（`realign_dtw.py`）的詳細程序**，仍有效，但要放在
 上面三階段框架下理解：`build_maps.py` 是 SoT/注入寫入者；`realign_dtw.py` 是把
 `miss/short/low-conf` 段落救回來的精修器；UI 是人工終審。對齊新講次的順序：
