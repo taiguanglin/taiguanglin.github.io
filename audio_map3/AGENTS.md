@@ -403,9 +403,12 @@ encoder，輸出更貼近逐字（即便同音錯字）→ 反而保留更多可
 
 | 系列 | 段數 | span_bad | unknown | bad+unknown | 主導殘餘 |
 |------|------|----------|---------|-------------|---------|
-| lengqie（楞伽） | 4265 | （見報告） | | | 待 dump 補齊後量 |
-| liuzutanjing（壇經） | 3636 | | | | 待 dump 補齊後量 |
-| lengyanjing（楞嚴） | 2784 | 578 | 360 | **33.69%** | 525 段**零寬 commentary**（`dtw/dtw-evid/interp` 標零寬、但 probe 找到正文被念過） |
+| lengqie（楞伽） | 4265 | 151 | 306 | **10.72%** | 零寬 commentary（段頭同音錯字） |
+| liuzutanjing（壇經） | 3636 | 256 | 319 | **15.81%** | 零寬 commentary；L6 最差 40.0% |
+| lengyanjing（楞嚴） | 2784 | 578 | 360 | **33.69%** | 525 段**零寬 commentary**（`dtw/dtw-evid/interp` 標零寬、但 probe 找到正文被念過；楞嚴咒區最重） |
+
+（上表為最新 commit `34401f9` + 全量重產 dump 後兩次重跑 `realign_dtw.py` 都一致的數字，
+與 §8a 記載的 post-fix 數值 `楞伽 151、壇經 256、楞嚴 578` 完全對得上。）
 
 **主導殘餘型態「零寬 commentary span_bad」= ASR 天花板的具體化**，不是可修的結構 bug：
 這些是「講解段」，`d_head`（段頭逐字命中）低到 0.1–0.3（開頭被 ASR 打成同音錯字、逐字
