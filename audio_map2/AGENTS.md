@@ -40,7 +40,10 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 ```
 
 操作：左側選月份 → session；卡片 ▶ 播放該段（`../audio/*.opus`）；
-過濾器可只看 ⚠低信心／插補／待人工／缺時間。快捷鍵 `P` 播放暫停、`↑↓` 段落導覽。
+過濾器可只看 ⚠低信心／插補／待人工／缺時間。快捷鍵 `P` 播放暫停、`↑↓` 段落導覽、
+`N` 定位到下一個未確認段落（`Shift`+`N` 下一個已確認；只捲動不播放、不寫 `lastPlayed`）。
+topbar 左側的「跳瀏工具列」⤒/⤓ 按鈕同款功能：循環定位到下一個未確認／已確認段落，
+右鍵／長按才定位並播放；徽章顯示本月份剩餘未確認段數。
 
 **完成＝實際聽過**：點 ▶／點文字播放該段後，會寫入「最後播放」記錄
 （`meta.lastPlayed`），側邊欄 session 才會變綠色（完成）；只微調時間不算完成。
@@ -54,6 +57,7 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 | 徽章 高/中/⚠低信心 | ≥0.8 / 0.5–0.8 / <0.5 |
 | notes: 待人工確認 | 找不到逐字音檔對應，時間為比例夾入 —— 用「待人工」過濾鍵集中審 |
 | 雙檔合併時間軸 | 該日音檔分（上）（下）或文字檔未分段，UI 自動換檔播放 |
+| 紅左框淡化卡 | 「零長度」段（師父未念）：卡片右上角 checkbox 勾選，起訖恆等、不可點播、自動算確認 |
 
 ## 特別注意的月份
 
@@ -62,6 +66,13 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 - **2024-11 之後**：有逐題念名＋`师父说` 開收場標記，mapping 品質高，抽查即可；
   少數待人工段多半是問題以圖片提交或朗讀順序與 Word 不同。
 - `2025-03-12`、`2024-12-09`：合併時間軸特例（見 tool README）。
+
+**「零長度」標記（`"zero": true`，2026-09 新增，與 audio_map3 同步）**：卡片右上角
+checkbox 勾選＝此段音檔長度為零（師父沒念）。行為：起訖強制相等（以原起始為錨點）、
+時間欄唯讀、▶ 變「☐ 零長度（師父未念，無音可播）」、點文字不可播；調整前後段落時
+其邊界自動吸附（可連續穿越多個零長度段，行為同 audio_map3）；勾選即寫入
+`meta.lastPlayed`（自動確認）。注入器 `tool/word2ebook/core/audio_map_injector.py`
+遇 `zero: true` 直接跳過（不產生播放鈕，等同零寬段）。
 
 重新產生 JSON：`tool/word_audio_map2/build_maps.py --all --apply`
 （會覆蓋本資料夾的月份 JSON；其章節子題拆分功能已隨舊 `data/audio_map_word/`

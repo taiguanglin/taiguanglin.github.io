@@ -54,6 +54,9 @@ const nudgeBurst = {
 /** 目前播放音檔在其合併時間軸上的起點偏移（split session 用，單檔為 0）。 */
 let activePartBase = 0;
 
+/** 跳瀏游標：連續點擊可逐段前進，但不影響編輯焦點／播放狀態。 */
+let jumpCursor = null;
+
 const els = {
     app: document.querySelector('#app'),
     sidebar: document.querySelector('#sidebar'),
@@ -101,6 +104,10 @@ const els = {
     forceSaveButton: document.querySelector('#forceSaveButton'),
     opusWarning: document.querySelector('#opusWarning'),
     conflictBanner: document.querySelector('#conflictBanner'),
+    jumpNav: document.querySelector('#jumpNav'),
+    jumpUnconfirmedButton: document.querySelector('#jumpUnconfirmedButton'),
+    jumpConfirmedButton: document.querySelector('#jumpConfirmedButton'),
+    jumpConfirmCount: document.querySelector('#jumpConfirmCount'),
     audioPlayer: document.querySelector('#audioPlayer'),
     audioTitle: document.querySelector('#audioTitle'),
     audioRange: document.querySelector('#audioRange'),
@@ -156,6 +163,7 @@ async function bootstrap() {
 }
 
 function bindEvents() {
+    bindJumpNav();
     els.monthSelect.addEventListener('change', () => {
         state.prefs.lastSessionId = null;
         setPrefs({ lastSessionId: null });
@@ -596,12 +604,27 @@ function flushEditorTimesIntoMap() {
         const prevStart = roundSeconds(entry.item.start);
         const prevEnd = roundSeconds(entry.item.end);
         const changed = prevStart !== nextStart || prevEnd !== nextEnd;
-        applyRangeToItem(entry.item, range, { markManual: changed || entry.item.status === 'manual' });
+        const zeroLocked = isZeroItem(entry.item);
+        if (zeroLocked) {
+            // 零長度段：起訖強制相等（以輸入的結束值為準）。
+            applyRangeToItem(entry.item, { ...range, start: range.end }, { markManual: changed || entry.item.status === 'manual' });
+            collapseToZero(entry.item);
+        } else {
+            applyRangeToItem(entry.item, range, { markManual: changed || entry.item.status === 'manual' });
+        }
+        if (!zeroLocked) {
+            if (changed && nextStart !== prevStart) {
+                propagateEdgeThroughZero(idx, 'start', roundSeconds(range.start));
+            }
+            if (changed && nextEnd !== prevEnd) {
+                propagateEdgeThroughZero(idx, 'end', roundSeconds(range.end));
+            }
+        }
         input.value = formatTimeMarker(entry.item, entry.kind);
         input.dataset.startTc = entry.item.start_label;
         input.dataset.endTc = entry.item.end_label;
         const playButton = input.closest('.marker-line')?.querySelector('.play-range');
-        if (playButton) updatePlayButton(playButton, input.value, idx, entry.title);
+        if (playButton) updatePlayButton(playButton, input.value, idx, entry.title, zeroLocked);
     }
     normalizeMapTimes(state.map);
     return { ok: true };
@@ -616,6 +639,61 @@ function prepareMapForSave() {
 
 function currentSession() {
     return state.map?.sessions?.find((s) => s.session_id === state.sessionId) || null;
+}
+
+// ---- 「音檔長度為零」段落（師父沒念）--------------------------------------
+// 勾選卡片右上角「零長度」＝這一段完全沒有對應音檔（長度為零）。行為：
+//   * 起訖永遠相等（零寬），手動輸入會被壓回同一點；
+//   * 調整前／後段落時，本段邊界自動吸附（不會被拉開，可穿越連續多個零段）；
+//   * 不可點播（無音可播）。
+function isZeroItem(item) {
+    return item?.zero === true;
+}
+
+/** 把段落壓成零寬 [t, t]；尚無任何時間時落在 0（錨點恆以起始為優先）。 */
+function collapseToZero(item) {
+    if (!item) return;
+    const t = Number.isFinite(item.start) ? item.start
+        : Number.isFinite(item.end) ? item.end : 0;
+    item.start = t;
+    item.end = t;
+    item.start_label = secondsToTimecode(t);
+    item.end_label = secondsToTimecode(t);
+}
+
+/** 從 idx 出發往 dir 方向找第一個「非零長度」段落的 index；找不到回 null。 */
+function resolveZeroChain(items, idx, dir) {
+    for (let i = idx + dir; i >= 0 && i < items.length; i += dir) {
+        if (!isZeroItem(items[i].item)) return i;
+    }
+    return null;
+}
+
+/**
+ * 把 segmentIndex 一側的時間同步給相鄰段落（可穿越中間的零長度段）：
+ * 改 start → 上一個非零段的 end；改 end → 下一個非零段的 start；
+ * 夾在中間的零長度段兩邊一起吸到同一點。沒有零長度段時，行為與
+ * 「同步緊鄰段落」完全相同。
+ */
+function propagateEdgeThroughZero(segmentIndex, edge, seconds) {
+    const items = sessionItems();
+    if (edge === 'start') {
+        const target = resolveZeroChain(items, segmentIndex, -1);
+        if (target == null) return;
+        for (let k = segmentIndex - 1; k > target; k -= 1) {
+            setSegmentEdge(k, 'start', seconds, { markEdited: false });
+            setSegmentEdge(k, 'end', seconds, { markEdited: false });
+        }
+        setSegmentEdge(target, 'end', seconds, { markEdited: false });
+    } else {
+        const target = resolveZeroChain(items, segmentIndex, +1);
+        if (target == null) return;
+        for (let k = segmentIndex + 1; k < target; k += 1) {
+            setSegmentEdge(k, 'start', seconds, { markEdited: false });
+            setSegmentEdge(k, 'end', seconds, { markEdited: false });
+        }
+        setSegmentEdge(target, 'start', seconds, { markEdited: false });
+    }
 }
 
 /** 把「合併時間軸」上的絕對秒數，對應到實際音檔與該檔內局部秒數。
@@ -702,6 +780,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
     els.monthSelect.value = month;
     state.sessionId = null;
     state.activeSegmentIndex = null;
+    jumpCursor = null;
     state.usingDraft = false;
 
     const path = mapPath(month);
@@ -911,6 +990,7 @@ function selectSession(sessionId) {
     clearNudgeBurst({ commit: true });
     state.sessionId = sessionId;
     state.activeSegmentIndex = null;
+    jumpCursor = null;
     state.prefs.lastMonth = state.month;
     state.prefs.lastSessionId = sessionId;
     setPrefs({ lastMonth: state.month, lastSessionId: sessionId });
@@ -952,6 +1032,86 @@ function scrollEditorToProgress() {
     requestAnimationFrame(() => requestAnimationFrame(apply));
 }
 
+// ---- 段落跳瀏（下一個未確認／已確認）--------------------------------------
+// 「確認」＝ 聽過（meta.lastPlayed 有值），與側邊欄「完成」統計同源。
+// 零長度段（師父未念）勾選即視為已確認，不會被跳到。
+// 跳瀏＝只定位（不播放、不寫 lastPlayed，避免誤標已確認）；右鍵／長按才播放並記錄。
+function isItemConfirmed(item) {
+    return Boolean(item?.meta?.lastPlayed);
+}
+
+/**
+ * 從 currentIndex 出發找下一段符合 wanted（true=已確認、false=未確認）的段落。
+ * 依序前進、循環整份清單，最多掃一輪（items.length 步）。
+ * @returns {number|null} 目標 index；整份都沒有符合時回 null
+ */
+function findSegmentByConfirmed(items, currentIndex, wanted) {
+    if (!items.length) return null;
+    for (let step = 1; step <= items.length; step += 1) {
+        const i = (currentIndex + step) % items.length;
+        if (isItemConfirmed(items[i].item) === wanted) return i;
+    }
+    return null;
+}
+
+function jumpToSegmentByConfirmed(wanted, { play = false } = {}) {
+    const items = sessionItems();
+    if (!items.length) return;
+    const current = play ? state.activeSegmentIndex : jumpCursor;
+    const startIdx = current == null ? items.length - 1 : current;
+    const target = findSegmentByConfirmed(items, startIdx, wanted);
+    if (target == null) {
+        const curLabel = itemKindLabel(items[startIdx]?.kind, items[startIdx]?.number);
+        setStatus(wanted
+            ? `「${curLabel}」之後（含循環）沒有已確認的段落`
+            : `「${curLabel}」之後（含循環）沒有未確認的段落`, 'ok');
+        return;
+    }
+    jumpCursor = target; // 這次定位的段落，下一次定位從它之後找。
+    if (play) setActiveSegment(target);
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${target}"]`);
+    card?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if (card) {
+        card.classList.remove('jump-target');
+        void card.offsetWidth;
+        card.classList.add('jump-target');
+        card.addEventListener('animationend', () => card.classList.remove('jump-target'), { once: true });
+    }
+    const label = itemKindLabel(items[target].kind, items[target].number);
+    if (!play) {
+        // 只定位：不播放、不寫入「最後播放」，也不改變作用中段落（避免跳瀏誤標已確認）。
+        setStatus(`已定位${label}（${wanted ? '已確認' : '未確認'}）`, 'ok');
+        return;
+    }
+    playSegmentByIndex(target);
+    setStatus(`已跳到${label}（${wanted ? '已確認' : '未確認'}）並播放`, 'ok');
+}
+
+function updateJumpCount() {
+    if (!els.jumpConfirmCount) return;
+    const unconfirmed = sessionItems().filter((e) => !isItemConfirmed(e.item)).length;
+    els.jumpConfirmCount.textContent = String(unconfirmed);
+}
+
+/** 綁定常駐跳瀏工具列（index.html 靜態 #jumpNav；確認數由 updateJumpCount 更新）。
+ *  左鍵／快捷鍵：只捲動定位（不播放、不寫「最後播放」）；右鍵／長按：定位並播放。 */
+function bindJumpNav() {
+    const bind = (btn, wanted) => {
+        if (!btn) return;
+        btn.addEventListener('click', () => jumpToSegmentByConfirmed(wanted));
+        btn.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(wanted, { play: true });
+        });
+        bindLongPressMenu(btn, (event) => {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(wanted, { play: true });
+        });
+    };
+    bind(els.jumpUnconfirmedButton, false);
+    bind(els.jumpConfirmedButton, true);
+}
+
 function renderEditor() {
     const session = currentSession();
     if (!session) return;
@@ -965,11 +1125,14 @@ function renderEditor() {
     const items = sessionItems();
     updateMetaStrip(items);
     els.editorRoot.innerHTML = '';
+    // 常駐跳瀏工具列（#jumpNav，在 topbar 左側）。
+    els.jumpNav?.classList.remove('hidden');
     items.forEach((entry, index) => {
         els.editorRoot.append(renderSegmentCard(entry, index));
     });
     recomputeDirty();
     updateHistoryButtons();
+    updateJumpCount();
 }
 
 function updateMetaStrip(items) {
@@ -992,6 +1155,7 @@ function updateMetaStrip(items) {
     els.metaPlayedOnlyCount.textContent = String(played);
     els.metaEditedOnlyCount.textContent = String(edited);
     els.metaNoneCount.textContent = String(none);
+    updateJumpCount();
 }
 
 function renderSegmentCard(entry, segmentIndex) {
@@ -1037,7 +1201,7 @@ function renderSegmentCard(entry, segmentIndex) {
     const playButton = document.createElement('button');
     playButton.type = 'button';
     playButton.className = 'button button-secondary play-range';
-    updatePlayButton(playButton, timeInput.value, segmentIndex, title);
+    updatePlayButton(playButton, timeInput.value, segmentIndex, title, isZeroItem(item));
     timeInput.addEventListener('change', () => {
         const range = parseTimeMarkerValue(timeInput.value);
         if (!range) {
@@ -1049,18 +1213,34 @@ function renderSegmentCard(entry, segmentIndex) {
         const endChanged = range.endLabel !== timeInput.dataset.endTc;
         commitHistory();
         applyRangeToItem(item, range);
+        if (isZeroItem(item)) {
+            // 零長度段：起訖強制相等（以手動輸入的結束值為準）。
+            collapseToZero(item);
+            timeInput.value = formatTimeMarker(item, kind);
+            timeInput.dataset.startTc = item.start_label;
+            timeInput.dataset.endTc = item.end_label;
+            updatePlayButton(playButton, timeInput.value, segmentIndex, title, true);
+            onSegmentEdit(segmentIndex);
+            commitHistory();
+            return;
+        }
         timeInput.value = formatTimeMarker(item, kind);
         timeInput.dataset.startTc = item.start_label;
         timeInput.dataset.endTc = item.end_label;
-        if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
-        if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
-        updatePlayButton(playButton, timeInput.value, segmentIndex, title);
+        if (startChanged) {
+            // 連動相鄰段（可穿越中間的零長度段）。
+            propagateEdgeThroughZero(segmentIndex, 'start', range.start);
+        }
+        if (endChanged) {
+            propagateEdgeThroughZero(segmentIndex, 'end', range.end);
+        }
+        updatePlayButton(playButton, timeInput.value, segmentIndex, title, isZeroItem(item));
         onSegmentEdit(segmentIndex);
         commitHistory();
         renderSessionList();
     });
     timeInput.addEventListener('input', () => {
-        updatePlayButton(playButton, timeInput.value, segmentIndex, title);
+        updatePlayButton(playButton, timeInput.value, segmentIndex, title, isZeroItem(item));
     });
     // ←→ 只移動游標，不要冒泡到微調快捷鍵；↑↓／P／R／S 仍可冒泡生效。
     timeInput.addEventListener('keydown', (event) => {
@@ -1068,6 +1248,54 @@ function renderSegmentCard(entry, segmentIndex) {
     });
     timeLine.append(timeInput, playButton);
     body.append(timeLine);
+
+    // 「零長度」checkbox：卡片右上角。勾選＝這一段完全沒有對應音檔（師父沒念），
+    // 起訖壓成相等，前後段落調整時自動吸附此段邊界，且不可點播。
+    if (kind === 'segment') {
+        const zeroLabel = document.createElement('label');
+        zeroLabel.className = 'checkbox-row compact segment-zero-toggle';
+        zeroLabel.title = '勾選表示此段音檔長度為零（師父未念）：起訖永遠相等、'
+            + '調整前後段落時自動吸附此段、不可點播。';
+        const zeroBox = document.createElement('input');
+        zeroBox.type = 'checkbox';
+        zeroBox.checked = isZeroItem(item);
+        zeroLabel.classList.toggle('on', zeroBox.checked);
+        zeroBox.addEventListener('change', () => {
+            commitHistory();
+            item.zero = zeroBox.checked;
+            zeroLabel.classList.toggle('on', zeroBox.checked);
+            if (zeroBox.checked) {
+                collapseToZero(item);
+                timeInput.value = formatTimeMarker(item, kind);
+                timeInput.dataset.startTc = item.start_label;
+                timeInput.dataset.endTc = item.end_label;
+            }
+            updatePlayButton(playButton, timeInput.value, segmentIndex, title, zeroBox.checked);
+            node.classList.toggle('zero-seg', zeroBox.checked);
+            applySegmentEditability(node);
+            onSegmentEdit(segmentIndex);
+            // 勾選零長度＝確認此段（無音可聽，等同「已聽過」）；取消則須重新確認。
+            const meta = ensureMeta(item);
+            if (zeroBox.checked) {
+                meta.lastPlayed = nowStamp();
+            } else {
+                meta.lastPlayed = '';
+            }
+            refreshSegmentMetaChips(segmentIndex);
+            updateMetaStrip(sessionItems());
+            renderSessionList();
+            commitHistory();
+            setStatus(zeroBox.checked ? '已標記本段「零長度」（師父未念）：起訖相等、不可點播，並確認此段'
+                : '已取消「零長度」標記（此段須重新確認）', 'ok');
+        });
+        const zeroText = document.createElement('span');
+        zeroText.textContent = '零長度';
+        zeroLabel.append(zeroBox, zeroText);
+        const actions = node.querySelector('.segment-actions');
+        if (actions) actions.insertBefore(zeroLabel, actions.firstChild);
+        node.classList.toggle('zero-seg', isZeroItem(item));
+        applySegmentEditability(node);
+    }
 
     // PDF answer (or opening text) — read-only block (div, not textarea) so
     // mouse wheel scrolls the page instead of an inner scrollbar.
@@ -1099,8 +1327,9 @@ function renderSegmentCard(entry, segmentIndex) {
     applyAm2CardExtras(node, item, kind);
 
     // Click question / answer to play (same as ▶); keep text selection for copy.
-    bindPlayOnTextClick(titleField, playButton, '點擊播放這一段');
-    bindPlayOnTextClick(answerEl, playButton, '點擊播放這一段');
+    const playHint = isZeroItem(item) ? '此段為零長度（師父未念），無音可播' : '點擊播放這一段';
+    bindPlayOnTextClick(titleField, playButton, playHint);
+    bindPlayOnTextClick(answerEl, playButton, playHint);
     // Ensure Q/A surfaces never keep form focus that would swallow P / ← / →.
     for (const surface of [titleField, answerEl]) {
         surface.addEventListener('pointerdown', () => {
@@ -1332,7 +1561,13 @@ function formatTimeMarker(item, kind) {
     return `${prefix}：${start} - ${end}`;
 }
 
-function updatePlayButton(button, markerText, segmentIndex, title) {
+function updatePlayButton(button, markerText, segmentIndex, title, zeroLocked = false) {
+    if (zeroLocked) {
+        button.textContent = '☐ 零長度（師父未念，無音可播）';
+        button.disabled = true;
+        button.onclick = null;
+        return;
+    }
     const range = parseTimeMarkerValue(markerText);
     if (!range) {
         button.textContent = '▶ 時間格式無效';
@@ -1365,13 +1600,21 @@ function updatePlayButton(button, markerText, segmentIndex, title) {
 function playSegmentByIndex(segmentIndex) {
     const items = sessionItems();
     if (segmentIndex == null || !items[segmentIndex]) return false;
-    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${segmentIndex}"]`);
+    // 零長度段（師父未念）不可播：改播下一個非零段。
+    const target = isZeroItem(items[segmentIndex].item)
+        ? resolveZeroChain(items, segmentIndex, +1)
+        : segmentIndex;
+    if (target == null) {
+        setStatus('此段標記為零長度（師父未念），且後面已無可播放的段落', 'ok');
+        return true;
+    }
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${target}"]`);
     const playBtn = card?.querySelector('.play-range');
     blurIfBlocksShortcuts(document.activeElement);
     if (playBtn && !playBtn.disabled) {
         playBtn.click();
     } else {
-        replaySegment(segmentIndex);
+        replaySegment(target);
     }
     card?.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     return true;
@@ -1418,7 +1661,12 @@ function nudgeSegmentStart(delta, opts = {}) {
     if (!Number.isFinite(delta) || delta === 0) return;
 
     const prev = items[idx - 1]?.item;
-    const minStart = prev?.start != null && Number.isFinite(prev.start) ? prev.start : 0;
+    // 起始下限：跳過上一側的零長度段，取「上一個非零段」的起始（零長度段被前一段壓成零寬，不能當下限）。
+    let limitItem = prev;
+    for (let k = idx - 1; k >= 0 && limitItem && isZeroItem(limitItem); k -= 1) {
+        limitItem = items[k - 1]?.item;
+    }
+    const minStart = limitItem?.start != null && Number.isFinite(limitItem.start) ? limitItem.start : 0;
     const maxStart = item.end != null && Number.isFinite(item.end) ? item.end : Infinity;
     const next = roundSeconds(clamp(item.start + delta, minStart, maxStart));
     if (next === roundSeconds(item.start)) {
@@ -1438,7 +1686,8 @@ function nudgeSegmentStart(delta, opts = {}) {
 
     const signed = next >= item.start ? `+${(next - item.start).toFixed(3)}` : (next - item.start).toFixed(3);
     setSegmentEdge(idx, 'start', next);
-    setSegmentEdge(idx - 1, 'end', next, { markEdited: false });
+    // 上一側是零長度段時，穿越它把「上一個非零段」的結束一併同步（連續多段零長度也一次穿過）。
+    propagateEdgeThroughZero(idx, 'start', next);
     const label = itemKindLabel(entry.kind, entry.number);
     const previewNote = opts.previewShort ? ' · 將試播 3 秒' : '';
     setStatus(`已將${label}起始調至 ${secondsToTimecode(next)}（${signed}s）${previewNote}`, 'ok');
@@ -1481,6 +1730,8 @@ async function replaySegment(segmentIndex, { maxDuration } = {}) {
     const entry = sessionItems()[segmentIndex];
     const session = currentSession();
     if (!entry || (!session?.audio_file && !session?.media_parts?.length)) return;
+    // 零長度段（師父未念）：無音可播，直接略過。
+    if (isZeroItem(entry.item)) return;
     const start = entry.item.start;
     const end = entry.item.end;
     if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) return;
@@ -1532,17 +1783,19 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
     if (!entry || seconds == null || !Number.isFinite(seconds)) return false;
     const item = entry.item;
     const value = roundSeconds(seconds);
+    // 零長度段（師父沒念）：起訖永遠相等，不可被拉開。
+    const zero = isZeroItem(item);
     if (edge === 'start') {
         item.start = value;
         item.start_label = secondsToTimecode(value);
-        if (item.end == null || item.end < value) {
+        if (zero || item.end == null || item.end < value) {
             item.end = value;
             item.end_label = secondsToTimecode(value);
         }
     } else {
         item.end = value;
         item.end_label = secondsToTimecode(value);
-        if (item.start == null || item.start > value) {
+        if (zero || item.start == null || item.start > value) {
             item.start = value;
             item.start_label = secondsToTimecode(value);
         }
@@ -1566,11 +1819,14 @@ function setSegmentEdge(segmentIndex, edge, seconds, { markEdited = true } = {})
 function applyPlayerTime(segmentIndex, edge, seconds) {
     commitHistory();
     if (!setSegmentEdge(segmentIndex, edge, seconds)) return;
-    if (edge === 'start') setSegmentEdge(segmentIndex - 1, 'end', seconds, { markEdited: false });
-    if (edge === 'end') setSegmentEdge(segmentIndex + 1, 'start', seconds, { markEdited: false });
+    // 連動相鄰段（可穿越中間的零長度段）；遇零長度段即穿越，設到下一個非零段。
+    propagateEdgeThroughZero(segmentIndex, edge, seconds);
     const entry = sessionItems()[segmentIndex];
     const label = edge === 'start' ? '起始' : '結束';
-    setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}`, 'ok');
+    const items = sessionItems();
+    const hit = resolveZeroChain(items, segmentIndex, edge === 'start' ? -1 : +1);
+    const note = hit != null ? `（連動至第 ${items[hit].number} 段，穿越零長度段）` : '';
+    setStatus(`已將第 ${entry?.number || segmentIndex + 1} 段${label}時間設為 ${secondsToTimecode(seconds)}${note}`, 'ok');
     commitHistory();
     renderSessionList();
     if (edge === 'start') replaySegment(segmentIndex);
@@ -1606,7 +1862,8 @@ function applySegmentEditability(card) {
     if (!card) return;
     const editable = !isMobileDock() || card.classList.contains('editing');
     for (const field of card.querySelectorAll('.segment-title, .marker-input')) {
-        if (field.dataset.locked === '1') {
+        if (field.dataset.locked === '1' || (field.classList.contains('marker-input') && card.classList.contains('zero-seg'))) {
+            // 零長度段：時間輸入框鎖定唯讀（起訖恆等，無意義可編）。
             field.readOnly = true;
         } else {
             field.readOnly = !editable;
@@ -2089,6 +2346,12 @@ function setupMiniPlayer() {
         // 時間輸入框：僅 ←→ 留給游標，其餘快捷鍵照常。
         if (inMarker && isArrowLeftRight(event)) return;
         if (!inMarker && isTypingInEditableField(event.target)) return;
+        // Shift+N：定位到下一個「已確認」段（只捲動不播放；在 modifier guard 之前攔；無 shift 的 N 在 switch 內）。
+        if (event.code === 'KeyN' && event.shiftKey) {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(true);
+            return;
+        }
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
         switch (event.code) {
@@ -2113,6 +2376,12 @@ function setupMiniPlayer() {
                 if (!player.src) return;
                 event.preventDefault();
                 if (!player.paused) player.pause();
+                break;
+            }
+            case 'KeyN': {
+                // N：定位到下一個「未確認」段（只捲動不播放；Shift+N 定位已確認段）。
+                event.preventDefault();
+                jumpToSegmentByConfirmed(false);
                 break;
             }
             case 'ArrowLeft': {

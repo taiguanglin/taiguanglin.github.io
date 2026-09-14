@@ -60,6 +60,10 @@ def _is_audio_map2_reviewed(item: Optional[dict]) -> bool:
         return False
     if item.get("start") is None:
         return False
+    # 「零長度」段（師父未念，audio_map2 UI 勾選寫回 zero: true）：無音可播，
+    # 與零寬段相同，不注入播放鈕。
+    if item.get("zero") is True:
+        return False
     return _has_been_listened(item)
 
 

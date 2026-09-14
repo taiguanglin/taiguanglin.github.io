@@ -50,6 +50,13 @@
                     <button id="undoButton" class="icon-button history-button" type="button" aria-label="復原上一步" title="復原上一步" disabled>↶</button>
                     <button id="redoButton" class="icon-button history-button" type="button" aria-label="重做下一步" title="重做下一步" disabled>↷</button>
                 </div>
+                <div id="jumpNav" class="jump-nav hidden">
+                    <button id="jumpUnconfirmedButton" class="button button-secondary jump-nav-btn" type="button"
+                        title="定位到下一個未確認段落（只捲動不播放、不更新「最後播放」；右鍵／長按：定位並播放；快捷鍵 N）">⤒ 下一個未確認</button>
+                    <button id="jumpConfirmedButton" class="button button-secondary jump-nav-btn" type="button"
+                        title="定位到下一個已確認段落（只捲動不播放、不更新「最後播放」；右鍵／長按：定位並播放；快捷鍵 Shift+N）">⤓ 下一個已確認</button>
+                    <span class="jump-nav-badge" title="尚未確認（未聽過）的段落數">未確認 <strong id="jumpConfirmCount">0</strong></span>
+                </div>
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
@@ -107,6 +114,7 @@
                 </div>
 
                 <div id="conflictBanner" class="warning hidden"></div>
+
                 <div id="editorRoot" class="segments"></div>
             </section>
         </main>

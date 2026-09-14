@@ -35,6 +35,13 @@
                     <button id="undoButton" class="icon-button history-button" type="button" aria-label="復原上一步" title="復原上一步" disabled>↶</button>
                     <button id="redoButton" class="icon-button history-button" type="button" aria-label="重做下一步" title="重做下一步" disabled>↷</button>
                 </div>
+                <div id="jumpNav" class="jump-nav hidden">
+                    <button id="jumpUnconfirmedButton" class="button button-secondary jump-nav-btn" type="button"
+                        title="定位到下一個未確認段落（只捲動不播放、不更新「最後播放」；右鍵／長按：定位並播放；快捷鍵 N）">⤒ 下一個未確認</button>
+                    <button id="jumpConfirmedButton" class="button button-secondary jump-nav-btn" type="button"
+                        title="定位到下一個已確認段落（只捲動不播放、不更新「最後播放」；右鍵／長按：定位並播放；快捷鍵 Shift+N）">⤓ 下一個已確認</button>
+                    <span class="jump-nav-badge" title="尚未確認（未聽過）的段落數">未確認 <strong id="jumpConfirmCount">0</strong></span>
+                </div>
             </div>
             <div class="topbar-actions">
                 <span id="saveStatus" class="status-pill">尚未載入</span>
@@ -65,7 +72,7 @@
                 <h2>選擇講次開始校稿（手機請點左上角「檔案」）——講經段落對齊</h2>
                 <p>每段一張卡片：標題為講次序號＋段落 pid，內文為該段落文字。側邊欄列出該系列的每個講次；選講次後逐段校對音檔起訖時間。</p>
                 <p>卡片標題旁有<b>自動對齊信心分數</b>——紅色「⚠ 低信心」請特別仔細聽檔。點 ▶ 或點文字可試聽該段（段尾自停）；實際聽過（有「最後播放」記錄）即視為<b>已確認</b>，儲存後寫回段落 `confirmed`，電子書才會注入該講的段落跟播時間。</p>
-                <p>時間標記格式 <code>00:00:00.000</code>。快捷鍵：<kbd>P</kbd> 播放／暫停、<kbd>↑</kbd><kbd>↓</kbd> 上下段導覽、<kbd>←</kbd><kbd>→</kbd> 微調起始時間。</p>
+                <p>時間標記格式 <code>00:00:00.000</code>。快捷鍵：<kbd>P</kbd> 播放／暫停、<kbd>↑</kbd><kbd>↓</kbd> 上下段導覽、<kbd>←</kbd><kbd>→</kbd> 微調起始時間、<kbd>N</kbd> 跳到下一個未確認段落（<kbd>Shift</kbd>+<kbd>N</kbd> 跳到下一個已確認段落）。</p>
                 <p>音檔走 <code>../audio/jiangjing/*.opus</code>（本地需 <code>audio/serve.py</code> 或同 origin 服務）。首次儲存前在「設定」填 GitHub Fine-grained PAT（權限只需此 repo 的 <code>Contents: Read and write</code>）。</p>
             </section>
 
@@ -93,6 +100,7 @@
                 </div>
 
                 <div id="conflictBanner" class="warning hidden"></div>
+
                 <div id="editorRoot" class="segments"></div>
             </section>
         </main>

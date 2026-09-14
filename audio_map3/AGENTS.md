@@ -44,6 +44,9 @@
    `build_maps.py` `merge_existing` 會保留 `zero` 並把起訖壓回相等；`realign_dtw.py`
    把 zero 段與 confirmed 鐵錨同等 pin 住。人工校正時「誤留極短長度的沒念經文段」
    就用這個勾選修復（四十二章經已把 31 段這類段落 `confirmed` 翻回 false，見 git 歷史）。
+   另有「跳瀏工具列」（topbar 左側）：⤒/⤓ 循環定位到下一個未確認／已確認段落（只捲動
+   不播放、不寫 `lastPlayed`），右鍵／長按才播放，快捷鍵 `N`／`Shift`+`N`；徽章顯示未確認數（確認＝`meta.lastPlayed`
+   有值，zero 勾選也算確認）。audio_map2 已有同款功能與零長度行為（同月子專案同步）。
 
 **本文件 §1–§10 是 DTW 精修路線（`realign_dtw.py`）的詳細程序**，仍有效，但要放在
 上面三階段框架下理解：`build_maps.py` 是 SoT/注入寫入者；`realign_dtw.py` 是把

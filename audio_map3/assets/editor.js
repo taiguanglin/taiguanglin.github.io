@@ -59,6 +59,9 @@ const nudgeBurst = {
 /** 目前播放音檔在其合併時間軸上的起點偏移（split session 用，單檔為 0）。 */
 let activePartBase = 0;
 
+/** 跳瀏游標：連續點擊可逐段前進，但不影響編輯焦點／播放狀態。 */
+let jumpCursor = null;
+
 const els = {
     app: document.querySelector('#app'),
     sidebar: document.querySelector('#sidebar'),
@@ -105,6 +108,10 @@ const els = {
     conflictPreview: document.querySelector('#conflictPreview'),
     reloadRemoteButton: document.querySelector('#reloadRemoteButton'),
     forceSaveButton: document.querySelector('#forceSaveButton'),
+    jumpNav: document.querySelector('#jumpNav'),
+    jumpUnconfirmedButton: document.querySelector('#jumpUnconfirmedButton'),
+    jumpConfirmedButton: document.querySelector('#jumpConfirmedButton'),
+    jumpConfirmCount: document.querySelector('#jumpConfirmCount'),
     opusWarning: document.querySelector('#opusWarning'),
     conflictBanner: document.querySelector('#conflictBanner'),
     audioPlayer: document.querySelector('#audioPlayer'),
@@ -162,6 +169,7 @@ async function bootstrap() {
 }
 
 function bindEvents() {
+    bindJumpNav();
     els.monthSelect.addEventListener('change', () => {
         state.prefs.lastSessionId = null;
         setPrefs({ lastSessionId: null });
@@ -868,6 +876,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
     els.monthSelect.value = month;
     state.sessionId = null;
     state.activeSegmentIndex = null;
+    jumpCursor = null;
     state.usingDraft = false;
 
     const path = mapPath(month);
@@ -909,7 +918,8 @@ async function loadMonth(month, { forceRemote = false } = {}) {
 
         let map = JSON.parse(text);
         // 講經段落：把 audio_map3 的 系列/講次/段落 轉成內部 sessions 模型。
-        map = map3ToMap2(map);
+        // 草稿存的是內部 sessions 模型（serializeMap），不能再轉一次，否則會變成 0 講。
+        map = Array.isArray(map?.sessions) ? map : map3ToMap2(map);
         state.map = map;
         state.originalMap = cloneMap(map);
         state.currentSha = sha;
@@ -1075,6 +1085,7 @@ function selectSession(sessionId) {
     clearNudgeBurst({ commit: true });
     state.sessionId = sessionId;
     state.activeSegmentIndex = null;
+    jumpCursor = null;
     state.prefs.lastMonth = state.month;
     state.prefs.lastSessionId = sessionId;
     setPrefs({ lastMonth: state.month, lastSessionId: sessionId });
@@ -1116,6 +1127,86 @@ function scrollEditorToProgress() {
     requestAnimationFrame(() => requestAnimationFrame(apply));
 }
 
+// ---- 段落跳瀏（下一個未確認／已確認）--------------------------------------
+// 「確認」＝ 聽過（meta.lastPlayed 有值），與側邊欄「確認 N」／完成判定同源。
+// 零長度段（師父未念）勾選即視為已確認，不會被跳到。
+// 跳瀏＝只定位（不播放、不寫 lastPlayed，避免誤標已確認）；右鍵／長按才播放並記錄。
+function isItemConfirmed(item) {
+    return Boolean(item?.meta?.lastPlayed);
+}
+
+/**
+ * 從 currentIndex 出發找下一段符合 wanted（true=已確認、false=未確認）的段落。
+ * 依序前進、循環整份清單，最多掃一輪（items.length 步）。
+ * @returns {number|null} 目標 index；整份都沒有符合時回 null
+ */
+function findSegmentByConfirmed(items, currentIndex, wanted) {
+    if (!items.length) return null;
+    for (let step = 1; step <= items.length; step += 1) {
+        const i = (currentIndex + step) % items.length;
+        if (isItemConfirmed(items[i].item) === wanted) return i;
+    }
+    return null;
+}
+
+function jumpToSegmentByConfirmed(wanted, { play = false } = {}) {
+    const items = sessionItems();
+    if (!items.length) return;
+    const current = play ? state.activeSegmentIndex : jumpCursor;
+    const startIdx = current == null ? items.length - 1 : current;
+    const target = findSegmentByConfirmed(items, startIdx, wanted);
+    if (target == null) {
+        const curLabel = itemKindLabel(items[startIdx]?.kind, items[startIdx]?.number);
+        setStatus(wanted
+            ? `「${curLabel}」之後（含循環）沒有已確認的段落`
+            : `「${curLabel}」之後（含循環）沒有未確認的段落`, 'ok');
+        return;
+    }
+    jumpCursor = target; // 這次定位的段落，下一次定位從它之後找。
+    if (play) setActiveSegment(target);
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${target}"]`);
+    card?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if (card) {
+        card.classList.remove('jump-target');
+        void card.offsetWidth;
+        card.classList.add('jump-target');
+        card.addEventListener('animationend', () => card.classList.remove('jump-target'), { once: true });
+    }
+    const label = itemKindLabel(items[target].kind, items[target].number);
+    if (!play) {
+        // 只定位：不播放、不寫入「最後播放」，也不改變作用中段落（避免跳瀏誤標已確認）。
+        setStatus(`已定位${label}（${wanted ? '已確認' : '未確認'}）`, 'ok');
+        return;
+    }
+    playSegmentByIndex(target);
+    setStatus(`已跳到${label}（${wanted ? '已確認' : '未確認'}）並播放`, 'ok');
+}
+
+function updateJumpCount() {
+    if (!els.jumpConfirmCount) return;
+    const unconfirmed = sessionItems().filter((e) => !isItemConfirmed(e.item)).length;
+    els.jumpConfirmCount.textContent = String(unconfirmed);
+}
+
+/** 綁定常駐跳瀏工具列（index.html 靜態 #jumpNav；確認數由 updateJumpCount 更新）。
+ *  左鍵／快捷鍵：只捲動定位（不播放、不寫「最後播放」）；右鍵／長按：定位並播放。 */
+function bindJumpNav() {
+    const bind = (btn, wanted) => {
+        if (!btn) return;
+        btn.addEventListener('click', () => jumpToSegmentByConfirmed(wanted));
+        btn.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(wanted, { play: true });
+        });
+        bindLongPressMenu(btn, (event) => {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(wanted, { play: true });
+        });
+    };
+    bind(els.jumpUnconfirmedButton, false);
+    bind(els.jumpConfirmedButton, true);
+}
+
 function renderEditor() {
     const session = currentSession();
     if (!session) return;
@@ -1129,6 +1220,8 @@ function renderEditor() {
     const items = sessionItems();
     updateMetaStrip(items);
     els.editorRoot.innerHTML = '';
+    // 常駐跳瀏工具列（#jumpNav，在 topbar 左側）。
+    els.jumpNav?.classList.remove('hidden');
     items.forEach((entry, index) => {
         els.editorRoot.append(renderSegmentCard(entry, index));
     });
@@ -1137,6 +1230,7 @@ function renderEditor() {
     els.editorRoot.append(renderSessionReview(session));
     recomputeDirty();
     updateHistoryButtons();
+    updateJumpCount();
 }
 
 /** 講次層級「reviewed」控制列：切換 `session.reviewed` → 存檔寫回 `lectures.{N}.reviewed`。 */
@@ -1194,6 +1288,7 @@ function updateMetaStrip(items) {
     els.metaPlayedOnlyCount.textContent = String(played);
     els.metaEditedOnlyCount.textContent = String(edited);
     els.metaNoneCount.textContent = String(none);
+    updateJumpCount();
 }
 
 function renderSegmentCard(entry, segmentIndex) {
@@ -2296,6 +2391,12 @@ function setupMiniPlayer() {
         // 時間輸入框：僅 ←→ 留給游標，其餘快捷鍵照常。
         if (inMarker && isArrowLeftRight(event)) return;
         if (!inMarker && isTypingInEditableField(event.target)) return;
+        // Shift+N：定位到下一個「已確認」段（只捲動不播放；在 modifier guard 之前攔；無 shift 的 N 在 switch 內）。
+        if (event.code === 'KeyN' && event.shiftKey) {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(true);
+            return;
+        }
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
         switch (event.code) {
@@ -2320,6 +2421,12 @@ function setupMiniPlayer() {
                 if (!player.src) return;
                 event.preventDefault();
                 if (!player.paused) player.pause();
+                break;
+            }
+            case 'KeyN': {
+                // N：定位到下一個「未確認」段（只捲動不播放；Shift+N 定位已確認段）。
+                event.preventDefault();
+                jumpToSegmentByConfirmed(false);
                 break;
             }
             case 'ArrowLeft': {
