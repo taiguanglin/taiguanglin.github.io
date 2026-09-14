@@ -18,6 +18,8 @@ const DEFAULT_PREFS = {
     contentRightGutter: 0,
     /** When false, play keeps the player hidden if the user already hid it. */
     autoShowMiniPlayer: true,
+    /** 手動輸入修改起訖時間時，是否自動同步上一段結束／下一段起始。 */
+    linkNeighborTimes: true,
     lastMonth: null,
     lastSessionId: null,
 };
