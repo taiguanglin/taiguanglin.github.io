@@ -14226,8 +14226,8 @@
           "start_label": "00:37:08.560",
           "end_label": "00:38:54.180",
           "confidence": 0.82,
-          "status": "auto",
-          "notes": "repaired:answer",
+          "status": "manual",
+          "notes": "repaired:answer | ok",
           "srt_preview": "沿啊这个腿脚后跟抵到这个腹腹股沟啊，大腿根部这个是知道的吧？然后这个脚趾头能触到大腿，外边是最好嗯持就发呃持久性，嗯，做好稳件服，然后你这个也得做好啊，你你已经做做了嘛。对 EELA 还有你啊，",
           "chapter_question_ids": [
             "question-e945fa36ef28"
@@ -14256,8 +14256,8 @@
           "start_label": "00:37:30.700",
           "end_label": "00:38:54.180",
           "confidence": 0.82,
-          "status": "auto",
-          "notes": "repaired:answer",
+          "status": "manual",
+          "notes": "repaired:answer | ok",
           "srt_preview": "沿啊这个腿脚后跟抵到这个腹腹股沟啊，大腿根部这个是知道的吧？然后这个脚趾头能触到大腿，外边是最好嗯持就发呃持久性，嗯，做好稳件服，然后你这个也得做好啊，你你已经做做了嘛。对 EELA 还有你啊，",
           "chapter_question_ids": [
             "question-85facdd1f39e"
@@ -28681,8 +28681,8 @@
           "start_label": "00:15:21.410",
           "end_label": "00:18:22.860",
           "confidence": 0.82,
-          "status": "auto",
-          "notes": "answer_opening",
+          "status": "manual",
+          "notes": "answer_opening | ok",
           "srt_preview": "妮莱雅呃，男性爱的供氧总量有限啊，现在医的说的啊，男性有五千次，那就怎么负重磕头啊，",
           "chapter_question_ids": [
             "question-21de2733e6d0"
@@ -28711,8 +28711,8 @@
           "start_label": "00:15:52.980",
           "end_label": "00:18:22.860",
           "confidence": 0.92,
-          "status": "auto",
-          "notes": "answer_opening",
+          "status": "manual",
+          "notes": "answer_opening | ok",
           "srt_preview": "负重磕五体投地得让大腿更强一点，呃，大腿肌肉更大一点。呃，这样就这个就有了，还有平时得练嗯，平时呃练那个提纲运动嗯，提纲运动，还有还有啊，不不能我我是不建议杀生的那个什么吃什么补品来方式的，这不需要的啊，这不需要。刚才已经都说了啊，提纲运动",
           "chapter_question_ids": [
             "question-2cdbb23203b0"

@@ -2822,7 +2822,7 @@
           "start_label": "00:27:01.650",
           "end_label": "00:27:52.257",
           "confidence": 0.88,
-          "status": "auto",
+          "status": "manual",
           "notes": "",
           "srt_preview": "他以为啊有没有典型点的修行计划啊，对于上班族来说，我是建议是凌晨起来打坐的。嗯，最好是凌晨。因为反正这个意志力也有个限度啊，到晚上回家之后就不想再线了，就很累，就早点睡。嗯，所以最好是凌晨起来啊，困也是这哪怕困也最好是早点起来。嗯，四五点钟",
           "chapter_question_ids": [
@@ -2852,8 +2852,8 @@
           "start_label": "00:27:52.257",
           "end_label": "00:28:52.700",
           "confidence": 0.88,
-          "status": "auto",
-          "notes": "",
+          "status": "manual",
+          "notes": "ok",
           "srt_preview": "然后磕头的事可以白天吃完午饭之后啊，下班之后也可以在晚上稍微磕点儿再睡觉，这样就可以了。还有呢平时就上班时间，一有空就多念念佛，呃，能拿书拿着书看的话就念念经什么的，还有拿什么来嗯替磕头啊，慢跑可以。但是呢这个也不是什么长久的办法，因为跑步",
           "chapter_question_ids": [
             "question-720d37bcda9c"
@@ -3538,8 +3538,8 @@
           "start_label": "00:00:02.680",
           "end_label": "00:01:59.800",
           "confidence": 0.92,
-          "status": "auto",
-          "notes": "name",
+          "status": "manual",
+          "notes": "name | ok",
           "srt_preview": "啊，多大的呢啊生不起忏悔之心啊，这个是可以说就是我值很重吧。啊，简单这么说吧，就是啊简单来就是境界低啊，你的胸围到了就可以申请了。现在是因为你感受不到别人的痛苦，而且对英国也是。虽然呃就算嘴上说相信吧，但是你还不能感受到那个你所你给其他重伤",
           "chapter_question_ids": [
             "question-7c3849c993c1"
@@ -3567,8 +3567,8 @@
           "start_label": "00:01:59.800",
           "end_label": "00:02:12.500",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "name",
+          "status": "manual",
+          "notes": "name | ok",
           "srt_preview": "逍遥见沧海，双班，一个一个半小时到两个小时啊，这个就可以不用练了，你就一直打算磕头，这两个一直持续反复的做就行。",
           "chapter_question_ids": [
             "question-9ffc4c62c485"
@@ -3596,8 +3596,8 @@
           "start_label": "00:02:12.500",
           "end_label": "00:02:56.800",
           "confidence": 0.9,
-          "status": "auto",
-          "notes": "answer_opening",
+          "status": "manual",
+          "notes": "answer_opening | ok",
           "srt_preview": "还有至至至于哪个先做这个无所谓，根据你的情况来定。一般我个人是上午打坐的啊，早晨起来一直打坐到中午啊，因为上午是什么东东西都不吃嘛，然后是吃完饭，嗯，下午休息一下，然后磕完头我然后再晚上再打坐。一般是这个顺序的。根据每个人的不同的情况嗯，看",
           "chapter_question_ids": [
             "question-0612ecc1a9d9"
@@ -3625,8 +3625,8 @@
           "start_label": "00:02:56.800",
           "end_label": "00:03:43.000",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "repaired:q_body",
+          "status": "manual",
+          "notes": "repaired:q_body | ok",
           "srt_preview": "还有打坐，尽量要坚持到，不能坚持为止，这样才能这样才能不断的进步啊，这个嗯就像在心理学上啊，心理学上或者身体的认知上，感知上也会是你去嗯去那个什么健身房，找那些个健身教练，嗯，他们也会建议的。然后我做什么动作和多做几次，最后实在坚持不来的时",
           "chapter_question_ids": [
             "question-213502807aa8"
@@ -3654,8 +3654,8 @@
           "start_label": "00:03:43.000",
           "end_label": "00:04:38.100",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "squeeze-fix:fuzzy-mid(0.67)",
+          "status": "manual",
+          "notes": "squeeze-fix:fuzzy-mid(0.67) | ok",
           "srt_preview": "下次啊加菲猫六六六，为什么世界各地人口增加资源减少了吗？嗯，是因为众生的福报越来越少了嘛。啊，所以就哦社会越来越不是个这个人的生活越来越不安定，也让人们处处在焦虑当中，这也是福报少的表现嘛。那如果你真你是个有硬手艺的人啊，或者是真真有本事的",
           "chapter_question_ids": [
             "question-c9dfff36d2a2"
@@ -3683,8 +3683,8 @@
           "start_label": "00:04:38.100",
           "end_label": "00:04:54.200",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "name",
+          "status": "manual",
+          "notes": "name | ok",
           "srt_preview": "关于建国嘛，嗯他也是嗯他也是按照剧本走的嘛，他他的目的可能就是要把美国搞黄了吧。导航嗯不是说要毁灭前先让他疯狂吗？他再怎么说，最后也得来来一会儿嘛，他毕竟是个霸权国家，",
           "chapter_question_ids": [
             "question-3bc2955837ac"
@@ -3711,9 +3711,9 @@
           "end": 349.8,
           "start_label": "00:04:54.200",
           "end_label": "00:05:49.800",
-          "confidence": 0.8,
-          "status": "auto",
-          "notes": "squeeze-fix:fuzzy-mid(0.56); 武僧段；開頭 ASR gap 294-322，尾段武层可證（）",
+          "confidence": 0.85,
+          "status": "manual",
+          "notes": "squeeze-fix:fuzzy-mid(0.56); 武僧段；開頭 ASR gap 294-322，尾段武层可證（） | ok",
           "srt_preview": "嗯，比打坐还还容易一些。虽然他们的那功夫也是需要一些年头来练，但是比打坐反而容易这个产地没有什么关系的啊，当然产品功夫高了，功夫也可以在意识层面上啊，心态上会有所提高。所以嗯在怎么说在身体嗯境界提高或者实战方面会有所进步。这是肯定的。但是一",
           "chapter_question_ids": [
             "question-550f5e89f724"
@@ -3770,8 +3770,8 @@
           "start_label": "00:05:49.800",
           "end_label": "00:07:47.400",
           "confidence": 0.92,
-          "status": "auto",
-          "notes": "answer_opening",
+          "status": "manual",
+          "notes": "answer_opening | ok",
           "srt_preview": "不不不怎么在场地上用功的清静啊，不持戒念楞严咒行不行啊？这个问题首先你得你得对戒，有一个正确的认知啊，就是要戒戒掉，灭掉那些个执着的呃必须必要的过程。嗯，所以要持戒。然后这个用这个正确的知见之后，自己一时之间控制不了这个啊欲望，所以不能守戒",
           "chapter_question_ids": [
             "question-cef3818d39e1"
@@ -3799,8 +3799,8 @@
           "start_label": "00:07:47.400",
           "end_label": "00:10:44.700",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "name",
+          "status": "manual",
+          "notes": "name | ok",
           "srt_preview": "其实但至少未来可能你得做 KIB 啊，收入的福报怎么运作，这个不能单看一个福报来说，而是你要吃的苦，这个也算在你的业当中啊，你可能有一段时间就得吃点苦。嗯，哪怕是过去啊，有哪怕过去当皇帝的人，他也会前期会出出去受苦，像住住院长似的，可也有过",
           "chapter_question_ids": [
             "question-d0699b24f1cb"
@@ -3828,8 +3828,8 @@
           "start_label": "00:10:44.700",
           "end_label": "00:11:44.900",
           "confidence": 0.88,
-          "status": "auto",
-          "notes": "answer_opening; 小静音1415 錨於 644.7（）",
+          "status": "manual",
+          "notes": "answer_opening; 小静音1415 錨於 644.7（） | ok",
           "srt_preview": "有时候只能靠这些小静音，幺四幺五啊，喂喂流浪动啊，喂猫啊、喂蚂蚁啊，这个什么啊，你尽量不要喂喂其他动物的肉啊，这样就是和和一些动物结恶元又和其其他动物结善缘，嗯，这这就有点得不偿失了。因为恶元难解，嗯，下缘相比而言就好说了。还有这个养动物的",
           "chapter_question_ids": [
             "question-712142df63e9"
@@ -3857,8 +3857,8 @@
           "start_label": "00:11:44.900",
           "end_label": "00:12:21.200",
           "confidence": 0.9,
-          "status": "auto",
-          "notes": "q_body",
+          "status": "manual",
+          "notes": "q_body | ok",
           "srt_preview": "一级啊练习私情的时候，心痒痒，想受你这个心痒痒是什么情绪上的痒痒啊，想呃开心呢还是什么意思啊？那个想受倒是嗯练习修思情，就说想受的。我还这第一次见过啊，一般都是会有升起什吗？呃，欢喜心是有，但是还没到哦，想笑的程度吧，或者是感激之情啊，或者",
           "chapter_question_ids": [
             "question-61dcd50fb3e9"
@@ -3885,9 +3885,9 @@
           "end": 835.7,
           "start_label": "00:12:21.200",
           "end_label": "00:13:55.700",
-          "confidence": 0.8,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.56); 六根/意識段；開頭 ASR gap 743-791，後段大腦機器可證（）",
+          "confidence": 0.85,
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.56); 六根/意識段；開頭 ASR gap 743-791，後段大腦機器可證（） | ok",
           "srt_preview": "那就算是走上正路了。意识操控的一台机器机器中的一个中枢系统，呃，通过这个大脑来在控制其他身体部位。但是呢也有些人是悟自信当中产生",
           "chapter_question_ids": [
             "question-de7cc1089830"
@@ -3914,9 +3914,9 @@
           "end": 880.5,
           "start_label": "00:13:55.700",
           "end_label": "00:14:40.500",
-          "confidence": 0.8,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.79); 自性ASR作自信；夢喻可證（）",
+          "confidence": 0.85,
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.79); 自性ASR作自信；夢喻可證（） | ok",
           "srt_preview": "中产生的妄想，所以他也不可能超越自信程度啊，就像我们现在做梦啊睡觉了，做梦啊，梦中可以创造整个宇宙出来梦，梦里也可以在宇宙中翱翔是吧？也可以创造其他的命人，哪动物啊、什么大环境啊，什么都可以创造出来。但是这一切的一切，在梦里创造的一切东西都",
           "chapter_question_ids": [
             "question-9a8d5d9450ff"
@@ -3944,8 +3944,8 @@
           "start_label": "00:14:40.500",
           "end_label": "00:16:25.600",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "answer_opening; 千湍盈泰ASR作天瑞银泰；出阳神可證（）",
+          "status": "manual",
+          "notes": "answer_opening; 千湍盈泰ASR作天瑞银泰；出阳神可證（） | ok",
           "srt_preview": "天瑞银泰啊，到家出阳山，嗯，国家对应深深。嗯，你是没有看十年前的数吗？啊，这扬城是根本还没有到菩萨境界，阳神还是凡佛，到二禅就可以出阳神。嗯，啊至于杨参是怎么出来的啊，这个这个不好说啊，有些人是从头顶飞出来，有些人是从胸口往前出来的，呃，各",
           "chapter_question_ids": [
             "question-0e0e14b85ce4"
@@ -3973,8 +3973,8 @@
           "start_label": "00:16:25.600",
           "end_label": "00:17:24.300",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "answer_opening",
+          "status": "manual",
+          "notes": "answer_opening | ok",
           "srt_preview": "民啊，打坐这个只要头上不昏沉或者头上出问题的话，你可以坚持啊其他一切身体身体的痛楚啊啊可以坚持。嗯，那尽量坚持到不能再坚持为止。呃，四十分钟还是太短了，还有盘腿要姿势要对啊，前面已经多次讲过了，这个脚后跟要抵到腹股沟啊，尽量往往上盘往里盘，",
           "chapter_question_ids": [
             "question-0d29e8103caf"
@@ -4002,8 +4002,8 @@
           "start_label": "00:17:24.300",
           "end_label": "00:18:20.100",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.65); 大悲咒水/四杯可證；開頭 ASR 殘缺（）",
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.65); 大悲咒水/四杯可證；開頭 ASR 殘缺（） | ok",
           "srt_preview": "不知不花背咒，再摆一杯，总共做四杯啊，那基本上两百遍大白粥，然后把这个四杯水分别放到房子的四个角落里啊，然后你在那个那里边再练的平时多念大悲咒，然后每隔几天啊，至少三天内重新做一次，这样你就可以你维持这样的一个结节。但是但是你的发心得要存啊",
           "chapter_question_ids": [
             "question-44b15c4a2a07"
@@ -4031,8 +4031,8 @@
           "start_label": "00:18:20.100",
           "end_label": "00:19:23.600",
           "confidence": 0.88,
-          "status": "auto",
-          "notes": "answer_opening",
+          "status": "manual",
+          "notes": "answer_opening | ok",
           "srt_preview": "这个是完全可以挡住其他外邪入侵的千瑞银泰啊，我猜你肯定没有看看我十年前的书，要不然你你你就不会说一场四场这么简单的进的话，他做梦做梦这个事儿吧。一开始有些人是嗯的确可以在梦中织梦啊，但是修行到一定程度，他就不能再织梦了。因为一开始的时候，你",
           "chapter_question_ids": [
             "question-eff624ffce35"
@@ -4060,8 +4060,8 @@
           "start_label": "00:19:23.600",
           "end_label": "00:24:01.400",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "squeeze-fix:fuzzy-mid(0.66)",
+          "status": "manual",
+          "notes": "squeeze-fix:fuzzy-mid(0.66) | ok",
           "srt_preview": "马俊川好，你也应该去好好看看一看十年前的书啊，这个饮食是有逐渐逐渐的断的，不能一下子断一下断断的可能这个营养不良啊，身体他还没有改变过来。情况下，你一下断断很多东西的话就出现其他不好的情况。嗯，所以要慢慢改变。嗯，首先不吃肉呃，首先就从不吃",
           "chapter_question_ids": [
             "question-3b3a8b014567"
@@ -4118,8 +4118,8 @@
           "start_label": "00:25:05.100",
           "end_label": "00:25:45.300",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "answer_opening; 河清海晏ASR作和青海燕（）",
+          "status": "manual",
+          "notes": "answer_opening; 河清海晏ASR作和青海燕（） | ok",
           "srt_preview": "和青海燕啊，感恩啊，你说的都对啊，感恩是修行的重要的一个前提条件吧。啊，一个人没有承承，不承恩加持的啊，因为你是没感感恩，这人说看的嗯挺好，有这样的心态就很好了。",
           "chapter_question_ids": [
             "question-2e2958b69811"
@@ -4147,8 +4147,8 @@
           "start_label": "00:25:45.300",
           "end_label": "00:26:25.400",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "squeeze-fix:fuzzy-mid(0.77)",
+          "status": "manual",
+          "notes": "squeeze-fix:fuzzy-mid(0.77) | ok",
           "srt_preview": "哎了啊嗯这个快速旋转啊，昨天有人问嗯，他有快速飞行的感觉，但实际上他没有飞，只是在脑子里产生那种感觉而已。嗯，你也一样啊，实际上你也没有旋转，嗯，只是脑子里产生那种感觉而已，那都是把它当做幻觉来看就可以。嗯，根本不用管啊。你这个正常的，该观",
           "chapter_question_ids": [
             "question-75e59484f859"
@@ -4176,8 +4176,8 @@
           "start_label": "00:26:25.400",
           "end_label": "00:26:59.800",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "repaired:q_body",
+          "status": "manual",
+          "notes": "repaired:q_body | ok",
           "srt_preview": "云啊，思念师傅，您是不是也可以从您那里得到加持，或者由您传递过来的阿弥陀佛加持。嗯，要不你你把我把这个中间的我给去掉，你直接四点二米陀佛，这这样是不是传递过来加持力更大呀？我这个人毕竟是个中间的人，他我我会打折一部分是吧？我还要是处在一个带",
           "chapter_question_ids": [
             "question-c72a0403d701"
@@ -4205,8 +4205,8 @@
           "start_label": "00:26:59.800",
           "end_label": "00:28:27.600",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.55); 云朋/小乘四果；ASR 嚴重變形但無色界/阿罗汉可證（）",
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.55); 云朋/小乘四果；ASR 嚴重變形但無色界/阿罗汉可證（） | ok",
           "srt_preview": "云鹏啊，小城四国四探八定第三届的对应关系。这样就我是三个，再加上二十万，就是第四个，也就是从嗯名字我就不知道怎么对嘛。但但是你可以查啊，就是嗯是无色件。对无色界定的最底层的那个是空无边处定。呃，这个是不在小城市国内，再往上开始是实无边处定，",
           "chapter_question_ids": [
             "question-e36cb0dc971c"
@@ -4234,8 +4234,8 @@
           "start_label": "00:28:27.600",
           "end_label": "00:29:08.200",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "verified; 未找到逐字對應，依前後段夾入（）; 重排：音檔在 #25 前念圆觉经禅那（需主仪）；",
+          "status": "manual",
+          "notes": "verified; 未找到逐字對應，依前後段夾入（）; 重排：音檔在 #25 前念圆觉经禅那（需主仪）； | ok",
           "srt_preview": "需主仪啊，圆觉经德参呢哈，就是那个提供加持力呃，菩萨或者博能提供的加持力。这个对反复的阶段",
           "chapter_question_ids": [
             "question-1fa7405edca7"
@@ -4320,9 +4320,9 @@
           "end": 1933.7,
           "start_label": "00:31:19.700",
           "end_label": "00:32:13.700",
-          "confidence": 0.8,
-          "status": "auto",
-          "notes": "verified; 未找到逐字對應，依前後段夾入（）; 剖腹产錨於 1879.7；乳腺內容 ASR 弱（）",
+          "confidence": 0.85,
+          "status": "manual",
+          "notes": "verified; 未找到逐字對應，依前後段夾入（）; 剖腹产錨於 1879.7；乳腺內容 ASR 弱（） | ok",
           "srt_preview": "剖腹产是有一定影响的，需要一段时间的修行。嗯嗯，除非你是专门的啊，把这个事儿想的太重了，就有点一想。嗯，不这样的话大大概率没什么问题。至于这个剖腹产还是会受影响的，先先嗯先把他们这个冤亲寨主怎么操作？这个前面都说了，先做这个，然后每天磕头打",
           "chapter_question_ids": [
             "question-3238598abbea"
@@ -4350,8 +4350,8 @@
           "start_label": "00:32:13.700",
           "end_label": "00:33:32.800",
           "confidence": 0.92,
-          "status": "auto",
-          "notes": "repaired:answer",
+          "status": "manual",
+          "notes": "repaired:answer | ok",
           "srt_preview": "书上呢这个膝盖这种骨头的毛病，只能是用嗯打中双盘来修的。一般你能坚持两个小时的基本嗯就可以去修哦，修不好了。还有啊，如果受伤了，你你觉得太疼了，就最好还是收敛一点啊，不要拼命的磕啊。虽然嗯说有些人是硬硬，是用这种方法来磕口气的，也可以做到，",
           "chapter_question_ids": [
             "question-1832125c245c"
@@ -4379,8 +4379,8 @@
           "start_label": "00:33:32.800",
           "end_label": "00:33:56.300",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "repaired:name",
+          "status": "manual",
+          "notes": "repaired:name | ok",
           "srt_preview": "还有阿白剖腹产两次。这个前面也说过了啊，这个身体的确受影响啊，这个肯定的。嗯，但是你只能是继续练了，你不练可能就像下边说的一样，不练身体怪正常嘛，所以练正常，练腹式呼吸，然后磕头，然后打坐你这些都练就可以了。请您好，",
           "chapter_question_ids": [
             "question-75696826cab6"
@@ -4408,8 +4408,8 @@
           "start_label": "00:33:56.300",
           "end_label": "00:34:43.500",
           "confidence": 0.9,
-          "status": "auto",
-          "notes": "repaired:fuzzy(0.30x6)",
+          "status": "manual",
+          "notes": "repaired:fuzzy(0.30x6) | ok",
           "srt_preview": "请您好，老是想起某个人啊，这也是一种嗯业，这也算是一种业。等消了啊，会经会一些经历一些事情啊，经历一些事情之后，这种念头会自己自己会消失。所以这得消这个业。至于嗯至于你这个念回想的时候，他出现了会被会回想给他这个没有关系啊。你你说你心里怎么",
           "chapter_question_ids": [
             "question-b8a85e30a453"
@@ -4437,8 +4437,8 @@
           "start_label": "00:34:43.500",
           "end_label": "00:35:34.500",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.68)",
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.68) | ok",
           "srt_preview": "想到什么就能马上回想给谁的 alen allen 啊，这个好呃，众生不可能在一个世界一直待着啊，所以这个世界消失了，这个世界佛法消失了，或者整个世界都毁了，这个众生就会送到其他世界投胎去。嗯，所以不一定说这一百年没有哦，没有往生的话，就只能",
           "chapter_question_ids": [
             "question-3ce0c5646e0d"
@@ -4466,8 +4466,8 @@
           "start_label": "00:35:34.500",
           "end_label": "00:36:15.600",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "repaired:q_body",
+          "status": "manual",
+          "notes": "repaired:q_body | ok",
           "srt_preview": "最好还有嗯刽子手和死刑犯之前有没有因果啊，这肯定也是有因果的啊，这个杀业未尽嘛。嗯，有些刽子手呢就是曾经嗯曾曾经前世做过什么一些虫子之类的，经常被人拍死啊，所以后来就当了刽子手，嗯就来报复吧，所以业还得消啊，这个也算是一种消的业。但是呢嗯在",
           "chapter_question_ids": [
             "question-53f9dd6e2b20"
@@ -4495,8 +4495,8 @@
           "start_label": "00:36:15.600",
           "end_label": "00:36:50.700",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.56); 看客ASR作看课（）",
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.56); 看客ASR作看课（） | ok",
           "srt_preview": "所以业还会轮着相互之间杀来杀去的事，不会结束看课啊，念咒和念佛。还有如果你把他们作觉得啊念长咒啊，阿弥陀佛这样的四个字的符号啊，所以你现在愿意这一切一起来，这没有关系，等等等，你等你自己练到一定程度啊，自己不想再念这个长的时候，你再改过来就",
           "chapter_question_ids": [
             "question-bd38e0f25fe6"
@@ -4524,8 +4524,8 @@
           "start_label": "00:36:50.700",
           "end_label": "00:37:45.200",
           "confidence": 0.9,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.68)",
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.68) | ok",
           "srt_preview": "链接爱啊，这个一个半小时左右之后，有那个骨头修修的过程会会出现吧。啊，这个时候很疼的这个的确难熬，但是呢就是硬撑下去嘛。啊，如果你想快度快速的过去的，你可以求婆葡萄加食，还有这个饮食上要控制一下啊，不要吃那种油腻的啊。除了芥肉之外，少吃油腻",
           "chapter_question_ids": [
             "question-c950d1ee63cf"
@@ -4553,8 +4553,8 @@
           "start_label": "00:37:45.200",
           "end_label": "00:38:22.100",
           "confidence": 0.95,
-          "status": "auto",
-          "notes": "repaired:fuzzy(0.28x6)",
+          "status": "manual",
+          "notes": "repaired:fuzzy(0.28x6) | ok",
           "srt_preview": "最终打坐时的痛苦潮起又潮落啊，我建议你不要追求什么，打造发热的这种状态，你就正常打坐就行啊，只要身体不塌啊，就是哪怕是在我尾椎骨这儿啊，重心会落到这里。你可以，你随便拿个东西，稍微垫一下，稍微垫高一下就可以。一般初学是这么见的，我不知道你打",
           "chapter_question_ids": [
             "question-6ec6e329d6a2"
@@ -4582,8 +4582,8 @@
           "start_label": "00:38:22.100",
           "end_label": "00:39:42.100",
           "confidence": 0.85,
-          "status": "auto",
-          "notes": "repaired:name; 空空无我/科技上限（）",
+          "status": "manual",
+          "notes": "repaired:name; 空空无我/科技上限（） | ok",
           "srt_preview": "这样可以让身体板直一下板直做的比较板直空空无我啊，科技有没有上线啊？就是他这个宇宙设计的已经设计嗯，已经有个他基本规则。就是说啊当然除了其他到之外，其他外星球也很难去啊，没有办法让你去的。尤其是像啊人类这终有杀戮的文明，是更不能让他结合其他",
           "chapter_question_ids": [
             "question-e8028a3dceb1"
@@ -4611,8 +4611,8 @@
           "start_label": "00:39:42.100",
           "end_label": "00:40:18.100",
           "confidence": 0.88,
-          "status": "auto",
-          "notes": "repaired:fuzzy-mid(0.67)",
+          "status": "manual",
+          "notes": "repaired:fuzzy-mid(0.67) | ok",
           "srt_preview": "道常敏幺五六七三啊。这个行，如果很多人都希望你办的话，你就办吧。那这也算是一种你的业啊，前面讲过了这个业和修心，嗯，欲和修心互相矛盾的时候，还是以宵夜为主啊。既然有人需要啊，有那么多人需要你去盖开那两个班，那就开一个吧。反正不要想着整天是什",
           "chapter_question_ids": [
             "question-47e92d8e8244"
@@ -4640,8 +4640,8 @@
           "start_label": "00:40:18.100",
           "end_label": "00:41:08.820",
           "confidence": 0.9,
-          "status": "auto",
-          "notes": "name",
+          "status": "manual",
+          "notes": "name | ok",
           "srt_preview": "小心啊，家里供佛，然后然后是烧香，也还有是放水果，然后什么供清水啊，这些个首先是看你的发型，嗯，你是以大菩提心修行的人，或者是哪怕是个以处理新修行的人。那那这个呃佛想还是会有佛菩萨来照着的。如果你在天天对着那个求求财呀，什么求其他乱七八糟的",
           "chapter_question_ids": [
             "question-f9aae5cec108"
