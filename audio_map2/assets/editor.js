@@ -1049,6 +1049,8 @@ function findSegmentByConfirmed(items, currentIndex, wanted) {
     if (!items.length) return null;
     for (let step = 1; step <= items.length; step += 1) {
         const i = (currentIndex + step) % items.length;
+        // 開場不列入跳瀏掃描（與側邊欄統計一致：只計正文段落＋收場）。
+        if (items[i].kind === 'opening') continue;
         if (isItemConfirmed(items[i].item) === wanted) return i;
     }
     return null;
@@ -1089,7 +1091,9 @@ function jumpToSegmentByConfirmed(wanted, { play = false } = {}) {
 
 function updateJumpCount() {
     if (!els.jumpConfirmCount) return;
-    const unconfirmed = sessionItems().filter((e) => !isItemConfirmed(e.item)).length;
+    // 與側邊欄統計一致：只計正文段落＋收場，開場（kind:'opening'）不計，避免數字差 1。
+    const unconfirmed = sessionItems()
+        .filter((e) => e.kind !== 'opening' && !isItemConfirmed(e.item)).length;
     els.jumpConfirmCount.textContent = String(unconfirmed);
 }
 
