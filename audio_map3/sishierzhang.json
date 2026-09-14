@@ -1,7 +1,7 @@
 {
   "series": "sishierzhang",
   "book_number": 7,
-  "generated_at": "2026-09-14T07:43:39.344Z",
+  "generated_at": "2026-09-14T10:06:10.948Z",
   "lectures": {
     "1": {
       "audio": "2024年8月9日Tai师父讲经·四十二章经(1).opus",
@@ -879,7 +879,7 @@
           "end": 950.576,
           "conf": 1,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s924d8f3b",
@@ -942,7 +942,7 @@
           "end": 1157.078,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s54b6d077",
@@ -1113,7 +1113,7 @@
           "end": 1676.923,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s976f56af",
@@ -2717,10 +2717,11 @@
           "pid": "p-s11160c01",
           "text": "第十二章举难劝修佛言：“人有二十难，贫穷布施难，豪贵学道难，弃命必死难，得睹佛经难，生值佛世难，忍色忍欲难，见好不求难，被辱不嗔难，有势不临难，触事无心难，广学博究难，除灭我慢难，不轻未学难，心行平等难，不说是非难，会善知识难，见性学道难，随化度人难，睹境不动难，善解方便难。”",
           "start": 0.35,
-          "end": 0.65,
+          "end": 0.35,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sfe0a3db0",
@@ -3934,13 +3935,13 @@
           "end": 1578.511,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s46c78b7f",
           "text": "如果你能忍辱——忍受任何攻击而不生气、不愤怒、不怨恨、不希望对方倒霉，你的心态是真正的“忍者”，这个“忍者”肯定不是日本那个忍者。“忍者”几乎是圣人的状态，所以可以得到人们的尊重，称为“人尊”。",
           "start": 1578.511,
-          "end": 1608.031,
+          "end": 1605.903,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -3948,11 +3949,11 @@
         {
           "pid": "p-sc43f2e2e",
           "text": "心垢灭尽，净无瑕秽，是为最明。",
-          "start": 1605.703,
+          "start": 1605.903,
           "end": 1605.903,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s66090da4",
@@ -3967,7 +3968,7 @@
           "pid": "p-sdc0a1ba7",
           "text": "所以在这里“是为最明”就是没有妄想的状态。“心垢灭尽，净无瑕秽”就是没有妄想、分别、执着，这样的状态是最为“明”的状态，也就是“成佛”的状态。",
           "start": 1639.663,
-          "end": 1658.941,
+          "end": 1658.878,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -3975,11 +3976,12 @@
         {
           "pid": "p-s029e9fa3",
           "text": "未有天地，逮于今日；十方所有，无有不见，无有不知，无有不闻，得一切智，可谓明矣。",
-          "start": 1658.778,
+          "start": 1658.878,
           "end": 1658.878,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s1b42ca96",
@@ -4095,7 +4097,7 @@
           "end": 171.533,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sce63cbf5",
@@ -4679,7 +4681,7 @@
           "end": 214.99,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbb0e5e32",
@@ -4976,7 +4978,7 @@
           "end": 1127.915,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a8596b0",
@@ -5081,7 +5083,7 @@
           "pid": "p-se2277a64",
           "text": "当时的佛就是对当时的那些普通人们说的，在这里佛讲经就是很朴素的讲法，见到什么人就讲什么内容，他不会对普通人说上面还有什么色界、无色界这些内容，只是对在家人们讲不要过于贪恋妻子、舍宅的意思。",
           "start": 1509.227,
-          "end": 1532.206,
+          "end": 1532.209,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -5089,11 +5091,11 @@
         {
           "pid": "p-s9887fc40",
           "text": "第二十四章色欲障道佛言：“爱欲莫甚于色，色之为欲，其大无外。赖有一矣，若使二同，普天之人，无能为道者矣！”",
-          "start": 1532.206,
+          "start": 1532.209,
           "end": 1532.209,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa1a09071",
@@ -5317,7 +5319,7 @@
           "end": 366.552,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9c7403a6",
@@ -5506,7 +5508,7 @@
           "end": 947.52,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se270bc6d",
@@ -5569,7 +5571,7 @@
           "end": 1143.35,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf621e69d",
@@ -5749,7 +5751,7 @@
           "end": 1678.224,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s16439f2a",
@@ -5758,7 +5760,7 @@
           "end": 1736.56,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s17fa8913",
@@ -6090,7 +6092,7 @@
           "end": 608.67,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdad264d4",
@@ -7187,7 +7189,7 @@
           "end": 1503.889,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93732b42",
@@ -7205,7 +7207,7 @@
           "end": 1519.783,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2ff967ff",
@@ -7223,7 +7225,7 @@
           "end": 1551.772,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8b64e17c",
@@ -7241,7 +7243,7 @@
           "end": 1566.782,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a8c45a6",
@@ -7277,7 +7279,7 @@
           "end": 1603.272,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2cf8d3fc",
@@ -7295,7 +7297,7 @@
           "end": 1616.532,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd2074390",
@@ -7331,7 +7333,7 @@
           "end": 1719.802,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5eef20e1",
@@ -7570,7 +7572,7 @@
           "pid": "p-s73270898",
           "text": "所以别看出家了就很圣洁，好像很干净，清净无染似的。但实际上大部分人还有淫欲，就算出家了也一样。毕竟不是所有出家人都是已经精进修行二十年的人。",
           "start": 453.66,
-          "end": 472.03,
+          "end": 468.951,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -7578,11 +7580,11 @@
         {
           "pid": "p-s323c48c0",
           "text": "既得为人，去女即男难。",
-          "start": 468.851,
+          "start": 468.951,
           "end": 468.951,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se1f836ac",
@@ -7840,7 +7842,7 @@
           "pid": "p-s75b7b4c1",
           "text": "还有受教育程度也很重要。西方现在搞了很多年的什么快乐教育之后，据说现在美国想一年征六万左右的兵，都征不到。不管是身体层面上，还是受教育程度上都达标的人，现在连六万都不到。后来把征兵的标准线降低：高中生就可以去当兵，而且只要健康、不是胖子、没有毒瘾，就可以当兵。要求这么低，说明美西方在教育层面上、教育普及的程度上已经不如中国了。",
           "start": 1105.561,
-          "end": 1160.73,
+          "end": 1155.326,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -7848,11 +7850,11 @@
         {
           "pid": "p-s57ed1913",
           "text": "既生中国，值佛世难；",
-          "start": 1155.126,
+          "start": 1155.326,
           "end": 1155.326,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s77ffd3c2",
@@ -8406,7 +8408,7 @@
           "pid": "p-s8684924f",
           "text": "这是佛的意思吧，我是这么理解的。",
           "start": 417.17,
-          "end": 421.52,
+          "end": 420.214,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -8414,11 +8416,11 @@
         {
           "pid": "p-s9b81be58",
           "text": "第三十九章教诲无差佛言：“学佛道者，佛所言说，皆应信顺。譬如食蜜，中边皆甜，吾经亦尔。”",
-          "start": 420.014,
+          "start": 420.214,
           "end": 420.214,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s299ad6d9",
@@ -8859,7 +8861,7 @@
           "end": 1633.84,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd4b24663",
@@ -8877,7 +8879,7 @@
           "end": 1656.332,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4bcb08ae",
@@ -8913,7 +8915,7 @@
           "end": 1709.712,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd154034e",
@@ -8967,7 +8969,7 @@
           "end": 1812.613,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc9c42ed5",
@@ -9048,7 +9050,7 @@
           "end": 1919.007,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s23e68fb5",
@@ -9084,7 +9086,7 @@
           "end": 1980.037,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5378a22a",
