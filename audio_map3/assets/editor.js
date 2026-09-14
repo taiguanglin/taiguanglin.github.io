@@ -98,6 +98,7 @@ const els = {
     contentRightGutterRange: document.querySelector('#contentRightGutterRange'),
     contentRightGutterValue: document.querySelector('#contentRightGutterValue'),
     autoShowMiniPlayerInput: document.querySelector('#autoShowMiniPlayerInput'),
+    linkNeighborTimesInput: document.querySelector('#linkNeighborTimesInput'),
     draftDialog: document.querySelector('#draftDialog'),
     draftMessage: document.querySelector('#draftMessage'),
     conflictDialog: document.querySelector('#conflictDialog'),
@@ -211,6 +212,12 @@ function bindEvents() {
         state.prefs.autoShowMiniPlayer = autoShow;
         setPrefs({ autoShowMiniPlayer: autoShow });
     });
+    els.linkNeighborTimesInput?.addEventListener('change', () => {
+        const link = Boolean(els.linkNeighborTimesInput.checked);
+        state.prefs.linkNeighborTimes = link;
+        setPrefs({ linkNeighborTimes: link });
+        setStatus(link ? '已開啟：改起訖時間自動同步相鄰段落' : '已關閉：改起訖時間不影響前後段', 'ok');
+    });
     els.playbackRate.addEventListener('change', () => {
         setPrefs({ playbackRate: Number(els.playbackRate.value) });
     });
@@ -294,6 +301,9 @@ function syncLayoutSettingsForm() {
     if (els.contentRightGutterValue) els.contentRightGutterValue.textContent = String(gutter);
     if (els.autoShowMiniPlayerInput) {
         els.autoShowMiniPlayerInput.checked = state.prefs.autoShowMiniPlayer !== false;
+    }
+    if (els.linkNeighborTimesInput) {
+        els.linkNeighborTimesInput.checked = state.prefs.linkNeighborTimes !== false;
     }
 }
 
@@ -606,7 +616,18 @@ function flushEditorTimesIntoMap() {
         const prevStart = roundSeconds(entry.item.start);
         const prevEnd = roundSeconds(entry.item.end);
         const changed = prevStart !== nextStart || prevEnd !== nextEnd;
+        const linkNeighbors = state.prefs.linkNeighborTimes !== false;
+        const prevItem = items[idx - 1]?.item;
+        const nextItem = items[idx + 1]?.item;
         applyRangeToItem(entry.item, range, { markManual: changed || entry.item.status === 'manual' });
+        if (linkNeighbors) {
+            if (changed && nextStart !== prevStart && prevItem) {
+                setSegmentEdge(idx - 1, 'end', nextStart, { markEdited: false });
+            }
+            if (changed && nextEnd !== prevEnd && nextItem) {
+                setSegmentEdge(idx + 1, 'start', nextEnd, { markEdited: false });
+            }
+        }
         input.value = formatTimeMarker(entry.item, entry.kind);
         input.dataset.startTc = entry.item.start_label;
         input.dataset.endTc = entry.item.end_label;
@@ -1166,8 +1187,16 @@ function renderSegmentCard(entry, segmentIndex) {
         timeInput.value = formatTimeMarker(item, kind);
         timeInput.dataset.startTc = item.start_label;
         timeInput.dataset.endTc = item.end_label;
-        if (startChanged) setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
-        if (endChanged) setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
+        if (startChanged) {
+            if (state.prefs.linkNeighborTimes !== false) {
+                setSegmentEdge(segmentIndex - 1, 'end', range.start, { markEdited: false });
+            }
+        }
+        if (endChanged) {
+            if (state.prefs.linkNeighborTimes !== false) {
+                setSegmentEdge(segmentIndex + 1, 'start', range.end, { markEdited: false });
+            }
+        }
         updatePlayButton(playButton, timeInput.value, segmentIndex, title);
         onSegmentEdit(segmentIndex);
         commitHistory();

@@ -138,6 +138,15 @@
                 <p class="hint">關閉後，若你已隱藏播放器，點段落播放時不會再自動跳出（仍可用「顯示播放器」手動打開）。</p>
             </fieldset>
 
+            <fieldset class="settings-fieldset">
+                <legend>時間編輯</legend>
+                <label class="checkbox-row">
+                    <input id="linkNeighborTimesInput" type="checkbox" checked>
+                    <span>手動改起訖時間時，自動同步相鄰段落的對應時間</span>
+                </label>
+                <p class="hint">開啟後：手動改某段「起始」會同步上一段的「結束」，改「結束」會同步下一段的「起始」（相鄰段不會標「已校」）。關閉後，手動輸入只改這一段自己的時間，不影響前後段。</p>
+            </fieldset>
+
             <label class="field">
                 <span>GitHub Fine-grained PAT</span>
                 <input id="patInput" type="password" autocomplete="off" placeholder="github_pat_...">
