@@ -4,12 +4,12 @@
   "version": 1,
   "stats": {
     "sessions": 25,
-    "segments": 1223,
+    "segments": 1220,
     "matched": 1096,
     "low_conf": 0,
     "interpolated": 0,
     "pending": 0,
-    "missing": 127,
+    "missing": 124,
     "openings_ok": 25,
     "closings_ok": 25
   },
@@ -1415,25 +1415,6 @@
         {
           "questioner": "富贵行者",
           "question_time": "2024-02-29 22:45",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0,
-          "status": "manual",
-          "notes": "空答案；音檔無對應（）",
-          "srt_preview": "",
-          "index": 48,
-          "question_id": "question-b560fae02624",
-          "stable_key": "2024-03-01-main#48",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说现在这个剧本已经是前面有人犯过错打过补丁的剧本，可否透露一二犯了什么错？打的什么补丁？",
           "answer_text": "富贵行者，剧本，第一个犯过最大错误是释迦牟尼，他自己说的，你去看看他自己怎么样说的。这个我看看吧，和上面聊聊之后看看能说就说，不能说就不说。这个错误是释迦牟尼犯的，这一点是肯定的。",
           "start": 2137.62,
@@ -1442,7 +1423,7 @@
           "end_label": "00:36:03.620",
           "confidence": 0.92,
           "status": "manual",
-          "notes": "repaired:answer",
+          "notes": "repaired:answer | merged:2024-03-01-main#48",
           "srt_preview": "剧本剧本那个第一个我犯过最大错误的是释迦牟尼啊，他自己说的，你去看看他自己说的怎么怎么样啊，这个我就看看吧，看看和协和下面聊聊之后，看看能说就说不能说就不让说，肯定这个这个错误是释迦牟尼犯的啊，这个这一点是肯定的。肝胆相照啊。",
           "chapter_question_ids": [
             "question-215d2080b5c7"
@@ -27562,25 +27543,6 @@
         {
           "questioner": "馬浚川",
           "question_time": "",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0,
-          "status": "manual",
-          "notes": "空答案；音檔無對應（）",
-          "srt_preview": "",
-          "index": 26,
-          "question_id": "question-88614493128a",
-          "stable_key": "2024-03-22-main#26",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说的思情要怎么理解？观想的目标是起思情。怎么也想象不出什么样算是起思情了。开始还会很激动？能否举下例子。",
           "answer_text": "馬浚川，思念，首先第一步你要先观察自己的情绪，情绪是从膻中开始升起的，反正胸口这个位置情绪会升起，欲望也会生起，欲望也是从这里开始的。你有什么东西，或者有什么事你要跃跃欲试想做的话，像我小时候想打游戏，上课快要结束的时候想去游戏厅打游戏，那个冲动都是从膻中开始升起的，情绪也一样，都是从这儿开始升起的。\n\n你得首先观察自己的情绪，不管是好情绪，还是坏情绪。忧伤、焦虑、恐惧，任何情绪起来的时候，你得先观察它是怎么升起的，然后再想着思念。就像你谈恋爱的时候思念一个人一样，那个人一直住在你心里，就那种感觉。二十四小时不间断地思念，那种感觉就行了。",
           "start": 1648.89,
@@ -27589,7 +27551,7 @@
           "end_label": "00:28:39.085",
           "confidence": 0.8,
           "status": "manual",
-          "notes": "answer_opening",
+          "notes": "answer_opening | merged:2024-03-22-main#26",
           "srt_preview": "马俊思念啊你先观察自己的情绪情绪是中这个落家",
           "chapter_question_ids": [
             "question-cfdb01c94753"
@@ -33612,25 +33574,6 @@
         {
           "questioner": "DD泰粉丝",
           "question_time": "2024-03-29",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0,
-          "status": "manual",
-          "notes": "空答案；音檔無對應（）",
-          "srt_preview": "",
-          "index": 1,
-          "question_id": "question-9afaf46a42b0",
-          "stable_key": "2024-03-29-main#1",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说有机会可以讲讲四大职业，还有黑暗的内容，是否会在义理里展开讲，大师兄让讲吗？如有不该问的我忏悔。",
           "answer_text": "DD泰粉丝,四大职业，就讲了一个教职业的基本理念。教职业主要是解决“信”的问题，怎么能让人产生“信”这个问题。后面人王和商人这边就不讲了，整个世界都是佛控制的，后面传法也是，还有人的命运到文明，都是有人控制的，所以这里边有很多可操作的空间，有时候告诉你了，好像对凡夫也没什么太大好处，反而想钻空子。\n\n但是对上面的人来说，他都有操作空间的，就像前面讲人王职业杀了人怎么办？怎么去化解？等他自己杀完人就去地狱蹲点，跟着一起在地狱里蹲他发心改变，这就可以了。实际上，没有什么太大难度，但是这个时间可能很长，所以很多人是不愿意的，而且改变之后还得把人度到阿罗汉，这个过程也很长，所以很多人是不愿意干这种事的。所以说有些事它只要是人干的事儿，都有可操作的空间。这个不像什么电脑一样那么死板，这种事你自己想想就可以了，在这里就不讲了。",
           "start": 18.57,
@@ -33639,7 +33582,7 @@
           "end_label": "00:01:47.340",
           "confidence": 0.92,
           "status": "manual",
-          "notes": "answer_opening",
+          "notes": "answer_opening | merged:2024-03-29-main#1",
           "srt_preview": "怎么能让人产生性这个问题后面人王和商人这边就不讲了啊有些有些内容呢呃毕毕竟这么说吧啊毕竟是人控制的都是人控制的那整个世界都是不控制的哈后面传法也是还有这个呃人的命运到文明这个都是有人控制的啊所以这里边有很多可操作的空间啊这个有时候告诉你了就",
           "chapter_question_ids": [
             "question-200f08184e37"

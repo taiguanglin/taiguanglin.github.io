@@ -4,12 +4,12 @@
   "version": 1,
   "stats": {
     "sessions": 12,
-    "segments": 495,
+    "segments": 494,
     "matched": 493,
     "low_conf": 0,
     "interpolated": 0,
     "pending": 0,
-    "missing": 2,
+    "missing": 1,
     "openings_ok": 12,
     "closings_ok": 12
   },
@@ -7859,28 +7859,6 @@
         {
           "questioner": "空空无我",
           "question_time": "",
-          "q_text": "",
-          "answer_text": "",
-          "start": 868.7,
-          "end": 868.7,
-          "start_label": "00:14:28.700",
-          "end_label": "00:14:28.700",
-          "confidence": 0,
-          "status": "manual",
-          "notes": "empty placeholder segment: q_text and answer_text both empty; no distinct audio between segment10 and segment12 (question not in audio)",
-          "srt_preview": "你要这个你要想着骑着弥勒菩萨成佛之前回来，嗯，那就有点不太可能了，",
-          "index": 11,
-          "question_id": "question-21f00893600d",
-          "stable_key": "2025-05-14-wechat#11",
-          "q_preview": "",
-          "answer_preview": "",
-          "meta": {
-            "lastPlayed": "2026-09-14 18:11"
-          }
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说去了极乐世界修到阿罗汉再回到我们娑婆世界，弥勒佛的时代都过去了，那么请教师父这一世修到什么程度再去极乐世界，能赶到弥勒菩萨成佛之前回来，帮弥勒菩萨传法度人？",
           "answer_text": "空空无我，一个佛住世多长时间，除了他自己的意愿之外，还有一个重要的标准、重要的前提条件是他的下一任有没有准备好，也就是说你要想在弥勒菩萨成佛之前回来，那就有点不太可能了。\n\n你去了极乐世界，那个世界的时间尺度和这里完全不一样。可能去了那你修到阿罗汉，这里弥勒佛的时间有可能过了，但是不要着急，无所谓了，谁住世，哪怕下一任佛也好，下下一任佛也好，你只要继续回来度人就可以了。\n\n如果你始终抓着弥勒菩萨不放的话，那你可以去他的世界，弥勒菩萨所住的兜率天，先去那里跟着他学，然后继续跟着他做事，这样也行。\n\n我们去极乐世界，发愿回到娑婆世界来度人，而不是说非要在某个时间一定要来，前面有关发愿的问题也提过了，不给自己设定时间和境界上的限制，有时候有可能会出错，有时候会给自己挖个坑，所以不发这样的愿。\n\n你就想着去极乐世界学好了，一定回到娑婆世界继续度人，把和你有缘的众生一定要度完，有这个愿就够了。不要想着一定要跟着弥勒菩萨度，这个就有点多余了。",
           "start": 868.7,
@@ -7889,7 +7867,7 @@
           "end_label": "00:16:20.500",
           "confidence": 0.85,
           "status": "manual",
-          "notes": "repaired:q_body | start corrected 898.65->868.57 ('下一个问题空空无我' name). end=seg13 '沉浸其中' 980.53",
+          "notes": "repaired:q_body | start corrected 898.65->868.57 ('下一个问题空空无我' name). end=seg13 '沉浸其中' 980.53 | merged:2025-05-14-wechat#11",
           "srt_preview": "反正就你去了极乐世界这个时间那个世界的时间尺度和这里完全 不一样啊，可能去了。那你去到奥拉法这个这里可能嗯可能弥勒佛的时间有可能过了，但是不要着急啊，无所谓了，谁的谁就是谁，哪怕下下一个让佛有下下一张佛有你只要继续回来渡人啊，那就可以了。如果你始终抓着弥勒菩萨不放的话，那你可以去他的那里，他的世界啊，他那个弥勒菩萨所住的那个多帅天先去那里跟着他学，呃，然后继续跟着他做事。嗯，这样也行啊，我们去极乐世界，我就发愿啊，回来继续回到这个收泼世…",
           "chapter_question_ids": [
             "question-ca0805cfb115"

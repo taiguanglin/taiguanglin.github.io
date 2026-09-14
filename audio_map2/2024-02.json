@@ -4,12 +4,12 @@
   "version": 1,
   "stats": {
     "sessions": 17,
-    "segments": 779,
+    "segments": 777,
     "matched": 686,
     "low_conf": 0,
     "interpolated": 0,
     "pending": 0,
-    "missing": 93,
+    "missing": 91,
     "openings_ok": 17,
     "closings_ok": 17
   },
@@ -21583,25 +21583,6 @@
         {
           "questioner": "麦花香158",
           "question_time": "2024-02-27 21:30",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0.0,
-          "status": "manual",
-          "notes": "空答案（）",
-          "srt_preview": "",
-          "index": 54,
-          "question_id": "question-45f51c17c263",
-          "stable_key": "2024-02-28-main#54",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说发了大愿的就能得到佛菩萨的加持，应该如何发愿，是发愿自己成了菩萨就回来度和自己有缘的众生吗？是在心里发愿还是去庙里发愿呢？求师父开示。",
           "answer_text": "卖花香158，自己发愿就可以，没必要到哪里庙里之类的。你今天心里想着佛菩萨，我要发愿我要普度众生，这样就可以了。和我有缘的众生，我一定都要度，这样就可以。就像地藏经里有两个王，一王发愿先度众生再成佛，一王发愿先成佛再度众生。这么简单，有这么个念想就可以。",
           "start": 2722.0,
@@ -21610,7 +21591,7 @@
           "end_label": "00:46:08.600",
           "confidence": 0.92,
           "status": "manual",
-          "notes": "repaired:fuzzy(0.26x7)",
+          "notes": "repaired:fuzzy(0.26x7) | merged:2024-02-28-main#54",
           "srt_preview": "一开始都有个过程呢你腿很硬嘛这个筋也没打开这个一开始都有这么个过程慢慢来发愿嘛麦花香幺五八发愿啊自己发愿就可以没必要到哪里跑跑庙里啊之类的你这里心里想着佛不在我要发愿我要普度众生这样就可以了和我和我有缘的众生我一定要都要动这样就可以就像那个…",
           "chapter_question_ids": [
             "question-7b3c3adeec73"
@@ -22492,25 +22473,6 @@
         {
           "questioner": "富贵行者",
           "question_time": "2024-02-29 15:34",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0.0,
-          "status": "manual",
-          "notes": "空答案（）",
-          "srt_preview": "",
-          "index": 27,
-          "question_id": "question-76a3f0b3ed8d",
-          "stable_key": "2024-02-29-main#27",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说大势至菩萨现在住世，大势至菩萨是教职业的，以前来是传授八识，现在教啥呢？是否有机会亲近呢？",
           "answer_text": "富贵行者，大势至菩萨，还是别找他的麻烦，还是别找他的麻烦。现在就慢慢消业，消完之后，最后一世回去了就不来了，这是最后一世。所以，他也不敢再和人结新的缘，就躲在一个地方角落里消业。所以，不要找他的麻烦。\n\n但是你修大势至菩萨的法门，观世音菩萨也会照顾，因为他俩是一对的。一对的好处就是这样，一个人下去的时候，另一个人也会关照到，这是必须的。",
           "start": 1478.0,
@@ -22519,7 +22481,7 @@
           "end_label": "00:25:07.800",
           "confidence": 0.92,
           "status": "manual",
-          "notes": "repaired:answer",
+          "notes": "repaired:answer | merged:2024-02-29-main#27",
           "srt_preview": "还是别找他的麻烦吧还是别找他的麻烦现在就需要慢慢消夜宵完之后就最后一世回去了就不来了这是最后一世了所以他也不敢和和人结在新的人啊就躲在一个地方角落里宵夜所以不要找他的麻烦啊但是你你你就但是这菩萨的法门观音菩萨也会照顾因为他俩是一对的啊那这一…",
           "chapter_question_ids": [
             "question-96677741aea1"

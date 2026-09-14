@@ -4,12 +4,12 @@
   "version": 1,
   "stats": {
     "sessions": 7,
-    "segments": 236,
+    "segments": 235,
     "matched": 220,
     "low_conf": 0,
     "interpolated": 0,
     "pending": 0,
-    "missing": 16,
+    "missing": 15,
     "openings_ok": 7,
     "closings_ok": 7
   },
@@ -3881,25 +3881,6 @@
         {
           "questioner": "空空无我",
           "question_time": "",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0.0,
-          "status": "missing",
-          "notes": "空答案佔位段；無獨立口播",
-          "srt_preview": "",
-          "index": 27,
-          "question_id": "question-435587c720ce",
-          "stable_key": "2024-04-24-main#27",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "",
-          "question_time": "",
           "q_text": "师父说世界是佛创造的，为什么佛创造世界的时候不把五辛和毒品去掉？",
           "answer_text": "",
           "start": null,
@@ -3908,7 +3889,7 @@
           "end_label": "",
           "confidence": 0.0,
           "status": "missing",
-          "notes": "空答案佔位段；提問可能重複；無獨立口播",
+          "notes": "空答案佔位段；提問可能重複；無獨立口播 | merged:2024-04-24-main#27",
           "srt_preview": "",
           "chapter_question_ids": [
             "question-ad8f86857847"
