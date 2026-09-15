@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-15T03:01:55.485Z",
+  "generated_at": "2026-09-15T07:34:25.470Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -1299,16 +1299,17 @@
       "audio": "2024年11月13日Tai师父讲经·楞伽经(3).opus",
       "title": "楞伽经（3）",
       "duration": 1645.605,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-sd7456f10",
           "text": "尔时，罗婆那楞伽王以都咤迦音歌赞佛已，复以歌声而说颂言：世尊于七日，住摩竭海中；然后出龙宫，安详升此岸。我与诸采女，及夜叉眷属，输迦娑剌那，众中聪慧者。悉以其神力，往诣如来所。各下花宫殿，礼敬世所尊；复以佛威神，对佛称己名；我是罗刹王，十首罗婆那。今来诣佛所，愿佛摄受我；及楞伽城中，所有诸众生。过去无量佛，咸升宝山顶；住楞伽城中，说自所证法。世尊亦应尔，住彼宝严山；菩萨众围绕，演说清净法。我等于今日，及住楞伽众；一心共欲闻，离言自证法。我念去来世，所有无量佛；菩萨共围绕，演说楞伽经。此入楞伽典，昔佛所称赞；愿佛同往尊，亦为众开演。请佛为哀愍，无量夜叉众；入彼宝严城，说此妙法门。",
-          "start": 2.15,
-          "end": 2.15,
+          "start": 1.95,
+          "end": 1.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sb6a52596",
@@ -1317,7 +1318,8 @@
           "end": 2.15,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s1d5fa659",
@@ -1326,7 +1328,8 @@
           "end": 2.15,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sd946687b",
@@ -1335,7 +1338,8 @@
           "end": 2.15,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sc8877117",
@@ -1344,7 +1348,8 @@
           "end": 2.15,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s65890560",
@@ -1353,7 +1358,8 @@
           "end": 2.15,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s8866267a",
@@ -1362,871 +1368,873 @@
           "end": 2.15,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s52db641c",
           "text": "《楞伽经》第三期，从正文的第三页开始。",
-          "start": 2.15,
-          "end": 8.83,
+          "start": 1.95,
+          "end": 10.98,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93b77248",
           "text": "尔时，罗婆那楞伽王以都咤迦音歌赞佛已，复以歌声而说颂言：",
-          "start": 11.08,
-          "end": 18.41,
+          "start": 10.98,
+          "end": 20.341,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sedd11904",
           "text": "下面一段内容把上面的故事重复了一遍，这里简单念一遍就过了。",
-          "start": 20.32,
-          "end": 27.41,
+          "start": 20.341,
+          "end": 27.31,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s82eec092",
           "text": "世尊于七日，住摩竭海中；然后出龙宫，安详升此岸。我与诸采女，及夜叉眷属，输迦娑剌那，众中聪慧者。悉以其神力，往诣如来所。",
-          "start": 27.41,
-          "end": 41.46,
+          "start": 27.31,
+          "end": 42.649,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s939504c5",
           "text": "佛从龙宫出来，出现在他们面前，罗婆那王带着这些眷属来到佛前。",
-          "start": 41.46,
+          "start": 42.649,
           "end": 52.38,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf78b4701",
           "text": "各下花宫殿，礼敬世所尊；复以佛威神，对佛称己名；我是罗刹王，十首罗婆那。",
           "start": 54.31,
-          "end": 62.57,
+          "end": 63.525,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7b5e1531",
           "text": "在佛前，罗刹王自我介绍。罗刹王是饿鬼，饿鬼中级别高的鬼王。",
-          "start": 62.57,
-          "end": 71.54,
+          "start": 63.525,
+          "end": 72.6,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3e7685a1",
           "text": "今来诣佛所，愿佛摄受我；及楞伽城中，所有诸众生。",
-          "start": 72.7,
-          "end": 77.33,
+          "start": 72.6,
+          "end": 78.574,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc756d70d",
           "text": "希望佛摄受我——给我讲法，到楞伽城中为城中所有众生讲法。",
-          "start": 77.33,
-          "end": 87.07,
+          "start": 78.574,
+          "end": 87.66,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc2c4d076",
           "text": "过去无量佛，咸升宝山顶；住楞伽城中，说自所证法。",
           "start": 87.66,
-          "end": 92.63,
+          "end": 93.653,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s46f1c8c9",
           "text": "过去很多佛也曾经在这里讲过法。在这里重点还是“自所证法”，这本书一直都说“自证圣智”，把成佛说成“自证圣智”，就是强调修行最后还是靠自己。法可以从外面来学，但是最后能不能成佛，还得靠自己修。",
-          "start": 92.63,
-          "end": 116.34,
+          "start": 93.653,
+          "end": 117.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scae9e256",
           "text": "世尊亦应尔，住彼宝严山；菩萨众围绕，演说清净法。我等于今日，及住楞伽众；一心共欲闻，离言自证法。",
-          "start": 117.35,
-          "end": 130.01,
+          "start": 117.25,
+          "end": 132.74,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5e935318",
           "text": "希望佛来为菩萨众以及楞伽城中的众生们讲法。下边重点是“离言自证法”，离开语言的自证法。",
-          "start": 132.64,
-          "end": 147.98,
+          "start": 132.74,
+          "end": 149.75,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa3097ab4",
           "text": "这本书后面专门会讲真法不能用语言来表现，但是如果不用语言讲又没有办法传法，所以什么声闻、缘觉、菩萨、佛都没有办法成就这些果位。就是不用语言传法就没有办法让人成就。但是有些世界以目瞪示法——用眼睛一瞪他就明白了。除了语言之外，还有各种传法方式，但是在我们这个世界还是以语言来讲。",
           "start": 149.75,
-          "end": 191.41,
+          "end": 194.713,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdd62e5c4",
           "text": "我念去来世，所有无量佛；菩萨共围绕，演说楞伽经。",
-          "start": 191.41,
-          "end": 191.41,
+          "start": 194.713,
+          "end": 201.409,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb1b6e61e",
           "text": "过去世有无量佛曾经在这里讲过《楞伽经》。",
-          "start": 194.56,
+          "start": 201.409,
           "end": 204.99,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2aeaca0c",
           "text": "此入楞伽典，昔佛所称赞；愿佛同往尊，亦为众开演。请佛为哀愍，无量夜叉众；入彼宝严城，说此妙法门。",
           "start": 205.64,
-          "end": 218.58,
+          "end": 219.37,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd74490ad",
           "text": "请佛到他的楞伽城中讲法。下面开始也算是故事。",
-          "start": 219.47,
-          "end": 226.4,
+          "start": 219.37,
+          "end": 227.83,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1e95a444",
           "text": "尔时，世尊闻是语已，即告之言：“夜叉王，过去世中诸大导师，咸哀愍汝受汝劝请，诣宝山中，说自证法，未来诸佛，亦复如是。",
           "start": 227.83,
-          "end": 272.79,
+          "end": 241.991,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s023f2694",
           "text": "过去很多佛都因为哀泯汝，听你的劝请，在宝山当中为你说过“自证法”，未来诸佛还会如此。",
-          "start": 272.79,
-          "end": 272.79,
+          "start": 241.991,
+          "end": 272.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f7c22f7",
           "text": "此是修行甚深观行现法乐者之所住处，",
-          "start": 272.79,
-          "end": 277.09,
+          "start": 263.146,
+          "end": 263.346,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2d7f513d",
           "text": "这里应该有个逗号，“此是修行甚深观行”，这里顿一下。“观”是一种修法，这个大家都知道。“行”是行为，也是一种修行，是关于业的方面，持戒、布施这些都算行。“修”只是修心。在这里“修行甚深观行”，就是既有修行的行为，也有修心的方法。“现法乐者”，表现为法乐者，就是喜欢佛法、修习佛法的这些人。以这种形态展示的人所居住的地方。",
-          "start": 290.3,
-          "end": 312.85,
+          "start": 263.346,
+          "end": 317.822,
           "conf": 0.818,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s741e98c6",
           "text": "我及诸菩萨哀愍汝，故受汝所请。",
-          "start": 316.29,
-          "end": 322.24,
+          "start": 317.822,
+          "end": 323.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s953b4fce",
           "text": "如来和他的菩萨们哀愍这位楞伽王，打算为他讲法。",
           "start": 323.62,
-          "end": 328.54,
+          "end": 328.84,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3f0b3677",
           "text": "作是语已，默然而住。时罗婆那王即以所乘妙花宫殿奉施于佛，佛坐其上。",
-          "start": 328.54,
-          "end": 328.54,
+          "start": 328.84,
+          "end": 338.041,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s55e81e57",
           "text": "罗婆那王把自己的宫殿供养于佛，然后佛就坐到这个宫殿上。",
-          "start": 330.97,
-          "end": 343.52,
+          "start": 338.041,
+          "end": 344.73,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se844d9ac",
           "text": "王及诸菩萨前后导从，无量采女歌咏赞叹，供养于佛，往诣彼城。",
           "start": 344.73,
-          "end": 350.64,
+          "end": 351.313,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb8bb254b",
           "text": "这些菩萨，以及无量采女——罗婆那王的眷属们，一起簇拥着佛到楞伽城中。",
-          "start": 350.64,
-          "end": 357.8,
+          "start": 351.313,
+          "end": 360.99,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc3d76d24",
           "text": "到彼城已，罗婆那王及诸眷属，复作种种上妙供养；",
-          "start": 357.8,
-          "end": 366.61,
+          "start": 360.99,
+          "end": 368.06,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0baa76d2",
           "text": "下面一段就是供养的那些很常见的语句，这些就不讲了。",
           "start": 368.06,
-          "end": 373.8,
+          "end": 374.65,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc04ce39f",
           "text": "夜叉众中童男童女，以宝罗网，供养于佛；罗婆那王施宝璎珞，奉佛菩萨，以挂其颈。尔时，世尊及诸菩萨受供养已，各为略说自证境界甚深之法。",
-          "start": 374.75,
-          "end": 389.72,
+          "start": 374.65,
+          "end": 391.031,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s85aca4c9",
           "text": "这些佛和菩萨们受供养之后，开始为他说各自自证境界之甚深之法，就是给罗婆那王说各自修行的过程以及他们悟到的境界。",
-          "start": 391.12,
-          "end": 403.17,
+          "start": 391.031,
+          "end": 406.442,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9b704060",
           "text": "时罗婆那王并其眷属，复更供养大慧菩萨，而劝请言：",
-          "start": 403.17,
-          "end": 403.17,
+          "start": 406.442,
+          "end": 412.432,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf59661ad",
           "text": "罗婆那王和他的眷属们又供养了大慧菩萨，然后请这位大慧菩萨来问。为什么请别的菩萨来问呢？因为我们都知道，人没有办法想象到自己认知外的事情。所以喜欢经济的朋友们说“人赚不到认知外的钱”，有这样的说法吧？",
-          "start": 413.49,
-          "end": 437.39,
+          "start": 412.432,
+          "end": 438.265,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s04a62f3e",
           "text": "学法也是，你的境界没有到那个程度的话，都问不出什么更高境界的问题。所以遇到佛是很稀有的事情，既然遇到了哪怕自己境界不到，问不出什么高深的问题，也要请境界高的人来替自己问一下，就算不能理解，不能马上证悟，起码听一遍，对未来也有帮助。曾听过的法都会记录在自性当中，未来都会显现出来。",
-          "start": 437.39,
-          "end": 467.56,
+          "start": 438.265,
+          "end": 469.02,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb69eca42",
           "text": "所以遇到机会的时候自己问不了就先请人问，听一遍，不能理解也没关系，这是好事。所以这位罗婆那王就请大慧菩萨这个十地菩萨来问。",
           "start": 469.02,
-          "end": 484.61,
+          "end": 485.82,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s39e1b5b9",
           "text": "我今诸大士，奉问于世尊；一切诸如来，自证智境界。",
           "start": 485.82,
-          "end": 491.2,
+          "end": 492.52,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sea47727e",
           "text": "求问的是最高端的法——自证至佛的“自证智境界”，就是最后那个成佛的法门。",
           "start": 492.52,
-          "end": 501.34,
+          "end": 501.86,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2bcb6afb",
           "text": "我与夜叉众，及此诸菩萨；一心愿欲闻，是故咸劝请。",
-          "start": 502.06,
-          "end": 506.03,
+          "start": 501.86,
+          "end": 507.058,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9ac6d9b7",
           "text": "罗婆那王和他的夜叉众们，以及这些在场的菩萨们都想听，所以希望佛讲法。",
-          "start": 506.03,
-          "end": 517.37,
+          "start": 507.058,
+          "end": 518.232,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5a930591",
           "text": "汝是修行者，言论中最胜；是故生尊敬，劝汝请问法。",
-          "start": 517.54,
-          "end": 522.6,
+          "start": 518.232,
+          "end": 524.606,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb3c712b4",
           "text": "这里当然指的是大慧菩萨。楞伽王说大慧菩萨你是修行者，“言论”在这里是一种辩才，辩才最胜。所以对你产生尊敬，请你替我们问法。",
-          "start": 522.6,
-          "end": 550.03,
+          "start": 524.606,
+          "end": 548.973,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s120379df",
           "text": "自证清净法，究竟入佛地；离外道二乘，一切诸过失。",
-          "start": 553.66,
-          "end": 561.07,
+          "start": 548.973,
+          "end": 548.973,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s936ab132",
           "text": "“自证清净法”，同样指成佛的方法。离开外道和二乘的那些法门、理论，以及一切所有的过失。“二乘”当然指的是声闻乘和缘觉乘。一般唯识里都是讲五乘，但是在大乘佛经里一般讲三乘——声闻乘、缘觉乘、如来乘或者菩萨乘。",
-          "start": 561.07,
-          "end": 585.45,
+          "start": 548.973,
+          "end": 590.574,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2734b40f",
           "text": "翻过一页，看原文，上边一段也算是故事。",
-          "start": 598.16,
-          "end": 599.73,
+          "start": 590.574,
+          "end": 600.73,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2a19882f",
           "text": "尔时，世尊以神通力，于彼山中复更化作无量宝山，悉以诸天百千万亿妙宝严饰。",
-          "start": 599.73,
-          "end": 599.73,
+          "start": 600.73,
+          "end": 615.659,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3be90b4b",
           "text": "世尊用神通制造了无量宝山，每个山上都有诸天百千万亿妙宝严饰。",
-          "start": 614.29,
-          "end": 626.34,
+          "start": 615.659,
+          "end": 627.56,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdf71b97d",
           "text": "一一山上，皆现佛身，一一佛前，皆有罗婆那王及其众会十方所有一切国土，皆于中现；",
-          "start": 627.66,
-          "end": 635.16,
+          "start": 627.56,
+          "end": 636.04,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0b59f82c",
           "text": "每一个山上都出现一尊佛，佛前有罗婆那王、这些与会的众菩萨和罗婆那王的眷属们，以及十方所有一切国土全部在幻境当中出现。这是佛用神通创造的一个幻境。",
-          "start": 636.14,
-          "end": 655.22,
+          "start": 636.04,
+          "end": 654.541,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb19ba44",
           "text": "一一国中，悉有如来，一一佛前，咸有罗婆那王并其眷属，楞伽大城阿输迦园，如是庄严，等无有异。一一皆有大慧菩萨，而兴请问，佛为开示自证智境，以百千妙音说此经已，佛及诸菩萨皆于空中隐而不现。",
-          "start": 655.25,
-          "end": 694.47,
+          "start": 654.541,
+          "end": 656.263,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1113c9d0",
           "text": "每一个国都有如来。每一尊佛前都有罗婆那王和他的眷属，以及楞伽大城。每一个世界都有大慧菩萨向佛请问，然后佛给大慧菩萨讲了“自证智境”——成佛的境界。说完之后，这些幻境全部消失了。",
-          "start": 694.47,
-          "end": 697.29,
+          "start": 656.263,
+          "end": 696.69,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s572a3c29",
           "text": "罗婆那王唯自见身住本宫中，作是思惟：向者是谁？谁听其说？所见何物？是谁能见？",
-          "start": 697.29,
-          "end": 697.29,
+          "start": 696.69,
+          "end": 700.922,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0f081fad",
           "text": "罗婆那王还是住在自己的宫殿中，开始想，这个讲法的人是谁？是谁在听这个法？见到的是什么？可以见到的这个主体又是谁呢？",
-          "start": 697.29,
-          "end": 721,
+          "start": 700.922,
+          "end": 720.206,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s30f5e417",
           "text": "佛及国城众宝山林，如是等物，今何所在？为梦所作？为幻所成？",
-          "start": 721,
-          "end": 721,
+          "start": 720.206,
+          "end": 726.077,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc4280068",
           "text": "刚才用神通展现出来的很多宝山，还有那个世界，那些都是什么？现在又去了哪里？因为佛讲完法之后，“佛及诸菩萨皆于空中隐而不现”，全部消失了，所以他又开始想这些消失之后他们去了哪里？到底是梦，还是幻觉呢？",
-          "start": 726.92,
-          "end": 753.2,
+          "start": 726.077,
+          "end": 752.386,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s440d3301",
           "text": "为复犹如乾闼婆城？",
-          "start": 753.2,
-          "end": 753.2,
+          "start": 752.386,
+          "end": 754.511,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4c7ba60d",
           "text": "在这里出现一个“乾闼婆城”，这有一个典故，翻过一页，这里注释说，据传有一乐师名乾闼婆，能以幻术做楼阁等，故后来佛经中以“乾闼婆城”喻幻有实无之物。佛在世的时候曾经有这么一个人，所以后面就专门用“乾闼婆城”来比喻幻境。",
-          "start": 754.45,
-          "end": 783.8,
+          "start": 754.511,
+          "end": 782.294,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfb430b34",
           "text": "为翳所见？为炎所惑？",
-          "start": 783.8,
-          "end": 783.8,
+          "start": 782.294,
+          "end": 783.52,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9532bec1",
           "text": "“翳”是眼病。“炎”，这里是“火焰”的“焰”。因为眼睛有病了，所以是看到的，还是被什么东西迷惑了？",
-          "start": 783.8,
-          "end": 796.14,
+          "start": 783.52,
+          "end": 795.079,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfb4b4d40",
           "text": "为如梦中石女生子？",
-          "start": 796.23,
-          "end": 798.94,
+          "start": 795.079,
+          "end": 796.858,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se7e003a5",
           "text": "在梦境当中石女生子。佛经里经常会用“石女之子”来比喻不存在的东西。“石女”是没有生育能力的女性，“石女之子”是不应该存在的，但是他看见了，那它到底是真是假呢？",
-          "start": 799.27,
-          "end": 819.05,
+          "start": 796.858,
+          "end": 824.009,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1907ef81",
           "text": "为如烟焰旋火轮耶？",
-          "start": 819.05,
-          "end": 819.05,
+          "start": 824.009,
+          "end": 827.225,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s291edc96",
           "text": "同样，把烟火或者火焰，当作火苗或者火轮，这些不存在实体的东西。",
-          "start": 825.2,
-          "end": 836.56,
+          "start": 827.225,
+          "end": 835.478,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc324560a",
           "text": "复更思惟：一切诸法性皆如是，唯是自心分别境界，凡夫迷惑不能解了，无有能见，亦无所见，无有能说亦无所说。",
-          "start": 836.59,
-          "end": 849.53,
+          "start": 835.478,
+          "end": 848.934,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd94a0edd",
           "text": "然后继续想，所有的法都是空，因为诸法的本性是空。这个“法”以前讲过，在我们凡夫境界看到的所有一切都称之为“法”，就是执着形成的这个轮回世界，外部看到的物质、我们的肉身、我们的想法以及虚空都称之为“法”。在菩萨的境界，连妄想也算“法”。",
-          "start": 849.53,
-          "end": 877.98,
+          "start": 848.934,
+          "end": 877.549,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0c69f9b2",
           "text": "这本书后面会专门讲七地、八地作为分界线，前面的菩萨和后面的菩萨——初地到六地、七地，后面从八地到十一地这些菩萨之间的区别。在七、八地开始称之为“法无我”，往下没有成为七、八地菩萨之前称之为“法有我”。",
-          "start": 877.98,
-          "end": 907.99,
+          "start": 877.549,
+          "end": 906.219,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8bbb07c6",
           "text": "所以，在这里“法”既是指我们看到的一切物质世界，也指菩萨的妄想。",
-          "start": 907.99,
-          "end": 917.69,
+          "start": 906.219,
+          "end": 916.251,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s81be0882",
           "text": "“唯是自心分别境界”，我所看到一切都是自心里分别出来的境界，都是妄想和合而成。“凡夫迷惑不能解了”，凡夫无法理解，不知道这个真相。真相是什么呢？",
-          "start": 917.69,
-          "end": 935.11,
+          "start": 916.251,
+          "end": 934.388,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s64a504db",
           "text": "“无有能见，亦无所见”，没有能见的东西，也没有可以见到的东西，无有“能”和“所”。“能”是主体，“所”指的是客体。就是没有能见的主人公，也没有可以看见的、能见到的这些客体。“无有能说亦无所说”，同样，没有会说话的主人公和说出来的内容，“无所说”就是没有可说的内容。",
-          "start": 935.11,
-          "end": 959.67,
+          "start": 934.388,
+          "end": 958.188,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scce7a4d2",
           "text": "见佛闻法皆是分别，如向所见不能见佛，不起分别是则能见。",
-          "start": 959.7,
-          "end": 973.91,
+          "start": 958.188,
+          "end": 960.388,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s344bfdf2",
           "text": "甚至见到佛听法，也是从分别境界当中产生的。如果这样见的话是不能见佛的，也就是用分别或者执着来求见佛的话，是见不到佛的。在没有分别的境界里求佛，才能见到佛。",
-          "start": 973.91,
-          "end": 988.53,
+          "start": 960.388,
+          "end": 989.376,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se694c5b5",
           "text": "时楞伽王寻即开悟，离诸杂染，证唯自心，住无分别，往昔所种善根力故。",
-          "start": 990.29,
-          "end": 998.63,
+          "start": 989.376,
+          "end": 997.567,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7418797c",
           "text": "楞伽王看到佛用神通创造很多个世界和无量宝山的幻境之后讲法，他看到之后自己思维就开悟了。“离诸杂染”就是灭掉了这些妄想、分别、执着。后面说“住无分别”，至少灭掉了执着和分别心。“证唯自心”，回到自心当中。这都是“往昔所种善根力故”，都是过去的很多前世种的善根。",
-          "start": 998.82,
-          "end": 1042.48,
+          "start": 997.567,
+          "end": 1041.096,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s83030e69",
           "text": "善根和慧根，如果把它们分开来讲的话，善根是行善过程当中积累下来的，多行善、多布施的话，你的善心不断增长，这叫“善根”。慧根是在佛前种下的，多听法、在佛前做供养，这些都会增长慧根。很多时候善根、慧根都是通用的，所以在这里只说“善根”。因为前面讲无量佛曾经在楞伽城讲过法，罗婆那王也曾听过，所以他见到佛已经不是第一次了。所以“往昔所种善根”是过去种下的善根，这次终于开悟了，是这个意思吧。",
-          "start": 1042.48,
-          "end": 1085.65,
+          "start": 1041.096,
+          "end": 1088.298,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s61b99493",
           "text": "于一切法得如实见，不随他悟，能以自智善巧观察，永离一切臆度邪解，住大修行，为修行师，现种种身，善达方便，巧知诸地上增进相，常乐远离心意意识，断三相续见，离外道执著，内自觉悟，入如来藏，趣于佛地。",
-          "start": 1085.65,
-          "end": 1113.47,
+          "start": 1088.298,
+          "end": 1111.946,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s314c1f2d",
           "text": "这都是表示那个境界的话，一句、一句拆开来看。“于一切法得如实见”，“法”是妄想、分别、执着的统称。“如实”就是看到他们的真相，本来就是空。“不随他悟”，“悟”并不是靠外力和什么第三者来悟，而是靠自己来悟。“能以自智善巧观察”，靠自己的智慧来善巧观察。“永离一切臆度邪解”，离开了这些错误的见解。",
-          "start": 1113.47,
-          "end": 1150.02,
+          "start": 1111.946,
+          "end": 1148.789,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2f04791b",
           "text": "“住大修行，为修行师”，住在大修行的境界当中，能为修行师。如果细分的话，“为修行师”有两种不同解释：一种是自己成为了修行师；还有一种是教育别人的意思，所以“为修行师”是教别人修行的意思，也可以这么解释，这个不重要。",
-          "start": 1150.02,
-          "end": 1179.14,
+          "start": 1148.789,
+          "end": 1178.102,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93f0c838",
           "text": "“现种种身，善达方便”，肯定是为了教别人和传法度人而现种种身，自己不会无缘无故干这种事。所以往前看，“修行师”的“师”应该是教育、指导的意思。",
-          "start": 1179.14,
-          "end": 1197.48,
+          "start": 1178.102,
+          "end": 1196.195,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s15c4d4f8",
           "text": "“巧知诸地上增进相”，这里“诸地”是菩萨的“地”，知道所有菩萨十地的增进相，每一个境界的不同。这段在《坐禅2》里讲菩萨十地的时候都讲过了。",
-          "start": 1197.48,
-          "end": 1212.84,
+          "start": 1196.195,
+          "end": 1214.477,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa2bc0a8d",
           "text": "“常乐远离心意意识”，在这里出现“心意意识”，正确答案：“心”是妄想，“意”是分别，“意识”就是执着心。",
-          "start": 1212.85,
-          "end": 1230.24,
+          "start": 1214.477,
+          "end": 1230.14,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1103df9d",
           "text": "他为什么不这么讲呢？因为佛经不是一次成形的，我们要知道在佛入灭之后陆续出现了不少大乘经典，从最初白马寺建立的时候，那些西域僧人们带来的佛经，一直到《楞严经》出现，《楞严经》应该算唐朝中期出现的，在中国这边前后算是经历了五六百年，放到印度那边的话，也经历了一千五六百年这么长时间。",
-          "start": 1230.24,
-          "end": 1270.94,
+          "start": 1230.14,
+          "end": 1272.017,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se9434664",
           "text": "而且佛经也不是一个人或者一个小团队进行整体翻译，（除了）最初那些上座部的佛经是佛的弟子们集结之外，后面陆续出现了很多佛经，参与翻译、转述、搬运的人很多。而且所经历的时代变化也很长，每个时代都有那个时代的用词习惯，这一点都能理解吧？过去的人说什么文言文，现在说大白话，这个大家都知道。所以在不同的时代，用当时的语言来描述，就会出现不一样的用词，所以“心意意识”这样的用词是妄想、分别、执着的另一种说法。",
-          "start": 1272.72,
-          "end": 1324.06,
+          "start": 1272.017,
+          "end": 1323.303,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf8564983",
           "text": "后面直接告诉你了，七识就是意、意识和五识，所以“意”和“意识”自然是第七识分别心和第六识执着心，这样理解是对的。后面还会讲到“心意意识”都要灭掉，所以“心”不是指自性本体，而是自性里产生外相，这样理解就对了。",
-          "start": 1324.06,
-          "end": 1358.63,
+          "start": 1323.303,
+          "end": 1358.48,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7b6e0032",
           "text": "“断三相续见”，“三相”也有很多种解释。但是我们看这本书的三十一页，中间有一段：“诸识有三相，谓转相、业相、真相。”原经里直接告诉你什么叫“三相”，就是“转相、业相、真相”。但是第十三页的译文当中把“三相”解说成了“三界相”——欲界、色界、无色界。可能这位写译文的人也没有把《楞伽经》吃透，反复看几遍，他可能没有看过。",
-          "start": 1359.6,
-          "end": 1367.07,
+          "start": 1358.48,
+          "end": 1418.457,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4605d1c3",
           "text": "我们以前学语文做阅读理解的时候，老师也说很多答案都在问题本身当中。你看佛经在前面有一个概念性的问题，可能看不懂，马上就去网上搜索什么答案之类的，但是我希望你把整个佛经从头到尾看一遍，可能前面的这些没有解释的、看不懂的这些名相，后面就给你解释了。",
-          "start": 1420.06,
-          "end": 1449.01,
+          "start": 1418.457,
+          "end": 1447.69,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s42add9fa",
           "text": "所以在这里“三相”就是“转相、业相、真相”，按照这个来解释是对的，不能按照这本书的译文里的“三界相”——欲界、色界、无色界来解释。",
-          "start": 1449.01,
-          "end": 1460.37,
+          "start": 1447.69,
+          "end": 1459.213,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s37bed4f7",
           "text": "什么叫“转相、业相、真相”？“真相”很容易理解，就是佛的本来面目。自性本来空无所有，自性里什么都没有，这个叫“真相”。",
-          "start": 1460.38,
-          "end": 1473.33,
+          "start": 1459.213,
+          "end": 1471.776,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s22ccf92d",
           "text": "“转相”呢？生起妄想的时候称之为“转相”。有反过来说的“转识成智”这样的说法，大家都听过，就是把妄想灭掉了，就展现出智慧，这叫“转”。翻过来又是另一种“转”，就是从智慧转到烦恼，或者智慧转到愚痴、无明，这也叫“转”。所以“转相”指的是生起妄想这种状态。",
-          "start": 1473.33,
-          "end": 1502.13,
+          "start": 1471.776,
+          "end": 1501.704,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbc444fe3",
           "text": "“业相”肯定是和其他众生互动当中造业。在这里“远离心意意识”，就是远离妄想、分别、执着，“断三相续见”就是要断掉转相、业相、真相，它们连续不断地出现的这个状态也要断掉。",
-          "start": 1502.18,
-          "end": 1529.35,
+          "start": 1501.704,
+          "end": 1528.524,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6e0e8c2f",
           "text": "至于“三相”，如果在网上搜得到，它有不少种解释：有一种“三相”叫“假名相、法相、无相相”，这个大概率是后世解读佛经的人们硬加出来的概念。",
-          "start": 1529.58,
-          "end": 1544.74,
+          "start": 1528.524,
+          "end": 1543.973,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbcdca2b5",
           "text": "还有一种叫“生住灭相”，生相、住相、灭相是指妄想的生起、住和灭，这也叫“三相”。",
-          "start": 1545.44,
-          "end": 1554.4,
+          "start": 1543.973,
+          "end": 1553.692,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s46302572",
           "text": "还有《楞严经》里讲“一念无明生三细”，这样的说法可能大家都听过。这里的“三细”指的是“业相、现相和转相”，“业相”和“转相”咱们都知道了，但是他不讲“真相”而是“现相”，那么“现相”是什么？“现相”就是境界相，因为产生了妄想、又造了业，就会产生境界，这叫“现相”。",
-          "start": 1555.1,
-          "end": 1588.46,
+          "start": 1553.692,
+          "end": 1587.586,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa8c099d2",
           "text": "也有一种说法，我相、人相、众生相称之为“三相”。所以如果你只是在一个佛经前面看到一段名词，直接去找的话，可能找到很多类似的解释，但是把佛经从头到尾多看几遍，有可能找到后面佛给你解释了这个前面讲的名相。",
-          "start": 1588.64,
-          "end": 1613.75,
+          "start": 1587.586,
+          "end": 1615.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s388b4509",
           "text": "离外道执著，内自觉悟，入如来藏，趣于佛地。",
-          "start": 1615.96,
-          "end": 1621.66,
+          "start": 1615.11,
+          "end": 1620.981,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2b4a647f",
           "text": "“外道”就是专指和佛道不一样的其他理论。从内自己觉悟，进入如来的智慧当中，最后成佛。",
-          "start": 1622.49,
-          "end": 1638.98,
+          "start": 1620.981,
+          "end": 1641.929,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8dbb3758",
           "text": "这一期就讲到这里吧。",
-          "start": 1643.4,
+          "start": 1641.929,
           "end": 1645.605,
           "conf": 1,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
