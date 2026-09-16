@@ -40,6 +40,9 @@ const state = {
     draftTimer: null,
     activeSegmentIndex: null,
     usingDraft: false,
+    /** 做過合併／分拆／刪除的 session（`month#session_id`）：結構變更後段落位移，
+        單段「回復原樣」會對錯原始段落，故停用（改用 ↶ 復原）。存檔／重載後清空。 */
+    structEditedSessions: new Set(),
 };
 
 /** Merge rapid start-nudge clicks into one undo step + one auto-replay. */
@@ -56,6 +59,9 @@ let activePartBase = 0;
 
 /** 跳瀏游標：連續點擊可逐段前進，但不影響編輯焦點／播放狀態。 */
 let jumpCursor = null;
+
+/** 「✂ 分拆」用的文字游標：最後一次在問答段「回答」區塊內點擊／選取的字元位置。 */
+const answerCaret = { segmentIndex: null, offset: null };
 
 const els = {
     app: document.querySelector('#app'),
@@ -164,6 +170,22 @@ async function bootstrap() {
 
 function bindEvents() {
     bindJumpNav();
+    // 「✂ 分拆」的游標追蹤：點擊／選取「回答」文字時記下字元位置（唯讀文字也能放游標）。
+    document.addEventListener('selectionchange', () => {
+        const sel = document.getSelection();
+        const node = sel?.anchorNode;
+        if (!node) return;
+        const el = node.nodeType === Node.ELEMENT_NODE ? node : node.parentElement;
+        const answerEl = el?.closest?.('.answer-body');
+        const card = answerEl?.closest?.('.segment-card');
+        if (!answerEl || !card || card.dataset.kind !== 'segment') return;
+        const idx = Number(card.dataset.segmentIndex);
+        if (!Number.isInteger(idx)) return;
+        const offset = caretOffsetWithin(answerEl, node, sel.anchorOffset ?? 0);
+        if (offset == null) return;
+        answerCaret.segmentIndex = idx;
+        answerCaret.offset = offset;
+    });
     els.monthSelect.addEventListener('change', () => {
         state.prefs.lastSessionId = null;
         setPrefs({ lastSessionId: null });
@@ -828,6 +850,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         state.currentSha = sha;
         state.dirty = false;
         state.draftPaths = listDraftPaths();
+        state.structEditedSessions.clear();
         resetHistory();
         state.prefs.lastMonth = month;
         setPrefs({ lastMonth: month });
@@ -852,6 +875,11 @@ function mergePdfTextFrom(target, source) {
     for (const session of out.sessions || []) {
         const src = srcById.get(session.session_id);
         if (!src) continue;
+        // 結構不同（UI 做過合併／分拆／刪除）：保留目標自身的文字，
+        // 不用本地（舊結構）的 q_text／answer_text 蓋回，否則會把併接後的文字還原成半段。
+        const srcKeys = (src.segments || []).map((s) => s.stable_key).join('\u0000');
+        const dstKeys = (session.segments || []).map((s) => s.stable_key).join('\u0000');
+        if (srcKeys !== dstKeys) continue;
         if (src.opening) {
             session.opening = session.opening || {};
             for (const k of ['text', 'text_preview']) {
@@ -991,6 +1019,8 @@ function selectSession(sessionId) {
     state.sessionId = sessionId;
     state.activeSegmentIndex = null;
     jumpCursor = null;
+    answerCaret.segmentIndex = null;
+    answerCaret.offset = null;
     state.prefs.lastMonth = state.month;
     state.prefs.lastSessionId = sessionId;
     setPrefs({ lastMonth: state.month, lastSessionId: sessionId });
@@ -1184,6 +1214,30 @@ function renderSegmentCard(entry, segmentIndex) {
     node.querySelector('.copy-segment')?.addEventListener('click', (event) => {
         copySegmentAnswer(segmentIndex, event.currentTarget);
     });
+
+    // 段落結構操作（⬆併上段／⬇併下段／✂分拆／🗑刪除）：僅問答段可用；
+    // 開場／收場卡隱藏；相鄰邊不是問答段時停用該方向的合併。
+    if (kind === 'segment') {
+        const siblings = sessionItems();
+        const mergeUpButton = node.querySelector('.merge-up');
+        const mergeDownButton = node.querySelector('.merge-down');
+        const splitButton = node.querySelector('.split-segment');
+        const deleteButton = node.querySelector('.delete-segment');
+        if (mergeUpButton) {
+            mergeUpButton.disabled = siblings[segmentIndex - 1]?.kind !== 'segment';
+            mergeUpButton.addEventListener('click', () => mergeSegmentsWithNext(segmentIndex - 1));
+        }
+        if (mergeDownButton) {
+            mergeDownButton.disabled = siblings[segmentIndex + 1]?.kind !== 'segment';
+            mergeDownButton.addEventListener('click', () => mergeSegmentsWithNext(segmentIndex));
+        }
+        splitButton?.addEventListener('click', () => splitSegmentAtCaret(segmentIndex));
+        deleteButton?.addEventListener('click', () => deleteSegmentAt(segmentIndex));
+    } else {
+        for (const selector of ['.merge-up', '.merge-down', '.split-segment', '.delete-segment']) {
+            node.querySelector(selector)?.classList.add('hidden');
+        }
+    }
 
     const body = node.querySelector('.segment-body');
 
@@ -1950,6 +2004,12 @@ function resetSegment(segmentIndex) {
     const session = currentSession();
     const orig = originalSession();
     if (!session || !orig) return;
+    // 結構變更（合併／分拆／刪除）後段落已位移，用 index／stable_key 對回原段都會對錯：
+    // 停用單段回復，請改用 ↶ 復原（整份快照）。
+    if (structEdited()) {
+        setStatus('此 session 已做過合併／分拆／刪除，段落位移後「↺ 回復原樣」會對錯原始段而停用；請用 ↶ 復原上一步', 'error');
+        return;
+    }
     const items = sessionItems();
     const entry = items[segmentIndex];
     if (!entry) return;
@@ -1985,6 +2045,391 @@ async function copySegmentAnswer(segmentIndex, button) {
     } catch (error) {
         setStatus(`複製失敗：${error.message}`, 'error');
     }
+}
+
+// ---- 段落結構操作：合併／分拆／刪除 -----------------------------------------
+// 還原舊 `qa/` 校對編輯器（assets/editor.word.js 前身）的段操作，慣例對齊
+// `tool/word_audio_map2/apply_resplit.py` 與 SKILL.md：
+//   * 結構變更後重新編號 index / stable_key / question_id / q_preview / answer_preview；
+//     question_id = 'question-' + sha1('{session_id}#{index}#{q_text 前 80 碼點}')[:12]。
+//   * 合併段時間 = 兩段包絡 [min start, max end]（不內移已確認邊界；SKILL.md 規則 5）。
+//   * 分拆點 = 「唸回下一題題幹」處：文字分界取游標（沒有游標退回第一個空行），
+//     時間分界優先取播放器目前位置，否則取本段目前結束時間（舊 qa 流程）。
+//   * 完成判定不變：合併／新分拆段仍要「實際聽過」才寫 meta.lastPlayed。
+// 章節對應（chapter_question_ids，已固化）無法自動判斷屬哪半段：
+//   * 合併 → 取兩段聯集（兩段的電子書子題都改指向合併段，方向正確）。
+//   * 分拆 → 保留在前半；新段不帶對應（注入器第一個命中者勝，避免兩段互搶）。
+//   * 刪除 → 一併移除（confirm 對話框會先警告遺失的對應）。
+
+/** SHA-1 hex digest（與 Python hashlib.sha1 一致；question_id 產生用）。 */
+function sha1Hex(text) {
+    const msg = new TextEncoder().encode(String(text));
+    const len = msg.length;
+    const total = (((len + 8) >> 6) + 1) << 6;
+    const buf = new Uint8Array(total);
+    buf.set(msg);
+    buf[len] = 0x80;
+    const dv = new DataView(buf.buffer);
+    dv.setUint32(total - 8, Math.floor((len * 8) / 0x100000000));
+    dv.setUint32(total - 4, (len * 8) >>> 0);
+    let h0 = 0x67452301;
+    let h1 = 0xEFCDAB89;
+    let h2 = 0x98BADCFE;
+    let h3 = 0x10325476;
+    let h4 = 0xC3D2E1F0;
+    const w = new Uint32Array(80);
+    for (let off = 0; off < total; off += 64) {
+        for (let i = 0; i < 16; i += 1) w[i] = dv.getUint32(off + i * 4);
+        for (let i = 16; i < 80; i += 1) {
+            const v = w[i - 3] ^ w[i - 8] ^ w[i - 14] ^ w[i - 16];
+            w[i] = (v << 1) | (v >>> 31);
+        }
+        let a = h0;
+        let b = h1;
+        let c = h2;
+        let d = h3;
+        let e = h4;
+        for (let i = 0; i < 80; i += 1) {
+            let f;
+            let k;
+            if (i < 20) { f = (b & c) | (~b & d); k = 0x5A827999; }
+            else if (i < 40) { f = b ^ c ^ d; k = 0x6ED9EBA1; }
+            else if (i < 60) { f = (b & c) | (b & d) | (c & d); k = 0x8F1BBCDC; }
+            else { f = b ^ c ^ d; k = 0xCA62C1D6; }
+            const t = (((a << 5) | (a >>> 27)) + f + e + k + w[i]) >>> 0;
+            e = d;
+            d = c;
+            c = (b << 30) | (b >>> 2);
+            b = a;
+            a = t;
+        }
+        h0 = (h0 + a) >>> 0;
+        h1 = (h1 + b) >>> 0;
+        h2 = (h2 + c) >>> 0;
+        h3 = (h3 + d) >>> 0;
+        h4 = (h4 + e) >>> 0;
+    }
+    return [h0, h1, h2, h3, h4].map((x) => x.toString(16).padStart(8, '0')).join('');
+}
+
+/** 與 build_maps.py / apply_resplit.py 的 question_id() 完全同式。 */
+function questionIdFor(sessionId, index, qText) {
+    // Python q_text[:80] 以碼點切；JS 用展開運算子對齊（emoji 才不會差半個字）。
+    const head = [...String(qText || '')].slice(0, 80).join('');
+    return `question-${sha1Hex(`${sessionId}#${index}#${head}`).slice(0, 12)}`;
+}
+
+/** 結構變更後重新編號：index / stable_key / question_id / previews。 */
+function renumberSegments(session) {
+    const sid = session?.session_id || '';
+    (session.segments || []).forEach((seg, i) => {
+        const n = i + 1;
+        seg.index = n;
+        seg.stable_key = `${sid}#${n}`;
+        seg.question_id = questionIdFor(sid, n, seg.q_text || '');
+        const q = [...String(seg.q_text || '')];
+        seg.q_preview = q.length > 100 ? `${q.slice(0, 100).join('')}…` : q.join('');
+        const a = [...String(seg.answer_text || '')];
+        seg.answer_preview = a.length > 160 ? `${a.slice(0, 160).join('')}…` : a.join('');
+    });
+}
+
+function markStructureEdited() {
+    if (state.sessionId) state.structEditedSessions.add(`${state.month}#${state.sessionId}`);
+}
+
+function structEdited() {
+    return state.sessionId != null
+        && state.structEditedSessions.has(`${state.month}#${state.sessionId}`);
+}
+
+/** 把 selection 的 anchor 換算成 answer 區塊內的字元偏移（用於分拆文字分界）。 */
+function caretOffsetWithin(container, node, offset) {
+    if (!container.contains(node)) return null;
+    const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+    let total = 0;
+    while (walker.nextNode()) {
+        const t = walker.currentNode;
+        if (t === node) return total + Math.min(offset, t.data.length);
+        total += t.data.length;
+    }
+    return null;
+}
+
+/** 結構操作共用收尾：記入 undo／草稿、重繪、聚焦目標卡、清失效的跳瀏／游標狀態。 */
+function afterStructuralChange({ focusIndex = null, message = '' } = {}) {
+    commitHistory();
+    jumpCursor = null;
+    answerCaret.segmentIndex = null;
+    answerCaret.offset = null;
+    renderSessionList();
+    renderEditor();
+    if (focusIndex != null && sessionItems()[focusIndex]) {
+        setActiveSegment(focusIndex);
+        const card = els.editorRoot.querySelector(
+            `.segment-card[data-segment-index="${focusIndex}"]`,
+        );
+        card?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        if (card) {
+            card.classList.add('jump-target');
+            card.addEventListener('animationend', () => card.classList.remove('jump-target'), { once: true });
+        }
+    } else {
+        setActiveSegment(null);
+    }
+    setStatus(message, 'ok');
+}
+
+/**
+ * 把 items[firstIndex] 與其後一個「問答段」合併（⬆併上段／⬇併下段共用）。
+ * 文字：問題／回答逐字併接（空行相接；同文只留一份）、提問人相同保留否則並列。
+ * 時間：兩段包絡 [min start, max end]。章節對應取聯集。
+ * meta：兩段都聽過才保留 lastPlayed，否則合併段視為未聽、需重聽。
+ */
+function mergeSegmentsWithNext(firstIndex) {
+    const items = sessionItems();
+    const firstEntry = items[firstIndex];
+    const secondEntry = items[firstIndex + 1];
+    if (!firstEntry || firstEntry.kind !== 'segment'
+        || !secondEntry || secondEntry.kind !== 'segment') {
+        setStatus('上／下一段不是可合併的問答段（開場／收場不可合併）', 'error');
+        return;
+    }
+    const session = currentSession();
+    if (!session) return;
+    const first = firstEntry.item;
+    const second = secondEntry.item;
+    const firstName = itemKindLabel('segment', first.index);
+    const secondName = itemKindLabel('segment', second.index);
+    const pos = session.segments.indexOf(first);
+    if (pos < 0) return;
+
+    commitHistory();
+    markStructureEdited();
+
+    const merged = cloneMap(first);
+    const q1 = String(first.q_text || '').trim();
+    const q2 = String(second.q_text || '').trim();
+    if (q2 && q2 !== q1) merged.q_text = q1 ? `${q1}\n\n${q2}` : q2;
+    const a1 = String(first.answer_text || '').trim();
+    const a2 = String(second.answer_text || '').trim();
+    merged.answer_text = a1 && a2 ? `${a1}\n\n${a2}` : (a1 || a2);
+    if (second.questioner && second.questioner !== first.questioner) {
+        merged.questioner = first.questioner
+            ? `${first.questioner}、${second.questioner}`
+            : second.questioner;
+    }
+    // 時間：包絡 [min start, max end]（保持與前後段 end[i]==start[i+1] 銜接）。
+    const starts = [first.start, second.start].filter((v) => v != null && Number.isFinite(v));
+    const ends = [first.end, second.end].filter((v) => v != null && Number.isFinite(v));
+    merged.start = starts.length ? Math.min(...starts) : null;
+    merged.end = ends.length ? Math.max(...ends) : null;
+    merged.zero = first.zero === true && second.zero === true;
+    if (merged.zero) collapseToZero(merged);
+    normalizeItemTimes(merged);
+    if (merged.start == null || merged.end == null) {
+        merged.start_label = null;
+        merged.end_label = null;
+    }
+    // 章節對應取聯集（前段先、後段補、去重）：兩段的電子書子題都指向合併段。
+    merged.chapter_question_ids = [...new Set([
+        ...(first.chapter_question_ids || []),
+        ...(second.chapter_question_ids || []),
+    ])];
+    merged.chapter_answer_ids = [...new Set([
+        ...(first.chapter_answer_ids || []),
+        ...(second.chapter_answer_ids || []),
+    ])];
+    merged.chapter_indexes = [...new Set([
+        ...(first.chapter_indexes || []),
+        ...(second.chapter_indexes || []),
+    ])].sort((a, b) => a - b);
+    if (first.html_verbatim === false || second.html_verbatim === false) {
+        merged.html_verbatim = false;
+    }
+    // 「兩段式播放」的同組兩半併回一段時，配對標記一併移除。
+    if (first.two_part_group && first.two_part_group === second.two_part_group) {
+        delete merged.two_part_group;
+        delete merged.two_part_role;
+    }
+    merged.confidence = Math.min(first.confidence ?? 1, second.confidence ?? 1);
+    merged.status = 'manual';
+    // 完成＝實際聽過：兩段都聽過才保留「最後播放」，否則合併段視為未聽、需重聽。
+    const meta = ensureMeta(merged);
+    const fp = first.meta?.lastPlayed || '';
+    const sp = second.meta?.lastPlayed || '';
+    meta.lastPlayed = fp && sp ? (fp > sp ? fp : sp) : '';
+    meta.lastEdited = nowStamp();
+
+    session.segments.splice(pos, 2, merged);
+    renumberSegments(session);
+
+    const rangeNote = merged.start != null && merged.end != null
+        ? `，時間包絡 ${merged.start_label} - ${merged.end_label}`
+        : '';
+    afterStructuralChange({
+        focusIndex: firstIndex,
+        message: `已合併${firstName}與${secondName}${rangeNote}，後面段落已重新編號；`
+            + (meta.lastPlayed
+                ? '邊界取包絡未動，建議重聽確認合併段。'
+                : '合併段尚未「實際聽過」，播放後才算完成。'),
+    });
+}
+
+/**
+ * 把 items[segmentIndex] 從文字游標處分拆成兩段（✂ 分拆）。
+ * 文字分界＝游標（點擊回答文字），沒有游標時退回第一個空行；
+ * 時間分界優先＝播放器目前位置（邊聽邊停在拆分點），否則＝本段目前結束時間
+ * （舊 qa 流程：先按「設結束」在拆分點）。前半 [start, 分界]、新段 [分界, 原結束]。
+ */
+function splitSegmentAtCaret(segmentIndex) {
+    const items = sessionItems();
+    const entry = items[segmentIndex];
+    if (!entry || entry.kind !== 'segment') return;
+    const session = currentSession();
+    if (!session) return;
+    const item = entry.item;
+    if (isZeroItem(item)) {
+        setStatus('零長度段（師父未念）沒有可分拆的音檔範圍', 'error');
+        return;
+    }
+    const answer = String(item.answer_text || '');
+    const start = item.start;
+    const end = item.end;
+    if (start == null || end == null || !Number.isFinite(start) || !Number.isFinite(end)) {
+        setStatus('此段尚無起訖時間；請先播放並用「設起始／設結束」校正後再分拆', 'error');
+        return;
+    }
+
+    let textOffset = null;
+    let textHow = '';
+    if (answerCaret.segmentIndex === segmentIndex
+        && Number.isInteger(answerCaret.offset)
+        && answerCaret.offset > 0
+        && answerCaret.offset < answer.length) {
+        textOffset = answerCaret.offset;
+        textHow = '游標處';
+    } else {
+        const nl = answer.indexOf('\n\n');
+        if (nl >= 0 && nl + 2 < answer.length) {
+            textOffset = nl + 2;
+            textHow = '第一個空行後';
+        }
+    }
+    if (textOffset == null) {
+        setStatus('找不到文字分拆點：請先點擊「回答」文字中要分拆的位置（出現游標）再按「✂ 分拆」，或讓回答文字含空行分段', 'error');
+        return;
+    }
+    const before = answer.slice(0, textOffset).replace(/\s+$/, '');
+    const after = answer.slice(textOffset).replace(/^[ \t\r\n]+/, '');
+    if (!before.trim() || !after.trim()) {
+        setStatus('分拆點落在文字最前或最後，沒有可分出的內容', 'error');
+        return;
+    }
+
+    let boundary = null;
+    let timeHow = '';
+    const now = playerCurrentTime();
+    if (state.activeSegmentIndex === segmentIndex
+        && now != null && Number.isFinite(now)
+        && now > start && now <= end + 0.0005) {
+        boundary = roundSeconds(Math.min(now, end));
+        timeHow = '播放器目前位置';
+    } else {
+        boundary = end;
+        timeHow = '本段目前結束時間';
+    }
+    if (boundary <= start) {
+        setStatus(`時間分界 ${secondsToTimecode(boundary)} 未落在本段起訖內，無法分拆`, 'error');
+        return;
+    }
+
+    const origIndex = item.index;
+    const origEnd = item.end;
+    const pos = session.segments.indexOf(item);
+    if (pos < 0) return;
+
+    commitHistory();
+    markStructureEdited();
+
+    const second = cloneMap(item);
+    // 前半：文字到分拆點；結束＝分界（先按過「設結束」者此值不變）。
+    item.answer_text = before;
+    item.end = boundary;
+    item.end_label = secondsToTimecode(boundary);
+    item.status = 'manual';
+    ensureMeta(item).lastEdited = nowStamp();
+    // 後半（新段）：從分界起到原結束（播放器分界＝原結束保留；「設結束」先按過＝零寬，聽時再校）。
+    second.q_text = '';
+    second.answer_text = after;
+    second.start = boundary;
+    second.start_label = secondsToTimecode(boundary);
+    second.end = origEnd;
+    second.end_label = secondsToTimecode(origEnd);
+    delete second.zero;
+    // 章節對應無法自動判斷屬哪半段：保留在前半、新段不帶（注入器第一個命中者勝）。
+    second.chapter_question_ids = [];
+    second.chapter_answer_ids = [];
+    second.chapter_indexes = [];
+    delete second.html_verbatim;
+    delete second.two_part_group;
+    delete second.two_part_role;
+    second.status = 'manual';
+    second.notes = `ui-split from #${origIndex}` + (item.notes ? ` | ${item.notes}` : '');
+    second.meta = { lastPlayed: '', lastEdited: nowStamp() };
+
+    session.segments.splice(pos + 1, 0, second);
+    renumberSegments(session);
+
+    afterStructuralChange({
+        focusIndex: segmentIndex + 1,
+        message: `已將第 ${origIndex} 段分拆成兩段：文字分界＝${textHow}，`
+            + `時間分界＝${timeHow} ${secondsToTimecode(boundary)}；`
+            + '章節對應保留在前半、新段未帶對應（若新段才是電子書子題請改 JSON 或重跑 link_chapters.py）；'
+            + '新段請實際聽過並校正結束時間。',
+    });
+}
+
+/**
+ * 刪除 items[segmentIndex] 這個問答段（🗑 刪除）。後面段落重新編號；
+ * 前後段時間邊界不連動（原段音檔範圍自所有段落下移除，鄰段請自行視需要調整）；
+ * 章節對應一併移除（confirm 會先警告）。
+ */
+function deleteSegmentAt(segmentIndex) {
+    const items = sessionItems();
+    const entry = items[segmentIndex];
+    if (!entry || entry.kind !== 'segment') return;
+    const session = currentSession();
+    if (!session) return;
+    const item = entry.item;
+    const name = itemKindLabel('segment', item.index);
+    const qids = item.chapter_question_ids || [];
+    const chapters = [...new Set(item.chapter_indexes || [])].sort((a, b) => a - b);
+    const linkNote = qids.length
+        ? `\n注意：此段對應電子書第 ${chapters.join('、')} 章的 ${qids.length} 個子題`
+            + '（chapter_question_ids），刪除後這些對應會一併消失，重建電子書後該些問題不會有播放鈕。'
+        : '';
+    if (!window.confirm(
+        `確定要刪除${name}嗎？其後段落會重新編號，前後段的時間邊界不會自動連動。`
+        + `需按「儲存到 GitHub」才會真正寫回。${linkNote}`,
+    )) {
+        return;
+    }
+
+    const pos = session.segments.indexOf(item);
+    if (pos < 0) return;
+
+    commitHistory();
+    markStructureEdited();
+
+    session.segments.splice(pos, 1);
+    renumberSegments(session);
+
+    const focusIndex = Math.min(segmentIndex, sessionItems().length - 1);
+    afterStructuralChange({
+        focusIndex: focusIndex >= 0 ? focusIndex : null,
+        message: `已刪除${name}，後面的段落已重新編號；前後段時間邊界未連動，請視需要調整鄰段起訖。`,
+    });
 }
 
 function recomputeDirty() {
@@ -2114,6 +2559,7 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         state.originalMap = cloneMap(payload);
         state.dirty = false;
         state.usingDraft = false;
+        state.structEditedSessions.clear();
         clearDraft(path);
         els.draftBadge.classList.add('hidden');
         resetHistory();
