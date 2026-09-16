@@ -169,6 +169,7 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
     confs = [r["conf"] for r in res_list]
     methods = [r["method"] for r in res_list]
     fixed_end = [bool(r.get("end_fixed")) for r in res_list]
+    no_clamp = set()   # R5 夾逼豁免（講首/黑洞救援：書序≠語序，允許回跳）
     changed = []
 
     def note(i, msg):
@@ -217,72 +218,178 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
             methods[i] = "block-zero"
             note(i, f"R1/R2 block-zero cov={cov:.2f} subsumed={subsumed}")
 
-    # -- R3：被吞掉的導言救援（只處理「講首 run＋期數 intro」型；
-    #    錨＝期數「第X期」（ASR  robust）＋講首 120s 先驗；找不到就留白＋review，
-    #    絕不在大窗內 fuzzy 亂錨） --
-    CN = "一二三四五六七八九"
-    lect_no = getattr(process_lecture, "_cur_lect_no", None)
-    if first_run and first_run[0] == 0:
-        cn = "" if lect_no is None else (
-            CN[lect_no - 1] if lect_no <= 9 else
-            ("十" if lect_no == 10 else
-             ("十" + CN[lect_no - 11] if lect_no < 20 else
-              (CN[lect_no // 10 - 1] + "十" + (CN[lect_no % 10 - 1] if lect_no % 10 else "")))))
+    # -- R3/H：講首重構（golden L1-3 慣例：書序≠語序）--
+    #  golden 實測慣例：
+    #   * 導言 COMM 錨在講首：start ≈ ASR 首字時間 − 0.2s（L3: 2.15−0.2=1.95、
+    #     L4: 1.74−0.2=1.54，皆與人工 golden 逐 byte 相符）。比期數 fuzzy 更強。
+    #   * 首 SUTRA run＝印刷參考塊；其 engine「幻影 READ」多半是講後 dup 引文
+    #     （同文重印，如 L38 p0↔p12、L22 p0↔p19）的 vocalization 被前置認領，
+    #     且 span 吞掉了講頭導言 → run 歸零、讀段移轉給 dup。
+    #   * 連續零寬 COMM（導言區塊，如 L22 p14-18）：第一員文字錨 anchor0，
+    #     其餘先逐字/拼音證據錨，無證據者按字數比例拆分剩餘窗（>60s 標人工）。
+    first_char_t = None
+    for _t in times:
+        if _t[0] is not None and _t[0] == _t[0]:
+            first_char_t = _t[0]
+            break
+    anchor0 = max(0.0, round(first_char_t - 0.2, 3)) if first_char_t is not None else None
+
+    if first_run and first_run[0] == 0 and anchor0 is not None:
         run_end = max(first_run)
-        for i in range(run_end + 1, min(n, run_end + 7)):
-            if cls_list[i] == "SUTRA" or len(norms[i]) < 4:
-                continue
-            w = (ends[i] or 0) - (starts[i] or 0)
-            if w >= 1.0:
-                continue  # 已有實寬
-            hi_t = duration
-            for j in range(i + 1, n):
-                if ends[j] is not None and starts[j] is not None and ends[j] > starts[j]:
+
+        # H-a：run 幻影 READ → dup 移轉（先做；head 區塊邊界會用 dup 新起點）
+        for i in first_run:
+            if starts[i] is None or ends[i] is None or ends[i] <= starts[i]:
+                continue  # 已零寬
+            if len(norms[i]) >= LONG_B or len(norms[i]) < 8:
+                continue  # R1/R2 已仲裁（cov≥0.6 留下的視為真讀）；太短不仲裁
+            nd = norms[i]
+            dup = -1
+            for j in range(run_end + 1, min(n, run_end + 17)):
+                if cls_list[j] == "SUTRA" and norms[j] and norms[j][:20] == nd[:20]:
+                    dup = j
+                    break
+            old_s, old_e = starts[i], ends[i]
+            if dup >= 0:
+                # run 段歸零（印刷參考塊），vocalization 移轉給 dup
+                starts[i] = ends[i] = round(prev_end(i), 3)
+                fixed_end[i] = True
+                confs[i] = 0.85
+                methods[i] = "block-zero"
+                note(i, f"H dup-transfer zero (vocalization -> p{dup})")
+                if not (starts[dup] is not None and ends[dup] is not None
+                        and ends[dup] > starts[dup]):
+                    # dup 重錨：先舊 span 緊窗（L38 型），再放寬（L10 型）
+                    s3 = per3 = None
+                    for w3a, w3b in ((max(0.0, old_s - 2.0), old_e + 1.0),
+                                     (max(0.0, old_s - 5.0), old_e + 175.0)):
+                        a3, b3 = chars_in_range(tstarts, w3a, w3b)
+                        if b3 <= a3:
+                            continue
+                        q3 = stream.find(nd[:HEAD_N], a3, b3) if len(nd) >= 6 else -1
+                        if q3 >= 0:
+                            t3 = t_of(times, q3)
+                            s3 = max(0.0, (t3 if t3 is not None else w3a) - LEAD_BACK)
+                            per3 = 0.9
+                            break
+                        v3 = dtw_verify(nd[:HEAD_N], chars, times, a3, b3)
+                        if v3 and v3[0] >= 0.55 and t_of(times, v3[1]) is not None:
+                            s3 = max(0.0, t_of(times, v3[1]) - LEAD_BACK)
+                            per3 = v3[0]
+                            break
+                    if s3 is not None and s3 < old_e + 175.0:
+                        starts[dup] = round(s3, 3)
+                        fixed_end[dup] = False
+                        confs[dup] = 0.85 if per3 >= 0.9 else 0.7
+                        methods[dup] = "dup-anchor"
+                        no_clamp.add(dup)
+                        note(dup, f"H dup-anchor {'verb' if per3 >= 0.9 else f'fuzzy{per3:.2f}'} @{s3:.2f}")
+                    else:
+                        # 無證據：繼承舊 span（保住可播性），R10 稽核 + 人工複核
+                        starts[dup] = round(old_s, 3)
+                        ends[dup] = round(old_e, 3)
+                        fixed_end[dup] = False
+                        confs[dup] = 0.45
+                        methods[dup] = "dup-anchor"
+                        no_clamp.add(dup)
+                        note(dup, f"H dup-anchor inherit @{old_s:.2f} +review")
+            else:
+                # 無 dup：局部覆蓋仲裁（cov<0.6 → 幻影 → 歸零）
+                exp3 = max(60.0, len(nd) / 4.5 * 2.0)
+                a3, b3 = chars_in_range(tstarts, max(0.0, old_s - 30.0),
+                                        old_e + exp3)
+                cov3, _ = greedy_coverage(nd, stream, a3, b3)
+                if cov3 < FULL_T:
+                    starts[i] = ends[i] = round(prev_end(i), 3)
+                    fixed_end[i] = True
+                    confs[i] = 0.85
+                    methods[i] = "block-zero"
+                    note(i, f"H block-zero cov={cov3:.2f} (no dup)")
+
+        # H-b：導言區塊（first run 後連續 COMM）重構
+        blk = []
+        for j in range(run_end + 1, n):
+            if cls_list[j] == "COMM" and len(norms[j]) >= 2:
+                blk.append(j)
+            else:
+                break
+        if blk:
+            intro = blk[0]
+            # 第一員（真導言）：文字型錨 anchor0（golden-exact）
+            cur = starts[intro]
+            if re.match(r"《楞伽[经經]》", paras[intro]["text"]) \
+                    and (cur is None or abs(cur - anchor0) > 0.5):
+                starts[intro] = anchor0
+                fixed_end[intro] = False
+                methods[intro] = "intro-rescue"
+                confs[intro] = 0.9
+                note(intro, f"H intro text-anchor {cur:.2f} -> {anchor0:.2f}")
+            # 區塊右邊界：block 後第一個實寬段
+            hi_t = duration or 0.0
+            for j in range(blk[-1] + 1, n):
+                if starts[j] is not None and ends[j] is not None and ends[j] > starts[j]:
                     hi_t = starts[j]
                     break
-            a, b = chars_in_range(tstarts, 0.0, min(hi_t, 150.0))
-            hit = None
-            if cn:
-                for qi in ("第" + cn + "期", cn + "期"):
-                    q = stream.find(qi, a, b)
-                    if q >= 0:
-                        t = t_of(times, q)
-                        # 導言起點≈期數前約 0.5–3s（「楞伽經第四期…」期數在頭）
-                        s = max(0.0, (t if t is not None else 0.0) - 1.5)
-                        hit = (q, s, "qishu")
-                        break
-            if hit is None:
-                for off in (0, 8, len(norms[i]) // 4):
-                    nd = norms[i][off:off + HEAD_N]
-                    if len(nd) < 6:
-                        continue
-                    q = stream.find(nd, a, b)
-                    if q >= 0:
-                        t = t_of(times, q)
-                        back = off / 4.5
-                        s = max(0.0, (t if t is not None else 0.0) - back)
-                        if s > 120.0:
+            # 其餘成員：先證據、後比例拆分
+            ev_end = starts[intro]
+            unev = []
+            for j in blk[1:]:
+                if starts[j] is not None and ends[j] is not None \
+                        and ends[j] > starts[j] and starts[j] <= hi_t:
+                    ev_end = max(ev_end, starts[j])  # 已有正確實寬者尊重
+                    continue
+                nd = norms[j]
+                hit = None
+                if len(nd) >= 8 and hi_t > ev_end:
+                    a4 = max(anchor0, ev_end)
+                    b4 = min(hi_t, a4 + 175.0)
+                    a4i, b4i = chars_in_range(tstarts, a4, b4)
+                    for off4 in (0, 8):
+                        nd4 = nd[off4:off4 + 10]
+                        if len(nd4) < 8:
                             continue
-                        hit = (q, s, f"verbatim@{off}")
-                        break
-            if hit is None:
-                a1, b1 = chars_in_range(tstarts, 0.0, min(hi_t, 120.0), pad=0)
-                if b1 > a1:
-                    v = dtw_verify(norms[i][:HEAD_N], chars, times,
-                                   a1, min(len(chars), b1 + 150))
-                    if v and v[0] >= 0.7:
-                        t = t_of(times, v[1])
-                        s = max(0.0, (t if t is not None else 0.0) - LEAD_BACK)
-                        if s <= 120.0:
-                            hit = (v[1], s, "fuzzy")
-            if hit is not None:
-                q, s, how = hit
-                if s <= min(hi_t, 120.0):
-                    starts[i] = round(s, 3)
-                    fixed_end[i] = False
-                    confs[i] = 0.9 if how == "qishu" else 0.8
-                    methods[i] = "intro-rescue"
-                    note(i, f"R3 intro-rescue {how} @{s:.2f}")
+                        q4 = stream.find(nd4, a4i, b4i)
+                        if q4 >= 0:
+                            t4 = t_of(times, q4)
+                            s4 = max(a4, (t4 if t4 is not None else a4) - off4 / 4.5)
+                            if s4 < hi_t:
+                                hit = (s4, "verb")
+                                break
+                    if hit is None:
+                        v4 = dtw_verify(nd[:HEAD_N], chars, times, a4i,
+                                        min(len(chars), b4i + 150))
+                        if v4 and v4[0] >= 0.6 and t_of(times, v4[1]) is not None:
+                            s4 = max(a4, t_of(times, v4[1]))
+                            if s4 < hi_t:
+                                hit = (s4, f"fuzzy{v4[0]:.2f}")
+                if hit is not None and hit[0] >= ev_end - 0.01:
+                    starts[j] = round(hit[0], 3)
+                    fixed_end[j] = False
+                    methods[j] = "head-anchor"
+                    confs[j] = 0.8
+                    ev_end = starts[j]
+                    note(j, f"H head-anchor {hit[1]} @{hit[0]:.2f}")
+                else:
+                    unev.append(j)
+            if unev:
+                # 拆分窗起點＝導言吃掉自身預期朗讀時長後（否則鏈會把導言壓回零寬）
+                lo5 = max(anchor0 + max(1.5, len(norms[intro]) / 4.5), ev_end)
+                lens5 = [max(4, len(norms[k])) for k in unev]
+                tot5 = sum(lens5)
+                if hi_t - lo5 >= 1.0:
+                    t5 = lo5
+                    for k, w5 in zip(unev, lens5):
+                        s5 = t5
+                        t5 = lo5 + (hi_t - lo5) * (sum(lens5[:unev.index(k) + 1]) / tot5)
+                        starts[k] = round(s5, 3)
+                        fixed_end[k] = True   # 防鏈塌縮（後鄰零錨可能更早）
+                        methods[k] = "head-split"
+                        confs[k] = 0.6 if (hi_t - lo5) <= 60 else 0.4
+                        note(k, f"H head-split [{s5:.1f},{t5:.1f}]")
+                for k in unev:
+                    no_clamp.add(k)
+            for j in blk:
+                no_clamp.add(j)
 
     # -- R4：误判 skip 救援（零寬短引文局部強證據；只救「清楚念出」，
     #    微讀（2-6 字帶過）證據不足，不硬救，列入人工清單） --
@@ -362,6 +469,189 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
                 methods[i] = "quote-rescue-fuzzy" if per < 0.9 else "quote-rescue"
                 note(i, f"R4 quote-rescue fuzzy {per:.2f} @{s:.2f}")
 
+    # -- R11：黑洞仲裁（time-axis hole ≥ 30s；跑在 R8 前，讓 R8 能拆
+    #    R11 產生的胖 span）--
+    #  塌縮段的音檔常在相鄰「時間軸黑洞」內（書序在後、語序在前，如 L38
+    #  p76-86 錨在黑洞末端 1500s、真音檔在 [1285,1498]）。處理順序：
+    #  證據認領（逐字→體部→拼音，洞內書序單調）→ 未認領者在「前後錨點
+    #  之間」按字數插值（勿全塞殘餘窗）→ 窗 <3s 誠實留零。洞後段若頭部
+    #  在洞內有強證據（≥0.85）則晚錨救援（R11b）；跑題/ASR 天花板洞只降
+    #  conf 提請人工聽（R11c，不動位置）。
+    reads_t = sorted(
+        (s, e, i) for i, (s, e) in enumerate(zip(starts, ends))
+        if s is not None and e is not None and e > s)
+    for (s1, e1, i1), (s2, e2, i2) in zip(reads_t, reads_t[1:]):
+        hole = s2 - e1
+        if hole < 30.0:
+            continue
+        cand = [i for i in range(n)
+                if starts[i] is not None and ends[i] is not None
+                and ends[i] <= starts[i]
+                and e1 - 5.0 <= starts[i] <= s2 + 5.0
+                and cls_list[i] in ("SUTRA", "COMM")
+                and len(norms[i]) >= 6]
+        if not cand:
+            # R11b/R11c：洞後段晚錨救援 / 無人認領大洞
+            nd2 = norms[i2]
+            if len(nd2) >= 8:
+                a11, b11 = chars_in_range(tstarts, e1, s2)
+                ev11 = None
+                if b11 > a11:
+                    q11 = stream.find(nd2[:12], a11, b11)
+                    if q11 >= 0 and t_of(times, q11) is not None:
+                        ev11 = (t_of(times, q11), 1.0)
+                    else:
+                        v11 = dtw_verify(nd2[:HEAD_N], chars, times, a11, b11)
+                        if v11 and v11[0] >= 0.85 and t_of(times, v11[1]) is not None:
+                            ev11 = (t_of(times, v11[1]), v11[0])
+                if ev11 is not None and ev11[0] < s2 - 5.0:
+                    starts[i2] = round(max(e1, ev11[0] - LEAD_BACK), 3)
+                    methods[i2] = "hole-late-rescue"
+                    confs[i2] = 0.7
+                    no_clamp.add(i2)
+                    note(i2, f"R11b late-rescue {s2:.2f} -> {starts[i2]:.2f}")
+                else:
+                    # 無人認領的大洞（跑題/ASR 天花板）：不動位置，降 conf 提請人工聽
+                    confs[i2] = min(confs[i2], 0.49)
+                    note(i2, f"R11c hole-unexplained [{e1:.0f},{s2:.0f}] +review")
+            continue
+        # 塌縮段書序範圍內的短零寬段一併納入（如「下一段：」）
+        base = set(cand)
+        for m in range(cand[0], cand[-1] + 1):
+            if starts[m] is not None and ends[m] is not None \
+                    and ends[m] <= starts[m] and m not in base \
+                    and cls_list[m] in ("SUTRA", "COMM"):
+                cand.append(m)
+                base.add(m)
+        cand.sort()
+        # 證據認領（書序、洞內單調；dup/echo 防護：書序在後的同文段
+        # 已擁有實寬 span → 音檔屬它（§0.5 經文重複段慣例），前段不認領）
+        cur_lo = e1
+        anchored = {}
+        for m in cand:
+            nd = norms[m]
+            echo = False
+            for j in range(m + 1, min(n, m + 25)):
+                if cls_list[j] == cls_list[m] and norms[j] \
+                        and norms[j][:20] == nd[:20] \
+                        and starts[j] is not None and ends[j] is not None \
+                        and ends[j] > starts[j]:
+                    echo = True
+                    break
+            if echo:
+                note(m, "R11 echo-guard: book-later dup owns the audio")
+                continue
+            hit = None
+            if len(nd) >= 10:
+                a_m, b_m = chars_in_range(tstarts, cur_lo, s2)
+                if b_m > a_m:
+                    q11 = stream.find(nd[:10], a_m, b_m)
+                    if q11 >= 0 and t_of(times, q11) is not None \
+                            and t_of(times, q11) >= cur_lo - 0.5:
+                        hit = (t_of(times, q11), 0.85, "verb")
+            if hit is None and len(nd) >= 12:
+                for off11 in (4, 8):
+                    ndb = nd[off11:off11 + 10]
+                    if len(ndb) < 8:
+                        continue
+                    a_m, b_m = chars_in_range(tstarts, cur_lo, s2)
+                    qb = stream.find(ndb, a_m, b_m)
+                    if qb >= 0 and t_of(times, qb) is not None:
+                        tb = t_of(times, qb)
+                        hit = (max(cur_lo, tb - off11 / 4.5), 0.8, f"body{off11}")
+                        break
+            if hit is None and len(nd) >= 8:
+                a_m, b_m = chars_in_range(tstarts, cur_lo, s2)
+                if b_m > a_m:
+                    v11 = dtw_verify(nd[:HEAD_N], chars, times, a_m, b_m)
+                    if v11 and v11[0] >= 0.60 and t_of(times, v11[1]) is not None \
+                            and t_of(times, v11[1]) >= cur_lo - 0.5:
+                        hit = (t_of(times, v11[1]), 0.65, f"fuzzy{v11[0]:.2f}")
+            if hit is not None and hit[0] < s2 - 1.5:
+                # 起點重疊防護：別的 READ 段已在同一起音點 ±2s → 音檔已被認領
+                # （L7 p1 型：fuzzy 咬到洞緣上 i2 的讀經起音；文字前綴規則
+                #  對「近鄰不同引文」無效，起點鄰近才是實質判準）
+                clash = None
+                for j in range(n):
+                    if j != m and starts[j] is not None and ends[j] is not None \
+                            and ends[j] > starts[j] \
+                            and abs(starts[j] - (hit[0] - LEAD_BACK)) <= 2.0:
+                        clash = j
+                        break
+                if clash is not None:
+                    note(m, f"R11 start-clash p{clash}@{starts[clash]:.1f} (claimed)")
+                    continue
+                starts[m] = round(max(cur_lo, hit[0] - LEAD_BACK), 3)
+                fixed_end[m] = False
+                methods[m] = "hole-anchor"
+                confs[m] = hit[1]
+                no_clamp.add(m)
+                anchored[m] = starts[m]
+                cur_lo = starts[m]
+                note(m, f"R11 hole-anchor {hit[2]} @{starts[m]:.2f}")
+        # 未認領者：在「前後錨點之間」按字數插值（書序、洞內單調）
+        uc = [m for m in cand if m not in anchored]
+        if uc:
+            runs_uc = []
+            cur = [uc[0]]
+            for m in uc[1:]:
+                if m == cur[-1] + 1:
+                    cur.append(m)
+                else:
+                    runs_uc.append(cur)
+                    cur = [m]
+            runs_uc.append(cur)
+            for run in runs_uc:
+                lo_b = e1
+                lo_from_anchor = False
+                for mm in reversed(cand[:cand.index(run[0])]):
+                    if mm in anchored:
+                        # 前錨成員先吃掉自己的預期朗讀時長
+                        lo_b = starts[mm] + max(2.0, len(norms[mm]) / 4.5)
+                        lo_from_anchor = True
+                        break
+                hi_b = s2
+                hi_from_anchor = False
+                for mm in cand[cand.index(run[-1]) + 1:]:
+                    if mm in anchored:
+                        hi_b = starts[mm]
+                        hi_from_anchor = True
+                        break
+                if not (lo_from_anchor or hi_from_anchor):
+                    # 兩側皆洞緣、無證據錨 → 不盲拆（L7 p1-4 型），誠實留零
+                    for m in run:
+                        methods[m] = "hole-zero"
+                        confs[m] = 0.35
+                        note(m, "R11 hole-zero (no in-hole anchor)")
+                    continue
+                if hi_b < lo_b:
+                    hi_b = min(s2, lo_b)
+                if hi_b - lo_b >= 3.0:
+                    lens_r = [max(4, len(norms[m])) for m in run]
+                    tot_r = sum(lens_r)
+                    t_r = lo_b
+                    for m, w_r in zip(run, lens_r):
+                        s_r = t_r
+                        t_r = lo_b + (hi_b - lo_b) * (sum(lens_r[:run.index(m) + 1]) / tot_r)
+                        starts[m] = round(s_r, 3)
+                        fixed_end[m] = True   # 防鏈塌縮
+                        methods[m] = "hole-split"
+                        confs[m] = 0.4
+                        no_clamp.add(m)
+                        note(m, f"R11 hole-split [{s_r:.1f},{t_r:.1f}]")
+                else:
+                    for m in run:
+                        methods[m] = "hole-zero"
+                        confs[m] = 0.35
+                        note(m, "R11 hole-zero (no evidence, tiny residual)")
+        # 釘住書序在前、音檔在後的相鄰 READ 段（防 R5 鏈回拉）
+        for j in range(cand[0] - 1, -1, -1):
+            if starts[j] is not None and ends[j] is not None and ends[j] > starts[j]:
+                if ends[j] > starts[cand[0]]:
+                    fixed_end[j] = True
+                    note(j, "R11 pinned (book-order prev, audio-after)")
+                break
+
     # -- R8：過胖引文拆分（SUTRA 實寬語速 < 2.5 字/s＋緊鄰零寬 COMM →
     #    前段按朗讀語速切給引文，後段還給講解） --
     for i in range(n):
@@ -412,7 +702,8 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
     #    dh<0.4 無證據→退回待人工；0.4–0.55 弱保留＋複核；≥0.55 確認；
     #    緊接 R4 跑，用預期窗 [s-1.5, s+m/4.5+5]，鏈化前攔截） --
     for i in range(n):
-        if methods[i] not in ("quote-rescue-fuzzy", "quote-rescue-body"):
+        if methods[i] not in ("quote-rescue-fuzzy", "quote-rescue-body",
+                              "dup-anchor"):
             continue
         if starts[i] is None:
             continue
@@ -465,7 +756,9 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
             continue
         if starts[i] is None or ends[i] is None or ends[i] <= starts[i]:
             continue
-        if methods[i] in ("quote-rescue", "quote-rescue-fuzzy", "split-give"):
+        if methods[i] in ("quote-rescue", "quote-rescue-fuzzy", "split-give",
+                          "dup-anchor", "hole-anchor", "head-anchor",
+                          "head-split", "hole-split"):
             continue
         if m / max(0.5, ends[i] - starts[i]) >= 3.0:
             continue  # 語速正常：真讀，不碰
@@ -504,7 +797,10 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
 
     # -- R7：COMM 永不零寬（拆分包夾間隙；大間隙標 NEEDS-HUMAN） --
     need_human = []
+    r7_done = set()
     for i in range(n):
+        if i in r7_done:
+            continue
         if cls_list[i] != "COMM" or len(norms[i]) < 4:
             continue
         if starts[i] is not None and ends[i] is not None and ends[i] > starts[i]:
@@ -533,6 +829,8 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
                 break
         lens = [max(4, len(norms[k])) for k in members]
         total = sum(lens)
+        degenerate = (hi_t - lo_t) < 1.0   # 鄰段相接無縫隙：語音在胖鄰居體內
+        r7_done.update(members)
         t = lo_t
         for k, w in zip(members, lens):
             s = t
@@ -540,14 +838,23 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
             starts[k] = round(s, 3)
             ends[k] = round(t, 3)
             fixed_end[k] = False
-            confs[k] = 0.6 if (hi_t - lo_t) <= 60 else 0.4
-            methods[k] = "comm-split"
-            note(k, f"R7 comm-split [{s:.1f},{t:.1f}]")
+            if degenerate:
+                # 誠實留零＋低 conf＋人工複核（不冒充拆分）
+                confs[k] = 0.35
+                methods[k] = "comm-gap-zero"
+                note(k, f"R7 comm-gap-zero @{s:.1f} (no gap to split)")
+            else:
+                confs[k] = 0.6 if (hi_t - lo_t) <= 60 else 0.4
+                methods[k] = "comm-split"
+                fixed_end[k] = True   # 防鏈塌縮（R7 拆分結果不得被鄰錨壓回）
+                note(k, f"R7 comm-split [{s:.1f},{t:.1f}]")
             if (hi_t - lo_t) > 60:
                 need_human.append(k)
         # 外層迴圈跳過已處理成員：標記即可（ends 已有寬，迴圈條件自動跳過）
 
-    # -- R5：鏈（尊重 end_fixed；zero 重壓） --
+    # -- R5：鏈（尊重 end_fixed；zero 重壓；golden 慣例：零寬 cosmetic 段
+    #    不推進單調邊界 last_t，講首/黑洞救援段豁免夾逼——L3 人工 golden
+    #    i=1-6 錨 2.15 > i=7 導言 1.95 證明零寬段允許「往後看見回跳」）--
     for i in range(n - 1):
         if fixed_end[i]:
             continue
@@ -560,14 +867,16 @@ def skill_correct(paras, cls_list, res_list, chars, times, stream, py_stream,
     for i in range(n):
         if starts[i] is None:
             starts[i] = round(last_t, 3)
-        if starts[i] < last_t - 1e-9:
+        is_zero = ends[i] is not None and starts[i] is not None \
+            and ends[i] <= starts[i]
+        if not is_zero and i not in no_clamp \
+                and starts[i] < last_t - 1e-9:
+            note(i, f"R5 clamped nonmonotonic ({starts[i]:.1f}<{last_t:.1f})")
             starts[i] = round(last_t, 3)
-            note(i, "R5 clamped nonmonotonic")
         if ends[i] is None or ends[i] < starts[i]:
             ends[i] = starts[i]
-        last_t = ends[i] if fixed_end[i] else max(last_t, ends[i])
-        if not fixed_end[i]:
-            last_t = ends[i]
+        if not is_zero:
+            last_t = max(last_t, ends[i])
     for i in range(n):
         is_zero = (cls_list[i] == "SUTRA" and
                    methods[i] in ("block-zero", "quote-skip", "skipped-sutra",
@@ -626,10 +935,12 @@ def process_lecture(ln, cls_map, verbose=False):
     for i, p in enumerate(paras):
         reasons = []
         if methods[i] in ("rescue-blocked", "comm-split", "split-give",
-                           "echo-zero"):
+                           "echo-zero", "comm-gap-zero", "hole-zero",
+                           "hole-split", "head-split", "hole-late-rescue"):
             reasons.append(methods[i])
         if methods[i] in ("quote-rescue-fuzzy", "quote-rescue-body",
-                           "quote-rescue") and confs[i] < 0.8:
+                           "quote-rescue", "dup-anchor", "hole-anchor",
+                           "head-anchor") and confs[i] < 0.8:
             reasons.append(f"{methods[i]}:verify-by-ear")
         if confs[i] < 0.5:
             reasons.append(f"low-conf={confs[i]}")
@@ -637,6 +948,12 @@ def process_lecture(ln, cls_map, verbose=False):
                 and cls_list[i] == "SUTRA" and 4 <= len(norm_para(p["text"])) <= SHORT_Q:
             # 短引文判不念：人工複核 objection 權（微讀無法自動驗證）
             reasons.append("skip-quote:verify-by-ear")
+        if starts[i] == ends[i] and methods[i] not in (
+                "block-zero", "quote-skip", "skipped-sutra", "echo-zero",
+                "subsumed-dup", "rescue-blocked", "hole-zero", "comm-gap-zero"):
+            # 引擎鏈塌縮段（dtw*/comm-split 等）：golden 從不出現此狀態，
+            # 誠實進複核清單（SUTRA 由 run_targets 補 zero 旗標）
+            reasons.append(f"zero-width({methods[i]}):verify-by-ear")
         if reasons:
             review.append({"lecture": ln, "i": i, "pid": p["pid"],
                            "cls": cls_list[i], "start": round(starts[i], 3),
@@ -712,18 +1029,31 @@ def run_targets(dry_run=True, only=None, verbose=False):
               f"maxΔ={max(d):.2f}s changes={len(changed)} review={len(review)}")
         if dry_run:
             continue
-        for p, s, e, c, m in zip(lec["paragraphs"], starts, ends, confs, methods):
-            p["start"], p["end"], p["conf"], p["method"] = \
-                round(s, 3), round(e, 3), c, m
+        for _i, (p, s, e, c, m) in enumerate(
+                zip(lec["paragraphs"], starts, ends, confs, methods)):
+            p["start"], p["end"] = round(s, 3), round(e, 3)
             if s == e:
                 # zero 標記：沿用 UI 語義（師父沒念）
                 if m in ("block-zero", "quote-skip", "skipped-sutra",
-                         "echo-zero", "subsumed-dup", "rescue-blocked"):
+                         "echo-zero", "subsumed-dup", "rescue-blocked",
+                         "hole-zero", "comm-gap-zero"):
                     p["zero"] = True
-                elif "zero" in p:
+                elif cls_list[_i] == "SUTRA":
+                    # 引擎鏈塌縮的 SUTRA（dtw*/ngram…）：補誠實 zero 旗標＋降 conf
+                    # golden 從不出現「無旗標零寬」狀態
+                    p["zero"] = True
+                    c = min(c, 0.45)
+                else:
+                    # COMM 塌縮：師父有講，不標 zero，降 conf 走複核清單
+                    c = min(c, 0.45)
+                    if "zero" in p:
+                        del p["zero"]
+                p["conf"] = c
+            else:
+                p["conf"] = c
+                if "zero" in p:
                     del p["zero"]
-            elif "zero" in p:
-                del p["zero"]
+            p["method"] = m
             # confirmed 鍵原樣保留，不碰
     if dry_run:
         print(f"dry-run：不寫檔。review total={len(all_review)}")

@@ -21,9 +21,9 @@
    "rate": 0.835
   },
   "5": {
-   "ok": 105,
+   "ok": 104,
    "total": 124,
-   "rate": 0.847
+   "rate": 0.839
   },
   "6": {
    "ok": 156,
@@ -31,14 +31,14 @@
    "rate": 0.929
   },
   "7": {
-   "ok": 83,
+   "ok": 84,
    "total": 94,
-   "rate": 0.883
+   "rate": 0.894
   },
   "8": {
-   "ok": 64,
+   "ok": 67,
    "total": 69,
-   "rate": 0.928
+   "rate": 0.971
   },
   "9": {
    "ok": 84,
@@ -61,24 +61,24 @@
    "rate": 0.863
   },
   "13": {
-   "ok": 120,
+   "ok": 121,
    "total": 130,
-   "rate": 0.923
+   "rate": 0.931
   },
   "14": {
-   "ok": 91,
+   "ok": 92,
    "total": 111,
-   "rate": 0.82
+   "rate": 0.829
   },
   "15": {
-   "ok": 85,
+   "ok": 86,
    "total": 102,
-   "rate": 0.833
+   "rate": 0.843
   },
   "16": {
-   "ok": 87,
+   "ok": 88,
    "total": 98,
-   "rate": 0.888
+   "rate": 0.898
   },
   "17": {
    "ok": 109,
@@ -101,14 +101,14 @@
    "rate": 0.81
   },
   "21": {
-   "ok": 72,
+   "ok": 73,
    "total": 89,
-   "rate": 0.809
+   "rate": 0.82
   },
   "22": {
-   "ok": 104,
+   "ok": 109,
    "total": 125,
-   "rate": 0.832
+   "rate": 0.872
   },
   "23": {
    "ok": 85,
@@ -121,24 +121,24 @@
    "rate": 0.963
   },
   "25": {
-   "ok": 104,
+   "ok": 105,
    "total": 110,
-   "rate": 0.945
+   "rate": 0.955
   },
   "26": {
-   "ok": 137,
+   "ok": 133,
    "total": 148,
-   "rate": 0.926
+   "rate": 0.899
   },
   "27": {
-   "ok": 103,
+   "ok": 104,
    "total": 119,
-   "rate": 0.866
+   "rate": 0.874
   },
   "28": {
-   "ok": 73,
+   "ok": 74,
    "total": 84,
-   "rate": 0.869
+   "rate": 0.881
   },
   "29": {
    "ok": 84,
@@ -146,29 +146,29 @@
    "rate": 0.894
   },
   "30": {
-   "ok": 84,
+   "ok": 85,
    "total": 102,
-   "rate": 0.824
+   "rate": 0.833
   },
   "31": {
-   "ok": 80,
+   "ok": 83,
    "total": 91,
-   "rate": 0.879
+   "rate": 0.912
   },
   "32": {
-   "ok": 81,
+   "ok": 82,
    "total": 94,
-   "rate": 0.862
+   "rate": 0.872
   },
   "33": {
-   "ok": 91,
+   "ok": 92,
    "total": 109,
-   "rate": 0.835
+   "rate": 0.844
   },
   "34": {
-   "ok": 89,
+   "ok": 90,
    "total": 98,
-   "rate": 0.908
+   "rate": 0.918
   },
   "35": {
    "ok": 65,
@@ -176,9 +176,9 @@
    "rate": 0.844
   },
   "36": {
-   "ok": 78,
+   "ok": 79,
    "total": 88,
-   "rate": 0.886
+   "rate": 0.898
   },
   "37": {
    "ok": 71,
@@ -186,14 +186,14 @@
    "rate": 0.826
   },
   "38": {
-   "ok": 100,
+   "ok": 105,
    "total": 116,
-   "rate": 0.862
+   "rate": 0.905
   },
   "39": {
-   "ok": 83,
+   "ok": 84,
    "total": 99,
-   "rate": 0.838
+   "rate": 0.848
   },
   "40": {
    "ok": 78,
@@ -3904,8 +3904,8 @@
      "pid": "p-s33fcb01b",
      "i": 1,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 1.54,
+     "conf": 0.9,
+     "start": 1.34,
      "end": 17.01,
      "is_sutra": false,
      "verdict": "span_ok",
@@ -4538,8 +4538,8 @@
     {
      "pid": "p-sfccecfc5",
      "i": 43,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1034.07,
      "end": 1034.07,
      "is_sutra": false,
@@ -5170,10 +5170,10 @@
   {
    "lecture": "5",
    "verdicts": {
-    "span_ok": 82,
-    "skip_ok": 23,
+    "span_ok": 83,
+    "skip_ok": 21,
     "span_bad": 6,
-    "unknown": 13
+    "unknown": 14
    },
    "details": [
     {
@@ -5367,14 +5367,16 @@
     {
      "pid": "p-s847d4ba0",
      "i": 14,
-     "method": "rescue-blocked",
-     "conf": 0.35,
-     "start": 154.21,
+     "method": "quote-rescue-fuzzy",
+     "conf": 0.8,
+     "start": 105.12,
      "end": 154.21,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.85,
+      "t_head": 104.96,
+      "d_blk": 0.85
      }
     },
     {
@@ -5383,7 +5385,7 @@
      "method": "comm-split",
      "conf": 0.6,
      "start": 154.21,
-     "end": 154.21,
+     "end": 159.73,
      "is_sutra": false,
      "verdict": "span_bad",
      "ev": {
@@ -5398,8 +5400,8 @@
      "i": 16,
      "method": "skipped-sutra",
      "conf": 0.8,
-     "start": 154.21,
-     "end": 154.21,
+     "start": 159.73,
+     "end": 159.73,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -6196,8 +6198,8 @@
     {
      "pid": "p-scd21ea23",
      "i": 70,
-     "method": "skipped-sutra",
-     "conf": 0.8,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 939.88,
      "end": 939.88,
      "is_sutra": true,
@@ -6212,23 +6214,22 @@
      "method": "comm-split",
      "conf": 0.6,
      "start": 939.88,
-     "end": 939.88,
+     "end": 971.03,
      "is_sutra": false,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "d_head": 0.279,
-      "t_head": 935.73,
-      "d_blk": 0.197,
-      "probe": 0.337
+      "d_head": 0.379,
+      "t_head": 938.58,
+      "d_blk": 0.391
      }
     },
     {
      "pid": "p-s633b2dc4",
      "i": 72,
-     "method": "skipped-sutra",
-     "conf": 0.8,
-     "start": 939.88,
-     "end": 939.88,
+     "method": "hole-zero",
+     "conf": 0.35,
+     "start": 971.03,
+     "end": 971.03,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -6946,8 +6947,8 @@
     {
      "pid": "p-s69045e27",
      "i": 120,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1940.09,
      "end": 1940.09,
      "is_sutra": false,
@@ -7206,7 +7207,7 @@
      "pid": "p-s23158299",
      "i": 13,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 208.27,
      "end": 208.27,
      "is_sutra": true,
@@ -7916,8 +7917,8 @@
      "i": 61,
      "method": "skipped-sutra",
      "conf": 0.95,
-     "start": 1287.54,
-     "end": 1287.54,
+     "start": 1274.63,
+     "end": 1274.63,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -7929,8 +7930,8 @@
      "i": 62,
      "method": "skipped-sutra",
      "conf": 0.85,
-     "start": 1287.54,
-     "end": 1287.54,
+     "start": 1274.63,
+     "end": 1274.63,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -9511,9 +9512,9 @@
    "lecture": "7",
    "verdicts": {
     "skip_ok": 8,
-    "span_bad": 4,
-    "span_ok": 75,
-    "unknown": 7
+    "span_ok": 76,
+    "unknown": 7,
+    "span_bad": 3
    },
    "details": [
     {
@@ -9532,8 +9533,8 @@
     {
      "pid": "p-safd06231",
      "i": 1,
-     "method": "skipped-sutra",
-     "conf": 0.88,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 53.85,
      "end": 53.85,
      "is_sutra": true,
@@ -9545,8 +9546,8 @@
     {
      "pid": "p-s94db50c7",
      "i": 2,
-     "method": "subsumed-dup",
-     "conf": 0.95,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 53.85,
      "end": 53.85,
      "is_sutra": true,
@@ -9558,8 +9559,8 @@
     {
      "pid": "p-s853e2c23",
      "i": 3,
-     "method": "subsumed-dup",
-     "conf": 0.95,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 53.85,
      "end": 53.85,
      "is_sutra": true,
@@ -9572,16 +9573,15 @@
      "pid": "p-s37895069",
      "i": 4,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 53.85,
+     "conf": 0.9,
+     "start": 1.29,
      "end": 118.76,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.167,
-      "t_head": 69.49,
-      "d_blk": 0.167,
-      "probe": 0.667
+      "d_head": 0.667,
+      "t_head": 1.49,
+      "d_blk": 0.667
      }
     },
     {
@@ -9602,8 +9602,8 @@
     {
      "pid": "p-s90055b77",
      "i": 6,
-     "method": "intro-rescue",
-     "conf": 0.85,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 124.87,
      "end": 124.87,
      "is_sutra": false,
@@ -9630,8 +9630,8 @@
     {
      "pid": "p-s0a030c9d",
      "i": 8,
-     "method": "intro-rescue",
-     "conf": 0.85,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 124.87,
      "end": 124.87,
      "is_sutra": false,
@@ -9645,8 +9645,8 @@
     {
      "pid": "p-sd1311082",
      "i": 9,
-     "method": "intro-rescue",
-     "conf": 0.85,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 124.87,
      "end": 124.87,
      "is_sutra": false,
@@ -9660,8 +9660,8 @@
     {
      "pid": "p-s49b19049",
      "i": 10,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 124.87,
      "end": 124.87,
      "is_sutra": false,
@@ -9676,8 +9676,8 @@
     {
      "pid": "p-s5afb29d1",
      "i": 11,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 124.87,
      "end": 124.87,
      "is_sutra": false,
@@ -9692,7 +9692,7 @@
      "pid": "p-s34540ae2",
      "i": 12,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 124.87,
      "end": 124.87,
      "is_sutra": true,
@@ -10859,7 +10859,7 @@
      "pid": "p-s6551862a",
      "i": 90,
      "method": "dtw",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 2037.54,
      "end": 2056.15,
      "is_sutra": false,
@@ -10904,7 +10904,7 @@
      "pid": "p-sb29b273f",
      "i": 93,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 2154.37,
      "end": 2197.961,
      "is_sutra": false,
@@ -10920,25 +10920,23 @@
   {
    "lecture": "8",
    "verdicts": {
-    "span_ok": 63,
-    "skip_ok": 1,
-    "span_bad": 3,
-    "unknown": 2
+    "skip_ok": 2,
+    "span_ok": 65,
+    "unknown": 1,
+    "span_bad": 1
    },
    "details": [
     {
      "pid": "p-s6b8ecd30",
      "i": 0,
-     "method": "dtw-frag",
-     "conf": 0.96,
-     "start": 90.63,
-     "end": 93.86,
+     "method": "block-zero",
+     "conf": 0.85,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.954,
-      "t_head": 90.7,
-      "d_blk": 0.921
+      "verbatim": false
      }
     },
     {
@@ -10958,62 +10956,61 @@
      "pid": "p-s367a8283",
      "i": 2,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 93.86,
-     "end": 93.86,
+     "conf": 0.9,
+     "start": 1.42,
+     "end": 24.753,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.083,
-      "t_head": 86.44,
-      "d_blk": -0.01,
-      "probe": 0.838
+      "d_head": 0.821,
+      "t_head": 1.62,
+      "d_blk": 0.584
      }
     },
     {
      "pid": "p-s4fc5fbeb",
      "i": 3,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 93.86,
+     "method": "head-split",
+     "conf": 0.4,
+     "start": 24.753,
      "end": 93.86,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.075,
-      "t_head": 86.44,
-      "d_blk": -0.042,
-      "probe": 0.71
+      "d_head": 0.846,
+      "t_head": 31.16,
+      "d_blk": 0.758,
+      "note": "head-in-span"
      }
     },
     {
      "pid": "p-s31633691",
      "i": 4,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 93.86,
+     "method": "head-split",
+     "conf": 0.4,
+     "start": 70.357,
      "end": 93.86,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.158,
-      "t_head": 93.16,
-      "d_blk": 0.1
+      "d_head": 0.25,
+      "t_head": 68.96,
+      "d_blk": 0.613
      }
     },
     {
      "pid": "p-s16543567",
      "i": 5,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 93.86,
+     "method": "head-split",
+     "conf": 0.4,
+     "start": 89.3,
      "end": 93.86,
      "is_sutra": false,
      "verdict": "unknown",
      "ev": {
-      "d_head": 0.046,
-      "t_head": 92.7,
-      "d_blk": 0.046
+      "d_head": 0.208,
+      "t_head": 87.84,
+      "d_blk": 0.208
      }
     },
     {
@@ -11970,8 +11967,8 @@
   {
    "lecture": "9",
    "verdicts": {
-    "skip_ok": 13,
-    "span_ok": 71,
+    "skip_ok": 11,
+    "span_ok": 73,
     "unknown": 7,
     "span_bad": 1
    },
@@ -13225,23 +13222,23 @@
      "method": "comm-split",
      "conf": 0.4,
      "start": 1632.8,
-     "end": 1632.8,
+     "end": 1693.42,
      "is_sutra": false,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
       "d_head": 0.675,
-      "t_head": 1626.42,
-      "d_blk": 0.12,
-      "probe": 0.367
+      "t_head": 1632.8,
+      "d_blk": 0.468,
+      "note": "head-in-span"
      }
     },
     {
      "pid": "p-sf1cce56a",
      "i": 85,
-     "method": "skipped-sutra",
-     "conf": 0.95,
-     "start": 1632.8,
-     "end": 1632.8,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1660.197,
+     "end": 1660.197,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -13251,8 +13248,8 @@
     {
      "pid": "p-s976c16d9",
      "i": 86,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1693.42,
      "end": 1693.42,
      "is_sutra": false,
@@ -13267,14 +13264,16 @@
     {
      "pid": "p-s2200eff1",
      "i": 87,
-     "method": "rescue-blocked",
-     "conf": 0.35,
-     "start": 1693.42,
+     "method": "hole-anchor",
+     "conf": 0.65,
+     "start": 1680.58,
      "end": 1693.42,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.765,
+      "t_head": 1680.73,
+      "d_blk": 0.765
      }
     },
     {
@@ -13351,10 +13350,10 @@
     {
      "pid": "p-s543082c3",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 1.6,
-     "end": 1.75,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -14004,15 +14003,15 @@
     {
      "pid": "p-s571b4be0",
      "i": 45,
-     "method": "rescue-blocked",
+     "method": "hole-zero",
      "conf": 0.35,
-     "start": 718.82,
+     "start": 725.02,
      "end": 769.09,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
       "d_head": 0.825,
-      "t_head": 725.37,
+      "t_head": 731.63,
       "d_blk": 0.825,
       "note": "head-in-span"
      }
@@ -16003,8 +16002,8 @@
     {
      "pid": "p-sfe1de5c3",
      "i": 55,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1022.34,
      "end": 1022.34,
      "is_sutra": false,
@@ -16320,8 +16319,8 @@
     {
      "pid": "p-sb734dad3",
      "i": 76,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1431.19,
      "end": 1431.19,
      "is_sutra": false,
@@ -16972,10 +16971,10 @@
     {
      "pid": "p-scb4b932d",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 0.88,
-     "end": 1.03,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -17766,7 +17765,7 @@
      "pid": "p-s36039456",
      "i": 54,
      "method": "dtw-evid",
-     "conf": 0.86,
+     "conf": 0.49,
      "start": 1290.722,
      "end": 1332.04,
      "is_sutra": false,
@@ -18394,22 +18393,22 @@
      "method": "comm-split",
      "conf": 0.6,
      "start": 2173.89,
-     "end": 2173.89,
+     "end": 2207.36,
      "is_sutra": false,
      "verdict": "unknown",
      "ev": {
-      "d_head": 0.167,
-      "t_head": 2174.07,
-      "d_blk": 0.028
+      "d_head": 0.0,
+      "t_head": 2172.47,
+      "d_blk": -0.155
      }
     },
     {
      "pid": "p-sbcf6c333",
      "i": 97,
-     "method": "skipped-sutra",
-     "conf": 0.8,
-     "start": 2173.89,
-     "end": 2173.89,
+     "method": "hole-zero",
+     "conf": 0.35,
+     "start": 2207.36,
+     "end": 2207.36,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -18481,26 +18480,23 @@
   {
    "lecture": "13",
    "verdicts": {
-    "span_ok": 98,
     "skip_ok": 22,
-    "span_bad": 3,
-    "unknown": 7
+    "span_ok": 99,
+    "unknown": 7,
+    "span_bad": 2
    },
    "details": [
     {
      "pid": "p-s89993411",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 13.49,
-     "end": 27.98,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.9,
-      "t_head": 17.24,
-      "d_blk": 0.931,
-      "note": "head-in-span"
+      "verbatim": false
      }
     },
     {
@@ -18624,29 +18620,31 @@
      "pid": "p-sa0723dd4",
      "i": 10,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 27.98,
-     "end": 27.98,
+     "conf": 0.9,
+     "start": 1.79,
+     "end": 13.49,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.204,
-      "t_head": 23.44,
-      "d_blk": 0.185,
-      "probe": 0.885
+      "d_head": 0.842,
+      "t_head": 1.99,
+      "d_blk": 0.885
      }
     },
     {
      "pid": "p-s81c0109f",
      "i": 11,
-     "method": "skipped-sutra",
-     "conf": 0.88,
-     "start": 27.98,
-     "end": 27.98,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 13.49,
+     "end": 32.99,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.9,
+      "t_head": 17.24,
+      "d_blk": 0.931,
+      "note": "head-in-span"
      }
     },
     {
@@ -19542,7 +19540,7 @@
      "pid": "p-seef84797",
      "i": 72,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1264.18,
      "end": 1264.18,
      "is_sutra": true,
@@ -20406,9 +20404,9 @@
    "lecture": "14",
    "verdicts": {
     "skip_ok": 11,
-    "span_bad": 3,
-    "span_ok": 80,
-    "unknown": 17
+    "span_ok": 81,
+    "unknown": 17,
+    "span_bad": 2
    },
    "details": [
     {
@@ -20493,16 +20491,15 @@
      "pid": "p-s29fa0eb0",
      "i": 6,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 11.63,
+     "conf": 0.9,
+     "start": 1.35,
      "end": 11.63,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.27,
-      "t_head": 4.15,
-      "d_blk": 0.27,
-      "probe": 0.68
+      "d_head": 0.68,
+      "t_head": 1.55,
+      "d_blk": 0.68
      }
     },
     {
@@ -20551,8 +20548,8 @@
     {
      "pid": "p-saad063f8",
      "i": 10,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 77.21,
      "end": 77.21,
      "is_sutra": false,
@@ -20566,8 +20563,8 @@
     {
      "pid": "p-sdf131f73",
      "i": 11,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 77.21,
      "end": 77.21,
      "is_sutra": false,
@@ -21030,7 +21027,7 @@
      "pid": "p-sadeadd29",
      "i": 42,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 630.24,
      "end": 660.28,
      "is_sutra": false,
@@ -21853,8 +21850,8 @@
     {
      "pid": "p-sc062edb1",
      "i": 97,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1861.82,
      "end": 1861.82,
      "is_sutra": false,
@@ -21868,8 +21865,8 @@
     {
      "pid": "p-s5e784fa2",
      "i": 98,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1861.82,
      "end": 1861.82,
      "is_sutra": false,
@@ -22019,7 +22016,7 @@
      "pid": "p-s8e89aae6",
      "i": 108,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 2070.74,
      "end": 2103.26,
      "is_sutra": false,
@@ -22065,25 +22062,23 @@
   {
    "lecture": "15",
    "verdicts": {
-    "span_ok": 67,
     "skip_ok": 18,
-    "span_bad": 7,
-    "unknown": 10
+    "span_ok": 68,
+    "unknown": 11,
+    "span_bad": 5
    },
    "details": [
     {
      "pid": "p-sb840ecc3",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 2.04,
-     "end": 42.49,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.813,
-      "t_head": 2.19,
-      "d_blk": 0.652
+      "verbatim": false
      }
     },
     {
@@ -22207,44 +22202,46 @@
      "pid": "p-s3da7490d",
      "i": 10,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 42.49,
-     "end": 42.49,
+     "conf": 0.9,
+     "start": 0.99,
+     "end": 2.04,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.141,
-      "t_head": 39.39,
-      "d_blk": 0.141,
-      "probe": 0.871
+      "d_head": 0.871,
+      "t_head": 1.19,
+      "d_blk": 0.871
      }
     },
     {
      "pid": "p-s6bd36a84",
      "i": 11,
-     "method": "skipped-sutra",
-     "conf": 0.88,
-     "start": 42.49,
-     "end": 42.49,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 2.04,
+     "end": 16.707,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.813,
+      "t_head": 2.19,
+      "d_blk": 0.274
      }
     },
     {
      "pid": "p-sae9f8aa4",
      "i": 12,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 42.49,
+     "method": "split-give",
+     "conf": 0.6,
+     "start": 16.707,
      "end": 42.49,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.129,
-      "t_head": 40.15,
-      "d_blk": 0.13
+      "d_head": 0.796,
+      "t_head": 20.63,
+      "d_blk": 0.719,
+      "note": "head-in-span"
      }
     },
     {
@@ -22323,8 +22320,8 @@
     {
      "pid": "p-s1b45656c",
      "i": 18,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 159.03,
      "end": 159.03,
      "is_sutra": false,
@@ -22475,7 +22472,7 @@
      "method": "dtw-evid",
      "conf": 0.85,
      "start": 347.05,
-     "end": 418.88,
+     "end": 416.31,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -22487,17 +22484,16 @@
     {
      "pid": "p-s93b34d45",
      "i": 29,
-     "method": "quote-rescue-fuzzy",
-     "conf": 0.8,
-     "start": 418.88,
+     "method": "hole-anchor",
+     "conf": 0.65,
+     "start": 416.31,
      "end": 425.55,
      "is_sutra": true,
-     "verdict": "span_bad",
+     "verdict": "unknown",
      "ev": {
-      "d_head": 0.817,
-      "t_head": 422.62,
-      "d_blk": 0.841,
-      "probe": 0.772
+      "d_head": 0.271,
+      "t_head": 415.72,
+      "d_blk": 0.197
      }
     },
     {
@@ -23582,25 +23578,23 @@
   {
    "lecture": "16",
    "verdicts": {
-    "unknown": 8,
     "skip_ok": 15,
-    "span_bad": 3,
-    "span_ok": 72
+    "span_ok": 73,
+    "unknown": 8,
+    "span_bad": 2
    },
    "details": [
     {
      "pid": "p-s95d22ff4",
      "i": 0,
-     "method": "dtw-frag",
-     "conf": 0.96,
-     "start": 6.32,
-     "end": 11.21,
+     "method": "block-zero",
+     "conf": 0.85,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "unknown",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.379,
-      "t_head": 8.55,
-      "d_blk": -0.089
+      "verbatim": false
      }
     },
     {
@@ -23724,29 +23718,30 @@
      "pid": "p-sded061c3",
      "i": 10,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 11.21,
-     "end": 11.21,
+     "conf": 0.9,
+     "start": 0.33,
+     "end": 6.32,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.565,
-      "t_head": 1.93,
-      "d_blk": 0.565,
-      "probe": 0.84
+      "d_head": 0.84,
+      "t_head": 0.53,
+      "d_blk": 0.84
      }
     },
     {
      "pid": "p-s105b3358",
      "i": 11,
-     "method": "dtw-evid",
+     "method": "dup-anchor",
      "conf": 0.85,
-     "start": 11.21,
+     "start": 6.32,
      "end": 11.21,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.409,
+      "t_head": 8.55,
+      "d_blk": 0.409
      }
     },
     {
@@ -24842,8 +24837,8 @@
     {
      "pid": "p-s1102371a",
      "i": 85,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1683.92,
      "end": 1683.92,
      "is_sutra": false,
@@ -25049,10 +25044,10 @@
     {
      "pid": "p-s1af86dd4",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 1.04,
-     "end": 1.19,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -26045,8 +26040,8 @@
     {
      "pid": "p-s0574522e",
      "i": 68,
-     "method": "skipped-sutra",
-     "conf": 0.95,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 1381.71,
      "end": 1381.71,
      "is_sutra": true,
@@ -26073,7 +26068,7 @@
     {
      "pid": "p-sc4f2afe3",
      "i": 70,
-     "method": "rescue-blocked",
+     "method": "hole-zero",
      "conf": 0.35,
      "start": 1422.51,
      "end": 1422.51,
@@ -26701,8 +26696,8 @@
     {
      "pid": "p-s04c8d828",
      "i": 112,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 2215.86,
      "end": 2215.86,
      "is_sutra": false,
@@ -29292,8 +29287,8 @@
     {
      "pid": "p-sb37cc732",
      "i": 67,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1288.14,
      "end": 1288.14,
      "is_sutra": false,
@@ -29323,7 +29318,7 @@
      "pid": "p-s61601823",
      "i": 69,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1306.29,
      "end": 1306.29,
      "is_sutra": true,
@@ -30047,8 +30042,8 @@
     {
      "pid": "p-seee3c88b",
      "i": 17,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 182.71,
      "end": 183.054,
      "is_sutra": false,
@@ -30063,8 +30058,8 @@
     {
      "pid": "p-se59195e9",
      "i": 18,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 183.054,
      "end": 183.51,
      "is_sutra": false,
@@ -30496,8 +30491,8 @@
     {
      "pid": "p-s15fad849",
      "i": 47,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 817.08,
      "end": 817.08,
      "is_sutra": false,
@@ -30524,8 +30519,8 @@
     {
      "pid": "p-sa28490b5",
      "i": 49,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 817.08,
      "end": 817.08,
      "is_sutra": false,
@@ -30954,7 +30949,7 @@
      "pid": "p-se9a7f871",
      "i": 78,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1376.43,
      "end": 1376.43,
      "is_sutra": true,
@@ -31284,9 +31279,9 @@
    "lecture": "21",
    "verdicts": {
     "skip_ok": 12,
-    "unknown": 15,
+    "span_ok": 61,
     "span_bad": 2,
-    "span_ok": 60
+    "unknown": 14
    },
    "details": [
     {
@@ -31371,15 +31366,15 @@
      "pid": "p-s2158a92d",
      "i": 6,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 39.54,
+     "conf": 0.9,
+     "start": 0.63,
      "end": 39.54,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.112,
-      "t_head": 37.18,
-      "d_blk": -0.01
+      "d_head": 0.867,
+      "t_head": 0.83,
+      "d_blk": 0.832
      }
     },
     {
@@ -32280,8 +32275,8 @@
     {
      "pid": "p-sabe45a52",
      "i": 67,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1348.61,
      "end": 1348.61,
      "is_sutra": false,
@@ -32615,9 +32610,9 @@
    "lecture": "22",
    "verdicts": {
     "skip_ok": 24,
-    "unknown": 14,
-    "span_bad": 7,
-    "span_ok": 80
+    "span_ok": 85,
+    "span_bad": 6,
+    "unknown": 10
    },
    "details": [
     {
@@ -32806,77 +32801,76 @@
      "pid": "p-se12d6329",
      "i": 14,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 108.56,
-     "end": 108.56,
+     "conf": 0.9,
+     "start": 0.48,
+     "end": 11.2,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.142,
-      "t_head": 107.86,
-      "d_blk": 0.113
+      "d_head": 0.904,
+      "t_head": 0.68,
+      "d_blk": 0.7
      }
     },
     {
      "pid": "p-s5c18a049",
      "i": 15,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 108.56,
-     "end": 108.56,
+     "method": "head-anchor",
+     "conf": 0.8,
+     "start": 11.2,
+     "end": 50.18,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.192,
-      "t_head": 106.16,
-      "d_blk": 0.012
+      "d_head": 0.863,
+      "t_head": 15.18,
+      "d_blk": 0.932,
+      "note": "head-in-span"
      }
     },
     {
      "pid": "p-s06f2d769",
      "i": 16,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 108.56,
-     "end": 108.56,
+     "method": "head-anchor",
+     "conf": 0.8,
+     "start": 50.18,
+     "end": 63.68,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.2,
-      "t_head": 102.38,
-      "d_blk": 0.133,
-      "probe": 0.941
+      "d_head": 0.967,
+      "t_head": 49.52,
+      "d_blk": 0.941
      }
     },
     {
      "pid": "p-s386fd6db",
      "i": 17,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 108.56,
-     "end": 108.56,
+     "method": "head-anchor",
+     "conf": 0.8,
+     "start": 63.68,
+     "end": 80.27,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.1,
-      "t_head": 101.76,
-      "d_blk": 0.042,
-      "probe": 0.722
+      "d_head": 0.738,
+      "t_head": 63.68,
+      "d_blk": 0.599
      }
     },
     {
      "pid": "p-sc9c6f039",
      "i": 18,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 108.56,
+     "method": "head-anchor",
+     "conf": 0.8,
+     "start": 80.27,
      "end": 108.56,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.108,
-      "t_head": 106.62,
-      "d_blk": 0.075
+      "d_head": 0.958,
+      "t_head": 80.27,
+      "d_blk": 0.883
      }
     },
     {
@@ -33122,8 +33116,8 @@
     {
      "pid": "p-sae98ff14",
      "i": 35,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 378.31,
      "end": 378.31,
      "is_sutra": false,
@@ -33441,22 +33435,23 @@
      "method": "comm-split",
      "conf": 0.6,
      "start": 765.53,
-     "end": 765.53,
+     "end": 813.0,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_bad",
      "ev": {
-      "d_head": 0.237,
-      "t_head": 763.43,
-      "d_blk": 0.026
+      "d_head": 0.867,
+      "t_head": 772.7,
+      "d_blk": 0.098,
+      "probe": 0.274
      }
     },
     {
      "pid": "p-sa27edd5a",
      "i": 57,
-     "method": "skipped-sutra",
-     "conf": 0.95,
-     "start": 765.53,
-     "end": 765.53,
+     "method": "hole-zero",
+     "conf": 0.35,
+     "start": 813.0,
+     "end": 813.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -33481,8 +33476,8 @@
     {
      "pid": "p-s51a3052f",
      "i": 59,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 831.93,
      "end": 831.93,
      "is_sutra": false,
@@ -35048,8 +35043,8 @@
     {
      "pid": "p-s923af770",
      "i": 39,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 758.8,
      "end": 758.8,
      "is_sutra": false,
@@ -37045,25 +37040,23 @@
   {
    "lecture": "25",
    "verdicts": {
-    "span_ok": 86,
     "skip_ok": 18,
-    "span_bad": 2,
+    "span_ok": 87,
+    "span_bad": 1,
     "unknown": 4
    },
    "details": [
     {
      "pid": "p-s513e495e",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 6.52,
-     "end": 20.59,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.696,
-      "t_head": 8.57,
-      "d_blk": 0.802
+      "verbatim": false
      }
     },
     {
@@ -37187,29 +37180,30 @@
      "pid": "p-s15b62315",
      "i": 10,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 20.59,
-     "end": 20.59,
+     "conf": 0.9,
+     "start": 0.47,
+     "end": 6.52,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.114,
-      "t_head": 13.55,
-      "d_blk": 0.114,
-      "probe": 0.895
+      "d_head": 0.836,
+      "t_head": 0.67,
+      "d_blk": 0.836
      }
     },
     {
      "pid": "p-sacf765a3",
      "i": 11,
-     "method": "skipped-sutra",
-     "conf": 0.88,
-     "start": 20.59,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 6.52,
      "end": 20.59,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.696,
+      "t_head": 8.57,
+      "d_blk": 0.802
      }
     },
     {
@@ -38675,10 +38669,10 @@
   {
    "lecture": "26",
    "verdicts": {
-    "skip_ok": 28,
-    "span_ok": 109,
-    "unknown": 7,
-    "span_bad": 4
+    "skip_ok": 25,
+    "span_ok": 108,
+    "unknown": 9,
+    "span_bad": 6
    },
    "details": [
     {
@@ -38912,28 +38906,31 @@
      "pid": "p-s6b79e0e7",
      "i": 17,
      "method": "dtw-evid",
-     "conf": 0.86,
+     "conf": 0.8,
      "start": 43.97,
-     "end": 43.97,
+     "end": 59.526,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.517,
+      "t_head": 43.27,
+      "d_blk": 0.184
      }
     },
     {
      "pid": "p-s6bec5f5b",
      "i": 18,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 43.97,
+     "method": "split-give",
+     "conf": 0.6,
+     "start": 59.526,
      "end": 90.51,
      "is_sutra": false,
-     "verdict": "span_ok",
+     "verdict": "span_bad",
      "ev": {
-      "d_head": 0.879,
-      "t_head": 43.27,
-      "d_blk": 0.744
+      "d_head": 0.221,
+      "t_head": 68.97,
+      "d_blk": 0.255,
+      "probe": 0.665
      }
     },
     {
@@ -39522,14 +39519,13 @@
      "method": "comm-split",
      "conf": 0.6,
      "start": 705.73,
-     "end": 705.73,
+     "end": 716.981,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "unknown",
      "ev": {
-      "d_head": 0.375,
-      "t_head": 696.11,
-      "d_blk": 0.348,
-      "probe": 0.559
+      "d_head": 0.096,
+      "t_head": 704.43,
+      "d_blk": 0.069
      }
     },
     {
@@ -39537,8 +39533,8 @@
      "i": 59,
      "method": "skipped-sutra",
      "conf": 0.85,
-     "start": 705.73,
-     "end": 705.73,
+     "start": 716.981,
+     "end": 716.981,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -39548,8 +39544,8 @@
     {
      "pid": "p-s352a22ef",
      "i": 60,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 716.981,
      "end": 716.981,
      "is_sutra": false,
@@ -39639,14 +39635,17 @@
     {
      "pid": "p-s9a0d2390",
      "i": 66,
-     "method": "skipped-sutra",
-     "conf": 0.8,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 861.87,
-     "end": 861.87,
+     "end": 905.23,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_bad",
      "ev": {
-      "verbatim": false
+      "d_head": 0.517,
+      "t_head": 875.57,
+      "d_blk": 0.684,
+      "probe": 0.684
      }
     },
     {
@@ -40043,9 +40042,9 @@
      "method": "comm-split",
      "conf": 0.6,
      "start": 1319.33,
-     "end": 1319.33,
+     "end": 1351.68,
      "is_sutra": false,
-     "verdict": "skip_ok",
+     "verdict": "span_bad",
      "ev": {
       "d_head": 0.225,
       "t_head": 1314.76,
@@ -40056,10 +40055,10 @@
     {
      "pid": "p-s0733e46f",
      "i": 94,
-     "method": "skipped-sutra",
-     "conf": 0.85,
-     "start": 1319.33,
-     "end": 1319.33,
+     "method": "hole-zero",
+     "conf": 0.35,
+     "start": 1351.68,
+     "end": 1351.68,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -40862,26 +40861,24 @@
   {
    "lecture": "27",
    "verdicts": {
-    "span_ok": 82,
     "skip_ok": 20,
     "tiny": 1,
-    "span_bad": 5,
-    "unknown": 11
+    "span_ok": 83,
+    "unknown": 12,
+    "span_bad": 3
    },
    "details": [
     {
      "pid": "p-sdada7d8e",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 0.98,
-     "end": 35.63,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.675,
-      "t_head": 1.71,
-      "d_blk": 0.596
+      "verbatim": false
      }
     },
     {
@@ -41042,45 +41039,46 @@
      "pid": "p-scbabf115",
      "i": 13,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 82.7,
-     "end": 82.7,
+     "conf": 0.9,
+     "start": 0.93,
+     "end": 1.56,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.178,
-      "t_head": 77.26,
-      "d_blk": 0.178,
-      "probe": 0.772
+      "d_head": 0.772,
+      "t_head": 1.13,
+      "d_blk": 0.772
      }
     },
     {
      "pid": "p-s0038c215",
      "i": 14,
-     "method": "skipped-sutra",
-     "conf": 0.8,
-     "start": 82.7,
-     "end": 82.7,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 1.56,
+     "end": 13.782,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.675,
+      "t_head": 1.71,
+      "d_blk": 0.14
      }
     },
     {
      "pid": "p-sf14638cb",
      "i": 15,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 82.7,
+     "method": "split-give",
+     "conf": 0.6,
+     "start": 13.782,
      "end": 82.7,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.15,
-      "t_head": 76.13,
-      "d_blk": 0.11,
-      "probe": 0.603
+      "d_head": 0.888,
+      "t_head": 18.39,
+      "d_blk": 0.618,
+      "note": "head-in-span"
      }
     },
     {
@@ -41099,8 +41097,8 @@
     {
      "pid": "p-s2339e9f8",
      "i": 17,
-     "method": "intro-rescue",
-     "conf": 0.85,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 82.7,
      "end": 82.7,
      "is_sutra": false,
@@ -41352,7 +41350,7 @@
      "pid": "p-s70117bc1",
      "i": 34,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 368.11,
      "end": 368.11,
      "is_sutra": true,
@@ -41425,8 +41423,8 @@
     {
      "pid": "p-sb1d83025",
      "i": 39,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 528.81,
      "end": 528.81,
      "is_sutra": false,
@@ -41516,8 +41514,8 @@
     {
      "pid": "p-s89e2e5d1",
      "i": 45,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 631.17,
      "end": 631.17,
      "is_sutra": false,
@@ -42625,9 +42623,9 @@
    "lecture": "28",
    "verdicts": {
     "skip_ok": 14,
-    "span_bad": 5,
+    "span_ok": 60,
     "unknown": 6,
-    "span_ok": 59
+    "span_bad": 4
    },
    "details": [
     {
@@ -42712,16 +42710,15 @@
      "pid": "p-sfc904b46",
      "i": 6,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 13.99,
+     "conf": 0.9,
+     "start": 0.48,
      "end": 13.99,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.279,
-      "t_head": 4.58,
-      "d_blk": 0.279,
-      "probe": 0.879
+      "d_head": 0.879,
+      "t_head": 0.68,
+      "d_blk": 0.879
      }
     },
     {
@@ -42772,8 +42769,8 @@
     {
      "pid": "p-s7e0f95f8",
      "i": 10,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 86.3,
      "end": 86.3,
      "is_sutra": false,
@@ -42788,8 +42785,8 @@
     {
      "pid": "p-s3288d694",
      "i": 11,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 86.3,
      "end": 86.3,
      "is_sutra": false,
@@ -43652,7 +43649,7 @@
      "pid": "p-sa4818323",
      "i": 69,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1482.32,
      "end": 1482.32,
      "is_sutra": true,
@@ -43887,10 +43884,10 @@
     {
      "pid": "p-sae77985e",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 0.08,
-     "end": 0.23,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -44912,8 +44909,8 @@
     {
      "pid": "p-se68f51b8",
      "i": 70,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1404.1,
      "end": 1404.1,
      "is_sutra": false,
@@ -45272,26 +45269,24 @@
   {
    "lecture": "30",
    "verdicts": {
-    "span_ok": 58,
     "skip_ok": 25,
     "tiny": 1,
-    "span_bad": 5,
-    "unknown": 13
+    "span_ok": 59,
+    "unknown": 13,
+    "span_bad": 4
    },
    "details": [
     {
      "pid": "p-se064bf44",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 28.08,
-     "end": 43.72,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.771,
-      "t_head": 29.61,
-      "d_blk": 0.855
+      "verbatim": false
      }
     },
     {
@@ -45439,29 +45434,30 @@
      "pid": "p-s9f5074f3",
      "i": 12,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 43.72,
-     "end": 43.72,
+     "conf": 0.9,
+     "start": 0.79,
+     "end": 28.08,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.262,
-      "t_head": 40.22,
-      "d_blk": 0.03,
-      "probe": 0.81
+      "d_head": 0.692,
+      "t_head": 0.99,
+      "d_blk": 0.81
      }
     },
     {
      "pid": "p-secfa7f6f",
      "i": 13,
-     "method": "skipped-sutra",
-     "conf": 0.88,
-     "start": 43.72,
-     "end": 43.72,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 28.08,
+     "end": 44.19,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.771,
+      "t_head": 29.61,
+      "d_blk": 0.855
      }
     },
     {
@@ -45573,7 +45569,7 @@
      "pid": "p-sf98a77a2",
      "i": 21,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 212.39,
      "end": 212.39,
      "is_sutra": true,
@@ -46180,8 +46176,8 @@
     {
      "pid": "p-s90247e72",
      "i": 62,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1072.87,
      "end": 1072.87,
      "is_sutra": false,
@@ -46271,8 +46267,8 @@
     {
      "pid": "p-seaaed63b",
      "i": 68,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1206.96,
      "end": 1207.34,
      "is_sutra": false,
@@ -46553,7 +46549,7 @@
      "pid": "p-se38e0489",
      "i": 87,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1528.09,
      "end": 1528.09,
      "is_sutra": true,
@@ -46774,26 +46770,23 @@
   {
    "lecture": "31",
    "verdicts": {
-    "span_bad": 5,
     "skip_ok": 19,
-    "span_ok": 61,
-    "unknown": 6
+    "span_ok": 64,
+    "unknown": 7,
+    "span_bad": 1
    },
    "details": [
     {
      "pid": "p-sfd312094",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 93.65,
-     "end": 97.02,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_bad",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.808,
-      "t_head": 88.11,
-      "d_blk": 0.783,
-      "probe": 0.783
+      "verbatim": false
      }
     },
     {
@@ -46878,7 +46871,7 @@
      "pid": "p-sf1833b1d",
      "i": 7,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 97.02,
      "end": 97.02,
      "is_sutra": true,
@@ -46917,61 +46910,60 @@
      "pid": "p-s31729d3a",
      "i": 10,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 97.02,
-     "end": 97.02,
+     "conf": 0.9,
+     "start": 0.95,
+     "end": 30.23,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.171,
-      "t_head": 88.73,
-      "d_blk": 0.049,
-      "probe": 0.797
+      "d_head": 0.825,
+      "t_head": 1.15,
+      "d_blk": 0.797
      }
     },
     {
      "pid": "p-s72e96d27",
      "i": 11,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 97.02,
-     "end": 97.02,
+     "method": "head-anchor",
+     "conf": 0.8,
+     "start": 30.23,
+     "end": 60.26,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.192,
-      "t_head": 87.95,
-      "d_blk": 0.004,
-      "probe": 0.823
+      "d_head": 0.721,
+      "t_head": 32.92,
+      "d_blk": 0.674
      }
     },
     {
      "pid": "p-s040f5bc1",
      "i": 12,
-     "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 97.02,
-     "end": 97.02,
+     "method": "head-anchor",
+     "conf": 0.8,
+     "start": 60.26,
+     "end": 87.66,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.113,
-      "t_head": 100.32,
-      "d_blk": 0.066,
-      "probe": 0.576
+      "d_head": 0.767,
+      "t_head": 60.26,
+      "d_blk": 0.728
      }
     },
     {
      "pid": "p-s38a5e1b1",
      "i": 13,
-     "method": "dtw-evid",
-     "conf": 0.85,
-     "start": 97.02,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 87.66,
      "end": 97.02,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.7,
+      "t_head": 88.11,
+      "d_blk": 0.386
      }
     },
     {
@@ -47630,7 +47622,7 @@
      "pid": "p-sfe7338ec",
      "i": 58,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1081.62,
      "end": 1081.62,
      "is_sutra": true,
@@ -48120,8 +48112,8 @@
    "lecture": "32",
    "verdicts": {
     "skip_ok": 12,
-    "span_bad": 4,
-    "span_ok": 69,
+    "span_ok": 70,
+    "span_bad": 3,
     "unknown": 9
    },
    "details": [
@@ -48207,16 +48199,15 @@
      "pid": "p-sdc7b61c9",
      "i": 6,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 11.16,
+     "conf": 0.9,
+     "start": 1.12,
      "end": 11.16,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.329,
-      "t_head": 4.86,
-      "d_blk": 0.329,
-      "probe": 0.738
+      "d_head": 0.738,
+      "t_head": 1.32,
+      "d_blk": 0.738
      }
     },
     {
@@ -49527,8 +49518,8 @@
    "verdicts": {
     "skip_ok": 14,
     "tiny": 1,
-    "unknown": 15,
-    "span_ok": 76,
+    "span_ok": 77,
+    "unknown": 14,
     "span_bad": 3
    },
    "details": [
@@ -49625,15 +49616,15 @@
      "pid": "p-s0cb89dd6",
      "i": 7,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 34.57,
+     "conf": 0.9,
+     "start": 1.22,
      "end": 34.57,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.117,
-      "t_head": 35.99,
-      "d_blk": 0.151
+      "d_head": 0.796,
+      "t_head": 1.42,
+      "d_blk": 0.849
      }
     },
     {
@@ -49652,8 +49643,8 @@
     {
      "pid": "p-s637f3a71",
      "i": 9,
-     "method": "intro-rescue",
-     "conf": 0.85,
+     "method": "comm-split",
+     "conf": 0.6,
      "start": 34.57,
      "end": 37.36,
      "is_sutra": false,
@@ -51147,25 +51138,23 @@
   {
    "lecture": "34",
    "verdicts": {
-    "span_ok": 74,
     "skip_ok": 15,
-    "span_bad": 4,
-    "unknown": 5
+    "span_ok": 75,
+    "unknown": 5,
+    "span_bad": 3
    },
    "details": [
     {
      "pid": "p-s0e025470",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 5.95,
-     "end": 23.76,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.771,
-      "t_head": 6.58,
-      "d_blk": 0.849
+      "verbatim": false
      }
     },
     {
@@ -51250,29 +51239,30 @@
      "pid": "p-s254ad5d2",
      "i": 7,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 23.76,
-     "end": 23.76,
+     "conf": 0.9,
+     "start": 0.98,
+     "end": 5.95,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.117,
-      "t_head": 17.66,
-      "d_blk": 0.117,
-      "probe": 0.828
+      "d_head": 0.828,
+      "t_head": 1.18,
+      "d_blk": 0.828
      }
     },
     {
      "pid": "p-s81ffad15",
      "i": 8,
-     "method": "skipped-sutra",
-     "conf": 0.88,
-     "start": 23.76,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 5.95,
      "end": 23.76,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.771,
+      "t_head": 6.58,
+      "d_blk": 0.849
      }
     },
     {
@@ -52484,7 +52474,7 @@
      "pid": "p-s2617ea87",
      "i": 90,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 1899.18,
      "end": 1899.18,
      "is_sutra": true,
@@ -52603,25 +52593,23 @@
   {
    "lecture": "35",
    "verdicts": {
-    "span_ok": 57,
     "skip_ok": 8,
-    "span_bad": 4,
-    "unknown": 8
+    "span_ok": 57,
+    "unknown": 8,
+    "span_bad": 4
    },
    "details": [
     {
      "pid": "p-sf556e56f",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 18.25,
-     "end": 33.34,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.758,
-      "t_head": 17.36,
-      "d_blk": 0.748
+      "verbatim": false
      }
     },
     {
@@ -52680,23 +52668,22 @@
      "pid": "p-s2a93856c",
      "i": 5,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 33.34,
+     "conf": 0.9,
+     "start": 1.07,
      "end": 33.34,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.183,
-      "t_head": 28.14,
-      "d_blk": 0.15,
-      "probe": 0.841
+      "d_head": 0.842,
+      "t_head": 1.27,
+      "d_blk": 0.841
      }
     },
     {
      "pid": "p-sd9b5780b",
      "i": 6,
-     "method": "skipped-sutra",
-     "conf": 0.88,
+     "method": "rescue-blocked",
+     "conf": 0.35,
      "start": 33.34,
      "end": 33.34,
      "is_sutra": true,
@@ -53071,14 +53058,17 @@
     {
      "pid": "p-s8c7db3fd",
      "i": 31,
-     "method": "skipped-sutra",
-     "conf": 0.95,
+     "method": "hole-zero",
+     "conf": 0.35,
      "start": 624.9,
-     "end": 624.9,
+     "end": 657.79,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_bad",
      "ev": {
-      "verbatim": false
+      "d_head": 0.133,
+      "t_head": 629.28,
+      "d_blk": -0.016,
+      "probe": 0.362
      }
     },
     {
@@ -53762,25 +53752,22 @@
   {
    "lecture": "36",
    "verdicts": {
-    "span_ok": 66,
     "skip_ok": 12,
-    "span_bad": 1,
+    "span_ok": 67,
     "unknown": 9
    },
    "details": [
     {
      "pid": "p-s48ef4364",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 28.26,
-     "end": 34.56,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.731,
-      "t_head": 28.41,
-      "d_blk": 0.731
+      "verbatim": false
      }
     },
     {
@@ -53839,29 +53826,30 @@
      "pid": "p-seb6ae23f",
      "i": 5,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 34.56,
-     "end": 34.56,
+     "conf": 0.9,
+     "start": 1.23,
+     "end": 28.26,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.238,
-      "t_head": 27.79,
-      "d_blk": 0.023,
-      "probe": 0.876
+      "d_head": 0.904,
+      "t_head": 1.43,
+      "d_blk": 0.818
      }
     },
     {
      "pid": "p-sb37e2f8b",
      "i": 6,
-     "method": "skipped-sutra",
-     "conf": 0.88,
-     "start": 34.56,
-     "end": 34.56,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 28.26,
+     "end": 34.85,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.731,
+      "t_head": 28.41,
+      "d_blk": 0.731
      }
     },
     {
@@ -54749,7 +54737,7 @@
      "pid": "p-s3fdfe151",
      "i": 66,
      "method": "dtw-frag",
-     "conf": 0.97,
+     "conf": 0.45,
      "start": 1253.29,
      "end": 1253.29,
      "is_sutra": true,
@@ -54761,8 +54749,8 @@
     {
      "pid": "p-s59f9e2d4",
      "i": 67,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1253.29,
      "end": 1253.29,
      "is_sutra": false,
@@ -54806,8 +54794,8 @@
     {
      "pid": "p-sb8459952",
      "i": 70,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1309.05,
      "end": 1309.05,
      "is_sutra": false,
@@ -55084,7 +55072,7 @@
      "pid": "p-s7aca3e90",
      "i": 0,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 0.86,
      "end": 0.86,
      "is_sutra": true,
@@ -55203,7 +55191,7 @@
      "pid": "p-s6d079abd",
      "i": 9,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 7.24,
      "end": 7.24,
      "is_sutra": true,
@@ -55860,7 +55848,7 @@
      "pid": "p-sbc6b0b51",
      "i": 53,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 1331.74,
      "end": 1337.72,
      "is_sutra": false,
@@ -55887,8 +55875,8 @@
     {
      "pid": "p-sace15a83",
      "i": 55,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -55916,8 +55904,8 @@
     {
      "pid": "p-s747bd922",
      "i": 57,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -55944,8 +55932,8 @@
     {
      "pid": "p-sf1d36146",
      "i": 59,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -55973,8 +55961,8 @@
     {
      "pid": "p-s52185d37",
      "i": 61,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -55989,8 +55977,8 @@
     {
      "pid": "p-s8a0dfc31",
      "i": 62,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -56018,8 +56006,8 @@
     {
      "pid": "p-s6a4f387e",
      "i": 64,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -56033,8 +56021,8 @@
     {
      "pid": "p-s4b506392",
      "i": 65,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -56048,8 +56036,8 @@
     {
      "pid": "p-s20a1b054",
      "i": 66,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -56064,8 +56052,8 @@
     {
      "pid": "p-s36508d78",
      "i": 67,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1337.72,
      "end": 1337.72,
      "is_sutra": false,
@@ -56351,25 +56339,23 @@
   {
    "lecture": "38",
    "verdicts": {
-    "span_ok": 78,
-    "skip_ok": 22,
+    "skip_ok": 18,
+    "span_ok": 87,
     "unknown": 8,
-    "span_bad": 8
+    "span_bad": 3
    },
    "details": [
     {
      "pid": "p-sead110ce",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 5.48,
-     "end": 16.35,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.813,
-      "t_head": 5.63,
-      "d_blk": 0.83
+      "verbatim": false
      }
     },
     {
@@ -56415,7 +56401,7 @@
      "pid": "p-s3a1f8b5c",
      "i": 4,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.45,
      "start": 16.35,
      "end": 16.35,
      "is_sutra": true,
@@ -56506,28 +56492,30 @@
      "pid": "p-sdcccb29e",
      "i": 11,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 16.35,
-     "end": 16.35,
+     "conf": 0.9,
+     "start": 0.93,
+     "end": 5.48,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.145,
-      "t_head": 19.23,
-      "d_blk": 0.145
+      "d_head": 0.859,
+      "t_head": 1.13,
+      "d_blk": 0.859
      }
     },
     {
      "pid": "p-s436ecaa0",
      "i": 12,
-     "method": "dtw-evid",
-     "conf": 0.85,
-     "start": 16.35,
+     "method": "dup-anchor",
+     "conf": 0.7,
+     "start": 5.48,
      "end": 16.35,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.813,
+      "t_head": 5.63,
+      "d_blk": 0.83
      }
     },
     {
@@ -57469,164 +57457,169 @@
     {
      "pid": "p-s05e787d5",
      "i": 76,
-     "method": "skipped-sutra",
-     "conf": 0.95,
-     "start": 1500.68,
-     "end": 1500.68,
+     "method": "hole-anchor",
+     "conf": 0.65,
+     "start": 1288.42,
+     "end": 1299.531,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.537,
+      "t_head": 1290.21,
+      "d_blk": 0.274
      }
     },
     {
      "pid": "p-s588ed44b",
      "i": 77,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1500.68,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1299.531,
      "end": 1500.68,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.142,
-      "t_head": 1496.87,
-      "d_blk": -0.014,
-      "probe": 0.714
+      "d_head": 0.558,
+      "t_head": 1298.15,
+      "d_blk": 0.706
      }
     },
     {
      "pid": "p-s6ea66412",
      "i": 78,
-     "method": "skipped-sutra",
-     "conf": 0.8,
-     "start": 1500.68,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1335.105,
      "end": 1500.68,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.675,
+      "t_head": 1333.88,
+      "d_blk": 0.675
      }
     },
     {
      "pid": "p-sd1687708",
      "i": 79,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1340.578,
+     "end": 1500.68,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.162,
-      "t_head": 1497.17,
-      "d_blk": 0.126,
-      "probe": 0.759
+      "d_head": 0.575,
+      "t_head": 1339.31,
+      "d_blk": 0.621
      }
     },
     {
      "pid": "p-sa47b1b7d",
      "i": 80,
-     "method": "skipped-sutra",
-     "conf": 0.8,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1352.208,
+     "end": 1500.68,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.496,
+      "t_head": 1350.94,
+      "d_blk": 0.612
      }
     },
     {
      "pid": "p-se39675e2",
      "i": 81,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1363.838,
+     "end": 1500.68,
      "is_sutra": false,
      "verdict": "span_bad",
      "ev": {
-      "d_head": 0.121,
-      "t_head": 1495.33,
-      "d_blk": 0.055,
+      "d_head": 0.192,
+      "t_head": 1393.84,
+      "d_blk": 0.509,
       "probe": 0.534
      }
     },
     {
      "pid": "p-s05e4a1e3",
      "i": 82,
-     "method": "rescue-blocked",
-     "conf": 0.35,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1389.151,
+     "end": 1500.68,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "span_ok",
      "ev": {
-      "verbatim": false
+      "d_head": 0.475,
+      "t_head": 1387.81,
+      "d_blk": 0.624
      }
     },
     {
      "pid": "p-s4822c233",
      "i": 83,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1402.149,
+     "end": 1500.68,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.15,
-      "t_head": 1495.13,
-      "d_blk": 0.093,
-      "probe": 0.594
+      "d_head": 0.396,
+      "t_head": 1401.56,
+      "d_blk": 0.6
      }
     },
     {
      "pid": "p-se4365432",
      "i": 84,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-anchor",
+     "conf": 0.65,
+     "start": 1420.62,
+     "end": 1475.58,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.137,
-      "t_head": 1495.13,
-      "d_blk": -0.041,
-      "probe": 0.818
+      "d_head": 0.667,
+      "t_head": 1429.55,
+      "d_blk": 0.818,
+      "note": "head-in-span"
      }
     },
     {
      "pid": "p-s07292390",
      "i": 85,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-anchor",
+     "conf": 0.65,
+     "start": 1475.58,
+     "end": 1491.58,
      "is_sutra": false,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.246,
-      "t_head": 1495.69,
-      "d_blk": 0.083,
-      "probe": 0.819
+      "d_head": 0.921,
+      "t_head": 1475.73,
+      "d_blk": 0.488
      }
     },
     {
      "pid": "p-sc74c982f",
      "i": 86,
-     "method": "comm-split",
-     "conf": 0.6,
-     "start": 1501.15,
-     "end": 1501.15,
+     "method": "hole-split",
+     "conf": 0.4,
+     "start": 1491.58,
+     "end": 1500.68,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
       "d_head": 0.833,
       "t_head": 1499.84,
-      "d_blk": 0.833
+      "d_blk": 0.833,
+      "note": "head-in-span"
      }
     },
     {
@@ -58070,25 +58063,23 @@
   {
    "lecture": "39",
    "verdicts": {
+    "skip_ok": 15,
     "span_ok": 69,
-    "skip_ok": 14,
-    "unknown": 13,
-    "span_bad": 3
+    "span_bad": 3,
+    "unknown": 12
    },
    "details": [
     {
      "pid": "p-sc72425fa",
      "i": 0,
-     "method": "dtw-evid",
+     "method": "block-zero",
      "conf": 0.85,
-     "start": 4.88,
-     "end": 18.92,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
-     "verdict": "span_ok",
+     "verdict": "skip_ok",
      "ev": {
-      "d_head": 0.883,
-      "t_head": 5.03,
-      "d_blk": 0.891
+      "verbatim": false
      }
     },
     {
@@ -58199,15 +58190,15 @@
      "pid": "p-s4c6a3587",
      "i": 9,
      "method": "intro-rescue",
-     "conf": 0.85,
-     "start": 18.92,
+     "conf": 0.9,
+     "start": 0.79,
      "end": 18.92,
      "is_sutra": false,
-     "verdict": "unknown",
+     "verdict": "span_ok",
      "ev": {
-      "d_head": 0.128,
-      "t_head": 16.84,
-      "d_blk": 0.128
+      "d_head": 0.828,
+      "t_head": 0.99,
+      "d_blk": 0.828
      }
     },
     {
@@ -58556,7 +58547,7 @@
      "pid": "p-s088c89d2",
      "i": 33,
      "method": "dtw",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 535.26,
      "end": 568.07,
      "is_sutra": false,
@@ -60437,8 +60428,8 @@
     {
      "pid": "p-scc532f49",
      "i": 60,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 1167.16,
      "end": 1167.16,
      "is_sutra": false,
@@ -61212,7 +61203,7 @@
      "pid": "p-s7661788f",
      "i": 22,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 529.29,
      "end": 536.94,
      "is_sutra": false,
@@ -61226,8 +61217,8 @@
     {
      "pid": "p-s2961784e",
      "i": 23,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": false,
@@ -61242,8 +61233,8 @@
     {
      "pid": "p-s910d21de",
      "i": 24,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": false,
@@ -61258,8 +61249,8 @@
     {
      "pid": "p-s8a454ea0",
      "i": 25,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": false,
@@ -61274,8 +61265,8 @@
     {
      "pid": "p-s9e020adc",
      "i": 26,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": false,
@@ -61291,7 +61282,7 @@
      "pid": "p-s46573bf5",
      "i": 27,
      "method": "dtw",
-     "conf": 0.86,
+     "conf": 0.45,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": true,
@@ -61303,8 +61294,8 @@
     {
      "pid": "p-sc8b00f26",
      "i": 28,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": false,
@@ -61319,7 +61310,7 @@
      "pid": "p-s02dd53a0",
      "i": 29,
      "method": "dtw",
-     "conf": 0.86,
+     "conf": 0.45,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": true,
@@ -61331,8 +61322,8 @@
     {
      "pid": "p-sd98d5e93",
      "i": 30,
-     "method": "comm-split",
-     "conf": 0.6,
+     "method": "comm-gap-zero",
+     "conf": 0.35,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": false,
@@ -61347,7 +61338,7 @@
      "pid": "p-sc50b1edf",
      "i": 31,
      "method": "dtw",
-     "conf": 0.9,
+     "conf": 0.45,
      "start": 536.94,
      "end": 536.94,
      "is_sutra": true,
@@ -62464,7 +62455,7 @@
      "pid": "p-se049ea7f",
      "i": 17,
      "method": "dtw-evid",
-     "conf": 0.85,
+     "conf": 0.49,
      "start": 271.47,
      "end": 301.53,
      "is_sutra": false,

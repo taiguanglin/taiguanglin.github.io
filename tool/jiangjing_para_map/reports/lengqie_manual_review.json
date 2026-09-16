@@ -58,7 +58,8 @@
     "start": 1034.07,
     "end": 1034.07,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "有这样观念的人们甚至把正常的修行看得一文不值。我劝大家要双盘打坐打通筋脉，有人就跳出来说单盘也能打通筋脉，什么单盘也能入"
   },
@@ -102,24 +103,11 @@
   },
   {
     "lecture": "5",
-    "i": 14,
-    "pid": "p-s847d4ba0",
-    "cls": "SUTRA",
-    "start": 154.21,
-    "end": 154.21,
-    "reasons": [
-      "rescue-blocked",
-      "low-conf=0.35"
-    ],
-    "text": "尔时，罗婆那王复作是念，愿我更得奉见如来，"
-  },
-  {
-    "lecture": "5",
     "i": 15,
     "pid": "p-sa6f6e604",
     "cls": "COMM",
     "start": 154.21,
-    "end": 154.21,
+    "end": 159.73,
     "reasons": [
       "comm-split"
     ],
@@ -193,7 +181,8 @@
     "start": 939.88,
     "end": 939.88,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-zero",
+      "low-conf=0.35"
     ],
     "text": "尔时，如来知楞伽王欲问此义，而告之曰：“楞伽王，汝欲问我，宜应速问，我当为汝分别解释，满汝所愿，令汝欢喜，"
   },
@@ -203,7 +192,7 @@
     "pid": "p-s1b7a5cac",
     "cls": "COMM",
     "start": 939.88,
-    "end": 939.88,
+    "end": 971.03,
     "reasons": [
       "comm-split"
     ],
@@ -214,10 +203,11 @@
     "i": 72,
     "pid": "p-s633b2dc4",
     "cls": "SUTRA",
-    "start": 939.88,
-    "end": 939.88,
+    "start": 971.03,
+    "end": 971.03,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-zero",
+      "low-conf=0.35"
     ],
     "text": "能以智慧思惟观察，离诸分别，善知诸地，修习对治，"
   },
@@ -278,7 +268,8 @@
     "start": 1940.09,
     "end": 1940.09,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "既然每个修行人修的法门一样，但是看到的境界都不一样，那么法与非法怎么会没有差别之相呢？实际上是这样反问。"
   },
@@ -293,6 +284,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "瓶等诸物凡愚所取本无有体，诸观行人以毗钵舍那如实观察，名舍诸法。"
+  },
+  {
+    "lecture": "6",
+    "i": 13,
+    "pid": "p-s23158299",
+    "cls": "SUTRA",
+    "start": 208.27,
+    "end": 208.27,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "楞伽王，何者是非法？所谓诸法无性无相永离分别，如实见者，若有若无如是境界彼皆不起，是名舍非法；"
   },
   {
     "lecture": "6",
@@ -407,13 +410,92 @@
   },
   {
     "lecture": "7",
+    "i": 1,
+    "pid": "p-safd06231",
+    "cls": "SUTRA",
+    "start": 53.85,
+    "end": 53.85,
+    "reasons": [
+      "hole-zero",
+      "low-conf=0.35"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，诸识有几种生住灭？”佛言：“大慧，诸识有二种生住灭，非臆度者之所能知。所谓相续生及"
+  },
+  {
+    "lecture": "7",
+    "i": 2,
+    "pid": "p-s94db50c7",
+    "cls": "SUTRA",
+    "start": 53.85,
+    "end": 53.85,
+    "reasons": [
+      "hole-zero",
+      "low-conf=0.35"
+    ],
+    "text": "“大慧，识广说有八，略则唯二，谓现识及分别事识。大慧，如明镜中现诸色像，现识亦尔。大慧，现识与分别事识，此二识无异相互为"
+  },
+  {
+    "lecture": "7",
+    "i": 3,
+    "pid": "p-s853e2c23",
+    "cls": "SUTRA",
+    "start": 53.85,
+    "end": 53.85,
+    "reasons": [
+      "hole-zero",
+      "low-conf=0.35"
+    ],
+    "text": "“大慧，转识藏识若异者，藏识非彼因；若不异者，转识灭藏识亦应灭，然彼真相不灭。大慧，识真相不灭，但业相灭。若真相灭者，藏"
+  },
+  {
+    "lecture": "7",
+    "i": 6,
+    "pid": "p-s90055b77",
+    "cls": "COMM",
+    "start": 124.87,
+    "end": 124.87,
+    "reasons": [
+      "comm-gap-zero",
+      "low-conf=0.35"
+    ],
+    "text": "什么是“一百八句”？下面一段好像中间有一部分直接给省略掉了，可能是这个编辑的人偷懒啦，或者他觉得没什么太大的意义吧。所以"
+  },
+  {
+    "lecture": "7",
+    "i": 8,
+    "pid": "p-s0a030c9d",
+    "cls": "COMM",
+    "start": 124.87,
+    "end": 124.87,
+    "reasons": [
+      "comm-gap-zero",
+      "low-conf=0.35"
+    ],
+    "text": "这个“是”和“非”在这里全部用“非”这种模式来说。我们人类的语言都是执着上形成的，只要说出来的话，就已经是执着了。"
+  },
+  {
+    "lecture": "7",
+    "i": 9,
+    "pid": "p-sd1311082",
+    "cls": "COMM",
+    "start": 124.87,
+    "end": 124.87,
+    "reasons": [
+      "comm-gap-zero",
+      "low-conf=0.35"
+    ],
+    "text": "既然他已经有了“见、取、执”这些执着的境界，尤其是“见”，我说出来的话肯定是“我认为”这样想才会说的，所以我们学法也是，"
+  },
+  {
+    "lecture": "7",
     "i": 10,
     "pid": "p-s49b19049",
     "cls": "COMM",
     "start": 124.87,
     "end": 124.87,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "所以这一段我们就把它理解为：佛告诉我们不要在文字上着相，也不要在文字上分别，否则你没有办法知道、领悟到佛的真意，这个直接"
   },
@@ -425,9 +507,22 @@
     "start": 124.87,
     "end": 124.87,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "下一段："
+  },
+  {
+    "lecture": "7",
+    "i": 12,
+    "pid": "p-s34540ae2",
+    "cls": "SUTRA",
+    "start": 124.87,
+    "end": 124.87,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，诸识有几种生住灭？”"
   },
   {
     "lecture": "7",
@@ -493,14 +588,51 @@
     "text": "如果这样看的话，我们就直接往回推理。前面已经提过一次外道断灭论，断灭论是什么？就是我们这个世界是被某个神创造出来的，包括"
   },
   {
+    "lecture": "7",
+    "i": 90,
+    "pid": "p-s6551862a",
+    "cls": "COMM",
+    "start": 2037.54,
+    "end": 2056.15,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "“大种句非大种句”，“大种”是四大的意思。“摄受句非摄受句”，“摄受”是佛教里说的摄受什么人，就是把人说服了，让他信佛。"
+  },
+  {
+    "lecture": "7",
+    "i": 93,
+    "pid": "p-sb29b273f",
+    "cls": "COMM",
+    "start": 2154.37,
+    "end": 2197.961,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "“演说句非演说句”，“演说”就是大庭广众之下向很多人讲话。这一期就讲到这里。"
+  },
+  {
+    "lecture": "8",
+    "i": 0,
+    "pid": "p-s6b8ecd30",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "“复次，大慧，有七种自性：所谓集自性、性自性、相自性、大种自性、因自性、缘自性、成自性。"
+  },
+  {
     "lecture": "8",
     "i": 3,
     "pid": "p-s4fc5fbeb",
     "cls": "COMM",
-    "start": 93.86,
+    "start": 24.753,
     "end": 93.86,
     "reasons": [
-      "comm-split"
+      "head-split",
+      "low-conf=0.4"
     ],
     "text": "咱们修行也如此。你有了完整的攻略，就有明确的目标，你都知道每个步骤该怎么做，那你对自己就有很强烈的信心，这对初学来说是最"
   },
@@ -509,10 +641,11 @@
     "i": 4,
     "pid": "p-s31633691",
     "cls": "COMM",
-    "start": 93.86,
+    "start": 70.357,
     "end": 93.86,
     "reasons": [
-      "comm-split"
+      "head-split",
+      "low-conf=0.4"
     ],
     "text": "所以我们不管当下境界如何，先把这些高层次的理论听一听，只要能理解就好。智商一百以上，我觉得还是能理解的，就看自己的悟性吧"
   },
@@ -521,10 +654,11 @@
     "i": 5,
     "pid": "p-s16543567",
     "cls": "COMM",
-    "start": 93.86,
+    "start": 89.3,
     "end": 93.86,
     "reasons": [
-      "comm-split"
+      "head-split",
+      "low-conf=0.4"
     ],
     "text": "第八期从三十四页开始，第一段："
   },
@@ -620,7 +754,7 @@
     "pid": "p-s68a10cba",
     "cls": "COMM",
     "start": 1632.8,
-    "end": 1632.8,
+    "end": 1693.42,
     "reasons": [
       "comm-split",
       "low-conf=0.4"
@@ -632,10 +766,12 @@
     "i": 85,
     "pid": "p-sf1cce56a",
     "cls": "SUTRA",
-    "start": 1632.8,
-    "end": 1632.8,
+    "start": 1660.197,
+    "end": 1660.197,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-split",
+      "low-conf=0.4",
+      "zero-width(hole-split):verify-by-ear"
     ],
     "text": "得心自在，无功用行，如如意宝，随宜现身，令达唯心，渐入诸地。"
   },
@@ -647,7 +783,8 @@
     "start": 1693.42,
     "end": 1693.42,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“得心自在，无功用行，如如意宝，随宜现身，令达唯心”，全是说佛的境界，“渐入诸地”，在菩萨的诸地当中。这里是说前面的佛的"
   },
@@ -656,11 +793,10 @@
     "i": 87,
     "pid": "p-s2200eff1",
     "cls": "SUTRA",
-    "start": 1693.42,
+    "start": 1680.58,
     "end": 1693.42,
     "reasons": [
-      "rescue-blocked",
-      "low-conf=0.35"
+      "hole-anchor:verify-by-ear"
     ],
     "text": "是故大慧，菩萨摩诃萨于自悉檀应善修学。"
   },
@@ -731,10 +867,10 @@
     "i": 45,
     "pid": "p-s571b4be0",
     "cls": "SUTRA",
-    "start": 718.82,
+    "start": 725.02,
     "end": 769.09,
     "reasons": [
-      "rescue-blocked",
+      "hole-zero",
       "low-conf=0.35"
     ],
     "text": "而于自心所现境界分别执著俱时而起，无差别相，各了自境。"
@@ -833,7 +969,8 @@
     "start": 1022.34,
     "end": 1022.34,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "为什么是虚妄计度出来的无？就是他根据看到的事物凭空想象出来的，看到存在的牛角，凭空想象出不存在的兔角，这叫“虚妄计度出无"
   },
@@ -870,7 +1007,8 @@
     "start": 1431.19,
     "end": 1431.19,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“二俱非有”，两者都不存在，那个存在的东西，像牛角，最后都是求不可得，是不存在的，本相是不存在的。然后又想象出了不存在的"
   },
@@ -897,6 +1035,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "尔时，世尊即说颂言：心所见无有，唯依心故起；"
+  },
+  {
+    "lecture": "12",
+    "i": 0,
+    "pid": "p-scb4b932d",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨，为净心现流故而请佛言：“世尊云何净诸众生自心现流？为渐次净？为顿净耶？”"
   },
   {
     "lecture": "12",
@@ -933,6 +1083,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "譬如藏识顿现于身及资生国土，一切境界，报佛亦尔，于色究竟天，顿能成熟一切众生令修诸行；"
+  },
+  {
+    "lecture": "12",
+    "i": 54,
+    "pid": "p-s36039456",
+    "cls": "COMM",
+    "start": 1290.722,
+    "end": 1332.04,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "我们知道菩萨生起妄想有两种原因，一种是靠自己的习气生起，还有一种是根据其他众生之妄想而生起。前面讲过，如果其他众生在轮回"
   },
   {
     "lecture": "12",
@@ -990,7 +1152,7 @@
     "pid": "p-se08bfcb4",
     "cls": "COMM",
     "start": 2173.89,
-    "end": 2173.89,
+    "end": 2207.36,
     "reasons": [
       "comm-split"
     ],
@@ -1001,22 +1163,35 @@
     "i": 97,
     "pid": "p-sbcf6c333",
     "cls": "SUTRA",
-    "start": 2173.89,
-    "end": 2173.89,
+    "start": 2207.36,
+    "end": 2207.36,
+    "reasons": [
+      "hole-zero",
+      "low-conf=0.35"
+    ],
+    "text": "菩萨摩诃萨于此法中，应知应舍离人无我见，入法无我相，渐住诸地。"
+  },
+  {
+    "lecture": "13",
+    "i": 0,
+    "pid": "p-s89993411",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
     "reasons": [
       "skip-quote:verify-by-ear"
     ],
-    "text": "菩萨摩诃萨于此法中，应知应舍离人无我见，入法无我相，渐住诸地。"
+    "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，如来所说常不思议自证圣智第一义境，将无同诸外道所说常不思议作者耶？”"
   },
   {
     "lecture": "13",
     "i": 11,
     "pid": "p-s81c0109f",
     "cls": "SUTRA",
-    "start": 27.98,
-    "end": 27.98,
+    "start": 13.49,
+    "end": 32.99,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "dup-anchor:verify-by-ear"
     ],
     "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，如来所说常不思议自证圣智第一义境，将无同诸外道所说常不思议作者耶？”"
   },
@@ -1096,6 +1271,18 @@
   },
   {
     "lecture": "13",
+    "i": 72,
+    "pid": "p-seef84797",
+    "cls": "SUTRA",
+    "start": 1264.18,
+    "end": 1264.18,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，身及资生器世间等，一切皆是藏识影像，所取能取二种相现，彼诸愚夫，堕生住灭二见中故，于中妄起有、无分别。大慧，汝于此"
+  },
+  {
+    "lecture": "13",
     "i": 76,
     "pid": "p-s29fc9dde",
     "cls": "SUTRA",
@@ -1150,7 +1337,8 @@
     "start": 77.21,
     "end": 77.21,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“以舍一切善根故”，这是第一种，舍了一切善根。"
   },
@@ -1162,7 +1350,8 @@
     "start": 77.21,
     "end": 77.21,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“为无始众生起愿故”，这是第二种人。怎么会舍一切善根呢？就是毁谤大乘，毁谤大乘叫“谤菩萨藏”。说大乘佛法并不是能够解脱的"
   },
@@ -1202,6 +1391,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "大慧，妄计自性从相生。云何从相生？谓彼依缘起事相种类显现，生计著故。"
+  },
+  {
+    "lecture": "14",
+    "i": 42,
+    "pid": "p-sadeadd29",
+    "cls": "COMM",
+    "start": 630.24,
+    "end": 660.28,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "前面讲过，就好比打坐的时候静静地坐着，浑身很舒服的时候，有人在旁边唱歌，或者有人轻轻地碰你，如果你的身体没有感受，或者你"
   },
   {
     "lecture": "14",
@@ -1261,7 +1462,8 @@
     "start": 1861.82,
     "end": 1861.82,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "我讲经会说我对《楞伽经》的理解是这样、这样的，并不敢确定地说这就是佛的真义。"
   },
@@ -1273,9 +1475,22 @@
     "start": 1861.82,
     "end": 1861.82,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "所以大家听的时候觉得这一段讲的和其他某些人讲的或者网上能找到的内容完全不一样，让你一瞬间有了什么顿悟的感觉，让你一下子明"
+  },
+  {
+    "lecture": "14",
+    "i": 108,
+    "pid": "p-s8e89aae6",
+    "cls": "COMM",
+    "start": 2070.74,
+    "end": 2103.26,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "唯一劝你不要做的事情就是你无法理解的情况下不要诽谤他，你只要认为自己智慧不够，还无法理解，这样就行了，不要诽谤大乘经典以"
   },
   {
     "lecture": "15",
@@ -1288,6 +1503,30 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "……尔时，大慧菩萨摩诃萨复请佛言：“愿为我说一切法空、无生、无二、无自性相，我及诸菩萨悟此相故，离有、无分别，疾得阿耨多"
+  },
+  {
+    "lecture": "15",
+    "i": 11,
+    "pid": "p-s6bd36a84",
+    "cls": "SUTRA",
+    "start": 2.04,
+    "end": 16.707,
+    "reasons": [
+      "dup-anchor:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿说建立诽谤相，令我及诸菩萨摩诃萨离此恶见，疾得阿耨多罗三藐三菩提，得菩提已，破建"
+  },
+  {
+    "lecture": "15",
+    "i": 12,
+    "pid": "p-sae9f8aa4",
+    "cls": "COMM",
+    "start": 16.707,
+    "end": 42.49,
+    "reasons": [
+      "split-give"
+    ],
+    "text": "求佛说一下什么是诽谤相，让这些菩萨摩诃萨远离这些恶见，快速得阿耨多罗三藐三菩提。"
   },
   {
     "lecture": "15",
@@ -1322,9 +1561,22 @@
     "start": 159.03,
     "end": 159.03,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "有四种是在没有的情况下硬创造、建立出来。都是什么呢？“所谓无有相建立相，无有见建立见，无有因建立因，无有性建立性”，总共"
+  },
+  {
+    "lecture": "15",
+    "i": 29,
+    "pid": "p-s93b34d45",
+    "cls": "SUTRA",
+    "start": 416.31,
+    "end": 425.55,
+    "reasons": [
+      "hole-anchor:verify-by-ear"
+    ],
+    "text": "云何无有见建立见？谓于蕴界处建立我、人、众生等见，是名无有见建立见；"
   },
   {
     "lecture": "15",
@@ -1492,7 +1744,8 @@
     "start": 1683.92,
     "end": 1683.92,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“譬如心意于无量百千由旬之外，忆先所见种种诸物”，这样在空间和时间上没有任何障碍，可以回忆起一切记忆。“念念相续疾诣于彼"
   },
@@ -1507,6 +1760,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "大慧，云何观察外法无性？谓观察一切法如阳焰、如梦境、如毛轮，无始戏论种种执著，虚妄恶习为其因故，如是观察一切法时，即是专"
+  },
+  {
+    "lecture": "17",
+    "i": 0,
+    "pid": "p-s1af86dd4",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复请佛言：“愿说一切法因缘相，令我及诸菩萨摩诃萨了达其义，离有无见不妄执诸法渐生顿生。”"
   },
   {
     "lecture": "17",
@@ -1536,6 +1801,19 @@
   },
   {
     "lecture": "17",
+    "i": 68,
+    "pid": "p-s0574522e",
+    "cls": "SUTRA",
+    "start": 1381.71,
+    "end": 1381.71,
+    "reasons": [
+      "hole-zero",
+      "low-conf=0.35"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说言说分别相心法门，我及诸菩萨摩诃萨善知此故，通达能说所说二义，疾得阿耨多罗"
+  },
+  {
+    "lecture": "17",
     "i": 69,
     "pid": "p-s4c7f6baa",
     "cls": "COMM",
@@ -1554,7 +1832,7 @@
     "start": 1422.51,
     "end": 1422.51,
     "reasons": [
-      "rescue-blocked",
+      "hole-zero",
       "low-conf=0.35"
     ],
     "text": "佛言：“大慧，有四种言说分别相。所谓相言说，梦言说，计著过恶言说，无始妄想言说。"
@@ -1604,7 +1882,8 @@
     "start": 2215.86,
     "end": 2215.86,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "在佛的第一义真相——佛的自性当中，自己的相和他相都不存在。语言只要说出来，就是有相的，也就是分别心里产生的，所以它不能显"
   },
@@ -1920,9 +2199,22 @@
     "start": 1288.14,
     "end": 1288.14,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "在这里说了，初地菩萨要入定，还是在佛的加持力下入的。只有在佛的加持力下，所有菩萨才能持续修行，进入三昧。佛也给这样的人“"
+  },
+  {
+    "lecture": "19",
+    "i": 69,
+    "pid": "p-s61601823",
+    "cls": "SUTRA",
+    "start": 1306.29,
+    "end": 1306.29,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，此菩萨摩诃萨蒙佛持力，入三昧已，于百千劫集诸善根，渐入诸地，善能通达治所治相，至法云地处，大莲花微妙宫殿坐于宝座，"
   },
   {
     "lecture": "19",
@@ -1992,7 +2284,8 @@
     "start": 182.71,
     "end": 183.054,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“世尊，外道亦说，以作者故，于无生有”，外道说因为造作的人存在——因为有这个人，然后他造作，所以从无中生有。"
   },
@@ -2004,7 +2297,8 @@
     "start": 183.054,
     "end": 183.51,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“世尊亦说，以因缘故，一切诸法本无而生，生已归灭”，佛说是因缘故——十二因缘法的“因缘”，本来也是从没有当中生出来的，生"
   },
@@ -2053,7 +2347,8 @@
     "start": 817.08,
     "end": 817.08,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "下面是一段偈言。"
   },
@@ -2077,7 +2372,8 @@
     "start": 817.08,
     "end": 817.08,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "这个虚空兔角、石女之子都是我们想象之后，在没有的情况下说出来的，妄计法就是这样。"
   },
@@ -2155,6 +2451,18 @@
       "comm-split"
     ],
     "text": "“圣”应该是有智慧的人。这些人又分为三种——声闻、缘觉、佛。"
+  },
+  {
+    "lecture": "20",
+    "i": 78,
+    "pid": "p-se9a7f871",
+    "cls": "SUTRA",
+    "start": 1376.43,
+    "end": 1376.43,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，何谓智人分别妄法而得成就佛乘种性？所谓了达一切唯是自心分别所见，无有外法。"
   },
   {
     "lecture": "20",
@@ -2264,7 +2572,8 @@
     "start": 1348.61,
     "end": 1348.61,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“句事究竟”就是把意思表达清楚的意思。“名身者，谓诸字名各各差别，如从阿字乃至呵字”，名字就是名相各个不同，就像字都不一"
   },
@@ -2433,7 +2742,8 @@
     "start": 378.31,
     "end": 378.31,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "为什么一切妄想、分别、执着不生了？离开了分别心，那就无作者，没有了我相，所以说一切法不生。“自性”是本体，为什么妄想、分"
   },
@@ -2481,7 +2791,7 @@
     "pid": "p-sbb25639a",
     "cls": "COMM",
     "start": 765.53,
-    "end": 765.53,
+    "end": 813.0,
     "reasons": [
       "comm-split"
     ],
@@ -2492,10 +2802,11 @@
     "i": 57,
     "pid": "p-sa27edd5a",
     "cls": "SUTRA",
-    "start": 765.53,
-    "end": 765.53,
+    "start": 813.0,
+    "end": 813.0,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-zero",
+      "low-conf=0.35"
     ],
     "text": "大慧，此三种人断三种结，谓身见、疑、戒禁取，上上胜进得阿罗汉果。"
   },
@@ -2507,7 +2818,8 @@
     "start": 831.93,
     "end": 831.93,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "我们先看第一种——身见。"
   },
@@ -2653,7 +2965,8 @@
     "start": 758.8,
     "end": 758.8,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "在这里讲到了“一真法界”，佛或者等觉菩萨的世界称之为“一真法界”。整个世界没有世界的区别，也没有时间、空间。意识可以覆盖"
   },
@@ -2757,6 +3070,18 @@
   },
   {
     "lecture": "25",
+    "i": 0,
+    "pid": "p-s513e495e",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "大慧菩萨摩诃萨复白佛言：“世尊，惟愿为说自证圣智行相及一乘行相，我及诸菩萨摩诃萨得此善巧，于佛法中不由他悟。”"
+  },
+  {
+    "lecture": "25",
     "i": 4,
     "pid": "p-sd60a5d4d",
     "cls": "SUTRA",
@@ -2796,10 +3121,10 @@
     "i": 11,
     "pid": "p-sacf765a3",
     "cls": "SUTRA",
-    "start": 20.59,
+    "start": 6.52,
     "end": 20.59,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "dup-anchor:verify-by-ear"
     ],
     "text": "大慧菩萨摩诃萨复白佛言：“世尊，惟愿为说自证圣智行相及一乘行相，我及诸菩萨摩诃萨得此善巧，于佛法中不由他悟。”"
   },
@@ -2926,6 +3251,18 @@
   },
   {
     "lecture": "26",
+    "i": 18,
+    "pid": "p-s6bec5f5b",
+    "cls": "COMM",
+    "start": 59.526,
+    "end": 90.51,
+    "reasons": [
+      "split-give"
+    ],
+    "text": "“云何外五无间？谓余教中所说无间”，就是其他教法中都讲过的那种“五无间罪”——杀父、杀母、杀阿罗汉、破和合僧、出佛身血，"
+  },
+  {
+    "lecture": "26",
     "i": 29,
     "pid": "p-sd1196c72",
     "cls": "SUTRA",
@@ -2979,7 +3316,7 @@
     "pid": "p-s3c34e707",
     "cls": "COMM",
     "start": 705.73,
-    "end": 705.73,
+    "end": 716.981,
     "reasons": [
       "comm-split"
     ],
@@ -2990,8 +3327,8 @@
     "i": 59,
     "pid": "p-sb3573396",
     "cls": "SUTRA",
-    "start": 705.73,
-    "end": 705.73,
+    "start": 716.981,
+    "end": 716.981,
     "reasons": [
       "skip-quote:verify-by-ear"
     ],
@@ -3005,9 +3342,23 @@
     "start": 716.981,
     "end": 716.981,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "所以佛可以对大众说，我曾经做过大象、鹦鹉、月光、妙眼，还有其他各种佛。"
+  },
+  {
+    "lecture": "26",
+    "i": 66,
+    "pid": "p-s9a0d2390",
+    "cls": "SUTRA",
+    "start": 861.87,
+    "end": 905.23,
+    "reasons": [
+      "hole-zero",
+      "low-conf=0.35"
+    ],
+    "text": "尔时，世尊重说颂言：迦叶、拘留孙，拘那含是我，依四平等故，为诸佛子说。尔时，大慧菩萨摩诃萨复白佛言：“世尊，如世尊说，我"
   },
   {
     "lecture": "26",
@@ -3064,7 +3415,7 @@
     "pid": "p-s93053438",
     "cls": "COMM",
     "start": 1319.33,
-    "end": 1319.33,
+    "end": 1351.68,
     "reasons": [
       "comm-split"
     ],
@@ -3075,10 +3426,11 @@
     "i": 94,
     "pid": "p-s0733e46f",
     "cls": "SUTRA",
-    "start": 1319.33,
-    "end": 1319.33,
+    "start": 1351.68,
+    "end": 1351.68,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-zero",
+      "low-conf=0.35"
     ],
     "text": "云何有见？谓实有因缘而生诸法，非不实有，实有诸法从因缘生，非无法生。大慧，如是说者，则说无因。"
   },
@@ -3122,6 +3474,18 @@
   },
   {
     "lecture": "27",
+    "i": 0,
+    "pid": "p-sdada7d8e",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，惟愿为说宗趣之相，令我及诸菩萨摩诃萨善达此义，不随一切众邪妄解，疾得阿耨多罗三藐三"
+  },
+  {
+    "lecture": "27",
     "i": 2,
     "pid": "p-s9787ae53",
     "cls": "SUTRA",
@@ -3161,12 +3525,24 @@
     "i": 14,
     "pid": "p-s0038c215",
     "cls": "SUTRA",
-    "start": 82.7,
-    "end": 82.7,
+    "start": 1.56,
+    "end": 13.782,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "dup-anchor:verify-by-ear"
     ],
     "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，惟愿为说宗趣之相，令我及诸菩萨摩诃萨善达此义，不随一切众邪妄解，疾得阿耨多罗三藐三"
+  },
+  {
+    "lecture": "27",
+    "i": 15,
+    "pid": "p-sf14638cb",
+    "cls": "COMM",
+    "start": 13.782,
+    "end": 82.7,
+    "reasons": [
+      "split-give"
+    ],
+    "text": "请佛说一下“宗趣之相”，让这些菩萨们不被错误的见解所困扰，最后能“疾得阿耨多罗三藐三菩提”。"
   },
   {
     "lecture": "27",
@@ -3179,6 +3555,19 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“大慧，一切二乘及诸菩萨，有二种宗法相。何等为二？谓宗趣法相，言说法相。"
+  },
+  {
+    "lecture": "27",
+    "i": 17,
+    "pid": "p-s2339e9f8",
+    "cls": "COMM",
+    "start": 82.7,
+    "end": 82.7,
+    "reasons": [
+      "comm-gap-zero",
+      "low-conf=0.35"
+    ],
+    "text": "有两种相，“宗趣法相”和“言说法相”。什么叫“宗趣法相”呢？"
   },
   {
     "lecture": "27",
@@ -3206,6 +3595,18 @@
   },
   {
     "lecture": "27",
+    "i": 34,
+    "pid": "p-s70117bc1",
+    "cls": "SUTRA",
+    "start": 368.11,
+    "end": 368.11,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧言：“唯。”佛言：大慧，一切众生于种种境不能了达自心所现，计能、所取，虚妄执著，起诸分别，堕有、无见，增长外道妄见习"
+  },
+  {
+    "lecture": "27",
     "i": 38,
     "pid": "p-s02a9b4e6",
     "cls": "SUTRA",
@@ -3224,7 +3625,8 @@
     "start": 528.81,
     "end": 528.81,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "外道的种种理论，它们本质上离开有无。在这里，“性”是本质的意思。“起诸见相”，在没有“有无”的状态里，还起这种相。“世尊"
   },
@@ -3248,7 +3650,8 @@
     "start": 631.17,
     "end": 631.17,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“一处言起，一不言故”，为什么声闻乘、缘觉乘法上“言起”，而在第一义谛上不“言起”？“世尊又说虚妄分别，堕有、无见”，世"
   },
@@ -3394,7 +3797,8 @@
     "start": 86.3,
     "end": 86.3,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "另一个译本在名词、名相上有些不一样，但基本都是一个意思。而且在这里佛只解释了“形转变”，其他大家可以自己想象一下，都差不"
   },
@@ -3406,7 +3810,8 @@
     "start": 86.3,
     "end": 86.3,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“相转变”肯定是分别心上产生的外相。“因转变”，任何事物的原因会转变。“相应转变”，“因”转变之后，与其相应的“果”也会"
   },
@@ -3471,6 +3876,30 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "此诸分别如蚕作茧，以妄想丝自缠、缠他，执著有、无，欲乐坚密。"
+  },
+  {
+    "lecture": "28",
+    "i": 69,
+    "pid": "p-sa4818323",
+    "cls": "SUTRA",
+    "start": 1482.32,
+    "end": 1482.32,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "尔时，世尊重说颂言：不实妄分别，是名为密相；若能如实知，诸密网皆断。凡愚不能了，随言而取义；譬如蚕处茧，妄想自缠缚。"
+  },
+  {
+    "lecture": "29",
+    "i": 0,
+    "pid": "p-sae77985e",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如世尊说，由种种心，分别诸法，非诸法有自性，此但妄计耳。世尊，若但妄计，无诸法者，"
   },
   {
     "lecture": "29",
@@ -3590,7 +4019,8 @@
     "start": 1404.1,
     "end": 1404.1,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“彼宗”——这个理论里有无法皆不生的话，那么一切法的有无相也不应该生，那样的话一切法都不能生。"
   },
@@ -3634,15 +4064,39 @@
   },
   {
     "lecture": "30",
-    "i": 13,
-    "pid": "p-secfa7f6f",
+    "i": 0,
+    "pid": "p-se064bf44",
     "cls": "SUTRA",
-    "start": 43.72,
-    "end": 43.72,
+    "start": 0.0,
+    "end": 0.0,
     "reasons": [
       "skip-quote:verify-by-ear"
     ],
     "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来一时说卢迦耶陀咒术词论，但能摄取世间财利，不得法利，不应亲近承事供养。世尊何故"
+  },
+  {
+    "lecture": "30",
+    "i": 13,
+    "pid": "p-secfa7f6f",
+    "cls": "SUTRA",
+    "start": 28.08,
+    "end": 44.19,
+    "reasons": [
+      "dup-anchor:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来一时说卢迦耶陀咒术词论，但能摄取世间财利，不得法利，不应亲近承事供养。世尊何故"
+  },
+  {
+    "lecture": "30",
+    "i": 21,
+    "pid": "p-sf98a77a2",
+    "cls": "SUTRA",
+    "start": 212.39,
+    "end": 212.39,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，释提桓因广解众论，自造诸论，彼世论者，有一弟子，现作龙身诣释天宫，而立论宗作是要言，憍尸迦，我共汝论，汝若不如，我"
   },
   {
     "lecture": "30",
@@ -3701,7 +4155,8 @@
     "start": 1072.87,
     "end": 1072.87,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "你说的那些都是你的世间言论而已，并不是我说的。我说是因为在无始以来的错误理论上，生起了恶习气，所以才有了“三有”。“三有"
   },
@@ -3725,7 +4180,8 @@
     "start": 1206.96,
     "end": 1207.34,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "婆罗门又问了，这个三有——欲界、色界、无色界是怎么有的？因为我们的“无明爱业为因缘”呢，还是没有原因就有呢？这两者也是世"
   },
@@ -3768,6 +4224,18 @@
   },
   {
     "lecture": "30",
+    "i": 87,
+    "pid": "p-se38e0489",
+    "cls": "SUTRA",
+    "start": 1528.09,
+    "end": 1528.09,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，所言财者，可触、可受、可取、可味，令著外境，堕在二边，增长贪爱生老病死、忧悲苦恼，我及诸佛说名财利，亲近世论之所获"
+  },
+  {
+    "lecture": "30",
     "i": 90,
     "pid": "p-sad942b24",
     "cls": "SUTRA",
@@ -3805,6 +4273,30 @@
   },
   {
     "lecture": "31",
+    "i": 0,
+    "pid": "p-sfd312094",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，佛说涅槃，说何等法以为涅槃，而诸外道种种分别？”"
+  },
+  {
+    "lecture": "31",
+    "i": 7,
+    "pid": "p-sf1833b1d",
+    "cls": "SUTRA",
+    "start": 97.02,
+    "end": 97.02,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说如来、应供、正等觉自觉性，令我及诸菩萨摩诃萨而得善巧自悟、悟他。”"
+  },
+  {
+    "lecture": "31",
     "i": 8,
     "pid": "p-sc406e8ef",
     "cls": "SUTRA",
@@ -3814,6 +4306,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "佛言：“如汝所问，当为汝说。”大慧言：“唯。世尊，如来、应供、正等觉为作非作？为果为因？为相所相？为说所说？为觉所觉？如"
+  },
+  {
+    "lecture": "31",
+    "i": 13,
+    "pid": "p-s38a5e1b1",
+    "cls": "SUTRA",
+    "start": 87.66,
+    "end": 97.02,
+    "reasons": [
+      "dup-anchor:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，佛说涅槃，说何等法以为涅槃，而诸外道种种分别？”"
   },
   {
     "lecture": "31",
@@ -3827,6 +4331,18 @@
       "low-conf=0.35"
     ],
     "text": "大慧，非以见坏名为涅槃；或谓至方名得涅槃，境界想离犹如风止；或谓不见能觉、所觉名为涅槃；或谓不起分别常、无常见名得涅槃。"
+  },
+  {
+    "lecture": "31",
+    "i": 58,
+    "pid": "p-sfe7338ec",
+    "cls": "SUTRA",
+    "start": 1081.62,
+    "end": 1081.62,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，复有异彼外道所说，以一切智大师子吼说，能了达唯心所现，不取外境，远离四句，住如实见，不堕二边，离能、所取，不入诸量"
   },
   {
     "lecture": "31",
@@ -3962,6 +4478,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "大慧，菩萨摩诃萨随于义，莫依文字。"
+  },
+  {
+    "lecture": "33",
+    "i": 9,
+    "pid": "p-s637f3a71",
+    "cls": "COMM",
+    "start": 34.57,
+    "end": 37.36,
+    "reasons": [
+      "comm-split"
+    ],
+    "text": "菩萨、真正的修行人应该追求义——世界的真相。义是佛要讲的世界真相。不要追求文字，不要执着于文字。"
   },
   {
     "lecture": "33",
@@ -4128,13 +4656,25 @@
   },
   {
     "lecture": "34",
+    "i": 0,
+    "pid": "p-s0e025470",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，一切外道妄说无常，世尊亦言诸行无常是生灭法，未知此说是邪是正？所言无常复有几种？”"
+  },
+  {
+    "lecture": "34",
     "i": 8,
     "pid": "p-s81ffad15",
     "cls": "SUTRA",
-    "start": 23.76,
+    "start": 5.95,
     "end": 23.76,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "dup-anchor:verify-by-ear"
     ],
     "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，一切外道妄说无常，世尊亦言诸行无常是生灭法，未知此说是邪是正？所言无常复有几种？”"
   },
@@ -4189,6 +4729,31 @@
     "text": "始造即舍无常者，非大种互造，大种以各别故；非自相造，以无异故；非复共造，以乖离故。当知非是始造无常。"
   },
   {
+    "lecture": "34",
+    "i": 90,
+    "pid": "p-s2617ea87",
+    "cls": "SUTRA",
+    "start": 1899.18,
+    "end": 1899.18,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "大慧，世间、出世间及出世间上上诸法，惟是自心非常、非无常，不能了达堕于外道二边恶见。"
+  },
+  {
+    "lecture": "35",
+    "i": 6,
+    "pid": "p-sd9b5780b",
+    "cls": "SUTRA",
+    "start": 33.34,
+    "end": 33.34,
+    "reasons": [
+      "rescue-blocked",
+      "low-conf=0.35"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说一切声闻、缘觉入灭次第相续相，令我及诸菩萨摩诃萨，善知此已，于灭尽三昧，乐"
+  },
+  {
     "lecture": "35",
     "i": 12,
     "pid": "p-s49008751",
@@ -4206,9 +4771,10 @@
     "pid": "p-s8c7db3fd",
     "cls": "SUTRA",
     "start": 624.9,
-    "end": 624.9,
+    "end": 657.79,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-zero",
+      "low-conf=0.35"
     ],
     "text": "大慧，七地菩萨善能观察心、意、意识、我、我所执，生法无我，若生若灭、自相共相，四无碍辩善巧决定，于三昧门而得自在，渐入诸"
   },
@@ -4227,6 +4793,18 @@
   },
   {
     "lecture": "36",
+    "i": 0,
+    "pid": "p-s48ef4364",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言："
+  },
+  {
+    "lecture": "36",
     "i": 3,
     "pid": "p-sf5106cf1",
     "cls": "SUTRA",
@@ -4242,10 +4820,10 @@
     "i": 6,
     "pid": "p-sb37e2f8b",
     "cls": "SUTRA",
-    "start": 34.56,
-    "end": 34.56,
+    "start": 28.26,
+    "end": 34.85,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "dup-anchor:verify-by-ear"
     ],
     "text": "尔时，大慧菩萨摩诃萨复白佛言："
   },
@@ -4299,13 +4877,26 @@
   },
   {
     "lecture": "36",
+    "i": 66,
+    "pid": "p-s3fdfe151",
+    "cls": "SUTRA",
+    "start": 1253.29,
+    "end": 1253.29,
+    "reasons": [
+      "zero-width(dtw-frag):verify-by-ear"
+    ],
+    "text": "名为藏识，生于七识无明住地，譬如大海而有波浪，其体相续，恒住不断，本性清净，离无常过，离于我论。"
+  },
+  {
+    "lecture": "36",
     "i": 67,
     "pid": "p-s59f9e2d4",
     "cls": "COMM",
     "start": 1253.29,
     "end": 1253.29,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“名为藏识”，另一本书里是“名为识藏”，是把“识”和“藏”颠倒过来，我们就把它认知为最底层的意识或者自性。“生于七识无明"
   },
@@ -4317,7 +4908,8 @@
     "start": 1309.05,
     "end": 1309.05,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "下一句指我们这些凡夫。"
   },
@@ -4347,6 +4939,18 @@
   },
   {
     "lecture": "37",
+    "i": 0,
+    "pid": "p-s7aca3e90",
+    "cls": "SUTRA",
+    "start": 0.86,
+    "end": 0.86,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "“若见如来藏五法自性诸法无我，随地次第而渐转灭，不为外道恶见所动，住不动地得于十种三昧乐门，为三昧力诸佛所持，观察不思议"
+  },
+  {
+    "lecture": "37",
     "i": 3,
     "pid": "p-s70b30cf8",
     "cls": "SUTRA",
@@ -4356,6 +4960,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说五法自性诸识无我差别之相，我及诸菩萨摩诃萨，善知此已，渐修诸地，具诸佛法，"
+  },
+  {
+    "lecture": "37",
+    "i": 9,
+    "pid": "p-s6d079abd",
+    "cls": "SUTRA",
+    "start": 7.24,
+    "end": 7.24,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "若见如来藏五法自性诸法无我，随地次第而渐转灭，不为外道恶见所动，住不动地得于十种三昧乐门，为三昧力诸佛所持，观察不思议佛"
   },
   {
     "lecture": "37",
@@ -4369,6 +4985,18 @@
       "low-conf=0.35"
     ],
     "text": "大慧，此如来藏藏识本性清净，客尘所染而为不净，一切二乘及诸外道，臆度起见，不能现证，如来于此分明现见，如观掌中菴摩勒果。"
+  },
+  {
+    "lecture": "37",
+    "i": 53,
+    "pid": "p-sbc6b0b51",
+    "cls": "COMM",
+    "start": 1331.74,
+    "end": 1337.72,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "先讲五法，“名、相、分别、正智、如如”。"
   },
   {
     "lecture": "37",
@@ -4390,7 +5018,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "修行者要观察这个五法——名、相、分别、正智、如如，他要如实地观察菩萨的妄想、阿罗汉的分别心、凡夫的执着，这些都要观察到。"
   },
@@ -4414,7 +5043,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "这些愚痴凡夫们不知道五法自性诸识无我，这些理论都是于心所现。他们看到外物之后又开始生起分别，这些都不是圣人。"
   },
@@ -4438,7 +5068,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“不了”什么呢？就是五法自性诸识无我这个理论。凡愚不知道而起分别，不知道的情况下，当然会起分别心。"
   },
@@ -4462,7 +5093,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "凡夫们都不知道这个名是假立的。名是为了交流方便，凭空创造出来的。名字都是这样创造出来的，不是本来就有的。“心随流动见种种"
   },
@@ -4474,7 +5106,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“染著于色”，然后就会产生执着，对由执着产生的物质世界有了更深层次的执着。“覆障圣智，起贪、嗔、痴，造作诸业”，这些执着"
   },
@@ -4486,7 +5119,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "就像蚕蛹一样，蚕可以吐丝把自己团团围住。我们凡夫也是妄想缠缚，我们自己生起的妄想，把我们困在这个有痛苦和生死的世界当中，"
   },
@@ -4498,7 +5132,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“不知诸法如幻、如焰、如水中月，自心所见”，“如焰、如水中月”，这些都是比喻，都是这样的幻觉；不知道诸法——妄想、分别、"
   },
@@ -4510,7 +5145,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“离能、所取及生住灭”，这里前面省略掉了“不知诸法”——“不知诸法离能、所取及生住灭”，这样就是一个完整的句子。普通人不"
   },
@@ -4522,7 +5158,8 @@
     "start": 1337.72,
     "end": 1337.72,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“谓从自在时节微尘胜性而生”，“自在”指自然生。这些凡夫们认为诸法都是从这个世界当中自然产生。“时节”是时间。“微尘”，"
   },
@@ -4541,6 +5178,18 @@
   },
   {
     "lecture": "38",
+    "i": 0,
+    "pid": "p-sead110ce",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，为三性入五法中，为各有自相？”"
+  },
+  {
+    "lecture": "38",
     "i": 3,
     "pid": "p-sbddc5056",
     "cls": "SUTRA",
@@ -4550,6 +5199,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "尔时，世尊重说颂言：五法三自性，及与八种识，二种无我法，普摄于大乘。名相及分别，二种自性摄，正智与如如，是则因成相。"
+  },
+  {
+    "lecture": "38",
+    "i": 4,
+    "pid": "p-s3a1f8b5c",
+    "cls": "SUTRA",
+    "start": 16.35,
+    "end": 16.35,
+    "reasons": [
+      "zero-width(dtw-evid):verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如经中说，过去、未来、现在诸佛如恒河沙，此当云何？为如言而受？为别有义？”"
   },
   {
     "lecture": "38",
@@ -4574,6 +5235,18 @@
       "skip-quote:verify-by-ear"
     ],
     "text": "尔时，世尊重说颂言：观察诸导师，譬如恒河沙，非坏亦非趣，是人能见佛。譬如恒河沙，悉离一切过，而恒随顺流，佛体亦如是。"
+  },
+  {
+    "lecture": "38",
+    "i": 12,
+    "pid": "p-s436ecaa0",
+    "cls": "SUTRA",
+    "start": 5.48,
+    "end": 16.35,
+    "reasons": [
+      "dup-anchor:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，为三性入五法中，为各有自相？”"
   },
   {
     "lecture": "38",
@@ -4642,10 +5315,10 @@
     "i": 76,
     "pid": "p-s05e787d5",
     "cls": "SUTRA",
-    "start": 1500.68,
-    "end": 1500.68,
+    "start": 1288.42,
+    "end": 1299.531,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-anchor:verify-by-ear"
     ],
     "text": "大慧，譬如恒沙，是地自性，劫尽烧时，烧一切地，而彼地大不舍本性，恒与火大俱时生故，诸凡愚人，谓地被烧，而实不烧，火所因故"
   },
@@ -4654,10 +5327,11 @@
     "i": 77,
     "pid": "p-s588ed44b",
     "cls": "COMM",
-    "start": 1500.68,
+    "start": 1299.531,
     "end": 1500.68,
     "reasons": [
-      "comm-split"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "恒沙有地的自性，“地”是四大中的地大。“劫尽烧时，烧一切地”，世界毁灭的时候，土地都会被烧。“而彼地大不舍本性”，而地的"
   },
@@ -4666,10 +5340,11 @@
     "i": 78,
     "pid": "p-s6ea66412",
     "cls": "SUTRA",
-    "start": 1500.68,
+    "start": 1335.105,
     "end": 1500.68,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "如来法身亦复如是，如恒河沙，终不坏灭。"
   },
@@ -4678,10 +5353,11 @@
     "i": 79,
     "pid": "p-sd1687708",
     "cls": "COMM",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1340.578,
+    "end": 1500.68,
     "reasons": [
-      "comm-split"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "如来的法身也像地大，像恒河沙一样始终不会坏。如来的法身永远不会坏——自性恒常。"
   },
@@ -4690,10 +5366,11 @@
     "i": 80,
     "pid": "p-sa47b1b7d",
     "cls": "SUTRA",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1352.208,
+    "end": 1500.68,
     "reasons": [
-      "skip-quote:verify-by-ear"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "大慧，譬如恒沙，无有限量，如来光明亦复如是，为欲成就无量众生普照一切诸佛大会。"
   },
@@ -4702,10 +5379,11 @@
     "i": 81,
     "pid": "p-se39675e2",
     "cls": "COMM",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1363.838,
+    "end": 1500.68,
     "reasons": [
-      "comm-split"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "恒沙无法量化计算，如来的光明也像恒沙一样无法计算。为了成就无量众生——普度众生，所以普照一切诸佛大会，会照到所有的佛世界"
   },
@@ -4714,11 +5392,11 @@
     "i": 82,
     "pid": "p-s05e4a1e3",
     "cls": "SUTRA",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1389.151,
+    "end": 1500.68,
     "reasons": [
-      "rescue-blocked",
-      "low-conf=0.35"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "大慧，譬如恒沙，住沙自性，不更改变而作余物，如来亦尔，于世间中不生不灭，诸有生因，悉已断故。"
   },
@@ -4727,10 +5405,11 @@
     "i": 83,
     "pid": "p-s4822c233",
     "cls": "COMM",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1402.149,
+    "end": 1500.68,
     "reasons": [
-      "comm-split"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "恒沙一直有着沙子的自性和性质，它的自性不会改变，从而变成其他物质。如来也一样，在世间中不生不灭，如来生妄想的因已经断了。"
   },
@@ -4739,10 +5418,10 @@
     "i": 84,
     "pid": "p-se4365432",
     "cls": "COMM",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1420.62,
+    "end": 1475.58,
     "reasons": [
-      "comm-split"
+      "hole-anchor:verify-by-ear"
     ],
     "text": "有人会说，既然初妄无因——没有原因，他还能断掉产生的因吗？这在别人提问的时候我已经解释过了。堕落到人间或者轮回内，再重新"
   },
@@ -4751,10 +5430,10 @@
     "i": 85,
     "pid": "p-s07292390",
     "cls": "COMM",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1475.58,
+    "end": 1491.58,
     "reasons": [
-      "comm-split"
+      "hole-anchor:verify-by-ear"
     ],
     "text": "但是佛最初堕落的时候，他是不自觉的，其他书上说“一念不觉生三细”，一念不觉马上就会生出妄想。他只要不觉察出自己生出妄想，"
   },
@@ -4763,10 +5442,11 @@
     "i": 86,
     "pid": "p-sc74c982f",
     "cls": "COMM",
-    "start": 1501.15,
-    "end": 1501.15,
+    "start": 1491.58,
+    "end": 1500.68,
     "reasons": [
-      "comm-split"
+      "hole-split",
+      "low-conf=0.4"
     ],
     "text": "下边还是比喻。"
   },
@@ -4794,6 +5474,18 @@
       "low-conf=0.35"
     ],
     "text": "大慧，一切诸法唯是自心分别所见，不了知故，分别心起，了心则灭。"
+  },
+  {
+    "lecture": "39",
+    "i": 0,
+    "pid": "p-sc72425fa",
+    "cls": "SUTRA",
+    "start": 0.0,
+    "end": 0.0,
+    "reasons": [
+      "skip-quote:verify-by-ear"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说一切诸法刹那坏相，何等诸法名有刹那？”"
   },
   {
     "lecture": "39",
@@ -4868,6 +5560,18 @@
       "low-conf=0.35"
     ],
     "text": "复次，大慧，善不善者，所谓八识，何等为八？谓如来藏名藏识，意及意识并五识身。"
+  },
+  {
+    "lecture": "39",
+    "i": 33,
+    "pid": "p-s088c89d2",
+    "cls": "COMM",
+    "start": 535.26,
+    "end": 568.07,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "“意识与彼五识共俱”，第六识执着心和五识一起。“取于种种差别形相”，在种种的差别形象上产生执着，“取”是执着。“刹那不住"
   },
   {
     "lecture": "39",
@@ -4974,7 +5678,8 @@
     "start": 1167.16,
     "end": 1167.16,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "如来的境界里没有妄念，不待思虑。“无有妄念”“不待思虑”都是没有妄想的意思。“然后说法”，在没有妄想的状态下说法。"
   },
@@ -5054,13 +5759,26 @@
   },
   {
     "lecture": "41",
+    "i": 22,
+    "pid": "p-s7661788f",
+    "cls": "COMM",
+    "start": 529.29,
+    "end": 536.94,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "“愿为我说食不食肉功德过失”，为我们说一下不吃肉的功德和吃肉的过失。"
+  },
+  {
+    "lecture": "41",
     "i": 23,
     "pid": "p-s2961784e",
     "cls": "COMM",
     "start": 536.94,
     "end": 536.94,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "在这里我们首先要有明确的认知，不吃肉没有功德，吃肉有罪过和果报。放生是善行，有善报。不吃肉是夹在中间的、不善不恶的状态，"
   },
@@ -5072,7 +5790,8 @@
     "start": 536.94,
     "end": 536.94,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "当然如果你本来吃肉，现在开始不吃肉了，造成的结果就是你前面吃肉的那些恶报会逐渐减少。本来生病的人，因为不吃肉，病情会逐渐"
   },
@@ -5084,7 +5803,8 @@
     "start": 536.94,
     "end": 536.94,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "所以在凡夫的立场上看，可能这也是一种好处，一种功德，但实际上不吃肉不能算有功德，只是不善不恶的状态而已。我们先理解这个逻"
   },
@@ -5096,9 +5816,22 @@
     "start": 536.94,
     "end": 536.94,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "“我及诸菩萨摩诃萨知其义已，为未来、现在报习所熏，食肉众生而演说之”，“报”是业报，“习”是习气。我和菩萨们知道吃肉的过"
+  },
+  {
+    "lecture": "41",
+    "i": 27,
+    "pid": "p-s46573bf5",
+    "cls": "SUTRA",
+    "start": 536.94,
+    "end": 536.94,
+    "reasons": [
+      "zero-width(dtw):verify-by-ear"
+    ],
+    "text": "于一切众生起大慈心，更相亲爱如一子想，住菩萨地，得阿耨多罗三藐三菩提，或二乘地，暂时止息，究竟当成无上正觉。"
   },
   {
     "lecture": "41",
@@ -5108,9 +5841,22 @@
     "start": 536.94,
     "end": 536.94,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "对一切众生产生大慈心之后，对所有众生像自己的孩子一样想。住菩萨地，最后得阿耨多罗三藐三菩提，或者中间的二乘地。暂时把不断"
+  },
+  {
+    "lecture": "41",
+    "i": 29,
+    "pid": "p-s02dd53a0",
+    "cls": "SUTRA",
+    "start": 536.94,
+    "end": 536.94,
+    "reasons": [
+      "zero-width(dtw):verify-by-ear"
+    ],
+    "text": "世尊，路伽耶等诸外道辈，起有、无见，执著断常，尚有遮禁，不听食肉，何况如来、应、正等觉，大悲含育，世所依怙，而许自他俱食"
   },
   {
     "lecture": "41",
@@ -5120,9 +5866,22 @@
     "start": 536.94,
     "end": 536.94,
     "reasons": [
-      "comm-split"
+      "comm-gap-zero",
+      "low-conf=0.35"
     ],
     "text": "路伽耶这样的外道，也执着于有无、断常等二边见当中，但是他们还有禁戒，“遮禁”就是禁戒。他们还不吃肉呢。佛以大悲心来普度众"
+  },
+  {
+    "lecture": "41",
+    "i": 31,
+    "pid": "p-sc50b1edf",
+    "cls": "SUTRA",
+    "start": 536.94,
+    "end": 536.94,
+    "reasons": [
+      "zero-width(dtw):verify-by-ear"
+    ],
+    "text": "善哉！世尊，具大慈悲，哀愍世间等观众生犹如一子，愿为解说食肉过恶，不食功德，令我及诸菩萨等闻已奉行，广为他说。"
   },
   {
     "lecture": "41",
@@ -5161,6 +5920,18 @@
       "low-conf=0.35"
     ],
     "text": "大慧，我常说言，凡所食噉作子肉想，余食尚然，云何而听弟子食肉？"
+  },
+  {
+    "lecture": "42",
+    "i": 17,
+    "pid": "p-se049ea7f",
+    "cls": "COMM",
+    "start": 271.47,
+    "end": 301.53,
+    "reasons": [
+      "low-conf=0.49"
+    ],
+    "text": "用大福报可以压制住这种习气，但也得看什么程度。如果你的习气重到一定程度，在睡梦中都忍不了的话，你死亡之后在中阴身状态，或"
   },
   {
     "lecture": "42",
@@ -5211,5 +5982,698 @@
       "comm-split"
     ],
     "text": "到这里算是把《楞伽经》全部讲完了。我本来想专门讲一期总结性的内容，但还是算了。因为《楞伽经》和《圆觉经》相比，《圆觉经》"
+  },
+  {
+    "lecture": "4",
+    "i": 3,
+    "pid": "p-s27853669",
+    "start": 20.0,
+    "end": 21.9,
+    "reasons": [
+      "span_bad:audit (d_head=0.679, listen@15.88)"
+    ],
+    "text": "这个时候楞伽王听到虚空中还有宫殿内有声音，这肯定是佛的声音。"
+  },
+  {
+    "lecture": "5",
+    "i": 29,
+    "pid": "p-s512ecb2d",
+    "start": 313.99,
+    "end": 315.18,
+    "reasons": [
+      "span_bad:audit (d_head=0.567, listen@310.02)"
+    ],
+    "text": "我今愿得重见如来大神通力，以得见故，未得者得，已得不退，"
+  },
+  {
+    "lecture": "5",
+    "i": 77,
+    "pid": "p-s65e758f6",
+    "start": 1074.18,
+    "end": 1103.15,
+    "reasons": [
+      "span_bad:audit (d_head=0.167, listen@1082.17)"
+    ],
+    "text": "二乘——声闻乘、缘觉乘也有三昧，但是从佛的境界来看，这些二乘的三昧是错误的，所以叫“二乘三昧过失”。让你住到不动地、善慧"
+  },
+  {
+    "lecture": "5",
+    "i": 82,
+    "pid": "p-s8efa98ad",
+    "start": 1206.45,
+    "end": 1221.58,
+    "reasons": [
+      "span_bad:audit (d_head=0.204, listen@1209.9)"
+    ],
+    "text": "这是楞伽王说的，我今天想要问“法”与“非法”二义，我曾经问过过去的如来，他们也都为我说过，我希望现在的如来——释迦牟尼佛"
+  },
+  {
+    "lecture": "5",
+    "i": 92,
+    "pid": "p-s9a8b055a",
+    "start": 1346.41,
+    "end": 1346.57,
+    "reasons": [
+      "span_bad:audit (d_head=0.8, listen@1339.8)"
+    ],
+    "text": "什么是法？什么是非法？法要舍弃，那为什么还有二呢？"
+  },
+  {
+    "lecture": "6",
+    "i": 78,
+    "pid": "p-sf4dce811",
+    "start": 1451.55,
+    "end": 1496.16,
+    "reasons": [
+      "span_bad:audit (d_head=0.892, listen@1454.85)"
+    ],
+    "text": "佛的法身就像幻境、梦境一样，也没有什么可称赞的，为什么要称赞？知道佛的法身、境界是无性，在这里“无性”并不是说没有自性，"
+  },
+  {
+    "lecture": "6",
+    "i": 82,
+    "pid": "p-s8af3c282",
+    "start": 1567.51,
+    "end": 1591.77,
+    "reasons": [
+      "span_bad:audit (d_head=0.079, listen@1573.98)"
+    ],
+    "text": "“云何于牟尼，而能有赞毁”，为什么还要对释迦牟尼有“赞”和“毁”这样的行为呢？“若见于牟尼，寂静远离生”，如果你真见到了"
+  },
+  {
+    "lecture": "6",
+    "i": 84,
+    "pid": "p-s02fb3139",
+    "start": 1599.31,
+    "end": 1603.37,
+    "reasons": [
+      "span_bad:audit (d_head=0.738, listen@1593.31)"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨偈赞佛已，自说姓名：我名为大慧，通达于大乘，今以百八义，仰咨尊中上。"
+  },
+  {
+    "lecture": "7",
+    "i": 88,
+    "pid": "p-sb267cb2c",
+    "start": 1712.7,
+    "end": 1747.13,
+    "reasons": [
+      "span_bad:audit (d_head=0.563, listen@1735.99)"
+    ],
+    "text": "这样总共是一百零八句。“三乘句非三乘句”，佛说的三乘——声闻乘、缘觉乘、菩萨乘或如来乘。"
+  },
+  {
+    "lecture": "8",
+    "i": 42,
+    "pid": "p-s02243c54",
+    "start": 908.8,
+    "end": 933.51,
+    "reasons": [
+      "span_bad:audit (d_head=0.621, listen@912.88)"
+    ],
+    "text": "网上找的或者这本书对“自、共相”的解释：“自相”解释为某些事物独有的特性，“共相”是很多事物共有的特性。如果按照这个解释"
+  },
+  {
+    "lecture": "10",
+    "i": 37,
+    "pid": "p-s076afe2c",
+    "start": 583.04,
+    "end": 609.91,
+    "reasons": [
+      "span_bad:audit (d_head=0.304, listen@592.76)"
+    ],
+    "text": "“因所作相”，大部分情况下都是指从佛那里产生妄想的状态，称之为“因所作”，这是最根本的因。用这个来解释的话，所有的东西都"
+  },
+  {
+    "lecture": "10",
+    "i": 98,
+    "pid": "p-sc35aa46a",
+    "start": 1575.37,
+    "end": 1575.83,
+    "reasons": [
+      "span_bad:audit (d_head=0.758, listen@1569.49)"
+    ],
+    "text": "“身资财安住”，这都是众生的“识”当中产生的幻境。"
+  },
+  {
+    "lecture": "10",
+    "i": 121,
+    "pid": "p-s6c34ea84",
+    "start": 1917.47,
+    "end": 1937.36,
+    "reasons": [
+      "span_bad:audit (d_head=0.158, listen@1910.57)"
+    ],
+    "text": "得到了“上圣智三种相”，就可以进入到“自证圣智所行之处”，就是正确地修行，从菩萨往佛的方向正确地努力修行。最后劝诸菩萨摩"
+  },
+  {
+    "lecture": "10",
+    "i": 122,
+    "pid": "p-s0ab254b4",
+    "start": 1937.36,
+    "end": 1940.103,
+    "reasons": [
+      "span_bad:audit (d_head=0.125, listen@1916.13)"
+    ],
+    "text": "这一期就讲到这里。"
+  },
+  {
+    "lecture": "13",
+    "i": 102,
+    "pid": "p-sd37e145f",
+    "start": 1916.01,
+    "end": 1916.61,
+    "reasons": [
+      "span_bad:audit (d_head=0.375, listen@1906.98)"
+    ],
+    "text": "第三种是如来乘种性，“所谓自性无自性法，内身自证圣智法，外诸佛刹广大法”三种法。"
+  },
+  {
+    "lecture": "14",
+    "i": 36,
+    "pid": "p-sd9e5adff",
+    "start": 479.369,
+    "end": 505.09,
+    "reasons": [
+      "span_bad:audit (d_head=0.233, listen@485.65)"
+    ],
+    "text": "在这里“内外法”，在菩萨境界没有内外分别，但是从一个佛的视角看某个菩萨的时候，菩萨的妄想以及和他有缘众生的妄想都在佛的意"
+  },
+  {
+    "lecture": "15",
+    "i": 40,
+    "pid": "p-s3d00464b",
+    "start": 679.68,
+    "end": 701.35,
+    "reasons": [
+      "span_bad:audit (d_head=0.2, listen@692.3)"
+    ],
+    "text": "“大慧，此离性非性”后面应该有个逗号——“大慧，此离性非性，一切诸法，离于有无，犹如毛轮、兔、马等角，是名无有性建立性。"
+  },
+  {
+    "lecture": "15",
+    "i": 56,
+    "pid": "p-sda5ee877",
+    "start": 1020.04,
+    "end": 1022.21,
+    "reasons": [
+      "span_bad:audit (d_head=0.812, listen@1015.44)"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复请佛言：“愿为我说一切法空、无生、无二、无自性相，我及诸菩萨悟此相故，离有、无分别，疾得阿耨多罗三"
+  },
+  {
+    "lecture": "15",
+    "i": 59,
+    "pid": "p-sf7dfc27b",
+    "start": 1065.8,
+    "end": 1081.75,
+    "reasons": [
+      "span_bad:audit (d_head=0.321, listen@1069.28)"
+    ],
+    "text": "在这里，所谓的“空”即是“妄计性句义”，它本身就是虚妄计度的句义。一旦语言说出来，就已经是执着了，所以也算是“妄计自性”"
+  },
+  {
+    "lecture": "15",
+    "i": 95,
+    "pid": "p-s24af397f",
+    "start": 1667.81,
+    "end": 1671.65,
+    "reasons": [
+      "span_bad:audit (d_head=0.367, listen@1664.71)"
+    ],
+    "text": "大慧，非谓堂无堂自性，非谓比丘无比丘自性，非谓余处无象马牛羊。"
+  },
+  {
+    "lecture": "16",
+    "i": 86,
+    "pid": "p-s3505b716",
+    "start": 1683.92,
+    "end": 1703.11,
+    "reasons": [
+      "span_bad:audit (d_head=0.121, listen@1696.86)"
+    ],
+    "text": "“如幻三昧力通自在诸相庄严，忆本成就众生愿故”，有要普度众生的大愿，从而出现“如幻三昧力通自在诸相庄严”，也就是菩萨的境"
+  },
+  {
+    "lecture": "17",
+    "i": 113,
+    "pid": "p-s28bb9e4e",
+    "start": 2215.86,
+    "end": 2225.85,
+    "reasons": [
+      "span_bad:audit (d_head=0.271, listen@2219.94)"
+    ],
+    "text": "第一义就是属于自心。你做的所有妄想、对外的想象本来就不存在。用语言的分别无法显示佛的第一义境。所以我们应该远离这个语言的"
+  },
+  {
+    "lecture": "18",
+    "i": 28,
+    "pid": "p-s34888c64",
+    "start": 291.88,
+    "end": 295.88,
+    "reasons": [
+      "span_bad:audit (d_head=0.104, listen@299.92)"
+    ],
+    "text": "前面是问“离一异、俱不俱、有无、非有无、常、无常”等这个问题，下边就是你好好修行，最后能达到这个境界。他用长篇大论来解释"
+  },
+  {
+    "lecture": "18",
+    "i": 40,
+    "pid": "p-s26e6947d",
+    "start": 518.71,
+    "end": 556.1,
+    "reasons": [
+      "span_bad:audit (d_head=0.213, listen@537.81)"
+    ],
+    "text": "没有智慧的人无始以来执着于四大和合而成的城，把假的不存在的城当作真城，执着（于此）。外道也是如此，被无始以来的虚妄习气所"
+  },
+  {
+    "lecture": "18",
+    "i": 69,
+    "pid": "p-sb73de981",
+    "start": 1225.36,
+    "end": 1266.0,
+    "reasons": [
+      "span_bad:audit (d_head=0.396, listen@1235.73)"
+    ],
+    "text": "“立三种量已，于圣智内证离二自性法，起有性分别”，外道们立了这三种判别方式之后，在成佛的正确修行方法上，“离二自性法”，"
+  },
+  {
+    "lecture": "18",
+    "i": 83,
+    "pid": "p-s4208b4b0",
+    "start": 1493.472,
+    "end": 1532.58,
+    "reasons": [
+      "span_bad:audit (d_head=0.396, listen@1501.15)"
+    ],
+    "text": "“外道亦尔，诸见所熏，不了自心，于一异等而生分别”，外道也是这样，被自己的恶见所熏，他们所处的环境本身是幻境，在那里又生"
+  },
+  {
+    "lecture": "19",
+    "i": 29,
+    "pid": "p-sd4cad3fb",
+    "start": 507.03,
+    "end": 528.33,
+    "reasons": [
+      "span_bad:audit (d_head=0.329, listen@514.74)"
+    ],
+    "text": "“我及诸佛说名涅槃”，我和诸佛把这样的状态称之为“涅槃”。“即是诸法性空境界”，所有的法——妄想、分别、执着的“性”空。"
+  },
+  {
+    "lecture": "20",
+    "i": 19,
+    "pid": "p-sea227eb4",
+    "start": 183.51,
+    "end": 208.88,
+    "reasons": [
+      "span_bad:audit (d_head=0.413, listen@191.02)"
+    ],
+    "text": "“如佛所说无明缘行，乃至老死，此说无因非说有因”，佛所说的“无明缘行”是没有原因的，也没有说它有因。“无明缘行，乃至老死"
+  },
+  {
+    "lecture": "20",
+    "i": 90,
+    "pid": "p-scedf4bb8",
+    "start": 1642.779,
+    "end": 1677.82,
+    "reasons": [
+      "span_bad:audit (d_head=0.308, listen@1661.09)"
+    ],
+    "text": "另一种说法是“是故说如离心，我说此句显示离想，即说离一切想”。这句话说离分别的想就是让你离一切的想。我说让你离开想，但是"
+  },
+  {
+    "lecture": "21",
+    "i": 7,
+    "pid": "p-s8998f773",
+    "start": 39.54,
+    "end": 41.06,
+    "reasons": [
+      "span_bad:audit (d_head=0.84, listen@35.32)"
+    ],
+    "text": "复次，大慧，见诸法非幻无有相似，故说一切法如幻。"
+  },
+  {
+    "lecture": "21",
+    "i": 82,
+    "pid": "p-se1481c7e",
+    "start": 1691.52,
+    "end": 1705.83,
+    "reasons": [
+      "span_bad:audit (d_head=0.104, listen@1698.04)"
+    ],
+    "text": "“如是涅槃诸行，相所相，依所依，造所造，见所见，地与微尘，智与智者，为异为不异？”这一系列的问题都是拿一些不存在的东西，"
+  },
+  {
+    "lecture": "22",
+    "i": 20,
+    "pid": "p-scd6874eb",
+    "start": 114.39,
+    "end": 134.09,
+    "reasons": [
+      "span_bad:audit (d_head=0.629, listen@119.8)"
+    ],
+    "text": "“作者”，前面讲过，也是指我相——认为有我。“命”是生命。外道都执着于有我，然后说生命就是肉身，肉身即是生命。"
+  },
+  {
+    "lecture": "22",
+    "i": 85,
+    "pid": "p-se7c67732",
+    "start": 1290.55,
+    "end": 1319.49,
+    "reasons": [
+      "span_bad:audit (d_head=0.463, listen@1294.83)"
+    ],
+    "text": "“何故须陀洹不取戒禁”，为什么不取禁戒？就是在须陀洹这里，没有持戒这个观念。“谓以明见生处苦相”，“明见”就是明确地知道"
+  },
+  {
+    "lecture": "22",
+    "i": 116,
+    "pid": "p-s7cc9dec2",
+    "start": 1968.13,
+    "end": 1990.8,
+    "reasons": [
+      "span_bad:audit (d_head=0.163, listen@1980.71)"
+    ],
+    "text": "“若须陀洹作如是念”，如果须陀洹有这样的念头。“诸结”是什么呢？前面讲过三结——身见、疑、戒禁取，这叫三结。“我离诸结，"
+  },
+  {
+    "lecture": "23",
+    "i": 53,
+    "pid": "p-sc063b7a7",
+    "start": 1023.61,
+    "end": 1057.64,
+    "reasons": [
+      "span_bad:audit (d_head=0.696, listen@1027.13)"
+    ],
+    "text": "在这里“无我、我所”，就是没有我相、人相，达到菩萨境界。“住如实处”，这是菩萨的真实境界，住在那里。“无生”，前面已经不"
+  },
+  {
+    "lecture": "24",
+    "i": 35,
+    "pid": "p-s0430011b",
+    "start": 749.75,
+    "end": 750.85,
+    "reasons": [
+      "span_bad:audit (d_head=0.274, listen@743.86)"
+    ],
+    "text": "从这开始往下，说都有什么样的分别，有好多种。"
+  },
+  {
+    "lecture": "25",
+    "i": 14,
+    "pid": "p-s18354321",
+    "start": 81.84,
+    "end": 106.82,
+    "reasons": [
+      "span_bad:audit (d_head=0.171, listen@94.89)"
+    ],
+    "text": "这些菩萨摩诃萨根据佛的教导，在没有分别的境界——菩萨的境界里安住。在这里“独处闲静”的意思是不要和人造业，不能说不要和人"
+  },
+  {
+    "lecture": "26",
+    "i": 63,
+    "pid": "p-s27c5971b",
+    "start": 761.04,
+    "end": 788.32,
+    "reasons": [
+      "span_bad:audit (d_head=0.642, listen@766.82)"
+    ],
+    "text": "有一本经叫《佛说月光菩萨经》，这部经里讲：佛曾经当过月光天子——一个国王，有人求他布施头颅——要他把脑袋割给他，最后这位"
+  },
+  {
+    "lecture": "26",
+    "i": 143,
+    "pid": "p-s4a20a025",
+    "start": 2019.15,
+    "end": 2022.29,
+    "reasons": [
+      "span_bad:audit (d_head=0.671, listen@2012.0)"
+    ],
+    "text": "恶见——错误的见解，认为有这个“生”。计较、执着于有无的都是妄想。"
+  },
+  {
+    "lecture": "28",
+    "i": 61,
+    "pid": "p-s62da6980",
+    "start": 1306.86,
+    "end": 1347.91,
+    "reasons": [
+      "span_bad:audit (d_head=0.258, listen@1322.31)"
+    ],
+    "text": "凡夫有三种秘密的“缚”——困住的意思。就是贪恚痴，在这里写成“嗔恚”的“恚”。大家都知道，这是人生三毒。五毒——贪嗔痴慢"
+  },
+  {
+    "lecture": "28",
+    "i": 72,
+    "pid": "p-se2d8a75a",
+    "start": 1554.204,
+    "end": 1577.75,
+    "reasons": [
+      "span_bad:audit (d_head=0.167, listen@1571.81)"
+    ],
+    "text": "“若能如实知，诸密网皆断”。只要如实地知道，佛告诉我们的这个世界的真相——人体、宇宙的真相，所有执着全部会断。“凡愚不能"
+  },
+  {
+    "lecture": "28",
+    "i": 79,
+    "pid": "p-s9a648b0b",
+    "start": 1764.12,
+    "end": 1789.33,
+    "reasons": [
+      "span_bad:audit (d_head=0.229, listen@1775.23)"
+    ],
+    "text": "比如，有人说我想在家里供个佛像，想找个位置，西方三圣往西边墙上供，地藏菩萨往南边墙上供；但是我没有这个条件，因为环境不好"
+  },
+  {
+    "lecture": "29",
+    "i": 71,
+    "pid": "p-s3f5b88f1",
+    "start": 1404.1,
+    "end": 1434.46,
+    "reasons": [
+      "span_bad:audit (d_head=0.258, listen@1424.03)"
+    ],
+    "text": "“此宗自坏”，说一切法不生的理论就坏了。“不应如是立诸分多过故”，所以不能立这样的说法。“展转因异相故”，因为不同的相而"
+  },
+  {
+    "lecture": "30",
+    "i": 39,
+    "pid": "p-s7650a3a6",
+    "start": 559.63,
+    "end": 561.06,
+    "reasons": [
+      "span_bad:audit (d_head=0.833, listen@554.9)"
+    ],
+    "text": "世尊亦说世间之事，谓以种种文句言词广说十方一切国土、天人等众，而来集会，非是自智所证之法，世尊亦同外道说耶？"
+  },
+  {
+    "lecture": "31",
+    "i": 71,
+    "pid": "p-s70feaf88",
+    "start": 1365.683,
+    "end": 1404.83,
+    "reasons": [
+      "span_bad:audit (d_head=0.258, listen@1369.66)"
+    ],
+    "text": "“有无有品论，彼悉无解脱”，外道都是不可能真正解脱的。“三有惟妄想，外义悉无有”，“三有”是欲界、色界、无色界，这个世界"
+  },
+  {
+    "lecture": "32",
+    "i": 7,
+    "pid": "p-s41f37154",
+    "start": 11.16,
+    "end": 12.6,
+    "reasons": [
+      "span_bad:audit (d_head=0.95, listen@8.04)"
+    ],
+    "text": "大慧，如我所说，诸法无我，以诸法中无有我性，故说无我。"
+  },
+  {
+    "lecture": "32",
+    "i": 21,
+    "pid": "p-sbbc7ff00",
+    "start": 267.56,
+    "end": 270.21,
+    "reasons": [
+      "span_bad:audit (d_head=0.454, listen@262.23)"
+    ],
+    "text": "大慧，如来与蕴非异非不异。若不异者，应是无常，五蕴诸法是所作故。"
+  },
+  {
+    "lecture": "33",
+    "i": 12,
+    "pid": "p-scdde5570",
+    "start": 87.78,
+    "end": 92.07,
+    "reasons": [
+      "span_bad:audit (d_head=0.525, listen@84.18)"
+    ],
+    "text": "若能善知一切法相，文辞句义悉皆通达，则能令自身受无相乐，亦能令他安住大乘；"
+  },
+  {
+    "lecture": "33",
+    "i": 46,
+    "pid": "p-s741a054b",
+    "start": 807.23,
+    "end": 810.99,
+    "reasons": [
+      "span_bad:audit (d_head=0.142, listen@810.68)"
+    ],
+    "text": "真实的修行是靠微妙寂静，最终成为佛的。“微妙寂静”，灭自己的妄想、分别、执着，靠这个最后成为佛。“言说者与妄想合流转生死"
+  },
+  {
+    "lecture": "33",
+    "i": 54,
+    "pid": "p-scc1c36eb",
+    "start": 967.02,
+    "end": 981.67,
+    "reasons": [
+      "span_bad:audit (d_head=0.142, listen@971.35)"
+    ],
+    "text": "那些外道都说造作者意识本身是不生不灭的。“世尊亦说虚空、涅槃及非数灭不生不灭”，“非数灭”，另一种说法叫“非择灭”，择灭"
+  },
+  {
+    "lecture": "34",
+    "i": 77,
+    "pid": "p-s64331d33",
+    "start": 1577.78,
+    "end": 1606.54,
+    "reasons": [
+      "span_bad:audit (d_head=0.6, listen@1580.98)"
+    ],
+    "text": "第三个外道，认为色是无常的这些人，他们认为形状无常——物质世界、外面看得见的形状是无常的。“非大种性”，并不是四大的本体"
+  },
+  {
+    "lecture": "34",
+    "i": 95,
+    "pid": "p-s0dff237e",
+    "start": 1981.8,
+    "end": 1988.81,
+    "reasons": [
+      "span_bad:audit (d_head=0.946, listen@1973.78)"
+    ],
+    "text": "始造即便舍，形状有转变；色物等无常，外道妄分别。诸法无坏灭，诸大自性住；外道种种见，如是说无常。彼诸外道众，皆说不生灭；"
+  },
+  {
+    "lecture": "34",
+    "i": 97,
+    "pid": "p-s83cdf1a4",
+    "start": 2024.032,
+    "end": 2028.548,
+    "reasons": [
+      "span_bad:audit (d_head=0.1, listen@1997.85)"
+    ],
+    "text": "好了，这一期就讲到这里。"
+  },
+  {
+    "lecture": "35",
+    "i": 10,
+    "pid": "p-se9e5fa8c",
+    "start": 126.23,
+    "end": 153.3,
+    "reasons": [
+      "span_bad:audit (d_head=0.179, listen@129.41)"
+    ],
+    "text": "菩萨摩诃萨从初地到六地，以及声闻、缘觉，都在进入禅定境界中，而七地菩萨可以一直处在那种禅定的状态。我们以前说过，菩萨没有"
+  },
+  {
+    "lecture": "35",
+    "i": 40,
+    "pid": "p-s20ade65a",
+    "start": 808.55,
+    "end": 841.3,
+    "reasons": [
+      "span_bad:audit (d_head=0.55, listen@805.35)"
+    ],
+    "text": "“彼实无有若生若灭”，事实上没有妄想的生灭。“诸地次第三界往来”，也没有诸地次第和三界往来。“一切皆是自心所见”，这一切"
+  },
+  {
+    "lecture": "35",
+    "i": 64,
+    "pid": "p-sd9adae9c",
+    "start": 1457.52,
+    "end": 1484.38,
+    "reasons": [
+      "span_bad:audit (d_head=0.613, listen@1464.87)"
+    ],
+    "text": "你要以非实非妄这样的认知来看待过去经历的所有事，以及分别的习气，然后离有念、无念——离开了有见、无见，都是在意识梦中产生"
+  },
+  {
+    "lecture": "37",
+    "i": 69,
+    "pid": "p-seda1fd0c",
+    "start": 1352.96,
+    "end": 1380.67,
+    "reasons": [
+      "span_bad:audit (d_head=0.179, listen@1363.21)"
+    ],
+    "text": "到这里应该断句，另一个译本是这样断的。大慧，名、相、分别、正智、如如当中的“相”是什么？用眼睛看到的。我们看到的称之为色"
+  },
+  {
+    "lecture": "38",
+    "i": 88,
+    "pid": "p-s29e09cdf",
+    "start": 1531.85,
+    "end": 1545.63,
+    "reasons": [
+      "span_bad:audit (d_head=0.15, listen@1537.82)"
+    ],
+    "text": "从恒沙里取出一些，不见减少，往里再投一些，也不会见增多。佛也如是，就是普度众生而已，在这里没有增减。这里的“无减无增”，"
+  },
+  {
+    "lecture": "38",
+    "i": 108,
+    "pid": "p-sfda2b68c",
+    "start": 1963.12,
+    "end": 1964.91,
+    "reasons": [
+      "span_bad:audit (d_head=0.413, listen@1952.72)"
+    ],
+    "text": "“无边际者”也是用分别心产生的异名。"
+  },
+  {
+    "lecture": "39",
+    "i": 10,
+    "pid": "p-sf7774ad7",
+    "start": 18.92,
+    "end": 21.02,
+    "reasons": [
+      "span_bad:audit (d_head=0.525, listen@12.68)"
+    ],
+    "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说一切诸法刹那坏相，何等诸法名有刹那？”"
+  },
+  {
+    "lecture": "39",
+    "i": 59,
+    "pid": "p-s41dab7e4",
+    "start": 1063.12,
+    "end": 1100.1,
+    "reasons": [
+      "span_bad:audit (d_head=0.625, listen@1069.01)"
+    ],
+    "text": "第二个波罗蜜——出世间波罗蜜，声闻、缘觉这些修行人们，执着于涅槃，用凡夫的执着心追求成佛，用这种状态来修行；自己开心就好"
+  },
+  {
+    "lecture": "40",
+    "i": 89,
+    "pid": "p-s0d62f004",
+    "start": 1761.3,
+    "end": 1771.201,
+    "reasons": [
+      "span_bad:audit (d_head=0.571, listen@1765.17)"
+    ],
+    "text": "这期就讲到这里。"
+  },
+  {
+    "lecture": "42",
+    "i": 54,
+    "pid": "p-s0bdfc605",
+    "start": 1277.382,
+    "end": 1325.64,
+    "reasons": [
+      "span_bad:audit (d_head=0.596, listen@1280.74)"
+    ],
+    "text": "“许三种者”，这是一种方便法，可以吃的三种肉，也就是三净肉——不见杀、不闻杀、不为己杀，不是专门为我而杀的肉。比如我去亲"
   }
 ]
