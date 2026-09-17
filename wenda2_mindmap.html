@@ -39,6 +39,7 @@
                     <div class="nav-dropdown-menu">
                         <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
                         <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
+                        <a href="books_knowledge.html" class="nav-dropdown-item">九書重點知識</a>
                         <a href="wenda2_knowledge.html" class="nav-dropdown-item">問答錄2 重點知識</a>
                         <a href="wenda2_mindmap.html" class="nav-dropdown-item active" aria-current="page">問答錄2 名詞心智圖</a>
                         <a href="wenda2_knowledge_full.html" class="nav-dropdown-item">問答錄2 知識庫全檔</a>
@@ -738,6 +739,47 @@ function renderChart() {
         }
 
         var booted = false;
+        /* -------- 修行次第線渲染（引擎拷貝到他頁而無此區塊時安全跳過） -------- */
+
+        function renderLadder() {
+            var host = document.getElementById('mm-ladder');
+            if (!host) return;
+            function step(n, s) {
+                var node = NODES[s.id];
+                if (!node) return '';
+                var body = '<p class="mm-detail-desc" style="margin-bottom:14px;">' + T(node.desc) + '</p>';
+                if (node.quote) {
+                    var cite = T(node.quote.s);
+                    if (EBOOK_LINKS[s.id]) {
+                        cite = '<a href="' + EBOOK_LINKS[s.id] + '" target="_blank" rel="noopener"' +
+                               ' title="' + T('打開電子書原文') + '">' + cite + ' <i aria-hidden="true">📖</i></a>';
+                    }
+                    body += '<blockquote class="mm-detail-quote">' +
+                            '<span class="mm-quote-mark" aria-hidden="true">❝</span>' +
+                            '<p>' + T(node.quote.t) + '</p><cite>' + cite + '</cite></blockquote>';
+                }
+                body += '<p class="mm-detail-src"><i aria-hidden="true">✦</i> ' + T('出處：') + T(node.src) + '</p>' +
+                        '<button type="button" class="mm-rel-chip" data-id="' + s.id + '">' +
+                        T('在心智圖中查看') + ' ↗</button>';
+                return '<details class="mm-ladder-step">' +
+                       '<summary><span class="mm-ladder-num">' + n + '</span>' +
+                       '<span class="mm-ladder-label">' + T(node.label) + '</span>' +
+                       '<span class="mm-ladder-note">' + T(s.note) + '</span></summary>' +
+                       '<div class="mm-ladder-body">' + body + '</div></details>';
+            }
+            var html = '<h3 class="mm-ladder-title">' + T('實修次第：從持戒到成佛') + '</h3>';
+            LADDER_PRACTICE.forEach(function (s, i) { html += step(i + 1, s); });
+            html += '<h3 class="mm-ladder-title">' + T('義理線：從初始設定到成佛') + '</h3>';
+            LADDER_THEORY.forEach(function (s, i) { html += step(i + 1, s); });
+            host.innerHTML = html;
+            host.querySelectorAll('.mm-rel-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    select(btn.dataset.id);
+                    document.getElementById('mm-detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+            });
+        }
+
         function boot() {
             if (booted) return;
             booted = true;
@@ -750,6 +792,7 @@ function renderChart() {
             renderMap();
             renderDetail();
             renderChart();
+            renderLadder();
         }
         document.addEventListener('DOMContentLoaded', function () {
             if (window.tgl_lang) {

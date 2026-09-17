@@ -190,7 +190,6 @@ var html = '<!DOCTYPE html>\n' +
 '                        <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>\n' +
 '                        <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>\n' +
 '                        <a href="books_knowledge.html" class="nav-dropdown-item active" aria-current="page">九書重點知識</a>\n' +
-'                        <a href="review.html" class="nav-dropdown-item">名詞複習</a>\n' +
 '                        <a href="wenda2_knowledge.html" class="nav-dropdown-item">問答錄2 重點知識</a>\n' +
 '                        <a href="wenda2_mindmap.html" class="nav-dropdown-item">問答錄2 名詞心智圖</a>\n' +
 '                        <a href="wenda2_knowledge_full.html" class="nav-dropdown-item">問答錄2 知識庫全檔</a>\n' +
