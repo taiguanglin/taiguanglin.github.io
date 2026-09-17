@@ -39,6 +39,8 @@
                     <div class="nav-dropdown-menu">
                         <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
                         <a href="mindmap.html" class="nav-dropdown-item active" aria-current="page">名詞關聯心智圖</a>
+                        <a href="books_knowledge.html" class="nav-dropdown-item">九書重點知識</a>
+                        <a href="review.html" class="nav-dropdown-item">名詞複習</a>
                         <a href="wenda2_knowledge.html" class="nav-dropdown-item">問答錄2 重點知識</a>
                         <a href="wenda2_mindmap.html" class="nav-dropdown-item">問答錄2 名詞心智圖</a>
                         <a href="wenda2_knowledge_full.html" class="nav-dropdown-item">問答錄2 知識庫全檔</a>
@@ -214,6 +216,20 @@
                 </table>
             </div>
             <p class="mm-source"> 出處：《坐禪1》第三章第06節・3〈禪定次第與放鬆次第〉、第四章，及書末〈坐禪之修行路線圖〉。</p>
+        </div>
+    </section>
+
+    <!-- 修行次第線 -->
+    <section class="section">
+        <div class="container">
+            <h2 class="section-title mm-section-title">
+                <span class="mm-section-icon" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 34h24M12 34V15l8-7 8 7v19" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 22h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </span>
+                修行次第線：把名詞排成一條路
+            </h2>
+            <p class="mm-lead">心智圖把名詞攤開來看關聯，這一區把它收回成一條路——從持戒、呼吸、雙盤，經欲界定、初禪到四禪，再到阿羅漢、成佛；義理線則從三大初始設定走一遍「眾生如何成佛」。每一級都可以展開：階段重點、已查證釋義與原文摘句（附電子書深連結）。</p>
+            <div class="mm-ladder" id="mm-ladder"></div>
         </div>
     </section>
 
@@ -1221,6 +1237,36 @@
             });
         });
 
+        /* -------- 修行次第線（16 級實修 + 7 步義理；註記依已查證節點內容撰寫） -------- */
+
+        var LADDER_PRACTICE = [
+            { id: 'jiexing', note: '修行前提：斷肉斷淫、不妄語，判準是夢中持戒。' },
+            { id: 'huxi', note: '身體工程起點：呼吸改成腹式、磕大頭消好動習氣。' },
+            { id: 'jiafuzuo', note: '降魔坐通右側、蓮花坐通左側，每邊以兩小時為換腿標準。' },
+            { id: 'miewenzi', note: '念咒滅文字妄想，一般三年打底；定中殘像勿理。' },
+            { id: 'yujiechanding', note: '兩小時以上處於無文字妄想狀態，一般需兩到三年。' },
+            { id: 'chuchan', note: '淫欲滅盡、注意力收斂，可集中四小時。' },
+            { id: 'erchan', note: '注意力在一點上集中十小時以上、不跳動。' },
+            { id: 'canqing', note: '打通筋脈後的主力法門，跳過六種感覺能力直指四禪。' },
+            { id: 'sanchan', note: '注意力破滅、五根同時脫落；不參情緒會堵死在此。' },
+            { id: 'sichan', note: '苦情破滅、陽神向虛空擴散；參到疑問破滅即開悟。' },
+            { id: 'yangshen', note: '三禪起收縮的意識即陽神；四禪起向虛空擴散。' },
+            { id: 'sikongding', note: '滅我執進空無邊處定成辟支佛，依序上到非想非非想處定。' },
+            { id: 'aluohan', note: '滅盡執著、解脫生死；之後消業轉為主動。' },
+            { id: 'pusa', note: '發大菩提心起修十地，每上一地少一個妄想、消一分業。' },
+            { id: 'dengjue', note: '只剩最後一個妄想，故稱一生補處。' },
+            { id: 'fo', note: '滅盡最後一個妄想即妙覺：絕對寂靜、本知現前。' }
+        ];
+        var LADDER_THEORY = [
+            { id: 'axiom-eternal', note: '設定一：自性不生不滅，佛與凡夫只差有無妄執。' },
+            { id: 'axiom-firstthought', note: '設定二：第一個妄想無因，不可再往前追問。' },
+            { id: 'axiom-onebody', note: '設定三：所有自性重疊——業、迴向、加持力的前提。' },
+            { id: 'wangxiang', note: '第八識生起的念，對應識蘊；菩薩最多十一種妄想。' },
+            { id: 'fenbie', note: '第七識對應行蘊；分別一生起即從初地跌為阿羅漢。' },
+            { id: 'zhizhuo', note: '第六識對應想蘊；執著一起即入輪迴成凡夫。' },
+            { id: 'fo', note: '妄想、分別、執著滅盡，意識只剩自性，即是佛。' }
+        ];
+
         /* -------------------------------------------------------- 版面計算 */
 
         var CX = 540, HUB_OFF = 156, LEAF_OFF = 332;
@@ -1753,6 +1799,47 @@
         }
 
         var booted = false;
+        /* -------- 修行次第線渲染（引擎拷貝到他頁而無此區塊時安全跳過） -------- */
+
+        function renderLadder() {
+            var host = document.getElementById('mm-ladder');
+            if (!host) return;
+            function step(n, s) {
+                var node = NODES[s.id];
+                if (!node) return '';
+                var body = '<p class="mm-detail-desc" style="margin-bottom:14px;">' + T(node.desc) + '</p>';
+                if (node.quote) {
+                    var cite = T(node.quote.s);
+                    if (EBOOK_LINKS[s.id]) {
+                        cite = '<a href="' + EBOOK_LINKS[s.id] + '" target="_blank" rel="noopener"' +
+                               ' title="' + T('打開電子書原文') + '">' + cite + ' <i aria-hidden="true">📖</i></a>';
+                    }
+                    body += '<blockquote class="mm-detail-quote">' +
+                            '<span class="mm-quote-mark" aria-hidden="true">❝</span>' +
+                            '<p>' + T(node.quote.t) + '</p><cite>' + cite + '</cite></blockquote>';
+                }
+                body += '<p class="mm-detail-src"><i aria-hidden="true">✦</i> ' + T('出處：') + T(node.src) + '</p>' +
+                        '<button type="button" class="mm-rel-chip" data-id="' + s.id + '">' +
+                        T('在心智圖中查看') + ' ↗</button>';
+                return '<details class="mm-ladder-step">' +
+                       '<summary><span class="mm-ladder-num">' + n + '</span>' +
+                       '<span class="mm-ladder-label">' + T(node.label) + '</span>' +
+                       '<span class="mm-ladder-note">' + T(s.note) + '</span></summary>' +
+                       '<div class="mm-ladder-body">' + body + '</div></details>';
+            }
+            var html = '<h3 class="mm-ladder-title">' + T('實修次第：從持戒到成佛') + '</h3>';
+            LADDER_PRACTICE.forEach(function (s, i) { html += step(i + 1, s); });
+            html += '<h3 class="mm-ladder-title">' + T('義理線：從初始設定到成佛') + '</h3>';
+            LADDER_THEORY.forEach(function (s, i) { html += step(i + 1, s); });
+            host.innerHTML = html;
+            host.querySelectorAll('.mm-rel-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    select(btn.dataset.id);
+                    document.getElementById('mm-detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+            });
+        }
+
         function boot() {
             if (booted) return;
             booted = true;
@@ -1765,6 +1852,7 @@
             renderMap();
             renderDetail();
             renderChart();
+            renderLadder();
         }
         document.addEventListener('DOMContentLoaded', function () {
             if (window.tgl_lang) {

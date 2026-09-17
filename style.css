@@ -3786,3 +3786,278 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
 .wk-method p { margin: 0 0 10px; font-size: 14px; line-height: 1.85; color: #55464c; }
 .wk-method p:last-child { margin-bottom: 0; }
 @media (max-width: 900px) { .wk-terms { grid-template-columns: 1fr; } }
+
+/* ---- 名詞複習頁（review.html 專屬 rv-*） ---- */
+
+/* 模式切換 */
+.rv-tabs { display: flex; flex-wrap: wrap; gap: 10px; }
+.rv-tab {
+    appearance: none;
+    font: inherit;
+    font-size: 15px;
+    font-weight: var(--font-weight-bold);
+    padding: 10px 24px;
+    border: 1px solid var(--line-deep);
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: transform .22s var(--ease), background .22s var(--ease), color .22s var(--ease), border-color .22s var(--ease);
+}
+.rv-tab:hover { transform: translateY(-2px); border-color: var(--sakura-400); color: var(--sakura-700); }
+.rv-tab.is-active {
+    background: var(--grad-rose);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 12px 26px -16px rgba(168, 64, 106, .9);
+}
+
+/* 閃卡 */
+.rv-card {
+    margin-top: 26px;
+    padding: 34px 38px 30px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--sh-1);
+}
+.rv-card-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+.rv-box { font-size: 12px; color: var(--ink-mute); border: 1px solid var(--line); border-radius: var(--r-pill); padding: 4px 12px; white-space: nowrap; }
+.rv-term { margin: 0 0 18px; font-family: var(--font-serif); font-size: 26px; font-weight: 900; color: var(--ink); }
+
+/* 按鈕（翻面／自評／測驗） */
+.rv-btn {
+    appearance: none;
+    font: inherit;
+    font-size: 14.5px;
+    font-weight: var(--font-weight-semibold);
+    padding: 10px 24px;
+    border-radius: var(--r-pill);
+    border: 1px solid var(--line-deep);
+    background: var(--surface);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: transform .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease), background .18s var(--ease);
+}
+.rv-btn:hover { transform: translateY(-2px); border-color: var(--sakura-400); color: var(--sakura-700); }
+.rv-btn-primary {
+    background: var(--grad-rose);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 12px 26px -16px rgba(168, 64, 106, .9);
+}
+.rv-btn-primary:hover { color: #fff; }
+.rv-rate { margin-top: 20px; font-size: 13px; color: var(--ink-mute); }
+.rv-rate-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+
+/* 測驗 */
+.rv-quiz {
+    margin-top: 26px;
+    padding: 34px 38px 30px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--sh-1);
+}
+.rv-progress { margin: 0 0 16px; font-size: 13px; color: var(--ink-mute); letter-spacing: .04em; }
+.rv-hint { margin: 0 0 16px; font-size: 13px; color: var(--sakura-500); font-weight: var(--font-weight-bold); }
+.rv-opts { display: grid; gap: 10px; }
+.rv-opt {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-align: left;
+    font: inherit;
+    font-size: 15px;
+    font-weight: var(--font-weight-medium);
+    color: var(--ink);
+    padding: 13px 18px;
+    border: 1px solid var(--line-deep);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    cursor: pointer;
+    transition: border-color .18s var(--ease), background .18s var(--ease), transform .18s var(--ease);
+}
+.rv-opt:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--sakura-400); }
+.rv-opt-key {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--paper-tint);
+    color: var(--ink-mute);
+    font-size: 12px;
+    font-weight: var(--font-weight-bold);
+}
+.rv-opt-mark { margin-left: auto; font-size: 12px; color: var(--ink-mute); white-space: nowrap; }
+.rv-opt.is-right { border-color: var(--sakura-500); background: var(--sakura-50); }
+.rv-opt.is-right .rv-opt-mark { color: var(--sakura-700); font-weight: var(--font-weight-bold); }
+.rv-opt.is-wrong { border-color: #b04a3e; background: #fdf3f2; }
+.rv-opt.is-wrong .rv-opt-mark { color: #b04a3e; font-weight: var(--font-weight-bold); }
+.rv-opt.is-dim { opacity: .6; }
+
+/* 測驗回饋與結果 */
+.rv-feedback { margin-top: 18px; padding: 20px 22px; border: 1px solid var(--line); border-radius: var(--r-lg); }
+.rv-feedback-ok { background: var(--sakura-50); border-color: var(--sakura-200); }
+.rv-feedback-ok strong { color: var(--sakura-700); }
+.rv-feedback-no { background: #fdf3f2; border-color: #ecc8c2; }
+.rv-feedback-no strong { color: #b04a3e; }
+.rv-feedback .mm-detail-quote { margin: 14px 0; }
+.rv-feedback .rv-btn { margin-top: 14px; }
+.rv-result {
+    margin-top: 26px;
+    padding: 34px 38px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    box-shadow: var(--sh-1);
+    text-align: center;
+}
+.rv-result-score strong { display: block; font-family: var(--font-serif); font-size: 34px; font-weight: 900; color: var(--sakura-600); }
+.rv-result-score span { font-size: 13px; color: var(--ink-mute); }
+.rv-result-title { margin: 22px 0 10px; font-size: 15px; color: var(--ink); }
+.rv-result-wrongs { list-style: none; margin: 0 0 22px; padding: 0; display: grid; gap: 8px; text-align: left; }
+.rv-result-wrongs li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--paper);
+    font-size: 13.5px;
+}
+.rv-result-wrongs a { color: var(--sakura-700); font-weight: var(--font-weight-bold); }
+.rv-result-wrongs span { color: var(--ink-mute); }
+.rv-result-perfect { color: var(--sakura-700); font-weight: var(--font-weight-bold); margin: 18px 0 22px; }
+
+@media (max-width: 720px) {
+    .rv-card, .rv-quiz, .rv-result { padding: 24px 20px; }
+    .rv-term { font-size: 22px; }
+    .rv-result-wrongs li { flex-direction: column; align-items: flex-start; gap: 4px; }
+}
+
+/* ---- 修行次第線（mindmap.html mm-ladder-*） ---- */
+
+.mm-ladder { display: grid; gap: 10px; margin-top: 22px; }
+.mm-ladder-title {
+    margin: 20px 0 6px;
+    font-family: var(--font-serif);
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--ink);
+}
+.mm-ladder-title:first-child { margin-top: 0; }
+.mm-ladder-step {
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    transition: border-color .22s var(--ease);
+}
+.mm-ladder-step[open] { border-color: var(--sakura-300); }
+.mm-ladder-step summary {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 18px;
+    cursor: pointer;
+    list-style: none;
+}
+.mm-ladder-step summary::-webkit-details-marker { display: none; }
+.mm-ladder-step summary::after { content: '▾'; margin-left: auto; color: var(--ink-mute); font-size: 12px; flex: none; }
+.mm-ladder-step[open] summary::after { content: '▴'; color: var(--sakura-500); }
+.mm-ladder-num {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    min-width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--grad-rose);
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: var(--font-weight-bold);
+}
+.mm-ladder-label {
+    flex: none;
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-bold);
+    font-size: 15.5px;
+    color: var(--ink);
+}
+.mm-ladder-note { font-size: 13px; color: var(--ink-mute); line-height: 1.6; }
+.mm-ladder-body { padding: 2px 18px 18px 56px; }
+.mm-ladder-body .mm-detail-desc { font-size: 14px; line-height: 1.95; }
+.mm-ladder-body .mm-detail-quote { margin: 14px 0; }
+.mm-ladder-body .mm-rel-chip { margin-top: 6px; }
+
+@media (max-width: 720px) {
+    .mm-ladder-step summary { flex-wrap: wrap; row-gap: 4px; }
+    .mm-ladder-body { padding-left: 18px; }
+}
+
+/* ---- 九書重點知識頁（books_knowledge.html 專屬 bk-*） ---- */
+
+.bk-nav { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 14px; }
+.bk-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid var(--line);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    font-size: 14px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--ink-soft);
+    text-decoration: none;
+    transition: transform .22s var(--ease), border-color .22s var(--ease), color .22s var(--ease);
+}
+.bk-nav-item:hover { transform: translateY(-2px); border-color: var(--sakura-400); color: var(--sakura-700); }
+.bk-nav-num {
+    flex: none;
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--grad-rose);
+    color: #fff;
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+}
+.bk-nav-count { margin-left: auto; font-size: 12px; color: var(--ink-mute); font-weight: var(--font-weight-normal); white-space: nowrap; }
+
+.bk-ebook-link {
+    margin-left: 12px;
+    font-size: 13px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--sakura-600);
+    text-decoration: none;
+    border: 1px solid var(--line);
+    padding: 6px 14px;
+    border-radius: var(--r-pill);
+    background: var(--surface);
+    white-space: nowrap;
+    transition: background .22s var(--ease), color .22s var(--ease), border-color .22s var(--ease);
+}
+.bk-ebook-link:hover { color: #fff; background: var(--grad-rose); border-color: transparent; }
+
+.bk-count { margin: 4px 0 14px; font-size: 13px; color: var(--ink-mute); }
+
+.bk-term .bk-term-label {
+    flex: 1;
+    font-family: var(--font-serif);
+    font-weight: var(--font-weight-bold);
+    font-size: 15.5px;
+    color: var(--ink);
+}
+.bk-term .mm-detail-tag { margin-left: 0; flex: none; }
+
+@media (max-width: 720px) {
+    .bk-ebook-link { margin-left: 0; }
+    .section-title .bk-ebook-link { display: inline-block; margin-top: 10px; }
+}
