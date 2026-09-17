@@ -1,0 +1,410 @@
+[
+ {
+  "file": "ch01_b01",
+  "ch": 1,
+  "kind": "thematic",
+  "chars": 6809
+ },
+ {
+  "file": "ch01_b02",
+  "ch": 1,
+  "kind": "thematic",
+  "chars": 6565
+ },
+ {
+  "file": "ch01_b03",
+  "ch": 1,
+  "kind": "thematic",
+  "chars": 5124
+ },
+ {
+  "file": "ch02_b01",
+  "ch": 2,
+  "kind": "thematic",
+  "chars": 6284
+ },
+ {
+  "file": "ch02_b02",
+  "ch": 2,
+  "kind": "thematic",
+  "chars": 6417
+ },
+ {
+  "file": "ch02_b03",
+  "ch": 2,
+  "kind": "thematic",
+  "chars": 6418
+ },
+ {
+  "file": "ch02_b04",
+  "ch": 2,
+  "kind": "thematic",
+  "chars": 6417
+ },
+ {
+  "file": "ch02_b05",
+  "ch": 2,
+  "kind": "thematic",
+  "chars": 3595
+ },
+ {
+  "file": "ch03_b01",
+  "ch": 3,
+  "kind": "thematic",
+  "chars": 5124
+ },
+ {
+  "file": "ch04_b01",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6677
+ },
+ {
+  "file": "ch04_b02",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6729
+ },
+ {
+  "file": "ch04_b03",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6344
+ },
+ {
+  "file": "ch04_b04",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6645
+ },
+ {
+  "file": "ch04_b05",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6692
+ },
+ {
+  "file": "ch04_b06",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6780
+ },
+ {
+  "file": "ch04_b07",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6480
+ },
+ {
+  "file": "ch04_b08",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6747
+ },
+ {
+  "file": "ch04_b09",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6476
+ },
+ {
+  "file": "ch04_b10",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 6637
+ },
+ {
+  "file": "ch04_b11",
+  "ch": 4,
+  "kind": "thematic",
+  "chars": 3027
+ },
+ {
+  "file": "ch05_b01",
+  "ch": 5,
+  "kind": "thematic",
+  "chars": 6275
+ },
+ {
+  "file": "ch05_b02",
+  "ch": 5,
+  "kind": "thematic",
+  "chars": 6650
+ },
+ {
+  "file": "ch05_b03",
+  "ch": 5,
+  "kind": "thematic",
+  "chars": 2988
+ },
+ {
+  "file": "ch06_b01",
+  "ch": 6,
+  "kind": "thematic",
+  "chars": 6432
+ },
+ {
+  "file": "ch06_b02",
+  "ch": 6,
+  "kind": "thematic",
+  "chars": 1330
+ },
+ {
+  "file": "ch07_b01",
+  "ch": 7,
+  "kind": "thematic",
+  "chars": 6802
+ },
+ {
+  "file": "ch07_b02",
+  "ch": 7,
+  "kind": "thematic",
+  "chars": 6228
+ },
+ {
+  "file": "ch07_b03",
+  "ch": 7,
+  "kind": "thematic",
+  "chars": 6599
+ },
+ {
+  "file": "ch08_b01",
+  "ch": 8,
+  "kind": "thematic",
+  "chars": 5248
+ },
+ {
+  "file": "ch09_b01",
+  "ch": 9,
+  "kind": "thematic",
+  "chars": 5989
+ },
+ {
+  "file": "ch10_b01",
+  "ch": 10,
+  "kind": "thematic",
+  "chars": 6559
+ },
+ {
+  "file": "ch10_b02",
+  "ch": 10,
+  "kind": "thematic",
+  "chars": 5978
+ },
+ {
+  "file": "ch10_b03",
+  "ch": 10,
+  "kind": "thematic",
+  "chars": 6444
+ },
+ {
+  "file": "ch10_b04",
+  "ch": 10,
+  "kind": "thematic",
+  "chars": 6747
+ },
+ {
+  "file": "ch10_b05",
+  "ch": 10,
+  "kind": "thematic",
+  "chars": 6605
+ },
+ {
+  "file": "ch10_b06",
+  "ch": 10,
+  "kind": "thematic",
+  "chars": 4708
+ },
+ {
+  "file": "ch11_b01",
+  "ch": 11,
+  "kind": "thematic",
+  "chars": 6595
+ },
+ {
+  "file": "ch11_b02",
+  "ch": 11,
+  "kind": "thematic",
+  "chars": 6149
+ },
+ {
+  "file": "ch11_b03",
+  "ch": 11,
+  "kind": "thematic",
+  "chars": 6379
+ },
+ {
+  "file": "ch11_b04",
+  "ch": 11,
+  "kind": "thematic",
+  "chars": 6420
+ },
+ {
+  "file": "ch11_b05",
+  "ch": 11,
+  "kind": "thematic",
+  "chars": 6523
+ },
+ {
+  "file": "ch11_b06",
+  "ch": 11,
+  "kind": "thematic",
+  "chars": 1626
+ },
+ {
+  "file": "ch12_b01",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 5866
+ },
+ {
+  "file": "ch12_b02",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 6671
+ },
+ {
+  "file": "ch12_b03",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 6623
+ },
+ {
+  "file": "ch12_b04",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 6678
+ },
+ {
+  "file": "ch12_b05",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 6336
+ },
+ {
+  "file": "ch12_b06",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 6259
+ },
+ {
+  "file": "ch12_b07",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 6566
+ },
+ {
+  "file": "ch12_b08",
+  "ch": 12,
+  "kind": "thematic",
+  "chars": 3619
+ },
+ {
+  "file": "ch13_b01",
+  "ch": 13,
+  "kind": "monthly",
+  "chars": 6542
+ },
+ {
+  "file": "ch13_b02",
+  "ch": 13,
+  "kind": "monthly",
+  "chars": 6485
+ },
+ {
+  "file": "ch14_b01",
+  "ch": 14,
+  "kind": "monthly",
+  "chars": 6482
+ },
+ {
+  "file": "ch14_b02",
+  "ch": 14,
+  "kind": "monthly",
+  "chars": 6524
+ },
+ {
+  "file": "ch15_b01",
+  "ch": 15,
+  "kind": "monthly",
+  "chars": 6449
+ },
+ {
+  "file": "ch15_b02",
+  "ch": 15,
+  "kind": "monthly",
+  "chars": 6489
+ },
+ {
+  "file": "ch16_b01",
+  "ch": 16,
+  "kind": "monthly",
+  "chars": 6514
+ },
+ {
+  "file": "ch16_b02",
+  "ch": 16,
+  "kind": "monthly",
+  "chars": 6462
+ },
+ {
+  "file": "ch17_b01",
+  "ch": 17,
+  "kind": "monthly",
+  "chars": 6390
+ },
+ {
+  "file": "ch17_b02",
+  "ch": 17,
+  "kind": "monthly",
+  "chars": 6324
+ },
+ {
+  "file": "ch18_b01",
+  "ch": 18,
+  "kind": "monthly",
+  "chars": 6349
+ },
+ {
+  "file": "ch18_b02",
+  "ch": 18,
+  "kind": "monthly",
+  "chars": 6673
+ },
+ {
+  "file": "ch19_b01",
+  "ch": 19,
+  "kind": "monthly",
+  "chars": 6331
+ },
+ {
+  "file": "ch19_b02",
+  "ch": 19,
+  "kind": "monthly",
+  "chars": 6323
+ },
+ {
+  "file": "ch20_b01",
+  "ch": 20,
+  "kind": "monthly",
+  "chars": 6358
+ },
+ {
+  "file": "ch20_b02",
+  "ch": 20,
+  "kind": "monthly",
+  "chars": 6629
+ },
+ {
+  "file": "ch21_b01",
+  "ch": 21,
+  "kind": "monthly",
+  "chars": 6330
+ },
+ {
+  "file": "ch21_b02",
+  "ch": 21,
+  "kind": "monthly",
+  "chars": 6377
+ }
+]

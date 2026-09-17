@@ -149,11 +149,13 @@
             applyLink(storiesLink, 'stories-page', true);
             return;
         }
-        if (file === 'infographic.html' || file === 'mindmap.html') {
-            var wanted = file === 'infographic.html' ? 'infographic.html' : 'mindmap.html';
+        if (file === 'infographic.html' || file === 'mindmap.html' ||
+            file === 'wenda2_knowledge.html' || file === 'wenda2_mindmap.html' ||
+            file === 'wenda2_knowledge_full.html') {
+            var wanted = file;
             var item = null;
             graphicItems.forEach(function (a) {
-                if (hrefOf(a).slice(-wanted.length) === wanted) item = a;
+                if (hrefOf(a).split('/').pop() === wanted) item = a;
             });
             applyLink(item || graphicToggle, 'graphic-page', true);
             return;

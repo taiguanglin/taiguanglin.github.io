@@ -45,6 +45,30 @@
     <priority>0.8</priority>
   </url>
 
+  <!-- 坐禪之問答錄2 重點知識 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_knowledge.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 坐禪之問答錄2 名詞心智圖 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_mindmap.html</loc>
+    <lastmod>2026-09-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- 坐禪之問答錄2 知識庫全檔 -->
+  <url>
+    <loc>https://taiguanglin.info/wenda2_knowledge_full.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+
   <!-- ============ 問答錄章節 - 核心理論篇 ============ -->
   <!-- 自性與意識 -->
   <url>

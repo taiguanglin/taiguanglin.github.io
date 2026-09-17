@@ -1,0 +1,758 @@
+[
+ {
+  "ch": 1,
+  "part": 1,
+  "n_qa": 96,
+  "chars": 38663,
+  "file": "/tmp/wenda2_qa/chunks/ch01_p01.txt"
+ },
+ {
+  "ch": 1,
+  "part": 2,
+  "n_qa": 93,
+  "chars": 38402,
+  "file": "/tmp/wenda2_qa/chunks/ch01_p02.txt"
+ },
+ {
+  "ch": 1,
+  "part": 3,
+  "n_qa": 84,
+  "chars": 40650,
+  "file": "/tmp/wenda2_qa/chunks/ch01_p03.txt"
+ },
+ {
+  "ch": 1,
+  "part": 4,
+  "n_qa": 51,
+  "chars": 17229,
+  "file": "/tmp/wenda2_qa/chunks/ch01_p04.txt"
+ },
+ {
+  "ch": 2,
+  "part": 1,
+  "n_qa": 86,
+  "chars": 35058,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p01.txt"
+ },
+ {
+  "ch": 2,
+  "part": 2,
+  "n_qa": 94,
+  "chars": 38185,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p02.txt"
+ },
+ {
+  "ch": 2,
+  "part": 3,
+  "n_qa": 85,
+  "chars": 40423,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p03.txt"
+ },
+ {
+  "ch": 2,
+  "part": 4,
+  "n_qa": 114,
+  "chars": 50918,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p04.txt"
+ },
+ {
+  "ch": 2,
+  "part": 5,
+  "n_qa": 103,
+  "chars": 48158,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p05.txt"
+ },
+ {
+  "ch": 2,
+  "part": 6,
+  "n_qa": 90,
+  "chars": 42036,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p06.txt"
+ },
+ {
+  "ch": 2,
+  "part": 7,
+  "n_qa": 85,
+  "chars": 37030,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p07.txt"
+ },
+ {
+  "ch": 2,
+  "part": 8,
+  "n_qa": 83,
+  "chars": 35297,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p08.txt"
+ },
+ {
+  "ch": 2,
+  "part": 9,
+  "n_qa": 47,
+  "chars": 19091,
+  "file": "/tmp/wenda2_qa/chunks/ch02_p09.txt"
+ },
+ {
+  "ch": 3,
+  "part": 1,
+  "n_qa": 114,
+  "chars": 41546,
+  "file": "/tmp/wenda2_qa/chunks/ch03_p01.txt"
+ },
+ {
+  "ch": 3,
+  "part": 2,
+  "n_qa": 4,
+  "chars": 1152,
+  "file": "/tmp/wenda2_qa/chunks/ch03_p02.txt"
+ },
+ {
+  "ch": 4,
+  "part": 1,
+  "n_qa": 90,
+  "chars": 37869,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p01.txt"
+ },
+ {
+  "ch": 4,
+  "part": 2,
+  "n_qa": 87,
+  "chars": 35347,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p02.txt"
+ },
+ {
+  "ch": 4,
+  "part": 3,
+  "n_qa": 87,
+  "chars": 37445,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p03.txt"
+ },
+ {
+  "ch": 4,
+  "part": 4,
+  "n_qa": 96,
+  "chars": 35508,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p04.txt"
+ },
+ {
+  "ch": 4,
+  "part": 5,
+  "n_qa": 102,
+  "chars": 40383,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p05.txt"
+ },
+ {
+  "ch": 4,
+  "part": 6,
+  "n_qa": 101,
+  "chars": 41139,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p06.txt"
+ },
+ {
+  "ch": 4,
+  "part": 7,
+  "n_qa": 95,
+  "chars": 37601,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p07.txt"
+ },
+ {
+  "ch": 4,
+  "part": 8,
+  "n_qa": 73,
+  "chars": 33938,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p08.txt"
+ },
+ {
+  "ch": 4,
+  "part": 9,
+  "n_qa": 70,
+  "chars": 34564,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p09.txt"
+ },
+ {
+  "ch": 4,
+  "part": 10,
+  "n_qa": 107,
+  "chars": 35108,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p10.txt"
+ },
+ {
+  "ch": 4,
+  "part": 11,
+  "n_qa": 107,
+  "chars": 38019,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p11.txt"
+ },
+ {
+  "ch": 4,
+  "part": 12,
+  "n_qa": 101,
+  "chars": 35468,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p12.txt"
+ },
+ {
+  "ch": 4,
+  "part": 13,
+  "n_qa": 105,
+  "chars": 35148,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p13.txt"
+ },
+ {
+  "ch": 4,
+  "part": 14,
+  "n_qa": 85,
+  "chars": 36704,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p14.txt"
+ },
+ {
+  "ch": 4,
+  "part": 15,
+  "n_qa": 21,
+  "chars": 10367,
+  "file": "/tmp/wenda2_qa/chunks/ch04_p15.txt"
+ },
+ {
+  "ch": 5,
+  "part": 1,
+  "n_qa": 117,
+  "chars": 48189,
+  "file": "/tmp/wenda2_qa/chunks/ch05_p01.txt"
+ },
+ {
+  "ch": 5,
+  "part": 2,
+  "n_qa": 104,
+  "chars": 38815,
+  "file": "/tmp/wenda2_qa/chunks/ch05_p02.txt"
+ },
+ {
+  "ch": 5,
+  "part": 3,
+  "n_qa": 78,
+  "chars": 33134,
+  "file": "/tmp/wenda2_qa/chunks/ch05_p03.txt"
+ },
+ {
+  "ch": 6,
+  "part": 1,
+  "n_qa": 100,
+  "chars": 40607,
+  "file": "/tmp/wenda2_qa/chunks/ch06_p01.txt"
+ },
+ {
+  "ch": 6,
+  "part": 2,
+  "n_qa": 77,
+  "chars": 30087,
+  "file": "/tmp/wenda2_qa/chunks/ch06_p02.txt"
+ },
+ {
+  "ch": 7,
+  "part": 1,
+  "n_qa": 114,
+  "chars": 35894,
+  "file": "/tmp/wenda2_qa/chunks/ch07_p01.txt"
+ },
+ {
+  "ch": 7,
+  "part": 2,
+  "n_qa": 114,
+  "chars": 36324,
+  "file": "/tmp/wenda2_qa/chunks/ch07_p02.txt"
+ },
+ {
+  "ch": 7,
+  "part": 3,
+  "n_qa": 93,
+  "chars": 38575,
+  "file": "/tmp/wenda2_qa/chunks/ch07_p03.txt"
+ },
+ {
+  "ch": 7,
+  "part": 4,
+  "n_qa": 40,
+  "chars": 13087,
+  "file": "/tmp/wenda2_qa/chunks/ch07_p04.txt"
+ },
+ {
+  "ch": 8,
+  "part": 1,
+  "n_qa": 55,
+  "chars": 14991,
+  "file": "/tmp/wenda2_qa/chunks/ch08_p01.txt"
+ },
+ {
+  "ch": 9,
+  "part": 1,
+  "n_qa": 73,
+  "chars": 22478,
+  "file": "/tmp/wenda2_qa/chunks/ch09_p01.txt"
+ },
+ {
+  "ch": 10,
+  "part": 1,
+  "n_qa": 110,
+  "chars": 35403,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p01.txt"
+ },
+ {
+  "ch": 10,
+  "part": 2,
+  "n_qa": 108,
+  "chars": 39015,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p02.txt"
+ },
+ {
+  "ch": 10,
+  "part": 3,
+  "n_qa": 102,
+  "chars": 38398,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p03.txt"
+ },
+ {
+  "ch": 10,
+  "part": 4,
+  "n_qa": 111,
+  "chars": 36799,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p04.txt"
+ },
+ {
+  "ch": 10,
+  "part": 5,
+  "n_qa": 96,
+  "chars": 38298,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p05.txt"
+ },
+ {
+  "ch": 10,
+  "part": 6,
+  "n_qa": 116,
+  "chars": 43971,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p06.txt"
+ },
+ {
+  "ch": 10,
+  "part": 7,
+  "n_qa": 43,
+  "chars": 18060,
+  "file": "/tmp/wenda2_qa/chunks/ch10_p07.txt"
+ },
+ {
+  "ch": 11,
+  "part": 1,
+  "n_qa": 103,
+  "chars": 35976,
+  "file": "/tmp/wenda2_qa/chunks/ch11_p01.txt"
+ },
+ {
+  "ch": 11,
+  "part": 2,
+  "n_qa": 121,
+  "chars": 43960,
+  "file": "/tmp/wenda2_qa/chunks/ch11_p02.txt"
+ },
+ {
+  "ch": 11,
+  "part": 3,
+  "n_qa": 96,
+  "chars": 38302,
+  "file": "/tmp/wenda2_qa/chunks/ch11_p03.txt"
+ },
+ {
+  "ch": 11,
+  "part": 4,
+  "n_qa": 118,
+  "chars": 49036,
+  "file": "/tmp/wenda2_qa/chunks/ch11_p04.txt"
+ },
+ {
+  "ch": 11,
+  "part": 5,
+  "n_qa": 112,
+  "chars": 44178,
+  "file": "/tmp/wenda2_qa/chunks/ch11_p05.txt"
+ },
+ {
+  "ch": 11,
+  "part": 6,
+  "n_qa": 57,
+  "chars": 19261,
+  "file": "/tmp/wenda2_qa/chunks/ch11_p06.txt"
+ },
+ {
+  "ch": 12,
+  "part": 1,
+  "n_qa": 111,
+  "chars": 49559,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p01.txt"
+ },
+ {
+  "ch": 12,
+  "part": 2,
+  "n_qa": 104,
+  "chars": 43882,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p02.txt"
+ },
+ {
+  "ch": 12,
+  "part": 3,
+  "n_qa": 89,
+  "chars": 41113,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p03.txt"
+ },
+ {
+  "ch": 12,
+  "part": 4,
+  "n_qa": 98,
+  "chars": 41294,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p04.txt"
+ },
+ {
+  "ch": 12,
+  "part": 5,
+  "n_qa": 92,
+  "chars": 35282,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p05.txt"
+ },
+ {
+  "ch": 12,
+  "part": 6,
+  "n_qa": 93,
+  "chars": 46336,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p06.txt"
+ },
+ {
+  "ch": 12,
+  "part": 7,
+  "n_qa": 67,
+  "chars": 40671,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p07.txt"
+ },
+ {
+  "ch": 12,
+  "part": 8,
+  "n_qa": 75,
+  "chars": 36232,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p08.txt"
+ },
+ {
+  "ch": 12,
+  "part": 9,
+  "n_qa": 105,
+  "chars": 37534,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p09.txt"
+ },
+ {
+  "ch": 12,
+  "part": 10,
+  "n_qa": 123,
+  "chars": 45298,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p10.txt"
+ },
+ {
+  "ch": 12,
+  "part": 11,
+  "n_qa": 8,
+  "chars": 6520,
+  "file": "/tmp/wenda2_qa/chunks/ch12_p11.txt"
+ },
+ {
+  "ch": 13,
+  "part": 1,
+  "n_qa": 68,
+  "chars": 36231,
+  "file": "/tmp/wenda2_qa/chunks/ch13_p01.txt"
+ },
+ {
+  "ch": 13,
+  "part": 2,
+  "n_qa": 100,
+  "chars": 47337,
+  "file": "/tmp/wenda2_qa/chunks/ch13_p02.txt"
+ },
+ {
+  "ch": 13,
+  "part": 3,
+  "n_qa": 78,
+  "chars": 38255,
+  "file": "/tmp/wenda2_qa/chunks/ch13_p03.txt"
+ },
+ {
+  "ch": 13,
+  "part": 4,
+  "n_qa": 70,
+  "chars": 38445,
+  "file": "/tmp/wenda2_qa/chunks/ch13_p04.txt"
+ },
+ {
+  "ch": 13,
+  "part": 5,
+  "n_qa": 17,
+  "chars": 8376,
+  "file": "/tmp/wenda2_qa/chunks/ch13_p05.txt"
+ },
+ {
+  "ch": 14,
+  "part": 1,
+  "n_qa": 92,
+  "chars": 41987,
+  "file": "/tmp/wenda2_qa/chunks/ch14_p01.txt"
+ },
+ {
+  "ch": 14,
+  "part": 2,
+  "n_qa": 88,
+  "chars": 35367,
+  "file": "/tmp/wenda2_qa/chunks/ch14_p02.txt"
+ },
+ {
+  "ch": 14,
+  "part": 3,
+  "n_qa": 97,
+  "chars": 38052,
+  "file": "/tmp/wenda2_qa/chunks/ch14_p03.txt"
+ },
+ {
+  "ch": 14,
+  "part": 4,
+  "n_qa": 111,
+  "chars": 46048,
+  "file": "/tmp/wenda2_qa/chunks/ch14_p04.txt"
+ },
+ {
+  "ch": 14,
+  "part": 5,
+  "n_qa": 11,
+  "chars": 5155,
+  "file": "/tmp/wenda2_qa/chunks/ch14_p05.txt"
+ },
+ {
+  "ch": 15,
+  "part": 1,
+  "n_qa": 95,
+  "chars": 38558,
+  "file": "/tmp/wenda2_qa/chunks/ch15_p01.txt"
+ },
+ {
+  "ch": 15,
+  "part": 2,
+  "n_qa": 99,
+  "chars": 39121,
+  "file": "/tmp/wenda2_qa/chunks/ch15_p02.txt"
+ },
+ {
+  "ch": 15,
+  "part": 3,
+  "n_qa": 82,
+  "chars": 40862,
+  "file": "/tmp/wenda2_qa/chunks/ch15_p03.txt"
+ },
+ {
+  "ch": 15,
+  "part": 4,
+  "n_qa": 60,
+  "chars": 31355,
+  "file": "/tmp/wenda2_qa/chunks/ch15_p04.txt"
+ },
+ {
+  "ch": 16,
+  "part": 1,
+  "n_qa": 65,
+  "chars": 35465,
+  "file": "/tmp/wenda2_qa/chunks/ch16_p01.txt"
+ },
+ {
+  "ch": 16,
+  "part": 2,
+  "n_qa": 97,
+  "chars": 50478,
+  "file": "/tmp/wenda2_qa/chunks/ch16_p02.txt"
+ },
+ {
+  "ch": 16,
+  "part": 3,
+  "n_qa": 108,
+  "chars": 46284,
+  "file": "/tmp/wenda2_qa/chunks/ch16_p03.txt"
+ },
+ {
+  "ch": 16,
+  "part": 4,
+  "n_qa": 57,
+  "chars": 25980,
+  "file": "/tmp/wenda2_qa/chunks/ch16_p04.txt"
+ },
+ {
+  "ch": 17,
+  "part": 1,
+  "n_qa": 70,
+  "chars": 50097,
+  "file": "/tmp/wenda2_qa/chunks/ch17_p01.txt"
+ },
+ {
+  "ch": 17,
+  "part": 2,
+  "n_qa": 116,
+  "chars": 45661,
+  "file": "/tmp/wenda2_qa/chunks/ch17_p02.txt"
+ },
+ {
+  "ch": 17,
+  "part": 3,
+  "n_qa": 104,
+  "chars": 47807,
+  "file": "/tmp/wenda2_qa/chunks/ch17_p03.txt"
+ },
+ {
+  "ch": 17,
+  "part": 4,
+  "n_qa": 89,
+  "chars": 41856,
+  "file": "/tmp/wenda2_qa/chunks/ch17_p04.txt"
+ },
+ {
+  "ch": 17,
+  "part": 5,
+  "n_qa": 89,
+  "chars": 44393,
+  "file": "/tmp/wenda2_qa/chunks/ch17_p05.txt"
+ },
+ {
+  "ch": 18,
+  "part": 1,
+  "n_qa": 87,
+  "chars": 37971,
+  "file": "/tmp/wenda2_qa/chunks/ch18_p01.txt"
+ },
+ {
+  "ch": 18,
+  "part": 2,
+  "n_qa": 103,
+  "chars": 49979,
+  "file": "/tmp/wenda2_qa/chunks/ch18_p02.txt"
+ },
+ {
+  "ch": 18,
+  "part": 3,
+  "n_qa": 104,
+  "chars": 43954,
+  "file": "/tmp/wenda2_qa/chunks/ch18_p03.txt"
+ },
+ {
+  "ch": 18,
+  "part": 4,
+  "n_qa": 97,
+  "chars": 40454,
+  "file": "/tmp/wenda2_qa/chunks/ch18_p04.txt"
+ },
+ {
+  "ch": 18,
+  "part": 5,
+  "n_qa": 12,
+  "chars": 4154,
+  "file": "/tmp/wenda2_qa/chunks/ch18_p05.txt"
+ },
+ {
+  "ch": 19,
+  "part": 1,
+  "n_qa": 91,
+  "chars": 33876,
+  "file": "/tmp/wenda2_qa/chunks/ch19_p01.txt"
+ },
+ {
+  "ch": 19,
+  "part": 2,
+  "n_qa": 110,
+  "chars": 50280,
+  "file": "/tmp/wenda2_qa/chunks/ch19_p02.txt"
+ },
+ {
+  "ch": 19,
+  "part": 3,
+  "n_qa": 79,
+  "chars": 38336,
+  "file": "/tmp/wenda2_qa/chunks/ch19_p03.txt"
+ },
+ {
+  "ch": 19,
+  "part": 4,
+  "n_qa": 82,
+  "chars": 38937,
+  "file": "/tmp/wenda2_qa/chunks/ch19_p04.txt"
+ },
+ {
+  "ch": 19,
+  "part": 5,
+  "n_qa": 80,
+  "chars": 41093,
+  "file": "/tmp/wenda2_qa/chunks/ch19_p05.txt"
+ },
+ {
+  "ch": 19,
+  "part": 6,
+  "n_qa": 29,
+  "chars": 16032,
+  "file": "/tmp/wenda2_qa/chunks/ch19_p06.txt"
+ },
+ {
+  "ch": 20,
+  "part": 1,
+  "n_qa": 95,
+  "chars": 37481,
+  "file": "/tmp/wenda2_qa/chunks/ch20_p01.txt"
+ },
+ {
+  "ch": 20,
+  "part": 2,
+  "n_qa": 99,
+  "chars": 49898,
+  "file": "/tmp/wenda2_qa/chunks/ch20_p02.txt"
+ },
+ {
+  "ch": 20,
+  "part": 3,
+  "n_qa": 70,
+  "chars": 34315,
+  "file": "/tmp/wenda2_qa/chunks/ch20_p03.txt"
+ },
+ {
+  "ch": 20,
+  "part": 4,
+  "n_qa": 94,
+  "chars": 41273,
+  "file": "/tmp/wenda2_qa/chunks/ch20_p04.txt"
+ },
+ {
+  "ch": 20,
+  "part": 5,
+  "n_qa": 23,
+  "chars": 10465,
+  "file": "/tmp/wenda2_qa/chunks/ch20_p05.txt"
+ },
+ {
+  "ch": 21,
+  "part": 1,
+  "n_qa": 72,
+  "chars": 34813,
+  "file": "/tmp/wenda2_qa/chunks/ch21_p01.txt"
+ },
+ {
+  "ch": 21,
+  "part": 2,
+  "n_qa": 97,
+  "chars": 45222,
+  "file": "/tmp/wenda2_qa/chunks/ch21_p02.txt"
+ },
+ {
+  "ch": 21,
+  "part": 3,
+  "n_qa": 108,
+  "chars": 49971,
+  "file": "/tmp/wenda2_qa/chunks/ch21_p03.txt"
+ },
+ {
+  "ch": 21,
+  "part": 4,
+  "n_qa": 57,
+  "chars": 28882,
+  "file": "/tmp/wenda2_qa/chunks/ch21_p04.txt"
+ }
+]

@@ -21,7 +21,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
 5. **Do not confuse site chrome with ebook assets** — root `script.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`).
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
-7. **AI-generated content disclaimer** — `infographic.html` and `mindmap.html` must both display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
+7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html`, `wenda2_knowledge.html`, `wenda2_mindmap.html` and `wenda2_knowledge_full.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
 8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
 9. **`mindmap.html`「三大初始設定」永遠只有三條** — 主幹 `b-truth` 固定為三個葉節點：`axiom-eternal`（自性恆常）、`axiom-firstthought`（初妄無因）、`axiom-onebody`（諸佛同體）。這是內容鐵律：**不可**在此主幹新增任何其他條目，也不可把其他節點移入。其他主題（如七處徵心、十番顯見等《楞嚴經》內容）一律屬「經典依據」主幹 `b-sutra`。若發現 `b-truth` 出現第 4 個葉節點，即為錯誤，必須移出。
 
@@ -38,6 +38,9 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `stories.html` | Stories list shell; list block updated by `build_index.py`. |
 | `infographic.html` | Gallery: `infographic/thumbs/` WebP thumbnails in the grid, `infographic/webp/` full-size WebP in the lightbox (`data-src`). |
 | `mindmap.html` | Self-contained interactive mind map (hand-edited). |
+| `wenda2_knowledge.html` | 問答錄2 重點知識：21 章、9,231 個回答的重點整理（AI 選材、逐字引句、電子書連結）。**Generated** from `tool/wenda2_curation/`（改內容改 `data/` 或 `build/build_wk.py` 再重跑，勿手改後又重跑）。 |
+| `wenda2_mindmap.html` | 問答錄2 名詞心智圖：57 個高頻名詞／11 主幹；互動引擎從 `mindmap.html` 拷貝（`build/build_mm.py` 重跑即同步）。**Generated** from `tool/wenda2_curation/`。 |
+| `wenda2_knowledge_full.html` | 問答錄2 知識庫全檔：57 名詞全檔＋134 名詞統計總表＋437 小節引句全錄＋36 月度精選。**Generated** from `tool/wenda2_curation/`（`build/build_full.py`）。 |
 | `script.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
 | `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；`/wenda2_ebook/`、`/ebook/` 依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
@@ -76,6 +79,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/audio_denoiser/` | Denoiser preprocessing before ASR | `README.md` |
 | `tool/stories2html/` | Stories → HTML readers + index/sitemap patches | `README.md` |
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
+| `tool/wenda2_curation/` | 問答錄2 知識萃取檔（語料＋精選＋統計 SoT）→ 三個圖解頁（knowledge / mindmap / knowledge_full） | **`README.md`**, `NOTES.md` |
 
 ---
 
@@ -157,6 +161,7 @@ mp3  →  (optional) tool/audio_denoiser
 | 12-theme TOC pages | `wenda2.html`, `wenda2/` | Commit (no ebook rebuild) |
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
 | Infographic / mindmap | `infographic/`, `infographic.html`, `mindmap.html` | Commit |
+| 問答錄2 圖解頁內容（knowledge / mindmap / knowledge_full） | `tool/wenda2_curation/`（`data/` 為 SoT） | 重跑 `build/` 對應腳本 → 驗證引句逐字 → commit |
 
 ---
 

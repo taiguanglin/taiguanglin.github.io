@@ -3128,12 +3128,21 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
    18. 名詞關聯心智圖（mindmap.html）
    ========================================================================== */
 .mm-lead {
-    max-width: 780px;
     margin-bottom: 26px;
     font-size: 15px;
     line-height: 1.95;
     color: var(--ink-soft);
 }
+
+/* 寬畫面斷行修正：引言不再被 780px 截斷，用滿容器寬；
+   text-wrap: pretty 為漸進增強（Chrome/Safari 新版支援），
+   避免段落尾行只剩一兩個字，不支援的瀏覽器維持原本行為。 */
+.mm-lead,
+.mm-notice-body p,
+.mm-axiom-card p,
+.mm-detail-desc,
+.mm-detail-points li,
+.mm-detail-quote p { text-wrap: pretty; }
 
 .mm-subtitle {
     margin: 42px 0 16px;
@@ -3692,3 +3701,88 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
     .daily-quote { margin-top: -30px; }
     .mm-stats { grid-template-columns: 1fr; }
 }
+
+/* ---- 問答錄2 延伸閱讀卡片（wenda2_mindmap / wenda2_knowledge 共用） ---- */
+.mm-more-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 26px; }
+.mm-more-card { display: flex; flex-direction: column; gap: 8px; padding: 22px 24px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--sh-1); text-decoration: none; color: inherit; transition: transform .3s var(--ease), box-shadow .3s var(--ease), border-color .3s var(--ease); }
+.mm-more-card:hover { border-color: #cf6b96; box-shadow: var(--sh-2); transform: translateY(-2px); }
+.mm-more-card strong { font-size: 17px; color: #953a60; }
+.mm-more-card span { font-size: 14px; line-height: 1.7; color: #6b5b60; }
+
+/* ---- wenda2_knowledge 知識頁專屬（wk-*） ---- */
+.wk-hero-note { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-top: 18px; }
+.wk-chip { display: inline-block; padding: 6px 14px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font-size: 13px; color: #6b5b60; text-decoration: none; transition: border-color .25s var(--ease), color .25s var(--ease); }
+.wk-chip:hover { border-color: #cf6b96; color: #953a60; }
+.wk-chip b { color: #953a60; font-weight: 700; }
+
+.wk-quick { display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; margin-top: 26px; }
+.wk-quick a { display: block; padding: 10px 6px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); text-decoration: none; text-align: center; transition: border-color .25s var(--ease), box-shadow .25s var(--ease); }
+.wk-quick a:hover { border-color: #cf6b96; box-shadow: var(--sh-1); }
+.wk-quick b { display: block; font-size: 15px; color: #953a60; }
+.wk-quick span { display: block; margin-top: 2px; font-size: 12px; color: #6b5b60; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.wk-chapter { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--sh-1); padding: 34px 36px; margin-top: 34px; scroll-margin-top: 96px; }
+.wk-chapter-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 14px; }
+.wk-chapter-head h2 { margin: 0; font-size: 26px; }
+.wk-chapter-head h2 a { color: inherit; text-decoration: none; }
+.wk-chapter-head h2 a:hover { color: #953a60; }
+.wk-chapter-meta { font-size: 13px; color: #8d7a80; }
+.wk-lede { margin: 14px 0 0; font-size: 15px; line-height: 1.85; color: #4d3f44; }
+.wk-core { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.wk-core li { position: relative; padding: 14px 16px 14px 46px; border: 1px solid var(--line); border-radius: 12px; background: #fbf7f8; font-size: 14.5px; line-height: 1.8; color: #4d3f44; }
+.wk-core li::before { content: '✦'; position: absolute; left: 18px; top: 14px; color: #cf6b96; font-size: 15px; }
+.wk-core a { color: #953a60; font-size: 12.5px; text-decoration: none; white-space: nowrap; }
+.wk-core a:hover { text-decoration: underline; }
+
+.wk-subs { margin: 24px 0 0; display: grid; gap: 12px; }
+.wk-sub { border: 1px solid var(--line); border-left: 3px solid #cf6b96; border-radius: 10px; padding: 16px 18px; background: #fff; }
+.wk-sub h3 { margin: 0 0 6px; font-size: 16px; color: #3d2f34; }
+.wk-sub h3 .wk-count { display: inline-block; margin-left: 8px; font-size: 12px; font-weight: 400; color: #8d7a80; }
+.wk-sub blockquote { margin: 8px 0 0; padding: 4px 0 4px 14px; border-left: 2px solid #e3c3cf; font-size: 14px; line-height: 1.8; color: #55464c; }
+.wk-sub blockquote .wk-qsrc { display: inline-block; margin-top: 6px; font-size: 12px; color: #953a60; text-decoration: none; }
+.wk-sub blockquote .wk-qsrc:hover { text-decoration: underline; }
+.wk-subs-more { margin-top: 12px; text-align: right; }
+.wk-subs-more a { font-size: 13px; color: #953a60; text-decoration: none; }
+.wk-subs-more a:hover { text-decoration: underline; }
+
+.wk-month-stats { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; }
+.wk-month-stats span { padding: 5px 12px; border-radius: 999px; background: #f7edf1; font-size: 12.5px; color: #6b5b60; }
+
+.wk-part-title { display: flex; align-items: center; gap: 14px; margin: 64px 0 -6px; }
+.wk-part-title h2 { margin: 0; font-size: 24px; color: #953a60; }
+.wk-part-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+@media (max-width: 900px) { .wk-quick { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 720px) {
+    .mm-more-grid { grid-template-columns: 1fr; }
+    .wk-quick { grid-template-columns: repeat(3, 1fr); }
+    .wk-chapter { padding: 24px 20px; }
+    .wk-part-title { margin-top: 48px; }
+}
+
+/* ---- wenda2_knowledge_full 知識庫全檔（wk-term 名詞全檔卡） ---- */
+.wk-terms { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 22px; }
+.wk-term { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--sh-1); padding: 24px 26px; scroll-margin-top: 96px; }
+.wk-term-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; }
+.wk-term-head h3 { margin: 0; font-size: 19px; }
+.wk-tag { padding: 3px 10px; border-radius: 999px; background: #f7edf1; color: #953a60; font-size: 12px; white-space: nowrap; }
+.wk-term-count { font-size: 12.5px; color: #8d7a80; white-space: nowrap; }
+.wk-term-desc { margin: 10px 0 0; font-size: 14px; line-height: 1.75; color: #55464c; }
+.wk-term-points { margin: 12px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+.wk-term-points li { position: relative; padding-left: 20px; font-size: 13.5px; line-height: 1.7; color: #4d3f44; }
+.wk-term-points li::before { content: '✦'; position: absolute; left: 0; top: 0; color: #cf6b96; font-size: 13px; }
+.wk-term blockquote { margin: 14px 0 0; padding: 4px 0 4px 14px; border-left: 2px solid #e3c3cf; font-size: 13.5px; line-height: 1.8; color: #55464c; }
+.wk-rel { margin-top: 14px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: 12.5px; color: #8d7a80; }
+.wk-rel a { padding: 3px 10px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: #953a60; text-decoration: none; transition: border-color .25s var(--ease); }
+.wk-rel a:hover { border-color: #cf6b96; }
+.wk-rep { display: inline-block; margin-top: 12px; font-size: 12.5px; color: #953a60; text-decoration: none; }
+.wk-rep:hover { text-decoration: underline; }
+.wk-branch-title { margin: 40px 0 -10px; font-size: 17px; color: #953a60; }
+.wk-branch-title:first-of-type { margin-top: 22px; }
+.wk-index-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 10px; }
+.wk-index-row > span { font-size: 13px; color: #953a60; font-weight: 700; min-width: 7.5em; }
+.wk-method { border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); box-shadow: var(--sh-1); padding: 26px 30px; margin-top: 22px; }
+.wk-method h3 { margin: 0 0 8px; font-size: 16px; color: #3d2f34; }
+.wk-method p { margin: 0 0 10px; font-size: 14px; line-height: 1.85; color: #55464c; }
+.wk-method p:last-child { margin-bottom: 0; }
+@media (max-width: 900px) { .wk-terms { grid-template-columns: 1fr; } }
