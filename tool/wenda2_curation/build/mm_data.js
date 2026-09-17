@@ -1,0 +1,581 @@
+        var ROOT = {"id": "root", "label": "坐禪之問答錄2", "desc": "Tai 師父 2024 年 2 月至 2026 年 3 月在貼吧與公眾號的問答結集，共 21 章、9,231 個回答。第 01–12 章按主題編排：自性與意識、羯磨、發心、世界起源、戒行、修福積功德、唪誦經咒、腹式呼吸、磕大頭、雙盤、禪定、佛門修行；第 13 章起按月份收錄。這張圖把全書最常被問到的名詞串成一張可以互動的關聯網。", "points": ["前 12 章按主題彙編（2024.02–2025.05 的問答）；第 13–21 章按月份收錄 2025.06–2026.03 的問答。", "9,231 個回答全部收錄於《坐禪之問答錄2》電子書，可全文檢索、逐題對照原文。", "57 個名詞、11 條主幹：右側五條講義理與世界（自性與意識、果位與聖眾、世界與輪迴、羯磨、功德與福報），左側六條講實修與生活（發心與戒行、淨土與往生、入門功課、禪定次第、唪誦法門、境界與現象）。", "每個名詞節點都附：AI 整理的定義與要點、逐字摘錄的引文、全書出現次數統計，以及連到電子書原文的連結。"], "quote": {"t": "所有的眾生，都有自己獨立的自性，但是它們的存在方式是重疊在一起，而不是所有的自性是一個自性。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "《坐禪之問答錄2》全書 21 章・9,231 個回答（2024.02–2026.03）", "rel": ["zixing", "ye", "dazuo"]};
+        var BRANCHES = [{"id": "b-mind", "side": "R", "label": "自性與意識", "desc": "全書的義理核心：自性＝第八識＝最底層意識；凡夫只是多了妄想→分別心→執著三層。問答錄裡最反覆被問、也最核心的題目。", "leaves": [{"id": "zixing", "label": "自性", "desc": "最底層、最根本的意識，不生不滅、遍虛空；阿賴耶識、根本識、第八識都是它的名字。佛與凡夫的差別，只在自性裡有沒有妄想、分別、執著。", "points": ["與阿賴耶識、根本識、第八識同義，都是給最底層意識起的名字。", "自性遍虛空、無重量、無實體；投胎的靈識被封在身體裡，但自性本體並不縮小。", "每個自性獨立而以重疊方式存在；因為自性恆常，業的輪轉才能成立。"], "quote": {"t": "自性遍虛空，意識遍虛空也可以這麼說，總之自性是遍虛空的。", "s": "《坐禪之問答錄2》第18章 二〇二五年十二月"}, "src": "全書出現 748 次；高頻：第01章（203）、第04章（100）", "rel": ["alaye", "wangxiang", "foxing"]}, {"id": "alaye", "label": "阿賴耶識", "desc": "第八識的別名。Tai 師父強調它「不能產生也不能消失」：本來就那樣存在，不生不滅不增不減；真用為智、妄用為識。", "points": ["沒有「一念妄動全體變成阿賴耶識」這回事——阿賴耶識不能變，是它在上面起妄想。", "大圓鏡智就是菩薩「只有妄想」狀態下的智慧，沒有轉不轉的問題。"], "quote": {"t": "“一念妄動全體變成阿賴耶識”，阿賴耶識是不能變的，它本來就那樣存在，不生不滅不增不減，沒有什麼變成的問題。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 75 次；高頻：第01章（40）、第04章（7）", "rel": ["zixing", "wangxiang", "fenbie"]}, {"id": "foxing", "label": "佛性", "desc": "「眾生皆有佛性」的本意：所有人本來都是佛；從佛那裡起了妄想才跌落成凡夫，所以一定能靠修行回到佛的狀態。", "points": ["佛性不是得到什麼，而是回到自性裡沒有妄想、分別、執著的狀態。", "自性沒有元素——這個世界唯有意識，沒有物。"], "quote": {"t": "眾生皆有佛性，就是說我們本來都是佛，從佛那裡起了妄想之後跌落到這個境界，成為凡夫了，我們本來就是佛，所以完全可以靠修行回到佛的狀態。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 15 次；高頻：第01章（3）、第12章（3）", "rel": ["zixing", "wangxiang", "fopusa"]}, {"id": "wangxiang", "label": "妄想", "desc": "最細微、最底層的初妄是妄想世界的根本元素；我們看到的物質世界，是眾生妄想互相影響、和合而成。", "points": ["妄想可數：全書說的「可數」指妄想總量可數，初妄是最細微的底層元素。", "整個物質世界是「我的妄想＋其他眾生的妄想」和合而成，缺一邊就不成立。", "從初妄開始越來越多，我們能想到的妄想已經比底層元素粗重很多很多。"], "quote": {"t": "我們看到的整個物質世界，這個手機，這個桌子，我看到的一切的一切都是我的妄想和合而成，同時和其他眾生的妄想一起相互影響之下和合而成的。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 3,369 次；高頻：第01章（587）、第04章（352）", "rel": ["fenbie", "zhizhuo", "zixing"]}, {"id": "fenbie", "label": "分別心", "desc": "第七識：在妄想之後產生的個體認知（A 是 A、B 是 B）。阿羅漢還有分別心，滅盡分別心才是菩薩。", "points": ["先有妄想，再有分別心，再往下才是執著；眼睛這種注意力是執著之下的產物。", "「用眼睛看但心裡不分別」做不到——眼睛本身就是分別下的注意力。", "修禪定是從注意力一個個往上滅，滅到分別心去。"], "quote": {"t": "先有妄想，再有分別心，分別心之後再往下執著，執著裡再產生眼睛，注意力是執著的一種。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 565 次；高頻：第01章（137）、第12章（65）", "rel": ["wangxiang", "zhizhuo", "zixing"]}, {"id": "zhizhuo", "label": "執著", "desc": "意識的第三層，分別心之下的產物；凡夫因為執著六根而執著肉身，肉身是自性裡的幻體。", "points": ["肉身＝自己對六根的執著＋有緣眾生的執著，兩者相加才造成現在的身體。", "對凡夫而言，所有的關心都是執著；菩薩沒有我相、人相、眾生相。"], "quote": {"t": "空覺永珍，我們的肉身，一個是我們自己有對肉身的執著，我們對六根的執著，身體是六根和合而成嘛，六根都在身體裡，所以我們對六根有執著，所以也就對肉身有了執著。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 1,764 次；高頻：第01章（221）、第04章（179）", "rel": ["fenbie", "wangxiang", "xiqi"]}, {"id": "xiqi", "label": "習氣", "desc": "無始輪迴累積下來的慣性，是死後投生的「硬指標」：習氣與往生執念誰戰勝誰，決定死後往哪走。", "points": ["放任習氣，造新業比消業快得多；持戒是為了不造新惡業。", "吃肉習氣大，死時就被習氣追著走；功德大可以暫時壓住。", "淫慾種子、異性傾向都潛藏在習氣裡，修行到一定程度會翻出來。"], "quote": {"t": "如果吃肉的習氣更大的話，死的那段就會被習氣追著走。", "s": "《坐禪之問答錄2》第14章 二〇二五年七月"}, "src": "全書出現 751 次；高頻：第02章（76）、第04章（75）", "rel": ["ye", "chijie", "yinyu"]}]}, {"id": "b-sages", "side": "R", "label": "果位與聖眾", "desc": "佛、菩薩、羅漢是救援團隊；再來人與善知識是他們在世間的蹤跡。問答錄最接地氣的部分，是把果位講成「分工」。", "leaves": [{"id": "fopusa", "label": "佛菩薩", "desc": "輪迴體系裡的救援團隊：消業指導、加持、入夢點撥都找他們；他們以「你相信的人」的形象出現在你夢中。", "points": ["遇業障：先做功德迴向，再求佛菩薩指導——夢中點撥、醒時靈感都是方式。", "佛菩薩入夢會以你相信的人的形象出現，因為你信，所以以那個形象來。"], "quote": {"t": "當下很難困惑的話，就不要忙著做決策，除非這個決策是很急迫的事情，否則就不要忙著做決策，先做功德迴向，然後求佛菩薩指導。", "s": "《坐禪之問答錄2》第02章 羯磨(業）"}, "src": "全書出現 2,371 次；高頻：第02章（334）、第04章（315）", "rel": ["jiachi", "meng", "putixin"]}, {"id": "pusa", "label": "菩薩", "desc": "有妄想而無分別心、無執著的果位（初地 11 個妄想→等覺 1 個）。問答錄裡菩薩是「度人團隊」的主力：編劇、傳法、消業都靠他們。", "points": ["菩薩以七地為分水嶺：七地以上「人無我，法無我」，七地以下「人無我，法有我」。", "修改命運是負責該地區傳法的佛菩薩才有的許可權，且要透過編劇菩薩。", "菩薩度人先分信與不信：信佛的教，不信的恆順、不結惡緣。"], "quote": {"t": "佛、菩薩、羅漢，主要是他負責這個圈了、這個地區、一個文明的傳法人，才有這個許可權，也會去做這個事兒。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 5,751 次；高頻：第04章（1,139）、第12章（726）", "rel": ["aluohan", "fopusa", "zailai"]}, {"id": "aluohan", "label": "阿羅漢", "desc": "有分別心而無執著，已解脫生死；問答錄常拿阿難當例子：佛成佛，不等於所有有緣人同時成就。", "points": ["佛成佛後，其他有緣人墮落不影響佛；度他的是其他有緣的菩薩羅漢。", "佛可以把人帶到別的佛的世界，借加持力推到阿羅漢再帶回來。"], "quote": {"t": "不影響這個已經成佛的人。", "s": "《坐禪之問答錄2》第17章 二〇二五年十一月"}, "src": "全書出現 893 次；高頻：第04章（279）、第02章（71）", "rel": ["pusa", "fopusa", "jiachi"]}, {"id": "zailai", "label": "再來人", "desc": "帶著任務投胎的菩薩羅漢。Tai 師父常被問怎麼辨認：再來人的說法不會互相矛盾，一個人也遇不到兩個再來人同時傳法。", "points": ["再來人的所有辦法都是一致的；菩薩羅漢不爭搶信眾。", "一個時代一個地區只有一位再來人傳法；慧能與神秀也是先後不同地區。"], "quote": {"t": "不可能，再來人的所有辦法都是一致的。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 385 次；高頻：第04章（119）、第12章（41）", "rel": ["pusa", "shanzhishi", "fopusa"]}, {"id": "shanzhishi", "label": "善知識", "desc": "能把真實的佛菩薩加持帶給你的傳法者。判斷標準很實際：修他的法門有感應就是；魔事諸多就要小心。", "points": ["修他的法門得到真實加持感應＝善知識；修幾年魔事諸多就要考慮換。", "初期修法各門派基本一樣——真正的差別在後面的教法。"], "quote": {"t": "你修他的法門能得到真實的佛菩薩的加持和感應的話，那應該算是善知識。", "s": "《坐禪之問答錄2》第12章 佛門修行"}, "src": "全書出現 55 次；高頻：第12章（20）、第13章（6）", "rel": ["zailai", "fopusa", "jiachi"]}, {"id": "zhongyinshen", "label": "中陰身", "desc": "死後到投生之間的狀態，記得前世記憶；有了中陰身，閻王依業評判，輪轉才有序。", "points": ["中陰身記得前世記憶；外道也有專修中陰身的。", "沒有中陰身就沒有閻王殿；有了它，因果才變得有秩序。"], "quote": {"t": "中陰身期間是記得前世記憶的。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 175 次；高頻：第04章（94）、第17章（17）", "rel": ["lunhui", "diyu", "wangsheng"]}]}, {"id": "b-world", "side": "R", "label": "世界與輪迴", "desc": "一個佛控制一個法界，小球連成大世界；菩薩視角裡小球全部消失，叫一真法界。輪迴是佛墮落後的救援故事。", "leaves": [{"id": "shijie", "label": "世界", "desc": "一個佛控制的一個法界像小球，多個小球連成整個世界；歸屬世界按「有緣眾生」與「師承」兩種分法。", "points": ["世界歸屬兩種分法：有緣眾生多寡、師承所屬；可以以極樂為基地往返娑婆度人。", "每跳過一個世界，加持力減弱一分——分別心越重，阻擋越多。"], "quote": {"t": "下一個問題，然後菩薩羅漢的講歸屬的世界很重要，你問的是如果是極樂世界的人，有緣眾生多在娑婆，這個人死後是去極樂世界還是娑婆世界，你都說了是極樂世界的人，那可以去極樂世界，這邊要度的人多的話，他要來度就可以來度。", "s": "《坐禪之問答錄2》第17章 二〇二五年十一月"}, "src": "全書出現 5,153 次；高頻：第04章（2,072）、第12章（391）", "rel": ["yizhen", "jile", "lunhui"]}, {"id": "lunhui", "label": "輪迴", "desc": "佛起了無明就墮入輪迴，與其他墮落的佛進入無限地獄世界；沒墮落的佛來救——這是整個故事的骨架。", "points": ["自性不生不滅，眾生總數是定數；輪迴是佛墮落後的救援與回升過程。", "緣沒有辦法斬斷，只有把對方度了才算結束。"], "quote": {"t": "本來所有佛都沒有妄想，大家都好好的，但是有一些佛產生了無明，就墮落到輪迴裡，和其他墮落的佛一起，進入了一個無限地獄世界，一直在痛苦當中輪迴。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 632 次；高頻：第04章（222）、第12章（61）", "rel": ["shijie", "diyu", "zixing"]}, {"id": "tianjie", "label": "天界", "desc": "輪迴世界的上層樓層。把人推上天界有兩個原理：功德迴向與加持力；助念絕大多數是用功德來推。", "points": ["幫人往上推：用巨大功德迴向化解冤親債主的執著，或用加持力直接推。", "摩登伽女聽佛說法直接證阿羅漢——全靠加持力推。"], "quote": {"t": "理論上是可以稍微推一推的，把人推上上邊，就是兩個原理，一個是用巨大的功德，功德的迴向轉移，也就可以幫他化解掉冤親債主的那些不好的執著，不能完全徹底說是化解，而是壓制住，形成一種平衡的話，它就可以往上走。", "s": "《坐禪之問答錄2》第20章 二〇二六年二月"}, "src": "全書出現 294 次；高頻：第04章（155）、第20章（30）", "rel": ["wangsheng", "gongde", "jiachi"]}, {"id": "diyu", "label": "地獄", "desc": "整個世界只有一處地獄，裡面有很多小地方；地藏菩薩度的就是這個唯一的地獄，沒有哪個宗教自己擁有地獄。", "points": ["沒有「道家地獄」「佛家地獄」——客觀真相只有一種。", "眾生剛強難化，在地獄裡反覆出出進進，連地藏菩薩也沒法一次改變。"], "quote": {"t": "地獄這個世界只有一處，地獄是裡邊有很多小地方，但是整個世界客觀上講只有一處地獄，不是這個宗教有它的地獄，那個宗教有它的地獄，不是這樣的。", "s": "《坐禪之問答錄2》第20章 二〇二六年二月"}, "src": "全書出現 550 次；高頻：第04章（207）、第02章（53）", "rel": ["zhongyinshen", "dizang", "yinguo"]}, {"id": "yizhen", "label": "一真法界", "desc": "菩薩視角裡的世界：沒有空間分別，所有小球（法界）消失為一體；加持力直接灌入，沒有阻擋。", "points": ["阿羅漢還有十方分別：世界是一個個小球連線；菩薩沒有分別心，小球全部消失。", "有分別心加持力就減弱一分；進入輪迴就受阻。"], "quote": {"t": "但是如果成了菩薩的話，沒有分別心的情況下，菩薩的視角裡這個小球就全部消失了，所以叫“一真法界”，在菩薩的境界裡叫“一真法界”。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 14 次；高頻：第04章（11）、第01章（3）", "rel": ["shijie", "fenbie", "jiachi"]}, {"id": "fashen", "label": "法身", "desc": "《華嚴經》「一切諸佛同一法身」常被問是否「只有一個自性」：Tai 師父說每個自性都獨立，只是以重疊方式存在。", "points": ["眾生不是一個自性分裂出來的——若是，修行就變成互相殺人格。", "自性獨立、不可能生也不可能死；重疊存在是它的存在方式。"], "quote": {"t": "所以每一個自性都是獨立的個體，不可能生也不可能死。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 179 次；高頻：第04章（74）、第17章（15）", "rel": ["zixing", "shijie", "wangxiang"]}]}, {"id": "b-karma", "side": "R", "label": "羯磨（業）", "desc": "業是凡夫互動產生的情緒引力：造新業比消業快，所以持戒；一生能消的業很少，所以要有耐心與方法。", "leaves": [{"id": "ye", "label": "業", "desc": "羯磨：凡夫互動產生的情緒引力。造新業比消業快，所以持戒；一生能消的業其實很少。", "points": ["一生能帶出來消的業有限：只能死一次，消一個死亡的業。", "放任習氣，造新業比消業快得多——所以持戒是不再造新惡業。", "正常互動也在業當中；與陌生人互動產生新緣，後面還會有故事。"], "quote": {"t": "一個人一生出來，他一生也就八、九十年的壽命，能帶出來的業就這麼多，一輩子只能死一次，只能消掉一個死亡的業，是吧。", "s": "《坐禪之問答錄2》第14章 二〇二五年七月"}, "src": "全書出現 7,011 次；高頻：第02章（1,376）、第04章（1,315）", "rel": ["xiaoye", "yinguo", "chijie"]}, {"id": "xiaoye", "label": "消業", "desc": "業障現前的處理法：做功德迴向、求佛菩薩指導；菩薩羅漢消業要投胎帶業才能正常消。", "points": ["為什麼不直接往腦子灌資訊教人消業：讓人相信太難；禪定中出現「菩薩」反而不能信。", "業障最終以受報為基本方式：要麼受報、要麼度他、要麼感動債主放棄。"], "quote": {"t": "阿難乎，菩薩羅漢他要消業他就得投胎，帶著業投胎，才能正常消業。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 940 次；高頻：第02章（206）、第04章（187）", "rel": ["ye", "gongde", "fopusa"]}, {"id": "yinguo", "label": "因果", "desc": "世界的基本規則：看因果有代價——凡夫給人看因果多半結果不好；佛不在因果內，所以能看。", "points": ["世界規則不許隨便看因果：看了容易想躲避果報，擾亂規則。", "求啟示要求佛菩薩，不要向人求——佛菩薩讓你看到的，對彼此都無果報。"], "quote": {"t": "因為這個世界規則就是不許你隨便看因果。", "s": "《坐禪之問答錄2》第02章 羯磨(業）"}, "src": "全書出現 742 次；高頻：第02章（192）、第04章（89）", "rel": ["ye", "mingyun", "fopusa"]}, {"id": "mingyun", "label": "命運", "desc": "已寫好的劇本＋佛菩薩的保護：有大菩提心的人，命運不受隨機意外干擾，所受的痛苦都是命運裡該有的。", "points": ["沒有大菩提心，就容易被設計裡必須有的隨機事件傷害。", "大的意外在劇本裡會被注意；小機率意外經常有，所以要靠佛菩薩保護。"], "quote": {"t": "你有了大菩提心，佛菩薩保護你的命運，不受意外事件干擾，你所受的痛苦都是你命運裡該有的，這才是重要的一點。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 915 次；高頻：第04章（220）、第02章（113）", "rel": ["putixin", "fopusa", "ye"]}, {"id": "yuanqin", "label": "冤親債主", "desc": "與你有業債的眾生：被害者指向加害者的恐懼與報復心，層層疊加反映到你的自性裡。", "points": ["送冤親債主的標準做法：懺悔、發願、做功德迴向；同時該休息就休息。", "打坐到某階段眼睛泛紅是過程，不算冤親債主，過了就好。"], "quote": {"t": "眼睛裡有黑色的血絲衝上眼球的話，一般來說是冤親債主，我們是這麼看的，但是每個人情況不一樣，你就按照送冤親債主的方式，懺悔、發願、做功德迴向，用這套方法做就可以了，還有該休息好好休息，也有可能是你太疲勞了，就沒睡好。", "s": "《坐禪之問答錄2》第02章 羯磨(業）"}, "src": "全書出現 991 次；高頻：第02章（261）、第06章（111）", "rel": ["ye", "huixiang", "xiaoye"]}]}, {"id": "b-merit", "side": "L", "label": "功德與福報", "desc": "「給別人造成好的情緒」才叫功德；自性重疊，所以功德可以轉移、放大、迴向。這是問答錄裡最實用的「功德經濟學」。", "leaves": [{"id": "gongde", "label": "功德", "desc": "給別人造成好的情緒才叫功德；自性重疊，修行會讓有緣眾生受益，功德因此產生。", "points": ["功德的來源：有緣眾生因你的修行受益、開心，好的情緒迴流給你。", "境界越高的人唸經唸咒，傳遞出去的量越大——沒有妄想，阻礙就少。"], "quote": {"t": "功德，前面也講過了，功德、福德都是給別人造成好的情緒，才叫功德、福德。", "s": "《坐禪之問答錄2》第06章 修福積功德"}, "src": "全書出現 3,231 次；高頻：第06章（489）、第02章（467）", "rel": ["fubao", "huixiang", "jiachi"]}, {"id": "fubao", "label": "福報", "desc": "功德福德的總量決定你能過什麼生活：當一世皇帝的福報要超過全國人民總和；極樂世界靠諸佛福報撐住。", "points": ["極樂世界的人不會跌落：加持力＋諸佛功德疊加夠大，能影響所有人。", "想管理一億人的國家，你的福報要比一億人加起來還大。"], "quote": {"t": "這和一個國家的領導人，有時候皇帝的福報是一個原理，以前我也說過，要想當一世的皇帝，你所擁有的功德福德就是福報的總量，就要超過所有人民的總量。", "s": "《坐禪之問答錄2》第20章 二〇二六年二月"}, "src": "全書出現 1,088 次；高頻：第04章（189）、第02章（153）", "rel": ["gongde", "jile", "fopusa"]}, {"id": "huixiang", "label": "迴向", "desc": "功德的轉移方式：給一兩個人算得出比例；迴向法界眾生則「0 與 0.001 之間有巨大區別」，返回時成倍增加。", "points": ["給法界眾生迴向：每人分得極少，但返回時會成倍增加。", "功德迴向後希望他學佛是你的心願，不是他的——你只能希望。"], "quote": {"t": "你只要把功德迴向給法界眾生的話，每一個眾生所分得的是哪怕極少的一點，他再返回來的時候就會成倍增加。", "s": "《坐禪之問答錄2》第16章 二〇二五年九月"}, "src": "全書出現 1,160 次；高頻：第02章（194）、第06章（185）", "rel": ["gongde", "yuanqin", "jiachi"]}, {"id": "jiachi", "label": "加持", "desc": "佛菩薩提供的助力，靠「諸佛同體」傳遞，可以透過有緣的中間人轉手；境界越高傳遞比例越高。", "points": ["把人往上推有兩個原理：巨大功德的迴向轉移、佛菩薩的加持力。", "摩登伽女聽佛說法直接證阿羅漢——全靠加持力推。", "加持力一直在那裡，像看不見的寶藏，多數人不知道怎麼承接。"], "quote": {"t": "加持力，我現在講《楞嚴經》，《楞嚴經》裡摩登伽女遇到佛之後，聽了法她就直接修成阿羅漢了，她都沒有修行的過程，就全靠加持力來推，就可以推到阿羅漢的境界。", "s": "《坐禪之問答錄2》第20章 二〇二六年二月"}, "src": "全書出現 1,530 次；高頻：第02章（219）、第04章（216）", "rel": ["gongde", "fopusa", "putixin"]}, {"id": "fangsheng", "label": "放生", "desc": "與小動物結「純粹的幫助」之緣：放魚泥鰍以後要度它們；幫狗送到救助站就好，不要帶回家讓業緣變複雜。", "points": ["放生小魚泥鰍是結緣——以後要度它們；幫狗不要帶回家養，業緣會變複雜。", "除了純粹的幫助之外其他都不要——最簡單的做好事方法。"], "quote": {"t": "除了純粹的幫助之外，其他一切都不要，這最簡單的做好事的方法。", "s": "《坐禪之問答錄2》第20章 二〇二六年二月"}, "src": "全書出現 702 次；高頻：第06章（197）、第02章（117）", "rel": ["gongde", "yuanqin", "chijie"]}, {"id": "bushi", "label": "佈施", "desc": "供養、佈施產生功德；有人要求佈施也算互動與緣；菩薩也會以化身出現要求佈施——佈施了同樣有巨大功德。", "points": ["要求佈施也是互動，會產生情緒——也算一種緣。", "菩薩以化身出現要求佈施，佈施者同樣有巨大功德。"], "quote": {"t": "這也算一種緣，因為有時候菩薩也會以化身的形式出現在人們面前，不是報身，是化身的形態出現在一些人面前要求佈施，如果佈施了，同樣也會有巨大功德，這就看運氣了。", "s": "《坐禪之問答錄2》第02章 羯磨(業）"}, "src": "全書出現 660 次；高頻：第06章（90）、第02章（83）", "rel": ["gongde", "fubao", "pusa"]}]}, {"id": "b-vow", "side": "L", "label": "發心與戒行", "desc": "發大菩提心引來加持力；持戒是不再造新惡業的工程。這一章把「為什麼學佛」與「怎麼守住」講得最白。", "leaves": [{"id": "putixin", "label": "菩提心", "desc": "願意度眾生的大心。發大菩提心自然引來相應的加持力；八十億人口中真正發大菩提心的人萬中無一。", "points": ["有大菩提心的人，佛菩薩保護你的命運不受隨機意外干擾。", "發大菩提心已經走在別人前面——你知道怎麼引來強大的加持力。"], "quote": {"t": "你說的那算是你發了大菩提心了，你願意回到娑婆世界度人，那就是大菩提心，有大菩提心自然就有相應的加持力，這是必然的。", "s": "《坐禪之問答錄2》第16章 二〇二五年九月"}, "src": "全書出現 634 次；高頻：第03章（110）、第12章（84）", "rel": ["fayuan", "jiachi", "mingyun"]}, {"id": "fayuan", "label": "發願", "desc": "輪迴中值得記錄的重大事件：一發願就表示要開始從凡夫往佛的方向回頭走；發願本身就有巨大加持。", "points": ["光是發願本身就是巨大的加持：一發願，就開始往回走。", "觀音菩薩在觀世音如來座下初發菩提心——佛經特意記載這個起點。"], "quote": {"t": "只要一發願，光是發願本身就是一個巨大的給自己疊buff的事情。", "s": "《坐禪之問答錄2》第03章 發心"}, "src": "全書出現 1,488 次；高頻：第02章（226）、第03章（181）", "rel": ["putixin", "zixing", "gongde"]}, {"id": "chijie", "label": "持戒", "desc": "受戒是成就戒體：佛的時代在戒壇修行五到七年，戒成就後對誘惑有絕對免疫力，龍天善神護持。", "points": ["供養僧眾不管對方持戒與否，本身就是功德；對方境界越高你功德越大。", "守戒不犯戒功德不長，行善才有功德；犯戒就是惡業在增長。"], "quote": {"t": "師父帶著你在戒壇上修行五到七年時間，直接讓你成就這個戒行，而且佛的加持力很大，至少你不殺生、不邪淫，這個戒成就了，你就算是成就了一個戒體。", "s": "《坐禪之問答錄2》第05章 戒行"}, "src": "全書出現 167 次；高頻：第14章（23）、第13章（18）", "rel": ["ye", "chisu", "yinyu"]}, {"id": "chisu", "label": "吃素", "desc": "想吃素，身體得跟上：先練降魔坐打通腸胃，消化吸收好了，吃素才不會出問題。", "points": ["雙盤能坐一小時以上、右側腸胃打通，吃什麼都好消化——吃素的前提是身體跟上。", "一般人突然吃素又減食量容易出問題；吸收能力決定吃素的效果。"], "quote": {"t": "你想改吃素，你的身體得跟上。", "s": "《坐禪之問答錄2》第05章 戒行"}, "src": "全書出現 104 次；高頻：第05章（32）、第02章（10）", "rel": ["chijie", "shuangpan", "yinyu"]}, {"id": "yinyu", "label": "淫慾", "desc": "淫慾種子潛藏在無始輪迴的習氣裡：修行到一定程度會翻出來，甚至出現異性傾向的幻境——撐過這個階段就好。", "points": ["淫慾翻種子是必經階段：當過男人也當過女人，各種慾望都潛藏在意識裡。", "從佛理上說，喜歡也是執著——滅淫慾是初禪的門檻。"], "quote": {"t": "過了這個淫慾種子翻出來的階段之後，有可能又會翻出來異性的淫慾，就是說你是男的，但是在那個淫慾裡就是有同性戀的慾望會出現，或者說把你想象成女性，然後有那種慾望也會出現的。", "s": "《坐禪之問答錄2》第05章 戒行"}, "src": "全書出現 729 次；高頻：第05章（176）、第11章（77）", "rel": ["xiqi", "chijie", "chanding"]}]}, {"id": "b-pure", "side": "L", "label": "淨土與往生", "desc": "極樂世界、往生、助念、地藏與觀音——問答錄把淨土法門講成可以操作的臨終工程。", "leaves": [{"id": "jile", "label": "極樂世界", "desc": "阿彌陀佛的世界：諸佛加持力與功德疊加夠大，去了不會跌落；歸屬按有緣眾生與師承兩種分法。", "points": ["極樂世界的人可以以那裡為基地，來娑婆度完人再回去休息。", "邊地疑城：還沒完全進入那個世界的人會被放在外邊，也有人被打回來。"], "quote": {"t": "但是你可以從極樂世界來這度人，度完人之後，又可以去極樂世界休息一段時間，學習一段時間又可以繼續來度，這兩邊是可以同時來的，不一定要一直待在那裡。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 1,146 次；高頻：第04章（548）、第11章（71）", "rel": ["wangsheng", "amituo", "shijie"]}, {"id": "wangsheng", "label": "往生", "desc": "臨終的功課：本人要有往生的願望，助念才有用；功德、修行的程度、福德決定能不能馬上走。", "points": ["助念有效的前提：當事人有往生的願望；他自己不想去，助念也沒用。", "死後修為福德不夠會徘徊二十四小時，冤親債主也來，這時助念幫他。", "吃肉習氣與往生執念誰勝誰，決定死後被哪邊帶走。"], "quote": {"t": "助念有沒有效果，首先是看要死的那個當事人，他有沒有強烈的要往生的願望，哪怕不那麼強烈，他有這個願望，以前有過修行，有想往生的這個願望的話，助念有效果。", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 886 次；高頻：第04章（320）、第12章（88）", "rel": ["amituo", "jile", "tianjie"]}, {"id": "amituo", "label": "阿彌陀佛", "desc": "三十六萬億佛共同的名號；知道這件事本身就有加持力——相信每一位佛都能提供加持。", "points": ["阿彌陀佛不只是西方世界當下那一位——是無量諸佛的共同名號。", "消業：生死重罪可以信，但業障最終以受報為基本方式。"], "quote": {"t": "下一個問題，西人，唸佛，阿彌陀佛，你已經知道了阿彌陀佛名號是三十六萬億佛共同的名號，你知道有這麼多的佛的時候，就已經開始效果不一樣了。", "s": "《坐禪之問答錄2》第11章 禪定"}, "src": "全書出現 814 次；高頻：第11章（246）、第04章（214）", "rel": ["jile", "nianfo", "guanyin"]}, {"id": "guanyin", "label": "觀音", "desc": "思情法門的所緣：思念觀音菩薩與思念阿彌陀佛一樣可以往生；妄念多的人先主修觀音法門。", "points": ["念六字大明咒或大悲咒、思念觀音菩薩，理論上與念阿彌陀佛一樣能去極樂。", "妄念多、雜亂的時候，先想像觀音菩薩像，把注意力拴在善所緣上。"], "quote": {"t": "你說你念六字大明咒，那思念觀音菩薩也可以，理論上都一樣的，也可以去極樂世界。", "s": "《坐禪之問答錄2》第12章 佛門修行"}, "src": "全書出現 551 次；高頻：第04章（119）、第02章（79）", "rel": ["amituo", "siching", "dabeizhou"]}, {"id": "dizang", "label": "地藏", "desc": "「地獄不空，誓不成佛」的代表：像地藏菩薩一樣發大願，加持力就來；地藏法門也是常見的在家法門。", "points": ["想快速滅嗔恨等習氣：做功德＋發極大的願——像地藏菩薩發願度地獄眾生。", "《地藏經》講的是因果：照著做（不吃肉等）才不墮惡道，不是念過就算。"], "quote": {"t": "像地藏菩薩一樣，他發願以後一直度地獄的所有眾生，然後他母親就從地獄解脫了。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 1,465 次；高頻：第07章（220）、第12章（211）", "rel": ["diyu", "dizangjing", "fayuan"]}]}, {"id": "b-basic", "side": "L", "label": "入門功課", "desc": "修行從身體開始：腹式呼吸、磕大頭、雙盤、打坐——問答錄裡被問最多次的「第一步」與「量」。", "leaves": [{"id": "fushi", "label": "腹式呼吸", "desc": "修行的第一步：主動練，大部分認真練的人兩個月到半年練成；打坐時間夠長也會自然轉成腹式呼吸。", "points": ["每天早晚練＋每天打坐一兩小時，兩個月到半年基本練成。", "打坐進入狀態會自然變腹式呼吸——但一般人坐不夠久，所以要主動練。", "練好腹式呼吸，後面修行的障礙就少了很多。"], "quote": {"t": "練好腹式呼吸很重要，腹式呼吸是修行的第一步。", "s": "《坐禪之問答錄2》第13章 二〇二五年六月"}, "src": "全書出現 541 次；高頻：第10章（137）、第08章（77）", "rel": ["dazuo", "kedatou", "shuangpan"]}, {"id": "kedatou", "label": "磕大頭", "desc": "每天磕大頭：出汗排血液雜質，磨滅傲慢心——恭敬心是凡夫對治我執的法門。", "points": ["磕大頭時放個大悲咒跟著念，負面情緒會好一些；連續幾天磕頭＋打坐，情緒明顯改善。", "恭敬心只是對治法：佛沒有恭敬與蔑視；超越分別心的聖者也沒有。"], "quote": {"t": "那麼我以前也說了，你這種，磕大頭，磕大頭，每天磕大頭是可以慢慢磨滅掉你的傲慢心的，還有這個也是需要修行人慢慢放下，你有大願的話，對別人有這種責任感的話，傲慢心會更少，就像一個父母看到一個孩子、自己的孩子生病，父母不會在孩子面前有傲慢心，應該是對孩子有更大的責任心，用慈悲心來看待，甚至孩子痛了，自己也會痛心痛，這樣才對，這是一個父母對孩子的觀念，因為父母是對孩子有這樣的責任感的。", "s": "《坐禪之問答錄2》第19章 二〇二六年一月"}, "src": "全書出現 164 次；高頻：第09章（53）、第10章（16）", "rel": ["fushi", "dazuo", "dabeizhou"]}, {"id": "shuangpan", "label": "雙盤", "desc": "熬腿的工程：就算不入定，維持雙盤本身就對身體有修復作用；打坐一般就是硬撐，撐過去就好。", "points": ["保持雙盤姿勢，氣的運轉與身體修復都在進行；長時間不打坐連精都可能漏。", "受過傷更應該試雙盤：打坐狀態下骨頭可以百分之百修復。"], "quote": {"t": "Zhiyu，只要維持雙盤的狀態，就比正常的不雙盤的狀態，身體還是有所變化的。", "s": "《坐禪之問答錄2》第10章 雙盤"}, "src": "全書出現 770 次；高頻：第10章（317）、第17章（54）", "rel": ["dazuo", "fushi", "chanding"]}, {"id": "dazuo", "label": "打坐", "desc": "一切實修的載體：能增加就增加——雙盤兩小時、配合腹式呼吸與磕頭；打坐一般是硬撐，撐過階段就好。", "points": ["打坐過猛鼻子可能發炎，但超過兩小時後慢性問題會慢慢好。", "打坐磕頭能加就加；體能撐得住可以繼續增加。"], "quote": {"t": "一開始打坐之前，一隻鼻子一直塞著的，但是打坐到一定程度之後它就通了，然後鼻涕也是，流了一段時間就好了，所以我是從來沒去看醫院的，我就硬撐，打坐一般人都是硬撐，然後撐到一定程度就夠熬過去了。", "s": "《坐禪之問答錄2》第17章 二〇二五年十一月"}, "src": "全書出現 4,038 次；高頻：第10章（1,131）、第11章（332）", "rel": ["shuangpan", "fushi", "kedatou"]}]}, {"id": "b-jhana", "side": "R", "label": "禪定次第", "desc": "在意識層面上的修行：從滅文字妄想，到參思情疑情，到陽神與觀丹田的身心現象——境界相一律不能信。", "leaves": [{"id": "chanding", "label": "禪定", "desc": "在意識層面上的修行：境界高「能看」的可能性高，但決定權在寫劇本的人；無所求只是看，有所求反而不給。", "points": ["禪定境界與能否看到真相是兩回事：決定權在上邊。", "拿福報去兌換：先做好福報、發願為眾生做事，科技點與企業都是這樣來的。"], "quote": {"t": "這和你的禪定境界無關，是上邊讓你看你才能看見，但是你的禪定境界高的話能看的可能性高，只不過決定權在他們身上，上邊的人，寫劇本的人，他們覺得可以給你就給你，不能給你就不能給你。", "s": "《坐禪之問答錄2》第18章 二〇二五年十二月"}, "src": "全書出現 640 次；高頻：第11章（162）、第04章（75）", "rel": ["wenziwang", "siching", "yangshen"]}, {"id": "wenziwang", "label": "文字妄想", "desc": "腦中的語言念頭：滅文字妄想是唸咒唸經的第一步——從長咒開始，念累了轉短咒、念佛、觀佛、思佛。", "points": ["文字妄想熾盛、注意力散亂時，從長咒（如大悲咒）開始念。", "唸佛唸經是代替妄想不是壓制：壓制本身也是妄想。"], "quote": {"t": "現在如果你覺得文字妄想熾盛，注意力很散亂，就從滅文字妄想的唸咒或者唸經開始，就從長咒開始念。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 702 次；高頻：第01章（142）、第11章（124）", "rel": ["nianfo", "dabeizhou", "chanding"]}, {"id": "siching", "label": "思情", "desc": "情緒修行法門：思情靠思念的驅動力（想一個人），疑情靠好奇心（唸佛是誰）；要安住三禪、雙盤 24 小時的程度才參得動。", "points": ["參思情往前有觀法（觀無量壽經）；參疑情往前是觀丹田或耳根圓通。", "有情慾的人都有思情——小時候思念母親也是；與阿彌陀佛緣分深就能念佛入思情。"], "quote": {"t": "我們這個世界的人都有情慾，只要有情慾的人都有思情。", "s": "《坐禪之問答錄2》第12章 佛門修行"}, "src": "全書出現 687 次；高頻：第11章（307）、第17章（69）", "rel": ["guanyin", "chanding", "dantian"]}, {"id": "yangshen", "label": "陽神", "desc": "意識與肉身之間的「線」：欲界定到初禪的人有接近人形的陽神；二禪開始變成發光球體。佛菩薩顯化身是先控陽神再控肉身。", "points": ["定中看到的元神、原型形象一般是陽神——欲界定到初禪接近人形。", "二禪起陽神變成有顏色的光球；道家講的元神就是這個。"], "quote": {"t": "以前第一本書裡說過了，如果意識、自性是主人的話，我們肉身是木偶，木偶和主人之間還有一個線，這個是陽神。", "s": "《坐禪之問答錄2》第11章 禪定"}, "src": "全書出現 543 次；高頻：第11章（222）、第04章（74）", "rel": ["chanding", "huanjue", "zixing"]}, {"id": "dantian", "label": "丹田", "desc": "觀丹田等身體觀法是入門與過渡：注意力放丹田，氣走正常線路；長時間往腦袋引氣會出問題。", "points": ["觀丹田，氣從背後正常轉上來，不會逆行；說話、唱歌才會把氣從下引出來（漏氣）。", "參疑情思情參不動時，先觀丹田或耳根圓通。"], "quote": {"t": "如果長時間往腦袋上引氣，有可能會出現問題，所以你還是把注意力放到觀丹田。", "s": "《坐禪之問答錄2》第15章 二〇二五年八月"}, "src": "全書出現 335 次；高頻：第11章（103）、第10章（62）", "rel": ["chanding", "siching", "fushi"]}]}, {"id": "b-recite", "side": "L", "label": "唸誦法門", "desc": "唸佛、持咒、唸經：都是代替妄想的工具；效果看修為與發心，不是看咒本本身。", "leaves": [{"id": "nianfo", "label": "唸佛", "desc": "用佛號代替妄想：一邊打妄想一邊念，堅持一兩年，妄想自然減少；「唸佛是誰」也是參疑情的話頭。", "points": ["唸佛唸經是代替不是壓制；妄想多就出聲念。", "滅文字妄想的順序：長咒→短咒→念佛→觀佛→思佛，按境界來定。"], "quote": {"t": "不是壓制，而是代替掉，用唸佛唸經的方式來代替很繁雜的妄想，繁雜的時候妄想比唸佛唸經要多，所以你一直念著一直唸佛唸經不需要刻意的控制，你可以一直打妄想一直唸佛唸經，這也是修行，一邊打妄想一直一邊念著一邊出聲念，如果妄想太多了你就出聲念就可以了。", "s": "《坐禪之問答錄2》第18章 二〇二五年十二月"}, "src": "全書出現 1,116 次；高頻：第11章（215）、第12章（107）", "rel": ["amituo", "wenziwang", "siching"]}, {"id": "dabeizhou", "label": "大悲咒", "desc": "長咒的代表：文字妄想熾盛時從它開始念；磕大頭時跟著念，負面情緒會好一些。", "points": ["選一個長咒（大悲咒什麼的）開始，念累了轉短咒、再轉念佛觀佛思佛。", "磕頭時放個大悲咒跟著心念，負面情緒的改善明顯。"], "quote": {"t": "選一個長咒，大悲咒什麼的，念著念著，哪一天覺得大悲咒念著挺累的，那就開始轉個短咒，然後再轉念佛，念得也挺累的，那就觀佛，然後觀佛累了那就思佛，是這個順序，是根據你的境界來定的，並不你想來哪個就來哪個。", "s": "《坐禪之問答錄2》第01章 自性與意識"}, "src": "全書出現 487 次；高頻：第07章（101）、第02章（50）", "rel": ["guanyin", "wenziwang", "kedatou"]}, {"id": "dizangjing", "label": "地藏經", "desc": "因果教育經：不墮三惡道靠的是照經裡的做（持戒行善），不是「念過」；效果與信心成正比。", "points": ["壞人念一遍經不消業——這世界就沒有因果了；要如實持戒修行。", "半信半疑地念，效果也有，但和全信的效果不同。"], "quote": {"t": "不是因為念過《地藏經》就不墮入了，而是按照《地藏經》裡做了。", "s": "《坐禪之問答錄2》第07章 唸誦經咒"}, "src": "全書出現 819 次；高頻：第07章（170）、第02章（93）", "rel": ["dizang", "chijie", "yinguo"]}, {"id": "lengyanzhou", "label": "楞嚴咒", "desc": "對治天魔的咒：威力取決於修為與發心——發心越純越貼近大菩提心威力越大，想傷害對方反而打折。", "points": ["不管念什麼咒，哪怕四字佛號，修為到了效果自然起。", "發心想讓對方下地獄，威力反而打折。"], "quote": {"t": "任何咒的威力還是取決於你的修為。", "s": "《坐禪之問答錄2》第07章 唸誦經咒"}, "src": "全書出現 220 次；高頻：第07章（60）、第21章（29）", "rel": ["putixin", "nianfo", "dabeizhou"]}]}, {"id": "b-phenom", "side": "L", "label": "境界與現象", "desc": "開悟的定義、神通的使用時機、夢與幻覺的判斷——問答錄裡最常見的「這是境界嗎」的標準答案。", "leaves": [{"id": "kaiwu", "label": "開悟", "desc": "Tai 師父的定義：滅盡所有情緒、離了所有的苦（四禪）才算開悟；嚴格說，明心見性是成佛的境界。", "points": ["各宗派對開悟說法不一；這裡以無為法為標準——看你滅到了什麼程度。", "一般說的明心見性多半是理悟：道理上信了眾生皆有佛性，是修行的開始。"], "quote": {"t": "在我這裡，我是到四禪才算開悟的，就是滅盡所有的情緒，離了所有的苦才算開悟。", "s": "《坐禪之問答錄2》第12章 佛門修行"}, "src": "全書出現 140 次；高頻：第12章（45）、第11章（12）", "rel": ["zixing", "chanding", "foxing"]}, {"id": "shentong", "label": "神通", "desc": "神通什麼時候用？最初現世的佛（釋迦牟尼）適合用，其他人最好少用；顯神通給不信的人只會被當妖怪。", "points": ["神通能幫到人的時候稍微有用；公開用了，後面麻煩事就多了。", "鬼有鬼通、外道也修神通——跟槓精顯神通沒有意義。"], "quote": {"t": "還有最後一個問題，神通來度化，神通什麼時候用，這個一般來說只有最初的佛，最初現的那位佛，釋迦牟尼佛，他適合用，但其他人是最好還是少用。", "s": "《坐禪之問答錄2》第18章 二〇二五年十二月"}, "src": "全書出現 251 次；高頻：第04章（60）、第12章（42）", "rel": ["chanding", "fopusa", "huanjue"]}, {"id": "meng", "label": "夢", "desc": "大部分夢是妄念，不用管；佛菩薩的加持夢會有明確資訊，做夢後佛法信心大增，很少人有。", "points": ["有些夢是未來的預示——神通的低階表現。", "從解脫者的視角看，我們的現實世界也是夢。"], "quote": {"t": "Mr Ayong，對於喜歡談夢的人，我想說大部分夢都是假的，你記不起來就記不起來，那都是假的，都是妄念而已，不需要管。", "s": "《坐禪之問答錄2》第12章 佛門修行"}, "src": "全書出現 1,434 次；高頻：第12章（379）、第17章（187）", "rel": ["fopusa", "shentong", "wangxiang"]}, {"id": "huanjue", "label": "幻覺", "desc": "定中看到的境界相不能信：六根殘相、內心慾望的展現；催眠最多到初禪二禪層面。", "points": ["禪定中看到的一切境界全是假的——「我是菩薩要你聽我的」更要小心。", "在分別心層面真實看到所經歷都是幻，才算徹底轉換。"], "quote": {"t": "因為我們在前面一直在教你啊，初禪、二禪全部教在你——禪定中看到的一切境界全是假的，那個都是六根殘相、內心慾望的展現之類的，你不能信！", "s": "《坐禪之問答錄2》第04章 世界起源與輪轉"}, "src": "全書出現 113 次；高頻：第11章（24）、第02章（16）", "rel": ["yangshen", "shentong", "chanding"]}]}];
+        var EBOOK_LINKS = {"zixing": "wenda2_ebook/18_trad.html#question-928a38c84277", "alaye": "wenda2_ebook/01_trad.html#question-49bdb14fc31d", "foxing": "wenda2_ebook/01_trad.html#question-cfe7ee1d8ad5", "wangxiang": "wenda2_ebook/01_trad.html#question-0097fff1aab2", "fenbie": "wenda2_ebook/01_trad.html#question-9b94b953d41c", "zhizhuo": "wenda2_ebook/04_trad.html#question-f93fe5dc1271", "xiqi": "wenda2_ebook/14_trad.html#question-9f755b5d9403", "fopusa": "wenda2_ebook/02_trad.html#question-e3989f2a591a", "pusa": "wenda2_ebook/04_trad.html#question-f4a5327c94a1", "aluohan": "wenda2_ebook/17_trad.html#question-98d057f399e7", "zailai": "wenda2_ebook/04_trad.html#question-4b354748c99b", "shanzhishi": "wenda2_ebook/12_trad.html#question-c26b8b6cbbc9", "zhongyinshen": "wenda2_ebook/04_trad.html#question-8b6c7eb12896", "shijie": "wenda2_ebook/17_trad.html#question-8731d2a272d3", "lunhui": "wenda2_ebook/01_trad.html#question-d78a0da6ecbd", "tianjie": "wenda2_ebook/20_trad.html#question-575ba2ccdd66", "diyu": "wenda2_ebook/20_trad.html#question-65175910755a", "yizhen": "wenda2_ebook/01_trad.html#question-d991afdd85d9", "fashen": "wenda2_ebook/01_trad.html#question-e63b651dbef9", "ye": "wenda2_ebook/14_trad.html#question-59848028a3b6", "xiaoye": "wenda2_ebook/04_trad.html#question-894221981a12", "yinguo": "wenda2_ebook/02_trad.html#question-c482c71aa824", "mingyun": "wenda2_ebook/04_trad.html#question-20d8a1a0afca", "yuanqin": "wenda2_ebook/02_trad.html#question-3dcad4b93c6e", "gongde": "wenda2_ebook/06_trad.html#question-9020e9e3f1da", "fubao": "wenda2_ebook/20_trad.html#question-18d8a9b03fb6", "huixiang": "wenda2_ebook/16_trad.html#question-16a9e15f4a49", "jiachi": "wenda2_ebook/20_trad.html#question-575ba2ccdd66", "fangsheng": "wenda2_ebook/20_trad.html#question-3af388cb5e56", "bushi": "wenda2_ebook/02_trad.html#question-ffd8242f6be5", "putixin": "wenda2_ebook/16_trad.html#question-9cf623e9c000", "fayuan": "wenda2_ebook/03_trad.html#question-d1e526ea43e5", "chijie": "wenda2_ebook/05_trad.html#question-a7d8937df1ae", "chisu": "wenda2_ebook/05_trad.html#question-97b0f5bbaed7", "yinyu": "wenda2_ebook/05_trad.html#question-6386b628e4a5", "jile": "wenda2_ebook/04_trad.html#question-b3b193abbf9d", "wangsheng": "wenda2_ebook/04_trad.html#question-10bfcda4b0e8", "amituo": "wenda2_ebook/11_trad.html#question-4ed289f09e17", "guanyin": "wenda2_ebook/12_trad.html#question-42f0dab41883", "dizang": "wenda2_ebook/01_trad.html#question-d6c129d6828c", "fushi": "wenda2_ebook/13_trad.html#question-9f5aca11cab9", "kedatou": "wenda2_ebook/19_trad.html#question-e01348213893", "shuangpan": "wenda2_ebook/10_trad.html#question-ff127be5308c", "dazuo": "wenda2_ebook/17_trad.html#question-0ef51f9b036c", "chanding": "wenda2_ebook/18_trad.html#question-705c189e68bc", "wenziwang": "wenda2_ebook/01_trad.html#question-f33269ab6bfa", "siching": "wenda2_ebook/12_trad.html#question-42f0dab41883", "yangshen": "wenda2_ebook/11_trad.html#question-b39988a6aa46", "dantian": "wenda2_ebook/15_trad.html#question-7265b75c0ce9", "nianfo": "wenda2_ebook/18_trad.html#question-97a6a153f6cb", "dabeizhou": "wenda2_ebook/01_trad.html#question-f33269ab6bfa", "dizangjing": "wenda2_ebook/07_trad.html#question-3138b92a629d", "lengyanzhou": "wenda2_ebook/07_trad.html#question-d02b304f3952", "kaiwu": "wenda2_ebook/12_trad.html#question-617976e05509", "shentong": "wenda2_ebook/18_trad.html#question-9eb5172df884", "meng": "wenda2_ebook/12_trad.html#question-bf915fae5607", "huanjue": "wenda2_ebook/04_trad.html#question-894221981a12", "root": "wenda2_ebook/01_trad.html#question-e63b651dbef9"};
+        var INTRO_CARDS = [{"id": "intro-read", "label": "一張圖看懂全書", "desc": "點任何名詞，右側展開定義、書中要點、逐字引文與出處統計；虛線是關聯名詞，點一下就能跳過去，把整本問答錄串著讀。"}, {"id": "intro-pick", "label": "名詞怎麼選的", "desc": "用程式對全書 9,231 個回答逐字統計，選出 57 個高頻名詞，按問答錄自己的主題分成 11 條主幹；每個節點的出現次數都是實際統計數字。"}, {"id": "intro-quote", "label": "引文與出處", "desc": "每句引文都從《坐禪之問答錄2》原文逐字摘錄（省略以……標示），並連結到電子書原文位置，方便對照上下文、聽 Tai 師父的完整回答。"}];
+
+        var NODES = { root: ROOT };
+        BRANCHES.forEach(function (b) {
+            NODES[b.id] = b;
+            b.leaves.forEach(function (l) {
+                l.branch = b.label;
+                NODES[l.id] = l;
+            });
+        });
+
+var CX = 540, HUB_OFF = 156, LEAF_OFF = 332;
+        var LEAF_H = 34, BRANCH_GAP = 26, BOX_H = 26;
+        var ICON_SIZE = 13, ICON_GAP = 6;
+        var CJK = /[\u2e80-\u9fff\u3000-\u303f\uff00-\uffef]/;
+
+        /* 九個主節點共用的 SVG 圖示（chips + 心智圖節點） */
+        var NODE_ICON_SVG = {"root": "<circle cx=\"12\" cy=\"12\" r=\"7\" fill=\"currentColor\"/>", "b-mind": "<circle cx=\"12\" cy=\"12\" r=\"8.5\" stroke=\"currentColor\" stroke-width=\"1.7\" fill=\"none\"/><circle cx=\"12\" cy=\"12\" r=\"3.4\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"12\" r=\"6\" stroke=\"currentColor\" stroke-width=\"1\" fill=\"none\" opacity=\".4\"/>", "b-sages": "<path d=\"M12 3.5l4.5 4.5-4.5 4.5-4.5-4.5z\" fill=\"currentColor\" opacity=\".85\"/><path d=\"M12 11.5l4.5 4.5-4.5 4.5-4.5-4.5z\" fill=\"currentColor\" opacity=\".5\"/>", "b-world": "<circle cx=\"12\" cy=\"12\" r=\"8.5\" stroke=\"currentColor\" stroke-width=\"1.7\" fill=\"none\"/><ellipse cx=\"12\" cy=\"12\" rx=\"3.5\" ry=\"8.5\" stroke=\"currentColor\" stroke-width=\"1.5\" fill=\"none\"/><path d=\"M3.5 12h17\" stroke=\"currentColor\" stroke-width=\"1.4\"/>", "b-karma": "<path d=\"M12 4v16\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\"/><path d=\"M5 8l7-4 7 4\" stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M5 8a3.5 3.5 0 007 0M12 4a3.5 3.5 0 017 0\" stroke=\"currentColor\" stroke-width=\"1.4\" fill=\"none\"/><circle cx=\"5\" cy=\"8\" r=\"1.6\" fill=\"currentColor\"/><circle cx=\"19\" cy=\"8\" r=\"1.6\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"19\" r=\"1.8\" fill=\"currentColor\" opacity=\".5\"/>", "b-merit": "<path d=\"M12 20c-4.5 0-8-3-8.5-7 3.5.5 6.5 2.5 8.5 6.2C14 15.5 17 13.5 20.5 13c-.5 4-4 7-8.5 7z\" fill=\"currentColor\" opacity=\".8\"/><path d=\"M12 12.2c-1.8-3-4.5-5-7.8-5.4C4.8 3.8 8.1 1.8 12 3c3.9-1.2 7.2.8 7.8 3.8-3.3.4-6 2.4-7.8 5.4z\" fill=\"currentColor\" opacity=\".45\"/>", "b-vow": "<path d=\"M12 3.2c2.6 3 4 5.6 4 8a4 4 0 11-8 0c0-2.4 1.4-5 4-8z\" fill=\"currentColor\" opacity=\".8\"/><path d=\"M7.5 14.5c-1.8 1-2.7 2.4-2.7 4 1.6-.2 2.9-.9 3.8-2.2M16.5 14.5c1.8 1 2.7 2.4 2.7 4-1.6-.2-2.9-.9-3.8-2.2\" stroke=\"currentColor\" stroke-width=\"1.5\" fill=\"none\" stroke-linecap=\"round\"/>", "b-pure": "<circle cx=\"12\" cy=\"12\" r=\"8.5\" stroke=\"currentColor\" stroke-width=\"1.6\" fill=\"none\"/><path d=\"M12 3.5v17M3.9 9.2h16.2M3.9 14.8h16.2\" stroke=\"currentColor\" stroke-width=\"1.4\"/>", "b-basic": "<path d=\"M4 18c2-3 4-3 6 0s4 3 6 0 4-3 6 0\" stroke=\"currentColor\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\"/><path d=\"M4 11c2-3 4-3 6 0s4 3 6 0 4-3 6 0\" stroke=\"currentColor\" stroke-width=\"1.8\" fill=\"none\" stroke-linecap=\"round\" opacity=\".45\"/>", "b-jhana": "<path d=\"M4 19h5v-4h5v-4h5V7\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\" fill=\"none\"/><circle cx=\"19\" cy=\"5.5\" r=\"2\" fill=\"currentColor\"/>", "b-recite": "<path d=\"M8 12a4 4 0 018 0v5.5a4 4 0 01-8 0z\" stroke=\"currentColor\" stroke-width=\"1.7\" fill=\"none\"/><path d=\"M16 11c1.8.4 3 1.8 3 3.6M17.5 6.5c2.8 1 4.5 3.4 4.5 6.5\" stroke=\"currentColor\" stroke-width=\"1.5\" fill=\"none\" stroke-linecap=\"round\"/><circle cx=\"12\" cy=\"14.5\" r=\"1.8\" fill=\"currentColor\"/>", "b-phenom": "<path d=\"M20.5 14.5A8.5 8.5 0 1111 3.7a7 7 0 109.5 10.8z\" stroke=\"currentColor\" stroke-width=\"1.7\" fill=\"none\" stroke-linejoin=\"round\"/><circle cx=\"17\" cy=\"6\" r=\"1.4\" fill=\"currentColor\"/>"};
+
+        function iconHtml(id) {
+            var inner = NODE_ICON_SVG[id];
+            if (!inner) return '';
+            return '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">' + inner + '</svg>';
+        }
+
+        function textWidth(s, size) {
+            var w = 0;
+            for (var i = 0; i < s.length; i++) {
+                w += CJK.test(s.charAt(i)) ? size : size * 0.56;
+            }
+            return w;
+        }
+
+        /* ------------------------------------------------ 簡繁即時轉換 */
+        /* lang-switch.js 提供 tgl_lang API；本頁所有動態產生的文字
+           都先經 T() 完成轉換才寫入 DOM，避免繁體閃一下才變簡體。 */
+        function langSimp() {
+            try { return !!(window.tgl_lang && window.tgl_lang.getVariant() === 'simp'); } catch (e) { return false; }
+        }
+        function T(s) {
+            if (typeof s !== 'string' || !s) return s;
+            if (langSimp()) {
+                var r = window.tgl_lang.convertTW(s);
+                if (r) return r;
+            }
+            return s;
+        }
+
+        function computeLayout() {
+            var boxes = [], totals = { L: 0, R: 0 };
+            ['L', 'R'].forEach(function (side) {
+                var bs = BRANCHES.filter(function (b) { return b.side === side; });
+                var sum = 0;
+                bs.forEach(function (b) { sum += b.leaves.length * LEAF_H; });
+                totals[side] = sum + (bs.length - 1) * BRANCH_GAP;
+            });
+            var height = Math.max(totals.L, totals.R) + 60;
+            var cy = height / 2;
+            var iconExtra = ICON_SIZE + ICON_GAP;
+
+            var rootW = textWidth(T(ROOT.label), 14) + 30 + iconExtra;
+            boxes.push({ id: 'root', label: T(ROOT.label), x: CX - rootW / 2, y: cy - 17,
+                         w: rootW, h: 34, kind: 'root' });
+
+            ['L', 'R'].forEach(function (side) {
+                var y = cy - totals[side] / 2;
+                BRANCHES.filter(function (b) { return b.side === side; }).forEach(function (b) {
+                    var blockH = b.leaves.length * LEAF_H;
+                    var hubW = textWidth(T(b.label), 13.5) + 28 + iconExtra;
+                    boxes.push({
+                        id: b.id, label: T(b.label), kind: 'hub', parent: 'root',
+                        x: side === 'R' ? CX + HUB_OFF : CX - HUB_OFF - hubW,
+                        y: y + blockH / 2 - BOX_H / 2, w: hubW, h: BOX_H
+                    });
+                    b.leaves.forEach(function (l, i) {
+                        var w = textWidth(T(l.label), 12.5) + 24;
+                        boxes.push({
+                            id: l.id, label: T(l.label), kind: 'leaf', parent: b.id,
+                            x: side === 'R' ? CX + LEAF_OFF : CX - LEAF_OFF - w,
+                            y: y + i * LEAF_H + (LEAF_H - BOX_H) / 2, w: w, h: BOX_H
+                        });
+                    });
+                    y += blockH + BRANCH_GAP;
+                });
+            });
+
+            var maxRight = 0, minLeft = Infinity;
+            boxes.forEach(function (b) {
+                maxRight = Math.max(maxRight, b.x + b.w);
+                minLeft = Math.min(minLeft, b.x);
+            });
+            return {
+                boxes: boxes, cy: cy, height: height,
+                width: maxRight + 24,
+                offsetX: minLeft < 24 ? 24 - minLeft : 0
+            };
+        }
+
+        var LAYOUT = computeLayout();
+        var BOX_BY_ID = {};
+        LAYOUT.boxes.forEach(function (b) { BOX_BY_ID[b.id] = b; });
+
+        function edgePath(from, to) {
+            var rightward = to.x > from.x;
+            var x1 = rightward ? from.x + from.w : from.x;
+            var y1 = from.y + from.h / 2;
+            var x2 = rightward ? to.x : to.x + to.w;
+            var y2 = to.y + to.h / 2;
+            var mx = (x1 + x2) / 2;
+            return 'M ' + x1 + ' ' + y1 + ' C ' + mx + ' ' + y1 + ', ' + mx + ' ' + y2 + ', ' + x2 + ' ' + y2;
+        }
+
+        function relPath(from, to) {
+            var x1 = from.x + from.w / 2, y1 = from.y + from.h / 2;
+            var x2 = to.x + to.w / 2, y2 = to.y + to.h / 2;
+            var mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+            var qx = mx + (CX - mx) * 0.55;
+            var qy = my + (LAYOUT.cy - my) * 0.55;
+            return 'M ' + x1 + ' ' + y1 + ' Q ' + qx + ' ' + qy + ', ' + x2 + ' ' + y2;
+        }
+
+        /* ------------------------------------------------------------ 繪製 */
+
+        var SVG_NS = 'http://www.w3.org/2000/svg';
+        var selected = 'root';
+
+        function el(name, attrs) {
+            var n = document.createElementNS(SVG_NS, name);
+            for (var k in attrs) {
+                if (Object.prototype.hasOwnProperty.call(attrs, k)) n.setAttribute(k, attrs[k]);
+            }
+            return n;
+        }
+
+        function familyOf(id) {
+            var set = {};
+            set[id] = true;
+            var node = NODES[id], box = BOX_BY_ID[id];
+            (node.rel || []).forEach(function (r) { set[r] = true; });
+            if (box && box.parent) set[box.parent] = true;
+            if (node.leaves) node.leaves.forEach(function (l) { set[l.id] = true; });
+            if (id === 'root') BRANCHES.forEach(function (b) { set[b.id] = true; });
+            return set;
+        }
+
+        function renderMap() {
+            var host = document.getElementById('mm-canvas');
+            host.innerHTML = '';
+
+            var svg = el('svg', {
+                viewBox: '0 0 ' + (LAYOUT.width + LAYOUT.offsetX) + ' ' + LAYOUT.height,
+                role: 'img',
+                'aria-label': T('TaiGuangLin 坐禪之問答錄2 名詞心智圖')
+            });
+            var g = el('g', { transform: 'translate(' + LAYOUT.offsetX + ',0)' });
+            svg.appendChild(g);
+
+            var fam = familyOf(selected);
+            var selBox = BOX_BY_ID[selected];
+
+            LAYOUT.boxes.forEach(function (b) {
+                if (!b.parent) return;
+                var lit = fam[b.id] && fam[b.parent];
+                g.appendChild(el('path', {
+                    d: edgePath(BOX_BY_ID[b.parent], b),
+                    fill: 'none',
+                    stroke: lit ? '#b54d78' : '#e3c4d3',
+                    'stroke-width': lit ? 1.8 : 1,
+                    opacity: lit ? 0.9 : 0.5
+                }));
+            });
+
+            (NODES[selected].rel || []).forEach(function (rid) {
+                var t = BOX_BY_ID[rid];
+                if (!t || !selBox) return;
+                g.appendChild(el('path', {
+                    d: relPath(selBox, t),
+                    fill: 'none',
+                    stroke: '#b54d78',
+                    'stroke-width': 1.4,
+                    'stroke-dasharray': '5 4',
+                    opacity: 0.7
+                }));
+            });
+
+            // 選中中心節點時呈現完整全貌，不淡化其它節點
+            var dimOthers = selected !== 'root';
+
+            LAYOUT.boxes.forEach(function (b) {
+                var active = b.id === selected;
+                var related = !!fam[b.id];
+                var isRoot = b.kind === 'root', isHub = b.kind === 'hub';
+                var hasIcon = !!(NODE_ICON_SVG[b.id]);
+                var fillColor = (active || isRoot) ? '#ffffff' : (isHub ? '#541d35' : '#33202a');
+                var padX = isRoot ? 14 : 12;
+
+                var group = el('g', {
+                    class: 'mm-node' + (active ? ' is-active' : ''),
+                    tabindex: '0',
+                    role: 'button',
+                    'aria-label': b.label,
+                    opacity: (!dimOthers || related || active) ? 1 : 0.4
+                });
+                group.appendChild(el('rect', {
+                    x: b.x, y: b.y, width: b.w, height: b.h, rx: isRoot ? 9 : 5,
+                    fill: active ? '#b54d78' : (isRoot ? '#e79dbe' : (isHub ? '#fbeaf2' : '#ffffff')),
+                    stroke: active ? '#b54d78' : (isRoot || isHub ? '#e79dbe' : '#f0dde5'),
+                    'stroke-width': (active || isRoot) ? 1.8 : 1
+                }));
+
+                if (hasIcon) {
+                    var iconX = b.x + padX;
+                    var iconY = b.y + (b.h - ICON_SIZE) / 2;
+                    var scale = ICON_SIZE / 24;
+                    var ig = el('g', {
+                        transform: 'translate(' + iconX + ',' + iconY + ') scale(' + scale + ')',
+                        class: 'mm-node-icon'
+                    });
+                    var parsed = new DOMParser().parseFromString(
+                        '<svg xmlns="http://www.w3.org/2000/svg">' + NODE_ICON_SVG[b.id] + '</svg>',
+                        'image/svg+xml'
+                    ).documentElement;
+                    var srcNodes = Array.prototype.slice.call(parsed.childNodes);
+                    srcNodes.forEach(function (src) {
+                        if (src.nodeType !== 1) return;
+                        var child = document.importNode(src, true);
+                        if (child.getAttribute('fill') === 'currentColor') child.setAttribute('fill', fillColor);
+                        if (child.getAttribute('stroke') === 'currentColor') child.setAttribute('stroke', fillColor);
+                        if (child.getAttribute('stroke') === '#fff') {
+                            child.setAttribute('stroke', (active || isRoot) ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.75)');
+                        }
+                        ig.appendChild(child);
+                    });
+                    group.appendChild(ig);
+
+                    var text = el('text', {
+                        x: b.x + padX + ICON_SIZE + ICON_GAP,
+                        y: b.y + b.h / 2 + (isRoot ? 5 : 4.5),
+                        'text-anchor': 'start',
+                        fill: fillColor,
+                        'font-size': isRoot ? 14 : (isHub ? 13.5 : 12.5),
+                        'font-weight': (isRoot || isHub) ? 600 : 400
+                    });
+                    text.appendChild(document.createTextNode(b.label));
+                    group.appendChild(text);
+                } else {
+                    var textOnly = el('text', {
+                        x: b.x + b.w / 2,
+                        y: b.y + b.h / 2 + (isRoot ? 5 : 4.5),
+                        'text-anchor': 'middle',
+                        fill: fillColor,
+                        'font-size': isRoot ? 14 : (isHub ? 13.5 : 12.5),
+                        'font-weight': (isRoot || isHub) ? 600 : 400
+                    });
+                    textOnly.appendChild(document.createTextNode(b.label));
+                    group.appendChild(textOnly);
+                }
+
+                group.addEventListener('click', function () { select(b.id); });
+                group.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(b.id); }
+                });
+                g.appendChild(group);
+            });
+
+            host.appendChild(svg);
+        }
+
+        function renderDetail() {
+            var node = NODES[selected];
+            var box = BOX_BY_ID[selected];
+            var tag = selected === 'root' ? T('中心') : T(node.branch || '主幹分支');
+            var headIcon = iconHtml(selected) || '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4h10v16l-5-3.6L7 20z"/></svg>';
+            if (!NODE_ICON_SVG[selected] && node.branch) {
+                for (var i = 0; i < BRANCHES.length; i++) {
+                    if (BRANCHES[i].label === node.branch) {
+                        headIcon = iconHtml(BRANCHES[i].id);
+                        break;
+                    }
+                }
+            }
+
+            var html = '<div class="mm-detail-head">' +
+                '<span class="mm-detail-icon" aria-hidden="true">' + headIcon + '</span>' +
+                '<div class="mm-detail-title-wrap">' +
+                '<h3>' + T(node.label) + '</h3>' +
+                '<span class="mm-detail-tag">' + tag + '</span>' +
+                '</div></div>' +
+                '<p class="mm-detail-desc">' + T(node.desc) + '</p>';
+
+            if (node.points && node.points.length) {
+                html += '<div class="mm-detail-block">' +
+                        '<h4><i aria-hidden="true">☰</i> ' + T('書中要點') + '</h4><ul class="mm-detail-points">';
+                node.points.forEach(function (p) { html += '<li>' + T(p) + '</li>'; });
+                html += '</ul></div>';
+            }
+
+            if (node.quote) {
+                var citeHtml = T(node.quote.s);
+                if (EBOOK_LINKS[selected]) {
+                    citeHtml = '<a href="' + EBOOK_LINKS[selected] + '" target="_blank" rel="noopener"' +
+                        ' title="' + T('打開電子書原文') + '">' + citeHtml + ' <i aria-hidden="true">📖</i></a>';
+                }
+                html += '<blockquote class="mm-detail-quote">' +
+                        '<span class="mm-quote-mark" aria-hidden="true">❝</span>' +
+                        '<p>' + T(node.quote.t) + '</p>' +
+                        '<cite>' + citeHtml + '</cite>' +
+                        '</blockquote>';
+            }
+
+            html += '<p class="mm-detail-src"><i aria-hidden="true">✦</i> ' + T('出處：') + T(node.src) + '</p>';
+
+            if (node.rel && node.rel.length) {
+                html += '<div class="mm-detail-rel"><span><i aria-hidden="true">↔</i> ' + T('關聯名詞') + '</span>';
+                node.rel.forEach(function (r) {
+                    html += '<button type="button" class="mm-rel-chip" data-id="' + r + '">' +
+                            (NODES[r] ? T(NODES[r].label) : r) + '</button>';
+                });
+                html += '</div>';
+            }
+
+            var host = document.getElementById('mm-detail');
+            host.innerHTML = html;
+            host.querySelectorAll('.mm-rel-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () { select(btn.dataset.id); });
+            });
+            if (box) { /* box reserved for future scroll-into-view */ }
+        }
+
+        function renderChips() {
+            var host = document.getElementById('mm-chips');
+            var items = [{ id: 'root', label: T(ROOT.label + '（中心）') }].concat(
+                BRANCHES.map(function (b) { return { id: b.id, label: T(b.label) }; })
+            );
+            host.innerHTML = items.map(function (it) {
+                var icon = iconHtml(it.id);
+                return '<button type="button" class="mm-chip' +
+                       (it.id === selected ? ' is-active' : '') +
+                       '" data-id="' + it.id + '"><span class="mm-chip-icon" aria-hidden="true">' +
+                       icon + '</span>' + it.label + '</button>';
+            }).join('');
+            host.querySelectorAll('.mm-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () { select(btn.dataset.id); });
+            });
+        }
+
+        function select(id) {
+            if (!NODES[id]) return;
+            selected = id;
+            renderMap();
+            renderDetail();
+            renderChips();
+        }
+
+                var AXIOM_ICONS = {"intro-read": "<svg viewBox=\"0 0 56 56\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"28\" cy=\"28\" r=\"17\" stroke=\"currentColor\" stroke-width=\"2\"/><circle cx=\"28\" cy=\"28\" r=\"3\" fill=\"currentColor\"/><path d=\"M28 11v-5M28 50v-5M11 28H6M50 28h-5\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", "intro-pick": "<svg viewBox=\"0 0 56 56\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M14 10h28a4 4 0 014 4v28a4 4 0 01-4 4H14a4 4 0 01-4-4V14a4 4 0 014-4z\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M20 22h16M20 30h16M20 38h9\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>", "intro-quote": "<svg viewBox=\"0 0 56 56\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M12 16c0-4 3-7 7-7h2v10h-6c-2 0-3 1-3 3v14c0 2 1 3 3 3h14c2 0 3-1 3-3V16c0-4 3-7 7-7h2v10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linejoin=\"round\" opacity=\".0\"/><path d=\"M18 12c-4 0-7 3-7 7v18c0 4 3 7 7 7h20c4 0 7-3 7-7V19c0-4-3-7-7-7H18z\" stroke=\"currentColor\" stroke-width=\"2\"/><path d=\"M20 24h16M20 32h10\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg>"};
+
+        function renderAxioms() {
+            var host = document.getElementById('mm-axioms');
+            if (!host) return;
+            host.innerHTML = INTRO_CARDS.map(function (a) {
+                return '<div class="mm-axiom-card">' +
+                       '<div class="mm-axiom-icon" aria-hidden="true">' + (AXIOM_ICONS[a.id] || '') + '</div>' +
+                       '<h3>' + T(a.label) + '</h3><p>' + T(a.desc) + '</p></div>';
+            }).join('');
+        }
+
+        var BOOKS = [{"name": "第01–04章 義理", "color": "#cf6b96"}, {"name": "第05–08章 戒修", "color": "#b54d78"}, {"name": "第09–12章 禪定", "color": "#953a60"}, {"name": "第13–17章 月度（25 下）", "color": "#c9a86a"}, {"name": "第18–21章 月度（25 末–26）", "color": "#8d6e63"}];
+        var TERM_COUNTS = [{"term": "業", "data": [2925, 463, 740, 1413, 1470]}, {"term": "打坐", "data": [290, 212, 1797, 1028, 711]}, {"term": "妄想", "data": [1048, 255, 582, 776, 708]}, {"term": "功德", "data": [846, 728, 351, 698, 608]}, {"term": "佛菩薩", "data": [740, 132, 530, 592, 377]}, {"term": "執著", "data": [545, 95, 278, 477, 369]}, {"term": "迴向", "data": [290, 301, 89, 250, 230]}, {"term": "極樂世界", "data": [624, 53, 146, 142, 181]}, {"term": "唸佛", "data": [197, 83, 415, 276, 145]}, {"term": "福報", "data": [361, 89, 110, 257, 271]}, {"term": "冤親債主", "data": [341, 193, 98, 163, 196]}, {"term": "命運", "data": [342, 71, 93, 229, 180]}];
+
+function renderChart() {
+            var host = document.getElementById('mm-chart');
+            var max = 0;
+            TERM_COUNTS.forEach(function (r) {
+                var t = r.data.reduce(function (a, b) { return a + b; }, 0);
+                r.total = t;
+                max = Math.max(max, t);
+            });
+
+            var legend = '<div class="mm-chart-legend">' + BOOKS.map(function (b) {
+                return '<span class="mm-legend-item"><i style="background:' + b.color + '"></i>《' + T(b.name) + '》</span>';
+            }).join('') + '</div>';
+
+            var rows = TERM_COUNTS.map(function (r, ri) {
+                var segs = r.data.map(function (v, i) {
+                    if (!v) return '';
+                    return '<span class="mm-chart-seg" style="width:' + (v / max * 100) + '%;background:' +
+                           BOOKS[i].color + '" data-row="' + ri + '" data-book="' + i + '"></span>';
+                }).join('');
+                return '<div class="mm-chart-row" data-row="' + ri + '">' +
+                       '<span class="mm-chart-label">' + T(r.term) + '</span>' +
+                       '<span class="mm-chart-track" data-row="' + ri + '">' + segs + '</span>' +
+                       '<span class="mm-chart-total">' + r.total.toLocaleString() + '</span>' +
+                       '</div>';
+            }).join('');
+
+            host.innerHTML = legend +
+                '<div class="mm-chart-rows">' + rows + '</div>' +
+                '<div class="mm-chart-axis"><span>0</span><span>' + T('全書合計出現次數（次）') + '</span><span>' +
+                max.toLocaleString() + '</span></div>' +
+                '<div class="mm-chart-tip" id="mm-chart-tip" hidden></div>';
+
+            var tip = document.getElementById('mm-chart-tip');
+            var activeRow = -1;
+            var activeBook = -1;
+
+            function tipHtml(ri, bi) {
+                var r = TERM_COUNTS[ri];
+                var lines = BOOKS.map(function (b, i) {
+                    var v = r.data[i];
+                    var hi = (bi === i) ? ' is-hi' : '';
+                    return '<div class="mm-chart-tip-row' + hi + '">' +
+                           '<span class="mm-chart-tip-name"><i style="background:' + b.color + '"></i>《' + T(b.name) + '》</span>' +
+                           '<span class="mm-chart-tip-val">' + v.toLocaleString() + '</span>' +
+                           '</div>';
+                }).join('');
+                return '<div class="mm-chart-tip-title">' + T(r.term) + '</div>' +
+                       lines +
+                       '<div class="mm-chart-tip-total"><span>' + T('合計') + '</span><span>' +
+                       r.total.toLocaleString() + '</span></div>';
+            }
+
+            function placeTip(e) {
+                var pad = 12;
+                var rect = host.getBoundingClientRect();
+                var tw = tip.offsetWidth || 220;
+                var th = tip.offsetHeight || 180;
+                var x = e.clientX - rect.left + 14;
+                var y = e.clientY - rect.top + 14;
+                if (x + tw > rect.width - pad) x = e.clientX - rect.left - tw - 10;
+                if (y + th > rect.height - pad) y = e.clientY - rect.top - th - 10;
+                if (x < pad) x = pad;
+                if (y < pad) y = pad;
+                tip.style.left = x + 'px';
+                tip.style.top = y + 'px';
+            }
+
+            function showTip(ri, bi, e) {
+                if (ri < 0) return;
+                if (ri !== activeRow || bi !== activeBook) {
+                    tip.innerHTML = tipHtml(ri, bi);
+                    activeRow = ri;
+                    activeBook = bi;
+                }
+                tip.hidden = false;
+                tip.classList.add('is-visible');
+                placeTip(e);
+
+                host.querySelectorAll('.mm-chart-seg.is-active').forEach(function (n) {
+                    n.classList.remove('is-active');
+                });
+                host.querySelectorAll('.mm-chart-row.is-active').forEach(function (n) {
+                    n.classList.remove('is-active');
+                });
+                var row = host.querySelector('.mm-chart-row[data-row="' + ri + '"]');
+                if (row) row.classList.add('is-active');
+                if (bi >= 0) {
+                    var seg = host.querySelector('.mm-chart-seg[data-row="' + ri + '"][data-book="' + bi + '"]');
+                    if (seg) seg.classList.add('is-active');
+                }
+            }
+
+            function hideTip() {
+                tip.hidden = true;
+                tip.classList.remove('is-visible');
+                activeRow = -1;
+                activeBook = -1;
+                host.querySelectorAll('.mm-chart-seg.is-active, .mm-chart-row.is-active').forEach(function (n) {
+                    n.classList.remove('is-active');
+                });
+            }
+
+            host.querySelectorAll('.mm-chart-track, .mm-chart-seg, .mm-chart-label, .mm-chart-total').forEach(function (el) {
+                el.addEventListener('mousemove', function (e) {
+                    var rowEl = el.closest('[data-row]');
+                    if (!rowEl) return;
+                    var ri = parseInt(rowEl.getAttribute('data-row'), 10);
+                    var bi = el.classList.contains('mm-chart-seg')
+                        ? parseInt(el.getAttribute('data-book'), 10)
+                        : -1;
+                    showTip(ri, bi, e);
+                });
+                el.addEventListener('mouseleave', function (e) {
+                    if (!host.contains(e.relatedTarget)) hideTip();
+                });
+                el.addEventListener('click', function (e) {
+                    var rowEl = el.closest('[data-row]');
+                    if (!rowEl) return;
+                    var ri = parseInt(rowEl.getAttribute('data-row'), 10);
+                    var bi = el.classList.contains('mm-chart-seg')
+                        ? parseInt(el.getAttribute('data-book'), 10)
+                        : -1;
+                    showTip(ri, bi, e);
+                });
+            });
+            host.addEventListener('mouseleave', hideTip);
+            document.addEventListener('click', function (e) {
+                if (!host.contains(e.target)) hideTip();
+            });
+        }
+
+        var booted = false;
+        /* -------- 修行次第線渲染（引擎拷貝到他頁而無此區塊時安全跳過） -------- */
+
+        function renderLadder() {
+            var host = document.getElementById('mm-ladder');
+            if (!host) return;
+            function step(n, s) {
+                var node = NODES[s.id];
+                if (!node) return '';
+                var body = '<p class="mm-detail-desc" style="margin-bottom:14px;">' + T(node.desc) + '</p>';
+                if (node.quote) {
+                    var cite = T(node.quote.s);
+                    if (EBOOK_LINKS[s.id]) {
+                        cite = '<a href="' + EBOOK_LINKS[s.id] + '" target="_blank" rel="noopener"' +
+                               ' title="' + T('打開電子書原文') + '">' + cite + ' <i aria-hidden="true">📖</i></a>';
+                    }
+                    body += '<blockquote class="mm-detail-quote">' +
+                            '<span class="mm-quote-mark" aria-hidden="true">❝</span>' +
+                            '<p>' + T(node.quote.t) + '</p><cite>' + cite + '</cite></blockquote>';
+                }
+                body += '<p class="mm-detail-src"><i aria-hidden="true">✦</i> ' + T('出處：') + T(node.src) + '</p>' +
+                        '<button type="button" class="mm-rel-chip" data-id="' + s.id + '">' +
+                        T('在心智圖中查看') + ' ↗</button>';
+                return '<details class="mm-ladder-step">' +
+                       '<summary><span class="mm-ladder-num">' + n + '</span>' +
+                       '<span class="mm-ladder-label">' + T(node.label) + '</span>' +
+                       '<span class="mm-ladder-note">' + T(s.note) + '</span></summary>' +
+                       '<div class="mm-ladder-body">' + body + '</div></details>';
+            }
+            var html = '<h3 class="mm-ladder-title">' + T('實修次第：從持戒到成佛') + '</h3>';
+            LADDER_PRACTICE.forEach(function (s, i) { html += step(i + 1, s); });
+            html += '<h3 class="mm-ladder-title">' + T('義理線：從初始設定到成佛') + '</h3>';
+            LADDER_THEORY.forEach(function (s, i) { html += step(i + 1, s); });
+            host.innerHTML = html;
+            host.querySelectorAll('.mm-rel-chip').forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    select(btn.dataset.id);
+                    document.getElementById('mm-detail').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                });
+            });
+        }
+
+        function boot() {
+            if (booted) return;
+            booted = true;
+            /* 首渲前重算版面：簡體模式下字寬以轉換後的標籤計算。 */
+            LAYOUT = computeLayout();
+            BOX_BY_ID = {};
+            LAYOUT.boxes.forEach(function (b) { BOX_BY_ID[b.id] = b; });
+            renderAxioms();
+            renderChips();
+            renderMap();
+            renderDetail();
+            renderChart();
+            renderLadder();
+        }
+        document.addEventListener('DOMContentLoaded', function () {
+            if (window.tgl_lang) {
+                /* 等 OpenCC 備妥、整頁字元轉換完成後才首渲，
+                   簡體偏好下第一屏就是簡體，不會先閃繁體。 */
+                window.tgl_lang.onReady(boot);
+                /* OpenCC 全部來源都載入失敗時的保底：3 秒後以原文渲染。 */
+                setTimeout(boot, 3000);
+            } else {
+                boot();
+            }
+        });
+        if (window.tgl_lang) {
+            /* 使用者切換簡繁後：已渲染內容由 lang-switch 一次同步轉換；
+               這裡只重算字寬版面，供之後的互動重渲使用。 */
+            window.tgl_lang.onChange(function () {
+                if (!booted) return;
+                LAYOUT = computeLayout();
+                BOX_BY_ID = {};
+                LAYOUT.boxes.forEach(function (b) { BOX_BY_ID[b.id] = b; });
+            });
+        }
+    })();
