@@ -43,7 +43,15 @@ def _ensure_venv() -> None:
 
     venv 的 ``bin/python`` 是 symlink 指向 base python，因此不能用 realpath 比對
     執行檔；改用 ``sys.prefix``（venv 內會指到 .venv 目錄本身）來判斷。
+
+    ⚠️ 只能在 ``main()`` 內呼叫，**不可**在 import 時執行：``os.execv`` 會把
+    整個行程換掉——若在 pytest import/collection 期間觸發，會以測試進程的
+    argv 完整重跑 pull → rebuild → commit → push（曾因此發生未授權 push）。
+
+    保險絲：偵測到 pytest（``PYTEST_CURRENT_TEST``）時一律不 re-exec。
     """
+    if os.environ.get("PYTEST_CURRENT_TEST"):
+        return
     venv_prefix = _VENV_DIR.resolve()
     current_prefix = Path(sys.prefix).resolve()
     if VENV_PYTHON.exists():
@@ -55,9 +63,6 @@ def _ensure_venv() -> None:
             "   將沿用當前直譯器執行；若缺少 docx 等相依套件，請先建立該 venv。",
             file=sys.stderr,
         )
-
-
-_ensure_venv()
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
@@ -162,6 +167,8 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
 
 def main() -> int:
+    # re-exec 只在此處（CLI 入口）發生；import 本模組必須完全無副作用。
+    _ensure_venv()
     args = create_argument_parser().parse_args()
 
     print("🚀 gen_all_and_push — 同步 → 重建 → 提交 → 推送")
