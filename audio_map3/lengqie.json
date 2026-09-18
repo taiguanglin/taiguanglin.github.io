@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-17T09:37:55.670Z",
+  "generated_at": "2026-09-18T08:32:04.394Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -3022,17 +3022,19 @@
           "pid": "p-sd7fdac5f",
           "text": "《楞伽经》第五期，这本书的第十一页。第四期讲到如来用神通化作无量宝山，好多个世界，在每个世界里都有一个佛，下边有很多听众，包括罗婆那王，就像我们科幻电影的平行世界一样。变出来很多个世界，都是幻境，佛在里边讲法，罗婆那王在下边听，佛讲完之后消失了，他和诸菩萨都在空中隐而不现，整个世界也全部消失。变出来的美妙场景全部消失之后，罗婆那王进行思维。",
           "start": 2.25,
-          "end": 56.0,
+          "end": 56.7,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s8c652e65",
           "text": "是谁在讲法？是谁在听法？看到的是什么？是谁能看见？等等，这些一系列问题之后，罗婆那王开悟了，住无分别的境界里——已经到了菩萨境界。结果听到虚空中和宫殿里传出佛的声音，佛没有显出形像，就是一个凭空出现的声音，这个声音对罗婆那王进行赞叹，又嘱咐他不要堕入外道之中，有一段嘱咐。",
-          "start": 56.0,
+          "start": 56.7,
           "end": 102.6,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s3f6754c9",
@@ -3040,7 +3042,8 @@
           "start": 102.6,
           "end": 107.4,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s329c40d2",
@@ -3158,7 +3161,8 @@
           "start": 107.4,
           "end": 112.3,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sa6f6e604",
@@ -3166,23 +3170,26 @@
           "start": 112.3,
           "end": 121.7,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s7a787e58",
           "text": "如来世尊于观自在，离外道法，能说自证圣智境界，超诸应化所应作事，住如来定，入三昧乐，是故说名大观行师，亦复名为大哀愍者，能烧烦恼分别薪尽，诸佛子众所共围绕，普入一切众生心中，遍一切处，具一切智，永离一切分别事相，我今愿得重见如来大神通力，以得见故，未得者得，已得不退，离诸分别，住三昧乐，增长满足如来智地。",
           "start": 121.7,
-          "end": 154.3,
+          "end": 154.8,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s37a286c3",
           "text": "“永离一切分别事相”，到这里为止，讲的是如来的境界，咱们就简单看一下。",
-          "start": 154.3,
+          "start": 154.8,
           "end": 166.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sc7af7790",
@@ -3190,270 +3197,288 @@
           "start": 166.3,
           "end": 168.5,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s37fc8e9e",
           "text": "“观自在”就是如来的意识遍虚空，所以不能用我们理解的“观”来表示，更准确的词应该是“感知到”。就像我们可以感知到身体的所有感觉一样，如来可以在意识遍虚空的状态下感知到一切众生的妄想。“离外道法”就不用说了。“能说自证圣智境”，如来可以讲成佛的法门，我们这样理解就可以了。",
           "start": 168.5,
-          "end": 197.4,
+          "end": 197.3,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s39323fe0",
           "text": "超诸应化所应作事，住如来定，入三昧乐，",
-          "start": 197.4,
-          "end": 201.0,
+          "start": 197.3,
+          "end": 201.1,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s58adb4ac",
           "text": "“超诸应化所应作事”，超越一切化身可以做的事。后面会讲到法身佛说的法和化身佛说的法不一样。所以在这里说“超诸应化所应作事”。“住如来定，入三昧乐”，这也是佛的境界。",
-          "start": 201.0,
-          "end": 228.0,
+          "start": 201.1,
+          "end": 227.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s916eef6b",
           "text": "是故说名大观行师，亦复名为大哀愍者，能烧烦恼分别薪尽，",
-          "start": 228.0,
+          "start": 227.3,
           "end": 229.2,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sa38d54c6",
           "text": "“观”也是一种修行方法，所以“大观行师”就是大修行师的意思。“哀愍者”是哀愍、怜悯一切众生的意思。“烦恼”和“分别”就是执着和分别，把这些像烧掉柴火一样烧尽，就是灭尽执着和分别。",
           "start": 229.2,
-          "end": 252.7,
+          "end": 252.4,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s146c7ad0",
           "text": "诸佛子众所共围绕，普入一切众生心中，",
-          "start": 252.7,
-          "end": 256.9,
+          "start": 252.4,
+          "end": 259.432,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s5cd41830",
           "text": "有众多的弟子们围绕。“普入一切众生心中”，如来意识遍虚空，反复地告诉大家这句话。我在这里讲法，如来的意识和我们全部重叠在一起，也和你重叠在一起。所以讲法的人是在佛菩萨的加持下讲，听法的人也是在佛菩萨的加持下学习。你有这样的认知，在有问题理解不了的时候可以求佛菩萨加持一下，这样就可以了。",
-          "start": 256.9,
-          "end": 283.56,
+          "start": 259.432,
+          "end": 286.783,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sb0f1c1b9",
           "text": "“普入一切众生心中”，就是（意识）和我们重叠在一起，可以说是进入到我们心中，知道我们的一切想法。",
-          "start": 283.56,
-          "end": 294.6,
+          "start": 286.783,
+          "end": 294.914,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scb232fe8",
           "text": "遍一切处，具一切智，永离一切分别事相，",
-          "start": 294.6,
-          "end": 295.7,
+          "start": 294.914,
+          "end": 294.914,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s1e348255",
           "text": "“遍一切处”，同样是意识遍虚空的意思。“具一切智”，在如来境界里肯定是圆满的智慧。“永离一切分别事相”，这肯定是没有分别心了。",
-          "start": 295.7,
+          "start": 294.914,
           "end": 311.3,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s512ecb2d",
           "text": "我今愿得重见如来大神通力，以得见故，未得者得，已得不退，",
           "start": 311.3,
-          "end": 314.1,
+          "end": 315.034,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s49d8b111",
           "text": "我希望今天重新见到如来的大神通力，因为见到了，没有得到法门或者智慧——在这里并没有明确地告诉大家得到的是什么，可以是佛讲的某段法，也可以是修身法门、佛的智慧，就是比当下的智慧要高一段的智慧，这么理解就对了，不需要抠字眼——没有得到的人得到了智慧或者得到了法门，学到了法。“已得不退”，已经得到的人不再退步或者退转。",
-          "start": 314.1,
-          "end": 354.7,
+          "start": 315.034,
+          "end": 355.354,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s39ba3811",
           "text": "离诸分别，住三昧乐，增长满足如来智地。",
-          "start": 354.7,
-          "end": 359.1,
+          "start": 355.354,
+          "end": 358.171,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s6cc94890",
           "text": "在没有分别的状态下，“住三昧乐”，至少是菩萨境界，“增长满足如来智地”，这都是向佛的境界努力修行的状态。",
-          "start": 359.1,
-          "end": 369.96,
+          "start": 358.171,
+          "end": 373.831,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sc9c17ac2",
           "text": "咱们翻过来到十四页。",
-          "start": 369.96,
+          "start": 373.831,
           "end": 377.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6b777782",
           "text": "尔时，世尊知楞伽王即当证悟无生法忍，",
           "start": 377.7,
-          "end": 382.07,
+          "end": 383.331,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se0ddf087",
           "text": "世尊知道楞伽王已经证悟到无生法忍。已经反复多次讲过“无生法忍”，凡夫的忍叫“生忍”，阿罗汉的忍叫“法忍”，菩萨的忍叫“无生法忍”。《华严经·十地品》里说，无生法忍对应的是八地菩萨，所以这是相当高的境界。这个“法”是什么？后面会讲到在菩萨的境界里“法”指所有的妄想、分别、执着。",
-          "start": 382.07,
-          "end": 412.01,
+          "start": 383.331,
+          "end": 413.243,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbefed614",
           "text": "在凡夫的境界里，我们看到的一切就可以称之为“法”，是执着和合而成的，执着变化出来这个物质世界，包括我们的肉身和脑子里的想法，都称之为“法”。因为再高的境界我们也感知不到，我们把我们能感知到的统称为“法”，这样就够了。",
-          "start": 412.01,
-          "end": 435.38,
+          "start": 413.243,
+          "end": 433.544,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s91261270",
           "text": "但是在菩萨的境界里，这个“法”同样是能感知到的一切，所以从菩萨的妄想开始，到分别，到执着，全部称之为“法”。",
-          "start": 435.38,
-          "end": 449.3,
+          "start": 433.544,
+          "end": 443.449,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfc9f8c3a",
           "text": "为哀愍故，便现其身，令所化事还复如本，",
-          "start": 449.3,
-          "end": 449.3,
+          "start": 443.449,
+          "end": 448.858,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s87bec360",
           "text": "因为哀愍楞伽王，所以又现出他的身体，这肯定是化身了。曾经变出来的那些无量宝山，很多平行世界一样的宇宙空间，重新变出来。",
-          "start": 449.3,
+          "start": 448.858,
           "end": 467.6,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s4e0c7dd5",
           "text": "时十头王见所曾睹，无量山城悉宝庄严，一一城中皆有如来应正等觉，三十二相以严其身，",
           "start": 467.6,
-          "end": 478.7,
+          "end": 478.8,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf1fd0c68",
           "text": "这都是他看到的境界。",
-          "start": 478.7,
+          "start": 478.8,
           "end": 480.8,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s771a1961",
           "text": "自见其身遍诸佛前，悉有大慧、夜叉围绕，",
           "start": 480.8,
-          "end": 484.24,
+          "end": 483.74,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sf114df16",
           "text": "看到了自己出现在每一个佛前。同时有大慧菩萨和夜叉众们围绕他。",
-          "start": 484.24,
+          "start": 483.74,
           "end": 493.73,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s293f5292",
           "text": "说自证智所行之法，亦见十方诸佛国土，如是等事悉无有别。",
           "start": 493.73,
-          "end": 499.55,
+          "end": 502.252,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4e16e0ab",
           "text": "看到了佛在继续讲自证智的法。所有的佛土当中，他看到的很多个平行世界一样的幻境里，每一个世界都有佛，每一个佛前面都有楞伽王、大慧菩萨和夜叉众们，他们都在听法，每个佛都在讲法。",
-          "start": 499.55,
+          "start": 502.252,
           "end": 531.52,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7cfac4e7",
           "text": "尔时，世尊普观众会，以慧眼观，非肉眼观，如师子王奋迅回盼，欣然大笑，",
           "start": 531.52,
-          "end": 537.31,
+          "end": 538.567,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc350ff09",
           "text": "世尊看到众会的所有众生，他不是用肉眼看，而是用慧眼也就是佛眼，就是佛的境界。佛显出化身的时候，他的法身还在，所以他的意识还是遍虚空的状态，也可以说是用意识来直接感知。“狮子王”这些都是比喻，咱们就没必要解释这些。佛经读多了，“狮子吼”就是讲法的一种比喻。“回盼”就是往回看一下，“欣然大笑”，然后大笑。",
-          "start": 537.31,
-          "end": 581.64,
+          "start": 538.567,
+          "end": 579.69,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s326838f7",
           "text": "于其眉间、髀胁、腰颈及以肩臂德字之中，一一毛孔皆放无量妙色光明，如虹挓晖，如日舒光，亦如劫火猛焰炽然。",
-          "start": 581.64,
-          "end": 596.0,
+          "start": 579.69,
+          "end": 597.974,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfcd7e1c6",
           "text": "这一段是放光的意思。我们就看作，佛放出大光明，全身都在放光。",
-          "start": 596.0,
+          "start": 597.974,
           "end": 602.3,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s42dd7700",
@@ -3461,7 +3486,8 @@
           "start": 602.3,
           "end": 604.6,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s48ec163c",
@@ -3469,7 +3495,8 @@
           "start": 604.6,
           "end": 629.7,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd470c79d",
@@ -3477,7 +3504,8 @@
           "start": 629.7,
           "end": 633.2,
           "conf": 0.65,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1e3d0819",
@@ -3485,7 +3513,8 @@
           "start": 633.2,
           "end": 663.31,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb8b0d70b",
@@ -3521,7 +3550,8 @@
           "start": 696.4,
           "end": 748.6,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9a4e3db8",
@@ -3529,7 +3559,8 @@
           "start": 748.6,
           "end": 752.6,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1e01c6bb",
@@ -3537,7 +3568,8 @@
           "start": 752.6,
           "end": 777.12,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdef9d918",
@@ -3561,17 +3593,19 @@
           "pid": "p-s0b67dae8",
           "text": "佛即告言：“善哉！大慧，善哉！大慧，汝观世间愍诸众生，于三世中恶见所缠，欲令开悟而问于我，诸智慧人，为利自他，能作是问。",
           "start": 791.4,
-          "end": 797.0,
+          "end": 797,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s247b2528",
           "text": "你看到世间一切众生之后，怜悯他们在三世中被错误的见解所困扰，为了让他们开悟而问我。所有有智慧的人为了利益自己和他人而问这样的问题。",
-          "start": 797.0,
+          "start": 797,
           "end": 833.74,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa6fb2995",
@@ -3624,7 +3658,8 @@
           "start": 926.3,
           "end": 939.88,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scd21ea23",
@@ -3632,7 +3667,8 @@
           "start": 939.88,
           "end": 958.6,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1b7a5cac",
@@ -3640,7 +3676,8 @@
           "start": 958.6,
           "end": 963.7,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s633b2dc4",
@@ -3648,7 +3685,8 @@
           "start": 963.7,
           "end": 970.6,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8ca31c67",
@@ -3656,7 +3694,8 @@
           "start": 970.6,
           "end": 1013.4,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7a21335a",
@@ -3664,7 +3703,8 @@
           "start": 1013.4,
           "end": 1016.3,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s32818453",
@@ -3672,7 +3712,8 @@
           "start": 1016.3,
           "end": 1049.9,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdb23a39b",
@@ -3680,7 +3721,8 @@
           "start": 1049.9,
           "end": 1051.6,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s65e758f6",
@@ -3688,7 +3730,8 @@
           "start": 1051.6,
           "end": 1103.15,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfb67ed74",
@@ -3714,7 +3757,8 @@
           "start": 1171.05,
           "end": 1185.98,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1a7c4c7b",
@@ -3731,7 +3775,8 @@
           "start": 1202.5,
           "end": 1221.63,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2a2b6b30",
@@ -3746,7 +3791,7 @@
           "pid": "p-s8dc68ca3",
           "text": "在这里出现“根本佛”，与“根本佛”对应的应该是“化身佛”。按照这里的说法，我们可以理解为根本佛说的是第一义谛——最核心、最高阶段的佛理，而化身佛应该讲的是方便法。他既然显出了化身，就说明想给某些人看到，根据这些人的境界，才会讲相应的方便法。所以化身佛讲的，我们可以理解为是一种应机的方便法，而根本佛讲的是最高阶段的空义，佛的空义，第一义谛。“不说虚妄分别所行”，也就是不说阿罗汉、凡夫的执着境界。",
           "start": 1231.63,
-          "end": 1283.0,
+          "end": 1283,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -3754,10 +3799,11 @@
         {
           "pid": "p-s93866c1a",
           "text": "善哉！世尊，于法自在，唯愿哀愍，说此二义，一切佛子心皆乐闻。”",
-          "start": 1283.0,
+          "start": 1283,
           "end": 1291.5,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfd26cd23",
@@ -3765,7 +3811,8 @@
           "start": 1291.5,
           "end": 1298.6,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s21267be8",
@@ -3773,7 +3820,8 @@
           "start": 1298.6,
           "end": 1303.5,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s96c80e25",
@@ -3781,7 +3829,8 @@
           "start": 1303.5,
           "end": 1308.5,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8d135e5d",
@@ -3789,7 +3838,8 @@
           "start": 1308.5,
           "end": 1325.79,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s729a38aa",
@@ -3806,7 +3856,8 @@
           "start": 1337.25,
           "end": 1339.5,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9a8b055a",
@@ -3814,7 +3865,8 @@
           "start": 1339.5,
           "end": 1346.6,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s63c39f0f",
@@ -3822,7 +3874,8 @@
           "start": 1346.6,
           "end": 1352.07,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s53f26820",
@@ -3839,7 +3892,8 @@
           "start": 1378.9,
           "end": 1382.5,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb98a0e22",
@@ -3847,7 +3901,8 @@
           "start": 1382.5,
           "end": 1398.49,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf8b4d6d0",
@@ -3889,7 +3944,7 @@
           "pid": "p-s5e0da25e",
           "text": "凡夫就在妄想、虚妄的境界当中生出分别。你怎么就不知道法与非法的区别呢？",
           "start": 1486.84,
-          "end": 1493.0,
+          "end": 1493,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -3897,10 +3952,11 @@
         {
           "pid": "p-s55940bc3",
           "text": "此是凡夫之所分别，非证智见。凡夫堕在种种相中，非诸证者。",
-          "start": 1493.0,
+          "start": 1493,
           "end": 1496.4,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5bd21d1f",
@@ -3908,7 +3964,8 @@
           "start": 1496.4,
           "end": 1538.35,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sec89f3a8",
@@ -3952,7 +4009,8 @@
           "start": 1608.4,
           "end": 1613.9,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s30d47d20",
@@ -3960,7 +4018,8 @@
           "start": 1613.9,
           "end": 1634.76,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc3934045",
@@ -3977,7 +4036,8 @@
           "start": 1636.9,
           "end": 1686.7,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s162ae757",
@@ -3985,7 +4045,8 @@
           "start": 1686.7,
           "end": 1693.65,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8df098c4",
@@ -3993,7 +4054,8 @@
           "start": 1693.65,
           "end": 1747.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2de47a65",
@@ -4010,7 +4072,8 @@
           "start": 1801.2,
           "end": 1808.6,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s091852ab",
@@ -4018,7 +4081,8 @@
           "start": 1808.6,
           "end": 1834.09,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd59ca183",
@@ -4044,7 +4108,8 @@
           "start": 1915.5,
           "end": 1919.1,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s69045e27",
@@ -4052,7 +4117,8 @@
           "start": 1919.1,
           "end": 1937.1,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd81adc6a",
@@ -4060,7 +4126,8 @@
           "start": 1937.1,
           "end": 1944.29,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdaa3fd3f",
@@ -4077,7 +4144,8 @@
           "start": 1970.2,
           "end": 1971.102,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         }
       ]
     },
@@ -4090,8 +4158,8 @@
         {
           "pid": "p-sbb81393c",
           "text": "“楞伽王，何者是法？所谓二乘及诸外道，虚妄分别说有实等为诸法因，如是等法应舍应离。不应于中分别取相，见自心法性则无执著。瓶等诸物凡愚所取本无有体，诸观行人以毗钵舍那如实观察，名舍诸法。楞伽王，何者是非法？所谓诸法无性无相永离分别，如实见者，若有若无如是境界彼皆不起，是名舍非法；复有非法，所谓兔角、石女儿等，皆无性相，不可分别，但随世俗说有名字，非如瓶等，而可取著，以彼非是识之所取，如是分别，亦应舍离。是名舍法与舍非法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -4100,8 +4168,8 @@
         {
           "pid": "p-s4b2addcf",
           "text": "“楞伽王，汝先所问，我已说竟。楞伽王，汝言我于过去诸如来所已问是义，彼诸如来已为我说。楞伽王，汝言过去但是分别，未来亦然。我亦同彼。楞伽王，彼诸佛法，皆离分别，已出一切分别戏论，非如色相，唯智能证，为令众生得安乐故而演说法，以无相智，说名如来。是故如来以智为体，智为身故，不可分别。不可以所分别，不可以我、人、众生分别。何故不能分别？以意识因境界起取色形相，是故离能分别，亦离所分别。楞伽王，譬如壁上彩画众生，无有觉知，世间众生悉亦如是。无业无报，诸法亦然，无闻无说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 1.74,
+          "end": 1.74,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4110,8 +4178,8 @@
         {
           "pid": "p-sc2b7da57",
           "text": "“楞伽王，世间众生犹如变化，凡夫外道不能了达。楞伽王，能如是见名为正见，若他见者名分别见，由分别故，取着于二。楞伽王，譬如有人于水镜中自见其像，于灯月中自见其影，于山谷中自闻其响，便生分别，而起取著，此亦如是。法与非法唯是分别，由分别故，不能舍离，但更增长，一切虚妄，不得寂灭。寂灭者，所谓一缘，一缘者是最胜三昧，从此能生自证圣智，以如来藏而为境界。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 1.74,
+          "end": 1.74,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4124,7 +4192,7 @@
           "end": 12.08,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf7a1bdad",
@@ -4133,52 +4201,52 @@
           "end": 14.87,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf02f0eb4",
           "text": "什么是法呢？二乘人就是声闻乘、缘觉乘，还有外道们，他们都是虚妄地分别——在本来就没有的空相当中产生妄想、分别之后进行分别。“有实等为诸法因”，他们认为物质或者什么虚空真实存在，以真实存在为诸法的因。“如是等法应舍应离”，这样的法应该舍弃、舍离。也就是真实存在的东西都是幻觉，都是从空中产生出来的，所以我们应该舍离。",
           "start": 14.87,
-          "end": 64.79,
+          "end": 65.85,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6d6348cf",
           "text": "不应于中分别取相，见自心法性则无执著。",
-          "start": 64.79,
-          "end": 69.4,
+          "start": 65.85,
+          "end": 69.2,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfcd127d2",
           "text": "在我们看得见的物质世界当中不要取相。看到我们自心的法性——阿赖耶识最底层的意识、什么都不存在的没有妄想的那个状态里，是没有执着的。",
-          "start": 69.4,
-          "end": 93.1,
+          "start": 69.2,
+          "end": 92.773,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9c39bffb",
           "text": "瓶等诸物凡愚所取本无有体，诸观行人以毗钵舍那如实观察，名舍诸法。",
-          "start": 93.1,
-          "end": 93.1,
+          "start": 92.773,
+          "end": 97.739,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-scae46054",
           "text": "“瓶”，真实存在的东西，这个瓶需要有人来制作，还有泥土，用火烤制等等，这样的东西都是愚痴凡夫们所执着的东西，它们本来就没有体，是不存在的。“观行人”就是修行人。“毗钵舍那”是一种观法，以智慧观法，我们这样理解就可以了。以智慧真实地观察它的本相，这叫“舍诸法”。",
-          "start": 93.1,
+          "start": 97.739,
           "end": 136.91,
-          "conf": 0.75,
-          "method": "ngram"
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-scfcd1535",
@@ -4212,8 +4280,9 @@
           "text": "楞伽王，何者是非法？所谓诸法无性无相永离分别，如实见者，若有若无如是境界彼皆不起，是名舍非法；",
           "start": 208.27,
           "end": 208.27,
-          "conf": 0.8,
+          "conf": 0.45,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
@@ -4229,7 +4298,7 @@
           "pid": "p-s68a0c0e2",
           "text": "“非法”是什么？在这里应该是无的境界，你执着于无和空的时候都称为“非法”。“非法”肯定是和“法”相对应的。我们执着于真实存在的东西之后叫执着于法，然后执着于空或者无的时候，就称为执着于非法。",
           "start": 264.23,
-          "end": 295.31,
+          "end": 294.19,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4256,7 +4325,7 @@
           "pid": "p-s968a947a",
           "text": "“兔角”，兔子没有角。“石女儿”，是石女之子的意思，就是不能生育的女人的儿子，不是女儿、女孩的意思。“皆无性相”，他们没有本体，也没有相，这些都是不能分别的。在这里指的什么意思？我们普通人会把一个不存在的东西想像出来之后在那里执着，就是执着于那些不存在的想像出来的东西也称之为“非法”。",
           "start": 301.62,
-          "end": 343.23,
+          "end": 342.46,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4265,7 +4334,7 @@
           "pid": "p-s68470f9d",
           "text": "就像我们小时候。我小时候和父母一起看过一个电影，叫《超人》。看了电影之后我喜欢超人，就在后背上披个枕巾，把它绑在脖子上，像个斗篷一样，然后跑来跑去假装超人。小时候还挺喜欢什么变形金刚那些，到现在也偶尔看《海贼王》之类的，这些都是真实世界里不存在的东西，是人凭空想像出来的东西。你去喜欢他，执着于他，这也叫“非法”。",
           "start": 343.23,
-          "end": 378.59,
+          "end": 376.95,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4273,8 +4342,8 @@
         {
           "pid": "p-s319bc497",
           "text": "但随世俗说有名字，非如瓶等，而可取著，以彼非是识之所取，如是分别，亦应舍离。是名舍法与舍非法。",
-          "start": 378.59,
-          "end": 378.59,
+          "start": 376.95,
+          "end": 376.95,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4302,7 +4371,7 @@
           "pid": "p-s211b64b4",
           "text": "“非法”，一个是和真实存在的妄想、分别、执着相对应的，就是执着于空或者执着于无，这样叫执着于非法。还有一种非法是把本来不存在的某些东西，凭空想像出来之后又执着于它、喜欢它，这也叫非法，执着于非法。非法是两种：一个是执空、执无；一个是执着凭空想像出来的。这叫“非法”。我们要舍离这样的“法”与“非法”。",
           "start": 475.68,
-          "end": 514.9,
+          "end": 509.67,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4310,24 +4379,27 @@
         {
           "pid": "p-s3e6b9105",
           "text": "楞伽王，汝先所问，我已说竟。楞伽王，汝言我于过去诸如来所已问是义，彼诸如来已为我说。楞伽王，汝言过去但是分别，未来亦然。我亦同彼。",
-          "start": 514.9,
-          "end": 517.75,
-          "conf": 0.7,
-          "method": "ngram"
+          "start": 509.67,
+          "end": 509.67,
+          "conf": 0.8,
+          "method": "ngram",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-sdbf3041e",
           "text": "楞伽王，你前面问的，我已经回答了。楞伽王，你说你曾经在过去如来那里也问过这些问题，那些如来们也都为你回答过。楞伽王，你所说的这个过去也是分别的。这个“时间分别”在《坐禅2》里讲过。“未来亦然”，也是分别。过去、现在、未来都是在分别相里产生出来，就是阿罗汉的分别心里产生出来的一种假相、幻境。“我亦同彼”，我也一样。在这里佛说“我亦同彼”，是楞伽王在说过去的如来给我讲过，现在你又给我讲。这样的话过去的如来和现在的如来又产生了分别，这叫“人我分别”或者“众生分别”，这个分别心也同样是在分别当中虚妄产生出来的。所以这些分别也要舍离。",
-          "start": 517.75,
+          "start": 512.91,
           "end": 581.63,
-          "conf": 0.75,
-          "method": "ngram"
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7b6a862a",
           "text": "楞伽王，彼诸佛法，皆离分别，已出一切分别戏论，非如色相，唯智能证，",
           "start": 581.63,
-          "end": 599.07,
+          "end": 597.6,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4336,7 +4408,7 @@
           "pid": "p-s876faba0",
           "text": "这些佛法最核心的，算是第一义谛，都是舍离分别心、超越分别心的真相。“已出一切分别戏论”，全部超越了这个分别的错误的谬论。“非如色相”，不像这个真实存在的、我们看得见的色相。“唯智能证”，这本书里的“正智”、五法当中的“正智”指的是菩萨境界。因为前面更强调的是分别，要离分别，所以“唯智能证”应该是到了菩萨境界才能证悟。",
           "start": 599.07,
-          "end": 647.25,
+          "end": 643.37,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4354,7 +4426,7 @@
           "pid": "p-sd3b6c457",
           "text": "为了让众生安乐而演说这样的法，以菩萨的智慧境界这样解释才是真正的如来所说法。",
           "start": 654.2,
-          "end": 669.01,
+          "end": 668.26,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4390,7 +4462,7 @@
           "pid": "p-s6b5261f5",
           "text": "“所分别”，在这里“所”是“能所”的“所”，也就是分别的对象。“能分别”是分别的主体，就是主人公。“不可以所分别”，就是没有分别的对象。“不可以我、人、众生分别”，不应该有我相、人相、众生相这种分别相。“何故不能分别”，为什么不能分别？",
           "start": 752.24,
-          "end": 766.4,
+          "end": 765.38,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4398,24 +4470,27 @@
         {
           "pid": "p-s122508f8",
           "text": "以意识因境界起取色形相，是故离能分别，亦离所分别。",
-          "start": 766.4,
-          "end": 774.3,
-          "conf": 0.7,
-          "method": "miss"
+          "start": 765.38,
+          "end": 765.38,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s299f61f7",
           "text": "“以意识因境界起取色形相”，就是在意识里随着各种境界产生的形相当中产生执着。“是故离能分别”，所以要离“能分别”，没有能分别的我相，也就是我这个主体应该消灭。“所分别”也要消失掉，灭掉可以分别的对象——客体。",
-          "start": 774.3,
-          "end": 806.55,
-          "conf": 0.75,
-          "method": "ngram"
+          "start": 766.51,
+          "end": 806.54,
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc746e77c",
           "text": "楞伽王，譬如壁上彩画众生，无有觉知，世间众生悉亦如是。",
           "start": 806.55,
-          "end": 814.4,
+          "end": 813.37,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4424,7 +4499,7 @@
           "pid": "p-s845b1afd",
           "text": "就像岩壁上画的那些彩画众生一样，这些众生都是死的、不能动的，他们没有觉知。那些世间的众生也是这样——没有觉知。如果你这样看的话，好像有在佛的境界里众生是没有觉知的这样的感觉，但实际上应该不是这个。从最底层的阿赖耶识里讲的话，这些众生的妄想都没有本体。应该是这个意思。",
           "start": 814.4,
-          "end": 850.88,
+          "end": 850.12,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4451,7 +4526,7 @@
           "pid": "p-s41cb3f06",
           "text": "楞伽王，世间众生犹如变化，凡夫外道不能了达。",
           "start": 867.42,
-          "end": 874.96,
+          "end": 873.9,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4478,7 +4553,7 @@
           "pid": "p-s332caa98",
           "text": "楞伽王，你这样见——把世间众生都当作幻觉来认知，它是正见。有其他见解的话，叫“分别见”。在这里说众生都是幻觉，这是在你的认知里众生所产生的妄想也是幻觉，这样看是对的。但是客观上众生的自性的确存在，只是在你的意识层面上不再进行分别，没有了我相、人相、众生相而已。",
           "start": 893.38,
-          "end": 933.2,
+          "end": 931.11,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4505,7 +4580,7 @@
           "pid": "p-s43d127e7",
           "text": "“二”可以看作有和无，也可以看作法与非法。总之因为有了分别心，就有了二。",
           "start": 976.62,
-          "end": 984.58,
+          "end": 983.78,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4523,7 +4598,7 @@
           "pid": "p-s31992891",
           "text": "这是一种比喻。“譬如有人于水镜中自见其像”，就像有人在水上看到了自己的影像。“于灯月中自见其影”，在光亮当中看到自己的影子。“于山谷中自闻其响”，听到了回声。就开始生起分别。“而起取著，此亦如是”，在这之上产生执着心，这也如此。",
           "start": 993.75,
-          "end": 1018.79,
+          "end": 1014.64,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4532,7 +4607,7 @@
           "pid": "p-s3fa19573",
           "text": "法与非法唯是分别，由分别故，不能舍离，但更增长，一切虚妄，不得寂灭。寂灭者，所谓一缘，一缘者是最胜三昧，",
           "start": 1018.79,
-          "end": 1024.56,
+          "end": 1019.12,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4540,16 +4615,17 @@
         {
           "pid": "p-s6f81abee",
           "text": "“法与非法唯是分别，”法和非法都是分别心里产生出来的。“由分别故，不能舍离”，因为分别，不能舍离，还无法舍离。“但更增长”，不能舍离的话反而会不断增长，分别心越来越重，在这之上又会产生执着心。“一切虚妄，不得寂灭”，而这些虚妄产生的妄想都不能消失。“寂灭者，所谓一缘”，“寂灭者”也就是佛，如果你能把妄想、分别、执着寂灭了，就只有一缘——一个缘故、一个因。“一缘者是最胜三昧”，“最胜三昧”是一缘，也是最终极的禅法。",
-          "start": 1024.56,
+          "start": 1019.12,
           "end": 1067.1,
-          "conf": 0.75,
-          "method": "ngram"
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s47e1c193",
           "text": "佛经里说的禅是什么四禅八定，这是凡夫的禅，菩萨那里没有禅，所以就说是“三昧”。菩萨也修各种三昧。“三昧”，翻译过来在我们语言里也叫“禅”。但是菩萨那里没有禅，所以说的是“三昧”，是往自心里灭妄想的过程，这种叫“三昧”。",
           "start": 1067.1,
-          "end": 1092.78,
+          "end": 1090.84,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4576,7 +4652,7 @@
           "pid": "p-sa1dc1a9d",
           "text": "好了，下一页。下一页开始，可以说这本书进入主题了，咱们的大慧菩萨——这本书的主人公开始登场。前面楞伽王是个打前站的人，他问的问题在这本经里算是比较低端、简单的问题。后面大慧菩萨问的问题都是菩萨境界的问题，除了最后几个什么以文字传法、不该吃肉这些问题之外，中间很多问题都是菩萨境界的问题，所以难度很高。",
           "start": 1106.53,
-          "end": 1148.26,
+          "end": 1142.78,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4585,7 +4661,7 @@
           "pid": "p-sbaf25732",
           "text": "我们讲这一段也是为了让你先在咱们凡夫的境界里了解菩萨的境界。如果你能把逻辑都给想通了，那是很不错的。因为这就等于先看到了游戏的后期攻略。",
           "start": 1148.26,
-          "end": 1167.16,
+          "end": 1165.15,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4603,7 +4679,7 @@
           "pid": "p-sb2deba42",
           "text": "以通关为目的的时候，就不是享受这个过程，就要先看攻略，这样时间就可以大幅减少，而且出错的概率比较低。我们修行更不应该出错，不能在这个过程当中自己胡乱尝试，这样的话有可能会把身体搞坏了，这个结果你很难承担。因为我们只有一条命，不像游戏里可以反复重来。",
           "start": 1197.01,
-          "end": 1230.72,
+          "end": 1228.52,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4612,7 +4688,7 @@
           "pid": "p-s6dfd76ee",
           "text": "对于普通人，我们这些凡夫来说，先讲菩萨的境界可以都存到你的意识深处、你的自性当中，等你修为到了这个境界，它们自然会显现出来。所以这是先给你后期攻略的做法。",
           "start": 1230.72,
-          "end": 1249.25,
+          "end": 1247.06,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4621,7 +4697,7 @@
           "pid": "p-s975789cb",
           "text": "虽然对当下的修行可能没有什么太大帮助，但是对你增强信心还是有帮助的，尤其是逻辑性强的人。有些人没有办法用逻辑把这个全部连贯起来想通，这样的话他生不起信心，还是处在一种疑惑当中。如果你把菩萨境界都想通了，这样逻辑上通了——认为佛法的确是真实的，就会产生很大的信心，从而对你的修行、发愿都是有帮助的。所以我们讲后面这个更高的境界，如果你能听懂就好，听不懂也可以先把它存到你的意识里，这就可以了。",
           "start": 1249.25,
-          "end": 1287.76,
+          "end": 1287.54,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4629,17 +4705,18 @@
         {
           "pid": "p-s1e104898",
           "text": "尔时，大慧菩萨摩诃萨与摩帝菩萨，俱游一切诸佛国土，承佛神力，从座而起，偏袒右肩，右膝着地，向佛合掌曲躬恭敬而说颂言：",
-          "start": 1287.76,
-          "end": 1287.76,
-          "conf": 0.8,
+          "start": 1287.54,
+          "end": 1287.54,
+          "conf": 0.35,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
           "pid": "p-s06ae4ae6",
           "text": "世间离生灭，譬如虚空花；智不得有无，而兴大悲心。一切法如幻，远离于心识；智不得有无，而兴大悲心。世间恒如梦，远离于断常；智不得有无，而兴大悲心。知人法无我，烦恼及尔焰；常清净无相，而兴大悲心。佛不住涅槃，涅槃不住佛；远离觉不觉，若有若非有。法身如幻梦，云何可称赞？知无性无生，乃名称赞佛。佛无根境相，不见名见佛；云何于牟尼，而能有赞毁？若见于牟尼，寂静远离生；是人今后世，离着无所取。",
-          "start": 1287.76,
-          "end": 1287.76,
+          "start": 1274.63,
+          "end": 1274.63,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4648,8 +4725,8 @@
         {
           "pid": "p-sc7d4f866",
           "text": "尔时，大慧菩萨摩诃萨偈赞佛已，自说姓名：我名为大慧，通达于大乘，今以百八义，仰咨尊中上。时世间解闻是语已，普观众会而作是言：汝等诸佛子，今皆恣所问，我当为汝说，自证之境界。",
-          "start": 1287.76,
-          "end": 1287.76,
+          "start": 1274.63,
+          "end": 1274.63,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -4658,8 +4735,8 @@
         {
           "pid": "p-se3cad035",
           "text": "尔时，大慧菩萨摩诃萨蒙佛许已，顶礼佛足，以偈问曰：云何起计度？云何净计度？云何起迷惑？云何净迷惑？云何名佛子，及无影次第？云何刹土化，相及诸外道？解脱至何所？谁缚谁能解？云何禅境界？何故有三乘？彼以何缘生？何作何能作？谁说二俱异？云何诸有起？云何无色定，及与灭尽定？云何为想灭？云何从定觉？云何所作生？进去及持身？云何见诸物？云何入诸地？云何有佛子？谁能破三有？何处身云何？生复往何处？云何得神通，自在及三昧？三昧心何相？愿佛为我说。云何名藏识？云何名意识？云何起诸见？云何退诸见？云何性非性？云何唯是心？何因建立相？云何成无我？云何无众生？云何随俗说？云何得不起，常见及断见？云何佛外道？其相不相违？何故当来世，种种诸异部？云何为性空？云何刹那灭？胎藏云何起？云何世不动？云何诸世间，如幻亦如梦？乾城及阳焰，乃至水中月？云何菩提分？觉分从何起？……",
-          "start": 1287.76,
-          "end": 1287.76,
+          "start": 1287.54,
+          "end": 1287.54,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4669,7 +4746,7 @@
           "pid": "p-s14e29def",
           "text": "看下一品“集一切法品第二之一”。",
           "start": 1287.76,
-          "end": 1291.4,
+          "end": 1291.33,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4677,18 +4754,20 @@
         {
           "pid": "p-s00be3240",
           "text": "尔时，大慧菩萨摩诃萨与摩帝菩萨，俱游一切诸佛国土，承佛神力，从座而起，偏袒右肩，右膝着地，向佛合掌曲躬恭敬而说颂言：",
-          "start": 1291.4,
-          "end": 1303.7,
+          "start": 1292.46,
+          "end": 1303.95,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se315db90",
           "text": "这样的内容咱们就不解释了，看下面的颂。",
-          "start": 1303.7,
-          "end": 1309.58,
+          "start": 1303.95,
+          "end": 1308.45,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sab59df12",
@@ -4703,7 +4782,7 @@
           "pid": "p-s45be34fc",
           "text": "世间一切都是离开妄想的生灭，这才是真相，世间一切都是妄想的生灭过程当中产生的，就像虚空中的花一样。“智不得有无”，智者要远离有和无的境界。“而兴大悲心”，在这里生起大悲心。就是没有无和没有有的境界当中生起的大悲心。",
           "start": 1314.25,
-          "end": 1339.55,
+          "end": 1339.1,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4711,16 +4790,17 @@
         {
           "pid": "p-s797e3beb",
           "text": "一切法如幻，远离于心识；智不得有无，而兴大悲心。",
-          "start": 1339.55,
+          "start": 1339.49,
           "end": 1340.64,
-          "conf": 0.7,
-          "method": "ngram"
+          "conf": 0.86,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2a2311de",
           "text": "一切法——妄想、分别、执着都是幻觉。“远离于心识”，“心识”，心意意识的简称，远离于妄想、分别、执着。“智不得有无，而兴大悲心”，这是上面同样的话。",
           "start": 1340.64,
-          "end": 1357.1,
+          "end": 1356.57,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4728,10 +4808,12 @@
         {
           "pid": "p-s61f949b6",
           "text": "世间恒如梦，远离于断常；智不得有无，而兴大悲心。",
-          "start": 1357.1,
-          "end": 1358.29,
-          "conf": 0.7,
-          "method": "ngram"
+          "start": 1356.57,
+          "end": 1356.57,
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s74c1839d",
@@ -4747,14 +4829,15 @@
           "text": "知人法无我，烦恼及尔焰；常清净无相，而兴大悲心。",
           "start": 1395.29,
           "end": 1398.3,
-          "conf": 0.6,
-          "method": "miss"
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sa042d0c9",
           "text": "知人无我，法无我，烦恼和尔焰本来都是无。处在清净无相的状态，“无相”应该专指菩萨状态。",
           "start": 1398.3,
-          "end": 1412.46,
+          "end": 1411.43,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4763,7 +4846,7 @@
           "pid": "p-s70bde514",
           "text": "佛不住涅槃，涅槃不住佛；远离觉不觉，若有若非有。",
           "start": 1412.46,
-          "end": 1417.65,
+          "end": 1416.69,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4771,32 +4854,36 @@
         {
           "pid": "p-s6b82a380",
           "text": "佛不在涅槃当中，涅槃也不住佛。在这里“涅槃”是给我们凡夫讲的，后面的“觉”与“不觉”都是给凡夫们讲的。在佛的境界里没有涅槃这一说，也没有什么跌落世间、堕入轮回这一说，也就没有觉和不觉的说法，没有“觉”“不觉”的分别。“若有若非有”，“有”和“非有”的分别都没有。",
-          "start": 1417.65,
-          "end": 1452.9,
-          "conf": 0.75,
-          "method": "ngram"
+          "start": 1416.69,
+          "end": 1451.55,
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8245cfb8",
           "text": "法身如幻梦，云何可称赞？知无性无生，乃名称赞佛。",
-          "start": 1452.9,
-          "end": 1455.5,
-          "conf": 0.7,
-          "method": "ngram"
+          "start": 1451.55,
+          "end": 1451.55,
+          "conf": 0.95,
+          "method": "ngram",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-sf4dce811",
           "text": "佛的法身就像幻境、梦境一样，也没有什么可称赞的，为什么要称赞？知道佛的法身、境界是无性，在这里“无性”并不是说没有自性，不是这个意思，而是妄想、分别、执着没有本体的意思。就像我们看一片树叶，单把一片树叶摘下来的话，它是没有本体的，本来不应该存在。树叶是从树干上长出来，我们妄想也是如此。单把一个妄想拿出来的话，它没有本体，但是它是从自性——阿赖耶识里生长出来的，就是阿赖耶识里虚妄产生出来的妄想。这个时候单拿这个妄想来说，它是无性的，也可以回到无生的状态——没有生出来的状态当中。这种境界“乃名称赞佛”。",
-          "start": 1455.5,
-          "end": 1519.79,
+          "start": 1451.55,
+          "end": 1496.16,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sef756259",
           "text": "佛无根境相，不见名见佛；",
-          "start": 1519.79,
-          "end": 1519.79,
+          "start": 1496.16,
+          "end": 1496.16,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -4833,17 +4920,19 @@
           "pid": "p-sf647bab9",
           "text": "下一页：",
           "start": 1591.77,
-          "end": 1592.3,
+          "end": 1599.31,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s02fb3139",
           "text": "尔时，大慧菩萨摩诃萨偈赞佛已，自说姓名：我名为大慧，通达于大乘，今以百八义，仰咨尊中上。",
-          "start": 1592.3,
+          "start": 1599.31,
           "end": 1603.37,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbd6d36e1",
@@ -4858,7 +4947,7 @@
           "pid": "p-s97252c63",
           "text": "时世间解闻是语已，普观众会而作是言：汝等诸佛子，今皆恣所问，我当为汝说，自证之境界。",
           "start": 1626.26,
-          "end": 1638.1,
+          "end": 1642.66,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4866,16 +4955,17 @@
         {
           "pid": "p-seeb9135d",
           "text": "“世间解”，这也是佛的一个名字。“应供、正遍知、明行足、善逝、世间解、无上士、调御丈夫、天人师、佛、世尊”，这是佛的十个名字。",
-          "start": 1638.1,
-          "end": 1652.48,
-          "conf": 0.75,
-          "method": "ngram"
+          "start": 1642.66,
+          "end": 1651,
+          "conf": 0.82,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s61576e62",
           "text": "听到这个话之后，他回答说，你们这些佛子可以随便问，我当为你说自证之境界——佛的境界。",
           "start": 1652.48,
-          "end": 1667.55,
+          "end": 1666.72,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4884,7 +4974,7 @@
           "pid": "p-s29e0739f",
           "text": "尔时，大慧菩萨摩诃萨蒙佛许已，顶礼佛足，以偈问曰：",
           "start": 1667.55,
-          "end": 1673.22,
+          "end": 1673.07,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4893,7 +4983,7 @@
           "pid": "p-s43421a70",
           "text": "然后开始问。下面是大慧菩萨问的问题。",
           "start": 1673.22,
-          "end": 1679.95,
+          "end": 1679.1,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4901,16 +4991,17 @@
         {
           "pid": "p-s3bafa662",
           "text": "云何起计度？云何净计度？",
-          "start": 1679.95,
+          "start": 1679.17,
           "end": 1682.24,
-          "conf": 0.7,
-          "method": "ngram"
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7ce7186c",
           "text": "“计度”是分别认知的意思，遍计执性。“云何净计度”，怎么灭分别认知？",
           "start": 1682.24,
-          "end": 1694.49,
+          "end": 1694.4,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4919,7 +5010,7 @@
           "pid": "p-sd2f2383c",
           "text": "云何起迷惑？云何净迷惑？",
           "start": 1694.49,
-          "end": 1698.44,
+          "end": 1696.96,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4928,7 +5019,7 @@
           "pid": "p-s63040cde",
           "text": "分别认知之后，在这之上产生迷惑，为什么会起迷惑呢？又怎么去消灭迷惑？",
           "start": 1698.44,
-          "end": 1707.27,
+          "end": 1705.58,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4937,7 +5028,7 @@
           "pid": "p-sc7a727e7",
           "text": "云何名佛子，及无影次第？",
           "start": 1707.27,
-          "end": 1711.41,
+          "end": 1709.3,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4946,7 +5037,7 @@
           "pid": "p-sfedd1059",
           "text": "为什么叫佛子？因何而名为佛子？无相法中因何而有次第？“无影”是无相的意思，“无影次第”也是无相的次第。",
           "start": 1711.41,
-          "end": 1722.52,
+          "end": 1720.99,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4964,7 +5055,7 @@
           "pid": "p-s09b9758a",
           "text": "“刹土”是佛土。这个佛土是怎么变化出来的？相和外道都是怎么变化出来的？",
           "start": 1725.13,
-          "end": 1734.83,
+          "end": 1734.27,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4973,7 +5064,7 @@
           "pid": "p-s2bfff4d3",
           "text": "解脱至何所？谁缚谁能解？",
           "start": 1734.83,
-          "end": 1737.45,
+          "end": 1736.79,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -4982,7 +5073,7 @@
           "pid": "p-s9a62ee45",
           "text": "解脱到哪里去？是谁在绑缚谁，谁又能解？",
           "start": 1737.45,
-          "end": 1746.93,
+          "end": 1744.48,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5009,7 +5100,7 @@
           "pid": "p-s0cdcbf7a",
           "text": "彼以何缘生？何作何能作？",
           "start": 1756.22,
-          "end": 1760,
+          "end": 1759,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5018,7 +5109,7 @@
           "pid": "p-s282042be",
           "text": "这些是什么因缘而生的？谁是能生因？谁是所作果？“何作何能作”，问的是因和果。",
           "start": 1760,
-          "end": 1770.89,
+          "end": 1770.08,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5036,7 +5127,7 @@
           "pid": "p-s3785b6d4",
           "text": "“二俱异”，这是“四句”当中的前两句——一和异、（俱不惧）。一和异是一种句式，四句当中一和异是第一个，“一”是“一二三四”的“一”，是同样的意思，“异”是不同的意思。",
           "start": 1773.2,
-          "end": 1795.3,
+          "end": 1794.09,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5045,7 +5136,7 @@
           "pid": "p-s2561a8c4",
           "text": "我在《坐禅2》里说分别心有同和异的分别——同分别和异分别，在这里“一”代表同，“异”代表不同。一异、俱不俱、有非有，常无常，这是佛总结的人类语言的总的句式种类，可以这么去理解。",
           "start": 1795.3,
-          "end": 1826.53,
+          "end": 1826.17,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5072,7 +5163,7 @@
           "pid": "p-s0d2a00cc",
           "text": "俱不俱是具备和不具备的意思。我们所有众生都具备自性和佛性，可以成佛的可能性，可以这么认识。我们说所有众生都具有佛性，也有些理论里说一些东西没有佛性，小乘理论里也有这样不具备佛性的人。",
           "start": 1868.25,
-          "end": 1898.3,
+          "end": 1897.69,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5108,7 +5199,7 @@
           "pid": "p-se9c2fc0a",
           "text": "俱不俱也同样：俱是一种，不俱是一种，亦俱亦不俱，还有非俱非不俱。“亦俱亦不俱”，既是具有的也是不具有的，这是一种。还有“非俱非不俱”，既是不具有的，也是非不具有的，反正很绕口。“俱”和“不俱”本来是相对的，但是“亦俱亦不俱”就是两个属性同时存在。还有另一种是两个属性都不同时存在——“非俱非不俱”。应该是这样的。",
           "start": 1951.67,
-          "end": 1992.61,
+          "end": 1989.63,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5135,7 +5226,7 @@
           "pid": "p-s8e6080fe",
           "text": "这样是四乘以四，总共十六种句式。在这十六种句式当中，我们再乘以三——过去、现在、未来，你所说的所有事情都在时间上对应于过去、现在、未来这三种时间线。所以这样十六乘以三总共是四十八种。",
           "start": 2018.78,
-          "end": 2047.61,
+          "end": 2045.67,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5144,7 +5235,7 @@
           "pid": "p-s735b8b14",
           "text": "在这里再乘以二，乘以二是什么？就是已起和未起，“起”是“起来”的“起”。已经出现了，这叫“已起”。“未起”是还没有出现，这是又一起。也就是一个物质还没有出现和已经出现这两种状态。这样四十八再乘以二就是九十六种。",
           "start": 2047.61,
-          "end": 2066.69,
+          "end": 2066.43,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5180,7 +5271,7 @@
           "pid": "p-s2f975f2e",
           "text": "“云何诸有起”，为什么会生起妄想？“有”是从妄想中产生的。",
           "start": 2122.99,
-          "end": 2142.06,
+          "end": 2129.67,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5198,7 +5289,7 @@
           "pid": "p-s1f3fcfeb",
           "text": "“无色定”是四禅以上的无色界定。对于“灭尽定”，后面注释当中说“又称‘灭尽三昧’‘灭受想定’‘灭定’，意为指灭尽六识之心，心所之禅定”，“灭尽六识”基本上是凡夫定当中的最高境界。",
           "start": 2145.83,
-          "end": 2168.76,
+          "end": 2165.84,
           "conf": 0.872,
           "method": "ngram",
           "confirmed": false
@@ -5206,8 +5297,8 @@
         {
           "pid": "p-s20a8d4fd",
           "text": "云何为想灭？云何从定觉？",
-          "start": 2168.76,
-          "end": 2168.76,
+          "start": 2165.84,
+          "end": 2165.84,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -5226,7 +5317,7 @@
           "pid": "p-s342da5d8",
           "text": "云何所作生？进去及持身？",
           "start": 2174.25,
-          "end": 2179.69,
+          "end": 2179.36,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5235,7 +5326,7 @@
           "pid": "p-s89cee4d8",
           "text": "“所作”就是造作。造作的这种行为是怎么生起的？怎么在造作当中维持，住在这种妄想、分别、执着翻滚的状态？",
           "start": 2179.69,
-          "end": 2194.17,
+          "end": 2192.15,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5253,7 +5344,7 @@
           "pid": "p-s0c653987",
           "text": "怎么见到诸物？单说一个“物”，就很难理解，在后边的译文当中说是“见五法、三自性”，我们就这么看。因为这个问题并不重要，我们关注的是佛回答的答案，回答的答案才重要。所以如果他问得有点模糊，咱们跳过就可以了。“物”是什么？就当它是什么“五法、三自性”，这样看不就可以了？“云何入诸地”，这是菩萨的“诸地”，怎么进入到菩萨诸地当中？",
           "start": 2196.31,
-          "end": 2233.25,
+          "end": 2230.98,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5262,7 +5353,7 @@
           "pid": "p-sdc46fee5",
           "text": "云何有佛子？谁能破三有？",
           "start": 2233.25,
-          "end": 2235.99,
+          "end": 2235.67,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5271,7 +5362,7 @@
           "pid": "p-s02ddc958",
           "text": "为什么会有佛子呢？“三有”是三界——欲界、色界、无色界，有这样的解释。",
           "start": 2235.99,
-          "end": 2246.43,
+          "end": 2242.44,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5289,7 +5380,7 @@
           "pid": "p-sea2e69c2",
           "text": "破了三界的人，他的身是怎么样的？又会生到哪里去？",
           "start": 2253.76,
-          "end": 2259.48,
+          "end": 2258.49,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5307,7 +5398,7 @@
           "pid": "p-sbb20350f",
           "text": "破了三界的人，怎样得到神通？自在和三昧是怎么得的？",
           "start": 2264.23,
-          "end": 2266.53,
+          "end": 2266.36,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5343,7 +5434,7 @@
           "pid": "p-sd98de90c",
           "text": "什么是藏识和意识？我们都认为“藏识”是第八识阿赖耶识。“心意意识”是在这个“藏识”当中生长出来的妄想、分别、执着，是妄想、分别、执着的另一种说法。",
           "start": 2276.74,
-          "end": 2292.56,
+          "end": 2292.55,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5352,7 +5443,7 @@
           "pid": "p-s7b27ea53",
           "text": "云何起诸见？云何退诸见？",
           "start": 2292.56,
-          "end": 2295.35,
+          "end": 2295.05,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5361,7 +5452,7 @@
           "pid": "p-s767cd1bb",
           "text": "“见”就是执着当中最深层次的执着——我见。",
           "start": 2295.35,
-          "end": 2301.18,
+          "end": 2300.91,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5379,7 +5470,7 @@
           "pid": "p-sbe9b1d74",
           "text": "“性”，后面会讲到种性。这个“种性”不是什么印度的种姓制度的那个种姓，而是五种不同根器。所以在这里“性非性”，就是根器和非根器。“云何唯是心”，为什么这一切都是唯心，都是从心里产生？",
           "start": 2305.27,
-          "end": 2325.96,
+          "end": 2324.59,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5388,7 +5479,7 @@
           "pid": "p-s8fca081f",
           "text": "关于五种根器，好像在《圆觉经》里已经讲过了，在这里内容是一样的。",
           "start": 2325.96,
-          "end": 2333.74,
+          "end": 2333.69,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5397,7 +5488,7 @@
           "pid": "p-s14365718",
           "text": "何因建立相？云何成无我？",
           "start": 2333.74,
-          "end": 2337.61,
+          "end": 2336.73,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5406,7 +5497,7 @@
           "pid": "p-s86baeff3",
           "text": "相是怎么建立的，也就是分别心是怎么产生的？“云何成无我”，怎么回到无我的状态，也就是这个分别心应该怎么灭？",
           "start": 2337.61,
-          "end": 2347.24,
+          "end": 2346.27,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5415,7 +5506,7 @@
           "pid": "p-s600c7bf7",
           "text": "云何无众生？云何随俗说？",
           "start": 2347.24,
-          "end": 2349.63,
+          "end": 2349.27,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5424,7 +5515,7 @@
           "pid": "p-sab13defa",
           "text": "为什么说没有众生？为什么随俗说——方便说？随着各个不同根器的人对他们说方便法，这叫“随俗说”。",
           "start": 2349.63,
-          "end": 2368.57,
+          "end": 2368.52,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5451,7 +5542,7 @@
           "pid": "p-s16045148",
           "text": "云何佛外道？其相不相违？",
           "start": 2380.69,
-          "end": 2383.39,
+          "end": 2382.93,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5460,7 +5551,7 @@
           "pid": "p-sff650e60",
           "text": "为什么佛与外道的相是不相违背的，不相冲突的？",
           "start": 2383.39,
-          "end": 2390.27,
+          "end": 2388.03,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5469,7 +5560,7 @@
           "pid": "p-s66dd563b",
           "text": "何故当来世，种种诸异部？",
           "start": 2390.27,
-          "end": 2394.36,
+          "end": 2393.6,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5478,7 +5569,7 @@
           "pid": "p-s03f193e2",
           "text": "为什么在未来世佛法会产生不同的宗派和不同的理论？“异部”，佛法往大了说有十八部之多，不是专业研究佛经佛法的人就没必要深入了解。咱们就大概知道有五个——禅宗、教宗、律宗、密宗、净土宗，这五个我们都是普遍认可的，比较广泛传播的。还有更多的什么八宗、十八宗之说，就不解释了，自己网上查就可以了。",
           "start": 2394.36,
-          "end": 2438.48,
+          "end": 2437.11,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5496,7 +5587,7 @@
           "pid": "p-s5321b540",
           "text": "为什么性空——自性本来是空的？这些妄想怎么刹那间灭掉？",
           "start": 2441.89,
-          "end": 2450.85,
+          "end": 2450.82,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5505,7 +5596,7 @@
           "pid": "p-sf909e37b",
           "text": "胎藏云何起？云何世不动？",
           "start": 2450.85,
-          "end": 2454.29,
+          "end": 2453.28,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5523,7 +5614,7 @@
           "pid": "p-s1782b241",
           "text": "“云何世不动”，在这里“世”书上解释为世间诸法，我们就不在这个问题上细究，更多关注在佛的回答上，所以我们就认为它是对的。为什么世间诸法一直不动？是妄想、分别、执着一直翻滚地存在着，指的是这个。",
           "start": 2469.33,
-          "end": 2496.29,
+          "end": 2496.04,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5532,7 +5623,7 @@
           "pid": "p-s4f8c5d3a",
           "text": "云何诸世间，如幻亦如梦？",
           "start": 2496.29,
-          "end": 2500.2,
+          "end": 2498.15,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5541,7 +5632,7 @@
           "pid": "p-sb18fd648",
           "text": "为什么说这个世间是幻觉又是梦？",
           "start": 2500.2,
-          "end": 2503.65,
+          "end": 2503.62,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5559,7 +5650,7 @@
           "pid": "p-sbaa761c4",
           "text": "就像乾闼婆城、“阳焰”和“水中月”？“阳焰”和“水中月”也像乾闼婆城这个幻境一样，都是不存在的东西。",
           "start": 2506,
-          "end": 2516.17,
+          "end": 2515.2,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false
@@ -5577,7 +5668,7 @@
           "pid": "p-sa10d2ad3",
           "text": "什么是菩提分？觉分，觉悟又从哪里生起？“菩提分”，书后面解释为“三十七菩提分”，“此等菩提分又是如何生起？”这个网上可以查到，“三十七菩提分”把它拆开来说是四念处、四正勤、四神足、五根、五力、七觉支、八正道，这个网上自己查就可以了。",
           "start": 2524.91,
-          "end": 2549.63,
+          "end": 2549.52,
           "conf": 0.833,
           "method": "ngram",
           "confirmed": false
@@ -5602,8 +5693,8 @@
         {
           "pid": "p-s00afe03a",
           "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，何者是一百八句？”佛言：“大慧，所谓生句非生句，常句非常句，相句非相句，住异句非住异句，刹那句非刹那句，自性句非自性句，空句非空句，断句非断句，心句非心句，……文字句非文字句。大慧，此一百八句皆是过去诸佛所说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -5612,109 +5703,129 @@
         {
           "pid": "p-safd06231",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，诸识有几种生住灭？”佛言：“大慧，诸识有二种生住灭，非臆度者之所能知。所谓相续生及相生，相续住及相住，相续灭及相灭。诸识有三相，谓转相、业相、真相。",
-          "start": 0.0,
-          "end": 0.0,
-          "conf": 0.8,
+          "start": 53.85,
+          "end": 53.85,
+          "conf": 0.35,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
           "pid": "p-s94db50c7",
           "text": "“大慧，识广说有八，略则唯二，谓现识及分别事识。大慧，如明镜中现诸色像，现识亦尔。大慧，现识与分别事识，此二识无异相互为因。大慧，现识以不思议熏变为因，分别事识以分别境界及无始戏论、习气为因。大慧，阿赖耶识虚妄分别，种种习气灭即一切根识灭，是名相灭。大慧，相续灭者，谓所依因灭及所缘灭即相续灭。所依因者，谓无始戏论、虚妄习气；所缘者，谓自心所见分别境界。大慧，譬如泥团与微尘非异非不异，金与庄严具亦如是。大慧，若泥团与微尘异者，应非彼成而实彼成，是故不异。若不异者，泥团、微尘应无分别。",
-          "start": 0.0,
-          "end": 0.0,
-          "conf": 0.8,
+          "start": 53.85,
+          "end": 53.85,
+          "conf": 0.35,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
           "pid": "p-s853e2c23",
           "text": "“大慧，转识藏识若异者，藏识非彼因；若不异者，转识灭藏识亦应灭，然彼真相不灭。大慧，识真相不灭，但业相灭。若真相灭者，藏识应灭。若藏识灭者，即不异外道断灭论。大慧，彼诸外道作如是说，取境界相续识灭，即无始相续识灭。大慧，彼诸外道说相续识从作者生，不说眼识依色光明和合而生，唯说作者为生因故，作者是何？彼计胜性丈夫自在时及行微尘为能作者。”",
-          "start": 0.0,
-          "end": 0.0,
-          "conf": 0.8,
+          "start": 53.85,
+          "end": 53.85,
+          "conf": 0.35,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
           "pid": "p-s37895069",
           "text": "《楞伽经》第七期。",
           "start": 1.29,
-          "end": 5.2,
+          "end": 118.76,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc0b2ccb2",
           "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，何者是一百八句？”",
-          "start": 5.2,
-          "end": 11.4,
+          "start": 118.76,
+          "end": 124.87,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s90055b77",
           "text": "什么是“一百八句”？下面一段好像中间有一部分直接给省略掉了，可能是这个编辑的人偷懒啦，或者他觉得没什么太大的意义吧。所以咱们在这里就不浪费时间了，简单读一下。",
-          "start": 11.4,
-          "end": 31.5,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 124.87,
+          "end": 124.87,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s3cd0fe93",
           "text": "佛言：“大慧，所谓生句非生句，常句非常句，相句非相句，住异句非住异句，刹那句非刹那句，自性句非自性句，空句非空句，断句非断句，心句非心句，……文字句非文字句。大慧，此一百八句皆是过去诸佛所说。”",
-          "start": 31.5,
-          "end": 55.8,
+          "start": 124.87,
+          "end": 124.87,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s0a030c9d",
           "text": "这个“是”和“非”在这里全部用“非”这种模式来说。我们人类的语言都是执着上形成的，只要说出来的话，就已经是执着了。",
-          "start": 55.8,
-          "end": 71.2,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 124.87,
+          "end": 124.87,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-sd1311082",
           "text": "既然他已经有了“见、取、执”这些执着的境界，尤其是“见”，我说出来的话肯定是“我认为”这样想才会说的，所以我们学法也是，如果执着于文字相的话，就没有办法领悟到佛所说的那个宇宙真相——最终极的第一义谛。",
-          "start": 71.2,
-          "end": 97.2,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 124.87,
+          "end": 124.87,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s49b19049",
           "text": "所以这一段我们就把它理解为：佛告诉我们不要在文字上着相，也不要在文字上分别，否则你没有办法知道、领悟到佛的真意，这个直接省略掉的内容，咱们就不要过度地追究。",
-          "start": 97.2,
-          "end": 118.0,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 124.87,
+          "end": 124.87,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s5afb29d1",
           "text": "下一段：",
-          "start": 118.0,
-          "end": 120.3,
-          "conf": 0.7,
-          "method": "miss"
+          "start": 124.87,
+          "end": 124.87,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s34540ae2",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，诸识有几种生住灭？”",
-          "start": 120.3,
-          "end": 125.8,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 124.87,
+          "end": 124.87,
+          "conf": 0.45,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s26eb3dc0",
           "text": "“诸识”是第八识——阿赖耶识，第七识分别心，第六识执着心，下边还有五识——眼、耳、鼻、舌、身，加起来总共是八识。",
-          "start": 125.8,
-          "end": 145.06,
-          "conf": 0.8,
-          "method": "ngram"
+          "start": 124.87,
+          "end": 143.93,
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbf960498",
@@ -5729,7 +5840,7 @@
           "pid": "p-s05bfffbc",
           "text": "诸识有二种生住灭相。“臆度者”，我们把它当作凡夫就可以了。不是凡夫所能知道的。",
           "start": 154.68,
-          "end": 159.69,
+          "end": 159.22,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5756,7 +5867,7 @@
           "pid": "p-s9f2eee8a",
           "text": "“所谓相续生和相生，……”，就是一个“相”看作是一个妄想生起、停留、消失，这个叫“生”“住”“灭”。“相生”“相住”“相灭”，就是指一个妄想生起、停留、消失这三种状态。“相续”是这个妄想产生之后，新的妄想又产生、新的又产生，导致这个相一直不停地连续下去。这本经的后面会讲到菩萨看妄想和佛看妄想的区别，它是不一样的。",
           "start": 199.71,
-          "end": 241.86,
+          "end": 240.29,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5774,7 +5885,7 @@
           "pid": "p-sbfdcb1e7",
           "text": "“相续”指妄想不停地出现、不停地出现，形成一个连续的，不像我们现在看电影、电视的时候，网速不行会卡顿，那就不能称之为“相续”。相续就是整个画面要连续，我们眼睛分辨不出来它是停顿的，这个叫“相续”。",
           "start": 250.96,
-          "end": 285.86,
+          "end": 282.86,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5783,7 +5894,7 @@
           "pid": "p-s4b977b47",
           "text": "诸识有三相，谓转相、业相、真相。",
           "start": 285.86,
-          "end": 290.54,
+          "end": 288.57,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5810,7 +5921,7 @@
           "pid": "p-sbea7ea4a",
           "text": "“业相”，肯定是和其他众生互动产生的相。如果自己产生的相，就是习气，一个人产生的妄想是习气，只要灭掉这个习气、妄想，就可以直接证悟到更高的境界。",
           "start": 332.41,
-          "end": 352.41,
+          "end": 351.96,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5819,7 +5930,7 @@
           "pid": "p-s4e66b006",
           "text": "但是和其他众生互动之后，他们的妄想也会反映到我们身上，所以我们的意识也没有办法彻底清净。后面会专门解释“自相”和“共相”，菩萨的境界里怎么解释“自相”“共相”。“自相”“共相”肯定不是你们在网上能找到的那些内容，是只有到了那个境界的人才能讲出来的内容。",
           "start": 352.41,
-          "end": 379.54,
+          "end": 378.83,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5837,7 +5948,7 @@
           "pid": "p-scd870f0e",
           "text": "“识”，意识，八识的统称。它广说就变成八识，简单说就是现识和分别事识。这里“现识”肯定指第八识——阿赖耶识，“分别事识”指第七识、第六识和眼、耳、鼻、舌、身这五识，全部加起来。“分别”肯定是第七识——分别心，“事”肯定是执着。也有一种解释“事”指和其他众生相互产生的业，这也没有错。",
           "start": 385,
-          "end": 428.93,
+          "end": 425.04,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5846,7 +5957,7 @@
           "pid": "p-s2087609f",
           "text": "大慧，如明镜中现诸色像，现识亦尔。",
           "start": 428.93,
-          "end": 435.14,
+          "end": 431.8,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5882,7 +5993,7 @@
           "pid": "p-sf92ebae7",
           "text": "而它们互相为因。先有阿赖耶识的妄想，妄想多出来之后就产生了分别心，然后又出现执着心。反过来，这些“分别”产生的境界和“执着”产生的这个有生死的轮回世界，也会让阿赖耶识的妄想增加。",
           "start": 502.58,
-          "end": 534.33,
+          "end": 530.75,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5891,7 +6002,7 @@
           "pid": "p-sb136b885",
           "text": "大慧，现识以不思议熏变为因，",
           "start": 534.33,
-          "end": 537.08,
+          "end": 536.72,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5900,7 +6011,7 @@
           "pid": "p-sd6906e6b",
           "text": "在这里“不思议”是什么意思？这个指在佛的境界里“初妄无因”的“无因”，不思议就是无因——没有原因，第一个妄想的产生是没有原因的。所以佛说“不思议”，没有办法解释，因为根本就没有原因。这种没有原因地产生妄想称为“不思议熏变”，在后面加了个“为因”。“现识以不思议熏变为因”，也就是阿赖耶识里产生妄想是没有原因的，就这么忽然产生。",
           "start": 537.08,
-          "end": 577.6,
+          "end": 574.3,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5908,18 +6019,21 @@
         {
           "pid": "p-sca71caba",
           "text": "分别事识以分别境界及无始戏论、习气为因。",
-          "start": 577.6,
-          "end": 583.85,
-          "conf": 0.7,
-          "method": "ngram"
+          "start": 574.3,
+          "end": 574.3,
+          "conf": 0.8,
+          "method": "ngram",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-s95e5b69b",
           "text": "“分别事识”，第七识分别心和第六识执着心是分别境界，妄想增多后产生分别心，在分别心上产生了不同的相，如此产生了境界。",
-          "start": 583.85,
-          "end": 595.43,
-          "conf": 0.8,
-          "method": "ngram"
+          "start": 576.67,
+          "end": 595.32,
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd55d98e0",
@@ -5934,7 +6048,7 @@
           "pid": "p-s76ac0ac0",
           "text": "分别事识以这种分别境界、错误的见解和习气为因。",
           "start": 621.35,
-          "end": 628.9,
+          "end": 625.88,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -5942,18 +6056,21 @@
         {
           "pid": "p-s819bed96",
           "text": "大慧，阿赖耶识虚妄分别，种种习气灭即一切根识灭，是名相灭。",
-          "start": 628.9,
-          "end": 636.4,
-          "conf": 0.7,
-          "method": "miss"
+          "start": 625.88,
+          "end": 625.88,
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false,
+          "zero": true
         },
         {
           "pid": "p-saea9bbdd",
           "text": "在第八识——阿赖耶识里会产生妄想，就产生分别心，然后产生种种习气，这些习气灭，根识就会灭——眼、耳、鼻、舌、身会灭，这叫“名相灭”。",
-          "start": 636.4,
+          "start": 628.99,
           "end": 657.93,
-          "conf": 0.8,
-          "method": "ngram"
+          "conf": 0.85,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7b26952d",
@@ -5978,14 +6095,15 @@
           "text": "大慧，相续灭者，谓所依因灭及所缘灭即相续灭。",
           "start": 714.81,
           "end": 720.4,
-          "conf": 0.6,
-          "method": "miss"
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s2d11864a",
           "text": "相续的“因”和“缘”灭的话，这个相续也会灭。下面开始解释什么是“因”，什么是“缘”。",
           "start": 720.4,
-          "end": 737.47,
+          "end": 737.14,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6003,7 +6121,7 @@
           "pid": "p-sa21f5bfe",
           "text": "这个上面解释过了，“无始戏论”就是错误的见解和理论；“虚妄习气”，就是对六根的习气，使用根识的习气。",
           "start": 741.19,
-          "end": 755.09,
+          "end": 755.04,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6021,7 +6139,7 @@
           "pid": "p-sa8be3bd9",
           "text": "“所缘”的“缘”是外缘的意思。有时候讲的“缘”是“无明缘行”的“缘”，也就是产生的原因，这个东西导致了后面这个东西的意思。也可以说后面这个东西的原因是前面这个东西，这也叫“缘”。",
           "start": 758.31,
-          "end": 783.94,
+          "end": 783.47,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6030,7 +6148,7 @@
           "pid": "p-s4a0cfa82",
           "text": "在这里的“缘”是对外境，这是根据外境而产生的妄想。“谓自心所见分别境界”，我们有了分别心之后产生不同的相——各种境界，在这之上又产生了执着。我们看到的这个物质世界其实是在我们自性当中，但是我们有了分别心之后就把自己和这个外面的世界区别开来，所以把外边的这个物质世界称之为“外缘”，但实际上它也在我们的自性当中。",
           "start": 783.94,
-          "end": 821.92,
+          "end": 816.63,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6057,7 +6175,7 @@
           "pid": "p-s3646a220",
           "text": "“庄严具”是用金打造出来的首饰、器物、器皿，用来吃饭的碗、酒杯之类的，这些东西都可以称之为“庄严具”。金与庄严具就像这个泥团和微尘一样，泥团是由微尘凝聚在一起形成的。金和庄严具都是金，但是改变了它的外相——外边的模样，变成庄严具。这些之间都是既同，也不同。",
           "start": 870.81,
-          "end": 910.91,
+          "end": 908.39,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6084,7 +6202,7 @@
           "pid": "p-s53b06f03",
           "text": "若不异者，泥团、微尘应无分别",
           "start": 952.31,
-          "end": 957.82,
+          "end": 957.41,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6093,7 +6211,7 @@
           "pid": "p-s540c2308",
           "text": "下半句翻译过来是：如果泥团和微尘一样，那么泥团和微尘就应该没有分别，到这里就结束了。",
           "start": 957.82,
-          "end": 971.77,
+          "end": 971.3,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6102,7 +6220,7 @@
           "pid": "p-s05502c69",
           "text": "我们把原文里省略掉的逻辑的结论补上，这一段的下面一段应该是：如果泥团和微尘一样，那么泥团和微尘就应该没有分别；可是泥团和微尘是有分别的，所以泥团和微尘不一样。这叫“非异非不异”。结论就是泥团和微尘既是一样，也不一样。",
           "start": 971.77,
-          "end": 1008.3,
+          "end": 1003.38,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6120,7 +6238,7 @@
           "pid": "p-s0bb0621f",
           "text": "在这里“藏识”肯定是阿赖耶识——最底层意识，这个自性是不生不灭的；“转识”就是藏识里忽然生长出来的、忽然出现的妄想。“异”翻译为不一样。这句话翻译为：妄想和自性不一样的话，自性不是妄想的因。",
           "start": 1013.63,
-          "end": 1050.14,
+          "end": 1047.62,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6138,7 +6256,7 @@
           "pid": "p-s957ef8c6",
           "text": "“不异”翻译过来就是一样。如果妄想和自性一样的话，妄想灭，自性也应该灭。但是真相是不灭的，藏识不生不灭。",
           "start": 1057.869,
-          "end": 1078.2,
+          "end": 1076.55,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6156,7 +6274,7 @@
           "pid": "p-sa8980d7c",
           "text": "我们从这句话反推回去的话，这个“真相”是三相——转相、业相、真相里最后一个。这个“真相”应该指三个初始设定——自性恒常、初妄无因和诸佛同体的前两个，就是自性恒常和初妄无因，这两个是宇宙的真相，佛应该讲的是这个。因为他把“真相”和“藏识”区别开来说了，并没有把真相和藏识，也就是自性划上等号。",
           "start": 1089.8,
-          "end": 1132.42,
+          "end": 1129.9,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6183,7 +6301,7 @@
           "pid": "p-s621d185e",
           "text": "“若藏识灭者，即不异外道断灭论”，如果自性都灭了，那么这种理论和外道的断灭论是一样的，没有分别。",
           "start": 1179.79,
-          "end": 1195.97,
+          "end": 1195.72,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6228,7 +6346,7 @@
           "pid": "p-se733839e",
           "text": "实际上，我们看到的、听到的全部都是我们自性当中产生的幻境，它们也是六根执着里的一部分，并不是外境，其实也包含在我们的自性当中，这才是真相。",
           "start": 1298.14,
-          "end": 1316.79,
+          "end": 1316.39,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6237,7 +6355,7 @@
           "pid": "p-s8751b35e",
           "text": "不是你看到什么，然后什么都不想，就像木头一样静静地待着，就可以解脱，这是不能解脱的。以前也讲过，这样就进入到无记空当中，多少佛出世都无法解脱。",
           "start": 1316.79,
-          "end": 1335.97,
+          "end": 1333.13,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6246,7 +6364,7 @@
           "pid": "p-s3b7f6b83",
           "text": "你看到什么都不起妄想，那不是真正的佛说的禅定，只能算是一种不打妄想的、低端的（状态），甚至佛认为这是外道三昧，根本不可能解脱。",
           "start": 1335.97,
-          "end": 1356.1,
+          "end": 1353.02,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6254,16 +6372,17 @@
         {
           "pid": "p-sc37c0ada",
           "text": "大慧，彼诸外道说相续识从作者生，不说眼识依色光明和合而生，",
-          "start": 1356.1,
+          "start": 1353.02,
           "end": 1364.5,
-          "conf": 0.7,
-          "method": "miss"
+          "conf": 0.35,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sbd340e39",
           "text": "下面就讲了这个“作者”。“眼识依色光明和合而生”，这是佛说的，更准确的应该是眼识、眼根、眼尘，这些都是同时产生的，六根、六尘、六识统称为“十八界”，这都是在执着、尤其是注意力上产生出来的，全部都是幻境，是根据注意力同时产生。如果这样说的话是佛说的。如果说相续识是从某个作者那里产生的，就是外道们所说。",
           "start": 1364.5,
-          "end": 1404.61,
+          "end": 1404.46,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6272,7 +6391,7 @@
           "pid": "p-s8876def7",
           "text": "下面专门解释了这个“作者”是什么？",
           "start": 1404.61,
-          "end": 1412.5,
+          "end": 1412.13,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6281,7 +6400,7 @@
           "pid": "p-s7a7b0b30",
           "text": "唯说作者为生因故，作者是何？彼计胜性丈夫自在时及行微尘为能作者。",
           "start": 1412.5,
-          "end": 1421.95,
+          "end": 1421.55,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6290,7 +6409,7 @@
           "pid": "p-seae0ddfd",
           "text": "这是外道们认为的。“计胜性丈夫自在时及行微尘为能作者”，这句话没办法按照我们的语言习惯来翻译。查别的书的话，在宋·宝臣《注大乘入楞伽经》里解释为“胜性亦云胜妙，是生梵天之天主，丈夫即神我之别名，自在谓大自在天，及计时节微尘等为能作者”。“神我”就是深层意识，外道们认为是比我们这个本我更高、自我意识之上的那个神我意识。",
           "start": 1421.95,
-          "end": 1487.6,
+          "end": 1488.38,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6298,10 +6417,11 @@
         {
           "pid": "p-sab5b0a2f",
           "text": "如果这样看的话，我们就直接往回推理。前面已经提过一次外道断灭论，断灭论是什么？就是我们这个世界是被某个神创造出来的，包括我们的意识、肉身都是创造出来的。",
-          "start": 1487.6,
+          "start": 1488.38,
           "end": 1494.83,
-          "conf": 0.75,
-          "method": "ngram"
+          "conf": 0.6,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5824a505",
@@ -6343,7 +6463,7 @@
           "pid": "p-se0697773",
           "text": "补充一点，我在网上专门搜了一下，因为我以前看的书里有百八句的全文，但是前面直接省略掉了。我还是查了一下，发现网上有全文，给大家念一遍，这就不解释了，大家只要听一遍就够了。以后整理成书的时候可能会把全文都放进去。",
           "start": 1616.65,
-          "end": 1652.02,
+          "end": 1651.57,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6361,7 +6481,7 @@
           "pid": "p-sb9f8678d",
           "text": "书上到这里后面就省略掉了，网上查到省略掉的部分是：",
           "start": 1669.97,
-          "end": 1677.59,
+          "end": 1676.15,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6379,7 +6499,7 @@
           "pid": "p-sb267cb2c",
           "text": "这样总共是一百零八句。“三乘句非三乘句”，佛说的三乘——声闻乘、缘觉乘、菩萨乘或如来乘。",
           "start": 1712.7,
-          "end": 1764.9,
+          "end": 1747.13,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6388,7 +6508,7 @@
           "pid": "p-sd9c757cd",
           "text": "“摽相句非摽相句”，“摽”是舍弃的意思，这个“相”是分别心上的相，这样就是舍弃相的意思。",
           "start": 1764.9,
-          "end": 2037.54,
+          "end": 1789.75,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6397,15 +6517,16 @@
           "pid": "p-s6551862a",
           "text": "“大种句非大种句”，“大种”是四大的意思。“摄受句非摄受句”，“摄受”是佛教里说的摄受什么人，就是把人说服了，让他信佛。",
           "start": 2037.54,
-          "end": 2065.67,
-          "conf": 0.7,
-          "method": "miss"
+          "end": 2056.15,
+          "conf": 0.49,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s64a64dd7",
           "text": "“一阐提句非一阐提句”，“阐提”，在这个佛经的后面会讲到。“一阐提”是没有佛性的那种说法。",
           "start": 2065.67,
-          "end": 2093.85,
+          "end": 2079.08,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6414,7 +6535,7 @@
           "pid": "p-s2a401a84",
           "text": "“女男不男句非女男不男句”，“非女男不男句”，应该是没有性别和有性别的意思吧。",
           "start": 2093.85,
-          "end": 2154.37,
+          "end": 2106.63,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6424,8 +6545,9 @@
           "text": "“演说句非演说句”，“演说”就是大庭广众之下向很多人讲话。这一期就讲到这里。",
           "start": 2154.37,
           "end": 2197.961,
-          "conf": 0.7,
-          "method": "miss"
+          "conf": 0.49,
+          "method": "miss",
+          "confirmed": false
         }
       ]
     },
@@ -6438,8 +6560,8 @@
         {
           "pid": "p-s6b8ecd30",
           "text": "“复次，大慧，有七种自性：所谓集自性、性自性、相自性、大种自性、因自性、缘自性、成自性。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -6448,8 +6570,8 @@
         {
           "pid": "p-sb97148e0",
           "text": "“复次，大慧，有七种第一义：所谓心所行、智所行、二见所行、超二见所行、超子地所行、如来所行、如来自证圣智所行。大慧，此是过去、未来、现在一切如来应正等觉，法自性第一义心，以此心成就如来世间、出世间最上法，以圣慧眼入自、共相种种安立，其所安立不与外道恶见共。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 93.86,
+          "end": 93.86,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -6459,47 +6581,52 @@
           "pid": "p-s367a8283",
           "text": "《楞伽经》第八期，这一期开始有点上难度了，开始讲菩萨的境界。我前面讲过，就像打游戏一样，咱们虽然是从新手村开始，但是可以先去拿最后阶段的、后期的那些攻略，到时候可以用得到。而且有了攻略的话，人就有信心，不是迷茫的状态下自己胡乱逛、胡乱摸索。",
           "start": 1.42,
-          "end": 33.8,
+          "end": 24.753,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4fc5fbeb",
           "text": "咱们修行也如此。你有了完整的攻略，就有明确的目标，你都知道每个步骤该怎么做，那你对自己就有很强烈的信心，这对初学来说是最大的一种福利。对高层次的佛法你能理解的话，虽然当下修行达不到那个境界，只要用我们的逻辑、凡夫的智慧来把它想通了、理解了，就能产生很大的信心，而且对发心也有极大的帮助。",
-          "start": 33.8,
-          "end": 65.5,
-          "conf": 0.85,
-          "method": "miss"
+          "start": 24.753,
+          "end": 93.86,
+          "conf": 0.4,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s31633691",
           "text": "所以我们不管当下境界如何，先把这些高层次的理论听一听，只要能理解就好。智商一百以上，我觉得还是能理解的，就看自己的悟性吧。",
-          "start": 65.5,
-          "end": 84.9,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 70.357,
+          "end": 93.86,
+          "conf": 0.4,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s16543567",
           "text": "第八期从三十四页开始，第一段：",
-          "start": 84.9,
-          "end": 91.6,
-          "conf": 0.8,
-          "method": "miss"
+          "start": 89.3,
+          "end": 93.86,
+          "conf": 0.4,
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s39dd364e",
           "text": "复次，大慧，有七种自性：所谓集自性、性自性、相自性、大种自性、因自性、缘自性、成自性。",
-          "start": 91.6,
+          "start": 93.86,
           "end": 99.14,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s54428194",
           "text": "首先我对这本佛经里乱用“自性”的表现方式有点不满，这肯定不是佛自己说的，是佛说了之后有人把它翻译过来，翻译的时候把很多名相、名词通用了，这样的结果就是后学看起来很容易搞混。",
           "start": 99.14,
-          "end": 125.63,
+          "end": 124.59,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6517,7 +6644,7 @@
           "pid": "p-sacac9195",
           "text": "比如前面已经出现了一个“三自性”，这本书里明确地告诉你“三自性”叫“妄计自性、缘起自性、圆成自性”。",
           "start": 140.69,
-          "end": 150.78,
+          "end": 149.8,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6535,7 +6662,7 @@
           "pid": "p-sd6822dda",
           "text": "在这里我们把“自性”理解成什么？应该是妄想的性质或者别的什么，比如妄计自性、缘起自性、圆成自性里的“自性”并不是第八识阿赖耶识的名字，而是妄想的起因，有能起妄想的三种原因。到后面出现这些名相的时候我再详细地解释。",
           "start": 176.12,
-          "end": 205.16,
+          "end": 204.27,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6544,7 +6671,7 @@
           "pid": "p-sbc7ea78c",
           "text": "“七自性”，我认为是妄想的性质，世界、一切都是妄想和合而成，把它拆解开来，是什么样的妄想，它的性质是什么？我认为是这个意思。",
           "start": 205.16,
-          "end": 218.47,
+          "end": 218.07,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6607,7 +6734,7 @@
           "pid": "p-s319b380a",
           "text": "下一段，从这里开始算是进入菩萨境界的理论。你在网上肯定找不到真实的讲法，而且我也找过，《楞伽经》总共有十七八种的“疏”。",
           "start": 398.13,
-          "end": 418.73,
+          "end": 413.64,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6616,7 +6743,7 @@
           "pid": "p-s62269de9",
           "text": "除了佛经之外，别人写的称之为“论”和“疏”。“论”是境界相当高的，而且写的人通常都是菩萨或者什么境界非常高的人，这种人写的时候有信心，认为自己写得相当不错，这个时候称之为“论”。前面提过一个“论”叫《金刚心总持论》，还有弥勒菩萨讲的《瑜伽师地论》。这种境界高的称之为“论”。",
           "start": 418.73,
-          "end": 444.82,
+          "end": 444.43,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6625,7 +6752,7 @@
           "pid": "p-s10e4a77d",
           "text": "“疏”是境界低的，作者认为佛法应该是这个样子，供大家参考，也可以批评，这样的意思。而且“疏”主要还有另外一层含义是注解——对佛经的注解。所以这本《楞伽经》至少有十七八种历代的注解。",
           "start": 444.82,
-          "end": 476.14,
+          "end": 475.64,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6634,7 +6761,7 @@
           "pid": "p-seb18d420",
           "text": "我在网上看了一位比较有名的法师叫慧律法师，这样的已经成名的人，我直接叫他名字应该没有问题吧。慧律法师是个好法师吧，他讲的《楞伽经》有上百个小时。我大概看了前面几个，发现原来他不是讲《楞伽经》原经，而是在讲十七八种疏中的一个，他把别人的注解拿过来，再按照自己的理解来讲。",
           "start": 476.14,
-          "end": 508.52,
+          "end": 505.32,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6643,7 +6770,7 @@
           "pid": "p-s19ba9dad",
           "text": "我不敢说他是错的，但是你想大德前辈先把《楞伽经》解释了一下，然后我再把这个注解再解释一下。那每一次解释的时候，如果意思稍微有点变化，后面就有可能会变得更多，和佛说的真义越来越有距离。",
           "start": 508.52,
-          "end": 529.76,
+          "end": 527.91,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6652,7 +6779,7 @@
           "pid": "p-s6df9f1fa",
           "text": "所以，在我们看到的大部分疏里根本看不到对菩萨境界的真实解释。不知道大家怎么想的。下边讲的就是我认为的最真实的解释。",
           "start": 529.76,
-          "end": 556.98,
+          "end": 555.78,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6661,7 +6788,7 @@
           "pid": "p-s569f21dd",
           "text": "首先第一段：",
           "start": 556.98,
-          "end": 558.81,
+          "end": 558.6,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6688,7 +6815,7 @@
           "pid": "p-s465b2ab5",
           "text": "第二个叫“智所行”，到了菩萨境界，在这里开始这本佛经里以“智”来表示，“证智”，后面还有“如如”“五法”，前面讲过了。“智所行”是初地菩萨，刚开始成为菩萨。",
           "start": 611.98,
-          "end": 630.7,
+          "end": 629.69,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6697,7 +6824,7 @@
           "pid": "p-sff0f46f1",
           "text": "“二见所行”，“二见”是什么呢？这本书里把“二见”解释为“人无我、法无我”，我认为这是错误的。",
           "start": 630.7,
-          "end": 640.67,
+          "end": 638.96,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6706,7 +6833,7 @@
           "pid": "p-s68d549e0",
           "text": "前面已经用很大篇幅解释了“法”与“非法”，所以在这里“二见”是“法”与“非法”，对“法”与“非法”有认知的时候叫“二见”。所以应该是二地到七地的菩萨阶段叫“二见所行”。对“法”与“非法”有认知的时候称之为“法有我”，超过了这个叫“法无我”。超越了“法有我”之后才算“人无我”“法无我”。",
           "start": 640.67,
-          "end": 681.472,
+          "end": 679.79,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6724,7 +6851,7 @@
           "pid": "p-s769e1bc4",
           "text": "下一个“超二见所行”，八地和九地超越了“法”与“非法”的认知，进入了“法无我”的境界。",
           "start": 704.98,
-          "end": 715.52,
+          "end": 714.58,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6751,7 +6878,7 @@
           "pid": "p-s14ecaea2",
           "text": "“超子地所行”，第九地叫佛子地，所以“超子地所行”就是十地和十一地等觉地。以前讲过《华严经·十地品》，从八地开始出现那种本知的境界，神通开始进入本知的阶段。后面是大范围的传法，前面是一对一的传法，到后边有大范围传法的那种能力，这叫“超子地所行”的境界，也就是十地菩萨和十一地菩萨。十地菩萨可以同时进入很多佛世界，跟着很多佛一起学习。",
           "start": 746.26,
-          "end": 792.27,
+          "end": 791.86,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6760,7 +6887,7 @@
           "pid": "p-s5c18e335",
           "text": "“如来所行”和“如来自证圣智所行”，为什么“如来”又分出了两个呢？因为这是如来的两种不同状态，后面会出现“法身佛”和“化身佛”的说法，他们不一样。化身佛可以说是方便，佛显了化身肯定是显给某些特定的人，那他讲的法肯定根据这个特定的人的根器来讲，这叫“化身佛”。“法身佛”是讲最终极的奥义——佛法的第一义谛。",
           "start": 792.27,
-          "end": 841.36,
+          "end": 837.3,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6778,7 +6905,7 @@
           "pid": "p-sed1c1bab",
           "text": "这以上是菩萨的不同境界里修行的状态。",
           "start": 862.84,
-          "end": 870.3,
+          "end": 867.84,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6796,7 +6923,7 @@
           "pid": "p-sa293ec7a",
           "text": "这样的内容就没有什么特别好解释的。这是过去、现在、未来的所有佛们说的，“法自性第一义心”是菩萨的最高境界，可以说是菩萨的修行方法。“以此心成就如来世间、出世间最上法”，以这样的方法来成就出世间与世间的最上法——成佛的法门。",
           "start": 879.55,
-          "end": 903.55,
+          "end": 901.95,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6823,7 +6950,7 @@
           "pid": "p-s73839e8d",
           "text": "什么是“自、共相”呢？在这里“相”已经不是阿罗汉的分别里产生出来的相了。自、共相不是这么理解的，是站在菩萨的立场来理解。",
           "start": 933.51,
-          "end": 947.74,
+          "end": 945.5,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6841,7 +6968,7 @@
           "pid": "p-sefe667d4",
           "text": "菩萨的意识里对众生妄想的认知就是这样的状态。在这里什么是“自相”和“共相”呢？每一张大荧幕里显示出来的妄想称之为“自相”，把这些全部重叠到一起，混杂的状态称之为“共相”。但是它混杂，并不是让你看到一个混沌的无法分别的那种状态，而是每一个你都能看得清清楚楚，但是又可以把所有的影像全部看到，这就叫“共相”。",
           "start": 1001.69,
-          "end": 1040.64,
+          "end": 1034.74,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6859,7 +6986,7 @@
           "pid": "p-se64ffca6",
           "text": "当你把自己的这个大荧幕关掉，让它变成一张完全透明的大荧幕的话，上面显示出来的就是重叠在一起的其他众生的妄想。也就是说如果有一百张大荧幕，你把自己的这一张灭掉，那你所看到的影像就是九十九张荧幕里的影像重叠在一起的。",
           "start": 1065.67,
-          "end": 1091.01,
+          "end": 1089.4,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6886,7 +7013,7 @@
           "pid": "p-sddb8abd9",
           "text": "后面还有这个细节的逻辑，但是在这里就先讲了。我们先完整地理解了自相、共相之后，你才能正确地理解后面由自相、共相延伸出来的所有理论。否则，你把自相、共相认知错误的话，后面全部都错的。",
           "start": 1155.04,
-          "end": 1176.83,
+          "end": 1176.32,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6895,7 +7022,7 @@
           "pid": "p-s7dba66ec",
           "text": "为什么以八地或者七地为中心？七地到八地是过渡阶段，从中间拆开，下面初地到六地的菩萨是自相、共相不成立，而从八地开始自相、共相成立。",
           "start": 1176.83,
-          "end": 1195.03,
+          "end": 1194.85,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6904,7 +7031,7 @@
           "pid": "p-sfb67976e",
           "text": "为什么会有这样的分别呢？我们得返回到我们的自证，我们只能理解我们肉身的感觉，没有办法理解菩萨的这种境界。但是刚才用大荧幕来比喻，让大家至少在逻辑上大概明白什么是自相，什么是共相。",
           "start": 1195.03,
-          "end": 1214.09,
+          "end": 1213.75,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6940,7 +7067,7 @@
           "pid": "p-s290044aa",
           "text": "这样的情况下，我们不能称它为自相成立，而只能称它为某一处的感觉成立。",
           "start": 1335.48,
-          "end": 1345.4,
+          "end": 1344.38,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6958,7 +7085,7 @@
           "pid": "p-s3285fbce",
           "text": "“自相”是每一处感觉全部非常清楚地感知到，“共相”是全身的感觉都能感知到。",
           "start": 1399.73,
-          "end": 1411.9,
+          "end": 1411.75,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6967,7 +7094,7 @@
           "pid": "p-s7c01e9d2",
           "text": "如果注意力炽盛的话，注意力在哪里，那个地方的感觉就会放大，其他地方的感觉全部弱化，这样的话自相、共相就不能成立。也就是注意力炽盛的时候，在凡夫的境界里自相、共相不能成立。反过来，注意力消失了，没有注意力了，这个时候是自相、共相成立。大家能理解这个意思吧？",
           "start": 1411.9,
-          "end": 1441.84,
+          "end": 1441.24,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -7012,7 +7139,7 @@
           "pid": "p-s014c157d",
           "text": "并不是说初地菩萨有共相和自相，但是共相不那么明晰，到了八地菩萨就变成共相明晰，不是这个意思。完全是下边（初地到六地）无法成立，到后边是成立的——八地开始成立。如果这么解释自相、共相的逻辑，你都没办法明白的话，我也不知道怎么解释了，对菩萨境界你只能这么想了。",
           "start": 1613,
-          "end": 1654.13,
+          "end": 1650.72,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -7030,7 +7157,7 @@
           "pid": "p-sbd4cf504",
           "text": "下边开始讲外道的恶见问题，外道的问题又有一些逻辑上有点难以理解的内容。要理解佛说的这些逻辑的话，你得先理解外道的主张。",
           "start": 1666.82,
-          "end": 1686.9,
+          "end": 1686.3,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -7038,10 +7165,11 @@
         {
           "pid": "p-s4fd25c24",
           "text": "咱们下一期再讲。这一期只讲了菩萨的自相、共相，这个就讲了很长时间。但是我们还是尽量去思考，如果你觉得靠自己实在想不到的话，还可以求佛菩萨加持。说不定他们一加持——让你的智慧提高一个境界，说不定你就理解了！",
-          "start": 1686.9,
-          "end": 1710.07,
+          "start": 1686.3,
+          "end": 1709.18,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdfd7351e",
