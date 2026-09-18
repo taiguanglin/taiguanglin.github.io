@@ -56,6 +56,45 @@
 
 ---
 
+## 0b. golden 慣例實測 + milli-align skill（楞伽 L1–4 人工對齊後、2026-09，**校對新講次前必讀**）
+
+**通用 skill 已落在 [`audio_map3/skills/milli-align/`](skills/milli-align/SKILL.md)**：
+`SKILL.md`（鐵律、golden 慣例表、經文五情況、作業流程）、`reference.md`（實測數字、
+L4 人工修正案例、L5 結構案例、工具陷阱）、`scripts/`（`golden_offsets.py` 量 golden 慣例、
+`milli_audit.py` 逐段證據稽核、`milli_refine.py` 套用 adjudication table＋鏈 pass）。
+校對任何講經系列的新講次，照 `SKILL.md` §4 流程走（golden offsets → audit → 判讀 →
+refine → 回頭檢驗 → 驗收），取代 §3 的一次性 `realign_dtw.py` 重跑。
+
+**從楞伽 L1–4 人工 golden 實測出的慣例**（`golden_offsets.py --series lengqie --golden 1-4`）：
+
+| 慣例 | 實測 | 意義 |
+|------|------|------|
+| 鏈 | `golden.start == 前一個 READ 段的 end`（median 誤差 0.000，97% 在 ±0.3s 內） | UI 邊界同步把 `end[i-1]=start[i]` 變成建構事實；zero 段透明 |
+| 段首 lead-in | `golden.start` 落在第一個逐字內容字**之前** 0–4s（median −0.59~−0.84），**絕不晚於內容字**（max 0.00） | start = run-onset（內容字往回 ≤0.7s 停頓／語氣詞），不是 `t(內容字)−0.15` |
+| 講首導言 | `intro.start = t(ASR 首字) − 0.2s`（L1–4：−0.35/−0.25/−0.20/−0.20） | 講首第一個 COMM 段就這樣釘 |
+| 搜尋窗 | 證據只在 `[prev_end−0.3, next_start+0.3]` 找；越窗的模糊命中是**鄰段回音** | 沒窗約束時 fuzzy 偏早 median −1.9s（L4 案例實證） |
+| 語速 | 朗讀 1–12 字/s；引文 span <1.5 字/s 必吞鄰段 | 胖／瘦 span 都要重切 |
+
+**楞伽 L5 判讀實錄（2026-09，68+18 段修正）**新增的結構教訓（詳見
+`skills/milli-align/reference.md` §B/§C/§D）：
+
+1. **書序 ≠ 語序**：L5 講首 [3]–[13] 是同一長 passage 的印刷參考塊；音檔實際流程是
+   「念第一句(107–111) → **插講[15]內容(112–121) → 續念整段(122–154)** → 逐行重引+講解(155+)」。
+   正確產出：[3] zero（被 [14]/[16] 認領）、[14] 短 READ、[15] 插講 READ、[16] 續念 READ、
+   [18]/[20] 等半念重引各自拿「第二次 vocalization」。上一版管線把 [14] 給了整個 49s、
+   把 [16]/[18]/[20] 全 zero——兩個錯都是「書序≠語序 + 重引歸屬」沒處理好。
+2. **半念（唸到一半就開始講解）**：引文只念頭 4–10 字（「大观行师啊」「遍一切处啊」
+   「等于二乘三位过失啊」），span 只框「實際念出的那截」，rate 以全文計算會虛高
+   （12–20 字/s 是雜訊，不是吞鄰段）。
+3. **毫秒級首字的唯一可靠驗證 = FunASR 字級時間逐字對照**：14 字 chunk 的估讀有
+   ±0.2–0.3s 誤差；L5 第二輪用字級時間重驗 18 個段首，全部修正到「首字 +0.04~0.12s」。
+   同音錯字對照表見 `reference.md` §E。
+4. **行內引文歸屬**：短 vocalization 同時符合「獨立 SUTRA 段頭」與「後方 COMM 行內引文」
+   時——前有 ≥0.6s 停頓或匹配到更完整經文 → 歸 SUTRA（[50]）；同一口氣接連 → 歸 COMM、
+   SUTRA 記 zero（[56]）。
+
+---
+
 ## 0. 核心心智模型（先讀這一段）
 
 講經電子書每一段（`<p class="para-block">` 或 `<div class="sutra-text para-block">`）

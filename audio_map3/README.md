@@ -7,9 +7,14 @@
 
 - JSON SoT：`audio_map3/<series>.json`（series ∈ `ganen / sishierzhang / lengqie / liuzutanjing / lengyanjing`），
   由 `tool/jiangjing_para_map/build_maps.py` 產生（SRT ↔ 段落對齊；重跑保留 `confirmed` 段落與 `reviewed` 講次）。
-- 結構：`lectures.{N}.paragraphs[] = {pid, text, start, end, conf, method, confirmed}`；講層 `reviewed`、`audio`、`duration`。
+- 結構：`lectures.{N}.paragraphs[] = {pid, text, start, end, conf, method, confirmed}`；講層 `reviewed`、`audio`、`duration`；
+  「零長度」段落另有 `"zero": true` 欄位。
 - 注入：`tool/books2ebook/para_audio_map.py` 在建置時把 start/end 寫進段落元素的 `data-start`/`data-end`，
   前端 `09b-para-track.js`（跟播 toggle / 高亮捲動 / 點段落即播 / 段末自停）依此運作。
+- 毫秒級精準對齊 skill：[`skills/milli-align/`](skills/milli-align/SKILL.md)——
+  以人工 golden 講次（如楞伽 L1–4）為標竿的通用校對程序（golden 慣例量測、逐段證據稽核、
+  adjudication table 套用＋鏈 pass）＋實測數據與案例（`reference.md`）。
+  校對新講次照其 §4 流程走；`AGENTS.md` §0b 有摘要。
 
 ## 使用
 
