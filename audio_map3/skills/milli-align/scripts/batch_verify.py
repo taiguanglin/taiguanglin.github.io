@@ -95,8 +95,10 @@ def run_onset(times, q, prev_end, th=0.7):
             break
         onset = ps
         k -= 1
-    # 無 ≥0.7s 邊界（連續語流或純靜音）→ 內容字 −0.2s（golden 導言 offset）
-    return round(max(t0 - 0.2, prev_end), 3)
+    # 無 ≥0.7s 邊界（連續語流或純靜音）→ 邊界落「前一個字元結束」與
+    # 「內容字 −0.2s」之間取大、且不晚於內容字（golden 導言 offset，永不晚於內容字）
+    prev_ch_end = times[q - 1][1] if q > 0 and times[q - 1][1] == times[q - 1][1] else 0.0
+    return round(min(max(prev_ch_end, t0 - 0.2), t0), 3)
 
 
 def main():
@@ -169,7 +171,16 @@ def main():
                     n_fuzzy += 1
                     row["fuzzy"] = {"score": fz[0], "t": round(fz[1], 2)} if fz[1] else {"score": fz[0]}
                     if fz[1] and p["start"] > fz[1] + 0.6:
-                        row["d"].append(f"fuzzy-late {round(p['start'] - fz[1], 2)}s")
+                        if fz[0] >= 0.7:
+                            # 以 fuzzy 首字時間為內容字錨，跑同一 run-onset 邏輯
+                            qf = int(np.nanargmin(np.abs(tstarts - fz[1]))) \
+                                if len(tstarts) else 0
+                            proposed = run_onset(times, qf, pe)
+                            row["d"].append(
+                                f"fuzzy-late {round(p['start'] - fz[1], 2)}s "
+                                f"→ run-onset {proposed}")
+                        else:
+                            row["d"].append(f"fuzzy-late {round(p['start'] - fz[1], 2)}s")
                     elif fz[1] and p["start"] < fz[1] - 4.5:
                         row["d"].append(f"fuzzy-early? {round(p['start'] - fz[1], 2)}s")
                 else:

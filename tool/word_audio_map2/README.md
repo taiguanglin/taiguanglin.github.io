@@ -27,6 +27,18 @@ cd tool/word_audio_map2
 首次安裝：`python3 -m venv .venv && .venv/bin/pip install opencc-python-reimplemented`
 （OpenCC 做 繁↔簡 normalize，比對 SRT 用）。
 
+### 一次性修正與審計腳本（依電子書 block 邊界）
+
+- `fix_2025_05_17_seg2.py` / `fix_2025_05_12_seg74.py` —— 一次性手術：把「一個
+  Word 段黏住多個電子書 block」的段切開（文字在電子書 block 邊界切、時間按
+  字數比例、`lastPlayed` 清除待重聽、同 qid 跨章 blocks 以`chapter_answer_ids`
+  區分）。dry-run 預設，`--apply` 才寫檔。
+- `audit_html_blocks.py` —— **唯讀**滑動視窗審計：把 `audio_map2/*.json` 各段
+  文字串成一條流，逐個 `wenda2_ebook` 01–12 章的 question/answer block 探測
+  其文字頭落在哪一段、offset 為何，回報：跨章同 qid（A）、多 qid 段（B）、
+  同 qid 連續多段（C）、block 文字頭落在段內／漏掛／錯掛（D）、跨 session 同
+  qid（E）、未凍結的 block。`--month` 可限月份，`--json` 出機讀報告。
+
 ## Word 解析規則
 
 | 元素 | 判斷 |
