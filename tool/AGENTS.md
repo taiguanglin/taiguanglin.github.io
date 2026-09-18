@@ -11,6 +11,8 @@
 |------|--------|-------------|------|
 | `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；13–21 章（PDF）播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/wenda2_curation/` | 問答錄 2 知識萃取檔保存（9,231 QA 語料、57 名詞精選、131+3 名詞統計、437 小節引句）＋三個圖解頁生成器。`data/` 為 SoT；語料為 2026-09-16 對 `wenda2_ebook/` 的萃取快照，電子書文字變動後引句需重新驗證。 | `data/*.json`（+`mindmap.html` 引擎）→ `wenda2_knowledge.html` / `wenda2_mindmap.html` / `wenda2_knowledge_full.html` | **`README.md`**, `NOTES.md` |
+| `tool/books_knowledge/` | 九書重點知識頁生成器（坐禪＋講經九書、按書分冊、91 名詞卡＋深連結）。SoT：`mindmap.html` 內嵌資料（slice＋eval-IIFE 抽取）；改名詞後重跑 `build.js` 同步，名詞對不到書時 build 直接失敗。 | `mindmap.html` → `books_knowledge.html` | `README.md` |
+| `tool/session_knowledge/` | Session 知識庫生成器（受限 md 子集 → HTML，自檢內建）＋**自抽取版** mm/rv harness（直接從 repo html 抽內嵌腳本跑煙霧測試，不需 /tmp）。 | `SESSION_KNOWLEDGE.md` → `session_knowledge.html`；mm_harness.js／rv_harness.js | `README.md` |
 | `tool/books2ebook/` | 坐禅系列 + 講經系列共十本原書 → 靜態電子書（簡/繁、全量搜尋、每講播放鈕）。 | `books/*.pdf` → `ebook/` | `README.md` |
 | `tool/pdf_audio_map/` | 對齊 PDF 章節（13–21）↔ 音檔時間 → 音訊映射 JSON（SoT：`tool/word2ebook/data/audio_map/`）。 | SRT/opus → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | 對齊**時間序** Word 彙總（2024-02…2025-05）↔ SRT → `audio_map2/*.json`（`build_maps.py`）。段上的 `chapter_question_ids` 供前 12 章注入；**分段會隨 `build_maps.py` 的 Q&A 偵測調整**，重分段後以 `link_chapters.py` 重新寫回章節對應（詳見「分段與章節對應」）。 | docx + SRT → `audio_map2/*.json` | `README.md` |
