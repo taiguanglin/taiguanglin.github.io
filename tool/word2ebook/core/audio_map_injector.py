@@ -32,6 +32,9 @@ H2_RE = re.compile(
 )
 QUESTION_OPEN_RE = re.compile(r'<div class="question"(?=[\s>])')
 QUESTION_ID_RE = re.compile(r'<div class="question" id="([^"]+)"')
+# Answer block that follows a question; used to look a segment up by the
+# block's own ``answer-…`` id (chapter_answer_ids) instead of the question id.
+ANSWER_ID_RE = re.compile(r'<div class="answer" id="([^"]+)"')
 # The answerer name span (Taiguanglin) inside an answer block; the play button is
 # inserted inline right after it, on the same line, adding no vertical height.
 ANSWERER_RE = re.compile(r'<span class="answerer">([^<]*)</span>')
@@ -260,6 +263,82 @@ def inject_chapters(chapters: List[Chapter], map_dir: Optional[Path] = None) -> 
 # ---------------------------------------------------------------------------
 
 
+def _iter_am2_segments(map_dir: Path):
+    """Yield ``(session, segment)`` pairs from every month JSON in ``map_dir``."""
+    if not map_dir.is_dir():
+        return
+    for path in sorted(map_dir.glob("*.json")):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        for session in data.get("sessions") or []:
+            for seg in session.get("segments") or []:
+                yield session, seg
+
+
+def _load_word_maps(
+    map_dir: Path,
+) -> Tuple[Dict[str, dict], Dict[str, dict]]:
+    """Single pass over audio_map2/*.json → ``(by_qid, by_answer)``.
+
+    by_qid: ebook ``question_id`` → segment; by_answer: ebook block's own
+    ``answer-…`` id (segments' ``chapter_answer_ids``) → segment.
+
+    Why by_answer: the ebook occasionally splits ONE Word question into TWO
+    blocks in TWO different chapters that share the same ``question-…`` id
+    (by_qid can only give both blocks the same range).  When audio_map2 was
+    re-split so each block has its own segment, each segment carries the same
+    ``chapter_question_ids`` entry but a distinct ``chapter_answer_ids``
+    entry — the answer id is the only key that tells the two blocks apart.
+
+    Two-part playback: a question answered in two non-contiguous audio spans
+    (with an unrelated question in between) is split into segments sharing the
+    same ``two_part_group``; their ranges are re-joined onto the start-role
+    member (first occurrence wins in both maps) so the single play button
+    plays front→back, skipping the interleaved segment.
+    """
+    by_qid: Dict[str, dict] = {}
+    by_answer: Dict[str, dict] = {}
+    two_part_groups: Dict[str, List[dict]] = {}
+    for session, seg in _iter_am2_segments(map_dir):
+        qids = seg.get("chapter_question_ids") or []
+        aids = seg.get("chapter_answer_ids") or []
+        if not qids and not aids:
+            continue
+        audio_file = session.get("audio_file") or ""
+        media_parts = session.get("media_parts") or []
+        if not audio_file and media_parts:
+            audio_file = media_parts[0].get("audio_file") or ""
+        resolved = dict(seg)
+        resolved["audio_file"] = audio_file
+        if seg.get("two_part_group"):
+            two_part_groups.setdefault(seg["two_part_group"], []).append(resolved)
+        for qid in qids:
+            # First occurrence wins; duplicates share one range anyway.
+            by_qid.setdefault(qid, resolved)
+        for aid in aids:
+            # First occurrence wins (mirrors by_qid).
+            by_answer.setdefault(aid, resolved)
+    # Re-join two-part ranges onto the "start" segment (it wins in the maps
+    # via first occurrence).
+    for group, members in two_part_groups.items():
+        parts = [
+            (m.get("start"), m.get("end"))
+            for m in members
+            if m.get("start") is not None and m.get("end") is not None
+        ]
+        parts.sort(key=lambda p: p[0] if p[0] is not None else float("inf"))
+        if len(parts) >= 2:
+            qids0 = members[0].get("chapter_question_ids") or []
+            aids0 = members[0].get("chapter_answer_ids") or []
+            if qids0 and qids0[0] in by_qid:
+                by_qid[qids0[0]]["parts"] = parts
+            if aids0 and aids0[0] in by_answer:
+                by_answer[aids0[0]]["parts"] = parts
+    return by_qid, by_answer
+
+
 def load_word_maps_from_audio_map2(
     map_dir: Path = DEFAULT_AUDIO_MAP2_DIR,
 ) -> Dict[str, dict]:
@@ -271,61 +350,37 @@ def load_word_maps_from_audio_map2(
     them, ``tool/word_audio_map2/link_chapters.py``, has been removed).
     Every question id in that list maps to the same reviewed segment/range.
     """
-    by_qid: Dict[str, dict] = {}
-    if not map_dir.is_dir():
-        return by_qid
-    # Two-part playback: a question answered in two non-contiguous audio spans
-    # (with an unrelated question in between) is split into segments sharing the
-    # same ``two_part_group``; the injector re-joins their ranges so the single
-    # play button plays front→back, skipping the interleaved segment.
-    two_part_groups: Dict[str, List[dict]] = {}
-    for path in sorted(map_dir.glob("*.json")):
-        try:
-            data = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-        for session in data.get("sessions") or []:
-            audio_file = session.get("audio_file") or ""
-            media_parts = session.get("media_parts") or []
-            if not audio_file and media_parts:
-                audio_file = media_parts[0].get("audio_file") or ""
-            for seg in session.get("segments") or []:
-                qids = seg.get("chapter_question_ids") or []
-                if not qids:
-                    continue
-                resolved = dict(seg)
-                resolved["audio_file"] = audio_file
-                if seg.get("two_part_group"):
-                    two_part_groups.setdefault(seg["two_part_group"], []).append(
-                        resolved
-                    )
-                for qid in qids:
-                    # First occurrence wins; duplicates share one range anyway.
-                    by_qid.setdefault(qid, resolved)
-    # Re-join two-part ranges onto the "start" segment (they map to one qid:
-    # both parts carry the same question id, so ``by_qid`` holds the start).
-    for group, members in two_part_groups.items():
-        parts = [
-            (m.get("start"), m.get("end"))
-            for m in members
-            if m.get("start") is not None and m.get("end") is not None
-        ]
-        parts.sort(key=lambda p: p[0] if p[0] is not None else float("inf"))
-        if len(parts) >= 2:
-            # find the start-role member (it wins in by_qid via first occurrence)
-            qids0 = members[0].get("chapter_question_ids") or []
-            if qids0 and qids0[0] in by_qid:
-                by_qid[qids0[0]]["parts"] = parts
+    by_qid, _ = _load_word_maps(map_dir)
     return by_qid
 
 
-def inject_word_html_from_audio_map2(content: str, by_qid: Dict[str, dict]) -> str:
+def load_word_answer_maps_from_audio_map2(
+    map_dir: Path = DEFAULT_AUDIO_MAP2_DIR,
+) -> Dict[str, dict]:
+    """Same as :func:`load_word_maps_from_audio_map2` but keyed by the ebook
+    block's own ``answer-…`` id (segments' ``chapter_answer_ids``) — see
+    :func:`_load_word_maps` for why this second key exists.
+    """
+    _, by_answer = _load_word_maps(map_dir)
+    return by_answer
+
+
+def inject_word_html_from_audio_map2(
+    content: str,
+    by_qid: Dict[str, dict],
+    by_answer: Optional[Dict[str, dict]] = None,
+) -> str:
     """Insert an inline play button after every mapped answer's answerer name.
 
     The gate is the audio_map2 review state: a segment counts only when a human
     actually listened to it (``meta.lastPlayed``) and it has a non-null range.
     The button is placed directly after ``<span class="answerer">Taiguanglin</span>``
     — no separate meta-bar line, no number — so page height is unchanged.
+
+    ``by_answer`` (optional, keyed by the block's own ``answer-…`` id via
+    ``chapter_answer_ids``) takes precedence over ``by_qid`` when the answer
+    block that follows a question carries a known id.  This disambiguates the
+    same-qid-in-two-chapters case, where each block must play its own half.
     """
     if not by_qid or not content:
         return content
@@ -343,10 +398,17 @@ def inject_word_html_from_audio_map2(content: str, by_qid: Dict[str, dict]) -> s
     q_matches = list(QUESTION_ID_RE.finditer(content))
     injections: List[Tuple[int, str]] = []
     for i, m in enumerate(q_matches):
-        seg = by_qid.get(m.group(1))
+        answer_end = q_matches[i + 1].start() if i + 1 < len(q_matches) else len(content)
+        seg = None
+        if by_answer:
+            # Prefer the block's own answer id (same qid may back two blocks).
+            am_id = ANSWER_ID_RE.search(content, m.end(), answer_end)
+            if am_id:
+                seg = by_answer.get(am_id.group(1))
+        if seg is None:
+            seg = by_qid.get(m.group(1))
         if not (seg and _is_audio_map2_reviewed(seg)):
             continue
-        answer_end = q_matches[i + 1].start() if i + 1 < len(q_matches) else len(content)
         answer_region = content[m.end():answer_end]
         am = ANSWERER_RE.search(answer_region)
         if not am:
@@ -376,7 +438,7 @@ def inject_word_chapters(chapters: List[Chapter]) -> int:
     contain date+source ``<h2>`` sections; they SHALL be skipped here so this
     pass does not strip the inline buttons the PDF pass already added.
     """
-    by_qid = load_word_maps_from_audio_map2(DEFAULT_AUDIO_MAP2_DIR)
+    by_qid, by_answer = _load_word_maps(DEFAULT_AUDIO_MAP2_DIR)
     if not by_qid:
         return 0
     changed = 0
@@ -386,7 +448,7 @@ def inject_word_chapters(chapters: List[Chapter]) -> int:
         # Skip PDF-sourced month chapters — they carry date+source h2 headings.
         if H2_RE.search(ch.content):
             continue
-        new_content = inject_word_html_from_audio_map2(ch.content, by_qid)
+        new_content = inject_word_html_from_audio_map2(ch.content, by_qid, by_answer)
         if new_content != ch.content:
             ch.content = new_content
             changed += 1

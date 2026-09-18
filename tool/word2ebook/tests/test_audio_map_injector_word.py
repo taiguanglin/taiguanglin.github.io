@@ -46,7 +46,7 @@ WORD_CHAPTER = """<h2 id="chu-shi-she-ding">初始设定1.自性恒常</h2>
 
 
 def _am2_seg(qids, index, start, end, status="manual", listened=False,
-             audio="2024年3月1日Tai師父答疑.opus"):
+             audio="2024年3月1日Tai師父答疑.opus", aids=None):
     seg = {
         "index": index,
         "chapter_question_ids": qids,
@@ -59,6 +59,8 @@ def _am2_seg(qids, index, start, end, status="manual", listened=False,
         "status": status,
         "notes": "",
     }
+    if aids:
+        seg["chapter_answer_ids"] = list(aids)
     if listened:
         seg["meta"] = {"lastPlayed": "2026-08-24 11:00"}
     return seg
@@ -139,6 +141,72 @@ class TestAudioMap2Injection:
 
     def test_missing_dir_empty(self, tmp_path):
         assert load_word_maps_from_audio_map2(tmp_path / "nope") == {}
+        from core.audio_map_injector import load_word_answer_maps_from_audio_map2
+        assert load_word_answer_maps_from_audio_map2(tmp_path / "nope") == {}
+
+
+class TestAnswerIdDisambiguation:
+    """One Word question split by the ebook into two same-qid blocks in two
+    chapters: each block must play its own half (chapter_answer_ids keyed)."""
+
+    DUP_QID = "question-aaa"
+
+    TWO_BLOCKS = """<h2 id="ch">章</h2>
+<div class="question" id="question-aaa">
+<div class="question-text">問一（前半）</div>
+</div>
+<div class="answer" id="answer-1">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+<div class="answer-text">答一</div>
+</div>
+<hr/>
+<div class="question" id="question-aaa">
+<div class="question-text">問一（後半）</div>
+</div>
+<div class="answer" id="answer-2">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+<div class="answer-text">答二</div>
+</div>
+"""
+
+    def _two_segments(self):
+        # Same chapter_question_ids entry (the ebook really reuses the qid);
+        # only the answer ids tell the two blocks apart.
+        return [
+            _am2_seg([self.DUP_QID], 74, 10.5, 20.5, listened=True,
+                     aids=["answer-1"]),
+            _am2_seg([self.DUP_QID], 75, 30.5, 40.5, listened=True,
+                     aids=["answer-2"]),
+        ]
+
+    def test_answer_map_keyed_by_answer_id(self, tmp_path):
+        from core.audio_map_injector import load_word_answer_maps_from_audio_map2
+        d = _am2_dir(tmp_path, [_am2_session(self._two_segments())])
+        by_answer = load_word_answer_maps_from_audio_map2(d)
+        assert set(by_answer) == {"answer-1", "answer-2"}
+        assert by_answer["answer-1"]["start"] == 10.5
+        assert by_answer["answer-2"]["start"] == 30.5
+
+    def test_same_qid_two_blocks_play_own_half(self, tmp_path):
+        d = _am2_dir(tmp_path, [_am2_session(self._two_segments())])
+        maps = load_word_maps_from_audio_map2(d)
+        from core.audio_map_injector import load_word_answer_maps_from_audio_map2
+        by_answer = load_word_answer_maps_from_audio_map2(d)
+        out = inject_word_html_from_audio_map2(self.TWO_BLOCKS, maps, by_answer)
+        assert out.count('class="qa-play qa-play--inline"') == 2
+        head, rest = out.split('id="answer-1"', 1)
+        _, tail = rest.split('id="answer-2"', 1)
+        assert 'data-start="10.500"' in head + rest.split('id="answer-2"')[0]
+        assert 'data-start="30.500"' in tail
+
+    def test_fallback_to_qid_without_answer_map(self, tmp_path):
+        # Legacy call signature (no by_answer): both blocks fall back to the
+        # qid map (first occurrence wins) — old behaviour preserved.
+        d = _am2_dir(tmp_path, [_am2_session(self._two_segments())])
+        maps = load_word_maps_from_audio_map2(d)
+        out = inject_word_html_from_audio_map2(self.TWO_BLOCKS, maps)
+        assert out.count('class="qa-play qa-play--inline"') == 2
+        assert out.count('data-start="10.500"') == 2
 
 
 class TestWordSkipsPdfChapters:

@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[4]
 sys.path.insert(0, str(ROOT / "tool" / "jiangjing_para_map"))
 from realign_dtw import load_dump, norm_para, py_string, dtw_span  # noqa: E402
 from align_lengqie import load_ebook_cls  # noqa: E402
+from series_cls import lecture_cls as _series_cls  # noqa: E402
 
 DUMP_DIR = Path("/tmp/funasr_cache")
 AMAP_DIR = ROOT / "audio_map3"
@@ -29,10 +30,13 @@ RATE_MIN, RATE_MAX = 0.5, 12.0
 
 
 def lecture_cls(series, ln):
-    try:
-        return {c["pid"]: c["cls"] for c in load_ebook_cls()[ln]}
-    except KeyError:
-        return {}
+    """lengqie 走原路徑（golden 等價）；其餘系列走泛化載入器。"""
+    if series == "lengqie":
+        try:
+            return {c["pid"]: c["cls"] for c in load_ebook_cls()[ln]}
+        except KeyError:
+            return {}
+    return _series_cls(series, ln)
 
 
 def head_hits(norm, stream, tstarts, lo, hi):
