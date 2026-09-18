@@ -30,5 +30,5 @@ python3 tool/session_knowledge/build.py
 ## 相關頁面
 
 - `review.html`（間隔重複閃卡＋測驗）— 手編，inline 資料；本知識庫記錄其查證依據
-- `books_knowledge.html`（九書重點知識）— 由 `tool/books_knowledge/build.js` 從 mindmap.html 生成
-- `mindmap.html`（名詞關聯心智圖＋修行次第線）— 73 節點資料的 SoT
+- `books_knowledge.html`（坐禪與講經重點知識）與 `books_knowledge_full.html`（坐禪與講經知識庫全檔）— 由 `tool/books_knowledge/` 從 mindmap.html 生成
+- `mindmap.html`（坐禪與講經名詞心智圖＋修行次第線）— 73 節點資料的 SoT

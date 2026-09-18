@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* 九書重點知識頁生成器（tool/books_knowledge/build.js）
+/* 坐禪與講經重點知識頁生成器（tool/books_knowledge/build.js）
  *
  * 單一真相來源：mindmap.html 內嵌、已逐點查證的節點資料（ROOT / BRANCHES / EBOOK_LINKS）。
  * 本腳本抽取該資料，按「書」重新組織，生成全靜態的 books_knowledge.html：
@@ -92,8 +92,8 @@ if (unmatched.length) {
 /* ---------------- 生成 HTML ---------------- */
 
 function esc(x) {
-    return String(x).replace(/&/g, '&').replace(/</g, '<')
-                     .replace(/>/g, '>').replace(/"/g, '"');
+    return String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                     .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 function termHtml(l) {
@@ -153,12 +153,12 @@ var html = '<!DOCTYPE html>\n' +
 '<head>\n' +
 '    <meta charset="UTF-8">\n' +
 '    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
-'    <title>九書重點知識｜坐禪與講經系列名詞整理｜TaiGuangLin 禪師</title>\n' +
+'    <title>坐禪與講經重點知識｜坐禪與講經系列名詞整理｜TaiGuangLin 禪師</title>\n' +
 '    <meta name="description" content="TaiGuangLin禪師坐禪與講經系列九本著作（《坐禪》《坐禪之問答錄》《坐禪2》《講金剛經 心經》《講圓覺經》《講四十二章經》《講楞伽經》《講六祖壇經》《講楞嚴經》）的重點知識：每本書的關鍵名詞、釋義、書中要點與原文摘句，每條引句附電子書原文深連結。">\n' +
 '    <meta name="keywords" content="重點知識,坐禪,講經,佛法名詞,禪定,妄想,分別,執著,業力,阿羅漢,菩薩,楞嚴經,楞伽經,六祖壇經,四十二章經,金剛經,心經,圓覺經,TaiGuangLin">\n' +
 '    <meta name="author" content="TaiGuangLin">\n' +
 '    <meta name="robots" content="index, follow">\n' +
-'    <meta property="og:title" content="九書重點知識｜TaiGuangLin 禪師">\n' +
+'    <meta property="og:title" content="坐禪與講經重點知識｜TaiGuangLin 禪師">\n' +
 '    <meta property="og:description" content="按書分冊整理九本著作的重點名詞：釋義、書中要點與原文摘句，逐句可達電子書原文">\n' +
 '    <meta property="og:type" content="website">\n' +
 '    <meta property="og:url" content="https://taiguanglin.info/books_knowledge.html">\n' +
@@ -183,18 +183,19 @@ var html = '<!DOCTYPE html>\n' +
 '                <a href="index.html#start" class="nav-link">入門路徑</a>\n' +
 '                <a href="index.html#books" class="nav-link">著作</a>\n' +
 '                <a href="wenda2.html" class="nav-link">問答錄 2</a>\n' +
-'                <a href="stories.html" class="nav-link">實修故事</a>\n' +
 '                <div class="nav-dropdown is-current" id="nav-dropdown">\n' +
 '                    <a href="#" class="nav-link nav-dropdown-toggle active" id="dropdown-toggle" aria-current="true">圖解 ▾</a>\n' +
 '                    <div class="nav-dropdown-menu">\n' +
 '                        <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>\n' +
-'                        <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>\n' +
-'                        <a href="books_knowledge.html" class="nav-dropdown-item active" aria-current="page">九書重點知識</a>\n' +
+'                        <a href="mindmap.html" class="nav-dropdown-item">坐禪與講經名詞心智圖</a>\n' +
+'                        <a href="books_knowledge.html" class="nav-dropdown-item active" aria-current="page">坐禪與講經重點知識</a>\n' +
+'                        <a href="books_knowledge_full.html" class="nav-dropdown-item">坐禪與講經知識庫全檔</a>\n' +
 '                        <a href="wenda2_knowledge.html" class="nav-dropdown-item">問答錄2 重點知識</a>\n' +
 '                        <a href="wenda2_mindmap.html" class="nav-dropdown-item">問答錄2 名詞心智圖</a>\n' +
 '                        <a href="wenda2_knowledge_full.html" class="nav-dropdown-item">問答錄2 知識庫全檔</a>\n' +
 '                    </div>\n' +
 '                </div>\n' +
+'                <a href="stories.html" class="nav-link">實修故事</a>\n' +
 '                <a href="index.html#downloads" class="nav-link nav-cta" data-download-trigger>下載資料</a>\n' +
 '            </div>\n' +
 '            <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">\n' +
@@ -208,11 +209,11 @@ var html = '<!DOCTYPE html>\n' +
 '        <div class="container">\n' +
 '            <nav class="crumbs" aria-label="位置">\n' +
 '                <a href="index.html">首頁</a><span class="crumbs-sep">/</span>\n' +
-'                <span aria-current="page">九書重點知識</span>\n' +
+'                <span aria-current="page">坐禪與講經重點知識</span>\n' +
 '            </nav>\n' +
 '            <span class="kicker">NINE BOOKS · KEY KNOWLEDGE</span>\n' +
-'            <h1 class="display">九書重點知識</h1>\n' +
-'            <p class="lede">坐禪系列與講經系列九本著作，按書分冊整理的重點知識：每本書的關鍵名詞、釋義、書中要點與原文摘句。內容全部來自「名詞關聯心智圖」那套已逐點對照原文查證的節點資料，每條引句都可以直達電子書的原文段落。</p>\n' +
+'            <h1 class="display">坐禪與講經重點知識</h1>\n' +
+'            <p class="lede">坐禪系列與講經系列九本著作，按書分冊整理的重點知識：每本書的關鍵名詞、釋義、書中要點與原文摘句。內容全部來自「坐禪與講經名詞心智圖」那套已逐點對照原文查證的節點資料，每條引句都可以直達電子書的原文段落。</p>\n' +
 '        </div>\n' +
 '    </section>\n' +
 '\n' +
@@ -229,7 +230,7 @@ var html = '<!DOCTYPE html>\n' +
 '            </div>\n' +
 '            <h2 class="mm-subtitle" style="margin-top: 28px;">全書快速導航</h2>\n' +
 '            <div class="bk-nav">\n' + navHtml + '\n            </div>\n' +
-'            <p class="mm-lead" style="margin-top: 16px;">《感恩與講經》（電子書第 04 冊）不在這套名詞查證語料內，故未列入。想按「關聯」而不是按「書」讀，請看<a href="mindmap.html">名詞關聯心智圖</a>；想自我測驗記憶，請看<a href="review.html">名詞複習</a>。</p>\n' +
+'            <p class="mm-lead" style="margin-top: 16px;">《感恩與講經》（電子書第 04 冊）不在這套名詞查證語料內，故未列入。想按「關聯」而不是按「書」讀，請看<a href="mindmap.html">坐禪與講經名詞心智圖</a>；想自我測驗記憶，請看<a href="review.html">名詞複習</a>。</p>\n' +
 '        </div>\n' +
 '    </section>\n' +
 '\n' + sectionsHtml + '\n' +
@@ -260,8 +261,8 @@ var html = '<!DOCTYPE html>\n' +
 '                    <h4>更多資源</h4>\n' +
 '                    <ul>\n' +
 '                        <li><a href="infographic.html">名詞圖解</a></li>\n' +
-'                        <li><a href="mindmap.html">名詞關聯心智圖</a></li>\n' +
-'                        <li><a href="books_knowledge.html">九書重點知識（本頁）</a></li>\n' +
+'                        <li><a href="mindmap.html">坐禪與講經名詞心智圖</a></li>\n' +
+'                        <li><a href="books_knowledge.html">坐禪與講經重點知識（本頁）</a></li>\n' +
 '                        <li><a href="review.html">名詞複習</a></li>\n' +
 '                        <li><a href="wenda2_knowledge.html">問答錄2 重點知識</a></li>\n' +
 '                        <li><a href="wenda2_mindmap.html">問答錄2 名詞心智圖</a></li>\n' +

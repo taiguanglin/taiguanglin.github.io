@@ -69,12 +69,20 @@
     <priority>0.6</priority>
   </url>
 
-  <!-- 九書重點知識 -->
+  <!-- 坐禪與講經重點知識 -->
   <url>
     <loc>https://taiguanglin.info/books_knowledge.html</loc>
     <lastmod>2026-09-17</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+  </url>
+
+  <!-- 坐禪與講經知識庫全檔 -->
+  <url>
+    <loc>https://taiguanglin.info/books_knowledge_full.html</loc>
+    <lastmod>2026-09-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
 
   <!-- 名詞複習（閃卡與測驗） -->

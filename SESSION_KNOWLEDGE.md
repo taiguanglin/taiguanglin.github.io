@@ -3,7 +3,7 @@
 > 本頁由 `tool/session_knowledge/build.py` 從 `SESSION_KNOWLEDGE.md` 生成（生成物勿手改，改 md 再重跑）。
 > 所有查證以 Tai 師父九本書原文為準；本頁整理本身由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。
 
-這份知識庫完整保存 2026-09-16 至 2026-09-17「mindmap.html 名詞查證與圖解工程」session 的可復用知識：查證方法、逐批發現與修正、證據行號、禁用術語、關鍵節點定稿、腳本與回歸基準。與本知識庫相關的產出：`review.html`（閃卡與測驗）、`books_knowledge.html`（九書重點知識）、`mindmap.html`（修行次第線區塊）。
+這份知識庫完整保存 2026-09-16 至 2026-09-17「mindmap.html 名詞查證與圖解工程」session 的可復用知識：查證方法、逐批發現與修正、證據行號、禁用術語、關鍵節點定稿、腳本與回歸基準。與本知識庫相關的產出：`review.html`（閃卡與測驗）、`books_knowledge.html`（坐禪與講經重點知識）、`books_knowledge_full.html`（坐禪與講經知識庫全檔）、`mindmap.html`（修行次第線區塊）。
 
 ---
 
@@ -17,7 +17,8 @@
 4. 呈現格式調查 → 建議：閃卡＋測驗、修行次第線
 5. review.html（間隔重複閃卡＋名詞測驗）
 6. mindmap.html 修行次第線（16 級實修＋7 步義理）
-7. books_knowledge.html（九書重點知識，按書分冊，從 mindmap 資料生成）
+7. books_knowledge.html（坐禪與講經重點知識，按書分冊，從 mindmap 資料生成）
+8. books_knowledge_full.html（坐禪與講經知識庫全檔：64 名詞全檔按主幹分組＋書冊分布＋高頻詞次數，比照問答錄2 知識庫全檔）
 8. 本知識庫（SESSION_KNOWLEDGE.md → session_knowledge.html）
 
 ### 0.2 數字總表
@@ -32,7 +33,7 @@
 | 電子書深連結 | 73／73 |
 | mm_harness 斷言 | 47（全綠） |
 | rv_harness 斷言 | 44（全綠） |
-| 九書重點知識名詞卡 | 91（含跨書重複） |
+| 坐禪與講經重點知識名詞卡 | 91（含跨書重複） |
 
 ---
 
@@ -272,7 +273,7 @@ mindmap 引擎的 renderLadder 開頭有 `if (!host) return;`——引擎拷貝�
 
 ### 7.1 AGENTS.md 金律摘錄（本 session 相關）
 
-- 規則 7（AI 免責聲明）：`infographic.html`、`mindmap.html`、`wenda2_knowledge.html`、`wenda2_mindmap.html`、`wenda2_knowledge_full.html` 及本次新增的 `review.html`、`books_knowledge.html`、`session_knowledge.html` 都必須顯示「本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。」
+- 規則 7（AI 免責聲明）：`infographic.html`、`mindmap.html`、`wenda2_knowledge.html`、`wenda2_mindmap.html`、`wenda2_knowledge_full.html` 及本次新增的 `review.html`、`books_knowledge.html`、`books_knowledge_full.html`、`session_knowledge.html` 都必須顯示「本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。」
 - 規則 8：共用 chrome CSS 在根 `style.css`；跨頁復用的 class 必須在那裡有規則。
 - 規則 9：`b-truth` 主幹永遠恰三條（axiom-eternal／axiom-firstthought／axiom-onebody）；出現第四條即為錯誤。
 
@@ -288,7 +289,8 @@ mindmap 引擎的 renderLadder 開頭有 `if (!host) return;`——引擎拷貝�
 
 ### 7.4 導覽慣例（2026-09-17 定案）
 
-- 「圖解」下拉全站統一 6 項：名詞圖解／名詞關聯心智圖／九書重點知識／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔（22 頁已同步，含 wenda2_curation 三個模板）。
+- 「圖解」下拉全站統一 7 項：名詞圖解／坐禪與講經名詞心智圖／坐禪與講經重點知識／坐禪與講經知識庫全檔／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔（22 頁＋books_knowledge_full 已同步，含 wenda2_curation 三個模板）。
+- 導覽列頂層邏輯順序：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料——認識（首頁→禪師→入門路徑）、兩大系列（著作→問答錄 2）與共用知識工具（圖解）相連、延伸內容（實修故事）、行動（下載）永遠最後。
 - `review.html` 刻意不在下拉：探索入口在 mindmap.html footer（名詞複習（閃卡與測驗））、books_knowledge.html 導言與 footer、review.html 自身 footer。
 - nav HTML 逐頁手工複製（shared.js 只加行為）；改導覽要逐頁改或用批次腳本。
 
@@ -334,6 +336,7 @@ mindmap 引擎的 renderLadder 開頭有 `if (!host) return;`——引擎拷貝�
 node tool/session_knowledge/mm_harness.js    # 47 PASS + ALL ASSERTIONS PASSED
 node tool/session_knowledge/rv_harness.js    # 44 PASS + ALL ASSERTIONS PASSED
 node tool/books_knowledge/build.js           # 91 卡、91 深連結、9 書區塊
+node tool/books_knowledge/build_full.js      # 64 名詞全檔、分布表 64 列、高頻詞表 12 列、書冊概覽 9 列
 node --check（改 mindmap.html／review.html 內嵌腳本後先跑）
 ```
 
@@ -343,7 +346,7 @@ wenda2 同步（改 mindmap 引擎後）：
 cd tool/wenda2_curation/build && python3 build_mm.py && python3 build_mm2.py
 ```
 
-檔案級檢查：三個新頁都有 AI 免責聲明與 canonical；sitemap.xml 含三個新 URL；22 頁下拉含「九書重點知識」且不含「名詞複習」。
+檔案級檢查：三個新頁都有 AI 免責聲明與 canonical；sitemap.xml 含四個新 URL；22 頁下拉含「坐禪與講經重點知識」「坐禪與講經知識庫全檔」且不含「名詞複習」。
 
 ---
 
@@ -353,13 +356,13 @@ cd tool/wenda2_curation/build && python3 build_mm.py && python3 build_mm2.py
 |---|---|---|
 | review.html | 間隔重複閃卡＋名詞測驗（SRS localStorage、深連結、繁簡、免責） | 手編（inline 資料 73 節點） |
 | mindmap.html | 73 節點查證＋深連結＋修行次第線區塊＋footer 連結 | 手編（已存在檔案） |
-| books_knowledge.html | 九書重點知識（9 書區塊、91 名詞卡） | 生成（tool/books_knowledge/build.js） |
+| books_knowledge.html | 坐禪與講經重點知識（9 書區塊、91 名詞卡） | 生成（tool/books_knowledge/build.js） |
 | style.css | .rv-*、.bk-*、.mm-ladder-* 樣式 | 手編 |
 | tool/books_knowledge/ | build.js＋README.md | 新工具 |
 | tool/session_knowledge/ | build.py＋mm_harness.js＋rv_harness.js＋本 md | 新工具 |
-| tool/wenda2_curation/build/*.py | 三個模板下拉加「九書重點知識」 | 模板修補 |
+| tool/wenda2_curation/build/*.py | 三個模板下拉加「坐禪與講經重點知識」 | 模板修補 |
 | wenda2_knowledge.html、wenda2_mindmap.html、wenda2_knowledge_full.html | 重跑生成（nav 同步） | 生成 |
-| 22 頁導覽下拉 | 「九書重點知識」加入、「名詞複習」移除 | 手編批次 |
+| 22 頁導覽下拉 | 「坐禪與講經重點知識」加入、「名詞複習」移除 | 手編批次 |
 | sitemap.xml | review／books_knowledge／session_knowledge 三個 URL | 手編 |
 | SESSION_KNOWLEDGE.md | 本知識庫（SoT） | 手編 |
 

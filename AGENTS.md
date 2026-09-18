@@ -21,7 +21,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
 5. **Do not confuse site chrome with ebook assets** — root `script.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`).
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
-7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html`, `wenda2_knowledge.html`, `wenda2_mindmap.html`, `wenda2_knowledge_full.html`, `review.html`, `books_knowledge.html` and `session_knowledge.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
+7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html`, `wenda2_knowledge.html`, `wenda2_mindmap.html`, `wenda2_knowledge_full.html`, `review.html`, `books_knowledge.html`, `books_knowledge_full.html` and `session_knowledge.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
 8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
 9. **`mindmap.html`「三大初始設定」永遠只有三條** — 主幹 `b-truth` 固定為三個葉節點：`axiom-eternal`（自性恆常）、`axiom-firstthought`（初妄無因）、`axiom-onebody`（諸佛同體）。這是內容鐵律：**不可**在此主幹新增任何其他條目，也不可把其他節點移入。其他主題（如七處徵心、十番顯見等《楞嚴經》內容）一律屬「經典依據」主幹 `b-sutra`。若發現 `b-truth` 出現第 4 個葉節點，即為錯誤，必須移出。
 
@@ -41,7 +41,8 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `wenda2_knowledge.html` | 問答錄2 重點知識：21 章、9,231 個回答的重點整理（AI 選材、逐字引句、電子書連結）。**Generated** from `tool/wenda2_curation/`（改內容改 `data/` 或 `build/build_wk.py` 再重跑，勿手改後又重跑）。 |
 | `wenda2_mindmap.html` | 問答錄2 名詞心智圖：57 個高頻名詞／11 主幹；互動引擎從 `mindmap.html` 拷貝（`build/build_mm.py` 重跑即同步）。**Generated** from `tool/wenda2_curation/`。 |
 | `wenda2_knowledge_full.html` | 問答錄2 知識庫全檔：57 名詞全檔＋134 名詞統計總表＋437 小節引句全錄＋36 月度精選。**Generated** from `tool/wenda2_curation/`（`build/build_full.py`）。 |
-| `books_knowledge.html` | 九書重點知識：坐禪＋講經九書、按書分冊的名詞整理（91 名詞卡：釋義／書中要點／引句＋電子書深連結）。**Generated** from `tool/books_knowledge/`（改名詞資料後重跑 `build.js`，勿手改）。 |
+| `books_knowledge.html` | 坐禪與講經重點知識：坐禪＋講經九書、按書分冊的名詞整理（91 名詞卡：釋義／書中要點／引句＋電子書深連結）。**Generated** from `tool/books_knowledge/`（改名詞資料後重跑 `build.js`，勿手改）。 |
+| `books_knowledge_full.html` | 坐禪與講經知識庫全檔：64 名詞全檔（按主幹分組）＋名詞書冊分布總表＋高頻詞全文出現次數＋九書書冊概覽。**Generated** from `tool/books_knowledge/`（`build_full.js`）。 |
 | `review.html` | 名詞複習：間隔重複閃卡＋名詞測驗（64 名詞、SRS localStorage `tgl-review-srs-v1`、同主幹誘答）。手編，inline 資料與 `mindmap.html` 同源，改兩者要一起改。**刻意不在「圖解」下拉**：入口在 mindmap footer、books_knowledge 導言與 footer。 |
 | `session_knowledge.html` | Session 知識庫：查證工程完整知識（逐批報告、證據速查、禁用術語、節點定稿、harness 基準）。**Generated** from `SESSION_KNOWLEDGE.md`（`tool/session_knowledge/build.py`）。 |
 | `script.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
@@ -83,7 +84,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/stories2html/` | Stories → HTML readers + index/sitemap patches | `README.md` |
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
 | `tool/wenda2_curation/` | 問答錄2 知識萃取檔（語料＋精選＋統計 SoT）→ 三個圖解頁（knowledge / mindmap / knowledge_full） | **`README.md`**, `NOTES.md` |
-| `tool/books_knowledge/` | mindmap.html 名詞資料 → 按書分冊的九書重點知識頁（91 名詞卡＋深連結；名詞對不到書時 build 失敗） | `README.md` |
+| `tool/books_knowledge/` | mindmap.html 名詞資料 → 坐禪與講經重點知識頁（91 卡）＋知識庫全檔頁（64 全檔＋分布表＋高頻詞次數；名詞對不到書時 build 失敗） | `README.md` |
 | `tool/session_knowledge/` | `SESSION_KNOWLEDGE.md` → `session_knowledge.html`；自抽取版 mm/rv harness（煙霧測試，不需 /tmp） | `README.md` |
 
 ---
@@ -180,7 +181,8 @@ mp3  →  (optional) tool/audio_denoiser
 | Root `script.js` vs ebook `script.js` | Unrelated; ebook bundle is concatenated from modules under `tool/word2ebook/assets/js/modules/`. |
 | `scripts/` | Empty; ignore unless something is added. |
 | Production `/audio/` | Code expects same-origin audio; files are not in this git repo. Local preview needs the symlink. |
-| 「圖解」下拉選單 | 全站統一 6 項：名詞圖解／名詞關聯心智圖／九書重點知識／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔。nav HTML 逐頁手工複製——改導覽需同步 22 頁＋ `tool/wenda2_curation/build/` 三個模板；`review.html` 刻意不在下拉（入口在 mindmap footer、books_knowledge 導言與 footer）。 |
+| 「圖解」下拉選單 | 全站統一 7 項：名詞圖解／坐禪與講經名詞心智圖／坐禪與講經重點知識／坐禪與講經知識庫全檔／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔。nav HTML 逐頁手工複製——改導覽需同步 22 頁＋ `tool/wenda2_curation/build/` 三個模板＋兩個生成器模板；`review.html` 刻意不在下拉（入口在 mindmap footer、books_knowledge 導言與 footer）。 |
+| 導覽列頂層順序 | 全站統一：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料——認識、兩大系列＋共用知識工具相連、延伸內容、行動（下載）最後。 |
 
 ---
 

@@ -1,7 +1,10 @@
-# books_knowledge — 九書重點知識頁生成器
+# books_knowledge — 坐禪與講經知識頁生成器
 
 把 `mindmap.html` 內嵌、已逐點查證的名詞資料（`ROOT` / `BRANCHES` / `EBOOK_LINKS`）按「書」重新組織，
-生成全靜態的 `books_knowledge.html`（比照 `wenda2_knowledge.html` 的定位，但對象是坐禪＋講經九書語料）。
+生成兩個全靜態頁（比照 `wenda2_knowledge.html`／`wenda2_knowledge_full.html` 的定位，但對象是坐禪＋講經九書語料）：
+
+- `build.js` → `books_knowledge.html`（坐禪與講經重點知識：按書分冊）
+- `build_full.js` → `books_knowledge_full.html`（坐禪與講經知識庫全檔：64 名詞全檔按主幹分組＋名詞書冊分布總表＋高頻詞全文出現次數＋九書書冊概覽）
 
 ## 資料流
 
@@ -12,6 +15,7 @@ mindmap.html（單一真相來源，hand-edited）
 按書歸類（src 含書名標記即列入；一詞可跨多書）
         ▼
 books_knowledge.html（生成物：9 個書區塊、名詞展開卡＝釋義／書中要點／原文摘句＋電子書深連結）
+books_knowledge_full.html（生成物：全檔快速導航、64 名詞全檔按主幹分組、分布總表 64 列＋高頻詞表 12 列、九書書冊概覽 9 列）
 ```
 
 ## 用法
@@ -20,6 +24,7 @@ books_knowledge.html（生成物：9 個書區塊、名詞展開卡＝釋義／�
 
 ```sh
 node tool/books_knowledge/build.js
+node tool/books_knowledge/build_full.js
 ```
 
 ## 維護規則
@@ -33,4 +38,4 @@ node tool/books_knowledge/build.js
 ## 頁面導覽約定
 
 「圖解」下拉選單在全站各頁為手工複製的 HTML；本工具生成的頁面、`mindmap.html` 與 `review.html`
-已同步為相同七項順序（名詞圖解／名詞關聯心智圖／九書重點知識／名詞複習／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔）。其他舊頁的下拉若有差異，屬尚待同步的範圍。
+已同步為相同七項順序（名詞圖解／坐禪與講經名詞心智圖／坐禪與講經重點知識／坐禪與講經知識庫全檔／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔）。導覽頂層順序：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料。`review.html` 刻意不在下拉。

@@ -30,18 +30,19 @@
                 <a href="index.html#start" class="nav-link">入門路徑</a>
                 <a href="index.html#books" class="nav-link">著作</a>
                 <a href="wenda2.html" class="nav-link">問答錄 2</a>
-                <a href="stories.html" class="nav-link">實修故事</a>
                 <div class="nav-dropdown" id="nav-dropdown">
                     <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
                         <a href="infographic.html" class="nav-dropdown-item">名詞圖解</a>
-                        <a href="mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
-                        <a href="books_knowledge.html" class="nav-dropdown-item">九書重點知識</a>
+                        <a href="mindmap.html" class="nav-dropdown-item">坐禪與講經名詞心智圖</a>
+                        <a href="books_knowledge.html" class="nav-dropdown-item">坐禪與講經重點知識</a>
+<a href="books_knowledge_full.html" class="nav-dropdown-item">坐禪與講經知識庫全檔</a>
                         <a href="wenda2_knowledge.html" class="nav-dropdown-item">問答錄2 重點知識</a>
                         <a href="wenda2_mindmap.html" class="nav-dropdown-item">問答錄2 名詞心智圖</a>
                         <a href="wenda2_knowledge_full.html" class="nav-dropdown-item">問答錄2 知識庫全檔</a>
                     </div>
                 </div>
+                <a href="stories.html" class="nav-link">實修故事</a>
                 <a href="index.html#downloads" class="nav-link nav-cta" data-download-trigger>下載資料</a>
             </div>
             <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">
@@ -78,13 +79,13 @@
     <section class="section">
         <div class="container sk-body">
 <blockquote class="sk-quote">本頁由 <code>tool/session_knowledge/build.py</code> 從 <code>SESSION_KNOWLEDGE.md</code> 生成（生成物勿手改，改 md 再重跑）。<br>所有查證以 Tai 師父九本書原文為準；本頁整理本身由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。</blockquote>
-<p class="sk-p">這份知識庫完整保存 2026-09-16 至 2026-09-17「mindmap.html 名詞查證與圖解工程」session 的可復用知識：查證方法、逐批發現與修正、證據行號、禁用術語、關鍵節點定稿、腳本與回歸基準。與本知識庫相關的產出：<code>review.html</code>（閃卡與測驗）、<code>books_knowledge.html</code>（九書重點知識）、<code>mindmap.html</code>（修行次第線區塊）。</p>
+<p class="sk-p">這份知識庫完整保存 2026-09-16 至 2026-09-17「mindmap.html 名詞查證與圖解工程」session 的可復用知識：查證方法、逐批發現與修正、證據行號、禁用術語、關鍵節點定稿、腳本與回歸基準。與本知識庫相關的產出：<code>review.html</code>（閃卡與測驗）、<code>books_knowledge.html</code>（坐禪與講經重點知識）、<code>books_knowledge_full.html</code>（坐禪與講經知識庫全檔）、<code>mindmap.html</code>（修行次第線區塊）。</p>
 <hr class="sk-hr">
 <h2 class="sk-h2" id="sk-0">0. 一頁總覽</h2>
 <h3 class="sk-h3">0.1 任務鏈</h3>
-<ol class="sk-list"><li>mindmap.html 73 節點逐點對照九本書原文查證（四批次 A／B／C／D）</li><li>73 條電子書深連結嵌入（每節點唯一引句處，<code>var EBOOK_LINKS</code>）</li><li><code>.mm-lead</code> 寬螢幕換行修正（移除 max-width、加 text-wrap: pretty）</li><li>呈現格式調查 → 建議：閃卡＋測驗、修行次第線</li><li>review.html（間隔重複閃卡＋名詞測驗）</li><li>mindmap.html 修行次第線（16 級實修＋7 步義理）</li><li>books_knowledge.html（九書重點知識，按書分冊，從 mindmap 資料生成）</li><li>本知識庫（SESSION_KNOWLEDGE.md → session_knowledge.html）</li></ol>
+<ol class="sk-list"><li>mindmap.html 73 節點逐點對照九本書原文查證（四批次 A／B／C／D）</li><li>73 條電子書深連結嵌入（每節點唯一引句處，<code>var EBOOK_LINKS</code>）</li><li><code>.mm-lead</code> 寬螢幕換行修正（移除 max-width、加 text-wrap: pretty）</li><li>呈現格式調查 → 建議：閃卡＋測驗、修行次第線</li><li>review.html（間隔重複閃卡＋名詞測驗）</li><li>mindmap.html 修行次第線（16 級實修＋7 步義理）</li><li>books_knowledge.html（坐禪與講經重點知識，按書分冊，從 mindmap 資料生成）</li><li>books_knowledge_full.html（坐禪與講經知識庫全檔：64 名詞全檔按主幹分組＋書冊分布＋高頻詞次數，比照問答錄2 知識庫全檔）</li><li>本知識庫（SESSION_KNOWLEDGE.md → session_knowledge.html）</li></ol>
 <h3 class="sk-h3">0.2 數字總表</h3>
-<div class="sk-table-wrap"><table class="sk-table"><thead><tr><th>項目</th><th>數字</th></tr></thead><tbody><tr><td>名詞節點（root＋主幹＋葉）</td><td>73</td></tr><tr><td>葉節點（名詞）</td><td>64</td></tr><tr><td>主幹</td><td>8</td></tr><tr><td>逐批查證節點</td><td>63（A14＋B17＋C12＋D20）</td></tr><tr><td>引句前綴審查</td><td>30 節點（6 修正）</td></tr><tr><td>電子書深連結</td><td>73／73</td></tr><tr><td>mm_harness 斷言</td><td>47（全綠）</td></tr><tr><td>rv_harness 斷言</td><td>44（全綠）</td></tr><tr><td>九書重點知識名詞卡</td><td>91（含跨書重複）</td></tr></tbody></table></div>
+<div class="sk-table-wrap"><table class="sk-table"><thead><tr><th>項目</th><th>數字</th></tr></thead><tbody><tr><td>名詞節點（root＋主幹＋葉）</td><td>73</td></tr><tr><td>葉節點（名詞）</td><td>64</td></tr><tr><td>主幹</td><td>8</td></tr><tr><td>逐批查證節點</td><td>63（A14＋B17＋C12＋D20）</td></tr><tr><td>引句前綴審查</td><td>30 節點（6 修正）</td></tr><tr><td>電子書深連結</td><td>73／73</td></tr><tr><td>mm_harness 斷言</td><td>47（全綠）</td></tr><tr><td>rv_harness 斷言</td><td>44（全綠）</td></tr><tr><td>坐禪與講經重點知識名詞卡</td><td>91（含跨書重複）</td></tr></tbody></table></div>
 <hr class="sk-hr">
 <h2 class="sk-h2" id="sk-1">1. 語料地圖</h2>
 <h3 class="sk-h3">1.1 語料 dump 與電子書編號對照</h3>
@@ -152,13 +153,13 @@ var D = eval(&#x27;(function(){&#x27; + script.slice(s, e) +
 <hr class="sk-hr">
 <h2 class="sk-h2" id="sk-7">7. 工程備忘</h2>
 <h3 class="sk-h3">7.1 AGENTS.md 金律摘錄（本 session 相關）</h3>
-<ul class="sk-list"><li>規則 7（AI 免責聲明）：<code>infographic.html</code>、<code>mindmap.html</code>、<code>wenda2_knowledge.html</code>、<code>wenda2_mindmap.html</code>、<code>wenda2_knowledge_full.html</code> 及本次新增的 <code>review.html</code>、<code>books_knowledge.html</code>、<code>session_knowledge.html</code> 都必須顯示「本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。」</li><li>規則 8：共用 chrome CSS 在根 <code>style.css</code>；跨頁復用的 class 必須在那裡有規則。</li><li>規則 9：<code>b-truth</code> 主幹永遠恰三條（axiom-eternal／axiom-firstthought／axiom-onebody）；出現第四條即為錯誤。</li></ul>
+<ul class="sk-list"><li>規則 7（AI 免責聲明）：<code>infographic.html</code>、<code>mindmap.html</code>、<code>wenda2_knowledge.html</code>、<code>wenda2_mindmap.html</code>、<code>wenda2_knowledge_full.html</code> 及本次新增的 <code>review.html</code>、<code>books_knowledge.html</code>、<code>books_knowledge_full.html</code>、<code>session_knowledge.html</code> 都必須顯示「本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。」</li><li>規則 8：共用 chrome CSS 在根 <code>style.css</code>；跨頁復用的 class 必須在那裡有規則。</li><li>規則 9：<code>b-truth</code> 主幹永遠恰三條（axiom-eternal／axiom-firstthought／axiom-onebody）；出現第四條即為錯誤。</li></ul>
 <h3 class="sk-h3">7.2 樣式資產</h3>
 <ul class="sk-list"><li>既有 <code>.mm-*</code>：mm-lead、mm-notice、mm-stats、mm-stat、mm-chips、mm-chip、mm-detail-block、mm-detail-points、mm-detail-quote、mm-quote-mark、mm-detail-src、mm-detail-tag、mm-detail-desc、mm-detail-rel、mm-rel-chip、mm-subtitle。</li><li>本次新增：<code>.mm-ladder-*</code>（mindmap 修行次第線）、<code>.rv-*</code>（review 頁）、<code>.bk-*</code>（books_knowledge 頁）。</li><li>設計語言：sakura 調色盤、--line／--line-deep 邊框、--grad-rose 主色、--r-pill／--r-md 圓角、--font-serif 標題。</li></ul>
 <h3 class="sk-h3">7.3 boot 模式（mindmap 與 review 相同）</h3>
 <p class="sk-p"><code>window.tgl_lang.onReady(boot)</code> ＋ <code>setTimeout(boot, 3000)</code> 保底 ＋ <code>onChange</code> 重渲。先等 OpenCC 備妥再首渲，避免簡體閃繁體。</p>
 <h3 class="sk-h3">7.4 導覽慣例（2026-09-17 定案）</h3>
-<ul class="sk-list"><li>「圖解」下拉全站統一 6 項：名詞圖解／名詞關聯心智圖／九書重點知識／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔（22 頁已同步，含 wenda2_curation 三個模板）。</li><li><code>review.html</code> 刻意不在下拉：探索入口在 mindmap.html footer（名詞複習（閃卡與測驗））、books_knowledge.html 導言與 footer、review.html 自身 footer。</li><li>nav HTML 逐頁手工複製（shared.js 只加行為）；改導覽要逐頁改或用批次腳本。</li></ul>
+<ul class="sk-list"><li>「圖解」下拉全站統一 7 項：名詞圖解／坐禪與講經名詞心智圖／坐禪與講經重點知識／坐禪與講經知識庫全檔／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔（22 頁＋books_knowledge_full 已同步，含 wenda2_curation 三個模板）。</li><li>導覽列頂層邏輯順序：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料——認識（首頁→禪師→入門路徑）、兩大系列（著作→問答錄 2）與共用知識工具（圖解）相連、延伸內容（實修故事）、行動（下載）永遠最後。</li><li><code>review.html</code> 刻意不在下拉：探索入口在 mindmap.html footer（名詞複習（閃卡與測驗））、books_knowledge.html 導言與 footer、review.html 自身 footer。</li><li>nav HTML 逐頁手工複製（shared.js 只加行為）；改導覽要逐頁改或用批次腳本。</li></ul>
 <h3 class="sk-h3">7.5 語言與繁簡</h3>
 <ul class="sk-list"><li>頁面內容以 zh-TW 為 SoT；JS 動態輸出經 <code>T()</code>（convertTW）轉換；靜態內容由 lang-switch 全頁 OpenCC 轉換。</li><li>harness 以「假簡轉換器」驗證動態輸出已轉換（只映射斷言用到的字）。</li></ul>
 <h3 class="sk-h3">7.6 修行次第數字（易錯）</h3>
@@ -176,13 +177,14 @@ var D = eval(&#x27;(function(){&#x27; + script.slice(s, e) +
 <pre class="sk-code">node tool/session_knowledge/mm_harness.js    # 47 PASS + ALL ASSERTIONS PASSED
 node tool/session_knowledge/rv_harness.js    # 44 PASS + ALL ASSERTIONS PASSED
 node tool/books_knowledge/build.js           # 91 卡、91 深連結、9 書區塊
+node tool/books_knowledge/build_full.js      # 64 名詞全檔、分布表 64 列、高頻詞表 12 列、書冊概覽 9 列
 node --check（改 mindmap.html／review.html 內嵌腳本後先跑）</pre>
 <p class="sk-p">wenda2 同步（改 mindmap 引擎後）：</p>
 <pre class="sk-code">cd tool/wenda2_curation/build &amp;&amp; python3 build_mm.py &amp;&amp; python3 build_mm2.py</pre>
-<p class="sk-p">檔案級檢查：三個新頁都有 AI 免責聲明與 canonical；sitemap.xml 含三個新 URL；22 頁下拉含「九書重點知識」且不含「名詞複習」。</p>
+<p class="sk-p">檔案級檢查：三個新頁都有 AI 免責聲明與 canonical；sitemap.xml 含四個新 URL；22 頁下拉含「坐禪與講經重點知識」「坐禪與講經知識庫全檔」且不含「名詞複習」。</p>
 <hr class="sk-hr">
 <h2 class="sk-h2" id="sk-10">10. 落地清單（2026-09-16 至 09-17）</h2>
-<div class="sk-table-wrap"><table class="sk-table"><thead><tr><th>檔案</th><th>內容</th><th>性質</th></tr></thead><tbody><tr><td>review.html</td><td>間隔重複閃卡＋名詞測驗（SRS localStorage、深連結、繁簡、免責）</td><td>手編（inline 資料 73 節點）</td></tr><tr><td>mindmap.html</td><td>73 節點查證＋深連結＋修行次第線區塊＋footer 連結</td><td>手編（已存在檔案）</td></tr><tr><td>books_knowledge.html</td><td>九書重點知識（9 書區塊、91 名詞卡）</td><td>生成（tool/books_knowledge/build.js）</td></tr><tr><td>style.css</td><td>.rv-*、.bk-*、.mm-ladder-* 樣式</td><td>手編</td></tr><tr><td>tool/books_knowledge/</td><td>build.js＋README.md</td><td>新工具</td></tr><tr><td>tool/session_knowledge/</td><td>build.py＋mm_harness.js＋rv_harness.js＋本 md</td><td>新工具</td></tr><tr><td>tool/wenda2_curation/build/*.py</td><td>三個模板下拉加「九書重點知識」</td><td>模板修補</td></tr><tr><td>wenda2_knowledge.html、wenda2_mindmap.html、wenda2_knowledge_full.html</td><td>重跑生成（nav 同步）</td><td>生成</td></tr><tr><td>22 頁導覽下拉</td><td>「九書重點知識」加入、「名詞複習」移除</td><td>手編批次</td></tr><tr><td>sitemap.xml</td><td>review／books_knowledge／session_knowledge 三個 URL</td><td>手編</td></tr><tr><td>SESSION_KNOWLEDGE.md</td><td>本知識庫（SoT）</td><td>手編</td></tr></tbody></table></div>
+<div class="sk-table-wrap"><table class="sk-table"><thead><tr><th>檔案</th><th>內容</th><th>性質</th></tr></thead><tbody><tr><td>review.html</td><td>間隔重複閃卡＋名詞測驗（SRS localStorage、深連結、繁簡、免責）</td><td>手編（inline 資料 73 節點）</td></tr><tr><td>mindmap.html</td><td>73 節點查證＋深連結＋修行次第線區塊＋footer 連結</td><td>手編（已存在檔案）</td></tr><tr><td>books_knowledge.html</td><td>坐禪與講經重點知識（9 書區塊、91 名詞卡）</td><td>生成（tool/books_knowledge/build.js）</td></tr><tr><td>style.css</td><td>.rv-*、.bk-*、.mm-ladder-* 樣式</td><td>手編</td></tr><tr><td>tool/books_knowledge/</td><td>build.js＋README.md</td><td>新工具</td></tr><tr><td>tool/session_knowledge/</td><td>build.py＋mm_harness.js＋rv_harness.js＋本 md</td><td>新工具</td></tr><tr><td>tool/wenda2_curation/build/*.py</td><td>三個模板下拉加「坐禪與講經重點知識」</td><td>模板修補</td></tr><tr><td>wenda2_knowledge.html、wenda2_mindmap.html、wenda2_knowledge_full.html</td><td>重跑生成（nav 同步）</td><td>生成</td></tr><tr><td>22 頁導覽下拉</td><td>「坐禪與講經重點知識」加入、「名詞複習」移除</td><td>手編批次</td></tr><tr><td>sitemap.xml</td><td>review／books_knowledge／session_knowledge 三個 URL</td><td>手編</td></tr><tr><td>SESSION_KNOWLEDGE.md</td><td>本知識庫（SoT）</td><td>手編</td></tr></tbody></table></div>
 <p class="sk-p">全部未 commit：由使用者 review 後 push main 佈署（GitHub Pages 無建置步驟）。</p>
         </div>
     </section>
@@ -213,8 +215,8 @@ node --check（改 mindmap.html／review.html 內嵌腳本後先跑）</pre>
                     <h4>更多資源</h4>
                     <ul>
                         <li><a href="infographic.html">名詞圖解</a></li>
-                        <li><a href="mindmap.html">名詞關聯心智圖</a></li>
-                        <li><a href="books_knowledge.html">九書重點知識</a></li>
+                        <li><a href="mindmap.html">坐禪與講經名詞心智圖</a></li>
+                        <li><a href="books_knowledge.html">坐禪與講經重點知識</a></li>
                         <li><a href="review.html">名詞複習（閃卡與測驗）</a></li>
                         <li><a href="wenda2_knowledge.html">問答錄2 重點知識</a></li>
                         <li><a href="wenda2_mindmap.html">問答錄2 名詞心智圖</a></li>
