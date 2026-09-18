@@ -31302,10 +31302,10 @@
   {
    "lecture": "21",
    "verdicts": {
-    "skip_ok": 12,
-    "span_ok": 61,
-    "span_bad": 2,
-    "unknown": 14
+    "skip_ok": 11,
+    "span_ok": 62,
+    "unknown": 15,
+    "span_bad": 1
    },
    "details": [
     {
@@ -31313,8 +31313,8 @@
      "i": 0,
      "method": "ngram",
      "conf": 0.85,
-     "start": 0,
-     "end": 0,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31326,8 +31326,8 @@
      "i": 1,
      "method": "ngram",
      "conf": 0.95,
-     "start": 39.54,
-     "end": 39.54,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31339,8 +31339,8 @@
      "i": 2,
      "method": "ngram",
      "conf": 0.85,
-     "start": 39.54,
-     "end": 39.54,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31352,8 +31352,8 @@
      "i": 3,
      "method": "ngram",
      "conf": 0.95,
-     "start": 39.54,
-     "end": 39.54,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31365,8 +31365,8 @@
      "i": 4,
      "method": "ngram",
      "conf": 0.95,
-     "start": 39.54,
-     "end": 39.54,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31378,8 +31378,8 @@
      "i": 5,
      "method": "ngram",
      "conf": 0.95,
-     "start": 39.54,
-     "end": 39.54,
+     "start": 0.0,
+     "end": 0.0,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31392,7 +31392,7 @@
      "method": "ngram",
      "conf": 0.9,
      "start": 0.63,
-     "end": 39.54,
+     "end": 36.1,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31406,15 +31406,14 @@
      "i": 7,
      "method": "ngram",
      "conf": 0.85,
-     "start": 39.54,
+     "start": 36.1,
      "end": 41.06,
      "is_sutra": true,
-     "verdict": "span_bad",
+     "verdict": "span_ok",
      "ev": {
       "d_head": 0.84,
-      "t_head": 35.32,
-      "d_blk": 0.84,
-      "probe": 0.84
+      "t_head": 35.86,
+      "d_blk": 0.84
      }
     },
     {
@@ -31423,7 +31422,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 41.06,
-     "end": 76.15,
+     "end": 78.26,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31469,7 +31468,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 156.4,
-     "end": 192.56,
+     "end": 194.24,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31484,7 +31483,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 194.24,
-     "end": 202.18,
+     "end": 202.25,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31574,7 +31573,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 303.56,
-     "end": 333.37,
+     "end": 335.58,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31662,13 +31661,13 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 416.83,
-     "end": 456.75,
+     "end": 457.74,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
       "d_head": 0.746,
       "t_head": 417.73,
-      "d_blk": 0.858
+      "d_blk": 0.868
      }
     },
     {
@@ -31693,7 +31692,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 488.03,
-     "end": 522.79,
+     "end": 524.54,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31738,7 +31737,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 532.69,
-     "end": 557.63,
+     "end": 558.14,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31753,11 +31752,13 @@
      "method": "ngram",
      "conf": 0.86,
      "start": 558.14,
-     "end": 559,
+     "end": 560.82,
      "is_sutra": true,
-     "verdict": "skip_ok",
+     "verdict": "unknown",
      "ev": {
-      "verbatim": false
+      "d_head": 0.296,
+      "t_head": 557.43,
+      "d_blk": -0.002
      }
     },
     {
@@ -31794,7 +31795,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 612.62,
-     "end": 653.88,
+     "end": 655.25,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31809,7 +31810,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 655.25,
-     "end": 665.85,
+     "end": 666.67,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -31839,7 +31840,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 684.26,
-     "end": 713.45,
+     "end": 715.32,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31853,8 +31854,8 @@
      "i": 37,
      "method": "miss",
      "conf": 0.35,
-     "start": 713.45,
-     "end": 713.45,
+     "start": 715.32,
+     "end": 715.32,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -31867,7 +31868,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 715.32,
-     "end": 735,
+     "end": 735.64,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31882,7 +31883,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 735.64,
-     "end": 740.59,
+     "end": 740.82,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -31897,7 +31898,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 740.82,
-     "end": 782.12,
+     "end": 782.21,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -31913,7 +31914,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 782.21,
-     "end": 789.27,
+     "end": 789.52,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -31989,7 +31990,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 878.56,
-     "end": 885.61,
+     "end": 886.16,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -32005,7 +32006,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 886.16,
-     "end": 902.9,
+     "end": 903.01,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32020,7 +32021,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 903.01,
-     "end": 913.47,
+     "end": 913.48,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -32035,7 +32036,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 913.48,
-     "end": 933.58,
+     "end": 934.25,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32049,8 +32050,8 @@
      "i": 50,
      "method": "ngram",
      "conf": 0.95,
-     "start": 933.58,
-     "end": 933.58,
+     "start": 934.25,
+     "end": 934.25,
      "is_sutra": true,
      "verdict": "skip_ok",
      "ev": {
@@ -32093,7 +32094,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1014.46,
-     "end": 1034.89,
+     "end": 1035.28,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32168,7 +32169,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1093.79,
-     "end": 1113.37,
+     "end": 1113.93,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32183,13 +32184,13 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1113.93,
-     "end": 1156.23,
+     "end": 1156.78,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
       "d_head": 0.942,
       "t_head": 1112.77,
-      "d_blk": 0.694
+      "d_blk": 0.728
      }
     },
     {
@@ -32214,7 +32215,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1187.06,
-     "end": 1193.84,
+     "end": 1194.25,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32347,7 +32348,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1377.02,
-     "end": 1406.88,
+     "end": 1406.95,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32378,7 +32379,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1440.42,
-     "end": 1456.71,
+     "end": 1456.74,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32423,7 +32424,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1496.13,
-     "end": 1515.23,
+     "end": 1515.68,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32483,7 +32484,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1614.17,
-     "end": 1646.78,
+     "end": 1647.85,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32528,12 +32529,12 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1691.52,
-     "end": 1705.83,
+     "end": 1706.9,
      "is_sutra": false,
      "verdict": "span_bad",
      "ev": {
-      "d_head": 0.104,
-      "t_head": 1698.04,
+      "d_head": 0.108,
+      "t_head": 1698.5,
       "d_blk": 0.547,
       "probe": 0.903
      }
@@ -32543,13 +32544,13 @@
      "i": 83,
      "method": "ngram",
      "conf": 0.86,
-     "start": 1707.17,
+     "start": 1706.9,
      "end": 1710.54,
      "is_sutra": true,
      "verdict": "unknown",
      "ev": {
       "d_head": 0.495,
-      "t_head": 1707.17,
+      "t_head": 1706.77,
       "d_blk": 0.495
      }
     },
@@ -32559,7 +32560,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1710.54,
-     "end": 1727.57,
+     "end": 1727.8,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32589,7 +32590,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1735.48,
-     "end": 1769.12,
+     "end": 1769.7,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -32604,7 +32605,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 1769.7,
-     "end": 1802.9,
+     "end": 1803.535,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
