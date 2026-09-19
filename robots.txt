@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+
+# Important pages for SEO
+Sitemap: https://taiguanglin.info/sitemap.xml
+
+# Allow access to CSS and JS files
+Allow: /style.css
+Allow: /shared.js
+Allow: /images/
+Allow: /stories/
+
+# Primary pages optimized for: 佛法,修行,打坐,雙盤,TaiGuangLin
+# Main page: https://taiguanglin.info/
+# Stories page: https://taiguanglin.info/stories.html 
