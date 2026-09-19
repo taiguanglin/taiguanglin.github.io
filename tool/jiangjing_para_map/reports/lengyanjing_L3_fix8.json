@@ -1,0 +1,66 @@
+[
+ {
+  "i": 46,
+  "start": 1155.15,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 47,
+  "start": 1159.55,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 48,
+  "start": 1163.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 49,
+  "start": 953.38,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解：那么在这里就要讲一下菩萨果位（ASR 953.38 这个呃果味哈在小城）"
+ },
+ {
+  "i": 50,
+  "start": 979.41,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 51,
+  "start": 1009.11,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 52,
+  "start": 1020.61,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 53,
+  "start": 1023.39,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ }
+]

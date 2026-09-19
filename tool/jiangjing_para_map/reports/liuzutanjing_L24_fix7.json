@@ -1,0 +1,42 @@
+[
+ {
+  "i": 72,
+  "start": 624.8,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點重錨，early/fat 修正）"
+ },
+ {
+  "i": 74,
+  "start": 682.65,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點重錨，early/fat 修正）"
+ },
+ {
+  "i": 84,
+  "start": 777.38,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點重錨，early/fat 修正）"
+ },
+ {
+  "i": 143,
+  "start": 1130.31,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點重錨，early/fat 修正）"
+ },
+ {
+  "i": 179,
+  "start": 1694.05,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點重錨，early/fat 修正）"
+ }
+]

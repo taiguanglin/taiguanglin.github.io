@@ -1,0 +1,250 @@
+[
+ {
+  "i": 158,
+  "start": 1395.32,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 159,
+  "start": 1400.02,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 160,
+  "start": 1402.48,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 161,
+  "start": 1468.59,
+  "conf": 0.75,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（那么后面是/然后，）零寬錨"
+ },
+ {
+  "i": 162,
+  "start": 1470.0,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 163,
+  "start": 1473.29,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 164,
+  "start": 1488.87,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 165,
+  "start": 1492.07,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 166,
+  "start": 1496.33,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 167,
+  "start": 1500.58,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 168,
+  "start": 1523.22,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 169,
+  "start": 1531.24,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 170,
+  "start": 1553.89,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 171,
+  "start": 1578.63,
+  "conf": 0.75,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（那么后面是/然后，）零寬錨"
+ },
+ {
+  "i": 172,
+  "start": 1583.03,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 173,
+  "start": 1589.62,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 174,
+  "start": 1597.06,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 175,
+  "start": 1599.94,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 176,
+  "start": 1603.32,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 177,
+  "start": 1606.62,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 178,
+  "start": 1613.03,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 179,
+  "start": 1643.08,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 180,
+  "start": 1662.5,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 181,
+  "start": 1676.5,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 182,
+  "start": 1700.56,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 183,
+  "start": 1717.56,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 184,
+  "start": 1736.44,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 185,
+  "start": 1761.43,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 186,
+  "start": 1773.59,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 187,
+  "start": 1796.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 188,
+  "start": 1804.23,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ }
+]

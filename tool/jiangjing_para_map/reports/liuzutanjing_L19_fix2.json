@@ -1,0 +1,47 @@
+[
+ {
+  "i": 10,
+  "start": 0.97,
+  "end": 17.0,
+  "conf": 0.85,
+  "method": "chain",
+  "zero": false,
+  "note": "導言尾：我们看原文@16.2-17.5（slice ASR 12.5-21.5）"
+ },
+ {
+  "i": 11,
+  "start": 17.5,
+  "end": 21.2,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "經文讀：行思禅师，生吉州安城刘氏@17.5-21.2（slice ASR 行思成师商西周安成刘氏@16.19-21.18）"
+ },
+ {
+  "i": 12,
+  "start": 22.09,
+  "end": 24.35,
+  "conf": 0.85,
+  "method": "chain",
+  "zero": false,
+  "note": "講解：这是他的籍贯和姓氏@22.09-24.35（slice ASR）"
+ },
+ {
+  "i": 13,
+  "start": 25.51,
+  "end": 29.73,
+  "conf": 0.8,
+  "method": "chain",
+  "zero": false,
+  "note": "經文讀：闻曹溪法席盛化，径来参礼@25.51-29.73（slice ASR 闻朝汐法系嗯圣话啊 敬来参礼）"
+ },
+ {
+  "i": 14,
+  "start": 30.01,
+  "end": 39.81,
+  "conf": 0.85,
+  "method": "chain",
+  "zero": false,
+  "note": "講解：他听说曹溪这里佛法很兴盛…@30.01-39.81（slice ASR 30.01-39.81）"
+ }
+]
