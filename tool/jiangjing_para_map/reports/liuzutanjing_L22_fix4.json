@@ -1,0 +1,322 @@
+[
+ {
+  "i": 44,
+  "start": 425.78,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 45,
+  "start": 428.1,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 46,
+  "start": 432.3,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 47,
+  "start": 440.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 48,
+  "start": 447.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 49,
+  "start": 455.37,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 50,
+  "start": 462.31,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 51,
+  "start": 464.43,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 52,
+  "start": 467.19,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 53,
+  "start": 469.31,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 54,
+  "start": 474.4,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 55,
+  "start": 477.93,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 56,
+  "start": 481.27,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 57,
+  "start": 485.75,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 58,
+  "start": 499.3,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 59,
+  "start": 503.45,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 60,
+  "start": 538.71,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 61,
+  "start": 542.18,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 62,
+  "start": 565.06,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 63,
+  "start": 571.58,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 64,
+  "start": 580.37,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 65,
+  "start": 585.13,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 66,
+  "start": 589.77,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 67,
+  "start": 592.24,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 68,
+  "start": 598.81,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 69,
+  "start": 602.99,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 70,
+  "start": 606.81,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 71,
+  "start": 610.28,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 72,
+  "start": 618.12,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 73,
+  "start": 621.83,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 74,
+  "start": 637.68,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 75,
+  "start": 641.19,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 76,
+  "start": 644.27,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 77,
+  "start": 650.39,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 78,
+  "start": 654.56,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 79,
+  "start": 668.22,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 80,
+  "start": 684.99,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 81,
+  "start": 687.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 82,
+  "start": 690.17,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 83,
+  "start": 691.11,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ }
+]

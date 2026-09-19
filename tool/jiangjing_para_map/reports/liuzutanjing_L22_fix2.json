@@ -1,0 +1,114 @@
+[
+ {
+  "i": 24,
+  "start": 207.84,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 25,
+  "start": 209.62,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 26,
+  "start": 294.32,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 27,
+  "start": 219.36,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 28,
+  "start": 224.14,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 29,
+  "start": 248.62,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 30,
+  "start": 252.18,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 31,
+  "start": 258.06,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 32,
+  "start": 265.28,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 33,
+  "start": 280.97,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 36,
+  "start": 341.15,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 37,
+  "start": 341.15,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 38,
+  "start": 341.15,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 42,
+  "start": 401.2,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ }
+]

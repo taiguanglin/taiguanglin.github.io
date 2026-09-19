@@ -1,0 +1,202 @@
+[
+ {
+  "i": 46,
+  "start": 332.26,
+  "conf": 0.8,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（故经云：）零寬錨@332.26；ASR 336.56 所以这个经理说 = [47] 頭"
+ },
+ {
+  "i": 47,
+  "start": 336.56,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 48,
+  "start": 340.02,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 49,
+  "start": 343.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 50,
+  "start": 346.64,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 51,
+  "start": 349.42,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 52,
+  "start": 352.0,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 53,
+  "start": 359.66,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 54,
+  "start": 363.84,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 55,
+  "start": 367.14,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 56,
+  "start": 379.53,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 57,
+  "start": 384.31,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 58,
+  "start": 384.31,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 59,
+  "start": 411.93,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 60,
+  "start": 415.29,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 61,
+  "start": 425.1,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 62,
+  "start": 446.87,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 63,
+  "start": 455.32,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 64,
+  "start": 476.7,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 65,
+  "start": 494.98,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 66,
+  "start": 499.2,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 67,
+  "start": 523.77,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 68,
+  "start": 551.03,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 69,
+  "start": 557.42,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 70,
+  "start": 581.19,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點）"
+ }
+]

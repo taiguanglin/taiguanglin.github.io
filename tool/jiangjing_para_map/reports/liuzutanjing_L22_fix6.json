@@ -1,0 +1,82 @@
+[
+ {
+  "i": 97,
+  "start": 910.32,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 100,
+  "start": 968.77,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 110,
+  "start": 1105.07,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 111,
+  "start": 1145.78,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 112,
+  "start": 1177.13,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 121,
+  "start": 1310.37,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 122,
+  "start": 1331.14,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 123,
+  "start": 1355.51,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 129,
+  "start": 1489.13,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ },
+ {
+  "i": 131,
+  "start": 1540.8,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點重錨，early/fat/impossible 修正）"
+ }
+]
