@@ -1,0 +1,18 @@
+[
+ {
+  "i": 84,
+  "start": 1650.7,
+  "conf": 0.85,
+  "method": "run-onset",
+  "zero": false,
+  "note": "經文讀（slice ASR）：下一段嗯上就是一切修道了几处文字…因智慧性方能建立@1650.72-1658.3"
+ },
+ {
+  "i": 85,
+  "start": 1658.5,
+  "conf": 0.7,
+  "method": "weak-pinyin",
+  "zero": false,
+  "note": "講解：ASR 修道罗就是气经的 嗯 就是金啊 铂经契经@1658.5-1666.8（slice ASR 1657.88-1663.34）；嚴重亂碼"
+ }
+]

@@ -1,0 +1,50 @@
+[
+ {
+  "i": 0,
+  "start": 0.59,
+  "conf": 0.85,
+  "method": "zero",
+  "zero": true,
+  "note": "整章經文塊 chunk 零寬透明（印刷參考塊 §B）"
+ },
+ {
+  "i": 1,
+  "start": 0.59,
+  "conf": 0.85,
+  "method": "zero",
+  "zero": true,
+  "note": "整章經文塊 chunk 零寬透明"
+ },
+ {
+  "i": 2,
+  "start": 0.59,
+  "conf": 0.85,
+  "method": "zero",
+  "zero": true,
+  "note": "整章經文塊 chunk 零寬透明"
+ },
+ {
+  "i": 3,
+  "start": 0.59,
+  "conf": 0.85,
+  "method": "zero",
+  "zero": true,
+  "note": "整章經文塊 chunk 零寬透明"
+ },
+ {
+  "i": 4,
+  "start": 0.59,
+  "conf": 0.85,
+  "method": "zero",
+  "zero": true,
+  "note": "整章經文塊 chunk 零寬透明"
+ },
+ {
+  "i": 5,
+  "start": 0.59,
+  "conf": 0.85,
+  "method": "run-onset",
+  "zero": false,
+  "note": "導言：ASR《坛经》第九期@~0.6（run-onset）"
+ }
+]

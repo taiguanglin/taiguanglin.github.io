@@ -1,0 +1,434 @@
+[
+ {
+  "i": 70,
+  "start": 581.19,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 71,
+  "start": 641.4,
+  "conf": 0.75,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（那么下一句/下一句/下一页）零寬錨"
+ },
+ {
+  "i": 72,
+  "start": 644.91,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 73,
+  "start": 659.02,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 74,
+  "start": 674.85,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 75,
+  "start": 693.92,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 76,
+  "start": 722.03,
+  "conf": 0.75,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（那么下一句/下一句/下一页）零寬錨"
+ },
+ {
+  "i": 77,
+  "start": 725.05,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 78,
+  "start": 733.92,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 79,
+  "start": 752.88,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 80,
+  "start": 764.78,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 81,
+  "start": 775.29,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 82,
+  "start": 786.06,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 83,
+  "start": 793.93,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 84,
+  "start": 799.94,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 85,
+  "start": 805.53,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 86,
+  "start": 809.26,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 87,
+  "start": 813.85,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 88,
+  "start": 821.36,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 89,
+  "start": 828.02,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 90,
+  "start": 834.16,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 91,
+  "start": 843.73,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 92,
+  "start": 849.94,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 93,
+  "start": 853.38,
+  "conf": 0.75,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（那么下一句/下一句/下一页）零寬錨"
+ },
+ {
+  "i": 94,
+  "start": 858.29,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 95,
+  "start": 861.55,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 96,
+  "start": 868.9,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 97,
+  "start": 874.16,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 98,
+  "start": 879.36,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 99,
+  "start": 883.06,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 100,
+  "start": 888.79,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 101,
+  "start": 891.55,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 102,
+  "start": 894.83,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 103,
+  "start": 898.46,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 104,
+  "start": 901.58,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 105,
+  "start": 905.6,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 106,
+  "start": 916.05,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 107,
+  "start": 920.32,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 108,
+  "start": 923.85,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 109,
+  "start": 929.87,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 110,
+  "start": 934.12,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 111,
+  "start": 937.61,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 112,
+  "start": 941.07,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 113,
+  "start": 945.38,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 114,
+  "start": 952.53,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 115,
+  "start": 956.81,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 116,
+  "start": 962.88,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 117,
+  "start": 968.86,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 118,
+  "start": 972.2,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 119,
+  "start": 978.54,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 120,
+  "start": 983.76,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 121,
+  "start": 986.4,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 122,
+  "start": 988.74,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 123,
+  "start": 993.37,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ }
+]

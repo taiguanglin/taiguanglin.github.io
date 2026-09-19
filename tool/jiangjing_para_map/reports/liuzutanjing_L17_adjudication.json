@@ -1,0 +1,19 @@
+[
+ {
+  "i": 11,
+  "start": 0.97,
+  "end": 36.15,
+  "conf": 0.85,
+  "method": "run-onset",
+  "zero": false,
+  "note": "導言：ASR《坛经》第十七期@0.97-36.15；[0]-[10] 經文塊 zero 維持"
+ },
+ {
+  "i": 12,
+  "start": 36.15,
+  "conf": 0.8,
+  "method": "run-onset",
+  "zero": false,
+  "note": "經文讀：达曰若然者但得解义不劳诵经耶@36.15-41.15"
+ }
+]

@@ -1,0 +1,90 @@
+[
+ {
+  "i": 36,
+  "start": 424.53,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 40,
+  "start": 433.11,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 41,
+  "start": 437.01,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 42,
+  "start": 440.35,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 43,
+  "start": 444.13,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 44,
+  "start": 447.87,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 45,
+  "start": 454.48,
+  "conf": 0.75,
+  "method": "zero",
+  "zero": true,
+  "note": "過渡詞（师云：）零寬錨@454.48"
+ },
+ {
+  "i": 46,
+  "start": 454.48,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 93,
+  "start": 850.62,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 95,
+  "start": 859.85,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 96,
+  "start": 876.69,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ }
+]

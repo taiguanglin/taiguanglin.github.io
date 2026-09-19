@@ -1,0 +1,11 @@
+[
+ {
+  "i": 3,
+  "start": 1.06,
+  "end": 46.76,
+  "conf": 0.85,
+  "method": "run-onset",
+  "zero": false,
+  "note": "導言：ASR《楞严经》第三期@1.06-46.76；[0]-[2] 經文塊 zero 維持；鏈 pass 修全講 READ"
+ }
+]

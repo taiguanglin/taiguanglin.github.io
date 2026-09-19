@@ -1,0 +1,47 @@
+[
+ {
+  "i": 19,
+  "start": 91.1,
+  "end": 136.94,
+  "conf": 0.8,
+  "method": "chain",
+  "zero": false,
+  "note": "導言尾對齊 [20] 頭（我們看般若品@137.14，run-onset=136.94）"
+ },
+ {
+  "i": 20,
+  "start": 136.94,
+  "end": 187.38,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "導言：般若品是韋使君請法…法的層次@136.94-187.38（ASR 137.14-185.94）"
+ },
+ {
+  "i": 21,
+  "start": 187.38,
+  "end": 225.51,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "導言：惠能活躍年代 636-713@187.38（ASR 我們再往前看@187.58）"
+ },
+ {
+  "i": 25,
+  "start": 358.37,
+  "end": 384.24,
+  "conf": 0.75,
+  "method": "chain",
+  "zero": false,
+  "note": "導言尾對齊 [26] 頭（我們開始看原文@384.36，run-onset=384.24）"
+ },
+ {
+  "i": 26,
+  "start": 384.24,
+  "end": 390.85,
+  "conf": 0.6,
+  "method": "weak-pinyin",
+  "zero": false,
+  "note": "導言尾：我們開始看原文 三十九頁 般若品第二@384.24-390.85（ASR 嚴重亂碼）"
+ }
+]

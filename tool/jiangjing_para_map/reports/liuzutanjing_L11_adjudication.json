@@ -1,0 +1,10 @@
+[
+ {
+  "i": 12,
+  "start": 0.92,
+  "conf": 0.85,
+  "method": "run-onset",
+  "zero": false,
+  "note": "導言：ASR《坛经》第十一期@0.92（run-onset）；[0]-[11] 經文塊 zero 維持"
+ }
+]

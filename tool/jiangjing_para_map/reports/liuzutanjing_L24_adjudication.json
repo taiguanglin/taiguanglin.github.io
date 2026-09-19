@@ -1,0 +1,28 @@
+[
+ {
+  "i": 10,
+  "start": 0.51,
+  "end": 19.72,
+  "conf": 0.85,
+  "method": "run-onset",
+  "zero": false,
+  "note": "導言：ASR《坛经》第二十四期@0.51-19.72；[0]-[9] 經文塊 zero 維持"
+ },
+ {
+  "i": 11,
+  "start": 19.72,
+  "end": 20.5,
+  "conf": 0.8,
+  "method": "chain",
+  "zero": false,
+  "note": "經文讀：师一日唤门人@19.72-20.5（ASR 一日换蛮人）"
+ },
+ {
+  "i": 12,
+  "start": 20.5,
+  "conf": 0.85,
+  "method": "chain",
+  "zero": false,
+  "note": "講解：他有一天把这些的门人们都叫来了@20.5（ASR 他有一天把这些的）"
+ }
+]

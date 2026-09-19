@@ -1,0 +1,115 @@
+[
+ {
+  "i": 50,
+  "start": 356.07,
+  "end": 356.38,
+  "conf": 0.75,
+  "method": "chain",
+  "zero": false,
+  "note": "講解：如是一十八界，皆从自性起用…（ASR 356.07 程啊如是一学八戒皆从自行启…）"
+ },
+ {
+  "i": 52,
+  "start": 366.8,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 53,
+  "start": 370.34,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 54,
+  "start": 396.09,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 55,
+  "start": 429.12,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 56,
+  "start": 451.89,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 57,
+  "start": 488.7,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 58,
+  "start": 499.72,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 59,
+  "start": 503.96,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 60,
+  "start": 507.26,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 61,
+  "start": 513.27,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 62,
+  "start": 516.79,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 63,
+  "start": 533.05,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／經文讀（ASR 序列錨點，slice ASR 輔證）"
+ },
+ {
+  "i": 64,
+  "start": 533.05,
+  "conf": 0.8,
+  "method": "zero",
+  "zero": true,
+  "note": "經文引句（对法外境，无情五对：）讀@533.05-537.27（ASR 下一句啊对法外界无亲无对）"
+ }
+]

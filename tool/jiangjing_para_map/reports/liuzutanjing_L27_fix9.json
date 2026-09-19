@@ -1,0 +1,66 @@
+[
+ {
+  "i": 188,
+  "start": 1804.23,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 189,
+  "start": 1833.8,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 190,
+  "start": 1860.29,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 191,
+  "start": 1880.75,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 192,
+  "start": 1903.92,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 193,
+  "start": 1919.37,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 194,
+  "start": 1930.47,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ },
+ {
+  "i": 195,
+  "start": 1972.71,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "講解／收尾（ASR 序列錨點）"
+ }
+]
