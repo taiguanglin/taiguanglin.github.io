@@ -1,0 +1,29 @@
+[
+ {
+  "i": 21,
+  "start": 379.07,
+  "end": 407.68,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 22,
+  "start": 407.68,
+  "end": 438.47,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 23,
+  "start": 438.47,
+  "end": 448.77,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ }
+]
