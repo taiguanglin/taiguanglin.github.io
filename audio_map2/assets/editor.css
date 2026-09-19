@@ -1332,3 +1332,92 @@ textarea.marker-heading {
         display: none;
     }
 }
+
+/* 卡片右上角「零長度」checkbox（勾選＝此段音檔長度為零／師父未念）。 */
+.segment-zero-toggle {
+    background: color-mix(in srgb, var(--border) 30%, transparent);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    gap: 0.3rem;
+    padding: 0.18rem 0.55rem;
+    white-space: nowrap;
+}
+
+.segment-zero-toggle input[type="checkbox"] {
+    accent-color: var(--danger, #b42318);
+    height: 0.9rem;
+    margin: 0;
+    padding: 0;
+    width: 0.9rem;
+}
+
+.segment-zero-toggle.on {
+    background: color-mix(in srgb, var(--danger, #b42318) 14%, transparent);
+    border-color: var(--danger, #b42318);
+    color: var(--danger, #b42318);
+    font-weight: 600;
+}
+
+/* 零長度段整張卡片的淡化樣式：此段沒有對應音檔。
+   zero 段視為已確認（data-status="both"），仍維持紅左框淡化、不套用確認配色。 */
+.segment-card.zero-seg {
+    border-left: 4px solid var(--danger, #b42318);
+    opacity: 0.62;
+}
+
+.segment-card.zero-seg[data-status="both"],
+.segment-card.zero-seg[data-status="played"] {
+    background: var(--panel-strong);
+    border-left-color: var(--danger, #b42318);
+}
+
+.segment-card.zero-seg .segment-header {
+    background: color-mix(in srgb, var(--danger, #b42318) 7%, var(--panel));
+}
+
+.segment-card.zero-seg[data-status="both"] .segment-header,
+.segment-card.zero-seg[data-status="played"] .segment-header {
+    background: color-mix(in srgb, var(--danger, #b42318) 7%, var(--panel));
+}
+
+.segment-card.zero-seg .play-range:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+}
+
+/* 跳瀏工具列：下一個未確認／已確認（topbar 左側常駐，不佔段落欄位空間）。 */
+.jump-nav {
+    align-items: center;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-left: 0.35rem;
+    padding-left: 0.75rem;
+}
+
+.jump-nav-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.85rem;
+}
+
+.jump-nav-badge {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.jump-nav-badge strong {
+    color: var(--danger, #b42318);
+}
+
+/* 跳瀏落點提示：淡出紅光暈。 */
+@keyframes jumpPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0); }
+    30% { box-shadow: 0 0 0 6px rgba(255, 138, 128, 0.25); }
+}
+
+.segment-card.jump-target {
+    animation: jumpPulse 1.6s ease-out 1;
+}
