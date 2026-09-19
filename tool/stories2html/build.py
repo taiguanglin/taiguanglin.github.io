@@ -33,7 +33,12 @@ NAV = """    <nav class="navbar" id="navbar">
                     <a href="#" class="nav-link nav-dropdown-toggle" id="dropdown-toggle">圖解 ▾</a>
                     <div class="nav-dropdown-menu">
                         <a href="../infographic.html" class="nav-dropdown-item">名詞圖解</a>
-                        <a href="../mindmap.html" class="nav-dropdown-item">名詞關聯心智圖</a>
+                        <a href="../mindmap.html" class="nav-dropdown-item">坐禪與講經名詞心智圖</a>
+                        <a href="../books_knowledge.html" class="nav-dropdown-item">坐禪與講經重點知識</a>
+                        <a href="../books_knowledge_full.html" class="nav-dropdown-item">坐禪與講經知識庫全檔</a>
+                        <a href="../wenda2_knowledge.html" class="nav-dropdown-item">問答錄2 重點知識</a>
+                        <a href="../wenda2_mindmap.html" class="nav-dropdown-item">問答錄2 名詞心智圖</a>
+                        <a href="../wenda2_knowledge_full.html" class="nav-dropdown-item">問答錄2 知識庫全檔</a>
                     </div>
                 </div>
                 <a href="../index.html#downloads" class="nav-link nav-cta">下載資料</a>
@@ -72,7 +77,12 @@ FOOTER = """    <footer class="footer">
                     <h4>更多資源</h4>
                     <ul>
                         <li><a href="../infographic.html">名詞圖解</a></li>
-                        <li><a href="../mindmap.html">名詞關聯心智圖</a></li>
+                        <li><a href="../mindmap.html">坐禪與講經名詞心智圖</a></li>
+                        <li><a href="../books_knowledge.html">坐禪與講經重點知識</a></li>
+                        <li><a href="../books_knowledge_full.html">坐禪與講經知識庫全檔</a></li>
+                        <li><a href="../wenda2_knowledge.html">問答錄2 重點知識</a></li>
+                        <li><a href="../wenda2_mindmap.html">問答錄2 名詞心智圖</a></li>
+                        <li><a href="../wenda2_knowledge_full.html">問答錄2 知識庫全檔</a></li>
                         <li><a href="../stories.html">實修故事</a></li>
                         <li><a href="../index.html#downloads">資料下載</a></li>
                     </ul>

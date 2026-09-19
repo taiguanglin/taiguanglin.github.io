@@ -252,7 +252,7 @@ NAV_AFTER.map(function (it) {
 '                <div class="mm-stat"><strong>' + LEAVES.filter(function (l) { return l.link; }).length + '</strong><span>條原文深連結</span></div>\n' +
 '            </div>\n' +
 '            <h2 class="mm-subtitle" style="margin-top: 28px;">全檔快速導航</h2>\n' +
-'            <div class="wk-quick">\n' +
+'            <div class="wk-quick wk-quick--4">\n' +
 '                <a class="wk-quick-item" href="#part1"><strong>一・六十四名詞全檔</strong><span>按主幹分組的完整名詞記錄</span></a>\n' +
 '                <a class="wk-quick-item" href="#part2"><strong>二・名詞書冊分布總表</strong><span>相關書冊與高頻詞出現次數</span></a>\n' +
 '                <a class="wk-quick-item" href="#part3"><strong>三・九書書冊概覽</strong><span>每本書的定位與收錄詞數</span></a>\n' +

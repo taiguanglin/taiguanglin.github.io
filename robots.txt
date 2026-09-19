@@ -6,7 +6,7 @@ Sitemap: https://taiguanglin.info/sitemap.xml
 
 # Allow access to CSS and JS files
 Allow: /style.css
-Allow: /script.js
+Allow: /shared.js
 Allow: /images/
 Allow: /stories/
 

@@ -19,7 +19,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 2. **Never implement ebook features by editing `wenda2_ebook/`** — change `tool/word2ebook/`, then `python3 gen_all.py`. Same for play buttons: edit maps / injectors, not chapter HTML.
 3. **`wenda2/` is not ebook output** — hand-maintained 12-chapter TOC pages; regenerating the ebook does **not** update `wenda2/`.
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
-5. **Do not confuse site chrome with ebook assets** — root `script.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`).
+5. **Do not confuse site chrome with ebook assets** — root `shared.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`). Root `script.js` was retired (superseded by `shared.js`); only the ebook bundles keep an `assets/js/script.js`.
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
 7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html`, `wenda2_knowledge.html`, `wenda2_mindmap.html`, `wenda2_knowledge_full.html`, `review.html`, `books_knowledge.html`, `books_knowledge_full.html` and `session_knowledge.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
 8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
@@ -45,7 +45,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `books_knowledge_full.html` | 坐禪與講經知識庫全檔：64 名詞全檔（按主幹分組）＋名詞書冊分布總表＋高頻詞全文出現次數＋九書書冊概覽。**Generated** from `tool/books_knowledge/`（`build_full.js`）。 |
 | `review.html` | 名詞複習：間隔重複閃卡＋名詞測驗（64 名詞、SRS localStorage `tgl-review-srs-v1`、同主幹誘答）。手編，inline 資料與 `mindmap.html` 同源，改兩者要一起改。**刻意不在「圖解」下拉**：入口在 mindmap footer、books_knowledge 導言與 footer。 |
 | `session_knowledge.html` | Session 知識庫：查證工程完整知識（逐批報告、證據速查、禁用術語、節點定稿、harness 基準）。**Generated** from `SESSION_KNOWLEDGE.md`（`tool/session_knowledge/build.py`）。 |
-| `script.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
+| `shared.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
 | `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；`/wenda2_ebook/`、`/ebook/` 依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
 | `robots.txt`, `CNAME` | Crawl / domain config. |
@@ -163,7 +163,7 @@ mp3  →  (optional) tool/audio_denoiser
 | 坐禅系列电子书 UI / 搜尋 / 簡繁 | `tool/books2ebook/` | `python3 gen_all.py`（同上；資產影印 wenda2_ebook 並附 books.css）|
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |
 | Play-button time ranges | `tool/word2ebook/data/audio_map/` (or `/audio_map/` UI / `pdf_audio_map`) | Rebuild ebook |
-| Site landing / nav / about | Root HTML + `script.js` / `style.css` | Commit |
+| Site landing / nav / about | Root HTML + `shared.js` / `style.css` | Commit |
 | 12-theme TOC pages | `wenda2.html`, `wenda2/` | Commit (no ebook rebuild) |
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
 | Infographic / mindmap | `infographic/`, `infographic.html`, `mindmap.html` | Commit |
@@ -178,10 +178,10 @@ mp3  →  (optional) tool/audio_denoiser
 | `wenda2/` vs `wenda2_ebook/` | Different products. `wenda2/` = hand site TOC. `wenda2_ebook/` = generated ebook. |
 | `問答錄2/` vs `wenda2_ebook/` | Source documents vs build output. |
 | `audio_map/` vs `tool/word2ebook/data/audio_map/` | UI vs JSON source of truth. |
-| Root `script.js` vs ebook `script.js` | Unrelated; ebook bundle is concatenated from modules under `tool/word2ebook/assets/js/modules/`. |
+| Root `script.js` vs ebook `script.js` | Root `script.js` 已移除（root chrome JS 是 `shared.js`）；ebook bundle 與其同名無關，由 `tool/word2ebook/assets/js/modules/` 串接而成。 |
 | `scripts/` | Empty; ignore unless something is added. |
 | Production `/audio/` | Code expects same-origin audio; files are not in this git repo. Local preview needs the symlink. |
-| 「圖解」下拉選單 | 全站統一 7 項：名詞圖解／坐禪與講經名詞心智圖／坐禪與講經重點知識／坐禪與講經知識庫全檔／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔。nav HTML 逐頁手工複製——改導覽需同步 22 頁＋ `tool/wenda2_curation/build/` 三個模板＋兩個生成器模板；`review.html` 刻意不在下拉（入口在 mindmap footer、books_knowledge 導言與 footer）。 |
+| 「圖解」下拉選單 | 全站統一 7 項：名詞圖解／坐禪與講經名詞心智圖／坐禪與講經重點知識／坐禪與講經知識庫全檔／問答錄2 重點知識／問答錄2 名詞心智圖／問答錄2 知識庫全檔。nav HTML 逐頁手工複製——改導覽需同步根頁＋ `wenda2/` 章節頁＋ `tool/stories2html/build.py` 模板（重建故事頁）＋ `tool/wenda2_curation/build/` 三個模板＋兩個生成器模板；`review.html` 刻意不在下拉（入口在 mindmap footer、books_knowledge 導言與 footer）。 |
 | 導覽列頂層順序 | 全站統一：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料——認識、兩大系列＋共用知識工具相連、延伸內容、行動（下載）最後。 |
 
 ---
