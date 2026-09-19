@@ -1,0 +1,10 @@
+[
+ {
+  "i": 3,
+  "start": 13.89,
+  "conf": 0.85,
+  "method": "chain",
+  "zero": false,
+  "note": "鏈 pass 修全講 READ；[0]-[2] 經文塊 zero 維持"
+ }
+]

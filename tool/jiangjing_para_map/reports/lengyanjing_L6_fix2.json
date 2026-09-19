@@ -1,0 +1,362 @@
+[
+ {
+  "i": 17,
+  "start": 113.96,
+  "end": 114.0,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "過渡「下一句」（ASR 序列錨點）"
+ },
+ {
+  "i": 18,
+  "start": 114.0,
+  "end": 121.36,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 19,
+  "start": 121.36,
+  "end": 144.76,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 20,
+  "start": 144.76,
+  "end": 147.34,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 21,
+  "start": 147.34,
+  "end": 150.75,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 22,
+  "start": 150.75,
+  "end": 163.77,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 23,
+  "start": 163.77,
+  "end": 168.05,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 24,
+  "start": 168.05,
+  "end": 172.71,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "過渡「下一句」（ASR 序列錨點）"
+ },
+ {
+  "i": 25,
+  "start": 172.71,
+  "end": 176.89,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 26,
+  "start": 176.89,
+  "end": 193.04,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 27,
+  "start": 193.04,
+  "end": 208.3,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 28,
+  "start": 208.3,
+  "end": 211.61,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 29,
+  "start": 211.61,
+  "end": 220.55,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 30,
+  "start": 220.55,
+  "end": 231.45,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 31,
+  "start": 231.45,
+  "end": 252.8,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 32,
+  "start": 252.8,
+  "end": 270.9,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 33,
+  "start": 270.9,
+  "end": 282.44,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 34,
+  "start": 282.44,
+  "end": 308.15,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 35,
+  "start": 308.15,
+  "end": 311.01,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 36,
+  "start": 311.01,
+  "end": 329.92,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 37,
+  "start": 329.92,
+  "end": 334.18,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 38,
+  "start": 334.18,
+  "end": 350.86,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 39,
+  "start": 350.86,
+  "end": 354.68,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 40,
+  "start": 354.68,
+  "end": 367.82,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 41,
+  "start": 367.82,
+  "end": 373.57,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 42,
+  "start": 373.57,
+  "end": 378.59,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 43,
+  "start": 378.59,
+  "end": 392.74,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 44,
+  "start": 392.74,
+  "end": 401.57,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 45,
+  "start": 401.57,
+  "end": 428.25,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 46,
+  "start": 428.25,
+  "end": 465.5,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 47,
+  "start": 428.25,
+  "end": 465.5,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 48,
+  "start": 465.5,
+  "end": 479.43,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 49,
+  "start": 1447.61,
+  "end": 1448.5,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "過渡「下一句」（ASR 序列錨點）"
+ },
+ {
+  "i": 50,
+  "start": 483.45,
+  "end": 486.45,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 51,
+  "start": 479.43,
+  "end": 483.45,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 52,
+  "start": 492.65,
+  "end": 496.51,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 53,
+  "start": 492.65,
+  "end": 494.0,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "過渡「為什麼」（ASR 序列錨點）"
+ },
+ {
+  "i": 54,
+  "start": 496.51,
+  "end": 499.68,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 55,
+  "start": 499.68,
+  "end": 521.91,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "講解（ASR 序列錨點）"
+ },
+ {
+  "i": 56,
+  "start": 521.91,
+  "end": 536.16,
+  "conf": 0.75,
+  "method": "asr-anchor",
+  "zero": false,
+  "note": "經文讀（ASR 序列錨點）"
+ }
+]

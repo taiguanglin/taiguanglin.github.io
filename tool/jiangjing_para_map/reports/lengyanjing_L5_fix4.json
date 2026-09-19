@@ -1,0 +1,138 @@
+[
+ {
+  "i": 30,
+  "start": 538.53,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 31,
+  "start": 540.92,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 32,
+  "start": 558.02,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 33,
+  "start": 564.75,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 34,
+  "start": 613.19,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 35,
+  "start": 640.16,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 36,
+  "start": 680.08,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 37,
+  "start": 724.64,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 38,
+  "start": 728.62,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 39,
+  "start": 739.22,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 40,
+  "start": 779.48,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 41,
+  "start": 815.98,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 42,
+  "start": 835.12,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 43,
+  "start": 868.98,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 44,
+  "start": 884.05,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 45,
+  "start": 906.38,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 46,
+  "start": 911.38,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ }
+]

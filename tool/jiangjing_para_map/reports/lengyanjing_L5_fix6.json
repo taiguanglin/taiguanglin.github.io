@@ -1,0 +1,58 @@
+[
+ {
+  "i": 66,
+  "start": 1263.69,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 67,
+  "start": 1257.59,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 68,
+  "start": 1284.85,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 69,
+  "start": 1296.88,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 70,
+  "start": 1328.72,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 71,
+  "start": 1332.94,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ },
+ {
+  "i": 72,
+  "start": 1340.75,
+  "conf": 0.75,
+  "method": "interpolated",
+  "zero": false,
+  "note": "過渡／講解／經文讀（ASR 序列錨點）"
+ }
+]
