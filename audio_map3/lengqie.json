@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-18T08:32:04.394Z",
+  "generated_at": "2026-09-19T12:50:51.742Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -3016,7 +3016,7 @@
       "audio": "2024年11月15日Tai师父讲经·楞伽经(5).opus",
       "title": "楞伽经（5）",
       "duration": 1971.102,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-sd7fdac5f",
@@ -3052,7 +3052,7 @@
           "end": 107.4,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false,
+          "confirmed": true,
           "zero": true
         },
         {
@@ -3475,7 +3475,7 @@
           "pid": "p-sfcd7e1c6",
           "text": "这一段是放光的意思。我们就看作，佛放出大光明，全身都在放光。",
           "start": 597.974,
-          "end": 602.3,
+          "end": 602.2,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": true
@@ -3483,62 +3483,62 @@
         {
           "pid": "p-s42dd7700",
           "text": "时虚空中梵释四天，遥见如来坐如须弥，楞伽山顶，欣然大笑。",
-          "start": 602.3,
-          "end": 604.6,
+          "start": 602.2,
+          "end": 604.8,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s48ec163c",
           "text": "“梵释四天”是梵天、帝释天和四天王天这些天界的天王们。不同天界的天王们同时看见如来像须弥山一样，出现在他们的天界里，住在楞伽山山顶上，欣然大笑。",
-          "start": 604.6,
-          "end": 629.7,
+          "start": 604.8,
+          "end": 630.485,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd470c79d",
           "text": "尔时，诸菩萨及诸天众咸作是念，如来世尊于法自在，何因缘故欣然大笑，身放光明，默然不动，住自证境，入三昧乐，如师子王，周回顾视，观罗婆那，念如实法。",
-          "start": 629.7,
-          "end": 633.2,
+          "start": 630.485,
+          "end": 635.506,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1e3d0819",
           "text": "菩萨和这些天众们都在想，“如来世尊于法自在，何因缘故欣然大笑”。“于法自在”，就是已经到了圆满境界的意思。“何因缘故欣然大笑”，佛为什么笑？大家有这样的疑问。",
-          "start": 633.2,
-          "end": 663.31,
+          "start": 635.506,
+          "end": 663.21,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb8b0d70b",
           "text": "尔时，大慧菩萨摩诃萨，先受罗婆那王请，复知菩萨众会之心，及观未来一切众生，",
-          "start": 663.31,
-          "end": 670.3,
+          "start": 663.21,
+          "end": 671.5,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saa8882fb",
           "text": "这位大慧菩萨先受到了罗婆那王的劝请，劝请他向佛请法。也知道了与会的菩萨及诸天众们的想法——他们都想知道佛为什么笑。",
-          "start": 670.3,
-          "end": 696.4,
+          "start": 671.5,
+          "end": 695.903,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s73864f93",
           "text": "皆悉乐著语言文字，随言取义，而生迷惑，执取二乘外道之行，",
-          "start": 696.4,
-          "end": 696.4,
+          "start": 695.903,
+          "end": 695.903,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -3547,605 +3547,605 @@
         {
           "pid": "p-sbe06167f",
           "text": "这里开始重要的一句，“皆悉乐著语言文字”。大慧菩萨肯定用神通看到了，未来的一切众生们都喜欢执着于语言文字。根据语言来理解佛法的法义，从而生出了迷惑。“执取二乘外道之行”，“取”是执着的一种，前面已经讲过了，“见、取、执”中的第二个。“取”是“我想要”这样的执着。“二乘外道之行”，“二乘”是声闻乘和缘觉乘，外道的修行和理论。",
-          "start": 696.4,
-          "end": 748.6,
+          "start": 695.903,
+          "end": 748.5,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a4e3db8",
           "text": "或作是念，世尊已离诸识境界，何因缘故欣然大笑？",
-          "start": 748.6,
-          "end": 752.6,
+          "start": 748.5,
+          "end": 751.661,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1e01c6bb",
           "text": "他们还会想，世尊已经灭了妄想、分别、执着，也就是这本《楞伽经》里讲的“心意意识”，为什么会笑呢？",
-          "start": 752.6,
-          "end": 777.12,
+          "start": 751.661,
+          "end": 774.746,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdef9d918",
           "text": "为断彼疑而问于佛，",
-          "start": 777.12,
-          "end": 779.37,
+          "start": 774.746,
+          "end": 779.239,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8c328217",
           "text": "大慧菩萨为了断这些菩萨和天众的疑问——佛为什么会笑，而开始问佛。",
-          "start": 779.37,
-          "end": 791.4,
+          "start": 779.239,
+          "end": 790.434,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0b67dae8",
           "text": "佛即告言：“善哉！大慧，善哉！大慧，汝观世间愍诸众生，于三世中恶见所缠，欲令开悟而问于我，诸智慧人，为利自他，能作是问。",
-          "start": 791.4,
-          "end": 797,
+          "start": 790.434,
+          "end": 796.188,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s247b2528",
           "text": "你看到世间一切众生之后，怜悯他们在三世中被错误的见解所困扰，为了让他们开悟而问我。所有有智慧的人为了利益自己和他人而问这样的问题。",
-          "start": 797,
-          "end": 833.74,
+          "start": 796.188,
+          "end": 831.599,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa6fb2995",
           "text": "大慧，此楞伽王曾问过去一切如来应正等觉，二种之义，今亦欲问，未来亦尔。",
-          "start": 833.74,
-          "end": 840.15,
+          "start": 831.599,
+          "end": 837.357,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8ef940cf",
           "text": "楞伽王过去已经见过不少佛了，每个佛他都问过“二种之义”，在这里“二种”指“法”与“非法”，后面会专门讲，所以这里不展开讲，简单讲一下。",
-          "start": 840.15,
-          "end": 863.66,
+          "start": 837.357,
+          "end": 860.474,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s223c8cbd",
           "text": "过去我们对初学讲法的时候，就说“法”是佛法，“非法”是不是佛法的其他外道学说，对初学这样讲，他们就能理解，也只能这样讲。对佛法有了一定认知之后就告诉他，“法”是我们凡夫境界里认知到的一切世界，也就是虚空、物质、身体、脑子里的想法统称为“法”。",
-          "start": 863.66,
-          "end": 892.73,
+          "start": 860.474,
+          "end": 890.593,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfadce0f7",
           "text": "“非法”是与这个物质世界相对的，可以说就是空义，“非法”就是空。到了《楞伽经》给菩萨们讲的时候，“法”与“非法”又有更高的解释，咱们后面讲，因为在这本佛经里直接讲到了，按照佛经里讲就可以了。",
-          "start": 892.73,
-          "end": 921.54,
+          "start": 890.593,
+          "end": 919.514,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se2fd46cf",
           "text": "此二种义差别之相，一切二乘及诸外道皆不能测。”",
-          "start": 921.54,
-          "end": 926.3,
+          "start": 919.514,
+          "end": 926.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6657c32b",
           "text": "在菩萨和佛境界里的“法”与“非法”是二乘和外道人不可能知道的事。",
-          "start": 926.3,
-          "end": 939.88,
+          "start": 926.7,
+          "end": 937.784,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scd21ea23",
           "text": "尔时，如来知楞伽王欲问此义，而告之曰：“楞伽王，汝欲问我，宜应速问，我当为汝分别解释，满汝所愿，令汝欢喜，",
-          "start": 939.88,
-          "end": 958.6,
+          "start": 937.784,
+          "end": 941.866,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1b7a5cac",
           "text": "如来知道楞伽王要问的就是“法”与“非法”，跟楞伽王说，你快点问，我就回答，满足你的愿望。",
-          "start": 958.6,
-          "end": 963.7,
+          "start": 941.866,
+          "end": 961.664,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s633b2dc4",
           "text": "能以智慧思惟观察，离诸分别，善知诸地，修习对治，",
-          "start": 963.7,
-          "end": 970.6,
+          "start": 961.664,
+          "end": 969.328,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8ca31c67",
           "text": "让楞伽王理解这个之后，楞伽王就可以用智慧，用菩萨或者比菩萨更高的境界。这本经里以七、八地为分界线，前面七地以下是一个阶段，八地以上又是一个阶段，主要讲这两个阶段之间的差别。所以“离诸分别”是已经到菩萨境界了。“善知诸地”，就是菩萨十地，他知道菩萨十地每个地的境界。“修习对治”，有针对性地修行。",
-          "start": 970.6,
-          "end": 1013.4,
+          "start": 969.328,
+          "end": 1011.507,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a21335a",
           "text": "证真实义，入三昧乐，为诸如来之所摄受，住奢摩他乐，",
-          "start": 1013.4,
-          "end": 1016.3,
+          "start": 1011.507,
+          "end": 1014.068,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s32818453",
           "text": "证到真实的佛法，可以说是意识和世界的真相。被很多如来们所摄受，住在奢摩他乐。在《圆觉经》里讲过“奢摩他”，《圆觉经》里通常用“寂静”表示，就是向内灭自己妄想的这种修行方法，这是菩萨境界里讲的。",
-          "start": 1016.3,
-          "end": 1049.9,
+          "start": 1014.068,
+          "end": 1046.889,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb23a39b",
           "text": "远离二乘三昧过失，住于不动善慧法云菩萨之地，能如实知诸法无我。”",
-          "start": 1049.9,
-          "end": 1051.6,
+          "start": 1046.889,
+          "end": 1049.671,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s65e758f6",
           "text": "二乘——声闻乘、缘觉乘也有三昧，但是从佛的境界来看，这些二乘的三昧是错误的，所以叫“二乘三昧过失”。让你住到不动地、善慧地、法云地，也就是八、九、十地菩萨之地。什么叫“法无我”？“法无我”的境界对应的是不动地、善慧地、法云地。前面的七地也可以看作一个过渡的阶段，所以七地也勉强算“法无我”，但是也不好说，就有一个过渡的阶段。真正的“法无我”是不动地、善慧地、法云地。后面会解释什么是“法无我”。",
-          "start": 1051.6,
-          "end": 1103.15,
+          "start": 1049.671,
+          "end": 1101.433,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfb67ed74",
           "text": "下一段翻开十七页，下面是一通赞叹和供养这些故事，像故事版的内容，所以这里简单读一下就过去。",
-          "start": 1103.15,
-          "end": 1116.04,
+          "start": 1101.433,
+          "end": 1114.333,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb949397f",
           "text": "尔时，楞伽王蒙佛许已，即于清净光明如大莲花宝山顶上，从座而起，诸采女众之所围绕，化作无量种种色花，种种色香、末香、涂香，幢幡、幰盖、冠佩、璎珞，及余世间未曾见闻种种胜妙庄严之具。又复化作欲界所有种种无量诸音乐器，过诸天龙乾闼婆等一切世间之所有者；又复化作十方佛土昔所曾见诸音乐器；又复化作大宝罗网遍覆一切佛菩萨上；复现种种上妙衣服，建立幢幡以为供养，作是事已，即升虚空高七多罗树，于虚空中复雨种种诸供养云，作诸音乐，从空而下。",
-          "start": 1116.04,
-          "end": 1171.05,
+          "start": 1114.333,
+          "end": 1169.713,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc8651ed5",
           "text": "就是各种供养，不用解释了，没什么好解释的，就像科幻电影或者玄幻电影里看到的那种供养。",
-          "start": 1171.05,
-          "end": 1185.98,
+          "start": 1169.713,
+          "end": 1182.721,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1a7c4c7b",
           "text": "即坐第二日电光明如大莲花宝山顶上，欢喜恭敬而作是言：“我今欲问如来二义，如是二义我已曾问过去如来应正等觉，彼佛世尊已为我说，我今亦欲问于是义，唯愿如来为我宣说。",
-          "start": 1185.98,
-          "end": 1202.5,
+          "start": 1182.721,
+          "end": 1197.529,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8efa98ad",
           "text": "这是楞伽王说的，我今天想要问“法”与“非法”二义，我曾经问过过去的如来，他们也都为我说过，我希望现在的如来——释迦牟尼佛再为我说一遍。",
-          "start": 1202.5,
-          "end": 1221.63,
+          "start": 1197.529,
+          "end": 1219.532,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2a2b6b30",
           "text": "世尊，变化如来说此二义，非根本佛，根本佛说三昧乐境，不说虚妄分别所行。",
-          "start": 1221.63,
-          "end": 1231.63,
+          "start": 1219.532,
+          "end": 1229.034,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8dc68ca3",
           "text": "在这里出现“根本佛”，与“根本佛”对应的应该是“化身佛”。按照这里的说法，我们可以理解为根本佛说的是第一义谛——最核心、最高阶段的佛理，而化身佛应该讲的是方便法。他既然显出了化身，就说明想给某些人看到，根据这些人的境界，才会讲相应的方便法。所以化身佛讲的，我们可以理解为是一种应机的方便法，而根本佛讲的是最高阶段的空义，佛的空义，第一义谛。“不说虚妄分别所行”，也就是不说阿罗汉、凡夫的执着境界。",
-          "start": 1231.63,
-          "end": 1283,
+          "start": 1229.034,
+          "end": 1280.933,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93866c1a",
           "text": "善哉！世尊，于法自在，唯愿哀愍，说此二义，一切佛子心皆乐闻。”",
-          "start": 1283,
-          "end": 1291.5,
+          "start": 1280.933,
+          "end": 1287.96,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfd26cd23",
           "text": "希望佛讲讲“二义”，这些佛子们都想听。",
-          "start": 1291.5,
-          "end": 1298.6,
+          "start": 1287.96,
+          "end": 1296.813,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s21267be8",
           "text": "尔时，世尊告彼王言：“汝应问，我当为汝说。”",
-          "start": 1298.6,
-          "end": 1303.5,
+          "start": 1296.813,
+          "end": 1301.863,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s96c80e25",
           "text": "佛跟楞伽王说，你应该问，我也会为你说的。",
-          "start": 1303.5,
-          "end": 1308.5,
+          "start": 1301.863,
+          "end": 1307.325,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8d135e5d",
           "text": "时夜叉王更着种种宝冠璎珞，诸庄严具以严其身，而作是言：“如来常说，法尚应舍，何况非法。云何得舍此二种法？",
-          "start": 1308.5,
-          "end": 1325.79,
+          "start": 1307.325,
+          "end": 1321.931,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s729a38aa",
           "text": "我们喜欢看佛经的人对这样的话已经很熟悉了，法要舍掉，非法同时也要舍掉。怎样才能舍弃这两种法？",
-          "start": 1325.79,
-          "end": 1337.25,
+          "start": 1321.931,
+          "end": 1335.184,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-see8c0d0d",
           "text": "何者是法？何者非法？法若应舍，云何有二？",
-          "start": 1337.25,
-          "end": 1339.5,
+          "start": 1335.184,
+          "end": 1336.891,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a8b055a",
           "text": "什么是法？什么是非法？法要舍弃，那为什么还有二呢？",
-          "start": 1339.5,
-          "end": 1346.6,
+          "start": 1336.891,
+          "end": 1344.603,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s63c39f0f",
           "text": "有二即堕分别相中，有体无体，是实非实，如是一切皆是分别，不能了知阿赖耶识无差别相，",
-          "start": 1346.6,
-          "end": 1352.07,
+          "start": 1344.603,
+          "end": 1349.951,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s53f26820",
           "text": "如果有二就已经堕入到分别相当中了。不管有体还是无体，“体”是本体，有实还是非实，“实”是真实存在的，非实是不真实存在的，虚的。这样的说法全是分别。不能知道阿赖耶识的没有差别的相。",
-          "start": 1352.07,
-          "end": 1378.9,
+          "start": 1349.951,
+          "end": 1376.39,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s87f77ca0",
           "text": "如毛轮住非净智境，法性如是，云何可舍？”",
-          "start": 1378.9,
-          "end": 1382.5,
+          "start": 1376.39,
+          "end": 1378.85,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb98a0e22",
           "text": "“毛轮住非净”是一种比喻。“毛轮”就像我们现在的鸡毛掸子一样，它在不干净的、有灰尘的地方，就会把灰尘吸附过来，吸附到鸡毛掸子或者毛轮上。",
-          "start": 1382.5,
-          "end": 1398.49,
+          "start": 1378.85,
+          "end": 1398.494,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf8b4d6d0",
           "text": "法性也一样，“法”和“性”也像鸡毛掸子吸附灰尘一样，产生出来之后，会粘附到一起。怎么可以舍弃？按照这个理解，就是很难舍弃的意思，所以后面有“云何可舍”这样的疑问。",
-          "start": 1398.49,
-          "end": 1422.45,
+          "start": 1398.494,
+          "end": 1420.619,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a1d1c26",
           "text": "尔时，佛告楞伽王言：“楞伽王，汝岂不见瓶等无常败坏之法，",
-          "start": 1422.45,
-          "end": 1427.95,
+          "start": 1420.619,
+          "end": 1426.85,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2c4f7c9e",
           "text": "在这里出现“瓶”，佛跟楞伽王说，你难道看不见“瓶”等的无常？按照那个时代的说法，“瓶”应该是陶瓷瓶，就是陶器。要做陶器的话需要什么？用泥土加点水，捏成形状，再用火烤，有这样的工艺过程，还需要工人来做，所以这个应该是实体。而这个“瓶”还是无常的败坏之法，它能被创造出来，也就会被破坏掉、消失掉。",
-          "start": 1427.95,
-          "end": 1476.62,
+          "start": 1426.85,
+          "end": 1472.979,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s55b02012",
           "text": "凡夫于中妄生分别，汝今何故不如是知法与非法差别之相？",
-          "start": 1476.62,
-          "end": 1486.84,
+          "start": 1472.979,
+          "end": 1476.134,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5e0da25e",
           "text": "凡夫就在妄想、虚妄的境界当中生出分别。你怎么就不知道法与非法的区别呢？",
-          "start": 1486.84,
-          "end": 1493,
+          "start": 1476.134,
+          "end": 1491.177,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s55940bc3",
           "text": "此是凡夫之所分别，非证智见。凡夫堕在种种相中，非诸证者。",
-          "start": 1493,
-          "end": 1496.4,
+          "start": 1491.177,
+          "end": 1493.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5bd21d1f",
           "text": "这些都是凡夫的分别心，可以说是阿罗汉以下用分别心来感知世界、认知世界的时候产生的一种见解。所以“非证智见”，都不是有智慧的见解，在菩萨的境界里、在没有分别心的境界里感知到的世界不是这样的。凡夫会堕入到各种相中，还产生执着，他们不是真正证悟的人。",
-          "start": 1496.4,
-          "end": 1538.35,
+          "start": 1493.89,
+          "end": 1535.642,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sec89f3a8",
           "text": "楞伽王，如烧宫殿、园林，见种种焰，火性是一，所出光焰由薪力故，长短大小各各差别。",
-          "start": 1538.35,
-          "end": 1546.7,
+          "start": 1535.642,
+          "end": 1544.605,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc208e4f4",
           "text": "楞伽王，就像烧宫殿和园林会看到不同的火焰。而火的本性、性质是一样的，它本来该有的性质是不变的。但是根据“薪力”——柴火，宫殿和园林肯定是不一样的材料，根据烧的材料不一样，烧出来的火焰的样子各个都不一样，不管大小还是亮的程度都不一样。",
-          "start": 1546.7,
-          "end": 1587.68,
+          "start": 1544.605,
+          "end": 1585.298,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdd2339cc",
           "text": "汝今云何不如是知法与非法差别之相？",
-          "start": 1587.68,
-          "end": 1592.37,
+          "start": 1585.298,
+          "end": 1590.148,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s00af715b",
           "text": "你为什么不这样认知法与非法的差别之相？也就是说，你要知道法与非法的本质、本性是一样的，就像火性一样。",
-          "start": 1592.37,
-          "end": 1608.4,
+          "start": 1590.148,
+          "end": 1605.651,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s53791fea",
           "text": "“楞伽王，如一种子，生芽、茎、枝叶及以花果无量差别。",
-          "start": 1608.4,
-          "end": 1613.9,
+          "start": 1605.651,
+          "end": 1611.945,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s30d47d20",
           "text": "就像一个种子，生出了芽，长出了根茎、主干和枝叶，结出了花和果，它们都有差别，但是它们都是从一个种子里发出来的，也就是说它的本性还是一样的，本性是一。",
-          "start": 1613.9,
-          "end": 1634.76,
+          "start": 1611.945,
+          "end": 1632.094,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc3934045",
           "text": "外法如是，内法亦然。",
-          "start": 1634.76,
-          "end": 1636.9,
+          "start": 1632.094,
+          "end": 1635.118,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6791c17e",
           "text": "我们看到的外边的法是这样的，内法也是这样的。在我们凡夫的境界里，“外法”与“内法”的区别是，“外法”是我们看到的外境，“内法”是我们脑子里的妄想，可以这么理解。但是在菩萨的境界里，没有内外分别。但是所有意识重叠在一起的情况下，客观地说，从第三者佛的视角看一个菩萨，内法和外法分别是这个菩萨自己的妄想以及和他有缘的所有众生的妄想，我们这样理解就可以了。",
-          "start": 1636.9,
-          "end": 1686.7,
+          "start": 1635.118,
+          "end": 1685.013,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s162ae757",
           "text": "谓无明为缘，生蕴界处一切诸法，于三界中，受诸趣生，有苦乐好丑语默行止，各各差别；",
-          "start": 1686.7,
-          "end": 1693.65,
+          "start": 1685.013,
+          "end": 1691.709,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8df098c4",
           "text": "“无明为缘”，“无明”是最初的妄想，我们说的“初妄无因”的“初妄”，以这个为最初的因，生出“蕴界处一切诸法”。“蕴界处”是色、受、想、行、识，所以妄想、分别、执着全部属于蕴界处。也就是在整个法界里你只要产生妄想，这一切的妄想都可以称之为“蕴界处”，所以这里的一切诸法——妄想、分别、执着全部都算。“于三界中，受诸趣生”，在三界——欲界、色界、无色界，投生到不同的道中。在不同的世界里，享受各种“苦乐好丑语默行止”，这些行为、觉受、感受各个差别，全部都不一样。",
-          "start": 1693.65,
-          "end": 1747.3,
+          "start": 1691.709,
+          "end": 1750.269,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2de47a65",
           "text": "也就是他的无明为缘，这个无明的性是一，它的本质是一个，这就像火性是一，前面拿火来比喻了，所以所有的一切妄想、分别、执着都是由最初的妄想不断叠加出来的结果。所有的本体最初的根本元素，按照我们现在的理解就是根本元素（是一样的）。如果你拿乐高的拼块一个一个拼出各种不同的模型，但是每一个拼块实际上都是一样的，就是这样的意思。",
-          "start": 1747.3,
-          "end": 1801.2,
+          "start": 1750.269,
+          "end": 1798.662,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s689f35e5",
           "text": "又如诸识，相虽是一，随于境界有上中下染净善恶种种差别。",
-          "start": 1801.2,
-          "end": 1808.6,
+          "start": 1798.662,
+          "end": 1807.267,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s091852ab",
           "text": "这里“诸识”同样是八识、七识、六识全部加起来，产生的各种妄想、分别、执着，它们的相虽是一，也就是根本元素是一个，还是同样的。但是根据不同的境界展现出不同的状态。",
-          "start": 1808.6,
-          "end": 1834.09,
+          "start": 1807.267,
+          "end": 1832.223,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd59ca183",
           "text": "楞伽王，非但如上法有差别，诸修行者，修观行时，自智所行亦复见有差别之相，",
-          "start": 1834.09,
-          "end": 1844.42,
+          "start": 1832.223,
+          "end": 1840.903,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa695f9c0",
           "text": "楞伽王，不仅仅在这些法——妄想、分别、执着上有差别。很多修行者们修观行的时候——“观”也是一种修行的方法，我们就简单理解为修行——根据他自己的智慧在修行状态里看到的境界都不一样，虽然修的法门一样。哪怕我们大部分人修的都是参疑情、参思情，可能参思情的人少，在正统的禅宗里基本都是参疑情，比参疑情低一段是修某种观法——观呼吸、观丹田这种法门。修的法门是一样的，但是在这个法门修行过程中每个人看到的境界都不一样。",
-          "start": 1844.42,
-          "end": 1915.5,
+          "start": 1840.903,
+          "end": 1913.099,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbe378182",
           "text": "况法与非法而无种种差别分别？",
-          "start": 1915.5,
-          "end": 1919.1,
+          "start": 1913.099,
+          "end": 1917.02,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s69045e27",
           "text": "既然每个修行人修的法门一样，但是看到的境界都不一样，那么法与非法怎么会没有差别之相呢？实际上是这样反问。",
-          "start": 1919.1,
-          "end": 1937.1,
+          "start": 1917.02,
+          "end": 1938.713,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd81adc6a",
           "text": "楞伽王，法与非法差别相者，当知悉是相分别故。",
-          "start": 1937.1,
-          "end": 1944.29,
+          "start": 1938.713,
+          "end": 1943.79,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdaa3fd3f",
           "text": "楞伽王，你要知道法与非法的不同显现出了相的不同之处，它们都是在相里产生的分别，也就是阿罗汉有了分别心之后产生了各种分别，看到了不同的境界。",
-          "start": 1944.29,
-          "end": 1970.2,
+          "start": 1943.79,
+          "end": 1968.263,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc75b4b06",
           "text": "好了，这一期就讲到这里。",
-          "start": 1970.2,
+          "start": 1968.263,
           "end": 1971.102,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
@@ -4158,8 +4158,8 @@
         {
           "pid": "p-sbb81393c",
           "text": "“楞伽王，何者是法？所谓二乘及诸外道，虚妄分别说有实等为诸法因，如是等法应舍应离。不应于中分别取相，见自心法性则无执著。瓶等诸物凡愚所取本无有体，诸观行人以毗钵舍那如实观察，名舍诸法。楞伽王，何者是非法？所谓诸法无性无相永离分别，如实见者，若有若无如是境界彼皆不起，是名舍非法；复有非法，所谓兔角、石女儿等，皆无性相，不可分别，但随世俗说有名字，非如瓶等，而可取著，以彼非是识之所取，如是分别，亦应舍离。是名舍法与舍非法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -4168,8 +4168,8 @@
         {
           "pid": "p-s4b2addcf",
           "text": "“楞伽王，汝先所问，我已说竟。楞伽王，汝言我于过去诸如来所已问是义，彼诸如来已为我说。楞伽王，汝言过去但是分别，未来亦然。我亦同彼。楞伽王，彼诸佛法，皆离分别，已出一切分别戏论，非如色相，唯智能证，为令众生得安乐故而演说法，以无相智，说名如来。是故如来以智为体，智为身故，不可分别。不可以所分别，不可以我、人、众生分别。何故不能分别？以意识因境界起取色形相，是故离能分别，亦离所分别。楞伽王，譬如壁上彩画众生，无有觉知，世间众生悉亦如是。无业无报，诸法亦然，无闻无说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4178,8 +4178,8 @@
         {
           "pid": "p-sc2b7da57",
           "text": "“楞伽王，世间众生犹如变化，凡夫外道不能了达。楞伽王，能如是见名为正见，若他见者名分别见，由分别故，取着于二。楞伽王，譬如有人于水镜中自见其像，于灯月中自见其影，于山谷中自闻其响，便生分别，而起取著，此亦如是。法与非法唯是分别，由分别故，不能舍离，但更增长，一切虚妄，不得寂灭。寂灭者，所谓一缘，一缘者是最胜三昧，从此能生自证圣智，以如来藏而为境界。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -4246,7 +4246,8 @@
           "start": 93.1,
           "end": 136.91,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scfcd1535",
@@ -4282,6 +4283,7 @@
           "end": 208.27,
           "conf": 0.8,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
@@ -4381,7 +4383,8 @@
           "start": 514.9,
           "end": 517.75,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdbf3041e",
@@ -4389,7 +4392,8 @@
           "start": 517.75,
           "end": 581.63,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7b6a862a",
@@ -4469,7 +4473,8 @@
           "start": 766.4,
           "end": 774.3,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s299f61f7",
@@ -4477,7 +4482,8 @@
           "start": 774.3,
           "end": 806.55,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc746e77c",
@@ -4611,7 +4617,8 @@
           "start": 1024.56,
           "end": 1067.1,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s47e1c193",
@@ -4701,6 +4708,7 @@
           "end": 1287.76,
           "conf": 0.8,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
@@ -4748,7 +4756,8 @@
           "start": 1291.4,
           "end": 1303.7,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se315db90",
@@ -4756,7 +4765,8 @@
           "start": 1303.7,
           "end": 1309.58,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sab59df12",
@@ -4782,7 +4792,8 @@
           "start": 1339.55,
           "end": 1340.64,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2a2311de",
@@ -4799,7 +4810,8 @@
           "start": 1357.1,
           "end": 1358.29,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s74c1839d",
@@ -4816,7 +4828,8 @@
           "start": 1395.29,
           "end": 1398.3,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sa042d0c9",
@@ -4842,7 +4855,8 @@
           "start": 1417.65,
           "end": 1452.9,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8245cfb8",
@@ -4850,7 +4864,8 @@
           "start": 1452.9,
           "end": 1455.5,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf4dce811",
@@ -4858,7 +4873,8 @@
           "start": 1455.5,
           "end": 1519.79,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sef756259",
@@ -4903,7 +4919,8 @@
           "start": 1591.77,
           "end": 1592.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s02fb3139",
@@ -4911,7 +4928,8 @@
           "start": 1592.3,
           "end": 1603.37,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbd6d36e1",
@@ -4937,7 +4955,8 @@
           "start": 1638.1,
           "end": 1652.48,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s61576e62",
@@ -4972,7 +4991,8 @@
           "start": 1679.95,
           "end": 1682.24,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7ce7186c",
@@ -5670,8 +5690,8 @@
         {
           "pid": "p-s00afe03a",
           "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，何者是一百八句？”佛言：“大慧，所谓生句非生句，常句非常句，相句非相句，住异句非住异句，刹那句非刹那句，自性句非自性句，空句非空句，断句非断句，心句非心句，……文字句非文字句。大慧，此一百八句皆是过去诸佛所说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -5680,28 +5700,31 @@
         {
           "pid": "p-safd06231",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，诸识有几种生住灭？”佛言：“大慧，诸识有二种生住灭，非臆度者之所能知。所谓相续生及相生，相续住及相住，相续灭及相灭。诸识有三相，谓转相、业相、真相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
           "pid": "p-s94db50c7",
           "text": "“大慧，识广说有八，略则唯二，谓现识及分别事识。大慧，如明镜中现诸色像，现识亦尔。大慧，现识与分别事识，此二识无异相互为因。大慧，现识以不思议熏变为因，分别事识以分别境界及无始戏论、习气为因。大慧，阿赖耶识虚妄分别，种种习气灭即一切根识灭，是名相灭。大慧，相续灭者，谓所依因灭及所缘灭即相续灭。所依因者，谓无始戏论、虚妄习气；所缘者，谓自心所见分别境界。大慧，譬如泥团与微尘非异非不异，金与庄严具亦如是。大慧，若泥团与微尘异者，应非彼成而实彼成，是故不异。若不异者，泥团、微尘应无分别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
           "pid": "p-s853e2c23",
           "text": "“大慧，转识藏识若异者，藏识非彼因；若不异者，转识灭藏识亦应灭，然彼真相不灭。大慧，识真相不灭，但业相灭。若真相灭者，藏识应灭。若藏识灭者，即不异外道断灭论。大慧，彼诸外道作如是说，取境界相续识灭，即无始相续识灭。大慧，彼诸外道说相续识从作者生，不说眼识依色光明和合而生，唯说作者为生因故，作者是何？彼计胜性丈夫自在时及行微尘为能作者。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "miss",
+          "confirmed": false,
           "zero": true
         },
         {
@@ -5710,7 +5733,8 @@
           "start": 1.29,
           "end": 5.2,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc0b2ccb2",
@@ -5718,7 +5742,8 @@
           "start": 5.2,
           "end": 11.4,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s90055b77",
@@ -5726,7 +5751,8 @@
           "start": 11.4,
           "end": 31.5,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s3cd0fe93",
@@ -5734,7 +5760,8 @@
           "start": 31.5,
           "end": 55.8,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0a030c9d",
@@ -5742,7 +5769,8 @@
           "start": 55.8,
           "end": 71.2,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sd1311082",
@@ -5750,23 +5778,26 @@
           "start": 71.2,
           "end": 97.2,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s49b19049",
           "text": "所以这一段我们就把它理解为：佛告诉我们不要在文字上着相，也不要在文字上分别，否则你没有办法知道、领悟到佛的真意，这个直接省略掉的内容，咱们就不要过度地追究。",
           "start": 97.2,
-          "end": 118.0,
+          "end": 118,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s5afb29d1",
           "text": "下一段：",
-          "start": 118.0,
+          "start": 118,
           "end": 120.3,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s34540ae2",
@@ -5774,7 +5805,8 @@
           "start": 120.3,
           "end": 125.8,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s26eb3dc0",
@@ -5782,7 +5814,8 @@
           "start": 125.8,
           "end": 145.06,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbf960498",
@@ -5979,7 +6012,8 @@
           "start": 577.6,
           "end": 583.85,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s95e5b69b",
@@ -5987,7 +6021,8 @@
           "start": 583.85,
           "end": 595.43,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd55d98e0",
@@ -6013,7 +6048,8 @@
           "start": 628.9,
           "end": 636.4,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-saea9bbdd",
@@ -6021,7 +6057,8 @@
           "start": 636.4,
           "end": 657.93,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7b26952d",
@@ -6047,7 +6084,8 @@
           "start": 714.81,
           "end": 720.4,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s2d11864a",
@@ -6325,7 +6363,8 @@
           "start": 1356.1,
           "end": 1364.5,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sbd340e39",
@@ -6369,7 +6408,8 @@
           "start": 1487.6,
           "end": 1494.83,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5824a505",
@@ -6467,7 +6507,8 @@
           "start": 2037.54,
           "end": 2065.67,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s64a64dd7",
@@ -6493,7 +6534,8 @@
           "start": 2154.37,
           "end": 2197.961,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         }
       ]
     },
@@ -6506,8 +6548,8 @@
         {
           "pid": "p-s6b8ecd30",
           "text": "“复次，大慧，有七种自性：所谓集自性、性自性、相自性、大种自性、因自性、缘自性、成自性。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -6516,8 +6558,8 @@
         {
           "pid": "p-sb97148e0",
           "text": "“复次，大慧，有七种第一义：所谓心所行、智所行、二见所行、超二见所行、超子地所行、如来所行、如来自证圣智所行。大慧，此是过去、未来、现在一切如来应正等觉，法自性第一义心，以此心成就如来世间、出世间最上法，以圣慧眼入自、共相种种安立，其所安立不与外道恶见共。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -6529,7 +6571,8 @@
           "start": 1.42,
           "end": 33.8,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4fc5fbeb",
@@ -6537,7 +6580,8 @@
           "start": 33.8,
           "end": 65.5,
           "conf": 0.85,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s31633691",
@@ -6545,7 +6589,8 @@
           "start": 65.5,
           "end": 84.9,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s16543567",
@@ -6553,7 +6598,8 @@
           "start": 84.9,
           "end": 91.6,
           "conf": 0.8,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s39dd364e",
@@ -6561,7 +6607,8 @@
           "start": 91.6,
           "end": 99.14,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s54428194",
@@ -6873,7 +6920,7 @@
           "pid": "p-s69ae0818",
           "text": "以圣慧眼入自、共相种种安立，其所安立不与外道恶见共。",
           "start": 903.55,
-          "end": 913.0,
+          "end": 913,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -6881,10 +6928,11 @@
         {
           "pid": "p-s02243c54",
           "text": "网上找的或者这本书对“自、共相”的解释：“自相”解释为某些事物独有的特性，“共相”是很多事物共有的特性。如果按照这个解释，后面很多由自、共相延伸出来的内容会全部解释错。",
-          "start": 913.0,
+          "start": 913,
           "end": 933.51,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s73839e8d",
@@ -7108,7 +7156,8 @@
           "start": 1686.9,
           "end": 1710.07,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdfd7351e",
@@ -7130,8 +7179,8 @@
         {
           "pid": "p-se9e25f41",
           "text": "“大慧，云何为外道恶见？谓不知境界自分别现，于自性第一义，见有见无，而起言说。大慧，我今当说，若了境如幻自心所现，则灭妄想、三有、苦及无知爱业缘。大慧，有诸沙门、婆罗门，妄计非有及有，于因果外显现诸物，依时而住；或计蕴界处，依缘生住有已即灭。大慧，彼于若相续若作用、若生若灭、若诸有、若涅槃、若道、若业、若果、若谛，是破坏断灭论。何以故？不得现法故，不见根本故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -7140,8 +7189,8 @@
         {
           "pid": "p-sa6f6fd9c",
           "text": "“大慧，譬如瓶破不作瓶事，又如焦种不能生芽，此亦如是。若蕴界处，法已现当灭，应知此则无相续生，以无因故，但是自心虚妄所见。复次，大慧，若本无有识，三缘合生，龟应生毛，沙应出油，汝宗则坏，违决定义，所作事业悉空无益。大慧，三合为缘，是因果性，可说为有，过、现、未来从无生有。此依住觉想地者，所有理教及自恶见熏习余气，作如是说。大慧，愚痴凡夫恶见所噬，邪见迷醉，无智妄称一切智说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -7150,8 +7199,8 @@
         {
           "pid": "p-s1484ef4b",
           "text": "“大慧，复有沙门、婆罗门，观一切法，皆无自性，如空中云，如旋火轮，如乾闼婆城，如幻如焰，如水中月，如梦所见，不离自心，由无始来虚妄见故取以为外，作是观已，断分别缘，亦离妄心所取名义，知身及物并所住处一切皆是藏识境界，无能所取及生住灭，如是思惟恒住不舍。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -7160,8 +7209,8 @@
         {
           "pid": "p-s983466e8",
           "text": "“大慧，此菩萨摩诃萨不久当得生死涅槃二种平等，大悲方便，无功用行，观众生如幻如影，从缘而起，知一切境界离心无得，行无相道，渐升诸地，住三昧境，了达三界皆唯自心得，如幻定绝众影像成就智慧证无生法，入金刚喻三昧，当得佛身恒住如如，起诸变化，力通自在。大慧，方便以为严饰，游众佛国，离诸外道，及心意识，转依次第，成如来身。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -7170,8 +7219,8 @@
         {
           "pid": "p-s5055b200",
           "text": "“大慧，菩萨摩诃萨欲得佛身，应当远离蕴界处心因缘所作生住灭法戏论分别，但住心量，观察三有无始时来，妄习所起，思惟佛地无相无生自证圣法，得心自在，无功用行，如如意宝，随宜现身，令达唯心，渐入诸地。是故大慧，菩萨摩诃萨于自悉檀应善修学。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -7364,7 +7413,8 @@
           "start": 431.5,
           "end": 432.64,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sdde1b361",
@@ -7417,7 +7467,8 @@
           "start": 543.1,
           "end": 550.65,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3f6aac92",
@@ -7579,7 +7630,8 @@
           "start": 1004.6,
           "end": 1006.86,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s639a8226",
@@ -7893,7 +7945,8 @@
           "start": 1632.8,
           "end": 1687.7,
           "conf": 0.85,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sf1cce56a",
@@ -7921,7 +7974,8 @@
           "start": 1687.7,
           "end": 1693.42,
           "conf": 0.75,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s989b977c",
@@ -7970,8 +8024,8 @@
         {
           "pid": "p-s543082c3",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，唯愿为我说心、意、意识、五法自性相众妙法门。此时，一切诸佛菩萨，入自心境，离所行相，称真实义诸佛教心，唯愿如来为此山中诸菩萨众，随顺过去诸佛演说藏识海浪法身境界。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -7980,8 +8034,8 @@
         {
           "pid": "p-sb3fa2d36",
           "text": "尔时，世尊告大慧菩萨摩诃萨言：“有四种因缘眼识转。何等为四？所谓不觉自心现而执取故，无始时来取著于色虚妄习气故，识本性如是故，乐见种种诸色相故。大慧，以此四缘，阿赖耶识如瀑流水，生转识浪如眼识，余亦如是，于一切诸根微尘毛孔眼等，转识或顿生，譬如明镜现众色像；或渐生，犹如猛风吹大海水，心海亦尔，境界风吹起诸识浪，相续不绝。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -7990,8 +8044,8 @@
         {
           "pid": "p-sd6edd318",
           "text": "“大慧，因所作相非一非异，业与生相，相系深缚，不能了知色等自性，五识身转。大慧，与五识俱，或因了别差别境相有意识生，然彼诸识不作是念，我等同时展转为因，而于自心所现境界分别执著俱时而起，无差别相，各了自境。大慧，诸修行者，入于三昧，以习力微，起而不觉知，但作是念，我灭诸识，入于三昧，实不灭识而入三昧，以彼不灭习气种故，但不取诸境名为识灭。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -8000,8 +8054,8 @@
         {
           "pid": "p-se5c671cf",
           "text": "“大慧，如是藏识，行相微细，唯除诸佛及住地菩萨，其余一切二乘外道，定慧之力，皆不能知，唯有修行如实行者，以智慧力了诸地相，善达句义，无边佛所，广集善根，不妄分别自心所见，能知之耳。大慧，诸修行人宴处山林，上中下修，能见自心，分别流注，得诸三昧，自在力通，诸佛灌顶，菩萨围绕，知心意意识所行境界，超爱业无明生死大海，是故汝等应当亲近诸佛菩萨，如实修行，大善知识。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -8010,8 +8064,8 @@
         {
           "pid": "p-s53e7b4b5",
           "text": "尔时，世尊重说颂言：譬如巨海浪，斯由猛风起；洪波鼓溟壑，无有断绝时。藏识海常住，境界风所动；种种诸识浪，腾跃而转生。青赤等诸色，盐贝乳石蜜；花果日月光，非异非不异。意等七种识，应知亦如是；如海共波浪，心俱和合生。譬如海水动，种种波浪转；……",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -8020,8 +8074,8 @@
         {
           "pid": "p-s042a66a9",
           "text": "尔时，大慧菩萨摩诃萨以颂问曰：青赤诸色像，众生识显现；如浪种种法，云何愿佛说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -8030,8 +8084,8 @@
         {
           "pid": "p-s1084b9cf",
           "text": "尔时，世尊以颂答曰：青赤诸色像，浪中不可得；言心起众相，开悟诸凡夫。而彼本无起，自心所取离；能取及所取，与彼波浪同。身资财安住，众生识所现；是故见此起，与浪无差别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -8040,8 +8094,8 @@
         {
           "pid": "p-sfb529cb2",
           "text": "“复次，大慧，菩萨摩诃萨若欲了知能取所取分别境界，皆是自心之所现者，当离愦闹、昏滞、睡眠，初中后夜勤加修习，远离曾闻外道邪论及二乘法，通达自心分别之相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -8050,8 +8104,8 @@
         {
           "pid": "p-s5cd4b95a",
           "text": "“复次，大慧，菩萨摩诃萨住智慧心所住相已，于上圣智三相当勤修学。何者为三？所谓无影像相、一切诸佛愿持相、自证圣智所趣相。诸修行者获此相已，即舍跛驴智慧心相，入菩萨第八地，于此三相修行不舍。大慧，无影像相者，谓由惯习，一切二乘外道相故得生起；一切诸佛愿持相者，谓由诸佛自本愿力所加持故，而得生起；自证圣智所趣相者，谓由不取一切法相，成就如幻三昧身，趣佛地智故而得生起。大慧，是名上圣智三种相，若得此相，即到自证圣智所行之处，汝及诸菩萨摩诃萨应勤修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -8253,7 +8307,8 @@
           "start": 433.4,
           "end": 433.74,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sfe278868",
@@ -8298,7 +8353,8 @@
           "start": 560.3,
           "end": 569.1,
           "conf": 0.7,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sbaa8c2a0",
@@ -8306,7 +8362,8 @@
           "start": 569.1,
           "end": 584.6,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s076afe2c",
@@ -8314,7 +8371,8 @@
           "start": 584.6,
           "end": 609.91,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s71c04497",
@@ -8412,7 +8470,8 @@
           "start": 823.8,
           "end": 826.13,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s66379d7e",
@@ -9078,7 +9137,8 @@
           "start": 1919.5,
           "end": 1940.103,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         }
       ]
     },
@@ -9091,8 +9151,8 @@
         {
           "pid": "p-sfa695bdb",
           "text": "尔时，大慧菩萨摩诃萨知诸菩萨心之所念，承一切佛威神之力，白佛言：“唯愿为说百八句差别所依圣智事自性法门，一切如来应正等觉，为诸菩萨摩诃萨堕自共相者，说此妄计性差别义门，知此义已，则能净治二无我观境，照明诸地，超越一切二乘外道三昧之乐，见诸如来不可思议所行境界。毕竟舍离五法自性，以一切佛法身智慧，而自庄严入如幻境，住一切刹兜率陀宫、色究竟天，成如来身。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -9101,8 +9161,8 @@
         {
           "pid": "p-sfd9bb5ab",
           "text": "佛言：“大慧，有一类外道，见一切法随因而尽，生分别解，想兔无角，起于无见，如兔角无，一切诸法悉亦如是。复有外道，见大种求那尘等诸物，形量分位，各差别已，执兔无角，于此而生牛有角想。大慧，彼堕二见，不了唯心，但于自心增长分别。大慧，身及资生器世间等，一切皆唯分别所现。大慧，应知兔角离于有无，诸法悉然，勿生分别。云何兔角离于有无？互因待故，分析牛角乃至微尘，求其体相终不可得，圣智所行远离彼见，是故于此不应分别。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -9111,8 +9171,8 @@
         {
           "pid": "p-s341c4db2",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，彼岂不以妄见起相比度观待妄计无耶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -9121,8 +9181,8 @@
         {
           "pid": "p-s3e2abf67",
           "text": "佛言：“不以分别起相待以言无。何以故？彼以分别为生因故。以角分别为其所依，所依为因离异不异，非由相待显兔角无。大慧，若此分别，异兔角者，则非角因，若不异者，因彼而起。大慧，分析牛角乃至极微，求不可得，异于有角言无角者，如是分别决定非理，二俱非有谁待于谁，若相待不成，待于有故言兔角无，不应分别，不正因故。有无论者，执有执无，二俱不成。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -9131,8 +9191,8 @@
         {
           "pid": "p-scf3b6702",
           "text": "“大慧，复有外道，见色形状虚空分齐而生执著，言色异虚空起于分别。大慧，虚空是色，随入色种。大慧，色是虚空，能持所持建立性故。色空分齐应如是知。大慧，大种生时自相各别，不住虚空中，非彼无虚空。大慧，兔角亦尔，观待牛角言彼角无。大慧，分析牛角乃至微尘，又析彼尘，其相不现。彼何所待，而言无耶？若待余物，彼亦如是。大慧，汝应远离兔角牛角、虚空及色所有分别，汝及诸菩萨摩诃萨，应常观察自心所见分别之相，于一切国土为诸佛子说观察自心修行之法。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -9141,8 +9201,8 @@
         {
           "pid": "p-s59abac81",
           "text": "尔时，世尊即说颂言：心所见无有，唯依心故起；身资所住影，众生藏识现。心意及与识，自性五种法：二无我清净，诸导师演说。长短共观待，展转互相生；因有故成无，因无故成有。微尘分析事，不起色分别；唯心所安立，恶见者不信。外道非行处，声闻亦复然；救世之所说，自证之境界。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -9994,7 +10054,8 @@
           "start": 1729.7,
           "end": 1738.7,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb986c5b8",
@@ -10002,7 +10063,8 @@
           "start": 1738.7,
           "end": 1741.6,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2592f0b7",
@@ -10010,7 +10072,8 @@
           "start": 1741.6,
           "end": 1750.24,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb7b957f6",
@@ -10176,8 +10239,8 @@
         {
           "pid": "p-scb4b932d",
           "text": "尔时，大慧菩萨摩诃萨，为净心现流故而请佛言：“世尊云何净诸众生自心现流？为渐次净？为顿净耶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -10186,8 +10249,8 @@
         {
           "pid": "p-sda617703",
           "text": "佛言：“大慧，渐净非顿，如庵罗果渐熟非顿，诸佛如来净诸众生自心现流，亦复如是，是渐净非顿；如陶师造器，渐成非顿，诸佛如来净诸众生自心现流，亦复如是，是渐而非顿；譬如大地生诸草木，渐生非顿，诸佛如来净诸众生自心现流，亦复如是，渐而非顿。大慧，譬如人学音乐书画，种种伎术，渐成非顿，诸佛如来净诸众生自心现流，亦复如是，是渐而非顿。譬如明镜，顿现众像而无分别，诸佛如来净诸众生自心现流，亦复如是，顿现一切无相境界而无分别；如日月轮一时遍照一切色像，诸佛如来净诸众生自心过习，亦复如是，顿为示现不可思议诸佛如来智慧境界；譬如藏识顿现于身及资生国土，一切境界，报佛亦尔，于色究竟天，顿能成熟一切众生令修诸行；譬如法佛顿现报佛及以化佛，光明照耀，自证圣境亦复如是，顿现法相而为照耀，令离一切有无恶见。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -10196,8 +10259,8 @@
         {
           "pid": "p-s353235db",
           "text": "“复次，大慧，法性所流，佛说一切法自相共相，自心现习气因相，妄计性所执因相，更相系属种种幻事皆无自性，而诸众生种种执著取以为实，悉不可得。复次，大慧，妄计自性执著缘起自性起。大慧，譬如幻师以幻术力，依草木瓦石幻作众生若干色像，令其见者种种分别，皆无真实。大慧，此亦如是，由取著境界习气力故，于缘起性中，有妄计性种种相现，是名妄计性生。大慧，是名法性所流佛说法相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -10206,8 +10269,8 @@
         {
           "pid": "p-s82acf5ff",
           "text": "“大慧，法性佛者，建立自证智所行离心自性相。大慧，化佛说施、戒、忍、进、禅定、智慧、蕴界处法，及诸解脱、诸识行相，建立差别，越外道见，超无色行。复次，大慧，法性佛非所攀缘，一切所缘一切所作相根量等相悉皆远离，非凡夫二乘及诸外道，执著我相所取境界。是故，大慧，于自证圣智胜境界相当勤修学，于自心所现分别见相当速舍离。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -10216,8 +10279,8 @@
         {
           "pid": "p-s07b90bc3",
           "text": "“复次，大慧，声闻乘有二种差别相，所谓自证圣智殊胜相，分别执著自性相。云何自证圣智殊胜相？谓明见苦、空、无常、无我诸谛境界，离欲寂灭故，于蕴界处若自若共外不坏相，如实了知，故心住一境。住一境已，获禅解脱三昧道果，而得出离，住自证圣智境界乐。未离习气及不思议变易死，是名声闻乘自证圣智境界相。菩萨摩诃萨虽亦得此圣智境界，以怜愍众生故，本愿所持故，不证寂灭门及三昧乐，诸菩萨摩诃萨于此自证圣智乐中，不应修学。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -10226,8 +10289,8 @@
         {
           "pid": "p-sfb6378dd",
           "text": "“大慧，云何分别执著自性相？所谓知坚湿暖动青黄赤白，如是等法非作者生，然依教理见自共相，分别执著，是名声闻乘分别执著相。菩萨摩诃萨于此法中，应知应舍离人无我见，入法无我相，渐住诸地。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -10791,7 +10854,8 @@
           "start": 1558.33,
           "end": 1597.6,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s32ca5b36",
@@ -10799,7 +10863,8 @@
           "start": 1597.6,
           "end": 1599.01,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sad1a45b7",
@@ -11113,8 +11178,8 @@
         {
           "pid": "p-s89993411",
           "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，如来所说常不思议自证圣智第一义境，将无同诸外道所说常不思议作者耶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -11123,8 +11188,8 @@
         {
           "pid": "p-s7acad4f8",
           "text": "佛言：“大慧，非诸外道作者得常不思议，所以者何？诸外道常不思议因自相不成，既因自相不成，以何显示常不思议。大慧，外道所说常不思议若因自相成彼则有常，但以作者为因相故，常不思议不成。大慧，我第一义常不思议，第一义因相成，远离有无，自证圣智所行相故有相，第一义智为其因故有因，离有无故非作者，如虚空涅槃寂灭法故常不思议。是故，我说常不思议，不同外道所有诤论。大慧，此常不思议，是诸如来自证圣智所行真理，是故菩萨当勤修学。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11133,8 +11198,8 @@
         {
           "pid": "p-s828a9f9d",
           "text": "“复次，大慧，外道常不思议，以无常异相因故常，非自相因力故常。大慧，外道常不思议，以见所作法有已还无，无常已比知是常，我亦见所作法有已还无，无常已不因此说为常。大慧，外道以如是因相成常不思议，此因相非有，同于兔角故，常不思议唯是分别但有言说，何故彼因同于兔角，无自因相故。大慧，我常不思议以自证为因相，不以外法有已还无无常为因，外道反此，曾不能知常不思议自因之相，而恒在于自证圣智所行相外，此不应说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11143,8 +11208,8 @@
         {
           "pid": "p-s79f6ff4e",
           "text": "“复次，大慧，诸声闻畏生死妄想苦而求涅槃，不知生死涅槃差别之相，一切皆是妄分别有，无所有故，妄计未来诸根境灭以为涅槃，不知证自智境界转所依藏识为大涅槃。彼愚痴人说有三乘，不说唯心无有境界。大慧，彼人不知去、来、现在诸佛所说自心境界，取心外境，常于生死轮转不绝。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -11153,8 +11218,8 @@
         {
           "pid": "p-s76c9291b",
           "text": "“复次，大慧，去、来、现在诸如来说一切法不生，何以故？自心所见非有性故，离有无生故，如兔马等角，凡愚妄取，唯自证圣智所行之处，非诸愚夫二分别境。大慧，身及资生器世间等，一切皆是藏识影像，所取能取二种相现，彼诸愚夫，堕生住灭二见中故，于中妄起有、无分别。大慧，汝于此义当勤修学。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11163,8 +11228,8 @@
         {
           "pid": "p-s0a29fef3",
           "text": "“复次，大慧，有五种种性，何等为五？谓声闻乘种性，缘觉乘种性，如来乘种性，不定种性，无种性。大慧，云何知是声闻乘种性？谓若闻说于蕴界处自相、共相，若知若证举身毛竖，心乐修习，于缘起相不乐观察，应知此是声闻乘种性。彼于自乘见所证已，于五、六地断烦恼结，不断烦恼习，住不思议死，正师子吼言：我生已尽，梵行已立，所作已办，不受后有，修习人无我，乃至生于得涅槃觉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11173,8 +11238,8 @@
         {
           "pid": "p-s515a85b4",
           "text": "“大慧，复有众生求证涅槃，言能觉知我、人、众生、养者、取者，此是涅槃，复有说言见一切法因作者有，此是涅槃。大慧，彼无解脱，以未能见法无我故，此是声闻乘及外道种性，于未出中，生出离想，应勤修习，舍此恶见。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11183,8 +11248,8 @@
         {
           "pid": "p-s3edf88ac",
           "text": "“大慧，云何知是缘觉乘种性？谓若闻说缘觉乘法，举身毛竖，悲泣流泪，离愦闹缘，无所染着，有时闻说现种种身，或聚或散神通变化，其心信受无所违逆，当知此是缘觉乘种性，应为其说缘觉乘法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11193,8 +11258,8 @@
         {
           "pid": "p-sa799f86e",
           "text": "“大慧，如来乘种性所证法有三种，所谓自性无自性法，内身自证圣智法，外诸佛刹广大法。大慧，若有闻说此一一法及自心所现、身财建立阿赖耶识不思议境，不惊、不怖、不畏，当知此是如来乘性。大慧，不定种性者，谓闻说彼三种法时，随生信解，而顺修学。大慧，为初治地人而说种性，欲令其入无影像地作此建立。大慧，彼住三昧乐声闻，若能证知自所依识，见法无我净烦恼习，毕竟当得如来之身。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11203,8 +11268,8 @@
         {
           "pid": "p-s230051f3",
           "text": "尔时，世尊即说颂言：预流一来果，不还阿罗汉；是等诸圣人，其心悉迷惑。我所立三乘，一乘及非乘；为愚夫少智，乐寂诸圣说。第一义法门，远离于二取；住于无境界，何建立三乘？诸禅及无量，无色三摩提；乃至灭受想，唯心不可得。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -11560,7 +11625,8 @@
           "start": 792.4,
           "end": 801.35,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-saecc1ec4",
@@ -11575,7 +11641,7 @@
           "pid": "p-sbe9b1d16",
           "text": "“我亦见所作法有已还无”，佛同样看到所有的妄想、分别、执着不断地升起和消失。“无常已不因此说为常”，不是看到这个无常变化的世界而说是“常”，佛不是根据无常变化的世界想象出某个“常”，来说这个“常”。",
           "start": 836.88,
-          "end": 872.0,
+          "end": 872,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false
@@ -11583,10 +11649,11 @@
         {
           "pid": "p-se3da9305",
           "text": "大慧，外道以如是因相成常不思议，此因相非有，同于兔角故，常不思议唯是分别但有言说，何故彼因同于兔角，无自因相故。",
-          "start": 872.0,
+          "start": 872,
           "end": 879.5,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s798ae23e",
@@ -11594,7 +11661,8 @@
           "start": 879.5,
           "end": 925.03,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbc70d92f",
@@ -11666,7 +11734,8 @@
           "start": 1106.1,
           "end": 1107.9,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scb879648",
@@ -11674,7 +11743,8 @@
           "start": 1107.9,
           "end": 1123.61,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfdeb16ef",
@@ -12038,7 +12108,8 @@
           "start": 1899.35,
           "end": 1904.4,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd37e145f",
@@ -12046,7 +12117,8 @@
           "start": 1904.4,
           "end": 1916.61,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s624b810f",
@@ -12302,8 +12374,8 @@
         {
           "pid": "p-sf3d0f1b4",
           "text": "“复次，大慧，此中一阐提何故于解脱中不生欲乐？大慧，以舍一切善根故。为无始众生起愿故。云何舍一切善根？谓谤菩萨藏，言此非随顺契经调伏解脱之说，作是语时，善根悉断不入涅槃。云何为无始众生起愿？谓诸菩萨以本愿方便，愿一切众生悉入涅槃，若一众生未涅槃者，我终不入。此亦住一阐提趣。此是无涅槃种性相。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -12312,8 +12384,8 @@
         {
           "pid": "p-s2f687fca",
           "text": "大慧菩萨言：“世尊，此中何者毕竟不入涅槃？”佛言：“大慧，彼菩萨一阐提，知一切法本来涅槃，毕竟不入，非舍善根。何以故？舍善根一阐提，以佛威力故，或时善根生，所以者何？佛于一切众生无舍时故，是故菩萨一阐提不入涅槃。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -12322,8 +12394,8 @@
         {
           "pid": "p-s6abd3186",
           "text": "“复次，大慧，菩萨摩诃萨当善知三自性相。何者为三？所谓妄计自性、缘起自性，圆成自性。大慧，妄计自性从相生。云何从相生？谓彼依缘起事相种类显现，生计著故。大慧，彼计著事相，有二种妄计性生，是诸如来之所演说，谓名相计著相，事相计著相。大慧，事计著相者，谓计著内外法，相计著相者，谓即彼内外法中，计著自、共相，是名二种妄计自性相。大慧，从所依所缘起，是缘起性。何者圆成自性？谓离名相事相一切分别，自证圣智所行真如。大慧，此是圆成自性如来藏心。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -12332,8 +12404,8 @@
         {
           "pid": "p-s02de5d0a",
           "text": "尔时，世尊即说颂言：名相分别，二自性相；正智真如，是圆成性。“大慧，是名观察五法自性相法门，自证圣智所行境界，汝及诸菩萨摩诃萨当勤修学。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -12342,8 +12414,8 @@
         {
           "pid": "p-sd6fe0da1",
           "text": "“复次，大慧，菩萨摩诃萨当善观察二无我相。何者为二？所谓人无我相、法无我相。大慧，何者是人无我相？谓蕴界处离我、我所，无知爱业之所生起，眼等识生取于色等而生计著；又自心所见身器世间，皆是藏心之所显现，刹那相续，变坏不停，如河流，如种子，如灯焰，如迅风，如浮云。躁动不安，如猿猴；乐不净处，如飞蝇；不知厌足，如猛火。无始虚伪习气为因，诸有趣中流转不息，如汲水轮，种种色身威仪进止，譬如死尸咒力故行，亦如木人因机运动，若能于此善知其相，是名人无我智。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -12352,8 +12424,8 @@
         {
           "pid": "p-sf87e9894",
           "text": "“大慧，云何为法无我智？谓知蕴界处是妄计性，如蕴界处离我、我所，唯共积聚爱业绳缚，互为缘起，无能作者。蕴等亦尔，离自、共相，虚妄分别种种相现，愚夫分别非诸圣者，如是观察一切诸法离心、意、意识、五法自性，是名菩萨摩诃萨法无我智。得此智已，知无境界，了诸地相，即入初地，心生欢喜次第渐进，乃至善慧及以法云。诸有所作皆悉已办，住是地已，有大宝莲花王众宝庄严，于其花上有宝宫殿，状如莲花，菩萨往修幻性法门之所成就，而坐其上，同行佛子前后围绕，一切佛刹所有如来，皆舒其手，如转轮王子灌顶之法，而灌其顶，超佛子地，获自证法，成就如来自在法身。大慧，是名见法无我相，汝及诸菩萨摩诃萨应勤修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -12628,17 +12700,19 @@
           "pid": "p-s5a285ea9",
           "text": "大慧，事计著相者，谓计著内外法，相计著相者，谓即彼内外法中，计著自、共相，是名二种妄计自性相。",
           "start": 463.71,
-          "end": 478.0,
+          "end": 478,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd9e5adff",
           "text": "在这里“内外法”，在菩萨境界没有内外分别，但是从一个佛的视角看某个菩萨的时候，菩萨的妄想以及和他有缘众生的妄想都在佛的意识里展现，佛能分别感知到这是这个菩萨的妄想，这是和这个菩萨有缘众生的妄想。在这里菩萨的妄想称为他的“内法”，和他有缘的、其他众生的妄想称之为“外法”。",
-          "start": 478.0,
+          "start": 478,
           "end": 505.09,
           "conf": 0.887,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s02c0cc9f",
@@ -13035,7 +13109,8 @@
           "start": 1461.53,
           "end": 1502.7,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s94e166b8",
@@ -13043,7 +13118,8 @@
           "start": 1502.7,
           "end": 1514.36,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s8066bd62",
@@ -13319,8 +13395,8 @@
         {
           "pid": "p-sb840ecc3",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿说建立诽谤相，令我及诸菩萨摩诃萨离此恶见，疾得阿耨多罗三藐三菩提，得菩提已，破建立常诽谤断见，令于正法不生毁谤。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -13329,8 +13405,8 @@
         {
           "pid": "p-s734bccf3",
           "text": "佛受其请，即说颂言：身资财所住，皆唯心影像，凡愚不能了，起建立诽谤，所起但是心，离心不可得。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -13339,8 +13415,8 @@
         {
           "pid": "p-s896ef9dc",
           "text": "尔时，世尊欲重明此义，告大慧言：“有四种无有有建立，何者为四？所谓无有相建立相，无有见建立见，无有因建立因，无有性建立性，是为四。大慧，诽谤者，谓于诸恶见所建立法。求不可得，不善观察，遂生诽谤，此是建立诽谤相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -13349,8 +13425,8 @@
         {
           "pid": "p-sa4ecd9b9",
           "text": "“大慧，云何无有相建立相？谓于蕴界处自相、共相本无所有，而生计著，此如是，此不异，而此分别从无始种种恶习所生，是名无有相建立相；云何无有见建立见？谓于蕴界处建立我、人、众生等见，是名无有见建立见；云何无有因建立因？谓初识前无因不生，其初识本无，后眼色明念等为因，如幻生，生已有，有还灭，是名无有因建立因；云何无有性建立性？谓于虚空、涅槃、非数灭无作性执著建立。大慧，此离性非性一切诸法，离于有无，犹如毛轮、兔、马等角，是名无有性建立性。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -13359,8 +13435,8 @@
         {
           "pid": "p-s0fa0f757",
           "text": "“大慧，建立诽谤皆是凡愚不了唯心而生分别，非诸圣者，是故汝等当勤观察，远离此见。大慧，菩萨摩诃萨善知心、意、意识、五法、自性、二无我相已，为众生故作种种身，如依缘起，起妄计性，亦如摩尼随心现色，普入佛会听闻佛说，诸法如幻、如梦、如影、如镜中花、如水中月，远离生灭及以断常，不住声闻辟支佛道，闻已成就无量百千亿那由他三昧，得此三昧已，遍游一切诸佛国土，供养诸佛，生诸天上，显扬三宝，示现佛身，为诸声闻菩萨大众说外境界皆唯是心，悉令远离有、无等执。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -13369,8 +13445,8 @@
         {
           "pid": "p-sfa738f5c",
           "text": "……尔时，大慧菩萨摩诃萨复请佛言：“愿为我说一切法空、无生、无二、无自性相，我及诸菩萨悟此相故，离有、无分别，疾得阿耨多罗三藐三菩提。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -13379,8 +13455,8 @@
         {
           "pid": "p-seca940e6",
           "text": "佛言：“谛听，当为汝说。大慧，空者即是妄计性句义。大慧，为执著妄计自性故，说空、无生、无二、无自性。大慧，略说空性有七种。谓相空、自性空、无行空、行空、一切法不可说空、第一义圣智大空、彼彼空。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -13389,8 +13465,8 @@
         {
           "pid": "p-s9a2183c3",
           "text": "“云何相空？谓一切法自相、共相空，展转积聚互相待故。分析推求无所有故，自他及共皆不生故。自、共相无生亦无住，是故名一切法自相空。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -13399,8 +13475,8 @@
         {
           "pid": "p-s6f31c17f",
           "text": "“云何自性空？谓一切法自性不生，是名自性空。“云何无行空？所谓诸蕴本来涅槃，无有诸行，是名无行空。“云何行空？所谓诸蕴由业及因和合而起，离我、我所，是名行空。“云何一切法不可说空？谓一切法妄计自性无可言说，是名不可说空。“云何第一义圣智大空？谓得自证圣智时，一切诸见过习悉离，是名第一义圣智大空。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -13409,8 +13485,8 @@
         {
           "pid": "p-s03eb9727",
           "text": "“云何彼彼空？谓于此无彼，是名彼彼空，譬如鹿子母堂，无象马牛羊等。我说彼堂空非无比丘众。大慧，非谓堂无堂自性，非谓比丘无比丘自性，非谓余处无象马牛羊。大慧，一切诸法自、共相，彼彼求不可得，是故说名彼彼空。是名七种空。大慧，此彼彼空，空中最粗，汝应远离。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -13422,23 +13498,26 @@
           "start": 0.99,
           "end": 8.8,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6bd36a84",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿说建立诽谤相，令我及诸菩萨摩诃萨离此恶见，疾得阿耨多罗三藐三菩提，得菩提已，破建立常诽谤断见，令于正法不生毁谤。”",
           "start": 8.8,
-          "end": 22.0,
+          "end": 22,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sae9f8aa4",
           "text": "求佛说一下什么是诽谤相，让这些菩萨摩诃萨远离这些恶见，快速得阿耨多罗三藐三菩提。",
-          "start": 22.0,
+          "start": 22,
           "end": 42.49,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc9aa27b0",
@@ -13446,7 +13525,8 @@
           "start": 42.49,
           "end": 75.5,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfaff704a",
@@ -13454,7 +13534,8 @@
           "start": 75.5,
           "end": 78.04,
           "conf": 0.5,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s41f9113f",
@@ -14258,8 +14339,8 @@
         {
           "pid": "p-s95d22ff4",
           "text": "“复次，大慧，无生者，自体不生而非不生，除住三昧，是名无生。大慧，无自性者以无生故密意而说。大慧，一切法无自性，以刹那不住故，见后变异故，是名无自性。云何无二相？大慧，如光影、如长短、如黑白，皆相待立，独则不成。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -14268,8 +14349,8 @@
         {
           "pid": "p-se9615862",
           "text": "大慧，非于生死外有涅槃，非于涅槃外有生死，生死涅槃无相违相，如生死涅槃，一切法亦如是，是名无二相。大慧，空、无生、无二、无自性相，汝当勤修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -14278,8 +14359,8 @@
         {
           "pid": "p-s56ccde1c",
           "text": "尔时，世尊重说颂言：我常说空法，远离于断常；生死如幻梦，而业亦不坏。虚空及涅槃，灭度亦如是；愚夫妄分别，诸圣离有无。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -14288,8 +14369,8 @@
         {
           "pid": "p-sfa3645db",
           "text": "尔时，世尊复告大慧菩萨摩诃萨言：“大慧，此空、无生、无自性、无二相，悉入一切诸佛所说修多罗中，佛所说经皆有是义。大慧，诸修多罗随顺一切众生心说，而非真实在于言中，譬如阳焰诳惑诸兽，令生水想，而实无水，众经所说亦复如是，随诸愚夫自所分别，令生欢喜，非皆显示圣智证处真实之法。大慧，应随顺义，莫著言说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -14298,8 +14379,8 @@
         {
           "pid": "p-sf2020a61",
           "text": "尔时，大慧菩萨摩诃萨白佛言：“世尊，修多罗中说如来藏本性清净，常恒不断，无有变易，具三十二相，在于一切众生身中，为蕴界处垢衣所缠，贪恚痴等妄分别垢之所污染，如无价宝在垢衣中，外道说我是常作者，离于求那自在无灭。世尊所说如来藏义，岂不同于外道说我耶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -14308,8 +14389,8 @@
         {
           "pid": "p-s30a9df64",
           "text": "佛言：“大慧，我说如来藏不同外道所说之我。大慧，如来应正等觉，以性空、实际、涅槃、不生、无相、无愿等诸句义，说如来藏，为令愚夫离无我怖，说无分别、无影像处如来藏门，未来、现在诸菩萨摩诃萨，不应于此执著于我。大慧，譬如陶师于泥聚中，以人功、水杖、轮绳方便作种种器，如来亦尔，于远离一切分别相无我法中，以种种智慧方便善巧，或说如来藏，或说为无我，种种名字各各差别。大慧，我说如来藏，为摄著我诸外道众，令离妄见入三解脱，速得证于阿耨多罗三藐三菩提，是故诸佛说如来藏，不同外道所说之我，若欲离于外道见者，应知无我如来藏义。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -14318,8 +14399,8 @@
         {
           "pid": "p-s6d61937f",
           "text": "尔时，世尊即说颂曰：士夫相续蕴，众缘及微尘：胜自在作者，此但心分别。尔时，大慧菩萨观未来一切众生，复请佛言：“愿为我说具修行法，如诸菩萨摩诃萨成大修行。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -14328,8 +14409,8 @@
         {
           "pid": "p-s16154731",
           "text": "佛言：“大慧，菩萨摩诃萨具四种法成大修行。何者为四？谓观察自心所现故，远离生住灭见故，善知外法无性故，专求自证圣智故。若诸菩萨成此四法，则得名为大修行者。大慧，云何观察自心所现？谓观三界唯是自心，离我、我所，无动作，无来去，无始执著过习所熏，三界种种色行名言系缚，身资所住分别随入之所显现，菩萨摩诃萨如是观察自心所现。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -14338,8 +14419,8 @@
         {
           "pid": "p-sdfb89237",
           "text": "“大慧，云何得离生住灭见？所谓观一切法如幻梦生，自他及俱皆不生故，随自心量之所现故，见外物无有故，见诸识不起故，及众缘无积故，分别因缘起三界故，如是观时，若内若外一切诸法皆不可得，知无体实远离生见，证如幻性即时逮得无生法忍，住第八地，了心意意识五法自性二无我境，转所依止，获意生身。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -14348,8 +14429,8 @@
         {
           "pid": "p-se0f4ca70",
           "text": "大慧言：“世尊，以何因缘名意生身？”佛言：“大慧，意生身者，譬如意去速疾无碍，名意生身。大慧，譬如心意于无量百千由旬之外，忆先所见种种诸物，念念相续疾诣于彼，非是其身及山河石壁所能为碍，意生身者亦复如是，如幻三昧力通自在诸相庄严，忆本成就众生愿故，犹如意去生于一切诸圣众中，是名菩萨摩诃萨得远离于生住灭见。大慧，云何观察外法无性？谓观察一切法如阳焰、如梦境、如毛轮，无始戏论种种执著，虚妄恶习为其因故，如是观察一切法时，即是专求自证圣智。大慧，是名菩萨具四种法成大修行。汝应如是勤加修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -14361,7 +14442,8 @@
           "start": 0.33,
           "end": 8.5,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s105b3358",
@@ -14369,7 +14451,8 @@
           "start": 8.5,
           "end": 13.2,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2497595c",
@@ -14377,7 +14460,8 @@
           "start": 13.2,
           "end": 51.96,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa3388b81",
@@ -14484,7 +14568,8 @@
           "start": 262.67,
           "end": 267.9,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc698be6e",
@@ -14492,7 +14577,8 @@
           "start": 267.9,
           "end": 305.86,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s064e5052",
@@ -14627,7 +14713,8 @@
           "start": 590.3,
           "end": 601.2,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1ebed4b4",
@@ -14635,7 +14722,8 @@
           "start": 601.2,
           "end": 648.98,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd9d8eb25",
@@ -15157,8 +15245,8 @@
         {
           "pid": "p-s1af86dd4",
           "text": "尔时，大慧菩萨摩诃萨复请佛言：“愿说一切法因缘相，令我及诸菩萨摩诃萨了达其义，离有无见不妄执诸法渐生顿生。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -15167,8 +15255,8 @@
         {
           "pid": "p-s8b3a666c",
           "text": "佛言：“大慧，一切法因缘生有二种，谓内及外。外者谓以泥团、水杖、轮绳、人工等缘和合成瓶，如泥瓶、缕迭、草席、种芽、酪酥，悉亦如是，名外缘前后转生。内者谓无明爱业等生蕴界处法，是为内缘起，此但愚夫之所分别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -15177,8 +15265,8 @@
         {
           "pid": "p-s69ed66c8",
           "text": "“大慧，因有六种，谓当有因、相属因、相因、能作因、显了因、观待因。大慧，当有因者，谓内外法作因生果；相属因者，谓内外法作缘生果，蕴种子等；相因者，作无间相生相续果；能作因者，谓作增上而生于果，如转轮王；显了因者，谓分别生能显境相，如灯照物；观待因者，谓灭时相续断无妄想生。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -15187,8 +15275,8 @@
         {
           "pid": "p-s77b002c3",
           "text": "“大慧，此是愚夫自所分别，非渐次生，亦非顿生。何以故？大慧，若顿生者，则作与所作无有差别，求其因相不可得故；若渐生者求其体相亦不可得，如未生子，云何名父？诸计度人言以因缘、所缘缘、无间缘、增上缘等，所生能生互相系属，次第生者理不得成，皆是妄情执著相故。大慧，渐次与顿皆悉不生，但有心现身资等故，外自、共相皆无性故，惟除识起自分别见。大慧，是故应离因缘所作和合相中渐、顿生见。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16210,17 +16298,19 @@
           "pid": "p-s383e8205",
           "text": "“诸法”，妄想、分别、执着。这些妄想、分别、执着都没有本体，也就没有可说的。“不见空空义”，把空意都给空掉了。也就是把你认为这个世界是空的认知也给彻底空掉，达到佛的大空、究竟空的境界，这才是我们要达到的最终目标。“愚夫故流转”，愚夫因为不见空空义，所以在六道轮回继续轮转。",
           "start": 2234.27,
-          "end": 2273.0,
+          "end": 2273,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7f53cb80",
           "text": "一切法无性，离言语分别；诸有如梦化，非生死涅槃。",
-          "start": 2273.0,
+          "start": 2273,
           "end": 2275.7,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9328df6f",
@@ -16228,7 +16318,8 @@
           "start": 2275.7,
           "end": 2298.77,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se2a02cfa",
@@ -16286,8 +16377,8 @@
         {
           "pid": "p-s05c9dd70",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说离一异、俱不俱、有无、非有无、常、无常等。一切外道所不能行，自证圣智者所行境界，远离妄计自相共相，入于真实第一义境，渐净诸地入如来位，以无功用本愿力故，如如意宝普现一切无边境界，一切诸法皆是自心所见差别，令我及余诸菩萨等，于如是等法，离妄计自性自共相见，速证阿耨多罗三藐三菩提，普令众生具足圆满一切功德。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -16296,8 +16387,8 @@
         {
           "pid": "p-s221d8e14",
           "text": "佛言：“大慧，善哉！善哉！汝哀愍世间请我此义，多所利益，多所安乐。大慧，凡夫无智不知心量，妄习为因，执著外物分别一异、俱不俱、有无非有无、常无常等一切自性。大慧，譬如群兽为渴所逼，于热时焰而生水想，迷惑驰趣不知非水。愚痴凡夫亦复如是，无始戏论分别所熏，三毒烧心，乐色境界，见生住灭取内外法，堕一异等执著之中。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16306,8 +16397,8 @@
         {
           "pid": "p-s880d7522",
           "text": "“大慧，如乾闼婆城非城非非城，无智之人，无始时来，执著城种妄习熏故，而作城想，外道亦尔，以无始来妄习熏故，不能了达自心所现，著一异等种种言说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16316,8 +16407,8 @@
         {
           "pid": "p-s58be426b",
           "text": "“大慧，譬如有人梦见男女象马车步城邑园林种种严饰，觉已忆念彼不实事。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -16326,8 +16417,8 @@
         {
           "pid": "p-s50c0278d",
           "text": "大慧，汝意云何，如是之人是黠慧不？”答言：“不也。”“大慧，外道亦尔，恶见所噬不了唯心，执著一异有无等见。“大慧，譬如画像无高无下，愚夫妄见作高下想，未来外道亦复如是，恶见熏习妄心增长，执一异等自坏坏他，于离有无，无生之论，亦说为无，此谤因果，拔善根本，应知此人分别有无起自他见，当堕地狱，欲求胜法，宜速远离。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16336,8 +16427,8 @@
         {
           "pid": "p-sb766201c",
           "text": "“大慧，譬如翳目见有毛轮，互相谓言，此事希有，而此毛轮，非有非无，见不见故。外道亦尔，恶见分别执著一异俱不俱等，诽谤正法，自陷陷他。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -16346,8 +16437,8 @@
         {
           "pid": "p-s0cf501e5",
           "text": "“大慧，譬如火轮实非是轮，愚夫取著非诸智者，外道亦尔，恶见乐欲执著一异俱不俱等一切法生。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -16356,8 +16447,8 @@
         {
           "pid": "p-s2c67c1e4",
           "text": "“大慧，譬如水泡似玻璃珠，愚夫执实奔驰而取，然彼水泡非珠非非珠，取不取故。外道亦尔，恶见分别习氯所熏，说非有为生坏于缘有。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -16366,8 +16457,8 @@
         {
           "pid": "p-s084085c7",
           "text": "“复次，大慧，立三种量已，于圣智内证离二自性法，起有性分别。大慧，诸修行者，转心意识，离能所取，住如来地自证圣法，于有及无，不起于想。大慧，诸修行者，若于境界起有无执，则著我、人、众生、寿者。大慧，一切诸法自相、共相，是化佛说，非法佛说。大慧，化佛说法但顺愚夫所起之见，不为显示自证圣智三昧乐境。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16376,8 +16467,8 @@
         {
           "pid": "p-s53de833d",
           "text": "“大慧，譬如水中有树影现，彼非影非非影，非树形非非树形。外道亦尔，诸见所熏，不了自心，于一异等而生分别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -16386,8 +16477,8 @@
         {
           "pid": "p-sadca2c33",
           "text": "“大慧，譬如明镜无有分别，随顺众缘现诸色像，彼非像非非像而见像非像，愚夫分别而作像想。外道亦尔，于自心所现种种形像而执一异俱不俱相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16396,8 +16487,8 @@
         {
           "pid": "p-s3c0ffe7f",
           "text": "“大慧，譬如谷响依于风水人等音声和合而起，彼非有非无，以闻声非声故。外道亦尔，自心分别熏习力故，起于一异俱不俱见。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16406,8 +16497,8 @@
         {
           "pid": "p-s4ddcb1da",
           "text": "“大慧，譬如大地无草木处，日光照触焰水波动，彼非有非无，以倒想非想故，愚痴凡夫亦复如是，无始戏论恶习所熏，于圣智自证法性门中，见生住灭一异有无俱不俱性。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -16416,8 +16507,8 @@
         {
           "pid": "p-s374de605",
           "text": "“大慧，譬如木人及以起尸，以毗舍阇机关力故，动摇运转，云为不绝，无智之人取以为实，愚痴凡夫亦复如是，随逐外道起诸恶见，著一异等虚妄言说。是故，大慧，当于圣智所证法中，离生住灭一异有无俱不俱等一切分别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -16730,7 +16821,8 @@
           "start": 658.6,
           "end": 701.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s15111fc7",
@@ -16738,7 +16830,8 @@
           "start": 701.3,
           "end": 703,
           "conf": 0.6,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-se103bd1a",
@@ -17185,8 +17278,8 @@
         {
           "pid": "p-s85b00985",
           "text": "“复次，大慧，有四种禅，何等为四？谓愚夫所行禅，观察义禅，攀缘真如禅，诸如来禅。大慧，云何愚夫所行禅？谓声闻、缘觉诸修行者，知人无我，见自他身骨锁相连皆是无常苦不净相，如是观察坚著不舍，渐次增胜至无想灭定，是名愚夫所行禅。云何观察义禅？谓知自共相人无我已，亦离外道自他俱作，于法无我诸地相义，随顺观察，是名观察义禅。云何攀缘真如禅？谓若分别无我有二是虚妄念，若如实知，彼念不起，是名攀缘真如禅。云何诸如来禅？谓入佛地住自证圣智三种乐，为诸众生作不思议事，是名诸如来禅。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -17195,8 +17288,8 @@
         {
           "pid": "p-s6d6b0284",
           "text": "……尔时，大慧菩萨摩诃萨复白佛言：“世尊，诸佛如来所说涅槃，说何等法名为涅槃？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -17205,8 +17298,8 @@
         {
           "pid": "p-s31322131",
           "text": "佛告大慧：“一切识自性习气及藏识、意、意识见习转已，我及诸佛说名涅槃，即是诸法性空境界。复次，大慧，涅槃者，自证圣智所行境界，远离断常及以有无。云何非常？谓离自相共相诸分别故。云何非断？谓去来现在一切圣者自证智所行故。复次，大慧，大般涅槃不坏不死，若死者应更受生，若坏者应是有为，是故涅槃不坏不死，诸修行者之所归趣。复次，大慧，无舍无得故，非断非常故，不一不异故，说名涅槃。复次，大慧，声闻、缘觉知自共相舍离愦闹，不生颠倒，不起分别，彼于其中生涅槃想。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -17215,8 +17308,8 @@
         {
           "pid": "p-sc1f827f3",
           "text": "“复次，大慧，有二种自性相。何者为二？谓执著言说自性相，执著诸法自性相。执著言说自性相者，以无始戏论执著言说习气故起；执著诸法自性相者，以不觉自心所现故起。复次，大慧，诸佛有二种加持，持诸菩萨，令顶礼佛足请问众义。云何为二？谓令入三昧及身现其前，手灌其顶。大慧，初地菩萨摩诃萨蒙诸佛持力，故入菩萨大乘光明定；入已十方诸佛普现其前，身语加持，如金刚藏及余成就如是功德相。菩萨摩诃萨者是。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -17225,8 +17318,8 @@
         {
           "pid": "p-s1be2f15e",
           "text": "“大慧，此菩萨摩诃萨蒙佛持力，入三昧已，于百千劫集诸善根，渐入诸地，善能通达治所治相，至法云地处，大莲花微妙宫殿坐于宝座，同类菩萨所共围绕，首戴宝冠，身如黄金，瞻葡花色，如盛满月，放大光明，十方诸佛舒莲花手，于其座上，而灌其顶，如转轮王太子受灌顶已，而得自在，此诸菩萨亦复如是，是名为二。诸菩萨摩诃萨为二种持之所持故，即能亲见一切诸佛，异则不能。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -17235,8 +17328,8 @@
         {
           "pid": "p-sfa570816",
           "text": "“复次，大慧，诸菩萨摩诃萨入于三昧，现通说法，如是一切皆由诸佛二种持力。大慧，若诸菩萨离佛加持，能说法者，则诸凡夫亦应能说。大慧，山林草树城郭宫殿及诸乐器，如来至处，以佛持力尚演法音，况有心者？聋盲瘖哑离苦解脱。大慧，如来持力有如是等广大作用。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -17245,8 +17338,8 @@
         {
           "pid": "p-s199a062f",
           "text": "大慧菩萨复白佛言：“何故如来以其持力，令诸菩萨入于三昧及殊胜地中，手灌其顶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -17255,8 +17348,8 @@
         {
           "pid": "p-s9f000168",
           "text": "佛言：“大慧，为欲令其远离魔业诸烦恼故，为令不堕声闻地故，为令速入如来地故，令所得法倍增长故。是故诸佛以加持力持诸菩萨。大慧，若不如是，彼菩萨便堕外道及以声闻魔境之中，则不能得无上菩提。是故如来以加持力摄诸菩萨。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -17265,8 +17358,8 @@
         {
           "pid": "p-se867284a",
           "text": "尔时，世尊重说颂言：世尊清净愿，有大加持力；初地十地中，三昧及灌顶。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -17506,7 +17599,8 @@
           "start": 591.04,
           "end": 591.1,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6371c998",
@@ -17514,7 +17608,8 @@
           "start": 591.1,
           "end": 601.43,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc8e28f84",
@@ -18115,8 +18210,8 @@
         {
           "pid": "p-sd42847ff",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，佛说缘起是由作起非自体起，外道亦说，胜性自在时我微尘生于诸法，今佛世尊，但以异名说作缘起，非义有别。世尊，外道亦说，以作者故，于无生有，世尊亦说，以因缘故，一切诸法本无而生，生已归灭，如佛所说无明缘行，乃至老死，此说无因非说有因。世尊说言，此有故彼有，若一时建立，非次第相待者，其义不成，是故外道说胜，非如来也。何以故？外道说因不从缘生而有所生，世尊所说果待于因，因复待因，如是展转成无穷过，又，此有故彼有者，则无有因。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -18125,8 +18220,8 @@
         {
           "pid": "p-s6a248b47",
           "text": "佛言：“大慧，我了诸法唯心所现，无能取所取，说此有故彼有，非是无因及因缘过失。大慧，若不了诸法唯心所现，计有能取及以所取，执著外境若有若无，彼有是过，非我所说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18135,8 +18230,8 @@
         {
           "pid": "p-s76d8f60e",
           "text": "大慧菩萨复白佛言：“世尊，有言说故，必有诸法，若无诸法，言依何起？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -18145,8 +18240,8 @@
         {
           "pid": "p-s702cc093",
           "text": "佛言：“大慧，虽无诸法，亦有言说，岂不现见龟毛、兔角、石女儿等，世人于中皆起言说？大慧，彼非有非非有，而有言说耳。大慧，如汝所说，有言说故有诸法者，此论则坏。大慧，非一切佛土皆有言说，言说者，假安立耳。大慧，或有佛土瞪视显法，或现异相，或复扬眉，或动目睛，或示微笑、颦呻、謦欬、忆念、动摇，以如是等而显于法。大慧，如不瞬世界、妙香世界及普贤如来佛土之中，但瞪视不瞬，令诸菩萨获无生法忍及诸胜三昧。大慧，非由言说而有诸法，此世界中蝇蚁等虫，虽无言说成自事故。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18155,8 +18250,8 @@
         {
           "pid": "p-sd68eccd6",
           "text": "尔时，世尊重说颂言：如虚空兔角，及与石女儿；无而有言说，妄计法如是。因缘和合中，愚夫妄谓生；不能如实解，流转于三有。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18165,8 +18260,8 @@
         {
           "pid": "p-sb313f304",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊所说常声，依何处说？”佛言：“大慧，依妄法说。以诸妄法圣人亦现，然不颠倒。大慧，譬如阳焰、火轮、垂发、乾闼婆城梦幻境像，世无智者生颠倒解，有智不然，然非不现。大慧，妄法现时无量差别，然非无常。何以故？离有无故。云何离有无？一切愚夫种种解故，如恒河水，有见不见，饿鬼不见，不可言有；余所见故，不可言无。圣于妄法离颠倒见。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18175,8 +18270,8 @@
         {
           "pid": "p-s473c747b",
           "text": "“大慧，妄法是常，相不异故，非诸妄法有差别相，以分别故而有别异，是故妄法其体是常。大慧，云何而得妄法真实？谓诸圣者，于妄法中不起颠倒，非颠倒觉，若于妄法有少分想，则非圣智。有少想者当知则是愚夫戏论，非圣言说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18185,8 +18280,8 @@
         {
           "pid": "p-sdb00a4c5",
           "text": "“大慧，若分别妄法是倒非倒，彼则成就二种种性，谓圣种性、凡夫种性。大慧，圣种性者，彼复三种，谓声闻、缘觉、佛乘别故。大慧，云何愚夫分别妄法，生声闻乘种性？所谓计著自相共相。大慧，何谓复有愚夫分别妄法，成缘觉乘种性？谓即执著自共相时，离于愦闹。大慧，何谓智人分别妄法而得成就佛乘种性？所谓了达一切唯是自心分别所见，无有外法。大慧，有诸愚夫分别妄法种种事物，决定如是，决定不异，此则成就生死乘性。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18195,8 +18290,8 @@
         {
           "pid": "p-s113432ed",
           "text": "“大慧，彼妄法中种种事物，非即是物，亦非非物。大慧，即彼妄法诸圣智者心、意、意识诸恶习气自性法转依故，即说此妄名为真如，是故真如离于心识，我今明了显示此句离分别者，悉离一切诸分别故。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -18205,8 +18300,8 @@
         {
           "pid": "p-s83fffa19",
           "text": "大慧菩萨白世尊言：“世尊所说妄法，为有为无？”佛言：“如幻无执著相故，若执著相体是有者，应不可转则诸缘起，应如外道说作者生。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -18774,7 +18869,8 @@
           "start": 1236.55,
           "end": 1239.6,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s26490e36",
@@ -18782,7 +18878,8 @@
           "start": 1239.6,
           "end": 1249.22,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s25a763e7",
@@ -18935,7 +19032,8 @@
           "start": 1598.45,
           "end": 1661.6,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scedf4bb8",
@@ -18943,7 +19041,8 @@
           "start": 1661.6,
           "end": 1677.82,
           "conf": 0.89,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saf780254",
@@ -19038,8 +19137,8 @@
         {
           "pid": "p-sfcb32b0a",
           "text": "“复次，大慧，见诸法非幻无有相似，故说一切法如幻。”大慧言：“世尊，为依执著种种幻相，言一切法犹如幻耶？为异依此执著颠倒相耶？若依执著种种幻相言一切法犹如幻者，世尊，一切法悉皆如幻，何以故？见种种色相不无因故。世尊，都无有因，令种种色相显现如幻，是故世尊，不可说言依于执著种种幻相言一切法与幻相似。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -19048,8 +19147,8 @@
         {
           "pid": "p-sd7855641",
           "text": "佛言：“大慧，不依执著种种幻相言一切法如幻。大慧，以一切法不实，速灭如电，故说如幻。大慧，譬如电光见已即灭，世间凡愚悉皆现见一切诸法依自分别自共相现，亦复如是，以不能观察无所有故，而妄计著种种色相。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19058,8 +19157,8 @@
         {
           "pid": "p-sf10963ff",
           "text": "尔时，世尊重说颂言：非幻无相似，亦非有诸法；不实速如电，如幻应当知。尔时，大慧菩萨摩诃萨复白佛言：“世尊，如佛先说，一切诸法皆悉无生，又言如幻，将非所说前后相违。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -19068,8 +19167,8 @@
         {
           "pid": "p-sa094e4b2",
           "text": "佛言：“大慧，无有相违。何以故？我了于生即是无生，唯是自心之所见故。若有若无一切外法，见其无性本不生故。大慧，为离外道因生义故，我说诸法皆悉不生。大慧，外道群聚共兴恶见，言从有无生一切法，非自执著分别为缘。大慧，我说诸法非有无生，故名无生。大慧，说诸法者，为令弟子知依诸业摄受生死，遮其无有断灭见故。大慧，说诸法相犹如幻者，令离诸法自性相故，为诸凡愚堕恶见欲，不知诸法唯心所现，为令远离执著因缘生起之相，说一切法如幻如梦，彼诸愚夫执著恶见，欺诳自他，不能明见一切诸法如实住处。大慧，见一切法如实处者，谓能了达唯心所现。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19078,8 +19177,8 @@
         {
           "pid": "p-s010fc4d0",
           "text": "尔时，世尊重说颂言：无作故无生，有法摄生死；了达如幻等，于相不分别。“复次，大慧，我当说名句、文身相。诸菩萨摩诃萨善观此相，了达其义，疾得阿耨多罗三藐三菩提，复能开悟一切众生。大慧，名身者，谓依事立名，名即是身，是名名身；句身者，谓能显义决定究竟，是名句身；文身者，谓由于此能成名句，是名文身。复次，大慧，句身者，谓句事究竟；名身者，谓诸字名各各差别，如从阿字乃至呵字；文身者，谓长短高下。复次，句身者，如足迹，如衢巷中人畜等迹。名谓非色四蕴以名说故，文谓名之自相由文显故，是名名句文身。此名句文身相汝应修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19088,8 +19187,8 @@
         {
           "pid": "p-s9c3e44ca",
           "text": "尔时，世尊重说颂言：名身与句身，及字身差别；凡愚所计著，如象溺深泥。“复次，大慧，未来世中，有诸邪智恶思觉者，离如实法以见一异、俱不俱相，问诸智者，彼即答言：‘此非正问。’‘谓色与无常为异为不异，如是涅槃诸行，相所相，依所依，造所造，见所见，地与微尘，智与智者，为异为不异？’如是等不可记事，次第而问，世尊说此当止记答。愚夫无智，非能所知，佛欲令其离惊怖处，不为记说。大慧，不记说者，欲令外道永得出离作者见故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19101,7 +19200,8 @@
           "start": 0.63,
           "end": 36.1,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8998f773",
@@ -19109,7 +19209,8 @@
           "start": 36.1,
           "end": 41.06,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7beb0814",
@@ -19789,7 +19890,8 @@
           "start": 1691.52,
           "end": 1706.9,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7f18dbf9",
@@ -19797,7 +19899,8 @@
           "start": 1706.9,
           "end": 1710.54,
           "conf": 0.86,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfb6c79d5",
@@ -19855,8 +19958,8 @@
         {
           "pid": "p-s12ad2523",
           "text": "“大慧，诸外道众计有作者，作如是说，命即是身，命异身异，如是等说，名无记论。大慧，外道痴惑说无记论，非我教中。大慧，我教中说离能、所取，不起分别。云何可止？大慧，若有执著能取、所取，不了唯是自心所见，彼应可止。大慧，诸佛如来以四种记论，为众生说法。大慧，止记论者，我别时说，以根未熟且止说故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -19865,8 +19968,8 @@
         {
           "pid": "p-s9c116283",
           "text": "“复次，大慧，何故一切法不生？以离能作、所作、无作者故。何以一切法无自性？以证智观自相、共相不可得故。何故一切法无来去？以自共相来无所从，去无所至故。何故一切法不灭？谓一切法无性相故，不可得故。何故一切法无常？谓诸相起无常性故。何故一切法常？谓诸相起即是不起，无所有故，无常性常，是故我说一切法常。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19875,8 +19978,8 @@
         {
           "pid": "p-sa01debb8",
           "text": "……尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说，诸须陀洹、须陀洹果行差别相，我及诸菩萨摩诃萨闻是义故，于须陀洹、斯陀含、阿那含、阿罗汉方便相，皆得善巧，如是而为众生演说，令其证得二无我法，净除二障，于诸地相渐次通达，获于如来不可思议智慧境界，如众色摩尼，普令众生悉得饶益。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19885,8 +19988,8 @@
         {
           "pid": "p-s989065b8",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“大慧，诸须陀洹、须陀洹果差别有三：谓下中上。大慧，下者于诸有中极七反生；中者三生五生；上者即于此生而入涅槃。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19895,8 +19998,8 @@
         {
           "pid": "p-s3f1fc57e",
           "text": "“大慧，此三种人断三种结，谓身见、疑、戒禁取，上上胜进得阿罗汉果。“大慧，身见有二种，谓俱生及分别，如依缘起有妄计性。大慧，譬如依止缘起性，故种种妄计执著性生，彼法但是妄分别相，非有非无，非亦有亦无，凡夫愚痴而横执著，犹如渴兽妄生水想。此分别身见无智慧故久远相应，见人无我即时舍离。大慧，俱生身见，以普观察自他之身，受等四蕴无色相故，色由大种而得生故。是诸大种互相因故，色不集故，如是观已，明见有无即时舍离。舍身见故，贪则不生，是名身见相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19905,8 +20008,8 @@
         {
           "pid": "p-s3de25ba0",
           "text": "“大慧，疑相者，于所证法，善见相故，及先二种身见分别断故。于诸法中疑不得生，亦不于余生大师想为净不净，是名疑相。大慧，何故须陀洹不取戒禁，谓以明见生处苦相，是故不取，夫其取者，谓诸凡愚于诸有中贪著世乐，苦行持戒，愿生于彼。须陀洹人不取是相，惟求所证最胜无漏无分别法，修行戒品，是名戒禁取相。大慧，须陀洹人舍三结故，离贪嗔痴。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19915,8 +20018,8 @@
         {
           "pid": "p-sed69240f",
           "text": "大慧白言：“贪有多种，舍何等贪？”佛言：“舍于女色缠绵贪欲，见此现乐生来苦故；又得三昧殊胜乐故，是故舍彼，非涅槃贪。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19925,8 +20028,8 @@
         {
           "pid": "p-sdefbe445",
           "text": "“大慧，云何斯陀含果？谓不了色相，起色分别，一往来已，善修禅行，尽苦边际而般涅槃，是名靳陀含。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19935,8 +20038,8 @@
         {
           "pid": "p-s22a97a27",
           "text": "“大慧，云何阿那含果？谓于过、未、现在色相起，有无见，分别过恶，随眠不起，永舍诸结，更不还来，是名阿那含。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19945,8 +20048,8 @@
         {
           "pid": "p-s6f98429a",
           "text": "“大慧，阿罗汉者，谓诸禅三昧解脱力通悉已成就，烦恼诸苦分别永尽，是名阿罗汉。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19955,8 +20058,8 @@
         {
           "pid": "p-s5b636b13",
           "text": "大慧言：“世尊，阿罗汉有三种，谓一向趣寂、退菩提愿、佛所变化。此说何者？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19965,8 +20068,8 @@
         {
           "pid": "p-sf359fc6f",
           "text": "佛言：“大慧，此说趣寂，非是其余。大慧，余二种人，谓已曾发巧方便愿，及为庄严诸佛众会，于彼示生。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -19975,8 +20078,8 @@
         {
           "pid": "p-s26b81909",
           "text": "“大慧，于虚妄处说种种法，所谓证果，禅者及禅，皆性离故，自心所见，得果相故。大慧，若须陀洹作如是念：我离诸结，则有二过，谓堕我见及诸结不断。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -19985,8 +20088,8 @@
         {
           "pid": "p-sb26d39fb",
           "text": "复次，大慧，若欲超过诸禅无量色界者，应离自心所见诸相。大慧，想受灭三昧，超自心所见境者不然，不离心故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -20370,7 +20473,8 @@
           "start": 746.5,
           "end": 772.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbb25639a",
@@ -20378,7 +20482,8 @@
           "start": 772.3,
           "end": 813,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa27edd5a",
@@ -20634,6 +20739,7 @@
           "end": 1294.4,
           "conf": 0.95,
           "method": "ngram",
+          "confirmed": false,
           "zero": true
         },
         {
@@ -20642,7 +20748,8 @@
           "start": 1294.4,
           "end": 1319.49,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se559da23",
@@ -21009,8 +21116,8 @@
         {
           "pid": "p-s8250b8a2",
           "text": "“复次，大慧，有二种觉智，谓观察智及取相分别执著建立智。观察智者，谓观一切法离四句不可得。四句者，谓一异、俱不俱，有非有、常无常等。我以诸法离此四句，是故说言，一切法离。大慧，如是观法汝应修学。云何取相分别执著建立智？谓于坚湿暖动诸大种性，取相执著虚妄分别，以宗因喻而妄建立，是名取相分别执著建立智，是名二种觉智相。菩萨摩诃萨知此智相，即能通达人、法无我，以无相智于解行地善巧观察，入于初地，得百三昧，以胜三昧力见百佛百菩萨，知前后际，各百劫事，光明照耀百佛世界，善能了知上上地相，以胜愿力变现自在，至法云地而受灌顶，入于佛地十无尽愿，成就众生种种应现无有休息，而恒安住自觉境界三昧胜乐。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -21019,8 +21126,8 @@
         {
           "pid": "p-sc781c4f1",
           "text": "“复次，大慧菩萨摩诃萨当善了知大种造色。云何了知？大慧，菩萨摩诃萨应如是观，彼诸大种真实不生，以诸三界，但是分别，惟心所现，无有外物，如是观时，大种所造悉皆性离超过四句，无我、我所，住如实处，成无生相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -21029,8 +21136,8 @@
         {
           "pid": "p-s5045f1e5",
           "text": "“大慧，彼诸大种云何造色？大慧，谓虚妄分别津润大种成内外水界，炎盛大种成内外火界，飘动大种成内外风界，色分段大种成内外地界，离于虚空，由执著邪谛，五蕴聚集，大种造色生。大慧，识者以执著种种言说境界，为因起故，于余趣中相续受生。大慧，地等造色有大种因，非四大种为大种因。何以故？谓若有法有形相者，则是所作，非无形者。大慧，此大种造色相外道分别非是我说。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -21039,8 +21146,8 @@
         {
           "pid": "p-s6d98fea3",
           "text": "“复次，大慧，我今当说，五蕴体相，谓色受想行识。大慧，色谓四大及所造色，此各异相，受等非色。大慧，非色诸蕴犹如虚空无有四数。大慧，譬如虚空，超过数相，然分别言，此是虚空，非色诸蕴，亦复如是，离诸数相，离有无等四种句故。数相者愚夫所说，非诸圣者，诸圣但说如幻所作，唯假施设，离异不异，如梦如像，无别所有。不了圣智所行境故，见有诸蕴分别现前，是名诸蕴自性相。大慧，如是分别，汝应舍离，舍离此已，说寂静法，断一切刹诸外道见，净法无我，入远行地，成就无量自在三昧，获意生身，如幻三昧，力通自在，皆悉具足，犹如大地普益群生。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -21486,17 +21593,19 @@
           "pid": "p-s8e1906ea",
           "text": "“如是观时”，这样思维、这样认知的时候。“大种所造悉皆性离超过四句”，四大所造出来的世间万物——“性”是本体——已经超过四句。因为它们本来就是没有本体的，所以可以说超过四句。用“四句”——前面讲的“一异、俱不俱、有非有、常无常”，可以描述这些世间事物，没有性的大种都可以超越（它们）。",
           "start": 985.22,
-          "end": 1027.0,
+          "end": 1027,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc063b7a7",
           "text": "在这里“无我、我所”，就是没有我相、人相，达到菩萨境界。“住如实处”，这是菩萨的真实境界，住在那里。“无生”，前面已经不断地解释过了。佛看世界是因为妄想没有本体，所以你就算起了妄想，佛也可以说它是无生的，所以说“成无生相”。就算你有妄想，你也知道这个妄想是没有本体的，有这样的认知，也可以说你已经悟到了；至少你理悟到了无生，可以这么说。体悟是另一说，体悟是自己真实的境界。所以咱们普通人现在只能理悟，只有相信这个世界，妄想是没有本体的，都是幻觉，这样想就对了。",
-          "start": 1027.0,
+          "start": 1027,
           "end": 1081.46,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7dfb22d3",
@@ -21863,8 +21972,8 @@
         {
           "pid": "p-s1a63b6a6",
           "text": "“复次，大慧，涅槃有四种。何等为四？谓诸法自性无性涅槃，种种相性无性涅槃，觉自相性无性涅槃，断诸蕴自、共相流注涅槃。大慧，此四涅槃是外道义，非我所说。大慧，我所说者，分别尔炎识灭名为涅槃。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -21873,8 +21982,8 @@
         {
           "pid": "p-s4fbb2889",
           "text": "大慧言：“世尊，岂不建立八种识耶？”佛言：“建立。”大慧言：“若建立者，云何但说意识灭，非七识灭？”佛言：“大慧，以彼为因及所缘故，七识得生。大慧，意识分别境界，起执著时，生诸习气，长养藏识，由是意俱我、我所执，思量随转无别体相，藏识为因、为所缘故，执著自心所现境界，心聚生起展转为因。大慧，譬如海浪自心所现境界风吹而有起灭，是故意识灭时，七识亦灭。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -21883,8 +21992,8 @@
         {
           "pid": "p-s9eeedf9e",
           "text": "……“复次，大慧，我今当说妄计自性差别相，令汝及诸菩萨摩诃萨善知此义，超诸妄想，证圣智境，知外道法，远离能取、所取分别，于依他起种种相中，不更取著妄所计相。大慧，云何妄计自性差别相，所谓言说分别、所说分别、相分别、财分别，自性分别、因分别、见分别、理分别、生分别、不生分别、相属分别、缚解分别。大慧，此是妄计自性差别相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -21893,8 +22002,8 @@
         {
           "pid": "p-sdfbc3b51",
           "text": "“云何言说分别？谓执著种种美妙音词，是名言说分别。云何所说分别？谓执有所说事，是圣智所证境依此起说，是名所说分别。云何相分别？谓即于彼所说事中，如渴兽想，分别执著坚湿暖动等一切诸相，是名相分别。云何财分别？谓取著种种金银等宝而起言说，是名财分别。云何自性分别？谓以恶见如是分别此自性，决定非余，是名自性分别。云何因分别？谓于因缘分别有无，以此因相而能生故，是名因分别。云何见分别？谓诸外道恶见，执著有无、一异、俱不俱等，是名见分别。云何理分别？谓有执著我、我所相，而起言说，是名理分别。云何生分别？谓计诸法若有若无从缘而生，是名生分别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -21903,8 +22012,8 @@
         {
           "pid": "p-s1ca28e17",
           "text": "“云何不生分别？谓计一切法本来不生，未有诸缘而先有体，不从因起，是名不生分别。云何相属分别？谓此与彼，递相系属，如针与线，是名相属分别。云何缚解分别？谓执因能缚，而有所缚，如人以绳方便力故，缚已复解，是名缚解分别。大慧，此是妄计性差别相，一切凡愚于中执著，若有若无。大慧，于缘起中，执著种种妄计自性，如依于幻见种种物，凡愚分别，见异于幻。大慧，幻与种种非异非不异。若异者，应幻非种种因；若一者，幻与种种应无差别。然见差别，是故非异非不异。大慧，汝及诸菩萨摩诃萨于幻有无不应生著。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -21913,8 +22022,8 @@
         {
           "pid": "p-s2669d61d",
           "text": "……",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -21926,7 +22035,8 @@
           "start": 0.94,
           "end": 8.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s38afac59",
@@ -21934,7 +22044,8 @@
           "start": 8.3,
           "end": 11.99,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5160a7ec",
@@ -22179,7 +22290,8 @@
           "start": 727.97,
           "end": 748.1,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0430011b",
@@ -22187,7 +22299,8 @@
           "start": 748.1,
           "end": 758.66,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scb9c11b5",
@@ -22599,8 +22712,8 @@
         {
           "pid": "p-s513e495e",
           "text": "大慧菩萨摩诃萨复白佛言：“世尊，惟愿为说自证圣智行相及一乘行相，我及诸菩萨摩诃萨得此善巧，于佛法中不由他悟。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -22609,8 +22722,8 @@
         {
           "pid": "p-s197805e8",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“大慧，菩萨摩诃萨依诸圣教无有分别，独处闲静观察自觉，不由他悟，离分别见，上上升进入如来地，如是修行，名自证圣智行相。云何名一乘行相？谓得证知一乘道故。云何名为知一乘道？谓离能取、所取分别，如实而住。大慧，此一乘道惟除如来，非外道、二乘、梵天王等之所能得。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -22619,8 +22732,8 @@
         {
           "pid": "p-s6619e131",
           "text": "大慧白佛言：“世尊，何故说有三乘，不说一乘？”佛言：“大慧，声闻、缘觉，无自般涅槃法故，我说一乘以彼但依如来所说，调伏远离，如是修行而得解脱，非自所得；又彼未能除灭智障及业习气，未觉法无我，未名不思议变易死，是故我说以为三乘。若彼能除一切过习，觉法无我，是时乃离三昧所醉，于无漏界而得觉悟已。于出世上上无漏界中修诸功德，普使满足，获不思议自在法身。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -22629,8 +22742,8 @@
         {
           "pid": "p-sa2f39203",
           "text": "尔时，世尊重说颂言：天乘及梵乘，声闻缘觉乘；诸佛如来乘，诸乘我所说。乃至有心起，诸乘未究竟；彼心转灭已，无乘及乘者。无有乘建立，我说为一乘；为摄愚夫故，说诸乘差别。解脱有三种，谓离诸烦恼；及以法无我，平等智解脱。譬如海中木，常随波浪转；声闻心亦然，相风所飘激。虽灭起烦恼，犹被习气缚；三昧酒所醉，住于无漏界。彼非究竟趣，亦复不退转；以得三昧身，乃至劫不觉。譬如昏醉人，酒消然后悟；声闻亦如是，觉后当成佛。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -22639,8 +22752,8 @@
         {
           "pid": "p-sd60a5d4d",
           "text": "尔时，佛告大慧菩萨摩诃萨言：“今当为汝说意成身差别相，谛听谛听，善思念之。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -22649,8 +22762,8 @@
         {
           "pid": "p-s7b49b6dc",
           "text": "大慧言：“唯。”佛言：“大慧，意成身有三种。何者为三？谓入三昧乐意成身，觉法自性意成身，种类俱生无作行意成身。诸修行者入初地已，渐次证得。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -22659,8 +22772,8 @@
         {
           "pid": "p-s8bf27f3d",
           "text": "“大慧，云何入三昧乐意成身？谓三、四、五地入于三昧，离种种心寂然不动，心海不起，转识波浪，了境心现，皆无所有，是名入三昧乐意成身；云何觉法自性意成身？谓八地中了法如幻，皆无有相，心转所依，住如幻定及余三昧，能现无量自在神通，如花开敷，速疾如意，如幻、如梦、如影、如像，非四大造与造相似，一切色相具足庄严，普入佛刹了诸法性，是名觉法自性无作行意成身；云何种类俱生无作行意成身？谓了达诸佛自证法相，是名种类俱生无作行意成身。大慧，三种身相当勤观察。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -22669,8 +22782,8 @@
         {
           "pid": "p-s2bc4e81a",
           "text": "……尔时，大慧菩萨摩诃萨复白佛言：“世尊，如世尊说五无间业。何者为五？若人作巳，堕阿鼻狱。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -22679,8 +22792,8 @@
         {
           "pid": "p-sb664cc1d",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛告大慧：“五无间者，所谓杀母、杀父、杀阿罗汉、破和合僧、怀恶逆心出佛身血。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -22689,8 +22802,8 @@
         {
           "pid": "p-see6a53d8",
           "text": "“大慧，何者为众生母？谓引生爱与贪喜俱如母养育。何者为父？所谓无明令生六处聚落中故，断二根本名杀父母。云何杀阿罗汉？谓随眠为怨，如鼠毒发，究竟断彼，是故说名杀阿罗汉。云何破和合僧？谓诸蕴异相和合积聚，究竟断彼名为破僧。云何恶心出佛身血？谓八识身妄生思觉，见自心外自相、共相，以三解脱无漏恶心，究竟断彼八识身佛，名为恶心出佛身血。大慧，是为内五无间。若有作者，无间即得现证实法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -22702,7 +22815,8 @@
           "start": 0.47,
           "end": 8.5,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sacf765a3",
@@ -22710,7 +22824,8 @@
           "start": 8.5,
           "end": 20.59,
           "conf": 0.7,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s467f7415",
@@ -23612,8 +23727,8 @@
         {
           "pid": "p-sda2c3f01",
           "text": "“复次，大慧，今为汝说外五无间，令汝及余菩萨闻是义已，于未来世不生疑惑。云何外五无间？谓余教中所说无间，若有作者于三解脱不能现证，唯除如来诸大菩萨及大声闻，见其有造无间业者，为欲劝发令其改过，以神通力示同其事，寻即悔除证于解脱。此皆化现，非是实造，若有实造无间业者，终无现身而得解脱，唯除觉了自心所现身资所住，离我、我所分别执见，或于来世余处受生遇善知识离分别过，方证解脱。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -23622,8 +23737,8 @@
         {
           "pid": "p-s20bdffc3",
           "text": "尔时，世尊重说颂言：贪爱名为母，无明则是父；识了于境界，此则名为佛。随眠阿罗汉，蕴聚和合僧；断彼无余间，是名无间业。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23632,8 +23747,8 @@
         {
           "pid": "p-s9a0189a3",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说诸佛体性。”佛言：“大慧，觉二无我，除二种障，离二种死，断二烦恼，是佛体性。大慧，声闻、缘觉得此法已，亦名为佛，我以是义但说一乘。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -23642,8 +23757,8 @@
         {
           "pid": "p-sa1318539",
           "text": "尔时，世尊重说颂言：善知二无我，除二障二恼，及不思议死，是故名如来。尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来以何密意，于大乘中唱如是言：‘我是过去一切诸佛及说百千本生之事，我于尔时作顶生王、大象、鹦鹉、月光、妙眼，如是等。’”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23652,8 +23767,8 @@
         {
           "pid": "p-safa2558a",
           "text": "佛言：“大慧，如来应正等觉依四平等秘密意故，于大众中作如是言，我于昔时作拘留孙佛、拘那含牟尼佛、迦叶佛。云何为四？所谓字平等、语平等、身平等、法平等。云何字平等？谓我名佛，一切如来亦名为佛，佛名无别，是谓字等；",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23662,8 +23777,8 @@
         {
           "pid": "p-s1d9b6cfc",
           "text": "云何语平等？谓我作六十四种梵音声语，一切如来亦作此语，迦陵频伽梵音声性，不增不减，无有差别，是名语等；云何身平等？谓我与诸佛，法身色相及随形好等无差别，除为调伏种种众生，现随类身，是谓身平等；云何法平等？谓我与诸佛，皆同证得三十七种菩提分法，是谓法等。是故如来应正等觉，于大众中作如是说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23672,8 +23787,8 @@
         {
           "pid": "p-sa886e547",
           "text": "尔时，世尊重说颂言：迦叶、拘留孙，拘那含是我，依四平等故，为诸佛子说。尔时，大慧菩萨摩诃萨复白佛言：“世尊，如世尊说，我于某夜成最正觉，乃至某夜当入涅槃，于其中间不说一字，亦不已说，亦不当说，不说是佛说。世尊，依何密意作如是语？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23682,8 +23797,8 @@
         {
           "pid": "p-s365c2ac7",
           "text": "佛言：“大慧，依二密法故作如是说。云何二法？谓自证法及本住法。云何自证法？谓诸佛所证，我亦同证，不增不减，证智所行，离言说相，离分别相，离名字相。云何本住法？谓法本性如金等在矿，若佛出世，若不出世，法住法位，法界法性皆悉常住。大慧，譬如有人行旷野中，见向古城平坦旧道，即便随入止息游戏。大慧，于汝意云何？彼作是道及以城中种种物耶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -23692,8 +23807,8 @@
         {
           "pid": "p-s11383b5e",
           "text": "白言：“不也。”佛言：“大慧，我及诸佛所证真如，常住法性亦复如是。是故说言始从成佛，乃至涅槃，于其中间不说一字，亦不已说，亦不当说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23702,8 +23817,8 @@
         {
           "pid": "p-se6f912f1",
           "text": "尔时，世尊重说颂言：某夜成正觉，某夜般涅槃，于此二中间，我都无所说。自证本住法，故作是密语，我及诸如来，无有少差别。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -23712,8 +23827,8 @@
         {
           "pid": "p-s5f6b93e1",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿说一切法有无相，令我及诸菩萨摩诃萨离此相，疾得阿耨多罗三藐三菩提。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -23722,8 +23837,8 @@
         {
           "pid": "p-s92c8b7bd",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“世间众生多堕二见，谓有见、无见。堕二见故，非出出想。“云何有见？谓实有因缘而生诸法，非不实有，实有诸法从因缘生，非无法生。大慧，如是说者，则说无因。云何无见？谓知受贪嗔痴已，而妄计言无。大慧，及彼分别有相，而不受诸法有，复有知诸如来、声闻、缘觉，无贪、嗔、痴性而计为非有，此中谁为坏者？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -23732,8 +23847,8 @@
         {
           "pid": "p-sf09d6bfa",
           "text": "大慧白言：“谓有贪、嗔、痴性后取于无，名为坏者。”佛言：“善哉！汝解我问，此人非止无贪、嗔、痴名为坏者，亦坏如来、声闻、缘觉。何以故？烦恼内外不可得故，体性非异非不异故。大慧，贪、嗔、痴性若内若外皆不可得，无体性故，无可取故，声闻、缘觉及以如来本性解脱，无有能缚及缚因故。大慧，若有能缚及以缚因，则有所缚，作如是说名为坏者，是为无有相，我依此义密意而说。宁起我见，如须弥山，不起空见，怀增上慢。若起此见，名为坏者，堕自共见乐欲之中，不了诸法惟心所现，以不了故，见有外法刹那无常展转差别蕴界处相。相续流转起已还灭，虚妄分别，离文字相，亦成坏者。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -23742,8 +23857,8 @@
         {
           "pid": "p-s968fb40a",
           "text": "尔时，世尊重说颂言：有无是二边，乃至心所行，净除彼所行，平等心寂灭。不取于境界，非灭无所有，有真如妙物，如诸圣所行。本无而有生，生已而复灭，因缘有及无，彼非住我法。非外道非佛，非我非余众，能以缘成有，云何而得无？谁以缘成有，而复得言无？恶见说为生，妄想计有无。若知无所生，亦复无所灭，观世悉空寂，有无二俱离。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -24977,8 +25092,8 @@
         {
           "pid": "p-sdada7d8e",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，惟愿为说宗趣之相，令我及诸菩萨摩诃萨善达此义，不随一切众邪妄解，疾得阿耨多罗三藐三菩提。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -24987,8 +25102,8 @@
         {
           "pid": "p-s62d5eeff",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“大慧，一切二乘及诸菩萨，有二种宗法相。何等为二？谓宗趣法相，言说法相。宗趣法相者，谓自证殊胜之相，离于文字语言分别，入无漏界，成自地行，超过一切不正思觉，伏魔外道，生智慧光，是名宗趣法相。言说法相者，谓说九部种种教法，离于一异、有无等相，以巧方便随众生心，令入此法，是名言说法相。汝及诸菩萨当勤修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -24997,8 +25112,8 @@
         {
           "pid": "p-s9787ae53",
           "text": "……尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说虚妄分别相，此虚妄分别，云何而生？是何而生？因何而生？谁之所生？何故名为虚妄分别？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -25007,8 +25122,8 @@
         {
           "pid": "p-s74d43da5",
           "text": "佛言：“大慧，善哉！善哉！汝为哀愍世间天人而问此义，多所利益，多所安乐，谛听，谛听，善思念之，当为汝说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -25017,8 +25132,8 @@
         {
           "pid": "p-sf9404384",
           "text": "大慧言：“唯。”佛言：“大慧，一切众生于种种境不能了达自心所现，计能、所取，虚妄执著，起诸分别，堕有、无见，增长外道妄见习气，心、心所法，相应起时，执有外义种种可得，计著于我及以我所，是故名为虚妄分别。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -25027,8 +25142,8 @@
         {
           "pid": "p-s7a3e8474",
           "text": "大慧白言：“若如是者，外种种义，性离有、无，起诸见相，世尊第一义谛亦复如是，离诸根量宗因譬喻。世尊何故于种种义言起分别？第一义中不言起耶？将无世尊所言乖理？一处言起，一不言故。世尊又说虚妄分别，堕有、无见，譬如幻事，种种非实，分别亦尔，有无相离，云何而说堕二见耶？此说岂不堕于世见？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -25037,8 +25152,8 @@
         {
           "pid": "p-s6fb32ed0",
           "text": "佛言：“大慧，分别不生不灭，何以故？不起有无分别相故，所见外法皆无有故，了唯自心之所现故，但以愚夫分别自心种种诸法，著种种相，而作是说，令知所见皆是自心，断我、我所一切见著，离作、所作诸恶因缘，觉唯心故，转其意乐，善明诸地，入佛境界，舍五法自性诸分别见，是故我说虚妄分别、执著种种自心所现，诸境界生，如实了知，则得解脱。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -25047,8 +25162,8 @@
         {
           "pid": "p-s05c30e49",
           "text": "……尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来说言，如我所说，汝及诸菩萨不应依语而取其义。世尊，何故不应依语取义？云何为语？云何为义？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -25057,8 +25172,8 @@
         {
           "pid": "p-s65cf6ebf",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“大慧，语者所谓分别习气而为其因，依于喉舌唇腭齿辅而出种种音声文字，相对谈说，是名为语。云何为义？菩萨摩诃萨住独一静处，以闻思修慧思惟观察，向涅槃道自智境界转诸习气，行于诸地种种行相，是名为义。复次，大慧，菩萨摩诃萨善于语、义，知语与义不一不异；义之与语，亦复如是。若义异语，则不应因语而显于义，而因语见义，如灯照色。大慧，譬如有人持灯照物，知此物如是在如是处。菩萨摩诃萨亦复如是，因语言灯入离言说自证境界。复次，大慧，若有于不生不灭自性涅槃三乘一乘五法诸心自性等中，如言取义，即堕建立及诽谤见，以异于彼起分别故，如见幻事计以为实，是愚夫见，非贤圣也。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -25067,8 +25182,8 @@
         {
           "pid": "p-s0151c9b6",
           "text": "尔时，世尊重说颂言：若随言取义，建立于诸法；以彼建立故，死堕地狱中。蕴中无有我，非蕴即是我；不如彼分别，亦复非无有。如愚所分别，一切皆有性；若如彼所见，皆应见真实。一切染净法，悉皆无体性；不如彼所见，亦非无所有。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -25077,8 +25192,8 @@
         {
           "pid": "p-s8d916ddb",
           "text": "“复次，大慧，我当为汝说智识相，汝及诸菩萨摩诃萨，若善了知智识之相，则能疾得阿耨多罗三藐三菩提。大慧，智有三种，谓世间智、出世间智、出世间上上智。云何世间智？谓一切外道凡愚计有、无法。云何出世间智？谓一切二乘著自、共相。云何出世间上上智？谓诸佛菩萨观一切法皆无有相，不生不灭，非有非无，证法无我，入如来地。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -25087,8 +25202,8 @@
         {
           "pid": "p-scbcb3857",
           "text": "“大慧，复有三种智。谓知自相、共相智，知生灭智，知不生不灭智。复次，大慧，生灭是识，不生灭是智；堕相、无相及以有、无种种相因，是识；离相、无相及有、无因是智；有积集相是识，无积集相是智；著境界相是识，不著境界相是智；三和合相应生是识，无碍相应自性相是智；有得相是识，无得相是智；证自圣智所行境界，如水中月，不入不出故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -25097,8 +25212,8 @@
         {
           "pid": "p-se71a02e3",
           "text": "……",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -26079,8 +26194,8 @@
         {
           "pid": "p-s5062f7e0",
           "text": "“复次，大慧，诸外道有九种转变见。所谓形转变、相转变、因转变、相应转变、见转变、生转变，物转变、缘明了转变、所作明了转变，是为九。一切外道因是见故，起有无转变论。此中形转变者，谓形别异见，譬如以金作庄严具，环钏璎珞种种不同，形状有殊，金体无易，一切法变亦复如是。诸余外道种种计著，皆非如是，亦非别异，但分别故，一切转变，如是应知，譬如乳酪酒果等熟，外道言此皆有转变，而实无有。若有若无，自心所见，无外物故。如此皆是愚迷凡夫，从自分别习气而起，实无一法若生若灭，如因幻梦所见诸色，如石女儿说有生死。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -26089,8 +26204,8 @@
         {
           "pid": "p-s68f8902b",
           "text": "尔时，世尊重说颂言：形处时转变，大种及诸根；中有渐次生，妄想非明智。诸佛不分别，缘起及世间；但诸缘世间，如乾闼婆城。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -26099,8 +26214,8 @@
         {
           "pid": "p-s98e7128e",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“惟愿如来为我解说于一切法深密义及解义相，令我及诸菩萨摩诃萨善知此法，不堕如言取义，深密执著，离文字语言虚妄分别，普入一切诸佛国土，力通自在，总持所印，觉慧善住，十无尽愿，以无功用种种变现，光明照耀如日月摩尼，地、水、火、风住于诸地，离分别见，知一切法如幻如梦，入如来位，普化众生，令知诸法虚妄不实，离有、无品，断生、灭执，不著言说，令转所依。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26109,8 +26224,8 @@
         {
           "pid": "p-sb2170952",
           "text": "佛言：“谛听，当为汝说。大慧，于一切法如言取义，执著深密，其数无量。所谓相执著、缘执著、有非有执著、生非生执著、灭非灭执著、乘非乘执著、为无为执著、地地自相执著、自分别现证执著、外道宗有无品执著，三乘一乘执著。大慧，此等密执有无量种，皆是凡愚自分别执而密执著。此诸分别如蚕作茧，以妄想丝自缠、缠他，执著有、无，欲乐坚密。大慧，此中实无密、非密相，以菩萨摩诃萨见一切法住寂静故，无分别故，若了诸法唯心所见，无有外物皆同无相，随顺观察于若有若无分别密执，悉见寂静，是故无有密、非密相。大慧，此中无缚亦无有解，不了实者见缚解耳。何以故？一切诸法若有若无，求其体性不可得故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26119,8 +26234,8 @@
         {
           "pid": "p-s48aa7441",
           "text": "“复次，大慧，愚痴凡夫有三种密缚，谓贪恚痴及爱来生与贪喜俱。以此密缚令诸众生续生五趣。密缚若断，是则无有密、非密相。复次，大慧，若有执著三和合缘，诸识密缚次第而起。有执著故，则有密缚。若见三解脱，离三和合识，一切诸密皆悉不生。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26129,8 +26244,8 @@
         {
           "pid": "p-s1c395363",
           "text": "尔时，世尊重说颂言：不实妄分别，是名为密相；若能如实知，诸密网皆断。凡愚不能了，随言而取义；譬如蚕处茧，妄想自缠缚。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26736,7 +26851,8 @@
           "start": 1524.91,
           "end": 1559.9,
           "conf": 0.986,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se2d8a75a",
@@ -26744,7 +26860,8 @@
           "start": 1559.9,
           "end": 1577.75,
           "conf": 0.86,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s03986ae2",
@@ -26856,8 +26973,8 @@
         {
           "pid": "p-sae77985e",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如世尊说，由种种心，分别诸法，非诸法有自性，此但妄计耳。世尊，若但妄计，无诸法者，染净诸法将无悉坏。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -26866,8 +26983,8 @@
         {
           "pid": "p-s7b56e5d7",
           "text": "佛言：“大慧，如是如是，如汝所说，一切凡愚分别诸法，而诸法性非如是有，此但妄执，无有性相，然诸圣者，以圣慧眼，见有诸法性。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -26876,8 +26993,8 @@
         {
           "pid": "p-scba9c67f",
           "text": "大慧白言：“若诸圣人以圣慧眼，见有诸法性，非天眼、肉眼，不同凡愚之所分别，云何凡愚得离分别？不能觉了诸圣法故。世尊，彼非颠倒非不颠倒。何以故？不见圣人所见法故，圣见远离有、无相故，圣亦不如凡所分别如是得故，非自所行境界相故，彼亦见有诸法性相如妄执性而显现故，不说有因及无因故，堕于诸法性相见故。世尊，其余境界既不同此，如是则成无穷之失，孰能于法了知性相？世尊，诸法性相不因分别，云何而言以分别故而有诸法？世尊，分别相异，诸法相异，因不相似，云何诸法而由分别？复以何故凡愚分别不如是有，而作是言，为令众生舍分别故，说如分别所见法相无如是法。世尊，何故令诸众生离有、无见所执著法，而复执著圣智境界，堕于有见？何以故？不说寂静空无之法，而说圣智自性事故？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26886,8 +27003,8 @@
         {
           "pid": "p-s1706f29d",
           "text": "佛言：“大慧，我非不说寂静空法，堕于有见。何以故？已说圣智自性事故，我为众生无始时来计著于有，于寂静法以圣事说，令其闻已，不生恐怖，能如实证寂静空法，离惑乱相入唯识理，知其所见无有外法，悟三脱门，获如实印，见法自性，了圣境界，远离有、无一切诸著。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -26896,8 +27013,8 @@
         {
           "pid": "p-s700eb021",
           "text": "“复次，大慧，菩萨摩诃萨不应成立一切诸法皆悉不生。何以故？一切法本无有故，及彼宗因生相故。复次，大慧，一切法不生，此言自坏，何以故？彼宗有待而生故。又彼宗即入一切法中不生，相亦不生故。又彼宗诸分而成故。又彼宗有、无法皆不生，此宗即入一切法中有、无相亦不生故，是故一切法不生，此宗自坏，不应如是立诸分多过故，展转因异相故，如不生，一切法空无自性亦如是。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26906,8 +27023,8 @@
         {
           "pid": "p-s1764e455",
           "text": "“大慧，菩萨摩诃萨应说一切法如幻如梦，见、不见故，一切皆是惑乱相故，除为愚夫而生恐怖。大慧，凡夫愚痴堕有无见，莫令于彼而生惊恐，远离大乘。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26916,8 +27033,8 @@
         {
           "pid": "p-s23c08c6c",
           "text": "……“复次，大慧，愚痴凡夫无始虚伪恶邪分别之所幻惑，不了如实及言说法，计心外相著方便说，不能修习清净真实离四句法。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -26926,8 +27043,8 @@
         {
           "pid": "p-se37a1226",
           "text": "大慧白言：“如是如是，诚如尊教。愿为我说如实之法及言说法，令我及诸菩萨摩诃萨于此二法而得善巧，非外道二乘之所能入。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -26936,8 +27053,8 @@
         {
           "pid": "p-s7b8de0e3",
           "text": "佛言：“谛听，当为汝说。大慧，三世如来有二种法，谓言说法及如实法。言说法者，谓随众生心为说种种诸方便教；如实法者，谓修行者于心所现，离诸分别不堕一异、俱不俱品，超度一切心、意、意识，于自觉圣智所行境界，离诸因缘相应见相，一切外道、声闻、缘觉，堕二边者，所不能知，是名如实法。此二种法，汝及诸菩萨摩诃萨当善修学。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -26946,8 +27063,8 @@
         {
           "pid": "p-s4ce653a6",
           "text": "尔时，世尊重说颂言：我说二种法，言教及如实；教法示凡夫，实为修行者。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -27726,8 +27843,8 @@
         {
           "pid": "p-se064bf44",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来一时说卢迦耶陀咒术词论，但能摄取世间财利，不得法利，不应亲近承事供养。世尊何故作如是说？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -27736,8 +27853,8 @@
         {
           "pid": "p-s558dce22",
           "text": "佛言：“大慧，卢迦耶陀所有词论，但饰文句，诳惑凡愚，随顺世间虚妄言说，不如于义，不称于理，不能证入真实境界，不能觉了一切诸法，恒堕二边，自失正道；亦令他失轮回诸趣，永不出离。何以故？不了诸法唯心所见，执著外境增分别故。是故我说世论文句因喻庄严但诳愚夫，不能解脱生老病死忧悲等患。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27746,8 +27863,8 @@
         {
           "pid": "p-s305e3bd9",
           "text": "“大慧，释提桓因广解众论，自造诸论，彼世论者，有一弟子，现作龙身诣释天宫，而立论宗作是要言，尸迦，我共汝论，汝若不如，我当破汝千辐轮，我若不如，断一一头，以谢所屈。说是语已，即以论法摧伏帝释，坏千辐轮，还来人间。大慧，世间言论因喻庄严，乃至能现龙形，以妙文词迷惑诸天及阿修罗，令其执著生、灭等见，而况于人？是故，大慧，不应亲近承事供养，以彼能作生苦因故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27756,8 +27873,8 @@
         {
           "pid": "p-s384a58ca",
           "text": "“大慧，世论唯说身觉境界，大慧，彼世论有百千字句，后末世中恶见乖离，邪众崩散，分成多部，各执自因。大慧，非余外道能立教法，唯卢迦耶以百千句，广说无量差别因相，非如实理，亦不自知是惑世法。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -27766,8 +27883,8 @@
         {
           "pid": "p-s43d79aac",
           "text": "尔时，大慧白言：“世尊，若卢迦耶所造之论，种种文字因喻庄严，执著自宗非如实法，名外道者；世尊亦说世间之事，谓以种种文句言词广说十方一切国土、天人等众，而来集会，非是自智所证之法，世尊亦同外道说耶？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -27776,8 +27893,8 @@
         {
           "pid": "p-s85351845",
           "text": "佛言：“大慧，我非世说亦无来去，我说诸法不来不去。大慧，来者集生，去者坏灭，不来不去，此则名为不生不灭。大慧，我之所说，不同外道堕分别中，何以故？外法有、无，无所著故，了唯自心不见二取，不行相境，不生分别，入空、无相、无愿之门而得解脱故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -27786,8 +27903,8 @@
         {
           "pid": "p-s10f42bb1",
           "text": "“大慧，我忆有时于一虚住，有世论婆罗门来至我所，遽问我言：‘瞿昙，一切是所作耶？’我时报言：‘婆罗门一切所作，是初世论。’又问我言：‘一切非所作耶？’我时报言：‘一切非所作，是第二世论。’彼复问言：‘一切常耶？一切无常耶？一切生耶？一切不生耶？’我时报言：‘是第六世论。’彼复问言：‘一切一耶？一切异耶？一切俱耶？一切不俱耶？一切皆由种种因缘而受生耶？’我时报言：‘是第十一世论。’彼复问言：‘一切有记耶？一切无记耶？有我耶？无我耶？有此世耶？无此世耶？有他世耶？无他世耶？有解脱耶？无解脱耶？是刹那耶？非刹那耶？虚空、涅槃及非择灭是所作耶？非所作耶？有中有耶？无中有耶？’",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27796,8 +27913,8 @@
         {
           "pid": "p-s61b25bd6",
           "text": "“我时报言：‘婆罗门，如是皆是汝之世论，非我所说。婆罗门，我说因于无始戏论诸恶习气而生三有，不了唯是自心所见，而取外法，实无可得，如外道说，我及根、境三合生，我不如是。我不说因，不说无因，唯依妄心，似能所取，而说缘起，非汝及余取著我者之所能测，大慧，虚空、涅槃及非择灭，但有三数本无体性，何况而说作与非作？’大慧，尔时，世论婆罗门复问我言：‘无明爱业为因缘，故有三有耶？为无因耶？我言此二亦是世论。’又问我言：‘一切诸法皆入自相及共相耶？’我时报言：‘此亦世论，婆罗门，乃至少有心识流动分别外境，皆是世论。’",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27806,8 +27923,8 @@
         {
           "pid": "p-s553a0e97",
           "text": "“大慧，尔时彼婆罗门复问我言：‘颇有非是世论者不？一切外道所有词论，种种文句因喻庄严，莫不皆从我法中出？’我报言：‘有，非汝所许，非世不许，非不说种种文句义理相应、非不相应。’彼复问言：‘岂有世许非世论耶？’我答言：‘有，但非于汝及以一切外道能知，何以故？以于外法虚妄分别生执著故，若能了达有、无等法，一切皆是自心所见，不生分别，不取外境，于自处住，自处住者是不起义，不起于何，不起分别。此是我法，非汝有也。’婆罗门，略而言之：随何处中心识往来死生求恋？若受、若见、若触、若住，取种种相，和合相续，于爱、于因而生计著，皆汝世论非是我法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27816,8 +27933,8 @@
         {
           "pid": "p-s91fb3ee6",
           "text": "“大慧，世论婆罗门作如是问，我如是答，不问于我自宗实法，默然而去，作是念言：沙门瞿昙，无可尊重，说一切法无生、无相、无因、无缘，唯是自心分别所见，若能了此分别不生。大慧，汝今亦复问我是义，何故亲近诸世论者，唯得财利，不得法利？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27826,8 +27943,8 @@
         {
           "pid": "p-s68ba3b03",
           "text": "大慧白言：“所言财法，是何等义？”佛言：“善哉！汝乃能为未来众生思惟是义，谛听谛听，当为汝说。大慧，所言财者，可触、可受、可取、可味，令著外境，堕在二边，增长贪爱生老病死、忧悲苦恼，我及诸佛说名财利，亲近世论之所获得。云何法利？谓了法是心，见二无我，不取于相，无有分别，善知诸地，离心、意、识，一切诸佛，所共灌顶，具足受行，十无尽愿，于一切法悉得自在，是名法利。以是不堕一切诸见、戏论、分别、常断二边。大慧，外道世论令诸痴人堕在二边，谓常及断，受无因论，则起常见，以因坏灭，则生断见，我说不见生住灭者，名得法利。是名财，法二差别相，汝及诸菩萨摩诃萨应勤观察。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -27836,8 +27953,8 @@
         {
           "pid": "p-s43a9abdd",
           "text": "……",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -28086,7 +28203,8 @@
           "start": 537.84,
           "end": 560.1,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7650a3a6",
@@ -28094,7 +28212,8 @@
           "start": 560.1,
           "end": 561.06,
           "conf": 0.86,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s87eb2ae6",
@@ -28674,8 +28793,8 @@
         {
           "pid": "p-sfd312094",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，佛说涅槃，说何等法以为涅槃，而诸外道种种分别？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -28684,8 +28803,8 @@
         {
           "pid": "p-sc933f083",
           "text": "佛言：“大慧，如诸外道分别涅槃，皆不随顺涅槃之相，谛听谛听，当为汝说。大慧，或有外道言，见法无常，不贪境界，蕴界处灭，心、心所法不现在前，不念过、现、未来境界，如灯尽，如种败，如火灭。诸取不起，分别不生，起涅槃想。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28694,8 +28813,8 @@
         {
           "pid": "p-s7d8532e2",
           "text": "“大慧，非以见坏名为涅槃；或谓至方名得涅槃，境界想离犹如风止；或谓不见能觉、所觉名为涅槃；或谓不起分别常、无常见名得涅槃。或有说言分别诸相发生于苦，而不能知自心所现，以不知故怖畏于相，以求无相，深生爱乐执为涅槃；或谓觉知内外诸法自相共相、去来现在有性不坏，作涅槃想。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28704,8 +28823,8 @@
         {
           "pid": "p-s1b52bf5c",
           "text": "“或计我、人、众生，寿命及一切法无有坏灭，作涅槃想；复有外道，无有智慧，计有自性及以士夫求那转变作一切物以为涅槃；或有外道计福非福尽，或计不由智慧诸烦恼尽，或计自在是实作者以为涅槃；或谓众生展转相生，以此为因，更无异因，彼无智故不能觉了，以不了故执为涅槃；或计证于谛道虚妄分别以为涅槃；或计求那与求那者而共和合一性异性，俱及不俱执为涅槃；或计诸物从自然生，孔雀文彩棘针铦利，生宝之处出种种宝，如此等事是谁能作，即执自然以为涅槃。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28714,8 +28833,8 @@
         {
           "pid": "p-s34d66590",
           "text": "“或谓能解二十五谛即得涅槃；或有说言能受六分，守护众生斯得涅槃；或有说言时生世间，时即涅槃；或执有物以为涅槃：或计无物以为涅槃；或有计著有物、无物为涅槃者；或计诸物与涅槃无别作涅槃想。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28724,8 +28843,8 @@
         {
           "pid": "p-s49771128",
           "text": "“大慧，复有异彼外道所说，以一切智大师子吼说，能了达唯心所现，不取外境，远离四句，住如实见，不堕二边，离能、所取，不入诸量，不著真实，住于圣智所现证法，悟二无我，离二烦恼，净二种障。转修诸地入于佛地，得如幻等诸大三昧，永超心、意及以意识，名得涅槃。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28734,8 +28853,8 @@
         {
           "pid": "p-s4f90a26b",
           "text": "“大慧，彼诸外道虚妄计度，不如于理，智者所弃，皆堕二边，作涅槃想，于此无有，若住若出。彼诸外道皆依自宗而生妄觉，违背于理，无所成就，唯令心意驰散往来，一切无有得涅槃者，汝及诸菩萨宜应远离。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28744,8 +28863,8 @@
         {
           "pid": "p-sf1833b1d",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说如来、应供、正等觉自觉性，令我及诸菩萨摩诃萨而得善巧自悟、悟他。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.45,
           "method": "miss",
           "confirmed": false,
@@ -28754,8 +28873,8 @@
         {
           "pid": "p-sc406e8ef",
           "text": "佛言：“如汝所问，当为汝说。”大慧言：“唯。世尊，如来、应供、正等觉为作非作？为果为因？为相所相？为说所说？为觉所觉？如是等为异不异？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -28764,8 +28883,8 @@
         {
           "pid": "p-s08772873",
           "text": "佛言：“大慧，如来、应、正等觉非作非非作，非果非因，非相非所相，非说非所说，非觉非所觉，何以故？俱有过故。大慧，若如来是作，则是无常，若是无常，一切作法应是如来。我及诸佛皆不忍可。若非作法，则无体性，所修方便悉空无益，同于兔角、石女之子，非作因成故。若非因非果，则非有非无，若非有非无，则超过四句。言四句者，但随世间而有言说。若超过四句，惟有言说，则如石女儿。大慧，石女儿者，惟有言说，不堕四句，以不堕故，不可度量，诸有智者，应如是知如来所有一切句义。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -29520,8 +29639,8 @@
         {
           "pid": "p-s00726708",
           "text": "“大慧，如我所说，诸法无我，以诸法中无有我性，故说无我。非是无有诸法自性，如来句义应知亦然。大慧，譬如牛无马性，马无牛性，非无自性，一切诸法亦复如是。无有自相，而非有即有，非诸凡愚之所能知，何故不知？以分别故。一切法空，一切法无生，一切法无自性，悉亦如是。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -29530,8 +29649,8 @@
         {
           "pid": "p-sdc3e4803",
           "text": "“大慧，如来与蕴非异非不异。若不异者，应是无常，五蕴诸法是所作故。若异者，如牛二角有异不异，互相似故不异，长短别故有异，如牛右角异左，左角异右，长短不同，色相各别。然亦不异，如于蕴于界处等。一切法亦如是。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -29540,8 +29659,8 @@
         {
           "pid": "p-s81490e7c",
           "text": "“大慧，如来者依解脱说，如来解脱非异非不异。若异者，如来便与色相相应，色相相应即是无常；若不异，修行者见应无差别，然有差别，故非不异。如是智与所知，非异非不异，若非异非不异，则非常非无常，非作非所作，非为非无为，非觉非所觉，非相非所相，非蕴非异蕴，非说非所说，非一非异，非俱非不俱。以是义故，超一切量，超一切量故，惟有言说，惟有言说故，则无有生，无有生故，则无有灭，无有灭故，则如虚空。大慧，虚空非作非所作，非作非所作故，远离攀缘，远离攀缘故，出过一切诸戏论法，出过一切诸戏论法，即是如来。如来即是正等觉体，正等觉者，永离一切诸根境界。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -29550,8 +29669,8 @@
         {
           "pid": "p-s84814701",
           "text": "……尔时，大慧菩萨摩诃萨复白佛言：“世尊，如佛经中分别摄取不生不灭，言此即是如来异名。世尊，愿为我说，不生不灭，此则无法，云何说是如来异名？如世尊说，一切诸法不生不灭，当知此则堕有无见。世尊，若法不生，则不可取，无有少法，谁是如来？惟愿世尊为我宣说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -29560,8 +29679,8 @@
         {
           "pid": "p-s153d4f2c",
           "text": "佛言：“谛听，当为汝说。大慧，我说如来，非是无法，亦非摄取不生不灭，亦非待缘，亦非无义，我说无生即是如来意生法身别异之名，一切外道、声闻、独觉、七地菩萨不了其义。大慧，譬如帝释地及虚空乃至手足，随一一物各有多名。非以名多而有多体，亦非无体。大慧，我亦如是，于此娑婆世界，有三阿僧祇百千名号，诸凡愚人虽闻虽说，而不知是如来异名，其中或有知如来者，知无师者，知导师者，知胜导者，知普导者，知是佛者，……如是等满足三阿僧祇百千名号，不增不减，于此及余诸世界中，有能知我如水中月，不入不出，但诸凡愚心没二边，不能解了，然亦尊重承事供养，而不善解名字句义，执著言教，昧于真实，谓无生，无灭是无体性，不知是佛差别名号。如因陀罗释揭罗等，以信言教，昧于真实，于一切法，如言取义，彼诸凡愚作如是言，义如言说，义说无异，何以故？义无体故。是人不了言音自性，谓言即义，无别义体。大慧，彼人愚痴，不知言说是生是灭，义不生灭。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -29570,8 +29689,8 @@
         {
           "pid": "p-s388c0582",
           "text": "“大慧，一切言说堕于文字，义则不堕，离有离无故，无生无体故。大慧，如来不说堕文字法，文字有无不可得故，惟除不堕于文字者。大慧，若人说法堕文字者，是虚诳说，何以故？诸法自性离文字故。是故，大慧，我经中说，我与诸佛及诸菩萨，不说一字，不答一字，所以者何？一切诸法离文字故，非不随义而分别说。大慧，若不说者，教法则断，教法断者，则无声闻、缘觉、菩萨、诸佛。若总无者，谁说？为谁？是故，大慧，菩萨摩诃萨不著文字，随宜说法，我及诸佛皆随众生烦恼解欲种种不同而为开演，令知诸法自心所见，无外境界，舍二分别，转心意识，非为成立圣自证处。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -29583,7 +29702,8 @@
           "start": 1.12,
           "end": 8.9,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s41f37154",
@@ -29591,7 +29711,8 @@
           "start": 8.9,
           "end": 12.71,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6717e902",
@@ -29708,7 +29829,8 @@
           "start": 236.87,
           "end": 267.8,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbbc7ff00",
@@ -29716,7 +29838,8 @@
           "start": 267.8,
           "end": 270.96,
           "conf": 0.86,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9a6951f8",
@@ -30133,7 +30256,8 @@
           "start": 1215.2,
           "end": 1237.4,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa0a3ecbf",
@@ -30141,7 +30265,8 @@
           "start": 1237.4,
           "end": 1258.82,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa92573d3",
@@ -30380,8 +30505,8 @@
         {
           "pid": "p-s224d0d07",
           "text": "“大慧，菩萨摩诃萨随于义，莫依文字。依文字者，堕于恶见，执著自宗，而起言说，不能善了一切法相，文辞章句，即自损坏，亦坏于他，不能令人心得悟解。若能善知一切法相，文辞句义悉皆通达，则能令自身受无相乐，亦能令他安住大乘；若能令他安住大乘，则得一切诸佛、声闻、缘觉及诸菩萨之所摄受；若得诸佛、声闻、缘觉及诸菩萨之所摄受，则能摄受一切众生；若能摄受一切众生，则能摄受一切正法；若能摄受一切正法，则不断佛种；若不断佛种，则得胜妙处。大慧，菩萨摩诃萨生胜妙处，欲令众生安住大乘，以十自在力，现众色像，随其所宜，说真实法。真实法者，无异、无别、不来、不去，一切戏论皆悉息灭。是故，大慧，善男子、善女人，不应如言执著于义。何以故？真实之法，离文字故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -30390,8 +30515,8 @@
         {
           "pid": "p-seb5779ae",
           "text": "“大慧，譬如有人以指指物，小儿观指不观于物，愚痴凡夫亦复如是，随言说指而生执著，乃至尽命终不能舍文字之指，取第一义。大慧，譬如婴儿应食熟食，有人不解成熟方便，而食生者则发狂乱。不生不灭亦复如是，不方便修则为不善，是故宜应善修方便，莫随言说而观指端。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -30400,8 +30525,8 @@
         {
           "pid": "p-s06c6a4e2",
           "text": "“大慧，实义者微妙寂静是涅槃因，言说者与妄想合流转生死。大慧，实义者从多闻得，多闻者谓善于义非善言说。善义者不随一切外道恶见，身自不随，亦令他不随，是则名曰于义多闻。欲求义者，应当亲近；与此相违著文字者，宜速舍离。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -30410,8 +30535,8 @@
         {
           "pid": "p-s4c6f2bfc",
           "text": "尔时，大慧菩萨摩诃萨承佛威神，复白佛言：“世尊，如来演说不生不灭，非为奇特。何以故？一切外道亦说作者不生不灭，世尊亦说虚空、涅槃及非数灭不生不灭；外道亦说作者因缘生于世间，世尊亦说无明爱业生诸世间，俱是因缘，但名别耳，外物因缘亦复如是。是故，佛说与外道说无有差别。外道说言，微尘、胜妙、自在、生主等如是九物不生、不灭，世尊亦说一切诸法不生不灭，若有若无，皆不可得。世尊大种不坏，以其自相不生、不灭，周流诸趣，不舍自性。世尊，分别虽稍变异，一切无非外道已说，是故佛法同于外道，若有不同，愿佛为演，有何所以佛说为胜？若无别异，外道即佛。以其亦说不生不灭故。世尊常说一世界中，无有多佛，如向所说，是则应有。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -30420,8 +30545,8 @@
         {
           "pid": "p-sefa11faf",
           "text": "佛言：“大慧，我之所说不生不灭，不同外道不生不灭、不生无常论。何以故？外道所说，有实性相不生不变，我不如是堕有，无品，我所说法，非有非无，离生离灭。云何非无？如幻梦色，种种见故。云何非有？色相自性非是有故，见不见故，取不取故。是故，我说一切诸法非有非无。若觉唯是自心所见，住于自性，分别不生，世间所作悉皆永息，分别者是凡愚事，非圣贤耳。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -30430,8 +30555,8 @@
         {
           "pid": "p-s01e078c0",
           "text": "“大慧，妄心分别不实境界，如乾闼婆城，幻所作人。大慧，譬如小儿见乾闼婆城及以幻人商贾入出，迷心分别，言有实事，凡愚所见生与不生，有为无为，悉亦如是。如幻人生、如幻人灭，幻人其实不生、不灭。诸法亦尔，离于生灭。大慧，凡夫虚妄起生灭见，非诸圣人。言虚妄者，不如法性，起颠倒见。颠倒见者，执法有性，不见寂灭；不见寂灭故，不能远离虚妄分别。是故，大慧，无相见胜，非是相见，相是生因，若无有相，则无分别，不生不灭则是涅槃。大慧，言涅槃者，见如实处，舍离分别心、心所法，获于如来内证圣智。我说此是寂灭涅槃。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -30440,8 +30565,8 @@
         {
           "pid": "p-s6cb1e1b5",
           "text": "……",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -30490,7 +30615,8 @@
           "start": 57.57,
           "end": 86.8,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scdde5570",
@@ -30498,7 +30624,8 @@
           "start": 86.8,
           "end": 92.16,
           "conf": 0.87,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7e133824",
@@ -31382,8 +31509,8 @@
         {
           "pid": "p-s0e025470",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，一切外道妄说无常，世尊亦言诸行无常是生灭法，未知此说是邪是正？所言无常复有几种？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -31392,8 +31519,8 @@
         {
           "pid": "p-sc6b7a888",
           "text": "佛言：“大慧，外道说有七种无常，非是我法。何等为七？谓有说始起即舍是名无常，生已不生，无常性故；有说形处变坏是名无常；有说色即无常；有说色之变异是名无常，一切诸法相续不断，能令变异自然归灭，犹如乳酪前后变异，虽不可见，然在法中坏一切法；有说物无常；有说物无物无常；有说不生无常，遍住一切诸法之中。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -31402,8 +31529,8 @@
         {
           "pid": "p-s42abfd77",
           "text": "“其中物、无物、无常者，谓能造、所造其相灭坏，大种自性本来无起；不生无常者，谓常与无常，有无等法，如是一切皆无有起，乃至分析至于微尘，亦无所见，以不起故，说名无生，此是不生无常相。若不了此，则堕外道生无常义，有物无常义；有物无常者，谓于非常、非无常处，自生分别。其义云何？彼立无常自不灭坏，能坏诸法，若无无常坏一切法，法终不灭，成于无有，如杖槌瓦石能坏于物，而自不坏，此亦如是。大慧，现见无常与一切法，无有能作、所作差别，云此是无常，此是所作。无差别故，能作、所作应俱是常，不见有因，能令诸法成于无故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -31412,8 +31539,8 @@
         {
           "pid": "p-sa788c48e",
           "text": "“大慧，诸法坏灭实亦有因，但非凡愚之所能了。大慧，异因不应生于异果，若能生者，一切异法应并相生，彼法此法能生所生应无有别，现见有别，云何异因生于异果？大慧，若无常性是有法者，应同所作自是无常，自无常故，所无常法皆应是常。大慧，若无常性住诸法中，应同诸法堕于三世，与过去色同时已灭，未来不生，现在俱坏，一切外道计四大种体性不坏，色者即是大种差别，大种造色，离异不异故，其自性亦不坏灭。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -31422,8 +31549,8 @@
         {
           "pid": "p-s96983094",
           "text": "“大慧，三有之中能造、所造莫不皆是生住灭相，岂更别有无常之性，能生于物而不灭耶？始造即舍无常者，非大种互造，大种以各别故；非自相造，以无异故；非复共造，以乖离故。当知非是始造无常。形状坏无常者，此非能造及所造坏，但形状坏。其义云何？谓分析色乃至微尘，但灭形状长短等见，不灭能造、所造色体，此见堕在数论之中。色即是无常者，谓此即是形状无常，非大种性，若大种性亦无常者，则无世事，无世事者，当知则堕卢迦耶见，以见一切法自相生，唯有言说故。转变无常者，谓色体变非大种变，譬如以金作庄严具，严具有变而金无改，此亦如是。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -31432,8 +31559,8 @@
         {
           "pid": "p-s1a7f9902",
           "text": "“大慧，如是等种种外道，虚妄分别，见无常性，彼作是说，火不能烧诸火自相，但各分散，若能烧者，能造、所造则皆断灭。大慧，我说诸法非常无常，何以故？不取外法故，三界唯心故，不说诸相故，大种性处种种差别不生、不灭故，非能造，所造故，能取、所取二种体性一切皆从分别起故，如实而知二取性故，了达惟是自心现故，离外有、无二种见故，离有、无见则不分别能造、所造故。大慧，世间、出世间及出世间上上诸法，惟是自心非常、非无常，不能了达堕于外道二边恶见。大慧，一切外道不能解了此三种法，依自分别而起言说，著无常性。大慧，此三种法所有语言分别境界，非诸凡愚之所能知。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -31442,8 +31569,8 @@
         {
           "pid": "p-s46be716d",
           "text": "尔时，世尊重说颂言：始造即便舍，形状有转变；色物等无常，外道妄分别。诸法无坏灭，诸大自性住；外道种种见，如是说无常。彼诸外道众，皆说不生灭；诸大性自常，谁是无常法？能取及所取，一切唯是心；二种从心现，无有我我所。梵天等诸法，我说惟是心；若离于心者，一切不可得。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -32081,7 +32208,8 @@
           "start": 1561,
           "end": 1583.4,
           "conf": 0.8,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s64331d33",
@@ -32089,7 +32217,8 @@
           "start": 1583.4,
           "end": 1606.54,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s53ac94c8",
@@ -32243,15 +32372,17 @@
           "start": 1943.19,
           "end": 1978.3,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0dff237e",
           "text": "始造即便舍，形状有转变；色物等无常，外道妄分别。诸法无坏灭，诸大自性住；外道种种见，如是说无常。彼诸外道众，皆说不生灭；诸大性自常，谁是无常法？能取及所取，一切唯是心；二种从心现，无有我我所。梵天等诸法，我说惟是心；若离于心者，一切不可得。",
           "start": 1978.3,
           "end": 1988.81,
-          "conf": 1.0,
-          "method": "ngram"
+          "conf": 1,
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s722dd0fa",
@@ -32282,8 +32413,8 @@
         {
           "pid": "p-sf556e56f",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说一切声闻、缘觉入灭次第相续相，令我及诸菩萨摩诃萨，善知此已，于灭尽三昧，乐心无所惑，不堕二乘及诸外道错乱之中。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -32292,8 +32423,8 @@
         {
           "pid": "p-sb28007c8",
           "text": "佛言：“谛听，当为汝说。大慧，菩萨摩诃萨至于六地及声闻、缘觉入于灭定，七地菩萨念念恒入，离一切法自性相故，非诸二乘。二乘有作，堕能、所取，不得诸法无差别相，了善、不善自相，共相，入于灭定，是故不能念念恒入。大慧，八地菩萨声闻、缘觉，心、意、意识分别想灭，始从初地乃至六地，观察三界一切唯是心、意、意识自分别起，离我、我所，不见外法种种诸相，凡愚不知，由无始来过恶熏习，于自心内变作能取、所取之相，而生执著。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -32302,8 +32433,8 @@
         {
           "pid": "p-s6afe6744",
           "text": "“大慧，八地菩萨所得三昧，同诸声闻、缘觉涅槃，以诸佛力所加持故，于三昧门不入涅槃，若不持者，便不化度一切众生，不能满足如来之地，亦则断绝如来种性。是故，诸佛为说如来不可思议诸大功德，令其究竟不入涅槃。声闻、缘觉著三昧乐，是故于中生涅槃想。大慧，七地菩萨善能观察心、意、意识、我、我所执，生法无我，若生若灭、自相共相，四无碍辩善巧决定，于三昧门而得自在，渐入诸地具菩提分法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -32312,8 +32443,8 @@
         {
           "pid": "p-s569b5d78",
           "text": "“大慧，我恐诸菩萨不善了知自相、共相，不知诸地相续次第，堕于外道诸恶见中，故如是说。大慧，彼实无有若生若灭，诸地次第三界往来，一切皆是自心所见，而诸凡愚不能了知，以不知故我及诸佛为如是说。大慧，声闻、缘觉至于菩萨第八地中，为三昧乐之所昏醉，未能善了惟心所见，自、共相习缠覆其心，著二无我，生涅槃觉，非寂灭慧。大慧，诸菩萨摩诃萨见于寂灭三昧乐门，即便忆念本愿大悲，具足修行十无尽句。是故，不即入于涅槃，以入涅槃不生果故，离能、所取故，了达惟心故，于一切法无分别故，不堕心意及以意识外法性相执著中故，然非不起佛法正因，随智慧行如是起故得于如来自证地故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -32322,8 +32453,8 @@
         {
           "pid": "p-sed62639d",
           "text": "“大慧，如人梦中方便度河，未度便觉，觉已思惟向之所见，为是真实？为是虚妄？复自念言，非实非妄。如是但是见闻觉知，曾所更事分别习气，离有、无念，意识梦中之所现耳。大慧，菩萨摩诃萨亦复如是，始从初地而至七地，乃至增进入于第八，得无分别见，一切法如幻梦等，离能、所取，见心、心所广大力用勤修佛法，未证令证，离心、意、意识妄分别想，获无生忍，此是菩萨所得涅槃，非灭坏也。大慧，第一义中无有次第，亦无相续，远离一切境界分别，此则名为寂灭之法。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -32991,8 +33122,8 @@
         {
           "pid": "p-s48ef4364",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -33001,8 +33132,8 @@
         {
           "pid": "p-s39bfdaa6",
           "text": "“世尊，如来、应、正等觉为常为无常？”佛言：“大慧，如来、应、正等觉非常非无常。何以故？俱有过故。云何有过？大慧，若如来常者，有能作过，一切外道说能作常；若无常者，有所作过，同于诸蕴为相所相，毕竟断灭而成无有，然佛如来实非断灭。大慧，一切所作如瓶衣等，皆是无常，是则如来有无常过，所修福智悉空无益；又诸作法应是如来，无异因故。是故，如来非常、非无常。复次，大慧，如来非常。若是常者，应如虚空不待因成。大慧，譬如虚空非常，非无常。何以故？离常无常，若一若异，俱不俱等诸过失故。复次，大慧，如来非常，若是常者，则是不生，同于兔、马、鱼、蛇等角。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33011,8 +33142,8 @@
         {
           "pid": "p-s404ebfbf",
           "text": "“复次，大慧，以别义故，亦得言常。何以故？谓以现智证常法故。证智是常，如来亦常。大慧，诸佛如来所证法性、法住、法位，如来出世若不出世，常住不易，在于一切二乘外道所得法中，非是空无，然非凡愚之所能知。大慧，夫如来者，以清净慧内证法性而得其名，非以心，意、意识，蕴界处法妄习得名。一切三界皆从虚妄分别而生，如来不从妄分别生。大慧，若有于二，有常无常，如来无二，证一切法无生相故，是故非常亦非无常。大慧，乃至少有言说分别生，即有常无常过，是故应除二分别觉，勿令少在。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33021,8 +33152,8 @@
         {
           "pid": "p-sf5106cf1",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，惟愿为我说蕴界处生灭之相。若无有我，谁生谁灭？而诸凡夫依于生灭，不求尽苦，不证涅槃。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -33031,8 +33162,8 @@
         {
           "pid": "p-s4f7b5c8d",
           "text": "佛言：“大慧，谛听谛听，当为汝说。大慧，如来藏是善不善因，能遍兴造一切趣生，譬如伎儿变现诸趣，离我、我所，以不觉故，三缘和合，而有果生。外道不知，执为作者，无始虚伪恶习所熏。名为藏识，生于七识无明住地，譬如大海而有波浪，其体相续，恒住不断，本性清净，离无常过，离于我论。其余七识，意、意识等，念念生灭，妄想为因，境相为缘，和合而生，不了色等，自心所现，计著名相起苦乐受，名相缠缚，既从贪生，复生于贪。若因及所缘，诸取根灭，不相续生，自慧分别苦乐受者，或得灭定，或得四禅，或复善入诸谛解脱，便妄生于得解脱想，而实未舍未转如来藏中藏识之名，苦无藏识，七识则灭。何以故？因彼及所缘而得生故，然非一切外道二乘诸修行者所知境界，以彼惟了人无我性，于蕴界处取于自相及共相故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33804,8 +33935,8 @@
         {
           "pid": "p-s7aca3e90",
           "text": "“若见如来藏五法自性诸法无我，随地次第而渐转灭，不为外道恶见所动，住不动地得于十种三昧乐门，为三昧力诸佛所持，观察不思议佛法及本愿力，不住实际及三昧乐，获自证智，不与二乘诸外道共，得十圣种性道及意生智身，离于诸行。是故，大慧，菩萨摩诃萨欲得胜法，应净如来藏藏识之名。大慧，若无如来藏名藏识者则无生灭，然诸凡夫及以圣人悉有生灭。是故，一切诸修行者虽见内境，住现法乐，而不舍于勇猛精进。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.45,
           "method": "miss",
           "confirmed": false,
@@ -33814,8 +33945,8 @@
         {
           "pid": "p-s195452db",
           "text": "“大慧，此如来藏藏识本性清净，客尘所染而为不净，一切二乘及诸外道，臆度起见，不能现证，如来于此分明现见，如观掌中菴摩勒果。大慧，我为胜鬘夫人，及余深妙净智菩萨说如来藏名藏识与七识俱起，令诸声闻见法无我。大慧，为胜鬘夫人说佛境界，非是外道二乘境界。大慧，此如来藏藏识是佛境界，与汝等比净智菩萨随顺义者所行之处，非是一切执著文字外道二乘所行处。是故，汝及诸菩萨摩诃萨于如来藏藏识当勤观察，莫但闻已便生足想。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33824,8 +33955,8 @@
         {
           "pid": "p-s1f67f080",
           "text": "尔时，世尊重说颂言：甚深如来藏，而与七识俱；执著二种生，了知则远离。无始习所熏，如像现于心；若能如实观，境相悉无有。如愚见指月，观指不观月；计著文字者，不见我真实。心如工技儿，意如和技者；五识为伴侣，妄想观技众。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33834,8 +33965,8 @@
         {
           "pid": "p-s70b30cf8",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说五法自性诸识无我差别之相，我及诸菩萨摩诃萨，善知此已，渐修诸地，具诸佛法，至于如来自证之位。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -33844,8 +33975,8 @@
         {
           "pid": "p-sc2f82ca1",
           "text": "佛言：“谛听，当为汝说。大慧，五法自性诸识无我，所谓名、相、分别、正智、如如。若修行者，观察此法，入于如来自证境界，远离常断、有无等见，得现法乐甚深三昧。大慧，凡愚不了五法自性诸识无我，于心所现，见有外物而起分别，非诸圣人。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33854,8 +33985,8 @@
         {
           "pid": "p-sc8a3506a",
           "text": "大慧白言：“云何不了而起分别？”佛言：“大慧，凡愚不知名是假立，心随流动见种种相，计我、我所，染著于色，覆障圣智，起贪、嗔、痴，造作诸业，如蚕作茧，妄想缠缚，堕于诸趣生死大海，如汲水轮，循环不绝，不知诸法如幻、如焰、如水中月，自心所见，妄分别起，离能、所取及生住灭，谓从自在时节微尘胜性而生，随名相流。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33864,8 +33995,8 @@
         {
           "pid": "p-se58708b6",
           "text": "“大慧，此中相者，谓眼识所见，名之为色，耳、鼻、舌、身、意识得者，名之为声、香、味、触、法，如是等我说为相。分别者，设施众名，显示诸相，谓以象、马、步车、男女等名，而显其相，此事如是决定不异，是名分别。正智者，谓观其相，互为其客，识心不起、不断、不常，不堕外道二乘之地，是名正智。大慧，菩萨摩诃萨以其正智观察名相，非有非无，远离损益二边恶见，名相及识本来不起，我说此法名为如如。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -33874,8 +34005,8 @@
         {
           "pid": "p-s5ae934b9",
           "text": "“大慧，菩萨摩诃萨住如如已，得无照现境，升欢喜地，离外道恶趣，入出世法，法相淳熟，知一切法犹如幻等，证自圣智所行之法，离臆度见，如是次第乃至法云。至法云已，三昧诸力自在神通开敷满足，成于如来。成如来已，为众生故，如水中月普现其身，随其欲乐而为说法，其身清净，离心意识，被弘誓甲，具足满十无尽愿，是名菩萨摩诃萨入于如如之所获得。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34612,8 +34743,8 @@
         {
           "pid": "p-sead110ce",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，为三性入五法中，为各有自相？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -34622,8 +34753,8 @@
         {
           "pid": "p-sd4da7bc9",
           "text": "佛言：“大慧，三性、八识及二无我悉入五法，其中名及相是妄计性；以依彼分别心、心所法俱时而起，如日与光，是缘起性；正智如如不可坏故，是圆成性。大慧，于自心所现生执著时，有八种分别。起此差别相，皆是不实，唯妄计性。若能舍离二种我执，二无我智即得生长。大慧，声闻、缘觉、菩萨、如来自证圣智诸地位次，一切佛法悉皆摄入此五法中。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34632,8 +34763,8 @@
         {
           "pid": "p-s3e65c7d3",
           "text": "“复次，大慧，五法者，所谓相、名、分别、如如、正智。此中相者，谓所见色等，形状各别，是名为相；依彼诸相立瓶等名。此如是，此不异，是名为名；施设众名，显示诸相心，心所法，是名分别；彼名彼相毕竟无有，但是妄心展转分别，如是观察乃至觉灭，是名如如。大慧，真实决定究竟根本自性可得是如如相，我及诸佛随顺证入，如其实相，开示演说，若能于此随顺悟解，离断离常，不生分别，入自证处，出于外道二乘境界，是名正智。大慧，此五种法、三性、八识、二无我，一切佛法普皆摄尽。大慧，于此法中，汝应以自智善巧通达，亦劝他人，含其通达，通达此已，心则决定不随他转。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34642,8 +34773,8 @@
         {
           "pid": "p-sbddc5056",
           "text": "尔时，世尊重说颂言：五法三自性，及与八种识，二种无我法，普摄于大乘。名相及分别，二种自性摄，正智与如如，是则因成相。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -34652,8 +34783,8 @@
         {
           "pid": "p-s3a1f8b5c",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如经中说，过去、未来、现在诸佛如恒河沙，此当云何？为如言而受？为别有义？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.45,
           "method": "miss",
           "confirmed": false,
@@ -34662,8 +34793,8 @@
         {
           "pid": "p-s553342d7",
           "text": "佛告大慧：“勿如言受，大慧，三世诸佛非如恒沙，何以故？如来最胜超诸世间，无与等者非喻所及，唯以少分为其喻耳，我以凡愚诸外道等，心恒执著常与无常恶见，增长生死轮回，令其厌离，发胜希望，言佛易成，易可逢值；若言难遇如优昙华，彼便退怯，不勤精进，是故我说如恒河沙；我复有时观受化者，说佛难值如优昙华。大慧，优昙钵华，无有曾见、现见、当见，如来则有已、现、当见。大慧，如是譬喻非说自法，自法者内证圣智所行境界，世间无等过诸譬喻，一切凡愚不能信受。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34672,8 +34803,8 @@
         {
           "pid": "p-sef6a24c0",
           "text": "“大慧，真实如来超心、意、意识所见之相，不可于中而立譬喻，然亦有时而为建立，言恒沙等，无有相违。大慧，譬如恒沙，龟、鱼、象、马之所践踏，不生分别，恒净无垢，如来圣智，如彼恒河，力通自在，以为其沙，外道龟，鱼竞来扰乱，而佛不起一念分别。何以故？如来本愿，以三昧乐普安众生，如恒河沙，无有爱憎，无分别故。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34682,8 +34813,8 @@
         {
           "pid": "p-sa428d591",
           "text": "“大慧，譬如恒沙，是地自性，劫尽烧时，烧一切地，而彼地大不舍本性，恒与火大俱时生故，诸凡愚人，谓地被烧，而实不烧，火所因故。如来法身亦复如是，如恒河沙，终不坏灭。大慧，譬如恒沙，无有限量，如来光明亦复如是，为欲成就无量众生普照一切诸佛大会。大慧，譬如恒沙，住沙自性，不更改变而作余物，如来亦尔，于世间中不生不灭，诸有生因，悉已断故。大慧，譬如恒沙，取不知减，投不见增，诸佛亦尔，以方便智成熟众生，无减无增，何以故？如来法身无有身故。大慧，以有身故，而有灭坏，法身无身，故无灭坏。大慧，譬如恒沙，虽苦压治，欲求酪油，终不可得，如来亦尔，虽为众生众苦所压，乃至蠢动未尽涅槃，欲令舍离于法界中，深心愿乐，亦不可得，何以故？具足成就大悲心故。大慧，譬如恒沙，随水而流，非无水也，如来亦尔，所有说法莫不随顺涅槃之流，以是说言诸佛如来如恒河沙。大慧，如来说法，不随于趣。趣是坏义，生死本际不可得知，既不可知，云何说趣？大慧，趣义是断，凡愚莫知。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34692,8 +34823,8 @@
         {
           "pid": "p-s5dbd3a4b",
           "text": "大慧菩萨复白佛言：“若生死本际，不可知者，云何众生在生死中而得解脱？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -34702,8 +34833,8 @@
         {
           "pid": "p-s65cc61c2",
           "text": "佛言：“大慧，无始虚伪过习因灭，了知外境自心所现，分别转依名为解脱，非灭坏也。是故，不得言无边际。大慧，无边际者，但是分别异名。大慧，离分别心无别众生，以智观察内外诸法，知与所知悉皆寂灭。大慧，一切诸法唯是自心分别所见，不了知故，分别心起，了心则灭。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -34712,8 +34843,8 @@
         {
           "pid": "p-s73954384",
           "text": "尔时，世尊重说颂言：观察诸导师，譬如恒河沙，非坏亦非趣，是人能见佛。譬如恒河沙，悉离一切过，而恒随顺流，佛体亦如是。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -35305,9 +35436,10 @@
           "pid": "p-sda47c14d",
           "text": "下一句还是比喻。",
           "start": 1498.26,
-          "end": 1289.6,
+          "end": 1498.26,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s05e787d5",
@@ -35324,7 +35456,8 @@
           "start": 1289.6,
           "end": 1333.5,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s6ea66412",
@@ -35332,23 +35465,26 @@
           "start": 1333.5,
           "end": 1342.2,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sd1687708",
           "text": "如来的法身也像地大，像恒河沙一样始终不会坏。如来的法身永远不会坏——自性恒常。",
           "start": 1342.2,
-          "end": 1349.0,
+          "end": 1349,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sa47b1b7d",
           "text": "大慧，譬如恒沙，无有限量，如来光明亦复如是，为欲成就无量众生普照一切诸佛大会。",
-          "start": 1349.0,
+          "start": 1349,
           "end": 1362.5,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-se39675e2",
@@ -35356,31 +35492,35 @@
           "start": 1362.5,
           "end": 1387.4,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s05e4a1e3",
           "text": "大慧，譬如恒沙，住沙自性，不更改变而作余物，如来亦尔，于世间中不生不灭，诸有生因，悉已断故。",
           "start": 1387.4,
-          "end": 1402.0,
+          "end": 1402,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s4822c233",
           "text": "恒沙一直有着沙子的自性和性质，它的自性不会改变，从而变成其他物质。如来也一样，在世间中不生不灭，如来生妄想的因已经断了。",
-          "start": 1402.0,
-          "end": 1420.0,
+          "start": 1402,
+          "end": 1420,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-se4365432",
           "text": "有人会说，既然初妄无因——没有原因，他还能断掉产生的因吗？这在别人提问的时候我已经解释过了。堕落到人间或者轮回内，再重新修回去的如来带有自己的记忆，他知道妄想生起之后，这个妄想一直滚下去的话，会变得越来越多，最后带来无尽的痛苦。有了这个记忆，当妄想生起的时候，他马上可以知道，从而控制这个妄想，不让它一直多下去。",
-          "start": 1420.0,
+          "start": 1420,
           "end": 1475.6,
           "conf": 0.65,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s07292390",
@@ -35388,7 +35528,8 @@
           "start": 1475.6,
           "end": 1499.8,
           "conf": 0.65,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc74c982f",
@@ -35396,7 +35537,8 @@
           "start": 1499.8,
           "end": 1501.15,
           "conf": 0.4,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-sd84c2655",
@@ -35671,8 +35813,8 @@
         {
           "pid": "p-sc72425fa",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说一切诸法刹那坏相，何等诸法名有刹那？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -35681,8 +35823,8 @@
         {
           "pid": "p-s41e8a6ac",
           "text": "佛言：“谛听，当为汝说。大慧，一切法者，所谓善法、不善法，有为法、无为法，世间法、出世间法，有漏法、无漏法，有受法、无受法。大慧，举要言之，五取蕴法以心、意、意识习气，为因而得增长，凡愚于此而生分别，谓善不善，圣人现证三昧乐住，是则名为善无漏法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -35691,8 +35833,8 @@
         {
           "pid": "p-sa9ae19fa",
           "text": "“复次，大慧，善不善者，所谓八识，何等为八？谓如来藏名藏识，意及意识并五识身。大慧，彼五识身与意识俱，善不善相展转差别，相续不断，无异体生，生已即灭，不了于境自心所现，次第灭时别识生起，意识与彼五识共俱，取于种种差别形相，刹那不住，我说此等名刹那法。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -35701,8 +35843,8 @@
         {
           "pid": "p-s8a8a98ff",
           "text": "“大慧，如来藏名藏识，所与意等诸习气俱，是刹那法；无漏习气非刹那法。此非凡愚刹那论者之所能知，彼不能知一切诸法，有是刹那、非刹那故，彼计无为同诸法坏，堕于断见。大慧，五识身非流转，不受苦乐非涅槃因，如来藏受苦乐，与因俱，有生灭，四种习气之所迷覆，而诸凡愚分别熏心，不能了知，起刹那见。大慧，如金、金刚佛之舍利，是奇特性，终不损坏，若得证法有刹那者，圣应非圣，而彼圣人未曾非圣，如金、金刚，虽经劫住，称量不减，云何凡愚不解于我秘密之说，于一切法作刹那想？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -35711,8 +35853,8 @@
         {
           "pid": "p-sd0a456f7",
           "text": "大慧菩萨复白佛言：“世尊常说六波罗蜜若得满足，便成正觉，何等为六？云何满足？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -35721,8 +35863,8 @@
         {
           "pid": "p-sc0cc5b40",
           "text": "佛言：“大慧，波罗蜜者差别有三，所谓世间、出世间、出世间上上。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -35731,8 +35873,8 @@
         {
           "pid": "p-sbaa74a4f",
           "text": "“大慧，世间波罗蜜者，诸凡愚者著我，我所，执取二边，求诸有身贪色等境，如是修行檀波罗蜜、持戒、忍辱、精进、禅定，成就神通，生于梵世。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.88,
           "method": "ngram",
           "confirmed": false,
@@ -35741,8 +35883,8 @@
         {
           "pid": "p-s2591e40c",
           "text": "“大慧，出世间波罗蜜者，谓声闻、缘觉执著涅槃希求自乐，如是修习诸波罗蜜。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -35751,8 +35893,8 @@
         {
           "pid": "p-s39a33060",
           "text": "“大慧，出世间上上波罗蜜者，谓菩萨摩诃萨于自心二法了知惟是分别所现，不起妄想，不生执著，不取色相，为欲利乐一切众生，而恒修行檀波罗蜜；于诸境界不起分别，是则修行尸波罗蜜；即于不起分别之时，忍知能取、所取自性，是则名为羼提波罗蜜；初中后夜勤修匪懈，随顺实解不生分别，是则名为毗梨耶波罗蜜；不生分别，不起外道涅槃之见，是则名为禅波罗蜜；以智观察心无分别，不堕二边，转净所依，而不坏灭获于圣智内证境界，是则名为般若波罗蜜。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -35764,7 +35906,8 @@
           "start": 0.79,
           "end": 11.2,
           "conf": 0.9,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf7774ad7",
@@ -35772,23 +35915,26 @@
           "start": 11.2,
           "end": 21.02,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7e471a76",
           "text": "“何等诸法名有刹那”，在另一个译本里是“云何一切法刹那”，“刹那”是什么？这在我们的认知里是一种时间单位，很短暂的时间叫刹那。那么在这里“一切诸法刹那坏相”，指妄想一刻不停住，不断在变化的状态。“云何一切法刹那”，为什么所有的法都在不断地变化？",
           "start": 21.02,
-          "end": 70.0,
+          "end": 70,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb35992a2",
           "text": "佛言：“谛听，当为汝说。大慧，一切法者，所谓善法、不善法，有为法、无为法，世间法、出世间法，有漏法、无漏法，有受法、无受法。",
-          "start": 70.0,
+          "start": 70,
           "end": 73.25,
           "conf": 0.35,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s40e240e4",
@@ -36196,7 +36342,8 @@
           "start": 1019.24,
           "end": 1068.4,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1325e2a7",
@@ -36214,7 +36361,8 @@
           "start": 1068.4,
           "end": 1102.89,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1d60b182",
@@ -36579,8 +36727,8 @@
         {
           "pid": "p-s198c234e",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来何故授阿罗汉阿耨多罗三藐三菩提记？何故复说无般涅槃法众生得成佛道？又何故说从初得佛至般涅槃，于其中间不说一字？又言如来常在于定，无觉无观；又言佛事皆是化作；又言诸识刹那变坏；又言金刚神常随卫护，又言前际不可知，而说有般涅槃，又现有魔及以魔业，又有余报，谓旃遮婆罗门女孙陀利外道女，及空钵而还等事？世尊，既有如是业障，云何得成一切种智？既已成于一切种智，云何不离如是诸过？”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -36589,8 +36737,8 @@
         {
           "pid": "p-sd5bd8b8d",
           "text": "佛言：“谛听，当为汝说。大慧，我为无余涅槃界故，密勒令彼修菩萨行，此界他土有诸菩萨，心乐求于声闻涅槃，令舍是心进修大行，故作是说；又变化佛与化声闻而授记别，非法性佛。大慧，授声闻记是秘密说。大慧，佛与二乘无差别者，据断惑障解脱一味，非谓智障。智障要见法无我性，乃清净故。烦恼障者，见人无我，意识舍离，是时初断藏识习，灭法障解脱方得永净。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -36599,8 +36747,8 @@
         {
           "pid": "p-s67e3fc0f",
           "text": "“大慧，我依本住法作是密语，非异前佛，后更有说，先具如是诸文字故。大慧，如来正知无有妄念，不待思虑，然后说法，如来久已断四种习，离二种死，除二种障。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -36609,8 +36757,8 @@
         {
           "pid": "p-sda0155e1",
           "text": "“大慧，意及意识眼识等七，习气为因，是刹那性，离无漏善，非流转法。大慧，如来藏者，生死流转及是涅槃苦乐之因，凡愚不知妄著于空。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -36619,8 +36767,8 @@
         {
           "pid": "p-se12cd1b1",
           "text": "“大慧，变化如来，金刚力士，常随卫护，非真实佛，真实如来离诸根量，二乘外道所不能知，住现法乐，成就智忍，不假金刚力士所护。一切化佛不从业生，非即是佛，亦非非佛，譬如陶师众事和合而有所作，化佛亦尔，众相具足而演说法，然不能说自证圣智所行之境。复次，大慧，诸凡愚人见六识灭，起于断见，不了藏识起于常见。大慧，自心分别是其本际，故不可得，离此分别，即得解脱，四种习断，离一切过。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -36686,7 +36834,8 @@
           "start": 85.62,
           "end": 93.9,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s23c01698",
@@ -36694,7 +36843,8 @@
           "start": 93.9,
           "end": 95.2,
           "conf": 0.35,
-          "method": "miss"
+          "method": "miss",
+          "confirmed": false
         },
         {
           "pid": "p-s1a1b7b81",
@@ -37382,7 +37532,8 @@
           "start": 1724.891,
           "end": 1765.1,
           "conf": 0.6,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0d62f004",
@@ -37390,7 +37541,8 @@
           "start": 1765.1,
           "end": 1771.201,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         }
       ]
     },
@@ -37403,8 +37555,8 @@
         {
           "pid": "p-s278b1f94",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说食不食肉功德过失，我及诸菩萨摩诃萨知其义已，为未来、现在报习所熏，食肉众生而演说之，令舍肉味求于法味，于一切众生起大慈心，更相亲爱如一子想，住菩萨地，得阿耨多罗三藐三菩提，或二乘地，暂时止息，究竟当成无上正觉。世尊，路伽耶等诸外道辈，起有、无见，执著断常，尚有遮禁，不听食肉，何况如来、应、正等觉，大悲含育，世所依怙，而许自他俱食肉耶？善哉！世尊，具大慈悲，哀愍世间等观众生犹如一子，愿为解说食肉过恶，不食功德，令我及诸菩萨等闻已奉行，广为他说。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -37413,8 +37565,8 @@
         {
           "pid": "p-s2f713d4c",
           "text": "……尔时，佛告大慧菩萨摩诃萨言：“大慧，谛听谛听，善思念之，吾当为汝分别解说。大慧，一切诸肉有无量缘，菩萨于中当生悲愍，不应噉食，我今当为汝说其少分。大慧，一切众生从无始来，在生死中轮回不息，靡不曾作父母，兄弟、男女、眷属，乃至朋友、亲爱、侍使，易生而受鸟兽等身，云何于中取之而食？大慧，菩萨摩诃萨观诸众生同于己身，念肉皆从有命中来，云何而食？大慧，诸罗刹等，闻我此说，尚应断肉，况乐法人？大慧，菩萨摩诃萨在在生处，观诸众生皆是亲属，乃至慈念如一子想，是故不应食一切肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -37423,8 +37575,8 @@
         {
           "pid": "p-sc40ab951",
           "text": "“大慧，衢路市肆诸卖肉人，或将犬、马、人、牛等肉，为求利故而贩鬻之，如是杂秽，云何可食？大慧，一切诸肉皆是精血污秽所成，求清净人，云何取食？",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -37433,8 +37585,8 @@
         {
           "pid": "p-s46b5a00c",
           "text": "大慧，食肉之人，众生见之，悉皆惊怖，修慈心者，云何食肉？大慧，譬如猎师及旃陀罗捕鱼网鸟诸恶人等，狗见惊吠，兽见奔走，空飞水陆一切众生，若有见之，咸作是念，此人气息犹如罗刹，今来至此，必当杀我，为护命故，悉皆走避。食肉之人，亦复如是。是故菩萨为修慈行，不应食肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -37443,8 +37595,8 @@
         {
           "pid": "p-se5d8f840",
           "text": "“大慧，夫食肉者，身体臭秽，恶名流布，贤圣善人，不用亲狎，是故菩萨不应食肉。大慧，夫血肉者，众仙所弃，群圣不食，是故菩萨不应食肉。大慧，菩萨为护众生信心，令于佛法不生讥谤，以慈愍故，不应食肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -37453,8 +37605,8 @@
         {
           "pid": "p-sfc68592e",
           "text": "“大慧，若我弟子贪噉于肉，令诸世人悉怀讥谤而作是言：云何沙门修清净行人，弃舍天仙所食之味，犹如恶兽食肉满腹，游行世间，令诸众生悉怀惊怖，坏清净行，失沙门道，是故当知佛法之中，无调伏行，菩萨慈愍，为护众生令不生于如是之心，不应食肉。大慧，如烧人肉，其气臭秽，与烧余肉，等无差别，云何于中有食不食？是故一切清净者，不应食肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -37463,8 +37615,8 @@
         {
           "pid": "p-s22dd8dc5",
           "text": "“大慧，诸善男女，塚间树下，阿兰若处，寂静修行，或住慈心，或持咒术，或求解脱，或趣大乘，以食肉故，一切障碍，不得成就，是故菩萨欲利自他，不应食肉。大慧，夫食肉者，见其形色，则已生于贪滋味心，菩萨慈念，一切众生犹如己身，云何见之，而作食想？是故菩萨不应食肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -37473,8 +37625,8 @@
         {
           "pid": "p-s5b5391fa",
           "text": "“大慧，夫食肉者，诸天远离，口气常臭，睡梦不安，觉已忧悚，夜叉恶鬼夺其精气，心多惊怖，食不知足，增长疾病，易生疮癣，恒被诸虫之所唼食，不能于食，深生厌离。大慧，我常说言，凡所食噉作子肉想，余食尚然，云何而听弟子食肉？大慧，肉非美好，肉不清净，生诸罪恶，败诸功德，诸仙圣人之所弃舍，云何而许弟子食耶？若言许食，此人谤我。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -37483,8 +37635,8 @@
         {
           "pid": "p-s0f55a4b1",
           "text": "“大慧，净美食者，应知则是粳米、粟米、大小麦、豆、酥油、石蜜，如是等类，此是过去诸佛所许，我所称说，我种姓中善男女心怀净信，久植善根，于身命财不生贪著，慈愍一切犹如己身，如是之人之所应食，非诸恶习虎狼性者心所爱重。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -38235,8 +38387,8 @@
         {
           "pid": "p-sb6937588",
           "text": "“大慧，过去有王名师子王，耽著肉味，食种种肉，如是不已，遂至食人，臣民不堪，悉皆离叛，亡失国位，受大苦恼。大慧，释提桓因处天王位，以于过去食肉，余习变身，为鹰而逐于鸽，我时作王，名曰尸毗，愍念其鸽，自割身肉，以代其命。大慧，帝释余习，尚恼众生，况余无惭常食肉者？当知食肉自恼、恼他，是故菩萨不应食肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": false,
@@ -38245,8 +38397,8 @@
         {
           "pid": "p-s637acce0",
           "text": "“大慧，昔有一王，乘马游猎，马惊奔逸，入于山险，既无归路，又绝人居，有牝师子，与同游处，遂行丑行，生诸子息，其最长者，名曰班足，后得作王，领七亿家，食肉余习，非肉不食，初食禽兽，后乃至人，所生男女，悉是罗刹，转此身已，复生师子、豺、狼、虎、豹、雕、鹫等中，欲求人身，终不可得，况出生死涅槃之道？",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -38255,8 +38407,8 @@
         {
           "pid": "p-sc6ed4614",
           "text": "“大慧，夫食肉者，有如是等无量过失，断而不食，获大功德，凡愚不知，如是损益，是故我今为汝开演，凡是肉者，悉不应食。大慧，凡杀生者，多为人食，人若不食，亦无杀事，是故食肉与杀同罪。奇哉！世间贪著肉味，于人身肉尚取食之，况于鸟兽有不食者？以贪味故，广设方便，置罗网罟，处处安施，水陆飞行，皆被杀害，设自不食，为贪价值，而作是事。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -38265,8 +38417,8 @@
         {
           "pid": "p-s0479f9f4",
           "text": "“大慧，世复有人心无慈愍，专行惨暴，犹如罗刹，若见众生其身充盛，便生肉想，言此可食。大慧，世无有肉非是自杀，亦非他杀，心不疑杀而可食者，以是义故，我（未）许声闻食如是肉。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -38275,8 +38427,8 @@
         {
           "pid": "p-s3a5e4247",
           "text": "“大慧，未来之世，有愚痴人，于我法中而为出家，妄说毗尼，坏乱正法，诽谤于我，言听食肉，亦自曾食。大慧，我若听许声闻食肉，我则非是住慈心者、修观行者、行头陀者、趣大乘者，云何而劝诸善男子及善女人于诸众生生一子想，断一切肉？大慧，我于诸处说遮十种、许三种者，是渐禁断令其修学，今此经中自死、他杀，凡是肉者，一切悉断。大慧，我不曾许弟子食肉，亦不现许，亦不当许。大慧，凡是肉食，于出家人悉是不净。",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": false,
@@ -38285,8 +38437,8 @@
         {
           "pid": "p-sa5f8bd35",
           "text": "“大慧，若有痴人谤言如来听许食肉，亦自食者，当知是人恶业所缠，必当永堕不饶益处。大慧，我之所有诸圣弟子尚不食于凡夫段食，况食血肉不净之食？大慧，声闻、缘觉及诸菩萨尚惟法食，岂况如来。大慧，如来法身非杂食身？大慧，我已断除一切烦恼，我已浣涤一切习气，我已善择诸心智慧，大悲平等，普观众生犹如一子，云何而许声闻弟子食于子肉，何况自食？作是说者，无有是处。”",
-          "start": 0.0,
-          "end": 0.0,
+          "start": 0,
+          "end": 0,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": false,
@@ -38721,7 +38873,8 @@
           "start": 1216.069,
           "end": 1284.3,
           "conf": 0.943,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0bdfc605",
@@ -38729,7 +38882,8 @@
           "start": 1284.3,
           "end": 1325.64,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4c33740c",
@@ -38809,7 +38963,8 @@
           "start": 1515.23,
           "end": 1545.7,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa347b376",
@@ -38817,7 +38972,8 @@
           "start": 1545.7,
           "end": 1564.75,
           "conf": 0.85,
-          "method": "ngram"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8b679b44",
