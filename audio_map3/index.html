@@ -71,7 +71,7 @@
             <section id="welcomePanel" class="welcome-panel">
                 <h2>選擇講次開始校稿（手機請點左上角「檔案」）——講經段落對齊</h2>
                 <p>每段一張卡片：標題為講次序號＋段落 pid，內文為該段落文字。側邊欄列出該系列的每個講次；選講次後逐段校對音檔起訖時間。</p>
-                <p>卡片標題旁有<b>自動對齊信心分數</b>——紅色「⚠ 低信心」請特別仔細聽檔。點 ▶ 或點文字可試聽該段（段尾自停）；實際聽過（有「最後播放」記錄）即視為<b>已確認</b>，儲存後寫回段落 `confirmed`，電子書才會注入該講的段落跟播時間。</p>
+                <p>卡片標題旁有<b>自動對齊信心分數</b>——紅色「⚠ 低信心」請特別仔細聽檔。點 ▶ 或點文字可試聽該段（段尾自停）；實際聽過（有「最後播放」記錄）即視為<b>已確認</b>，儲存後寫回段落 `confirmed`，電子書才會注入該講的段落跟播時間；勾了「零長度」（師父未念）的段即使沒有播放／編輯記錄也自動算已確認。</p>
                 <p>時間標記格式 <code>00:00:00.000</code>。快捷鍵：<kbd>P</kbd> 播放／暫停、<kbd>↑</kbd><kbd>↓</kbd> 上下段導覽、<kbd>←</kbd><kbd>→</kbd> 微調起始時間、<kbd>N</kbd> 跳到下一個未確認段落（<kbd>Shift</kbd>+<kbd>N</kbd> 跳到下一個已確認段落）。</p>
                 <p>音檔走 <code>../audio/jiangjing/*.opus</code>（本地需 <code>audio/serve.py</code> 或同 origin 服務）。首次儲存前在「設定」填 GitHub Fine-grained PAT（權限只需此 repo 的 <code>Contents: Read and write</code>）。</p>
             </section>

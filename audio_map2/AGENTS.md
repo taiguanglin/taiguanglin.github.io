@@ -26,7 +26,9 @@
 
 **完成／review 判定以「最後播放」為準**：審核 UI 在實際播放某段時寫入
 `meta.lastPlayed`（時間戳）。只有「有 `meta.lastPlayed` 記錄」且 `start != null`
-的段，重建電子書後前 12 章對應段落才會出現播放鈕。align 器產出的 `status`
+的段，重建電子書後前 12 章對應段落才會出現播放鈕。唯一例外：勾了「零長度」
+（`zero: true`）的段即使最後播放／最後編輯都沒有值，也一律視為已確認
+（UI 統計、跳瀏、卡片狀態都以 zero 為準；注入器本來就會跳過 zero 段）。align 器產出的 `status`
 （`manual`/`reviewed`/`auto`/`missing`）**不再是注入閘門**——`status=manual`
 但沒真正聽過的段一樣不亮鈕。
 
@@ -102,8 +104,9 @@ topbar 左側的「跳瀏工具列」⤒/⤓ 按鈕同款功能：循環定位�
 **「零長度」標記（`"zero": true`，2026-09 新增，與 audio_map3 同步）**：卡片右上角
 checkbox 勾選＝此段音檔長度為零（師父沒念）。行為：起訖強制相等（以原起始為錨點）、
 時間欄唯讀、▶ 變「☐ 零長度（師父未念，無音可播）」、點文字不可播；調整前後段落時
-其邊界自動吸附（可連續穿越多個零長度段，行為同 audio_map3）；勾選即寫入
-`meta.lastPlayed`（自動確認）。注入器 `tool/word2ebook/core/audio_map_injector.py`
+其邊界自動吸附（可連續穿越多個零長度段，行為同 audio_map3）；勾選即自動確認
+（確認判定含 `zero: true` 本身，不依賴 `meta.lastPlayed`；UI 會盡量補寫時間戳，
+但缺了也算已確認）。注入器 `tool/word2ebook/core/audio_map_injector.py`
 遇 `zero: true` 直接跳過（不產生播放鈕，等同零寬段）。
 
 重新產生 JSON：`tool/word_audio_map2/build_maps.py --all --apply`

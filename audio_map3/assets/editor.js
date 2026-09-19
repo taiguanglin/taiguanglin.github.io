@@ -845,7 +845,8 @@ function map2ToMap3(map) {
                     end: seg.end ?? null,
                     conf: Number.isFinite(seg.confidence) ? seg.confidence : 1,
                     method: seg.notes?.includes('待人工') ? 'miss' : 'ngram',
-                    confirmed: Boolean(seg.meta?.lastPlayed),
+                    // 勾了「零長度」（zero）的段即使沒有最後播放／最後編輯，也寫回 confirmed。
+                    confirmed: Boolean(seg.meta?.lastPlayed) || seg.zero === true,
                 };
                 // 只在勾選時寫入，避免整份 JSON 每段多出一個 "zero": false 欄位。
                 if (seg.zero === true) para.zero = true;
@@ -1057,9 +1058,9 @@ function countSessionMeta(session) {
     let edited = 0;
     let none = 0;
     for (const item of mustItems) {
-        const hasPlayed = Boolean(item?.meta?.lastPlayed);
+        const hasPlayed = Boolean(item?.meta?.lastPlayed) || isZeroItem(item);
         const hasEdited = Boolean(item?.meta?.lastEdited);
-        // 「完成」= 必須項已聽過（含收場；不含開場）
+        // 「完成」= 必須項已聽過（含收場；不含開場）；零長度段無音可聽，直接算已確認。
         if (hasPlayed) completed += 1;
         if (hasPlayed && hasEdited) both += 1;
         else if (hasPlayed) played += 1;
@@ -1104,7 +1105,7 @@ function scrollEditorToProgress() {
     const items = sessionItems();
     let lastCompleted = -1;
     for (let i = 0; i < items.length; i += 1) {
-        if (items[i].item?.meta?.lastPlayed) lastCompleted = i;
+        if (isItemConfirmed(items[i].item)) lastCompleted = i;
     }
     const apply = () => {
         if (lastCompleted < 0) {
@@ -1128,11 +1129,11 @@ function scrollEditorToProgress() {
 }
 
 // ---- 段落跳瀏（下一個未確認／已確認）--------------------------------------
-// 「確認」＝ 聽過（meta.lastPlayed 有值），與側邊欄「確認 N」／完成判定同源。
-// 零長度段（師父未念）勾選即視為已確認，不會被跳到。
+// 「確認」＝ 聽過（meta.lastPlayed 有值）或勾了「零長度」（zero: true，無音可聽），
+//   與側邊欄「確認 N」／完成判定同源；零長度段不會被當成未確認跳到。
 // 跳瀏＝只定位（不播放、不寫 lastPlayed，避免誤標已確認）；右鍵／長按才播放並記錄。
 function isItemConfirmed(item) {
-    return Boolean(item?.meta?.lastPlayed);
+    return Boolean(item?.meta?.lastPlayed) || isZeroItem(item);
 }
 
 /**
@@ -1280,7 +1281,8 @@ function updateMetaStrip(items) {
     let edited = 0;
     let none = 0;
     for (const { item } of must) {
-        const hasPlayed = Boolean(item?.meta?.lastPlayed);
+        // 零長度段（zero: true）沒有最後播放／最後編輯，也一律視為已確認。
+        const hasPlayed = Boolean(item?.meta?.lastPlayed) || isZeroItem(item);
         const hasEdited = Boolean(item?.meta?.lastEdited);
         if (hasPlayed) completed += 1;
         if (hasPlayed && !hasEdited) played += 1;
@@ -1417,7 +1419,8 @@ function renderSegmentCard(entry, segmentIndex) {
             // 勾選零長度＝確認此段（無音可聽，等同「已聽過」）；取消則須重新確認。
             const meta = ensureMeta(item);
             if (zeroBox.checked) {
-                meta.lastPlayed = nowStamp();
+                // zero 段視為已確認，但不需要 lastPlayed 時間戳：確認判定已含 zero。
+                meta.lastPlayed = meta.lastPlayed || nowStamp();
             } else {
                 meta.lastPlayed = '';
             }
@@ -1487,7 +1490,7 @@ function applyAm2CardExtras(node, item, kind) {
     const conf = item.confidence ?? 1;
     const lv = conf >= 0.8 ? 'high' : conf >= 0.5 ? 'mid' : 'low';
 
-    node.classList.toggle('low-conf', lv === 'low');
+    node.classList.toggle('low-conf', lv === 'low' && !isZeroItem(item));
 
     const metaRow = node.querySelector('.segment-meta');
     if (metaRow) {
@@ -1981,6 +1984,8 @@ function updateSegmentMetaChips(card, item) {
     if (hasPlayed && hasEdited) status = 'both';
     else if (hasPlayed) status = 'played';
     else if (hasEdited) status = 'edited';
+    // 零長度段（師父未念）即使最後播放／最後編輯都沒有值，也算已確認（both）。
+    else if (isZeroItem(item)) status = 'both';
     card.dataset.status = status;
 }
 

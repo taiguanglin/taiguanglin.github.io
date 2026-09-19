@@ -1360,13 +1360,25 @@ textarea.marker-heading {
     font-weight: 600;
 }
 
-/* 零長度段整張卡片的淡化樣式：此段沒有對應音檔。 */
+/* 零長度段整張卡片的淡化樣式：此段沒有對應音檔。
+   zero 段視為已確認（data-status="both"），仍維持紅左框淡化、不套用確認配色。 */
 .segment-card.zero-seg {
     border-left: 4px solid var(--danger, #b42318);
     opacity: 0.62;
 }
 
+.segment-card.zero-seg[data-status="both"],
+.segment-card.zero-seg[data-status="played"] {
+    background: var(--panel-strong);
+    border-left-color: var(--danger, #b42318);
+}
+
 .segment-card.zero-seg .segment-header {
+    background: color-mix(in srgb, var(--danger, #b42318) 7%, var(--panel));
+}
+
+.segment-card.zero-seg[data-status="both"] .segment-header,
+.segment-card.zero-seg[data-status="played"] .segment-header {
     background: color-mix(in srgb, var(--danger, #b42318) 7%, var(--panel));
 }
 
