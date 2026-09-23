@@ -1,0 +1,140 @@
+[
+ {
+  "i": 10,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 86.52
+ },
+ {
+  "i": 11,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 86.52「非是唯有諸法自信如來之以」＝R",
+  "start": 86.52,
+  "end": 89.08,
+  "zero": false
+ },
+ {
+  "i": 12,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 89.08
+ },
+ {
+  "i": 24,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 332.5
+ },
+ {
+  "i": 25,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 332.50「有異者如」336.12「牛二角有意不異啊」＝R",
+  "start": 332.5,
+  "end": 342.38,
+  "zero": false
+ },
+ {
+  "i": 26,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 342.38
+ },
+ {
+  "i": 30,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 442.39
+ },
+ {
+  "i": 31,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 442.39「若異者如果不同的话啊如」445.93「來便於色相相應」＝R",
+  "start": 442.39,
+  "end": 455.31,
+  "zero": false
+ },
+ {
+  "i": 32,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 455.31
+ },
+ {
+  "i": 34,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 534.41
+ },
+ {
+  "i": 35,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 534.41「是至己所知至以所知啊智是」＝「如是智與所知」",
+  "start": 534.41,
+  "end": 542.12,
+  "zero": false
+ },
+ {
+  "i": 36,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 542.12
+ },
+ {
+  "i": 54,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 924.68
+ },
+ {
+  "i": 55,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 924.68「一名人不是總說一切做法不」927.08「生不滅方之此此則作有無價」＝R",
+  "start": 924.68,
+  "end": 936.42,
+  "zero": false
+ },
+ {
+  "i": 56,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 936.42
+ },
+ {
+  "i": 88,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1580.85
+ },
+ {
+  "i": 89,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1580.85「的視覺的如種無者誰說為誰」1583.37「世故大會菩薩摩薩不著文字」＝R",
+  "start": 1580.85,
+  "end": 1591.98,
+  "zero": false
+ },
+ {
+  "i": 90,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1591.98
+ }
+]

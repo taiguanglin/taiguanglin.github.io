@@ -1,0 +1,140 @@
+[
+ {
+  "i": 7,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 55.28
+ },
+ {
+  "i": 8,
+  "conf": 0.55,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 55.28,
+  "end": 57.74
+ },
+ {
+  "i": 9,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 57.74
+ },
+ {
+  "i": 17,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 320.09
+ },
+ {
+  "i": 18,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 320.09,
+  "end": 323.73
+ },
+ {
+  "i": 19,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 323.73
+ },
+ {
+  "i": 38,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 759.83
+ },
+ {
+  "i": 39,
+  "conf": 0.4,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 759.83,
+  "end": 761.95
+ },
+ {
+  "i": 40,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 761.95
+ },
+ {
+  "i": 53,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 1079.17
+ },
+ {
+  "i": 54,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 1079.17,
+  "end": 1081.87
+ },
+ {
+  "i": 55,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 1081.87
+ },
+ {
+  "i": 61,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 1273.0
+ },
+ {
+  "i": 62,
+  "conf": 0.55,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 1273.0,
+  "end": 1275.93
+ },
+ {
+  "i": 63,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 1275.93
+ },
+ {
+  "i": 81,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 1701.02
+ },
+ {
+  "i": 82,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 1701.02,
+  "end": 1703.99
+ },
+ {
+  "i": 83,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 1703.99
+ }
+]

@@ -1,0 +1,193 @@
+[
+ {
+  "i": 21,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 296.3
+ },
+ {
+  "i": 22,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 296.3「所以我們說一下這個吃肉的功德」＝本段",
+  "start": 296.3,
+  "end": 301.9,
+  "zero": false
+ },
+ {
+  "i": 23,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 301.9「在這裡我們有首先有有個明確的認知」＝本段",
+  "start": 301.9,
+  "end": 339.9,
+  "zero": false
+ },
+ {
+  "i": 24,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 339.9「現在本來吃肉吃肉的人啊」345.6「造成的就是你前面吃肉的那些惡報會逐漸減少」＝本段",
+  "start": 339.9,
+  "end": 369.3,
+  "zero": false
+ },
+ {
+  "i": 25,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 369.3「立場沙騰可能這也是一種好處」＝本段",
+  "start": 369.3,
+  "end": 380.6,
+  "zero": false
+ },
+ {
+  "i": 26,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 380.6「普及諸菩薩摩薩知其意義為未來現在抱其所及」387.9「說之」＝本段",
+  "start": 380.6,
+  "end": 409.6,
+  "zero": false
+ },
+ {
+  "i": 27,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 416.2「同一氣眾生起大悲心買大吃星更像親耳豬一直想」＝R",
+  "start": 416.2,
+  "end": 424.3,
+  "zero": false
+ },
+ {
+  "i": 28,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 424.3「對於一切眾生啊啊生起大慈心大悲心」＝本段",
+  "start": 424.3,
+  "end": 451.9,
+  "zero": false
+ },
+ {
+  "i": 29,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 459.7「是在陸千野等諸外道背其有見無見執著斷腸」＝R",
+  "start": 459.7,
+  "end": 468.6,
+  "zero": false
+ },
+ {
+  "i": 30,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 468.6「這樣的道呢啊他們也集中於這個有建有見當中」＝本段",
+  "start": 468.6,
+  "end": 506.8,
+  "zero": false
+ },
+ {
+  "i": 31,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 506.8「我現在是這種巨大慈悲哀米是間等觀眾生猶如一子便為解說食肉過惡不」＝R",
+  "start": 506.8,
+  "end": 514.0,
+  "zero": false
+ },
+ {
+  "i": 32,
+  "conf": 0.8,
+  "method": "span",
+  "note": "鏈邊界同步：字級 514.0「食功德令我及諸菩薩等文以奉行廣為他說啊嗯嗯修破出這個詩尊呢啊以大」＝本段接手",
+  "start": 514.0,
+  "end": 546.38,
+  "zero": false
+ },
+ {
+  "i": 39,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 651.95「啊大會菩薩摩薩薩觀眾眾同」655.17「念肉皆從有命」＝R",
+  "start": 651.95,
+  "end": 658.41,
+  "zero": false
+ },
+ {
+  "i": 40,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 658.41
+ },
+ {
+  "i": 53,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1016.55
+ },
+ {
+  "i": 54,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1016.55「這麼呃詹陀羅伯與亡鳥等諸」＝「譬如獵師及旃陀羅捕魚網鳥諸惡人等」",
+  "start": 1016.55,
+  "end": 1022.69,
+  "zero": false
+ },
+ {
+  "i": 55,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1022.69
+ },
+ {
+  "i": 62,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1148.14
+ },
+ {
+  "i": 63,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1148.14「中上大會不善維護眾生信心」＝「大慧，菩薩為護眾生信心」",
+  "start": 1148.14,
+  "end": 1154.9,
+  "zero": false
+ },
+ {
+  "i": 64,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1154.9
+ },
+ {
+  "i": 66,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1224.81
+ },
+ {
+  "i": 67,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1224.81「不擅長大會說我弟子嗯攤淡」1229.07「魚肉令諸市長心懷羈膀」＝R",
+  "start": 1224.81,
+  "end": 1231.96,
+  "zero": false
+ },
+ {
+  "i": 68,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1231.96
+ }
+]

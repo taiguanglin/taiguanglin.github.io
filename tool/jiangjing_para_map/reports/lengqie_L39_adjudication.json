@@ -1,0 +1,140 @@
+[
+ {
+  "i": 19,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 236.62
+ },
+ {
+  "i": 20,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 240.38「主要研究舞曲韻法以心意意」＝「五取蘊法以心、意、意識習氣」",
+  "start": 236.62,
+  "end": 243.58,
+  "zero": false
+ },
+ {
+  "i": 21,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 243.58
+ },
+ {
+  "i": 24,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 352.01
+ },
+ {
+  "i": 25,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 352.01「次大會善不善的所謂八士合」＝「復次，大慧，善不善者，所謂八識」",
+  "start": 352.01,
+  "end": 358.83,
+  "zero": false
+ },
+ {
+  "i": 26,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 358.83
+ },
+ {
+  "i": 27,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 408.29
+ },
+ {
+  "i": 28,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 408.29「生與電視劇嗯吳許軒嗯意思」＝「彼五識身與意識俱」",
+  "start": 408.29,
+  "end": 414.0,
+  "zero": false
+ },
+ {
+  "i": 29,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 414.0
+ },
+ {
+  "i": 33,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 577.95
+ },
+ {
+  "i": 34,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 577.95「如來葬臨從史所以一等夫席」580.91「之句是恰當話啊」＝R",
+  "start": 577.95,
+  "end": 586.7,
+  "zero": false
+ },
+ {
+  "i": 35,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 586.7
+ },
+ {
+  "i": 57,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1064.91
+ },
+ {
+  "i": 58,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：切片 1064.91「第二個菠蘿蜜芽大會舒世間菠蘿蜜棗會聲紋廉覺執著嗯需」＝R",
+  "start": 1064.91,
+  "end": 1075.66,
+  "zero": false
+ },
+ {
+  "i": 59,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1075.66
+ },
+ {
+  "i": 77,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1468.26
+ },
+ {
+  "i": 78,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1468.26「義從生其意而說寄言空無蒼」1471.43「剎那一副妄想作啊」＝偈頭",
+  "start": 1468.26,
+  "end": 1477.62,
+  "zero": false
+ },
+ {
+  "i": 79,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1477.62
+ }
+]

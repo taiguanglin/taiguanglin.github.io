@@ -1,0 +1,71 @@
+[
+ {
+  "i": 5,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 32.54
+ },
+ {
+  "i": 6,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 32.54「外道錯然之中嗯為我們說一」35.92「聲身為緣覺呃入滅次第相是」＝R",
+  "start": 32.54,
+  "end": 39.14,
+  "zero": false
+ },
+ {
+  "i": 7,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 39.14
+ },
+ {
+  "i": 11,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 185.26
+ },
+ {
+  "i": 12,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 188.27「城有座做能索取不得珠寶誤」＝「二乘有作，墮能、所取，不得諸法」",
+  "start": 185.26,
+  "end": 191.78,
+  "zero": false
+ },
+ {
+  "i": 13,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 191.78
+ },
+ {
+  "i": 70,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1641.69
+ },
+ {
+  "i": 71,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ（owned-by-70 更正）：字級 1641.69「是滅敗啊大會地獄中無有次」1645.11「第亦無相序」＝R",
+  "start": 1641.69,
+  "end": 1650.48,
+  "zero": false
+ },
+ {
+  "i": 72,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1650.48
+ }
+]

@@ -1,0 +1,212 @@
+[
+ {
+  "i": 19,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 141.77
+ },
+ {
+  "i": 20,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 141.77「非是實照啊這些都是劃線」＝「此皆化現，非是實造」",
+  "start": 141.77,
+  "end": 148.84,
+  "zero": false
+ },
+ {
+  "i": 21,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 148.84
+ },
+ {
+  "i": 28,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 292.4
+ },
+ {
+  "i": 29,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 292.40「慧菩薩摩薩不白佛嚴至尊」＝「大慧菩薩摩訶薩復白佛言：世尊」",
+  "start": 292.4,
+  "end": 296.5,
+  "zero": false
+ },
+ {
+  "i": 30,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 296.5,
+  "end": 315.42
+ },
+ {
+  "i": 31,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 315.42「他就說啊大會就是二五阿爾」＝「佛言：大慧，覺二無我」",
+  "start": 315.42,
+  "end": 319.21,
+  "zero": false
+ },
+ {
+  "i": 32,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 319.21
+ },
+ {
+  "i": 57,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 695.29
+ },
+ {
+  "i": 58,
+  "conf": 0.85,
+  "method": "span",
+  "note": "負 span 修正：[58] start 原 705.73（舊 pin）> [59] start 700.37；字級 695.29「都是這個三十七種菩提分法」＝[58] 內容，改起點 695.29",
+  "end": 700.37,
+  "start": 695.29,
+  "zero": false
+ },
+ {
+  "i": 59,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 700.37「來最後只為是違法的事故如」705.07「來應等證」＝「是故如來應正等覺，於大眾中作如是說」",
+  "start": 700.37,
+  "end": 716.5,
+  "zero": false
+ },
+ {
+  "i": 61,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 716.5
+ },
+ {
+  "i": 68,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 949.69
+ },
+ {
+  "i": 69,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 949.69「一和二吧為自證法及本助法」＝R",
+  "start": 949.69,
+  "end": 952.65,
+  "zero": false
+ },
+ {
+  "i": 70,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 952.65
+ },
+ {
+  "i": 93,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1350.71
+ },
+ {
+  "i": 94,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1350.71「目非無實有實有諸法眾因緣」＝「非不實有，實有諸法從因緣生」",
+  "start": 1350.71,
+  "end": 1353.55,
+  "zero": false
+ },
+ {
+  "i": 95,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1353.55
+ },
+ {
+  "i": 97,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1435.3
+ },
+ {
+  "i": 98,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1435.30「銀河無間什麼叫無劍呢」1438.60「未知他愛貪嗔赤以」＝R",
+  "start": 1435.3,
+  "end": 1445.21,
+  "zero": false
+ },
+ {
+  "i": 99,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1445.21
+ },
+ {
+  "i": 105,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1558.7
+ },
+ {
+  "i": 106,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1558.70「此人呢非指無貪嗔痴名為」＝R",
+  "start": 1558.7,
+  "end": 1565.29,
+  "zero": false
+ },
+ {
+  "i": 107,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1565.29
+ },
+ {
+  "i": 121,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1835.56
+ },
+ {
+  "i": 122,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ（owned-by-121 更正）：字級 1835.56「名為壞者啊」1839.59「敗的人墮自共見樂欲之中」＝R",
+  "start": 1835.56,
+  "end": 1839.59,
+  "zero": false
+ },
+ {
+  "i": 123,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1839.59
+ }
+]

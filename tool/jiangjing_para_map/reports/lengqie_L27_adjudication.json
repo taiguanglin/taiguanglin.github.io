@@ -1,0 +1,204 @@
+[
+ {
+  "i": 15,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 44.1
+ },
+ {
+  "i": 16,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 44.10「何等為二為中去法相嚴說法」＝「何等為二？謂宗趣法相，言說法相」",
+  "start": 44.1,
+  "end": 47.26,
+  "zero": false
+ },
+ {
+  "i": 17,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 47.26「相啊這兩種相中去法相和嚴」＝COMM",
+  "start": 47.26,
+  "end": 54.1,
+  "zero": false
+ },
+ {
+  "i": 18,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 54.10「去法相則為自正書聖之相」＝「宗趣法相者，謂自證殊勝之相」",
+  "start": 54.1,
+  "end": 67.8,
+  "zero": false
+ },
+ {
+  "i": 19,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 67.8
+ },
+ {
+  "i": 22,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 161.19
+ },
+ {
+  "i": 23,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 161.19「個佛的境界那麼嚴修法相」＝「言說法相者」",
+  "start": 161.19,
+  "end": 163.59,
+  "zero": false
+ },
+ {
+  "i": 24,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 163.59
+ },
+ {
+  "i": 33,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 370.67
+ },
+ {
+  "i": 34,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 370.67「吃一切眾生與種種境不能了」＝R",
+  "start": 370.67,
+  "end": 375.92,
+  "zero": false
+ },
+ {
+  "i": 35,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 375.92
+ },
+ {
+  "i": 38,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 509.67
+ },
+ {
+  "i": 39,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 509.67「世尊第一異地」511.85「世尊的理論也是如此」＝本段",
+  "start": 509.67,
+  "end": 523.65,
+  "zero": false
+ },
+ {
+  "i": 40,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 523.65
+ },
+ {
+  "i": 44,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 615.36
+ },
+ {
+  "i": 45,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 615.36「視種種非是分別一耳」＝「譬如幻事，種種非實，分別亦爾」",
+  "start": 615.36,
+  "end": 629.01,
+  "zero": false
+ },
+ {
+  "i": 46,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 629.01
+ },
+ {
+  "i": 48,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 700.52
+ },
+ {
+  "i": 49,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 700.52「啊佛言大會分別不生不滅何」＝R",
+  "start": 700.52,
+  "end": 702.58,
+  "zero": false
+ },
+ {
+  "i": 50,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 702.58
+ },
+ {
+  "i": 106,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1784.21
+ },
+ {
+  "i": 107,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1784.21「啊就叫叫智三和合相應相識」＝「三和合相應生是識」",
+  "start": 1784.21,
+  "end": 1791.65,
+  "zero": false
+ },
+ {
+  "i": 108,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1791.65
+ },
+ {
+  "i": 114,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1917.75
+ },
+ {
+  "i": 115,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1917.75「有採集頁就」1922.68「啊以及業為始不採集為治也」＝R",
+  "start": 1917.75,
+  "end": 1925.22,
+  "zero": false
+ },
+ {
+  "i": 116,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1925.22
+ }
+]

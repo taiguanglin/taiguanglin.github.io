@@ -1,0 +1,186 @@
+[
+ {
+  "i": 7,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 15.72
+ },
+ {
+  "i": 8,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 15.72「係大會菩薩摩薩隨意意莫一」＝「大慧，菩薩摩訶薩隨於義，莫依文字」",
+  "start": 15.72,
+  "end": 18.42,
+  "zero": false
+ },
+ {
+  "i": 9,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 18.42
+ },
+ {
+  "i": 20,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 243.36
+ },
+ {
+  "i": 21,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 243.36「一切正法則不斷佛阻」＝「若能攝受一切正法，則不斷佛種」",
+  "start": 243.36,
+  "end": 246.14,
+  "zero": false
+ },
+ {
+  "i": 22,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 246.14
+ },
+ {
+  "i": 44,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 790.37
+ },
+ {
+  "i": 45,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：切片 790.37「十十者惟妙寂靜，是滅滅銀」＝「大慧，實義者微妙寂靜是涅槃因」；⑤ 交錯（R 另兩截落 [46] span 內 803.8/820.8）",
+  "start": 790.37,
+  "end": 793.77,
+  "zero": false
+ },
+ {
+  "i": 46,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 793.77
+ },
+ {
+  "i": 56,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1015.44
+ },
+ {
+  "i": 57,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1015.44「語說作者因緣生於世間聖作」＝「外道亦說作者因緣生於世間」",
+  "start": 1015.44,
+  "end": 1021.53,
+  "zero": false
+ },
+ {
+  "i": 58,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1021.53
+ },
+ {
+  "i": 77,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1433.29
+ },
+ {
+  "i": 78,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1433.29「色相至今非是遙過」＝「色相自性非是有故」",
+  "start": 1433.29,
+  "end": 1435.82,
+  "zero": false
+ },
+ {
+  "i": 79,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1435.82
+ },
+ {
+  "i": 81,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1509.89
+ },
+ {
+  "i": 82,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ（owned-by-81 更正）：字級 1509.89「若我覺唯是至今所見」＝R",
+  "start": 1509.89,
+  "end": 1518.12,
+  "zero": false
+ },
+ {
+  "i": 83,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1518.12
+ },
+ {
+  "i": 92,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1682.98
+ },
+ {
+  "i": 93,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1682.98「夫西王取身滅見這一周送人」＝「凡夫虛妄起生滅見，非諸聖人」",
+  "start": 1682.98,
+  "end": 1690.35,
+  "zero": false
+ },
+ {
+  "i": 94,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1690.35
+ },
+ {
+  "i": 95,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1753.85
+ },
+ {
+  "i": 96,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ（owned-by-95 更正）：字級 1753.85「的分辨系統事故大會無相劍」＝「是故，大慧，無相見勝」",
+  "start": 1753.85,
+  "end": 1760.0,
+  "zero": false
+ },
+ {
+  "i": 97,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1760.0
+ }
+]

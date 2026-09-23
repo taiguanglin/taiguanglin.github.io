@@ -1,0 +1,181 @@
+[
+ {
+  "i": 29,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 420.23
+ },
+ {
+  "i": 30,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 420.23,
+  "end": 434.69
+ },
+ {
+  "i": 31,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 434.69
+ },
+ {
+  "i": 38,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 627.21
+ },
+ {
+  "i": 39,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 627.21,
+  "end": 650.3
+ },
+ {
+  "i": 40,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 650.3
+ },
+ {
+  "i": 46,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 816.42
+ },
+ {
+  "i": 47,
+  "conf": 0.4,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 816.42,
+  "end": 818.78
+ },
+ {
+  "i": 48,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 818.78,
+  "end": 826.0
+ },
+ {
+  "i": 49,
+  "conf": 0.45,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 826.0,
+  "end": 831.16
+ },
+ {
+  "i": 50,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 831.16
+ },
+ {
+  "i": 57,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 981.54
+ },
+ {
+  "i": 58,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 981.54,
+  "end": 985.44
+ },
+ {
+  "i": 59,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 985.44
+ },
+ {
+  "i": 64,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 1142.53
+ },
+ {
+  "i": 65,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 1142.53,
+  "end": 1144.89
+ },
+ {
+  "i": 66,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 1144.89
+ },
+ {
+  "i": 77,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 1375.61
+ },
+ {
+  "i": 78,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 1375.61,
+  "end": 1380.88
+ },
+ {
+  "i": 79,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 1380.88
+ },
+ {
+  "i": 94,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "end": 1775.0
+ },
+ {
+  "i": 95,
+  "conf": 0.6,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "zero": false,
+  "start": 1775.0,
+  "end": 1781.39
+ },
+ {
+  "i": 96,
+  "conf": 0.85,
+  "method": "span",
+  "note": "r1 batch（見 earcheck 報告）",
+  "start": 1781.39
+ }
+]

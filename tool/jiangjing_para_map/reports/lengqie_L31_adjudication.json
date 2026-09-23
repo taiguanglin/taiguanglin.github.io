@@ -1,0 +1,186 @@
+[
+ {
+  "i": 22,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 270.2
+ },
+ {
+  "i": 23,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 270.20「但會非以見壞名為涅槃」＝R",
+  "start": 270.2,
+  "end": 274.09,
+  "zero": false
+ },
+ {
+  "i": 24,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 274.09
+ },
+ {
+  "i": 30,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 464.36
+ },
+ {
+  "i": 31,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 464.36「一個會有受延分別出項嗯發」468.81「生於苦而不能之自心所向」＝R",
+  "start": 464.36,
+  "end": 472.68,
+  "zero": false
+ },
+ {
+  "i": 32,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 472.68
+ },
+ {
+  "i": 41,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 715.93
+ },
+ {
+  "i": 42,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 715.93「護衛或為眾生輾短相生以此」＝「或謂眾生展轉相生」",
+  "start": 715.93,
+  "end": 721.55,
+  "zero": false
+ },
+ {
+  "i": 43,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 721.55
+ },
+ {
+  "i": 47,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 874.36
+ },
+ {
+  "i": 48,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 874.36「狀啊各位能減二十五d寄的」＝「或謂能解二十五諦即得涅槃」",
+  "start": 874.36,
+  "end": 878.09,
+  "zero": false
+ },
+ {
+  "i": 49,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 878.09
+ },
+ {
+  "i": 57,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1081.62
+ },
+ {
+  "i": 58,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1081.62「大會會有一筆外道所說以一」＝「復有異彼外道所說」",
+  "start": 1081.62,
+  "end": 1088.34,
+  "zero": false
+ },
+ {
+  "i": 59,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1088.34
+ },
+ {
+  "i": 64,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1227.69
+ },
+ {
+  "i": 65,
+  "conf": 0.6,
+  "method": "span",
+  "note": "FALSE_ZERO：字級 1227.69「掉了稱之為滅板啊下段大會」1231.09「比諸外道虛妄嫉妒不如不入」＝R",
+  "start": 1227.69,
+  "end": 1233.79,
+  "zero": false
+ },
+ {
+  "i": 66,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1233.79
+ },
+ {
+  "i": 74,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1452.06
+ },
+ {
+  "i": 75,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1452.06「說了啊如有所問大會主說大」1454.14「官言為至尊如來應共正等爵」＝R",
+  "start": 1452.06,
+  "end": 1460.02,
+  "zero": false
+ },
+ {
+  "i": 76,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1460.02
+ },
+ {
+  "i": 81,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1618.5
+ },
+ {
+  "i": 82,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1618.50「性嗯如果說如來是非做非做」＝「若非作法，則無體性」",
+  "start": 1618.5,
+  "end": 1625.87,
+  "zero": false
+ },
+ {
+  "i": 83,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1625.87
+ }
+]

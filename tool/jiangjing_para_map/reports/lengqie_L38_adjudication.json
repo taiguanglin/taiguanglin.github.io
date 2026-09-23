@@ -1,0 +1,156 @@
+[
+ {
+  "i": 13,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 62.87
+ },
+ {
+  "i": 14,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 62.87「下一頁博言大會三信八世」67.04「及二五五西路無法」＝R",
+  "start": 62.87,
+  "end": 71.96,
+  "zero": false
+ },
+ {
+  "i": 15,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 71.96
+ },
+ {
+  "i": 38,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 621.66
+ },
+ {
+  "i": 39,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ（owned-by-38 更正）：字級 621.66「下一句啊大會此無宗法三信」624.61「八十二如我一切佛法普及世」＝R",
+  "start": 621.66,
+  "end": 627.17,
+  "zero": false
+ },
+ {
+  "i": 40,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 627.17
+ },
+ {
+  "i": 52,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 785.62
+ },
+ {
+  "i": 53,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 785.62「最勝抽出世間嗯雷人讀的是」＝「如來最勝超諸世間」",
+  "start": 785.62,
+  "end": 792.03,
+  "zero": false
+ },
+ {
+  "i": 54,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 792.03
+ },
+ {
+  "i": 55,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 871.78
+ },
+ {
+  "i": 56,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 871.78「了哈若言難語無憂曇徨以便」＝「若言難遇如優曇華，彼便退怯」",
+  "start": 871.78,
+  "end": 880.26,
+  "zero": false
+ },
+ {
+  "i": 57,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 880.26
+ },
+ {
+  "i": 66,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1115.24
+ },
+ {
+  "i": 67,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1115.24「會真實如來操心意意識所見」＝「真實如來超心、意、意識所見之相」",
+  "start": 1115.24,
+  "end": 1123.72,
+  "zero": false
+ },
+ {
+  "i": 68,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1123.72
+ },
+ {
+  "i": 75,
+  "conf": 0.85,
+  "method": "span",
+  "note": "zero 標記補齊（原資料缺 zero 鍵）；COMM，R 唸在 [76] span 內",
+  "zero": true
+ },
+ {
+  "i": 106,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1963.12
+ },
+ {
+  "i": 107,
+  "conf": 0.6,
+  "method": "span",
+  "note": "FALSE_ZERO：字級 1963.12「無無邊相也無分分別來名名」＝「無邊際者，但是分別異名」",
+  "start": 1963.12,
+  "end": 1964.91,
+  "zero": false
+ },
+ {
+  "i": 108,
+  "conf": 0.85,
+  "method": "span",
+  "note": "負 span 修正：[108] start 原 1969.66（舊 pin）> end 1964.91；[108] 內容落在 1964.91–1969.66",
+  "start": 1964.91,
+  "end": 1969.66,
+  "zero": false
+ },
+ {
+  "i": 109,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1969.66
+ }
+]

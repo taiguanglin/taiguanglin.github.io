@@ -1,0 +1,140 @@
+[
+ {
+  "i": 12,
+  "end": 80.85,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 13,
+  "start": 80.85,
+  "end": 85.11,
+  "conf": 0.55,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 80.85「接力獨促閒景觀察自覺」=「獨處閒靜觀察自覺」"
+ },
+ {
+  "i": 14,
+  "start": 85.11,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 22,
+  "end": 384.27,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 23,
+  "start": 384.27,
+  "end": 388.0,
+  "conf": 0.55,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 383.69「下一段啊零和」388.00「零異情形象」=「云何名一乘行相？」"
+ },
+ {
+  "i": 24,
+  "start": 388.0,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 37,
+  "end": 641.64,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 38,
+  "start": 641.64,
+  "end": 648.15,
+  "conf": 0.6,
+  "zero": false,
+  "method": "span",
+  "note": "FALSE_ZERO：字級 641.64「又多來之往的引導才行又比未」644.64「能除滅智障及夜習起」=R"
+ },
+ {
+  "i": 39,
+  "start": 648.15,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 55,
+  "end": 901.93,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 56,
+  "start": 901.93,
+  "end": 904.3,
+  "conf": 0.55,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 901.93「氣煩惱牛備襲其魄」=「雖滅起煩惱，猶被習氣縛」"
+ },
+ {
+  "i": 57,
+  "start": 904.3,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 72,
+  "end": 1164.46,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 73,
+  "start": 1164.46,
+  "end": 1167.34,
+  "conf": 0.55,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 1164.46「然後呢靈和學法制性一重生」=「云何覺法自性意成身」"
+ },
+ {
+  "i": 74,
+  "start": 1167.34,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 104,
+  "end": 1849.67,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 105,
+  "start": 1849.67,
+  "end": 1856.83,
+  "conf": 0.6,
+  "zero": false,
+  "method": "span",
+  "note": "FALSE_ZERO：字級 1849.67「為另五五間是內務的若有」1853.12「作者無間記的現政」=R"
+ },
+ {
+  "i": 106,
+  "start": 1856.83,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ }
+]
