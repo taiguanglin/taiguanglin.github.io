@@ -1,0 +1,300 @@
+/* books2ebook 附加樣式 —— 僅供 ebook 使用，補足散文/經文類內容的呈現。
+   設計代幣沿用 wenda2_ebook 的 :root 變數。 */
+
+/* 經文與詩句引文 */
+.sutra-text {
+  font-family: "Kaiti TC", "Kaiti SC", KaiTi, STKaiti, serif;
+  background: linear-gradient(135deg, #fdf6ec 0%, #fffdf8 100%);
+  border-left: 4px solid var(--color-primary);
+  padding: 12px 15px;
+  border-radius: 8px;
+  margin: 0 0 15px;
+  color: #5a4632;
+  line-height: var(--line-height);
+  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.08);
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+body.dark-mode .sutra-text {
+  background: #4a2c3a;
+  color: #fddde6;
+  border-left-color: var(--color-primary-light);
+}
+
+/* 回答的發文時間（沿用提問時間的樣式，色調偏師父側的淺粉） */
+.answer-time {
+  background: rgba(248, 200, 220, 0.3);
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 13px;
+  color: #fd7b7b;
+  border: 1px solid rgba(255, 142, 142, 0.15);
+}
+
+body.dark-mode .answer-time {
+  background: rgba(90, 45, 73, 0.4);
+  color: #d4a5b8;
+  border: 1px solid rgba(255, 105, 180, 0.2);
+}
+
+/* 「譯文 / 注解 / 解析」小標籤 */
+.label-heading {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--color-primary);
+  margin: 22px 0 10px;
+}
+
+body.dark-mode .label-heading { color: #ff91af; }
+
+/* 插圖 */
+figure.book-img {
+  margin: 18px auto;
+  text-align: center;
+  max-width: 100%;
+}
+
+figure.book-img img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-mode figure.book-img img {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* h5（坐禅2 的「（1）佛经」等括號編號子項）—— 比 h4 再深一層 */
+h5 {
+  color: var(--color-h4);
+  font-size: 15px;
+  margin-top: 12px;
+  padding-left: 16px;
+  font-weight: 600;
+}
+
+body.dark-mode h5 { color: #ffd1e0; }
+
+/* h6（坐禅2 的「Ⅰ）恩惠」等羅馬數字子項）—— 比 h5 再深一層 */
+h6 {
+  color: var(--color-h4);
+  font-size: 14px;
+  margin-top: 10px;
+  padding-left: 32px;
+  font-weight: 500;
+}
+
+body.dark-mode h6 { color: #ffd1e0; }
+
+/* 目錄第 5 層縮排（chapter-toc 與 main-toc） */
+#chapter-toc .toc-item.toc-level-5 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 70px;
+}
+#chapter-toc .toc-item.toc-level-5 .toc-expand-icon { left: 72px; }
+#main-toc .toc-item.toc-level-5 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 100px;
+}
+#main-toc .toc-item.toc-level-5 .toc-expand-icon { left: 102px; }
+body.dark-mode .toc-item.toc-level-5 > a { color: #ffd1e0; }
+
+/* 目錄第 6 層縮排（比第 5 層更深；「顯示層級」不新增第 6 按鈕，
+   展開第 5 層時由 JS 一併顯示） */
+#chapter-toc .toc-item.toc-level-6 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 92px;
+}
+#chapter-toc .toc-item.toc-level-6 .toc-expand-icon { left: 94px; }
+#main-toc .toc-item.toc-level-6 > a {
+  font-weight: 400;
+  color: var(--color-h4);
+  font-size: 12px;
+  margin-left: 122px;
+}
+#main-toc .toc-item.toc-level-6 .toc-expand-icon { left: 124px; }
+body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
+
+/* ---- .para-block 內文段落互動按鈕（複製 / 書籤 / 分享） ----------------
+   沿用 wenda2_ebook 的 .qa-actions 按鈕，但位置改到段落「外右上角」上方，
+   避免遮住滑鼠所在的段落文字（可能遮到上一段，但不遮當下段落）。
+
+   互動改為「⋯」disclosure menu：滑鼠移入段落時，只出現一個低對比、小佔位的
+   「⋯」提示氣泡，不再直接亮出三個按鈕；唯有滑鼠移上該 ⋯（或用鍵盤聚焦）才
+   展開完整按鈕（複製 / 書籤 / 分享），大幅降低單純移動滑鼠時的閱讀干擾。 */
+.para-block {
+  position: relative;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 6px;
+  /* 預留左側指示線空間：跟播高亮（inset 豎線）與書籤（border-left）
+     若無此 padding / 透明邊框，豎線會直接壓到段落首字（深色模式最明顯）。
+     經文段落 .sutra-text 自帶 border + padding，不在此列。 */
+  border-left: 4px solid transparent;
+  padding-left: 12px;
+}
+
+/* 經文段落自帶 4px 邊框與 15px 左右 padding，沿用自身設定即可 */
+.sutra-text.para-block {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 15px;
+}
+
+body.dark-mode .sutra-text.para-block {
+  border-left-color: var(--color-primary-light);
+}
+
+/* 跟播高亮的 inset 豎線落在上方的 padding 區，不再壓字 */
+.para-block.para-active {
+  padding-left: 12px;
+}
+
+.sutra-text.para-block.para-active {
+  padding-left: 15px;
+  /* 跟播高亮（04c-qa-audio.css 的 .para-block.para-active）用的是半透明 rgba
+     漸層，套在經文上會蓋掉 .sutra-text 自身的不透明漸層。經文一旦同時置頂
+     （sticky），下方講解滑過時就會透過半透明底色看見，畫面很雜亂；因此經文
+     的跟播高亮改用等效但不透明的暖色（把 rgba 疊在頁面底色上算出的實色），
+     維持原本的暖光暈視覺、完全不透光。 */
+  background: linear-gradient(135deg, #ffead6 0%, #fff1ef 100%);
+}
+
+body.dark-mode .sutra-text.para-block.para-active {
+  background: linear-gradient(135deg, #563139 0%, #4f283f 100%);
+}
+
+/* 書籤僅改變預留邊框的顏色，不再因新增邊框造成位移或壓字 */
+.para-block.bookmarked {
+  border-left-color: var(--color-primary-light);
+  padding-left: 12px;
+}
+
+.sutra-text.para-block.bookmarked {
+  padding-left: 15px;
+}
+
+.para-block:hover {
+  background-color: rgba(231, 84, 128, 0.05);
+  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.12);
+}
+
+body.dark-mode .para-block:hover {
+  background-color: rgba(255, 105, 180, 0.10);
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.20);
+}
+
+/* 經文段落（.sutra-text）本身是漸層背景，background-color 會被蓋掉；
+   因此改用 background 取代漸層 + 邊框/陰影強化，讓 hover 時有清楚顏色變化。 */
+.sutra-text.para-block {
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sutra-text.para-block:hover {
+  background: linear-gradient(135deg, #f7e8d8 0%, #fff2e0 100%);
+  border-left-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(231, 84, 128, 0.12);
+}
+
+body.dark-mode .sutra-text.para-block:hover {
+  background: #5b3a4c;
+  border-left-color: #ff91af;
+  box-shadow: 0 2px 8px rgba(255, 105, 180, 0.20);
+}
+
+/* 按鈕容器：置於段落正上方、靠右。用 bottom:100% 讓容器下緣貼齊段落頂端，
+   消除段落與容器之間的縫隙；並以 ::before 延伸一段透明熱區向下與段落重疊，
+   使滑鼠從段落移到容器（⋯ → 按鈕）的過程永遠不離開命中區，避免突然消失。 */
+.para-block .qa-actions {
+  top: auto;
+  bottom: 100%;
+  right: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 透明熱區（加大命中範圍）：向右上角移動時，滑鼠不必精準對到 ⋯ 氣泡。
+   往左延伸為 ⋯ 氣泡寬度（22px）的 3 倍，並向下、向上各貼近段落與按鈕列，
+   使「段落 → ⋯ → 按鈕」的移動過程維持連續命中，不會半途消失。 */
+.para-block .qa-actions::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  bottom: -18px;
+  left: auto;
+  right: 0;
+  width: 66px; /* 22px × 3 */
+}
+
+/* 「⋯」提示氣泡（預設狀態）：低對比、小佔位，僅作為「這裡有動作」的線索 */
+.para-block .qa-actions::after {
+  content: "⋯";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 16px;
+  line-height: 1;
+  color: rgba(120, 120, 120, 0.55);
+  background: rgba(0, 0, 0, 0.04);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode .para-block .qa-actions::after {
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位。
+   展開後按鈕需疊在 ::before 透明熱區「之上」（position + z-index），
+   否則寬熱區會蓋住 書籤/分享 按鈕，導致無法點擊。 */
+.para-block .qa-actions .qa-btn {
+  display: none;
+  position: relative;
+  z-index: 1;
+}
+
+/* 段落 hover → 顯示 ⋯（container 取得 pointer-events） */
+.para-block:hover .qa-actions,
+.para-block .qa-actions:hover,
+.para-block .qa-actions:focus-within {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ⋯ hover / 聚焦 → 隱藏 ⋯、展開完整按鈕 */
+.para-block .qa-actions:hover::after,
+.para-block .qa-actions:focus-within::after {
+  display: none;
+}
+
+.para-block .qa-actions:hover .qa-btn,
+.para-block .qa-actions:focus-within .qa-btn {
+  display: flex;
+}
+
+/* 書籤圖示移到段落左上角，下緣貼齊段落頂端（`bottom: 100%`），高度 10px
+   使圖示貼近文字，與右上 `.qa-actions` 按鈕列的視覺距離一致。 */
+.para-block.bookmarked .bookmark-indicator {
+  top: auto;
+  bottom: 100%;
+  right: auto;
+  left: 0;
+  display: flex;
+  align-items: center;
+  height: 10px;
+}
