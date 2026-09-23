@@ -1,0 +1,254 @@
+[
+ {
+  "i": 8,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 10.16
+ },
+ {
+  "i": 9,
+  "conf": 0.6,
+  "method": "span",
+  "note": "FALSE_ZERO：字級 10.16「我見如來賬無把自信出把握」14.48「隨地次第而見轉命」＝R",
+  "start": 10.16,
+  "end": 18.44,
+  "zero": false
+ },
+ {
+  "i": 10,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 18.44
+ },
+ {
+  "i": 25,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 440.17
+ },
+ {
+  "i": 26,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 440.17「技能接著看下一段大會此如」442.58「來賬誠實本性清」＝R",
+  "start": 440.17,
+  "end": 446.63,
+  "zero": false
+ },
+ {
+  "i": 27,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 446.63
+ },
+ {
+  "i": 42,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 829.64
+ },
+ {
+  "i": 43,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：[43] 內容「下面是一段總結性的偈語」在 829.64–833.54（字級 829.64「但面是一段總結性」）",
+  "start": 829.64,
+  "end": 833.54,
+  "zero": false
+ },
+ {
+  "i": 44,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 833.54「的句言但是是是」837.44「與其使俱」840.87「信和啟使誰走二重生」＝偈頭",
+  "start": 833.54,
+  "end": 845.84,
+  "zero": false
+ },
+ {
+  "i": 45,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 845.84
+ },
+ {
+  "i": 52,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1010.8
+ },
+ {
+  "i": 53,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1010.8「我把嗯名校分別政治注入」＝「先講五法，名、相、分別、正智、如如」",
+  "start": 1010.8,
+  "end": 1013.0,
+  "zero": false
+ },
+ {
+  "i": 54,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1010.8 段「然后能够修行者观察此法入意如类质政境界」＝R",
+  "start": 1013.0,
+  "end": 1018.3,
+  "zero": false
+ },
+ {
+  "i": 55,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1018.3「修行者呢要观察此法这个无法」＝本段",
+  "start": 1018.3,
+  "end": 1049.4,
+  "zero": false
+ },
+ {
+  "i": 56,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 ~1055「反育不了無」＝「凡愚不了五法自性諸識無我」",
+  "start": 1049.4,
+  "end": 1057.9,
+  "zero": false
+ },
+ {
+  "i": 57,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1057.9「普通人呢就是一句法后們呢不知道這個無法置信」＝本段",
+  "start": 1057.9,
+  "end": 1081.4,
+  "zero": false
+ },
+ {
+  "i": 58,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1081.4「云和不了而起分別」＝「云何不了而起分別？」",
+  "start": 1081.4,
+  "end": 1089.6,
+  "zero": false
+ },
+ {
+  "i": 59,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1089.6「那塊不了的什麼呢就是這個五保自信出食物這個理論」＝本段",
+  "start": 1089.6,
+  "end": 1095.9,
+  "zero": false
+ },
+ {
+  "i": 60,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1095.9「發言大會專於不知」＝「佛言：大慧，凡愚不知名是假立」",
+  "start": 1095.9,
+  "end": 1105.2,
+  "zero": false
+ },
+ {
+  "i": 61,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1105.2「您是假勵嗯這些防護們都不知道這個您是假立的」＝本段",
+  "start": 1105.2,
+  "end": 1133.7,
+  "zero": false
+ },
+ {
+  "i": 62,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1133.7「然后在这里讲上记…执着于这个分备」1148.3「負重聖至其貪春之教書作業」＝本段",
+  "start": 1133.7,
+  "end": 1173.2,
+  "zero": false
+ },
+ {
+  "i": 63,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1173.2「如槍就儉妄想財富」＝「如蠶作繭，妄想纏縛」",
+  "start": 1173.2,
+  "end": 1181.5,
+  "zero": false
+ },
+ {
+  "i": 64,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1181.5「就像這個呃陳勇一樣…把自己個團團圍住」＝本段",
+  "start": 1181.5,
+  "end": 1229.6,
+  "zero": false
+ },
+ {
+  "i": 65,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1222.0「不置珠寶的話如眼如水中月之心所見」1229.6「不知道這個珠寶想分別之作」＝本段",
+  "start": 1229.6,
+  "end": 1245.1,
+  "zero": false
+ },
+ {
+  "i": 66,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1245.1「離能所取一生作滅啊在這裡前面省略到」＝本段",
+  "start": 1245.1,
+  "end": 1276.7,
+  "zero": false
+ },
+ {
+  "i": 67,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 1276.7「未從自在時間未曾嗅醒而生」1309.7「隨名向流」＝本段",
+  "start": 1276.7,
+  "end": 1326.2,
+  "zero": false
+ },
+ {
+  "i": 68,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1326.2「大會始終向著為岩石所見名之為色」＝「此中相者，謂眼識所見，名之為色」",
+  "start": 1326.2,
+  "end": 1352.96,
+  "zero": false
+ },
+ {
+  "i": 77,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1564.46
+ },
+ {
+  "i": 78,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1564.46「薩諸如如矣嗯菩薩這個在住」＝「菩薩摩訶薩住如如已」",
+  "start": 1564.46,
+  "end": 1566.96,
+  "zero": false
+ },
+ {
+  "i": 79,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1566.96
+ }
+]

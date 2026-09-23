@@ -1,0 +1,94 @@
+[
+ {
+  "i": 18,
+  "end": 366.36,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 19,
+  "start": 366.36,
+  "end": 369.56,
+  "conf": 0.6,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 366.36「大會以彼為因其所緣故」=R 頭"
+ },
+ {
+  "i": 20,
+  "start": 369.56,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 24,
+  "end": 513.33,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 25,
+  "start": 513.33,
+  "end": 523.15,
+  "conf": 0.6,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 513.33「一本書裡是這樣寫的我不捏」=偈首"
+ },
+ {
+  "i": 26,
+  "start": 523.15,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 30,
+  "end": 639.34,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 31,
+  "start": 639.34,
+  "end": 641.84,
+  "conf": 0.6,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 639.34「復次大會我應裝作忘記這些」=「復次，大慧，我今當說妄計自性差別相」"
+ },
+ {
+  "i": 32,
+  "start": 641.84,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 68,
+  "end": 1419.73,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ },
+ {
+  "i": 69,
+  "start": 1419.73,
+  "end": 1424.87,
+  "conf": 0.55,
+  "zero": false,
+  "method": "span",
+  "note": "假 zero→READ：字級 1419.73「大會以緣起中去做種種忘記之行」=「大慧，於緣起中，執著種種妄計自性」"
+ },
+ {
+  "i": 70,
+  "start": 1424.87,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步"
+ }
+]

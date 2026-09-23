@@ -1,0 +1,232 @@
+[
+ {
+  "i": 20,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 214.96
+ },
+ {
+  "i": 21,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 214.96「濕際環境廣解重量自造之本」＝「釋提桓因廣解眾論，自造諸論」",
+  "start": 214.96,
+  "end": 220.7,
+  "zero": false
+ },
+ {
+  "i": 22,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 220.7
+ },
+ {
+  "i": 23,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 301.26
+ },
+ {
+  "i": 24,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 301.26「論法雖不濟世對」＝「即以論法摧伏帝釋，壞千輻輪」",
+  "start": 301.26,
+  "end": 303.81,
+  "zero": false
+ },
+ {
+  "i": 25,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 303.81
+ },
+ {
+  "i": 36,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 536.97
+ },
+ {
+  "i": 37,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 536.97「道啊這個如果說這個儒家業」＝「若盧迦耶所造之論」",
+  "start": 536.97,
+  "end": 540.42,
+  "zero": false
+ },
+ {
+  "i": 38,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 540.42
+ },
+ {
+  "i": 54,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 876.99
+ },
+ {
+  "i": 55,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 876.99「是世間圓滿你復問一切有趣」＝「彼復問言：一切有記耶」",
+  "start": 876.99,
+  "end": 882.69,
+  "zero": false
+ },
+ {
+  "i": 56,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 882.69
+ },
+ {
+  "i": 61,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1050.87
+ },
+ {
+  "i": 62,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 1050.87「有是三界的意思啊欲界色界無色界」1057.83「不知道這一切都是我們的心里產生的幻境」＝本段",
+  "start": 1050.87,
+  "end": 1071.99,
+  "zero": false
+ },
+ {
+  "i": 63,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1071.99
+ },
+ {
+  "i": 69,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1248.25
+ },
+ {
+  "i": 70,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1248.25「是給婆羅門復我我言頗有非」＝R",
+  "start": 1248.25,
+  "end": 1253.15,
+  "zero": false
+ },
+ {
+  "i": 71,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1253.15
+ },
+ {
+  "i": 76,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1395.06
+ },
+ {
+  "i": 77,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 1395.06「你有的啊朋友們略而言之啊」＝「婆羅門，略而言之」",
+  "start": 1395.06,
+  "end": 1398.66,
+  "zero": false
+ },
+ {
+  "i": 78,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1398.66
+ },
+ {
+  "i": 86,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1527.13
+ },
+ {
+  "i": 87,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1527.13「我跟你說啊大會所言財者可」＝R",
+  "start": 1527.13,
+  "end": 1533.74,
+  "zero": false
+ },
+ {
+  "i": 88,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1533.74
+ },
+ {
+  "i": 94,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1672.99
+ },
+ {
+  "i": 95,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1672.99「種斷腸和二邊但會外道事論」1675.91「令出七人墮在二邊」＝R",
+  "start": 1672.99,
+  "end": 1680.78,
+  "zero": false
+ },
+ {
+  "i": 96,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1680.78
+ },
+ {
+  "i": 97,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1744.49
+ },
+ {
+  "i": 98,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1744.49「充足越努力是名詞民法啊說」＝「是名財、法二差別相」",
+  "start": 1744.49,
+  "end": 1752.25,
+  "zero": false
+ },
+ {
+  "i": 99,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1752.25
+ }
+]

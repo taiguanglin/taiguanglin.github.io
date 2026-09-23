@@ -1,0 +1,126 @@
+[
+ {
+  "i": 19,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 275.78
+ },
+ {
+  "i": 20,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 275.78「大會一切所作如」278.99「平一等皆是無常」＝R",
+  "start": 275.78,
+  "end": 282.44,
+  "zero": false
+ },
+ {
+  "i": 21,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 282.44
+ },
+ {
+  "i": 65,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1231.57
+ },
+ {
+  "i": 67,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 1231.57「識或者叫自信吧啊名為常識」1234.47「生於七史無名駐地」＝本段（[66] R 由本段引述，維持 zero）",
+  "start": 1231.57,
+  "end": 1252.77,
+  "zero": false
+ },
+ {
+  "i": 68,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1252.77
+ },
+ {
+  "i": 69,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1308.13
+ },
+ {
+  "i": 70,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 1310.36「下一句指的是我們這什麼反復」＝本段",
+  "start": 1308.13,
+  "end": 1312.1,
+  "zero": false
+ },
+ {
+  "i": 71,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1312.10「復啊其餘七始意意識等啊七」＝R",
+  "start": 1312.1,
+  "end": 1316.0,
+  "zero": false
+ },
+ {
+  "i": 72,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1316.0
+ },
+ {
+  "i": 74,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1426.4
+ },
+ {
+  "i": 75,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1426.40「啊若因其所源諸取功滅」1429.96「向犧牲智慧分別苦勞受者」＝R",
+  "start": 1426.4,
+  "end": 1437.58,
+  "zero": false
+ },
+ {
+  "i": 76,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1437.58
+ },
+ {
+  "i": 79,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1571.62
+ },
+ {
+  "i": 80,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1571.62「何以故」1575.38「因彼己所願而得生故」＝R",
+  "start": 1571.62,
+  "end": 1579.16,
+  "zero": false
+ },
+ {
+  "i": 81,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1579.16
+ }
+]

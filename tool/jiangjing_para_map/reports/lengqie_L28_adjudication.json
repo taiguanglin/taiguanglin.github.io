@@ -1,0 +1,179 @@
+[
+ {
+  "i": 9,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 66.31
+ },
+ {
+  "i": 11,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 66.31-82.97 逐字＝本段（「因轉變」…「物轉變」）；[10] 未唸（書序≠語序，講解直接唸 [11]）",
+  "start": 66.31,
+  "end": 85.0,
+  "zero": false
+ },
+ {
+  "i": 12,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 85.0
+ },
+ {
+  "i": 16,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 200.04
+ },
+ {
+  "i": 17,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 200.04「此株形轉變成為形別意見」＝R",
+  "start": 200.04,
+  "end": 204.02,
+  "zero": false
+ },
+ {
+  "i": 18,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 204.02
+ },
+ {
+  "i": 21,
+  "conf": 0.5,
+  "method": "span",
+  "note": "假 zero→READ：字級 299.20「注意外道種種技術皆非如是」＝R 頭",
+  "start": 296.93,
+  "end": 299.2,
+  "zero": false
+ },
+ {
+  "i": 22,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 299.2
+ },
+ {
+  "i": 27,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 459.3
+ },
+ {
+  "i": 28,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 462.70「重設壽眠行處時轉變大總急」＝偈「形處時轉變，大種及諸根」",
+  "start": 459.3,
+  "end": 470.43,
+  "zero": false
+ },
+ {
+  "i": 29,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 470.43
+ },
+ {
+  "i": 30,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 531.29
+ },
+ {
+  "i": 31,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 531.29「唯願如來」534.18「為我解說於一切法生命意及」＝R",
+  "start": 531.29,
+  "end": 540.04,
+  "zero": false
+ },
+ {
+  "i": 32,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 540.04
+ },
+ {
+  "i": 47,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1042.11
+ },
+ {
+  "i": 48,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1042.11「此株分別如常作繭以妄想思」＝R",
+  "start": 1042.11,
+  "end": 1045.93,
+  "zero": false
+ },
+ {
+  "i": 49,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1045.93
+ },
+ {
+  "i": 50,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1105.58
+ },
+ {
+  "i": 51,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1105.58「下一段啊大會始終食無命」1110.06「非逆向以菩薩摩薩見一切法」＝R",
+  "start": 1105.58,
+  "end": 1112.89,
+  "zero": false
+ },
+ {
+  "i": 52,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1112.89
+ },
+ {
+  "i": 68,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1481.36
+ },
+ {
+  "i": 69,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1484.40「說頌言不失望分別是名為逆」＝偈頭",
+  "start": 1481.36,
+  "end": 1489.96,
+  "zero": false
+ },
+ {
+  "i": 70,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1489.96
+ }
+]

@@ -1,0 +1,117 @@
+[
+ {
+  "i": 27,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 510.36
+ },
+ {
+  "i": 28,
+  "conf": 0.6,
+  "method": "span",
+  "note": "FALSE_ZERO：字級 510.36「種狀品都算是啊何以故為什」513.10「麼呢不見聖人所見法故啊這」＝R",
+  "start": 510.36,
+  "end": 518.26,
+  "zero": false
+ },
+ {
+  "i": 29,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 518.26
+ },
+ {
+  "i": 50,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1007.76
+ },
+ {
+  "i": 51,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1007.76「博言大會我非不說進行空房」＝R",
+  "start": 1007.76,
+  "end": 1014.66,
+  "zero": false
+ },
+ {
+  "i": 52,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1014.66
+ },
+ {
+  "i": 55,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1125.07
+ },
+ {
+  "i": 56,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1125.07「的正進行空法敵破亂象入圍」＝「離惑亂相入唯識理」",
+  "start": 1125.07,
+  "end": 1127.97,
+  "zero": false
+ },
+ {
+  "i": 57,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1127.97
+ },
+ {
+  "i": 69,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1384.36
+ },
+ {
+  "i": 70,
+  "conf": 0.45,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 1384.36「在一切法的有誤上他也不應」1389.09「切吧脫不能生啊」＝本段",
+  "start": 1384.36,
+  "end": 1391.97,
+  "zero": false
+ },
+ {
+  "i": 71,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1391.97
+ },
+ {
+  "i": 87,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1753.72
+ },
+ {
+  "i": 88,
+  "conf": 0.6,
+  "method": "span",
+  "note": "假 zero→READ：字級 1753.72「讀書發展我修行者與心所限」＝「謂修行者於心所現」",
+  "start": 1753.72,
+  "end": 1757.36,
+  "zero": false
+ },
+ {
+  "i": 89,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1757.36
+ }
+]

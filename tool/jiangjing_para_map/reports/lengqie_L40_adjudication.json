@@ -1,0 +1,117 @@
+[
+ {
+  "i": 13,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 124.82
+ },
+ {
+  "i": 14,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 124.82「就言如來常在絕境無絕無關」＝「又言如來常在於定，無覺無觀」",
+  "start": 124.82,
+  "end": 128.99,
+  "zero": false
+ },
+ {
+  "i": 15,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 128.99
+ },
+ {
+  "i": 33,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 667.05
+ },
+ {
+  "i": 34,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 667.05「借過烏雲涅牌啊我就是為了」＝「我為無餘涅槃界故」",
+  "start": 667.05,
+  "end": 677.16,
+  "zero": false
+ },
+ {
+  "i": 35,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 677.16
+ },
+ {
+  "i": 50,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 984.08
+ },
+ {
+  "i": 51,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 984.08「清醒煩惱正在那見人我必識行」＝「煩惱障者，見人無我」",
+  "start": 984.08,
+  "end": 995.31,
+  "zero": false
+ },
+ {
+  "i": 52,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 995.31
+ },
+ {
+  "i": 59,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1147.24
+ },
+ {
+  "i": 60,
+  "conf": 0.5,
+  "method": "span",
+  "note": "COMM 零寬修復：字級 1149.99「是沒有沒有妄想啊我有忘念」1154.49「思然後說法」＝本段",
+  "start": 1147.24,
+  "end": 1160.71,
+  "zero": false
+ },
+ {
+  "i": 61,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1160.71
+ },
+ {
+  "i": 74,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "end": 1445.96
+ },
+ {
+  "i": 75,
+  "conf": 0.55,
+  "method": "span",
+  "note": "假 zero→READ：字級 1445.96「切劃過不從夜行非即使風亦」1449.84「非非佛」＝R",
+  "start": 1445.96,
+  "end": 1454.64,
+  "zero": false
+ },
+ {
+  "i": 76,
+  "conf": 0.85,
+  "method": "span",
+  "note": "鏈邊界同步",
+  "start": 1454.64
+ }
+]
