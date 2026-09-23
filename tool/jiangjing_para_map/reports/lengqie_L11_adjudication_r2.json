@@ -1,0 +1,99 @@
+[
+ {
+  "i": 9,
+  "start": 46.97,
+  "conf": 0.85,
+  "method": "ngram",
+  "zero": true,
+  "note": "rule 2.a：段頭「一切如来应正等觉」@47.12 念出後即講解；[10] 開頭 verbatim 重引全 R → SUTRA zero，念誦音頻由 [10] 攜帶"
+ },
+ {
+  "i": 10,
+  "start": 46.97,
+  "conf": 0.85,
+  "method": "ngram",
+  "note": "start=46.90→46.97 = [9] 引文 R run-onset（t(一切)=47.12 −0.15s）；承載 [9] 的念誦"
+ },
+ {
+  "i": 57,
+  "start": 1027.03,
+  "conf": 0.8,
+  "method": "ngram",
+  "zero": false,
+  "note": "rule 2.b：只念段頭「不以分别起相待以言无」@1027.37-1029.31；「何以故…」未念；[58] 開頭無 verbatim 重引 → span 恰蓋實念那截"
+ },
+ {
+  "i": 58,
+  "start": 1029.31,
+  "conf": 0.85,
+  "method": "ngram",
+  "note": "緊接 [57] 念誦末字（無）；原 start 1030.84 吞了 [57] 的念誦尾"
+ },
+ {
+  "i": 59,
+  "start": 1061.04,
+  "conf": 0.85,
+  "method": "ngram",
+  "zero": true,
+  "note": "rule 2.a：段頭「以角分别为其所依」@1061.39 念出後即講解；[60] 開頭 verbatim 重引全 R → SUTRA zero，念誦由 [60] 攜帶"
+ },
+ {
+  "i": 60,
+  "start": 1061.04,
+  "conf": 0.85,
+  "method": "ngram",
+  "note": "start=1061.04 = [59] 引文 R run-onset（t(一)=1061.39 −0.35s）"
+ },
+ {
+  "i": 72,
+  "start": 1360.46,
+  "conf": 0.85,
+  "method": "ngram",
+  "zero": true,
+  "note": "rule 2.a：只念「大慧，分析牛角乃至极微，求不可得」@1360.76-1363.74；[73] 開頭 verbatim 重引 R 的 86% → SUTRA zero，念誦由 [73] 攜帶（原 1.36s span 語速 22 字/s 不可能）"
+ },
+ {
+  "i": 73,
+  "start": 1360.46,
+  "conf": 0.85,
+  "method": "ngram",
+  "note": "start=1360.46 = [72] 引文 R run-onset（t(大)=1360.76 −0.30s）"
+ },
+ {
+  "i": 75,
+  "start": 1403.43,
+  "conf": 0.8,
+  "method": "ngram",
+  "zero": false,
+  "note": "rule 2.b：只念段頭「二俱非有谁待于谁」@1403.78-1405.44；[76] 開頭只重引「二俱非有」(<80%) → span 恰蓋實念那截（原 span 1417.86 起，完全錯位）"
+ },
+ {
+  "i": 76,
+  "start": 1405.44,
+  "conf": 0.8,
+  "method": "ngram",
+  "zero": false,
+  "note": "COMM 永不 zero：音頻 1405.83-1423.94 確實念出（「两者都不存在…谁相对于谁呢」）；解除 auto-zero/auto-confirmed，改回 READ"
+ },
+ {
+  "i": 77,
+  "start": 1424.10,
+  "conf": 0.89,
+  "method": "ngram",
+  "note": "start=1424.10 = 段頭「若相待不成」@1424.45 run-onset（原 1431.19 晚 7s，吞掉 [76] 內容）"
+ },
+ {
+  "i": 94,
+  "start": 1649.58,
+  "conf": 0.85,
+  "method": "ngram",
+  "note": "start=1649.58 = 段頭「彼何所待」@1649.93 run-onset（原 1648.65 早了 1.3s）"
+ },
+ {
+  "i": 95,
+  "start": 1663.03,
+  "conf": 0.85,
+  "method": "ngram",
+  "note": "start=1663.03 = 段頭「若待余物」@1663.38 run-onset（原 1663.96 晚了 1s）"
+ }
+]
