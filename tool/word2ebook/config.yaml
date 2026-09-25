@@ -1,0 +1,303 @@
+# Word2EBook 配置文件
+# Configuration file for Word2EBook
+
+# 電子書標題設定
+# E-book title settings
+book_title:
+  # 簡體中文標題 (如果不設定，將使用檔案名)
+  # Simplified Chinese title (if not set, filename will be used)
+  simplified: "坐禅之问答录2"
+  
+  # 繁體中文標題 (如果不設定，將使用檔案名)
+  # Traditional Chinese title (if not set, filename will be used)
+  traditional: "坐禪之問答錄2"
+
+# 多語言文字設定
+# Multi-language text settings
+i18n:
+  # 目錄相關文字
+  table_of_contents:
+    simplified: "目录"
+    traditional: "目錄"
+  
+  # 導航相關文字
+  navigation:
+    home:
+      simplified: "🌸 回首页"
+      traditional: "🌸 回首頁"
+
+    ebook_toc:
+      simplified: "📖 问答录2总目录"
+      traditional: "📖 問答錄2總目錄"
+
+    site_home:
+      simplified: "🏠 首页"
+      traditional: "🏠 首頁"
+
+    cross_ebook:
+      simplified: "📚 坐禅与讲经"
+      traditional: "📚 坐禪與講經"
+    
+    chapter_toc:
+      simplified: "本章目录"
+      traditional: "本章目錄"
+    
+    bookmarks:
+      simplified: "书签"
+      traditional: "書籤"
+    
+    my_bookmarks:
+      simplified: "我的书签"
+      traditional: "我的書籤"
+    
+    chapter_directory:
+      simplified: "章节目录"
+      traditional: "章節目錄"
+  
+  # 書籤相關文字
+  bookmark:
+    myBookmarks:
+      simplified: "我的书签"
+      traditional: "我的書籤"
+    
+    empty:
+      simplified: "尚无书签"
+      traditional: "尚無書籤"
+  
+  # 語言切換
+  language_switch:
+    simplified: "简体"
+    traditional: "繁體"
+
+  # QA（qa/ 資料夾答疑章節）相關文字
+  qa:
+    # 章節頂部來源橫幅（連到線上校稿工具 qa/index.html）
+    banner:
+      simplified: "本章由录音 AI 转录、人工校稿中。点此查看来源与校稿进度"
+      traditional: "本章由錄音 AI 轉錄、人工校稿中。點此查看來源與校稿進度"
+
+    # 已人工校稿徽章（後面接最後校稿時間）
+    proofread:
+      simplified: "已人工校稿"
+      traditional: "已人工校稿"
+
+    # 尚未校對徽章（AI 轉錄草稿）
+    unproofread:
+      simplified: "AI 转录，尚未校对"
+      traditional: "AI 轉錄，尚未校對"
+
+    # 首頁來源的第三個連結標籤
+    source_label:
+      simplified: "线上答疑校稿稿（qa）"
+      traditional: "線上答疑校稿稿（qa）"
+  
+  # 搜索相關
+  search:
+    activate_search:
+      simplified: "启用全文搜索"
+      traditional: "啟用全文搜尋"
+    
+    search_placeholder:
+      simplified: "搜索全文内容..."
+      traditional: "搜尋全文內容..."
+    
+    search_initializing:
+      simplified: "正在初始化搜索功能..."
+      traditional: "正在初始化搜尋功能..."
+    
+    search_loading:
+      simplified: "正在加载搜索功能，请稍候..."
+      traditional: "正在載入搜尋功能，請稍候..."
+    
+    show_more:
+      simplified: "显示更多"
+      traditional: "顯示更多"
+    
+    show_all:
+      simplified: "显示全部"
+      traditional: "顯示全部"
+    
+    clear_search:
+      simplified: "清除搜索"
+      traditional: "清除搜尋"
+    
+    collapse_search:
+      simplified: "收起搜索"
+      traditional: "收起搜尋"
+
+    scope_label:
+      simplified: "搜索范围"
+      traditional: "搜尋範圍"
+
+    scope_question:
+      simplified: "问题"
+      traditional: "問題"
+
+    scope_answer:
+      simplified: "回答"
+      traditional: "回答"
+
+    scope_both:
+      simplified: "两者"
+      traditional: "兩者"
+  
+  # 層級控制
+  level_control:
+    show_level:
+      simplified: "显示层级"
+      traditional: "顯示層級"
+    
+    level:
+      simplified: "层级"
+      traditional: "層級"
+    
+    collapse_expand:
+      simplified: "收缩/展开层级控制"
+      traditional: "收縮/展開層級控制"
+  
+  # 其他UI文字
+  ui:
+    previous_chapter:
+      simplified: "上一章"
+      traditional: "上一章"
+    
+    next_chapter:
+      simplified: "下一章"
+      traditional: "下一章"
+    
+    function_menu:
+      simplified: "功能菜单"
+      traditional: "功能選單"
+    
+    settings:
+      simplified: "设置"
+      traditional: "設置"
+    
+    back_to_top:
+      simplified: "回到顶部"
+      traditional: "回到頂部"
+    
+    back_to_chapter_toc:
+      simplified: "回到本章目录"
+      traditional: "回到本章目錄"
+      
+    home:
+      simplified: "回首页"
+      traditional: "回首頁"
+      
+    directory:
+      simplified: "目录"
+      traditional: "目錄"
+      
+    table_of_contents:
+      simplified: "目录"
+      traditional: "目錄"
+  
+  # 閱讀設置相關文字
+  reading_settings:
+    title:
+      simplified: "阅读设置"
+      traditional: "閱讀設置"
+    
+    font_size:
+      simplified: "字体大小"
+      traditional: "字體大小"
+    
+    line_height:
+      simplified: "行距"
+      traditional: "行距"
+    
+    width:
+      simplified: "宽度"
+      traditional: "寬度"
+    
+    theme:
+      simplified: "主题"
+      traditional: "主題"
+    
+    # 字體大小選項
+    font_decrease:
+      simplified: "A-"
+      traditional: "A-"
+    
+    font_normal:
+      simplified: "A"
+      traditional: "A"
+    
+    font_increase:
+      simplified: "A+"
+      traditional: "A+"
+    
+    # 行距選項
+    line_tight:
+      simplified: "紧密"
+      traditional: "緊密"
+    
+    line_normal:
+      simplified: "正常"
+      traditional: "正常"
+    
+    line_loose:
+      simplified: "宽松"
+      traditional: "寬鬆"
+    
+    # 寬度選項
+    width_narrow:
+      simplified: "窄"
+      traditional: "窄"
+    
+    width_normal:
+      simplified: "中"
+      traditional: "中"
+    
+    width_wide:
+      simplified: "宽"
+      traditional: "寬"
+    
+    # 主題選項
+    theme_light:
+      simplified: "☀️ 日间"
+      traditional: "☀️ 日間"
+    
+    theme_dark:
+      simplified: "🌙 夜间"
+      traditional: "🌙 夜間"
+
+  # SEO / 分享 meta 文字（章節與首頁 head；{title} 會代入清理後的章名）
+  seo:
+    site_name:
+      simplified: "TaiGuangLin 禅师"
+      traditional: "TaiGuangLin 禪師"
+
+    chapter_description:
+      simplified: "《坐禅之问答录2》{title}——TaiGuangLin 禅师针对修行者疑问的圆满开示，全文可检索、支持简繁切换。"
+      traditional: "《坐禪之問答錄2》{title}——TaiGuangLin 禪師針對修行者疑問的圓滿開示，全文可檢索、支援簡繁切換。"
+
+    index_description:
+      simplified: "TaiGuangLin 禅师《坐禅之问答录2》完整电子书：八十余则问答按 21 章收录（2024.02 起），支持全文检索、书签与简繁切换。"
+      traditional: "TaiGuangLin 禪師《坐禪之問答錄2》完整電子書：八十餘則問答按 21 章收錄（2024.02 起），支援全文檢索、書籤與簡繁切換。"
+
+# 其他設定
+# Other settings
+generation:
+  # 是否自動生成繁體版
+  # Whether to automatically generate traditional version
+  auto_traditional: true
+  
+  # 是否生成搜索索引
+  # Whether to generate search index
+  generate_search: true
+
+# Favicon 設定
+# Favicon settings
+favicon:
+  # 是否啟用 favicon 功能
+  # Whether to enable favicon functionality
+  enabled: true
+  
+  # 搜索 favicon 文件的模式（按優先級順序）
+  # Search patterns for favicon files (in priority order)
+  search_patterns:
+    - "favicon.ico"
+    - "favicon.png" 
+    - "favicon.svg"
