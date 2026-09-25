@@ -1,0 +1,13 @@
+/* TaiGuangLin 自架字型子集 — 由 tool/fonts/build_fonts.py 產生，勿手改。
+   來源：Noto Serif TC / Noto Sans TC（SIL OFL 1.1，見 fonts/OFL.txt）。
+   字體檔為全站共用子集；新增頁面用字後請重跑管線。 */
+@font-face { font-family: 'Noto Serif TC'; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/NotoSerifTC-400.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Serif TC'; font-style: normal; font-weight: 500; font-display: swap; src: url(/fonts/NotoSerifTC-500.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Serif TC'; font-style: normal; font-weight: 600; font-display: swap; src: url(/fonts/NotoSerifTC-600.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Serif TC'; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/NotoSerifTC-700.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Serif TC'; font-style: normal; font-weight: 900; font-display: swap; src: url(/fonts/NotoSerifTC-900.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Sans TC'; font-style: normal; font-weight: 300; font-display: swap; src: url(/fonts/NotoSansTC-300.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Sans TC'; font-style: normal; font-weight: 400; font-display: swap; src: url(/fonts/NotoSansTC-400.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Sans TC'; font-style: normal; font-weight: 500; font-display: swap; src: url(/fonts/NotoSansTC-500.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Sans TC'; font-style: normal; font-weight: 600; font-display: swap; src: url(/fonts/NotoSansTC-600.woff2) format('woff2'); }
+@font-face { font-family: 'Noto Sans TC'; font-style: normal; font-weight: 700; font-display: swap; src: url(/fonts/NotoSansTC-700.woff2) format('woff2'); }
