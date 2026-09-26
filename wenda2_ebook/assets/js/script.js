@@ -839,8 +839,63 @@ function generateSearchResultItem(result, index, indexOffset, query) {
   `;
 }
 
+// ============================================================
+// 搜尋狀態 ↔ URL hash（#q=…&scope=…）：返回本頁時可由 hash 還原查詢
+// （replaceState 不產生新瀏覽記錄；配對 01e 的自動還原流程）
+// ============================================================
+
+// 從 URL hash 讀取搜尋狀態（無則回傳空字串的查詢）
+function readSearchStateFromHash() {
+  const hash = window.location.hash.replace(/^#/, '');
+  const qMatch = /(?:^|&)q=([^&]*)/.exec(hash);
+  let q = '';
+  if (qMatch) {
+    try {
+      q = decodeURIComponent(qMatch[1]);
+    } catch (e) {
+      q = qMatch[1];
+    }
+  }
+  const scopeMatch = /(?:^|&)scope=([^&]*)/.exec(hash);
+  let scope = '';
+  if (scopeMatch) {
+    try {
+      scope = decodeURIComponent(scopeMatch[1]);
+    } catch (e) {
+      scope = scopeMatch[1];
+    }
+  }
+  return { q: q, scope: scope };
+}
+
+// 把目前查詢／範圍寫入 URL hash（replaceState：不產生新瀏覽記錄）
+function updateSearchQueryHash(query) {
+  const q = (query || '').trim();
+  // 與 performSearch 相同的門檻：空查詢或 ≥2 字元才寫入，避免打字中途污染 hash
+  if (q && q.length < 2) return;
+  let parts = [];
+  if (q) parts.push('q=' + encodeURIComponent(q));
+  if (q && searchScope && searchScope !== 'both') {
+    parts.push('scope=' + encodeURIComponent(searchScope));
+  }
+  const newHash = parts.length ? '#' + parts.join('&') : '';
+  const current = window.location.hash;
+  if (current === newHash) return;
+  try {
+    history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+  } catch (e) { /* 部分環境不允許 history 操作，忽略 */ }
+}
+
+// 對外（01e / 模組載入順序在後者）提供 hash 讀取
+W2E.search = W2E.search || {};
+W2E.search.readStateFromHash = readSearchStateFromHash;
+
 // 执行搜索
-function performSearch(query) {
+// targetDisplayedCount：還原情境下欲重現的「已顯示筆數」（一般搜尋傳 undefined → 第一頁）
+function performSearch(query, targetDisplayedCount) {
+  // 同步查詢到 URL hash：返回本頁時可據此還原結果
+  updateSearchQueryHash(query);
+
   const elements = getSearchElements();
   resetSearchResultsHeight();
 
@@ -889,8 +944,9 @@ function performSearch(query) {
 
     if (results.length > 0) {
       resetSearchResultsHeight();
-      displayPagedResults(trimmedQuery);
+      displayPagedResults(trimmedQuery, targetDisplayedCount);
       setSearchScopeVisible(true);
+      if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
     } else {
       displayNoResults(trimmedQuery, elements);
       elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
@@ -903,6 +959,7 @@ function performSearch(query) {
 
     elements.searchResults.style.display = 'block';
     elements.tocHeader.style.display = 'none';
+    if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
     setTimeout(updateFloatingControlsState, 10);
     setTimeout(updateBottomSearchButtonsVisibility, 10);
 
@@ -917,9 +974,13 @@ function performSearch(query) {
 }
 
 // 展示第一页结果（分页）
-function displayPagedResults(query) {
+// targetDisplayedCount：傳入時一次顯示到該筆數（搜尋狀態還原用）
+function displayPagedResults(query, targetDisplayedCount) {
   const elements = getSearchElements();
-  displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  const firstPageCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  displayedResultsCount = (typeof targetDisplayedCount === 'number' && targetDisplayedCount > firstPageCount)
+    ? Math.min(targetDisplayedCount, currentSearchResults.length)
+    : firstPageCount;
   const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
   elements.searchResultsList.innerHTML = resultsToShow.map((r, i) =>
     generateSearchResultItem(r, i, 0, query)
@@ -949,6 +1010,7 @@ function loadMoreResults() {
   expandSearchResultsHeight();
   updateResultsCounter();
   updateLoadMoreButtons();
+  if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
   const el = document.getElementById('search-status');
   if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
 }
@@ -970,6 +1032,7 @@ function loadAllResults() {
   expandSearchResultsHeight();
   updateResultsCounter();
   updateLoadMoreButtons();
+  if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
   const el = document.getElementById('search-status');
   if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
 }
@@ -1110,8 +1173,45 @@ function setSearchScopeVisible(visible) {
   scopeEl.classList.toggle('is-visible', !!visible);
 }
 
+// ============================================================
+// 從 URL hash / 快照還原搜尋狀態（返回本頁時：#q=…&scope=…）
+// 配對 01d 的 updateSearchQueryHash（performSearch 寫入、replaceState 不產生記錄）
+// 以及 10-search-return 的 sessionStorage 快照（還原筆數＋捲動位置）
+// ============================================================
+function restoreSearchFromHash() {
+  const state = readSearchStateFromHash();
+  const snap = (typeof readSearchSnapshot === 'function') ? readSearchSnapshot() : null;
+  // hash 沒有時，以快照（同分頁返回）兒底
+  const q = ((state.q || '') || (snap && snap.q) || '').trim();
+  if (!q || q.length < 2) return;
+
+  const input = document.getElementById('search-input');
+  if (input) input.value = q;
+
+  const scopeCandidate = state.scope || (snap && snap.scope) || '';
+  const validScopes = ['question', 'answer', 'both'];
+  if (scopeCandidate && validScopes.indexOf(scopeCandidate) !== -1) {
+    searchScope = scopeCandidate;
+    document.querySelectorAll('.search-scope-btn').forEach((b) => {
+      const active = b.getAttribute('data-scope') === searchScope;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  // 還原「已顯示筆數」與「捲動位置」（搜尋完成後套用）
+  const targetDisplayed = (snap && typeof snap.displayed === 'number' && snap.displayed > 0) ? snap.displayed : undefined;
+  const wantScroll = !!(snap && typeof snap.scrollY === 'number' && snap.scrollY > 0);
+  window.__w2eRestoreScrollY = wantScroll ? snap.scrollY : 0;
+
+  performSearch(q, targetDisplayed);
+}
+
 // 清除搜索状态（重置输入框、结果、计数）
 function clearSearch() {
+  // 明確清除時同步清掉 URL hash 與 sessionStorage 快照，返回本頁才不會又自動還原已刪除的查詢
+  updateSearchQueryHash('');
+  if (typeof writeSearchSnapshot === 'function') writeSearchSnapshot(null);
   const elements = getSearchElements();
   if (elements.searchInput) elements.searchInput.value = '';
   if (elements.searchResults) elements.searchResults.style.display = 'none';
@@ -1129,6 +1229,9 @@ function clearSearch() {
 
 // 收起搜索面板
 function collapseSearch() {
+  // 收起視同離開搜尋：同步清掉 URL hash 與 sessionStorage 快照
+  updateSearchQueryHash('');
+  if (typeof writeSearchSnapshot === 'function') writeSearchSnapshot(null);
   const searchContainer  = document.getElementById('search-container');
   const searchActivation = document.querySelector('.search-activation');
   if (!searchContainer || !searchActivation) return;
@@ -1328,13 +1431,47 @@ async function initSearch() {
     if (btn) btn.addEventListener('click', fn);
   });
 
-  // 结果列表点击（與目錄連結一致：同頁導覽，瀏覽器返回可回到結果）
+  // 结果列表点击：一律開新分頁，本頁搜尋結果完整保留（返回免重載索引）。
+  // 先把手動展開的 TOC 狀態存進 sessionStorage，防範瀏覽器對 _blank 一律同頁開啟的設定。
   elements.searchResultsList.addEventListener('click', (e) => {
     const item = e.target.closest('.search-result-item');
     if (item && item.dataset.url) {
-      window.location.href = item.dataset.url;
+      if (typeof saveTocExpandSnapshot === 'function') {
+        try { saveTocExpandSnapshot(); } catch (err) { /* 非致命 */ }
+      }
+      // 帶上 ?q=（14-search-plus.js 在章節頁據此高亮命中詞，
+      // 10-search-return.js 亦據此顯示「回到搜尋結果」）。
+      var openUrl = item.dataset.url;
+      var inputEl = document.getElementById('search-input');
+      var openQ = inputEl ? (inputEl.value || '').trim() : '';
+      if (openQ) {
+        var hashPos = openUrl.indexOf('#');
+        var qParam = '?q=' + encodeURIComponent(openQ);
+        openUrl = hashPos === -1 ? openUrl + qParam
+          : openUrl.slice(0, hashPos) + qParam + openUrl.slice(hashPos);
+      }
+      window.open(openUrl, '_blank', 'noopener');
     }
   });
+
+  // 從其他分頁返回本頁時，若有 #q= hash（或先前查詢）即自動還原搜尋狀態
+  restoreSearchFromHash();
+
+  // 還原情境：查詢/筆數重現後，把捲動位置也帶回來。
+  // 先關掉瀏覽器原生的 scroll restoration（它會在內容長高後把位置拉回重載前的
+  // 舊位，覆蓋我們要還原的位置），改由下面的快照還原接手。
+  if (window.__w2eRestoreScrollY > 0) {
+    try { history.scrollRestoration = 'manual'; } catch (e) { /* 忽略 */ }
+    const targetY = window.__w2eRestoreScrollY;
+    window.__w2eRestoreScrollY = 0;
+    requestAnimationFrame(() => {
+      window.scrollTo(0, targetY);
+      // 版面（字型/圖片）就緒後再校一次（帶入固定目標值，不重讀快照）
+      setTimeout(() => {
+        if (typeof restoreSearchScroll === 'function') restoreSearchScroll(targetY);
+      }, 200);
+    });
+  }
 }
 
 // ============================================================
@@ -1344,6 +1481,33 @@ if (isIndexPage()) {
   const searchActivateBtn = document.getElementById('search-activate-btn');
   if (searchActivateBtn) {
     searchActivateBtn.addEventListener('click', activateSearch);
+
+    // 帶 #q= hash 或 ?q= 查詢參數（章節頁「回到搜尋結果」按鈕）載入時，
+    // 自動啟用搜索並還原上次查詢，免去手動點按鈕＋重打關鍵字
+    const hashState = readSearchStateFromHash();
+    let urlQ = hashState.q || '';
+    if (!urlQ) {
+      const urlScopeMatch = /(?:^|&)scope=([^&]*)/.exec(window.location.search.replace(/^\?/, ''));
+      const urlQMatch = /(?:^|&)q=([^&]*)/.exec(window.location.search.replace(/^\?/, ''));
+      if (urlQMatch) {
+        try { urlQ = decodeURIComponent(urlQMatch[1]); } catch (e) { urlQ = urlQMatch[1]; }
+      }
+      // ?q= 同時可能帶 ?scope=（回 URL 時沒有 hash 也能正確設範圍）；
+      // restoreSearchFromHash 只讀 hash，這裡先把 scope 參數寫進 hash（不觸發記錄）
+      if (urlQ && urlScopeMatch && !window.location.hash) {
+        let scopeParam = '';
+        try { scopeParam = decodeURIComponent(urlScopeMatch[1]); } catch (e) { scopeParam = urlScopeMatch[1]; }
+        if (['question', 'answer', 'both'].indexOf(scopeParam) !== -1) {
+          try {
+            history.replaceState(null, '', window.location.pathname + window.location.search +
+              '#q=' + encodeURIComponent(urlQ) + (scopeParam !== 'both' ? '&scope=' + encodeURIComponent(scopeParam) : ''));
+          } catch (e) { /* 忽略 */ }
+        }
+      }
+    }
+    if ((urlQ || '').trim().length >= 2) {
+      setTimeout(() => { activateSearch(); }, 0);
+    }
   }
 }
   // ============ 功能實現 ============
@@ -1587,6 +1751,7 @@ if (isIndexPage()) {
         '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.theme', isTraditionalChinesePage(), '主題') + '">' +
           '<button class="ctrl-btn" data-action="theme-light" aria-pressed="false">' + getI18nText('readingSettings.themeLight', isTraditionalChinesePage(), '☀️ 日間') + '</button>' +
           '<button class="ctrl-btn" data-action="theme-dark" aria-pressed="false">' + getI18nText('readingSettings.themeDark', isTraditionalChinesePage(), '🌙 夜間') + '</button>' +
+          '<button class="ctrl-btn" data-action="theme-dark-neutral" aria-pressed="false" title="' + getI18nText('readingSettings.themeDarkNeutral', isTraditionalChinesePage(), '墨夜（中性深色，適合長時間夜讀）') + '">' + getI18nText('readingSettings.themeDarkNeutral', isTraditionalChinesePage(), '🌌 墨夜') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(toolbar);
@@ -1594,16 +1759,21 @@ if (isIndexPage()) {
   }
   
   // 更新主題按鈕狀態
+  // 日間／夜間（粉）／墨夜 三鈕互斥：同一時間只有一顆 .active。
   function updateThemeButtons() {
     const isDark = document.body.classList.contains('dark-mode');
+    let isNeutral = false;
+    if (isDark) {
+      try { isNeutral = localStorage.getItem('w2e:darkPalette') === 'neutral'; } catch (e) {}
+    }
     const lightBtn = document.querySelector('[data-action="theme-light"]');
     const darkBtn = document.querySelector('[data-action="theme-dark"]');
+    const neutralBtn = document.querySelector('[data-action="theme-dark-neutral"]');
     
-    if (lightBtn && darkBtn) {
-      lightBtn.classList.toggle('active', !isDark);
-      darkBtn.classList.toggle('active', isDark);
-      syncToolbarAriaPressed();
-    }
+    if (lightBtn) lightBtn.classList.toggle('active', !isDark);
+    if (darkBtn) darkBtn.classList.toggle('active', isDark && !isNeutral);
+    if (neutralBtn) neutralBtn.classList.toggle('active', isDark && isNeutral);
+    syncToolbarAriaPressed();
   }
 
   // 把工具欄切換鈕的 aria-pressed 與 .active 狀態同步
@@ -2620,7 +2790,9 @@ function addHomepageBookmarkEventListeners() {
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
-  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
+  // D2 長文排印：寬螢幕（≥1400px）預設給較寬內容（1000px），
+  // 其餘維持 800px；使用者曾在寬度鈕明確選擇時以其偏好為準。
+  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || (window.innerWidth >= 1400 ? 1000 : 800);
   
   function applyReadingSettings() {
     // 使用!important确保字体大小设置在移动设备上生效
@@ -3175,6 +3347,15 @@ function addHomepageBookmarkEventListeners() {
       case 'theme-dark':
         document.body.classList.add('dark-mode');
         localStorage.setItem('darkMode', true);
+        // 點夜間：回到預設粉色深色面板
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('pink');
+        updateThemeButtons();
+        break;
+      case 'theme-dark-neutral':
+        // 三鈕互斥：墨夜自身即一個主題（不與「夜間」同時選中）
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', true);
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('neutral');
         updateThemeButtons();
         break;
 
@@ -3282,7 +3463,9 @@ function addHomepageBookmarkEventListeners() {
           const shareUrl = generateShareUrl(shareElement);
           const isQuestion = shareElement.classList.contains('question');
           const isParagraph = shareElement.classList.contains('para-block');
-          const toastMessage = isParagraph ? '段落鏈接已複製' : (isQuestion ? '問題鏈接已複製' : '回答鏈接已複製');
+          const toastMessage = isParagraph
+            ? getText('段落链接已复制', '段落連結已複製')
+            : (isQuestion ? getText('问题链接已复制', '問題連結已複製') : getText('回答链接已复制', '回答連結已複製'));
           
           if (navigator.share) {
             navigator.share({
@@ -3293,14 +3476,14 @@ function addHomepageBookmarkEventListeners() {
             showToast(toastMessage);
           }
         } else {
-          // 降級處理：分享頁面鏈接
+          // 降級處理：分享頁面連結
           if (navigator.share) {
             navigator.share({
               url: window.location.href
             });
           } else {
             copyText(window.location.href);
-            showToast('頁面鏈接已複製');
+            showToast(getText('页面链接已复制', '頁面連結已複製'));
           }
         }
         break;
@@ -3568,6 +3751,119 @@ function addHomepageBookmarkEventListeners() {
   initTocCollapseControl();
   initFloatingLevelControls();
   
+  // ============================================================
+  // TOC 手動展開狀態快照（sessionStorage per-entry）
+  //
+  // 目的：使用者手動展開/收合的 TOC 節點，在離開頁面（點搜尋結果、TOC
+  // 連結跳章節）再返回時能原樣重現——鍵含頁面路徑與書籤，兩本電子書
+  // （wenda2_ebook / ebook）互不干擾、兩個分頁也不衝突。每次快照整批
+  // 覆寫同一鍵，舊快照自動作廢，不會殘留舊書籤的殭屍項目。
+  // ============================================================
+  
+  // 站內文檔頁：傳回「電子書根目錄」鍵（index.html / 0N.html 同屬一本書）；
+  // 站外頁面或 file:// 環境回傳 null（不寫入）。
+  function getTocSnapshotKey() {
+    try {
+      if (window.location.protocol === 'file:') return null;
+      const segs = window.location.pathname.split('/');
+      if (segs.length < 2) return null;
+      return 'tocExpandState:' + segs[segs.length - 2];
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // 穩定書籤：優先 href（頁面＋錨點，TOC 改版仍穩定）；無 href 時用標題文字。
+  function computeTocItemKey(item) {
+    const link = item.querySelector('a');
+    const href = link ? (link.getAttribute('href') || '') : '';
+    if (href) return href;
+    const clone = item.cloneNode(true);
+    clone.querySelectorAll('ul, .toc-expand-icon').forEach(el => el.remove());
+    const text = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+    return 't:' + text.slice(0, 120);
+  }
+  
+  // 為所有目錄項補上 data-id（快照還原用的書籤）
+  function ensureTocItemIds(tocContainer) {
+    if (!tocContainer) return;
+    tocContainer.querySelectorAll('.toc-item').forEach(item => {
+      if (!item.getAttribute('data-id')) {
+        item.setAttribute('data-id', computeTocItemKey(item));
+      }
+    });
+  }
+  
+  // 依 data-id 找目錄項（CSS.escape 防特殊字元破壞選擇器）
+  function tocItemById(tocContainer, id) {
+    const esc = (window.CSS && CSS.escape) ? CSS.escape(id) : id.replace(/"/g, '\\"');
+    return tocContainer.querySelector('.toc-item[data-id="' + esc + '"]');
+  }
+  
+  // 把目前「手動展開的節點」（data-user-toggled 且有可見子項）快照到 sessionStorage。
+  // 僅 index 頁寫入：章節頁的快照會殘留舊目錄的書籤，反而污染 index 的還原。
+  function saveTocExpandSnapshot() {
+    if (!isIndexPage()) return;
+    const key = getTocSnapshotKey();
+    if (!key) return;
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+  
+    const expanded = [];
+    tocContainer.querySelectorAll('.toc-item[data-user-toggled="true"]').forEach(item => {
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon && icon.getAttribute('aria-expanded') === 'true' && hasVisibleDirectChildren(item)) {
+        expanded.push(item.getAttribute('data-id'));
+      }
+    });
+  
+    try {
+      sessionStorage.setItem(key, JSON.stringify(expanded));
+    } catch (e) { /* 隱私模式等；忽略 */ }
+  }
+  
+  // 還原快照：展開記錄中的節點（可見且存在者）
+  function restoreTocExpandSnapshot() {
+    const key = getTocSnapshotKey();
+    if (!key) return;
+    let expanded = null;
+    try {
+      const raw = sessionStorage.getItem(key);
+      if (raw) expanded = JSON.parse(raw);
+    } catch (e) { /* 解析失敗視同無快照 */ }
+    if (!Array.isArray(expanded) || expanded.length === 0) return;
+  
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+  
+    expanded.forEach(id => {
+      if (!id) return;
+      const item = tocItemById(tocContainer, id);
+      if (!item) return; // 目錄改版後書籤可能失效，靜默略過
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon && icon.getAttribute('aria-expanded') === 'false') {
+        const actuallyExpanded = hasVisibleDirectChildren(item);
+        item.setAttribute('data-user-toggled', 'true');
+        if (actuallyExpanded) {
+          setTocIconState(icon, true);
+        } else {
+          expandTocItem(item);
+          setTocIconState(icon, true);
+        } 
+      }
+    });
+  
+    try { sessionStorage.removeItem(key); } catch (e) { /* 忽略 */ }
+  }
+  
+  // 事件：點 TOC 連結（含葉節點整行點擊 link.click()）前快照；頁面卸載前也快照一次
+  document.addEventListener('click', function(e) {
+    if (e.target.closest && e.target.closest('#main-toc a, #chapter-toc a')) {
+      saveTocExpandSnapshot();
+    }
+  }, true);
+  window.addEventListener('pagehide', saveTocExpandSnapshot);
+  
   // 展開/收合鈕狀態同步（.collapsed 樣式、▼/▶ 文字與 aria-expanded 一致）
   function setTocIconState(icon, expanded) {
     if (!icon) return;
@@ -3582,6 +3878,9 @@ function addHomepageBookmarkEventListeners() {
     
     // 检测实际的目录层级并隐藏不必要的按钮
     const maxLevel = detectAndHideLevelButtons(tocContainer);
+    
+    // 為目錄項補上 data-id（展開狀態快照的還原書籤）
+    ensureTocItemIds(tocContainer);
     
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
@@ -3610,6 +3909,9 @@ function addHomepageBookmarkEventListeners() {
     
     // 绑定全部展开/折叠按钮事件
     bindExpandAllEvents();
+    
+    // 還原前次離開頁前手動展開的節點（sessionStorage 快照）
+    restoreTocExpandSnapshot();
   }
   
   // 智能選擇可用的層級
@@ -3913,6 +4215,9 @@ function addHomepageBookmarkEventListeners() {
             expandTocItem(expandableItem);
             setTocIconState(icon, true);
           }
+          
+          // 同步快照，離頁（點連結跳章節、開新分頁）再返回時能原樣重現
+          saveTocExpandSnapshot();
         }
       } else {
         // 这是没有展开图标的目录项（叶子节点），处理整行点击跳转
@@ -5251,6 +5556,7 @@ function addHomepageBookmarkEventListeners() {
 
   function onPointerUp(e) {
     if (!dragging) return;
+    if (moved) maybeSwipeNavigate(e.clientX, e.clientY);
     dragging = false;
     stage.classList.remove('is-dragging');
     try { stage.releasePointerCapture(e.pointerId); } catch (_) { /* ignore */ }
@@ -5333,9 +5639,26 @@ function addHomepageBookmarkEventListeners() {
     }
   }
 
+  // 適窗狀態下的快速橫滑 → 切換上一/下一張（縮放中維持平移語意）。
+  // 以指標位移判斷：適窗時 clampPan 會把 tx 壓回 0，不能看 tx 差值。
+  function maybeSwipeNavigate(endX, endY) {
+    if (scale > fitScale * 1.05) return;
+    var dx = endX - dragStartX;
+    var dy = endY - dragStartY;
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2) {
+      moved = true;
+      go(dx < 0 ? 1 : -1);
+    } else {
+      tx = dragOriginTx; // 未達門檻：回彈
+      ty = dragOriginTy;
+      applyTransform();
+    }
+  }
+
   function onTouchEnd(e) {
     if (e.touches.length < 2) pinchActive = false;
     if (e.touches.length === 0) {
+      if (dragging && moved) maybeSwipeNavigate(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
       dragging = false;
       stage.classList.remove('is-dragging');
     } else if (e.touches.length === 1) {
@@ -5982,4 +6305,815 @@ function addHomepageBookmarkEventListeners() {
       isEnabled: function () { return pinOn; }
     };
   })();
+// ============================================================
+// 10-search-return.js — 「回到搜尋結果」浮動按鈕 + 搜尋狀態快照/還原
+//
+// 兩端配合（都在本 bundle 內）：
+//   ① 章節頁：URL 帶 ?q=（由 index 的 buildSearchReturnUrl 附加）時，
+//      顯示「回到搜尋結果」浮動按鈕，點擊返回 index.html?q=…#q=…；
+//      離開前再把 TOC 展開快照寫一次（saveTocExpandSnapshot 定義於 06）。
+//   ② index 頁：搜尋／分頁／捲動時把 {q, scope, displayed, scrollY}
+//      存進 sessionStorage（per-tab），restoreSearchFromHash（01e）回來時
+//      一併還原「已顯示筆數」與「捲動位置」。
+// ============================================================
+
+// 搜尋狀態快照鍵（sessionStorage：關閉分頁即失效，不同分頁互不干擾）
+var W2E_SEARCH_SNAPSHOT_KEY = 'w2eSearchSnapshot';
+
+// 讀取快照；解析失敗視同無快照
+function readSearchSnapshot() {
+  try {
+    var raw = sessionStorage.getItem(W2E_SEARCH_SNAPSHOT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 寫入快照（q 為空字串時直接移除鍵）
+function writeSearchSnapshot(state) {
+  try {
+    if (state && state.q && String(state.q).trim()) {
+      sessionStorage.setItem(W2E_SEARCH_SNAPSHOT_KEY, JSON.stringify(state));
+    } else {
+      sessionStorage.removeItem(W2E_SEARCH_SNAPSHOT_KEY);
+    }
+  } catch (e) { /* 隱私模式等；忽略 */ }
+}
+
+// ------------------------------------------------------------
+// index 頁：持續記錄 {q, scope, displayed, scrollY}
+// ------------------------------------------------------------
+
+// 由目前 UI 狀態組快照並寫入 sessionStorage
+function captureSearchSnapshot() {
+  if (!isIndexPage()) return;
+  var input = document.getElementById('search-input');
+  if (!input) return;
+  var q = (input.value || '').trim();
+  if (!q || q.length < 2) return; // 無有效查詢就不留快照
+  writeSearchSnapshot({
+    q: q,
+    scope: (typeof searchScope !== 'undefined' && searchScope) || 'both',
+    displayed: (typeof displayedResultsCount !== 'undefined') ? displayedResultsCount : 0,
+    scrollY: Math.round(window.scrollY || 0)
+  });
+}
+
+// index 頁啟動：接上持續快照（節流）
+function initSearchSnapshotCapture() {
+  if (!isIndexPage()) return;
+
+  var lastWrite = 0;
+  function throttledCapture() {
+    var now = Date.now();
+    if (now - lastWrite < 400) return;
+    lastWrite = now;
+    captureSearchSnapshot();
+  }
+
+  window.addEventListener('scroll', throttledCapture, { passive: true });
+  window.addEventListener('pagehide', captureSearchSnapshot);
+
+  // 分頁「顯示更多／全部」改變 displayedResultsCount → 立即快照
+  ['search-load-more', 'search-load-all', 'search-load-more-bottom', 'search-load-all-bottom'].forEach(function (id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', function () { setTimeout(captureSearchSnapshot, 0); });
+  });
+}
+
+// ------------------------------------------------------------
+// index 頁：還原捲動位置（01e 的 restoreSearchFromHash 呼叫）
+// ------------------------------------------------------------
+
+// 還原上次離開時的捲動位置；targetY 明確傳入，不重讀快照（避免還原途中
+// 自己的 scroll 快照蓋寫目標值造成追逐迴圈）
+function restoreSearchScroll(targetY) {
+  if (typeof targetY !== 'number' || targetY <= 0) {
+    var snap = readSearchSnapshot();
+    if (!snap || typeof snap.scrollY !== 'number' || snap.scrollY <= 0) return;
+    targetY = snap.scrollY;
+  }
+
+  var tries = 0;
+  var maxTries = 20; // 最多約 2 秒；版面（字型/圖片）就緒後停
+  var timer = setInterval(function () {
+    tries++;
+    // 查詢已變更（使用者自己改了關鍵字）→ 放棄舊位置
+    var input = document.getElementById('search-input');
+    var q = input ? (input.value || '').trim() : '';
+    if (!q || q.length < 2) {
+      clearInterval(timer);
+      return;
+    }
+    window.scrollTo(0, targetY);
+    var settled = (Math.abs(window.scrollY - targetY) < 4) || tries >= maxTries;
+    if (settled) clearInterval(timer);
+  }, 100);
+}
+
+// ------------------------------------------------------------
+// 「回到搜尋結果」浮動按鈕已於 2026-09 移除（行為依賴 sessionStorage
+// 快照跨分頁複製，在 noopener 新分頁下多數情況拿不到快照、出現時機不穩）。
+// 保留 index 頁的搜尋狀態快照：使用者直接用瀏覽器返回/回到 index 時
+// 仍由 01e 的 restoreSearchFromHash 還原查詢與捲動位置。
+// ------------------------------------------------------------
+
+initSearchSnapshotCapture();
+// ============================================================
+// 11-reading-resume.js — 閱讀位置記憶 + 簡繁切換原位恢復
+//
+// ① 閱讀位置：捲動時（節流）與離頁前把「頁面 → 捲動比例」存入
+//    localStorage('w2e:readpos')（上限 40 頁，LRU 淘汰）。再次進入同頁、
+//    且 URL 無錨點時，頂部浮出「回到上次閱讀位置（XX%）」提示條；
+//    點「回到位置」平滑捲回，點 ✕ 或 12 秒後自動消失。
+//    **總目錄頁（index.html / index_trad.html）只有目錄、沒有正文**，
+//    既不記錄也不提示（並清掉舊版留下的殘留紀錄）。
+// ② 簡繁切換原位恢復：/lang-switch.js 在 ebook 雙頁跳轉前寫入
+//    sessionStorage('w2e:langjump') = {id, frac}；本模組偵測到後直接
+//    還原（優先同 id 錨點，其次比例），不顯示提示條。
+// ============================================================
+
+;(function () {
+  var POS_KEY = 'w2e:readpos';
+  var JUMP_KEY = 'w2e:langjump';
+  var MAX_ENTRIES = 40;
+  var SAVE_THROTTLE_MS = 500;
+
+  function docFraction() {
+    var doc = document.documentElement;
+    var total = doc.scrollHeight - window.innerHeight;
+    if (total <= 0) return 0;
+    return Math.max(0, Math.min(1, (window.scrollY || 0) / total));
+  }
+
+  function scrollToFraction(frac, smooth) {
+    var doc = document.documentElement;
+    var total = doc.scrollHeight - window.innerHeight;
+    if (total <= 0) return;
+    var top = Math.round(frac * total);
+    window.scrollTo(0, top);
+    void smooth;
+  }
+
+  function readPositions() {
+    try { return JSON.parse(localStorage.getItem(POS_KEY) || '{}'); } catch (e) { return {}; }
+  }
+
+  function writePositions(map) {
+    try {
+      var keys = Object.keys(map);
+      if (keys.length > MAX_ENTRIES) {
+        keys.sort(function (a, b) { return (map[a].ts || 0) - (map[b].ts || 0); });
+        while (keys.length > MAX_ENTRIES) { delete map[keys.shift()]; }
+      }
+      localStorage.setItem(POS_KEY, JSON.stringify(map));
+    } catch (e) { /* 隱私模式等 */ }
+  }
+
+  var pageKey = window.location.pathname;
+
+  // 總目錄頁只有目錄、沒有正文，不適用「回到上次閱讀位置」
+  function isTocOnlyPage() {
+    return typeof isIndexPage === 'function' && isIndexPage();
+  }
+
+  function save() {
+    if (isTocOnlyPage()) return;
+    var frac = docFraction();
+    if (frac <= 0) return;
+    var map = readPositions();
+    map[pageKey] = { frac: Math.round(frac * 1000) / 1000, ts: Date.now() };
+    writePositions(map);
+  }
+
+  // 清掉總目錄頁的歷史紀錄（修正前的舊版會寫進來）
+  function pruneTocOnlyEntries() {
+    var map = readPositions();
+    var changed = false;
+    Object.keys(map).forEach(function (k) {
+      var f = k.split('/').pop() || 'index.html';
+      if (f === 'index.html' || f === 'index_trad.html') { delete map[k]; changed = true; }
+    });
+    if (changed) writePositions(map);
+  }
+
+  // ---- 簡繁切換原位恢復（優先於閱讀位置提示） --------------------------
+  function tryLangJumpRestore() {
+    var raw = null;
+    try { raw = sessionStorage.getItem(JUMP_KEY); } catch (e) { return false; }
+    if (!raw) return false;
+    try { sessionStorage.removeItem(JUMP_KEY); } catch (e) {}
+    var info = null;
+    try { info = JSON.parse(raw); } catch (e) { return false; }
+    if (!info) return false;
+    setTimeout(function () {
+      var el = info.id && document.getElementById(info.id);
+      if (el) {
+        el.scrollIntoView({ block: 'start' });
+      } else if (typeof info.frac === 'number') {
+        scrollToFraction(info.frac, false);
+      }
+    }, 60);
+    return true;
+  }
+
+  // ---- 回到上次閱讀位置提示條 ------------------------------------------
+  function showResumeBar(entry) {
+    var isTrad = typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
+    var pct = Math.round(entry.frac * 100);
+
+    var bar = document.createElement('div');
+    bar.className = 'w2e-resume-bar';
+    bar.setAttribute('role', 'status');
+    bar.innerHTML =
+      '<span class="w2e-resume-text">' +
+        (isTrad ? '上次讀到 ' + pct + '%' : '上次读到 ' + pct + '%') +
+      '</span>' +
+      '<button type="button" class="w2e-resume-go">' +
+        (isTrad ? '回到位置' : '回到位置') +
+      '</button>' +
+      '<button type="button" class="w2e-resume-close" aria-label="' +
+        (isTrad ? '關閉' : '关闭') + '">✕</button>';
+    document.body.appendChild(bar);
+
+    var dismissTimer = setTimeout(dismiss, 12000);
+    requestAnimationFrame(function () { bar.classList.add('visible'); });
+
+    function dismiss() {
+      clearTimeout(dismissTimer);
+      bar.classList.remove('visible');
+      setTimeout(function () { bar.remove(); }, 300);
+    }
+
+    bar.querySelector('.w2e-resume-go').addEventListener('click', function () {
+      dismiss();
+      requestAnimationFrame(function () { scrollToFraction(entry.frac, true); });
+    });
+    bar.querySelector('.w2e-resume-close').addEventListener('click', dismiss);
+  }
+
+  function maybeOfferResume() {
+    // 簡繁切換原位恢復優先（順帶清掉 sessionStorage 標記，避免外溢到下一頁）
+    var jumped = tryLangJumpRestore();
+    // 總目錄頁只有目錄、沒有正文 —— 不提示（並清掉舊版殘留紀錄）
+    if (isTocOnlyPage()) { pruneTocOnlyEntries(); return; }
+    // 帶錨點／搜尋跳轉進來時不打擾
+    if (window.location.hash && window.location.hash.length > 1) return;
+    if (jumped) return;
+    var entry = readPositions()[pageKey];
+    if (!entry) return;
+    if (entry.frac < 0.03 || entry.frac > 0.98) return;
+    var ageDays = (Date.now() - (entry.ts || 0)) / 86400000;
+    if (ageDays > 30) return;
+    showResumeBar(entry);
+  }
+
+  // ---- 持續記錄 ------------------------------------------------------
+  var lastSave = 0;
+  window.addEventListener('scroll', function () {
+    var now = Date.now();
+    if (now - lastSave < SAVE_THROTTLE_MS) return;
+    lastSave = now;
+    save();
+  }, { passive: true });
+  window.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') save();
+  });
+
+  // 等首屏穩定後再判斷（避免與錨點跳轉、字型載入打架）
+  setTimeout(maybeOfferResume, 400);
+})();
+// ============================================================
+// 13-player-persist.js — 音檔播放跨頁持續性
+//
+// 靜態站無法讓 <audio> 跨頁存活；改以「狀態快照 → 喚回播放」：
+//   ① 播放中每 3 秒與離頁前，把 {src, 進度秒, 檔名, 頁面, 段落錨點}
+//      快照到 sessionStorage('w2e:playerState')（08 播放器的狀態經
+//      W2E.qaAudio 讀取）。
+//   ② 任何頁面載入後若有 12 小時內的快照，左下角浮出續播膠囊
+//      「▶ 檔名 12:34」：點「續播」——同頁優先交回 08 播放器
+//      （找到原播放鈕重播再 seek），他頁則自建 Audio 從斷點續播；
+//      「回到段落」跳回原文頁面錨點；✕ 丟棄快照。
+// ============================================================
+
+;(function () {
+  var KEY = 'w2e:playerState';
+  var FRESH_MS = 12 * 3600 * 1000;
+  var SAVE_MS = 3000;
+
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+
+  function read() {
+    try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+  }
+  function write(state) {
+    try {
+      if (state) sessionStorage.setItem(KEY, JSON.stringify(state));
+      else sessionStorage.removeItem(KEY);
+    } catch (e) {}
+  }
+  function fmt(s) {
+    s = Math.max(0, Math.floor(s || 0));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return (h ? p(h) + ':' : '') + p(m) + ':' + p(sec);
+  }
+  function absUrl(u) {
+    try { return new URL(u, window.location.href).href; } catch (e) { return u; }
+  }
+
+  // ---- 快照：從 08 播放器讀狀態 ----------------------------------------
+  function capture() {
+    var qa = window.W2E && W2E.qaAudio;
+    if (!qa || !qa.audio || !qa.audio.src) return;
+    var a = qa.audio;
+    if (isNaN(a.currentTime)) return;
+    var btn = qa.getActiveButton && qa.getActiveButton();
+    var file = '', range = '';
+    var bar = document.querySelector('.qa-player.visible');
+    if (bar) {
+      var f = bar.querySelector('.qa-player-file');
+      var r = bar.querySelector('.qa-player-range');
+      if (f) file = f.textContent || '';
+      if (r) range = r.textContent || '';
+    }
+    if (!file) file = decodeURIComponent(a.src.split('/').pop() || '');
+    var anchor = null;
+    if (btn) {
+      var host = btn.closest('[id]');
+      anchor = host ? host.id : null;
+    }
+    // 只記「有進度」的狀態；停在段落起點就不打擾
+    if (a.currentTime < 2) return;
+    write({
+      src: a.src,
+      t: Math.round(a.currentTime * 10) / 10,
+      file: file,
+      range: range,
+      page: window.location.pathname,
+      anchor: anchor,
+      playing: !a.paused,
+      ts: Date.now()
+    });
+  }
+
+  setInterval(capture, SAVE_MS);
+  window.addEventListener('pagehide', capture);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') capture();
+  });
+
+  // ---- 續播膠囊 ---------------------------------------------------------
+  var state = read();
+  if (!state || !state.src) return;
+  if (Date.now() - (state.ts || 0) > FRESH_MS) { write(null); return; }
+  // 同頁且播放器已可見（使用者正在操作 08 播放器）→ 不打擾
+  if (state.page === window.location.pathname &&
+      document.querySelector('.qa-player.visible')) return;
+
+  var pill = document.createElement('div');
+  pill.className = 'w2e-audio-resume';
+  pill.innerHTML =
+    '<button type="button" class="w2e-audio-resume-play">▶</button>' +
+    '<div class="w2e-audio-resume-info">' +
+      '<div class="w2e-audio-resume-file" title="' + state.file.replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="w2e-audio-resume-time">' + fmt(state.t) + '</div>' +
+    '</div>' +
+    (state.anchor && state.page !== window.location.pathname
+      ? '<a class="w2e-audio-resume-back" href="' + state.page + '#' + state.anchor + '">' +
+        tt('回到段落', '回到段落') + '</a>'
+      : '') +
+    '<button type="button" class="w2e-audio-resume-close" aria-label="' + tt('关闭', '關閉') + '">✕</button>';
+  pill.querySelector('.w2e-audio-resume-file').textContent = state.file;
+  document.body.appendChild(pill);
+  requestAnimationFrame(function () { pill.classList.add('visible'); });
+
+  var extraAudio = null;
+
+  function setPlayingUI(playing) {
+    pill.querySelector('.w2e-audio-resume-play').textContent = playing ? '⏸' : '▶';
+    pill.classList.toggle('is-playing', playing);
+  }
+
+  function resumeSamePage() {
+    // 在原文頁：找回 08 播放器的對應播放鈕，重播該段後 seek 到斷點
+    var qa = W2E.qaAudio;
+    var btns = Array.prototype.slice.call(document.querySelectorAll('button.qa-play'));
+    var target = null;
+    for (var i = 0; i < btns.length; i++) {
+      if (absUrl(btns[i].getAttribute('data-audio')) === state.src) {
+        var s = parseFloat(btns[i].getAttribute('data-start')) || 0;
+        var en = parseFloat(btns[i].getAttribute('data-end'));
+        if (state.t >= s && (isNaN(en) || state.t <= en + 1)) { target = btns[i]; break; }
+        if (!target) target = btns[i];
+      }
+    }
+    if (!target) return false;
+    qa.play(target);
+    setTimeout(function () { qa.seekAbs(state.t); }, 300);
+    return true;
+  }
+
+  pill.querySelector('.w2e-audio-resume-play').addEventListener('click', function () {
+    if (extraAudio) {
+      if (extraAudio.paused) { extraAudio.play().catch(function () {}); }
+      else { extraAudio.pause(); }
+      return;
+    }
+    if (state.page === window.location.pathname && window.W2E && W2E.qaAudio) {
+      if (resumeSamePage()) { pill.remove(); write(null); showToastIfAble(tt('已从断点续播', '已從斷點續播')); return; }
+    }
+    extraAudio = new Audio(state.src);
+    extraAudio.currentTime = state.t;
+    extraAudio.play().then(function () { setPlayingUI(true); })
+      .catch(function () { setPlayingUI(false); });
+    extraAudio.addEventListener('pause', function () { setPlayingUI(false); });
+    extraAudio.addEventListener('playing', function () { setPlayingUI(true); });
+    extraAudio.addEventListener('timeupdate', function () {
+      var tEl = pill.querySelector('.w2e-audio-resume-time');
+      if (tEl) tEl.textContent = fmt(extraAudio.currentTime);
+    });
+    extraAudio.addEventListener('error', function () {
+      setPlayingUI(false);
+      showToastIfAble(tt('音档加载失败', '音檔載入失敗'));
+    });
+  });
+
+  pill.querySelector('.w2e-audio-resume-close').addEventListener('click', function () {
+    if (extraAudio) { extraAudio.pause(); extraAudio = null; }
+    write(null);
+    pill.remove();
+  });
+
+  function showToastIfAble(msg) {
+    if (typeof showToast === 'function') showToast(msg);
+  }
+})();
+// ============================================================
+// 14-search-plus.js — 搜尋體驗補強
+//
+// ① 快捷鍵：index 頁按 「/」 或 Ctrl/Cmd+K 直接啟用並聚焦搜尋框。
+// ② 結果鍵盤導覽：在搜尋框或結果區按 ↓/↑ 移動焦點（.kb-focus），
+//    Enter 開啟該筆結果，Esc 收合焦點/關閉面板。
+// ③ 章節頁關鍵字高亮：章節 URL 帶 ?q=（由「回到搜尋結果」流程附加）
+//    且帶 #錨點時，把查詢詞在錨點所在區塊以 <mark class="w2e-hl">
+//    標出，並 toast 命中數。只處理錨點區塊，避免全文標記造成卡頓。
+// ============================================================
+
+;(function () {
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+  function isEditable(el) {
+    return el && (el.closest('input, textarea, select, [contenteditable="true"]'));
+  }
+
+  // ---------- index 頁：快捷鍵 + 結果鍵盤導覽 --------------------------
+  var input = document.getElementById('search-input');
+  var results = document.getElementById('search-results');
+  var resultsList = document.getElementById('search-results-list');
+
+  if (input && results && resultsList) {
+    document.addEventListener('keydown', function (e) {
+      if (isEditable(e.target)) return;
+      var focusHotkey = e.key === '/' ||
+        ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K'));
+      if (!focusHotkey) return;
+      e.preventDefault();
+      // 面板未啟用時，先點啟用鈕（沿用既有初始化流程，含進度提示）
+      var activateBtn = document.getElementById('search-activate-btn');
+      var container = document.getElementById('search-container');
+      if (activateBtn && container && container.style.display === 'none') {
+        activateBtn.click();
+      }
+      input.focus();
+      input.select();
+    });
+
+    var focusIdx = -1;
+    function items() {
+      return Array.prototype.slice.call(resultsList.querySelectorAll('li, .search-result'));
+    }
+    function moveFocus(delta) {
+      var list = items();
+      if (!list.length) return;
+      list.forEach(function (el) { el.classList.remove('kb-focus'); });
+      focusIdx = (focusIdx + delta + list.length) % list.length;
+      var el = list[focusIdx];
+      el.classList.add('kb-focus');
+      el.scrollIntoView({ block: 'nearest' });
+    }
+    function clearFocus() {
+      focusIdx = -1;
+      items().forEach(function (el) { el.classList.remove('kb-focus'); });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (results.style.display === 'none') return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); moveFocus(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); moveFocus(-1); }
+      else if (e.key === 'Enter' && focusIdx >= 0 && !isEditable(e.target)) {
+        var list = items();
+        if (list[focusIdx]) { e.preventDefault(); list[focusIdx].click(); }
+      } else if (e.key === 'Escape' && focusIdx >= 0) {
+        clearFocus();
+      }
+    });
+    // 換搜尋/換頁後焦點失效：以 MutationObserver 監看結果列表重繪
+    // （Chrome 已移除 DOMSubtreeModified 支援，舊寫法不會觸發且每頁報錯）。
+    // 只監看 childList/subtree：clearFocus 自身的 classList 變更屬 attribute
+    // mutation，不會再觸發本 observer，無自觸發迴圈。
+    if (typeof MutationObserver === 'function') {
+      new MutationObserver(clearFocus).observe(resultsList, { childList: true, subtree: true });
+    } else {
+      resultsList.addEventListener('DOMSubtreeModified', clearFocus);
+    }
+  }
+
+  // ---------- 章節頁：?q= 關鍵字高亮（限錨點區塊） ----------------------
+  var q = null;
+  try { q = new URLSearchParams(window.location.search).get('q'); } catch (e) {}
+  if (!q || !window.location.hash || typeof isIndexPage === 'function' && isIndexPage()) return;
+
+  var terms = q.trim().split(/\s+/).filter(function (t) { return t.length >= 1; });
+  if (!terms.length) return;
+
+  var target = null;
+  try { target = document.getElementById(decodeURIComponent(window.location.hash.slice(1))); } catch (e) {}
+  if (!target) return;
+  var block = target.closest('.question, .answer, .para-block') || target;
+
+  // TreeWalker 走文字節點，逐詞包 <mark>（跳過既有互動元件）
+  var SKIP = 'SCRIPT,STYLE,MARK,BUTTON,A,TEXTAREA';
+  var walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
+    acceptNode: function (node) {
+      if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      var p = node.parentNode;
+      while (p && p !== block) {
+        if (p.nodeType === 1 && SKIP.indexOf(p.tagName) !== -1) return NodeFilter.FILTER_REJECT;
+        p = p.parentNode;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  var nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  var hits = 0;
+  nodes.forEach(function (node) {
+    var text = node.nodeValue;
+    var lower = text;
+    var matched = terms.filter(function (t) { return lower.indexOf(t) !== -1; });
+    if (!matched.length) return;
+    var frag = document.createDocumentFragment();
+    var cursor = 0;
+    // 逐字掃描找最早命中的詞（CJK 多為單字/詞級查詢）
+    while (cursor < text.length) {
+      var best = -1, bestTerm = null;
+      for (var i = 0; i < matched.length; i++) {
+        var idx = text.indexOf(matched[i], cursor);
+        if (idx !== -1 && (best === -1 || idx < best)) { best = idx; bestTerm = matched[i]; }
+      }
+      if (best === -1) {
+        frag.appendChild(document.createTextNode(text.slice(cursor)));
+        break;
+      }
+      if (best > cursor) frag.appendChild(document.createTextNode(text.slice(cursor, best)));
+      var mark = document.createElement('mark');
+      mark.className = 'w2e-hl';
+      mark.textContent = text.substr(best, bestTerm.length);
+      frag.appendChild(mark);
+      hits++;
+      cursor = best + bestTerm.length;
+    }
+    node.parentNode.replaceChild(frag, node);
+  });
+
+  if (hits && typeof showToast === 'function') {
+    showToast(tt('已在结果区块高亮 ', '已在結果區塊高亮 ') + hits + (isTraditionalChinesePage() ? ' 處「%s」'.replace('%s', q) : ' 处「%s」'.replace('%s', q)));
+  }
+})();
+// ============================================================
+// 15-mobile-toc.js — 手機版目錄操作
+//
+// ① 行動裝置（≤768px）開啟浮動目錄時鋪半透明 backdrop，
+//    點 backdrop 即關閉（等效點目錄的 ✕）。
+// ② 手勢：自螢幕左緣（≤28px 起點）右滑 >70px 開啟目錄；
+//    目錄內左滑 >70px 關閉。
+//
+// 「回到頂端」只保留在右下角功能選單（☰ → ↑，見 02-reader-ux.js
+// `data-action="top"`），不再另做常駐懸浮鈕。
+// ============================================================
+
+;(function () {
+  function isMobileView() { return window.innerWidth <= 768; }
+
+  // ---------- backdrop ----------
+  var backdrop = document.createElement('div');
+  backdrop.className = 'w2e-toc-backdrop';
+  document.body.appendChild(backdrop);
+
+  function tocEl() { return document.querySelector('.floating-toc'); }
+  function tocVisible() {
+    var toc = tocEl();
+    return !!toc && (toc.classList.contains('visible') || toc.classList.contains('is-open'));
+  }
+  function closeToc() {
+    var toc = tocEl();
+    if (!toc) return;
+    var close = toc.querySelector('.ctrl-btn[data-action="close-toc"], [data-action="close-toc"]');
+    if (close) { close.click(); return; }
+    toc.classList.remove('visible');
+    syncBackdrop();
+  }
+  function openToc() {
+    var btn = document.querySelector('.action-btn[data-action="toc"]');
+    if (btn) btn.click();
+    setTimeout(syncBackdrop, 50);
+  }
+  function syncBackdrop() {
+    backdrop.classList.toggle('visible', isMobileView() && tocVisible());
+  }
+  backdrop.addEventListener('click', closeToc);
+
+  // 目錄 class 變化 → 同步 backdrop（也涵蓋電腦版縮放視窗的情形）
+  var mo = new MutationObserver(syncBackdrop);
+  function observeToc() { var t = tocEl(); if (t) mo.observe(t, { attributes: true, attributeFilter: ['class'] }); }
+  observeToc();
+  window.addEventListener('resize', syncBackdrop);
+
+  // ---------- 手勢 ----------
+  var startX = 0, startY = 0, tracking = false, fromPanel = false;
+  document.addEventListener('touchstart', function (e) {
+    if (!isMobileView() || e.touches.length !== 1) return;
+    var x = e.touches[0].clientX;
+    var inToc = !!(e.target.closest && e.target.closest('.floating-toc'));
+    if (x <= 28 || inToc) {
+      tracking = true;
+      fromPanel = inToc;
+      startX = x; startY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (!tracking) return;
+    tracking = false;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - startX, dy = t.clientY - startY;
+    if (Math.abs(dy) > 60) return;
+    if (!fromPanel && dx > 70 && !tocVisible()) openToc();
+    else if (fromPanel && dx < -70 && tocVisible()) closeToc();
+  }, { passive: true });
+})();
+// ============================================================
+// 16-jump-share.js — 目錄計數直跳主題第一則問答／標題分享連結／
+//                     ebook 無跟播章節提示
+//
+// ① 章節目錄的 .toc-count「(50)」變成可點：跳到該主題下第一則
+//    .question（沒有問題的主題退回原錨點行為）。
+// ② h2/h3 帶 id 的標題在 hover/focus 時顯示 🔗 錨點鈕，點擊複製
+//    「頁面#錨點」連結（沿用 03d 的 copyText + 02 的穩定 ID）。
+// ③ /ebook/ 講經頁（含 .para-block）若全頁無 .qa-play 播放鈕，
+//    在 h1 後插一句「本講次尚無音檔跟播」提示，避免使用者以為壞掉。
+// ============================================================
+
+;(function () {
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+
+  // ---------- ① .toc-count → 主題第一則問答 ---------------------------
+  function headingLevel(el) { return parseInt(el.tagName.slice(1), 10); }
+
+  function firstQuestionInSection(heading) {
+    var level = headingLevel(heading);
+    var cur = heading.nextElementSibling;
+    while (cur) {
+      if (/^H[2-6]$/.test(cur.tagName) && headingLevel(cur) <= level) break;
+      if (cur.classList && cur.classList.contains('question')) return cur;
+      var found = cur.querySelector && cur.querySelector('.question');
+      if (found) return found;
+      cur = cur.nextElementSibling;
+    }
+    return null;
+  }
+
+  document.querySelectorAll('.toc-count').forEach(function (badge) {
+    var li = badge.closest('li');
+    if (!li) return;
+    var link = li.querySelector('a[href^="#"]');
+    if (!link) return;
+    badge.setAttribute('role', 'button');
+    badge.setAttribute('tabindex', '0');
+    badge.title = tt('跳到本主题第一则问答', '跳到本主題第一則問答');
+    function go(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var id = link.getAttribute('href').slice(1);
+      var heading = document.getElementById(id);
+      if (!heading) return;
+      var q = firstQuestionInSection(heading);
+      var target = q || heading;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (q) {
+        q.classList.remove('anchor-target-highlight');
+        void q.offsetWidth;
+        q.classList.add('anchor-target-highlight');
+        setTimeout(function () { q.classList.remove('anchor-target-highlight'); }, 3000);
+      }
+      try { history.replaceState(null, '', '#' + target.id); } catch (_) {}
+    }
+    badge.addEventListener('click', go);
+    badge.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') go(e);
+    });
+  });
+
+  // ---------- ② 標題錨點分享 -------------------------------------------
+  if (typeof isIndexPage !== 'function' || !isIndexPage()) {
+    document.querySelectorAll('h2[id], h3[id]').forEach(function (h) {
+      if (h.querySelector('.anchor-share')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'anchor-share';
+      btn.textContent = '🔗';
+      btn.title = tt('复制本节链接', '複製本節連結');
+      btn.setAttribute('aria-label', btn.title);
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var url = window.location.origin + window.location.pathname + '#' + h.id;
+        if (typeof copyText === 'function') copyText(url);
+        else if (navigator.clipboard) navigator.clipboard.writeText(url);
+      });
+      h.appendChild(btn);
+    });
+  }
+
+  // ---------- ③ ebook 無跟播章節提示 ------------------------------------
+  if (window.location.pathname.indexOf('/ebook/') !== -1 &&
+      document.querySelector('.para-block') &&
+      !document.querySelector('button.qa-play')) {
+    var h1 = document.querySelector('main h1, h1');
+    if (h1) {
+      var note = document.createElement('p');
+      note.className = 'no-audio-note';
+      note.textContent = tt(
+        '本讲次暂未提供音档跟播（音档校对中，敬请见谅）。',
+        '本講次暫未提供音檔跟播（音檔校對中，敬請見諒）。');
+      h1.insertAdjacentElement('afterend', note);
+    }
+  }
+})();
+// ============================================================
+// 17-theme-pwa.js — 深色面板配色（粉夜/墨夜）＋ PWA 註冊
+//
+// ① 深色模式第二套配色「墨夜」（中性深灰＋暖金，適合長時間夜讀）：
+//    偏好存 localStorage('w2e:darkPalette')，'neutral' 時於
+//    body 掛 .dark-neutral（防閃爍由模板 prepaint 腳本掛到 <html>）。
+//    工具欄主題列由 02-reader-ux.js 產生第三顆鈕，事件在 04-events.js。
+// ② PWA：/wenda2_ebook/ 與 /ebook/ 下註冊 /sw.js，離線可開曾讀頁面；
+//    音檔刻意不快取（避免佔滿裝置儲存）。
+// ============================================================
+
+;(function () {
+  // ---- 深色面板配色 ----
+  function applyPalette() {
+    var dark = document.body.classList.contains('dark-mode');
+    var neutral = false;
+    try { neutral = localStorage.getItem('w2e:darkPalette') === 'neutral'; } catch (e) {}
+    document.body.classList.toggle('dark-neutral', dark && neutral);
+    document.documentElement.classList.remove('dark-neutral');
+  }
+  applyPalette();
+
+  // 主題切換（04-events.js 點 theme-* 鈕改 body.dark-mode）後跟隨重評估
+  var mo = new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) {
+      if (muts[i].type === 'attributes') { applyPalette(); break; }
+    }
+  });
+  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+  window.W2E = window.W2E || {};
+  W2E.darkPalette = function (name) {
+    try {
+      if (name === 'neutral' || name === 'pink') localStorage.setItem('w2e:darkPalette', name);
+      else localStorage.removeItem('w2e:darkPalette');
+    } catch (e) {}
+    applyPalette();
+  };
+
+  // 主題三鈕互斥（日間／夜間粉／墨夜）：active 狀態統一由
+  // 02-reader-ux.js 的 updateThemeButtons() 依 body class + 面板偏好管理。
+  if (typeof updateThemeButtons === 'function') updateThemeButtons();
+
+  // ---- PWA ----
+  var inEbook = /^\/(wenda2_ebook|ebook)(\/|$)/.test(window.location.pathname);
+  if (inEbook && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
+  }
+})();
 });

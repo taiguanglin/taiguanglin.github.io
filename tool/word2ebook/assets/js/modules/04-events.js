@@ -102,6 +102,15 @@
       case 'theme-dark':
         document.body.classList.add('dark-mode');
         localStorage.setItem('darkMode', true);
+        // 點夜間：回到預設粉色深色面板
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('pink');
+        updateThemeButtons();
+        break;
+      case 'theme-dark-neutral':
+        // 三鈕互斥：墨夜自身即一個主題（不與「夜間」同時選中）
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', true);
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('neutral');
         updateThemeButtons();
         break;
 
@@ -209,7 +218,9 @@
           const shareUrl = generateShareUrl(shareElement);
           const isQuestion = shareElement.classList.contains('question');
           const isParagraph = shareElement.classList.contains('para-block');
-          const toastMessage = isParagraph ? '段落鏈接已複製' : (isQuestion ? '問題鏈接已複製' : '回答鏈接已複製');
+          const toastMessage = isParagraph
+            ? getText('段落链接已复制', '段落連結已複製')
+            : (isQuestion ? getText('问题链接已复制', '問題連結已複製') : getText('回答链接已复制', '回答連結已複製'));
           
           if (navigator.share) {
             navigator.share({
@@ -220,14 +231,14 @@
             showToast(toastMessage);
           }
         } else {
-          // 降級處理：分享頁面鏈接
+          // 降級處理：分享頁面連結
           if (navigator.share) {
             navigator.share({
               url: window.location.href
             });
           } else {
             copyText(window.location.href);
-            showToast('頁面鏈接已複製');
+            showToast(getText('页面链接已复制', '頁面連結已複製'));
           }
         }
         break;

@@ -1,0 +1,464 @@
+/* ============================================================
+   06-ux-plus.css — 2026-09 UX 改善元件樣式（無 @media；斷點在 05）
+
+   涵蓋：閱讀位置提示條、書籤管理區塊、音檔續播膠囊、目錄計數跳轉、
+   標題錨點分享、章節關鍵字高亮、搜尋鍵盤焦點、行動版目錄 backdrop、
+   回到頂端鈕、無音檔提示、深色「墨夜」面板、目錄縮排導引線。
+   ============================================================ */
+
+/* ---- 深色「墨夜」面板（body.dark-neutral；html 同掛為防閃爍暫態） ---- */
+html.dark-neutral { background: var(--color-neutral-bg); }
+
+/* 整體換色第一層：墨夜下把所有設計 token 重映射到中性暖金色系，
+   使用 var(--color-*) 的既有規則（頂部目錄連結、漸層按鈕、TOC 層級色、
+   陰影、錨點高亮…）全部自動跟隨，不需逐條覆寫。 */
+body.dark-neutral {
+    --color-primary:         var(--color-neutral-accent);
+    --color-primary-light:   var(--color-neutral-accent-2);
+    --color-primary-deep:    var(--color-neutral-accent-deep);
+    --color-h3:              var(--color-neutral-text);
+    --color-h4:              var(--color-neutral-muted);
+    --color-accent-pale:     var(--color-neutral-hairline);
+    --color-link:            var(--color-neutral-accent);
+    --color-link-hover:      var(--color-neutral-accent-2);
+    --gradient-primary:      linear-gradient(135deg, #c99a5b 0%, var(--color-neutral-accent-2) 100%);
+    --gradient-hr:           linear-gradient(to right, var(--color-neutral-hairline), var(--color-neutral-accent), var(--color-neutral-hairline));
+    --shadow-sm:             0 2px 6px rgba(0, 0, 0, 0.35);
+    --shadow-md:             0 3px 8px rgba(0, 0, 0, 0.45);
+    --shadow-lg:             0 4px 12px rgba(0, 0, 0, 0.55);
+    --color-anchor-highlight: rgba(217, 168, 108, 0.30);
+
+    background: var(--color-neutral-bg);
+    color: var(--color-neutral-text);
+}
+body.dark-neutral a { color: var(--color-neutral-accent); }
+body.dark-neutral a:hover { color: var(--color-neutral-accent-2); }
+/* D4 資訊層級：h1 暖金＋字重，h2–h4 依明度遞減，與粉色面板拉開差異 */
+body.dark-neutral h1 { color: #e0b36a; border-bottom-color: var(--color-neutral-hairline); font-weight: 700; }
+body.dark-neutral h2 { color: var(--color-neutral-accent-2); }
+body.dark-neutral h3 { color: var(--color-neutral-text); }
+body.dark-neutral h4 { color: var(--color-neutral-muted); }
+body.dark-neutral hr { background: linear-gradient(to right, var(--color-neutral-hairline), var(--color-neutral-accent), var(--color-neutral-hairline)); }
+body.dark-neutral .question { background: var(--color-neutral-surface); border-left-color: var(--color-neutral-accent); }
+body.dark-neutral .question-text { color: var(--color-neutral-text); }
+body.dark-neutral .questioner { color: #e0b36a; }
+body.dark-neutral .question-time { color: var(--color-neutral-muted); }
+body.dark-neutral .answer { background: linear-gradient(135deg, var(--color-neutral-surface) 0%, var(--color-neutral-bg) 100%); border-left-color: var(--color-neutral-accent); }
+body.dark-neutral .answer-text { color: var(--color-neutral-text); }
+body.dark-neutral .answerer { color: #e0b36a; }
+body.dark-neutral .nav-footer a { background: #2a2f3a; color: #e6dcc8; box-shadow: none; }
+body.dark-neutral .w2e-toc-backdrop { background: rgba(0, 0, 0, 0.55); }
+
+/* ---- 閱讀位置提示條（11-reading-resume.js） ---- */
+.w2e-resume-bar {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translate(-50%, -140%);
+    display: flex;
+    align-items: center;
+    gap: var(--radius-md);
+    padding: 8px var(--radius-lg);
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 999px;
+    box-shadow: var(--shadow-lg);
+    font-size: 14px;
+    z-index: 9995;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    max-width: 92vw;
+}
+.w2e-resume-bar.visible { transform: translate(-50%, 0); opacity: 1; }
+.w2e-resume-bar button {
+    border: none;
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.w2e-resume-bar .w2e-resume-close { padding: 4px 8px; }
+body.dark-mode .w2e-resume-bar { background: #5a2d49; }
+
+/* ---- 音檔續播膠囊（13-player-persist.js） ---- */
+.w2e-audio-resume {
+    position: fixed;
+    left: 14px;
+    bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: var(--radius-md);
+    padding: var(--radius-md) 12px;
+    background: #fff;
+    border: 1px solid var(--color-accent-pale);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 9994;
+    max-width: min(420px, 86vw);
+    transform: translateY(140%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    font-size: 13px;
+}
+.w2e-audio-resume.visible { transform: translateY(0); opacity: 1; }
+.w2e-audio-resume-play {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gradient-primary);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.w2e-audio-resume-info { min-width: 0; }
+.w2e-audio-resume-file {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333;
+}
+.w2e-audio-resume-time { color: #999; font-size: 12px; }
+.w2e-audio-resume-back { font-size: 12px; white-space: nowrap; }
+.w2e-audio-resume-close { border: none; background: none; color: #bbb; cursor: pointer; }
+.w2e-audio-resume-close:hover { color: var(--color-primary-deep); }
+body.dark-mode .w2e-audio-resume { background: #4a2c3a; border-color: #5a2d49; }
+body.dark-mode .w2e-audio-resume-file { color: #fddde6; }
+body.dark-neutral .w2e-audio-resume { background: var(--color-neutral-surface); border-color: var(--color-neutral-hairline); }
+body.dark-neutral .w2e-audio-resume-file { color: var(--color-neutral-text); }
+
+/* ---- 目錄計數可點（16-jump-share.js ①） ---- */
+.toc-count[role="button"] {
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 0 2px;
+}
+.toc-count[role="button"]:hover,
+.toc-count[role="button"]:focus-visible {
+    background: var(--color-accent-pale);
+    color: var(--color-primary-deep);
+    outline: none;
+}
+
+/* ---- 標題錨點分享（16-jump-share.js ②） ---- */
+h2[id], h3[id] { position: relative; }
+.anchor-share {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.65em;
+    margin-left: var(--radius-sm);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    vertical-align: middle;
+    padding: 0 4px;
+}
+h2:hover .anchor-share, h3:hover .anchor-share,
+h2:focus-within .anchor-share, h3:focus-within .anchor-share,
+.anchor-share:focus-visible { opacity: 0.85; }
+
+/* ---- 章節頁搜尋關鍵字高亮（14-search-plus.js ③） ---- */
+mark.w2e-hl {
+    background: var(--color-anchor-highlight);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+body.dark-mode mark.w2e-hl { background: rgba(255, 145, 175, 0.4); }
+body.dark-neutral mark.w2e-hl { background: rgba(217, 168, 108, 0.35); }
+
+/* ---- 搜尋結果鍵盤焦點（14-search-plus.js ②；D9） ---- */
+#search-results-list li.kb-focus,
+#search-results-list .search-result.kb-focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+/* D9 搜尋結果樣式：命中詞標記與類型標籤提高對比 */
+.search-result-content mark { background: var(--color-anchor-highlight); color: inherit; padding: 0 1px; border-radius: 2px; }
+
+/* ---- 行動版目錄 backdrop（15-mobile-toc.js ①） ---- */
+.w2e-toc-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 790; /* 浮動目錄 .floating-toc=800 之下、頁面內容之上 */
+    display: none;
+}
+.w2e-toc-backdrop.visible { display: block; }
+
+/* ---- ebook 無音檔提示（16-jump-share.js ③；U6） ---- */
+.no-audio-note {
+    font-size: 0.85em;
+    color: #999;
+    border-left: 3px solid var(--color-accent-pale);
+    padding-left: 10px;
+    margin: 8px 0 20px;
+}
+body.dark-mode .no-audio-note { color: #b98ca3; border-left-color: #5a2d49; }
+body.dark-neutral .no-audio-note { color: var(--color-neutral-muted); border-left-color: var(--color-neutral-hairline); }
+
+/* ---- 目錄縮排導引線（D7） ---- */
+.toc ul ul { border-left: 1px dashed var(--color-accent-pale); margin-left: 6px; padding-left: 14px; }
+.toc ul ul ul { border-left-style: dotted; }
+body.dark-mode .toc ul ul { border-left-color: #5a2d49; }
+body.dark-neutral .toc ul ul { border-left-color: var(--color-neutral-hairline); }
+/* 浮動目錄深層項目同示導引 */
+.floating-toc-item.level-h3 { border-left: 2px solid var(--color-accent-pale); padding-left: var(--radius-md); }
+.floating-toc-item.level-h4 { border-left: 2px dotted var(--color-accent-pale); padding-left: 20px; }
+.floating-toc-item.level-h5 { border-left: 2px dotted var(--color-accent-pale); padding-left: 28px; }
+
+
+/* ============================================================
+   墨夜面板全面換色（自動產生的 dark-mode 規則鏡像覆寫。
+   來源：00–05 模組內所有含粉色/暗粉色值的 body.dark-mode 規則；
+   更動來源的粉色／暗色規則時請重新產生本區塊）
+   ============================================================ */
+
+body.dark-mode.dark-neutral { background: var(--color-bg-page-dark); color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral a { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral h1 { color: var(--color-neutral-accent); border-bottom-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral h2 { color: var(--color-neutral-accent); }
+/* 與夜間模式目錄第1層相同 */
+body.dark-mode.dark-neutral h3 { color: var(--color-neutral-accent-2); }
+/* 與夜間模式目錄第2層相同 */
+body.dark-mode.dark-neutral h4 { color: var(--color-neutral-text); }
+/* 與夜間模式目錄第4層相同 */
+body.dark-mode.dark-neutral hr { background: linear-gradient(to right, var(--color-neutral-hairline), var(--color-neutral-accent), var(--color-neutral-hairline)); }
+body.dark-mode.dark-neutral .question { background: var(--color-neutral-surface); border-left-color: var(--color-neutral-accent); box-shadow: 0 2px 8px rgba(217, 168, 108, 0.1); }
+body.dark-mode.dark-neutral .question-text { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .questioner { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .question-time { 
+    background: rgba(90, 45, 73, 0.4); /* 降低不透明度 */
+    color: #d4a5b8; /* 更柔和的粉紅色，減少螢光感 */
+    border: 1px solid rgba(217, 168, 108, 0.2); /* 淡邊框 */
+}
+body.dark-mode.dark-neutral .answer { background: linear-gradient(135deg, var(--color-neutral-surface) 0%, var(--color-neutral-bg) 100%); border-left-color: var(--color-primary-light); }
+body.dark-mode.dark-neutral .answer-text { color: var(--color-neutral-text); }
+/* 暗色模式下的导航按钮 */
+body.dark-mode.dark-neutral .nav-footer a { 
+    background: linear-gradient(135deg, var(--color-neutral-hairline) 0%, var(--color-primary-light) 100%); 
+    color: var(--color-neutral-text);
+    box-shadow: 0 2px 6px rgba(90, 45, 73, 0.3);
+}
+body.dark-mode.dark-neutral .top-nav-buttons a {
+    background: linear-gradient(135deg, var(--color-neutral-hairline) 0%, var(--color-primary-light) 100%);
+    color: var(--color-neutral-text);
+    box-shadow: 0 2px 6px rgba(90, 45, 73, 0.3);
+}
+body.dark-mode.dark-neutral .back-to-top a { 
+    color: var(--color-neutral-accent); 
+    /* 暗色模式下🔝符號的text-shadow效果 */
+    text-shadow: 0 0 3px rgba(217, 168, 108, 0.4), 0 0 6px rgba(217, 168, 108, 0.2);
+}
+body.dark-mode.dark-neutral .back-to-top a:hover { 
+    color: var(--color-primary-light); 
+    /* 暗色模式hover時增強text-shadow效果 */
+    text-shadow: 0 0 4px rgba(217, 168, 108, 0.6), 0 0 8px rgba(217, 168, 108, 0.4);
+}
+body.dark-mode.dark-neutral .lang-switch a { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .nav-home a { color: var(--color-neutral-accent); }
+/* ---- 暗色模式適配 --------------------------------------- */
+body.dark-mode.dark-neutral .reading-toolbar { background: rgba(59, 28, 50, 0.95); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .reading-toolbar::-webkit-scrollbar-thumb { background: rgba(217, 168, 108, 0.4); }
+body.dark-mode.dark-neutral .reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(217, 168, 108, 0.6); }
+body.dark-mode.dark-neutral .ctrl-btn, body.dark-mode.dark-neutral .qa-btn { background: rgba(90, 45, 73, 0.9); color: var(--color-neutral-text); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .ctrl-btn.active { background: var(--color-primary-light); color: #fff; border-color: var(--color-primary-light); box-shadow: 0 0 8px rgba(217, 168, 108, 0.5); }
+body.dark-mode.dark-neutral .ctrl-btn.font-adjust { background: linear-gradient(135deg, #3a3a3a 0%, #2d2d2d 100%); border: 1px solid #555; color: var(--color-neutral-text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); }
+body.dark-mode.dark-neutral .action-btn { background: var(--color-primary-light); box-shadow: 0 4px 15px rgba(217, 168, 108, 0.4); }
+body.dark-mode.dark-neutral .action-btn:hover { background: var(--color-primary); box-shadow: 0 6px 20px rgba(217, 168, 108, 0.5); }
+/* ---- 暗色模式 ------------------------------------------- */
+body.dark-mode.dark-neutral .floating-toc { background: rgba(59, 28, 50, 0.95); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .floating-toc-header { background: rgba(59, 28, 50, 0.95); border-bottom: 1px solid var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .floating-toc-content::-webkit-scrollbar-thumb { background: rgba(217, 168, 108, 0.4); }
+body.dark-mode.dark-neutral .floating-toc-content::-webkit-scrollbar-thumb:hover { background: rgba(217, 168, 108, 0.6); }
+body.dark-mode.dark-neutral .floating-toc-item:hover { background: rgba(217, 168, 108, 0.2); }
+body.dark-mode.dark-neutral .floating-toc-item.active { background: rgba(217, 168, 108, 0.25); border-left-color: var(--color-primary-light); color: var(--color-primary-light); box-shadow: 0 1px 4px rgba(217, 168, 108, 0.4); }
+body.dark-mode.dark-neutral .floating-toc-tab { color: var(--color-neutral-text); border-bottom: 1px solid var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .floating-toc-tab:hover { background: rgba(217, 168, 108, 0.1); }
+/* ---- 暗色模式 ------------------------------------------- */
+body.dark-mode.dark-neutral .bookmarked {
+    background: linear-gradient(135deg, rgba(217, 168, 108, 0.15) 0%, rgba(139, 69, 19, 0.1) 100%);
+    border-left-color: var(--color-primary-light);
+    box-shadow: 0 2px 8px rgba(217, 168, 108, 0.3);
+}
+body.dark-mode.dark-neutral .bookmark-chapter { background: rgba(217, 168, 108, 0.15); border-left-color: var(--color-primary-light); }
+body.dark-mode.dark-neutral .bookmark-chapter-count { background: rgba(217, 168, 108, 0.3); color: var(--color-primary-light); }
+body.dark-mode.dark-neutral .current-chapter-info { background: rgba(217, 168, 108, 0.15); border-left-color: var(--color-primary-light); }
+body.dark-mode.dark-neutral .current-chapter-count { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .bookmark-clear-icon:hover { background: rgba(217, 168, 108, 0.2) !important; opacity: 1 !important; }
+body.dark-mode.dark-neutral .bookmark-clear-icon:hover::after { background: var(--color-neutral-hairline); color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .qa-pair-bookmark {
+    border-left-color: var(--color-primary-light);
+    background: linear-gradient(135deg, rgba(217, 168, 108, 0.15) 0%, rgba(59, 28, 50, 0.5) 100%);
+}
+body.dark-mode.dark-neutral .qa-pair-bookmark:hover {
+    background: linear-gradient(135deg, rgba(217, 168, 108, 0.2) 0%, rgba(217, 168, 108, 0.1) 100%);
+}
+/* 暗色模式搜索样式 */
+body.dark-mode.dark-neutral .search-activate-btn {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
+    box-shadow: 0 4px 15px rgba(217, 168, 108, 0.4);
+}
+body.dark-mode.dark-neutral .search-activate-btn:hover {
+    background: var(--gradient-primary);
+    box-shadow: 0 6px 20px rgba(217, 168, 108, 0.5);
+}
+body.dark-mode.dark-neutral #search-input:focus {
+    border-color: var(--color-primary-light);
+    box-shadow: 0 0 0 3px rgba(217, 168, 108, 0.2);
+}
+body.dark-mode.dark-neutral .search-loading-text {
+    color: var(--color-neutral-text);
+}
+/* 搜索錯誤狀態夜間模式 */
+body.dark-mode.dark-neutral .search-error {
+    background: var(--color-neutral-surface);
+    border-color: var(--color-neutral-hairline);
+    color: var(--color-neutral-accent);
+}
+body.dark-mode.dark-neutral .search-retry-btn:hover {
+    background: var(--color-neutral-accent);
+}
+/* ============================================================
+   04b-toc-dark.css — 目錄相關元素的暗色模式適配
+   ============================================================ */
+
+/* ---- 目錄層級控制 --------------------------------------- */
+body.dark-mode.dark-neutral .toc-header-container h2 { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .toc-level-label { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .toc-level-btn { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: var(--color-neutral-accent); }
+/* ---- 浮動層級控制 --------------------------------------- */
+body.dark-mode.dark-neutral .floating-level-controls { background: rgba(40, 40, 40, 0.95); border-color: rgba(217, 168, 108, 0.3); }
+body.dark-mode.dark-neutral .floating-level-label { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .floating-level-btn { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .floating-level-toggle { border-color: var(--color-primary-light); background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); color: var(--color-neutral-accent); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); }
+body.dark-mode.dark-neutral .floating-level-toggle:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); box-shadow: 0 2px 8px rgba(217, 168, 108, 0.4); }
+/* ---- 展開圖標 ------------------------------------------ */
+body.dark-mode.dark-neutral .toc-expand-icon { color: var(--color-neutral-accent); }
+/* ---- TOC 項目懸停 --------------------------------------- */
+body.dark-mode.dark-neutral .toc-item.toc-expandable:hover { background-color: rgba(217, 168, 108, 0.15); }
+body.dark-mode.dark-neutral .toc-item:not(.toc-expandable):hover { background-color: rgba(217, 168, 108, 0.12); }
+/* ---- TOC 層級鏈接顏色 ---------------------------------- */
+body.dark-mode.dark-neutral .toc-item.toc-level-1 > a { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .toc-item.toc-level-2 > a { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .toc-item.toc-level-4 > a { color: var(--color-neutral-text); }
+/* 章節頁面目錄（提高優先級，使用 ul 結構選擇器）*/
+body.dark-mode.dark-neutral .toc > ul > li > a { color: var(--color-neutral-accent) !important; }
+body.dark-mode.dark-neutral .toc ul ul > li > a { color: var(--color-neutral-accent-2) !important; }
+body.dark-mode.dark-neutral .toc ul ul ul ul > li > a { color: var(--color-neutral-text) !important; }
+/* ---- 浮動 TOC 面板 ------------------------------------- */
+body.dark-mode.dark-neutral .floating-toc { background: rgba(40, 40, 40, 0.95); border-color: rgba(217, 168, 108, 0.3); }
+body.dark-mode.dark-neutral .floating-toc-header { background: rgba(40, 40, 40, 0.95); border-bottom-color: #444; color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .floating-toc-item { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .floating-toc-item.level-h3 { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .floating-toc-item.level-h4 { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .floating-toc-item.level-h5 { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .floating-toc-item:hover { background: rgba(217, 168, 108, 0.2); }
+body.dark-mode.dark-neutral .floating-toc-item.active { background: rgba(217, 168, 108, 0.3); color: var(--color-primary-light); }
+/* ---- 書籤相關（TOC 面板內）----------------------------- */
+body.dark-mode.dark-neutral .bookmark-item { background: rgba(60, 60, 60, 0.5); border-color: #555; color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .bookmark-item:hover { background: rgba(217, 168, 108, 0.15); border-color: var(--color-primary-light); }
+body.dark-mode.dark-neutral .bookmark-preview { color: var(--color-neutral-accent); }
+/* ===== 暗色模式 ===== */
+body.dark-mode.dark-neutral .qa-source-banner {
+    background: rgba(90, 45, 73, 0.4);
+    border-color: var(--color-neutral-hairline);
+    border-left-color: var(--color-neutral-accent);
+}
+body.dark-mode.dark-neutral .qa-source-banner a { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-number { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-play {
+    background: rgba(90, 45, 73, 0.45);
+    color: var(--color-neutral-accent-2);
+    border-color: var(--color-neutral-accent);
+}
+body.dark-mode.dark-neutral .qa-play .qa-play-icon {
+    color: var(--color-neutral-accent);
+}
+body.dark-mode.dark-neutral .qa-play:hover,
+body.dark-mode.dark-neutral .qa-play.playing,
+body.dark-mode.dark-neutral .qa-play.loading {
+    background: linear-gradient(135deg, var(--color-neutral-hairline) 0%, var(--color-primary-light) 100%);
+    color: #fff;
+    border-color: transparent;
+}
+body.dark-mode.dark-neutral .para-track-toggle,
+body.dark-mode.dark-neutral .sutra-pin-toggle {
+    background: transparent;
+    border-color: var(--color-neutral-accent);
+    color: var(--color-neutral-accent-2);
+}
+body.dark-mode.dark-neutral .para-track-toggle.on,
+body.dark-mode.dark-neutral .sutra-pin-toggle.on {
+    background: linear-gradient(135deg, var(--color-neutral-hairline) 0%, var(--color-primary-light) 100%);
+    border-color: transparent;
+    color: #fff;
+}
+body.dark-mode.dark-neutral .para-track-toggle input[type="checkbox"],
+body.dark-mode.dark-neutral .sutra-pin-toggle input[type="checkbox"] {
+    accent-color: var(--color-neutral-accent);
+}
+body.dark-mode.dark-neutral .para-block.para-active {
+    background: linear-gradient(135deg, rgba(255, 179, 102, 0.14) 0%, rgba(217, 168, 108, 0.10) 100%);
+    box-shadow: inset 3px 0 0 var(--color-neutral-accent), 0 0 14px rgba(217, 168, 108, 0.22);
+}
+body.dark-mode.dark-neutral .qa-player {
+    background: var(--color-neutral-surface);
+    border-color: var(--color-neutral-hairline);
+}
+body.dark-mode.dark-neutral .qa-player-file { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-player.is-loading .qa-player-range {
+    color: var(--color-neutral-accent-2);
+}
+body.dark-mode.dark-neutral .qa-player-close { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .qa-player-volume-btn { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .qa-volume-symbol { fill: var(--color-neutral-accent); stroke: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-player-volume-btn:hover .qa-volume-symbol,
+body.dark-mode.dark-neutral .qa-player-volume-group.is-open .qa-volume-symbol { fill: var(--color-neutral-accent-2); stroke: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .qa-player-volume-popup { background: var(--color-neutral-surface); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .qa-player-volume-value { color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-player-volume::-webkit-slider-runnable-track {
+    background: linear-gradient(to right,
+        var(--color-neutral-accent) 0%,
+        var(--color-neutral-accent) var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) 100%);
+}
+body.dark-mode.dark-neutral .qa-player-volume::-webkit-slider-thumb { background: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-player-volume::-moz-range-track {
+    background: linear-gradient(to right,
+        var(--color-neutral-accent) 0%,
+        var(--color-neutral-accent) var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) var(--qa-volume-pct, 100%),
+        rgba(90, 45, 73, 0.6) 100%);
+}
+body.dark-mode.dark-neutral .qa-player-volume::-moz-range-thumb { background: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .qa-player-toggle {
+    background: linear-gradient(135deg, var(--color-neutral-hairline) 0%, var(--color-primary-light) 100%);
+    color: #fff;
+}
+body.dark-mode.dark-neutral .qa-player-skip {
+    background: #3b2330;
+    color: var(--color-neutral-accent-2);
+    border-color: var(--color-neutral-hairline);
+}
+body.dark-mode.dark-neutral .qa-player-skip:hover {
+    background: rgba(90, 45, 73, 0.8);
+    border-color: var(--color-neutral-accent);
+}
+body.dark-mode.dark-neutral .qa-player-progress-fill {
+    background: linear-gradient(135deg, var(--color-neutral-hairline) 0%, var(--color-primary-light) 100%);
+}
+body.dark-mode.dark-neutral .qa-player-progress.is-indeterminate .qa-player-progress-fill {
+    background: linear-gradient(90deg, var(--color-neutral-hairline), var(--color-neutral-accent), var(--color-neutral-hairline));
+}
+body.dark-mode.dark-neutral .qa-player-progress-thumb { background: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .img-lightbox__toolbar {
+    background: rgba(0, 0, 0, 0.55);
+    border-bottom-color: rgba(217, 168, 108, 0.35);
+}

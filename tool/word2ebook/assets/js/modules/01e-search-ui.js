@@ -112,8 +112,45 @@ function setSearchScopeVisible(visible) {
   scopeEl.classList.toggle('is-visible', !!visible);
 }
 
+// ============================================================
+// 從 URL hash / 快照還原搜尋狀態（返回本頁時：#q=…&scope=…）
+// 配對 01d 的 updateSearchQueryHash（performSearch 寫入、replaceState 不產生記錄）
+// 以及 10-search-return 的 sessionStorage 快照（還原筆數＋捲動位置）
+// ============================================================
+function restoreSearchFromHash() {
+  const state = readSearchStateFromHash();
+  const snap = (typeof readSearchSnapshot === 'function') ? readSearchSnapshot() : null;
+  // hash 沒有時，以快照（同分頁返回）兒底
+  const q = ((state.q || '') || (snap && snap.q) || '').trim();
+  if (!q || q.length < 2) return;
+
+  const input = document.getElementById('search-input');
+  if (input) input.value = q;
+
+  const scopeCandidate = state.scope || (snap && snap.scope) || '';
+  const validScopes = ['question', 'answer', 'both'];
+  if (scopeCandidate && validScopes.indexOf(scopeCandidate) !== -1) {
+    searchScope = scopeCandidate;
+    document.querySelectorAll('.search-scope-btn').forEach((b) => {
+      const active = b.getAttribute('data-scope') === searchScope;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  // 還原「已顯示筆數」與「捲動位置」（搜尋完成後套用）
+  const targetDisplayed = (snap && typeof snap.displayed === 'number' && snap.displayed > 0) ? snap.displayed : undefined;
+  const wantScroll = !!(snap && typeof snap.scrollY === 'number' && snap.scrollY > 0);
+  window.__w2eRestoreScrollY = wantScroll ? snap.scrollY : 0;
+
+  performSearch(q, targetDisplayed);
+}
+
 // 清除搜索状态（重置输入框、结果、计数）
 function clearSearch() {
+  // 明確清除時同步清掉 URL hash 與 sessionStorage 快照，返回本頁才不會又自動還原已刪除的查詢
+  updateSearchQueryHash('');
+  if (typeof writeSearchSnapshot === 'function') writeSearchSnapshot(null);
   const elements = getSearchElements();
   if (elements.searchInput) elements.searchInput.value = '';
   if (elements.searchResults) elements.searchResults.style.display = 'none';
@@ -131,6 +168,9 @@ function clearSearch() {
 
 // 收起搜索面板
 function collapseSearch() {
+  // 收起視同離開搜尋：同步清掉 URL hash 與 sessionStorage 快照
+  updateSearchQueryHash('');
+  if (typeof writeSearchSnapshot === 'function') writeSearchSnapshot(null);
   const searchContainer  = document.getElementById('search-container');
   const searchActivation = document.querySelector('.search-activation');
   if (!searchContainer || !searchActivation) return;
@@ -330,13 +370,47 @@ async function initSearch() {
     if (btn) btn.addEventListener('click', fn);
   });
 
-  // 结果列表点击（與目錄連結一致：同頁導覽，瀏覽器返回可回到結果）
+  // 结果列表点击：一律開新分頁，本頁搜尋結果完整保留（返回免重載索引）。
+  // 先把手動展開的 TOC 狀態存進 sessionStorage，防範瀏覽器對 _blank 一律同頁開啟的設定。
   elements.searchResultsList.addEventListener('click', (e) => {
     const item = e.target.closest('.search-result-item');
     if (item && item.dataset.url) {
-      window.location.href = item.dataset.url;
+      if (typeof saveTocExpandSnapshot === 'function') {
+        try { saveTocExpandSnapshot(); } catch (err) { /* 非致命 */ }
+      }
+      // 帶上 ?q=（14-search-plus.js 在章節頁據此高亮命中詞，
+      // 10-search-return.js 亦據此顯示「回到搜尋結果」）。
+      var openUrl = item.dataset.url;
+      var inputEl = document.getElementById('search-input');
+      var openQ = inputEl ? (inputEl.value || '').trim() : '';
+      if (openQ) {
+        var hashPos = openUrl.indexOf('#');
+        var qParam = '?q=' + encodeURIComponent(openQ);
+        openUrl = hashPos === -1 ? openUrl + qParam
+          : openUrl.slice(0, hashPos) + qParam + openUrl.slice(hashPos);
+      }
+      window.open(openUrl, '_blank', 'noopener');
     }
   });
+
+  // 從其他分頁返回本頁時，若有 #q= hash（或先前查詢）即自動還原搜尋狀態
+  restoreSearchFromHash();
+
+  // 還原情境：查詢/筆數重現後，把捲動位置也帶回來。
+  // 先關掉瀏覽器原生的 scroll restoration（它會在內容長高後把位置拉回重載前的
+  // 舊位，覆蓋我們要還原的位置），改由下面的快照還原接手。
+  if (window.__w2eRestoreScrollY > 0) {
+    try { history.scrollRestoration = 'manual'; } catch (e) { /* 忽略 */ }
+    const targetY = window.__w2eRestoreScrollY;
+    window.__w2eRestoreScrollY = 0;
+    requestAnimationFrame(() => {
+      window.scrollTo(0, targetY);
+      // 版面（字型/圖片）就緒後再校一次（帶入固定目標值，不重讀快照）
+      setTimeout(() => {
+        if (typeof restoreSearchScroll === 'function') restoreSearchScroll(targetY);
+      }, 200);
+    });
+  }
 }
 
 // ============================================================
@@ -346,5 +420,32 @@ if (isIndexPage()) {
   const searchActivateBtn = document.getElementById('search-activate-btn');
   if (searchActivateBtn) {
     searchActivateBtn.addEventListener('click', activateSearch);
+
+    // 帶 #q= hash 或 ?q= 查詢參數（章節頁「回到搜尋結果」按鈕）載入時，
+    // 自動啟用搜索並還原上次查詢，免去手動點按鈕＋重打關鍵字
+    const hashState = readSearchStateFromHash();
+    let urlQ = hashState.q || '';
+    if (!urlQ) {
+      const urlScopeMatch = /(?:^|&)scope=([^&]*)/.exec(window.location.search.replace(/^\?/, ''));
+      const urlQMatch = /(?:^|&)q=([^&]*)/.exec(window.location.search.replace(/^\?/, ''));
+      if (urlQMatch) {
+        try { urlQ = decodeURIComponent(urlQMatch[1]); } catch (e) { urlQ = urlQMatch[1]; }
+      }
+      // ?q= 同時可能帶 ?scope=（回 URL 時沒有 hash 也能正確設範圍）；
+      // restoreSearchFromHash 只讀 hash，這裡先把 scope 參數寫進 hash（不觸發記錄）
+      if (urlQ && urlScopeMatch && !window.location.hash) {
+        let scopeParam = '';
+        try { scopeParam = decodeURIComponent(urlScopeMatch[1]); } catch (e) { scopeParam = urlScopeMatch[1]; }
+        if (['question', 'answer', 'both'].indexOf(scopeParam) !== -1) {
+          try {
+            history.replaceState(null, '', window.location.pathname + window.location.search +
+              '#q=' + encodeURIComponent(urlQ) + (scopeParam !== 'both' ? '&scope=' + encodeURIComponent(scopeParam) : ''));
+          } catch (e) { /* 忽略 */ }
+        }
+      }
+    }
+    if ((urlQ || '').trim().length >= 2) {
+      setTimeout(() => { activateSearch(); }, 0);
+    }
   }
 }

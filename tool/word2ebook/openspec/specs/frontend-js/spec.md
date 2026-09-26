@@ -22,8 +22,8 @@ Source JavaScript SHALL be split into ordered module files under
 | `01a-search-init.js` | Search state variables, `activateSearch`, loading/error UI, `loadSearchIndexWithProgress`, Jieba WASM init, `segmentWithJieba` |
 | `01b-search-index.js` | `createSearchConfig`, `buildSearchIndexInBatches`, `buildSearchIndexInBatchesWithCache` |
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |
-| `01d-search-perform.js` | `performSearch` (MiniSearch + scope `filter`), `displayPagedResults`, `loadMoreResults` |
-| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, scope buttons, clear, collapse, load-more) |
+| `01d-search-perform.js` | `performSearch` (MiniSearch + scope `filter`) + URL-hash mirroring (`#q=…&scope=…` via `history.replaceState`), `displayPagedResults`, `loadMoreResults` |
+| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, scope buttons, clear, collapse, load-more), hash-based search-state restore + auto-activate on back, result items open in new tab |
 | `02-reader-ux.js` | Q&A ID generation, reading toolbar, floating TOC creation, action buttons, Q&A action overlays |
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
@@ -31,12 +31,23 @@ Source JavaScript SHALL be split into ordered module files under
 | `03d-reading-settings.js` | `getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
-| `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC` |
+| `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
 | `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle, Bilibili-style volume control — hovering the speaker button shows a popup with a vertical slider persisted in `localStorage`, moving away hides it, clicking the speaker toggles mute/unmute), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
 | `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
 | `09b-para-track.js` | 講經「段落跟播」（講經書頁，段落帶 `data-start`/`data-end` 時啟動；經 `08-qa-audio.js` 暴露的 `W2E.qaAudio` 掛接）：講次 h2 旁插入「段落跟播」toggle（`paraTrackEnabled`，預設 ON）— ON 時播放中依 `audio.currentTime` 高亮當前段落（`.para-active`，上一段不做任何視覺改變）並平滑捲動（目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)；若目標段落屬於經文置頂 sticky 群，另以「當前段頂 − `W2E.sutraPin.reserveFor(el)` − 24px」為捲動上限，使高亮段落永遠落在停留經文下方不被蓋住，僅段落切換時觸發，timeupdate 節流 250ms）；跟播 ON 時點擊段落即播放所屬講次並 seek 至段首，之後一路順播到底（無段末自停；拖選／反白選取文字、點擊段落內按鈕連結時不觸發）；isolated IIFE |
 | `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留，頁面含 `.sutra-text` 時啟動）：向下捲動時讓「即將捲出視窗頂」的那段原經文以原生 `position: sticky; top: 0` 停在視窗最上方——停留中的經文就是原版經文本身（原尺寸、原樣式、無白邊），講解段落從其下方滑過（Confluence 固定表頭概念）。為每段經文包 `.sutra-pin-host`（只包層、不搬動順序），再以「經文 → 下一邊界」包 `.sutra-pin-group` 限制 sticky 範圍：邊界 = 下一段經文、任何 h1–h6（章節名/品名小節名）、任何 figure/img 圖片（取文件順序最先者；無邊界則到下一經文頂層節點/章節尾）——因此停留中的經文天生不會蓋住下一段經文、章節名或圖片，會遮住之前先讓位歸位（隨畫面捲走），進入新章節亦自然失效。過長（> 45% 視窗高）的經文整段不停留（`.sutra-pin-tall`），且經文高度隨閱讀設定（字級／行距／版面寬）、視窗縮放或字型載入改變時會重新量測（`ResizeObserver` + `<html>/<body>` inline style `MutationObserver` + `document.fonts.ready`），避免放大字級後接近滿版的經文仍卡在置頂、蓋住講解；講次 h2 旁「經文置頂」toggle（`sutraPinEnabled`，預設 ON；關閉 → `body.sutra-pin-off` 全部照常捲動）；錨點跳轉（`hashchange`／帶 hash 載入／攔截 `scrollIntoView`）時 `body.sutra-pin-suppress` 短暫停停留避免蓋住跳轉目標；暴露 `W2E.sutraPin.reserveFor(el)` 供 09b 跟播捲動取「段頂 − 經文高 − 24px」捲動上限（高亮段落永遠在停留經文下方）；isolated IIFE |
+| `10-search-return.js` | ~~「回到搜尋結果」浮動按鈕~~（2026-09 移除：依賴快照跨分頁複製，出現時機不穩）。現僅保留 index 頁持續快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage），供上一頁返回時由 01e 還原查詢、已顯示筆數與捲動位置 |
+| `11-reading-resume.js` | 閱讀位置記憶（`localStorage w2e:readpos`，頁面→捲動比例，LRU 40 頁）：重回同頁且無錨點時頂部提示「回到上次閱讀位置（X%）」；**總目錄頁（`isIndexPage()`）只有目錄無正文，既不記錄也不提示，並清除舊版殘留的目錄頁紀錄**；優先消化 `/lang-switch.js` 寫入的 `sessionStorage w2e:langjump`（簡繁雙頁切換原位恢復，總目錄頁也照樣消化以免標記外溢） |
+| `13-player-persist.js` | 音檔跨頁續播：定時（3s）與 `pagehide` 把 `{src, t, file, range, page, anchor}` 快照進 `sessionStorage w2e:playerState`（經 `W2E.qaAudio` 讀取）；任何頁載入後若有 12 小時內快照，左下浮出續播膠囊——同頁交回 08 播放器重播並 `seekAbs`，他頁自建 `Audio` 從斷點續播；✕ 丟棄 |
+| `14-search-plus.js` | 搜尋補強：`/` 或 Ctrl/Cmd+K 啟用並聚焦搜尋框；結果區 ↓/↑ 移動 `.kb-focus`、Enter 開啟、Esc 取消，結果列表重繪（換搜尋/換頁）時以 `MutationObserver`（childList/subtree）重置鍵盤焦點（不得使用已棄用的 `DOMSubtreeModified`）；章節頁帶 `?q=`（01e 開新頁時附加）且有錨點時，於錨點所在區塊以 `<mark class="w2e-hl">` 標出查詢詞 |
+| `15-mobile-toc.js` | 行動版目錄操作：≤768px 開啟浮動目錄時鋪 `.w2e-toc-backdrop`（點擊即關）；左緣 ≤28px 起右滑開啟、目錄內左滑關閉。**不**再建立常駐的 `.w2e-backtop` 回到頂端鈕——「回到頂端」只由右下角功能選單（`02-reader-ux.js` 的 `data-action="top"`）提供 |
+| `16-jump-share.js` | `.toc-count` 可點：直跳該主題第一則 `.question`（無則退回錨點）；章節頁 h2/h3[id] hover/focus 出現 🔗 錨點鈕複製「頁面#錨點」；`/ebook/` 講經頁（有 `.para-block`）全無 `.qa-play` 時在 h1 後插「本講次暫無音檔跟播」提示 |
+| `17-theme-pwa.js` | 深色第二面板「墨夜」：`localStorage w2e:darkPalette=neutral` 時 `body.dark-neutral`（防閃爍由模板 prepaint 掛 `<html>`）；供 04-events.js 的 `theme-dark-neutral` 動作呼叫；`/wenda2_ebook/`、`/ebook/` 下註冊根 `/sw.js`（PWA 離線） |
+
+> 編號 `12-bookmarks-manager.js`（首頁總目錄底部的「我的書籤」跨章節管理區塊）已移除，
+> 編號保留空缺、不重排。書籤本體功能（03a/03b/03c：章節頁加書籤、浮動目錄書籤分頁、
+> 書籤計數）不受影響；書籤改由浮動目錄面板的書籤分頁檢視與管理。
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.js` files (sorted by

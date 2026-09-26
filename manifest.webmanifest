@@ -1,0 +1,14 @@
+{
+  "name": "TaiGuangLin 電子書",
+  "short_name": "Tai 電子書",
+  "description": "TaiGuangLin 坐禪與講經、問答錄靜態電子書",
+  "lang": "zh-Hant",
+  "start_url": "/wenda2_ebook/index_trad.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff0f5",
+  "theme_color": "#e75480",
+  "icons": [
+    { "src": "/images/buddha.png", "sizes": "146x145", "type": "image/png" }
+  ]
+}

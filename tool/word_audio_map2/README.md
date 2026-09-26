@@ -29,15 +29,27 @@ cd tool/word_audio_map2
 
 ### 一次性修正與審計腳本（依電子書 block 邊界）
 
+- `link_image_blocks.py` —— 把**沒有題目段的 block**（提問以截圖 `<img alt="…">` 送出，
+  或題目被換成 `（此問題丟失或未收集到）`／`问题缺失`／`(TAI師父自白)` 等佔位）接回音檔段：
+  以**答案文字**比對（OpenCC t2s ＋ `著/着` 摺疊，命中後 ratio 皆 1.0），寫入
+  `chapter_answer_ids`（該 block 自己的 `answer-…` id）＋ `chapter_indexes`。
+  這種 block 沒有 qid，`link_chapters.py` 比對不到，只能靠本工具。全域 16 個，
+  已於 2026-09 全部接回（含 4 個「合併段內的其中一個 block」，另記 `html-portion:` note）。
+  只動上述兩欄與 `notes`；dry-run 預設，`--apply` 才寫檔。
+  ⚠️ block id 的正則必須含去重後綴（`answer-…-2`），否則會把正常 block 誤判成孤兒。
 - `fix_2025_05_17_seg2.py` / `fix_2025_05_12_seg74.py` —— 一次性手術：把「一個
   Word 段黏住多個電子書 block」的段切開（文字在電子書 block 邊界切、時間按
   字數比例、`lastPlayed` 清除待重聽、同 qid 跨章 blocks 以`chapter_answer_ids`
   區分）。dry-run 預設，`--apply` 才寫檔。
+- `add_answer_ids.py` —— 由 `chapter_question_ids` 經 `build/answer_map.json` 推導
+  `chapter_answer_ids`；**沒有 qid 的段會保留既有的 `answer-…` 對應**（`link_image_blocks.py`
+  寫的），不會被洗掉。
 - `audit_html_blocks.py` —— **唯讀**滑動視窗審計：把 `audio_map2/*.json` 各段
   文字串成一條流，逐個 `wenda2_ebook` 01–12 章的 question/answer block 探測
   其文字頭落在哪一段、offset 為何，回報：跨章同 qid（A）、多 qid 段（B）、
   同 qid 連續多段（C）、block 文字頭落在段內／漏掛／錯掛（D）、跨 session 同
   qid（E）、未凍結的 block。`--month` 可限月份，`--json` 出機讀報告。
+  （只走 question block，無題目段的 block 對它不可見——那些由 `link_image_blocks.py` 負責。）
 
 ## Word 解析規則
 
