@@ -1,15 +1,24 @@
 User-agent: *
 Allow: /
 
-# Important pages for SEO
+# 內部音檔校對工具（部署於公開 Pages，但僅供維護者使用）
+# 這些頁面含 GitHub PAT 輸入欄位，不應被搜尋引擎索引或跟隨。
+# 注意：robots.txt 不是存取控制，真正的保護是把工具移出公開 repo。
+Disallow: /audio_map/
+Disallow: /audio_map2/
+Disallow: /audio_map3/
+
+# session_knowledge.html（內部查證工程紀錄）刻意「不」在此封鎖：
+# 頁面已自帶 <meta name="robots" content="noindex, nofollow, noarchive">，
+# 且已從 sitemap.xml 移除。爬蟲必須能讀取該頁才能看到 noindex 並移除既有索引；
+# 若在此加 Disallow，爬蟲無法讀取頁面，索引反而會殘留。
+#
+# 內部工具的 noindex 標記位於：
+#   session_knowledge.html   → tool/session_knowledge/build.py（生成器）
+#   audio_map*/index.html    → 內部編輯 UI，無站內連結
+
+# 主要頁面優化字詞：佛法,修行,打坐,雙盤,TaiGuangLin
+# 首頁：https://taiguanglin.info/
+# 故事列表：https://taiguanglin.info/stories.html
+
 Sitemap: https://taiguanglin.info/sitemap.xml
-
-# Allow access to CSS and JS files
-Allow: /style.css
-Allow: /shared.js
-Allow: /images/
-Allow: /stories/
-
-# Primary pages optimized for: 佛法,修行,打坐,雙盤,TaiGuangLin
-# Main page: https://taiguanglin.info/
-# Stories page: https://taiguanglin.info/stories.html 

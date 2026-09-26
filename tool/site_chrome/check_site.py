@@ -21,6 +21,20 @@ KNOWLEDGE_PAGES = (
     "mindmap.html", "wenda2_mindmap.html",
 )
 SEO_PAGES = ("infographic.html",) + KNOWLEDGE_PAGES
+# 內部頁：部署於公開 Pages，但不得被搜尋引擎索引。
+# 必須同時滿足 (a) 頁面自帶 noindex、(b) 不在 sitemap.xml、(c) robots.txt 有 Disallow。
+# 注意 (a) 與 (c) 不可互相取代：robots.txt 封鎖會讓爬蟲讀不到 noindex，反而殘留索引。
+NOINDEX_PAGES = (
+    "session_knowledge.html",
+    "audio_map/index.html",
+    "audio_map2/index.html",
+    "audio_map3/index.html",
+)
+ROBOTS_TXT_DISALLOW = (
+    "/audio_map/",
+    "/audio_map2/",
+    "/audio_map3/",
+)
 
 
 class LinkParser(HTMLParser):
@@ -52,6 +66,19 @@ def main() -> int:
         text = (ROOT / rel).read_text(encoding="utf-8")
         if AI_NOTICE not in text:
             errors.append(f"{rel}: missing AI notice")
+
+    # 內部頁：noindex + 不在 sitemap + robots.txt Disallow
+    sitemap_text = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
+    robots_text = (ROOT / "robots.txt").read_text(encoding="utf-8")
+    for rel in NOINDEX_PAGES:
+        text = (ROOT / rel).read_text(encoding="utf-8")
+        if not re.search(r'<meta\s+name="robots"[^>]*noindex', text, re.I):
+            errors.append(f"{rel}: internal page missing noindex")
+        if f"taiguanglin.info/{rel}" in sitemap_text:
+            errors.append(f"{rel}: internal page must not be in sitemap.xml")
+    for path in ROBOTS_TXT_DISALLOW:
+        if f"Disallow: {path}" not in robots_text:
+            errors.append(f"robots.txt: missing 'Disallow: {path}'")
 
     for rel in KNOWLEDGE_PAGES:
         text = (ROOT / rel).read_text(encoding="utf-8")
@@ -143,8 +170,7 @@ def main() -> int:
     for broken in broken_links:
         errors.append(broken)
 
-    sitemap = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
-    for url in re.findall(r"<loc>(.*?)</loc>", sitemap):
+    for url in re.findall(r"<loc>(.*?)</loc>", sitemap_text):
         rel = unquote(urlsplit(url).path).lstrip("/") or "index.html"
         target = ROOT / rel
         if rel.endswith("/"):
