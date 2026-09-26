@@ -37,14 +37,9 @@
     applyPalette();
   };
 
-  // 更新工具欄按鈕狀態（供 04-events.js 的 theme 事件呼叫）
-  W2E.updateDarkPaletteButtons = function () {
-    var neutral = false;
-    try { neutral = localStorage.getItem('w2e:darkPalette') === 'neutral'; } catch (e) {}
-    var btn = document.querySelector('[data-action="theme-dark-neutral"]');
-    if (btn) btn.classList.toggle('active', neutral);
-  };
-  W2E.updateDarkPaletteButtons();
+  // 主題三鈕互斥（日間／夜間粉／墨夜）：active 狀態統一由
+  // 02-reader-ux.js 的 updateThemeButtons() 依 body class + 面板偏好管理。
+  if (typeof updateThemeButtons === 'function') updateThemeButtons();
 
   // ---- PWA ----
   var inEbook = /^\/(wenda2_ebook|ebook)(\/|$)/.test(window.location.pathname);
