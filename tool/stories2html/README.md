@@ -36,6 +36,17 @@ python3 tool/stories2html/build.py xiaoxi-shuangpan-riji
 閱讀頁共用 `stories/assets/story.css` 與 `stories/assets/story.js`，
 內文圖片放在 `stories/assets/img/<slug>/`。
 
+### 圖片一律 WebP
+
+內文圖片輸出為 `*.webp`（`extract.py::save_pixmap`）。MuPDF 的 `pix.save` 不支援
+WebP，故先存無損 PNG 中間檔、再交給全站共用的
+`tool/word2ebook/utils/image_markup.py::encode_webp`（q85，alpha/CMYK 自動處理），
+轉完即刪中間檔。DOCX 內嵌若本來就是 WebP 則原樣落地，避免二次失真。
+
+實測 189 張故事圖 10.42 MB → 6.75 MB（−35%；來源本已是 JPEG q76–85，
+故壓縮空間比電子書的 PNG 少）。全站圖片格式策略以此模組為 SoT，
+`word2ebook`／`books2ebook`／`stories2html` 三者共用。
+
 ## PDF 版面參數
 
 `docs.py` 的 `layout` 用來告訴抽取器怎麼讀版面：

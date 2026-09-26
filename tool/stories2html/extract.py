@@ -4,7 +4,10 @@
 
 輸出：
   tool/stories2html/build/<slug>.json   區塊清單
-  stories/assets/img/<slug>/*.jpg|png   內文圖片
+  stories/assets/img/<slug>/*.webp      內文圖片
+
+內文圖片一律輸出 WebP（見 :func:`save_pixmap`）：故事原文多為手機翻拍／截圖，
+JPEG 落地動輒 11 MB，WebP 在同樣視覺品質下約省 2/3。
 
 區塊型別：
   {"t": "h2"|"h3", "text": ...}
@@ -20,6 +23,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 import zipfile
 from xml.etree import ElementTree as ET
 
@@ -27,6 +31,29 @@ import fitz
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from docs import DOCS  # noqa: E402
+
+
+def _load_image_markup():
+    """載入 word2ebook 的圖片格式 SoT（WebP 編碼 + 寬高解析）。
+
+    單檔 ``importlib`` 載入，避開套件名稱衝突；兩工具共用同一份
+    ``encode_webp`` / ``webp_dimensions``，全站圖片策略才不會分叉。
+    """
+    import importlib.util
+
+    path = os.path.abspath(os.path.join(
+        os.path.dirname(__file__), "..", "word2ebook", "utils", "image_markup.py"))
+    spec = importlib.util.spec_from_file_location("_shared_image_markup", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入共用圖片模組：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_IMG = _load_image_markup()
+encode_webp = _IMG.encode_webp
+webp_dimensions = _IMG.webp_dimensions
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 BUILD = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
@@ -75,15 +102,23 @@ def join_lines(parts):
 # --------------------------------------------------------------------------
 # 圖片
 # --------------------------------------------------------------------------
-def save_pixmap(pix, path):
+def save_pixmap(pix, outdir, name):
+    """把 MuPDF pixmap 落地成 ``outdir/name.webp``，回傳 (檔名, 寬, 高)。
+
+    MuPDF 的 ``pix.save`` 不支援 WebP，因此先存無損 PNG 中間檔再交給共用的
+    :func:`encode_webp` 轉碼（quality 85），轉完即刪中間檔——輸出目錄只留
+    WebP。Alpha / 灰階與 CMYK 來源都由 ``encode_webp`` 內部處理。
+    """
     while pix.width > MAX_IMG_W:
         pix.shrink(1)
-    if pix.alpha or pix.n == 1:
-        pix.save(path[: path.rfind(".")] + ".png")
-        return path[: path.rfind(".")] + ".png", pix.width, pix.height
-    # 全頁掃描檔壓得重一點，其餘保留較高畫質
-    pix.save(path, jpg_quality=76 if pix.width > 1200 else 85)
-    return path, pix.width, pix.height
+    os.makedirs(outdir, exist_ok=True)
+    final = os.path.join(outdir, name + ".webp")
+    with tempfile.TemporaryDirectory() as tmp:
+        raw = os.path.join(tmp, name + ".png")
+        pix.save(raw)
+        with open(final, "wb") as fh:
+            fh.write(encode_webp(open(raw, "rb").read()))
+    return os.path.basename(final), pix.width, pix.height
 
 
 def webp_size(data):
@@ -110,7 +145,6 @@ def save_page_image(doc, page, rect, xref, transform, outdir, name):
     裁切重繪；解析度對齊原圖寬度，避免無謂放大。
     """
     os.makedirs(outdir, exist_ok=True)
-    out = os.path.join(outdir, name + ".jpg")
     a, b, c, d = transform[:4]
     rotated = max(abs(b), abs(c)) > 1e-3 or a < 0 or d > 0
 
@@ -123,23 +157,23 @@ def save_page_image(doc, page, rect, xref, transform, outdir, name):
         if pix.colorspace and pix.colorspace.name == "DeviceCMYK":
             pix = fitz.Pixmap(fitz.csRGB, pix)
 
-    path, w, h = save_pixmap(pix, out)
-    return {"src": os.path.basename(path), "w": w, "h": h}
+    src, w, h = save_pixmap(pix, outdir, name)
+    return {"src": src, "w": w, "h": h}
 
 
 def save_image_bytes(data, outdir, name):
     os.makedirs(outdir, exist_ok=True)
     if data[:4] == b"RIFF" and data[8:12] == b"WEBP":
+        # DOCX 內嵌的本來就是 WebP：原樣落地，不必再轉碼（避免二次失真）。
         path = os.path.join(outdir, name + ".webp")
         with open(path, "wb") as fh:
             fh.write(data)
-        w, h = webp_size(data)
+        w, h = webp_dimensions(path) or webp_size(data)
         return os.path.basename(path), w, h
     pix = fitz.Pixmap(data)
     if pix.colorspace and pix.colorspace.name == "DeviceCMYK":
         pix = fitz.Pixmap(fitz.csRGB, pix)
-    path, w, h = save_pixmap(pix, os.path.join(outdir, name + ".jpg"))
-    return os.path.basename(path), w, h
+    return save_pixmap(pix, outdir, name)
 
 
 # --------------------------------------------------------------------------
