@@ -526,4 +526,49 @@ body.dark-mode .search-load-all:hover {
     color: #1a1a1a;
 }
 
+/* ---- 「回到搜尋結果」浮動按鈕（章節頁，由 10-search-return.js 注入）---- */
+.search-return-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 120px;   /* JS 會依浮動層級控制/QA 播放器動態讓位 */
+    left: auto;
+    z-index: 960;    /* 高於浮動層級控制（950），低於 QA 播放器（10001） */
+    padding: 10px 16px;
+    border: 1px solid rgba(255, 105, 180, 0.4);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--color-primary-deep);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    white-space: nowrap;
+}
+.search-return-btn:hover {
+    background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary-deep) 100%);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.45);
+}
+body.dark-mode .search-return-btn {
+    background: #1a2a3a;
+    color: #66ccff;
+    border-color: rgba(102, 204, 255, 0.4);
+}
+body.dark-mode .search-return-btn:hover {
+    background: #66ccff;
+    color: #1a1a1a;
+}
+
+@media (max-width: 600px) {
+    .search-return-btn {
+        right: 12px;
+        left: auto;
+        padding: 9px 14px;
+        font-size: 12px;
+    }
+}
+
 

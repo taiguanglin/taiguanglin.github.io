@@ -131,7 +131,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `01b-search-index.js` | `createSearchConfig`, `buildSearchIndexInBatches`, `buildSearchIndexInBatchesWithCache` |
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |
 | `01d-search-perform.js` | `performSearch`, `displayPagedResults`, `loadMoreResults` |
-| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, clear, collapse, load-more) |
+| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, clear, collapse, load-more); result items open in **new tab** (`window.open(..., '_blank', 'noopener')`); search state (`#q=…&scope=…` hash, written by 01d) auto-restores + auto-activates search on back-navigation |
 | `02-reader-ux.js` | Reading toolbar, floating TOC creation, DOM setup, action buttons, Q&A action overlays |
 | `03a-bookmark-data.js` | Bookmark CRUD, localStorage persistence, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
@@ -139,11 +139,12 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `03d-reading-settings.js` | Font/line-height/width/theme persistence via localStorage; `updateReadingProgress`, `showToast`, `copyText` |
 | `04-events.js` | Global event listeners that wire all modules together |
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
-| `06-toc-collapse.js` | TOC expand/collapse and level filtering |
+| `06-toc-collapse.js` | TOC expand/collapse and level filtering; manual expand state snapshot/restored via `sessionStorage` (`tocExpandState:<dir>` per book, `data-id` stable keys) so back/forward keeps the user's expanded TOC |
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
 | `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback; exposes `W2E.qaAudio` (isolated IIFE) |
 | `09b-para-track.js` | 講經「段落跟播」：講次 h2 旁「段落跟播」toggle（`paraTrackEnabled`），播放中高亮當前段落並平滑捲動、點段落即播（經 `W2E.qaAudio` 掛接；isolated IIFE） |
 | `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留）：頁面含 `.sutra-text` 時啟動；以原生 `position: sticky` 讓即將捲出視窗頂的經文停在視窗頂（原尺寸、無白邊），`.sutra-pin-group` 以「下一段經文/標題 h1–h6/圖片」為界限制停留範圍，天生不遮這些內容；過長（> 45% 視窗高）經文不停留，且高度改變（閱讀設定／縮放／字型載入）時重新量測；`sutraPinEnabled` toggle、錨點跳轉暫停、`W2E.sutraPin.reserveFor` 供跟播讓位（isolated IIFE） |
+| `10-search-return.js` | 「回到搜尋結果」floating button on chapter pages (reads `w2eSearchSnapshot` sessionStorage key written on the index page); index page snapshots `{q, scope, displayed, scrollY}` so returning restores displayed count + scroll position |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 

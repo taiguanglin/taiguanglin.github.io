@@ -240,6 +240,54 @@ class TestStaticAssetsManagerRealModules:
         assert "createFloatingTOC" in js
         assert "addQAActions" in js
 
+    def test_real_js_search_results_open_new_tab(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # Search results open in a new tab (keeps index page + results intact)
+        assert "window.open(item.dataset.url, '_blank', 'noopener')" in js
+        assert "window.location.href = item.dataset.url" not in js
+
+    def test_real_js_search_state_hash_roundtrip(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # performSearch mirrors query/scope into URL hash; init restores it
+        assert "updateSearchQueryHash" in js
+        assert "readSearchStateFromHash" in js
+        assert "restoreSearchFromHash" in js
+        assert "history.replaceState" in js
+
+    def test_real_js_toc_expand_snapshot(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # TOC manual expand state is snapshotted to sessionStorage and restored
+        assert "saveTocExpandSnapshot" in js
+        assert "restoreTocExpandSnapshot" in js
+        assert "sessionStorage.setItem(key, JSON.stringify(expanded))" in js
+        assert "tocExpandState:" in js
+        # Snapshot hook fires before page unload and on toggle
+        assert "pagehide" in js
+        # Only the index page writes TOC snapshots (chapter pages must not pollute)
+        assert "if (!isIndexPage()) return;" in js
+
+    def test_real_js_search_return_module(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # Floating 「回到搜尋結果」 button module is bundled
+        assert "initSearchReturnButton" in js
+        assert "getSearchReturnUrl" in js
+        assert "w2eSearchSnapshot" in js
+        assert "回到搜尋結果" in js
+
+    def test_real_js_search_state_restores_displayed_and_scroll(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # performSearch accepts a target displayed count; restore path uses it
+        assert "function performSearch(query, targetDisplayedCount)" in js
+        assert "captureSearchSnapshot" in js
+        assert "restoreSearchScroll" in js
+        # index honours ?q= query params (return button deep link)
+        assert "location.search" in js
+
+    def test_real_css_has_search_return_button(self):
+        css = StaticAssetsManager().get_full_css_content()
+        assert ".search-return-btn" in css
+        assert "body.dark-mode .search-return-btn" in css
+
     def test_real_css_has_qa_audio_module(self):
         css = StaticAssetsManager().get_full_css_content()
         assert ".qa-source-banner" in css

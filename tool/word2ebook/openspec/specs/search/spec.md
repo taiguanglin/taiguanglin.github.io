@@ -116,8 +116,72 @@ index ~30%). Search-result snippets SHALL be derived live from `content` via
 window, then head-window) and `trimSnippet` (~160 chars, sentence-aware trim).
 
 ### Requirement: Search Result Navigation
-Selecting a search result SHALL navigate in the same tab (`window.location.href`),
-not open a new tab.
+Selecting a search result SHALL open the target in a new tab
+(`window.open(url, '_blank', 'noopener')`). The index page (query, results,
+scope, scroll position) therefore stays intact — going back to it MUST NOT
+re-download the search index. Before opening, the current manual TOC expand
+state SHALL be snapshotted to `sessionStorage` (same as TOC links) so that a
+browser configured to open `target=_blank` in the same tab still restores the
+TOC state on return.
+
+#### Scenario: Result opens in a new tab
+- GIVEN an index page with active search results
+- WHEN the user clicks a `.search-result-item`
+- THEN the target URL SHALL open in a new tab
+- AND the index page SHALL keep displaying the same results
+
+### Requirement: Search State Persists Across Navigation
+`performSearch` SHALL mirror the active query and scope into the URL hash as
+`#q=<encoded>&scope=<encoded>` via `history.replaceState` (scope only when not
+`both`); an empty query clears the hash. No new history entry SHALL be created.
+
+When the index page loads with a `#q=` hash (or the module-load check sees one),
+the search UI SHALL auto-activate (skip the enable button), restore the query
+input and scope buttons from the hash, and re-run the search once the index is
+ready — so browser-back from a chapter returns the user to their results without
+a manual re-query. Manual clear/collapse SHALL still wipe the hash.
+
+#### Scenario: Back navigation restores results
+- GIVEN the user searched `自性` on the index page and opened a result in a new tab
+- WHEN the user returns to the index page via browser back
+- THEN the search panel SHALL be active with `自性` in the input
+- AND the previous results SHALL be re-displayed without user action
+
+### Requirement: Search State Snapshot with Scroll and Pagination
+The index page SHALL persist `{q, scope, displayed, scrollY}` to
+`sessionStorage` (per-tab, key `w2eSearchSnapshot`) whenever results, the
+displayed count, or the scroll position change (throttled for scroll, exact on
+`pagehide` and load-more clicks). Clearing or collapsing the search SHALL
+remove the snapshot. When restoring, the displayed count SHALL be replayed
+(`displayPagedResults(query, targetDisplayedCount)` shows results 1..N in one
+pass) and the saved scroll position SHALL be re-applied after layout settles.
+
+#### Scenario: Displayed count survives back navigation
+- GIVEN the user clicked 「显示更多」 twice (60 displayed) then left the page
+- WHEN the search state is restored on return
+- THEN 60 results SHALL be displayed without extra clicks
+
+#### Scenario: Scroll position survives back navigation
+- GIVEN the snapshot recorded a scroll position of 2400px
+- WHEN the search state is restored on return
+- THEN the page SHALL scroll back to approximately 2400px after results render
+
+### Requirement: Search Return Button on Chapter Pages
+When a chapter page loads while `w2eSearchSnapshot` holds an active query
+(`?q=` may also be present in the URL), the chapter page SHALL show a fixed
+「回到搜尋結果」 button (injected by `10-search-return.js`). Clicking it SHALL
+navigate to `index.html?q=<query>&scope=<scope>#q=<query>&scope=<scope>` (same
+language variant). The button SHALL dodge the floating level controls and the
+QA mini-player, and clicking it SHALL also refresh the TOC expand snapshot.
+On the index page the `?q=`/`?scope=` query parameters SHALL be honoured like
+the hash (scope copied into the hash when absent) and SHALL auto-activate the
+search.
+
+#### Scenario: One-click return from a chapter
+- GIVEN the user opened a chapter from a search result in the same tab
+- WHEN the user clicks 「回到搜尋結果」
+- THEN the index page SHALL load with the original query, scope, displayed
+  count, and scroll position restored
 
 ### Requirement: Configurable Default Scope Types
 The client `both` scope SHALL read its allow-list from
