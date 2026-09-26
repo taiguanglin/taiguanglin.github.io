@@ -166,22 +166,16 @@ pass) and the saved scroll position SHALL be re-applied after layout settles.
 - WHEN the search state is restored on return
 - THEN the page SHALL scroll back to approximately 2400px after results render
 
-### Requirement: Search Return Button on Chapter Pages
-When a chapter page loads while `w2eSearchSnapshot` holds an active query
-(`?q=` may also be present in the URL), the chapter page SHALL show a fixed
-「回到搜尋結果」 button (injected by `10-search-return.js`). Clicking it SHALL
-navigate to `index.html?q=<query>&scope=<scope>#q=<query>&scope=<scope>` (same
-language variant). The button SHALL dodge the floating level controls and the
-QA mini-player, and clicking it SHALL also refresh the TOC expand snapshot.
-On the index page the `?q=`/`?scope=` query parameters SHALL be honoured like
-the hash (scope copied into the hash when absent) and SHALL auto-activate the
-search.
-
-#### Scenario: One-click return from a chapter
-- GIVEN the user opened a chapter from a search result in the same tab
-- WHEN the user clicks 「回到搜尋結果」
-- THEN the index page SHALL load with the original query, scope, displayed
-  count, and scroll position restored
+### Requirement: Search Return Button (removed)
+~~Chapter pages show a fixed「回到搜尋結果」button.~~ REMOVED 2026-09: the
+button's visibility depended on the `w2eSearchSnapshot` sessionStorage entry
+surviving into a `_blank`-opened tab, which is unreliable, so the button
+rarely appeared. `10-search-return.js` now only keeps the index-page snapshot
+capture (used by `restoreSearchFromHash`); users return via the browser's
+back button or the chapter's home link. No chapter page SHALL inject a
+`#search-return-btn` element, and the bundled CSS SHALL contain no
+`.search-return-btn` rules. On the index page the `?q=`/`?scope=` query
+parameters SHALL still be honoured like the hash and auto-activate search.
 
 ### Requirement: Configurable Default Scope Types
 The client `both` scope SHALL read its allow-list from
