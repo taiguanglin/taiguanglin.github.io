@@ -41,6 +41,27 @@
   `category`、`sortNewest/Oldest`、`stats`、`years`、`np`、`npTitle`、`npStop`、`jumpTop`。
 - 大悲咒仍以「兩顆 `<audio>` 各載一首、關螢幕時切換播放」的方式接力，`DABEI` 的 `duration` 為檔案真實長度。
 
+## 封面圖：頁面用 WebP，MediaSession 用 JPEG
+
+`西方三聖` 系列有兩種用途，**格式刻意不同**，改樣板時別搞混：
+
+| 用途 | 檔案 | 格式 | 為什麼 |
+|------|------|------|--------|
+| 頁面 `<img class="dabei-art">` | `西方三聖.webp` | WebP q75 | 播放器封面，`fetchpriority="high"`，是本站 LCP |
+| 頁面 `<img class="np-art">` | `西方三聖-96.webp` | WebP q85 | 「正在播放」列的 96px 縮圖 |
+| `MediaMetadata.artwork` | 4 張 `*.jpg` | **JPEG** | 見下 |
+
+`DABEI_ARTWORK`（96/256/512/1920）**只**餵給 `navigator.mediaSession.metadata.artwork`，
+由**作業系統**的媒體控制（鎖定畫面／CarPlay／Android 通知）解碼，那裡對 WebP 的支援不可靠，
+故維持 JPEG。256/512 頁面本身從不載入（只有 OS 會抓），轉 WebP 不減頁面重量、只增風險。
+
+> 1920 那張已是高效率編碼的 progressive JPEG，WebP 在 q85 只省 4%，必須降到 **q75** 才省 38%；
+> 實測 q75 的 PSNR 39.5 dB，漸層處無可見劣化。這是本 repo 唯一一處非 `WEBP_QUALITY`(85) 的例外，
+> 原因就是原檔品質遠高於一般素材。轉碼時用 `encode_webp(data, quality=75)`，
+> **不要**用 `file_to_webp()`——那會刪掉 MediaSession 還要用的原 JPEG。
+>
+> 新增封面時沿用同樣的分工：頁面 `<img>` 走 WebP，`DABEI_ARTWORK` 走 JPEG。
+
 ## 使用
 
 ```bash
