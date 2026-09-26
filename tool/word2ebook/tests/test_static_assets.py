@@ -466,7 +466,6 @@ def test_real_js_bundle_contains_ux_modules():
     js = mgr.get_full_js_content()
     for marker in [
         "w2e:readpos",          # 11-reading-resume
-        "w2e-bm-manager",       # 12-bookmarks-manager
         "w2e:playerState",      # 13-player-persist
         "w2e-audio-resume",     # 13-player-persist
         "kb-focus",             # 14-search-plus 鍵盤導覽
@@ -485,7 +484,6 @@ def test_real_css_bundle_contains_ux_module():
     for marker in [
         ".dark-neutral",        # 墨夜面板
         ".w2e-resume-bar",
-        ".w2e-bm-manager",
         ".w2e-audio-resume",
         ".no-audio-note",
         ".anchor-share",
@@ -494,9 +492,34 @@ def test_real_css_bundle_contains_ux_module():
         assert marker in css, f"串接後的 style.css 缺少 {marker}"
 
 
+def test_homepage_bookmark_manager_block_is_removed():
+    """首頁（總目錄）底部的「我的書籤」管理區塊已移除（12-bookmarks-manager.js 刪除）。
+
+    浮動目錄面板的書籤分頁（02-reader-ux 的分頁標籤）不在此限，仍應存在。
+    """
+    mgr = StaticAssetsManager()
+    for bundle in (mgr.get_full_js_content(), mgr.get_full_css_content()):
+        assert "w2e-bm-" not in bundle, "殘留首頁書籤管理區塊（.w2e-bm-*）樣式/腳本"
+    # 模組檔本身已刪除（編號 12 保留空缺、不重排）
+    assert not (Path(__file__).resolve().parents[1]
+                / "assets" / "js" / "modules" / "12-bookmarks-manager.js").exists()
+    # 側邊浮動目錄的書籤分頁仍在
+    assert "bookmarks-list" in mgr.get_full_js_content()
+
+
 def test_real_bundles_drop_persistent_backtop_button():
     """常駐回到頂端鈕已移除：回到頂端只留功能選單（data-action="top"）內的 ↑。"""
     mgr = StaticAssetsManager()
     assert "w2e-backtop" not in mgr.get_full_js_content()
     assert "w2e-backtop" not in mgr.get_full_css_content()
     assert 'data-action="top"' in mgr.get_full_js_content()
+
+
+def test_reading_resume_skips_toc_only_index_pages():
+    """總目錄頁只有目錄、沒有正文，不得出現「上次讀到 XX%」提示條。"""
+    js = StaticAssetsManager().get_full_js_content()
+    assert "isTocOnlyPage" in js          # 11-reading-resume 的頁面類型判斷
+    assert "pruneTocOnlyEntries" in js   # 清除舊版殘留的目錄頁紀錄
+    # 兩道關卡：儲存時不寫、顯示前不彈
+    assert "if (isTocOnlyPage()) return;" in js
+    assert "if (isTocOnlyPage()) { pruneTocOnlyEntries(); return; }" in js

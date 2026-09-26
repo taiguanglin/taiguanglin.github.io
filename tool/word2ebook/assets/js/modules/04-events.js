@@ -105,14 +105,13 @@
         // 點夜間：回到預設粉色深色面板
         if (window.W2E && W2E.darkPalette) W2E.darkPalette('pink');
         updateThemeButtons();
-        if (window.W2E && W2E.updateDarkPaletteButtons) W2E.updateDarkPaletteButtons();
         break;
       case 'theme-dark-neutral':
+        // 三鈕互斥：墨夜自身即一個主題（不與「夜間」同時選中）
         document.body.classList.add('dark-mode');
         localStorage.setItem('darkMode', true);
         if (window.W2E && W2E.darkPalette) W2E.darkPalette('neutral');
         updateThemeButtons();
-        if (window.W2E && W2E.updateDarkPaletteButtons) W2E.updateDarkPaletteButtons();
         break;
 
       // 操作按鈕

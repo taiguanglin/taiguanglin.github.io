@@ -247,16 +247,21 @@
   }
   
   // 更新主題按鈕狀態
+  // 日間／夜間（粉）／墨夜 三鈕互斥：同一時間只有一顆 .active。
   function updateThemeButtons() {
     const isDark = document.body.classList.contains('dark-mode');
+    let isNeutral = false;
+    if (isDark) {
+      try { isNeutral = localStorage.getItem('w2e:darkPalette') === 'neutral'; } catch (e) {}
+    }
     const lightBtn = document.querySelector('[data-action="theme-light"]');
     const darkBtn = document.querySelector('[data-action="theme-dark"]');
+    const neutralBtn = document.querySelector('[data-action="theme-dark-neutral"]');
     
-    if (lightBtn && darkBtn) {
-      lightBtn.classList.toggle('active', !isDark);
-      darkBtn.classList.toggle('active', isDark);
-      syncToolbarAriaPressed();
-    }
+    if (lightBtn) lightBtn.classList.toggle('active', !isDark);
+    if (darkBtn) darkBtn.classList.toggle('active', isDark && !isNeutral);
+    if (neutralBtn) neutralBtn.classList.toggle('active', isDark && isNeutral);
+    syncToolbarAriaPressed();
   }
 
   // 把工具欄切換鈕的 aria-pressed 與 .active 狀態同步
