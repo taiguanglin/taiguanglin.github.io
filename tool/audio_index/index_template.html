@@ -554,7 +554,7 @@
               aria-label="點擊開始或暫停大悲咒播放">
         <img
           class="dabei-art"
-          src="西方三聖.jpg"
+          src="西方三聖.webp"
           alt="西方三聖：南無阿彌陀佛、南無觀世音菩薩、南無大勢至菩薩"
           width="1920"
           height="1080"
@@ -690,7 +690,7 @@
 
 <div class="now-playing" id="np" role="region" aria-label="正在播放">
   <div class="np-row">
-    <img class="np-art" id="npArt" src="西方三聖-96.jpg" alt="" width="96" height="96" />
+    <img class="np-art" id="npArt" src="西方三聖-96.webp" alt="" width="96" height="96" />
     <span class="np-label">正在播放</span>
     <span class="np-title" id="npTitle">—</span>
     <button class="chip" id="npStop" type="button">停止</button>
@@ -713,6 +713,9 @@ const DABEI = [
   { id: "fast", file: "Tai師父大悲咒快速版108遍.opus", title: "大悲咒 · 快速版 108遍", duration: 4368.94 }
 ];
 
+// 刻意維持 JPEG：這組只餵給 navigator.mediaSession.metadata.artwork，由「作業系統」
+// 的媒體控制（鎖定畫面／CarPlay／Android 通知）去解碼，那裡對 WebP 的支援不可靠。
+// 頁面上真正顯示的 <img>（dabei-art、np-art）另走 WebP，見對應的 src。
 const DABEI_ARTWORK = [
   { src: "西方三聖-96.jpg", sizes: "96x96", type: "image/jpeg" },
   { src: "西方三聖-256.jpg", sizes: "256x256", type: "image/jpeg" },
