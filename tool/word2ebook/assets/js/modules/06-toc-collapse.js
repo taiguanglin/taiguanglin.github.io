@@ -4,6 +4,14 @@
   initTocCollapseControl();
   initFloatingLevelControls();
   
+  // 展開/收合鈕狀態同步（.collapsed 樣式、▼/▶ 文字與 aria-expanded 一致）
+  function setTocIconState(icon, expanded) {
+    if (!icon) return;
+    icon.classList.toggle('collapsed', !expanded);
+    icon.textContent = expanded ? '▼' : '▶';
+    icon.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  }
+  
   function initTocCollapseControl() {
     const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
     if (!tocContainer) return;
@@ -18,15 +26,7 @@
     // 获取用户保存的偏好，使用對應的默認值
     const rawSavedLevel = localStorage.getItem('toc-display-level') || defaultLevel;
     
-    // 展開/收合鈕狀態同步（.collapsed 樣式、▼/▶ 文字與 aria-expanded 一致）
-  function setTocIconState(icon, expanded) {
-    if (!icon) return;
-    icon.classList.toggle('collapsed', !expanded);
-    icon.textContent = expanded ? '▼' : '▶';
-    icon.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-  }
-
-  // 智能選擇可用的層級
+    // 智能選擇可用的層級
     const validLevel = selectValidLevel(rawSavedLevel, maxLevel, defaultLevel, tocContainer);
     
     // 初始化按钮状态
