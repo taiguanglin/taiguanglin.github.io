@@ -45,30 +45,12 @@
     <priority>0.8</priority>
   </url>
 
-  <!-- 坐禪之問答錄2 重點知識 -->
-
   <!-- 坐禪之問答錄2 名詞心智圖 -->
   <url>
     <loc>https://taiguanglin.info/wenda2_mindmap.html</loc>
     <lastmod>2026-09-16</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
-  </url>
-
-  <!-- 坐禪之問答錄2 知識庫全檔 -->
-
-  <!-- 坐禪與講經重點知識 -->
-
-  <!-- 坐禪與講經知識庫全檔 -->
-
-  <!-- 名詞複習（閃卡與測驗） -->
-
-  <!-- Session 知識庫 -->
-  <url>
-    <loc>https://taiguanglin.info/session_knowledge.html</loc>
-    <lastmod>2026-09-17</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
   </url>
 
   <!-- ============ 問答錄章節 - 核心理論篇 ============ -->

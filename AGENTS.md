@@ -24,6 +24,14 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html`, `wenda2_mindmap.html` and `session_knowledge.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
 8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
 9. **`mindmap.html`「三大初始設定」永遠只有三條** — 主幹 `b-truth` 固定為三個葉節點：`axiom-eternal`（自性恆常）、`axiom-firstthought`（初妄無因）、`axiom-onebody`（諸佛同體）。這是內容鐵律：**不可**在此主幹新增任何其他條目，也不可把其他節點移入。其他主題（如七處徵心、十番顯見等《楞嚴經》內容）一律屬「經典依據」主幹 `b-sutra`。若發現 `b-truth` 出現第 4 個葉節點，即為錯誤，必須移出。
+10. **內部頁不得被索引** — `session_knowledge.html`（查證工程紀錄）與 `audio_map*/index.html`（含 GitHub PAT 輸入欄位的校稿工具）部署於公開 Pages，但一律不得被搜尋引擎索引。三條件缺一不可，由 `tool/site_chrome/check_site.py` 自動守門：
+    - 頁面自帶 `<meta name="robots" content="noindex, nofollow, noarchive">`
+    - **不得**出現在 `sitemap.xml`
+    - `robots.txt` 對 `/audio_map/`、`/audio_map2/`、`/audio_map3/` 有 `Disallow`
+
+    ⚠️ `session_knowledge.html` **刻意不**加 `Disallow`：`robots.txt` 封鎖會讓爬蟲讀不到頁面的 `noindex`，導致索引殘留。改 `session_knowledge.html` 時要改生成器 `tool/session_knowledge/build.py`（勿手改生成物）。
+    ⚠️ `robots.txt` 不是存取控制，`audio_map*` 的 PAT 輸入仍無保護——真正的修法是把工具移出公開 repo。
+
 
 ---
 

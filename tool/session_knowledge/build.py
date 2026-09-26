@@ -160,7 +160,9 @@ def build():
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>__TITLE__｜TaiGuangLin 禪師</title>
     <meta name="description" content="九書名詞查證與圖解工程的完整知識庫：查證方法、逐批報告、證據速查表、禁用術語、關鍵節點定稿、腳本與回歸基準。">
-    <meta name="robots" content="index, follow">
+    <!-- 內部查證工程紀錄，不希望被搜尋引擎索引（亦不在 sitemap.xml／robots.txt 封鎖，
+         以利爬蟲讀取 noindex 後移除索引；若加 Disallow 反而無法讀取此標記）。 -->
+    <meta name="robots" content="noindex, nofollow, noarchive">
     <meta property="og:title" content="__TITLE__｜TaiGuangLin 禪師">
     <meta property="og:description" content="mindmap.html 名詞查證工程的完整知識萃取，全部存成可復用的知識庫">
     <meta property="og:type" content="website">
@@ -300,6 +302,9 @@ __BODY__
         ['lang-switch.js', '/lang-switch.js' in page],
         ['shared.js', 'shared.js' in page],
         ['canonical', 'https://taiguanglin.info/session_knowledge.html"' in page],
+        ['noindex（內部工程頁不索引）', 'content="noindex, nofollow, noarchive"' in page],
+        ['不在 sitemap.xml', 'session_knowledge.html' not in
+         open(os.path.join(ROOT, 'sitemap.xml'), encoding='utf-8').read()],
         ['TOC 與 h2 數量一致', page.count('<a class="sk-toc-item"') == n_h2],
         ['十一個章節', n_h2 == 11],
         ['十三張表格', n_tables == 13],
