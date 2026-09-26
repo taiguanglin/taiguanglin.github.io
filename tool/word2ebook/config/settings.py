@@ -1,0 +1,153 @@
+"""配置管理"""
+
+from dataclasses import dataclass
+from typing import Dict, Any, List
+
+
+@dataclass
+class Settings:
+    """程序配置类"""
+    
+    # 文档处理配置
+    preserve_line_breaks: bool = True
+    merge_qa_blocks: bool = True
+    extract_images: bool = True
+    
+    # 搜索配置
+    search_results_per_page: int = 20
+    search_min_paragraph_length: int = 20
+    
+    # HTML 生成配置
+    enable_back_to_top: bool = True
+    enable_reading_toolbar: bool = True
+    enable_floating_toc: bool = True
+
+    
+    # 多语言配置
+    default_answerer: str = "Tai師父"
+    
+    # ID 生成配置
+    id_content_length: int = 50  # 用于生成稳定ID的内容长度
+    
+    # 文件配置
+    assets_css_path: str = "assets/css/style.css"
+    assets_js_path: str = "assets/js/script.js"
+    assets_images_path: str = "assets/images"
+    
+    # Favicon 配置
+    favicon_enabled: bool = True
+    favicon_search_patterns: List[str] = None
+    
+    def __post_init__(self):
+        if self.favicon_search_patterns is None:
+            # 嘗試從配置文件讀取
+            try:
+                from utils.config_utils import get_favicon_config
+                self.favicon_enabled = get_favicon_config('enabled', True)
+                self.favicon_search_patterns = get_favicon_config('search_patterns', ["favicon.ico", "favicon.png", "favicon.svg"])
+            except ImportError:
+                # 如果配置工具不可用，使用默認值
+                self.favicon_search_patterns = ["favicon.ico", "favicon.png", "favicon.svg"]
+    
+    @classmethod
+    def from_dict(cls, config: Dict[str, Any]) -> 'Settings':
+        """从字典创建配置对象"""
+        return cls(**{k: v for k, v in config.items() if hasattr(cls, k)})
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典"""
+        return {
+            field.name: getattr(self, field.name) 
+            for field in self.__dataclass_fields__.values()
+        }
+
+
+# 默认配置
+DEFAULT_SETTINGS = Settings()
+
+
+# 常量定义
+class Constants:
+    """常量定义"""
+    
+    # HTML 模板占位符
+    TEMPLATE_PLACEHOLDERS = {
+        'title': '{title}',
+        'content': '{content}',
+        'book_title': '{book_title}',
+        'toc_items': '{toc_items}',
+        'chapter_toc': '{chapter_toc}',
+        'prev_link': '{prev_link}',
+        'next_link': '{next_link}',
+        'top_nav_links': '{top_nav_links}',
+        'home_link': '{home_link}',
+        'lang_switch_links': '{lang_switch_links}'
+    }
+    
+    # 文件扩展名
+    HTML_EXT = '.html'
+    TRAD_SUFFIX = '_trad'
+    JSON_EXT = '.json'
+    
+    # 搜索索引文件名
+    SEARCH_INDEX_SIMPLIFIED = 'search_index.json'
+    SEARCH_INDEX_TRADITIONAL = 'search_index_trad.json'
+    
+    # CDN 配置
+    # MiniSearch 以本地自架為主（跟著站點上線、中國大陸可連、無第三方依賴）；
+    # CDN 僅作為本地檔案缺失時的執行期退路。JS 端（01e-search-ui.js 的
+    # ensureMiniSearchLoaded）內嵌同一組 URL 作為動態載入來源——兩邊需同步修改。
+    MINISEARCH_LOCAL_PATH = 'assets/js/minisearch.min.js'
+    MINISEARCH_CDN_PRIMARY = 'https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js'
+    MINISEARCH_CDN_BACKUP = 'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js'
+    
+    # 问答类型标识
+    QA_TYPES = {
+        'question': 'question',
+        'answer': 'answer',
+        'qa_pair': 'qa-pair'
+    }
+    
+    # 搜索项类型
+    SEARCH_TYPES = {
+        'heading': 'heading',
+        'question': 'question', 
+        'answer': 'answer',
+        'content': 'content'
+    }
+    
+    # 搜索权重
+    SEARCH_WEIGHTS = {
+        'h1': 4.0,
+        'h2': 3.0,
+        'h3': 2.0,
+        'h4': 2.0,
+        'question': 3.0,
+        'answer': 2.0,
+        'content': 1.0
+    }
+
+    # 问答作者相关
+    ANSWERER_RAW_NAME = "Taiguanglin"        # 文档中出现的原始名称
+    ANSWERER_DISPLAY_NAME = "Tai師父"        # 渲染到 HTML 时使用的显示名称
+    ANSWERER_REGEX = r'^(Taiguanglin|taiguanglin)[:：]\s*(.*)'  # 识别答复者的正则
+
+    # 内容默认值
+    DEFAULT_QUESTION_TITLE = "問題"          # 无法提取标题时的回退标题
+
+    # QA（qa/ 資料夾 txt 答疑）相關
+    # 音檔基底路徑：電子書頁面位於 /wenda2_ebook/，音檔在站台根目錄 /audio/，
+    # 故以 ../audio/ 相對路徑連結（與 qa/assets/audio.js 一致）。
+    QA_AUDIO_BASE = "../audio/"
+    # QA 章節頂部與首頁來源連到線上校稿工具（qa/index.html）的相對連結。
+    QA_INDEX_LINK = "../qa/index.html"
+
+    # SEO / 分享 meta（章節與首頁 head；書名描述文字在 config.yaml 的 i18n.seo）
+    SITE_BASE_URL = "https://taiguanglin.info"   # 站台絕對網址（CNAME）
+    EBOOK_URL_PATH = "wenda2_ebook"              # 電子書線上路徑（相對站台根）
+    OG_IMAGE_PATH = "images/og-default.jpg"      # og:image（相對站台根，1200×630）
+    SEO_HREFLANG_DEFAULT = "zh-Hant"             # x-default 指向繁體首選頁
+
+    # HTML 标题层级范围（TOC 识别和 QA 计数使用的 h 标签范围）
+    TOC_MIN_HEADING_LEVEL = 2
+    TOC_MAX_HEADING_LEVEL = 4
