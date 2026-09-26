@@ -16,11 +16,16 @@
 <meta content="https://taiguanglin.info/wenda2_ebook/06.html" property="og:url"/>
 <meta content="https://taiguanglin.info/images/og-default.jpg" property="og:image"/>
 <meta content="TaiGuangLin 禅师" property="og:site_name"/>
+<meta content="#e75480" name="theme-color"/>
+<link href="/manifest.webmanifest" rel="manifest"/>
 <script>
 try {
   var __dm = localStorage.getItem('darkMode');
   if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
-  if (__dm === 'true') document.documentElement.classList.add('dark-mode');
+  if (__dm === 'true') {
+    document.documentElement.classList.add('dark-mode');
+    if (localStorage.getItem('w2e:darkPalette') === 'neutral') document.documentElement.classList.add('dark-neutral');
+  }
 } catch (e) {}
 </script>
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>

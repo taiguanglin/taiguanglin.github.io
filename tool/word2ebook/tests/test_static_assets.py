@@ -243,7 +243,7 @@ class TestStaticAssetsManagerRealModules:
     def test_real_js_search_results_open_new_tab(self):
         js = StaticAssetsManager().get_full_js_content()
         # Search results open in a new tab (keeps index page + results intact)
-        assert "window.open(item.dataset.url, '_blank', 'noopener')" in js
+        assert "window.open(openUrl, '_blank', 'noopener')" in js  # 01e 改以 openUrl（含 ?q= 高亮參數）開啟
         assert "window.location.href = item.dataset.url" not in js
 
     def test_real_js_search_state_hash_roundtrip(self):
@@ -453,3 +453,50 @@ class TestRealVendorAssets:
     def test_css_has_cjk_font_stack(self):
         css = StaticAssetsManager().get_full_css_content()
         assert "PingFang" in css and "Microsoft JhengHei" in css
+
+
+# ---------------------------------------------------------------------------
+# 2026-09 UX 改善：新模組必須出現在串接產物中（真實 assets 樹）
+# ---------------------------------------------------------------------------
+
+
+
+def test_real_js_bundle_contains_ux_modules():
+    mgr = StaticAssetsManager()  # 預設即真實 assets 目錄
+    js = mgr.get_full_js_content()
+    for marker in [
+        "w2e:readpos",          # 11-reading-resume
+        "w2e-bm-manager",       # 12-bookmarks-manager
+        "w2e:playerState",      # 13-player-persist
+        "w2e-audio-resume",     # 13-player-persist
+        "kb-focus",             # 14-search-plus 鍵盤導覽
+        "w2e-toc-backdrop",     # 15-mobile-toc
+        "no-audio-note",        # 16-jump-share（ebook 無音檔提示）
+        "anchor-share",         # 16-jump-share（標題錨點分享）
+        "theme-dark-neutral",   # 02-reader-ux／04-events（墨夜主題鈕）
+        "sw.js",                # 17-theme-pwa（PWA 註冊）
+    ]:
+        assert marker in js, f"串接後的 script.js 缺少 {marker}"
+
+
+def test_real_css_bundle_contains_ux_module():
+    mgr = StaticAssetsManager()  # 預設即真實 assets 目錄
+    css = mgr.get_full_css_content()
+    for marker in [
+        ".dark-neutral",        # 墨夜面板
+        ".w2e-resume-bar",
+        ".w2e-bm-manager",
+        ".w2e-audio-resume",
+        ".no-audio-note",
+        ".anchor-share",
+        "mark.w2e-hl",
+    ]:
+        assert marker in css, f"串接後的 style.css 缺少 {marker}"
+
+
+def test_real_bundles_drop_persistent_backtop_button():
+    """常駐回到頂端鈕已移除：回到頂端只留功能選單（data-action="top"）內的 ↑。"""
+    mgr = StaticAssetsManager()
+    assert "w2e-backtop" not in mgr.get_full_js_content()
+    assert "w2e-backtop" not in mgr.get_full_css_content()
+    assert 'data-action="top"' in mgr.get_full_js_content()

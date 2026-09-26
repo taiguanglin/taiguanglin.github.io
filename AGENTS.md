@@ -44,6 +44,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；`/wenda2_ebook/`、`/ebook/` 依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
 | `robots.txt`, `CNAME` | Crawl / domain config. |
+| `sw.js`, `manifest.webmanifest` | PWA（2026-09）：兩套電子書頁（`/wenda2_ebook/`、`/ebook/`）由 word2ebook `17-theme-pwa.js` 註冊根 SW；音檔永不快取。manifest 被兩套電子書模板 `<head>` 引用。 |
 
 ### Content & media
 

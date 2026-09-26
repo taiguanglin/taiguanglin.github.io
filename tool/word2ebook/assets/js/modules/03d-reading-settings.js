@@ -14,7 +14,9 @@
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
-  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
+  // D2 長文排印：寬螢幕（≥1400px）預設給較寬內容（1000px），
+  // 其餘維持 800px；使用者曾在寬度鈕明確選擇時以其偏好為準。
+  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || (window.innerWidth >= 1400 ? 1000 : 800);
   
   function applyReadingSettings() {
     // 使用!important确保字体大小设置在移动设备上生效

@@ -239,6 +239,7 @@
         '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.theme', isTraditionalChinesePage(), '主題') + '">' +
           '<button class="ctrl-btn" data-action="theme-light" aria-pressed="false">' + getI18nText('readingSettings.themeLight', isTraditionalChinesePage(), '☀️ 日間') + '</button>' +
           '<button class="ctrl-btn" data-action="theme-dark" aria-pressed="false">' + getI18nText('readingSettings.themeDark', isTraditionalChinesePage(), '🌙 夜間') + '</button>' +
+          '<button class="ctrl-btn" data-action="theme-dark-neutral" aria-pressed="false" title="' + getI18nText('readingSettings.themeDarkNeutral', isTraditionalChinesePage(), '墨夜（中性深色，適合長時間夜讀）') + '">' + getI18nText('readingSettings.themeDarkNeutral', isTraditionalChinesePage(), '🌌 墨夜') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(toolbar);

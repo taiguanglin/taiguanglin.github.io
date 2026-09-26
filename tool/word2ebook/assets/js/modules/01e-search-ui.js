@@ -378,7 +378,18 @@ async function initSearch() {
       if (typeof saveTocExpandSnapshot === 'function') {
         try { saveTocExpandSnapshot(); } catch (err) { /* 非致命 */ }
       }
-      window.open(item.dataset.url, '_blank', 'noopener');
+      // 帶上 ?q=（14-search-plus.js 在章節頁據此高亮命中詞，
+      // 10-search-return.js 亦據此顯示「回到搜尋結果」）。
+      var openUrl = item.dataset.url;
+      var inputEl = document.getElementById('search-input');
+      var openQ = inputEl ? (inputEl.value || '').trim() : '';
+      if (openQ) {
+        var hashPos = openUrl.indexOf('#');
+        var qParam = '?q=' + encodeURIComponent(openQ);
+        openUrl = hashPos === -1 ? openUrl + qParam
+          : openUrl.slice(0, hashPos) + qParam + openUrl.slice(hashPos);
+      }
+      window.open(openUrl, '_blank', 'noopener');
     }
   });
 

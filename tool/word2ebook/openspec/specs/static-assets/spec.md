@@ -68,6 +68,19 @@ priority order:
   contain `img-lightbox` / `openImageLightbox`, with no build-config change
   required
 
+#### Scenario: 2026-09 UX modules are auto-included
+- GIVEN `assets/js/modules/11-reading-resume.js` … `17-theme-pwa.js` and
+  `assets/css/modules/06-ux-plus.css`
+- WHEN `get_full_css_content()` / `get_full_js_content()` are called
+- THEN the bundled JS SHALL contain the reading-resume (`w2e:readpos`),
+  bookmark-manager (`w2e-bm-manager`), player-persist (`w2e:playerState`),
+  search-plus (`kb-focus`, `w2e-hl`), mobile-TOC (`w2e-toc-backdrop`),
+  jump-share (`anchor-share`), and theme/PWA (`theme-dark-neutral`, `sw.js`)
+  behaviours AFTER the `10-search-return.js` block, and the bundled CSS SHALL
+  contain `.dark-neutral` / `.w2e-resume-bar` / `.w2e-audio-resume` /
+  `.no-audio-note` / `.anchor-share` rules, with no build-config change
+  required
+
 ### Requirement: Concatenation Ordering
 When concatenating module files, files SHALL be sorted lexicographically by
 filename. The numeric prefix (`00-`, `01-`, …) enforces the correct order.

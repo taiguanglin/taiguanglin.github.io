@@ -12,7 +12,10 @@ DARK_MODE_PREPAINT_SCRIPT = """<script>
 try {
   var __dm = localStorage.getItem('darkMode');
   if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
-  if (__dm === 'true') document.documentElement.classList.add('dark-mode');
+  if (__dm === 'true') {
+    document.documentElement.classList.add('dark-mode');
+    if (localStorage.getItem('w2e:darkPalette') === 'neutral') document.documentElement.classList.add('dark-neutral');
+  }
 } catch (e) {}
 </script>"""
 
@@ -131,6 +134,8 @@ class I18nTemplateManager:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{seo_title}</title>
 {seo_head}
+<meta name="theme-color" content="#e75480">
+<link rel="manifest" href="/manifest.webmanifest">
 {dark_mode_prepaint}
 {favicon_tag}
 <link rel="stylesheet" href="assets/css/style.css">
@@ -207,6 +212,8 @@ class I18nTemplateManager:
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{seo_title}</title>
 {seo_head}
+<meta name="theme-color" content="#e75480">
+<link rel="manifest" href="/manifest.webmanifest">
 {dark_mode_prepaint}
 {favicon_tag}
 <link rel="stylesheet" href="assets/css/style.css">

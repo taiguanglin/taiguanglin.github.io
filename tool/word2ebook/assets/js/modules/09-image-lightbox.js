@@ -312,6 +312,7 @@
 
   function onPointerUp(e) {
     if (!dragging) return;
+    if (moved) maybeSwipeNavigate(e.clientX, e.clientY);
     dragging = false;
     stage.classList.remove('is-dragging');
     try { stage.releasePointerCapture(e.pointerId); } catch (_) { /* ignore */ }
@@ -394,9 +395,26 @@
     }
   }
 
+  // 適窗狀態下的快速橫滑 → 切換上一/下一張（縮放中維持平移語意）。
+  // 以指標位移判斷：適窗時 clampPan 會把 tx 壓回 0，不能看 tx 差值。
+  function maybeSwipeNavigate(endX, endY) {
+    if (scale > fitScale * 1.05) return;
+    var dx = endX - dragStartX;
+    var dy = endY - dragStartY;
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2) {
+      moved = true;
+      go(dx < 0 ? 1 : -1);
+    } else {
+      tx = dragOriginTx; // 未達門檻：回彈
+      ty = dragOriginTy;
+      applyTransform();
+    }
+  }
+
   function onTouchEnd(e) {
     if (e.touches.length < 2) pinchActive = false;
     if (e.touches.length === 0) {
+      if (dragging && moved) maybeSwipeNavigate(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
       dragging = false;
       stage.classList.remove('is-dragging');
     } else if (e.touches.length === 1) {
