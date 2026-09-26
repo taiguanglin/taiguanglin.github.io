@@ -67,8 +67,15 @@
         clearFocus();
       }
     });
-    // 換搜尋/換頁後焦點失效
-    resultsList.addEventListener('DOMSubtreeModified', clearFocus, { passive: true });
+    // 換搜尋/換頁後焦點失效：以 MutationObserver 監看結果列表重繪
+    // （Chrome 已移除 DOMSubtreeModified 支援，舊寫法不會觸發且每頁報錯）。
+    // 只監看 childList/subtree：clearFocus 自身的 classList 變更屬 attribute
+    // mutation，不會再觸發本 observer，無自觸發迴圈。
+    if (typeof MutationObserver === 'function') {
+      new MutationObserver(clearFocus).observe(resultsList, { childList: true, subtree: true });
+    } else {
+      resultsList.addEventListener('DOMSubtreeModified', clearFocus);
+    }
   }
 
   // ---------- 章節頁：?q= 關鍵字高亮（限錨點區塊） ----------------------

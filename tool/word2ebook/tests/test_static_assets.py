@@ -524,3 +524,31 @@ def test_reading_resume_skips_toc_only_index_pages():
     # 兩道關卡：儲存時不寫、顯示前不彈
     assert "if (isTocOnlyPage()) return;" in js
     assert "if (isTocOnlyPage()) { pruneTocOnlyEntries(); return; }" in js
+
+
+def test_search_plus_focus_reset_uses_mutation_observer():
+    """14-search-plus 的鍵盤焦點重置必須用 MutationObserver。
+
+    Chrome 已移除 DOMSubtreeModified 支援（監聽不觸發且每頁 console 報錯），
+    只允許作為 MutationObserver 不可用時的降級路徑出現。
+    """
+    src = (Path(__file__).resolve().parents[1]
+           / "assets" / "js" / "modules" / "14-search-plus.js").read_text(encoding="utf-8")
+    assert "new MutationObserver(clearFocus)" in src
+    assert "observe(resultsList" in src
+    # 棄用事件只能出現在 if/else 降級分支的 addEventListener 呼叫
+    assert "addEventListener('DOMSubtreeModified'" in src
+    # 其餘出現次數限於說明註解（≤2：降級分支附近 + 說明）；禁止新增其他用途
+    assert src.count("DOMSubtreeModified") <= 2
+    # MutationObserver 是主路徑（if 在前、else 降級在後）
+    assert src.index("typeof MutationObserver === 'function'") < src.index("addEventListener('DOMSubtreeModified'")
+
+
+def test_share_toast_uses_gettext_for_traditional():
+    """04-events 分享 toast 不得硬編「鏈接已複製」——繁體頁應顯示「連結」。"""
+    src = (Path(__file__).resolve().parents[1]
+           / "assets" / "js" / "modules" / "04-events.js").read_text(encoding="utf-8")
+    assert "getText('页面链接已复制', '頁面連結已複製')" in src
+    assert "'段落連結已複製'" in src and "'問題連結已複製'" in src and "'回答連結已複製'" in src
+    # 硬編舊字串不得殘留（含 toast 與註解）
+    assert "鏈接已複製" not in src
