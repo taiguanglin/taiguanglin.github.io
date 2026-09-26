@@ -125,6 +125,18 @@ Both templates SHALL include a synchronous inline `<head>` script that reads
 `dark-mode` class to `<html>` before first paint, preventing the flash of the
 wrong theme. `00-base.js` later moves the class to `<body>` (per the
 `body.dark-mode` CSS contract) and removes it from `<html>`.
+When `localStorage['w2e:darkPalette'] === 'neutral'`, the same pre-paint
+script SHALL also add the `dark-neutral` class to `<html>`; `17-theme-pwa.js`
+later moves it to `<body>` (per the `body.dark-neutral` CSS contract).
+(books2ebook's `_DARK_MODE_PREPAINT` mirrors this snippet and must stay in
+sync.)
+
+### Requirement: PWA Head Tags
+Both templates SHALL include `<meta name="theme-color" content="#e75480">` and
+`<link rel="manifest" href="/manifest.webmanifest">` in `<head>` so ebook
+pages are installable and usable offline via the root `/sw.js` service worker
+(registered by `17-theme-pwa.js` only under `/wenda2_ebook/` and `/ebook/`).
+books2ebook's `_HEAD_TMPL` carries the same two tags.
 
 ### Requirement: Play Button Accessibility
 QA play buttons and lecture play buttons SHALL carry

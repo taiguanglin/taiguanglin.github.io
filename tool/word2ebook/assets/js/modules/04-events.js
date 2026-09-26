@@ -102,7 +102,17 @@
       case 'theme-dark':
         document.body.classList.add('dark-mode');
         localStorage.setItem('darkMode', true);
+        // 點夜間：回到預設粉色深色面板
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('pink');
         updateThemeButtons();
+        if (window.W2E && W2E.updateDarkPaletteButtons) W2E.updateDarkPaletteButtons();
+        break;
+      case 'theme-dark-neutral':
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', true);
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('neutral');
+        updateThemeButtons();
+        if (window.W2E && W2E.updateDarkPaletteButtons) W2E.updateDarkPaletteButtons();
         break;
 
       // 操作按鈕

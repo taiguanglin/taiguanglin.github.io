@@ -45,6 +45,15 @@
 
     /* 深色模式頁面底色（body.dark-mode 與防閃爍的 html.dark-mode 共用） */
     --color-bg-page-dark:  #3b1c32;
+
+    /* 深色「墨夜」面板 tokens（body.dark-neutral 使用；見 06-ux-plus.css） */
+    --color-neutral-bg:        #16181d;
+    --color-neutral-surface:   #20242c;
+    --color-neutral-text:      #ddd6c9;
+    --color-neutral-muted:     #8b93a3;
+    --color-neutral-accent:    #d9a86c;
+    --color-neutral-accent-2:  #e0b36a;
+    --color-neutral-hairline:  #3a3f4a;
 }
 
 body { font-family: var(--font-sans); margin: auto; max-width: 800px; line-height: var(--line-height); background: var(--color-bg-page); color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
@@ -2863,3 +2872,260 @@ p.source-filename a:active {
     scroll-behavior: auto !important;
   }
 }
+/* ============================================================
+   06-ux-plus.css — 2026-09 UX 改善元件樣式（無 @media；斷點在 05）
+
+   涵蓋：閱讀位置提示條、書籤管理區塊、音檔續播膠囊、目錄計數跳轉、
+   標題錨點分享、章節關鍵字高亮、搜尋鍵盤焦點、行動版目錄 backdrop、
+   回到頂端鈕、無音檔提示、深色「墨夜」面板、目錄縮排導引線。
+   ============================================================ */
+
+/* ---- 深色「墨夜」面板（body.dark-neutral；html 同掛為防閃爍暫態） ---- */
+html.dark-neutral { background: var(--color-neutral-bg); }
+body.dark-neutral {
+    background: var(--color-neutral-bg);
+    color: var(--color-neutral-text);
+}
+body.dark-neutral a { color: var(--color-neutral-accent); }
+body.dark-neutral a:hover { color: var(--color-neutral-accent-2); }
+/* D4 資訊層級：h1 暖金＋字重，h2–h4 依明度遞減，與粉色面板拉開差異 */
+body.dark-neutral h1 { color: #e0b36a; border-bottom-color: var(--color-neutral-hairline); font-weight: 700; }
+body.dark-neutral h2 { color: var(--color-neutral-accent-2); }
+body.dark-neutral h3 { color: var(--color-neutral-text); }
+body.dark-neutral h4 { color: var(--color-neutral-muted); }
+body.dark-neutral hr { background: linear-gradient(to right, var(--color-neutral-hairline), var(--color-neutral-accent), var(--color-neutral-hairline)); }
+body.dark-neutral .question { background: var(--color-neutral-surface); border-left-color: var(--color-neutral-accent); }
+body.dark-neutral .question-text { color: var(--color-neutral-text); }
+body.dark-neutral .questioner { color: #e0b36a; }
+body.dark-neutral .question-time { color: var(--color-neutral-muted); }
+body.dark-neutral .answer { background: linear-gradient(135deg, var(--color-neutral-surface) 0%, var(--color-neutral-bg) 100%); border-left-color: var(--color-neutral-accent); }
+body.dark-neutral .answer-text { color: var(--color-neutral-text); }
+body.dark-neutral .answerer { color: #e0b36a; }
+body.dark-neutral .nav-footer a { background: #2a2f3a; color: #e6dcc8; box-shadow: none; }
+body.dark-neutral .w2e-toc-backdrop { background: rgba(0, 0, 0, 0.55); }
+
+/* ---- 閱讀位置提示條（11-reading-resume.js） ---- */
+.w2e-resume-bar {
+    position: fixed;
+    top: 12px;
+    left: 50%;
+    transform: translate(-50%, -140%);
+    display: flex;
+    align-items: center;
+    gap: var(--radius-md);
+    padding: 8px var(--radius-lg);
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: 999px;
+    box-shadow: var(--shadow-lg);
+    font-size: 14px;
+    z-index: 9995;
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    max-width: 92vw;
+}
+.w2e-resume-bar.visible { transform: translate(-50%, 0); opacity: 1; }
+.w2e-resume-bar button {
+    border: none;
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    border-radius: 999px;
+    padding: 4px 10px;
+    cursor: pointer;
+    font-size: 13px;
+}
+.w2e-resume-bar .w2e-resume-close { padding: 4px 8px; }
+body.dark-mode .w2e-resume-bar { background: #5a2d49; }
+
+/* ---- 首頁書籤管理區塊（12-bookmarks-manager.js） ---- */
+.w2e-bm-manager { margin: 30px 0; }
+.w2e-bm-title {
+    display: flex;
+    align-items: center;
+    gap: var(--radius-sm);
+    margin-top: 0;
+}
+.w2e-bm-fold {
+    border: 1px solid var(--color-accent-pale);
+    background: #fff;
+    color: var(--color-primary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 8px;
+}
+.w2e-bm-group { margin: 12px 0; }
+.w2e-bm-chapter { font-weight: 600; color: var(--color-primary); margin-bottom: 6px; }
+.w2e-bm-item {
+    list-style: none;
+    background: #fff;
+    border-left: 3px solid var(--color-h4);
+    border-radius: var(--radius-sm);
+    padding: var(--radius-md);
+    margin-bottom: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+}
+.w2e-bm-jump { color: #333; display: block; }
+.w2e-bm-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #999;
+}
+.w2e-bm-del {
+    border: none;
+    background: none;
+    color: #bbb;
+    cursor: pointer;
+    font-size: 13px;
+}
+.w2e-bm-del:hover { color: var(--color-primary-deep); }
+.w2e-bm-clearall {
+    margin-top: var(--radius-md);
+    border: 1px solid var(--color-primary-deep);
+    background: none;
+    color: var(--color-primary-deep);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    cursor: pointer;
+}
+body.dark-mode .w2e-bm-item { background: #4a2c3a; }
+body.dark-mode .w2e-bm-jump { color: #fddde6; }
+body.dark-mode .w2e-bm-fold { background: #4a2c3a; border-color: #5a2d49; color: #ff91af; }
+body.dark-mode .w2e-bm-meta { color: #b98ca3; }
+body.dark-neutral .w2e-bm-item { background: var(--color-neutral-surface); border-left-color: var(--color-neutral-accent); }
+body.dark-neutral .w2e-bm-jump { color: var(--color-neutral-text); }
+body.dark-neutral .w2e-bm-fold { background: var(--color-neutral-surface); border-color: var(--color-neutral-hairline); color: var(--color-neutral-accent); }
+body.dark-neutral .w2e-bm-meta { color: var(--color-neutral-muted); }
+
+/* ---- 音檔續播膠囊（13-player-persist.js） ---- */
+.w2e-audio-resume {
+    position: fixed;
+    left: 14px;
+    bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: var(--radius-md);
+    padding: var(--radius-md) 12px;
+    background: #fff;
+    border: 1px solid var(--color-accent-pale);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    z-index: 9994;
+    max-width: min(420px, 86vw);
+    transform: translateY(140%);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    font-size: 13px;
+}
+.w2e-audio-resume.visible { transform: translateY(0); opacity: 1; }
+.w2e-audio-resume-play {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--gradient-primary);
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.w2e-audio-resume-info { min-width: 0; }
+.w2e-audio-resume-file {
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #333;
+}
+.w2e-audio-resume-time { color: #999; font-size: 12px; }
+.w2e-audio-resume-back { font-size: 12px; white-space: nowrap; }
+.w2e-audio-resume-close { border: none; background: none; color: #bbb; cursor: pointer; }
+.w2e-audio-resume-close:hover { color: var(--color-primary-deep); }
+body.dark-mode .w2e-audio-resume { background: #4a2c3a; border-color: #5a2d49; }
+body.dark-mode .w2e-audio-resume-file { color: #fddde6; }
+body.dark-neutral .w2e-audio-resume { background: var(--color-neutral-surface); border-color: var(--color-neutral-hairline); }
+body.dark-neutral .w2e-audio-resume-file { color: var(--color-neutral-text); }
+
+/* ---- 目錄計數可點（16-jump-share.js ①） ---- */
+.toc-count[role="button"] {
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    padding: 0 2px;
+}
+.toc-count[role="button"]:hover,
+.toc-count[role="button"]:focus-visible {
+    background: var(--color-accent-pale);
+    color: var(--color-primary-deep);
+    outline: none;
+}
+
+/* ---- 標題錨點分享（16-jump-share.js ②） ---- */
+h2[id], h3[id] { position: relative; }
+.anchor-share {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 0.65em;
+    margin-left: var(--radius-sm);
+    opacity: 0;
+    transition: opacity 0.15s ease;
+    vertical-align: middle;
+    padding: 0 4px;
+}
+h2:hover .anchor-share, h3:hover .anchor-share,
+h2:focus-within .anchor-share, h3:focus-within .anchor-share,
+.anchor-share:focus-visible { opacity: 0.85; }
+
+/* ---- 章節頁搜尋關鍵字高亮（14-search-plus.js ③） ---- */
+mark.w2e-hl {
+    background: var(--color-anchor-highlight);
+    color: inherit;
+    border-radius: 2px;
+    padding: 0 1px;
+}
+body.dark-mode mark.w2e-hl { background: rgba(255, 145, 175, 0.4); }
+body.dark-neutral mark.w2e-hl { background: rgba(217, 168, 108, 0.35); }
+
+/* ---- 搜尋結果鍵盤焦點（14-search-plus.js ②；D9） ---- */
+#search-results-list li.kb-focus,
+#search-results-list .search-result.kb-focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+/* D9 搜尋結果樣式：命中詞標記與類型標籤提高對比 */
+.search-result-content mark { background: var(--color-anchor-highlight); color: inherit; padding: 0 1px; border-radius: 2px; }
+
+/* ---- 行動版目錄 backdrop（15-mobile-toc.js ①） ---- */
+.w2e-toc-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 790; /* 浮動目錄 .floating-toc=800 之下、頁面內容之上 */
+    display: none;
+}
+.w2e-toc-backdrop.visible { display: block; }
+
+/* ---- ebook 無音檔提示（16-jump-share.js ③；U6） ---- */
+.no-audio-note {
+    font-size: 0.85em;
+    color: #999;
+    border-left: 3px solid var(--color-accent-pale);
+    padding-left: 10px;
+    margin: 8px 0 20px;
+}
+body.dark-mode .no-audio-note { color: #b98ca3; border-left-color: #5a2d49; }
+body.dark-neutral .no-audio-note { color: var(--color-neutral-muted); border-left-color: var(--color-neutral-hairline); }
+
+/* ---- 目錄縮排導引線（D7） ---- */
+.toc ul ul { border-left: 1px dashed var(--color-accent-pale); margin-left: 6px; padding-left: 14px; }
+.toc ul ul ul { border-left-style: dotted; }
+body.dark-mode .toc ul ul { border-left-color: #5a2d49; }
+body.dark-neutral .toc ul ul { border-left-color: var(--color-neutral-hairline); }
+/* 浮動目錄深層項目同示導引 */
+.floating-toc-item.level-h3 { border-left: 2px solid var(--color-accent-pale); padding-left: var(--radius-md); }
+.floating-toc-item.level-h4 { border-left: 2px dotted var(--color-accent-pale); padding-left: 20px; }
+.floating-toc-item.level-h5 { border-left: 2px dotted var(--color-accent-pale); padding-left: 28px; }

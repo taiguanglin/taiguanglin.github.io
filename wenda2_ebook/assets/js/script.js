@@ -1439,7 +1439,18 @@ async function initSearch() {
       if (typeof saveTocExpandSnapshot === 'function') {
         try { saveTocExpandSnapshot(); } catch (err) { /* 非致命 */ }
       }
-      window.open(item.dataset.url, '_blank', 'noopener');
+      // 帶上 ?q=（14-search-plus.js 在章節頁據此高亮命中詞，
+      // 10-search-return.js 亦據此顯示「回到搜尋結果」）。
+      var openUrl = item.dataset.url;
+      var inputEl = document.getElementById('search-input');
+      var openQ = inputEl ? (inputEl.value || '').trim() : '';
+      if (openQ) {
+        var hashPos = openUrl.indexOf('#');
+        var qParam = '?q=' + encodeURIComponent(openQ);
+        openUrl = hashPos === -1 ? openUrl + qParam
+          : openUrl.slice(0, hashPos) + qParam + openUrl.slice(hashPos);
+      }
+      window.open(openUrl, '_blank', 'noopener');
     }
   });
 
@@ -1740,6 +1751,7 @@ if (isIndexPage()) {
         '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.theme', isTraditionalChinesePage(), '主題') + '">' +
           '<button class="ctrl-btn" data-action="theme-light" aria-pressed="false">' + getI18nText('readingSettings.themeLight', isTraditionalChinesePage(), '☀️ 日間') + '</button>' +
           '<button class="ctrl-btn" data-action="theme-dark" aria-pressed="false">' + getI18nText('readingSettings.themeDark', isTraditionalChinesePage(), '🌙 夜間') + '</button>' +
+          '<button class="ctrl-btn" data-action="theme-dark-neutral" aria-pressed="false" title="' + getI18nText('readingSettings.themeDarkNeutral', isTraditionalChinesePage(), '墨夜（中性深色，適合長時間夜讀）') + '">' + getI18nText('readingSettings.themeDarkNeutral', isTraditionalChinesePage(), '🌌 墨夜') + '</button>' +
         '</div>' +
       '</div>';
     document.body.appendChild(toolbar);
@@ -2773,7 +2785,9 @@ function addHomepageBookmarkEventListeners() {
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
-  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
+  // D2 長文排印：寬螢幕（≥1400px）預設給較寬內容（1000px），
+  // 其餘維持 800px；使用者曾在寬度鈕明確選擇時以其偏好為準。
+  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || (window.innerWidth >= 1400 ? 1000 : 800);
   
   function applyReadingSettings() {
     // 使用!important确保字体大小设置在移动设备上生效
@@ -3328,7 +3342,17 @@ function addHomepageBookmarkEventListeners() {
       case 'theme-dark':
         document.body.classList.add('dark-mode');
         localStorage.setItem('darkMode', true);
+        // 點夜間：回到預設粉色深色面板
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('pink');
         updateThemeButtons();
+        if (window.W2E && W2E.updateDarkPaletteButtons) W2E.updateDarkPaletteButtons();
+        break;
+      case 'theme-dark-neutral':
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', true);
+        if (window.W2E && W2E.darkPalette) W2E.darkPalette('neutral');
+        updateThemeButtons();
+        if (window.W2E && W2E.updateDarkPaletteButtons) W2E.updateDarkPaletteButtons();
         break;
 
       // 操作按鈕
@@ -5526,6 +5550,7 @@ function addHomepageBookmarkEventListeners() {
 
   function onPointerUp(e) {
     if (!dragging) return;
+    if (moved) maybeSwipeNavigate(e.clientX, e.clientY);
     dragging = false;
     stage.classList.remove('is-dragging');
     try { stage.releasePointerCapture(e.pointerId); } catch (_) { /* ignore */ }
@@ -5608,9 +5633,26 @@ function addHomepageBookmarkEventListeners() {
     }
   }
 
+  // 適窗狀態下的快速橫滑 → 切換上一/下一張（縮放中維持平移語意）。
+  // 以指標位移判斷：適窗時 clampPan 會把 tx 壓回 0，不能看 tx 差值。
+  function maybeSwipeNavigate(endX, endY) {
+    if (scale > fitScale * 1.05) return;
+    var dx = endX - dragStartX;
+    var dy = endY - dragStartY;
+    if (Math.abs(dx) > 80 && Math.abs(dx) > Math.abs(dy) * 2) {
+      moved = true;
+      go(dx < 0 ? 1 : -1);
+    } else {
+      tx = dragOriginTx; // 未達門檻：回彈
+      ty = dragOriginTy;
+      applyTransform();
+    }
+  }
+
   function onTouchEnd(e) {
     if (e.touches.length < 2) pinchActive = false;
     if (e.touches.length === 0) {
+      if (dragging && moved) maybeSwipeNavigate(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
       dragging = false;
       stage.classList.remove('is-dragging');
     } else if (e.touches.length === 1) {
@@ -6434,4 +6476,791 @@ function initSearchReturnButton() {
 
 initSearchSnapshotCapture();
 initSearchReturnButton();
+// ============================================================
+// 11-reading-resume.js — 閱讀位置記憶 + 簡繁切換原位恢復
+//
+// ① 閱讀位置：捲動時（節流）與離頁前把「頁面 → 捲動比例」存入
+//    localStorage('w2e:readpos')（上限 40 頁，LRU 淘汰）。再次進入同頁、
+//    且 URL 無錨點時，頂部浮出「回到上次閱讀位置（XX%）」提示條；
+//    點「回到位置」平滑捲回，點 ✕ 或 12 秒後自動消失。
+// ② 簡繁切換原位恢復：/lang-switch.js 在 ebook 雙頁跳轉前寫入
+//    sessionStorage('w2e:langjump') = {id, frac}；本模組偵測到後直接
+//    還原（優先同 id 錨點，其次比例），不顯示提示條。
+// ============================================================
+
+;(function () {
+  var POS_KEY = 'w2e:readpos';
+  var JUMP_KEY = 'w2e:langjump';
+  var MAX_ENTRIES = 40;
+  var SAVE_THROTTLE_MS = 500;
+
+  function docFraction() {
+    var doc = document.documentElement;
+    var total = doc.scrollHeight - window.innerHeight;
+    if (total <= 0) return 0;
+    return Math.max(0, Math.min(1, (window.scrollY || 0) / total));
+  }
+
+  function scrollToFraction(frac, smooth) {
+    var doc = document.documentElement;
+    var total = doc.scrollHeight - window.innerHeight;
+    if (total <= 0) return;
+    var top = Math.round(frac * total);
+    window.scrollTo(0, top);
+    void smooth;
+  }
+
+  function readPositions() {
+    try { return JSON.parse(localStorage.getItem(POS_KEY) || '{}'); } catch (e) { return {}; }
+  }
+
+  function writePositions(map) {
+    try {
+      var keys = Object.keys(map);
+      if (keys.length > MAX_ENTRIES) {
+        keys.sort(function (a, b) { return (map[a].ts || 0) - (map[b].ts || 0); });
+        while (keys.length > MAX_ENTRIES) { delete map[keys.shift()]; }
+      }
+      localStorage.setItem(POS_KEY, JSON.stringify(map));
+    } catch (e) { /* 隱私模式等 */ }
+  }
+
+  var pageKey = window.location.pathname;
+
+  function save() {
+    var frac = docFraction();
+    if (frac <= 0) return;
+    var map = readPositions();
+    map[pageKey] = { frac: Math.round(frac * 1000) / 1000, ts: Date.now() };
+    writePositions(map);
+  }
+
+  // ---- 簡繁切換原位恢復（優先於閱讀位置提示） --------------------------
+  function tryLangJumpRestore() {
+    var raw = null;
+    try { raw = sessionStorage.getItem(JUMP_KEY); } catch (e) { return false; }
+    if (!raw) return false;
+    try { sessionStorage.removeItem(JUMP_KEY); } catch (e) {}
+    var info = null;
+    try { info = JSON.parse(raw); } catch (e) { return false; }
+    if (!info) return false;
+    setTimeout(function () {
+      var el = info.id && document.getElementById(info.id);
+      if (el) {
+        el.scrollIntoView({ block: 'start' });
+      } else if (typeof info.frac === 'number') {
+        scrollToFraction(info.frac, false);
+      }
+    }, 60);
+    return true;
+  }
+
+  // ---- 回到上次閱讀位置提示條 ------------------------------------------
+  function showResumeBar(entry) {
+    var isTrad = typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
+    var pct = Math.round(entry.frac * 100);
+
+    var bar = document.createElement('div');
+    bar.className = 'w2e-resume-bar';
+    bar.setAttribute('role', 'status');
+    bar.innerHTML =
+      '<span class="w2e-resume-text">' +
+        (isTrad ? '上次讀到 ' + pct + '%' : '上次读到 ' + pct + '%') +
+      '</span>' +
+      '<button type="button" class="w2e-resume-go">' +
+        (isTrad ? '回到位置' : '回到位置') +
+      '</button>' +
+      '<button type="button" class="w2e-resume-close" aria-label="' +
+        (isTrad ? '關閉' : '关闭') + '">✕</button>';
+    document.body.appendChild(bar);
+
+    var dismissTimer = setTimeout(dismiss, 12000);
+    requestAnimationFrame(function () { bar.classList.add('visible'); });
+
+    function dismiss() {
+      clearTimeout(dismissTimer);
+      bar.classList.remove('visible');
+      setTimeout(function () { bar.remove(); }, 300);
+    }
+
+    bar.querySelector('.w2e-resume-go').addEventListener('click', function () {
+      dismiss();
+      requestAnimationFrame(function () { scrollToFraction(entry.frac, true); });
+    });
+    bar.querySelector('.w2e-resume-close').addEventListener('click', dismiss);
+  }
+
+  function maybeOfferResume() {
+    // 帶錨點／搜尋跳轉進來時不打擾
+    if (window.location.hash && window.location.hash.length > 1) return;
+    if (tryLangJumpRestore()) return;
+    var entry = readPositions()[pageKey];
+    if (!entry) return;
+    if (entry.frac < 0.03 || entry.frac > 0.98) return;
+    var ageDays = (Date.now() - (entry.ts || 0)) / 86400000;
+    if (ageDays > 30) return;
+    showResumeBar(entry);
+  }
+
+  // ---- 持續記錄 ------------------------------------------------------
+  var lastSave = 0;
+  window.addEventListener('scroll', function () {
+    var now = Date.now();
+    if (now - lastSave < SAVE_THROTTLE_MS) return;
+    lastSave = now;
+    save();
+  }, { passive: true });
+  window.addEventListener('pagehide', save);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') save();
+  });
+
+  // 等首屏穩定後再判斷（避免與錨點跳轉、字型載入打架）
+  setTimeout(maybeOfferResume, 400);
+})();
+// ============================================================
+// 12-bookmarks-manager.js — 首頁「我的書籤」跨章節管理區塊
+//
+// 浮動面板的書籤分頁只能看到清單；這裡在 index 主內容插入一個
+// 可收合的管理區塊：按章節分組列出所有書籤（章名＋摘錄＋時間），
+// 每筆可「跳轉」（同分頁前往 chapter.html#elementId）或「刪除」，
+// 底部可「清空全部書籤」（confirm）。
+// 資料來源與 03a 共用 localStorage 鍵（簡/繁分開）。
+// ============================================================
+
+;(function () {
+  if (typeof isIndexPage !== 'function' || !isIndexPage()) return;
+  if (typeof getBookmarks !== 'function') return;
+
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+
+  var section = document.createElement('section');
+  section.className = 'w2e-bm-manager';
+  section.innerHTML =
+    '<h2 class="w2e-bm-title">' +
+      '<button type="button" class="w2e-bm-fold" aria-expanded="false">▸</button>' +
+      '🔖 ' + tt('我的书签', '我的書籤') + ' <span class="w2e-bm-count"></span>' +
+    '</h2>' +
+    '<div class="w2e-bm-body" hidden></div>';
+
+  var anchor = document.getElementById('main-toc');
+  if (anchor && anchor.parentNode) {
+    anchor.parentNode.insertBefore(section, anchor.nextSibling);
+  } else {
+    var main = document.querySelector('main');
+    if (main) main.appendChild(section);
+  }
+
+  var body = section.querySelector('.w2e-bm-body');
+  var foldBtn = section.querySelector('.w2e-bm-fold');
+
+  function esc(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function render() {
+    var all = getBookmarks();
+    section.querySelector('.w2e-bm-count').textContent = '(' + all.length + ')';
+
+    if (!all.length) {
+      body.innerHTML = '<p class="w2e-bm-empty">' + tt('尚无书签', '尚無書籤') + '</p>';
+      return;
+    }
+
+    // 按章節分組（保持原始加入順序）
+    var groups = {};
+    var order = [];
+    all.forEach(function (b) {
+      var key = b.chapterFilename || '?';
+      if (!groups[key]) { groups[key] = []; order.push(key); }
+      groups[key].push(b);
+    });
+
+    var html = '';
+    order.forEach(function (file) {
+      var items = groups[file];
+      var title = esc(items[0].chapterTitle || (items[0].chapter && items[0].chapter.title) || file);
+      html += '<div class="w2e-bm-group">' +
+        '<div class="w2e-bm-chapter">' + title + ' <span>(' + items.length + ')</span></div><ul>';
+      items.forEach(function (b) {
+        html += '<li class="w2e-bm-item" data-id="' + esc(b.id) + '" ' +
+          'data-file="' + esc(b.chapterFilename || '') + '" data-el="' + esc(b.elementId || '') + '">' +
+          '<a class="w2e-bm-jump" href="' + esc(b.chapterFilename || '') + '#' + esc(b.elementId || '') + '">' +
+            esc(b.preview || '') +
+          '</a>' +
+          '<div class="w2e-bm-meta">' +
+            '<span>' + esc(b.questioner || '') + (b.time ? ' · ' + esc(b.time) : '') + '</span>' +
+            '<button type="button" class="w2e-bm-del" title="' + tt('删除', '刪除') + '" aria-label="' + tt('删除书签', '刪除書籤') + '">✕</button>' +
+          '</div>' +
+        '</li>';
+      });
+      html += '</ul></div>';
+    });
+    html += '<button type="button" class="w2e-bm-clearall">' + tt('清空全部书签', '清空全部書籤') + '</button>';
+    body.innerHTML = html;
+  }
+
+  foldBtn.addEventListener('click', function () {
+    var open = body.hidden;
+    body.hidden = !open;
+    foldBtn.textContent = open ? '▾' : '▸';
+    foldBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (open) render();
+  });
+
+  body.addEventListener('click', function (e) {
+    var del = e.target.closest('.w2e-bm-del');
+    if (del) {
+      var li = del.closest('.w2e-bm-item');
+      if (li && typeof removeBookmarkById === 'function') {
+        removeBookmarkById(li.dataset.id);
+        render();
+      }
+      return;
+    }
+    if (e.target.closest('.w2e-bm-clearall')) {
+      var all = getBookmarks();
+      if (!all.length) return;
+      if (!confirm(tt('确定要清空全部 ' + all.length + ' 个书签吗？此操作无法撤销。',
+                      '確定要清空全部 ' + all.length + ' 個書籤嗎？此操作無法撤銷。'))) return;
+      if (typeof saveBookmarks === 'function') saveBookmarks([]);
+      render();
+    }
+  });
+
+  render(); // 只更新標題計數；內容於展開時渲染
+})();
+// ============================================================
+// 13-player-persist.js — 音檔播放跨頁持續性
+//
+// 靜態站無法讓 <audio> 跨頁存活；改以「狀態快照 → 喚回播放」：
+//   ① 播放中每 3 秒與離頁前，把 {src, 進度秒, 檔名, 頁面, 段落錨點}
+//      快照到 sessionStorage('w2e:playerState')（08 播放器的狀態經
+//      W2E.qaAudio 讀取）。
+//   ② 任何頁面載入後若有 12 小時內的快照，左下角浮出續播膠囊
+//      「▶ 檔名 12:34」：點「續播」——同頁優先交回 08 播放器
+//      （找到原播放鈕重播再 seek），他頁則自建 Audio 從斷點續播；
+//      「回到段落」跳回原文頁面錨點；✕ 丟棄快照。
+// ============================================================
+
+;(function () {
+  var KEY = 'w2e:playerState';
+  var FRESH_MS = 12 * 3600 * 1000;
+  var SAVE_MS = 3000;
+
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+
+  function read() {
+    try { return JSON.parse(sessionStorage.getItem(KEY) || 'null'); } catch (e) { return null; }
+  }
+  function write(state) {
+    try {
+      if (state) sessionStorage.setItem(KEY, JSON.stringify(state));
+      else sessionStorage.removeItem(KEY);
+    } catch (e) {}
+  }
+  function fmt(s) {
+    s = Math.max(0, Math.floor(s || 0));
+    var h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+    function p(n) { return (n < 10 ? '0' : '') + n; }
+    return (h ? p(h) + ':' : '') + p(m) + ':' + p(sec);
+  }
+  function absUrl(u) {
+    try { return new URL(u, window.location.href).href; } catch (e) { return u; }
+  }
+
+  // ---- 快照：從 08 播放器讀狀態 ----------------------------------------
+  function capture() {
+    var qa = window.W2E && W2E.qaAudio;
+    if (!qa || !qa.audio || !qa.audio.src) return;
+    var a = qa.audio;
+    if (isNaN(a.currentTime)) return;
+    var btn = qa.getActiveButton && qa.getActiveButton();
+    var file = '', range = '';
+    var bar = document.querySelector('.qa-player.visible');
+    if (bar) {
+      var f = bar.querySelector('.qa-player-file');
+      var r = bar.querySelector('.qa-player-range');
+      if (f) file = f.textContent || '';
+      if (r) range = r.textContent || '';
+    }
+    if (!file) file = decodeURIComponent(a.src.split('/').pop() || '');
+    var anchor = null;
+    if (btn) {
+      var host = btn.closest('[id]');
+      anchor = host ? host.id : null;
+    }
+    // 只記「有進度」的狀態；停在段落起點就不打擾
+    if (a.currentTime < 2) return;
+    write({
+      src: a.src,
+      t: Math.round(a.currentTime * 10) / 10,
+      file: file,
+      range: range,
+      page: window.location.pathname,
+      anchor: anchor,
+      playing: !a.paused,
+      ts: Date.now()
+    });
+  }
+
+  setInterval(capture, SAVE_MS);
+  window.addEventListener('pagehide', capture);
+  document.addEventListener('visibilitychange', function () {
+    if (document.visibilityState === 'hidden') capture();
+  });
+
+  // ---- 續播膠囊 ---------------------------------------------------------
+  var state = read();
+  if (!state || !state.src) return;
+  if (Date.now() - (state.ts || 0) > FRESH_MS) { write(null); return; }
+  // 同頁且播放器已可見（使用者正在操作 08 播放器）→ 不打擾
+  if (state.page === window.location.pathname &&
+      document.querySelector('.qa-player.visible')) return;
+
+  var pill = document.createElement('div');
+  pill.className = 'w2e-audio-resume';
+  pill.innerHTML =
+    '<button type="button" class="w2e-audio-resume-play">▶</button>' +
+    '<div class="w2e-audio-resume-info">' +
+      '<div class="w2e-audio-resume-file" title="' + state.file.replace(/"/g, '&quot;') + '"></div>' +
+      '<div class="w2e-audio-resume-time">' + fmt(state.t) + '</div>' +
+    '</div>' +
+    (state.anchor && state.page !== window.location.pathname
+      ? '<a class="w2e-audio-resume-back" href="' + state.page + '#' + state.anchor + '">' +
+        tt('回到段落', '回到段落') + '</a>'
+      : '') +
+    '<button type="button" class="w2e-audio-resume-close" aria-label="' + tt('关闭', '關閉') + '">✕</button>';
+  pill.querySelector('.w2e-audio-resume-file').textContent = state.file;
+  document.body.appendChild(pill);
+  requestAnimationFrame(function () { pill.classList.add('visible'); });
+
+  var extraAudio = null;
+
+  function setPlayingUI(playing) {
+    pill.querySelector('.w2e-audio-resume-play').textContent = playing ? '⏸' : '▶';
+    pill.classList.toggle('is-playing', playing);
+  }
+
+  function resumeSamePage() {
+    // 在原文頁：找回 08 播放器的對應播放鈕，重播該段後 seek 到斷點
+    var qa = W2E.qaAudio;
+    var btns = Array.prototype.slice.call(document.querySelectorAll('button.qa-play'));
+    var target = null;
+    for (var i = 0; i < btns.length; i++) {
+      if (absUrl(btns[i].getAttribute('data-audio')) === state.src) {
+        var s = parseFloat(btns[i].getAttribute('data-start')) || 0;
+        var en = parseFloat(btns[i].getAttribute('data-end'));
+        if (state.t >= s && (isNaN(en) || state.t <= en + 1)) { target = btns[i]; break; }
+        if (!target) target = btns[i];
+      }
+    }
+    if (!target) return false;
+    qa.play(target);
+    setTimeout(function () { qa.seekAbs(state.t); }, 300);
+    return true;
+  }
+
+  pill.querySelector('.w2e-audio-resume-play').addEventListener('click', function () {
+    if (extraAudio) {
+      if (extraAudio.paused) { extraAudio.play().catch(function () {}); }
+      else { extraAudio.pause(); }
+      return;
+    }
+    if (state.page === window.location.pathname && window.W2E && W2E.qaAudio) {
+      if (resumeSamePage()) { pill.remove(); write(null); showToastIfAble(tt('已从断点续播', '已從斷點續播')); return; }
+    }
+    extraAudio = new Audio(state.src);
+    extraAudio.currentTime = state.t;
+    extraAudio.play().then(function () { setPlayingUI(true); })
+      .catch(function () { setPlayingUI(false); });
+    extraAudio.addEventListener('pause', function () { setPlayingUI(false); });
+    extraAudio.addEventListener('playing', function () { setPlayingUI(true); });
+    extraAudio.addEventListener('timeupdate', function () {
+      var tEl = pill.querySelector('.w2e-audio-resume-time');
+      if (tEl) tEl.textContent = fmt(extraAudio.currentTime);
+    });
+    extraAudio.addEventListener('error', function () {
+      setPlayingUI(false);
+      showToastIfAble(tt('音档加载失败', '音檔載入失敗'));
+    });
+  });
+
+  pill.querySelector('.w2e-audio-resume-close').addEventListener('click', function () {
+    if (extraAudio) { extraAudio.pause(); extraAudio = null; }
+    write(null);
+    pill.remove();
+  });
+
+  function showToastIfAble(msg) {
+    if (typeof showToast === 'function') showToast(msg);
+  }
+})();
+// ============================================================
+// 14-search-plus.js — 搜尋體驗補強
+//
+// ① 快捷鍵：index 頁按 「/」 或 Ctrl/Cmd+K 直接啟用並聚焦搜尋框。
+// ② 結果鍵盤導覽：在搜尋框或結果區按 ↓/↑ 移動焦點（.kb-focus），
+//    Enter 開啟該筆結果，Esc 收合焦點/關閉面板。
+// ③ 章節頁關鍵字高亮：章節 URL 帶 ?q=（由「回到搜尋結果」流程附加）
+//    且帶 #錨點時，把查詢詞在錨點所在區塊以 <mark class="w2e-hl">
+//    標出，並 toast 命中數。只處理錨點區塊，避免全文標記造成卡頓。
+// ============================================================
+
+;(function () {
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+  function isEditable(el) {
+    return el && (el.closest('input, textarea, select, [contenteditable="true"]'));
+  }
+
+  // ---------- index 頁：快捷鍵 + 結果鍵盤導覽 --------------------------
+  var input = document.getElementById('search-input');
+  var results = document.getElementById('search-results');
+  var resultsList = document.getElementById('search-results-list');
+
+  if (input && results && resultsList) {
+    document.addEventListener('keydown', function (e) {
+      if (isEditable(e.target)) return;
+      var focusHotkey = e.key === '/' ||
+        ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K'));
+      if (!focusHotkey) return;
+      e.preventDefault();
+      // 面板未啟用時，先點啟用鈕（沿用既有初始化流程，含進度提示）
+      var activateBtn = document.getElementById('search-activate-btn');
+      var container = document.getElementById('search-container');
+      if (activateBtn && container && container.style.display === 'none') {
+        activateBtn.click();
+      }
+      input.focus();
+      input.select();
+    });
+
+    var focusIdx = -1;
+    function items() {
+      return Array.prototype.slice.call(resultsList.querySelectorAll('li, .search-result'));
+    }
+    function moveFocus(delta) {
+      var list = items();
+      if (!list.length) return;
+      list.forEach(function (el) { el.classList.remove('kb-focus'); });
+      focusIdx = (focusIdx + delta + list.length) % list.length;
+      var el = list[focusIdx];
+      el.classList.add('kb-focus');
+      el.scrollIntoView({ block: 'nearest' });
+    }
+    function clearFocus() {
+      focusIdx = -1;
+      items().forEach(function (el) { el.classList.remove('kb-focus'); });
+    }
+    document.addEventListener('keydown', function (e) {
+      if (results.style.display === 'none') return;
+      if (e.key === 'ArrowDown') { e.preventDefault(); moveFocus(1); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); moveFocus(-1); }
+      else if (e.key === 'Enter' && focusIdx >= 0 && !isEditable(e.target)) {
+        var list = items();
+        if (list[focusIdx]) { e.preventDefault(); list[focusIdx].click(); }
+      } else if (e.key === 'Escape' && focusIdx >= 0) {
+        clearFocus();
+      }
+    });
+    // 換搜尋/換頁後焦點失效
+    resultsList.addEventListener('DOMSubtreeModified', clearFocus, { passive: true });
+  }
+
+  // ---------- 章節頁：?q= 關鍵字高亮（限錨點區塊） ----------------------
+  var q = null;
+  try { q = new URLSearchParams(window.location.search).get('q'); } catch (e) {}
+  if (!q || !window.location.hash || typeof isIndexPage === 'function' && isIndexPage()) return;
+
+  var terms = q.trim().split(/\s+/).filter(function (t) { return t.length >= 1; });
+  if (!terms.length) return;
+
+  var target = null;
+  try { target = document.getElementById(decodeURIComponent(window.location.hash.slice(1))); } catch (e) {}
+  if (!target) return;
+  var block = target.closest('.question, .answer, .para-block') || target;
+
+  // TreeWalker 走文字節點，逐詞包 <mark>（跳過既有互動元件）
+  var SKIP = 'SCRIPT,STYLE,MARK,BUTTON,A,TEXTAREA';
+  var walker = document.createTreeWalker(block, NodeFilter.SHOW_TEXT, {
+    acceptNode: function (node) {
+      if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+      var p = node.parentNode;
+      while (p && p !== block) {
+        if (p.nodeType === 1 && SKIP.indexOf(p.tagName) !== -1) return NodeFilter.FILTER_REJECT;
+        p = p.parentNode;
+      }
+      return NodeFilter.FILTER_ACCEPT;
+    }
+  });
+  var nodes = [];
+  while (walker.nextNode()) nodes.push(walker.currentNode);
+
+  var hits = 0;
+  nodes.forEach(function (node) {
+    var text = node.nodeValue;
+    var lower = text;
+    var matched = terms.filter(function (t) { return lower.indexOf(t) !== -1; });
+    if (!matched.length) return;
+    var frag = document.createDocumentFragment();
+    var cursor = 0;
+    // 逐字掃描找最早命中的詞（CJK 多為單字/詞級查詢）
+    while (cursor < text.length) {
+      var best = -1, bestTerm = null;
+      for (var i = 0; i < matched.length; i++) {
+        var idx = text.indexOf(matched[i], cursor);
+        if (idx !== -1 && (best === -1 || idx < best)) { best = idx; bestTerm = matched[i]; }
+      }
+      if (best === -1) {
+        frag.appendChild(document.createTextNode(text.slice(cursor)));
+        break;
+      }
+      if (best > cursor) frag.appendChild(document.createTextNode(text.slice(cursor, best)));
+      var mark = document.createElement('mark');
+      mark.className = 'w2e-hl';
+      mark.textContent = text.substr(best, bestTerm.length);
+      frag.appendChild(mark);
+      hits++;
+      cursor = best + bestTerm.length;
+    }
+    node.parentNode.replaceChild(frag, node);
+  });
+
+  if (hits && typeof showToast === 'function') {
+    showToast(tt('已在结果区块高亮 ', '已在結果區塊高亮 ') + hits + (isTraditionalChinesePage() ? ' 處「%s」'.replace('%s', q) : ' 处「%s」'.replace('%s', q)));
+  }
+})();
+// ============================================================
+// 15-mobile-toc.js — 手機版目錄操作
+//
+// ① 行動裝置（≤768px）開啟浮動目錄時鋪半透明 backdrop，
+//    點 backdrop 即關閉（等效點目錄的 ✕）。
+// ② 手勢：自螢幕左緣（≤28px 起點）右滑 >70px 開啟目錄；
+//    目錄內左滑 >70px 關閉。
+//
+// 「回到頂端」只保留在右下角功能選單（☰ → ↑，見 02-reader-ux.js
+// `data-action="top"`），不再另做常駐懸浮鈕。
+// ============================================================
+
+;(function () {
+  function isMobileView() { return window.innerWidth <= 768; }
+
+  // ---------- backdrop ----------
+  var backdrop = document.createElement('div');
+  backdrop.className = 'w2e-toc-backdrop';
+  document.body.appendChild(backdrop);
+
+  function tocEl() { return document.querySelector('.floating-toc'); }
+  function tocVisible() {
+    var toc = tocEl();
+    return !!toc && (toc.classList.contains('visible') || toc.classList.contains('is-open'));
+  }
+  function closeToc() {
+    var toc = tocEl();
+    if (!toc) return;
+    var close = toc.querySelector('.ctrl-btn[data-action="close-toc"], [data-action="close-toc"]');
+    if (close) { close.click(); return; }
+    toc.classList.remove('visible');
+    syncBackdrop();
+  }
+  function openToc() {
+    var btn = document.querySelector('.action-btn[data-action="toc"]');
+    if (btn) btn.click();
+    setTimeout(syncBackdrop, 50);
+  }
+  function syncBackdrop() {
+    backdrop.classList.toggle('visible', isMobileView() && tocVisible());
+  }
+  backdrop.addEventListener('click', closeToc);
+
+  // 目錄 class 變化 → 同步 backdrop（也涵蓋電腦版縮放視窗的情形）
+  var mo = new MutationObserver(syncBackdrop);
+  function observeToc() { var t = tocEl(); if (t) mo.observe(t, { attributes: true, attributeFilter: ['class'] }); }
+  observeToc();
+  window.addEventListener('resize', syncBackdrop);
+
+  // ---------- 手勢 ----------
+  var startX = 0, startY = 0, tracking = false, fromPanel = false;
+  document.addEventListener('touchstart', function (e) {
+    if (!isMobileView() || e.touches.length !== 1) return;
+    var x = e.touches[0].clientX;
+    var inToc = !!(e.target.closest && e.target.closest('.floating-toc'));
+    if (x <= 28 || inToc) {
+      tracking = true;
+      fromPanel = inToc;
+      startX = x; startY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+  document.addEventListener('touchend', function (e) {
+    if (!tracking) return;
+    tracking = false;
+    var t = e.changedTouches[0];
+    var dx = t.clientX - startX, dy = t.clientY - startY;
+    if (Math.abs(dy) > 60) return;
+    if (!fromPanel && dx > 70 && !tocVisible()) openToc();
+    else if (fromPanel && dx < -70 && tocVisible()) closeToc();
+  }, { passive: true });
+})();
+// ============================================================
+// 16-jump-share.js — 目錄計數直跳主題第一則問答／標題分享連結／
+//                     ebook 無跟播章節提示
+//
+// ① 章節目錄的 .toc-count「(50)」變成可點：跳到該主題下第一則
+//    .question（沒有問題的主題退回原錨點行為）。
+// ② h2/h3 帶 id 的標題在 hover/focus 時顯示 🔗 錨點鈕，點擊複製
+//    「頁面#錨點」連結（沿用 03d 的 copyText + 02 的穩定 ID）。
+// ③ /ebook/ 講經頁（含 .para-block）若全頁無 .qa-play 播放鈕，
+//    在 h1 後插一句「本講次尚無音檔跟播」提示，避免使用者以為壞掉。
+// ============================================================
+
+;(function () {
+  function tt(sim, trad) {
+    return (typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage()) ? trad : sim;
+  }
+
+  // ---------- ① .toc-count → 主題第一則問答 ---------------------------
+  function headingLevel(el) { return parseInt(el.tagName.slice(1), 10); }
+
+  function firstQuestionInSection(heading) {
+    var level = headingLevel(heading);
+    var cur = heading.nextElementSibling;
+    while (cur) {
+      if (/^H[2-6]$/.test(cur.tagName) && headingLevel(cur) <= level) break;
+      if (cur.classList && cur.classList.contains('question')) return cur;
+      var found = cur.querySelector && cur.querySelector('.question');
+      if (found) return found;
+      cur = cur.nextElementSibling;
+    }
+    return null;
+  }
+
+  document.querySelectorAll('.toc-count').forEach(function (badge) {
+    var li = badge.closest('li');
+    if (!li) return;
+    var link = li.querySelector('a[href^="#"]');
+    if (!link) return;
+    badge.setAttribute('role', 'button');
+    badge.setAttribute('tabindex', '0');
+    badge.title = tt('跳到本主题第一则问答', '跳到本主題第一則問答');
+    function go(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var id = link.getAttribute('href').slice(1);
+      var heading = document.getElementById(id);
+      if (!heading) return;
+      var q = firstQuestionInSection(heading);
+      var target = q || heading;
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (q) {
+        q.classList.remove('anchor-target-highlight');
+        void q.offsetWidth;
+        q.classList.add('anchor-target-highlight');
+        setTimeout(function () { q.classList.remove('anchor-target-highlight'); }, 3000);
+      }
+      try { history.replaceState(null, '', '#' + target.id); } catch (_) {}
+    }
+    badge.addEventListener('click', go);
+    badge.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') go(e);
+    });
+  });
+
+  // ---------- ② 標題錨點分享 -------------------------------------------
+  if (typeof isIndexPage !== 'function' || !isIndexPage()) {
+    document.querySelectorAll('h2[id], h3[id]').forEach(function (h) {
+      if (h.querySelector('.anchor-share')) return;
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'anchor-share';
+      btn.textContent = '🔗';
+      btn.title = tt('复制本节链接', '複製本節連結');
+      btn.setAttribute('aria-label', btn.title);
+      btn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var url = window.location.origin + window.location.pathname + '#' + h.id;
+        if (typeof copyText === 'function') copyText(url);
+        else if (navigator.clipboard) navigator.clipboard.writeText(url);
+      });
+      h.appendChild(btn);
+    });
+  }
+
+  // ---------- ③ ebook 無跟播章節提示 ------------------------------------
+  if (window.location.pathname.indexOf('/ebook/') !== -1 &&
+      document.querySelector('.para-block') &&
+      !document.querySelector('button.qa-play')) {
+    var h1 = document.querySelector('main h1, h1');
+    if (h1) {
+      var note = document.createElement('p');
+      note.className = 'no-audio-note';
+      note.textContent = tt(
+        '本讲次暂未提供音档跟播（音档校对中，敬请见谅）。',
+        '本講次暫未提供音檔跟播（音檔校對中，敬請見諒）。');
+      h1.insertAdjacentElement('afterend', note);
+    }
+  }
+})();
+// ============================================================
+// 17-theme-pwa.js — 深色面板配色（粉夜/墨夜）＋ PWA 註冊
+//
+// ① 深色模式第二套配色「墨夜」（中性深灰＋暖金，適合長時間夜讀）：
+//    偏好存 localStorage('w2e:darkPalette')，'neutral' 時於
+//    body 掛 .dark-neutral（防閃爍由模板 prepaint 腳本掛到 <html>）。
+//    工具欄主題列由 02-reader-ux.js 產生第三顆鈕，事件在 04-events.js。
+// ② PWA：/wenda2_ebook/ 與 /ebook/ 下註冊 /sw.js，離線可開曾讀頁面；
+//    音檔刻意不快取（避免佔滿裝置儲存）。
+// ============================================================
+
+;(function () {
+  // ---- 深色面板配色 ----
+  function applyPalette() {
+    var dark = document.body.classList.contains('dark-mode');
+    var neutral = false;
+    try { neutral = localStorage.getItem('w2e:darkPalette') === 'neutral'; } catch (e) {}
+    document.body.classList.toggle('dark-neutral', dark && neutral);
+    document.documentElement.classList.remove('dark-neutral');
+  }
+  applyPalette();
+
+  // 主題切換（04-events.js 點 theme-* 鈕改 body.dark-mode）後跟隨重評估
+  var mo = new MutationObserver(function (muts) {
+    for (var i = 0; i < muts.length; i++) {
+      if (muts[i].type === 'attributes') { applyPalette(); break; }
+    }
+  });
+  mo.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+  window.W2E = window.W2E || {};
+  W2E.darkPalette = function (name) {
+    try {
+      if (name === 'neutral' || name === 'pink') localStorage.setItem('w2e:darkPalette', name);
+      else localStorage.removeItem('w2e:darkPalette');
+    } catch (e) {}
+    applyPalette();
+  };
+
+  // 更新工具欄按鈕狀態（供 04-events.js 的 theme 事件呼叫）
+  W2E.updateDarkPaletteButtons = function () {
+    var neutral = false;
+    try { neutral = localStorage.getItem('w2e:darkPalette') === 'neutral'; } catch (e) {}
+    var btn = document.querySelector('[data-action="theme-dark-neutral"]');
+    if (btn) btn.classList.toggle('active', neutral);
+  };
+  W2E.updateDarkPaletteButtons();
+
+  // ---- PWA ----
+  var inEbook = /^\/(wenda2_ebook|ebook)(\/|$)/.test(window.location.pathname);
+  if (inEbook && 'serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
+  }
+})();
 });
