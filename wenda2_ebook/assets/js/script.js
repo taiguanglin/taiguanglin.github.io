@@ -839,8 +839,63 @@ function generateSearchResultItem(result, index, indexOffset, query) {
   `;
 }
 
+// ============================================================
+// 搜尋狀態 ↔ URL hash（#q=…&scope=…）：返回本頁時可由 hash 還原查詢
+// （replaceState 不產生新瀏覽記錄；配對 01e 的自動還原流程）
+// ============================================================
+
+// 從 URL hash 讀取搜尋狀態（無則回傳空字串的查詢）
+function readSearchStateFromHash() {
+  const hash = window.location.hash.replace(/^#/, '');
+  const qMatch = /(?:^|&)q=([^&]*)/.exec(hash);
+  let q = '';
+  if (qMatch) {
+    try {
+      q = decodeURIComponent(qMatch[1]);
+    } catch (e) {
+      q = qMatch[1];
+    }
+  }
+  const scopeMatch = /(?:^|&)scope=([^&]*)/.exec(hash);
+  let scope = '';
+  if (scopeMatch) {
+    try {
+      scope = decodeURIComponent(scopeMatch[1]);
+    } catch (e) {
+      scope = scopeMatch[1];
+    }
+  }
+  return { q: q, scope: scope };
+}
+
+// 把目前查詢／範圍寫入 URL hash（replaceState：不產生新瀏覽記錄）
+function updateSearchQueryHash(query) {
+  const q = (query || '').trim();
+  // 與 performSearch 相同的門檻：空查詢或 ≥2 字元才寫入，避免打字中途污染 hash
+  if (q && q.length < 2) return;
+  let parts = [];
+  if (q) parts.push('q=' + encodeURIComponent(q));
+  if (q && searchScope && searchScope !== 'both') {
+    parts.push('scope=' + encodeURIComponent(searchScope));
+  }
+  const newHash = parts.length ? '#' + parts.join('&') : '';
+  const current = window.location.hash;
+  if (current === newHash) return;
+  try {
+    history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+  } catch (e) { /* 部分環境不允許 history 操作，忽略 */ }
+}
+
+// 對外（01e / 模組載入順序在後者）提供 hash 讀取
+W2E.search = W2E.search || {};
+W2E.search.readStateFromHash = readSearchStateFromHash;
+
 // 执行搜索
-function performSearch(query) {
+// targetDisplayedCount：還原情境下欲重現的「已顯示筆數」（一般搜尋傳 undefined → 第一頁）
+function performSearch(query, targetDisplayedCount) {
+  // 同步查詢到 URL hash：返回本頁時可據此還原結果
+  updateSearchQueryHash(query);
+
   const elements = getSearchElements();
   resetSearchResultsHeight();
 
@@ -889,8 +944,9 @@ function performSearch(query) {
 
     if (results.length > 0) {
       resetSearchResultsHeight();
-      displayPagedResults(trimmedQuery);
+      displayPagedResults(trimmedQuery, targetDisplayedCount);
       setSearchScopeVisible(true);
+      if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
     } else {
       displayNoResults(trimmedQuery, elements);
       elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
@@ -903,6 +959,7 @@ function performSearch(query) {
 
     elements.searchResults.style.display = 'block';
     elements.tocHeader.style.display = 'none';
+    if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
     setTimeout(updateFloatingControlsState, 10);
     setTimeout(updateBottomSearchButtonsVisibility, 10);
 
@@ -917,9 +974,13 @@ function performSearch(query) {
 }
 
 // 展示第一页结果（分页）
-function displayPagedResults(query) {
+// targetDisplayedCount：傳入時一次顯示到該筆數（搜尋狀態還原用）
+function displayPagedResults(query, targetDisplayedCount) {
   const elements = getSearchElements();
-  displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  const firstPageCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  displayedResultsCount = (typeof targetDisplayedCount === 'number' && targetDisplayedCount > firstPageCount)
+    ? Math.min(targetDisplayedCount, currentSearchResults.length)
+    : firstPageCount;
   const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
   elements.searchResultsList.innerHTML = resultsToShow.map((r, i) =>
     generateSearchResultItem(r, i, 0, query)
@@ -949,6 +1010,7 @@ function loadMoreResults() {
   expandSearchResultsHeight();
   updateResultsCounter();
   updateLoadMoreButtons();
+  if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
   const el = document.getElementById('search-status');
   if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
 }
@@ -970,6 +1032,7 @@ function loadAllResults() {
   expandSearchResultsHeight();
   updateResultsCounter();
   updateLoadMoreButtons();
+  if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
   const el = document.getElementById('search-status');
   if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
 }
@@ -1110,8 +1173,45 @@ function setSearchScopeVisible(visible) {
   scopeEl.classList.toggle('is-visible', !!visible);
 }
 
+// ============================================================
+// 從 URL hash / 快照還原搜尋狀態（返回本頁時：#q=…&scope=…）
+// 配對 01d 的 updateSearchQueryHash（performSearch 寫入、replaceState 不產生記錄）
+// 以及 10-search-return 的 sessionStorage 快照（還原筆數＋捲動位置）
+// ============================================================
+function restoreSearchFromHash() {
+  const state = readSearchStateFromHash();
+  const snap = (typeof readSearchSnapshot === 'function') ? readSearchSnapshot() : null;
+  // hash 沒有時，以快照（同分頁返回）兒底
+  const q = ((state.q || '') || (snap && snap.q) || '').trim();
+  if (!q || q.length < 2) return;
+
+  const input = document.getElementById('search-input');
+  if (input) input.value = q;
+
+  const scopeCandidate = state.scope || (snap && snap.scope) || '';
+  const validScopes = ['question', 'answer', 'both'];
+  if (scopeCandidate && validScopes.indexOf(scopeCandidate) !== -1) {
+    searchScope = scopeCandidate;
+    document.querySelectorAll('.search-scope-btn').forEach((b) => {
+      const active = b.getAttribute('data-scope') === searchScope;
+      b.classList.toggle('is-active', active);
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  // 還原「已顯示筆數」與「捲動位置」（搜尋完成後套用）
+  const targetDisplayed = (snap && typeof snap.displayed === 'number' && snap.displayed > 0) ? snap.displayed : undefined;
+  const wantScroll = !!(snap && typeof snap.scrollY === 'number' && snap.scrollY > 0);
+  window.__w2eRestoreScrollY = wantScroll ? snap.scrollY : 0;
+
+  performSearch(q, targetDisplayed);
+}
+
 // 清除搜索状态（重置输入框、结果、计数）
 function clearSearch() {
+  // 明確清除時同步清掉 URL hash 與 sessionStorage 快照，返回本頁才不會又自動還原已刪除的查詢
+  updateSearchQueryHash('');
+  if (typeof writeSearchSnapshot === 'function') writeSearchSnapshot(null);
   const elements = getSearchElements();
   if (elements.searchInput) elements.searchInput.value = '';
   if (elements.searchResults) elements.searchResults.style.display = 'none';
@@ -1129,6 +1229,9 @@ function clearSearch() {
 
 // 收起搜索面板
 function collapseSearch() {
+  // 收起視同離開搜尋：同步清掉 URL hash 與 sessionStorage 快照
+  updateSearchQueryHash('');
+  if (typeof writeSearchSnapshot === 'function') writeSearchSnapshot(null);
   const searchContainer  = document.getElementById('search-container');
   const searchActivation = document.querySelector('.search-activation');
   if (!searchContainer || !searchActivation) return;
@@ -1328,13 +1431,36 @@ async function initSearch() {
     if (btn) btn.addEventListener('click', fn);
   });
 
-  // 结果列表点击（與目錄連結一致：同頁導覽，瀏覽器返回可回到結果）
+  // 结果列表点击：一律開新分頁，本頁搜尋結果完整保留（返回免重載索引）。
+  // 先把手動展開的 TOC 狀態存進 sessionStorage，防範瀏覽器對 _blank 一律同頁開啟的設定。
   elements.searchResultsList.addEventListener('click', (e) => {
     const item = e.target.closest('.search-result-item');
     if (item && item.dataset.url) {
-      window.location.href = item.dataset.url;
+      if (typeof saveTocExpandSnapshot === 'function') {
+        try { saveTocExpandSnapshot(); } catch (err) { /* 非致命 */ }
+      }
+      window.open(item.dataset.url, '_blank', 'noopener');
     }
   });
+
+  // 從其他分頁返回本頁時，若有 #q= hash（或先前查詢）即自動還原搜尋狀態
+  restoreSearchFromHash();
+
+  // 還原情境：查詢/筆數重現後，把捲動位置也帶回來。
+  // 先關掉瀏覽器原生的 scroll restoration（它會在內容長高後把位置拉回重載前的
+  // 舊位，覆蓋我們要還原的位置），改由下面的快照還原接手。
+  if (window.__w2eRestoreScrollY > 0) {
+    try { history.scrollRestoration = 'manual'; } catch (e) { /* 忽略 */ }
+    const targetY = window.__w2eRestoreScrollY;
+    window.__w2eRestoreScrollY = 0;
+    requestAnimationFrame(() => {
+      window.scrollTo(0, targetY);
+      // 版面（字型/圖片）就緒後再校一次（帶入固定目標值，不重讀快照）
+      setTimeout(() => {
+        if (typeof restoreSearchScroll === 'function') restoreSearchScroll(targetY);
+      }, 200);
+    });
+  }
 }
 
 // ============================================================
@@ -1344,6 +1470,33 @@ if (isIndexPage()) {
   const searchActivateBtn = document.getElementById('search-activate-btn');
   if (searchActivateBtn) {
     searchActivateBtn.addEventListener('click', activateSearch);
+
+    // 帶 #q= hash 或 ?q= 查詢參數（章節頁「回到搜尋結果」按鈕）載入時，
+    // 自動啟用搜索並還原上次查詢，免去手動點按鈕＋重打關鍵字
+    const hashState = readSearchStateFromHash();
+    let urlQ = hashState.q || '';
+    if (!urlQ) {
+      const urlScopeMatch = /(?:^|&)scope=([^&]*)/.exec(window.location.search.replace(/^\?/, ''));
+      const urlQMatch = /(?:^|&)q=([^&]*)/.exec(window.location.search.replace(/^\?/, ''));
+      if (urlQMatch) {
+        try { urlQ = decodeURIComponent(urlQMatch[1]); } catch (e) { urlQ = urlQMatch[1]; }
+      }
+      // ?q= 同時可能帶 ?scope=（回 URL 時沒有 hash 也能正確設範圍）；
+      // restoreSearchFromHash 只讀 hash，這裡先把 scope 參數寫進 hash（不觸發記錄）
+      if (urlQ && urlScopeMatch && !window.location.hash) {
+        let scopeParam = '';
+        try { scopeParam = decodeURIComponent(urlScopeMatch[1]); } catch (e) { scopeParam = urlScopeMatch[1]; }
+        if (['question', 'answer', 'both'].indexOf(scopeParam) !== -1) {
+          try {
+            history.replaceState(null, '', window.location.pathname + window.location.search +
+              '#q=' + encodeURIComponent(urlQ) + (scopeParam !== 'both' ? '&scope=' + encodeURIComponent(scopeParam) : ''));
+          } catch (e) { /* 忽略 */ }
+        }
+      }
+    }
+    if ((urlQ || '').trim().length >= 2) {
+      setTimeout(() => { activateSearch(); }, 0);
+    }
   }
 }
   // ============ 功能實現 ============
@@ -3568,6 +3721,119 @@ function addHomepageBookmarkEventListeners() {
   initTocCollapseControl();
   initFloatingLevelControls();
   
+  // ============================================================
+  // TOC 手動展開狀態快照（sessionStorage per-entry）
+  //
+  // 目的：使用者手動展開/收合的 TOC 節點，在離開頁面（點搜尋結果、TOC
+  // 連結跳章節）再返回時能原樣重現——鍵含頁面路徑與書籤，兩本電子書
+  // （wenda2_ebook / ebook）互不干擾、兩個分頁也不衝突。每次快照整批
+  // 覆寫同一鍵，舊快照自動作廢，不會殘留舊書籤的殭屍項目。
+  // ============================================================
+  
+  // 站內文檔頁：傳回「電子書根目錄」鍵（index.html / 0N.html 同屬一本書）；
+  // 站外頁面或 file:// 環境回傳 null（不寫入）。
+  function getTocSnapshotKey() {
+    try {
+      if (window.location.protocol === 'file:') return null;
+      const segs = window.location.pathname.split('/');
+      if (segs.length < 2) return null;
+      return 'tocExpandState:' + segs[segs.length - 2];
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // 穩定書籤：優先 href（頁面＋錨點，TOC 改版仍穩定）；無 href 時用標題文字。
+  function computeTocItemKey(item) {
+    const link = item.querySelector('a');
+    const href = link ? (link.getAttribute('href') || '') : '';
+    if (href) return href;
+    const clone = item.cloneNode(true);
+    clone.querySelectorAll('ul, .toc-expand-icon').forEach(el => el.remove());
+    const text = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+    return 't:' + text.slice(0, 120);
+  }
+  
+  // 為所有目錄項補上 data-id（快照還原用的書籤）
+  function ensureTocItemIds(tocContainer) {
+    if (!tocContainer) return;
+    tocContainer.querySelectorAll('.toc-item').forEach(item => {
+      if (!item.getAttribute('data-id')) {
+        item.setAttribute('data-id', computeTocItemKey(item));
+      }
+    });
+  }
+  
+  // 依 data-id 找目錄項（CSS.escape 防特殊字元破壞選擇器）
+  function tocItemById(tocContainer, id) {
+    const esc = (window.CSS && CSS.escape) ? CSS.escape(id) : id.replace(/"/g, '\\"');
+    return tocContainer.querySelector('.toc-item[data-id="' + esc + '"]');
+  }
+  
+  // 把目前「手動展開的節點」（data-user-toggled 且有可見子項）快照到 sessionStorage。
+  // 僅 index 頁寫入：章節頁的快照會殘留舊目錄的書籤，反而污染 index 的還原。
+  function saveTocExpandSnapshot() {
+    if (!isIndexPage()) return;
+    const key = getTocSnapshotKey();
+    if (!key) return;
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+  
+    const expanded = [];
+    tocContainer.querySelectorAll('.toc-item[data-user-toggled="true"]').forEach(item => {
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon && icon.getAttribute('aria-expanded') === 'true' && hasVisibleDirectChildren(item)) {
+        expanded.push(item.getAttribute('data-id'));
+      }
+    });
+  
+    try {
+      sessionStorage.setItem(key, JSON.stringify(expanded));
+    } catch (e) { /* 隱私模式等；忽略 */ }
+  }
+  
+  // 還原快照：展開記錄中的節點（可見且存在者）
+  function restoreTocExpandSnapshot() {
+    const key = getTocSnapshotKey();
+    if (!key) return;
+    let expanded = null;
+    try {
+      const raw = sessionStorage.getItem(key);
+      if (raw) expanded = JSON.parse(raw);
+    } catch (e) { /* 解析失敗視同無快照 */ }
+    if (!Array.isArray(expanded) || expanded.length === 0) return;
+  
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+  
+    expanded.forEach(id => {
+      if (!id) return;
+      const item = tocItemById(tocContainer, id);
+      if (!item) return; // 目錄改版後書籤可能失效，靜默略過
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon && icon.getAttribute('aria-expanded') === 'false') {
+        const actuallyExpanded = hasVisibleDirectChildren(item);
+        item.setAttribute('data-user-toggled', 'true');
+        if (actuallyExpanded) {
+          setTocIconState(icon, true);
+        } else {
+          expandTocItem(item);
+          setTocIconState(icon, true);
+        } 
+      }
+    });
+  
+    try { sessionStorage.removeItem(key); } catch (e) { /* 忽略 */ }
+  }
+  
+  // 事件：點 TOC 連結（含葉節點整行點擊 link.click()）前快照；頁面卸載前也快照一次
+  document.addEventListener('click', function(e) {
+    if (e.target.closest && e.target.closest('#main-toc a, #chapter-toc a')) {
+      saveTocExpandSnapshot();
+    }
+  }, true);
+  window.addEventListener('pagehide', saveTocExpandSnapshot);
+  
   // 展開/收合鈕狀態同步（.collapsed 樣式、▼/▶ 文字與 aria-expanded 一致）
   function setTocIconState(icon, expanded) {
     if (!icon) return;
@@ -3582,6 +3848,9 @@ function addHomepageBookmarkEventListeners() {
     
     // 检测实际的目录层级并隐藏不必要的按钮
     const maxLevel = detectAndHideLevelButtons(tocContainer);
+    
+    // 為目錄項補上 data-id（展開狀態快照的還原書籤）
+    ensureTocItemIds(tocContainer);
     
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
@@ -3610,6 +3879,9 @@ function addHomepageBookmarkEventListeners() {
     
     // 绑定全部展开/折叠按钮事件
     bindExpandAllEvents();
+    
+    // 還原前次離開頁前手動展開的節點（sessionStorage 快照）
+    restoreTocExpandSnapshot();
   }
   
   // 智能選擇可用的層級
@@ -3913,6 +4185,9 @@ function addHomepageBookmarkEventListeners() {
             expandTocItem(expandableItem);
             setTocIconState(icon, true);
           }
+          
+          // 同步快照，離頁（點連結跳章節、開新分頁）再返回時能原樣重現
+          saveTocExpandSnapshot();
         }
       } else {
         // 这是没有展开图标的目录项（叶子节点），处理整行点击跳转
@@ -5982,4 +6257,181 @@ function addHomepageBookmarkEventListeners() {
       isEnabled: function () { return pinOn; }
     };
   })();
+// ============================================================
+// 10-search-return.js — 「回到搜尋結果」浮動按鈕 + 搜尋狀態快照/還原
+//
+// 兩端配合（都在本 bundle 內）：
+//   ① 章節頁：URL 帶 ?q=（由 index 的 buildSearchReturnUrl 附加）時，
+//      顯示「回到搜尋結果」浮動按鈕，點擊返回 index.html?q=…#q=…；
+//      離開前再把 TOC 展開快照寫一次（saveTocExpandSnapshot 定義於 06）。
+//   ② index 頁：搜尋／分頁／捲動時把 {q, scope, displayed, scrollY}
+//      存進 sessionStorage（per-tab），restoreSearchFromHash（01e）回來時
+//      一併還原「已顯示筆數」與「捲動位置」。
+// ============================================================
+
+// 搜尋狀態快照鍵（sessionStorage：關閉分頁即失效，不同分頁互不干擾）
+var W2E_SEARCH_SNAPSHOT_KEY = 'w2eSearchSnapshot';
+
+// 讀取快照；解析失敗視同無快照
+function readSearchSnapshot() {
+  try {
+    var raw = sessionStorage.getItem(W2E_SEARCH_SNAPSHOT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+// 寫入快照（q 為空字串時直接移除鍵）
+function writeSearchSnapshot(state) {
+  try {
+    if (state && state.q && String(state.q).trim()) {
+      sessionStorage.setItem(W2E_SEARCH_SNAPSHOT_KEY, JSON.stringify(state));
+    } else {
+      sessionStorage.removeItem(W2E_SEARCH_SNAPSHOT_KEY);
+    }
+  } catch (e) { /* 隱私模式等；忽略 */ }
+}
+
+// ------------------------------------------------------------
+// index 頁：持續記錄 {q, scope, displayed, scrollY}
+// ------------------------------------------------------------
+
+// 由目前 UI 狀態組快照並寫入 sessionStorage
+function captureSearchSnapshot() {
+  if (!isIndexPage()) return;
+  var input = document.getElementById('search-input');
+  if (!input) return;
+  var q = (input.value || '').trim();
+  if (!q || q.length < 2) return; // 無有效查詢就不留快照
+  writeSearchSnapshot({
+    q: q,
+    scope: (typeof searchScope !== 'undefined' && searchScope) || 'both',
+    displayed: (typeof displayedResultsCount !== 'undefined') ? displayedResultsCount : 0,
+    scrollY: Math.round(window.scrollY || 0)
+  });
+}
+
+// index 頁啟動：接上持續快照（節流）
+function initSearchSnapshotCapture() {
+  if (!isIndexPage()) return;
+
+  var lastWrite = 0;
+  function throttledCapture() {
+    var now = Date.now();
+    if (now - lastWrite < 400) return;
+    lastWrite = now;
+    captureSearchSnapshot();
+  }
+
+  window.addEventListener('scroll', throttledCapture, { passive: true });
+  window.addEventListener('pagehide', captureSearchSnapshot);
+
+  // 分頁「顯示更多／全部」改變 displayedResultsCount → 立即快照
+  ['search-load-more', 'search-load-all', 'search-load-more-bottom', 'search-load-all-bottom'].forEach(function (id) {
+    var btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', function () { setTimeout(captureSearchSnapshot, 0); });
+  });
+}
+
+// ------------------------------------------------------------
+// index 頁：還原捲動位置（01e 的 restoreSearchFromHash 呼叫）
+// ------------------------------------------------------------
+
+// 還原上次離開時的捲動位置；targetY 明確傳入，不重讀快照（避免還原途中
+// 自己的 scroll 快照蓋寫目標值造成追逐迴圈）
+function restoreSearchScroll(targetY) {
+  if (typeof targetY !== 'number' || targetY <= 0) {
+    var snap = readSearchSnapshot();
+    if (!snap || typeof snap.scrollY !== 'number' || snap.scrollY <= 0) return;
+    targetY = snap.scrollY;
+  }
+
+  var tries = 0;
+  var maxTries = 20; // 最多約 2 秒；版面（字型/圖片）就緒後停
+  var timer = setInterval(function () {
+    tries++;
+    // 查詢已變更（使用者自己改了關鍵字）→ 放棄舊位置
+    var input = document.getElementById('search-input');
+    var q = input ? (input.value || '').trim() : '';
+    if (!q || q.length < 2) {
+      clearInterval(timer);
+      return;
+    }
+    window.scrollTo(0, targetY);
+    var settled = (Math.abs(window.scrollY - targetY) < 4) || tries >= maxTries;
+    if (settled) clearInterval(timer);
+  }, 100);
+}
+
+// ------------------------------------------------------------
+// 章節頁：「回到搜尋結果」浮動按鈕
+// ------------------------------------------------------------
+
+function getSearchReturnUrl() {
+  var snap = readSearchSnapshot();
+  if (!snap || !snap.q) return null;
+  var isTrad = isTraditionalChinesePage();
+  var indexPage = isTrad ? 'index_trad.html' : 'index.html';
+  // pathname 可能是 …/wenda2_ebook/01.html 或 …/ebook/05.html；
+  // scope 同時放 query 與 hash（hash 是 restoreSearchFromHash 的主要來源）
+  var scopePart = (snap.scope && snap.scope !== 'both') ? '&scope=' + encodeURIComponent(snap.scope) : '';
+  return indexPage +
+    '?q=' + encodeURIComponent(snap.q) + scopePart +
+    '#q=' + encodeURIComponent(snap.q) + scopePart;
+}
+
+// 按鈕定位：避開浮動層級控制（桌面右下 120px 起）與 QA 播放器
+function applySearchReturnBtnPosition(btn) {
+  var isMobile = window.innerWidth <= 600;
+  var bottomPx = isMobile ? 130 : 120;
+  var floatingControls = document.getElementById('floating-level-controls');
+  if (floatingControls && floatingControls.style.display === 'block') {
+    // 浮動層級控制顯示中 → 再往上讓位
+    bottomPx += (isMobile ? 160 : 120);
+  }
+  // QA 底部播放器顯示中 → 讓位到播放器上方
+  var qaPlayer = document.querySelector('.qa-player.visible');
+  if (qaPlayer) bottomPx += 100;
+  btn.style.bottom = bottomPx + 'px';
+}
+
+// 在章節頁建立/顯示「回到搜尋結果」按鈕
+function initSearchReturnButton() {
+  if (isIndexPage()) return;
+  if (document.getElementById('search-return-btn')) return;
+  if (!getSearchReturnUrl()) return; // 沒有快照 → 不顯示
+
+  var isTrad = isTraditionalChinesePage();
+  var btn = document.createElement('button');
+  btn.id = 'search-return-btn';
+  btn.className = 'search-return-btn';
+  btn.type = 'button';
+  btn.innerHTML = '🔍 ' + getI18nText('search.returnToResults', isTrad, '回到搜尋結果');
+  btn.title = getI18nText('search.returnToResultsTitle', isTrad, '返回首頁並還原上次的搜尋結果');
+  btn.setAttribute('aria-label', btn.title);
+
+  btn.addEventListener('click', function () {
+    // 離開前補寫 TOC 展開快照（saveTocExpandSnapshot 定義於 06-toc-collapse.js）
+    if (typeof saveTocExpandSnapshot === 'function') {
+      try { saveTocExpandSnapshot(); } catch (e) { /* 非致命 */ }
+    }
+    var url = getSearchReturnUrl();
+    if (url) window.location.href = url;
+  });
+
+  document.body.appendChild(btn);
+  applySearchReturnBtnPosition(btn);
+
+  // 浮動層級控制顯示/隱藏時重新定位（07 的 handleScroll 會改它的 display）
+  window.addEventListener('scroll', function () {
+    applySearchReturnBtnPosition(btn);
+  }, { passive: true });
+  window.addEventListener('resize', function () {
+    applySearchReturnBtnPosition(btn);
+  }, { passive: true });
+}
+
+initSearchSnapshotCapture();
+initSearchReturnButton();
 });
