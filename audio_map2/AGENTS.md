@@ -16,6 +16,22 @@
   已移除）。對應由 `tool/word_audio_map2/link_chapters.py` 內容比對寫回（分段調整時需重跑），欄位
   只在段上新增、不改文字／時間／status。
 
+### 「圖片題」block（沒有題目段的答案）
+
+前 12 章有 **16 個 block 沒有 `<div class="question">`**：提問以截圖送出（`<img alt="提問人：日期 …">`）
+或題目被換成 `（此問題丟失或未收集到）`／`问题缺失`／`(TAI師父自白)` 之類佔位。這種 block 沒有 qid，
+`link_chapters.py`／`audit_html_blocks.py` 只走 question block，比對不到，過去一律沒有播放鈕。
+
+- 對應寫在 **`chapter_answer_ids`**（該 block 自己的 `answer-…` id）＋ `chapter_indexes`，
+  **不放進 `chapter_question_ids`**。
+- 產生方式：`tool/word_audio_map2/link_image_blocks.py`（dry-run 預設、`--apply` 才寫檔），
+  以**答案文字**比對（OpenCC t2s ＋ 著/着 摺疊），只動上述兩欄與 `notes`。
+- 注入：`tool/word2ebook/core/audio_map_injector.py` 的 `inject_word_html_from_audio_map2()`
+  有第二個 pass 專門處理這種 block（走 `by_answer`）；審核 UI 的「HTML 對應」在
+  `chapter_question_ids` 為空時也會渲染 `答` anchor。
+- 合併段（一段連講多個 block）也會掛上多個 `answer-…` id，並在 `notes` 記
+  `html-portion: …播放鈕共用本段時間`——該 block 的時間是整段範圍，不是精準切點。
+
 **完成／review 判定以「最後播放」為準**：UI 實際播放某段時寫入 `meta.lastPlayed`。只有
 「有 `meta.lastPlayed`」且 `start != null` 的段，重建電子書後前 12 章才會出現播放鈕。
 唯一例外：`zero: true`（零長度）段即使無 `lastPlayed`／`lastEdited` 也一律視為已確認。
