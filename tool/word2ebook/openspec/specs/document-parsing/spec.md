@@ -64,13 +64,21 @@ The system SHALL generate stable, deterministic IDs for each Q&A pair based on
   `-2`, `-3`, … numeric suffix, so element IDs stay unique per page
 
 ### Requirement: Image Extraction
-The system SHALL extract inline images from the `.docx` and save them as
-`assets/images/image_N.png` in the output folder.
+The system SHALL extract inline images from the `.docx`, transcode them to WebP,
+and save them as `assets/images/image_N.webp` in the output folder.
 
 #### Scenario: Document with images
 - GIVEN a `.docx` with embedded images
 - WHEN the parser runs
 - THEN each image SHALL be saved to `assets/images/` and referenced in HTML via relative path
+
+#### Scenario: Source image is PNG or JPEG
+- GIVEN a `.docx` whose embedded images are PNG, JPEG, or GIF
+- WHEN `ImageHandler.save_image_bytes` runs
+- THEN the bytes SHALL be transcoded to WebP before being written
+  (`utils/image_markup.py::encode_webp`, quality `WEBP_QUALITY` = 85, alpha preserved)
+- AND only the WebP file SHALL be written — the source encoding SHALL NOT also be
+  kept, so `assets/images/` ends up WebP-only
 
 ### Requirement: TOC Metadata
 For each chapter the system SHALL populate `Chapter.toc_items` with `TOCItem`

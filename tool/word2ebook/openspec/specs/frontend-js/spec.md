@@ -323,6 +323,7 @@ the client mini-player SHALL continue announcing via the label element.
 ### Requirement: Image Markup Contract
 All `<img>` tags in generated HTML SHALL carry `loading="lazy"`, a meaningful
 `alt` (nearest text context, e.g. `alt_from_context`), and, when the file is
-readable, explicit `width`/`height` (from `png_dimensions`) to prevent layout
+readable, explicit `width`/`height` (from `image_dimensions`, which detects
+PNG/JPEG/WebP) to prevent layout
 shift (`utils/image_markup.py::render_img_tag` — shared by document_parser,
 pdf_parser and books2ebook).
