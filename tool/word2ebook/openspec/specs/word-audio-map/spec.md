@@ -32,6 +32,11 @@ is **not** the injection gate.
 - THEN both stable question ids SHALL appear in that segment's
   `chapter_question_ids` and SHALL share the segment's reviewed range
 
+A segment that speaks several ebook blocks in a row (a merged Word segment) may
+be linked to several of them.  Where such a link shares the segment's coarse
+range, `notes` SHALL carry an `html-portion:` marker naming the block id, so the
+shared range is not mistaken for a precise anchor.
+
 ### Requirement: Reviewed-Gated Injection
 `inject_word_chapters()` SHALL insert an inline `.qa-play` button **only** for
 segments that a human actually listened to **and** carry a non-null range
@@ -73,6 +78,44 @@ full suffixed id SHALL take precedence over the base retry.
 - GIVEN the segment maps contain both `question-X-2` and `question-X`
 - WHEN injecting
 - THEN the full-id lookup SHALL win and the base retry SHALL not shadow it
+
+### Requirement: Questionless Blocks Are Addressed By Their Answer Id
+Some ebook blocks have **no** `<div class="question">` of their own: the
+question was submitted as a screenshot (`<img alt="提問人：日期 …">`) or was
+replaced by a placeholder (`（此問題丟失或未收集到）` / `问题缺失` /
+`(TAI師父自白)`).  Such blocks SHALL be mapped by the audio_map2 segment that
+speaks them, recorded as `chapter_answer_ids` (the block's own `answer-…` id)
+plus `chapter_indexes`, and `link_image_blocks.py` SHALL be the tool that
+derives those links by content.
+
+`inject_word_html_from_audio_map2()` SHALL run a second pass over the answer
+blocks that the question-driven pass never reached, resolving them through
+`by_answer` alone.  A block already reached by the question-driven pass SHALL be
+skipped so no block receives two buttons, and the answerer-name lookup SHALL be
+bounded by the block's own answer div (never reaching into the next question
+block).  The same `meta.lastPlayed` review gate SHALL apply.
+
+#### Scenario: Screenshot-question block gets its button
+- GIVEN a chapter containing `<hr/><img alt="心的選擇：2025-03-12 18:42 …"/>` followed
+  by `<div class="answer" id="answer-0d6082063772">` (no question div), and an
+  audio_map2 segment with `chapter_answer_ids` = `["answer-0d6082063772"]`, a
+  `meta.lastPlayed` record and a non-null range
+- WHEN the chapter is built
+- THEN a `.qa-play` button with that segment's range SHALL appear inline
+  immediately after that block's `<span class="answerer">`, and no button SHALL
+  appear for any other block in that chapter
+
+#### Scenario: Unreviewed questionless block stays buttonless
+- GIVEN a questionless answer block whose only audio_map2 segment lacks
+  `meta.lastPlayed`
+- WHEN the chapter is built
+- THEN no play button SHALL be emitted for that block
+
+#### Scenario: Question-driven block is not double-injected
+- GIVEN a chapter with both normal question+answer blocks and a questionless
+  block, all of them listed in `chapter_answer_ids`
+- WHEN the chapter is built
+- THEN each block SHALL carry exactly one inline play button
 
 ### Requirement: Injection Is Idempotent And Non-Destructive
 Injecting twice SHALL NOT duplicate buttons. An answer whose answerer name is
