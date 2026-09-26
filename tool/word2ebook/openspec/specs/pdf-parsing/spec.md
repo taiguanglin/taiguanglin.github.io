@@ -536,7 +536,8 @@ SHALL group sections by `(year, month)` so January 2026 becomes
 ### Requirement: Embedded Images
 When an `ImageHandler` is supplied, the parser SHALL extract embedded PDF images
 in reading order (by page y then x), skip images whose display width and height
-are both below 80px, write each kept image under `assets/images/image_N.png`,
+are both below 80px, write each kept image under `assets/images/image_N.webp`
+(transcoded via `utils/image_markup.py::encode_webp`),
 and insert `<img src="assets/images/…" alt="Image">` into the surrounding
 content flow. When a Q/A card is open, the image SHALL stay inside that card
 (between preceding and following body text) rather than closing the card.
@@ -584,6 +585,9 @@ metadata, and the collapsible chapter TOC are produced identically.
 Images extracted from PDF pages SHALL be rendered through
 `utils/image_markup.py::render_img_tag` (via `PDFParser._render_img`) with
 `loading="lazy"`, a contextual `alt` (`提問配圖` / `回答配圖` / `答疑配圖`
-fallbacks by block role, refined by nearest text), and PNG dimension-based
-`width`/`height` when the file parses.
+fallbacks by block role, refined by nearest text), and width/height-derived
+`width`/`height` when the file parses. Dimension reading SHALL auto-detect the
+on-disk format — `image_dimensions` tries PNG → JPEG → WebP (`VP8 `/`VP8L`/
+`VP8X`), because extracted assets are WebP while the source bytes may be
+either.
 

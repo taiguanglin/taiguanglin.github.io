@@ -36,6 +36,27 @@ def _load_i18n_processor():
     return module.I18nProcessor()
 
 
+def _load_image_markup():
+    """載入 word2ebook 的圖片格式 SoT（``image_markup.py``：WebP 編碼 + 寬高）。
+
+    同 :func:`_load_i18n_processor` 的理由：該模組無內部 import，可獨立載入，
+    避開兩工具各自 ``config`` 套件名稱衝突。電子書圖一律 WebP 由此把關。
+    """
+    path = os.path.abspath(os.path.join(
+        os.path.dirname(__file__), "..", "word2ebook", "utils", "image_markup.py"
+    ))
+    spec = importlib.util.spec_from_file_location("_shared_image_markup", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入共用圖片模組：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+_IMAGE_MARKUP = _load_image_markup()
+file_to_webp = _IMAGE_MARKUP.file_to_webp
+
+
 _TAIWAN_CHINESE = _load_i18n_processor()
 _HTML_TAG_RE = re.compile(r"(<[^>]*>)", re.DOTALL)
 _HTML_RAW_BLOCK_RE = re.compile(
@@ -112,7 +133,11 @@ def parse_books(books_dir):
 
 
 def export_images(books_meta, books_dir, out_dir):
-    """把各書插圖匯出到 assets/img/，回傳 {book_number: {xref: rel_src}}。"""
+    """把各書插圖匯出到 assets/img/（統一 WebP），回傳 {book_number: {xref: rel_src}}。
+
+    PDF 內嵌圖多為 PNG，逐本匯出後再經 word2ebook 的 :func:`encode_webp`
+    轉碼（該模組是圖片格式的 SoT），並刪除中間 PNG，輸出目錄只留 WebP。
+    """
     img_root = os.path.join(out_dir, "assets", "img")
     maps = {}
     for bm in books_meta:
@@ -128,9 +153,8 @@ def export_images(books_meta, books_dir, out_dir):
                 continue
             os.makedirs(book_dir, exist_ok=True)
             base = os.path.join(book_dir, "img_%d" % xref)
-            rel_base = "assets/img/b%d/img_%d" % (bc.number, xref)
             dest = None
-            for ext in ("png", "jpeg", "jpg", "gif", "webp"):
+            for ext in ("webp", "png", "jpeg", "jpg", "gif"):
                 cand = base + "." + ext
                 if os.path.exists(cand):
                     dest = cand
@@ -143,6 +167,8 @@ def export_images(books_meta, books_dir, out_dir):
                 else:
                     print("   ⚠️ 圖片匯出失敗：xref=%d（%s）" % (xref, bc.title))
                     continue
+            # 統一轉 WebP（已是 .webp 時 file_to_webp 會原樣沿用）
+            dest = str(file_to_webp(dest))
             xref_map[xref] = os.path.relpath(dest, out_dir).replace(os.sep, "/")
         maps[bc.number] = xref_map
     return maps
