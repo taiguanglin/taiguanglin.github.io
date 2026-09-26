@@ -40,7 +40,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `10-search-return.js` | ~~「回到搜尋結果」浮動按鈕~~（2026-09 移除：依賴快照跨分頁複製，出現時機不穩）。現僅保留 index 頁持續快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage），供上一頁返回時由 01e 還原查詢、已顯示筆數與捲動位置 |
 | `11-reading-resume.js` | 閱讀位置記憶（`localStorage w2e:readpos`，頁面→捲動比例，LRU 40 頁）：重回同頁且無錨點時頂部提示「回到上次閱讀位置（X%）」；**總目錄頁（`isIndexPage()`）只有目錄無正文，既不記錄也不提示，並清除舊版殘留的目錄頁紀錄**；優先消化 `/lang-switch.js` 寫入的 `sessionStorage w2e:langjump`（簡繁雙頁切換原位恢復，總目錄頁也照樣消化以免標記外溢） |
 | `13-player-persist.js` | 音檔跨頁續播：定時（3s）與 `pagehide` 把 `{src, t, file, range, page, anchor}` 快照進 `sessionStorage w2e:playerState`（經 `W2E.qaAudio` 讀取）；任何頁載入後若有 12 小時內快照，左下浮出續播膠囊——同頁交回 08 播放器重播並 `seekAbs`，他頁自建 `Audio` 從斷點續播；✕ 丟棄 |
-| `14-search-plus.js` | 搜尋補強：`/` 或 Ctrl/Cmd+K 啟用並聚焦搜尋框；結果區 ↓/↑ 移動 `.kb-focus`、Enter 開啟、Esc 取消；章節頁帶 `?q=`（01e 開新頁時附加）且有錨點時，於錨點所在區塊以 `<mark class="w2e-hl">` 標出查詢詞 |
+| `14-search-plus.js` | 搜尋補強：`/` 或 Ctrl/Cmd+K 啟用並聚焦搜尋框；結果區 ↓/↑ 移動 `.kb-focus`、Enter 開啟、Esc 取消，結果列表重繪（換搜尋/換頁）時以 `MutationObserver`（childList/subtree）重置鍵盤焦點（不得使用已棄用的 `DOMSubtreeModified`）；章節頁帶 `?q=`（01e 開新頁時附加）且有錨點時，於錨點所在區塊以 `<mark class="w2e-hl">` 標出查詢詞 |
 | `15-mobile-toc.js` | 行動版目錄操作：≤768px 開啟浮動目錄時鋪 `.w2e-toc-backdrop`（點擊即關）；左緣 ≤28px 起右滑開啟、目錄內左滑關閉。**不**再建立常駐的 `.w2e-backtop` 回到頂端鈕——「回到頂端」只由右下角功能選單（`02-reader-ux.js` 的 `data-action="top"`）提供 |
 | `16-jump-share.js` | `.toc-count` 可點：直跳該主題第一則 `.question`（無則退回錨點）；章節頁 h2/h3[id] hover/focus 出現 🔗 錨點鈕複製「頁面#錨點」；`/ebook/` 講經頁（有 `.para-block`）全無 `.qa-play` 時在 h1 後插「本講次暫無音檔跟播」提示 |
 | `17-theme-pwa.js` | 深色第二面板「墨夜」：`localStorage w2e:darkPalette=neutral` 時 `body.dark-neutral`（防閃爍由模板 prepaint 掛 `<html>`）；供 04-events.js 的 `theme-dark-neutral` 動作呼叫；`/wenda2_ebook/`、`/ebook/` 下註冊根 `/sw.js`（PWA 離線） |

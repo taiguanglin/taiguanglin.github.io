@@ -3463,7 +3463,9 @@ function addHomepageBookmarkEventListeners() {
           const shareUrl = generateShareUrl(shareElement);
           const isQuestion = shareElement.classList.contains('question');
           const isParagraph = shareElement.classList.contains('para-block');
-          const toastMessage = isParagraph ? '段落鏈接已複製' : (isQuestion ? '問題鏈接已複製' : '回答鏈接已複製');
+          const toastMessage = isParagraph
+            ? getText('段落链接已复制', '段落連結已複製')
+            : (isQuestion ? getText('问题链接已复制', '問題連結已複製') : getText('回答链接已复制', '回答連結已複製'));
           
           if (navigator.share) {
             navigator.share({
@@ -3474,14 +3476,14 @@ function addHomepageBookmarkEventListeners() {
             showToast(toastMessage);
           }
         } else {
-          // 降級處理：分享頁面鏈接
+          // 降級處理：分享頁面連結
           if (navigator.share) {
             navigator.share({
               url: window.location.href
             });
           } else {
             copyText(window.location.href);
-            showToast('頁面鏈接已複製');
+            showToast(getText('页面链接已复制', '頁面連結已複製'));
           }
         }
         break;
@@ -6820,8 +6822,15 @@ initSearchSnapshotCapture();
         clearFocus();
       }
     });
-    // 換搜尋/換頁後焦點失效
-    resultsList.addEventListener('DOMSubtreeModified', clearFocus, { passive: true });
+    // 換搜尋/換頁後焦點失效：以 MutationObserver 監看結果列表重繪
+    // （Chrome 已移除 DOMSubtreeModified 支援，舊寫法不會觸發且每頁報錯）。
+    // 只監看 childList/subtree：clearFocus 自身的 classList 變更屬 attribute
+    // mutation，不會再觸發本 observer，無自觸發迴圈。
+    if (typeof MutationObserver === 'function') {
+      new MutationObserver(clearFocus).observe(resultsList, { childList: true, subtree: true });
+    } else {
+      resultsList.addEventListener('DOMSubtreeModified', clearFocus);
+    }
   }
 
   // ---------- 章節頁：?q= 關鍵字高亮（限錨點區塊） ----------------------
