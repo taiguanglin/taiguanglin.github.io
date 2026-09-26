@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-26T08:50:27.146Z",
+  "generated_at": "2026-09-26T11:33:35.125Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -7175,7 +7175,7 @@
       "audio": "2024年12月11日Tai师父讲经·楞伽经(9).opus",
       "title": "楞伽经（9）",
       "duration": 1792.819,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-se9e25f41",
@@ -7641,187 +7641,187 @@
           "end": 1018.195,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8a5f753b",
           "text": "“观一切法，皆无自性”，所有的妄想、分别、执着称之为“法”，观一切妄想、分别、执着都没有本体。",
           "start": 1018.195,
-          "end": 1028.43,
+          "end": 1029.096,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s126111c8",
           "text": "“如空中云，如旋火轮，如乾闼婆城，如幻如焰，如水中月，如梦所见”，都是比喻，都是幻境，但是不离自心，都是从我们自心当中显现的。",
-          "start": 1028.43,
-          "end": 1043.175,
+          "start": 1029.096,
+          "end": 1043.975,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd0229bd3",
           "text": "重点是“观一切法，皆无自性”，在这里“自性”一定要理解为本体的意思。前面拿树叶比喻过了，树叶是从树干里长出来的，但是你把树叶单拿出来的话，它是没有本体的。妄想、分别、执着都是如此，它是从自性当中显现出来的，无缘无故突然生起的第一个妄想不断增加出来的，但是你把妄想单个拿出来的话，它是没有本体的。",
-          "start": 1043.175,
-          "end": 1078.335,
+          "start": 1043.975,
+          "end": 1079.535,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfb6df421",
           "text": "不离自心，由无始来虚妄见故取以为外，作是观已，断分别缘，亦离妄心所取名义，",
-          "start": 1078.335,
-          "end": 1104.635,
+          "start": 1079.535,
+          "end": 1086.611,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s307b7f86",
           "text": "“不离自心”，认为这些妄想都是我们自心显现出来的。“由无始来虚妄见故”，从无始以来的错误的见解。“取以为外”，对外执取。“作是观已”，这样认为。认为这个妄想都是从我们自心里显现出来，都是无始以来的虚妄见故，根据他的习气不断地在做妄想，对外产生执着。如果这样认为或者有这样的观念的话，可以“断分别缘”。",
-          "start": 1104.635,
-          "end": 1133.775,
+          "start": 1086.611,
+          "end": 1134.702,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7510962f",
           "text": "“分别”的原因是什么？分别心的起因是前面的菩萨的妄想，然后是阿罗汉的分别。“断分别缘”，可以断掉分别之前的那个因。“亦离妄心所取名义”，就可以离开妄心所取名义，“所取名义”就是分别之后产生了相，在相上再贴标签。这些都要离开，就是灭掉的意思。",
-          "start": 1133.775,
-          "end": 1163.63,
+          "start": 1134.702,
+          "end": 1163.43,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se67fc82a",
           "text": "知身及物并所住处一切皆是藏识境界，无能所取及生住灭，如是思惟恒住不舍。",
-          "start": 1163.63,
-          "end": 1168.285,
+          "start": 1163.43,
+          "end": 1168.485,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5a0657d4",
           "text": "知道自己的身体和物——外部的器世界，还有这些所住处，都是我们的自性里产生的境界。",
-          "start": 1168.285,
-          "end": 1182.425,
+          "start": 1168.485,
+          "end": 1182.925,
           "conf": 0.906,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0009514f",
           "text": "“无能所取及生住灭”，能取和所取简称“能所取”，没有能取，也没有所取。“能取”是主观、主人公，“所取”是对象——“取”的对象。“能取”的最根本原因还是我相、人相，我把这个世界二元分开了，以“我”为中心，外边是另一个世界，分开的结果就是产生了能取和所取的分别。没有能取、所取和这些世界的生住灭，也没有我们肉身的生住灭。",
-          "start": 1182.425,
-          "end": 1227.06,
+          "start": 1182.925,
+          "end": 1228.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f5c2acf",
           "text": "“无能所取及生住灭”就是以“我”为中心，也就是主人公和这个“我”对外境所造作的、所取的这些境界，以及生住灭都会消失。",
-          "start": 1227.06,
-          "end": 1244.89,
+          "start": 1228.19,
+          "end": 1246.534,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2727cea5",
           "text": "“如是思惟恒住不舍”，这样认为，然后一直处在这样的认知当中。",
-          "start": 1244.89,
-          "end": 1257.3,
+          "start": 1246.534,
+          "end": 1257.5,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0b749e32",
           "text": "大慧，此菩萨摩诃萨不久当得生死涅槃二种平等，",
-          "start": 1257.3,
-          "end": 1261.505,
+          "start": 1257.5,
+          "end": 1261.993,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scabedc90",
           "text": "这样的人就称之为“菩萨摩诃萨”。前面说了“沙门、婆罗门”这些人，下面开始说“菩萨摩诃萨”。如法修行的人就可以称他为“菩萨摩诃萨”。",
-          "start": 1261.505,
-          "end": 1276.815,
+          "start": 1261.993,
+          "end": 1281.356,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa74b7e32",
           "text": "他不久之后进入生死涅槃的二种平等。“涅槃”和“生死”都是在凡夫的境界里认知、分别出来的，在佛的境界里没有生死、涅槃之区别，可以说没有分别心的境界，至少在菩萨境界里就已经没有生死和涅槃的区别，所以称之为“生死涅槃二种平等”。",
-          "start": 1276.815,
-          "end": 1311.915,
+          "start": 1281.356,
+          "end": 1312.698,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s473f6e9a",
           "text": "大悲方便，无功用行，",
-          "start": 1311.915,
-          "end": 1314.445,
+          "start": 1312.698,
+          "end": 1315.929,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s71291728",
           "text": "这是菩萨的境界。“大悲方便”就是以方便法开始度人。“无功用行”，不是刻意造作地去做什么，而是很自然地进行度人和修行。",
-          "start": 1314.445,
-          "end": 1330.12,
+          "start": 1315.929,
+          "end": 1330.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc55653d5",
           "text": "观众生如幻如影，从缘而起，知一切境界离心无得，",
-          "start": 1330.12,
-          "end": 1335.94,
+          "start": 1330.62,
+          "end": 1364.957,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sff232466",
           "text": "知道众生本身也是幻境，《圆觉经》里说“众生”都是幻众，都是从自心里产生的妄想、分别、执着和合而成。但是这可不是客观上完全没有众生的意思，的确客观上有无数个自性，只是在我们修行人的意识层面上要去掉这个人我分别。",
-          "start": 1335.94,
-          "end": 1348.12,
+          "start": 1364.957,
+          "end": 1364.957,
           "conf": 0.888,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6dc7b58b",
           "text": "“观众生如幻如影，从缘而起”，知道这些所有虚幻的众生都是从最初的那个妄想开始产生的。这里的“缘”就是“无明缘行”的“缘”。",
-          "start": 1348.12,
-          "end": 1377.21,
+          "start": 1364.957,
+          "end": 1377.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd247c5e8",
           "text": "“知一切境界离心无得”，知道所有境界离开了心就无法得，就是所有境界都是在自性当中产生的。",
-          "start": 1377.21,
+          "start": 1377.81,
           "end": 1390.11,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se0178ac6",
@@ -7830,25 +7830,25 @@
           "end": 1394.77,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb0804974",
           "text": "“无相”是菩萨的境界，“有相”是阿罗汉的境界。“行无相道”就是行菩萨道的意思。“渐升诸地”，菩萨的十地不断往上升，往上修行，提高境界。“住三昧境”，住在三昧境。“了达三界皆唯自心得”，知道三界——欲界、色界、无色界都是从我们自心显现出来的。",
           "start": 1394.77,
-          "end": 1423.965,
+          "end": 1424.92,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa5948712",
           "text": "“如幻定绝众影像成就智慧证无生法”，“如幻定”是一种修法，知道世间一切都是幻觉的那种禅定。用这个定来灭众生之影像，“绝”就是灭。“成就智慧证无生法”就是进入高级菩萨境界。“入金刚喻三昧”，同样指高级菩萨状态。",
-          "start": 1423.965,
+          "start": 1424.92,
           "end": 1456.49,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb820708",
@@ -7857,76 +7857,76 @@
           "end": 1459.845,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3a6a346f",
           "text": "这样的话最后肯定能得佛身，也就是成佛。“恒住如如”，一直处在佛的境界里。“起诸变化”，既然“变化”，肯定是为了度人，他不会无缘无故自己变化，在佛的境界里开始用变化来度人。",
           "start": 1459.845,
-          "end": 1477.715,
+          "end": 1478.378,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s910804de",
           "text": "“力通自在”，而且还是自由自在地、无所不能地开始度了。这个“力”以前好像也讲过，一种是不动摇的状态——对外境不会产生妄想而不动摇，这是一种“力”；还有一种是一旦开始动起来，向一个方向坚持的时候，自己不会再产生左右摇摆的这种状态，也称之为“力”。“力通自在”就是在度人这个事情上不再动摇，一直坚持下去。",
-          "start": 1477.715,
-          "end": 1522.215,
+          "start": 1478.378,
+          "end": 1523.143,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1d8b17a6",
           "text": "大慧，方便以为严饰，游众佛国，离诸外道，及心意识，转依次第，成如来身。",
-          "start": 1522.215,
-          "end": 1530,
+          "start": 1523.143,
+          "end": 1529.9,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s375f3575",
           "text": "这都是成佛的意思。后面这很长一段都是讲要成佛的意思，把成佛这两个字拆开来，就是用各种美妙的比喻。",
-          "start": 1530,
-          "end": 1540.795,
+          "start": 1529.9,
+          "end": 1541.42,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe699d31",
           "text": "“方便以为严饰”，用方便法来度人。“游众佛国”，到各种不同的佛国去。“离诸外道”，离开外道。“及心、意、意识”就是妄想、分别、执着，离开了妄想、分别、执着。“转依次第，成如来身”，前面讲过妄想生起叫“转”，妄想灭掉也叫“转”，最后成佛。",
-          "start": 1540.795,
-          "end": 1572.36,
+          "start": 1541.42,
+          "end": 1571.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s952ce36e",
           "text": "大慧，菩萨摩诃萨欲得佛身，应当远离蕴界处心因缘所作生住灭法戏论分别，",
-          "start": 1572.36,
-          "end": 1582.01,
+          "start": 1571.96,
+          "end": 1581.61,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sad519e72",
           "text": "菩萨摩诃萨要想成佛，应该远离色、受、想、行、识五蕴产生的妄想，还要远离从“无明缘行”这里产生的生住灭法，以及对它们的戏论分别。",
-          "start": 1582.01,
-          "end": 1606.45,
+          "start": 1581.61,
+          "end": 1606.55,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s525b4178",
           "text": "但住心量，观察三有无始时来，妄习所起，思惟佛地无相无生自证圣法，",
-          "start": 1606.45,
-          "end": 1606.45,
+          "start": 1606.55,
+          "end": 1606.55,
           "conf": 0.8,
           "method": "ngram",
           "confirmed": true,
@@ -7935,26 +7935,26 @@
         {
           "pid": "p-se2bd1ffe",
           "text": "“但住心量”，就安住在自己的自性状态当中。“观察三有无始时来”，“三有”是欲界、色界、无色界，观察这个轮回世界无始以来的变化。",
-          "start": 1606.45,
-          "end": 1627.88,
+          "start": 1606.55,
+          "end": 1627.48,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s68a10cba",
           "text": "“妄习所起”指前面的三有——虚妄的习气所产生的轮回世界。“思惟”在这里也是一种修行状态。“佛地无相无生”，在佛地是无相无生的，“无相”指没有分别，“无生”是不起妄想。“自证圣法”，进入佛的境界。",
-          "start": 1627.88,
-          "end": 1687.7,
+          "start": 1627.48,
+          "end": 1661.643,
           "conf": 0.85,
           "method": "miss",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf1cce56a",
           "text": "得心自在，无功用行，如如意宝，随宜现身，令达唯心，渐入诸地。",
-          "start": 1687.7,
-          "end": 1687.7,
+          "start": 1661.643,
+          "end": 1661.643,
           "conf": 0.4,
           "method": "miss",
           "confirmed": true,
@@ -7963,57 +7963,56 @@
         {
           "pid": "p-s976c16d9",
           "text": "“得心自在，无功用行，如如意宝，随宜现身，令达唯心”，全是说佛的境界，“渐入诸地”，在菩萨的诸地当中。这里是说前面的佛的境界都是在菩萨的状态下往佛的境界努力的过程。",
-          "start": 1687.7,
-          "end": 1687.7,
+          "start": 1661.643,
+          "end": 1687.4,
           "conf": 0.35,
           "method": "miss",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s2200eff1",
           "text": "是故大慧，菩萨摩诃萨于自悉檀应善修学。",
-          "start": 1687.7,
-          "end": 1693.21,
+          "start": 1687.4,
+          "end": 1693.31,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s989b977c",
           "text": "在这里“悉檀”是普遍施舍的意思，也有中的意思。在龙树菩萨写的《大智度论》里讲到“四悉檀”——“世界悉檀，各各为人悉檀，对治悉檀，第一义悉檀”，指佛度人的四种方法。“世界”，我觉得应该是创造世界度人这种方法。“各各为人”，如果佛有行为的话，他的所有一切行为都是为了众生。“对治”，指方便法，对不同的人用不同的方法来度。“第一义”，最后让人信佛、修行之后，肯定要开示第一义，让他究竟成佛。",
-          "start": 1693.21,
-          "end": 1757.66,
+          "start": 1693.31,
+          "end": 1757.36,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5197d116",
           "text": "这是四种度人的方法，也是根据不同阶段度人来说的。当然大家也可以在网上搜索“四悉檀”的解释，网上说的肯定和我说的又不一样。这个无所谓了，已经不重要了。",
-          "start": 1757.66,
-          "end": 1774.63,
+          "start": 1757.36,
+          "end": 1774.23,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s974d703a",
           "text": "“菩萨摩诃萨于自悉檀应善修学”，就是让菩萨好好修行——度人和灭自己的妄想，就是《圆觉经》里所说的“奢摩他、三摩钵底、禅那”这几个方法。",
-          "start": 1774.63,
-          "end": 1790.37,
+          "start": 1774.23,
+          "end": 1790.07,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb99e8bf5",
           "text": "好了，这一期就讲到这里。",
-          "start": 1790.37,
+          "start": 1790.07,
           "end": 1792.819,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
