@@ -4,6 +4,8 @@ import os
 import shutil
 from pathlib import Path
 from typing import Dict, Any
+
+from utils.image_markup import encode_webp
 # slugify 導入已移除，改為簡單數字命名
 
 
@@ -84,11 +86,11 @@ class ImageHandler:
         self.image_counter = 1
 
     def seed_counter_from_disk(self) -> None:
-        """從既有 ``assets/images/image_N.png`` 接續編號，避免 --only-pdf 覆寫 Word 圖。"""
+        """從既有 ``assets/images/image_N.*`` 接續編號，避免 --only-pdf 覆寫 Word 圖。"""
         images_dir = self.file_manager.get_assets_path("images")
         max_n = 0
         if images_dir.exists():
-            for path in images_dir.glob("image_*.png"):
+            for path in images_dir.glob("image_*.*"):
                 stem = path.stem  # image_12
                 try:
                     n = int(stem.split("_", 1)[1])
@@ -99,12 +101,16 @@ class ImageHandler:
         self.image_counter = max_n + 1
 
     def save_image_bytes(self, image_data: bytes) -> str:
-        """將圖片位元組寫入 ``assets/images/image_N.png``，回傳相對路徑。"""
-        filename = f"image_{self.image_counter}.png"
+        """將圖片位元組轉成 WebP 寫入 ``assets/images/image_N.webp``，回傳相對路徑。
+
+        Word/PDF 內嵌幾乎都是 PNG（未壓縮掃描圖，單檔常破 2 MB），故統一
+        經 :func:`encode_webp` 轉碼後才落地——全站支援率高，體積約為 5–8%。
+        """
+        filename = f"image_{self.image_counter}.webp"
         image_path = self.file_manager.get_assets_path("images") / filename
         image_path.parent.mkdir(parents=True, exist_ok=True)
         with open(image_path, "wb") as f:
-            f.write(image_data)
+            f.write(encode_webp(image_data))
         relative_path = f"assets/images/{filename}"
         self.image_counter += 1
         return relative_path
