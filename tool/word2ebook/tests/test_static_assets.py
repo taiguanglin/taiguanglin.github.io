@@ -268,11 +268,10 @@ class TestStaticAssetsManagerRealModules:
 
     def test_real_js_search_return_module(self):
         js = StaticAssetsManager().get_full_js_content()
-        # Floating 「回到搜尋結果」 button module is bundled
-        assert "initSearchReturnButton" in js
-        assert "getSearchReturnUrl" in js
-        assert "w2eSearchSnapshot" in js
-        assert "回到搜尋結果" in js
+        # 「回到搜尋結果」按鈕已移除（2026-09）；index 快照機制保留
+        assert "initSearchReturnButton" not in js
+        assert "captureSearchSnapshot" in js
+        assert "restoreSearchScroll" in js
 
     def test_real_js_search_state_restores_displayed_and_scroll(self):
         js = StaticAssetsManager().get_full_js_content()
@@ -283,10 +282,12 @@ class TestStaticAssetsManagerRealModules:
         # index honours ?q= query params (return button deep link)
         assert "location.search" in js
 
-    def test_real_css_has_search_return_button(self):
+    def test_real_css_has_no_search_return_button(self):
+        # 「回到搜尋結果」浮動按鈕已於 2026-09 移除（快照跨分頁複製不穩）
         css = StaticAssetsManager().get_full_css_content()
-        assert ".search-return-btn" in css
-        assert "body.dark-mode .search-return-btn" in css
+        assert ".search-return-btn" not in css
+        js = StaticAssetsManager().get_full_js_content()
+        assert "initSearchReturnButton" not in js
 
     def test_real_css_has_qa_audio_module(self):
         css = StaticAssetsManager().get_full_css_content()

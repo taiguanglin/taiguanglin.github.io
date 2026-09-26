@@ -106,72 +106,10 @@ function restoreSearchScroll(targetY) {
 }
 
 // ------------------------------------------------------------
-// 章節頁：「回到搜尋結果」浮動按鈕
+// 「回到搜尋結果」浮動按鈕已於 2026-09 移除（行為依賴 sessionStorage
+// 快照跨分頁複製，在 noopener 新分頁下多數情況拿不到快照、出現時機不穩）。
+// 保留 index 頁的搜尋狀態快照：使用者直接用瀏覽器返回/回到 index 時
+// 仍由 01e 的 restoreSearchFromHash 還原查詢與捲動位置。
 // ------------------------------------------------------------
 
-function getSearchReturnUrl() {
-  var snap = readSearchSnapshot();
-  if (!snap || !snap.q) return null;
-  var isTrad = isTraditionalChinesePage();
-  var indexPage = isTrad ? 'index_trad.html' : 'index.html';
-  // pathname 可能是 …/wenda2_ebook/01.html 或 …/ebook/05.html；
-  // scope 同時放 query 與 hash（hash 是 restoreSearchFromHash 的主要來源）
-  var scopePart = (snap.scope && snap.scope !== 'both') ? '&scope=' + encodeURIComponent(snap.scope) : '';
-  return indexPage +
-    '?q=' + encodeURIComponent(snap.q) + scopePart +
-    '#q=' + encodeURIComponent(snap.q) + scopePart;
-}
-
-// 按鈕定位：避開浮動層級控制（桌面右下 120px 起）與 QA 播放器
-function applySearchReturnBtnPosition(btn) {
-  var isMobile = window.innerWidth <= 600;
-  var bottomPx = isMobile ? 130 : 120;
-  var floatingControls = document.getElementById('floating-level-controls');
-  if (floatingControls && floatingControls.style.display === 'block') {
-    // 浮動層級控制顯示中 → 再往上讓位
-    bottomPx += (isMobile ? 160 : 120);
-  }
-  // QA 底部播放器顯示中 → 讓位到播放器上方
-  var qaPlayer = document.querySelector('.qa-player.visible');
-  if (qaPlayer) bottomPx += 100;
-  btn.style.bottom = bottomPx + 'px';
-}
-
-// 在章節頁建立/顯示「回到搜尋結果」按鈕
-function initSearchReturnButton() {
-  if (isIndexPage()) return;
-  if (document.getElementById('search-return-btn')) return;
-  if (!getSearchReturnUrl()) return; // 沒有快照 → 不顯示
-
-  var isTrad = isTraditionalChinesePage();
-  var btn = document.createElement('button');
-  btn.id = 'search-return-btn';
-  btn.className = 'search-return-btn';
-  btn.type = 'button';
-  btn.innerHTML = '🔍 ' + getI18nText('search.returnToResults', isTrad, '回到搜尋結果');
-  btn.title = getI18nText('search.returnToResultsTitle', isTrad, '返回首頁並還原上次的搜尋結果');
-  btn.setAttribute('aria-label', btn.title);
-
-  btn.addEventListener('click', function () {
-    // 離開前補寫 TOC 展開快照（saveTocExpandSnapshot 定義於 06-toc-collapse.js）
-    if (typeof saveTocExpandSnapshot === 'function') {
-      try { saveTocExpandSnapshot(); } catch (e) { /* 非致命 */ }
-    }
-    var url = getSearchReturnUrl();
-    if (url) window.location.href = url;
-  });
-
-  document.body.appendChild(btn);
-  applySearchReturnBtnPosition(btn);
-
-  // 浮動層級控制顯示/隱藏時重新定位（07 的 handleScroll 會改它的 display）
-  window.addEventListener('scroll', function () {
-    applySearchReturnBtnPosition(btn);
-  }, { passive: true });
-  window.addEventListener('resize', function () {
-    applySearchReturnBtnPosition(btn);
-  }, { passive: true });
-}
-
 initSearchSnapshotCapture();
-initSearchReturnButton();
