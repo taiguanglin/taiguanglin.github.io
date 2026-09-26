@@ -4,7 +4,11 @@
 ``build/answer_map.json``).
 
 Idempotent: only adds/replaces the ``chapter_answer_ids`` field; never touches
-q_text / answer_text / start / end / status / meta.lastPlayed / notes.
+q_text / answer_text / start / end / status / meta.lastPlayed / notes.  Existing
+``answer-…`` ids that the segment's ``chapter_question_ids`` cannot produce are
+**kept** — those are answer-only links written by ``link_image_blocks.py`` for
+ebook blocks that have no question div (圖片題 / 「問題丟失」), and a merged
+segment can carry both kinds at once.
 
 Usage:
   .venv/bin/python add_answer_ids.py          # dry-run: report counts
@@ -23,7 +27,7 @@ ANSWER_MAP = Path(__file__).resolve().parent / "build" / "answer_map.json"
 
 def add_answer_ids(data: dict, amap: dict) -> dict:
     """Return summary counts; mutate data in place."""
-    added = missing = total_qids = 0
+    added = missing = total_qids = kept_answer_only = 0
     for sess in data.get("sessions") or []:
         for seg in sess.get("segments") or []:
             qids = seg.get("chapter_question_ids") or []
@@ -38,6 +42,16 @@ def add_answer_ids(data: dict, amap: dict) -> dict:
                 else:
                     hit_missing = True
                     missing += 1
+            # Answer blocks that have no question div of their own (圖片題 /
+            # 「問題丟失」block) are linked by link_image_blocks.py with
+            # chapter_answer_ids only — there is no qid to derive them from, so
+            # keep any existing answer-… id that this segment's qids do not
+            # produce.  A merged segment can carry both kinds at once.
+            derived = set(aids)
+            kept = [a for a in (seg.get("chapter_answer_ids") or [])
+                    if a.startswith("answer-") and a not in derived]
+            kept_answer_only += len(kept)
+            aids = aids + kept
             if aids:
                 seg["chapter_answer_ids"] = aids
             else:
@@ -47,7 +61,8 @@ def add_answer_ids(data: dict, amap: dict) -> dict:
                 note = seg.get("notes") or ""
                 if "缺 answer 對應" not in note:
                     seg["notes"] = (note + " | html-resplit: 缺 HTML answer 對應，待人工確認").strip(" |")
-    return {"added": added, "missing": missing, "total_qids": total_qids}
+    return {"added": added, "missing": missing, "total_qids": total_qids,
+            "kept_answer_only": kept_answer_only}
 
 
 def main() -> int:

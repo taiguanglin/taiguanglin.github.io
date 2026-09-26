@@ -4,6 +4,119 @@
   initTocCollapseControl();
   initFloatingLevelControls();
   
+  // ============================================================
+  // TOC 手動展開狀態快照（sessionStorage per-entry）
+  //
+  // 目的：使用者手動展開/收合的 TOC 節點，在離開頁面（點搜尋結果、TOC
+  // 連結跳章節）再返回時能原樣重現——鍵含頁面路徑與書籤，兩本電子書
+  // （wenda2_ebook / ebook）互不干擾、兩個分頁也不衝突。每次快照整批
+  // 覆寫同一鍵，舊快照自動作廢，不會殘留舊書籤的殭屍項目。
+  // ============================================================
+  
+  // 站內文檔頁：傳回「電子書根目錄」鍵（index.html / 0N.html 同屬一本書）；
+  // 站外頁面或 file:// 環境回傳 null（不寫入）。
+  function getTocSnapshotKey() {
+    try {
+      if (window.location.protocol === 'file:') return null;
+      const segs = window.location.pathname.split('/');
+      if (segs.length < 2) return null;
+      return 'tocExpandState:' + segs[segs.length - 2];
+    } catch (e) {
+      return null;
+    }
+  }
+  
+  // 穩定書籤：優先 href（頁面＋錨點，TOC 改版仍穩定）；無 href 時用標題文字。
+  function computeTocItemKey(item) {
+    const link = item.querySelector('a');
+    const href = link ? (link.getAttribute('href') || '') : '';
+    if (href) return href;
+    const clone = item.cloneNode(true);
+    clone.querySelectorAll('ul, .toc-expand-icon').forEach(el => el.remove());
+    const text = (clone.textContent || '').replace(/\s+/g, ' ').trim();
+    return 't:' + text.slice(0, 120);
+  }
+  
+  // 為所有目錄項補上 data-id（快照還原用的書籤）
+  function ensureTocItemIds(tocContainer) {
+    if (!tocContainer) return;
+    tocContainer.querySelectorAll('.toc-item').forEach(item => {
+      if (!item.getAttribute('data-id')) {
+        item.setAttribute('data-id', computeTocItemKey(item));
+      }
+    });
+  }
+  
+  // 依 data-id 找目錄項（CSS.escape 防特殊字元破壞選擇器）
+  function tocItemById(tocContainer, id) {
+    const esc = (window.CSS && CSS.escape) ? CSS.escape(id) : id.replace(/"/g, '\\"');
+    return tocContainer.querySelector('.toc-item[data-id="' + esc + '"]');
+  }
+  
+  // 把目前「手動展開的節點」（data-user-toggled 且有可見子項）快照到 sessionStorage。
+  // 僅 index 頁寫入：章節頁的快照會殘留舊目錄的書籤，反而污染 index 的還原。
+  function saveTocExpandSnapshot() {
+    if (!isIndexPage()) return;
+    const key = getTocSnapshotKey();
+    if (!key) return;
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+  
+    const expanded = [];
+    tocContainer.querySelectorAll('.toc-item[data-user-toggled="true"]').forEach(item => {
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon && icon.getAttribute('aria-expanded') === 'true' && hasVisibleDirectChildren(item)) {
+        expanded.push(item.getAttribute('data-id'));
+      }
+    });
+  
+    try {
+      sessionStorage.setItem(key, JSON.stringify(expanded));
+    } catch (e) { /* 隱私模式等；忽略 */ }
+  }
+  
+  // 還原快照：展開記錄中的節點（可見且存在者）
+  function restoreTocExpandSnapshot() {
+    const key = getTocSnapshotKey();
+    if (!key) return;
+    let expanded = null;
+    try {
+      const raw = sessionStorage.getItem(key);
+      if (raw) expanded = JSON.parse(raw);
+    } catch (e) { /* 解析失敗視同無快照 */ }
+    if (!Array.isArray(expanded) || expanded.length === 0) return;
+  
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+  
+    expanded.forEach(id => {
+      if (!id) return;
+      const item = tocItemById(tocContainer, id);
+      if (!item) return; // 目錄改版後書籤可能失效，靜默略過
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon && icon.getAttribute('aria-expanded') === 'false') {
+        const actuallyExpanded = hasVisibleDirectChildren(item);
+        item.setAttribute('data-user-toggled', 'true');
+        if (actuallyExpanded) {
+          setTocIconState(icon, true);
+        } else {
+          expandTocItem(item);
+          setTocIconState(icon, true);
+        } 
+      }
+    });
+  
+    try { sessionStorage.removeItem(key); } catch (e) { /* 忽略 */ }
+  }
+  
+  // 事件：點 TOC 連結（含葉節點整行點擊 link.click()）前快照；頁面卸載前也快照一次
+  document.addEventListener('click', function(e) {
+    if (e.target.closest && e.target.closest('#main-toc a, #chapter-toc a')) {
+      saveTocExpandSnapshot();
+    }
+  }, true);
+  window.addEventListener('pagehide', saveTocExpandSnapshot);
+  
   // 展開/收合鈕狀態同步（.collapsed 樣式、▼/▶ 文字與 aria-expanded 一致）
   function setTocIconState(icon, expanded) {
     if (!icon) return;
@@ -18,6 +131,9 @@
     
     // 检测实际的目录层级并隐藏不必要的按钮
     const maxLevel = detectAndHideLevelButtons(tocContainer);
+    
+    // 為目錄項補上 data-id（展開狀態快照的還原書籤）
+    ensureTocItemIds(tocContainer);
     
     // 根據頁面類型設定不同的默認值
     const isChapterPage = document.getElementById('chapter-toc') !== null;
@@ -46,6 +162,9 @@
     
     // 绑定全部展开/折叠按钮事件
     bindExpandAllEvents();
+    
+    // 還原前次離開頁前手動展開的節點（sessionStorage 快照）
+    restoreTocExpandSnapshot();
   }
   
   // 智能選擇可用的層級
@@ -349,6 +468,9 @@
             expandTocItem(expandableItem);
             setTocIconState(icon, true);
           }
+          
+          // 同步快照，離頁（點連結跳章節、開新分頁）再返回時能原樣重現
+          saveTocExpandSnapshot();
         }
       } else {
         // 这是没有展开图标的目录项（叶子节点），处理整行点击跳转

@@ -66,7 +66,21 @@
             var wantTrad = pref === 'trad';
             if (wantTrad !== isTradPage) {
                 var target = wantTrad ? base + '_trad.html' : base + '.html';
-                location.replace(target + location.search + location.hash);
+                /* U10 簡繁切換保留閱讀位置：記下目前最近的標題錨點與捲動比例，
+                 * 目標頁的 11-reading-resume.js 據此原位恢復。 */
+                try {
+                    var jump = { id: null, frac: 0 };
+                    var doc = document.documentElement;
+                    var total = doc.scrollHeight - window.innerHeight;
+                    jump.frac = total > 0 ? (window.pageYOffset || 0) / total : 0;
+                    var hs = document.querySelectorAll('h1[id], h2[id], h3[id], h4[id]');
+                    for (var i = 0; i < hs.length; i++) {
+                        if (hs[i].getBoundingClientRect().top <= 120) jump.id = hs[i].id;
+                        else break;
+                    }
+                    sessionStorage.setItem('w2e:langjump', JSON.stringify(jump));
+                } catch (e) { /* ignore */ }
+                location.replace(target + location.search);
                 return;
             }
         }

@@ -240,6 +240,55 @@ class TestStaticAssetsManagerRealModules:
         assert "createFloatingTOC" in js
         assert "addQAActions" in js
 
+    def test_real_js_search_results_open_new_tab(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # Search results open in a new tab (keeps index page + results intact)
+        assert "window.open(openUrl, '_blank', 'noopener')" in js  # 01e 改以 openUrl（含 ?q= 高亮參數）開啟
+        assert "window.location.href = item.dataset.url" not in js
+
+    def test_real_js_search_state_hash_roundtrip(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # performSearch mirrors query/scope into URL hash; init restores it
+        assert "updateSearchQueryHash" in js
+        assert "readSearchStateFromHash" in js
+        assert "restoreSearchFromHash" in js
+        assert "history.replaceState" in js
+
+    def test_real_js_toc_expand_snapshot(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # TOC manual expand state is snapshotted to sessionStorage and restored
+        assert "saveTocExpandSnapshot" in js
+        assert "restoreTocExpandSnapshot" in js
+        assert "sessionStorage.setItem(key, JSON.stringify(expanded))" in js
+        assert "tocExpandState:" in js
+        # Snapshot hook fires before page unload and on toggle
+        assert "pagehide" in js
+        # Only the index page writes TOC snapshots (chapter pages must not pollute)
+        assert "if (!isIndexPage()) return;" in js
+
+    def test_real_js_search_return_module(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # 「回到搜尋結果」按鈕已移除（2026-09）；index 快照機制保留
+        assert "initSearchReturnButton" not in js
+        assert "captureSearchSnapshot" in js
+        assert "restoreSearchScroll" in js
+
+    def test_real_js_search_state_restores_displayed_and_scroll(self):
+        js = StaticAssetsManager().get_full_js_content()
+        # performSearch accepts a target displayed count; restore path uses it
+        assert "function performSearch(query, targetDisplayedCount)" in js
+        assert "captureSearchSnapshot" in js
+        assert "restoreSearchScroll" in js
+        # index honours ?q= query params (return button deep link)
+        assert "location.search" in js
+
+    def test_real_css_has_no_search_return_button(self):
+        # 「回到搜尋結果」浮動按鈕已於 2026-09 移除（快照跨分頁複製不穩）
+        css = StaticAssetsManager().get_full_css_content()
+        assert ".search-return-btn" not in css
+        js = StaticAssetsManager().get_full_js_content()
+        assert "initSearchReturnButton" not in js
+
     def test_real_css_has_qa_audio_module(self):
         css = StaticAssetsManager().get_full_css_content()
         assert ".qa-source-banner" in css
@@ -405,3 +454,101 @@ class TestRealVendorAssets:
     def test_css_has_cjk_font_stack(self):
         css = StaticAssetsManager().get_full_css_content()
         assert "PingFang" in css and "Microsoft JhengHei" in css
+
+
+# ---------------------------------------------------------------------------
+# 2026-09 UX 改善：新模組必須出現在串接產物中（真實 assets 樹）
+# ---------------------------------------------------------------------------
+
+
+
+def test_real_js_bundle_contains_ux_modules():
+    mgr = StaticAssetsManager()  # 預設即真實 assets 目錄
+    js = mgr.get_full_js_content()
+    for marker in [
+        "w2e:readpos",          # 11-reading-resume
+        "w2e:playerState",      # 13-player-persist
+        "w2e-audio-resume",     # 13-player-persist
+        "kb-focus",             # 14-search-plus 鍵盤導覽
+        "w2e-toc-backdrop",     # 15-mobile-toc
+        "no-audio-note",        # 16-jump-share（ebook 無音檔提示）
+        "anchor-share",         # 16-jump-share（標題錨點分享）
+        "theme-dark-neutral",   # 02-reader-ux／04-events（墨夜主題鈕）
+        "sw.js",                # 17-theme-pwa（PWA 註冊）
+    ]:
+        assert marker in js, f"串接後的 script.js 缺少 {marker}"
+
+
+def test_real_css_bundle_contains_ux_module():
+    mgr = StaticAssetsManager()  # 預設即真實 assets 目錄
+    css = mgr.get_full_css_content()
+    for marker in [
+        ".dark-neutral",        # 墨夜面板
+        ".w2e-resume-bar",
+        ".w2e-audio-resume",
+        ".no-audio-note",
+        ".anchor-share",
+        "mark.w2e-hl",
+    ]:
+        assert marker in css, f"串接後的 style.css 缺少 {marker}"
+
+
+def test_homepage_bookmark_manager_block_is_removed():
+    """首頁（總目錄）底部的「我的書籤」管理區塊已移除（12-bookmarks-manager.js 刪除）。
+
+    浮動目錄面板的書籤分頁（02-reader-ux 的分頁標籤）不在此限，仍應存在。
+    """
+    mgr = StaticAssetsManager()
+    for bundle in (mgr.get_full_js_content(), mgr.get_full_css_content()):
+        assert "w2e-bm-" not in bundle, "殘留首頁書籤管理區塊（.w2e-bm-*）樣式/腳本"
+    # 模組檔本身已刪除（編號 12 保留空缺、不重排）
+    assert not (Path(__file__).resolve().parents[1]
+                / "assets" / "js" / "modules" / "12-bookmarks-manager.js").exists()
+    # 側邊浮動目錄的書籤分頁仍在
+    assert "bookmarks-list" in mgr.get_full_js_content()
+
+
+def test_real_bundles_drop_persistent_backtop_button():
+    """常駐回到頂端鈕已移除：回到頂端只留功能選單（data-action="top"）內的 ↑。"""
+    mgr = StaticAssetsManager()
+    assert "w2e-backtop" not in mgr.get_full_js_content()
+    assert "w2e-backtop" not in mgr.get_full_css_content()
+    assert 'data-action="top"' in mgr.get_full_js_content()
+
+
+def test_reading_resume_skips_toc_only_index_pages():
+    """總目錄頁只有目錄、沒有正文，不得出現「上次讀到 XX%」提示條。"""
+    js = StaticAssetsManager().get_full_js_content()
+    assert "isTocOnlyPage" in js          # 11-reading-resume 的頁面類型判斷
+    assert "pruneTocOnlyEntries" in js   # 清除舊版殘留的目錄頁紀錄
+    # 兩道關卡：儲存時不寫、顯示前不彈
+    assert "if (isTocOnlyPage()) return;" in js
+    assert "if (isTocOnlyPage()) { pruneTocOnlyEntries(); return; }" in js
+
+
+def test_search_plus_focus_reset_uses_mutation_observer():
+    """14-search-plus 的鍵盤焦點重置必須用 MutationObserver。
+
+    Chrome 已移除 DOMSubtreeModified 支援（監聽不觸發且每頁 console 報錯），
+    只允許作為 MutationObserver 不可用時的降級路徑出現。
+    """
+    src = (Path(__file__).resolve().parents[1]
+           / "assets" / "js" / "modules" / "14-search-plus.js").read_text(encoding="utf-8")
+    assert "new MutationObserver(clearFocus)" in src
+    assert "observe(resultsList" in src
+    # 棄用事件只能出現在 if/else 降級分支的 addEventListener 呼叫
+    assert "addEventListener('DOMSubtreeModified'" in src
+    # 其餘出現次數限於說明註解（≤2：降級分支附近 + 說明）；禁止新增其他用途
+    assert src.count("DOMSubtreeModified") <= 2
+    # MutationObserver 是主路徑（if 在前、else 降級在後）
+    assert src.index("typeof MutationObserver === 'function'") < src.index("addEventListener('DOMSubtreeModified'")
+
+
+def test_share_toast_uses_gettext_for_traditional():
+    """04-events 分享 toast 不得硬編「鏈接已複製」——繁體頁應顯示「連結」。"""
+    src = (Path(__file__).resolve().parents[1]
+           / "assets" / "js" / "modules" / "04-events.js").read_text(encoding="utf-8")
+    assert "getText('页面链接已复制', '頁面連結已複製')" in src
+    assert "'段落連結已複製'" in src and "'問題連結已複製'" in src and "'回答連結已複製'" in src
+    # 硬編舊字串不得殘留（含 toast 與註解）
+    assert "鏈接已複製" not in src

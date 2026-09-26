@@ -30,8 +30,63 @@ function generateSearchResultItem(result, index, indexOffset, query) {
   `;
 }
 
+// ============================================================
+// 搜尋狀態 ↔ URL hash（#q=…&scope=…）：返回本頁時可由 hash 還原查詢
+// （replaceState 不產生新瀏覽記錄；配對 01e 的自動還原流程）
+// ============================================================
+
+// 從 URL hash 讀取搜尋狀態（無則回傳空字串的查詢）
+function readSearchStateFromHash() {
+  const hash = window.location.hash.replace(/^#/, '');
+  const qMatch = /(?:^|&)q=([^&]*)/.exec(hash);
+  let q = '';
+  if (qMatch) {
+    try {
+      q = decodeURIComponent(qMatch[1]);
+    } catch (e) {
+      q = qMatch[1];
+    }
+  }
+  const scopeMatch = /(?:^|&)scope=([^&]*)/.exec(hash);
+  let scope = '';
+  if (scopeMatch) {
+    try {
+      scope = decodeURIComponent(scopeMatch[1]);
+    } catch (e) {
+      scope = scopeMatch[1];
+    }
+  }
+  return { q: q, scope: scope };
+}
+
+// 把目前查詢／範圍寫入 URL hash（replaceState：不產生新瀏覽記錄）
+function updateSearchQueryHash(query) {
+  const q = (query || '').trim();
+  // 與 performSearch 相同的門檻：空查詢或 ≥2 字元才寫入，避免打字中途污染 hash
+  if (q && q.length < 2) return;
+  let parts = [];
+  if (q) parts.push('q=' + encodeURIComponent(q));
+  if (q && searchScope && searchScope !== 'both') {
+    parts.push('scope=' + encodeURIComponent(searchScope));
+  }
+  const newHash = parts.length ? '#' + parts.join('&') : '';
+  const current = window.location.hash;
+  if (current === newHash) return;
+  try {
+    history.replaceState(null, '', window.location.pathname + window.location.search + newHash);
+  } catch (e) { /* 部分環境不允許 history 操作，忽略 */ }
+}
+
+// 對外（01e / 模組載入順序在後者）提供 hash 讀取
+W2E.search = W2E.search || {};
+W2E.search.readStateFromHash = readSearchStateFromHash;
+
 // 执行搜索
-function performSearch(query) {
+// targetDisplayedCount：還原情境下欲重現的「已顯示筆數」（一般搜尋傳 undefined → 第一頁）
+function performSearch(query, targetDisplayedCount) {
+  // 同步查詢到 URL hash：返回本頁時可據此還原結果
+  updateSearchQueryHash(query);
+
   const elements = getSearchElements();
   resetSearchResultsHeight();
 
@@ -80,8 +135,9 @@ function performSearch(query) {
 
     if (results.length > 0) {
       resetSearchResultsHeight();
-      displayPagedResults(trimmedQuery);
+      displayPagedResults(trimmedQuery, targetDisplayedCount);
       setSearchScopeVisible(true);
+      if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
     } else {
       displayNoResults(trimmedQuery, elements);
       elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
@@ -94,6 +150,7 @@ function performSearch(query) {
 
     elements.searchResults.style.display = 'block';
     elements.tocHeader.style.display = 'none';
+    if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
     setTimeout(updateFloatingControlsState, 10);
     setTimeout(updateBottomSearchButtonsVisibility, 10);
 
@@ -108,9 +165,13 @@ function performSearch(query) {
 }
 
 // 展示第一页结果（分页）
-function displayPagedResults(query) {
+// targetDisplayedCount：傳入時一次顯示到該筆數（搜尋狀態還原用）
+function displayPagedResults(query, targetDisplayedCount) {
   const elements = getSearchElements();
-  displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  const firstPageCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  displayedResultsCount = (typeof targetDisplayedCount === 'number' && targetDisplayedCount > firstPageCount)
+    ? Math.min(targetDisplayedCount, currentSearchResults.length)
+    : firstPageCount;
   const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
   elements.searchResultsList.innerHTML = resultsToShow.map((r, i) =>
     generateSearchResultItem(r, i, 0, query)
@@ -140,6 +201,7 @@ function loadMoreResults() {
   expandSearchResultsHeight();
   updateResultsCounter();
   updateLoadMoreButtons();
+  if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
   const el = document.getElementById('search-status');
   if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
 }
@@ -161,6 +223,7 @@ function loadAllResults() {
   expandSearchResultsHeight();
   updateResultsCounter();
   updateLoadMoreButtons();
+  if (typeof captureSearchSnapshot === 'function') captureSearchSnapshot();
   const el = document.getElementById('search-status');
   if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
 }

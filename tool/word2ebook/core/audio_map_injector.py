@@ -395,8 +395,14 @@ def inject_word_html_from_audio_map2(
     ``chapter_answer_ids``) takes precedence over ``by_qid`` when the answer
     block that follows a question carries a known id.  This disambiguates the
     same-qid-in-two-chapters case, where each block must play its own half.
+
+    A second pass injects into answer blocks that have **no question div at
+    all** — the question was submitted as a screenshot (``<img alt="…">``) or
+    replaced by a "（此問題丟失）" placeholder, so the block is addressable only
+    by its own ``answer-…`` id.  Answer divs already reached by the
+    question-driven pass are skipped, so no block ever gets two buttons.
     """
-    if not by_qid or not content:
+    if (not by_qid and not by_answer) or not content:
         return content
 
     # Strip any previously injected inline buttons for idempotency.
@@ -411,6 +417,7 @@ def inject_word_html_from_audio_map2(
     # follow a matched question, then apply in reverse order.
     q_matches = list(QUESTION_ID_RE.finditer(content))
     injections: List[Tuple[int, str]] = []
+    claimed_answers: set = set()
     for i, m in enumerate(q_matches):
         answer_end = q_matches[i + 1].start() if i + 1 < len(q_matches) else len(content)
         seg = None
@@ -418,6 +425,7 @@ def inject_word_html_from_audio_map2(
             # Prefer the block's own answer id (same qid may back two blocks).
             am_id = ANSWER_ID_RE.search(content, m.end(), answer_end)
             if am_id:
+                claimed_answers.add(am_id.start())
                 seg = by_answer.get(am_id.group(1))
                 if seg is None:
                     seg = by_answer.get(_base_id(am_id.group(1)))
@@ -439,6 +447,39 @@ def inject_word_html_from_audio_map2(
         )
         if button:
             injections.append((m.end() + am.end(), button))
+
+    # ---- blocks with no ``<div class="question">`` of their own -------------
+    # The ebook renders a screenshot of the question (``<img alt="…">``) or a
+    # "（此問題丟失）" placeholder instead of a question div, so those blocks are
+    # addressed by their own ``answer-…`` id via ``chapter_answer_ids`` and have
+    # no question-driven pass at all.  Any answer div already reached above is
+    # skipped so a block never gets two buttons.
+    if by_answer:
+        a_matches = list(ANSWER_ID_RE.finditer(content))
+        for i, am_id in enumerate(a_matches):
+            if am_id.start() in claimed_answers:
+                continue
+            seg = by_answer.get(am_id.group(1))
+            if seg is None:
+                seg = by_answer.get(_base_id(am_id.group(1)))
+            if not (seg and _is_audio_map2_reviewed(seg)):
+                continue
+            # The answerer name must belong to THIS block: stop at the next
+            # answer div and never reach into the next question block.
+            block_end = a_matches[i + 1].start() if i + 1 < len(a_matches) else len(content)
+            next_q = next((q.start() for q in q_matches if q.start() > am_id.start()), block_end)
+            block_end = min(block_end, next_q)
+            am = ANSWERER_RE.search(content, am_id.end(), block_end)
+            if not am:
+                continue
+            button = render_inline_answerer_play(
+                _range_tuple(seg),
+                audio_url(seg.get("audio_file") or ""),
+                hide_if_missing=True,
+                parts=[(p[0], p[1]) for p in seg.get("parts") or [] if p[0] is not None and p[1] is not None] or None,
+            )
+            if button:
+                injections.append((am.end(), button))
 
     if not injections:
         return content

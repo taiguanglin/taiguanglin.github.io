@@ -4,11 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>《坐禅2》・坐禅与讲经系列电子书｜TaiGuangLin 禅师</title>
+<meta name="theme-color" content="#e75480">
+<link rel="manifest" href="/manifest.webmanifest">
 <script>
 try {
   var __dm = localStorage.getItem('darkMode');
   if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
-  if (__dm === 'true') document.documentElement.classList.add('dark-mode');
+  if (__dm === 'true') {
+    document.documentElement.classList.add('dark-mode');
+    if (localStorage.getItem('w2e:darkPalette') === 'neutral') document.documentElement.classList.add('dark-neutral');
+  }
 } catch (e) {}
 </script>
 <link rel="icon" type="image/x-icon" href="favicon.ico">

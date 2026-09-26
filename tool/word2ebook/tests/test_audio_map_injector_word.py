@@ -209,6 +209,104 @@ class TestAnswerIdDisambiguation:
         assert out.count('data-start="10.500"') == 2
 
 
+class TestQuestionlessAnswerBlocks:
+    """圖片題 /「問題丟失」block：沒有 ``<div class="question">``，只能靠自己的
+    ``answer-…`` id（``chapter_answer_ids``）取得播放鈕。"""
+
+    CHAPTER = """<h2 id="ch">章</h2>
+<div class="question" id="question-aaa">
+<div class="question-text">問一</div>
+</div>
+<div class="answer" id="answer-aaa">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+<div class="answer-text">答一</div>
+</div>
+<hr/>
+<img alt="心的选择：2025-03-12 18:42 师父，目前双盘只能一二十分钟" src="assets/images/x.png"/>
+<div class="answer" id="answer-orphan">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+<div class="answer-text">下一個問題，你的姿勢是挺好的。</div>
+</div>
+<hr/>
+<div class="question" id="question-bbb">
+<div class="question-text">問二</div>
+</div>
+<div class="answer" id="answer-bbb">
+<div class="answer-meta"><span class="answerer">Taiguanglin</span></div>
+<div class="answer-text">答二</div>
+</div>
+"""
+
+    def _orphan_seg(self, **kw):
+        kw.setdefault("listened", True)
+        kw.setdefault("start", 314.6)
+        kw.setdefault("end", 415.37)
+        return _am2_seg([], 4, kw["start"], kw["end"],
+                        listened=kw["listened"],
+                        audio="2025年3月12日Tai師父貼吧答疑.opus")
+
+    def test_orphan_block_injected_from_answer_id_only(self):
+        seg = self._orphan_seg()
+        out = inject_word_html_from_audio_map2(
+            self.CHAPTER, {}, by_answer={"answer-orphan": seg}
+        )
+        assert out.count('class="qa-play qa-play--inline"') == 1
+        # the button belongs to the orphan block, with the orphan's own range
+        head, tail = out.split('id="answer-orphan"', 1)
+        assert 'data-start="314.600"' not in head
+        assert 'data-start="314.600"' in tail
+        assert 'data-end="415.370"' in tail
+        # injected right after the orphan's own answerer name
+        assert 'class="answerer">Taiguanglin</span><button' in tail
+
+    def test_orphan_block_respects_review_gate(self):
+        seg = self._orphan_seg(listened=False)
+        out = inject_word_html_from_audio_map2(
+            self.CHAPTER, {}, by_answer={"answer-orphan": seg}
+        )
+        assert "qa-play--inline" not in out
+
+    def test_orphan_and_normal_block_coexist_once_each(self):
+        normal = _am2_seg(["question-aaa"], 3, 10.0, 20.0, listened=True)
+        orphan = self._orphan_seg()
+        out = inject_word_html_from_audio_map2(
+            self.CHAPTER, {"question-aaa": normal},
+            by_answer={"answer-aaa": normal, "answer-orphan": orphan},
+        )
+        assert out.count('class="qa-play qa-play--inline"') == 2
+        assert 'data-start="10.000"' in out
+        assert 'data-start="314.600"' in out
+
+    def test_idempotent(self):
+        normal = _am2_seg(["question-aaa"], 3, 10.0, 20.0, listened=True)
+        orphan = self._orphan_seg()
+        maps = {"question-aaa": normal}
+        by_answer = {"answer-aaa": normal, "answer-orphan": orphan}
+        once = inject_word_html_from_audio_map2(self.CHAPTER, maps, by_answer)
+        twice = inject_word_html_from_audio_map2(once, maps, by_answer)
+        assert twice.count('class="qa-play qa-play--inline"') == 2
+        assert once == twice
+
+    def test_answerer_lookup_stays_inside_its_own_block(self):
+        # An unreviewed orphan must not steal the next block's answerer span.
+        orphan = self._orphan_seg(listened=False)
+        out = inject_word_html_from_audio_map2(
+            self.CHAPTER, {}, by_answer={"answer-orphan": orphan}
+        )
+        assert "qa-play--inline" not in out
+        # the orphan's answerer stays untouched (no button spliced in)
+        assert out.count('<span class="answerer">Taiguanglin</span></div>') == 3
+
+    def test_base_id_fallback(self):
+        html = self.CHAPTER.replace('id="answer-orphan"', 'id="answer-orphan-2"')
+        seg = self._orphan_seg()
+        out = inject_word_html_from_audio_map2(
+            html, {}, by_answer={"answer-orphan": seg}
+        )
+        assert out.count('class="qa-play qa-play--inline"') == 1
+        assert 'data-start="314.600"' in out
+
+
 class TestWordSkipsPdfChapters:
     def test_pdf_month_chapter_not_stripped(self, tmp_path, monkeypatch):
         # A PDF chapter carries a date+source h2 and an already-injected inline

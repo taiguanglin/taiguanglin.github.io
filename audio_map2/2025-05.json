@@ -11132,7 +11132,13 @@
           "meta": {
             "lastPlayed": "2026-09-13 21:39",
             "lastEdited": "2026-09-13 21:39"
-          }
+          },
+          "chapter_answer_ids": [
+            "answer-9692f1677f6f"
+          ],
+          "chapter_indexes": [
+            10
+          ]
         },
         {
           "questioner": "闻与所闻尽",
@@ -13591,7 +13597,7 @@
           "end_label": "01:05:28.765",
           "confidence": 0.827,
           "status": "manual",
-          "notes": "repaired:answer",
+          "notes": "repaired:answer | html-portion: 本段含多個電子書 block，answer-80a48b2e2044 為其中之一，播放鈕共用本段時間",
           "srt_preview": "职业也可以嗯阳光新陈代谢旺盛、嗯，衰老变快。这个新陈代谢是如果你把它看成一个排毒的过程的话，旺盛反而会排毒快，那就衰老变慢啊。因为现在医学的说法是嗯人衰老，就是因为毒素在积累，不管是呼吸进来的，还是吃进来的，毒素在身体积累，所以内脏积累的毒素之后开始变衰老。这是现在医学的说法，如果新陈代谢快让你排毒更快的话，应该反而是衰老缓慢啊。嗯，但是这个呃修行带来的是整体身体机能的缓慢，并不是指的是新陈代谢、新陈代谢单单指这个呃身体排毒的过程，而是…",
           "index": 38,
           "question_id": "question-156ad92c699f",
@@ -13601,7 +13607,13 @@
           "meta": {
             "lastPlayed": "2026-09-13 20:10",
             "lastEdited": "2026-09-06 17:48"
-          }
+          },
+          "chapter_answer_ids": [
+            "answer-80a48b2e2044"
+          ],
+          "chapter_indexes": [
+            8
+          ]
         },
         {
           "questioner": "贴吧用户_QUDy8Na",

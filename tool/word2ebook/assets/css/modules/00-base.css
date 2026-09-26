@@ -45,6 +45,16 @@
 
     /* 深色模式頁面底色（body.dark-mode 與防閃爍的 html.dark-mode 共用） */
     --color-bg-page-dark:  #3b1c32;
+
+    /* 深色「墨夜」面板 tokens（body.dark-neutral 使用；見 06-ux-plus.css） */
+    --color-neutral-bg:        #16181d;
+    --color-neutral-surface:   #20242c;
+    --color-neutral-text:      #ddd6c9;
+    --color-neutral-muted:     #8b93a3;
+    --color-neutral-accent:    #d9a86c;
+    --color-neutral-accent-2:  #e0b36a;
+    --color-neutral-accent-deep:#a9753c;
+    --color-neutral-hairline:  #3a3f4a;
 }
 
 body { font-family: var(--font-sans); margin: auto; max-width: 800px; line-height: var(--line-height); background: var(--color-bg-page); color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }

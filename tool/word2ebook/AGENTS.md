@@ -131,7 +131,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `01b-search-index.js` | `createSearchConfig`, `buildSearchIndexInBatches`, `buildSearchIndexInBatchesWithCache` |
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |
 | `01d-search-perform.js` | `performSearch`, `displayPagedResults`, `loadMoreResults` |
-| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, clear, collapse, load-more) |
+| `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, clear, collapse, load-more); result items open in **new tab** (`window.open(..., '_blank', 'noopener')`); search state (`#q=…&scope=…` hash, written by 01d) auto-restores + auto-activates search on back-navigation |
 | `02-reader-ux.js` | Reading toolbar, floating TOC creation, DOM setup, action buttons, Q&A action overlays |
 | `03a-bookmark-data.js` | Bookmark CRUD, localStorage persistence, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
@@ -139,11 +139,18 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `03d-reading-settings.js` | Font/line-height/width/theme persistence via localStorage; `updateReadingProgress`, `showToast`, `copyText` |
 | `04-events.js` | Global event listeners that wire all modules together |
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
-| `06-toc-collapse.js` | TOC expand/collapse and level filtering |
+| `06-toc-collapse.js` | TOC expand/collapse and level filtering; manual expand state snapshot/restored via `sessionStorage` (`tocExpandState:<dir>` per book, `data-id` stable keys) so back/forward keeps the user's expanded TOC |
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
 | `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback; exposes `W2E.qaAudio` (isolated IIFE) |
 | `09b-para-track.js` | 講經「段落跟播」：講次 h2 旁「段落跟播」toggle（`paraTrackEnabled`），播放中高亮當前段落並平滑捲動、點段落即播（經 `W2E.qaAudio` 掛接；isolated IIFE） |
 | `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留）：頁面含 `.sutra-text` 時啟動；以原生 `position: sticky` 讓即將捲出視窗頂的經文停在視窗頂（原尺寸、無白邊），`.sutra-pin-group` 以「下一段經文/標題 h1–h6/圖片」為界限制停留範圍，天生不遮這些內容；過長（> 45% 視窗高）經文不停留，且高度改變（閱讀設定／縮放／字型載入）時重新量測；`sutraPinEnabled` toggle、錨點跳轉暫停、`W2E.sutraPin.reserveFor` 供跟播讓位（isolated IIFE） |
+| `10-search-return.js` | 「回到搜尋結果」浮動按鈕已移除（2026-09：快照跨分頁複製不穩、按鈕鮮少出現）。僅保留 index 頁快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage）供返回時由 01e 還原 |
+| `11-reading-resume.js` | Reading-position memory (`localStorage w2e:readpos`, LRU 40 pages) with a top "回到上次閱讀位置" bar; **index/TOC pages (`isIndexPage()`) neither save nor offer it** (and prune leftover index entries) since they hold no article text; consumes the `w2e:langjump` sessionStorage marker that `/lang-switch.js` leaves on simp↔trad ebook redirects so script switching lands at the same spot |
+| `13-player-persist.js` | Cross-page audio persistence: snapshots `{src, t, file, page, anchor}` from `W2E.qaAudio` into `sessionStorage w2e:playerState`; resume pill on any page (same-page hands back to 08's player + `seekAbs`, other pages spawn their own `Audio`) |
+| `14-search-plus.js` | Search UX: `/` / Ctrl+K focus, ↓/↑/Enter keyboard navigation on results, keyboard-focus reset via `MutationObserver` when the results list re-renders (never the removed `DOMSubtreeModified`), and chapter-page `<mark class="w2e-hl">` term highlighting driven by the `?q=` param that 01e appends when opening results |
+| `15-mobile-toc.js` | Mobile TOC ergonomics: tap-out backdrop (≤768px), edge-swipe open / panel-swipe close. 「回到頂端」只留功能選單（☰ → ↑）內的按鈕，無常駐懸浮鈕 |
+| `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3; "本講次暫無音檔跟播" note on `/ebook/` lecture pages that have `.para-block` but no play buttons |
+| `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint script in templates adds it to `<html>`); registers root `/sw.js` under the two ebook dirs for offline reading |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 
@@ -172,6 +179,7 @@ All CSS modules live in `assets/css/modules/` and are concatenated (in numeric o
 | `04b-toc-dark.css` | Dark-mode overrides for TOC controls, floating TOC, bookmark items inside the TOC panel |
 | `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), opening/closing bars, `qa-opening`, bottom floating `qa-player`, loading states; 講經「段落跟播」（`.para-track-toggle`、`body.para-track-on`、`.para-block.para-active`）與「經文置頂」（`.sutra-pin-toggle`、sticky `.sutra-pin-host`、範圍容器 `.sutra-pin-group`，`body.sutra-pin-off`/`-suppress` 止停留）styles; dark-mode variants. Loads before `05` so its responsive overrides win |
 | `05-responsive.css` | **All** `@media` breakpoints: height-based toolbar, ≤768px tablet, ≥800px wide, ≤600px mobile (incl. QA player full-width), ≤400px small-phone |
+| `06-ux-plus.css` | 2026-09 UX 改善元件（無 `@media`）：墨夜深色面板（`.dark-neutral`）、閱讀位置提示條、續播膠囊、`.toc-count` 可點、`.anchor-share`、`mark.w2e-hl`、搜尋結果 `.kb-focus`、目錄 backdrop、`.no-audio-note`、目錄縮排導引線（**已移除**首頁「我的書籤」管理區塊的 `.w2e-bm-*`） |
 
 **Design-token rule:** always use `var(--color-primary)`, `var(--radius-sm)`, etc. (defined in `00-base.css`) — never hardcode raw hex or pixel values in new CSS.
 

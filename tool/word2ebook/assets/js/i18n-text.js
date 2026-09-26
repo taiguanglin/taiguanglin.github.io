@@ -319,6 +319,10 @@ window.I18N_TEXT = {
     themeDark: {
       simplified: '🌙 夜间',
       traditional: '🌙 夜間'
+    },
+    themeDarkNeutral: {
+      simplified: '🌌 墨夜',
+      traditional: '🌌 墨夜'
     }
   },
   
