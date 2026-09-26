@@ -1,0 +1,23 @@
+*.pyc
+*.DS_Store
+classify/*classified_results_*.xlsx
+classify/qa_classification_results*.json
+classify/qa_classification.log
+問答錄2/~$*.xlsx
+tool/stories2html/build/
+
+# Local symlink to external audio library (/Users/paul/tai/audio); do not commit.
+/audio
+.freebuff/project-id
+
+# Local backup files; never deploy.
+.bak/
+
+# 本機工具狀態／快取（AI CLI、pytest）：不進版控、也不該部署
+.opencode/
+.pytest_cache/
+
+# 字型子集管線（tool/fonts）：源字型與暫存不進版控，產出 fonts/*.woff2 要 commit
+tool/fonts/src/
+tool/fonts/.pylibs/
+tool/fonts/build/
