@@ -1,0 +1,212 @@
+"""文档数据模型定义"""
+
+from dataclasses import dataclass, field
+from typing import List, Optional, Dict, Any, Tuple
+from pathlib import Path
+
+from config.settings import Constants
+
+
+@dataclass
+class TOCItem:
+    """目录项数据模型"""
+    level: int
+    text: str
+    anchor: str
+
+
+@dataclass
+class QAPair:
+    """问答对数据模型"""
+    question_id: str
+    answer_id: str
+    questioner: str
+    answerer: str = Constants.ANSWERER_RAW_NAME
+    question_text: str = ""
+    answer_text: str = ""
+    time_info: Optional[str] = None
+    
+    def to_html(self) -> str:
+        """转换为 HTML 格式"""
+        question_html = self._generate_question_html()
+        answer_html = self._generate_answer_html()
+        return f"{question_html}\n{answer_html}"
+    
+    def _generate_question_html(self) -> str:
+        """生成问题的 HTML"""
+        time_html = f'<span class="question-time">{self.time_info}</span>' if self.time_info else ''
+        
+        return f'''<div class="question" id="{self.question_id}">
+    <div class="question-meta">
+        <span class="questioner">{self.questioner}</span>
+        {time_html}
+    </div>
+    <div class="question-text">{self.question_text}</div>
+</div>'''
+    
+    def _generate_answer_html(self) -> str:
+        """生成回答的 HTML"""
+        return f'''<div class="answer" id="{self.answer_id}">
+    <div class="answer-meta">
+        <span class="answerer">{self.answerer}</span>
+    </div>
+    <div class="answer-text">{self.answer_text}</div>
+</div>'''
+
+
+@dataclass
+class SearchItem:
+    """搜索项数据模型"""
+    id: str
+    title: str
+    type: str  # 'heading', 'question', 'answer', 'content'
+    content: str
+    # context 已不再輸出到搜尋索引（與 content 前綴重複，佔索引 ~30% 體積）；
+    # 欄位保留為空字串預設，僅為相容舊呼叫端／測試。
+    context: str = ""
+    url: str = ""
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典格式（用于 JSON 序列化）"""
+        result = {
+            'id': self.id,
+            'title': self.title,
+            'type': self.type,
+            'content': self.content,
+            'url': self.url
+        }
+        return result
+
+
+@dataclass
+class QAPosition:
+    """問答位置信息"""
+    question_start: int  # 問答在HTML中的起始位置
+    question_end: int    # 問答在HTML中的結束位置
+    
+
+@dataclass
+class QACountMetadata:
+    """問答計數元數據 - 優化版本"""
+    chapter_filename: str
+    anchor_counts: Dict[str, int] = field(default_factory=dict)  # anchor -> 問答數量
+    qa_positions: List[QAPosition] = field(default_factory=list)  # 所有問答的位置
+    heading_positions: Dict[str, int] = field(default_factory=dict)  # anchor -> 標題在HTML中的位置
+    toc_structure: List[Tuple[int, str, str]] = field(default_factory=list)  # (level, text, anchor)
+    
+    def get_count_for_anchor(self, anchor: str) -> int:
+        """獲取指定anchor的問答計數"""
+        return self.anchor_counts.get(anchor, 0)
+
+
+@dataclass
+class Chapter:
+    """章节数据模型"""
+    title: str
+    filename: str
+    content: str = ""
+    chapter_toc: str = ""
+    toc_items: List[TOCItem] = field(default_factory=list)
+    qa_pairs: List[QAPair] = field(default_factory=list)
+    search_items: List[SearchItem] = field(default_factory=list)
+    qa_count_metadata: Optional[QACountMetadata] = None
+    # 來自 qa/ 資料夾的章節（含每段音檔播放與校稿狀態徽章），HTML 生成時會額外
+    # 渲染來源橫幅（連到 qa/index.html）。
+    is_qa: bool = False
+    
+    @property
+    def safe_title(self) -> str:
+        """获取安全的标题（移除 HTML 标签）"""
+        import re
+        return re.sub(r"<.*?>", "", self.title)
+    
+    @property
+    def traditional_filename(self) -> str:
+        """获取繁体版文件名"""
+        return self.filename.replace(".html", "_trad.html")
+    
+    def add_toc_item(self, level: int, text: str, anchor: str) -> None:
+        """添加目录项"""
+        self.toc_items.append(TOCItem(level=level, text=text, anchor=anchor))
+    
+    def add_qa_pair(self, qa_pair: QAPair) -> None:
+        """添加问答对"""
+        self.qa_pairs.append(qa_pair)
+    
+    def add_search_item(self, search_item: SearchItem) -> None:
+        """添加搜索项"""
+        self.search_items.append(search_item)
+
+
+@dataclass
+class ConversionConfig:
+    """转换配置数据模型"""
+    input_file: Path
+    output_folder: Path
+    generate_search: bool = True
+    generate_traditional: bool = True
+    generate_simplified: bool = True
+
+    book_title: Optional[str] = None
+
+    # PDF 來源（可選）：把一份或多份 PDF 答疑依序附加為月份章節
+    pdf_files: List[Path] = field(default_factory=list)
+    # 單一 PDF 相容欄位（會併入 pdf_files；新程式請用 pdf_files）
+    pdf_file: Optional[Path] = None
+    # QA 來源（可選）：把 qa/ 資料夾的 txt 答疑附加為新的月份章節（含音檔與校稿狀態）
+    qa_folder: Optional[Path] = None
+    # 開發用部分模式：只重生 Word / 只重生 PDF / 只重生 QA 的章節頁（略過首頁與搜尋索引重建）
+    only_word: bool = False
+    only_pdf: bool = False
+    only_qa: bool = False
+    # 只跑 PDF 時，章節編號從此值 + 1 開始（預設 12 → 第一個月份章節為 13）
+    pdf_start_index: int = 12
+    # 只跑 QA 時，章節編號從此值 + 1 開始（預設 16 → 第一個月份章節為 17）
+    qa_start_index: int = 16
+    
+    def __post_init__(self):
+        """初始化后处理"""
+        # 确保路径是 Path 对象
+        if not isinstance(self.input_file, Path):
+            self.input_file = Path(self.input_file)
+        if not isinstance(self.output_folder, Path):
+            self.output_folder = Path(self.output_folder)
+        if self.qa_folder is not None and not isinstance(self.qa_folder, Path):
+            self.qa_folder = Path(self.qa_folder)
+
+        # 合併 pdf_file + pdf_files（去重、保序）
+        resolved: List[Path] = []
+        for raw in ([self.pdf_file] if self.pdf_file is not None else []) + list(self.pdf_files or []):
+            path = Path(raw) if not isinstance(raw, Path) else raw
+            if path not in resolved:
+                resolved.append(path)
+        self.pdf_files = resolved
+        self.pdf_file = self.pdf_files[0] if self.pdf_files else None
+        
+        # 如果没有指定书名，从文件名获取
+        if self.book_title is None:
+            self.book_title = self.input_file.stem
+    
+    def get_book_title(self, is_traditional: bool = False) -> str:
+        """獲取電子書標題，優先使用配置文件中的設定
+        
+        Args:
+            is_traditional: 是否為繁體版
+            
+        Returns:
+            電子書標題
+        """
+        try:
+            # 導入配置管理器（延遲導入避免循環依賴）
+            from utils.config_utils import get_book_title
+            
+            # 優先使用配置文件中的標題，如果沒有則使用當前設定的書名
+            config_title = get_book_title(is_traditional, "")
+            if config_title:
+                return config_title
+            else:
+                return self.book_title or self.input_file.stem
+                
+        except ImportError:
+            # 如果配置工具不可用，使用默認邏輯
+            return self.book_title or self.input_file.stem

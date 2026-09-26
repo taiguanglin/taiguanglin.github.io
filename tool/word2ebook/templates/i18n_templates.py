@@ -1,0 +1,344 @@
+"""支援國際化的HTML模板管理"""
+
+from typing import Dict, Any
+from config.settings import Constants
+from utils.config_utils import get_i18n_text
+
+
+# 防閃爍（P2-21/P2-23）：在 <head> 內同步執行，首繪前依偏好（或首次造訪的
+# 作業系統深色偏好）把 dark-mode 掛到 <html>。00-base.js 於 DOM 就緒後把
+# 類別移到 <body> 並移除 <html> 上的暫時類別。
+DARK_MODE_PREPAINT_SCRIPT = """<script>
+try {
+  var __dm = localStorage.getItem('darkMode');
+  if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
+  if (__dm === 'true') document.documentElement.classList.add('dark-mode');
+} catch (e) {}
+</script>"""
+
+
+class I18nTemplateManager:
+    """支援國際化的HTML模板管理器"""
+    
+    def __init__(self):
+        self._templates = {}
+        self._load_templates()
+    
+    def _load_templates(self):
+        """加載所有模板"""
+        self._templates['chapter'] = self._get_chapter_template()
+        self._templates['index'] = self._get_index_template()
+    
+    def get_template(self, template_name: str) -> str:
+        """獲取模板"""
+        if template_name not in self._templates:
+            raise ValueError(f"未知的模板名稱: {template_name}")
+        return self._templates[template_name]
+    
+    def render_chapter(self, is_traditional: bool = False, **kwargs) -> str:
+        """渲染章節模板"""
+        # 獲取國際化文字
+        i18n_kwargs = self._get_chapter_i18n_kwargs(is_traditional)
+        i18n_kwargs.update(kwargs)
+        
+        # 設置favicon默認值
+        if 'favicon_tag' not in i18n_kwargs:
+            i18n_kwargs['favicon_tag'] = ''
+        # QA 來源橫幅僅 QA 章節有，其餘章節預設為空字串以維持相容
+        if 'qa_banner' not in i18n_kwargs:
+            i18n_kwargs['qa_banner'] = ''
+        # SEO head 預設值（未提供時保持舊行為，方便最小重建與測試）
+        i18n_kwargs.setdefault('html_lang', 'zh-Hant' if is_traditional else 'zh-Hans')
+        i18n_kwargs.setdefault('seo_title', i18n_kwargs.get('title', ''))
+        i18n_kwargs.setdefault('seo_head', '')
+            
+        return self.get_template('chapter').format(**i18n_kwargs)
+    
+    def render_index(self, is_traditional: bool = False, **kwargs) -> str:
+        """渲染首頁模板"""
+        # 獲取國際化文字
+        i18n_kwargs = self._get_index_i18n_kwargs(is_traditional)
+        i18n_kwargs.update(kwargs)
+        
+        # 設置favicon默認值
+        if 'favicon_tag' not in i18n_kwargs:
+            i18n_kwargs['favicon_tag'] = ''
+        # SEO head 預設值
+        i18n_kwargs.setdefault('html_lang', 'zh-Hant' if is_traditional else 'zh-Hans')
+        i18n_kwargs.setdefault('seo_title', i18n_kwargs.get('book_title', ''))
+        i18n_kwargs.setdefault('seo_head', '')
+            
+        return self.get_template('index').format(**i18n_kwargs)
+    
+    def _get_chapter_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
+        """獲取章節頁面的國際化文字"""
+        return {
+            'ebook_toc_text': get_i18n_text(
+                'navigation.ebook_toc',
+                is_traditional,
+                '📖 問答錄2總目錄' if is_traditional else '📖 问答录2总目录',
+            ),
+            'chapter_toc_title': get_i18n_text('navigation.chapter_toc', is_traditional, '本章目錄'),
+            'previous_chapter': get_i18n_text('ui.previous_chapter', is_traditional, '上一章'),
+            'next_chapter': get_i18n_text('ui.next_chapter', is_traditional, '下一章'),
+            'show_level': get_i18n_text('level_control.show_level', is_traditional, '顯示層級'),
+            'level': get_i18n_text('level_control.level', is_traditional, '層級'),
+            'collapse_expand_level_control': get_i18n_text('level_control.collapse_expand', is_traditional, '收縮/展開層級控制'),
+            'dark_mode_prepaint': DARK_MODE_PREPAINT_SCRIPT,
+        }
+    
+    def _get_index_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
+        """獲取首頁的國際化文字"""
+        return {
+            'table_of_contents': get_i18n_text('table_of_contents', is_traditional, '目錄'),
+            'activate_search': get_i18n_text('search.activate_search', is_traditional, '🔍 啟用全文搜尋'),
+            'search_placeholder': get_i18n_text('search.search_placeholder', is_traditional, '搜尋全文內容...'),
+            'search_initializing': get_i18n_text('search.search_initializing', is_traditional, '正在初始化搜尋功能...'),
+            'show_more': get_i18n_text('search.show_more', is_traditional, '顯示更多'),
+            'show_all': get_i18n_text('search.show_all', is_traditional, '顯示全部'),
+            'clear_search': get_i18n_text('search.clear_search', is_traditional, '清除搜尋'),
+            'collapse_search': get_i18n_text('search.collapse_search', is_traditional, '收起搜尋'),
+            'scope_label': get_i18n_text('search.scope_label', is_traditional, '搜尋範圍'),
+            'scope_question': get_i18n_text('search.scope_question', is_traditional, '問題'),
+            'scope_answer': get_i18n_text('search.scope_answer', is_traditional, '回答'),
+            'scope_both': get_i18n_text('search.scope_both', is_traditional, '兩者'),
+            'show_level': get_i18n_text('level_control.show_level', is_traditional, '顯示層級'),
+            'level': get_i18n_text('level_control.level', is_traditional, '層級'),
+            'collapse_expand_level_control': get_i18n_text('level_control.collapse_expand', is_traditional, '收縮/展開層級控制'),
+            'bookmarks': get_i18n_text('navigation.bookmarks', is_traditional, '書籤'),
+            'my_bookmarks': get_i18n_text('navigation.my_bookmarks', is_traditional, '我的書籤'),
+            'chapter_directory': get_i18n_text('navigation.chapter_directory', is_traditional, '章節目錄'),
+            'function_menu': get_i18n_text('ui.function_menu', is_traditional, '功能選單'),
+            'settings': get_i18n_text('ui.settings', is_traditional, '設置'),
+            'back_to_top': get_i18n_text('ui.back_to_top', is_traditional, '回到頂部'),
+            'site_home_text': get_i18n_text('navigation.site_home', is_traditional, '🏠 首頁' if is_traditional else '🏠 首页'),
+            'site_home_href': "../index.html",
+            'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
+            'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪與講經' if is_traditional else '📚 坐禅与讲经'),
+            'dark_mode_prepaint': DARK_MODE_PREPAINT_SCRIPT,
+            'minisearch_script': (
+                f'<script src="{Constants.MINISEARCH_LOCAL_PATH}" defer></script>'
+                if Constants.MINISEARCH_LOCAL_PATH else ''
+            ),
+        }
+    
+    def _get_chapter_template(self) -> str:
+        """章節頁面模板"""
+        return '''<!DOCTYPE html>
+<html lang="{html_lang}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{seo_title}</title>
+{seo_head}
+{dark_mode_prepaint}
+{favicon_tag}
+<link rel="stylesheet" href="assets/css/style.css">
+<script src="assets/js/i18n-text.js"></script>
+<script src="assets/js/script.js" defer></script>
+<script src="/lang-switch.js" defer></script>
+</head>
+<body>
+<div id="top"></div>
+<header class="header-nav">
+  <nav class="nav-home" aria-label="站內導覽">
+    <a href="{home_link}">{ebook_toc_text}</a>
+  </nav>
+  <div class="lang-switch">
+    {lang_switch_links}
+  </div>
+</header>
+
+<div class="top-nav">
+{top_nav_links}
+</div>
+
+<main>
+{chapter_title}
+
+{qa_banner}
+
+<!-- 章節TOC標題和層級控制的水平布局 -->
+<div class="toc-header-container">
+  <h2 id="chapter-toc-header">{chapter_toc_title}</h2>
+  <div class="toc-level-controls">
+    <div class="toc-level-label">{show_level}</div>
+    <div class="toc-level-buttons-vertical">
+      <button class="toc-level-btn" data-level="2" title="显示第2层">2</button>
+      <button class="toc-level-btn active" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="chapter-toc">
+{chapter_toc}
+</div>
+
+<!-- 滚动时显示的浮动层级控制按钮 -->
+<div class="floating-level-controls" id="floating-level-controls" style="display: none;">
+  <button class="floating-level-toggle" id="floating-level-toggle" title="{collapse_expand_level_control}">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">{level}</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="2" title="显示第2层">2</button>
+      <button class="floating-level-btn active" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
+  </div>
+</div>
+
+{content}
+
+<div class="nav-footer">
+{prev_link}
+{next_link}
+</div>
+</main>
+</body>
+</html>'''
+    
+    def _get_index_template(self) -> str:
+        """首頁模板"""
+        return '''<!DOCTYPE html>
+<html lang="{html_lang}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{seo_title}</title>
+{seo_head}
+{dark_mode_prepaint}
+{favicon_tag}
+<link rel="stylesheet" href="assets/css/style.css">
+{minisearch_script}
+<script src="assets/js/i18n-text.js"></script>
+<script src="assets/js/search-cache.js"></script>
+<script src="assets/js/script.js" defer></script>
+<script src="/lang-switch.js" defer></script>
+</head>
+<body>
+<header class="header-nav index-header">
+  <nav class="nav-home" aria-label="站內導覽">
+    <a href="{site_home_href}">{site_home_text}</a> | <a href="{cross_href}">{cross_text}</a>
+  </nav>
+  <div class="lang-switch">
+    {lang_switch_links}
+  </div>
+</header>
+<main>
+<h1>{book_title}</h1>
+
+<!-- 搜索激活按钮 -->
+<div class="search-activation">
+  <button class="search-activate-btn" id="search-activate-btn">
+    {activate_search}
+  </button>
+</div>
+
+<!-- 搜索功能（默认隐藏） -->
+<div class="search-container" id="search-container" style="display: none;">
+  <div class="search-box">
+    <input type="text" id="search-input" placeholder="{search_placeholder}" autocomplete="off">
+    <div class="search-scope" role="group" aria-label="{scope_label}">
+      <button type="button" class="search-scope-btn" data-scope="question" aria-pressed="false">{scope_question}</button>
+      <button type="button" class="search-scope-btn" data-scope="answer" aria-pressed="false">{scope_answer}</button>
+      <button type="button" class="search-scope-btn is-active" data-scope="both" aria-pressed="true">{scope_both}</button>
+    </div>
+    <div class="search-status" id="search-status">{search_initializing}</div>
+  </div>
+  
+  <!-- 搜索结果 -->
+  <div class="search-results" id="search-results" style="display: none;">
+    <div class="search-results-header">
+      <span class="search-results-count" id="search-results-count"></span>
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more" style="display: none;">{show_more}</button>
+        <button class="search-load-all" id="search-load-all" style="display: none;">{show_all}</button>
+        <button class="search-clear" id="search-clear">{clear_search}</button>
+        <button class="search-collapse" id="search-collapse">{collapse_search}</button>
+      </div>
+    </div>
+    <ul class="search-results-list" id="search-results-list"></ul>
+    
+    <!-- 底部控制按鈕 -->
+    <div class="search-results-footer">
+      <div class="search-results-actions">
+        <button class="search-load-more" id="search-load-more-bottom" style="display: none;">{show_more}</button>
+        <button class="search-load-all" id="search-load-all-bottom" style="display: none;">{show_all}</button>
+        <button class="search-clear" id="search-clear-bottom">{clear_search}</button>
+        <button class="search-collapse" id="search-collapse-bottom">{collapse_search}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOC标题和层级控制的水平布局 -->
+<div class="toc-header-container">
+  <h2 id="toc-header">{table_of_contents}</h2>
+  <div class="toc-level-controls">
+    <div class="toc-level-label">{show_level}</div>
+    <div class="toc-level-buttons-vertical">
+      <button class="toc-level-btn" data-level="1" title="显示第1层">1</button>
+      <button class="toc-level-btn active" data-level="2" title="显示前2层">2</button>
+      <button class="toc-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
+  </div>
+</div>
+
+<div class="toc" id="main-toc">
+{toc_items}
+</div>
+
+<!-- 懸浮操作按钮 -->
+<div class="action-buttons">
+  <div class="action-menu">
+    <button class="action-btn menu-btn" data-action="toggle-menu" title="{function_menu}">☰</button>
+    <div class="action-menu-items">
+      <button class="action-btn" data-action="toc" title="{bookmarks}">🔖</button>
+      <button class="action-btn" data-action="top" title="{back_to_top}">↑</button>
+      <button class="action-btn" data-action="settings" title="{settings}">⚙️</button>
+    </div>
+  </div>
+</div>
+
+<!-- 懸浮目錄 -->
+<div class="floating-toc" id="floating-toc">
+  <div class="floating-toc-header">
+    <div class="floating-toc-tabs">
+      <button class="floating-toc-tab active" data-tab="toc">📖 {table_of_contents}</button>
+      <button class="floating-toc-tab" data-tab="bookmarks">🔖 {bookmarks}</button>
+    </div>
+    <button class="ctrl-btn" data-action="close-toc">✕</button>
+  </div>
+  
+  <div class="floating-toc-content">
+    <h3 id="toc-title">📖 {chapter_directory}</h3>
+    <ul id="toc-list">
+      <!-- 動態生成的首頁TOC內容 -->
+    </ul>
+    <ul id="bookmarks-list" style="display: none;">
+      <!-- 動態生成的書籤內容 -->
+    </ul>
+  </div>
+</div>
+
+<p class="source-filename" id="source-filename">Source: {source_filename}</p>
+</main>
+
+<!-- 滚动时显示的浮动层级控制按钮 -->
+<div class="floating-level-controls" id="floating-level-controls" style="display: none;">
+  <button class="floating-level-toggle" id="floating-level-toggle" title="{collapse_expand_level_control}">⇄</button>
+  <div class="floating-level-content">
+    <div class="floating-level-label">{level}</div>
+    <div class="floating-level-buttons">
+      <button class="floating-level-btn" data-level="1" title="显示第1层">1</button>
+      <button class="floating-level-btn active" data-level="2" title="显示前2层">2</button>
+      <button class="floating-level-btn" data-level="3" title="显示前3层">3</button>
+      <button class="floating-level-btn" data-level="4" title="显示前4层">4</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>'''

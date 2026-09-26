@@ -1,0 +1,5985 @@
+document.addEventListener('DOMContentLoaded', function() {
+// ============================================================
+// 00-base.js — 全局命名空间、页面类型检测、暗色模式初始化
+//
+// 规则：所有跨模块共享的工具函数都应在此定义。
+// 其他模块通过 W2E.* 命名空间或直接调用这里定义的全局函数。
+// ============================================================
+
+// 全局命名空间：用于模块间显式通信（减少裸全局变量）
+const W2E = window.W2E = {};
+
+// ------------------------------------------------------------------ //
+// 页面类型检测（在所有模块中共享）                                    //
+// ------------------------------------------------------------------ //
+
+function _getPageFilename() {
+  return window.location.pathname.split('/').pop() || 'index.html';
+}
+
+function isIndexPage() {
+  const f = _getPageFilename();
+  return f === 'index.html' || f === 'index_trad.html';
+}
+
+function isTraditionalChinesePage() {
+  return _getPageFilename().includes('_trad.html');
+}
+
+// 简体/繁体文本选择（当 I18N_TEXT 不可用时的降级）
+function getText(simplifiedText, traditionalText) {
+  return isTraditionalChinesePage() ? traditionalText : simplifiedText;
+}
+
+// ------------------------------------------------------------------ //
+// 暗色模式初始化                                                       //
+// 1. 已有偏好（localStorage 'darkMode'）→ 照偏好。                      //
+// 2. 首次造訪未設偏好 → 跟隨作業系統 prefers-color-scheme（未寫回偏好， //
+//    使用者明確切換後才凍結）。                                        //
+// 「防閃爍」由模板 <head> 內聯腳本在首繪前於 <html> 掛 dark-mode；      //
+// 這裡在 DOM 就緒後把狀態移到 <body>（版面著色主體），並移除 <html> 上  //
+// 的暫時類別（避免內容不足整頁時底部露出深色底）。                      //
+// ------------------------------------------------------------------ //
+
+function shouldUseDarkMode() {
+  try {
+    var pref = localStorage.getItem('darkMode');
+    if (pref === 'true') return true;
+    if (pref === 'false') return false;
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  } catch (e) {
+    return false;
+  }
+}
+
+if (shouldUseDarkMode()) {
+  document.body.classList.add('dark-mode');
+}
+document.documentElement.classList.remove('dark-mode');
+  // ============ 搜索功能（延迟加载） ============
+  // isIndexPage / isTraditionalChinesePage / getText 由 00-base.js 提供
+
+  let searchIndex = null;
+  let miniSearch = null;
+  let searchInitialized = false;
+  let currentSearchResults = [];
+  let displayedResultsCount = 0;
+  let searchScope = 'both'; // 'question' | 'answer' | 'both'
+  const RESULTS_PER_PAGE = 20;
+
+  // 获取搜索索引文件名
+  function getSearchIndexFile() {
+    const pathname = window.location.pathname;
+    const filename = pathname.split('/').pop() || 'index.html';
+    return filename === 'index_trad.html' ? 'search_index_trad.json' : 'search_index.json';
+  }
+  
+  // 激活搜索功能
+  async function activateSearch() {
+    const searchContainer = document.getElementById('search-container');
+    const searchActivation = document.querySelector('.search-activation');
+    const searchInput = document.getElementById('search-input');
+    const searchActivateBtn = document.getElementById('search-activate-btn');
+    
+    // 立即禁用激活按钮防止重复点击
+    if (searchActivateBtn) {
+      searchActivateBtn.disabled = true;
+    }
+    
+    if (searchInitialized) {
+      // 如果已经初始化，直接显示搜索容器
+      if (searchContainer && searchActivation) {
+        searchActivation.style.display = 'none';
+        searchContainer.style.display = 'block';
+        
+        // 恢復搜索準備就緒狀態信息
+        const searchStatus = document.getElementById('search-status');
+        if (searchStatus && searchIndex && searchIndex.length > 0) {
+          const isSegmenterEnabled = chineseSegmenter && chineseSegmenter.cut;
+          const segmenterStatus = isSegmenterEnabled ? 
+            (isTraditionalChinesePage() ? '智能中文分詞已啟用' : '智能中文分词已启用') : 
+            (isTraditionalChinesePage() ? '使用傳統搜尋模式' : '使用传统搜索模式');
+          
+          searchStatus.innerHTML = `
+            <div class="search-status-success">
+              ✅ ${getI18nText('search.indexReady', isTraditionalChinesePage(), '搜尋準備就緒 (共{count}條記錄)', { count: searchIndex.length })}
+              <br><small>🔧 ${segmenterStatus}</small>
+            </div>
+          `;
+        }
+        
+        // 聚焦搜索框
+        if (searchInput) {
+          setTimeout(() => searchInput.focus(), 100);
+        }
+      }
+      // 重新启用激活按钮
+      if (searchActivateBtn) {
+        searchActivateBtn.disabled = false;
+      }
+      return;
+    }
+    
+    // 立即禁用搜索输入框并显示加载状态
+    if (searchInput) {
+      searchInput.disabled = true;
+      searchInput.placeholder = getI18nText('search.loading', isTraditionalChinesePage(), '正在載入搜尋功能，請稍候...');
+    }
+    
+    await initSearch();
+  }
+  
+  // 創建載入UI（spinner；下載進度改由 createProgressUI 負責）
+  function createLoadingUI(container) {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'search-loading';
+    loadingDiv.innerHTML = `
+      <div class="search-loading-spinner"></div>
+      <div class="search-loading-text" id="search-loading-text"></div>
+    `;
+    
+    container.appendChild(loadingDiv);
+    
+    return {
+      loadingDiv,
+      textElement: loadingDiv.querySelector('#search-loading-text')
+    };
+  }
+  
+  // 創建錯誤UI
+  function createErrorUI(container, message, onRetry) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'search-error';
+    errorDiv.innerHTML = `
+      <span>⚠️ ${message}</span>
+      <button class="search-retry-btn" id="search-retry-btn">${getI18nText('search.retry', isTraditionalChinesePage(), '重試')}</button>
+    `;
+    
+    container.appendChild(errorDiv);
+    
+    const retryBtn = errorDiv.querySelector('#search-retry-btn');
+    retryBtn.addEventListener('click', () => {
+      container.removeChild(errorDiv);
+      onRetry();
+    });
+    
+    return errorDiv;
+  }
+
+  function formatDownloadMb(bytes) {
+    return (bytes / (1024 * 1024)).toFixed(1);
+  }
+
+  /**
+   * 載入搜索索引並顯示下載進度條。
+   * @param {number|null|undefined} expectedTotalBytes 未壓縮 JSON 位元組數（來自 .hash 的 size）；
+   *   勿使用 HTTP Content-Length（gzip 時為壓縮大小，與 body stream 單位不一致）。
+   * @param {HTMLElement} searchStatus 狀態容器
+   */
+  async function loadSearchIndexWithProgress(expectedTotalBytes, searchStatus) {
+    const indexFile = getSearchIndexFile();
+    const isTrad = isTraditionalChinesePage();
+    const total = (typeof expectedTotalBytes === 'number' && expectedTotalBytes > 0)
+      ? expectedTotalBytes
+      : null;
+
+    try {
+      const initialText = getI18nText('search.loadingIndex', isTrad, '正在載入搜尋索引...');
+      const progress = createProgressUI(searchStatus, initialText);
+      const progressBar = progress.fill.parentElement;
+      if (total === null && progressBar) {
+        progressBar.classList.add('is-indeterminate');
+      }
+
+      const response = await fetch(indexFile);
+
+      if (!response.ok) {
+        throw new Error(getI18nText('search.networkError', isTrad, '網路連接失敗，請檢查網路後重試'));
+      }
+
+      let loaded = 0;
+      const reader = response.body.getReader();
+      const chunks = [];
+      let lastUiAt = 0;
+      let lastPct = -1;
+
+      const renderDownloadProgress = (force) => {
+        const now = Date.now();
+        const loadedMb = formatDownloadMb(loaded);
+        let pct = null;
+        if (total !== null) {
+          pct = Math.min(100, Math.round((loaded / total) * 100));
+        }
+        if (!force) {
+          const pctUnchanged = pct === null || pct === lastPct;
+          if (now - lastUiAt < 100 && pctUnchanged) return;
+        }
+        lastUiAt = now;
+        if (pct !== null) lastPct = pct;
+
+        if (pct !== null) {
+          const totalMb = formatDownloadMb(total);
+          progress.text.textContent = getI18nText(
+            'search.downloadingProgress',
+            isTrad,
+            '正在下載搜尋資料… ' + loadedMb + ' / ' + totalMb + ' MB（' + pct + '%）',
+            { loaded: loadedMb, total: totalMb, pct: pct }
+          );
+          progress.fill.style.width = pct + '%';
+        } else {
+          progress.text.textContent = getI18nText(
+            'search.downloadingBytes',
+            isTrad,
+            '正在下載搜尋資料… ' + loadedMb + ' MB',
+            { loaded: loadedMb }
+          );
+        }
+      };
+
+      renderDownloadProgress(true);
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        loaded += value.length;
+        renderDownloadProgress(false);
+      }
+
+      if (progressBar) progressBar.classList.remove('is-indeterminate');
+      progress.fill.style.width = '100%';
+      progress.text.textContent = getI18nText(
+        'search.processingIndex',
+        isTrad,
+        '正在處理搜尋索引...'
+      );
+
+      const allChunks = new Uint8Array(loaded);
+      let position = 0;
+      for (let i = 0; i < chunks.length; i++) {
+        allChunks.set(chunks[i], position);
+        position += chunks[i].length;
+      }
+
+      const text = new TextDecoder().decode(allChunks);
+      const parsedIndex = JSON.parse(text);
+
+      progress.text.textContent = getI18nText(
+        'search.preparingIndex',
+        isTrad,
+        '準備智能搜尋索引... 即將完成'
+      );
+
+      return parsedIndex;
+
+    } catch (error) {
+      console.error('載入搜索索引失敗:', error);
+      throw error;
+    }
+  }
+  
+  // 中文分词器（使用 jieba-wasm）
+  let chineseSegmenter = null;
+  
+  // 初始化中文分词器 (jieba-wasm)
+  async function initChineseSegmenter() {
+    try {
+      // 檢查是否已經初始化
+      if (chineseSegmenter) {
+        console.log(isTraditionalChinesePage() ? 
+          '✅ jieba-wasm 已初始化，跳過重複初始化' : 
+          '✅ jieba-wasm 已初始化，跳过重复初始化');
+        return true;
+      }
+
+      // 引入 jieba_rs_wasm.js 模塊
+      console.log(isTraditionalChinesePage() ? 
+        '⏳ 正在載入 jieba_rs_wasm.js...' : 
+        '⏳ 正在载入 jieba_rs_wasm.js...');
+      
+      const { default: jiebaInit, cut } = await import('./jieba_rs_wasm.js');
+      await jiebaInit();
+      
+      chineseSegmenter = {
+        cut: function(text) {
+          try {
+            return cut(text, true);
+          } catch (error) {
+            console.error('jieba-wasm 分詞錯誤:', error);
+            return [];
+          }
+        }
+      };
+      
+      console.log(isTraditionalChinesePage() ? 
+        '✅ jieba-wasm 已啟用，支持高性能中文分詞' : 
+        '✅ jieba-wasm 已启用，支持高性能中文分词');
+      return true;
+      
+    } catch (error) {
+      console.error(isTraditionalChinesePage() ? 
+        '❌ jieba-wasm 初始化失敗:' : 
+        '❌ jieba-wasm 初始化失败:', error);
+      return false;
+    }
+  }
+  
+  // jieba-wasm 統一分詞功能
+  // 分詞統計變數（調試用）
+  let segmentationStats = { calls: 0, totalTime: 0 };
+  
+  /**
+   * 使用 jieba-wasm 進行文本分詞
+   * @param {string} text - 要分詞的文本
+   * @param {boolean} returnArray - 是否返回數組格式（默認返回空格分隔的字符串）
+   * @returns {string|Array} 分詞結果
+   */
+  function segmentWithJieba(text, returnArray = false) {
+    if (!text || typeof text !== 'string') {
+      return returnArray ? [] : '';
+    }
+    
+    // 統計調用次數和性能
+    segmentationStats.calls++;
+    const startTime = performance.now();
+    
+    if (chineseSegmenter && chineseSegmenter.cut) {
+      try {
+        // 使用 jieba-wasm 分詞
+        const words = chineseSegmenter.cut(text);
+        
+        // 記錄處理時間
+        const endTime = performance.now();
+        segmentationStats.totalTime += (endTime - startTime);
+        
+        // 每2000次調用輸出一次統計（避免日誌過多）
+        if (segmentationStats.calls % 2000 === 0) {
+          console.log(isTraditionalChinesePage() ? 
+            `🔤 jieba-wasm 統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
+            `🔤 jieba-wasm 统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
+        }
+        
+        return returnArray ? words : words.join(' ');
+      } catch (error) {
+        console.error(isTraditionalChinesePage() ? 
+          '❌ jieba-wasm 分詞失敗:' : 
+          '❌ jieba-wasm 分词失败:', error);
+        return returnArray ? [] : '';
+      }
+    }
+    
+    // jieba-wasm 不可用時的降級處理
+    console.warn(isTraditionalChinesePage() ? 
+      '⚠️ jieba-wasm 不可用，返回原文本' : 
+      '⚠️ jieba-wasm 不可用，返回原文本');
+    return returnArray ? [text] : text;
+  }
+// ============================================================
+// 01b-search-index.js — 搜索索引构建（分批分词、缓存集成）
+// ============================================================
+
+// 創建搜索配置
+// （storeFields 不含 context：索引 JSON 已不再輸出該欄位——與 content 重複、
+//   佔索引約 30% 體積；顯示摘要改由 01c 的 getBestContextForHighlight 現場截取）
+function createSearchConfig(segmenterEnabled) {
+  if (segmenterEnabled) {
+    return {
+      fields: ['processedContent'],
+      storeFields: ['id', 'title', 'type', 'content', 'processedContent', 'url'],
+      searchOptions: {
+        boost: { processedContent: 1 },
+        combineWith: 'AND'
+      },
+    };
+  } else {
+    return {
+      fields: ['content'],
+      storeFields: ['id', 'title', 'type', 'content', 'url'],
+      searchOptions: {
+        boost: { content: 1 },
+        combineWith: 'AND'
+      }
+    };
+  }
+}
+
+// 创建统一的进度条 UI（返回 { container, fill, text }）
+function createProgressUI(searchStatus, initialText) {
+  const container = document.createElement('div');
+  container.className = 'search-progress-container';
+  container.innerHTML = `
+    <div class="search-loading-text">${initialText}</div>
+    <div class="search-progress-bar">
+      <div class="search-progress-fill" style="width: 0%"></div>
+    </div>
+  `;
+  searchStatus.innerHTML = '';
+  searchStatus.appendChild(container);
+  return {
+    container,
+    fill: container.querySelector('.search-progress-fill'),
+    text: container.querySelector('.search-loading-text'),
+  };
+}
+
+// 分批建立搜索索引（含即時分詞）
+async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
+  console.time('📇 分詞+索引建立時間 (分批處理)');
+  const isTrad = isTraditionalChinesePage();
+  console.log(isTrad
+    ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
+    : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
+
+  const BATCH_SIZE = 300;
+  const totalBatches = Math.ceil(searchIndex.length / BATCH_SIZE);
+  const initialText = isTrad
+    ? `📊 正在分詞並建立搜尋索引...0/${searchIndex.length}`
+    : `📊 正在分词并建立搜索索引...0/${searchIndex.length}`;
+  const progress = createProgressUI(searchStatus, initialText);
+
+  for (let i = 0; i < totalBatches; i++) {
+    const startIdx = i * BATCH_SIZE;
+    const endIdx = Math.min(startIdx + BATCH_SIZE, searchIndex.length);
+    const batch = searchIndex.slice(startIdx, endIdx).map(doc => {
+      const processed = { ...doc };
+      if (segmenterEnabled && doc.content) {
+        processed.processedContent = segmentWithJieba(doc.content);
+      } else {
+        processed.processedContent = doc.content;
+      }
+      return processed;
+    });
+
+    miniSearch.addAll(batch);
+
+    const pct = Math.round((endIdx / searchIndex.length) * 100);
+    progress.fill.style.width = `${pct}%`;
+    progress.text.textContent = isTrad
+      ? `📊 正在分詞並建立搜尋索引...${endIdx}/${searchIndex.length}`
+      : `📊 正在分词并建立搜索索引...${endIdx}/${searchIndex.length}`;
+
+    await new Promise(resolve => setTimeout(resolve, 15));
+  }
+
+  searchStatus.removeChild(progress.container);
+  console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
+  console.log('✅ 索引建立完成！');
+}
+
+// 分批建立索引並收集處理後數據（供緩存使用）
+async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems) {
+  console.time('📇 分詞+索引建立時間 (分批處理)');
+  const isTrad = isTraditionalChinesePage();
+  console.log(isTrad
+    ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
+    : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
+
+  const BATCH_SIZE = 300;
+  const totalItems = searchIndex.length;
+  const initialText = isTrad
+    ? `📊 正在分詞並建立搜尋索引...0/${totalItems}`
+    : `📊 正在分词并建立搜索索引...0/${totalItems}`;
+  const progress = createProgressUI(searchStatus, initialText);
+
+  for (let i = 0; i < totalItems; i += BATCH_SIZE) {
+    const batch = searchIndex.slice(i, i + BATCH_SIZE);
+    const processedBatch = [];
+
+    for (const doc of batch) {
+      const processed = { ...doc };
+      if (segmenterEnabled && doc.content) {
+        processed.processedContent = segmentWithJieba(doc.content);
+      }
+      processedBatch.push(processed);
+      processedItems.push(processed);
+    }
+
+    miniSearch.addAll(processedBatch);
+
+    const prog = Math.min(i + BATCH_SIZE, totalItems);
+    const pct = Math.round((prog / totalItems) * 100);
+    progress.fill.style.width = `${pct}%`;
+    progress.text.textContent = isTrad
+      ? `📊 正在分詞並建立搜尋索引...${prog}/${totalItems}`
+      : `📊 正在分词并建立搜索索引...${prog}/${totalItems}`;
+
+    await new Promise(resolve => setTimeout(resolve, 15));
+  }
+
+  console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
+  console.log('✅ 索引建立完成！');
+}
+
+// 支持緩存的索引建立（優先嘗試從緩存恢復）
+async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, cacheManager, isTraditional) {
+  const isTrad = isTraditionalChinesePage();
+
+  let currentHash = null;
+  if (cacheManager) {
+    const hashKey = `hash_${isTraditional ? 'trad' : 'simp'}`;
+    const hashData = await cacheManager.getMetadata(hashKey);
+    currentHash = hashData ? hashData.hash : null;
+  }
+
+  let processedData = null;
+  if (cacheManager && currentHash) {
+    processedData = await cacheManager.getCachedProcessedIndex(isTraditional, segmenterEnabled, currentHash);
+  }
+
+  if (processedData) {
+    console.time('📇 從緩存恢復索引');
+    console.log('⚡ 從緩存恢復處理後的搜索索引...');
+    try {
+      const BATCH_SIZE = 1000;
+      const totalItems = processedData.length;
+      const initialText = isTrad
+        ? `⚡ 從緩存恢復處理後的搜索索引...0/${totalItems}`
+        : `⚡ 从缓存恢复处理后的搜索索引...0/${totalItems}`;
+      const progress = createProgressUI(searchStatus, initialText);
+
+      for (let i = 0; i < totalItems; i += BATCH_SIZE) {
+        miniSearch.addAll(processedData.slice(i, i + BATCH_SIZE));
+        const prog = Math.min(i + BATCH_SIZE, totalItems);
+        const pct = Math.round((prog / totalItems) * 100);
+        progress.fill.style.width = `${pct}%`;
+        progress.text.textContent = isTrad
+          ? `⚡ 從緩存恢復處理後的搜索索引...${prog}/${totalItems}`
+          : `⚡ 从缓存恢复处理后的搜索索引...${prog}/${totalItems}`;
+        await new Promise(resolve => setTimeout(resolve, 10));
+      }
+
+      console.timeEnd('📇 從緩存恢復索引');
+      console.log(isTrad ? '⚡ 從緩存快速恢復索引完成！' : '⚡ 从缓存快速恢复索引完成！');
+    } catch (error) {
+      console.warn('從緩存恢復失敗，將重新建立索引:', error);
+      await buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled);
+    }
+  } else {
+    console.log('🔄 執行完整的分詞和索引建立流程...');
+    const processedItems = [];
+    await buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems);
+    if (cacheManager && processedItems.length > 0) {
+      console.log('💾 保存處理後的索引到緩存...');
+      await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled, currentHash);
+    }
+  }
+}
+// ============================================================
+// 01c-search-highlight.js — 搜索结果高亮 & 上下文提取
+// ============================================================
+
+// 转义 HTML 特殊字符
+function escapeHtml(str) {
+  if (!str || typeof str !== 'string') return '';
+  try {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  } catch (e) {
+    return str.replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;');
+  }
+}
+
+// 转义正则表达式特殊字符
+function escapeRegex(str) {
+  if (!str || typeof str !== 'string') return '';
+  const chars = {
+    '\\': '\\\\', '.': '\\.', '*': '\\*', '+': '\\+', '?': '\\?',
+    '^': '\\^', '$': '\\$', '{': '\\{', '}': '\\}', '(': '\\(',
+    ')': '\\)', '|': '\\|', '[': '\\[', ']': '\\]', '/': '\\/'
+  };
+  let result = str;
+  Object.keys(chars).forEach(c => { result = result.split(c).join(chars[c]); });
+  return result;
+}
+
+// 摘要截斷：搜尋索引已不再內建 context 欄位（與 content 重複、佔 30% 體積），
+// 改由 content 現場截取；此函數保證無查詢詞時的顯示也有固定長度上限。
+function trimSnippet(text, maxLength) {
+  if (!text) return '';
+  const max = maxLength || 160;
+  if (text.length <= max) return text;
+  return text.slice(0, max - 1) + '…';
+}
+
+// 智能获取最佳 context 用于高亮显示
+// （優先順序：命中詞前後的窗口 > 多關鍵詞合併窗口 > 開頭截斷。
+//   相容仍帶 context 欄位的舊快取索引。）
+function getBestContextForHighlight(result, query) {
+  const content = result.content || result.context || '';
+  if (!query || !content) return trimSnippet(result.context || content);
+
+  const term = query.trim();
+  const lowerContent = content.toLowerCase();
+  const lowerTerm = term.toLowerCase();
+
+  const exactIndex = lowerContent.indexOf(lowerTerm);
+  if (exactIndex !== -1) return extractContextAroundPosition(content, exactIndex, 160);
+
+  const keywords = extractKeywords(term);
+  if (keywords.length > 1) return generateMultiKeywordContext(content, buildKeywordPositions(content, keywords), 150);
+
+  return result.context || extractContextAroundPosition(content, 0, 160);
+}
+
+function buildKeywordPositions(content, keywords) {
+  const lowerContent = content.toLowerCase();
+  const positions = [];
+  keywords.forEach(kw => {
+    const lw = kw.toLowerCase();
+    let idx = lowerContent.indexOf(lw);
+    while (idx !== -1) {
+      positions.push({ keyword: kw, position: idx, length: kw.length });
+      idx = lowerContent.indexOf(lw, idx + 1);
+    }
+  });
+  return positions;
+}
+
+// 提取关键词（支持空格分割和中文简单分词）
+function extractKeywords(searchTerm) {
+  const cleaned = searchTerm.trim().replace(/\s+/g, ' ');
+  const spaceWords = cleaned.split(' ').filter(w => w.length > 0);
+  if (spaceWords.length > 1) return spaceWords;
+
+  const keywords = [];
+  const text = cleaned;
+  if (text.length <= 4) {
+    for (let i = 0; i < text.length; i += 2) {
+      const w = text.substr(i, 2);
+      if (w.length >= 2) keywords.push(w);
+    }
+  } else {
+    for (let i = 0; i < text.length - 1; i++) {
+      const w3 = text.substr(i, 3);
+      const w2 = text.substr(i, 2);
+      if (i < text.length - 2 && isLikelyWord(w3)) {
+        keywords.push(w3); i += 2;
+      } else if (isLikelyWord(w2)) {
+        keywords.push(w2); i += 1;
+      }
+    }
+  }
+  return keywords.length > 0 ? keywords : [text];
+}
+
+function isLikelyWord(word) {
+  return /^[\u4e00-\u9fff]+$/.test(word) && word.length >= 2;
+}
+
+// 生成包含多个关键词的 context 段落
+function generateMultiKeywordContext(content, keywordPositions, maxLength) {
+  if (!keywordPositions.length) return content.substring(0, maxLength);
+
+  keywordPositions.sort((a, b) => a.position - b.position);
+  const firstPos = keywordPositions[0].position;
+  const last = keywordPositions[keywordPositions.length - 1];
+  const totalSpan = last.position + last.length - firstPos;
+
+  if (totalSpan <= maxLength * 0.8) {
+    const start = Math.max(0, firstPos - Math.floor((maxLength - totalSpan) / 2));
+    const end = Math.min(content.length, start + maxLength);
+    let ctx = content.substring(start, end);
+    if (start > 0) ctx = '...' + ctx;
+    if (end < content.length) ctx += '...';
+    return ctx;
+  }
+
+  const important = selectImportantPositions(keywordPositions, maxLength);
+  return important.map(pos => {
+    const partLen = Math.floor(maxLength / important.length);
+    const s = Math.max(0, pos.position - Math.floor(partLen / 2));
+    const e = Math.min(content.length, s + partLen);
+    let part = content.substring(s, e);
+    if (s > 0) part = '...' + part;
+    if (e < content.length) part += '...';
+    return part;
+  }).join(' ');
+}
+
+function selectImportantPositions(positions, maxLength) {
+  const selected = [];
+  for (const pos of positions) {
+    if (!selected.some(s => Math.abs(s.position - pos.position) < 20)) {
+      selected.push(pos);
+    }
+    if (selected.length >= 3) break;
+  }
+  return selected.length > 0 ? selected : [positions[0]];
+}
+
+// 从指定位置提取上下文（智能裁剪到词边界）
+function extractContextAroundPosition(text, position, maxLength) {
+  const half = Math.floor(maxLength / 2);
+  let start = Math.max(0, position - half);
+  let end = Math.min(text.length, position + half);
+
+  if (start > 0) {
+    const before = text.substring(start - 10, start);
+    const si = before.lastIndexOf(' ');
+    const pi = Math.max(before.lastIndexOf('。'), before.lastIndexOf('，'), before.lastIndexOf('！'), before.lastIndexOf('？'));
+    if (si !== -1 || pi !== -1) start = start - 10 + Math.max(si, pi) + 1;
+  }
+  if (end < text.length) {
+    const after = text.substring(end, end + 10);
+    const si = after.indexOf(' ');
+    const pi = Math.min(
+      after.indexOf('。') !== -1 ? after.indexOf('。') : Infinity,
+      after.indexOf('，') !== -1 ? after.indexOf('，') : Infinity,
+      after.indexOf('！') !== -1 ? after.indexOf('！') : Infinity,
+      after.indexOf('？') !== -1 ? after.indexOf('？') : Infinity
+    );
+    if (si !== -1 || pi !== Infinity) end += Math.min(si !== -1 ? si : Infinity, pi);
+  }
+
+  let ctx = text.substring(start, end);
+  if (start > 0) ctx = '...' + ctx;
+  if (end < text.length) ctx += '...';
+  return ctx;
+}
+
+// 智能高亮搜索词（支持精确 / 多关键词 / 模糊降级）
+function highlightSearchTerm(text, searchTerm) {
+  if (!text || !searchTerm || typeof text !== 'string' || typeof searchTerm !== 'string') return text;
+  const term = searchTerm.trim();
+  if (!term) return text;
+
+  try {
+    const exactRegex = new RegExp(`(${escapeRegex(term)})`, 'gi');
+    const exact = text.replace(exactRegex, '<span class="search-result-highlight">$1</span>');
+    if (exact !== text) return exact;
+
+    const keywords = extractKeywords(term);
+    if (keywords.length > 1) {
+      const multi = highlightMultipleKeywords(text, keywords);
+      if (multi !== text) return multi;
+    }
+
+    return highlightWithFuzzyMatching(text, term);
+  } catch (e) {
+    console.warn('智能高亮处理失败:', e);
+    return highlightWithFuzzyMatching(text, term);
+  }
+}
+
+function highlightMultipleKeywords(text, keywords) {
+  let result = text;
+  let hasMatch = false;
+  const sorted = keywords.slice().sort((a, b) => b.length - a.length);
+  sorted.forEach(kw => {
+    const r = new RegExp(`(${escapeRegex(kw)})`, 'gi');
+    const before = result;
+    result = result.replace(r, '<span class="search-result-highlight">$1</span>');
+    if (result !== before) hasMatch = true;
+  });
+  return hasMatch ? result : text;
+}
+
+function highlightWithFuzzyMatching(text, term) {
+  try {
+    const punct = '[\\s\\u3000-\\u303F\\uFF00-\\uFFEF\\u2000-\\u206F\\u0020-\\u002F\\u003A-\\u0040\\u005B-\\u0060\\u007B-\\u007E\\u2010-\\u2027\\u2030-\\u205F\\u3001-\\u3003\\u3008-\\u3011\\u3014-\\u301F\\uFE10-\\uFE19\\uFE30-\\uFE6F]';
+    const flexPattern = term.split('').map(c => escapeRegex(c)).join(`${punct}*`);
+    const flex = text.replace(new RegExp(`(${flexPattern})`, 'gi'), '<span class="search-result-highlight">$1</span>');
+    if (flex !== text) return flex;
+
+    const chars = term.split('');
+    if (chars.length > 1) {
+      const charPat = chars.map(c => escapeRegex(c)).join(`${punct}*`);
+      const charResult = text.replace(new RegExp(`(${charPat})`, 'gi'), '<span class="search-result-highlight">$1</span>');
+      if (charResult !== text) return charResult;
+    }
+
+    let result = text;
+    chars.forEach(c => {
+      if (c.trim()) result = result.replace(new RegExp(`(${escapeRegex(c)})`, 'gi'), '<span class="search-result-highlight">$1</span>');
+    });
+    return result;
+  } catch (e) {
+    console.warn('模糊高亮处理失败:', e);
+    try {
+      return text.replace(new RegExp(term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'), '<span class="search-result-highlight">$&</span>');
+    } catch (e2) {
+      return text;
+    }
+  }
+}
+// ============================================================
+// 01d-search-perform.js — 搜索执行、结果展示、分页
+// ============================================================
+
+// 生成单个搜索结果 item 的 HTML
+function generateSearchResultItem(result, index, indexOffset, query) {
+  const typeText = {
+    heading:  getI18nText('search.resultTypes.heading',  isTraditionalChinesePage(), '標題'),
+    question: getI18nText('search.resultTypes.question', isTraditionalChinesePage(), '問題'),
+    answer:   getI18nText('search.resultTypes.answer',   isTraditionalChinesePage(), '回答'),
+    content:  getI18nText('search.resultTypes.content',  isTraditionalChinesePage(), '內容'),
+  }[result.type] || getText('内容', '內容');
+
+  const bestContext = query
+    ? getBestContextForHighlight(result, query)
+    : (result.context || result.content || '');
+  const highlightedContext = query ? highlightSearchTerm(bestContext, query) : bestContext;
+  const globalIndex = (indexOffset || 0) + index + 1;
+  const total = currentSearchResults.length;
+
+  return `
+    <li class="search-result-item" data-url="${result.url}">
+      <div class="search-result-header">
+        <span class="search-result-number">${globalIndex}/${total}</span>
+        <span class="search-result-type">${typeText}</span>
+        <div class="search-result-title">${escapeHtml(result.title)}</div>
+      </div>
+      <div class="search-result-content">${highlightedContext}</div>
+    </li>
+  `;
+}
+
+// 执行搜索
+function performSearch(query) {
+  const elements = getSearchElements();
+  resetSearchResultsHeight();
+
+  if (!miniSearch || !query || query.trim().length < 2) {
+    elements.searchResults.style.display = 'none';
+    elements.tocHeader.style.display = 'block';
+    currentSearchResults = [];
+    displayedResultsCount = 0;
+    hideLoadMoreButtons();
+    setSearchScopeVisible(false);
+    if (query && query.trim().length > 0 && query.trim().length < 2) {
+      elements.searchStatus.textContent = getI18nText('search.minCharWarning', isTraditionalChinesePage(), '請輸入至少2個字元進行搜尋');
+    } else {
+      const count = searchIndex ? searchIndex.length : 0;
+      elements.searchStatus.innerHTML = getText(`搜索准备就绪 (共${count}条记录)`, `搜尋準備就緒 (共${count}條記錄)`);
+    }
+    return;
+  }
+
+  const trimmedQuery = query.trim();
+  try {
+    let searchQuery = trimmedQuery;
+    // 「兩者」範圍可由頁面設定擴充（books2ebook 用 w2e-config.js 把 content/heading
+    // 一併納入全書搜尋；wenda2_ebook 未設定時維持 question/answer）
+    const bothTypes = window.W2E_SEARCH_SCOPE_TYPES || ['question', 'answer'];
+    const allowedTypes = searchScope === 'question' ? ['question']
+      : searchScope === 'answer' ? ['answer']
+      : bothTypes;
+    const searchOptions = {
+      boost: { processedContent: 1 },
+      filter: function (result) {
+        return allowedTypes.indexOf(result.type) !== -1;
+      }
+    };
+
+    if (chineseSegmenter && trimmedQuery.length > 1) {
+      const words = segmentWithJieba(trimmedQuery, true);
+      if (words.length > 0) searchQuery = words.join(' ');
+    }
+
+    const results = miniSearch.search(searchQuery, searchOptions);
+    results.sort((a, b) => b.score - a.score);
+
+    currentSearchResults = results;
+    displayedResultsCount = 0;
+
+    if (results.length > 0) {
+      resetSearchResultsHeight();
+      displayPagedResults(trimmedQuery);
+      setSearchScopeVisible(true);
+    } else {
+      displayNoResults(trimmedQuery, elements);
+      elements.searchStatus.textContent = getText('未找到匹配结果', '未找到匹配結果');
+      // 若使用者已透過有結果的搜尋打開過範圍選項，保留可見以免切換後無法切回
+      const scopeEl = document.querySelector('.search-scope');
+      if (!(scopeEl && scopeEl.classList.contains('is-visible'))) {
+        setSearchScopeVisible(false);
+      }
+    }
+
+    elements.searchResults.style.display = 'block';
+    elements.tocHeader.style.display = 'none';
+    setTimeout(updateFloatingControlsState, 10);
+    setTimeout(updateBottomSearchButtonsVisibility, 10);
+
+  } catch (error) {
+    console.error('搜索出错:', error);
+    elements.searchStatus.textContent = getText('搜索出现错误，请重试', '搜尋出現錯誤，請重試');
+    elements.searchResults.style.display = 'none';
+    elements.tocHeader.style.display = 'block';
+    setSearchScopeVisible(false);
+    setTimeout(updateFloatingControlsState, 10);
+  }
+}
+
+// 展示第一页结果（分页）
+function displayPagedResults(query) {
+  const elements = getSearchElements();
+  displayedResultsCount = Math.min(RESULTS_PER_PAGE, currentSearchResults.length);
+  const resultsToShow = currentSearchResults.slice(0, displayedResultsCount);
+  elements.searchResultsList.innerHTML = resultsToShow.map((r, i) =>
+    generateSearchResultItem(r, i, 0, query)
+  ).join('');
+  updateResultsCounter();
+  updateLoadMoreButtons();
+  const total = currentSearchResults.length;
+  const el = document.getElementById('search-status');
+  if (el) el.textContent = getText(`找到 ${total} 条匹配结果`, `找到 ${total} 條匹配結果`);
+}
+
+// 加载更多结果（每次追加 RESULTS_PER_PAGE 条）
+function loadMoreResults() {
+  const elements = getSearchElements();
+  const startIndex = displayedResultsCount;
+  const endIndex = Math.min(startIndex + RESULTS_PER_PAGE, currentSearchResults.length);
+  const batch = currentSearchResults.slice(startIndex, endIndex);
+  if (!batch.length) return;
+
+  displayedResultsCount = endIndex;
+  const query = document.getElementById('search-input').value.trim();
+  const additionalHTML = batch.map((r, i) =>
+    generateSearchResultItem(r, i, startIndex, query)
+  ).join('');
+  elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+
+  expandSearchResultsHeight();
+  updateResultsCounter();
+  updateLoadMoreButtons();
+  const el = document.getElementById('search-status');
+  if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
+}
+
+// 加载所有剩余结果
+function loadAllResults() {
+  const elements = getSearchElements();
+  const remaining = currentSearchResults.slice(displayedResultsCount);
+  if (!remaining.length) return;
+
+  const startIndex = displayedResultsCount;
+  displayedResultsCount = currentSearchResults.length;
+  const query = document.getElementById('search-input').value.trim();
+  const additionalHTML = remaining.map((r, i) =>
+    generateSearchResultItem(r, i, startIndex, query)
+  ).join('');
+  elements.searchResultsList.insertAdjacentHTML('beforeend', additionalHTML);
+
+  expandSearchResultsHeight();
+  updateResultsCounter();
+  updateLoadMoreButtons();
+  const el = document.getElementById('search-status');
+  if (el) el.textContent = getText(`找到 ${currentSearchResults.length} 条匹配结果`, `找到 ${currentSearchResults.length} 條匹配結果`);
+}
+
+// 显示无结果占位符
+function displayNoResults(query, elements) {
+  const el = elements || getSearchElements();
+  el.searchResultsCount.textContent = getText('未找到结果', '未找到結果');
+  el.searchResultsList.innerHTML = `
+    <li class="search-result-item" style="text-align: center; color: #999;">
+      <div>${getText(`未找到包含"${escapeHtml(query)}"的内容`, `未找到包含"${escapeHtml(query)}"的內容`)}</div>
+      <div style="font-size: 12px; margin-top: 8px;">${getText('尝试使用不同的关键词', '嘗試使用不同的關鍵詞')}</div>
+    </li>
+  `;
+}
+
+// 更新结果计数器文本
+function updateResultsCounter() {
+  const elements = getSearchElements();
+  if (elements.searchResultsCount) {
+    elements.searchResultsCount.textContent = getText(
+      `显示 ${displayedResultsCount} / ${currentSearchResults.length} 条结果`,
+      `顯示 ${displayedResultsCount} / ${currentSearchResults.length} 條結果`
+    );
+  }
+}
+// ============================================================
+// 01e-search-ui.js — 搜索 UI 状态管理、initSearch、事件绑定
+// ============================================================
+
+// 获取搜索相关的 DOM 元素
+function getSearchElements() {
+  return {
+    searchContainer:    document.getElementById('search-container'),
+    searchActivation:   document.querySelector('.search-activation'),
+    searchInput:        document.getElementById('search-input'),
+    searchStatus:       document.getElementById('search-status'),
+    searchResults:      document.getElementById('search-results'),
+    searchResultsList:  document.getElementById('search-results-list'),
+    searchResultsCount: document.getElementById('search-results-count'),
+    searchClear:        document.getElementById('search-clear'),
+    searchCollapse:     document.getElementById('search-collapse'),
+    tocHeader:          document.getElementById('toc-header'),
+  };
+}
+
+// 初始化搜索 UI（显示容器；进度条由下载／建索引阶段自行挂载）
+function initializeSearchUI(elements) {
+  if (elements.searchActivation) elements.searchActivation.style.display = 'none';
+  elements.searchContainer.style.display = 'block';
+  elements.searchStatus.innerHTML = '';
+  const loadingUI = createLoadingUI(elements.searchStatus);
+  if (loadingUI.textElement) {
+    loadingUI.textElement.textContent = getI18nText(
+      'search.loading',
+      isTraditionalChinesePage(),
+      '正在載入搜尋功能，請稍候...'
+    );
+  }
+  return loadingUI;
+}
+
+// 更新「显示更多」按钮的显示状态
+function updateLoadMoreButtons() {
+  if (typeof displayedResultsCount === 'undefined' || typeof currentSearchResults === 'undefined') return;
+  const shouldShow = displayedResultsCount < currentSearchResults.length;
+  ['search-load-more', 'search-load-all', 'search-load-more-bottom', 'search-load-all-bottom'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = shouldShow ? 'inline-block' : 'none';
+  });
+}
+
+// 隐藏所有「显示更多」按钮
+function hideLoadMoreButtons() {
+  ['search-load-more', 'search-load-all', 'search-load-more-bottom', 'search-load-all-bottom'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.style.display = 'none';
+  });
+}
+
+// 搜索结果列表高度工具函数（预设无限制，保留兼容性）
+function initializeSearchResultsHeight() {
+  const list = document.querySelector('.search-results-list');
+  if (list) { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; }
+}
+function expandSearchResultsHeight() {
+  const list = document.querySelector('.search-results-list');
+  if (list) { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; list.setAttribute('data-expanded', 'true'); }
+}
+function resetSearchResultsHeight() {
+  const list = document.querySelector('.search-results-list');
+  if (list) { list.style.maxHeight = 'none'; list.style.overflowY = 'visible'; list.removeAttribute('data-expanded'); }
+}
+
+// 完成搜索初始化设置（更新状态、启用输入框）
+function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
+  const isTrad = isTraditionalChinesePage();
+  const segStatus = segmenterEnabled
+    ? (isTrad ? '智能中文分詞已啟用' : '智能中文分词已启用')
+    : (isTrad ? '使用傳統搜尋模式' : '使用传统搜索模式');
+
+  console.timeEnd('🚀 搜索初始化總時間');
+  console.log(isTrad ? '🎉 搜尋初始化流程完成！' : '🎉 搜索初始化流程完成！');
+
+  elements.searchStatus.innerHTML = `
+    <div class="search-status-success">
+      ✅ ${getI18nText('search.indexReady', isTrad, '搜尋準備就緒 (共{count}條記錄)', { count: indexLength })}
+      <br><small>🔧 ${segStatus}</small>
+    </div>
+  `;
+  searchInitialized = true;
+  initializeSearchResultsHeight();
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.search_placeholder', isTrad, '搜尋全文內容...');
+  const activateBtn = document.getElementById('search-activate-btn');
+  if (activateBtn) activateBtn.disabled = false;
+  setTimeout(() => elements.searchInput.focus(), 100);
+}
+
+// 处理搜索初始化错误
+function handleSearchInitError(elements, error) {
+  const isTrad = isTraditionalChinesePage();
+  console.error('搜索初始化失败:', error);
+  elements.searchStatus.innerHTML = '';
+  createErrorUI(elements.searchStatus, error.message || getI18nText('search.loadingFailed', isTrad, '搜尋索引載入失敗'), async () => {
+    await initSearch();
+  });
+  elements.searchInput.disabled = false;
+  elements.searchInput.placeholder = getI18nText('search.searchUnavailable', isTrad, '搜尋功能暫不可用');
+  const activateBtn = document.getElementById('search-activate-btn');
+  if (activateBtn) activateBtn.disabled = false;
+}
+
+// 搜尋範圍選項：僅在有結果時顯示，保持載入／空輸入時介面乾淨
+function setSearchScopeVisible(visible) {
+  const scopeEl = document.querySelector('.search-scope');
+  if (!scopeEl) return;
+  scopeEl.classList.toggle('is-visible', !!visible);
+}
+
+// 清除搜索状态（重置输入框、结果、计数）
+function clearSearch() {
+  const elements = getSearchElements();
+  if (elements.searchInput) elements.searchInput.value = '';
+  if (elements.searchResults) elements.searchResults.style.display = 'none';
+  if (elements.tocHeader) elements.tocHeader.style.display = 'block';
+  currentSearchResults = [];
+  displayedResultsCount = 0;
+  hideLoadMoreButtons();
+  resetSearchResultsHeight();
+  setSearchScopeVisible(false);
+  if (elements.searchStatus) {
+    const count = searchIndex ? searchIndex.length : 0;
+    elements.searchStatus.innerHTML = getText(`搜索准备就绪 (共${count}条记录)`, `搜尋準備就緒 (共${count}條記錄)`);
+  }
+}
+
+// 收起搜索面板
+function collapseSearch() {
+  const searchContainer  = document.getElementById('search-container');
+  const searchActivation = document.querySelector('.search-activation');
+  if (!searchContainer || !searchActivation) return;
+
+  const searchInput        = document.getElementById('search-input');
+  const searchResults      = document.getElementById('search-results');
+  const tocHeader          = document.getElementById('toc-header');
+  const searchStatus       = document.getElementById('search-status');
+  const searchResultsList  = document.getElementById('search-results-list');
+  const searchResultsCount = document.getElementById('search-results-count');
+
+  if (searchInput) searchInput.value = '';
+  if (searchResults) searchResults.style.display = 'none';
+  if (tocHeader) tocHeader.style.display = 'block';
+  currentSearchResults = [];
+  displayedResultsCount = 0;
+  hideLoadMoreButtons();
+  setSearchScopeVisible(false);
+
+  if (searchStatus) searchStatus.innerHTML = '';
+  if (searchResultsList) { searchResultsList.innerHTML = ''; searchResultsList.style.maxHeight = ''; searchResultsList.style.overflowY = ''; }
+  if (searchResultsCount) searchResultsCount.textContent = '';
+  if (searchResults) searchResults.style.maxHeight = '';
+
+  searchContainer.style.display = 'none';
+  searchActivation.style.display = 'block';
+  setTimeout(updateFloatingControlsState, 10);
+}
+
+// ============================================================
+// initSearch — 搜索功能主入口（async）
+// ============================================================
+
+// MiniSearch 兜底載入：頁面以本地自架的 assets/js/minisearch.min.js 為主
+// （defer，跟著站點一起上線、中國大陸可連）；本地缺失時才依序退到 CDN。
+async function ensureMiniSearchLoaded() {
+  if (typeof MiniSearch !== 'undefined') return true;
+  const cdns = [
+    'https://cdn.jsdelivr.net/npm/minisearch@6.3.0/dist/umd/index.min.js',
+    'https://unpkg.com/minisearch@6.3.0/dist/umd/index.min.js'
+  ];
+  for (const src of cdns) {
+    try {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+      });
+      if (typeof MiniSearch !== 'undefined') return true;
+    } catch (e) {
+      console.warn('MiniSearch CDN 載入失敗：', src);
+    }
+  }
+  return false;
+}
+
+async function initSearch() {
+  if (!isIndexPage()) return;
+
+  console.time('🚀 搜索初始化總時間');
+  console.log('📊 開始搜索初始化流程...');
+
+  const elements = getSearchElements();
+  if (!elements.searchInput || !elements.searchContainer) return;
+
+  // 初始化缓存管理器
+  let cacheManager = null;
+  try {
+    if (window.searchCacheManager) {
+      await window.searchCacheManager.init();
+      cacheManager = window.searchCacheManager;
+      console.log('💾 緩存管理器初始化成功');
+    }
+  } catch (err) {
+    console.warn('緩存管理器初始化失敗，將使用標準流程:', err);
+  }
+
+  try {
+    initializeSearchUI(elements);
+
+    if (!(await ensureMiniSearchLoaded())) {
+      throw new Error('MiniSearch库未加载');
+    }
+
+    // jieba WASM（約 6.5MB）與索引下載互不依賴：先平行啟動分詞器，
+    // 索引檢查/下載完成後再 await，縮短首次搜尋的關鍵路徑。
+    const segmenterPromise = initChineseSegmenter();
+
+    const isTraditional = isTraditionalChinesePage();
+    const isTrad = isTraditionalChinesePage();
+
+    let needsUpdate = true;
+    let hashData = null;
+    if (cacheManager) {
+      const updateInfo = await cacheManager.checkUpdate(isTraditional);
+      needsUpdate = updateInfo.needsUpdate;
+      hashData = updateInfo.hashData;
+    }
+
+    if (!needsUpdate) {
+      elements.searchStatus.innerHTML = '';
+      const cacheMsg = document.createElement('div');
+      cacheMsg.className = 'search-loading-text';
+      cacheMsg.textContent = getI18nText(
+        'search.loadingFromCache',
+        isTrad,
+        '正在從快取載入搜尋索引…'
+      );
+      elements.searchStatus.appendChild(cacheMsg);
+      searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
+      if (!searchIndex) {
+        console.log('📡 緩存數據丟失，重新下載...');
+        needsUpdate = true;
+      } else {
+        console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
+      }
+    }
+
+    if (needsUpdate) {
+      console.log('📡 從網絡加載搜索索引...');
+      if (!hashData && cacheManager) {
+        const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
+        hashData = await cacheManager.fetchHashFile(`${indexFileName}.hash`);
+      } else if (!hashData) {
+        try {
+          const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
+          const hashResp = await fetch(`${indexFileName}.hash`);
+          if (hashResp.ok) hashData = await hashResp.json();
+        } catch (e) { /* 無 hash 時改顯示位元組進度 */ }
+      }
+      const expectedSize = hashData && typeof hashData.size === 'number' ? hashData.size : null;
+      searchIndex = await loadSearchIndexWithProgress(expectedSize, elements.searchStatus);
+      if (cacheManager && searchIndex) {
+        await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
+        if (hashData) {
+          await cacheManager.saveHashMetadata(hashData, isTraditional);
+          console.log('🗑️ 清除舊的處理後索引緩存...');
+          await cacheManager.clearOldProcessedIndexes(isTraditional, hashData.hash);
+        }
+      }
+    }
+
+    console.log(`📋 索引記錄數: ${searchIndex.length}`);
+
+    const segmenterEnabled = await segmenterPromise;
+    console.log(isTraditionalChinesePage()
+      ? `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}`
+      : `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
+
+    const searchConfig = createSearchConfig(segmenterEnabled);
+    miniSearch = new MiniSearch(searchConfig);
+
+    await buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, elements.searchStatus, segmenterEnabled, cacheManager, isTraditional);
+    finalizeSearchSetup(elements, segmenterEnabled, searchIndex.length);
+
+  } catch (error) {
+    handleSearchInitError(elements, error);
+    return;
+  }
+
+  // 搜索输入防抖
+  let searchTimeout;
+  elements.searchInput.addEventListener('input', (e) => {
+    clearTimeout(searchTimeout);
+    const query = e.target.value.trim();
+    searchTimeout = setTimeout(() => performSearch(query), 300);
+  });
+
+  // 搜尋範圍：問題 / 回答 / 兩者
+  document.querySelectorAll('.search-scope-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const scope = btn.getAttribute('data-scope');
+      if (!scope || scope === searchScope) return;
+      searchScope = scope;
+      document.querySelectorAll('.search-scope-btn').forEach((b) => {
+        const active = b.getAttribute('data-scope') === searchScope;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+      const query = elements.searchInput.value.trim();
+      if (query.length >= 2) performSearch(query);
+    });
+  });
+
+  // 清除 / 收起按钮
+  if (elements.searchClear) elements.searchClear.addEventListener('click', clearSearch);
+  if (elements.searchCollapse) elements.searchCollapse.addEventListener('click', collapseSearch);
+
+  // 显示更多 / 全部按钮（顶部 + 底部）
+  [['search-load-more', loadMoreResults], ['search-load-all', loadAllResults],
+   ['search-load-more-bottom', loadMoreResults], ['search-load-all-bottom', loadAllResults],
+   ['search-clear-bottom', clearSearch], ['search-collapse-bottom', collapseSearch]
+  ].forEach(([id, fn]) => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('click', fn);
+  });
+
+  // 结果列表点击（與目錄連結一致：同頁導覽，瀏覽器返回可回到結果）
+  elements.searchResultsList.addEventListener('click', (e) => {
+    const item = e.target.closest('.search-result-item');
+    if (item && item.dataset.url) {
+      window.location.href = item.dataset.url;
+    }
+  });
+}
+
+// ============================================================
+// 首页搜索激活按钮监听（模块加载后绑定）
+// ============================================================
+if (isIndexPage()) {
+  const searchActivateBtn = document.getElementById('search-activate-btn');
+  if (searchActivateBtn) {
+    searchActivateBtn.addEventListener('click', activateSearch);
+  }
+}
+  // ============ 功能實現 ============
+  
+  // 標準 MD5（UTF-8）——與 Python 端 hashlib.md5(x.encode('utf-8')) 完全一致。
+  // 書籤/分享用的 stable ID 依賴兩端 hash 相同；舊版此處是 32 位滾動 hash 的
+  // 「模擬」，與 Python 產生的元素 id 對不上，已改為真實實作。
+  function md5Hex(input) {
+    const bytes = new TextEncoder().encode(input);
+    const n = bytes.length;
+    const padded = new Uint8Array((((n + 8) >> 6) + 1) << 6);
+    padded.set(bytes);
+    padded[n] = 0x80;
+    const dv = new DataView(padded.buffer);
+    dv.setUint32(padded.length - 8, (n << 3) >>> 0, true);
+    dv.setUint32(padded.length - 4, Math.floor(n / 536870912), true);
+
+    const S = [7, 12, 17, 22, 5, 9, 14, 20, 4, 11, 16, 23, 6, 10, 15, 21];
+    const K = new Int32Array(64);
+    for (let i = 0; i < 64; i++) K[i] = Math.floor(Math.abs(Math.sin(i + 1)) * 4294967296);
+
+    let a0 = 0x67452301, b0 = 0xefcdab89, c0 = 0x98badcfe, d0 = 0x10325476;
+    const M = new Int32Array(16);
+    for (let off = 0; off < padded.length; off += 64) {
+      for (let i = 0; i < 16; i++) M[i] = dv.getUint32(off + i * 4, true);
+      let A = a0, B = b0, C = c0, D = d0;
+      for (let i = 0; i < 64; i++) {
+        let F, g;
+        if (i < 16)      { F = (B & C) | (~B & D); g = i; }
+        else if (i < 32) { F = (D & B) | (~D & C); g = (5 * i + 1) % 16; }
+        else if (i < 48) { F = B ^ C ^ D;          g = (3 * i + 5) % 16; }
+        else             { F = C ^ (B | ~D);       g = (7 * i) % 16; }
+        F = (F + A + K[i] + M[g]) | 0;
+        const s = S[(i >> 4) * 4 + (i % 4)];
+        A = D; D = C; C = B;
+        B = (B + ((F << s) | (F >>> (32 - s)))) | 0;
+      }
+      a0 = (a0 + A) | 0; b0 = (b0 + B) | 0; c0 = (c0 + C) | 0; d0 = (d0 + D) | 0;
+    }
+
+    const out = new Uint8Array(16);
+    const odv = new DataView(out.buffer);
+    odv.setUint32(0, a0, true); odv.setUint32(4, b0, true);
+    odv.setUint32(8, c0, true); odv.setUint32(12, d0, true);
+    let hex = '';
+    for (let i = 0; i < 16; i++) hex += out[i].toString(16).padStart(2, '0');
+    return hex;
+  }
+
+  // 生成內容的簡單hash（與Python端 text_utils.simple_hash 一致：MD5前12位）
+  function simpleHash(str) {
+    return md5Hex(str).substring(0, 12);
+  }
+  
+  // 標準化文本內容，提高ID生成的穩定性
+  function normalizeTextForId(text) {
+    if (!text) return '';
+    
+    return text
+      .trim()                                    // 移除首尾空白
+      .replace(/[\r\n\t]/g, ' ')              // 替換換行符和制表符為空格
+      .replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');  // 處理HTML實體，與Python端保持一致
+  }
+  
+  // 生成穩定的內容ID
+  function generateStableContentId(questioner, content, time) {
+    // 標準化各個組件
+    const normalizedQuestioner = normalizeTextForId(questioner);
+    const normalizedContent = normalizeTextForId(content);
+    
+    // 標準化時間：只保留數字部分
+    const normalizedTime = time ? time.replace(/[^\d]/g, '').substring(0, 8) : '';
+    
+    // 組合穩定的標識內容：人名 + 時間 + 前50個字（與Python端保持一致）
+    const stableContent = normalizedQuestioner + 
+                         normalizedTime +
+                         normalizedContent.substring(0, 50); // 改為50字符，與用戶要求一致
+    
+    return simpleHash(stableContent);
+  }
+  
+  // 確保元素有唯一且穩定的ID
+  function ensureElementId(element, prefix = 'qa') {
+    if (!element.id) {
+      let questioner = '', content = '', time = '';
+      
+      if (element.classList.contains('question')) {
+        questioner = element.querySelector('.questioner')?.textContent || '';
+        content = element.querySelector('.question-text')?.textContent || '';
+        time = element.querySelector('.question-time')?.textContent || '';
+      } else if (element.classList.contains('answer')) {
+        questioner = element.querySelector('.answerer')?.textContent || '';
+        content = element.querySelector('.answer-text')?.textContent || '';
+        // 答案通常沒有時間，使用空字符串
+        time = '';
+      }
+      
+      // 使用新的穩定ID生成邏輯
+      const stableHash = generateStableContentId(questioner, content, time);
+      element.id = prefix + '-' + stableHash;
+    }
+    return element.id;
+  }
+  
+  // 生成分享URL
+  function generateShareUrl(targetElement) {
+    let prefix;
+    if (targetElement.classList.contains('question')) {
+      prefix = 'question';
+    } else if (targetElement.classList.contains('answer')) {
+      prefix = 'answer';
+    } else if (targetElement.classList.contains('para-block')) {
+      prefix = 'paragraph';
+    } else {
+      prefix = 'element';
+    }
+    const elementId = ensureElementId(targetElement, prefix);
+    const baseUrl = window.location.origin + window.location.pathname;
+    return baseUrl + '#' + elementId;
+  }
+
+  // 取得段落純文字（ebook 的 para-block 沒有問答結構）
+  function getParagraphText(element) {
+    return (element.textContent || '').trim();
+  }
+
+  // 向上找最近的前一個章節標題，作為段落書籤的歸屬標題
+  function findHeadingForParagraph(element) {
+    let cur = element.previousElementSibling;
+    while (cur) {
+      if (/^H[2-6]$/.test(cur.tagName)) {
+        return cur.textContent.trim();
+      }
+      cur = cur.previousElementSibling;
+    }
+    return '';
+  }
+
+  // 找到問答配對
+  function findQuestionForAnswer(answerElement) {
+    let currentElement = answerElement.previousElementSibling;
+    
+    // 向上查找最近的問題元素
+    while (currentElement) {
+      if (currentElement.classList.contains('question')) {
+        return currentElement;
+      }
+      currentElement = currentElement.previousElementSibling;
+    }
+    
+    return null;
+  }
+  
+  function findAnswerForQuestion(questionElement) {
+    let currentElement = questionElement.nextElementSibling;
+    
+    // 向下查找最近的回答元素
+    while (currentElement) {
+      if (currentElement.classList.contains('answer')) {
+        return currentElement;
+      }
+      currentElement = currentElement.nextElementSibling;
+    }
+    
+    return null;
+  }
+  
+  // 獲取問答的完整文本
+  function getQAPairText(element) {
+    let questionElement, answerElement;
+    let text = '';
+    
+    // 判断传入的是问题还是答案元素
+    if (element.classList.contains('question')) {
+      questionElement = element;
+      answerElement = findAnswerForQuestion(element);
+    } else if (element.classList.contains('answer')) {
+      answerElement = element;
+      questionElement = findQuestionForAnswer(element);
+    }
+    
+    // 提取問題內容
+    if (questionElement) {
+      const questioner = questionElement.querySelector('.questioner')?.textContent || '匿名';
+      const questionTime = questionElement.querySelector('.question-time')?.textContent || '';
+      const questionText = questionElement.querySelector('.question-text')?.textContent || '';
+      
+      text += `問：${questioner}`;
+      if (questionTime) text += ` (${questionTime})`;
+      text += `\n${questionText}\n\n`;
+    }
+    
+    // 提取回答內容
+    if (answerElement) {
+      const answerer = answerElement.querySelector('.answerer')?.textContent || 'Taiguanglin';
+      const answerText = answerElement.querySelector('.answer-text')?.textContent || '';
+      
+      text += `答：${answerer}\n${answerText}`;
+    }
+    
+    return text;
+  }
+  
+  // 創建閱讀工具欄
+  function createReadingToolbar() {
+    const toolbar = document.createElement('div');
+    toolbar.className = 'reading-toolbar hidden';
+    toolbar.innerHTML = 
+      '<div class="toolbar-header">' +
+        '<span>⚙️ ' + getI18nText('readingSettings.title', isTraditionalChinesePage(), '閱讀設置') + '</span>' +
+        '<button class="ctrl-btn" data-action="close-toolbar">✕</button>' +
+      '</div>' +
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">' + 
+          getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + 
+        '</div>' +
+        '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.fontSize', isTraditionalChinesePage(), '字體大小') + '">' +
+          '<button class="ctrl-btn font-adjust" data-action="font-decrease" title="縮小字體">' + getI18nText('readingSettings.fontDecrease', isTraditionalChinesePage(), 'A-') + '</button>' +
+          '<button class="ctrl-btn font-option active" data-action="font-normal" aria-pressed="true" title="重置為默認字體">' + getI18nText('readingSettings.fontNormal', isTraditionalChinesePage(), 'A') + '</button>' +
+          '<button class="ctrl-btn font-adjust" data-action="font-increase" title="放大字體">' + getI18nText('readingSettings.fontIncrease', isTraditionalChinesePage(), 'A+') + '</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.lineHeight', isTraditionalChinesePage(), '行距') + '</div>' +
+        '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.lineHeight', isTraditionalChinesePage(), '行距') + '">' +
+          '<button class="ctrl-btn" data-action="line-tight" aria-pressed="false">' + getI18nText('readingSettings.lineTight', isTraditionalChinesePage(), '緊密') + '</button>' +
+          '<button class="ctrl-btn active" data-action="line-normal" aria-pressed="true">' + getI18nText('readingSettings.lineNormal', isTraditionalChinesePage(), '正常') + '</button>' +
+          '<button class="ctrl-btn" data-action="line-loose" aria-pressed="false">' + getI18nText('readingSettings.lineLoose', isTraditionalChinesePage(), '寬鬆') + '</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.width', isTraditionalChinesePage(), '寬度') + '</div>' +
+        '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.width', isTraditionalChinesePage(), '寬度') + '">' +
+          '<button class="ctrl-btn" data-action="width-narrow" aria-pressed="false">' + getI18nText('readingSettings.widthNarrow', isTraditionalChinesePage(), '窄') + '</button>' +
+          '<button class="ctrl-btn active" data-action="width-normal" aria-pressed="true">' + getI18nText('readingSettings.widthNormal', isTraditionalChinesePage(), '中') + '</button>' +
+          '<button class="ctrl-btn" data-action="width-wide" aria-pressed="false">' + getI18nText('readingSettings.widthWide', isTraditionalChinesePage(), '寬') + '</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="toolbar-section">' +
+        '<div class="toolbar-label">' + getI18nText('readingSettings.theme', isTraditionalChinesePage(), '主題') + '</div>' +
+        '<div class="toolbar-controls" role="group" aria-label="' + getI18nText('readingSettings.theme', isTraditionalChinesePage(), '主題') + '">' +
+          '<button class="ctrl-btn" data-action="theme-light" aria-pressed="false">' + getI18nText('readingSettings.themeLight', isTraditionalChinesePage(), '☀️ 日間') + '</button>' +
+          '<button class="ctrl-btn" data-action="theme-dark" aria-pressed="false">' + getI18nText('readingSettings.themeDark', isTraditionalChinesePage(), '🌙 夜間') + '</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(toolbar);
+    return toolbar;
+  }
+  
+  // 更新主題按鈕狀態
+  function updateThemeButtons() {
+    const isDark = document.body.classList.contains('dark-mode');
+    const lightBtn = document.querySelector('[data-action="theme-light"]');
+    const darkBtn = document.querySelector('[data-action="theme-dark"]');
+    
+    if (lightBtn && darkBtn) {
+      lightBtn.classList.toggle('active', !isDark);
+      darkBtn.classList.toggle('active', isDark);
+      syncToolbarAriaPressed();
+    }
+  }
+
+  // 把工具欄切換鈕的 aria-pressed 與 .active 狀態同步
+  // （.active 只改樣式；aria-pressed 才對螢幕閱讀器發布選中狀態）
+  function syncToolbarAriaPressed() {
+    document.querySelectorAll('.reading-toolbar [data-action][aria-pressed]').forEach(btn => {
+      btn.setAttribute('aria-pressed', btn.classList.contains('active') ? 'true' : 'false');
+    });
+  }
+
+  // 更新閱讀設置按鈕狀態
+  function updateReadingSettingsButtons() {
+    updateFontSizeButtons();
+    updateLineHeightButtons();
+    updateContentWidthButtons();
+    syncToolbarAriaPressed();
+  }
+
+  // 更新字體大小按鈕狀態
+  function updateFontSizeButtons() {
+    // 只更新選項按鈕的狀態，不影響調整按鈕
+    const fontOptionBtns = document.querySelectorAll('[data-action^="font-"].font-option');
+    fontOptionBtns.forEach(btn => btn.classList.remove('active'));
+    
+    // 根據當前字體大小標記對應按鈕
+    const defaultFontSize = getDefaultFontSize();
+    if (fontSize === defaultFontSize || fontSize === 16) {
+      const normalBtn = document.querySelector('[data-action="font-normal"]');
+      if (normalBtn) normalBtn.classList.add('active');
+    }
+    
+    // A- 和 A+ 按鈕使用 font-adjust 類，不參與 active 狀態管理
+  }
+
+  // 更新行距按鈕狀態
+  function updateLineHeightButtons() {
+    const lineHeightBtns = document.querySelectorAll('[data-action^="line-"]');
+    lineHeightBtns.forEach(btn => btn.classList.remove('active'));
+    
+    let activeLineHeightBtn = null;
+    if (lineHeight === 1.2) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-tight"]');
+    } else if (lineHeight === 1.6) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-normal"]');
+    } else if (lineHeight === 2.0) {
+      activeLineHeightBtn = document.querySelector('[data-action="line-loose"]');
+    }
+    
+    if (activeLineHeightBtn) {
+      activeLineHeightBtn.classList.add('active');
+    }
+  }
+
+  // 更新內容寬度按鈕狀態
+  function updateContentWidthButtons() {
+    const widthBtns = document.querySelectorAll('[data-action^="width-"]');
+    widthBtns.forEach(btn => btn.classList.remove('active'));
+    
+    let activeWidthBtn = null;
+    if (contentWidth === 600) {
+      activeWidthBtn = document.querySelector('[data-action="width-narrow"]');
+    } else if (contentWidth === 800) {
+      activeWidthBtn = document.querySelector('[data-action="width-normal"]');
+    } else if (contentWidth === 1000) {
+      activeWidthBtn = document.querySelector('[data-action="width-wide"]');
+    }
+    
+    if (activeWidthBtn) {
+      activeWidthBtn.classList.add('active');
+    }
+  }
+
+  // 創建閱讀進度條
+  function createReadingProgress() {
+    const progress = document.createElement('div');
+    progress.className = 'reading-progress';
+    progress.innerHTML = '<div class="reading-progress-bar"></div>';
+    document.body.appendChild(progress);
+    return progress;
+  }
+
+  // 創建浮動目錄
+  function createFloatingTOC() {
+    const toc = document.createElement('div');
+    toc.className = 'floating-toc';
+    
+    let tocItems = '';
+    
+    if (currentChapter.isHomepage) {
+      // 首頁：從TOC連結提取目錄結構
+      const tocLinks = document.querySelectorAll('h2 + ul li a, ul li a');
+      tocLinks.forEach((link, index) => {
+        const text = link.textContent;
+        const href = link.getAttribute('href');
+        
+        // 更準確的層級判斷：計算嵌套深度
+        const listItem = link.closest('li');
+        let level = 0;
+        let currentElement = listItem.parentElement; // 从ul开始计算
+        
+        // 向上遍歷，計算嵌套的ul層數
+        while (currentElement && currentElement.tagName === 'UL') {
+          level++;
+          // 跳过li，直接到下一个ul
+          currentElement = currentElement.parentElement;
+          if (currentElement && currentElement.tagName === 'LI') {
+            currentElement = currentElement.parentElement;
+          }
+        }
+        
+        // 根據層級添加對應的class (level=1是第一层，无缩进)
+        // 顯示前四層目錄，跳過第五層及以下
+        if (level >= 5) {
+          return; // 跳過第五層及以下的項目
+        }
+        
+        let levelClass = '';
+        if (level === 2) {
+          levelClass = ' level-h3';
+        } else if (level === 3) {
+          levelClass = ' level-h4';
+        } else if (level === 4) {
+          levelClass = ' level-h5';  // Note: this maps to what would be level 4 content
+        }
+        
+        // 為首頁TOC項目使用特殊的data屬性
+        tocItems += '<div class="floating-toc-item' + levelClass + '" data-href="' + href + '">' + text + '</div>';
+      });
+    } else {
+      // 其他頁面：收集標題
+      const headings = document.querySelectorAll('h2, h3, h4');
+      headings.forEach((heading, index) => {
+        const text = heading.textContent;
+        const id = heading.id || ('heading-' + index);
+        if (!heading.id) heading.id = id;
+        
+        const level = heading.tagName.toLowerCase();
+        const levelClass = level !== 'h2' ? ' level-' + level : '';
+        
+        tocItems += '<div class="floating-toc-item' + levelClass + '" data-target="#' + id + '">' + text + '</div>';
+      });
+    }
+    
+    // 根據是否為首頁決定標籤頁內容
+    let tabsHtml = '';
+    let contentHtml = '';
+    
+    if (currentChapter.isHomepage) {
+      // 首頁只顯示書籤，不顯示目錄標籤（因為首頁本身就是目錄）
+      tabsHtml = 
+        '<button class="floating-toc-tab active" data-tab="bookmarks">📖 ' + getI18nText('bookmark.myBookmarks', isTraditionalChinesePage(), '我的書籤') + ' <span id="bookmark-count">(0)</span></button>';
+      contentHtml = 
+        '<ul id="bookmarks-list" class="floating-toc-list" style="display: block;">' +
+          '<li class="bookmarks-empty">' + getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>' +
+        '</ul>';
+    } else {
+      // 其他頁面顯示目錄和書籤
+      tabsHtml = 
+        '<button class="floating-toc-tab active" data-tab="toc">' + getI18nText('navigation.tableOfContents', isTraditionalChinesePage(), '目錄') + '</button>' +
+        '<button class="floating-toc-tab" data-tab="bookmarks">' + getI18nText('navigation.bookmarks', isTraditionalChinesePage(), '書籤') + ' <span id="bookmark-count">(0)</span></button>';
+      contentHtml = 
+        '<ul id="toc-list" class="floating-toc-list">' +
+          tocItems +
+        '</ul>' +
+        '<ul id="bookmarks-list" class="floating-toc-list" style="display: none;">' +
+          '<li class="bookmarks-empty">' + getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>' +
+        '</ul>';
+    }
+    
+    // 根據頁面類型設定初始標題
+    const initialTitle = currentChapter.isHomepage ? 
+      '🔖 ' + getI18nText('bookmark.myBookmarks', isTraditionalChinesePage(), '我的書籤') : 
+      '📖 ' + getI18nText('navigation.chapterDirectory', isTraditionalChinesePage(), '章節目錄');
+    
+    toc.innerHTML = 
+      '<div class="floating-toc-header">' +
+        '<span id="toc-title">' + initialTitle + '</span>' +
+        '<button class="ctrl-btn" data-action="close-toc">✕</button>' +
+      '</div>' +
+      '<div class="floating-toc-tabs">' +
+        tabsHtml +
+      '</div>' +
+      '<div class="floating-toc-content">' +
+        contentHtml +
+      '</div>';
+    
+    // 檢查是否已存在靜態TOC，如果有則替換，否則添加新的
+    const existingTOC = document.getElementById('floating-toc');
+    if (existingTOC) {
+      existingTOC.parentNode.replaceChild(toc, existingTOC);
+    } else {
+      document.body.appendChild(toc);
+    }
+    return toc;
+  }
+
+  // 創建操作按鈕組
+  function createActionButtons() {
+    const buttons = document.createElement('div');
+    buttons.className = 'action-buttons';
+    
+    // 根據頁面類型設置第一個按鈕的內容
+    const firstBtnIcon = currentChapter.isHomepage ? '🔖' : '📖';
+    const firstBtnTitle = currentChapter.isHomepage ? 
+      getI18nText('navigation.bookmarks', isTraditionalChinesePage(), '書籤') : 
+      getI18nText('ui.tableOfContents', isTraditionalChinesePage(), '目錄');
+    
+    // 為章節頁面添加回首頁按鈕
+    const homeButton = currentChapter.isHomepage ? '' : 
+      '<button class="action-btn" data-action="home" title="' + getI18nText('ui.home', isTraditionalChinesePage(), '回首頁') + '">🏠</button>';
+    
+    buttons.innerHTML = 
+      '<div class="action-menu">' +
+        '<button class="action-btn menu-btn" data-action="toggle-menu" title="' + getI18nText('ui.functionMenu', isTraditionalChinesePage(), '功能選單') + '">☰</button>' +
+        '<div class="action-menu-items">' +
+          '<button class="action-btn" data-action="toc" title="' + firstBtnTitle + '">' + firstBtnIcon + '</button>' +
+          homeButton +
+          '<button class="action-btn" data-action="top" title="' + getI18nText('ui.backToTop', isTraditionalChinesePage(), '回到頂部') + '">↑</button>' +
+          '<button class="action-btn" data-action="settings" title="' + getI18nText('ui.settings', isTraditionalChinesePage(), '設置') + '">⚙️</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(buttons);
+    return buttons;
+  }
+
+  // 為問答添加互動按鈕
+  function addQAActions() {
+    const qaElements = document.querySelectorAll('.question, .answer, .para-block');
+    qaElements.forEach((element) => {
+      // 確保元素有唯一ID（用於分享功能）
+      let prefix;
+      if (element.classList.contains('question')) {
+        prefix = 'question';
+      } else if (element.classList.contains('answer')) {
+        prefix = 'answer';
+      } else {
+        prefix = 'paragraph';
+      }
+      ensureElementId(element, prefix);
+      
+      element.style.position = 'relative';
+      const actions = document.createElement('div');
+      actions.className = 'qa-actions';
+      
+      const isQuestion = element.classList.contains('question');
+      const isAnswer = element.classList.contains('answer');
+      const isParagraph = element.classList.contains('para-block');
+      
+      // 首頁不顯示書籤按鈕
+      let actionsHtml = '';
+      
+      if (isQuestion) {
+        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+        if (!currentChapter.isHomepage) {
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+        }
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
+      } else if (isAnswer) {
+        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+        if (!currentChapter.isHomepage) {
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+        }
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
+      } else if (isParagraph) {
+        // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
+        actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
+        if (!currentChapter.isHomepage) {
+          actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+        }
+        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
+      }
+      
+      actions.innerHTML = actionsHtml;
+      element.appendChild(actions);
+    });
+  }
+
+// ============================================================
+// 03a-bookmark-data.js — 书签存储、CRUD、章节检测、视觉标识
+// ============================================================
+
+// 当前文件章节信息（在 DOMContentLoaded 后设置）
+let currentChapter;
+
+// 获取当前语言版本的 localStorage 键
+function getBookmarkStorageKey() {
+  return isTraditionalChinesePage() ? 'ebook-bookmarks-traditional' : 'ebook-bookmarks-simplified';
+}
+
+// 迁移旧版统一书签到按语言分离的结构（只执行一次）
+function migrateOldBookmarks() {
+  if (localStorage.getItem('bookmarks-migrated')) return;
+
+  const oldData = localStorage.getItem('ebook-bookmarks');
+  if (!oldData) { localStorage.setItem('bookmarks-migrated', 'true'); return; }
+
+  try {
+    const all = JSON.parse(oldData);
+    const simplified = all.filter(b => !(b.chapterFilename && b.chapterFilename.includes('_trad.html')));
+    const traditional = all.filter(b => b.chapterFilename && b.chapterFilename.includes('_trad.html'));
+    if (simplified.length) localStorage.setItem('ebook-bookmarks-simplified', JSON.stringify(simplified));
+    if (traditional.length) localStorage.setItem('ebook-bookmarks-traditional', JSON.stringify(traditional));
+    localStorage.removeItem('ebook-bookmarks');
+    localStorage.setItem('bookmarks-migrated', 'true');
+    console.log(`书签迁移完成: 简体 ${simplified.length} 个, 繁体 ${traditional.length} 个`);
+  } catch (e) {
+    console.error('书签迁移失败:', e);
+    localStorage.setItem('bookmarks-migrated', 'true');
+  }
+}
+
+// 读取书签列表（可选按章节 ID 过滤）
+function getBookmarks(chapterId = null) {
+  migrateOldBookmarks();
+  const raw = localStorage.getItem(getBookmarkStorageKey());
+  const all = raw ? JSON.parse(raw) : [];
+  return chapterId ? all.filter(b => b.chapter && b.chapter.id === chapterId) : all;
+}
+
+function getCurrentChapterBookmarks() {
+  return getBookmarks(currentChapter.id);
+}
+
+// 持久化书签列表并更新计数显示
+function saveBookmarks(bookmarks) {
+  localStorage.setItem(getBookmarkStorageKey(), JSON.stringify(bookmarks));
+  updateBookmarkCount();
+}
+
+// 根据当前页面 URL 和 h1 构建章节信息对象
+function getCurrentChapter() {
+  const filename = (window.location.pathname.split('/').pop()) || 'index.html';
+  if (filename === 'index.html' || filename === 'index_trad.html') {
+    return {
+      title: getI18nText('navigation.homepage', isTraditionalChinesePage(), '首頁'),
+      id: 'homepage',
+      isHomepage: true,
+    };
+  }
+  const h1 = document.querySelector('h1');
+  const title = (h1 ? h1.textContent.trim() : document.title) || '未知章節';
+  return { title, id: filename.replace('.html', ''), filename, isHomepage: false };
+}
+
+// 为元素查找所属章节（直接使用 currentChapter）
+function findChapterForElement(_element) {
+  return { title: currentChapter.title, id: currentChapter.id, filename: currentChapter.filename };
+}
+
+// ------------------------------------------------------------------ //
+// 视觉标识                                                            //
+// ------------------------------------------------------------------ //
+
+function addBookmarkVisualIndicator(element) {
+  if (element.classList.contains('bookmarked')) return;
+  element.classList.add('bookmarked');
+  if (!element.querySelector('.bookmark-indicator')) {
+    const span = document.createElement('span');
+    span.className = 'bookmark-indicator';
+    span.textContent = '🔖';
+    span.title = getI18nText('bookmark.removeBookmark', isTraditionalChinesePage(), '點擊移除書籤');
+    element.appendChild(span);
+  }
+}
+
+function removeBookmarkVisualIndicator(element) {
+  element.classList.remove('bookmarked');
+  const indicator = element.querySelector('.bookmark-indicator');
+  if (indicator) element.removeChild(indicator);
+}
+
+function restoreBookmarkVisualStates() {
+  getBookmarks().forEach(bookmark => {
+    const el = document.getElementById(bookmark.elementId);
+    if (!el) return;
+    addBookmarkVisualIndicator(el);
+    if (bookmark.type === 'qa-pair') {
+      if (el.classList.contains('question')) {
+        const ans = findAnswerForQuestion(el);
+        if (ans) addBookmarkVisualIndicator(ans);
+      } else if (el.classList.contains('answer')) {
+        const q = findQuestionForAnswer(el);
+        if (q) addBookmarkVisualIndicator(q);
+      }
+    }
+  });
+}
+
+// ------------------------------------------------------------------ //
+// CRUD 操作                                                           //
+// ------------------------------------------------------------------ //
+
+function toggleBookmark(element) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  const isQuestion = element.classList.contains('question');
+  const isAnswer = element.classList.contains('answer');
+  if (!isQuestion && !isAnswer) return;
+
+  element.id = element.id || ('bookmark-' + Date.now());
+  const id = element.id;
+  const existing = bookmarks.find(b => b.elementId === id);
+
+  if (existing) {
+    removeBookmarkVisualIndicator(element);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== id));
+    renderBookmarks();
+    showToast('已從書籤移除');
+    return;
+  }
+
+  let questioner = '', time = '', preview = '';
+  if (isQuestion) {
+    questioner = element.querySelector('.questioner')?.textContent || '匿名';
+    time = element.querySelector('.question-time')?.textContent || '';
+    preview = (element.querySelector('.question-text')?.textContent || '').substring(0, 100) + '...';
+  } else {
+    questioner = element.querySelector('.answerer')?.textContent || 'Taiguanglin';
+    preview = (element.querySelector('.answer-text')?.textContent || '').substring(0, 100) + '...';
+  }
+
+  bookmarks.push({
+    id: 'bookmark-' + Date.now(),
+    elementId: id,
+    type: isQuestion ? 'question' : 'answer',
+    questioner, time, preview,
+    chapter: findChapterForElement(element),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(element);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
+function toggleQAPairBookmark(answerElement) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  const questionElement = findQuestionForAnswer(answerElement);
+
+  const targetEl = questionElement || answerElement;
+  targetEl.id = targetEl.id || ('qa-question-' + Date.now());
+  if (!answerElement.id) answerElement.id = 'qa-answer-' + Date.now();
+  const targetId = targetEl.id;
+
+  const existing = bookmarks.find(b => b.elementId === targetId);
+  if (existing) {
+    removeBookmarkVisualIndicator(answerElement);
+    if (questionElement) removeBookmarkVisualIndicator(questionElement);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== targetId));
+    renderBookmarks();
+    showToast('已從書籤移除問答');
+    return;
+  }
+
+  let questioner = '匿名', time = '', preview = '';
+  if (questionElement) {
+    questioner = questionElement.querySelector('.questioner')?.textContent || '匿名';
+    time = questionElement.querySelector('.question-time')?.textContent || '';
+    const qText = questionElement.querySelector('.question-text')?.textContent || '';
+    const aText = answerElement.querySelector('.answer-text')?.textContent || '';
+    preview = `問：${qText.substring(0, 50)}... 答：${aText.substring(0, 50)}...`;
+  } else {
+    questioner = answerElement.querySelector('.answerer')?.textContent || 'Taiguanglin';
+    const aText = answerElement.querySelector('.answer-text')?.textContent || '';
+    preview = `答：${aText.substring(0, 100)}...`;
+  }
+
+  bookmarks.push({
+    id: 'qa-bookmark-' + Date.now(),
+    elementId: targetId,
+    type: 'qa-pair',
+    questioner, time, preview,
+    chapter: findChapterForElement(answerElement),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(answerElement);
+  if (questionElement) addBookmarkVisualIndicator(questionElement);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
+// 段落書籤（ebook 的 .para-block）：切換某段內文的書籤狀態
+function toggleParagraphBookmark(element) {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+
+  const bookmarks = getBookmarks();
+  element.id = element.id || ('bookmark-' + Date.now());
+  const id = element.id;
+  const existing = bookmarks.find(b => b.elementId === id);
+
+  if (existing) {
+    removeBookmarkVisualIndicator(element);
+    saveBookmarks(bookmarks.filter(b => b.elementId !== id));
+    renderBookmarks();
+    showToast('已從書籤移除');
+    return;
+  }
+
+  const heading = findHeadingForParagraph(element);
+  const preview = (getParagraphText(element)).substring(0, 100) + '...';
+
+  bookmarks.push({
+    id: 'bookmark-' + Date.now(),
+    elementId: id,
+    type: 'paragraph',
+    questioner: heading || currentChapter.title,
+    time: '',
+    preview: preview,
+    chapter: findChapterForElement(element),
+    chapterTitle: currentChapter.title,
+    chapterFilename: currentChapter.filename,
+    timestamp: new Date().toLocaleString(),
+  });
+  saveBookmarks(bookmarks);
+  addBookmarkVisualIndicator(element);
+  renderBookmarks();
+  showBookmarkAddedFeedback();
+}
+
+function removeBookmark(bookmarkId) {
+  const bookmarks = getBookmarks();
+  const bookmark = bookmarks.find(b => b.id === bookmarkId);
+  if (bookmark) {
+    const el = document.getElementById(bookmark.elementId);
+    if (el) {
+      removeBookmarkVisualIndicator(el);
+      if (bookmark.type === 'qa-pair') {
+        const other = el.classList.contains('question')
+          ? findAnswerForQuestion(el)
+          : findQuestionForAnswer(el);
+        if (other) removeBookmarkVisualIndicator(other);
+      }
+    }
+  }
+  saveBookmarks(bookmarks.filter(b => b.id !== bookmarkId));
+  renderBookmarks();
+  showToast('已從書籤移除');
+}
+
+function removeBookmarkById(bookmarkId) {
+  saveBookmarks(getBookmarks().filter(b => b.id !== bookmarkId));
+  showToast(getI18nText('bookmark.bookmarkDeleted', isTraditionalChinesePage(), '書籤已刪除'));
+}
+
+function clearCurrentChapterBookmarks() {
+  if (currentChapter.isHomepage) { showToast('首頁不支持書籤功能'); return; }
+  const current = getCurrentChapterBookmarks();
+  if (!current.length) { showToast('本文件暫無書籤'); return; }
+  if (!confirm(`確定要清空本文件的所有 ${current.length} 個書籤嗎？此操作無法撤銷。`)) return;
+
+  current.forEach(b => {
+    const el = document.getElementById(b.elementId);
+    if (el) {
+      removeBookmarkVisualIndicator(el);
+      if (b.type === 'qa-pair' && el.classList.contains('answer')) {
+        const q = findQuestionForAnswer(el);
+        if (q) removeBookmarkVisualIndicator(q);
+      }
+    }
+  });
+
+  const all = getBookmarks();
+  saveBookmarks(all.filter(b => !b.chapter || b.chapter.id !== currentChapter.id));
+  renderBookmarks();
+  showToast(`已清空本文件的 ${current.length} 個書籤`);
+}
+
+// 跳转到指定书签（同标签页——与搜索结果/TOC 一致，避免堆积标签页）
+function jumpToBookmark(bookmarkId) {
+  const bm = getBookmarks().find(b => b.id === bookmarkId);
+  if (bm && bm.chapterFilename) {
+    window.location.href = `${bm.chapterFilename}#${bm.elementId}`;
+  }
+}
+// ============================================================
+// 03b-bookmark-render.js — 书签渲染、首页书签、Toast 反馈
+// ============================================================
+
+// ------------------------------------------------------------------ //
+// 书签添加反馈                                                        //
+// ------------------------------------------------------------------ //
+
+function showBookmarkAddedFeedback() {
+  if (currentChapter.isHomepage) {
+    showToast(getI18nText('bookmark.viewInSidebar', isTraditionalChinesePage(), '已添加到書籤，可在側邊欄查看'));
+    _highlightBookmarkTab();
+  } else {
+    showEnhancedBookmarkToast();
+  }
+}
+
+function _highlightBookmarkTab() {
+  const floatingTOC = document.getElementById('floating-toc');
+  const bookmarkTab = document.querySelector('.floating-toc-tab[data-tab="bookmarks"]');
+  if (!floatingTOC || !bookmarkTab) return;
+
+  const wasHidden = !floatingTOC.classList.contains('visible');
+  if (wasHidden) floatingTOC.classList.add('visible');
+
+  Object.assign(bookmarkTab.style, {
+    background: '#ff69b4', color: 'white',
+    transform: 'scale(1.1)', transition: 'all 0.3s ease',
+    boxShadow: '0 2px 8px rgba(255, 105, 180, 0.5)',
+  });
+  setTimeout(() => {
+    Object.assign(bookmarkTab.style, { background: '', color: '', transform: '', boxShadow: '' });
+    if (wasHidden) setTimeout(() => floatingTOC.classList.remove('visible'), 1500);
+  }, 1200);
+}
+
+// 章节页专用的增强 Toast
+function showEnhancedBookmarkToast() {
+  const toast = document.createElement('div');
+  toast.className = 'bookmark-success-toast';
+  toast.innerHTML = `
+    <div class="toast-icon">🔖</div>
+    <div class="toast-content">
+      <div class="toast-title">書籤已添加！</div>
+      <div class="toast-subtitle">點擊右下角 📖 查看所有書籤</div>
+    </div>
+  `;
+  Object.assign(toast.style, {
+    position: 'fixed', top: '20px', right: '20px',
+    background: 'linear-gradient(135deg, #ff69b4, #e75480)',
+    color: 'white', padding: '16px 20px', borderRadius: '12px',
+    boxShadow: '0 8px 25px rgba(231, 84, 128, 0.3)',
+    zIndex: '10000', transform: 'translateX(400px)',
+    transition: 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+    display: 'flex', alignItems: 'center', gap: '12px',
+    maxWidth: '300px', fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+  });
+
+  const style = document.createElement('style');
+  style.textContent = `@keyframes bounce { 0% { transform:translateY(0); } 100% { transform:translateY(-6px); } }`;
+  document.head.appendChild(style);
+  document.body.appendChild(toast);
+
+  setTimeout(() => { toast.style.transform = 'translateX(0)'; }, 100);
+  setTimeout(() => {
+    toast.style.transform = 'translateX(400px)';
+    toast.style.opacity = '0';
+    setTimeout(() => {
+      if (toast.parentNode) document.body.removeChild(toast);
+      if (style.parentNode) document.head.removeChild(style);
+    }, 400);
+  }, 3500);
+}
+
+// ------------------------------------------------------------------ //
+// 首页书签渲染                                                        //
+// ------------------------------------------------------------------ //
+
+function initializeHomepageTOC() {
+  const tocList = document.getElementById('toc-list');
+  const mainTOC = document.querySelector('.toc ul');
+  if (tocList && mainTOC) {
+    tocList.innerHTML = mainTOC.innerHTML;
+    tocList.addEventListener('click', (e) => {
+      if (e.target.tagName !== 'A') return;
+      e.preventDefault();
+      const href = e.target.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else if (href) {
+        window.location.href = href;
+      }
+    });
+  }
+  refreshHomepageBookmarks();
+  updateBookmarkCount();
+}
+
+function refreshHomepageBookmarks() {
+  if (!currentChapter.isHomepage) return;
+  const bookmarksList = document.getElementById('bookmarks-list');
+  if (!bookmarksList) return;
+
+  setTimeout(() => {
+    const all = getBookmarks();
+    if (!all.length) {
+      bookmarksList.innerHTML = '<li class="bookmarks-empty">' +
+        getI18nText('bookmark.empty', isTraditionalChinesePage(), '尚無書籤') + '</li>';
+      return;
+    }
+    if (all.length > 50) showBookmarkProcessingIndicator(all.length);
+    processHomepageBookmarks(all);
+  }, 10);
+}
+
+function showBookmarkProcessingIndicator(totalCount) {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+  el.innerHTML = `
+    <div class="bookmark-loading-container">
+      <div class="bookmark-loading-spinner">
+        <div class="loading-text">處理 ${totalCount} 個書籤...</div>
+      </div>
+    </div>
+  `;
+}
+
+function processHomepageBookmarks(allBookmarks) {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+  requestAnimationFrame(() => {
+    const byChapter = {};
+    allBookmarks.forEach(b => {
+      const key = b.chapterTitle || '未知章節';
+      (byChapter[key] = byChapter[key] || []).push(b);
+    });
+    const sorted = Object.keys(byChapter).sort((a, b) => {
+      const num = t => { const m = t.match(/^(\d{1,2})/); return m ? parseInt(m[1], 10) : 999; };
+      return num(a) - num(b);
+    });
+    renderBookmarkChaptersBatch(sorted, byChapter, 0);
+  });
+}
+
+function renderBookmarkChaptersBatch(titles, byChapter, startIndex) {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+
+  const BATCH = 3;
+  const end = Math.min(startIndex + BATCH, titles.length);
+  if (startIndex === 0) el.innerHTML = '';
+
+  for (let i = startIndex; i < end; i++) {
+    const title = titles[i];
+    const bookmarks = byChapter[title];
+    const group = document.createElement('li');
+    group.className = 'bookmark-chapter-group';
+
+    let html = `<div class="bookmark-chapter-title">${title}</div><ul class="bookmark-chapter-list">`;
+    bookmarks.forEach(b => {
+      const isQA = b.type === 'qa-pair';
+      const icon = isQA ? '💬' : '📝';
+      const cls = isQA ? ' qa-pair-bookmark' : '';
+      const link = (b.chapterFilename && b.elementId) ? `${b.chapterFilename}#${b.elementId}` : '#';
+      html += `
+        <li class="bookmark-item${cls}" data-bookmark-id="${b.id}">
+          <div class="bookmark-meta">
+            <span class="bookmark-type">${icon}</span>
+            <span class="bookmark-questioner">${b.questioner || '匿名'}</span>
+            <span class="bookmark-time">${b.time || ''}</span>
+          </div>
+          <div class="bookmark-preview">
+            <a href="${link}" target="_blank" title="點擊跳轉到原問答">${b.preview || ''}</a>
+          </div>
+          <button class="bookmark-delete" data-bookmark-id="${b.id}" title="刪除書籤">✕</button>
+        </li>
+      `;
+    });
+    html += '</ul>';
+    group.innerHTML = html;
+    el.appendChild(group);
+  }
+
+  if (end < titles.length) {
+    requestAnimationFrame(() => renderBookmarkChaptersBatch(titles, byChapter, end));
+  } else {
+    addHomepageBookmarkEventListeners();
+  }
+}
+
+function addHomepageBookmarkEventListeners() {
+  const el = document.getElementById('bookmarks-list');
+  if (!el) return;
+
+  if (el.bookmarkClickHandler) el.removeEventListener('click', el.bookmarkClickHandler);
+
+  const handler = (e) => {
+    if (e.target.classList.contains('bookmark-delete')) {
+      e.stopPropagation();
+      removeBookmarkById(e.target.getAttribute('data-bookmark-id'));
+      refreshHomepageBookmarks();
+      updateBookmarkCount();
+    } else if (!e.target.closest('a')) {
+      const item = e.target.closest('.bookmark-item');
+      if (item) jumpToBookmark(item.getAttribute('data-bookmark-id'));
+    }
+  };
+
+  el.addEventListener('click', handler);
+  el.bookmarkClickHandler = handler;
+}
+  // 渲染首頁動態TOC內容
+  function renderIndexTOC() {
+    const tocList = document.getElementById('toc-list');
+    const bookmarksList = document.getElementById('bookmarks-list');
+    
+    if (!tocList) return;
+    
+    // 獲取首頁的TOC鏈接
+    const mainTOC = document.querySelector('.toc');
+    if (!mainTOC) return;
+    
+    const tocLinks = mainTOC.querySelectorAll('a[href]');
+    let tocHTML = '';
+    
+    tocLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      const text = link.textContent.trim();
+      
+      // 只顯示主章節（不包含錨點的鏈接）
+      if (href && !href.includes('#') && text) {
+        tocHTML += `<div class="floating-toc-item" data-href="${href}">${text}</div>`;
+      }
+    });
+    
+    tocList.innerHTML = tocHTML;
+    
+    // 同時更新書籤列表為章節書籤功能說明
+    if (bookmarksList) {
+      bookmarksList.innerHTML = `
+        <div class="bookmarks-empty">
+          <p>📖 書籤功能說明</p>
+          <p>• 進入任意章節</p>
+          <p>• 找到感興趣的問答</p>
+          <p>• 點擊右上角書籤圖標</p>
+          <p>• 返回此處查看收藏</p>
+        </div>
+      `;
+    }
+  }
+  
+  // 顯示書籤載入指示器
+  function showBookmarkLoadingIndicator() {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    if (!bookmarksList) return;
+    
+    // 創建載入動畫HTML
+    const loadingHTML = `
+      <div class="bookmark-loading-container">
+        <div class="bookmark-loading-spinner">
+          <div class="loading-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+          </div>
+          <div class="loading-text">載入書籤中...</div>
+        </div>
+      </div>
+    `;
+    
+    bookmarksList.innerHTML = loadingHTML;
+    
+    // 動態添加載入動畫CSS（如果尚未添加）
+    if (!document.querySelector('#bookmark-loading-styles')) {
+      const style = document.createElement('style');
+      style.id = 'bookmark-loading-styles';
+      style.textContent = `
+        .bookmark-loading-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 40px 20px;
+          min-height: 120px;
+        }
+        
+        .bookmark-loading-spinner {
+          text-align: center;
+          color: #666;
+        }
+        
+        .loading-dots {
+          display: flex;
+          gap: 4px;
+          justify-content: center;
+          margin-bottom: 12px;
+        }
+        
+        .loading-dots .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background-color: #ff69b4;
+          animation: bookmarkDotPulse 1.4s infinite ease-in-out both;
+        }
+        
+        .loading-dots .dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dots .dot:nth-child(2) { animation-delay: -0.16s; }
+        .loading-dots .dot:nth-child(3) { animation-delay: 0s; }
+        
+        .loading-text {
+          font-size: 14px;
+          color: #999;
+          font-weight: 500;
+        }
+        
+        @keyframes bookmarkDotPulse {
+          0%, 80%, 100% {
+            transform: scale(0.6);
+            opacity: 0.5;
+          }
+          40% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+        
+        /* 暗色模式支持 */
+        .dark-mode .bookmark-loading-spinner {
+          color: #ccc;
+        }
+        
+        .dark-mode .loading-text {
+          color: #aaa;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+
+  function renderBookmarks() {
+    const bookmarksList = document.getElementById('bookmarks-list');
+    
+    if (!bookmarksList) {
+      return;
+    }
+    
+    // 首頁使用專門的書籤顯示函數
+    if (currentChapter.isHomepage) {
+      refreshHomepageBookmarks();
+      return;
+    }
+    
+    // 對於章節頁面，也使用異步處理來改善UX
+    setTimeout(() => {
+      const chapterBookmarks = getCurrentChapterBookmarks();
+      
+      if (chapterBookmarks.length === 0) {
+        bookmarksList.innerHTML = 
+          '<div class="bookmarks-empty">' +
+            '<div>本文件暫無書籤</div>' +
+            '<div style="font-size: 12px; color: #999; margin-top: 8px;">當前文件：' + currentChapter.title + '</div>' +
+          '</div>';
+        return;
+      }
+      
+      let bookmarksHTML = '';
+      
+      // 添加當前文件標題和清空按鈕
+      bookmarksHTML += 
+        '<div class="current-chapter-info">' +
+          '<div class="chapter-header">' +
+            '<div class="current-chapter-title">📄 ' + currentChapter.title + '</div>' +
+            '<button class="bookmark-clear-icon" data-action="clear-bookmarks" title="清空本文件所有書籤">🗑️</button>' +
+          '</div>' +
+        '</div>';
+      
+      // 直接顯示當前文件的書籤，不需要分組
+      chapterBookmarks.forEach(bookmark => {
+        const isQAPair = bookmark.type === 'qa-pair';
+        const typeIcon = isQAPair ? '💬' : '📝';
+        const typeClass = isQAPair ? ' qa-pair-bookmark' : '';
+        
+        bookmarksHTML += 
+          '<div class="bookmark-item' + typeClass + '" data-target="#' + bookmark.elementId + '">' +
+            '<div class="bookmark-meta">' +
+              '<span class="bookmark-type">' + typeIcon + '</span>' +
+              '<span class="bookmark-questioner">' + bookmark.questioner + '</span>' +
+              '<span class="bookmark-time">' + bookmark.time + '</span>' +
+            '</div>' +
+            '<div class="bookmark-preview">' + bookmark.preview + '</div>' +
+            '<button class="bookmark-delete" data-bookmark-id="' + bookmark.id + '" title="刪除書籤">✕</button>' +
+          '</div>';
+      });
+      
+      bookmarksList.innerHTML = bookmarksHTML;
+    }, 10); // 短暫延遲讓載入動畫顯示
+  }
+  
+  function updateBookmarkCount() {
+    const countEl = document.getElementById('bookmark-count');
+    if (!countEl) {
+      return;
+    }
+    
+    let count;
+    if (currentChapter.isHomepage) {
+      // 首頁顯示所有書籤的總數
+      const allBookmarks = getBookmarks();
+      count = allBookmarks.length;
+    } else {
+      // 章節頁面顯示當前章節的書籤數
+      count = getCurrentChapterBookmarks().length;
+    }
+    if (countEl) {
+      countEl.textContent = '(' + count + ')';
+    }
+  }
+
+  // 閱讀設置功能
+  // 根据屏幕尺寸设置默认字体大小
+  function getDefaultFontSize() {
+    const screenWidth = window.innerWidth;
+    if (screenWidth <= 400) {
+      return 19; // 小手机默认19px
+    } else if (screenWidth <= 600) {
+      return 18; // 手机默认18px
+    } else if (screenWidth <= 768) {
+      return 17; // 平板默认17px
+    }
+    return 16; // 桌面默认16px
+  }
+  
+  let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
+  let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
+  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || 800;
+  
+  function applyReadingSettings() {
+    // 使用!important确保字体大小设置在移动设备上生效
+    document.body.style.setProperty('font-size', fontSize + 'px', 'important');
+    document.documentElement.style.setProperty('--line-height', lineHeight);
+    document.body.style.maxWidth = contentWidth + 'px';
+    
+    // 動態調整TOC目錄的字型大小和間距
+    // 移除現有的動態TOC樣式
+    let existingTocStyle = document.getElementById('dynamic-toc-styles');
+    if (existingTocStyle) {
+      existingTocStyle.remove();
+    }
+    
+    // 創建新的動態樣式
+    const tocStyle = document.createElement('style');
+    tocStyle.id = 'dynamic-toc-styles';
+    
+    // 檢測螢幕大小，調整響應式基礎字型
+    const screenWidth = window.innerWidth;
+    let responsiveBaseFontSize = fontSize;
+    
+    // 根據螢幕寬度調整基礎字型大小，但允許用户自由调整
+    // 移除最小值限制，允许用户设置更小的字体
+    responsiveBaseFontSize = fontSize;
+    
+    // 計算相對於響應式基礎字型大小的比例
+    const fontScale = responsiveBaseFontSize / 16;
+    const lineHeightValue = lineHeight;
+    
+    // 各層級的字型大小比例（相對於響應式基礎大小）
+    const level1Size = Math.round(responsiveBaseFontSize * 1.1); // 第一層：稍大
+    const level2Size = responsiveBaseFontSize; // 第二層：基礎大小  
+    const level3Size = Math.round(responsiveBaseFontSize * 0.95); // 第三層：稍小
+    const level4Size = Math.round(responsiveBaseFontSize * 0.9); // 第四層：更小
+    
+    // 調試信息
+    console.log('字體設置應用:', {
+      screenWidth,
+      fontSize,
+      responsiveBaseFontSize,
+      level1Size,
+      level2Size,
+      level3Size,
+      level4Size,
+      lineHeightValue
+    });
+    
+    // 間距調整（基於行距設置）
+    const spacing1 = Math.round(8 * lineHeightValue / 1.6); // 第一層間距
+    const spacing2 = Math.round(6 * lineHeightValue / 1.6); // 第二層間距  
+    const spacing3 = Math.round(4 * lineHeightValue / 1.6); // 第三層間距
+    const spacing4 = Math.round(3 * lineHeightValue / 1.6); // 第四層間距
+    
+    tocStyle.textContent = `
+      /* 首頁TOC樣式調整 - 使用更高的特定性確保生效 */
+      #main-toc .toc > ul > li,
+      .toc > ul > li { 
+        font-size: ${level1Size}px !important; 
+        margin-bottom: ${spacing1}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      #main-toc .toc ul ul > li,
+      .toc ul ul > li { 
+        font-size: ${level2Size}px !important; 
+        margin-bottom: ${spacing2}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      #main-toc .toc ul ul ul > li,
+      .toc ul ul ul > li { 
+        font-size: ${level3Size}px !important; 
+        margin-bottom: ${spacing3}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      #main-toc .toc ul ul ul ul > li,
+      .toc ul ul ul ul > li { 
+        font-size: ${level4Size}px !important; 
+        margin-bottom: ${spacing4}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      /* 章節頁TOC樣式調整 - 使用更高的特定性確保生效 */
+      #chapter-toc .toc-item.toc-level-1 > a,
+      .toc-item.toc-level-1 > a {
+        font-size: ${level1Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      #chapter-toc .toc-item.toc-level-2 > a,
+      .toc-item.toc-level-2 > a {
+        font-size: ${level2Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      #chapter-toc .toc-item.toc-level-3 > a,
+      .toc-item.toc-level-3 > a {
+        font-size: ${level3Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      #chapter-toc .toc-item.toc-level-4 > a,
+      .toc-item.toc-level-4 > a {
+        font-size: ${level4Size}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      /* TOC項目的間距調整 */
+      .toc-item.toc-level-1 {
+        margin-bottom: ${spacing1}px !important;
+      }
+      
+      .toc-item.toc-level-2 {
+        margin-bottom: ${spacing2}px !important;
+      }
+      
+      .toc-item.toc-level-3 {
+        margin-bottom: ${spacing3}px !important;
+      }
+      
+      .toc-item.toc-level-4 {
+        margin-bottom: ${spacing4}px !important;
+      }
+      
+      /* 浮動TOC樣式調整 */
+      .floating-toc-item {
+        font-size: ${Math.round(fontSize * 0.85)}px !important;
+        line-height: ${lineHeightValue} !important;
+      }
+      
+      .floating-toc-item.level-h3 {
+        font-size: ${Math.round(fontSize * 0.8)}px !important;
+      }
+      
+      .floating-toc-item.level-h4 {
+        font-size: ${Math.round(fontSize * 0.75)}px !important;
+      }
+      
+      .floating-toc-item.level-h5 {
+        font-size: ${Math.round(fontSize * 0.7)}px !important;
+      }
+      
+      /* 層級控制按鈕樣式調整 */
+      .toc-level-label {
+        font-size: ${Math.round(fontSize * 0.9)}px !important;
+      }
+      
+      .toc-level-btn, .floating-level-btn {
+        font-size: ${Math.round(fontSize * 0.9)}px !important;
+      }
+      
+      .floating-level-label {
+        font-size: ${Math.round(fontSize * 0.7)}px !important;
+      }
+    `;
+    
+    document.head.appendChild(tocStyle);
+    
+    // 動態調整搜索功能的字型大小
+    applySearchFontStyles();
+  }
+  
+  // 應用搜索功能字體樣式
+  function applySearchFontStyles() {
+    // 移除現有的動態搜索樣式
+    let existingSearchStyle = document.getElementById('dynamic-search-styles');
+    if (existingSearchStyle) {
+      existingSearchStyle.remove();
+    }
+    
+    // 創建新的動態搜索樣式
+    const searchStyle = document.createElement('style');
+    searchStyle.id = 'dynamic-search-styles';
+    
+    // 計算搜索相關元素的字體大小
+    const baseFontSize = fontSize;
+    const inputFontSize = Math.max(14, Math.min(20, baseFontSize)); // 輸入框：14-20px範圍
+    const contentFontSize = Math.max(12, Math.round(baseFontSize * 0.9)); // 搜索結果內容稍小，最小12px
+    const titleFontSize = Math.max(12, Math.round(baseFontSize * 0.85)); // 標題更小，最小12px
+    const controlFontSize = Math.max(10, Math.round(baseFontSize * 0.75)); // 控制按鈕最小10px
+    const statusFontSize = Math.max(11, Math.round(baseFontSize * 0.8)); // 狀態文字最小11px
+    const activateBtnFontSize = Math.max(13, Math.round(baseFontSize * 0.9)); // 激活按鈕最小13px
+    
+    // 調試信息
+    console.log('搜索字體設置應用:', {
+      baseFontSize,
+      inputFontSize,
+      contentFontSize,
+      titleFontSize,
+      controlFontSize,
+      statusFontSize,
+      activateBtnFontSize
+    });
+    
+    searchStyle.textContent = `
+      /* 搜索輸入框字體 */
+      #search-input {
+        font-size: ${inputFontSize}px !important;
+      }
+      
+      /* 搜索輸入框占位符字體 */
+      #search-input::placeholder {
+        font-size: ${inputFontSize}px !important;
+      }
+      
+      /* 搜索結果內容字體 */
+      .search-result-content {
+        font-size: ${contentFontSize}px !important;
+        line-height: ${lineHeight} !important;
+      }
+      
+      /* 搜索結果標題字體 */
+      .search-result-title {
+        font-size: ${titleFontSize}px !important;
+      }
+      
+      /* 搜索狀態文字 */
+      .search-status,
+      .search-loading-text {
+        font-size: ${statusFontSize}px !important;
+      }
+      
+      /* 搜索控制按鈕 */
+      .search-clear,
+      .search-collapse,
+      .search-load-more,
+      .search-load-all,
+      .search-retry-btn {
+        font-size: ${controlFontSize}px !important;
+      }
+      
+      /* 搜索結果底部控制按鈕 */
+      .search-results-footer {
+        padding: 10px;
+        border-top: 1px solid var(--border-color);
+        background: var(--bg-color);
+        position: sticky;
+        bottom: 0;
+      }
+      
+      .search-results-footer .search-results-actions {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+        flex-wrap: wrap;
+      }
+      
+      /* 搜索結果編號 */
+      .search-result-header {
+        display: inline-block;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 4px;
+        flex-wrap: nowrap;
+        min-height: fit-content;
+      }
+      
+      .search-result-number {
+        background: #e75480;
+        color: white;
+        padding: 2px 4px;
+        border-radius: 3px;
+        font-size: ${Math.max(9, Math.round(titleFontSize * 0.8))}px !important;
+        font-weight: bold;
+        flex-shrink: 0;
+        white-space: nowrap;
+        line-height: 1.2;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+      }
+      
+      .search-result-title {
+        display: inline-block;
+        flex: 1;
+        min-width: 0;
+        margin: 0;
+        padding: 0;
+      }
+      
+      /* 搜索激活按鈕 */
+      .search-activate-btn {
+        font-size: ${activateBtnFontSize}px !important;
+      }
+      
+      /* 搜索結果類型標籤 */
+      .search-result-type {
+        font-size: ${Math.round(controlFontSize * 0.9)}px !important;
+      }
+      
+      /* 搜索結果統計 */
+      .search-results-count {
+        font-size: ${statusFontSize}px !important;
+      }
+      
+    `;
+    
+    document.head.appendChild(searchStyle);
+  }
+  
+  function updateFontSize(change) {
+    fontSize = Math.max(12, Math.min(24, fontSize + change));
+    localStorage.setItem('fontSize', fontSize);
+    applyReadingSettings();
+    updateFontSizeButtons();
+  }
+  
+  function updateLineHeight(value) {
+    lineHeight = value;
+    localStorage.setItem('lineHeight', lineHeight);
+    applyReadingSettings();
+    updateLineHeightButtons();
+  }
+  
+  function updateContentWidth(value) {
+    contentWidth = value;
+    localStorage.setItem('contentWidth', contentWidth);
+    applyReadingSettings();
+    updateContentWidthButtons();
+  }
+
+  // 閱讀進度功能
+  function updateReadingProgress() {
+    const scrollTop = window.pageYOffset;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = (scrollTop / docHeight) * 100;
+    
+    const progressBar = document.querySelector('.reading-progress-bar');
+    if (progressBar) {
+      progressBar.style.width = Math.max(0, Math.min(100, progress)) + '%';
+    }
+  }
+
+  // 章節跟踪功能
+  function updateCurrentSection() {
+    // 首頁跳過章節跟踪
+    if (currentChapter.isHomepage) {
+      return;
+    }
+    
+    const headings = document.querySelectorAll('h2[id], h3[id], h4[id]');
+    const scrollTop = window.pageYOffset;
+    const offset = 100; // 偏移量，調整觸發點
+    
+    let currentSection = null;
+    
+    // 找到最接近當前位置的章節
+    headings.forEach((heading) => {
+      const rect = heading.getBoundingClientRect();
+      const elementTop = scrollTop + rect.top;
+      
+      if (elementTop <= scrollTop + offset) {
+        currentSection = heading;
+      }
+    });
+    
+    // 更新TOC高亮狀態
+    const tocItems = document.querySelectorAll('.floating-toc-item[data-target]');
+    let activeItem = null;
+    
+    tocItems.forEach(item => {
+      item.classList.remove('active');
+      
+      if (currentSection) {
+        const targetId = '#' + currentSection.id;
+        if (item.dataset.target === targetId) {
+          item.classList.add('active');
+          activeItem = item;
+        }
+      }
+    });
+    
+    // 自動滾動sidebar到當前章節
+    if (activeItem) {
+      const tocContainer = activeItem.closest('.floating-toc');
+      if (tocContainer && tocContainer.classList.contains('visible')) {
+        // 檢查activeItem是否在可視區域內
+        const containerRect = tocContainer.getBoundingClientRect();
+        const itemRect = activeItem.getBoundingClientRect();
+        
+        // 如果item不在容器的可視區域內，則滾動到該位置
+        if (itemRect.top < containerRect.top + 60 || itemRect.bottom > containerRect.bottom - 20) {
+          activeItem.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
+      }
+    }
+  }
+
+  // 顯示通知
+  function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 100);
+    setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => document.body.removeChild(toast), 300);
+    }, 2000);
+  }
+
+  // 複製功能
+  function copyText(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        showToast('已複製到剪貼板');
+      });
+    } else {
+      // 降級處理
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      showToast('已複製到剪貼板');
+    }
+  }
+  
+  // 處理頁面加載時的錨點跳轉
+  function handleInitialAnchor() {
+    const hash = window.location.hash;
+    if (hash && hash.length > 1) {
+      const targetId = hash.substring(1); // 移除#號
+      const targetElement = document.getElementById(targetId);
+      
+      if (targetElement) {
+        // 延遲滾動，確保頁面布局完成
+        setTimeout(() => {
+          targetElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+          
+          // 添加臨時高亮效果；使用 class，避免經文的漸層背景蓋住 background-color。
+          targetElement.classList.remove('anchor-target-highlight');
+          void targetElement.offsetWidth;
+          targetElement.classList.add('anchor-target-highlight');
+          setTimeout(() => {
+            targetElement.classList.remove('anchor-target-highlight');
+          }, 3000);
+        }, 300);
+      }
+    }
+  }
+
+  // ============ 事件監聽 ============
+  
+  // 首先初始化當前章節信息
+  currentChapter = getCurrentChapter();
+  
+  // 初始化所有組件
+  const toolbar = createReadingToolbar();
+  const progressBar = createReadingProgress();
+  const floatingTOC = createFloatingTOC();
+  
+  // 只在章節頁面創建action-buttons，首頁已有靜態HTML
+  if (!currentChapter.isHomepage) {
+    const actionButtons = createActionButtons();
+  }
+  
+  addQAActions();
+  applyReadingSettings();
+  
+  // 首頁專用：初始化浮動TOC
+  if (currentChapter.isHomepage) {
+    initializeHomepageTOC();
+  }
+  
+  updateBookmarkCount();
+  updateThemeButtons();
+  updateReadingSettingsButtons();
+  restoreBookmarkVisualStates();
+  
+  // 延遲執行章節跟踪，確保頁面完全渲染
+  setTimeout(updateCurrentSection, 100);
+  
+  // 處理頁面加載時的錨點跳轉
+  setTimeout(handleInitialAnchor, 200);
+  
+  // 如果是首頁，渲染動態TOC內容
+  if (isIndexPage()) {
+    renderIndexTOC();
+  }
+
+  document.addEventListener('keydown', (e) => {
+    // Esc 關閉所有浮動面板（操作選單／浮動目錄／閱讀工具欄）
+    if (e.key === 'Escape') {
+      closeSidebars();
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const action = e.target.dataset.action;
+    
+    // 點擊外部區域關閉所有打開的sidebars
+    if (!action && !isClickInsideSidebar(e.target)) {
+      closeSidebars();
+    }
+    
+    if (!action) return;
+
+    switch (action) {
+      // 字體設置
+      case 'font-decrease':
+        updateFontSize(-2);
+        addFontAdjustFeedback(e.target);
+        break;
+      case 'font-normal':
+        fontSize = getDefaultFontSize();
+        localStorage.setItem('fontSize', fontSize);
+        applyReadingSettings();
+        updateFontSizeButtons();
+        break;
+      case 'font-increase':
+        updateFontSize(2);
+        addFontAdjustFeedback(e.target);
+        break;
+
+      // 行距設置
+      case 'line-tight':
+        updateLineHeight(1.2);
+        break;
+      case 'line-normal':
+        updateLineHeight(1.6);
+        break;
+      case 'line-loose':
+        updateLineHeight(2.0);
+        break;
+
+      // 寬度設置
+      case 'width-narrow':
+        updateContentWidth(600);
+        break;
+      case 'width-normal':
+        updateContentWidth(800);
+        break;
+      case 'width-wide':
+        updateContentWidth(1000);
+        break;
+
+      // 主題切換
+      case 'theme-light':
+        document.body.classList.remove('dark-mode');
+        localStorage.setItem('darkMode', false);
+        updateThemeButtons();
+        break;
+      case 'theme-dark':
+        document.body.classList.add('dark-mode');
+        localStorage.setItem('darkMode', true);
+        updateThemeButtons();
+        break;
+
+      // 操作按鈕
+      case 'toggle-menu':
+        // 兼容首頁和章節頁面的不同結構
+        const actionButtons = e.target.closest('.action-buttons');
+        let actionMenu = actionButtons.querySelector('.action-menu');
+        
+        // 如果沒找到.action-menu，可能是首頁結構，直接查找同級的.action-menu
+        if (!actionMenu) {
+          actionMenu = e.target.nextElementSibling;
+          if (actionMenu && !actionMenu.classList.contains('action-menu')) {
+            actionMenu = null;
+          }
+        }
+        
+        if (actionMenu) {
+          actionMenu.classList.toggle('expanded');
+        }
+        e.target.classList.toggle('expanded');
+        break;
+      case 'toc':
+        floatingTOC.classList.toggle('visible');
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+        // 如果TOC剛打開，立即定位當前章節
+        if (floatingTOC.classList.contains('visible')) {
+          setTimeout(updateCurrentSection, 100); // 等待CSS transition完成
+        }
+        break;
+      case 'close-toc':
+        floatingTOC.classList.remove('visible');
+        break;
+      case 'top':
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+        break;
+      case 'home':
+        // 回到首頁 - 根據當前頁面語言版本決定目標首頁
+        const homePageUrl = isTraditionalChinesePage() ? 'index_trad.html' : 'index.html';
+        window.location.href = homePageUrl;
+        break;
+
+      case 'settings':
+        toolbar.classList.toggle('hidden');
+        // 關閉菜單
+        document.querySelector('.action-menu').classList.remove('expanded');
+        document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+        break;
+      case 'close-toolbar':
+        toolbar.classList.add('hidden');
+        break;
+
+      // 問答操作
+      case 'bookmark':
+        const bookmarkElement = e.target.closest('.question, .answer');
+        if (bookmarkElement) {
+          toggleBookmark(bookmarkElement);
+        }
+        break;
+      case 'copy-qa':
+        const copyQAElement = e.target.closest('.question, .answer');
+        if (copyQAElement) {
+          const qaPairText = getQAPairText(copyQAElement);
+          copyText(qaPairText);
+        }
+        break;
+      case 'bookmark-qa':
+        const qaBookmarkElement = e.target.closest('.question, .answer');
+        if (qaBookmarkElement) {
+          if (qaBookmarkElement.classList.contains('answer')) {
+            toggleQAPairBookmark(qaBookmarkElement);
+          } else if (qaBookmarkElement.classList.contains('question')) {
+            // 如果是問題，找到對應的回答
+            const answerElement = findAnswerForQuestion(qaBookmarkElement);
+            if (answerElement) {
+              toggleQAPairBookmark(answerElement);
+            } else {
+              // 如果沒有對應回答，提示用戶
+              showToast('找不到對應的回答');
+            }
+          }
+        }
+        break;
+      case 'copy-para':
+        const copyParaElement = e.target.closest('.para-block');
+        if (copyParaElement) {
+          copyText(getParagraphText(copyParaElement));
+        }
+        break;
+      case 'bookmark-para':
+        const paraBookmarkElement = e.target.closest('.para-block');
+        if (paraBookmarkElement) {
+          toggleParagraphBookmark(paraBookmarkElement);
+        }
+        break;
+      case 'share':
+        const shareElement = e.target.closest('.question, .answer, .para-block');
+        if (shareElement) {
+          // 直接分享點擊的區塊（問題、回答或段落）
+          const shareUrl = generateShareUrl(shareElement);
+          const isQuestion = shareElement.classList.contains('question');
+          const isParagraph = shareElement.classList.contains('para-block');
+          const toastMessage = isParagraph ? '段落鏈接已複製' : (isQuestion ? '問題鏈接已複製' : '回答鏈接已複製');
+          
+          if (navigator.share) {
+            navigator.share({
+              url: shareUrl
+            });
+          } else {
+            copyText(shareUrl);
+            showToast(toastMessage);
+          }
+        } else {
+          // 降級處理：分享頁面鏈接
+          if (navigator.share) {
+            navigator.share({
+              url: window.location.href
+            });
+          } else {
+            copyText(window.location.href);
+            showToast('頁面鏈接已複製');
+          }
+        }
+        break;
+      case 'clear-bookmarks':
+        clearCurrentChapterBookmarks();
+        break;
+    }
+  });
+
+  // 浮動目錄點擊
+  document.addEventListener('click', (e) => {
+    // 目錄項點擊
+    if (e.target.classList.contains('floating-toc-item')) {
+      // 首頁的TOC項目：跳轉到其他頁面
+      if (e.target.dataset.href) {
+        const href = e.target.dataset.href;
+        window.location.href = href;
+        return;
+      }
+      
+      // 其他頁面：頁面內跳轉
+      const target = e.target.dataset.target;
+      const element = document.querySelector(target);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // 移除自動關閉sidebar，讓用戶可以連續導航
+        // floatingTOC.classList.remove('visible');
+      }
+    }
+    
+    // 標籤頁切換
+    if (e.target.classList.contains('floating-toc-tab')) {
+      const tab = e.target.dataset.tab;
+      
+      // 更新標籤頁狀態
+      document.querySelectorAll('.floating-toc-tab').forEach(t => t.classList.remove('active'));
+      e.target.classList.add('active');
+      
+      // 切換內容
+      const tocList = document.getElementById('toc-list');
+      const bookmarksList = document.getElementById('bookmarks-list');
+      const tocTitle = document.getElementById('toc-title');
+      
+      if (tab === 'toc') {
+        // 目录模式：显示目录，隐藏书签
+        if (tocList) tocList.style.display = 'block';
+        if (bookmarksList) bookmarksList.style.display = 'none';
+        if (tocTitle) {
+          tocTitle.textContent = '📖 章節目錄';
+          tocTitle.style.display = 'block';
+        }
+        
+        // 切換到目錄標籤頁時，自動定位到當前章節
+        // 添加小延遲確保DOM更新完成
+        setTimeout(() => {
+          updateCurrentSection();
+        }, 50);
+      } else if (tab === 'bookmarks') {
+        // 书签模式：隐藏目录，只显示书签内容
+        if (tocList) tocList.style.display = 'none';
+        if (bookmarksList) bookmarksList.style.display = 'block';
+        if (tocTitle) {
+          tocTitle.textContent = '🔖 我的書籤';
+          tocTitle.style.display = 'block';
+        }
+        
+        // 立即顯示載入指示器，改善UX
+        showBookmarkLoadingIndicator();
+        
+        // 使用requestAnimationFrame延遲渲染，讓載入動畫先顯示
+        requestAnimationFrame(() => {
+          renderBookmarks();
+        });
+      }
+    }
+    
+    // 書籤項點擊
+    const bookmarkItem = e.target.closest('.bookmark-item');
+    if (bookmarkItem && !e.target.classList.contains('bookmark-delete')) {
+      const target = bookmarkItem.dataset.target;
+      const element = document.querySelector(target);
+      if (element) {
+        // 添加臨時高亮效果；使用 class，避免經文的漸層背景蓋住 background-color。
+        element.classList.remove('anchor-target-highlight');
+        void element.offsetWidth;
+        element.classList.add('anchor-target-highlight');
+        setTimeout(() => {
+          element.classList.remove('anchor-target-highlight');
+        }, 3000);
+
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        // 移除自動關閉側邊欄，讓用戶可以連續瀏覽書籤
+        // floatingTOC.classList.remove('visible');
+      }
+    }
+    
+    // 書籤刪除按鈕
+    if (e.target.classList.contains('bookmark-delete')) {
+      e.stopPropagation();
+      const bookmarkId = e.target.dataset.bookmarkId;
+      if (bookmarkId) {
+        removeBookmark(bookmarkId);
+      }
+    }
+    
+    // 書籤標記點擊 - 移除書籤
+    if (e.target.classList.contains('bookmark-indicator')) {
+      e.stopPropagation();
+      const bookmarkedElement = e.target.closest('.question, .answer, .para-block');
+      if (bookmarkedElement) {
+        // 段落書籤：直接切換移除
+        if (bookmarkedElement.classList.contains('para-block')) {
+          toggleParagraphBookmark(bookmarkedElement);
+          return;
+        }
+        // 首先檢查是否為問答書籤（通過檢查配對元素）
+        let isQAPairBookmark = false;
+        let answerElement = null;
+        let questionElement = null;
+        
+        if (bookmarkedElement.classList.contains('answer')) {
+          answerElement = bookmarkedElement;
+          questionElement = findQuestionForAnswer(answerElement);
+        } else {
+          questionElement = bookmarkedElement;
+          answerElement = findAnswerForQuestion(questionElement);
+        }
+        
+        // 如果問題和回答都有書籤標記，說明是問答書籤
+        if (questionElement && answerElement && 
+            questionElement.classList.contains('bookmarked') && 
+            answerElement.classList.contains('bookmarked')) {
+          isQAPairBookmark = true;
+        }
+        
+        if (isQAPairBookmark && answerElement) {
+          // 問答書籤：使用問答切換功能移除
+          toggleQAPairBookmark(answerElement);
+        } else {
+          // 單個元素書籤：使用原來的切換功能
+          toggleBookmark(bookmarkedElement);
+        }
+      }
+    }
+  });
+
+  function updateActiveButton(container, activeBtn) {
+    container.querySelectorAll('.ctrl-btn').forEach(btn => btn.classList.remove('active'));
+    activeBtn.classList.add('active');
+  }
+
+  // 為字體調整按鈕添加點擊反饋效果
+  function addFontAdjustFeedback(button) {
+    if (button.classList.contains('font-adjust')) {
+      button.classList.add('clicked');
+      setTimeout(() => {
+        button.classList.remove('clicked');
+      }, 150); // 150ms後移除反饋效果
+    }
+  }
+
+  // 檢查點擊是否在sidebar內部
+  function isClickInsideSidebar(target) {
+    return target.closest('.action-menu') || 
+           target.closest('.floating-toc') || 
+           target.closest('.reading-toolbar');
+  }
+
+  // 關閉所有打開的sidebars
+  function closeSidebars() {
+    // 關閉操作菜單
+    const openMenu = document.querySelector('.action-menu.expanded');
+    if (openMenu) {
+      openMenu.classList.remove('expanded');
+      document.querySelector('.action-btn.menu-btn').classList.remove('expanded');
+    }
+    
+    // 關閉浮動目錄
+    const visibleTOC = document.querySelector('.floating-toc.visible');
+    if (visibleTOC) {
+      visibleTOC.classList.remove('visible');
+    }
+    
+    // 關閉閱讀工具栏
+    const visibleToolbar = document.querySelector('.reading-toolbar:not(.hidden)');
+    if (visibleToolbar) {
+      visibleToolbar.classList.add('hidden');
+    }
+  }
+
+  // ========== 搜索按鈕智能顯示功能 ==========
+  
+  // 檢測頂部搜索控制按鈕是否在視窗中完全可見
+  function areTopSearchControlsVisible() {
+    const searchHeader = document.querySelector('.search-results-header');
+    if (!searchHeader) return false;
+    
+    const rect = searchHeader.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // 設置觸發閾值：當頂部按鈕開始被遮住時就顯示底部按鈕
+    // 使用50px的緩衝區，確保用戶體驗的連續性
+    const threshold = 50;
+    
+    // 檢查頂部控制按鈕是否有足夠的可見區域
+    // 當按鈕開始被遮住超過閾值時，就認為不完全可見
+    return rect.bottom > threshold && rect.top < (viewportHeight - threshold);
+  }
+  
+  // 更新底部搜索按鈕的顯示狀態
+  function updateBottomSearchButtonsVisibility() {
+    const bottomFooter = document.querySelector('.search-results-footer');
+    if (!bottomFooter) return;
+    
+    const areTopControlsVisible = areTopSearchControlsVisible();
+    
+    // 當頂部按鈕可見時隱藏底部按鈕，否則顯示底部按鈕
+    if (areTopControlsVisible) {
+      bottomFooter.style.display = 'none';
+    } else {
+      bottomFooter.style.display = 'block';
+    }
+  }
+
+  // 滾動事件（帶節流優化）
+  let scrollTimeout;
+  function handleScroll() {
+    updateReadingProgress();
+    
+    // 節流處理章節跟踪，避免過度頻繁更新
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(updateCurrentSection, 50);
+    
+    // 更新搜索按鈕顯示狀態
+    updateBottomSearchButtonsVisibility();
+  }
+  
+  window.addEventListener('scroll', handleScroll);
+  
+  // 窗口大小變化時更新搜索按鈕狀態
+  window.addEventListener('resize', () => {
+    setTimeout(updateBottomSearchButtonsVisibility, 100);
+  });
+  
+  updateReadingProgress();
+  updateCurrentSection(); // 初始化當前章節
+
+
+  // 平滑滾動章節內 TOC 與回到頂部
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const href = this.getAttribute('href');
+      const target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        history.pushState(null, null, href);
+      }
+    });
+  });
+
+  // ========== 目录折叠控制功能 ==========
+  
+  // 初始化目录折叠控制（首页和章节页面都需要）
+  initTocCollapseControl();
+  initFloatingLevelControls();
+  
+  function initTocCollapseControl() {
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+    
+    // 检测实际的目录层级并隐藏不必要的按钮
+    const maxLevel = detectAndHideLevelButtons(tocContainer);
+    
+    // 根據頁面類型設定不同的默認值
+    const isChapterPage = document.getElementById('chapter-toc') !== null;
+    const defaultLevel = isChapterPage ? '3' : '2'; // 章節頁面默認第3層，首頁默認第2層
+    
+    // 获取用户保存的偏好，使用對應的默認值
+    const rawSavedLevel = localStorage.getItem('toc-display-level') || defaultLevel;
+    
+    // 展開/收合鈕狀態同步（.collapsed 樣式、▼/▶ 文字與 aria-expanded 一致）
+  function setTocIconState(icon, expanded) {
+    if (!icon) return;
+    icon.classList.toggle('collapsed', !expanded);
+    icon.textContent = expanded ? '▼' : '▶';
+    icon.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+  }
+
+  // 智能選擇可用的層級
+    const validLevel = selectValidLevel(rawSavedLevel, maxLevel, defaultLevel, tocContainer);
+    
+    // 初始化按钮状态
+    updateLevelButtonsActive(validLevel);
+    
+    // 根据智能选择的层级设置初始显示
+    setTocDisplayLevel(validLevel);
+    
+    // 绑定层级切换按钮事件
+    bindLevelControlEvents();
+    
+    // 为有展开图标的目录项添加 toc-expandable 类
+    initializeTocExpandableItems();
+    
+    // 绑定展开/折叠图标事件
+    bindExpandCollapseEvents();
+    
+    // 绑定全部展开/折叠按钮事件
+    bindExpandAllEvents();
+  }
+  
+  // 智能選擇可用的層級
+  function selectValidLevel(savedLevel, maxLevel, defaultLevel, tocContainer) {
+    const savedLevelNum = parseInt(savedLevel);
+    const maxLevelNum = parseInt(maxLevel);
+    const defaultLevelNum = parseInt(defaultLevel);
+    
+    // 檢查當前頁面實際存在的層級（有內容的層級）
+    const availableLevels = [];
+    
+    // 檢查每個層級是否有實際的目錄項目
+    for (let level = 1; level <= maxLevelNum; level++) {
+      const itemsAtLevel = tocContainer.querySelectorAll(`.toc-item[data-level="${level}"]`);
+      if (itemsAtLevel.length > 0) {
+        availableLevels.push(level);
+      }
+    }
+    
+    // 也檢查是否有對應的層級按鈕可見
+    const visibleButtons = [];
+    const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');
+    allLevelButtons.forEach(btn => {
+      const level = parseInt(btn.getAttribute('data-level'));
+      if (btn.style.display !== 'none' && !btn.hasAttribute('data-hidden-level')) {
+        if (!visibleButtons.includes(level)) {
+          visibleButtons.push(level);
+        }
+      }
+    });
+    
+    // 取交集：既有內容又有按鈕的層級
+    const validLevels = availableLevels.filter(level => visibleButtons.includes(level));
+    
+    console.log('有內容的層級:', availableLevels, '可見按鈕層級:', visibleButtons, '有效層級:', validLevels);
+    console.log('保存的層級:', savedLevelNum, '最大層級:', maxLevelNum);
+    
+    // 如果保存的層級在有效層級中，直接使用
+    if (validLevels.includes(savedLevelNum)) {
+      console.log('使用保存的層級:', savedLevelNum);
+      return savedLevel;
+    }
+    
+    // 如果保存的層級不可用，選擇最接近的有效層級
+    if (validLevels.length === 0) {
+      console.warn('沒有找到有效層級，使用默認值');
+      return defaultLevel;
+    }
+    
+    // 找到最接近保存層級的有效層級
+    let selectedLevel = validLevels[0];
+    let minDistance = Math.abs(validLevels[0] - savedLevelNum);
+    
+    for (const level of validLevels) {
+      const distance = Math.abs(level - savedLevelNum);
+      if (distance < minDistance) {
+        minDistance = distance;
+        selectedLevel = level;
+      }
+    }
+    
+    console.log('智能選擇的層級:', selectedLevel, '原因: 最接近保存的層級', savedLevelNum);
+    return selectedLevel.toString();
+  }
+
+  // 检测目录实际层级并隐藏不必要的层级按钮
+  function detectAndHideLevelButtons(tocContainer) {
+    let maxLevel = 1; // 默认至少有第1层
+    
+    // 检测所有目录项的层级
+    const tocItems = tocContainer.querySelectorAll('.toc-item[data-level]');
+    tocItems.forEach(item => {
+      const level = parseInt(item.getAttribute('data-level'));
+      if (level > maxLevel) {
+        maxLevel = level;
+      }
+    });
+    
+    // 也检查传统的嵌套结构（ul > li）
+    const nestedItems = tocContainer.querySelectorAll('ul li');
+    if (nestedItems.length > 0) {
+      // 计算嵌套深度
+      nestedItems.forEach(item => {
+        let depth = 1;
+        let parent = item.parentElement;
+        while (parent && parent !== tocContainer) {
+          if (parent.tagName === 'UL') {
+            depth++;
+          }
+          parent = parent.parentElement;
+        }
+        if (depth > maxLevel) {
+          maxLevel = depth;
+        }
+      });
+    }
+    
+    console.log('检测到的最大目录层级:', maxLevel);
+    
+    // 隐藏超出实际层级的按钮
+    const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');
+    allLevelButtons.forEach(btn => {
+      const buttonLevel = parseInt(btn.getAttribute('data-level'));
+      if (buttonLevel > maxLevel) {
+        btn.style.display = 'none';
+        // 同时为其父容器添加一个属性，表示这个按钮被隐藏了
+        btn.setAttribute('data-hidden-level', 'true');
+      } else {
+        btn.style.display = '';
+        btn.removeAttribute('data-hidden-level');
+      }
+    });
+    
+    // 返回检测到的最大层级，供其他函数使用
+    return maxLevel;
+  }
+  
+  function bindLevelControlEvents() {
+    const levelButtons = document.querySelectorAll('.toc-level-btn');
+    levelButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const level = this.getAttribute('data-level');
+        
+        // 更新所有按钮状态（包括浮动按钮）
+        updateAllLevelButtonsActive(level);
+        
+        // 设置显示层级
+        setTocDisplayLevel(level);
+        
+        // 保存用户偏好
+        localStorage.setItem('toc-display-level', level);
+      });
+    });
+  }
+  
+  function updateLevelButtonsActive(activeLevel) {
+    // 保持向后兼容，但现在使用统一的更新函数
+    updateAllLevelButtonsActive(activeLevel);
+  }
+  
+  function setTocDisplayLevel(level) {
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+    
+    const allItems = tocContainer.querySelectorAll('.toc-item');
+    const targetLevel = parseInt(level);
+    
+    // 最深的「顯示層級」（按鈕只到這一層；更深層如第 6 層不出現在按鈕中）。
+    // 當選到最深顯示層級時，一併顯示更深一層的子項（例如坐禅2 的羅馬數字 h6，
+    // 只有這處有第 6 層，不值得獨立成一個「顯示層級」按鈕）。
+    let deepestButtonLevel = 0;
+    document.querySelectorAll('.toc-level-btn, .floating-level-btn').forEach(btn => {
+      const lv = parseInt(btn.getAttribute('data-level'));
+      if (!isNaN(lv) && lv > deepestButtonLevel) deepestButtonLevel = lv;
+    });
+    const showDeeper = deepestButtonLevel > 0 && targetLevel >= deepestButtonLevel;
+    
+    // 清除所有手動標記，讓層級控制重新接管
+    allItems.forEach(item => {
+      item.removeAttribute('data-user-toggled');
+      item.removeAttribute('data-manually-shown');
+    });
+    
+    allItems.forEach(item => {
+      const itemLevel = parseInt(item.getAttribute('data-level'));
+      
+      // 根據層級控制顯示/隱藏；選到最深層時連更深層（第 6 層）一起顯示
+      if (itemLevel <= targetLevel || (showDeeper && itemLevel > targetLevel)) {
+        item.classList.remove('hidden');
+      } else {
+        item.classList.add('hidden');
+      }
+      
+      // 重新設置圖標狀態
+      const expandIcon = item.querySelector('.toc-expand-icon');
+      if (expandIcon) {
+        if (itemLevel < targetLevel) {
+          // 小於目標層級的項目自動展開
+          setTocIconState(expandIcon, true);
+        } else if (itemLevel === targetLevel) {
+          // 等於目標層級的項目設為折疊狀態
+          setTocIconState(expandIcon, false);
+        }
+      }
+    });
+  }
+  
+  // 同步图标状态与实际展开状态
+  function syncIconStates() {
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+    
+    const expandableItems = tocContainer.querySelectorAll('.toc-item.toc-expandable');
+    expandableItems.forEach(item => {
+      const icon = item.querySelector('.toc-expand-icon');
+      if (icon) {
+        const actuallyExpanded = hasVisibleDirectChildren(item);
+        
+        if (actuallyExpanded) {
+          setTocIconState(icon, true);
+        } else {
+          setTocIconState(icon, false);
+        }
+      }
+    });
+  }
+
+  // 初始化可展开的目录项
+  function initializeTocExpandableItems() {
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+    
+    // 为所有有展开图标的目录项添加 toc-expandable 类
+    const itemsWithIcons = tocContainer.querySelectorAll('.toc-item .toc-expand-icon');
+    itemsWithIcons.forEach(icon => {
+      const tocItem = icon.closest('.toc-item');
+      if (tocItem) {
+        tocItem.classList.add('toc-expandable');
+      }
+    });
+    
+    // 同步图标状态
+    syncIconStates();
+  }
+
+  // 检查一个目录项是否有可见的直接子项
+  function hasVisibleDirectChildren(parentItem) {
+    const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    
+    // 首先检查嵌套结构（首页TOC）：查找直接的ul子元素
+    const nestedUl = parentItem.querySelector(':scope > ul');
+    if (nestedUl) {
+      const directChildren = nestedUl.querySelectorAll(':scope > .toc-item');
+      for (let child of directChildren) {
+        if (!child.classList.contains('hidden')) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    // 然后检查扁平结构（章节页TOC）：查找兄弟元素
+    let nextSibling = parentItem.nextElementSibling;
+    while (nextSibling && nextSibling.classList.contains('toc-item')) {
+      const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      
+      if (siblingLevel <= parentLevel) {
+        // 遇到同级或更高级别的项目，停止
+        break;
+      }
+      
+      if (siblingLevel === parentLevel + 1) {
+        // 这是直接子项，检查是否可见
+        if (!nextSibling.classList.contains('hidden')) {
+          return true;
+        }
+      }
+      
+      nextSibling = nextSibling.nextElementSibling;
+    }
+    
+    return false;
+  }
+
+  function bindExpandCollapseEvents() {
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!tocContainer) return;
+    
+    // 使用事件委托处理展开/折叠和跳转
+    tocContainer.addEventListener('click', function(e) {
+      // 检查是否直接点击了链接文字
+      if (e.target.tagName === 'A') {
+        // 直接点击链接文字，允许默认行为（页面跳转）
+        return;
+      }
+      
+      // 查找最近的目录项
+      const tocItem = e.target.closest('.toc-item');
+      if (!tocItem) return;
+      
+      // 检查是否点击了可展开的目录项（有三角形图标的）
+      const expandableItem = tocItem.classList.contains('toc-expandable') ? tocItem : null;
+      if (expandableItem) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const icon = expandableItem.querySelector('.toc-expand-icon');
+        if (icon) {
+          // 检查实际的展开状态：查看是否有可见的直接子项
+          const actuallyExpanded = hasVisibleDirectChildren(expandableItem);
+          
+          // 标记这个项目已经被用户手动操作
+          expandableItem.setAttribute('data-user-toggled', 'true');
+          
+          if (actuallyExpanded) {
+            // 当前已展开，执行折叠
+            collapseTocItem(expandableItem);
+            setTocIconState(icon, false);
+          } else {
+            // 当前已折叠，执行展开
+            expandTocItem(expandableItem);
+            setTocIconState(icon, true);
+          }
+        }
+      } else {
+        // 这是没有展开图标的目录项（叶子节点），处理整行点击跳转
+        const link = tocItem.querySelector('a');
+        if (link && !e.target.closest('a')) {
+          // 点击的是目录项但不是链接本身，触发链接跳转
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // 模拟点击链接
+          link.click();
+        }
+      }
+    });
+  }
+  
+  function expandTocItem(parentItem) {
+    const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    const parentChapter = parentItem.getAttribute('data-chapter');
+    
+    // 首先检查嵌套结构（首页TOC）
+    const nestedUl = parentItem.querySelector(':scope > ul');
+    if (nestedUl) {
+      const directChildren = nestedUl.querySelectorAll(':scope > .toc-item');
+      directChildren.forEach(child => {
+        const childLevel = parseInt(child.getAttribute('data-level'));
+        const childChapter = child.getAttribute('data-chapter');
+        
+        // 只展開同一章節且是直接子項的項目
+        if (childLevel === parentLevel + 1 && childChapter === parentChapter) {
+          child.classList.remove('hidden');
+          child.setAttribute('data-manually-shown', 'true');
+        }
+      });
+      return;
+    }
+    
+    // 处理扁平结构（章节页TOC）
+    let nextSibling = parentItem.nextElementSibling;
+    while (nextSibling && nextSibling.classList.contains('toc-item')) {
+      const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      const siblingChapter = nextSibling.getAttribute('data-chapter');
+      
+      if (siblingLevel <= parentLevel) {
+        // 遇到同级或更高级别的项目，停止
+        break;
+      }
+      
+      // 只處理同一章節的子項目
+      if (siblingLevel === parentLevel + 1 && siblingChapter === parentChapter) {
+        // 这是直接子项，显示它
+        nextSibling.classList.remove('hidden');
+        // 添加标记，表示这是用户手动展开的
+        nextSibling.setAttribute('data-manually-shown', 'true');
+      }
+      
+      nextSibling = nextSibling.nextElementSibling;
+    }
+  }
+  
+  function collapseTocItem(parentItem) {
+    const parentLevel = parseInt(parentItem.getAttribute('data-level'));
+    const parentChapter = parentItem.getAttribute('data-chapter');
+    
+    // 首先检查嵌套结构（首页TOC）
+    const nestedUl = parentItem.querySelector(':scope > ul');
+    if (nestedUl) {
+      const allChildren = nestedUl.querySelectorAll('.toc-item');
+      allChildren.forEach(child => {
+        const childLevel = parseInt(child.getAttribute('data-level'));
+        const childChapter = child.getAttribute('data-chapter');
+        
+        // 只收縮同一章節且層級更深的項目
+        if (childLevel > parentLevel && childChapter === parentChapter) {
+          child.classList.add('hidden');
+          child.removeAttribute('data-manually-shown');
+          const childIcon = child.querySelector('.toc-expand-icon');
+          if (childIcon) {
+            setTocIconState(childIcon, false);
+          }
+        }
+      });
+      return;
+    }
+    
+    // 处理扁平结构（章节页TOC）
+    let nextSibling = parentItem.nextElementSibling;
+    while (nextSibling && nextSibling.classList.contains('toc-item')) {
+      const siblingLevel = parseInt(nextSibling.getAttribute('data-level'));
+      const siblingChapter = nextSibling.getAttribute('data-chapter');
+      
+      if (siblingLevel <= parentLevel) {
+        // 遇到同级或更高级别的项目，停止
+        break;
+      }
+      
+      // 只處理同一章節的子項目
+      if (siblingChapter === parentChapter) {
+        // 这是子项，隐藏它，并同时折叠其展开状态
+        nextSibling.classList.add('hidden');
+        // 清除手动展开标记
+        nextSibling.removeAttribute('data-manually-shown');
+        const childIcon = nextSibling.querySelector('.toc-expand-icon');
+        if (childIcon) {
+          setTocIconState(childIcon, false);
+        }
+      }
+      
+      nextSibling = nextSibling.nextElementSibling;
+    }
+  }
+  
+  function bindExpandAllEvents() {
+    // 移除了全部展开/折叠按钮，因为现在只有3个层级按钮
+    // 功能已经整合到层级按钮中
+  }
+  
+  // ========== 浮动层级控制功能 ==========
+  
+  // 检测固定层级控制按钮是否在视窗中可见
+  function areTocControlsVisible() {
+    const tocControls = document.querySelector('.toc-level-controls');
+    if (!tocControls) return false;
+    
+    const rect = tocControls.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // 检查控制按钮是否在视窗内可见
+    return rect.bottom > 0 && rect.top < viewportHeight;
+  }
+  
+  // 检测目录内容是否在视窗中可见（确保有目录需要控制）
+  function isTocContentVisible() {
+    const mainToc = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (!mainToc) return false;
+    
+    const rect = mainToc.getBoundingClientRect();
+    const viewportHeight = window.innerHeight;
+    
+    // 目录内容的任何部分在视窗内都算可见
+    return rect.bottom > 0 && rect.top < viewportHeight;
+  }
+  
+  // 更新浮动层级控制的显示状态（全局函数，供搜索功能调用）
+  function updateFloatingControlsState() {
+    const floatingControls = document.getElementById('floating-level-controls');
+    if (!floatingControls) return;
+    
+    const currentScrollY = window.scrollY;
+    const isMobile = window.innerWidth <= 600;
+    const scrollThreshold = isMobile ? 100 : 200;
+    
+    // 检查固定控制按钮是否可见
+    const areControlsVisible = areTocControlsVisible();
+    // 检查目录内容是否可见（确保有内容需要控制）
+    const isTocContentAvailable = isTocContentVisible();
+    
+    // 只有在达到滚动阈值、固定控制按钮不可见、但目录内容仍可见时才显示浮动控制
+    const shouldShow = currentScrollY > scrollThreshold && !areControlsVisible && isTocContentAvailable;
+    
+    if (shouldShow) {
+      floatingControls.style.display = 'block';
+    } else {
+      floatingControls.style.display = 'none';
+    }
+  }
+  
+  function initFloatingLevelControls() {
+    const floatingControls = document.getElementById('floating-level-controls');
+    const tocControls = document.querySelector('.toc-level-controls');
+    
+    if (!floatingControls || !tocControls) return;
+    
+    // 确保浮动控制也应用层级检测（以防在初始化时有时序问题）
+    const tocContainer = document.getElementById('main-toc') || document.getElementById('chapter-toc');
+    if (tocContainer) {
+      detectAndHideLevelButtons(tocContainer);
+    }
+    
+    // 调试模式：检查元素是否正确创建
+    const debugMode = window.location.hash.includes('debug');
+    if (debugMode) {
+      console.log('FloatingControls found:', floatingControls);
+      console.log('Screen size:', window.innerWidth, 'x', window.innerHeight);
+      console.log('Device pixel ratio:', window.devicePixelRatio);
+      console.log('User agent:', navigator.userAgent);
+    }
+    
+    // 绑定浮动按钮事件
+    bindFloatingLevelEvents();
+    
+    // 绑定浮动层级控制的收縮/展開功能
+    initFloatingLevelToggle();
+    
+    // 样式重置函数 - 清除JavaScript设置的内联样式
+    function resetFloatingControlsStyles() {
+      floatingControls.style.removeProperty('right');
+      floatingControls.style.removeProperty('zIndex');
+      floatingControls.style.removeProperty('position');
+      if (debugMode) {
+        console.log('Floating controls styles reset');
+      }
+    }
+    
+    // 重新应用正确的样式
+    function applyCorrectStyles() {
+      const isMobile = window.innerWidth <= 600;
+      const isSmallMobile = window.innerWidth <= 400;
+      
+      if (isMobile) {
+        // 移动端保持右側定位，設置必要的樣式
+        floatingControls.style.zIndex = '10000';
+        floatingControls.style.position = 'fixed';
+        floatingControls.style.right = isSmallMobile ? '5px' : '8px';
+        // 移除 left 設定，確保右側定位
+        floatingControls.style.removeProperty('left');
+      } else {
+        // 桌面端时清除所有内联样式，让CSS媒体查询生效
+        resetFloatingControlsStyles();
+      }
+      
+      if (debugMode) {
+        console.log('Styles applied for:', isMobile ? 'mobile' : 'desktop', 
+                   `(${window.innerWidth}px)`);
+      }
+    }
+
+    // 监听滚动，控制浮动按钮显示
+    let lastScrollY = window.scrollY;
+    const tocControlsRect = tocControls.getBoundingClientRect();
+    const initialTop = tocControlsRect.top + window.scrollY;
+    
+    function handleScroll() {
+      const currentScrollY = window.scrollY;
+      // 检测移动端，降低显示门槛
+      const isMobile = window.innerWidth <= 600;
+      const scrollThreshold = isMobile ? 100 : 200; // 移动端更早显示
+      
+      // 检查固定控制按钮是否可见
+      const areControlsVisible = areTocControlsVisible();
+      // 检查目录内容是否可见
+      const isTocContentAvailable = isTocContentVisible();
+      
+      // 只有在达到滚动阈值、固定控制按钮不可见、但目录内容仍可见时才显示浮动控制
+      const shouldShowFloating = currentScrollY > scrollThreshold && !areControlsVisible && isTocContentAvailable;
+      
+      // 调试输出
+      if (debugMode && currentScrollY > 50) {
+        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
+      }
+      
+      if (shouldShowFloating) {
+        // 滚动时显示浮动版本（仅当固定按钮不可见但目录内容可见时）
+        floatingControls.style.display = 'block';
+        // 应用正确的样式（基于当前屏幕尺寸）
+        applyCorrectStyles();
+      } else {
+        // 页面顶部时、固定按钮可见时、或目录内容不可见时隐藏浮动版本
+        floatingControls.style.display = 'none';
+      }
+      
+      lastScrollY = currentScrollY;
+    }
+    
+    // 添加滚动监听
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // 添加窗口大小变化监听（处理屏幕旋转）
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      // 去抖动处理，避免resize过程中频繁触发
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (debugMode) {
+          console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
+        }
+        // 重新应用字体设置，确保在屏幕尺寸变化时字体调整依然有效
+        applyReadingSettings();
+        // 重置所有内联样式，然后重新应用
+        resetFloatingControlsStyles();
+        handleScroll(); // 重新检查显示状态和应用样式
+      }, 150); // 增加延迟确保resize完全完成
+    }, { passive: true });
+    
+    // 添加方向变化监听（移动端特有）
+    function handleOrientationChange() {
+      setTimeout(() => {
+        if (debugMode) {
+          console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
+        }
+        // 重新应用字体设置，确保方向变化后字体调整依然有效
+        applyReadingSettings();
+        resetFloatingControlsStyles();
+        handleScroll();
+      }, 200);
+    }
+    
+    if (screen && screen.orientation) {
+      screen.orientation.addEventListener('change', handleOrientationChange);
+    } else {
+      // 兼容旧浏览器的方向变化检测
+      window.addEventListener('orientationchange', handleOrientationChange);
+    }
+    
+    // 初始状态
+    handleScroll();
+  }
+  
+  function initFloatingLevelToggle() {
+    const toggleBtn = document.getElementById('floating-level-toggle');
+    const floatingControls = document.getElementById('floating-level-controls');
+    
+    if (!toggleBtn || !floatingControls) return;
+    
+    // 獲取保存的收縮狀態，默認為展開（false）
+    const savedState = localStorage.getItem('floating-level-collapsed');
+    const isCollapsed = savedState === 'true'; // 只有明確設置為 'true' 才收縮，其他情況（包括 null）都展開
+    
+    // 應用保存的狀態
+    if (isCollapsed) {
+      floatingControls.classList.add('collapsed');
+      toggleBtn.innerHTML = '↔';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    } else {
+      floatingControls.classList.remove('collapsed');
+      toggleBtn.innerHTML = '⇄';
+      toggleBtn.title = getI18nText('level_control.collapse_expand', false, '收縮/展開層級控制');
+    }
+    
+    // 綁定點擊事件
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      
+      const isNowCollapsed = floatingControls.classList.contains('collapsed');
+      
+      if (isNowCollapsed) {
+        // 展開
+        floatingControls.classList.remove('collapsed');
+        toggleBtn.innerHTML = '⇄';
+        localStorage.setItem('floating-level-collapsed', 'false');
+      } else {
+        // 收縮
+        floatingControls.classList.add('collapsed');
+        toggleBtn.innerHTML = '↔';
+        localStorage.setItem('floating-level-collapsed', 'true');
+      }
+    });
+  }
+  
+  function bindFloatingLevelEvents() {
+    const floatingButtons = document.querySelectorAll('.floating-level-btn');
+    floatingButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const level = this.getAttribute('data-level');
+        
+        // 更新所有按钮状态（包括顶部和浮动）
+        updateAllLevelButtonsActive(level);
+        
+        // 设置显示层级
+        setTocDisplayLevel(level);
+        
+        // 保存用户偏好
+        localStorage.setItem('toc-display-level', level);
+      });
+    });
+  }
+  
+  function updateAllLevelButtonsActive(activeLevel) {
+    // 更新顶部按钮
+    const topButtons = document.querySelectorAll('.toc-level-btn');
+    topButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-level') === activeLevel) {
+        btn.classList.add('active');
+      }
+    });
+    
+    // 更新浮动按钮
+    const floatingButtons = document.querySelectorAll('.floating-level-btn');
+    floatingButtons.forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.getAttribute('data-level') === activeLevel) {
+        btn.classList.add('active');
+      }
+    });
+  }
+
+
+  // ============================================================
+  // 08-qa-audio.js — QA 答疑章節的逐段音檔播放（含底部浮動播放器）
+  //
+  // 僅 qa/ 資料夾轉出的章節含 .qa-play 按鈕（data-audio/-start/-end/-label）。
+  // 點擊後從指定時間播放對應 .opus 音檔，到段落結束自動停止，並在畫面底部
+  // 顯示一個浮動迷你播放器（音檔名稱 + 起訖時間 + 可拖拉進度條 + ±5s + 暫停 +
+  // 音量控制：b站風格，滑鼠移上喇叭鈕即彈出垂直音量滑桿
+  // （頂部 0–100 數字 + 已達到的音量以主色填滿軌道），移走即收起；
+  // 點一下喇叭鈕靜音、再點一下取消靜音（取消時還原靜音前音量）。
+  // 音量值存於 localStorage 以便跨頁保留。
+  //
+  // 首次載入（或跳到尚未緩衝的時間點）時，播放鈕與迷你播放器會顯示載入中
+  // 狀態與緩衝進度，避免使用者以為沒反應。
+  //
+  // data-audio 為 percent-encoded 的相對路徑（../audio/<檔名>.opus），可避免
+  // OpenCC 簡繁轉換破壞中文檔名；顯示時再以 decodeURIComponent 還原。
+  //
+  // 以具名 IIFE 隔離作用域（本檔被串接進共用的 DOMContentLoaded 函式中）。
+  // ============================================================
+  ;(function () {
+    var buttons = Array.prototype.slice.call(
+      document.querySelectorAll('button.qa-play')
+    );
+    if (!buttons.length) return;
+
+    var SKIP_SECONDS = 5;
+    var LOADING_DELAY_MS = 120; // 避免已快取音檔時載入 UI 閃爍
+    var VOLUME_STORAGE_KEY = 'qa-volume';
+
+    var audio = new Audio();
+    audio.preload = 'none';
+
+    var segEnd = null;       // 目前段落的結束秒數（到此自動停止）
+    var segStart = 0;        // 目前段落的起始秒數
+    var segParts = null;     // 多段播放：[[start,end],...]，依序播放（兩段式跳過中段）
+    var segPartIndex = 0;    // 目前播到第幾段
+    var activeButton = null; // 目前播放中的按鈕
+    var isDragging = false;  // 拖拉進度條中
+    var isLoading = false;   // 正在等待音檔可播放
+    var loadGen = 0;         // 載入世代，用於取消過期回呼
+    var loadingDelayTimer = null;
+    var savedRangeLabel = '';
+    var volumeBeforeMute = null; // 點擊喇叭鈕靜音前的音量，取消靜音時還原
+
+    // ---- 底部浮動播放器 ------------------------------------------------
+    var bar = document.createElement('div');
+    bar.className = 'qa-player';
+    bar.setAttribute('aria-hidden', 'true');
+    bar.innerHTML =
+      '<button class="qa-player-toggle" type="button" aria-label="播放/暫停">▶</button>' +
+      '<div class="qa-player-info">' +
+        '<div class="qa-player-file"></div>' +
+        '<div class="qa-player-range"></div>' +
+        '<div class="qa-player-seek-row">' +
+          '<button class="qa-player-skip qa-player-skip--back" type="button" aria-label="後退 5 秒">−5s</button>' +
+          '<div class="qa-player-progress" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">' +
+            '<span class="qa-player-progress-fill"></span>' +
+            '<span class="qa-player-progress-thumb"></span>' +
+          '</div>' +
+          '<button class="qa-player-skip qa-player-skip--fwd" type="button" aria-label="前進 5 秒">+5s</button>' +
+          '<div class="qa-player-volume-group">' +
+            '<button class="qa-player-volume-btn" type="button" aria-label="音量" aria-expanded="false">' +
+              '<svg class="qa-player-volume-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
+                '<path class="qa-volume-symbol qa-volume-speaker" d="M3 9v6h4l5 4V5L7 9H3z"/>' +
+                '<path class="qa-volume-symbol qa-volume-waves" d="M15 8.5a3.5 3.5 0 0 1 0 7M18 6a7 7 0 0 1 0 12" fill="none" stroke-linecap="round" opacity="0"/>' +
+                '<path class="qa-volume-symbol qa-volume-muted" d="M5 5l14 14" fill="none" stroke-linecap="round" opacity="0"/>' +
+              '</svg>' +
+            '</button>' +
+            '<div class="qa-player-volume-popup" role="group" aria-label="音量">' +
+              '<div class="qa-player-volume-value">100</div>' +
+              '<div class="qa-player-volume-track-wrap">' +
+                '<input class="qa-player-volume" type="range" min="0" max="100" step="1" value="100" aria-label="音量">' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      '<button class="qa-player-close" type="button" aria-label="關閉">✕</button>';
+    document.body.appendChild(bar);
+
+    var toggleBtn = bar.querySelector('.qa-player-toggle');
+    var fileEl = bar.querySelector('.qa-player-file');
+    var rangeEl = bar.querySelector('.qa-player-range');
+    var progressEl = bar.querySelector('.qa-player-progress');
+    var fillEl = bar.querySelector('.qa-player-progress-fill');
+    var thumbEl = bar.querySelector('.qa-player-progress-thumb');
+    var skipBackBtn = bar.querySelector('.qa-player-skip--back');
+    var skipFwdBtn = bar.querySelector('.qa-player-skip--fwd');
+    var volumeGroup = bar.querySelector('.qa-player-volume-group');
+    var volumeBtn = bar.querySelector('.qa-player-volume-btn');
+    var volumeBtnWaves = bar.querySelector('.qa-player-volume-icon .qa-volume-waves');
+    var volumeBtnMuted = bar.querySelector('.qa-player-volume-icon .qa-volume-muted');
+    var volumeValue = bar.querySelector('.qa-player-volume-value');
+    var volumeInput = bar.querySelector('.qa-player-volume');
+    var closeBtn = bar.querySelector('.qa-player-close');
+
+    function isTrad() {
+      return typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
+    }
+
+    function qaText(key, fallback, params) {
+      if (typeof getI18nText === 'function') {
+        return getI18nText(key, isTrad(), fallback, params || {});
+      }
+      return fallback;
+    }
+
+    function decodeName(url) {
+      var base = (url || '').split('/').pop();
+      try { base = decodeURIComponent(base); } catch (e) {}
+      return base;
+    }
+
+    function fmtHMS(seconds) {
+      var s = Math.max(0, Math.floor(seconds || 0));
+      var h = Math.floor(s / 3600);
+      var m = Math.floor((s % 3600) / 60);
+      var sec = s % 60;
+      function pad(n) { return (n < 10 ? '0' : '') + n; }
+      return pad(h) + ':' + pad(m) + ':' + pad(sec);
+    }
+
+    function absoluteUrl(url) {
+      try { return new URL(url, window.location.href).href; } catch (e) { return url; }
+    }
+
+    // ---- 音量控制（b站風格：滑鼠移上喇叭鈕彈出垂直音量滑桿，點擊切換靜音） ----
+    function clampVolume(v) {
+      if (!isFinite(v)) return 1;
+      return Math.max(0, Math.min(1, v));
+    }
+
+    function loadSavedVolume() {
+      try {
+        var saved = localStorage.getItem(VOLUME_STORAGE_KEY);
+        if (saved == null) return 1;
+        return clampVolume(parseFloat(saved));
+      } catch (e) {
+        return 1;
+      }
+    }
+
+    function saveVolume(v) {
+      try { localStorage.setItem(VOLUME_STORAGE_KEY, String(v)); } catch (e) {}
+    }
+
+    function updateVolumeUI() {
+      var pct = Math.round(clampVolume(audio.volume) * 100);
+      var muted = audio.muted || pct === 0;
+      // 靜音時隱藏波紋、顯示斜線；取消靜音則反之
+      if (volumeBtnWaves) {
+        volumeBtnWaves.setAttribute('opacity', muted ? '0' : '1');
+      }
+      if (volumeBtnMuted) {
+        volumeBtnMuted.setAttribute('opacity', muted ? '1' : '0');
+      }
+      // 頂部 0–100 數字 + 軌道填色比例（b站風格），並同步滑桿數值
+      volumeValue.textContent = String(pct);
+      volumeInput.value = String(pct);
+      volumeInput.style.setProperty('--qa-volume-pct', pct + '%');
+    }
+
+    function setVolumeOpen(open) {
+      volumeGroup.classList.toggle('is-open', open);
+      volumeBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    }
+
+    // 點擊喇叭鈕：靜音 / 取消靜音（b站風格；取消時還原靜音前的音量）
+    function toggleMute() {
+      if (audio.muted || audio.volume === 0) {
+        audio.muted = false;
+        if (volumeBeforeMute != null && volumeBeforeMute > 0) {
+          audio.volume = clampVolume(volumeBeforeMute);
+        } else if (audio.volume === 0) {
+          audio.volume = 1; // 從 0 取消靜音：回到預設音量
+        }
+        volumeBeforeMute = null;
+      } else {
+        volumeBeforeMute = audio.volume;
+        audio.muted = true;
+      }
+      saveVolume(audio.volume);
+      updateVolumeUI();
+    }
+
+    // 初始化音量（預設 1，若有上次儲存值則還原）
+    audio.volume = loadSavedVolume();
+    volumeInput.value = String(Math.round(audio.volume * 100));
+    volumeInput.setAttribute('aria-label', qaText('qaAudio.volume', '音量'));
+    updateVolumeUI();
+
+    function segmentEndLimit() {
+      if (segEnd != null) return segEnd;
+      return isFinite(audio.duration) ? audio.duration : segStart;
+    }
+
+    function clampToSegment(t) {
+      return Math.max(segStart, Math.min(t, segmentEndLimit()));
+    }
+
+    function updateProgressUI(currentTime) {
+      if (isLoading) return;
+      var end = segmentEndLimit();
+      var span = end - segStart;
+      var pct = 0;
+      if (span > 0) {
+        pct = ((currentTime - segStart) / span) * 100;
+        pct = Math.max(0, Math.min(100, pct));
+      }
+      fillEl.style.width = pct + '%';
+      thumbEl.style.left = pct + '%';
+      progressEl.setAttribute('aria-valuenow', String(Math.round(pct)));
+      // 動態顯示「目前播放進度時間 - 段落結束時間」，取代靜態起訖 label
+      if (activeButton) {
+        var endLabel = (segEnd != null) ? segEnd
+          : (isFinite(audio.duration) ? audio.duration : end);
+        rangeEl.textContent = fmtHMS(currentTime) + ' - ' + fmtHMS(endLabel);
+      }
+    }
+
+    function showBar() {
+      bar.classList.add('visible');
+      bar.setAttribute('aria-hidden', 'false');
+    }
+
+    function getBufferPercent() {
+      try {
+        if (!audio.buffered || audio.buffered.length === 0) return 0;
+        var i;
+        for (i = 0; i < audio.buffered.length; i++) {
+          if (audio.buffered.start(i) <= segStart && audio.buffered.end(i) >= segStart) {
+            return 100;
+          }
+        }
+        var farthest = 0;
+        var covered = 0;
+        for (i = 0; i < audio.buffered.length; i++) {
+          farthest = Math.max(farthest, audio.buffered.end(i));
+          covered += audio.buffered.end(i) - audio.buffered.start(i);
+        }
+        if (audio.duration && isFinite(audio.duration) && audio.duration > 0) {
+          return Math.min(99, Math.round((covered / audio.duration) * 100));
+        }
+        if (segStart > 0) {
+          return Math.min(99, Math.round((farthest / segStart) * 100));
+        }
+        return farthest > 0 ? 50 : 0;
+      } catch (e) {
+        return -1;
+      }
+    }
+
+    function setPlayIconLoading(btn, loading) {
+      if (!btn) return;
+      var icon = btn.querySelector('.qa-play-icon');
+      if (!icon) return;
+      if (loading) {
+        if (!icon.getAttribute('data-play-icon-html')) {
+          icon.setAttribute('data-play-icon-html', icon.innerHTML);
+        }
+        icon.innerHTML = '';
+        icon.classList.add('qa-play-icon--spinner');
+      } else {
+        icon.classList.remove('qa-play-icon--spinner');
+        var saved = icon.getAttribute('data-play-icon-html');
+        if (saved != null) {
+          icon.innerHTML = saved;
+          icon.removeAttribute('data-play-icon-html');
+        }
+        btn.style.removeProperty('--qa-load-pct');
+      }
+    }
+
+    function applyLoadingVisual(pct) {
+      bar.classList.add('is-loading');
+      var known = pct > 0;
+      progressEl.classList.toggle('is-indeterminate', !known);
+      if (known) {
+        fillEl.style.width = pct + '%';
+        thumbEl.style.left = pct + '%';
+        progressEl.setAttribute('aria-valuenow', String(pct));
+        rangeEl.textContent = qaText(
+          'qaAudio.loadingProgress',
+          '正在載入音檔… ' + pct + '%',
+          { pct: pct }
+        );
+        if (activeButton) {
+          activeButton.style.setProperty('--qa-load-pct', pct + '%');
+        }
+      } else {
+        rangeEl.textContent = qaText('qaAudio.loading', '正在載入音檔…');
+        if (activeButton) {
+          activeButton.style.setProperty('--qa-load-pct', '0%');
+        }
+      }
+      toggleBtn.classList.add('is-loading');
+      toggleBtn.setAttribute('aria-label', qaText('qaAudio.loading', '正在載入音檔…'));
+      toggleBtn.setAttribute('aria-busy', 'true');
+      if (activeButton) {
+        activeButton.classList.add('loading');
+        activeButton.setAttribute('aria-busy', 'true');
+        setPlayIconLoading(activeButton, true);
+      }
+    }
+
+    function clearLoadingVisual() {
+      bar.classList.remove('is-loading');
+      progressEl.classList.remove('is-indeterminate');
+      toggleBtn.classList.remove('is-loading');
+      toggleBtn.removeAttribute('aria-busy');
+      buttons.forEach(function (b) {
+        b.classList.remove('loading');
+        b.removeAttribute('aria-busy');
+        setPlayIconLoading(b, false);
+      });
+      if (savedRangeLabel) {
+        rangeEl.textContent = savedRangeLabel;
+      }
+    }
+
+    function updateLoadProgress() {
+      if (!isLoading) return;
+      var pct = getBufferPercent();
+      applyLoadingVisual(pct);
+    }
+
+    function beginLoading() {
+      if (loadingDelayTimer) {
+        clearTimeout(loadingDelayTimer);
+        loadingDelayTimer = null;
+      }
+      isLoading = true;
+      // 短延遲後再顯示，避免本機快取命中時閃一下
+      loadingDelayTimer = setTimeout(function () {
+        loadingDelayTimer = null;
+        if (!isLoading) return;
+        updateLoadProgress();
+      }, LOADING_DELAY_MS);
+    }
+
+    function endLoading() {
+      if (loadingDelayTimer) {
+        clearTimeout(loadingDelayTimer);
+        loadingDelayTimer = null;
+      }
+      if (!isLoading && !bar.classList.contains('is-loading')) return;
+      isLoading = false;
+      clearLoadingVisual();
+      updateProgressUI(audio.currentTime || segStart);
+    }
+
+    function setPlayingUI(isPlaying) {
+      if (!toggleBtn.classList.contains('is-loading')) {
+        toggleBtn.textContent = isPlaying ? '⏸' : '▶';
+        toggleBtn.setAttribute('aria-label', isPlaying ? '暫停' : '播放');
+      }
+      buttons.forEach(function (b) { b.classList.remove('playing'); });
+      if (activeButton && isPlaying) activeButton.classList.add('playing');
+    }
+
+    function stopPlayback() {
+      audio.pause();
+      endLoading();
+      setPlayingUI(false);
+    }
+
+    function seekTo(time, updateUi) {
+      var t = clampToSegment(time);
+      try { audio.currentTime = t; } catch (e) {}
+      if (updateUi !== false) updateProgressUI(t);
+      return t;
+    }
+
+    function seekFromClientX(clientX) {
+      var rect = progressEl.getBoundingClientRect();
+      if (!rect.width) return segStart;
+      var ratio = (clientX - rect.left) / rect.width;
+      ratio = Math.max(0, Math.min(1, ratio));
+      var end = segmentEndLimit();
+      return seekTo(segStart + ratio * (end - segStart));
+    }
+
+    function skipBy(delta) {
+      if (!activeButton || isLoading) return;
+      seekTo(audio.currentTime + delta);
+      if (audio.paused) {
+        var p = audio.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+    }
+
+    function playSegment(btn) {
+      var url = btn.getAttribute('data-audio');
+      if (!url) return;
+      var myGen = ++loadGen;
+      segStart = parseFloat(btn.getAttribute('data-start')) || 0;
+      var end = parseFloat(btn.getAttribute('data-end'));
+      segEnd = isNaN(end) ? null : end;
+      segPartIndex = 0;
+      segParts = null;
+      var rawParts = btn.getAttribute('data-segments');
+      if (rawParts) {
+        try {
+          var parsed = JSON.parse(rawParts);
+          if (Array.isArray(parsed) && parsed.length) {
+            segParts = parsed.map(function (p) { return [parseFloat(p[0]), parseFloat(p[1])]; });
+            // first segment becomes the active [segStart, segEnd]
+            segStart = segParts[0][0];
+            segEnd = segParts[0][1];
+          }
+        } catch (e) { segParts = null; }
+      }
+      activeButton = btn;
+
+      savedRangeLabel = btn.getAttribute('data-label') || '';
+      fileEl.textContent = decodeName(url);
+      rangeEl.textContent = savedRangeLabel;
+      updateProgressUI(segStart);
+      showBar();
+      beginLoading();
+
+      var seekAndPlay = function () {
+        if (myGen !== loadGen) return;
+        seekTo(segStart);
+        var p = audio.play();
+        if (p && p.catch) {
+          p.catch(function () {
+            if (myGen === loadGen) endLoading();
+          });
+        }
+      };
+
+      if (absoluteUrl(url) !== audio.src) {
+        audio.src = url;
+        audio.addEventListener('loadedmetadata', seekAndPlay, { once: true });
+        audio.load();
+      } else if (audio.readyState >= 1) {
+        seekAndPlay();
+      } else {
+        audio.addEventListener('loadedmetadata', seekAndPlay, { once: true });
+        audio.load();
+      }
+    }
+
+    buttons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        // 點擊正在播放的同一段 → 暫停
+        if (activeButton === btn && !audio.paused) {
+          stopPlayback();
+          return;
+        }
+        // 點擊正在載入的同一段 → 取消載入
+        if (activeButton === btn && isLoading) {
+          loadGen += 1;
+          stopPlayback();
+          return;
+        }
+        playSegment(btn);
+      });
+    });
+
+    audio.addEventListener('timeupdate', function () {
+      if (isDragging || isLoading) return;
+      if (segEnd != null && audio.currentTime >= segEnd) {
+        // 多段播放：跳到下一段（跳過中段），直到最末段才停止
+        if (segParts && segPartIndex + 1 < segParts.length) {
+          segPartIndex += 1;
+          segStart = segParts[segPartIndex][0];
+          segEnd = segParts[segPartIndex][1];
+          seekTo(segStart);
+          updateProgressUI(segStart);
+          return;
+        }
+        stopPlayback();
+        updateProgressUI(segEnd);
+        return;
+      }
+      updateProgressUI(audio.currentTime);
+    });
+
+    audio.addEventListener('progress', function () {
+      if (isLoading) updateLoadProgress();
+    });
+
+    audio.addEventListener('waiting', function () {
+      if (!activeButton || audio.paused) return;
+      beginLoading();
+      updateLoadProgress();
+    });
+
+    audio.addEventListener('playing', function () {
+      endLoading();
+      setPlayingUI(true);
+    });
+
+    audio.addEventListener('play', function () { setPlayingUI(true); });
+    audio.addEventListener('pause', function () {
+      if (!isLoading) setPlayingUI(false);
+    });
+    audio.addEventListener('ended', function () { stopPlayback(); });
+    audio.addEventListener('error', function () {
+      endLoading();
+      rangeEl.textContent = qaText('qaAudio.loadError', '音檔載入失敗');
+      setPlayingUI(false);
+    });
+
+    toggleBtn.addEventListener('click', function () {
+      if (!activeButton || isLoading) return;
+      if (audio.paused) {
+        // 若已播到段落結束，重頭播該段
+        if (segEnd != null && audio.currentTime >= segEnd) {
+          seekTo(segStart);
+        }
+        beginLoading();
+        var p = audio.play();
+        if (p && p.catch) p.catch(function () { endLoading(); });
+      } else {
+        audio.pause();
+      }
+    });
+
+    skipBackBtn.addEventListener('click', function () { skipBy(-SKIP_SECONDS); });
+    skipFwdBtn.addEventListener('click', function () { skipBy(SKIP_SECONDS); });
+
+    volumeBtn.addEventListener('click', toggleMute);
+
+    // b站風格：滑鼠移上喇叭鈕（含彈出層）顯示音量滑桿，移走即收起
+    var volumeHoverTimer = null;
+    volumeGroup.addEventListener('mouseenter', function () {
+      if (volumeHoverTimer) {
+        clearTimeout(volumeHoverTimer);
+        volumeHoverTimer = null;
+      }
+      setVolumeOpen(true);
+    });
+    volumeGroup.addEventListener('mouseleave', function () {
+      if (volumeHoverTimer) {
+        clearTimeout(volumeHoverTimer);
+        volumeHoverTimer = null;
+      }
+      // 小延遲避免在按鈕與彈出層之間移動時閃爍
+      volumeHoverTimer = setTimeout(function () {
+        volumeHoverTimer = null;
+        setVolumeOpen(false);
+      }, 180);
+    });
+
+    // 點擊控制區外或按 Esc 時關閉音量彈出層
+    document.addEventListener('pointerdown', function (e) {
+      if (!volumeGroup.classList.contains('is-open')) return;
+      if (!volumeGroup.contains(e.target)) {
+        setVolumeOpen(false);
+      }
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && volumeGroup.classList.contains('is-open')) {
+        setVolumeOpen(false);
+        volumeBtn.focus();
+      }
+    });
+
+    volumeInput.addEventListener('input', function () {
+      var v = clampVolume((parseFloat(volumeInput.value) || 0) / 100);
+      volumeBeforeMute = null; // 手動調整後，舊的「靜音前音量」不再適用
+      audio.volume = v;
+      if (v === 0) {
+        audio.muted = true;
+      } else if (audio.muted) {
+        audio.muted = false;
+      }
+      updateVolumeUI();
+      saveVolume(v);
+    });
+
+    progressEl.addEventListener('pointerdown', function (e) {
+      if (!activeButton || isLoading) return;
+      isDragging = true;
+      fillEl.style.transition = 'none';
+      thumbEl.style.transition = 'none';
+      progressEl.setPointerCapture(e.pointerId);
+      seekFromClientX(e.clientX);
+      e.preventDefault();
+    });
+
+    progressEl.addEventListener('pointermove', function (e) {
+      if (!isDragging) return;
+      seekFromClientX(e.clientX);
+    });
+
+    function endDrag(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      fillEl.style.transition = '';
+      thumbEl.style.transition = '';
+      if (e && progressEl.hasPointerCapture(e.pointerId)) {
+        progressEl.releasePointerCapture(e.pointerId);
+      }
+    }
+
+    progressEl.addEventListener('pointerup', endDrag);
+    progressEl.addEventListener('pointercancel', endDrag);
+
+    progressEl.addEventListener('keydown', function (e) {
+      if (!activeButton || isLoading) return;
+      if (e.key === 'ArrowLeft') {
+        e.preventDefault();
+        skipBy(-SKIP_SECONDS);
+      } else if (e.key === 'ArrowRight') {
+        e.preventDefault();
+        skipBy(SKIP_SECONDS);
+      } else if (e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault();
+        toggleBtn.click();
+      }
+    });
+
+    closeBtn.addEventListener('click', function () {
+      loadGen += 1;
+      stopPlayback();
+      setVolumeOpen(false);
+      bar.classList.remove('visible');
+      bar.setAttribute('aria-hidden', 'true');
+    });
+
+    // ---- 對外介面：供 09b-para-track.js（講經段落跟播）掛接 ----
+    // play(btn) 觸發與點擊章節喇叭相同的播放流程（含載入、進度條）；
+    // seekAbs(t) 直接 seek 到音檔絕對秒數（不做段落 clamp）。
+    W2E.qaAudio = {
+      audio: audio,
+      play: playSegment,
+      seekAbs: function (t) {
+        try { audio.currentTime = Math.max(0, t); } catch (e) {}
+      },
+      getActiveButton: function () { return activeButton; }
+    };
+  })();
+// ============================================================
+// 09-image-lightbox.js — 章節內嵌圖 lightbox（原圖／縮放／同頁切換）
+//
+// 點擊 img[src*="assets/images/"] 開啟；同頁前後張；適窗／縮放／拖曳。
+// 獨立 IIFE，避免與共享 DOMContentLoaded 作用域碰撞。
+// ============================================================
+
+(function () {
+  const IMG_SEL = 'img[src*="assets/images/"]';
+  const MIN_SCALE = 0.25;
+  const MAX_SCALE = 8;
+  const ZOOM_STEP = 1.25;
+
+  let root = null;
+  let stage = null;
+  let imgEl = null;
+  let counterEl = null;
+  let btnPrev = null;
+  let btnNext = null;
+  let btnJump = null;
+  let btnClose = null;
+  let btnZoomIn = null;
+  let btnZoomOut = null;
+  let btnReset = null;
+
+  let gallery = [];
+  let index = 0;
+  let open = false;
+  let scale = 1;
+  let fitScale = 1;
+  let tx = 0;
+  let ty = 0;
+  let naturalW = 0;
+  let naturalH = 0;
+
+  let dragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let dragOriginTx = 0;
+  let dragOriginTy = 0;
+  let moved = false;
+
+  let pinchActive = false;
+  let pinchStartDist = 0;
+  let pinchStartScale = 1;
+  let lastTapTime = 0;
+
+  function t(sim, trad) {
+    if (typeof getText === 'function') return getText(sim, trad);
+    return trad;
+  }
+
+  function collectGallery() {
+    return Array.from(document.querySelectorAll(IMG_SEL));
+  }
+
+  function ensureDom() {
+    if (root) return;
+
+    root = document.createElement('div');
+    root.className = 'img-lightbox';
+    root.setAttribute('role', 'dialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-label', t('图片查看', '圖片檢視'));
+
+    const toolbar = document.createElement('div');
+    toolbar.className = 'img-lightbox__toolbar';
+
+    btnPrev = makeBtn('prev', '‹', t('上一张', '上一張'));
+    btnNext = makeBtn('next', '›', t('下一张', '下一張'));
+    btnJump = makeBtn('jump', t('跳到问答', '跳到問答'), t('关闭并滚动到该图片所在问答', '關閉並捲動到該圖片所在問答'));
+    btnZoomOut = makeBtn('zoom-out', '−', t('缩小', '縮小'));
+    btnZoomIn = makeBtn('zoom-in', '+', t('放大', '放大'));
+    btnReset = makeBtn('reset', '1:1', t('实际大小', '實際大小'));
+    btnClose = makeBtn('close', '×', t('关闭', '關閉'));
+
+    counterEl = document.createElement('span');
+    counterEl.className = 'img-lightbox__counter';
+    counterEl.setAttribute('aria-live', 'polite');
+
+    toolbar.append(
+      btnPrev, counterEl, btnNext, btnJump,
+      btnZoomOut, btnZoomIn, btnReset, btnClose,
+    );
+
+    stage = document.createElement('div');
+    stage.className = 'img-lightbox__stage';
+
+    imgEl = document.createElement('img');
+    imgEl.className = 'img-lightbox__img';
+    imgEl.alt = '';
+    stage.appendChild(imgEl);
+
+    root.append(toolbar, stage);
+    document.body.appendChild(root);
+
+    btnPrev.addEventListener('click', (e) => { e.stopPropagation(); go(-1); });
+    btnNext.addEventListener('click', (e) => { e.stopPropagation(); go(1); });
+    btnJump.addEventListener('click', (e) => { e.stopPropagation(); jumpToSource(); });
+    btnZoomIn.addEventListener('click', (e) => { e.stopPropagation(); zoomBy(ZOOM_STEP); });
+    btnZoomOut.addEventListener('click', (e) => { e.stopPropagation(); zoomBy(1 / ZOOM_STEP); });
+    btnReset.addEventListener('click', (e) => { e.stopPropagation(); toggleFitOrOne(); });
+    btnClose.addEventListener('click', (e) => { e.stopPropagation(); closeLightbox(); });
+
+    root.addEventListener('click', (e) => {
+      if (moved) {
+        moved = false;
+        return;
+      }
+      if (e.target === root || e.target === stage) closeLightbox();
+    });
+
+    stage.addEventListener('pointerdown', onPointerDown);
+    stage.addEventListener('pointermove', onPointerMove);
+    stage.addEventListener('pointerup', onPointerUp);
+    stage.addEventListener('pointercancel', onPointerUp);
+    stage.addEventListener('wheel', onWheel, { passive: false });
+    stage.addEventListener('dblclick', onDblClick);
+    stage.addEventListener('touchstart', onTouchStart, { passive: false });
+    stage.addEventListener('touchmove', onTouchMove, { passive: false });
+    stage.addEventListener('touchend', onTouchEnd);
+    stage.addEventListener('touchcancel', onTouchEnd);
+  }
+
+  function makeBtn(action, label, title) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'img-lightbox__btn';
+    b.dataset.action = action;
+    b.textContent = label;
+    b.title = title;
+    b.setAttribute('aria-label', title);
+    return b;
+  }
+
+  function applyTransform() {
+    imgEl.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+  }
+
+  function clampPan() {
+    const sw = stage.clientWidth;
+    const sh = stage.clientHeight;
+    const dw = naturalW * scale;
+    const dh = naturalH * scale;
+    const maxX = Math.max(0, (dw - sw) / 2);
+    const maxY = Math.max(0, (dh - sh) / 2);
+    tx = Math.min(maxX, Math.max(-maxX, tx));
+    ty = Math.min(maxY, Math.max(-maxY, ty));
+  }
+
+  function computeFitScale() {
+    const sw = Math.max(1, stage.clientWidth - 16);
+    const sh = Math.max(1, stage.clientHeight - 16);
+    if (!naturalW || !naturalH) return 1;
+    return Math.min(1, sw / naturalW, sh / naturalH);
+  }
+
+  function setScale(next, pivotX, pivotY) {
+    const prev = scale;
+    scale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, next));
+    if (pivotX != null && pivotY != null && prev > 0) {
+      const rect = stage.getBoundingClientRect();
+      const cx = pivotX - rect.left - rect.width / 2;
+      const cy = pivotY - rect.top - rect.height / 2;
+      const ratio = scale / prev;
+      tx = cx - (cx - tx) * ratio;
+      ty = cy - (cy - ty) * ratio;
+    }
+    clampPan();
+    applyTransform();
+    updateResetLabel();
+  }
+
+  function zoomBy(factor, pivotX, pivotY) {
+    setScale(scale * factor, pivotX, pivotY);
+  }
+
+  function updateResetLabel() {
+    const nearFit = Math.abs(scale - fitScale) < 0.02;
+    if (nearFit) {
+      btnReset.textContent = '1:1';
+      btnReset.title = t('实际大小', '實際大小');
+      btnReset.setAttribute('aria-label', btnReset.title);
+    } else {
+      btnReset.textContent = t('适窗', '適窗');
+      btnReset.title = t('适合窗口', '適合視窗');
+      btnReset.setAttribute('aria-label', btnReset.title);
+    }
+  }
+
+  function toggleFitOrOne() {
+    const nearFit = Math.abs(scale - fitScale) < 0.02;
+    if (nearFit) {
+      setScale(1);
+      tx = 0;
+      ty = 0;
+      clampPan();
+      applyTransform();
+    } else {
+      fitToViewport();
+    }
+    updateResetLabel();
+  }
+
+  function fitToViewport() {
+    fitScale = computeFitScale();
+    scale = fitScale;
+    tx = 0;
+    ty = 0;
+    applyTransform();
+    updateResetLabel();
+  }
+
+  function updateNav() {
+    const n = gallery.length;
+    counterEl.textContent = n ? `${index + 1} / ${n}` : '0 / 0';
+    btnPrev.disabled = index <= 0;
+    btnNext.disabled = index >= n - 1;
+  }
+
+  function showAt(i) {
+    if (i < 0 || i >= gallery.length) return;
+    index = i;
+    const src = gallery[i].currentSrc || gallery[i].src;
+    imgEl.onload = () => {
+      naturalW = imgEl.naturalWidth;
+      naturalH = imgEl.naturalHeight;
+      fitToViewport();
+    };
+    if (imgEl.src !== src) {
+      imgEl.src = src;
+    } else if (imgEl.complete && imgEl.naturalWidth) {
+      naturalW = imgEl.naturalWidth;
+      naturalH = imgEl.naturalHeight;
+      fitToViewport();
+    }
+    updateNav();
+  }
+
+  function go(delta) {
+    const next = index + delta;
+    if (next < 0 || next >= gallery.length) return;
+    showAt(next);
+  }
+
+  /** Closest Q/A card for the current gallery image; fall back to the img itself. */
+  function sourceAnchor() {
+    const img = gallery[index];
+    if (!img || !document.body.contains(img)) return null;
+    return img.closest('.question, .answer') || img;
+  }
+
+  function jumpToSource() {
+    const target = sourceAnchor();
+    closeLightbox();
+    if (!target) return;
+    // Wait a frame so body overflow is restored before scrolling.
+    requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (target.id) {
+        try {
+          history.replaceState(null, '', `#${target.id}`);
+        } catch (_) { /* ignore */ }
+      }
+    });
+  }
+
+  function openLightbox(fromImg) {
+    ensureDom();
+    gallery = collectGallery();
+    const i = gallery.indexOf(fromImg);
+    if (i < 0) return;
+    open = true;
+    root.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    showAt(i);
+  }
+
+  function closeLightbox() {
+    if (!open) return;
+    open = false;
+    root.classList.remove('is-open');
+    document.body.style.overflow = '';
+    dragging = false;
+    pinchActive = false;
+    stage.classList.remove('is-dragging');
+  }
+
+  function onPointerDown(e) {
+    if (e.pointerType === 'touch') return;
+    if (e.button != null && e.button !== 0) return;
+    dragging = true;
+    moved = false;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    dragOriginTx = tx;
+    dragOriginTy = ty;
+    stage.classList.add('is-dragging');
+    try { stage.setPointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+  }
+
+  function onPointerMove(e) {
+    if (!dragging) return;
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+    if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+    tx = dragOriginTx + dx;
+    ty = dragOriginTy + dy;
+    clampPan();
+    applyTransform();
+  }
+
+  function onPointerUp(e) {
+    if (!dragging) return;
+    dragging = false;
+    stage.classList.remove('is-dragging');
+    try { stage.releasePointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+  }
+
+  function onWheel(e) {
+    if (!open) return;
+    e.preventDefault();
+    if (e.ctrlKey || e.metaKey) {
+      const factor = e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
+      zoomBy(factor, e.clientX, e.clientY);
+    } else {
+      // plain wheel also zooms (common for image viewers)
+      const factor = e.deltaY < 0 ? ZOOM_STEP : 1 / ZOOM_STEP;
+      zoomBy(factor, e.clientX, e.clientY);
+    }
+  }
+
+  function onDblClick(e) {
+    e.preventDefault();
+    toggleFitOrOne();
+  }
+
+  function touchDistance(touches) {
+    const a = touches[0];
+    const b = touches[1];
+    const dx = a.clientX - b.clientX;
+    const dy = a.clientY - b.clientY;
+    return Math.hypot(dx, dy);
+  }
+
+  function onTouchStart(e) {
+    if (e.touches.length === 2) {
+      e.preventDefault();
+      pinchActive = true;
+      dragging = false;
+      pinchStartDist = touchDistance(e.touches);
+      pinchStartScale = scale;
+      return;
+    }
+    if (e.touches.length === 1) {
+      const now = Date.now();
+      if (now - lastTapTime < 300) {
+        e.preventDefault();
+        toggleFitOrOne();
+        lastTapTime = 0;
+        return;
+      }
+      lastTapTime = now;
+      dragging = true;
+      moved = false;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      dragOriginTx = tx;
+      dragOriginTy = ty;
+      stage.classList.add('is-dragging');
+    }
+  }
+
+  function onTouchMove(e) {
+    if (pinchActive && e.touches.length === 2) {
+      e.preventDefault();
+      const dist = touchDistance(e.touches);
+      if (pinchStartDist > 0) {
+        const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+        const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+        setScale(pinchStartScale * (dist / pinchStartDist), midX, midY);
+      }
+      return;
+    }
+    if (dragging && e.touches.length === 1) {
+      e.preventDefault();
+      const dx = e.touches[0].clientX - dragStartX;
+      const dy = e.touches[0].clientY - dragStartY;
+      if (Math.abs(dx) > 2 || Math.abs(dy) > 2) moved = true;
+      tx = dragOriginTx + dx;
+      ty = dragOriginTy + dy;
+      clampPan();
+      applyTransform();
+    }
+  }
+
+  function onTouchEnd(e) {
+    if (e.touches.length < 2) pinchActive = false;
+    if (e.touches.length === 0) {
+      dragging = false;
+      stage.classList.remove('is-dragging');
+    } else if (e.touches.length === 1) {
+      dragging = true;
+      dragStartX = e.touches[0].clientX;
+      dragStartY = e.touches[0].clientY;
+      dragOriginTx = tx;
+      dragOriginTy = ty;
+    }
+  }
+
+  function onKeyDown(e) {
+    if (!open) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      go(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      go(1);
+    } else if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      zoomBy(ZOOM_STEP);
+    } else if (e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      zoomBy(1 / ZOOM_STEP);
+    } else if (e.key === '0') {
+      e.preventDefault();
+      fitToViewport();
+    }
+  }
+
+  function onDocClick(e) {
+    const img = e.target.closest(IMG_SEL);
+    if (!img || !document.body.contains(img)) return;
+    if (root && root.contains(img)) return;
+    e.preventDefault();
+    openLightbox(img);
+  }
+
+  function onResize() {
+    if (!open) return;
+    fitScale = computeFitScale();
+    if (scale <= fitScale * 1.02) {
+      fitToViewport();
+    } else {
+      clampPan();
+      applyTransform();
+      updateResetLabel();
+    }
+  }
+
+  document.addEventListener('click', onDocClick);
+  document.addEventListener('keydown', onKeyDown);
+  window.addEventListener('resize', onResize);
+
+  W2E.openImageLightbox = openLightbox;
+  W2E.closeImageLightbox = closeLightbox;
+})();
+  // ============================================================
+  // 09b-para-track.js — 講經「段落跟播」
+  //
+  // 適用頁面：存在帶 data-start/data-end 的 .para-block 段落（books2ebook 依
+  // audio_map3/<series>.json 於建置時注入）。整講播放（.qa-play）由
+  // 08-qa-audio.js 提供，本模組透過其暴露的 W2E.qaAudio 介面掛接。
+  //
+  // 功能：
+  //   1. 每個含段落時間的講次 h2 旁插入「段落跟播」文字 checkbox
+  //      （localStorage
+  //      paraTrackEnabled，預設 ON）。ON 時播放中依 audio.currentTime    //      高亮當前段落（.para-active，上一段不做任何視覺改變），並平滑捲動：
+    //      目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)，
+    //      再以「當前段頂 − 停留經文高 − 24px」為上限（經文置頂開啟時，
+    //      使高亮段落永遠落在停留經文下方）。僅在段落切換時捲動。
+  //   2. 跟播 ON 時點擊任一段落 → 播放所屬講次音檔並 seek 至該段起點，
+  //      之後一路順播到底，不在段末自停。拖選文字、有反白選區，或點到
+  //      段落內按鈕/連結時不觸發；可點播段落顯示手形游標（body.para-track-on）。
+  //   3. toggle 即時生效、不需重新載入；只操作 .para-active
+  //      一個 class，不與搜尋高亮等其他模組衝突。
+  //
+  // 以具名 IIFE 隔離作用域（本檔被串接進共用的 DOMContentLoaded 函式中）。
+  // ============================================================
+  ;(function () {
+    var paras = Array.prototype.slice.call(
+      document.querySelectorAll('.para-block[data-start]')
+    );
+    if (!paras.length) return;
+    if (!window.W2E || !W2E.qaAudio) return;
+
+    var TRACK_KEY = 'paraTrackEnabled';
+    var SCROLL_THROTTLE_MS = 250;
+
+    var qa = W2E.qaAudio;
+    var audio = qa.audio;
+
+    function loadState(key, dflt) {
+      try {
+        var v = localStorage.getItem(key);
+        return v == null ? dflt : v === '1';
+      } catch (e) {
+        return dflt;
+      }
+    }
+
+    function saveState(key, val) {
+      try { localStorage.setItem(key, val ? '1' : '0'); } catch (e) {}
+    }
+
+    var trackOn = loadState(TRACK_KEY, true);
+
+    function isTrad() {
+      return typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
+    }
+
+    function ptText(key, fallback) {
+      if (typeof getI18nText === 'function') {
+        return getI18nText(key, isTrad(), fallback, {});
+      }
+      return fallback;
+    }
+
+    // ---- 建立「講次 → 段落清單」索引 ----------------------------------
+    // 講次 = 含 .qa-play 的 h2；其後直到下一個 h2 之間、且帶齊
+    // data-start/data-end 的 .para-block 為該講段落（h3 小節不打斷歸屬）。
+    var sections = [];          // [{btn, paras:[{el,start,end}]}]
+    var paraSection = new Map(); // el → section
+    Array.prototype.slice.call(
+      document.querySelectorAll('h2 .qa-play')
+    ).forEach(function (btn) {
+      var h2 = btn.closest('h2');
+      if (!h2) return;
+      var list = [];
+      var node = h2.nextElementSibling;
+      while (node && node.tagName !== 'H2') {
+        if (node.classList && node.classList.contains('para-block') &&
+            node.hasAttribute('data-start') && node.hasAttribute('data-end')) {
+          var s = parseFloat(node.getAttribute('data-start'));
+          var e = parseFloat(node.getAttribute('data-end'));
+          if (isFinite(s) && isFinite(e) && e > s) {
+            list.push({ el: node, start: s, end: e });
+          }
+        }
+        node = node.nextElementSibling;
+      }
+      if (!list.length) return;
+      list.sort(function (a, b) { return a.start - b.start; });
+      var sec = { btn: btn, paras: list };
+      sections.push(sec);
+      list.forEach(function (p) { paraSection.set(p.el, sec); });
+    });
+    if (!sections.length) return;
+
+    // ---- 講次 h2 旁的「段落跟播」toggle -------------------------------
+    // 文字 checkbox（取代舊 🎯 純圖示按鈕，好理解用途）：
+    // <label class="para-track-toggle"><input type="checkbox"><span>段落跟播</span></label>
+    var toggleLabel = ptText('paraTrack.toggle', '段落跟播');
+    var toggles = [];
+    sections.forEach(function (sec) {
+      var t = document.createElement('label');
+      t.className = 'para-track-toggle';
+      t.title = toggleLabel;
+      var box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = trackOn;
+      box.setAttribute('aria-label', toggleLabel);
+      var txt = document.createElement('span');
+      txt.textContent = toggleLabel;
+      t.appendChild(box);
+      t.appendChild(txt);
+      sec.btn.parentNode.insertBefore(t, sec.btn.nextSibling);
+      toggles.push(t);
+      box.addEventListener('change', function () {
+        trackOn = box.checked;
+        saveState(TRACK_KEY, trackOn);
+        syncToggleUI();
+        if (!trackOn) {
+          clearParaClasses();
+        }
+      });
+    });
+
+    function syncToggleUI() {
+      toggles.forEach(function (t) {
+        t.classList.toggle('on', trackOn);
+        t.setAttribute('aria-pressed', trackOn ? 'true' : 'false');
+        var box = t.querySelector('input[type="checkbox"]');
+        if (box && box.checked !== trackOn) box.checked = trackOn;
+      });
+      // 跟播開關同步到 body，供 CSS 把可點播段落切成手形游標
+      if (document.body) document.body.classList.toggle('para-track-on', trackOn);
+    }
+
+    syncToggleUI();
+
+    // ---- 段落高亮與捲動 -----------------------------------------------
+    var activePara = null;   // 目前高亮的段落元素
+    var prevPara = null;     // 上一段（僅供捲動定位保留可見，不做視覺改變）
+
+    function clearParaClasses() {
+      if (activePara) activePara.classList.remove('para-active');
+      if (prevPara) prevPara.classList.remove('para-prev');
+      activePara = null;
+      prevPara = null;
+    }
+
+    function setActivePara(el, prevEl) {
+      if (el === activePara) return;
+      clearParaClasses();
+      activePara = el;
+      prevPara = prevEl || null;
+      el.classList.add('para-active');
+      if (prevPara) prevPara.classList.add('para-prev');
+      scrollToPara(el, prevEl);
+    }
+
+    function scrollToPara(el, prevEl) {
+      // 目標：當前段頂停在視窗上方約 1/4；若上一段存在，保留其底部貼近
+      // 視窗頂端可見（取較小 scrollTop，即「頂 − 上一段高 − 24px」錨點）。
+      var y = el.getBoundingClientRect().top + window.pageYOffset;
+      var target = y - window.innerHeight * 0.22;
+      if (prevEl) {
+        var prevH = prevEl.getBoundingClientRect().height;
+        target = Math.min(target, y - prevH - 24);
+      }
+      // 經文置頂（09c-sutra-pin）：目標段落所在的 sticky 群經文捲動後會停在
+      // 視窗頂（top:0、佔高 reserve），捲動上限取「段頂 − reserve − 24px」，
+      // 確保高亮段落捲動後永遠落在停留經文下方、不被蓋住。
+      if (window.W2E && W2E.sutraPin && W2E.sutraPin.reserveFor) {
+        var reserve = W2E.sutraPin.reserveFor(el);
+        if (reserve > 0) target = Math.min(target, y - reserve - 24);
+      }
+      window.scrollTo({ top: Math.max(0, target), behavior: 'smooth' });
+    }
+
+    function findSectionByButton(btn) {
+      if (!btn) return null;
+      for (var i = 0; i < sections.length; i++) {
+        if (sections[i].btn === btn) return sections[i];
+      }
+      return null;
+    }
+
+    function sectionIndexOf(sec, time) {
+      // 回傳 time 所在的段落 index；落在兩段之間時取下一段的上一段（-1=尚未到首段）
+      var list = sec.paras;
+      if (time < list[0].start) return -1;
+      for (var i = list.length - 1; i >= 0; i--) {
+        if (list[i].start <= time) return i;
+      }
+      return -1;
+    }
+
+    function updateTracking() {
+      var sec = findSectionByButton(qa.getActiveButton());
+      if (!sec) { clearParaClasses(); return; }
+      var idx = sectionIndexOf(sec, audio.currentTime);
+      if (idx < 0) { clearParaClasses(); return; }
+      var cur = sec.paras[idx];
+      setActivePara(cur.el, idx > 0 ? sec.paras[idx - 1].el : null);
+    }
+
+    // ---- timeupdate：節流的高亮跟播 -------------------------------------
+    var lastTrackTs = 0;
+    audio.addEventListener('timeupdate', function () {
+      if (!trackOn || audio.paused) return;
+      var now = Date.now();
+      if (now - lastTrackTs < SCROLL_THROTTLE_MS) return;
+      lastTrackTs = now;
+      updateTracking();
+    });
+    // 切換講次（點章節喇叭）→ 清掉段落高亮，等 timeupdate 重新定位
+    sections.forEach(function (sec) {
+      sec.btn.addEventListener('click', function () {
+        if (!trackOn) return;
+        // 章節鈕播放從頭開始：清掉前一段落高亮，等 timeupdate 重新定位
+        clearParaClasses();
+      });
+    });
+
+    // ---- 點段落即播（僅跟播 ON 時） ------------------------------------
+    // 誤觸排除：拖選文字（按下/放開距離過大或放開時有反白選區）、
+    // 點到段落內的互動元件（⋯ 按鈕列、書籤標識、連結、按鈕）都不觸發播放。
+    var downPos = null;
+    document.addEventListener('mousedown', function (e) {
+      if (!trackOn) { downPos = null; return; }
+      downPos = (e.target && e.target.closest && e.target.closest('.para-block[data-start]'))
+        ? { x: e.clientX, y: e.clientY }
+        : null;
+    }, true);
+    document.addEventListener('click', function (e) {
+      if (!trackOn) return;
+      var el = e.target && e.target.closest
+        ? e.target.closest('.para-block[data-start]')
+        : null;
+      if (!el) return;
+      // 段落內的操作元件：交給各自的處理，不觸發播放
+      if (e.target.closest('.qa-actions, .bookmark-indicator, a, button')) return;
+      // 拖選：按下與放開距離超過 8px，視為選取操作
+      if (downPos) {
+        var dx = e.clientX - downPos.x;
+        var dy = e.clientY - downPos.y;
+        if (dx * dx + dy * dy > 64) return;
+      }
+      // 放開時有反白選區：視為選取文字，不播放
+      try {
+        var sel = window.getSelection();
+        if (sel && !sel.isCollapsed && String(sel).length > 0) return;
+      } catch (err) { /* 取不到選區時照常走播放流程 */ }
+      var sec = paraSection.get(el);
+      if (!sec) return;
+      var start = parseFloat(el.getAttribute('data-start'));
+      if (!isFinite(start)) return;
+
+      function doSeek() { qa.seekAbs(start); }
+
+      if (qa.getActiveButton() !== sec.btn) {
+        // 換講：qa.play 會在 loadedmetadata 時 seek 回 0，故我們的 seek
+        // 註冊在其後（once），確保最後停在段落起點
+        qa.play(sec.btn);
+        if (audio.readyState >= 1) {
+          doSeek();
+        } else {
+          audio.addEventListener('loadedmetadata', doSeek, { once: true });
+        }
+      } else {
+        doSeek();
+        if (audio.paused) {
+          var p = audio.play();
+          if (p && p.catch) p.catch(function () {});
+        }
+      }
+      // 立即回饋高亮（不等 timeupdate）
+      var idx = -1;
+      for (var i = 0; i < sec.paras.length; i++) {
+        if (sec.paras[i].el === el) { idx = i; break; }
+      }
+      if (idx >= 0) {
+        setActivePara(el, idx > 0 ? sec.paras[idx - 1].el : null);
+      }
+    });
+  })();
+  // ============================================================
+  // 09c-sutra-pin.js — 講經「經文置頂」（原經文原尺寸停留）
+  //
+  // 適用頁面：章節內含 .sutra-text 原經文（quote 區塊，講經系列與坐禅2）。
+  // 向下捲動時，把「即將捲出視窗頂」的那段原經文停在視窗最上方，呈現
+  // 「畫面繼續捲動、上方經文段落卻停留」的閱讀效果（Confluence 固定表頭
+  // 概念）；不管有沒有開啟段落跟播都會生效。
+  //
+  // 做法：原生 position: sticky——停留中的經文就是原版經文本身，原尺寸、
+  // 原樣式、無白邊；講解段落從它下方滑過。
+  //
+  //   1. 為每段經文包一層 .sutra-pin-host（只包層、不搬動順序，sticky 的
+  //      定位單位），09b-para-track 以 nextElementSibling 掃描段落的邏輯
+  //      照常運作（.para-block 節點不變）。
+  //   2. 再以「經文 → 邊界元素」為範圍包 .sutra-pin-group：邊界 = 下一段
+  //      經文、任何 h1–h6（章節名/品名小節名）、任何圖片（figure/img），
+  //      取文件順序最先者；章節尾（下一個 h2）之前若無這些邊界就到章節尾
+  //      為止。sticky 的移動範圍被限制在 group 內，因此停留中的經文天生
+  //      不可能蓋住下一段經文、章節名或圖片——會遮住之前就先讓位（歸位
+  //      隨畫面捲走），正好呈現「永遠是最後看到的一段經文停留」。
+  //   3. 過長（> 45% 視窗高，接近滿版）的經文整段不停留（.sutra-pin-tall
+  //      → position: static）：停留中的經文會蓋住其後講解，經文若高到
+  //      接近或超過整個畫面，就沒空間讀講解，該段一律放棄置頂。
+  //   4. 「經文置頂」toggle（講次 h2 旁，localStorage sutraPinEnabled，
+  //      預設 ON；關閉時 body.sutra-pin-off → 全部照常捲動）。    //   5. 錨點跳轉（hashchange／帶 hash 載入／程式化 scrollIntoView）時短暫
+    //      body.sutra-pin-suppress 停停留，避免蓋住目錄/搜尋/書籤跳轉目標；
+    //      09b 跟播捲動前可呼叫 W2E.sutraPin.reserveFor(el) 取得停留經文
+    //      高度作為捲動上限（當前段頂 − 經文高 − 24px），使高亮段落永遠
+    //      落在停留經文下方、不被蓋住。
+  //
+  // 以具名 IIFE 隔離作用域（本檔被串接進共用的 DOMContentLoaded 函式中）。
+  // ============================================================
+  ;(function () {
+    if (typeof isIndexPage === 'function' && isIndexPage()) return;
+
+    var sutras = Array.prototype.slice.call(
+      document.querySelectorAll('.sutra-text')
+    );
+    if (!sutras.length || !document.body) return;
+
+    var PIN_KEY = 'sutraPinEnabled';
+    var TALL_RATIO = 0.45;           // 經文高 > 45% 視窗高 → 不停留
+                                     // （停留經文最多佔畫面 45%，至少留 55% 讀講解）
+
+    function loadState(key, dflt) {
+      try {
+        var v = localStorage.getItem(key);
+        return v == null ? dflt : v === '1';
+      } catch (e) {
+        return dflt;
+      }
+    }
+
+    function saveState(key, val) {
+      try { localStorage.setItem(key, val ? '1' : '0'); } catch (e) {}
+    }
+
+    var pinOn = loadState(PIN_KEY, true);
+
+    function isTrad() {
+      return typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
+    }
+
+    function spText(key, fallback) {
+      if (typeof getI18nText === 'function') {
+        return getI18nText(key, isTrad(), fallback, {});
+      }
+      return fallback;
+    }
+
+    function isBefore(a, b) {
+      return !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
+    }
+
+    // el 在 container 的直接子層祖先（el 位於 container 子樹內時才有值）
+    function topLevelWithin(el, container) {
+      while (el && el.parentNode !== container) el = el.parentNode;
+      return el && el.parentNode === container ? el : null;
+    }
+
+    // ---- 為每段經文包 host（只包層，不改變 DOM 順序）-------------------
+    var hosts = [];
+    sutras.forEach(function (s) {
+      var parent = s.parentNode;
+      if (!parent) return;
+      if (parent.classList && parent.classList.contains('sutra-pin-host')) {
+        hosts.push(parent);
+        return;
+      }
+      var host = document.createElement('div');
+      host.className = 'sutra-pin-host';
+      parent.insertBefore(host, s);
+      host.appendChild(s);
+      hosts.push(host);
+    });
+    if (!hosts.length) return;
+
+    // ---- 包 sticky 群：經文 → 下一邊界 ----------------------------------
+    // 邊界（文件順序取最先者）：下一段經文的 host、h1–h6 章節名/小節名、
+    // figure/img 圖片。sticky 範圍被限制在群內 → 停留中的經文永遠蓋不到
+    // 這些元素（群底緣最多貼齊邊界頂緣）。指標依文件順序單向推進，O(n)。
+    var BOUNDARY_SEL = 'h1,h2,h3,h4,h5,h6,img,figure';
+    var boundaries = Array.prototype.slice.call(
+      document.body.querySelectorAll(BOUNDARY_SEL)
+    );
+    var bPtr = 0;
+    var groups = [];
+    sutras.forEach(function (s, i) {
+      var host = hosts[i];
+      var parent = host.parentNode;
+      var group = document.createElement('div');
+      group.className = 'sutra-pin-group';
+
+      // 推進邊界指標到本經文之後，取第一個 h/img 邊界
+      while (bPtr < boundaries.length &&
+             !isBefore(s, boundaries[bPtr])) bPtr++;
+      var endEl = null;
+      for (var k = bPtr; k < boundaries.length; k++) {
+        var b = boundaries[k];
+        if (!isBefore(s, b)) continue;
+        if (host.contains(b)) continue;
+        endEl = b;
+        break;
+      }
+
+      // 候選收尾點（映射到本經文父節點的直接子層）：下一段經文的 host、
+      // 第一個 h/img 邊界；取文件順序最前者為群尾。
+      var cands = [];
+      if (sutras[i + 1]) {
+        var nh = topLevelWithin(hosts[i + 1], parent);
+        if (nh && nh !== host && isBefore(host, nh)) cands.push(nh);
+      }
+      if (endEl) {
+        var eh = topLevelWithin(endEl, parent);
+        if (eh && eh !== host && isBefore(host, eh)) cands.push(eh);
+      }
+      var endRef = null;
+      for (var c = 0; c < cands.length; c++) {
+        if (!endRef || isBefore(cands[c], endRef)) endRef = cands[c];
+      }
+
+      // 群佔據經文原位（不能插在邊界處，否則經文會被搬到講解後面）；
+      // 再把 host 之後、群尾之前的兄弟節點依序搬進群（不改變順序）
+      parent.insertBefore(group, host);
+      group.appendChild(host);
+      while (group.nextElementSibling && group.nextElementSibling !== endRef) {
+        group.appendChild(group.nextElementSibling);
+      }
+      groups.push(group);
+    });
+
+    // ---- 章節（h2）→ 群清單（用於 toggle 放置與跨章節自然失效）----------
+    var sections = [];          // [{h2, groups: [Element]}]
+    var pre = { h2: null, groups: [] };
+    var cur = null;
+    Array.prototype.slice.call(
+      document.body.querySelectorAll('h2, .sutra-pin-group')
+    ).forEach(function (el) {
+      if (el.tagName === 'H2') {
+        cur = { h2: el, groups: [] };
+        sections.push(cur);
+      } else if (cur) {
+        cur.groups.push(el);
+      } else {
+        pre.groups.push(el);
+      }
+    });
+    if (pre.groups.length) sections.unshift(pre);
+
+    // ---- 過長經文不停留 --------------------------------------------------
+    // 停留中的經文天生會蓋住其後講解（sticky 本質）；經文若高到接近或超過
+    // 整個畫面，停留後幾乎沒有空間讀講解，該段就放棄置頂。
+    function applyTallClasses() {
+      var vh = window.innerHeight;
+      if (!vh) return;
+      groups.forEach(function (g) {
+        var sutra = g.firstElementChild &&
+                    g.firstElementChild.firstElementChild;
+        if (!sutra || !sutra.classList.contains('sutra-text')) return;
+        g.classList.toggle('sutra-pin-tall',
+                           sutra.offsetHeight > vh * TALL_RATIO);
+      });
+    }
+
+    // 經文高度會隨閱讀設定（字級／行距／版面寬）、視窗縮放、字型或圖片載入
+    // 而改變。若只在載入時量一次，使用者把字級調大後，原本不算高的經文可能
+    // 變成接近滿版卻仍卡在置頂狀態（蓋住講解）；因此任何尺寸變化都重新量測。
+    var tallScheduled = false;
+    function scheduleTallCheck() {
+      if (tallScheduled) return;
+      tallScheduled = true;
+      var run = function () { tallScheduled = false; applyTallClasses(); };
+      if (window.requestAnimationFrame) window.requestAnimationFrame(run);
+      else setTimeout(run, 50);
+    }
+
+    applyTallClasses();
+    window.addEventListener('resize', scheduleTallCheck);
+    window.addEventListener('orientationchange', scheduleTallCheck);
+    window.addEventListener('load', scheduleTallCheck);
+    if (window.ResizeObserver) {
+      var tallObserver = new ResizeObserver(scheduleTallCheck);
+      sutras.forEach(function (s) { tallObserver.observe(s); });
+    }
+    // 閱讀設定以 inline style 套在 <html>/<body> 上（--line-height、font-size、
+    // max-width）：一起監看，變化時補一次量測。
+    if (window.MutationObserver) {
+      var tallStyleObserver = new MutationObserver(scheduleTallCheck);
+      [document.documentElement, document.body].forEach(function (el) {
+        if (el) tallStyleObserver.observe(el, {
+          attributes: true, attributeFilter: ['style']
+        });
+      });
+    }
+    if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+      document.fonts.ready.then(scheduleTallCheck);
+    }
+
+    // ---- 「經文置頂」toggle（講次 h2 旁，樣式沿用段落跟播）--------------
+    var toggles = [];
+    var toggleLabel = spText('sutraPin.toggle', '經文置頂');
+    sections.forEach(function (sec) {
+      if (!sec.h2 || !sec.groups.length) return;
+      var t = document.createElement('label');
+      t.className = 'sutra-pin-toggle';
+      t.title = toggleLabel;
+      var box = document.createElement('input');
+      box.type = 'checkbox';
+      box.checked = pinOn;
+      box.setAttribute('aria-label', toggleLabel);
+      var txt = document.createElement('span');
+      txt.textContent = toggleLabel;
+      t.appendChild(box);
+      t.appendChild(txt);
+      // 插入順序：排在「段落跟播」toggle 之後（無則排在 .qa-play 之後）
+      var play = sec.h2.querySelector('.qa-play');
+      var track = sec.h2.querySelector('.para-track-toggle');
+      if (track) track.parentNode.insertBefore(t, track.nextSibling);
+      else if (play) play.parentNode.insertBefore(t, play.nextSibling);
+      else sec.h2.appendChild(t);
+      toggles.push(t);
+      box.addEventListener('change', function () {
+        pinOn = box.checked;
+        saveState(PIN_KEY, pinOn);
+        syncToggleUI();
+      });
+    });
+
+    function syncToggleUI() {
+      if (document.body) {
+        document.body.classList.toggle('sutra-pin-off', !pinOn);
+      }
+      toggles.forEach(function (t) {
+        t.classList.toggle('on', pinOn);
+        t.setAttribute('aria-pressed', pinOn ? 'true' : 'false');
+        var box = t.querySelector('input[type="checkbox"]');
+        if (box && box.checked !== pinOn) box.checked = pinOn;
+      });
+    }
+
+    syncToggleUI();
+
+    // ---- 錨點跳轉保護：短暫停停留，避免蓋住跳轉目標 ----------------------
+    var suppressTimer = null;
+    function suppressPin(ms) {
+      if (!document.body) return;
+      document.body.classList.add('sutra-pin-suppress');
+      if (suppressTimer) clearTimeout(suppressTimer);
+      suppressTimer = setTimeout(function () {
+        document.body.classList.remove('sutra-pin-suppress');
+        suppressTimer = null;
+      }, ms || 450);
+    }
+
+    // 攔截 scrollIntoView：目錄/搜尋/書籤的程式化捲動先停停留再捲
+    // （否則捲動目標會被停留中的經文蓋住）
+    var origScrollIntoView = Element.prototype.scrollIntoView;
+    if (origScrollIntoView) {
+      Element.prototype.scrollIntoView = function () {
+        suppressPin(600);
+        return origScrollIntoView.apply(this, arguments);
+      };
+    }
+    window.addEventListener('hashchange', function () { suppressPin(600); });
+    // 帶錨點載入：目標會停在視窗最頂
+    if (location.hash) suppressPin(800);
+
+    // ---- 對外介面：供 09b-para-track 讓出停留經文的高度 ------------------
+    window.W2E = window.W2E || {};
+    window.W2E.sutraPin = {
+      // 跟播捲動前呼叫：目標段落若屬於某個 sticky 群，回傳該群經文高度
+      // （捲動後這段經文會停在視窗頂；09b 以「段頂 − 此高度 − 24px」為
+      // 捲動上限，使高亮段落落在停留經文下方）
+      reserveFor: function (el) {
+        if (!pinOn || !el || !el.closest) return 0;
+        var g = el.closest('.sutra-pin-group');
+        if (!g || g.classList.contains('sutra-pin-tall')) return 0;
+        var sutra = g.firstElementChild && g.firstElementChild.firstElementChild;
+        return sutra && sutra.classList.contains('sutra-text')
+          ? sutra.offsetHeight : 0;
+      },
+      isEnabled: function () { return pinOn; }
+    };
+  })();
+});
