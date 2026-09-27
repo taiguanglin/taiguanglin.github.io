@@ -21,15 +21,15 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
 5. **Do not confuse site chrome with ebook assets** — root `shared.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`). Root `script.js` was retired (superseded by `shared.js`); only the ebook bundles keep an `assets/js/script.js`.
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
-7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html`, `wenda2_mindmap.html` and `session_knowledge.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
+7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html` and `wenda2_mindmap.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
 8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
 9. **`mindmap.html`「三大初始設定」永遠只有三條** — 主幹 `b-truth` 固定為三個葉節點：`axiom-eternal`（自性恆常）、`axiom-firstthought`（初妄無因）、`axiom-onebody`（諸佛同體）。這是內容鐵律：**不可**在此主幹新增任何其他條目，也不可把其他節點移入。其他主題（如七處徵心、十番顯見等《楞嚴經》內容）一律屬「經典依據」主幹 `b-sutra`。若發現 `b-truth` 出現第 4 個葉節點，即為錯誤，必須移出。
-10. **內部頁不得被索引** — `session_knowledge.html`（查證工程紀錄）與 `audio_map*/index.html`（含 GitHub PAT 輸入欄位的校稿工具）部署於公開 Pages，但一律不得被搜尋引擎索引。三條件缺一不可，由 `tool/site_chrome/check_site.py` 自動守門：
+10. **內部頁不得被索引** — `audio_map*/index.html`（含 GitHub PAT 輸入欄位的校稿工具）部署於公開 Pages，但一律不得被搜尋引擎索引。三條件缺一不可，由 `tool/site_chrome/check_site.py` 自動守門：
     - 頁面自帶 `<meta name="robots" content="noindex, nofollow, noarchive">`
     - **不得**出現在 `sitemap.xml`
     - `robots.txt` 對 `/audio_map/`、`/audio_map2/`、`/audio_map3/` 有 `Disallow`
 
-    ⚠️ `session_knowledge.html` **刻意不**加 `Disallow`：`robots.txt` 封鎖會讓爬蟲讀不到頁面的 `noindex`，導致索引殘留。改 `session_knowledge.html` 時要改生成器 `tool/session_knowledge/build.py`（勿手改生成物）。
+    ⚠️ `session_knowledge.html`（查證工程紀錄）已於 2026-09 徹底移除，連同 `SESSION_KNOWLEDGE.md`、`tool/session_knowledge/`（含 `mm_harness.js`）與 `style.css` 的 `.sk-*` 區段；不要重新引入。
     ⚠️ `robots.txt` 不是存取控制，`audio_map*` 的 PAT 輸入仍無保護——真正的修法是把工具移出公開 repo。
 
 11. **頁面顯示用圖片一律 WebP** — 全站圖片格式的 SoT 是 `tool/word2ebook/utils/image_markup.py`（`encode_webp` / `webp_dimensions`），`word2ebook`、`books2ebook`、`stories2html` 三個生成器皆引用它，品質一律 `WEBP_QUALITY`(85)。新增圖片產出時請走同一條路徑，不要再落地 PNG/JPEG。**兩個例外必須維持 PNG**：`images/taiguanglin.png`（`og:image`，社群 crawler 不支援 WebP）與 `images/buddha.png`（`manifest.webmanifest` 的 PWA icon）——`index.html` 的 `<img>` 改用另出的 `images/buddha.webp`，manifest 仍指 PNG。
@@ -48,7 +48,6 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `infographic.html` | Gallery: `infographic/thumbs/` WebP thumbnails in the grid, `infographic/webp/` full-size WebP in the lightbox (`data-src`). |
 | `mindmap.html` | 坐禪與講經心智圖：自包含互動名詞心智圖（hand-edited）。 |
 | `wenda2_mindmap.html` | 問答錄2心智圖：57 個高頻名詞／11 主幹；由 `tool/wenda2_curation/build/build_mm.py`（資料→`mm_data.js`）＋`build_mm2.py`（頁面組裝，互動引擎從 `mindmap.html` 拷貝）生成。 |
-| `session_knowledge.html` | Session 知識庫：查證工程完整知識（逐批報告、證據速查、禁用術語、節點定稿、harness 基準）。**Generated** from `SESSION_KNOWLEDGE.md`（`tool/session_knowledge/build.py`）。 |
 | `shared.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
 | `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；`/wenda2_ebook/`、`/ebook/` 依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
@@ -91,7 +90,6 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
 | `tool/wenda2_curation/` | 問答錄2 心智圖資料 SoT（名詞結構＋逐字引句＋統計）→ `wenda2_mindmap.html` | **`README.md`**, `NOTES.md` |
 | `tool/site_chrome/` | 全站共用導覽 SoT → 「圖解」3 入口＋圖解頁 JSON-LD 寫回；`sync.py`（含 `--check`）、`check_site.py` 一致性檢查、`dropdown_harness.js` 下拉互動測試 | `README.md` |
-| `tool/session_knowledge/` | `SESSION_KNOWLEDGE.md` → `session_knowledge.html`；自抽取版 mm harness（煙霧測試，不需 /tmp） | `README.md` |
 
 ---
 

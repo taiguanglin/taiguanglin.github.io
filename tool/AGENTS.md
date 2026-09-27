@@ -12,7 +12,6 @@
 | `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；13–21 章（PDF）播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/wenda2_curation/` | 問答錄 2 心智圖資料 SoT（57 名詞結構＋逐字引句＋131+3 名詞統計）。`data/` 為 SoT；引句為 2026-09-16 對 `wenda2_ebook/` 的萃取快照，電子書文字變動後需重新驗證（語料 `ch01..21.json` 已刪，EXTRA 統計與根引句已烤入 `build_mm.py`）。 | `data/*.json`（+`mindmap.html` 引擎）→ `wenda2_mindmap.html` | **`README.md`**, `NOTES.md` |
 | `tool/site_chrome/` | 全站共用導覽的單一真相來源：把「圖解」下拉 3 入口（名詞圖解／坐禪與講經心智圖／問答錄2心智圖）、圖解頁 JSON-LD 寫回所有共用 chrome 頁；並附站台一致性檢查（AI 免責聲明、canonical、連結／錨點、sitemap、圖片屬性、`b-truth` 三節點）＋免 jsdom 的下拉互動測試。 | `sync.py` 定義 → root／`wenda2/`／`stories/` HTML；`dropdown_harness.js` 驗互動 | `README.md` |
-| `tool/session_knowledge/` | Session 知識庫生成器（受限 md 子集 → HTML，自檢內建）＋**自抽取版** mm harness（直接從 repo html 抽內嵌腳本跑煙霧測試，不需 /tmp）。 | `SESSION_KNOWLEDGE.md` → `session_knowledge.html`；mm_harness.js | `README.md` |
 | `tool/books2ebook/` | 坐禅系列 + 講經系列共十本原書 → 靜態電子書（簡/繁、全量搜尋、每講播放鈕）。 | `books/*.pdf` → `ebook/` | `README.md` |
 | `tool/pdf_audio_map/` | 對齊 PDF 章節（13–21）↔ 音檔時間 → 音訊映射 JSON（SoT：`tool/word2ebook/data/audio_map/`）。 | SRT/opus → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | 對齊**時間序** Word 彙總（2024-02…2025-05）↔ SRT → `audio_map2/*.json`（`build_maps.py`）。段上的 `chapter_question_ids` 供前 12 章注入；**分段會隨 `build_maps.py` 的 Q&A 偵測調整**，重分段後以 `link_chapters.py` 重新寫回章節對應（詳見「分段與章節對應」）。 | docx + SRT → `audio_map2/*.json` | `README.md` |
@@ -36,6 +35,7 @@
 - ~~`tool/wenda2_curation/`（知識頁部分）~~ — `build_wk.py`／`build_full.py` 與 `wenda2_knowledge(.html/_full.html)`、語料 `data/ch01..21.json`、`curation_chapters.json`、`term_reps.json`、兩個 packet.txt 已移除；僅保留心智圖鏈（`build_mm.py`＋`build_mm2.py`）。
 - ~~`tool/word_audio_map/`~~ — 主題式對齊器（舊 `data/audio_map_word/` 流程），源碼已刪。其 `.venv` 已搬至 `tool/word_audio_map2/`（供 `build_maps.py` 與 word2ebook 生成使用）。
 - ~~`tool/video_creator/`~~ — 離線 ffmpeg（聲音 + `animation.mp4` → 影片），站外獨立用途，已移除。
+- ~~`tool/session_knowledge/`~~ — 查證工程 session 紀錄生成器（`SESSION_KNOWLEDGE.md` → `session_knowledge.html`，內部 noindex 頁）。連同 `SESSION_KNOWLEDGE.md`、生成物、`.sk-*` CSS、`mm_harness.js` 於 2026-09 徹底移除，git 歷史可回溯。
 
 ---
 

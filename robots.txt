@@ -8,13 +8,7 @@ Disallow: /audio_map/
 Disallow: /audio_map2/
 Disallow: /audio_map3/
 
-# session_knowledge.html（內部查證工程紀錄）刻意「不」在此封鎖：
-# 頁面已自帶 <meta name="robots" content="noindex, nofollow, noarchive">，
-# 且已從 sitemap.xml 移除。爬蟲必須能讀取該頁才能看到 noindex 並移除既有索引；
-# 若在此加 Disallow，爬蟲無法讀取頁面，索引反而會殘留。
-#
 # 內部工具的 noindex 標記位於：
-#   session_knowledge.html   → tool/session_knowledge/build.py（生成器）
 #   audio_map*/index.html    → 內部編輯 UI，無站內連結
 
 # 主要頁面優化字詞：佛法,修行,打坐,雙盤,TaiGuangLin
