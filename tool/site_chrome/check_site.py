@@ -15,7 +15,7 @@ ROOT = Path(__file__).resolve().parents[2]
 AI_NOTICE = "本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。"
 AI_PAGES = (
     "infographic.html", "mindmap.html",
-    "wenda2_mindmap.html", "session_knowledge.html",
+    "wenda2_mindmap.html",
 )
 KNOWLEDGE_PAGES = (
     "mindmap.html", "wenda2_mindmap.html",
@@ -25,7 +25,6 @@ SEO_PAGES = ("infographic.html",) + KNOWLEDGE_PAGES
 # 必須同時滿足 (a) 頁面自帶 noindex、(b) 不在 sitemap.xml、(c) robots.txt 有 Disallow。
 # 注意 (a) 與 (c) 不可互相取代：robots.txt 封鎖會讓爬蟲讀不到 noindex，反而殘留索引。
 NOINDEX_PAGES = (
-    "session_knowledge.html",
     "audio_map/index.html",
     "audio_map2/index.html",
     "audio_map3/index.html",
