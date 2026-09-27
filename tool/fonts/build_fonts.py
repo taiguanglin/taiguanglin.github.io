@@ -7,7 +7,7 @@
   /fonts/，全站 33+ 個頁面共用同一組檔案，跨頁快取、離線（Pages 同源）可載。
 
 語料來源（rebuild 時自動重掃）：
-  - 根目錄 *.html（含生成的 session_knowledge.html、wenda2_mindmap.html）
+  - 根目錄 *.html（含生成的 wenda2_mindmap.html）
   - wenda2/*.html、stories/*.html、404.html
   - stories/assets/story.js（閱讀器 UI 文字）
   - daily_quotes.json（首頁「每日精選」動態注入的文字）

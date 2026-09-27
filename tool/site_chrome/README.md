@@ -57,7 +57,6 @@ node tool/site_chrome/dropdown_harness.js index.html wenda2/chapter-01.html
 
 下列生成器寫檔後會自動呼叫 `sync.py`，重建後不必手動補導覽：
 
-- `tool/session_knowledge/build.py`
 - `tool/wenda2_curation/build/build_mm2.py`
 - `tool/stories2html/build.py`（整批故事頁寫完後同步一次）
 
@@ -69,4 +68,5 @@ node tool/site_chrome/dropdown_harness.js index.html wenda2/chapter-01.html
 - SEO 結構化資料由 `<!-- STRUCTURED-DATA:START -->` / `:END -->` 標記包住，由 `sync.py` 冪等重建，可安全重複執行。
 - 手機版滑入面板中，「圖解」toggle 只開合子選單、不收起整個面板（`shared.js` 的 `closeMenu` 迴圈排除 `.nav-dropdown-toggle`），桌機與手機行為一致。
 - 舊的知識頁（`wenda2_knowledge*.html`、`books_knowledge*.html`）與其生成器、語料已於 2026-09 全數移除；「圖解」僅保留三個入口。
+- `session_knowledge.html`（查證工程紀錄）連同 `SESSION_KNOWLEDGE.md`、`tool/session_knowledge/`（含 `mm_harness.js`）與 `.sk-*` CSS 已於 2026-09 徹底移除；`robots.txt`／`check_site.py` 的相關條目同步清掉。
 - `review.html`（名詞複習）已於 2026-09 移除，相關 CSS（`.rv-*`）與 `rv_harness.js` 一併刪除。
