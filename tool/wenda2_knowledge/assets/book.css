@@ -1,0 +1,306 @@
+/* ============================================================
+   複習電子書共用樣式（wenda2_keypoints / wenda2_lens）
+   設計語言沿用 wenda2_ebook/assets/css/style.css 的粉紅色系與字體堆疊，
+   但版面是為「重點複習」重新排的：更窄的正文欄、更強的層級、可摺疊的引文。
+   ============================================================ */
+
+:root {
+    --k-primary:      #e75480;
+    --k-primary-deep: #c73650;
+    --k-primary-soft: #ffedf3;
+    --k-accent:       #f8c8dc;
+    --k-quote:        #fff8fa;
+    --k-check:        #f2f7ff;
+    --k-check-line:   #a8c4e8;
+
+    --k-bg:           #fff7fa;
+    --k-surface:      #ffffff;
+    --k-ink:          #2f2a2c;
+    --k-ink-soft:     #5b5155;
+    --k-ink-mute:     #8d8388;
+    --k-line:         #f0dde4;
+
+    --k-radius:       12px;
+    --k-shadow:       0 2px 10px rgba(199, 54, 80, .08);
+
+    --k-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "PingFang TC", "PingFang SC", "Hiragino Sans CJK",
+        "Noto Sans CJK TC", "Noto Sans CJK SC",
+        "Microsoft JhengHei", "Microsoft YaHei",
+        "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --k-font-serif: "Songti TC", "Noto Serif CJK TC", "Noto Serif CJK SC",
+        "Source Han Serif TC", "Source Han Serif SC", "SimSun", Georgia, serif;
+    --k-font-mono: "SF Mono", Menlo, Consolas, "Courier New", monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+    margin: 0;
+    font-family: var(--k-font-sans);
+    font-size: 16px;
+    line-height: 1.9;
+    color: var(--k-ink);
+    background: var(--k-bg);
+    -webkit-text-size-adjust: 100%;
+}
+
+a { color: var(--k-primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ---------- 版心 ---------- */
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 18px; }
+.wrap--wide { max-width: 1080px; }
+
+/* ---------- 頂列 ---------- */
+.topbar {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(255, 247, 250, .92);
+    backdrop-filter: saturate(180%) blur(12px);
+    border-bottom: 1px solid var(--k-line);
+}
+.topbar__in {
+    max-width: 1080px; margin: 0 auto; padding: 10px 18px;
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+}
+.topbar__home { font-size: 14px; color: var(--k-ink-soft); white-space: nowrap; }
+.topbar__title {
+    font-size: 14.5px; font-weight: 700; color: var(--k-primary);
+    margin-right: auto; white-space: nowrap;
+}
+.topbar__nav { display: flex; gap: 8px; align-items: center; font-size: 13.5px; flex-wrap: wrap; }
+.topbar__nav a {
+    padding: 3px 10px; border: 1px solid var(--k-line); border-radius: 999px;
+    color: var(--k-ink-soft); background: var(--k-surface); white-space: nowrap;
+}
+.topbar__nav a:hover { border-color: var(--k-primary); color: var(--k-primary); text-decoration: none; }
+.topbar__nav a[aria-current="page"] {
+    background: var(--k-primary); border-color: var(--k-primary); color: #fff;
+}
+
+/* ---------- 書首 ---------- */
+.hero { padding: 46px 0 30px; }
+.hero__kicker {
+    display: inline-block; font-size: 12.5px; letter-spacing: .14em;
+    color: var(--k-primary); border: 1px solid var(--k-accent);
+    border-radius: 999px; padding: 3px 12px; margin-bottom: 16px;
+}
+.hero h1 {
+    font-family: var(--k-font-serif);
+    font-size: clamp(30px, 6vw, 44px); line-height: 1.25;
+    margin: 0 0 10px; color: var(--k-ink); letter-spacing: .01em;
+}
+.hero__sub { font-size: 17px; color: var(--k-ink-soft); margin: 0 0 22px; }
+.hero__meta { font-size: 13.5px; color: var(--k-ink-mute); }
+
+/* ---------- 免責聲明 ---------- */
+.notice {
+    margin: 0 0 30px; padding: 13px 16px;
+    background: var(--k-primary-soft);
+    border-left: 4px solid var(--k-primary);
+    border-radius: 0 var(--k-radius) var(--k-radius) 0;
+    font-size: 14px; line-height: 1.8; color: var(--k-ink-soft);
+}
+.notice strong { color: var(--k-primary-deep); }
+
+/* ---------- 卡片 ---------- */
+.card {
+    background: var(--k-surface); border: 1px solid var(--k-line);
+    border-radius: var(--k-radius); box-shadow: var(--k-shadow);
+    padding: 22px 24px; margin: 0 0 18px;
+}
+
+/* ---------- 目錄 ---------- */
+.toc { display: grid; gap: 10px; margin: 0 0 30px; }
+@media (min-width: 720px) { .toc--2 { grid-template-columns: 1fr 1fr; } }
+.toc a {
+    display: block; padding: 12px 16px;
+    border: 1px solid var(--k-line); border-radius: var(--k-radius);
+    background: var(--k-surface); color: var(--k-ink);
+    transition: transform .2s var(--ease, ease), border-color .2s;
+}
+.toc a:hover { transform: translateY(-2px); border-color: var(--k-primary); text-decoration: none; }
+.toc__n { font-size: 12.5px; color: var(--k-primary); font-weight: 700; letter-spacing: .06em; }
+.toc__t { display: block; font-size: 16px; font-weight: 700; margin-top: 2px; }
+.toc__d { display: block; font-size: 13.5px; color: var(--k-ink-mute); margin-top: 3px; line-height: 1.7; }
+.toc__subs { margin: 8px 0 0; padding-left: 18px; font-size: 13.5px; color: var(--k-ink-soft); }
+.toc__subs li { margin: 2px 0; }
+.toc__subs a { border: 0; background: none; padding: 1px 0; display: inline; color: var(--k-ink-soft); }
+.toc__subs a:hover { color: var(--k-primary); }
+
+/* ---------- 章 ---------- */
+.chapter { padding: 34px 0 10px; }
+.chapter + .chapter { border-top: 2px solid var(--k-accent); }
+.chapter__n {
+    display: inline-block; font-size: 12.5px; font-weight: 700; letter-spacing: .12em;
+    color: var(--k-primary); margin-bottom: 6px;
+}
+.chapter h2 {
+    font-family: var(--k-font-serif);
+    font-size: clamp(24px, 4.6vw, 32px); line-height: 1.35;
+    margin: 0 0 10px; color: var(--k-ink);
+}
+.chapter__lead { font-size: 15.5px; color: var(--k-ink-soft); margin: 0 0 24px; }
+
+/* ---------- 節（重點） ---------- */
+.section {
+    background: var(--k-surface); border: 1px solid var(--k-line);
+    border-radius: var(--k-radius); box-shadow: var(--k-shadow);
+    padding: 20px 22px; margin: 0 0 16px; scroll-margin-top: 76px;
+}
+.section h3 {
+    font-size: 19px; line-height: 1.5; margin: 0 0 12px; color: var(--k-primary-deep);
+    display: flex; gap: 9px; align-items: baseline;
+}
+.section h3::before {
+    content: ""; flex: 0 0 auto; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--k-primary); transform: translateY(-3px);
+}
+.section p { margin: 0 0 12px; }
+.section p:last-child { margin-bottom: 0; }
+
+/* ---------- 引文 ---------- */
+.quotes { margin: 16px 0 0; display: grid; gap: 12px; }
+.quote {
+    border: 1px solid var(--k-accent); border-left: 4px solid var(--k-primary);
+    border-radius: 0 var(--k-radius) var(--k-radius) 0;
+    background: var(--k-quote); padding: 14px 18px;
+}
+.quote__topic {
+    display: block; font-size: 12.5px; font-weight: 700; letter-spacing: .05em;
+    color: var(--k-primary); margin-bottom: 6px;
+}
+.quote__text { margin: 0; font-size: 15.5px; line-height: 1.95; color: var(--k-ink); }
+.quote__src {
+    display: block; margin-top: 10px; font-size: 12.5px; color: var(--k-ink-mute);
+    display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center;
+}
+.quote__src a { font-size: 12.5px; }
+.quote__src .src-book { color: var(--k-ink-mute); }
+.quote__from { color: var(--k-ink-mute); }
+
+/* ---------- 自測 ---------- */
+.check {
+    margin: 16px 0 0; padding: 14px 18px;
+    background: var(--k-check); border: 1px solid var(--k-check-line);
+    border-radius: var(--k-radius);
+}
+.check__q { font-weight: 700; font-size: 15px; color: #24405f; margin: 0 0 10px; }
+.check__a { margin: 0; font-size: 14.5px; line-height: 1.9; color: #2f4460; }
+.check__a[hidden] { display: none; }
+.check__btn {
+    margin-top: 12px; font: inherit; font-size: 13.5px; cursor: pointer;
+    padding: 5px 14px; border-radius: 999px;
+    border: 1px solid var(--k-check-line); background: #fff; color: #2f4460;
+}
+.check__btn:hover { border-color: #6f96cc; }
+
+/* ---------- 閱讀路線（lens 用） ---------- */
+.routes { display: grid; gap: 12px; margin: 0 0 26px; }
+@media (min-width: 760px) { .routes { grid-template-columns: repeat(3, 1fr); } }
+.route {
+    border: 1px solid var(--k-line); border-radius: var(--k-radius);
+    background: var(--k-surface); padding: 16px 18px;
+}
+.route h4 { margin: 0 0 6px; font-size: 16px; color: var(--k-primary-deep); }
+.route p { margin: 0 0 8px; font-size: 13.5px; color: var(--k-ink-soft); line-height: 1.8; }
+.route ol { margin: 0; padding-left: 20px; font-size: 13.5px; }
+.route li { margin: 2px 0; }
+.route a { font-size: 13.5px; }
+
+/* ---------- 場景（lens 卷/章） ---------- */
+.scene { padding: 40px 0 12px; }
+.scene + .scene { border-top: 2px solid var(--k-accent); }
+.scene__part {
+    font-family: var(--k-font-serif); font-size: 13px; letter-spacing: .3em;
+    color: var(--k-primary); margin-bottom: 8px;
+}
+.scene h2 {
+    font-family: var(--k-font-serif);
+    font-size: clamp(25px, 5vw, 34px); line-height: 1.4; margin: 0 0 16px;
+}
+.narrative { font-size: 16.5px; line-height: 2.05; color: var(--k-ink); }
+.narrative p { margin: 0 0 14px; }
+.narrative p:last-child { margin-bottom: 0; }
+.voices { margin: 18px 0 0; display: grid; gap: 12px; }
+
+/* ---------- 搜尋 ---------- */
+.search { margin: 0 0 26px; }
+.search__box {
+    display: flex; gap: 8px; flex-wrap: wrap;
+}
+.search__box input {
+    flex: 1 1 240px; min-width: 0; font: inherit; font-size: 15px;
+    padding: 9px 14px; border: 1px solid var(--k-line); border-radius: 999px;
+    background: var(--k-surface); color: var(--k-ink);
+}
+.search__box input:focus { outline: 2px solid var(--k-accent); outline-offset: 1px; }
+.search__box button {
+    font: inherit; font-size: 14px; cursor: pointer; padding: 9px 16px;
+    border-radius: 999px; border: 1px solid var(--k-line);
+    background: var(--k-surface); color: var(--k-ink-soft);
+}
+.search__box button:hover { border-color: var(--k-primary); color: var(--k-primary); }
+.search__status { font-size: 13px; color: var(--k-ink-mute); margin: 10px 2px 0; }
+.search__results { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+.search__results:empty { display: none; }
+.search__hit {
+    border: 1px solid var(--k-line); border-radius: 10px;
+    background: var(--k-surface); padding: 10px 14px;
+}
+.search__hit a { font-weight: 700; font-size: 14.5px; }
+.search__hit p { margin: 3px 0 0; font-size: 13.5px; color: var(--k-ink-soft); line-height: 1.75; }
+.search__hit mark { background: #ffe08a; color: inherit; padding: 0 1px; border-radius: 3px; }
+
+/* ---------- 頁尾 ---------- */
+.foot {
+    margin-top: 50px; padding: 28px 0 46px;
+    border-top: 2px solid var(--k-accent);
+    font-size: 13.5px; color: var(--k-ink-mute); line-height: 1.9;
+}
+.foot a { color: var(--k-ink-soft); text-decoration: underline; }
+.foot ul { margin: 8px 0 0; padding-left: 20px; }
+.foot__line { margin: 0 0 6px; }
+
+.backtop {
+    display: inline-block; margin-top: 16px; font-size: 13px;
+    border: 1px solid var(--k-line); border-radius: 999px; padding: 5px 14px;
+    background: var(--k-surface); color: var(--k-ink-soft);
+}
+.backtop:hover { border-color: var(--k-primary); color: var(--k-primary); text-decoration: none; }
+
+/* ---------- 夜模式 ---------- */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --k-primary:      #ff8fb0;
+        --k-primary-deep: #ffb3c8;
+        --k-primary-soft: #3a2330;
+        --k-accent:       #6b3d4e;
+        --k-quote:        #2c2126;
+        --k-check:        #1e2836;
+        --k-check-line:   #3d557a;
+        --k-bg:           #191316;
+        --k-surface:      #211a1d;
+        --k-ink:          #f0e7ea;
+        --k-ink-soft:     #d3c6cb;
+        --k-ink-mute:     #a2949a;
+        --k-line:         #3a2d33;
+        --k-shadow:       0 2px 12px rgba(0, 0, 0, .3);
+    }
+    .check__q { color: #cfe0f5; }
+    .check__a { color: #d6e2f0; }
+    .check__btn { background: #26313f; color: #d6e2f0; border-color: #3d557a; }
+    .search__hit mark { background: #6b5320; color: #fff3d0; }
+    .topbar { background: rgba(25, 19, 22, .92); }
+}
+
+/* ---------- 列印 ---------- */
+@media print {
+    .topbar, .search, .check__btn, .backtop { display: none !important; }
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .section, .card, .quote { box-shadow: none; border-color: #ccc; }
+    .check__a[hidden] { display: block !important; }
+}

@@ -28,11 +28,18 @@ NOINDEX_PAGES = (
     "audio_map/index.html",
     "audio_map2/index.html",
     "audio_map3/index.html",
+    # 複習電子書（已部署但不索引）：入口與四本首頁
+    "hidden/index.html",
+    "hidden/ebook_keypoints/index.html",
+    "hidden/ebook_lens/index.html",
+    "hidden/wenda2_keypoints/index.html",
+    "hidden/wenda2_lens/index.html",
 )
 ROBOTS_TXT_DISALLOW = (
     "/audio_map/",
     "/audio_map2/",
     "/audio_map3/",
+    "/hidden/",
 )
 
 
@@ -70,7 +77,13 @@ def main() -> int:
     sitemap_text = (ROOT / "sitemap.xml").read_text(encoding="utf-8")
     robots_text = (ROOT / "robots.txt").read_text(encoding="utf-8")
     for rel in NOINDEX_PAGES:
-        text = (ROOT / rel).read_text(encoding="utf-8")
+        path = ROOT / rel
+        # 舊版 hidden/ 不進版控時，乾淨 clone 不會有這些檔案；現在已進版控，
+        # 這個 exists() 護欄保留是為了容忍只重建單一產物的工作區。
+        # 存在時才驗 noindex——沒有檔案就沒東西可被索引。
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
         if not re.search(r'<meta\s+name="robots"[^>]*noindex', text, re.I):
             errors.append(f"{rel}: internal page missing noindex")
         if f"taiguanglin.info/{rel}" in sitemap_text:
