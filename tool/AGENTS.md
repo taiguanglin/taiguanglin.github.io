@@ -10,7 +10,6 @@
 | 工具 | 做什麼 | 輸入 → 輸出 | Docs |
 |------|--------|-------------|------|
 | `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；13–21 章（PDF）播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
-| `tool/wenda2_curation/` | 問答錄 2 心智圖資料 SoT（57 名詞結構＋逐字引句＋131+3 名詞統計）。`data/` 為 SoT；引句為 2026-09-16 對 `wenda2_ebook/` 的萃取快照，電子書文字變動後需重新驗證（語料 `ch01..21.json` 已刪，EXTRA 統計與根引句已烤入 `build_mm.py`）。 | `data/*.json`（+`mindmap.html` 引擎）→ `wenda2_mindmap.html` | **`README.md`**, `NOTES.md` |
 | `tool/site_chrome/` | 全站共用導覽的單一真相來源：把「圖解」下拉 3 入口（名詞圖解／坐禪與講經心智圖／問答錄2心智圖）、圖解頁 JSON-LD 寫回所有共用 chrome 頁；並附站台一致性檢查（AI 免責聲明、canonical、連結／錨點、sitemap、圖片屬性、`b-truth` 三節點）＋免 jsdom 的下拉互動測試。 | `sync.py` 定義 → root／`wenda2/`／`stories/` HTML；`dropdown_harness.js` 驗互動 | `README.md` |
 | `tool/wenda2_knowledge/` | 問答錄 2 的兩本「複習用」電子書產生器：`hidden/wenda2_keypoints/`（重點知識，18 章主題章節＋自測）＋`hidden/wenda2_lens/`（另類閱讀視角，第二人稱敘事）（已部署但不索引；`hidden/` 已進版控）。SoT 是 `src/*.py`；`data/corpus.json` 為生成物。引文逐字對照 `wenda2_ebook/`，驗證不過就 exit 1。 | `wenda2_ebook/*.html` → `extract_corpus.py` → `data/corpus.json`；＋`src/*.py` → `build_all.py` → `hidden/wenda2_keypoints/`、`hidden/wenda2_lens/`（不索引） | `README.md` |
 | `tool/books2ebook/` | 坐禅系列 + 講經系列共十本原書 → 靜態電子書（簡/繁、全量搜尋、每講播放鈕）。 | `books/*.pdf` → `ebook/` | `README.md` |
@@ -33,8 +32,7 @@
 以下工具為**一次性／已完成**流程，輸入或產生器已移除，故整包刪除（git 歷史仍可回溯）：
 
 - ~~`tool/qa_resplit/`~~ — 對 `qa/*.txt`（校對轉錄稿，2025-11~2026-03）做 resplit/realign/TW-normalize；`qa/` 已刪，不再使用。
-- ~~`tool/books_knowledge/`~~ — 坐禪與講經知識頁（`books_knowledge(.html/_full.html)`）生成器；四個知識頁連同產生器與語料一併移除（2026-09 精簡「圖解」為三頁），git 歷史可回溯。
-- ~~`tool/wenda2_curation/`（知識頁部分）~~ — `build_wk.py`／`build_full.py` 與 `wenda2_knowledge(.html/_full.html)`、語料 `data/ch01..21.json`、`curation_chapters.json`、`term_reps.json`、兩個 packet.txt 已移除；僅保留心智圖鏈（`build_mm.py`＋`build_mm2.py`）。
+- ~~`tool/wenda2_curation/`~~ — 問答錄 2 心智圖的資料 SoT（57 名詞結構、逐字引句、名詞統計）與產生器（`build_mm.py`／`build_mm2.py`、`data/*.json`、`mm_data.js`）。發布頁 `wenda2_mindmap.html` **自包含且保持不動**，往後不再重新生成，來源與產生器已於 2026-09-28 整包移除（更早的知識頁部分已於 2026-09 移除）。
 - ~~`tool/word_audio_map/`~~ — 主題式對齊器（舊 `data/audio_map_word/` 流程），源碼已刪。其 `.venv` 已搬至 `tool/word_audio_map2/`（供 `build_maps.py` 與 word2ebook 生成使用）。
 - ~~`tool/video_creator/`~~ — 離線 ffmpeg（聲音 + `animation.mp4` → 影片），站外獨立用途，已移除。
 - ~~`tool/session_knowledge/`~~ — 查證工程 session 紀錄生成器（`SESSION_KNOWLEDGE.md` → `session_knowledge.html`，內部 noindex 頁）。連同 `SESSION_KNOWLEDGE.md`、生成物、`.sk-*` CSS、`mm_harness.js` 於 2026-09 徹底移除，git 歷史可回溯。
