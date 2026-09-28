@@ -8,8 +8,14 @@ Disallow: /audio_map/
 Disallow: /audio_map2/
 Disallow: /audio_map3/
 
+# 複習電子書（已部署，但定位為「不索引的未公開頁」）：頁面自帶 noindex、
+# 不列入 sitemap.xml、不掛全站導覽，只靠直接網址進入（hidden/ 已進版控）。
+# 注意：robots.txt／noindex 都不是存取控制——知道網址的人都能讀。
+Disallow: /hidden/
+
 # 內部工具的 noindex 標記位於：
 #   audio_map*/index.html    → 內部編輯 UI，無站內連結
+#   hidden/index.html        → 複習電子書入口（未對外宣傳）
 
 # 主要頁面優化字詞：佛法,修行,打坐,雙盤,TaiGuangLin
 # 首頁：https://taiguanglin.info/

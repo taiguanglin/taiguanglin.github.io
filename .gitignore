@@ -21,3 +21,19 @@ tool/stories2html/build/
 tool/fonts/src/
 tool/fonts/.pylibs/
 tool/fonts/build/
+
+# 問答錄2 複習電子書（tool/wenda2_knowledge）：
+# data/corpus.json 是 extract_corpus.py 從 wenda2_ebook/ 抽出的快取（13MB），
+# 可隨時重建，不進版控。SoT 是 src/*.py；改了 wenda2_ebook/ 記得先重跑 extract。
+tool/wenda2_knowledge/data/corpus.json
+
+# 坐禪與講經十書複習電子書（tool/ebook_knowledge）：
+# data/corpus.json 是 extract_corpus.py 從 ebook/ 抽出的快照，可隨時重建，不進版控。
+# data/dumps/ 是閱讀用純文字傾印，同為生成物。SoT 是 src/*.py。
+tool/ebook_knowledge/data/
+
+# 兩套複習電子書的輸出（tool/*_knowledge → hidden/）**已進版控並部署**，
+# 但屬「不索引的未公開頁」：每頁 noindex＋不在 sitemap.xml＋robots.txt
+# `Disallow: /hidden/`（三重守門由 tool/site_chrome/check_site.py 驗證），
+# 且刻意不掛全站導覽、landing 頁與 lang-switch.js 都不含此路徑。
+# 所以：不要再把 hidden/ 加回這裡（上面 tool/*_knowledge/data/ 的快取仍要 ignore）。

@@ -29,6 +29,16 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - **不得**出現在 `sitemap.xml`
     - `robots.txt` 對 `/audio_map/`、`/audio_map2/`、`/audio_map3/` 有 `Disallow`
 
+    **`hidden/`（兩套複習電子書）已進版控並部署，但屬「不索引頁」**：三重守門全部保留
+    （頁面 noindex、不在 `sitemap.xml`、`robots.txt` 有 `Disallow: /hidden/`，
+    且登錄在 `check_site.py` 的 `NOINDEX_PAGES` / `ROBOTS_TXT_DISALLOW`——
+    該檢查對不存在的頁面會自動略過，乾淨 clone 不會失敗）。
+    它們**刻意不掛全站導覽**：landing 頁（`index.html`、`wenda2.html`）與
+    `lang-switch.js` 的 `EBOOK_DIRS` 都不含 `/hidden/`，只能靠直接網址進入。
+    ⚠️ 靜態 Pages 沒有存取控制——知道網址的人都能開；noindex 只保證不被搜尋引擎收錄。
+    輸出由 `tool/*_knowledge/build_all.py` 產生（`hidden/` 已進版控；
+    `tool/*_knowledge/data/` 是重建得回來的語料快取，維持 gitignore）。
+
     ⚠️ `session_knowledge.html`（查證工程紀錄）已於 2026-09 徹底移除，連同 `SESSION_KNOWLEDGE.md`、`tool/session_knowledge/`（含 `mm_harness.js`）與 `style.css` 的 `.sk-*` 區段；不要重新引入。
     ⚠️ `robots.txt` 不是存取控制，`audio_map*` 的 PAT 輸入仍無保護——真正的修法是把工具移出公開 repo。
 
@@ -49,7 +59,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `mindmap.html` | 坐禪與講經心智圖：自包含互動名詞心智圖（hand-edited）。 |
 | `wenda2_mindmap.html` | 問答錄2心智圖：57 個高頻名詞／11 主幹；由 `tool/wenda2_curation/build/build_mm.py`（資料→`mm_data.js`）＋`build_mm2.py`（頁面組裝，互動引擎從 `mindmap.html` 拷貝）生成。 |
 | `shared.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
-| `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；`/wenda2_ebook/`、`/ebook/` 依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
+| `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；電子書區（`EBOOK_DIRS`：`/wenda2_ebook/`、`/ebook/`）依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
 | `robots.txt`, `CNAME` | Crawl / domain config. |
 | `sw.js`, `manifest.webmanifest` | PWA（2026-09）：兩套電子書頁（`/wenda2_ebook/`、`/ebook/`）由 word2ebook `17-theme-pwa.js` 註冊根 SW；音檔永不快取。manifest 被兩套電子書模板 `<head>` 引用。 |
@@ -90,6 +100,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
 | `tool/wenda2_curation/` | 問答錄2 心智圖資料 SoT（名詞結構＋逐字引句＋統計）→ `wenda2_mindmap.html` | **`README.md`**, `NOTES.md` |
 | `tool/site_chrome/` | 全站共用導覽 SoT → 「圖解」3 入口＋圖解頁 JSON-LD 寫回；`sync.py`（含 `--check`）、`check_site.py` 一致性檢查、`dropdown_harness.js` 下拉互動測試 | `README.md` |
+| `tool/wenda2_knowledge/` | 問答錄2 的兩本複習電子書：**`hidden/wenda2_keypoints/`**（重點知識，18 章主題章節＋自測）＋**`hidden/wenda2_lens/`**（另類閱讀視角，第二人稱敘事）。**已部署但不索引**：輸出在 `hidden/` 下（已進版控）、頁面自帶 noindex、不列 sitemap、不掛全站導覽。**SoT 是 `src/*.py`**（引文只寫 qid ＋ 句號或貼原文，文字建置時從語料取）；`data/corpus.json` 是 `extract_corpus.py` 的生成物 | `README.md` |
 
 ---
 
@@ -172,6 +183,7 @@ mp3  →  (optional) tool/audio_denoiser
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
 | Infographic / mindmap | `infographic/`, `infographic.html`, `mindmap.html` | Commit |
 | 問答錄2心智圖內容 | `tool/wenda2_curation/`（`data/` 為 SoT） | 重跑 `build/build_mm.py`＋`build/build_mm2.py` → 驗證引句逐字 → commit |
+| 兩本複習電子書的內容 | `tool/wenda2_knowledge/src/*.py`（引文只寫 qid＋句號，文字建置時從語料取） | `venv/bin/python tool/wenda2_knowledge/audit.py` 驗引文 → `build_all.py` 重建 |
 
 ---
 
@@ -185,6 +197,7 @@ mp3  →  (optional) tool/audio_denoiser
 | Root `script.js` vs ebook `script.js` | Root `script.js` 已移除（root chrome JS 是 `shared.js`）；ebook bundle 與其同名無關，由 `tool/word2ebook/assets/js/modules/` 串接而成。 |
 | `scripts/` | Empty; ignore unless something is added. |
 | Production `/audio/` | Code expects same-origin audio; files are not in this git repo. Local preview needs the symlink. |
+| `hidden/` | 兩套複習電子書（`ebook_knowledge`、`wenda2_knowledge`）的**不索引**輸出＋入口 `hidden/index.html`。**已進版控並部署**，但 noindex＋不在 sitemap＋`robots.txt` Disallow，且不掛全站導覽（只能靠網址進入）。不是建構來源；內容由 `tool/*_knowledge/src/*.py` 決定。 |
 | 「圖解」下拉選單 | 全站統一 3 個入口：名詞圖解（`infographic.html`）／坐禪與講經心智圖（`mindmap.html`）／問答錄2心智圖（`wenda2_mindmap.html`）。三頁皆為獨立終點頁，無「檢視切換」下一層。下拉單一真相來源為 `tool/site_chrome/sync.py`；生成或修改頁面後執行 `python3 tool/site_chrome/sync.py`，以 `--check` 驗證 root、`wenda2/`、`stories/` 的共用 chrome 頁。 |
 | 導覽列頂層順序 | 全站統一：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料——認識、兩大系列＋共用知識工具相連、延伸內容、行動（下載）最後。 |
 
