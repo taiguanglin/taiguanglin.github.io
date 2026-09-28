@@ -57,7 +57,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `stories.html` | Stories list shell; list block updated by `build_index.py`. |
 | `infographic.html` | Gallery: `infographic/thumbs/` WebP thumbnails in the grid, `infographic/webp/` full-size WebP in the lightbox (`data-src`). |
 | `mindmap.html` | 坐禪與講經心智圖：自包含互動名詞心智圖（hand-edited）。 |
-| `wenda2_mindmap.html` | 問答錄2心智圖：57 個高頻名詞／11 主幹；由 `tool/wenda2_curation/build/build_mm.py`（資料→`mm_data.js`）＋`build_mm2.py`（頁面組裝，互動引擎從 `mindmap.html` 拷貝）生成。 |
+| `wenda2_mindmap.html` | 問答錄2心智圖：57 個高頻名詞／11 主幹；自包含單頁，**已凍結為手工維護**（產生器＋語料 `tool/wenda2_curation/` 已於 2026-09-28 移除，互動引擎原從 `mindmap.html` 拷貝）。 |
 | `shared.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
 | `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；電子書區（`EBOOK_DIRS`：`/wenda2_ebook/`、`/ebook/`）依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
@@ -98,7 +98,6 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/audio_denoiser/` | Denoiser preprocessing before ASR | `README.md` |
 | `tool/stories2html/` | Stories → HTML readers + index/sitemap patches | `README.md` |
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
-| `tool/wenda2_curation/` | 問答錄2 心智圖資料 SoT（名詞結構＋逐字引句＋統計）→ `wenda2_mindmap.html` | **`README.md`**, `NOTES.md` |
 | `tool/site_chrome/` | 全站共用導覽 SoT → 「圖解」3 入口＋圖解頁 JSON-LD 寫回；`sync.py`（含 `--check`）、`check_site.py` 一致性檢查、`dropdown_harness.js` 下拉互動測試 | `README.md` |
 | `tool/wenda2_knowledge/` | 問答錄2 的兩本複習電子書：**`hidden/wenda2_keypoints/`**（重點知識，18 章主題章節＋自測）＋**`hidden/wenda2_lens/`**（另類閱讀視角，第二人稱敘事）。**已部署但不索引**：輸出在 `hidden/` 下（已進版控）、頁面自帶 noindex、不列 sitemap、不掛全站導覽。**SoT 是 `src/*.py`**（引文只寫 qid ＋ 句號或貼原文，文字建置時從語料取）；`data/corpus.json` 是 `extract_corpus.py` 的生成物 | `README.md` |
 
@@ -182,7 +181,7 @@ mp3  →  (optional) tool/audio_denoiser
 | 12-theme TOC pages | `wenda2.html`, `wenda2/` | Commit (no ebook rebuild) |
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
 | Infographic / mindmap | `infographic/`, `infographic.html`, `mindmap.html` | Commit |
-| 問答錄2心智圖內容 | `tool/wenda2_curation/`（`data/` 為 SoT） | 重跑 `build/build_mm.py`＋`build/build_mm2.py` → 驗證引句逐字 → commit |
+| 問答錄2心智圖內容 | `wenda2_mindmap.html`（**手工維護**；產生器已移除） | 直接改頁面 → `python3 tool/site_chrome/sync.py --check` → `check_site.py` → commit |
 | 兩本複習電子書的內容 | `tool/wenda2_knowledge/src/*.py`（引文只寫 qid＋句號，文字建置時從語料取） | `venv/bin/python tool/wenda2_knowledge/audit.py` 驗引文 → `build_all.py` 重建 |
 
 ---
