@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-28T07:48:57.429Z",
+  "generated_at": "2026-09-28T13:08:51.779Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -8487,7 +8487,7 @@
           "pid": "p-s3df7bdee",
           "text": "但实际上并不是灭“识”，而是“以彼不灭习气种故”，习气种没有灭掉。是没有灭掉什么习气？就是“看”的习气，五识的习气。五根针对于外境而产生妄想的这个习气没有灭掉，使用五根的习气没有灭掉，但是自以为已经灭了这个识，这是错误的想法。",
           "start": 864.805,
-          "end": 894.11,
+          "end": 894.71,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -8495,651 +8495,650 @@
         {
           "pid": "p-s4afc0832",
           "text": "再仔细看这一句。“诸修行者，入于三昧”，修佛法的时候叫“三昧”，有一些外道修行也可以称之为“三昧”。“习力微”，禅定的功力不行。“起而不觉知”，妄想升起，但是自己却不知道。“但作是念”，自己认为。“我灭诸识，入于三昧”，自己已经灭了诸识，进入了三昧当中，自以为这样。",
-          "start": 894.11,
-          "end": 925.37,
+          "start": 894.71,
+          "end": 925.885,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2a7e8906",
           "text": "“实不灭识而入三昧”，实际上没有灭诸识，入了三昧。这个“三昧”肯定不是佛说的真实的三昧，就是外道认为的那种无想定中的状态。“以彼不灭习气种故”，他们还没有灭掉习气种，就是“看”和“听”的根本习气都没有灭掉。“但不取诸境名为识灭”，对看到或者听到的境界不起妄想和名相，这样就认为识灭了。佛说这种外道的认知是错误的。",
-          "start": 925.37,
-          "end": 964.92,
+          "start": 925.885,
+          "end": 968.381,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd6d63616",
           "text": "大慧，如是藏识，行相微细，",
-          "start": 964.92,
-          "end": 970.88,
+          "start": 968.381,
+          "end": 970.98,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd81fced0",
           "text": "“藏识”是第八识——阿赖耶识，阿赖耶识里起妄想这个事非常微细。有人以前问过，佛能看到一切众生的妄想，为什么他不以看到的妄想为根据，来让自己不起妄想呢？这个主要原因是：佛在没有业的状态下，最初堕落的时候，没有办法觉知第一个起的妄想。",
-          "start": 970.88,
-          "end": 1012.04,
+          "start": 970.98,
+          "end": 1008.151,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se7866cb5",
           "text": "《大乘起信论》里有一句“一念不觉生三细”。“三细”指转相、业相、现相，也有的说是转相、业相、境界相。就是最初那个无明——妄想生起的时候，佛自己感知不到，这才是最根本的原因。他要是感知到，就可以马上灭掉。",
-          "start": 1012.04,
-          "end": 1036.97,
+          "start": 1008.151,
+          "end": 1037.951,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s853c0ab9",
           "text": "但是，他有了后边一系列的妄想、分别、执着，堕落轮回受苦，之后再修回去的话，他就有了这个记忆，就知道这个妄想一生起，后面会出现什么事，所以不会再生起妄想，或者生起的时候他会马上觉知，可以马上回去。",
-          "start": 1036.97,
-          "end": 1058.98,
+          "start": 1037.951,
+          "end": 1060.283,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7e24357e",
           "text": "所以，为什么佛看到别人生起妄想后堕入地狱受苦，自己还会生起妄想？肯定有原因的，要不然这个世界堕入地狱受苦的人就应该只有一个，其他佛都看到一个人堕入地狱了，就都不堕入了，应该是这样的。但实际上不是，肯定是有原因的。所以在佛的境界最初生起妄想是无法控制的。",
-          "start": 1058.98,
-          "end": 1094.54,
+          "start": 1060.283,
+          "end": 1094.34,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb3f7aab1",
           "text": "唯除诸佛及住地菩萨，其余一切二乘外道，定慧之力，皆不能知，",
-          "start": 1094.54,
-          "end": 1100.62,
+          "start": 1094.34,
+          "end": 1103.305,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s332a9388",
           "text": "诸佛和住地菩萨可以知道藏识里行相微细——藏识里妄想的微细变化，只有佛和住地菩萨才能知道。其余一切二乘外道的定慧之力是不能知的。",
-          "start": 1100.62,
-          "end": 1120.56,
+          "start": 1103.305,
+          "end": 1121.28,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s87d6fc78",
           "text": "唯有修行如实行者，以智慧力了诸地相，善达句义，无边佛所，广集善根，",
-          "start": 1120.56,
-          "end": 1120.56,
+          "start": 1121.28,
+          "end": 1126.413,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s77bdcf40",
           "text": "只有如实修行者——按照佛说的如实修行的人，根据智慧力来了解菩萨的诸地相。而且对这个“句义”——佛说的义理也非常通透、了解。",
-          "start": 1120.56,
-          "end": 1140.1,
+          "start": 1126.413,
+          "end": 1140.587,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb3bb20a2",
           "text": "“无边佛所，广集善根”，一般不懂业的人不会把这句话拿出来给你解释。如果光是听了理论，按照这个修行马上就可以成佛，或者就算不是马上，未来必然成佛的话，那就没有无边佛所了，不需要去无边佛所广集善根，是不是这个原因？",
-          "start": 1140.1,
-          "end": 1165.48,
+          "start": 1140.587,
+          "end": 1166.333,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sef7963b4",
           "text": "假如没有业的话，你只要见到一个再来人或者一个佛，在他那里听了完整的理论，按照他说的法修行就可以成佛了，是吧？但是，就因为有业，有了业就要度人，要度很多很多和自己有业的人，所以必须到各个不同的佛那里去度和自己有缘的人。",
-          "start": 1165.48,
-          "end": 1189.48,
+          "start": 1166.333,
+          "end": 1190.071,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1453b34c",
           "text": "所以，修行人得去不同的世界见不同的佛，在他的世界里度和自己有缘的人，这样度来度去、度来度去，最后要把和自己有缘的人全部度了。这个时候估计已经度了无量众生。所以佛给人授记的时候说，你未来要度无量众生，值多少佛。而不是你见了一个佛，按照他说的法马上就可以修行成佛。其实很多人，哪怕是学大乘的人，对业还是不够了解。",
-          "start": 1189.48,
-          "end": 1231.99,
+          "start": 1190.071,
+          "end": 1232.09,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s622fc5a6",
           "text": "在这本佛经里前面讲的楞伽王也是见了很多佛，不只是见了一个佛。他自己都说前面见到的佛们都到他的宫殿里讲过法。",
-          "start": 1231.99,
-          "end": 1247.48,
+          "start": 1232.09,
+          "end": 1247.954,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd1a3c915",
           "text": "不妄分别自心所见，能知之耳。",
-          "start": 1247.48,
-          "end": 1255.39,
+          "start": 1247.954,
+          "end": 1255.371,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe4d360f",
           "text": "对于自己的妄想产生的这个境界不妄分别，还能知道、察知。",
-          "start": 1255.39,
-          "end": 1263.73,
+          "start": 1255.371,
+          "end": 1263.63,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s641bc36d",
           "text": "大慧，诸修行人宴处山林，上中下修，能见自心，分别流注，得诸三昧，自在力通，诸佛灌顶，菩萨围绕，知心意意识所行境界，超爱业无明生死大海，是故汝等应当亲近诸佛菩萨，如实修行，大善知识。",
-          "start": 1263.73,
-          "end": 1274.53,
+          "start": 1263.63,
+          "end": 1278.011,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sedbc45ad",
           "text": "这是一个修行人该有的过程。“修行人宴处山林”，指找个僻静的地方好好修行。“上中下修”，在不同的境界里——上、中、下不同层次，在自己所处的那个层次里要好好修。“能见自心”，最后能见自心。",
-          "start": 1274.53,
-          "end": 1299.88,
+          "start": 1278.011,
+          "end": 1302.769,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6e149bdb",
           "text": "“分别流注”指在自己心中升起的妄想都能了知。一开始的妄想肯定只有一种，但是后面出了分别心和执着心的时候，它是分性质的，所以“分别流注”就是对自己起的妄想都能了知。像我们升起妄想的人，就知道这是文字妄想、还是注意力、还是情绪，能分别了知，这叫“分别流注”。",
-          "start": 1299.88,
-          "end": 1332.43,
+          "start": 1302.769,
+          "end": 1333.113,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf60978cb",
           "text": "“得诸三昧”，进入三昧里。“自在力通”，这样的语句就没有必要过多解释，就是修行到一定境界，有神通了或者很自在了。",
-          "start": 1332.43,
-          "end": 1346.95,
+          "start": 1333.113,
+          "end": 1348.893,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6c9bcf72",
           "text": "“诸佛灌顶”，要得到佛灌顶，应该算是有大心的人。佛不随便给人灌顶，只有有大菩提心，而且修为到了一定境界，这个时候才给你灌顶。“知心意意识所行境界”，知道妄想、分别、执着的所行境界。",
-          "start": 1346.95,
-          "end": 1376.97,
+          "start": 1348.893,
+          "end": 1377.47,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfb89b613",
           "text": "“超爱业无明生死大海”，就是超越了一些业的轮转。“是故汝等应当亲近诸佛菩萨”，所以你们应该亲近诸佛菩萨。“如实修行，大善知识”，这样修行的人才能称之为“大善知识”。",
-          "start": 1376.97,
-          "end": 1401.07,
+          "start": 1377.47,
+          "end": 1400.353,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2d473d19",
           "text": "下面是佛说的一段颂，把上面的意思重复一遍。",
-          "start": 1401.07,
-          "end": 1405.56,
+          "start": 1400.353,
+          "end": 1405.36,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7029f4ef",
           "text": "譬如巨海浪，斯由猛风起；洪波鼓溟壑，无有断绝时。",
-          "start": 1405.56,
-          "end": 1411.41,
+          "start": 1405.36,
+          "end": 1411.21,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdf9b2c42",
           "text": "就像海上巨浪不断地升起，被猛风吹起之后不断地翻涌。",
-          "start": 1411.41,
-          "end": 1416.7,
+          "start": 1411.21,
+          "end": 1416.5,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saeedf0f5",
           "text": "藏识海常住，境界风所动；",
-          "start": 1416.7,
-          "end": 1420.51,
+          "start": 1416.5,
+          "end": 1420.31,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3e9ff7d7",
           "text": "“藏识”就是意识——阿赖耶识，是常住的、永恒不变的，在这之上，妄想被境界风吹起。",
-          "start": 1420.51,
-          "end": 1432.35,
+          "start": 1420.31,
+          "end": 1432.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6f6b10cd",
           "text": "种种诸识浪，腾跃而转生。",
-          "start": 1432.35,
-          "end": 1435.26,
+          "start": 1432.95,
+          "end": 1434.805,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc456ed95",
           "text": "这个境界风动了之后，种种诸识——七识都会生起。",
-          "start": 1435.26,
-          "end": 1441.73,
+          "start": 1434.805,
+          "end": 1441.53,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8f1249e9",
           "text": "青赤等诸色，盐贝乳石蜜；花果日月光，非异非不异。",
-          "start": 1441.73,
-          "end": 1446.38,
+          "start": 1441.53,
+          "end": 1446.969,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se4769300",
           "text": "这些所有看到的境界，意识里产生的所有东西，它是非异非不异的，本质上都是妄想。",
-          "start": 1446.38,
-          "end": 1454.73,
+          "start": 1446.969,
+          "end": 1454.63,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf96c8139",
           "text": "意等七种识，应知亦如是；如海共波浪，心俱和合生。",
-          "start": 1454.73,
-          "end": 1461.91,
+          "start": 1454.63,
+          "end": 1461.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbdf4080b",
           "text": "意、意识和后边的五识，合称七识，都是这样像海浪一样不断翻涌，都是妄想和合而生。",
-          "start": 1461.91,
-          "end": 1475.15,
+          "start": 1461.81,
+          "end": 1475.617,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2918d271",
           "text": "譬如海水动，种种波浪转；",
-          "start": 1475.15,
-          "end": 1480.92,
+          "start": 1475.617,
+          "end": 1479.517,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s663d48a0",
           "text": "用海浪比喻我们的妄想一直不断的那个状态。",
-          "start": 1480.92,
-          "end": 1486.48,
+          "start": 1479.517,
+          "end": 1486.38,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s05b291a9",
           "text": "尔时，大慧菩萨摩诃萨以颂问曰：青赤诸色像，众生识显现；如浪种种法，云何愿佛说。",
-          "start": 1486.48,
-          "end": 1496.67,
+          "start": 1486.38,
+          "end": 1496.47,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1c4faf8f",
           "text": "看到的一切景象都是众生的“识”里显现出来的幻境。“种种法”就是种种妄想。像海浪一样的种种妄想，希望佛说一说。",
-          "start": 1496.67,
-          "end": 1516.56,
+          "start": 1496.47,
+          "end": 1516.46,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbae9a4dd",
           "text": "青赤诸色像，浪中不可得；",
-          "start": 1516.56,
-          "end": 1518.65,
+          "start": 1516.46,
+          "end": 1519.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe38908a",
           "text": "这些相是不可得的。",
-          "start": 1518.65,
-          "end": 1521.14,
+          "start": 1519.25,
+          "end": 1520.84,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa508388a",
           "text": "言心起众相，开悟诸凡夫。",
-          "start": 1521.14,
-          "end": 1523.85,
+          "start": 1520.84,
+          "end": 1525.024,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s112c7729",
           "text": "告诉大家“众相”都是从心中生起的，就是自性当中产生的幻境，是妄想和合而成的，以此说法来开悟诸凡夫。",
-          "start": 1523.85,
-          "end": 1537.59,
+          "start": 1525.024,
+          "end": 1537.49,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s19959f63",
           "text": "而彼本无起，自心所取离；",
-          "start": 1537.59,
-          "end": 1539.48,
+          "start": 1537.49,
+          "end": 1539.975,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb29f4ae6",
           "text": "它们本来没有“起”这种状态，也就是妄想本来是“无起”的，都是自己心里对它们产生了执取和执离。“取”是执着，“离”也是执着。讨厌——要远离——这样的想法也是执着。",
-          "start": 1539.48,
-          "end": 1559.25,
+          "start": 1539.975,
+          "end": 1559.15,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3f8598ac",
           "text": "能取及所取，与彼波浪同。",
-          "start": 1559.25,
-          "end": 1564.01,
+          "start": 1559.15,
+          "end": 1564.304,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe18e793",
           "text": "这个“能取”“所取”是从分别心上产生的，也和波浪一样都是妄想。",
-          "start": 1564.01,
-          "end": 1569.34,
+          "start": 1564.304,
+          "end": 1569.24,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9aad6cf3",
           "text": "身资财安住，众生识所现；",
-          "start": 1569.34,
+          "start": 1569.24,
           "end": 1571.45,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc35aa46a",
           "text": "“身资财安住”，这都是众生的“识”当中产生的幻境。",
           "start": 1571.45,
-          "end": 1576.1,
+          "end": 1577,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2ae8f399",
           "text": "是故见此起，与浪无差别。",
-          "start": 1576.1,
+          "start": 1577,
           "end": 1579.77,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s316c9c3c",
           "text": "所以要知道这些妄想、境界都和海浪一样，是没有差别的。",
           "start": 1579.77,
-          "end": 1587.48,
+          "end": 1590.085,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7156c797",
           "text": "复次，大慧，菩萨摩诃萨若欲了知能取所取分别境界，皆是自心之所现者，",
-          "start": 1587.48,
-          "end": 1597.88,
+          "start": 1590.085,
+          "end": 1598.78,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbe8b9b21",
           "text": "菩萨摩诃萨要想知道这个“能取”“所取”的分别境界都是自心所现——自己的妄想。“能取”“所取”是在分别心中产生的。菩萨要知道它们都是自己心中产生的妄想。",
-          "start": 1597.88,
-          "end": 1618.64,
+          "start": 1598.78,
+          "end": 1618.54,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3cbfb531",
           "text": "当离愦闹、昏滞、睡眠，初中后夜勤加修习，",
-          "start": 1618.64,
-          "end": 1623.21,
+          "start": 1618.54,
+          "end": 1624.113,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8d01a266",
           "text": "“愦闹”是混乱的意思，头脑混乱。“昏滞”是昏沉。“睡眠”，菩萨连睡眠都不能要的。初中后夜精进修习。",
-          "start": 1623.21,
-          "end": 1641.11,
+          "start": 1624.113,
+          "end": 1640.91,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbd324b12",
           "text": "远离曾闻外道邪论及二乘法，通达自心分别之相。",
-          "start": 1641.11,
-          "end": 1646.28,
+          "start": 1640.91,
+          "end": 1645.98,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd19dcee2",
           "text": "远离这些过去曾经学的外道邪论及二乘法，对自己心中产生的妄想、分别之相要了解。“通达”是了解的意思。",
-          "start": 1646.28,
-          "end": 1659.05,
+          "start": 1645.98,
+          "end": 1660.755,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9ccfcd37",
           "text": "你要修行，首先得有正知正见，没有正知正见，修行只会把你带到更糟糕的状态当中。所以首先要把义理学通透，哪怕不修行，你先用逻辑来把它都理解了，这就可以了。",
-          "start": 1659.05,
-          "end": 1677.41,
+          "start": 1660.755,
+          "end": 1684.107,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a8190e5",
           "text": "复次，大慧，菩萨摩诃萨住智慧心所住相已，于上圣智三相当勤修学。何者为三？所谓无影像相、一切诸佛愿持相、自证圣智所趣相。",
-          "start": 1677.41,
-          "end": 1695.533,
+          "start": 1684.107,
+          "end": 1688.644,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se1aa5e37",
           "text": "“住智慧心所住相已”是指初地菩萨。初地菩萨应该怎么修行可以入菩萨第八地？。他要修行三种相——“所谓无影像相、一切诸佛愿持相、自证圣智所趣相”。",
-          "start": 1695.533,
-          "end": 1715.02,
+          "start": 1688.644,
+          "end": 1717.492,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s205a7e2e",
           "text": "诸修行者获此相已，即舍跛驴智慧心相，入菩萨第八地，于此三相修行不舍。",
-          "start": 1715.02,
-          "end": 1720.71,
+          "start": 1717.492,
+          "end": 1720.61,
           "conf": 0.75,
           "method": "miss",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s298e17c4",
           "text": "“跛驴”，书后面解释为“未得无功用慧者”。“跛驴”速度慢，而且蠢，用“驴”来比喻那种愚蠢的状态——速度慢同时愚蠢。对上面讲的“三相”修行不舍就可以进入第八地。",
-          "start": 1720.71,
-          "end": 1756.21,
+          "start": 1720.61,
+          "end": 1756.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s09bc1c34",
           "text": "大慧，无影像相者，谓由惯习，一切二乘外道相故得生起；",
-          "start": 1756.21,
-          "end": 1761.98,
+          "start": 1756.11,
+          "end": 1762.88,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa185d212",
           "text": "“无影像相者”，是曾经学这个二乘理论或外道理论的，从这里开始生起。这一段怎么理解呢？那我们得说说二乘外道的理论。前面讲过外道在意识、自性这个层面上无非就是两种：要么意识是被创造出来的；要么是自然产生的。",
-          "start": 1761.98,
-          "end": 1800.65,
+          "start": 1762.88,
+          "end": 1800.15,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9fc7d361",
           "text": "再往前看的话，被创造出来之前是没有的，自然产生之前也是没有的。所以根据这个理论来修行的人也可以进入“定”。但是这个“定”不是佛所说的“正定”，而是一种趋向于“无想定”的那种“定”，只要把自己意识灭掉就可以了。以这种观念来修行，这叫“无影像相”。",
-          "start": 1800.65,
-          "end": 1829.08,
+          "start": 1800.15,
+          "end": 1830.392,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc44b62bf",
           "text": "一切诸佛愿持相者，谓由诸佛自本愿力所加持故，而得生起；",
-          "start": 1829.08,
-          "end": 1837.87,
+          "start": 1830.392,
+          "end": 1837.67,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf26ee526",
           "text": "这是因为诸佛加持力，所以能生起这种“诸佛愿持相者”。菩萨都是要度人的，度人的愿叫“大菩提心”，佛以大菩提心加持众生。如果你也有大菩提心的话，就可以得到佛的加持，所以这叫“一切诸佛愿持相者”。",
-          "start": 1837.87,
-          "end": 1855.92,
+          "start": 1837.67,
+          "end": 1856.52,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sef8a64c7",
           "text": "如果没有大菩提心，那肯定生不起“诸佛愿持相”，没有“诸佛愿持相”就入不了八地。也就是说你没有大菩提心就成不了八地菩萨。按现实来说的话，没有大菩提心连解脱都解脱不了，成为阿罗汉都不可能。",
-          "start": 1855.92,
-          "end": 1879.56,
+          "start": 1856.52,
+          "end": 1879.36,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0bc2db27",
           "text": "自证圣智所趣相者，谓由不取一切法相，成就如幻三昧身，趣佛地智故而得生起。",
-          "start": 1879.56,
-          "end": 1884.66,
+          "start": 1879.36,
+          "end": 1886.261,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s86eba1a8",
           "text": "“自证圣智所趣相者”，往成佛这个方向努力的意思。“法”是一切妄想的统称，妄想、分别、执着都叫“法”。“谓由不取一切法相”，就是不起任何妄想。“成就如幻三昧身”，这是成佛的意思。“趣佛地智故而得生起”，这也是成佛的意思。",
-          "start": 1884.66,
-          "end": 1906.32,
+          "start": 1886.261,
+          "end": 1907.103,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdec317ae",
           "text": "大慧，是名上圣智三种相，若得此相，即到自证圣智所行之处，汝及诸菩萨摩诃萨应勤修学。",
-          "start": 1906.32,
-          "end": 1917.47,
+          "start": 1907.103,
+          "end": 1918.77,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6c34ea84",
           "text": "得到了“上圣智三种相”，就可以进入到“自证圣智所行之处”，就是正确地修行，从菩萨往佛的方向正确地努力修行。最后劝诸菩萨摩诃萨应勤修学。",
-          "start": 1917.47,
-          "end": 1937.81,
+          "start": 1918.77,
+          "end": 1938.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0ab254b4",
           "text": "这一期就讲到这里。",
-          "start": 1937.81,
+          "start": 1938.11,
           "end": 1940.103,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
