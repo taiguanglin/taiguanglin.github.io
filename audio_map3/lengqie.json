@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-28T13:08:59.468Z",
+  "generated_at": "2026-09-29T09:32:14.657Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -9211,35 +9211,35 @@
         {
           "pid": "p-sb4775c88",
           "text": "《楞伽经》第十一期。这本书的第四十八页中间开始。",
-          "start": 2.21,
+          "start": 2.01,
           "end": 10.12,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc514be70",
           "text": "尔时，大慧菩萨摩诃萨知诸菩萨心之所念，承一切佛威神之力，白佛言：“唯愿为说百八句差别所依圣智事自性法门，",
           "start": 10.12,
-          "end": 17.27,
+          "end": 18.584,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-secf2d419",
           "text": "大慧菩萨摩诃萨知道其他菩萨们的想法，可以说是替他们问，也是“承一切佛威神之力”而问。前面讲过这个“百八句”的差别。“所依圣智事自性法门”，就是从佛的境界来看，这些问题应该怎么解释。",
-          "start": 17.27,
-          "end": 46.97,
+          "start": 18.584,
+          "end": 46.87,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s95b5aff3",
           "text": "一切如来应正等觉，为诸菩萨摩诃萨堕自共相者，说此妄计性差别义门，",
-          "start": 46.97,
-          "end": 46.97,
+          "start": 46.87,
+          "end": 46.87,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true,
@@ -9248,227 +9248,227 @@
         {
           "pid": "p-s550a04cb",
           "text": "“一切如来应正等觉”，所有佛们。“为诸菩萨摩诃萨堕自共相者”，这些菩萨摩诃萨堕入了“自共相”中，也就是八地、九地、十地有自相和共相的境界。",
-          "start": 46.97,
-          "end": 65.93,
+          "start": 46.87,
+          "end": 66.53,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc01265f7",
           "text": "在这里“堕”字，如果从境界高的地方掉入境界低的地方，这个时候称之为“堕”；如果从境界低的地方往境界高的地方去，称为“入”或者“趣入”什么境界。",
-          "start": 65.93,
-          "end": 84.66,
+          "start": 66.53,
+          "end": 90.169,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s464184da",
           "text": "这边用“堕”来表示，说明是从佛的没有自相、共相的境界里，堕入到有自相、共相的八、九、十地菩萨的境界当中。因为这一段的最后一句是“成如来身”，也就是说这是从佛的境界里堕入到八地、九地、十地的这个境界的人。为了这些人，说一下后边的这些更高的境界应该怎么样。",
-          "start": 84.66,
-          "end": 119.28,
+          "start": 90.169,
+          "end": 119.847,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4321e83d",
           "text": "“说此妄计性差别义门”，“性”是本相，虚妄计度本相的差别义门。",
-          "start": 119.28,
+          "start": 119.847,
           "end": 133.07,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s32076340",
           "text": "知此义已，则能净治二无我观境，照明诸地，超越一切二乘外道三昧之乐，见诸如来不可思议所行境界。",
           "start": 133.07,
-          "end": 137.44,
+          "end": 136.94,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s030ef48b",
           "text": "知道这个“义”——佛理或者真相，就可以灭掉“二无我观”。“二无我”就是“人无我、法无我”，到了八地菩萨可以称之为“人无我、法无我”。可以知道所有菩萨十地，超越这些二乘和外道的三昧之乐，可以成佛或者了解佛的境界。",
-          "start": 137.44,
-          "end": 169.88,
+          "start": 136.94,
+          "end": 170.08,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4cd7906f",
           "text": "毕竟舍离五法自性，以一切佛法身智慧，而自庄严入如幻境，住一切刹兜率陀宫、色究竟天，成如来身。",
-          "start": 169.88,
-          "end": 181.84,
+          "start": 170.08,
+          "end": 181.64,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s70932df2",
           "text": "这一大段都是说成佛。这位大慧菩萨问佛，为这些堕入八地以下的、有自共相的八地、九地、十地的菩萨们说一说佛的境界，应该怎么成佛，主要的“差别义门”是什么。结果佛并不直接说“差别义门”，而是又开始说外道的错误理解。",
-          "start": 181.84,
-          "end": 214.64,
+          "start": 181.64,
+          "end": 216.937,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s683c9031",
           "text": "佛言：“大慧，有一类外道，见一切法随因而尽，生分别解，想兔无角，起于无见，如兔角无，一切诸法悉亦如是。",
-          "start": 214.64,
-          "end": 223.751,
+          "start": 216.937,
+          "end": 223.051,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0385fa5b",
           "text": "有一种外道看到“一切法”——所有的妄想“随因而尽”，生起妄想的那个“因”消失了，所以妄想也消失了。因此生起了分别心。他生起了“兔无角”的想法，这是“起于无见”。",
-          "start": 223.751,
-          "end": 253.35,
+          "start": 223.051,
+          "end": 253.25,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sda6d9e9b",
           "text": "“如”，在我们的用词习惯里，有可能是如果，也有可能是像的意思。在这里应该是“像”的意思。“如兔角无”，就像兔角不存在一样。所有的法都是如此。",
-          "start": 253.35,
-          "end": 280.91,
+          "start": 253.25,
+          "end": 280.71,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s56f1ad6e",
           "text": "所有的妄想、分别、执着本来是不存在的，你把不存在的兔角想象出来，产生了“无见”。一切诸法本来都是不存在的，像你想象出来的兔角一样，再执着于它，所以形成这个物质世界或者轮回世界。",
-          "start": 280.91,
-          "end": 302.23,
+          "start": 280.71,
+          "end": 302.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc820a2d1",
           "text": "复有外道，见大种求那尘等诸物，形量分位，各差别已，执兔无角，于此而生牛有角想。",
-          "start": 302.23,
-          "end": 309.563,
+          "start": 302.13,
+          "end": 308.417,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1b08d09c",
           "text": "“大种”就是四大。“那尘等诸物”，就是看得见的实物。在四大上对那些实物产生执着。“形量分位，各差别已”，看到它们有状态和量的差别。",
-          "start": 309.563,
-          "end": 328.13,
+          "start": 308.417,
+          "end": 324.458,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9f008e4d",
           "text": "“执兔无角，于此而生牛有角想”，执着于“兔无角”，执着于某个东西不存在这样的想法，从这个想法当中又延伸出来，生起“牛有角想”，对存在的东西产生了“有”的想法。这是个有点复杂的逻辑。",
-          "start": 328.13,
-          "end": 347.01,
+          "start": 324.458,
+          "end": 346.81,
           "conf": 0.816,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s55f6cbfa",
           "text": "先是看到了真实存在的东西，从这里想象出一个不存在的东西，在不存在的东西上再想象出存在的东西。这样绕了一个弯。",
-          "start": 347.01,
-          "end": 363.12,
+          "start": 346.81,
+          "end": 362.92,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sba377ea4",
           "text": "大慧，彼堕二见，不了唯心，但于自心增长分别。",
-          "start": 363.12,
-          "end": 366.56,
+          "start": 362.92,
+          "end": 366.26,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s60202be7",
           "text": "这些外道都堕入了“有见”和“无见”当中，不知道这一切都是从自性当中产生的妄想，只是在自己心上增长了分别心。",
-          "start": 366.56,
-          "end": 381.42,
+          "start": 366.26,
+          "end": 381.32,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s34449fe9",
           "text": "大慧，身及资生器世间等，一切皆唯分别所现。",
-          "start": 381.42,
+          "start": 381.32,
           "end": 387.01,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9064fb0a",
           "text": "大慧，我们的肉身、外部的器世界、能承载这个器世界的虚空都是从分别心上产生的。从分别开始，在这之上产生执着，然后就出现了我们这个物质世界。",
           "start": 387.01,
-          "end": 407.11,
+          "end": 407.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se57651e3",
           "text": "大慧，应知兔角离于有无，诸法悉然，勿生分别。",
-          "start": 407.11,
-          "end": 412.3,
+          "start": 407.81,
+          "end": 412.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se7574d9c",
           "text": "兔角应该和“有无”不相关。所有的法都是如此，都和“有无”不相关。要离开分别来看诸法，那样就可以灭掉诸法。所以在这里说不要产生分别心。",
-          "start": 412.3,
-          "end": 434.24,
+          "start": 412.7,
+          "end": 434.84,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s123addc5",
           "text": "云何兔角离于有无？互因待故，",
-          "start": 434.24,
-          "end": 437.85,
+          "start": 434.84,
+          "end": 439.15,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3c66093c",
           "text": "为什么说兔角和“有无”不相关？因为它是和牛角相对而说。在这里佛说的是正确的有无观，不是佛的境界里的完全大空的“无”，而是凡夫的逻辑上的“无”。什么叫真正的“无”？",
-          "start": 437.85,
-          "end": 462.9,
+          "start": 439.15,
+          "end": 460.521,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa6e55af1",
           "text": "有一个真实存在的东西，比如我有个手机，放在桌上，这个时候称之为“有”；我把这个手机藏起来了，或者把它弄坏了，或者把它彻底粉碎了、烧化了，总之把它弄没了，已经不在桌子上了，这个时候可以称之为“无”。也就是把我们看得到的东西毁掉之后，可以说它“无”。",
-          "start": 462.9,
+          "start": 460.521,
           "end": 490.48,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scd03c097",
