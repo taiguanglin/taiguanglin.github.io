@@ -1799,8 +1799,11 @@ if (isIndexPage()) {
     fontOptionBtns.forEach(btn => btn.classList.remove('active'));
     
     // 根據當前字體大小標記對應按鈕
+    // 桌面預設值同樣視為「A（正常）」：使用者若曾在窄視窗調到桌面預設、
+    // 之後再放大視窗，選中狀態不該消失。
     const defaultFontSize = getDefaultFontSize();
-    if (fontSize === defaultFontSize || fontSize === 16) {
+    const desktopFontSize = FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_DEFAULT_STEPS;
+    if (fontSize === defaultFontSize || fontSize === desktopFontSize) {
       const normalBtn = document.querySelector('[data-action="font-normal"]');
       if (normalBtn) normalBtn.classList.add('active');
     }
@@ -2775,17 +2778,32 @@ function addHomepageBookmarkEventListeners() {
   }
 
   // 閱讀設置功能
+  //
+  // 字級階梯：預設字級 = 螢幕寬度對應的「基礎值」+ FONT_SIZE_STEP * FONT_DEFAULT_STEPS，
+  // FONT_DEFAULT_STEPS = 2 代表預設比基礎值大兩級，也就是「A+ 按兩次」後的大小。
+  // 上下界一併跟著放大（原本預設 16 落在 12–24 的正中央），讓預設值上下仍各有四級
+  // 可調，不會因為預設變大就把 A+ 的可調空間吃掉。
+  const FONT_SIZE_STEP = 2;                        // A+／A- 每按一級的 px 差
+  const FONT_DEFAULT_STEPS = 2;                    // 預設比基礎值大幾級（= A+ 按兩次）
+  const FONT_SIZE_MIN = 12;
+  const FONT_SIZE_MAX = 28;
+  const FONT_BASE_SMALL_PHONE = 19;                // 基礎值（不含預設加成）
+  const FONT_BASE_PHONE = 18;
+  const FONT_BASE_TABLET = 17;
+  const FONT_BASE_DESKTOP = 16;
+
   // 根据屏幕尺寸设置默认字体大小
   function getDefaultFontSize() {
     const screenWidth = window.innerWidth;
+    const bonus = FONT_SIZE_STEP * FONT_DEFAULT_STEPS;
     if (screenWidth <= 400) {
-      return 19; // 小手机默认19px
+      return FONT_BASE_SMALL_PHONE + bonus; // 小手机默认23px
     } else if (screenWidth <= 600) {
-      return 18; // 手机默认18px
+      return FONT_BASE_PHONE + bonus; // 手机默认22px
     } else if (screenWidth <= 768) {
-      return 17; // 平板默认17px
+      return FONT_BASE_TABLET + bonus; // 平板默认21px
     }
-    return 16; // 桌面默认16px
+    return FONT_BASE_DESKTOP + bonus; // 桌面默认20px
   }
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
@@ -3094,7 +3112,7 @@ function addHomepageBookmarkEventListeners() {
   }
   
   function updateFontSize(change) {
-    fontSize = Math.max(12, Math.min(24, fontSize + change));
+    fontSize = Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, fontSize + change));
     localStorage.setItem('fontSize', fontSize);
     applyReadingSettings();
     updateFontSizeButtons();
@@ -3302,7 +3320,7 @@ function addHomepageBookmarkEventListeners() {
     switch (action) {
       // 字體設置
       case 'font-decrease':
-        updateFontSize(-2);
+        updateFontSize(-FONT_SIZE_STEP);
         addFontAdjustFeedback(e.target);
         break;
       case 'font-normal':
@@ -3312,7 +3330,7 @@ function addHomepageBookmarkEventListeners() {
         updateFontSizeButtons();
         break;
       case 'font-increase':
-        updateFontSize(2);
+        updateFontSize(FONT_SIZE_STEP);
         addFontAdjustFeedback(e.target);
         break;
 

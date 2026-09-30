@@ -1,15 +1,30 @@
   // 閱讀設置功能
+  //
+  // 字級階梯：預設字級 = 螢幕寬度對應的「基礎值」+ FONT_SIZE_STEP * FONT_DEFAULT_STEPS，
+  // FONT_DEFAULT_STEPS = 2 代表預設比基礎值大兩級，也就是「A+ 按兩次」後的大小。
+  // 上下界一併跟著放大（原本預設 16 落在 12–24 的正中央），讓預設值上下仍各有四級
+  // 可調，不會因為預設變大就把 A+ 的可調空間吃掉。
+  const FONT_SIZE_STEP = 2;                        // A+／A- 每按一級的 px 差
+  const FONT_DEFAULT_STEPS = 2;                    // 預設比基礎值大幾級（= A+ 按兩次）
+  const FONT_SIZE_MIN = 12;
+  const FONT_SIZE_MAX = 28;
+  const FONT_BASE_SMALL_PHONE = 19;                // 基礎值（不含預設加成）
+  const FONT_BASE_PHONE = 18;
+  const FONT_BASE_TABLET = 17;
+  const FONT_BASE_DESKTOP = 16;
+
   // 根据屏幕尺寸设置默认字体大小
   function getDefaultFontSize() {
     const screenWidth = window.innerWidth;
+    const bonus = FONT_SIZE_STEP * FONT_DEFAULT_STEPS;
     if (screenWidth <= 400) {
-      return 19; // 小手机默认19px
+      return FONT_BASE_SMALL_PHONE + bonus; // 小手机默认23px
     } else if (screenWidth <= 600) {
-      return 18; // 手机默认18px
+      return FONT_BASE_PHONE + bonus; // 手机默认22px
     } else if (screenWidth <= 768) {
-      return 17; // 平板默认17px
+      return FONT_BASE_TABLET + bonus; // 平板默认21px
     }
-    return 16; // 桌面默认16px
+    return FONT_BASE_DESKTOP + bonus; // 桌面默认20px
   }
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
@@ -318,7 +333,7 @@
   }
   
   function updateFontSize(change) {
-    fontSize = Math.max(12, Math.min(24, fontSize + change));
+    fontSize = Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, fontSize + change));
     localStorage.setItem('fontSize', fontSize);
     applyReadingSettings();
     updateFontSizeButtons();

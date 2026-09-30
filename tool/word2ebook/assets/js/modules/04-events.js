@@ -57,7 +57,7 @@
     switch (action) {
       // 字體設置
       case 'font-decrease':
-        updateFontSize(-2);
+        updateFontSize(-FONT_SIZE_STEP);
         addFontAdjustFeedback(e.target);
         break;
       case 'font-normal':
@@ -67,7 +67,7 @@
         updateFontSizeButtons();
         break;
       case 'font-increase':
-        updateFontSize(2);
+        updateFontSize(FONT_SIZE_STEP);
         addFontAdjustFeedback(e.target);
         break;
 
