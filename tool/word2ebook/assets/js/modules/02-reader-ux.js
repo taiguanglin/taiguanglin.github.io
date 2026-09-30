@@ -290,7 +290,7 @@
     // 桌面預設值同樣視為「A（正常）」：使用者若曾在窄視窗調到桌面預設、
     // 之後再放大視窗，選中狀態不該消失。
     const defaultFontSize = getDefaultFontSize();
-    const desktopFontSize = FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_DEFAULT_STEPS;
+    const desktopFontSize = FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_STEPS_DESKTOP;
     if (fontSize === defaultFontSize || fontSize === desktopFontSize) {
       const normalBtn = document.querySelector('[data-action="font-normal"]');
       if (normalBtn) normalBtn.classList.add('active');

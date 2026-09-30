@@ -1,30 +1,32 @@
   // 閱讀設置功能
   //
-  // 字級階梯：預設字級 = 螢幕寬度對應的「基礎值」+ FONT_SIZE_STEP * FONT_DEFAULT_STEPS，
-  // FONT_DEFAULT_STEPS = 2 代表預設比基礎值大兩級，也就是「A+ 按兩次」後的大小。
-  // 上下界一併跟著放大（原本預設 16 落在 12–24 的正中央），讓預設值上下仍各有四級
-  // 可調，不會因為預設變大就把 A+ 的可調空間吃掉。
+  // 字級階梯：預設字級 = 螢幕寬度對應的「基礎值」+ FONT_SIZE_STEP × 該區間的加強級數。
+  // 加強級數依裝置而異——電腦 +2 級（＝按兩次 A+）、平板 +1 級（＝按一次 A+）、
+  // 手機不額外加強（維持原預設），因為小螢幕本來就靠基礎值偏大來兼顧可讀性。
+  // 上下界一併留出空間，讓加強後的預設值上下仍各有四級（±8px）可調。
   const FONT_SIZE_STEP = 2;                        // A+／A- 每按一級的 px 差
-  const FONT_DEFAULT_STEPS = 2;                    // 預設比基礎值大幾級（= A+ 按兩次）
+  const FONT_STEPS_SMALL_PHONE = 0;                // ≤400px：不快調
+  const FONT_STEPS_PHONE = 0;                      // ≤600px：不加調
+  const FONT_STEPS_TABLET = 1;                     // ≤768px：+1 級（A+ 按一次）
+  const FONT_STEPS_DESKTOP = 2;                    // >768px：+2 級（A+ 按兩次）
   const FONT_SIZE_MIN = 12;
   const FONT_SIZE_MAX = 28;
-  const FONT_BASE_SMALL_PHONE = 19;                // 基礎值（不含預設加成）
+  const FONT_BASE_SMALL_PHONE = 19;                // 基礎值（不含加強級數）
   const FONT_BASE_PHONE = 18;
   const FONT_BASE_TABLET = 17;
   const FONT_BASE_DESKTOP = 16;
 
-  // 根据屏幕尺寸设置默认字体大小
+  // 根据屏幕尺寸设置默认字体大小（加強級數依螢幕寬度而定）
   function getDefaultFontSize() {
     const screenWidth = window.innerWidth;
-    const bonus = FONT_SIZE_STEP * FONT_DEFAULT_STEPS;
     if (screenWidth <= 400) {
-      return FONT_BASE_SMALL_PHONE + bonus; // 小手机默认23px
+      return FONT_BASE_SMALL_PHONE + FONT_SIZE_STEP * FONT_STEPS_SMALL_PHONE; // 小手机默认19px
     } else if (screenWidth <= 600) {
-      return FONT_BASE_PHONE + bonus; // 手机默认22px
+      return FONT_BASE_PHONE + FONT_SIZE_STEP * FONT_STEPS_PHONE; // 手机默认18px
     } else if (screenWidth <= 768) {
-      return FONT_BASE_TABLET + bonus; // 平板默认21px
+      return FONT_BASE_TABLET + FONT_SIZE_STEP * FONT_STEPS_TABLET; // 平板默认19px（+1 級）
     }
-    return FONT_BASE_DESKTOP + bonus; // 桌面默认20px
+    return FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_STEPS_DESKTOP; // 桌面默认20px（+2 級）
   }
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
