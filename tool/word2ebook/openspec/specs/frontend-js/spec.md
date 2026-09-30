@@ -28,7 +28,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | `getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
+| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_DEFAULT_STEPS` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、`getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
@@ -110,6 +110,32 @@ when the key is unset, first paint SHALL honor the OS preference via
 `matchMedia('(prefers-color-scheme: dark)')` (the inline head script applies
 `dark-mode` to `<html>` pre-paint; `00-base.js` re-applies it to `<body>` and
 removes it from `<html>`).
+
+### Requirement: Default Reading Font Size
+The system SHALL derive the default body font size from the viewport width plus
+two font steps above that base value, where one step is the A+/A- increment
+(`FONT_SIZE_STEP = 2`) and `FONT_DEFAULT_STEPS = 2`. The base per breakpoint
+SHALL be 19 (≤400px), 18 (≤600px), 17 (≤768px), 16 (wider), giving defaults of
+23 / 22 / 21 / 20 px — i.e. the size reached by pressing A+ twice on the former
+base. A user-stored `localStorage['fontSize']` SHALL still win over the default
+(the load path must not persist the default on its own).
+
+`updateFontSize` SHALL clamp to `[FONT_SIZE_MIN, FONT_SIZE_MAX]` = `[12, 28]`,
+so the default keeps four steps of headroom in each direction, and the A+ / A-
+handlers SHALL move by `FONT_SIZE_STEP` rather than a hard-coded 2. The `A`
+(`font-normal`) button SHALL reset to the same default.
+
+#### Scenario: First visit on a desktop viewport
+- GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
+- WHEN the page applies reading settings
+- THEN the body font size SHALL be 20px
+- AND pressing A+ twice from there would not change the size
+
+#### Scenario: Stored preference is kept
+- GIVEN `localStorage['fontSize']` is `16`
+- WHEN the page applies reading settings
+- THEN the body font size SHALL stay 16px
+- AND pressing `A` SHALL reset it to the new default (20px on desktop)
 
 ### Requirement: Initial Anchor Highlight
 When a chapter page loads with a valid URL fragment, `handleInitialAnchor`
