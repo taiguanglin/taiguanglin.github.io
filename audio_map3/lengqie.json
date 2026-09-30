@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-09-29T09:32:14.657Z",
+  "generated_at": "2026-09-30T10:02:31.959Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -9146,7 +9146,7 @@
       "audio": "2024年12月13日Tai师父讲经·楞伽经(11).opus",
       "title": "楞伽经（11）",
       "duration": 1851.682,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-sfa695bdb",
@@ -9465,7 +9465,7 @@
           "pid": "p-sa6e55af1",
           "text": "有一个真实存在的东西，比如我有个手机，放在桌上，这个时候称之为“有”；我把这个手机藏起来了，或者把它弄坏了，或者把它彻底粉碎了、烧化了，总之把它弄没了，已经不在桌子上了，这个时候可以称之为“无”。也就是把我们看得到的东西毁掉之后，可以说它“无”。",
           "start": 460.521,
-          "end": 490.48,
+          "end": 490.936,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -9473,225 +9473,224 @@
         {
           "pid": "p-scd03c097",
           "text": "但是，这些外道凭空想象出没有的东西来，然后执着于它，认为这是“无”。这也是“无见”。但是，佛说你这样的“无”和我们说的真实的“无”是不一样的。因为想象出来的东西不符合我们要研究的真实的佛义。我们要的是什么？从我们真实存在的这里往回修行，回到佛的那个“空无”的境界。",
-          "start": 490.48,
-          "end": 526.08,
+          "start": 490.936,
+          "end": 527.643,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s90c43213",
           "text": "在我们这个境界里，已经存在很多事物的状态下，你又想象出别的某个不存在的东西，如果想象的程度很强烈的话，那个东西也可以变成真实的东西，佛经里叫“凝想成真”。你把一个东西想象得越来越多、越来越具体的话，它真的会变成现实里的东西。",
-          "start": 526.08,
-          "end": 551.8,
+          "start": 527.643,
+          "end": 552.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0c1c0792",
           "text": "也就是你在“无”的观念里想象出某个不存在的东西，如果这个状态延续下去的话，反而会出现真实的东西，从而让你更加堕入到这个物质世界当中。",
-          "start": 551.8,
-          "end": 567.24,
+          "start": 552.62,
+          "end": 567.04,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5ab08e47",
           "text": "所以我们堕入这个物质世界，也是因为这个原理。本来是没有的，一开始是想象出来，然后想象的这些在感觉上会越来越真实，从而变成真实的世界——从我们的感受来说。",
-          "start": 567.24,
-          "end": 581.58,
+          "start": 567.04,
+          "end": 582.096,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s024b531b",
           "text": "所以佛的意思是不要再去想象这些没有的东西，这已经不符合我们真实修行的步骤或者方法了。我们修行的方法是对于已经存在的东西产生正确的认知——知道它本来是不存在的，都是妄想、分别、执着和合而成的。",
-          "start": 581.58,
-          "end": 607.99,
+          "start": 582.096,
+          "end": 607.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s45401254",
           "text": "有了这样正确的认知之后，再往上修，把已经存在的五根境界慢慢灭掉，这是正常修行方法。而不是在这种存在的事物上又想象出没有的事物，还去追求这样的没有的事物。这样的话反而堕入到另一种错误的禅定境界当中，无法解脱。这是这一段佛要讲的核心内容。",
-          "start": 607.99,
-          "end": 638.11,
+          "start": 607.89,
+          "end": 639.354,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf31bbe6c",
           "text": "如果从这里再延伸出来讲一讲的话，人类和动物的区别不只是什么使用工具之类的，在意识层面上有一个重要区别，就是动物没有想象力，而人有想象力。人在想象力之上才能创造国家和文明。",
-          "start": 638.11,
-          "end": 662.06,
+          "start": 639.354,
+          "end": 663.379,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s178e70be",
           "text": "前不久外国某一位研究社会学和心理学的人写过书，他认为人类的社交范围就一百五十人左右，这个定律在大部分情况下都成立。",
-          "start": 662.06,
-          "end": 680.34,
+          "start": 663.379,
+          "end": 682.085,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s45608252",
           "text": "所以在古代部落社会，最多也就一百到三百人这个程度——一百五十左右的人成为一个部落，一起生活。我们称之为“熟人社会”，都是知道的、认识的状态。",
-          "start": 680.34,
-          "end": 698.62,
+          "start": 682.085,
+          "end": 698.32,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s553a31cf",
           "text": "在这之上要凝聚更多的人，从建立一个城邦国家开始，往上建立一个更大、乃至十亿人的国家，那必须要有想象出来的某个东西，其中最核心的一个东西就是“民族”。",
-          "start": 698.62,
-          "end": 711.88,
+          "start": 698.32,
+          "end": 712.88,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa6ee352a",
           "text": "大家想想看，“民族”这个词是不是全部想象出来的？我们都是独立的个体，在这生物世界里，就是一个独立的动物而已。为了生存我们可以和几个人一起生活，组成一个家庭。或者为了方便和提高生产力，可以一两百个人组成一个部落。但是，有了民族这样想象出来的东西之后，就可以凝聚更多的人，成为一个国家。",
-          "start": 711.88,
-          "end": 737.48,
+          "start": 712.88,
+          "end": 738.953,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf311f882",
           "text": "在这之上，什么宗教、社会观念、国家理想、共产主义理想都是一种想象。用这种想象出来的东西凝聚更多的人，这是人类才能做到的，动物是做不到的。",
-          "start": 737.48,
-          "end": 754.83,
+          "start": 738.953,
+          "end": 754.538,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1c3d8025",
           "text": "像北方的鸡和南方的鸡，或者北方的狗和南方的狗，它们没有什么民族的观念，所以它们也不可能组成一个什么狗的民族，只能成为一种物种。就算一个区域里有几群完全差不多的动物，比如一个草原里这边有一群牛，那边也有一群牛，都处在相同的环境里，但是它们也不可能凝聚成一个民族之类的。这是人类特有的智慧。",
-          "start": 754.83,
-          "end": 790.33,
+          "start": 754.538,
+          "end": 790.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s49229189",
           "text": "如果这种智慧放到修行上的话，反而会把人拖入更深的深渊当中。因为你想象出越多无的东西，就会堕入得越深。所以一般修行好的人很难从事这种创意类职业——靠想象和灵感的这种职业。除非你的剧本里已经写好从事这个职业，靠这个吃饭。但是，一般情况下你修得越好，脑子里妄想越少，想象力就越弱。这个时候想靠这种创意类工作吃饭就有点难度。",
-          "start": 790.33,
-          "end": 831.39,
+          "start": 790.13,
+          "end": 831.886,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f8607f2",
           "text": "所以我以前也劝过大家，你要求什么东西的话，最好是求健康、时间和钱，这三样就够了。如果你一定要求某个专业方面的灵感，拿福报去兑换也可以。但是这对你的修行来说不是究竟的法，也可以说是一种助缘，并不是很究竟的作为修行人的态度。",
-          "start": 831.39,
-          "end": 860.77,
+          "start": 831.886,
+          "end": 863.73,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s99878913",
           "text": "回到原文继续看。“云何兔角离于有无？”为什么这个兔角和有无没有关系呢？“互因待故”，这个兔角是与牛角相对而说的。相对真实存在的牛角来说，它是想象出来的东西。",
-          "start": 860.77,
-          "end": 881.21,
+          "start": 863.73,
+          "end": 881.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s99f0bf3e",
           "text": "分析牛角乃至微尘，求其体相终不可得，圣智所行远离彼见，是故于此不应分别。",
-          "start": 881.21,
-          "end": 890.64,
+          "start": 881.11,
+          "end": 889.959,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s18c3e4ee",
           "text": "分析牛角直到微尘，它的“体相终不可得”，也就是把一个东西分解到最后的话，它是不存在的。“圣智所行远离彼见”，正常的佛法修行应该远离这样的观念。“是故于此不应分别”，在这之上不能分别，也就是不能像这些外道一样，从有的东西上想象出无的东西，然后再进行分别，这是错误的见解。",
-          "start": 890.64,
-          "end": 926.06,
+          "start": 889.959,
+          "end": 926.56,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s29569fcf",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，彼岂不以妄见起相比度观待妄计无耶？”",
-          "start": 926.06,
-          "end": 939.21,
+          "start": 926.56,
+          "end": 938.271,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd5b254e2",
           "text": "这一句里“比度”是推测、推断的意思。这句话整体的意思就是：大慧菩萨问，世尊，这些外道不是用虚妄生起的分别相来推断虚妄计度出来的无吗？前面的“妄见起相”是指虚妄生起的分别相，后边的“虚妄计度”是关于“无”的。",
-          "start": 939.21,
-          "end": 1022.34,
+          "start": 938.271,
+          "end": 996.653,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe1de5c3",
           "text": "为什么是虚妄计度出来的无？就是他根据看到的事物凭空想象出来的，看到存在的牛角，凭空想象出不存在的兔角，这叫“虚妄计度出无”。",
-          "start": 1022.34,
-          "end": 1022.34,
+          "start": 996.653,
+          "end": 1023.462,
           "conf": 0.8,
           "method": "miss",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s6f4077a5",
           "text": "下一段，佛根据这句话来回答。",
-          "start": 1022.34,
-          "end": 1027.03,
+          "start": 1023.462,
+          "end": 1027.23,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sff63dbf7",
           "text": "佛言：“不以分别起相待以言无。何以故？彼以分别为生因故。",
-          "start": 1027.03,
-          "end": 1029.31,
+          "start": 1027.23,
+          "end": 1030.213,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3f092ea3",
           "text": "这个“无”是不能用这种分别起相相对来说的，尤其是把已经存在的东西作为参照物，想象出一个不存在的东西，再说它无，这是不对的。这是以分别心为“生”的原因。",
-          "start": 1029.31,
-          "end": 1061.04,
+          "start": 1030.213,
+          "end": 1061.14,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s51abac4a",
           "text": "以角分别为其所依，所依为因离异不异，非由相待显兔角无。",
-          "start": 1061.04,
-          "end": 1061.04,
+          "start": 1061.14,
+          "end": 1061.14,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true,
@@ -9700,300 +9699,299 @@
         {
           "pid": "p-s81cffe34",
           "text": "“以角分别为其所依”，关于角的分别作为依据。这里角的分别中间缺几个字——角的“有无”分别为其所依，以角的存在与不存在作为分别的依据。“所依为因离异不异”，这样分别的依据离开了“异不异”，和“异不异”不相关。“异”是不同，“不异”是同。",
-          "start": 1061.04,
-          "end": 1094.71,
+          "start": 1061.14,
+          "end": 1095.743,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1bb42b38",
           "text": "以前分别心的部分专门讲过“同分别”和“异分别”的区别。“同分别”是有个体认知，却没有个体差异；“异分别”是有个体认知，又有个体差异。所以分别心不管是同分别还是异分别，都是对于存在的事物来说，没有拿“存在的”和“不存在的”来分别的这种做法，这在佛的逻辑上是分别不成立。",
-          "start": 1094.71,
-          "end": 1130.66,
+          "start": 1095.743,
+          "end": 1132.08,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf116b74a",
           "text": "“非由相待显兔角无”，所以佛说不能用这种相对的方式来显示“兔角无”，这本身就是一种错误的观念。",
-          "start": 1130.66,
-          "end": 1146.09,
+          "start": 1132.08,
+          "end": 1145.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s103c9347",
           "text": "下一段是非常烧脑的一个逻辑问题，我也看了好一会儿，因为有不同的译本。前面讲过《楞伽经》有三个主要译本，这是唐译本，实叉难陀译的。",
-          "start": 1146.09,
-          "end": 1161.89,
+          "start": 1145.89,
+          "end": 1162.689,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa03518c4",
           "text": "大慧，若此分别，异兔角者，则非角因，若不异者，因彼而起。",
-          "start": 1161.89,
-          "end": 1167.9,
+          "start": 1162.689,
+          "end": 1168.1,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s398e47cf",
           "text": "这一段怎么解释才能在逻辑上比较通顺呢？这个有点难度。还有一个是刘宋译本，译者是“天竺三藏求那跋陀罗”，这个人翻译的是：“若复妄想异角者，则不因角生。若不异者，则因彼故。”好像有点相似，但是也有点不一样。",
-          "start": 1167.9,
-          "end": 1199.14,
+          "start": 1168.1,
+          "end": 1201.619,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s725d3c7c",
           "text": "我是这样理解的，这个“此分别”是什么？看到存在的牛角，而想象出不存在的兔角，然后分别这个牛角和兔角，指这种错误的分别方式。",
-          "start": 1199.14,
+          "start": 1201.619,
           "end": 1219.9,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5073f448",
           "text": "“异兔角者”，不同于兔角者，“异”是不同的意思。这既然和兔角不同，兔角是不存在的，和不存在的东西不同的，肯定是存在的东西，咱们就叫牛角。",
           "start": 1219.9,
-          "end": 1236.49,
+          "end": 1239.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s407ecd26",
           "text": "“则非角因”，它不是角的因，这句什么意思呢？存在的牛角并不是因为不存在的兔角而存在。“则非角因”的“角”前面应该有个“兔”字，那就不是兔角的因。这个存在的东西并不是因为这个不存在的东西而存在，它本来就存在，和不存在的东西不相关。存在就是存在，它哪有和不存在的东西有联系或者有关联而存在的，是吧？",
-          "start": 1236.49,
-          "end": 1275.55,
+          "start": 1239.25,
+          "end": 1277.542,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfaea050e",
           "text": "“若不异者”，“不异”是同的意思，和不存在的兔角同样的，也是不存在的东西。",
-          "start": 1275.55,
+          "start": 1277.542,
           "end": 1289.55,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s94b71908",
           "text": "“因彼而起”，和兔角一样不存在的东西因错误的分别而生起。“彼”是前面这个分别方式——看到存在的牛角想象出兔角，然后分别牛角和兔角的这种分别方式。“因彼而起”，不存在的东西却是因为这种分别方式而生起。所以这整个观念都是错误的。",
           "start": 1289.55,
-          "end": 1320.54,
+          "end": 1321.876,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s32e7f1a6",
           "text": "好了，这句我重新翻译一下：看到存在的牛角，想象出兔角，然后分别牛角、兔角。如果在这种分别方式下，不同于兔角者即存在的牛角，并不是因为不存在的兔角而存在，也就是存在的东西并不是因为不存在的东西而存在。和兔角一样不存在的东西是因错误的分别心而生起。",
-          "start": 1320.54,
+          "start": 1321.876,
           "end": 1360.46,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s05e963e5",
           "text": "大慧，分析牛角乃至极微，求不可得，异于有角言无角者，如是分别决定非理，",
           "start": 1360.46,
-          "end": 1360.46,
+          "end": 1363.735,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s4989bba4",
           "text": "“分析牛角乃至极微，求不可得”，大家都知道，牛角乃至微尘只要一直分解下去，最后都是求不可得的，都会消失。也可以说整个物质世界都是妄想和合而成，所以妄想消失的话，全部都会消失。",
-          "start": 1360.46,
-          "end": 1378.58,
+          "start": 1363.735,
+          "end": 1379.377,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbe152966",
           "text": "“异于有角言无角者”，和这个因为看到存在的角，而说不存在的人不一样。“如是分别决定非理”，看到存在的东西，而想象出不存在的东西，然后说他们不一样，这种分别是错误的。",
-          "start": 1378.58,
-          "end": 1403.43,
+          "start": 1379.377,
+          "end": 1403.53,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s83a0bc27",
           "text": "二俱非有谁待于谁，若相待不成，待于有故言兔角无，不应分别，不正因故。",
-          "start": 1403.43,
+          "start": 1403.53,
           "end": 1405.44,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb734dad3",
           "text": "“二俱非有”，两者都不存在，那个存在的东西，像牛角，最后都是求不可得，是不存在的，本相是不存在的。然后又想象出了不存在的东西，本相也是不存在的。所以“谁待于谁”，谁相对于谁呢？",
           "start": 1405.44,
-          "end": 1424.1,
+          "end": 1424.2,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa64375e9",
           "text": "“若相待不成”，这种相对不成立的话。“待于有故言兔角无”，相对于存在的东西而说不存在的东西，相对于存在的牛角而说不存在的兔角。“不应分别”，不应该有这样的分别方式。“不正因故”，这不是正确的因。",
-          "start": 1424.1,
-          "end": 1444.66,
+          "start": 1424.2,
+          "end": 1444.56,
           "conf": 0.89,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6e45e4e1",
           "text": "有无论者，执有执无，二俱不成。",
-          "start": 1444.66,
-          "end": 1447.31,
+          "start": 1444.56,
+          "end": 1447.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3c7d3b75",
           "text": "“有无论者”，就是执着于“有”和“无”的这些外道。“执有执无”，他们执着于“有”和“无”。“二俱不成”，“有”和“无”本身都不成立。",
-          "start": 1447.31,
-          "end": 1463.53,
+          "start": 1447.81,
+          "end": 1463.33,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc58185a9",
           "text": "大慧，复有外道，见色形状虚空分齐而生执著，言色异虚空起于分别。",
-          "start": 1463.53,
-          "end": 1475.84,
+          "start": 1463.33,
+          "end": 1468.686,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s26524ed6",
           "text": "还有一种外道，看到色——物质世界，在物质上的形状和“虚空分齐”，虚空和物质分别存在，而产生执着。“言色异虚空起于分别”，物质和虚空不一样的这种说法从分别心中来。",
-          "start": 1475.84,
-          "end": 1499.71,
+          "start": 1468.686,
+          "end": 1499.61,
           "conf": 0.828,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s577c86f7",
           "text": "大慧，虚空是色，随入色种。",
-          "start": 1499.71,
-          "end": 1503.93,
+          "start": 1499.61,
+          "end": 1503.63,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9870dd8c",
           "text": "虚空也是色，我们所认知的那个虚空、真空也是色的一种。",
-          "start": 1503.93,
-          "end": 1509.97,
+          "start": 1503.63,
+          "end": 1511.295,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sabe082a4",
           "text": "大慧，色是虚空，能持所持建立性故。色空分齐应如是知。",
-          "start": 1509.97,
-          "end": 1513.42,
+          "start": 1511.295,
+          "end": 1513.12,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2cedce1d",
           "text": "色就是虚空。“能持所持”，就是能和所。“能持所持建立性故”，在能所的区别上建立起来的。哪个是“能持”，哪个是“所持”呢？虚空是“能持”，“所持”是色。虚空承载着色——一切物质世界，所以虚空是能持。在这之上装载的这些物质——器世界称之为色。",
-          "start": 1513.42,
-          "end": 1542.51,
+          "start": 1513.12,
+          "end": 1543.869,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4c6fe8eb",
           "text": "“色空分齐应如是知”，我们应该这样知道虚空和色。佛说的意思就是虚空也是色的一种，只是根据能持和所持分别出来的。虚空里承载着色，色存在于虚空当中，以这种分别又建立出这种关系。",
-          "start": 1542.51,
-          "end": 1577.42,
+          "start": 1543.869,
+          "end": 1577.728,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5e3bb02d",
           "text": "大慧，大种生时自相各别，不住虚空中，非彼无虚空。",
-          "start": 1577.42,
-          "end": 1582.62,
+          "start": 1577.728,
+          "end": 1584.166,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0d1073a5",
           "text": "“大种”就是四大。四大产生的时候，它们的各个相都不一样，四大也就是物质存在的地方——虚空就不存在。“非彼无虚空”，实际上并不是没有虚空，虚空一直在，只是东西占了一个地方而已。",
-          "start": 1582.62,
-          "end": 1613.15,
+          "start": 1584.166,
+          "end": 1613.852,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4f0b783f",
           "text": "大慧，兔角亦尔，观待牛角言彼角无。",
-          "start": 1613.15,
-          "end": 1618.13,
+          "start": 1613.852,
+          "end": 1620.065,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfa31f84c",
           "text": "兔角也是这样，相对牛角来说它不存在。外道都这么说。",
-          "start": 1618.13,
-          "end": 1626.09,
+          "start": 1620.065,
+          "end": 1625.99,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7150f533",
           "text": "大慧，分析牛角乃至微尘，又析彼尘，其相不现。",
-          "start": 1626.09,
-          "end": 1632.67,
+          "start": 1625.99,
+          "end": 1634.383,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd1aac4e5",
           "text": "在这里“又析彼尘”的“彼”是兔角。牛角到微尘都是不存在的。本来不存在兔角，分析它的尘，最后也是不存在的。所以“其相不现”，它们的相都不现出来。",
-          "start": 1632.67,
+          "start": 1634.383,
           "end": 1649.58,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s37bcfc48",
@@ -10009,226 +10007,226 @@
           "pid": "p-s91df6982",
           "text": "“彼何所待”，它们既然不存在，又怎么能相对而立呢？“而言无耶”，怎么能说它们无呢？不能相对，也没有办法说它们无。",
           "start": 1649.58,
-          "end": 1663.03,
+          "end": 1663.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sabf46120",
           "text": "“若待余物，彼亦如是”，就算相对的是其他物——牛角和其他真实存在的东西，它也是这样——分析至微尘的话，其相都不现，都是不存在的。",
-          "start": 1663.03,
-          "end": 1676.28,
+          "start": 1663.13,
+          "end": 1676.88,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s42aa4b91",
           "text": "大慧，汝应远离兔角牛角、虚空及色所有分别，汝及诸菩萨摩诃萨，应常观察自心所见分别之相，于一切国土为诸佛子说观察自心修行之法。",
-          "start": 1676.28,
-          "end": 1683.11,
+          "start": 1676.88,
+          "end": 1683.756,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc6a3a73c",
           "text": "大慧，你应该远离这些个兔角和牛角、虚空及色的所有分别。你们菩萨应该常观察自己心中产生的这个“分别之相”。到各个佛世界当中去说这种观察自心的修行方法——内观法。",
-          "start": 1683.11,
-          "end": 1711.49,
+          "start": 1683.756,
+          "end": 1711.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7fa0b3af",
           "text": "这个内观法不是我们凡夫阶段的内观，而是菩萨境界里的“奢摩他”法——入静这个方法。“奢摩他”“三摩钵提”“禅那”在《圆觉经》里都解释过，大家去看一下。“奢摩他”就是往自己内心灭妄想的修法。",
-          "start": 1711.49,
-          "end": 1729.7,
+          "start": 1711.19,
+          "end": 1733.32,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1a8fe916",
           "text": "下面一段是佛说的偈语，总结了上面的这些理论。",
-          "start": 1729.7,
-          "end": 1738.7,
+          "start": 1733.32,
+          "end": 1738.566,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb986c5b8",
           "text": "尔时，世尊即说颂言：心所见无有，唯依心故起；",
-          "start": 1738.7,
-          "end": 1741.6,
+          "start": 1738.566,
+          "end": 1742.506,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2592f0b7",
           "text": "心中见到“无”和“有”，“无”和“有”都是从心中生起的，都是唯自心所现的妄想。",
-          "start": 1741.6,
-          "end": 1750.24,
+          "start": 1742.506,
+          "end": 1749.91,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb7b957f6",
           "text": "身资所住影，众生藏识现。",
-          "start": 1750.24,
-          "end": 1753.16,
+          "start": 1749.91,
+          "end": 1753.791,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sef878545",
           "text": "“资”是物质世界、器世界。我们的身体和物质世界、器世界都是从众生的藏识——第八识阿赖耶识当中显现出来的。",
-          "start": 1753.16,
-          "end": 1762.24,
+          "start": 1753.791,
+          "end": 1762.14,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s049e0264",
           "text": "心意及与识，自性五种法：二无我清净，诸导师演说。",
-          "start": 1762.24,
-          "end": 1767.9,
+          "start": 1762.14,
+          "end": 1768.291,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s324df949",
           "text": "这个七识、心意意识、意识的分别，还有“三自性”“五法”，这个前面都讲过了。“二无我”，人无我、法无我。“诸导师演说”，这都是前面的诸佛说过的。",
-          "start": 1767.9,
+          "start": 1768.291,
           "end": 1786.93,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3df00995",
           "text": "长短共观待，展转互相生；",
           "start": 1786.93,
-          "end": 1792.13,
+          "end": 1788.784,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s09dab006",
           "text": "长和短是相对而说的，都是相互依存而生的。",
-          "start": 1792.13,
-          "end": 1795.66,
+          "start": 1788.784,
+          "end": 1795.46,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s16085d78",
           "text": "因有故成无，因无故成有。",
-          "start": 1795.66,
-          "end": 1798.29,
+          "start": 1795.46,
+          "end": 1798.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s82beac49",
           "text": "因为“有”而说“无”，因为“无”而说“有”。",
-          "start": 1798.29,
-          "end": 1801.81,
+          "start": 1798.19,
+          "end": 1801.71,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5c6d9e75",
           "text": "微尘分析事，不起色分别；",
-          "start": 1801.81,
-          "end": 1806.26,
+          "start": 1801.71,
+          "end": 1806.16,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s30ed5a66",
           "text": "所有事物分析到微尘上，都会回到无的状态里，所以不应该起色上的分别。",
-          "start": 1806.26,
-          "end": 1815.36,
+          "start": 1806.16,
+          "end": 1815.26,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd36fa170",
           "text": "唯心所安立，恶见者不信。",
-          "start": 1815.36,
-          "end": 1817.73,
+          "start": 1815.26,
+          "end": 1817.63,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s30cb87e2",
           "text": "一切都是心中分别出来的相而已。但是恶见者不信，就是外道这些人不信。",
-          "start": 1817.73,
-          "end": 1824.34,
+          "start": 1817.63,
+          "end": 1824.74,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saf789507",
           "text": "外道非行处，声闻亦复然；",
-          "start": 1824.34,
-          "end": 1826.56,
+          "start": 1824.74,
+          "end": 1827.788,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s59048fb8",
           "text": "“非行”就是外道错误的修行处。外道处在这种错误的修行状态上，声闻也是如此。",
-          "start": 1826.56,
-          "end": 1836,
+          "start": 1827.788,
+          "end": 1835.9,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2bec25cf",
           "text": "救世之所说，自证之境界。",
-          "start": 1836,
-          "end": 1839.01,
+          "start": 1835.9,
+          "end": 1840.407,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se26d80e7",
           "text": "佛说的是自己灭除自己内心妄想的这种修法。“自证之境界”，也可以说是佛的境界。",
-          "start": 1839.01,
-          "end": 1848.47,
+          "start": 1840.407,
+          "end": 1849.653,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2f4bc2c1",
           "text": "好了，这一期就讲到这里。",
-          "start": 1848.47,
+          "start": 1849.653,
           "end": 1851.682,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
