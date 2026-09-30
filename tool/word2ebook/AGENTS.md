@@ -149,7 +149,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `13-player-persist.js` | Cross-page audio persistence: snapshots `{src, t, file, page, anchor}` from `W2E.qaAudio` into `sessionStorage w2e:playerState`; resume pill on any page (same-page hands back to 08's player + `seekAbs`, other pages spawn their own `Audio`) |
 | `14-search-plus.js` | Search UX: `/` / Ctrl+K focus, ↓/↑/Enter keyboard navigation on results, keyboard-focus reset via `MutationObserver` when the results list re-renders (never the removed `DOMSubtreeModified`), and chapter-page `<mark class="w2e-hl">` term highlighting driven by the `?q=` param that 01e appends when opening results |
 | `15-mobile-toc.js` | Mobile TOC ergonomics: tap-out backdrop (≤768px), edge-swipe open / panel-swipe close. 「回到頂端」只留功能選單（☰ → ↑）內的按鈕，無常駐懸浮鈕 |
-| `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3; "本講次暫無音檔跟播" note on `/ebook/` lecture pages that have `.para-block` but no play buttons |
+| `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3 |
 | `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint script in templates adds it to `<html>`); registers root `/sw.js` under the two ebook dirs for offline reading |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
@@ -179,7 +179,7 @@ All CSS modules live in `assets/css/modules/` and are concatenated (in numeric o
 | `04b-toc-dark.css` | Dark-mode overrides for TOC controls, floating TOC, bookmark items inside the TOC panel |
 | `04c-qa-audio.css` | QA source banner, `qa-meta-bar` (number + `.qa-play` + status badge), opening/closing bars, `qa-opening`, bottom floating `qa-player`, loading states; 講經「段落跟播」（`.para-track-toggle`、`body.para-track-on`、`.para-block.para-active`）與「經文置頂」（`.sutra-pin-toggle`、sticky `.sutra-pin-host`、範圍容器 `.sutra-pin-group`，`body.sutra-pin-off`/`-suppress` 止停留）styles; dark-mode variants. Loads before `05` so its responsive overrides win |
 | `05-responsive.css` | **All** `@media` breakpoints: height-based toolbar, ≤768px tablet, ≥800px wide, ≤600px mobile (incl. QA player full-width), ≤400px small-phone |
-| `06-ux-plus.css` | 2026-09 UX 改善元件（無 `@media`）：墨夜深色面板（`.dark-neutral`）、閱讀位置提示條、續播膠囊、`.toc-count` 可點、`.anchor-share`、`mark.w2e-hl`、搜尋結果 `.kb-focus`、目錄 backdrop、`.no-audio-note`、目錄縮排導引線（**已移除**首頁「我的書籤」管理區塊的 `.w2e-bm-*`） |
+| `06-ux-plus.css` | 2026-09 UX 改善元件（無 `@media`）：墨夜深色面板（`.dark-neutral`）、閱讀位置提示條、續播膠囊、`.toc-count` 可點、`.anchor-share`、`mark.w2e-hl`、搜尋結果 `.kb-focus`、目錄 backdrop、目錄縮排導引線（**已移除**首頁「我的書籤」管理區塊的 `.w2e-bm-*`） |
 
 **Design-token rule:** always use `var(--color-primary)`, `var(--radius-sm)`, etc. (defined in `00-base.css`) — never hardcode raw hex or pixel values in new CSS.
 

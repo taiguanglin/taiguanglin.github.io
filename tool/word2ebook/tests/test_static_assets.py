@@ -471,7 +471,6 @@ def test_real_js_bundle_contains_ux_modules():
         "w2e-audio-resume",     # 13-player-persist
         "kb-focus",             # 14-search-plus 鍵盤導覽
         "w2e-toc-backdrop",     # 15-mobile-toc
-        "no-audio-note",        # 16-jump-share（ebook 無音檔提示）
         "anchor-share",         # 16-jump-share（標題錨點分享）
         "theme-dark-neutral",   # 02-reader-ux／04-events（墨夜主題鈕）
         "sw.js",                # 17-theme-pwa（PWA 註冊）
@@ -486,7 +485,6 @@ def test_real_css_bundle_contains_ux_module():
         ".dark-neutral",        # 墨夜面板
         ".w2e-resume-bar",
         ".w2e-audio-resume",
-        ".no-audio-note",
         ".anchor-share",
         "mark.w2e-hl",
     ]:

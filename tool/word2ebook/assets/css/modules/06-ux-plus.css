@@ -191,17 +191,6 @@ body.dark-neutral mark.w2e-hl { background: rgba(217, 168, 108, 0.35); }
 }
 .w2e-toc-backdrop.visible { display: block; }
 
-/* ---- ebook 無音檔提示（16-jump-share.js ③；U6） ---- */
-.no-audio-note {
-    font-size: 0.85em;
-    color: #999;
-    border-left: 3px solid var(--color-accent-pale);
-    padding-left: 10px;
-    margin: 8px 0 20px;
-}
-body.dark-mode .no-audio-note { color: #b98ca3; border-left-color: #5a2d49; }
-body.dark-neutral .no-audio-note { color: var(--color-neutral-muted); border-left-color: var(--color-neutral-hairline); }
-
 /* ---- 目錄縮排導引線（D7） ---- */
 .toc ul ul { border-left: 1px dashed var(--color-accent-pale); margin-left: 6px; padding-left: 14px; }
 .toc ul ul ul { border-left-style: dotted; }
