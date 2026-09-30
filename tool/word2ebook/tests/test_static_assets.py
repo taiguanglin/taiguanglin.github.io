@@ -346,16 +346,23 @@ class TestStaticAssetsManagerRealModules:
         assert "handleInitialAnchor" in js
         assert "classList.add('anchor-target-highlight')" in js
 
-    def test_real_js_default_font_size_is_two_steps_above_base(self):
-        """閱讀設置預設字級 = 螢幕基礎值 + 2 級（A+ 按兩次），上下界 12–28。"""
+    def test_real_js_default_font_size_is_boosted_per_device(self):
+        """閱讀設置預設字級：電腦 +2 級（A+ 兩次）、平板 +1 級（A+ 一次）、手機不加。"""
         js = StaticAssetsManager().get_full_js_content()
         assert "const FONT_SIZE_STEP = 2;" in js
-        assert "const FONT_DEFAULT_STEPS = 2;" in js
+        assert "const FONT_STEPS_SMALL_PHONE = 0;" in js
+        assert "const FONT_STEPS_PHONE = 0;" in js
+        assert "const FONT_STEPS_TABLET = 1;" in js
+        assert "const FONT_STEPS_DESKTOP = 2;" in js
         assert "const FONT_SIZE_MIN = 12;" in js
         assert "const FONT_SIZE_MAX = 28;" in js
-        # 桌面預設 = 16 + 2 * 2 = 20px（其餘視窗 23/22/21）
-        assert "return FONT_BASE_DESKTOP + bonus;" in js
-        assert "const bonus = FONT_SIZE_STEP * FONT_DEFAULT_STEPS;" in js
+        # 實際預設：19 / 18 / 19 / 20 px
+        assert (
+            "return FONT_BASE_SMALL_PHONE + FONT_SIZE_STEP * FONT_STEPS_SMALL_PHONE;" in js
+        )
+        assert "return FONT_BASE_PHONE + FONT_SIZE_STEP * FONT_STEPS_PHONE;" in js
+        assert "return FONT_BASE_TABLET + FONT_SIZE_STEP * FONT_STEPS_TABLET;" in js
+        assert "return FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_STEPS_DESKTOP;" in js
         # A+／A- 走常數，clamp 走常數上下界，不再有寫死的 2 / 12 / 24
         assert "updateFontSize(FONT_SIZE_STEP)" in js
         assert "updateFontSize(-FONT_SIZE_STEP)" in js

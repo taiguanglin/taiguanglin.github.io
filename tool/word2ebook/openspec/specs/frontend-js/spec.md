@@ -28,7 +28,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_DEFAULT_STEPS` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、`getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
+| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_STEPS_*` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、`getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
@@ -112,24 +112,38 @@ when the key is unset, first paint SHALL honor the OS preference via
 removes it from `<html>`).
 
 ### Requirement: Default Reading Font Size
-The system SHALL derive the default body font size from the viewport width plus
-two font steps above that base value, where one step is the A+/A- increment
-(`FONT_SIZE_STEP = 2`) and `FONT_DEFAULT_STEPS = 2`. The base per breakpoint
-SHALL be 19 (≤400px), 18 (≤600px), 17 (≤768px), 16 (wider), giving defaults of
-23 / 22 / 21 / 20 px — i.e. the size reached by pressing A+ twice on the former
-base. A user-stored `localStorage['fontSize']` SHALL still win over the default
-(the load path must not persist the default on its own).
+The system SHALL derive the default body font size from the viewport width as
+`base + FONT_SIZE_STEP × steps`, where one step is the A+/A- increment
+(`FONT_SIZE_STEP = 2`). The per-device ladder SHALL be:
+
+| Viewport | Base | Steps | Default |
+|----------|------|-------|---------|
+| ≤400px (small phone) | 19 | 0 | 19px |
+| ≤600px (phone) | 18 | 0 | 18px |
+| ≤768px (tablet) | 17 | 1 | 19px |
+| >768px (desktop) | 16 | 2 | 20px |
+
+The desktop default SHALL equal the size reached by pressing A+ twice, the
+tablet default by pressing A+ once, and phones SHALL keep their former defaults.
+A user-stored `localStorage['fontSize']` SHALL still win over the default (the
+load path must not persist the default on its own).
 
 `updateFontSize` SHALL clamp to `[FONT_SIZE_MIN, FONT_SIZE_MAX]` = `[12, 28]`,
-so the default keeps four steps of headroom in each direction, and the A+ / A-
-handlers SHALL move by `FONT_SIZE_STEP` rather than a hard-coded 2. The `A`
-(`font-normal`) button SHALL reset to the same default.
+so the boosted desktop default keeps four steps of headroom in each direction,
+and the A+ / A- handlers SHALL move by `FONT_SIZE_STEP` rather than a hard-coded
+2. The `A` (`font-normal`) button SHALL reset to the same default.
 
 #### Scenario: First visit on a desktop viewport
 - GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
 - WHEN the page applies reading settings
 - THEN the body font size SHALL be 20px
-- AND pressing A+ twice from there would not change the size
+- AND pressing A+ twice from the former 16px base would have produced the same size
+
+#### Scenario: Tablet gets one step, phone gets none
+- GIVEN no `localStorage['fontSize']`
+- WHEN the page applies reading settings on a 700px-wide viewport
+- THEN the body font size SHALL be 19px
+- AND on a 390px-wide viewport it SHALL be 19px (unchanged from the old default)
 
 #### Scenario: Stored preference is kept
 - GIVEN `localStorage['fontSize']` is `16`
