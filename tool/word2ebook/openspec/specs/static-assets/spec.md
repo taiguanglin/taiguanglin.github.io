@@ -79,7 +79,7 @@ priority order:
   theme/PWA (`theme-dark-neutral`, `sw.js`) behaviours AFTER the
   `10-search-return.js` block, the bundled CSS SHALL
   contain `.dark-neutral` / `.w2e-resume-bar` / `.w2e-audio-resume` /
-  `.no-audio-note` / `.anchor-share` rules, NEITHER bundle SHALL contain any
+  `.anchor-share` rules, NEITHER bundle SHALL contain any
   `w2e-bm-*` / `我的書籤` rule or markup, and no build-config change is required
 
 ### Requirement: Concatenation Ordering

@@ -6968,15 +6968,12 @@ initSearchSnapshotCapture();
   }, { passive: true });
 })();
 // ============================================================
-// 16-jump-share.js — 目錄計數直跳主題第一則問答／標題分享連結／
-//                     ebook 無跟播章節提示
+// 16-jump-share.js — 目錄計數直跳主題第一則問答／標題分享連結
 //
 // ① 章節目錄的 .toc-count「(50)」變成可點：跳到該主題下第一則
 //    .question（沒有問題的主題退回原錨點行為）。
 // ② h2/h3 帶 id 的標題在 hover/focus 時顯示 🔗 錨點鈕，點擊複製
 //    「頁面#錨點」連結（沿用 03d 的 copyText + 02 的穩定 ID）。
-// ③ /ebook/ 講經頁（含 .para-block）若全頁無 .qa-play 播放鈕，
-//    在 h1 後插一句「本講次尚無音檔跟播」提示，避免使用者以為壞掉。
 // ============================================================
 
 ;(function () {
@@ -7050,21 +7047,6 @@ initSearchSnapshotCapture();
       });
       h.appendChild(btn);
     });
-  }
-
-  // ---------- ③ ebook 無跟播章節提示 ------------------------------------
-  if (window.location.pathname.indexOf('/ebook/') !== -1 &&
-      document.querySelector('.para-block') &&
-      !document.querySelector('button.qa-play')) {
-    var h1 = document.querySelector('main h1, h1');
-    if (h1) {
-      var note = document.createElement('p');
-      note.className = 'no-audio-note';
-      note.textContent = tt(
-        '本讲次暂未提供音档跟播（音档校对中，敬请见谅）。',
-        '本講次暫未提供音檔跟播（音檔校對中，敬請見諒）。');
-      h1.insertAdjacentElement('afterend', note);
-    }
   }
 })();
 // ============================================================
