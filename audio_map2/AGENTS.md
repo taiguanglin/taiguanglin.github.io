@@ -62,6 +62,15 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
   段數（開場不計入，與側邊欄 `mustCalibrateItems` 口徑一致）。
 - **完成＝實際聽過**：播放該段才寫入 `meta.lastPlayed`、session 才變綠；只微調時間不算完成。
   要持久化（寫回 GitHub JSON）按底部「💾 儲存」或「存收聽進度」。
+- **防遺失機制（不要改壞它）**：本機草稿是唯一能救回「按了儲存但沒存完就離開」的東西。
+  - `scheduleDraft()` 是 800ms debounce，但有 **2500ms 硬上限**（`DRAFT_MAX_DELAY_MS`）——
+    連續校稿不會把本機副本無限期往後推。
+  - `flushDraft()` 在**第一個 await 之前**同步寫檔：按「儲存到 GitHub」時會先存本機草稿再上傳，
+    `beforeunload`／`pagehide`／`visibilitychange:hidden`（手機切 app、下拉重整）也各自觸發。
+    ⚠️ 這些同步點是防止「離頁時 pending timer 被取消 → 草稿從未寫入 → 成果靜默消失」的唯一防線。
+  - `pendingSave` 標記（`storage.js`）記錄「上傳開始但沒完成」；存檔成功才清除。下次開頁看到草稿時，
+    對話框會明說上次上傳未完成、遠端仍是存檔前版本。
+  - 存檔**失敗不會丟任何東西**：草稿與標記都留著，可直接重試。
 
 ### 卡片顏色
 

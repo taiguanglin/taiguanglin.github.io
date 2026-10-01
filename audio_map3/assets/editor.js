@@ -4,12 +4,15 @@ import { parseRanges, secondsToTimecode, timecodeToSeconds } from './parser.js';
 import {
     clearDraft,
     clearPat,
+    clearPendingSave,
     getDraft,
     getPat,
+    getPendingSave,
     getPrefs,
     listDraftPaths,
     setDraft,
     setPat,
+    setPendingSave,
     setPrefs,
 } from './storage.js';
 
@@ -26,6 +29,9 @@ const MONTHS = SERIES.map((s) => s.key);
 const SERIES_LABEL = Object.fromEntries(SERIES.map((s) => [s.key, s.label]));
 
 const HISTORY_LIMIT = 50;
+/** Local-draft write timing: quiet period, and a hard ceiling on it. */
+const DRAFT_DEBOUNCE_MS = 800;
+const DRAFT_MAX_DELAY_MS = 2500;
 const history = {
     undo: [],
     redo: [],
@@ -43,6 +49,8 @@ const state = {
     prefs: getPrefs(),
     draftPaths: listDraftPaths(),
     draftTimer: null,
+    draftFirstAt: null,
+    saving: false,
     activeSegmentIndex: null,
     usingDraft: false,
 };
@@ -255,9 +263,21 @@ function bindEvents() {
         await saveCurrentMap({ force: true });
     });
     window.addEventListener('beforeunload', (event) => {
-        if (!state.dirty) return;
+        // Never lose the local copy because the page went away mid-save.
+        if (state.dirty) flushDraft();
+        // An upload in flight is the dangerous case: the remote copy may still
+        // be the pre-save version, so warn even if the map looks clean.
+        if (!state.dirty && !state.saving) return;
         event.preventDefault();
         event.returnValue = '';
+    });
+    // `pagehide` is the reliable teardown hook (bfcache, tab close, Safari);
+    // `visibilitychange` covers mobile app-switch and pull-to-refresh.
+    window.addEventListener('pagehide', () => {
+        if (state.dirty) flushDraft();
+    });
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'hidden' && state.dirty) flushDraft();
     });
 }
 
@@ -1005,7 +1025,12 @@ function mergePdfTextFrom(target, source) {
 function askDraftChoice(path, draft) {
     return new Promise((resolve) => {
         const date = draft.savedAt ? new Date(draft.savedAt).toLocaleString('zh-TW') : '未知時間';
-        els.draftMessage.textContent = `${path} 有本機草稿，最後暫存時間：${date}。`;
+        const pending = getPendingSave();
+        const interrupted = pending?.path === path
+            ? '（上次按「儲存到 GitHub」後就離開了頁面，那次上傳沒有完成，'
+              + '所以遠端還是存檔前的版本。）'
+            : '';
+        els.draftMessage.textContent = `${path} 有本機草稿，最後暫存時間：${date}。${interrupted}`;
         const onClose = () => {
             els.draftDialog.removeEventListener('close', onClose);
             resolve(els.draftDialog.returnValue || 'remote');
@@ -2091,16 +2116,38 @@ function recomputeDirty() {
     else setStatus('有未儲存變更', 'ok');
 }
 
+/**
+ * Write the local draft now, cancelling any pending debounce.
+ *
+ * The debounce below is the only thing standing between an edit and a durable
+ * local copy, so every moment where the page could go away — starting a save,
+ * unloading, backgrounding the tab — must flush synchronously instead of
+ * waiting for a timer that an unload will silently cancel.
+ */
+function flushDraft() {
+    clearTimeout(state.draftTimer);
+    state.draftTimer = null;
+    if (!state.map) return;
+    flushEditorTimesIntoMap();
+    setDraft(mapPath(state.month), serializeMap(state.map), state.currentSha);
+    state.draftPaths = listDraftPaths();
+    els.draftBadge.classList.remove('hidden');
+}
+
 function scheduleDraft() {
     clearTimeout(state.draftTimer);
+    // Trailing debounce, but bounded: continuous editing must not be able to
+    // postpone the local copy forever.
+    const now = Date.now();
+    if (state.draftFirstAt == null) state.draftFirstAt = now;
+    const delay = Math.max(0, Math.min(
+        DRAFT_DEBOUNCE_MS,
+        state.draftFirstAt + DRAFT_MAX_DELAY_MS - now,
+    ));
     state.draftTimer = setTimeout(() => {
-        if (!state.map) return;
-        // Best-effort: include any in-progress marker edits in the local draft.
-        flushEditorTimesIntoMap();
-        setDraft(mapPath(state.month), serializeMap(state.map), state.currentSha);
-        state.draftPaths = listDraftPaths();
-        els.draftBadge.classList.remove('hidden');
-    }, 800);
+        state.draftFirstAt = null;
+        flushDraft();
+    }, delay);
 }
 
 function resetHistory() {
@@ -2168,7 +2215,12 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         return;
     }
     const path = mapPath(state.month);
-    setStatus('上傳中…', 'loading');
+    // Persist locally *before* the first await: a reload during the upload must
+    // find a recoverable draft, and a leftover marker tells the next load why.
+    flushDraft();
+    setPendingSave(path);
+    state.saving = true;
+    setStatus('上傳中…（請勿重新整理；本機草稿已暫存）', 'loading');
     try {
         if (!state.currentSha) {
             try {
@@ -2191,6 +2243,8 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         state.dirty = false;
         state.usingDraft = false;
         clearDraft(path);
+        clearPendingSave();
+        state.draftFirstAt = null;
         els.draftBadge.classList.add('hidden');
         resetHistory();
         if (state.sessionId) renderEditor();
@@ -2204,6 +2258,8 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
             return;
         }
         setStatus(error.message || String(error), 'error');
+    } finally {
+        state.saving = false;
     }
 }
 
