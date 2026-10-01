@@ -46,6 +46,20 @@ questioner pattern (`Name：content`) and answerer pattern (`Taiguanglin：conte
 - GIVEN a paragraph where the token before a date is not followed by a full
   `HH:MM` timestamp, the system SHALL NOT treat it as a questioner paragraph
 
+#### Scenario: Misspelled answerer marker
+- GIVEN the Word 彙總 contains an answerer marker that is a typo of
+  `Taiguanglin` (e.g. `Taiguangli`, `Tiguanglin`, `_x0001_Taiguanglin`, or
+  `Taiguanglin师父说`)
+- WHEN the parser extracts the answerer
+- THEN the system SHALL recognise it as an answerer, NOT as a questioner
+- AND the rendered block SHALL be one `question` div followed by one `answer`
+  div wrapped in a single `qa-pair` article, so the answer is never emitted as
+  a second `question` div
+- AND the system SHALL NOT treat ordinary questioner names (including ones that
+  merely contain `Tai`/`师父`) as answerers
+- NOTE: a marker embedded **mid-paragraph** (`…内容。Taiguanglin：回答`) is out
+  of scope for this requirement; the marker regex stays anchored at line start.
+
 ### Requirement: Stable Element IDs
 The system SHALL generate stable, deterministic IDs for each Q&A pair based on
 `questioner_name + normalized_time + first_50_chars_of_content` hashed with MD5.

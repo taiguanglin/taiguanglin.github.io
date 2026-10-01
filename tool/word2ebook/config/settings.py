@@ -130,7 +130,24 @@ class Constants:
     # 问答作者相关
     ANSWERER_RAW_NAME = "Taiguanglin"        # 文档中出现的原始名称
     ANSWERER_DISPLAY_NAME = "Tai師父"        # 渲染到 HTML 时使用的显示名称
-    ANSWERER_REGEX = r'^(Taiguanglin|taiguanglin)[:：]\s*(.*)'  # 识别答复者的正则
+    # 识别答复者的正则。
+    #
+    # Word 彙總裡實際出現過 5 處答者標記誤植，原本嚴格匹配會把它們當成「提問人」，
+    # 於是該段被渲染成第二個 <div class="question">（block 變成「提問＋提問」、沒有
+    # answer div），螢幕閱讀器也會把師父的回答讀成問問題：
+    #   Taiguangli：          少尾 n
+    #   Tiguanglin：          少 T 後的 a
+    #   _x0001_Taiguanglin：  Word 把控制字元寫成 _xHHHH_ 轉義
+    #   Taiguanglin师父说：   多綴「师父说」
+    # 因此容忍上述變體，但不放寬到會誤認一般人名為答者。
+    # 注意：捕獲組編號是既有契約 —— 組 1＝標記名、組 2＝回答內容
+    # （utils/text_utils.extract_answerer_info 取 group(2)）。
+    ANSWERER_REGEX = (
+        r'^((?:_x[0-9A-Fa-f]{4}_)?'        # Word 控制字元轉義前綴
+        r'(?:Ta?iguanglin|Taiguanglin?)'   # 少 a（Ta?iguanglin）／少尾 n（Taiguanglin?）
+        r'(?:師父说|师父说|師父說|师父說)?' # 多綴的「师父说」
+        r')[:：]\s*(.*)'
+    )
 
     # 内容默认值
     DEFAULT_QUESTION_TITLE = "問題"          # 无法提取标题时的回退标题

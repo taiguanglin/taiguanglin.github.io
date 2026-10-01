@@ -195,6 +195,48 @@ class TestExtractQuestionerInfo:
 # IDGenerator
 # ---------------------------------------------------------------------------
 
+class TestExtractAnswererInfo:
+    """答者標記辨識（含 Word 彙總裡實見的誤植）。
+
+    誤植若不認出來，該段會被當成「提問人」→ 電子書渲染成第二個
+    ``<div class="question">``，block 變成「提問＋提問」、沒有 answer div。
+    """
+
+    @pytest.mark.parametrize("marker", [
+        "Taiguanglin",          # 正規
+        "taiguanglin",          # 全小寫
+        "TAIGUANGLIN",          # 全大寫
+        "Taiguangli",           # 誤植：少尾 n（2024-02-29 隨意的蚂蚁2）
+        "Tiguanglin",           # 誤植：少 T 後的 a（2024-08-17 千湍盈泰／慧光）
+        "_x0001_Taiguanglin",   # Word 控制字元轉義前綴（2025-03-10 覺）
+        "Taiguanglin师父说",     # 多綴「师父说」（2025-01-18 收場）
+    ])
+    def test_recognised_markers(self, text_proc, marker):
+        answerer, content = text_proc.extract_answerer_info(f"{marker}：\n回答正文")
+        assert answerer == "Taiguanglin"
+        assert content == "回答正文"
+
+    @pytest.mark.parametrize("text", [
+        "随意的蚂蚁2：2024-02-29 22:24\n师父，自小与父亲不大亲密",
+        "小猫咪柴：\n顶礼师父",
+        "Tai师父的小粉丝：2024-09-13\n请问师父",
+        "觉：2025/3/10礼敬Tai师父",
+        "妄_Tai：\n顶礼",
+    ])
+    def test_questioners_are_not_mistaken_for_answerers(self, text_proc, text):
+        # 一般提問人名不得被誤判成答者（否則整段提問會不見）
+        answerer, _ = text_proc.extract_answerer_info(text)
+        assert answerer is None
+
+    def test_capture_group_contract_preserved(self, text_proc):
+        # text_utils 取 group(2) 當回答內容；回傳的答者名一律正規化為
+        # ANSWERER_RAW_NAME（不管原始標記誤植成什麼）
+        answerer, content = text_proc.extract_answerer_info(
+            "Tiguanglin：<br>你下边第二个问题，禅定中的问题。")
+        assert answerer == "Taiguanglin"
+        assert content == "<br>你下边第二个问题，禅定中的问题。"
+
+
 class TestIDGenerator:
     def test_stable_qa_id_deterministic_across_instances(self, settings):
         # 「稳定」指跨重建稳定：每次构建都新建解析器/IDGenerator，
