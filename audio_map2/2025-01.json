@@ -9619,11 +9619,9 @@
           "end_label": "00:44:21.265",
           "confidence": 0.0,
           "status": "auto",
-          "notes": "非答疑段；新年快樂收場白，已移入 closing；移除無關 chapter_answer_id answer-297d4a8b8de0（該 answer div 沒有自己的 question block，是「答者標記誤植」造成的 HTML 孤兒，非本題回答）",
+          "notes": "非答疑段；新年快樂收場白，已移入 closing；移除無關 chapter_answer_id answer-297d4a8b8de0（該 answer div 沒有自己的 question block，是「答者標記誤植」造成的 HTML 孤兒，非本題回答）；重建後「Taiguanglin师父说」誤植已修：本段在電子書變成沒有 question div 的孤立 answer block（answer-61dc46b01b0b），故 chapter_question_ids 清空、改用 chapter_answer_ids",
           "srt_preview": "最后呃祝大家新年快乐吧，马上就要春节了哈，给大家拜个年啊，就有人提这个布什的事啊，什么供养的事，我是打算半年一次的哈，所以下次应该是三月份吧。啊啊，这时候我希望大家这个春节呢就痛痛，快快的啊，快快乐乐的，该玩就玩，该吃就吃啊，嗯呃我就不在这个春节期间过度打打扰大家了。大家也不用想这个事儿啊，大家就去好好团聚和亲人好好团聚啊，尤其是在春节期间啊，每一次这个据说是每次每次民政局嗯过了这个节日的时候，来来这个离婚的人就大长排队。嗯，大排长队啊…",
-          "chapter_question_ids": [
-            "question-eee741d14345"
-          ],
+          "chapter_question_ids": [],
           "chapter_indexes": [
             12
           ],
@@ -9632,7 +9630,9 @@
           "stable_key": "2025-01-18-wechat#24",
           "q_preview": "最后祝大家新年快乐，马上就要春节了，给大家拜个年。有人提布施的事，供养的事，我是打算半年一次的，所以下一次应该是三月份吧。\n至少我希望大家这个春节痛痛快快的、快快乐乐的，该玩就玩，该吃就吃，我就不在春…",
           "answer_preview": "",
-          "chapter_answer_ids": [],
+          "chapter_answer_ids": [
+            "answer-61dc46b01b0b"
+          ],
           "html_verbatim": false
         }
       ],
