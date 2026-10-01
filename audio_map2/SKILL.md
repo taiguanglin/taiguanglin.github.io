@@ -127,6 +127,10 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
 `model.generate()` 的 `item['timestamp']` 取（`funasr_char_onset.py` 已封裝）。`AutoModel` 的 punc
 模型用全名 `iic/punc_ct-transformer_zh-cn-common-vocab272727-pytorch`（`"ct-punc"` 此 venv 不註冊）。
 稽核對「長 cue 含前段尾＋首詞」可能給 **OK 偽陰**；`EARLY ≤1.5s` 合法，只修 `LATE`／`prev-tail`。
+**更嚴重的偽陰**：稽核拿「首詞所在 cue」判定，**不驗 `start` 落在哪個 cue**——若 `start` 整段落在
+下一個 cue（例：2025-02-15 貼吧 #6 首詞 cue 574.54、`start` 誤取 577.242）仍會報 `OK`。
+稽核只給 `OK/LATE/???` 不等於對齊正確；**收尾仍要逐段跑「從 `start` 剪 4s 首字複驗」**
+（`start` 起第一個詞＝段落第一個詞才收案）。
 **自報 conf 不可信，以稽核為準。**
 
 ## 7. 逐月結論（可外推教訓；逐段明細見 git 歷史）
