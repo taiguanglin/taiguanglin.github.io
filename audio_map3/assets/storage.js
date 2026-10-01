@@ -2,6 +2,7 @@ const PREFIX = 'audioMapEditor:';
 const PAT_KEY = `${PREFIX}pat`;
 const PREFS_KEY = `${PREFIX}prefs`;
 const DRAFT_PREFIX = `${PREFIX}draft:`;
+const PENDING_SAVE_KEY = `${PREFIX}pendingSave`;
 
 const DEFAULT_PREFS = {
     playbackRate: 1,
@@ -90,4 +91,29 @@ export function listDraftPaths() {
 
 function draftKey(path) {
     return `${DRAFT_PREFIX}${path}`;
+}
+
+/**
+ * Marker for "a GitHub save was started and never confirmed". Cleared on
+ * success. A leftover marker is how the next page load knows the previous
+ * session ended mid-save, so the draft it finds can be explained instead of
+ * looking like an unexplained local copy.
+ */
+export function getPendingSave() {
+    try {
+        return JSON.parse(localStorage.getItem(PENDING_SAVE_KEY) || 'null');
+    } catch {
+        return null;
+    }
+}
+
+export function setPendingSave(path) {
+    localStorage.setItem(PENDING_SAVE_KEY, JSON.stringify({
+        path,
+        startedAt: new Date().toISOString(),
+    }));
+}
+
+export function clearPendingSave() {
+    localStorage.removeItem(PENDING_SAVE_KEY);
 }

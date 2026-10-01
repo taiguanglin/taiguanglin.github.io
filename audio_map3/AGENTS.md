@@ -44,6 +44,12 @@ cd <repo root> && python3 -m http.server 8931   # 或 audio/serve.py（需 Range
   **topbar 常駐徽章 `#dataSourceBadge`** 標「來源 GitHub raw」（綠）或「來源 已部署檔案」（黃），
   滑過有完整說明與實際抓取的 URL——**看見舊資料先看這顆**。`#saveStatus` 是會被播放／校時／存檔
   洗掉的暫時訊息，不能拿它當來源依據。
+- **防遺失機制（不要改壞它）**（與 audio_map2 同款）：本機草稿是唯一能救回「按了儲存但沒存完就
+  離開」的東西。`scheduleDraft()` 800ms debounce 有 **2500ms 硬上限**（`DRAFT_MAX_DELAY_MS`）；
+  `flushDraft()` 在**第一個 await 之前**同步寫檔，並由 `beforeunload`／`pagehide`／
+  `visibilitychange:hidden`（手機切 app、下拉重整）觸發——這些同步點是防止「離頁時 pending timer 被
+  取消 → 草稿從未寫入 → 成果靜默消失」的唯一防線。`pendingSave` 標記（`storage.js`）記錄「上傳開始
+  但沒完成」，成功才清除，下次看到草稿時對話框會明說上次上傳未完成。存檔失敗不會丟任何東西。
 
 ### 「零長度」標記（`"zero": true`，2026-09 新增，與 audio_map2 同步）
 
