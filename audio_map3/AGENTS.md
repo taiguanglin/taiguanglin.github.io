@@ -40,8 +40,10 @@ cd <repo root> && python3 -m http.server 8931   # 或 audio/serve.py（需 Range
 - **`<series>.json` 的來源隨網站位置切換**（`github.js` 的 `loadMapJson`）：在 `taiguanglin.info`
   （任何非 localhost 主機）改讀 `raw.githubusercontent.com/…/main/audio_map3/<series>.json`，
   commit 完**幾秒內**就看到新資料，不用等 Pages 建置（建置失敗時也不會卡住）。localhost／`file://`
-  一律讀本機檔案。raw 讀不到會自動退回已部署檔案並記住（不再每次都等逾時）；狀態列標
-  「來源 GitHub raw」或「來源已部署檔案」——**看見舊資料時先看這行**。
+  一律讀本機檔案。raw 讀不到（離線／被擋）會自動退回已部署檔案並記住，不再每次都等逾時。
+  **topbar 常駐徽章 `#dataSourceBadge`** 標「來源 GitHub raw」（綠）或「來源 已部署檔案」（黃），
+  滑過有完整說明與實際抓取的 URL——**看見舊資料先看這顆**。`#saveStatus` 是會被播放／校時／存檔
+  洗掉的暫時訊息，不能拿它當來源依據。
 
 ### 「零長度」標記（`"zero": true`，2026-09 新增，與 audio_map2 同步）
 
