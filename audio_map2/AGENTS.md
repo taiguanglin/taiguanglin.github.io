@@ -48,6 +48,12 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 
 - 左側選月份 → session；卡片 ▶ 播放該段（`../audio/*.opus`）；過濾器可只看
   ⚠低信心／插補／待人工／缺時間。
+- **月份 JSON 的來源隨網站位置切換**（`github.js` 的 `loadMapJson`）：在
+  `taiguanglin.info`（任何非 localhost 主機）改讀
+  `raw.githubusercontent.com/…/main/audio_map2/<month>.json`，commit 完**幾秒內**就看到新資料，
+  不用等 Pages 建置（建置失敗時也不會卡住）。localhost／`file://` 一律讀本機檔案（預覽工作樹）。
+  raw 讀不到會自動退回已部署檔案，並在該次 session 記住（不再每次都等逾時），狀態列會標
+  「來源 GitHub raw」或「來源已部署檔案」——**看見舊資料時先看這行**。
 - 快捷鍵：`P` 播放暫停、`↑↓` 段落導覽、`N` 定位下一個未確認段（`Shift`+`N` 下一個已確認；
   只捲動不播放、不寫 `lastPlayed`）。
 - topbar「跳瀏工具列」⤒/⤓ 同款循環定位（右鍵／長按才定位並播放）；徽章顯示本月份剩餘未確認
