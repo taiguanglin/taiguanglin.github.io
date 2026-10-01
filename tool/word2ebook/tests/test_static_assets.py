@@ -365,11 +365,12 @@ class TestStaticAssetsManagerRealModules:
         assert "matchMedia('(pointer: coarse)')" in js
         assert "isHandheldPointer() ? FONT_BASE_TABLET : FONT_BASE_DESKTOP" in js
         assert "isHandheldPointer() ? FONT_STEPS_TABLET : FONT_STEPS_DESKTOP" in js
-        # A+／A- 走常數，clamp 走常數上下界，不再有寫死的 2 / 12 / 24
+        # A+／A- 走常數；夾限收斂到 clampFontSize()（載入路徑與按鈕共用同一支）
         assert "updateFontSize(FONT_SIZE_STEP)" in js
         assert "updateFontSize(-FONT_SIZE_STEP)" in js
-        assert "Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, fontSize + change))" in js
-        assert "fontSize === 16" not in js
+        assert "fontSize = clampFontSize(fontSize + change);" in js
+        assert "function clampFontSize(size) {" in js
+        assert "return Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, size));" in js
 
     def test_real_js_content_width_follows_font_size(self):
         """內容寬度依行長目標連動：舊版寬螢幕固定 1000px，20px 下等於每行 48 字。"""
@@ -402,17 +403,37 @@ class TestStaticAssetsManagerRealModules:
         boosted = js.find("getFontBoostSteps(screenWidth);", idx)
         assert idx < base < boosted, "目錄頁應先 return base，再走加強分支"
 
-    def test_real_js_font_normal_does_not_persist_on_index_page(self):
-        """目錄頁按「A」不得寫入 localStorage：否則內文頁被鎖死在目錄的緊湊字級。"""
+    def test_real_js_font_normal_resets_the_step_to_zero(self):
+        """「A」= 回到預設：寫入級數 0。改存級數後不再需要頁型守衛——
+        舊版存絕對 px 時，目錄頁寫入會把內文鎖死在緊湊字級。"""
         js = StaticAssetsManager().get_full_js_content()
         idx = js.find("case 'font-normal':")
         assert idx != -1
         block = js[idx:idx + 400]
-        assert "localStorage.setItem('fontSize', fontSize);" in block
-        guard = block.find("if (!isIndexPage()) {")
-        write = block.find("localStorage.setItem('fontSize', fontSize);")
-        assert guard != -1, "寫入前必須有 isIndexPage() 守衛"
-        assert guard < write, "setItem 必須落在守衛內"
+        assert "fontStep = 0;" in block
+        assert "writeStorage(FONT_STEP_KEY, 0);" in block
+        assert "localStorage.setItem('fontSize'" not in block
+        assert "if (!isIndexPage())" not in block, "存級數後不需要頁型守衛"
+
+    def test_real_js_stores_font_size_as_step_offset_with_migration(self):
+        """字級偏好存「相對預設的級數」而非絕對 px，讓偏好在各裝置都成立；
+        舊的絕對 px 首次載入換算後移除舊 key。"""
+        js = StaticAssetsManager().get_full_js_content()
+        assert "const FONT_STEP_KEY = 'fontStep';" in js
+        assert "const LEGACY_FONT_SIZE_KEY = 'fontSize';" in js
+        # 載入：級數 → 字級，並夾在上下界內
+        assert "let fontStep = loadFontStep(fontBase);" in js
+        assert "let fontSize = clampFontSize(getDefaultFontSize() + fontStep * FONT_SIZE_STEP);" in js
+        # 遷移：以基礎值為基準換算，並清掉舊 key（避免每次載入重跑）
+        assert "const step = Math.round((legacy - base) / FONT_SIZE_STEP);" in js
+        assert "removeStorage(LEGACY_FONT_SIZE_KEY);" in js
+        # 0 是合法級數，不能被當成「沒設定過」
+        assert "if (!isNaN(stored)) return stored;" in js
+        # 調整後反推級數存檔
+        assert "fontStep = Math.round((fontSize - getDefaultFontSize()) / FONT_SIZE_STEP);" in js
+        # 「A（正常）」的選中判準是級數為 0，不是寫死的 px
+        assert "if (fontStep === 0) {" in js
+        assert re.search(r"fontSize\s*===\s*16", js) is None
 
     def test_real_css_does_not_override_body_line_height(self):
         """媒體查詢不得寫死 body 的 line-height：那會蓋掉 --line-height，

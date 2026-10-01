@@ -286,12 +286,10 @@
     const fontOptionBtns = document.querySelectorAll('[data-action^="font-"].font-option');
     fontOptionBtns.forEach(btn => btn.classList.remove('active'));
     
-    // 根據當前字體大小標記對應按鈕
-    // 桌面預設值同樣視為「A（正常）」：使用者若曾在窄視窗調到桌面預設、
-    // 之後再放大視窗，選中狀態不該消失。
-    const defaultFontSize = getDefaultFontSize();
-    const desktopFontSize = FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_STEPS_DESKTOP;
-    if (fontSize === defaultFontSize || fontSize === desktopFontSize) {
+    // 「A（正常）」的判準是「沒有任何自訂級數」，不是某個寫死的 px。
+    // 舊版比對寫死的 16px 作為桌面預設的寬容；改存級數後，視窗寬窄變化
+    // 不會再讓「使用者的選擇」看起來像「預設」，這個寬容不需要了。
+    if (fontStep === 0) {
       const normalBtn = document.querySelector('[data-action="font-normal"]');
       if (normalBtn) normalBtn.classList.add('active');
     }

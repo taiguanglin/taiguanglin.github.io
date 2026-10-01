@@ -1,0 +1,62 @@
+# 電子書產生器管線的鎖版依賴（word2ebook / books2ebook / word_audio_map2 共用）
+#
+# 安裝：
+#     python3 -m venv .venv
+#     .venv/bin/pip install -r requirements.txt
+#
+# 為什麼要鎖版（全部用 == 精確釘住，不是 >=）
+# ----------------------------------------------
+# 產生器的輸出**不是**只由 repo 內的程式碼決定，套件版本也參與其中。最明顯的
+# 例子是 PyMuPDF：PDF 文字抽取時如何在斷行處插入空格，會隨版本不同而改變，
+# 而 books2ebook 的 `_join()` 正是靠「上一段結尾 + 下一段開頭」決定要不要補空格。
+# 實測：同一支 parser、同一個 regex，在 PyMuPDF 1.28.2 下重建 ebook/，
+# 會有 72 段文字與版控中的版本不同（`18 岁` → `18岁`），連帶 search_index 的
+# MD5 也變了。也就是說版控中的 ebook/ 文字**無法由新環境重現**。
+#
+# 這不是理論風險：2026-09 為了同步 books.css 而跑了一次 books2ebook 重建，
+# 就撞上了這件事。若換版本後重建，diff 會混進大量與內容無關的文字雜訊，
+# 無法 review，也分不清是真的改到文字還是抽取層變了。
+#
+# 規則：**只在明確需要升版時**才動這裡，且升版後：
+#   1. 重新 build 並 review 文字 diff（確認是預期的內容差異，而非抽取雜訊）
+#   2. 一次提交內同時更新 requirements.txt 與產出的文字
+# 升版與產出**永遠綁在一起**，不要分兩次提交。
+#
+# 已知敏感套件（影響產出文字，升版前務必 review diff）：
+#   pymupdf            —— PDF 文字抽取與斷行
+#   opencc-python-reimplemented —— 簡繁轉換（異體字表會更新）
+#   python-docx        —— docx 解析與段落切分
+#   pypinyin           —— 拼音欄位
+#   jieba              —— 搜尋索引斷詞（build/quotes 用）
+#   beautifulsoup4 / lxml —— HTML 解析
+
+# --- PDF 解析（word2ebook PDF 章節、books2ebook 十本書、pdf_audio_map）---
+pymupdf==1.28.2
+
+# --- Word 解析（問答錄 2 的 .docx）---
+python-docx==1.2.0
+
+# --- 簡繁轉換（I18nProcessor；lang-switch.js 的字集須與其同步）---
+opencc-python-reimplemented==0.1.7
+
+# --- 設定（config.yaml）---
+PyYAML==6.0.3
+
+# --- 搜尋索引斷詞 ---
+jieba==0.42.1
+
+# --- 拼音（搜尋／欄位）---
+pypinyin==0.55.0
+
+# --- HTML 解析（章節後處理、審計腳本）---
+beautifulsoup4==4.15.0
+lxml==6.1.2
+
+# --- slug（檔名／錨點）---
+python-slugify==8.0.4
+text-unidecode==1.3
+
+# --- 測試（tool/word2ebook/tests；AGENTS 要求每次改動後跑）---
+pytest==9.1.1
+pytest-cov==7.1.0
+coverage==7.15.4
