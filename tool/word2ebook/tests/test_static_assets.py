@@ -1,6 +1,7 @@
 """Tests for templates/static_assets.py"""
 
 import pytest
+import re
 from pathlib import Path
 
 from templates.static_assets import (
@@ -354,15 +355,39 @@ class TestStaticAssetsManagerRealModules:
         assert "const FONT_STEPS_PHONE = 0;" in js
         assert "const FONT_STEPS_TABLET = 1;" in js
         assert "const FONT_STEPS_DESKTOP = 2;" in js
-        assert "const FONT_SIZE_MIN = 12;" in js
+        # 中文下限 14px（12px 的中文字形在非 Retina 上會糊）
+        assert "const FONT_SIZE_MIN = 14;" in js
         assert "const FONT_SIZE_MAX = 28;" in js
         # 內文頁實際預設：19 / 18 / 19 / 20 px
         assert "return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);" in js
+        # 觸控為主的裝置一律算平板級（不吃桌面的基礎值與 +2 級）
+        assert "function isHandheldPointer()" in js
+        assert "matchMedia('(pointer: coarse)')" in js
+        assert "isHandheldPointer() ? FONT_BASE_TABLET : FONT_BASE_DESKTOP" in js
+        assert "isHandheldPointer() ? FONT_STEPS_TABLET : FONT_STEPS_DESKTOP" in js
         # A+／A- 走常數，clamp 走常數上下界，不再有寫死的 2 / 12 / 24
         assert "updateFontSize(FONT_SIZE_STEP)" in js
         assert "updateFontSize(-FONT_SIZE_STEP)" in js
         assert "Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, fontSize + change))" in js
         assert "fontSize === 16" not in js
+
+    def test_real_js_content_width_follows_font_size(self):
+        """內容寬度依行長目標連動：舊版寬螢幕固定 1000px，20px 下等於每行 48 字。"""
+        js = StaticAssetsManager().get_full_js_content()
+        assert "const MEASURE_TARGET_CHARS = 40;" in js
+        assert "const CONTENT_CHROME_PX = 34;" in js
+        assert "function getDefaultContentWidth()" in js
+        assert "const byMeasure = MEASURE_TARGET_CHARS * fontSize + CONTENT_CHROME_PX;" in js
+        assert (
+            "return Math.max(CONTENT_WIDTH_MIN, Math.min(CONTENT_WIDTH_MAX, Math.round(byMeasure)));" in js
+        )
+        # 目錄頁維持 800px 固定寬度；內文才跟字級連動
+        assert "return TOC_CONTENT_WIDTH;" in js
+        assert (
+            "let contentWidth = parseInt(localStorage.getItem('contentWidth')) || getDefaultContentWidth();" in js
+        )
+        # 舊的視窗寬度特例必須消失
+        assert "window.innerWidth >= 1400 ? 1000 : 800" not in js
 
     def test_real_js_index_page_keeps_unboosted_default_font_size(self):
         """總目錄頁（index / index_trad）不加大預設字級：目錄要多行才好看得完。"""
@@ -376,6 +401,63 @@ class TestStaticAssetsManagerRealModules:
         base = js.find("return base;", idx)
         boosted = js.find("getFontBoostSteps(screenWidth);", idx)
         assert idx < base < boosted, "目錄頁應先 return base，再走加強分支"
+
+    def test_real_js_font_normal_does_not_persist_on_index_page(self):
+        """目錄頁按「A」不得寫入 localStorage：否則內文頁被鎖死在目錄的緊湊字級。"""
+        js = StaticAssetsManager().get_full_js_content()
+        idx = js.find("case 'font-normal':")
+        assert idx != -1
+        block = js[idx:idx + 400]
+        assert "localStorage.setItem('fontSize', fontSize);" in block
+        guard = block.find("if (!isIndexPage()) {")
+        write = block.find("localStorage.setItem('fontSize', fontSize);")
+        assert guard != -1, "寫入前必須有 isIndexPage() 守衛"
+        assert guard < write, "setItem 必須落在守衛內"
+
+    def test_real_css_does_not_override_body_line_height(self):
+        """媒體查詢不得寫死 body 的 line-height：那會蓋掉 --line-height，
+        讓「緊密／正常／寬鬆」三顆鈕在平板／手機上失效。"""
+        css = StaticAssetsManager().get_full_css_content()
+        # 去掉註解，避免把說明文字裡的 "body { line-height: 1.7 }" 當成真規則
+        css = re.sub(r"/\*.*?\*/", "", css, flags=re.S)
+        assert re.search(r"body\s*\{[^}]*line-height\s*:\s*var\(--line-height\)", css), (
+            "body 的行高應由 --line-height 控制"
+        )
+        # 逐一走訪每個 @media 的「完整」區塊本體（比對大括號配對），
+        # 不能只掃開頭幾百字——覆寫規則可能落在區塊深處。
+        for m in re.finditer(r"@media[^{]*\{", css):
+            start = m.end() - 1
+            depth, i = 0, start
+            while i < len(css):
+                if css[i] == "{":
+                    depth += 1
+                elif css[i] == "}":
+                    depth -= 1
+                    if depth == 0:
+                        break
+                i += 1
+            block = css[start:i]
+            assert not re.search(r"body\s*\{[^}]*line-height\s*:", block), (
+                "媒體查詢內寫死 body line-height 會覆蓋 --line-height：%s" % m.group(0).strip()
+            )
+
+    def test_real_css_headings_scale_with_reading_font_size(self):
+        """h1–h4 用 em 比例跟著 body 縮放；媒體查詢不得再釘死 px，
+        否則字級一放大，平板／手機的標題層級就被壓平。"""
+        css = StaticAssetsManager().get_full_css_content()
+        for ratio in ("h1 { color: var(--color-primary); font-size: 1.6em;",
+                      "h2 { color: var(--color-primary); font-size: 1.3em;",
+                      "h3 { color: var(--color-h3); font-size: 1.15em;",
+                      "h4 { color: var(--color-h4); font-size: 1em;"):
+            assert ratio in css, "缺少 em 化的標題規則：%s" % ratio
+        # (?<![\w-]) 排除 .floating-toc-item.level-h3 這類「後綴剛好是 h3」的选择器
+        assert not re.search(r"(?<![\w-])h[1-4]\s*\{[^}]*font-size\s*:\s*\d+px", css), (
+            "h1–h4 仍有寫死 px，會脫鉤於閱讀設定的字級"
+        )
+        # 問答署名與時間戳跟著縮放
+        assert re.search(r"\.questioner\s*\{[^}]*font-size:\s*1em", css)
+        assert re.search(r"\.answerer\s*\{[^}]*font-size:\s*1em", css)
+        assert re.search(r"\.question-time\s*\{[^}]*font-size:\s*0\.8em", css)
 
     def test_real_css_has_anchor_target_highlight(self):
         css = StaticAssetsManager().get_full_css_content()
@@ -428,7 +510,9 @@ class TestStaticAssetsManagerRealModules:
         assert "sutra-pin-group" in js
         assert "W2E.sutraPin" in js
         # 過長經文放棄置頂的門檻，以及高度變化後重新量測的機制
-        assert "TALL_RATIO = 0.45" in js
+        # 0.55（2026-09 由 0.45 提高）：預設字級 16→20px 後行高多了 25%，
+        # 45% 門檻會把可停留的經文長度從約 16 行砍到 13 行
+        assert "TALL_RATIO = 0.55" in js
         assert "ResizeObserver" in js
         assert "MutationObserver" in js
         assert "document.fonts.ready" in js

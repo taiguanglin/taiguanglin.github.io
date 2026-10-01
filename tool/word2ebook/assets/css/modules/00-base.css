@@ -59,10 +59,13 @@
 
 body { font-family: var(--font-sans); margin: auto; max-width: 800px; line-height: var(--line-height); background: var(--color-bg-page); color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
 
-h1 { color: var(--color-primary); border-bottom: 2px solid var(--color-accent-pale); padding-bottom: 10px; padding-left: 10px;}
-h2 { color: var(--color-primary); margin-top: 40px; padding-left: 5px; } /* 與目錄第1層相同 */
-h3 { color: var(--color-h3); margin-top: 25px; padding-left: 5px; } /* 與目錄第2層相同 */
-h4 { color: var(--color-h4); margin-top: 15px; padding-left: 5px; } /* 與目錄第4層相同 */
+/* 標題字級用 em：跟著 body 縮放，閱讀設定放大字級時層級關係不會被壓平。
+   比例取 1.6 / 1.3 / 1.15 / 1.0——比瀏覽器預設（2 / 1.5 / 1.17 / 1）略收，
+   因為手機上 2em 的 h1 會大到每行只剩十幾個字。 */
+h1 { color: var(--color-primary); font-size: 1.6em; line-height: 1.3; border-bottom: 2px solid var(--color-accent-pale); padding-bottom: 10px; padding-left: 10px;}
+h2 { color: var(--color-primary); font-size: 1.3em; line-height: 1.4; margin-top: 40px; padding-left: 5px; } /* 與目錄第1層相同 */
+h3 { color: var(--color-h3); font-size: 1.15em; line-height: 1.4; margin-top: 25px; padding-left: 5px; } /* 與目錄第2層相同 */
+h4 { color: var(--color-h4); font-size: 1em; line-height: 1.4; margin-top: 15px; padding-left: 5px; } /* 與目錄第4層相同 */
 p { margin: 15px 0; }
 img { max-width: 100%; display: block; margin: 20px auto; }
 a { color: var(--color-primary); text-decoration: none; }
@@ -245,14 +248,14 @@ hr { border: none; height: 2px; background: var(--gradient-hr); margin: 30px 0; 
 .questioner {
     font-weight: 600;
     color: var(--color-primary);
-    font-size: 16px;
+    font-size: 1em;
 }
 
 .question-time {
     background: rgba(248, 200, 220, 0.3); /* 降低不透明度，更柔和 */
     padding: 3px 8px;
     border-radius: 12px;
-    font-size: 13px; /* 稍微縮小字體 */
+    font-size: 0.8em; /* 稍微縮小字體；em 跟著閱讀設定的 body 字級縮放 */
     color: #fd7b7b; /* 更柔和的粉紅色 */
     border: 1px solid rgba(255, 142, 142, 0.15); /* 添加淡邊框增加層次 */
     font-weight: 500;
@@ -292,7 +295,7 @@ hr { border: none; height: 2px; background: var(--gradient-hr); margin: 30px 0; 
 .answerer {
     font-weight: 700;
     color: var(--color-primary-light);
-    font-size: 16px;
+    font-size: 1em;
 }
 
 .answer-text {

@@ -121,10 +121,15 @@ The system SHALL derive the default body font size from the viewport width as
 | ≤400px (small phone) | 19 | 0 | 19px |
 | ≤600px (phone) | 18 | 0 | 18px |
 | ≤768px (tablet) | 17 | 1 | 19px |
-| >768px (desktop) | 16 | 2 | 20px |
+| >768px, fine pointer (desktop) | 16 | 2 | 20px |
+| >768px, coarse pointer (handheld) | 17 | 1 | 19px |
 
 The desktop default SHALL equal the size reached by pressing A+ twice, the
 tablet default by pressing A+ once, and phones SHALL keep their former defaults.
+A touch-primary device (`matchMedia('(pointer: coarse)')`) SHALL resolve to the
+tablet tier at any width, so a landscape phone or tablet does not inherit the
+desktop's base and +2 boost. A touchscreen laptop keeps the desktop tier because
+its primary pointer is still a mouse.
 
 On TOC pages (`isIndexPage()` — `index.html` / `index_trad.html` of either
 book) the boost SHALL NOT apply at any width: `getDefaultFontSize` SHALL return
@@ -135,10 +140,45 @@ A user-stored `localStorage['fontSize']` SHALL still win over the default (the
 load path must not persist the default on its own), so a size chosen on a TOC
 page carries over to chapter pages unchanged.
 
-`updateFontSize` SHALL clamp to `[FONT_SIZE_MIN, FONT_SIZE_MAX]` = `[12, 28]`,
-so the boosted desktop default keeps four steps of headroom in each direction,
-and the A+ / A- handlers SHALL move by `FONT_SIZE_STEP` rather than a hard-coded
-2. The `A` (`font-normal`) button SHALL reset to the same default.
+The `A` (`font-normal`) button SHALL reset to `getDefaultFontSize()`, but on a
+TOC page it SHALL NOT write the result to `localStorage`. The TOC default is
+deliberately smaller, so persisting it would silently lock every chapter page to
+the compact TOC size. Explicit A+ / A- presses on a TOC page still persist —
+only the implicit "reset" is withheld.
+
+`updateFontSize` SHALL clamp to `[FONT_SIZE_MIN, FONT_SIZE_MAX]` = `[14, 28]`.
+The floor is 14px rather than 12px because Latin script stays marginally legible
+at 12px while Chinese glyph strokes merge together. The ceiling stays three
+steps above the boosted desktop default, and the A+ / A- handlers SHALL move by
+`FONT_SIZE_STEP` rather than a hard-coded 2.
+
+### Requirement: Measure-Linked Content Width
+`getDefaultContentWidth()` SHALL size the column from the font size rather than
+from the viewport: `min(max(MEASURE_TARGET_CHARS × fontSize + CONTENT_CHROME_PX,
+CONTENT_WIDTH_MIN), CONTENT_WIDTH_MAX)` with `MEASURE_TARGET_CHARS = 40` and
+`CONTENT_CHROME_PX = 34` (the `.question`/`.answer` horizontal padding and
+border). This keeps the CJK measure at 40 characters per line — inside the
+30–45 comfortable band — for every default font size, and still ≥34 characters
+at the 28px ceiling.
+
+The previous rule (`innerWidth >= 1400 ? 1000 : 800`) SHALL no longer exist: at
+20px it produced a 48-character measure on wide screens. TOC pages SHALL keep a
+fixed 800px column, since chapter titles are short labels rather than prose and
+the existing layout is established. An explicit 窄/中/寬 choice stored in
+`localStorage['contentWidth']` SHALL still win; with only an automatic width no
+width button shows as selected, which correctly means "no explicit choice".
+
+#### Scenario: Wide screen no longer over-uses the line
+- GIVEN no stored `fontSize` or `contentWidth` and a 1920px viewport
+- WHEN a chapter page applies reading settings
+- THEN the content width SHALL be 834px
+- AND the measure SHALL be 40 characters per line
+
+#### Scenario: Measure holds at the largest font
+- GIVEN the user has raised the font to 28px
+- WHEN the page re-applies reading settings with no stored width
+- THEN the content width SHALL be capped at 1000px
+- AND the measure SHALL be at least 34 characters per line
 
 #### Scenario: First visit on a desktop viewport
 - GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
@@ -158,11 +198,23 @@ and the A+ / A- handlers SHALL move by `FONT_SIZE_STEP` rather than a hard-coded
 - THEN the body font size SHALL be 16px
 - AND `/ebook/chapter_01.html` on the same viewport and same session SHALL be 20px
 
+#### Scenario: Resetting on a TOC page must not shrink the chapters
+- GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
+- WHEN the user presses `A` on `/wenda2_ebook/index.html`
+- THEN the TOC SHALL render at 16px
+- AND `localStorage['fontSize']` SHALL remain unset
+- AND opening a chapter page afterwards SHALL still render at 20px
+
 #### Scenario: Stored preference is kept
 - GIVEN `localStorage['fontSize']` is `16`
 - WHEN the page applies reading settings
 - THEN the body font size SHALL stay 16px
 - AND pressing `A` SHALL reset it to the new default (20px on desktop)
+
+#### Scenario: Landscape phone is not treated as a desktop
+- GIVEN a touch-primary device reporting an 844px-wide viewport
+- WHEN a chapter page applies reading settings
+- THEN the body font size SHALL be 19px (tablet tier), not 20px
 
 ### Requirement: Initial Anchor Highlight
 When a chapter page loads with a valid URL fragment, `handleInitialAnchor`
