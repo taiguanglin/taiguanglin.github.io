@@ -356,18 +356,26 @@ class TestStaticAssetsManagerRealModules:
         assert "const FONT_STEPS_DESKTOP = 2;" in js
         assert "const FONT_SIZE_MIN = 12;" in js
         assert "const FONT_SIZE_MAX = 28;" in js
-        # 實際預設：19 / 18 / 19 / 20 px
-        assert (
-            "return FONT_BASE_SMALL_PHONE + FONT_SIZE_STEP * FONT_STEPS_SMALL_PHONE;" in js
-        )
-        assert "return FONT_BASE_PHONE + FONT_SIZE_STEP * FONT_STEPS_PHONE;" in js
-        assert "return FONT_BASE_TABLET + FONT_SIZE_STEP * FONT_STEPS_TABLET;" in js
-        assert "return FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_STEPS_DESKTOP;" in js
+        # 內文頁實際預設：19 / 18 / 19 / 20 px
+        assert "return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);" in js
         # A+／A- 走常數，clamp 走常數上下界，不再有寫死的 2 / 12 / 24
         assert "updateFontSize(FONT_SIZE_STEP)" in js
         assert "updateFontSize(-FONT_SIZE_STEP)" in js
         assert "Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, fontSize + change))" in js
         assert "fontSize === 16" not in js
+
+    def test_real_js_index_page_keeps_unboosted_default_font_size(self):
+        """總目錄頁（index / index_trad）不加大預設字級：目錄要多行才好看得完。"""
+        js = StaticAssetsManager().get_full_js_content()
+        assert "function getBaseFontSize(screenWidth)" in js
+        assert "function getFontBoostSteps(screenWidth)" in js
+        assert "if (isIndexPage()) {" in js
+        # 加強級數只在非目錄頁加總；目錄頁直接回傳基礎值
+        assert "return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);" in js
+        idx = js.find("function getDefaultFontSize()")
+        base = js.find("return base;", idx)
+        boosted = js.find("getFontBoostSteps(screenWidth);", idx)
+        assert idx < base < boosted, "目錄頁應先 return base，再走加強分支"
 
     def test_real_css_has_anchor_target_highlight(self):
         css = StaticAssetsManager().get_full_css_content()

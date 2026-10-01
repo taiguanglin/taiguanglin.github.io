@@ -2782,6 +2782,8 @@ function addHomepageBookmarkEventListeners() {
   // 字級階梯：預設字級 = 螢幕寬度對應的「基礎值」+ FONT_SIZE_STEP × 該區間的加強級數。
   // 加強級數依裝置而異——電腦 +2 級（＝按兩次 A+）、平板 +1 級（＝按一次 A+）、
   // 手機不額外加強（維持原預設），因為小螢幕本來就靠基礎值偏大來兼顧可讀性。
+  // 總目錄頁（index / index_trad）則一律不加強：目錄要能一覽更多章節，
+  // 字級一大就得多行才有重點、且捲動距離翻倍，反而不好找書。
   // 上下界一併留出空間，讓加強後的預設值上下仍各有四級（±8px）可調。
   const FONT_SIZE_STEP = 2;                        // A+／A- 每按一級的 px 差
   const FONT_STEPS_SMALL_PHONE = 0;                // ≤400px：不快調
@@ -2795,17 +2797,39 @@ function addHomepageBookmarkEventListeners() {
   const FONT_BASE_TABLET = 17;
   const FONT_BASE_DESKTOP = 16;
 
-  // 根据屏幕尺寸设置默认字体大小（加強級數依螢幕寬度而定）
+  // 依螢幕寬度取基礎字級
+  function getBaseFontSize(screenWidth) {
+    if (screenWidth <= 400) {
+      return FONT_BASE_SMALL_PHONE;
+    } else if (screenWidth <= 600) {
+      return FONT_BASE_PHONE;
+    } else if (screenWidth <= 768) {
+      return FONT_BASE_TABLET;
+    }
+    return FONT_BASE_DESKTOP;
+  }
+
+  // 依螢幕寬度取加強級數（幾次 A+）
+  function getFontBoostSteps(screenWidth) {
+    if (screenWidth <= 400) {
+      return FONT_STEPS_SMALL_PHONE;
+    } else if (screenWidth <= 600) {
+      return FONT_STEPS_PHONE;
+    } else if (screenWidth <= 768) {
+      return FONT_STEPS_TABLET;
+    }
+    return FONT_STEPS_DESKTOP;
+  }
+
+  // 根据屏幕尺寸设置默认字体大小（总目录页不加强，其余按视窗宽度加强）
   function getDefaultFontSize() {
     const screenWidth = window.innerWidth;
-    if (screenWidth <= 400) {
-      return FONT_BASE_SMALL_PHONE + FONT_SIZE_STEP * FONT_STEPS_SMALL_PHONE; // 小手机默认19px
-    } else if (screenWidth <= 600) {
-      return FONT_BASE_PHONE + FONT_SIZE_STEP * FONT_STEPS_PHONE; // 手机默认18px
-    } else if (screenWidth <= 768) {
-      return FONT_BASE_TABLET + FONT_SIZE_STEP * FONT_STEPS_TABLET; // 平板默认19px（+1 級）
+    const base = getBaseFontSize(screenWidth);
+    // 總目錄頁維持原預設字級：目錄行數是找書的關鍵，不跟內文一起放大
+    if (isIndexPage()) {
+      return base;
     }
-    return FONT_BASE_DESKTOP + FONT_SIZE_STEP * FONT_STEPS_DESKTOP; // 桌面默认20px（+2 級）
+    return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);
   }
   
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();

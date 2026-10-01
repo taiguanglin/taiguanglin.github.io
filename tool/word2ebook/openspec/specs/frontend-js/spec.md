@@ -28,7 +28,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_STEPS_*` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、`getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
+| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_STEPS_*` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、`getBaseFontSize`, `getFontBoostSteps`, `getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
@@ -125,8 +125,15 @@ The system SHALL derive the default body font size from the viewport width as
 
 The desktop default SHALL equal the size reached by pressing A+ twice, the
 tablet default by pressing A+ once, and phones SHALL keep their former defaults.
+
+On TOC pages (`isIndexPage()` — `index.html` / `index_trad.html` of either
+book) the boost SHALL NOT apply at any width: `getDefaultFontSize` SHALL return
+the bare base value (19 / 18 / 17 / 16), because a larger TOC font wraps more
+titles onto extra lines and doubles the scrolling needed to scan the book.
+
 A user-stored `localStorage['fontSize']` SHALL still win over the default (the
-load path must not persist the default on its own).
+load path must not persist the default on its own), so a size chosen on a TOC
+page carries over to chapter pages unchanged.
 
 `updateFontSize` SHALL clamp to `[FONT_SIZE_MIN, FONT_SIZE_MAX]` = `[12, 28]`,
 so the boosted desktop default keeps four steps of headroom in each direction,
@@ -135,15 +142,21 @@ and the A+ / A- handlers SHALL move by `FONT_SIZE_STEP` rather than a hard-coded
 
 #### Scenario: First visit on a desktop viewport
 - GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
-- WHEN the page applies reading settings
+- WHEN a chapter page applies reading settings
 - THEN the body font size SHALL be 20px
 - AND pressing A+ twice from the former 16px base would have produced the same size
 
 #### Scenario: Tablet gets one step, phone gets none
 - GIVEN no `localStorage['fontSize']`
-- WHEN the page applies reading settings on a 700px-wide viewport
+- WHEN a chapter page applies reading settings on a 700px-wide viewport
 - THEN the body font size SHALL be 19px
 - AND on a 390px-wide viewport it SHALL be 19px (unchanged from the old default)
+
+#### Scenario: TOC page stays compact
+- GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
+- WHEN `/ebook/index.html` or `/wenda2_ebook/index.html` applies reading settings
+- THEN the body font size SHALL be 16px
+- AND `/ebook/chapter_01.html` on the same viewport and same session SHALL be 20px
 
 #### Scenario: Stored preference is kept
 - GIVEN `localStorage['fontSize']` is `16`
