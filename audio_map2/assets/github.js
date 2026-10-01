@@ -114,6 +114,24 @@ async function fetchText(url, label, timeoutMs = 0) {
     }
 }
 
+/**
+ * When the file was last changed on the configured branch — the one signal that
+ * tells you whether the data on screen is the file you just pushed. Neither raw
+ * (it sends no `Last-Modified`) nor the contents API carries a timestamp, so
+ * this is the only source. Returns null when unavailable (offline, rate
+ * limited); callers must treat that as "unknown", not as "stale".
+ */
+export async function getLastCommit(path) {
+    const commits = await request(
+        `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/commits`
+        + `?path=${encodePath(path)}&sha=${GITHUB_CONFIG.branch}&per_page=1`,
+    );
+    const commit = Array.isArray(commits) ? commits[0] : null;
+    const date = commit?.commit?.committer?.date;
+    if (!date) return null;
+    return { date, sha: commit.sha || '', message: commit.commit?.message || '' };
+}
+
 export async function putFile(path, text, sha, message, { force = false } = {}) {
     let targetSha = sha;
     if (force) {
