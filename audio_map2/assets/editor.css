@@ -831,6 +831,31 @@ textarea.marker-heading {
     padding: 0.35rem 0.6rem;
 }
 
+/* Which copy of the map JSON is on screen. The status pill is transient (every
+   play / time tweak / save overwrites it), so the source needs its own badge. */
+.data-source-badge {
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+    background: color-mix(in srgb, var(--border) 40%, transparent);
+    color: var(--muted);
+    font-size: 0.78rem;
+    padding: 0.3rem 0.55rem;
+    white-space: nowrap;
+    cursor: help;
+}
+
+.data-source-badge[data-source="raw"] {
+    background: color-mix(in srgb, var(--status-both) 16%, transparent);
+    border-color: color-mix(in srgb, var(--status-both) 40%, transparent);
+    color: var(--status-both);
+}
+
+.data-source-badge[data-source="deployed"] {
+    background: color-mix(in srgb, var(--status-edited) 18%, transparent);
+    border-color: color-mix(in srgb, var(--status-edited) 45%, transparent);
+    color: var(--status-edited);
+}
+
 .status-pill {
     background: color-mix(in srgb, var(--border) 45%, transparent);
     color: var(--muted);

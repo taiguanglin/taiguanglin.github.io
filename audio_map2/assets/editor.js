@@ -88,6 +88,7 @@ const els = {
     saveButton: document.querySelector('#saveButton'),
     savePlayedButton: document.querySelector('#savePlayedButton'),
     saveStatus: document.querySelector('#saveStatus'),
+    dataSourceBadge: document.querySelector('#dataSourceBadge'),
     settingsButton: document.querySelector('#settingsButton'),
     settingsDialog: document.querySelector('#settingsDialog'),
     patInput: document.querySelector('#patInput'),
@@ -516,9 +517,25 @@ function mapPath(month) {
     return `audio_map2/${month}.json`;
 }
 
-/** Say which copy is on screen, so "still the old data?" is answerable. */
-function mapSourceLabel(source) {
-    return source === 'raw' ? '來源 GitHub raw' : '來源已部署檔案';
+/**
+ * Persistent "which copy of the JSON is on screen?" indicator. The status pill
+ * cannot carry it: every play, time tweak and save overwrites that line, so the
+ * answer would be gone seconds after loading. Hover for the exact URL fetched.
+ */
+function renderDataSource(source, url) {
+    const badge = els.dataSourceBadge;
+    if (!badge) return;
+    const isRaw = source === 'raw';
+    badge.textContent = isRaw ? '來源 GitHub raw' : '來源 已部署檔案';
+    badge.dataset.source = source;
+    badge.title = isRaw
+        ? `直接讀 GitHub raw（${url}）\ncommit 後幾秒即生效，不用等 GitHub Pages 建置。`
+        : `讀本站已部署的檔案（${url}）\nGitHub Pages 建置完成前，這裡可能是舊版。\n讀不到 raw 時的後備來源。`;
+    badge.classList.remove('hidden');
+}
+
+function hideDataSource() {
+    els.dataSourceBadge?.classList.add('hidden');
 }
 
 function serializeMap(map) {
@@ -803,6 +820,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
 
     clearNudgeBurst();
     setStatus('正在載入…', 'loading');
+    hideDataSource();
     state.month = month;
     els.monthSelect.value = month;
     state.sessionId = null;
@@ -869,11 +887,10 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         els.editorRoot.innerHTML = '';
         els.saveButton.disabled = true;
         els.draftBadge.classList.toggle('hidden', !state.usingDraft);
-        setStatus(
-            `已載入 ${month}（${state.map.sessions?.length || 0} sessions・${mapSourceLabel(source)}）`,
-            'ok',
-        );
+        setStatus(`已載入 ${month}（${state.map.sessions?.length || 0} sessions）`, 'ok');
+        renderDataSource(source, loaded.url);
     } catch (error) {
+        hideDataSource();
         els.fileList.innerHTML = `<div class="empty-state error">載入失敗：${escapeHtml(error.message)}</div>`;
         setStatus(`載入失敗：${error.message}`, 'error');
     }
