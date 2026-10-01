@@ -71,10 +71,7 @@
     return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);
   }
 
-  // 內容寬度跟著字級走，讓行長穩穩落在中文舒適區：
-  // 舊版寬螢幕（≥1400px）固定給 1000px，20px 下等於每行 48 字，偏長。
-  // 改成「目標字數 × 字級」，不論字級調到 14 還是 28，行長都不會失控；
-  // 使用者明確按過寬度鈕時，仍以 localStorage 的偏好為準。
+  // D2 長文排印：內容寬度依字級連動，讓行長穩穩落在中文舒適區
   function getDefaultContentWidth() {
     // 總目錄維持 800px：章節標題是短標籤不是散文，且沿用既有版面避免大改
     if (isIndexPage()) {
@@ -84,7 +81,67 @@
     return Math.max(CONTENT_WIDTH_MIN, Math.min(CONTENT_WIDTH_MAX, Math.round(byMeasure)));
   }
 
-  let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
+  // ---- 字級偏好的儲存格式：存「相對預設的級數」，不存絕對 px --------------
+  // 存絕對 px 會讓偏好綁死在當初設定的裝置上：桌機調到 22px，帶到只有 390px
+  // 寬的手機就是 22px（偏大）；反之平板的 19px 搬到桌機又偏小。存級數則同一個
+  // 偏好（「比預設大兩級」）在每種裝置都各自成立。
+  // 舊版存的是絕對 px（localStorage 'fontSize'），首次載入時換算後移除舊 key。
+  const FONT_STEP_KEY = 'fontStep';
+  const LEGACY_FONT_SIZE_KEY = 'fontSize';
+
+  function clampFontSize(size) {
+    return Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, size));
+  }
+
+  function readStorage(key) {
+    try {
+      return localStorage.getItem(key);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function writeStorage(key, value) {
+    try {
+      localStorage.setItem(key, String(value));
+    } catch (e) {
+      /* 私密瀏覽／配額滿：偏好存不下就退化成每次用預設 */
+    }
+  }
+
+  function removeStorage(key) {
+    try {
+      localStorage.removeItem(key);
+    } catch (e) {
+      /* 忽略 */
+    }
+  }
+
+  // 舊的絕對 px → 級數。以「基礎值」（不含視窗加強、裝置無關）為基準換算，
+  // 因為舊版的絕對值本來就是從各裝置的基礎值（16/17/18/19）出發的。
+  // 換算完即移除舊 key，避免每次載入都重跑遷移。
+  function migrateLegacyFontStep(base) {
+    const legacy = parseInt(readStorage(LEGACY_FONT_SIZE_KEY));
+    if (isNaN(legacy)) return null;
+    const step = Math.round((legacy - base) / FONT_SIZE_STEP);
+    writeStorage(FONT_STEP_KEY, step);
+    removeStorage(LEGACY_FONT_SIZE_KEY);
+    return step;
+  }
+
+  function loadFontStep(base) {
+    const stored = parseInt(readStorage(FONT_STEP_KEY));
+    if (!isNaN(stored)) return stored;          // 0 是合法值，不能當「沒有」
+    const migrated = migrateLegacyFontStep(base);
+    return migrated === null ? 0 : migrated;    // 完全沒設定過 = 用預設，不寫回
+  }
+
+  // 級數相對於**本頁的預設**（含目錄頁不加強的規則），所以「從沒調過」的人
+  // 在目錄頁拿到緊湊字級、在內文頁拿到加強字級；而明確調過的人兩邊都照他的
+  // 偏好走。字級在載入時定案，不隨視窗變化重算（與舊版行為一致）。
+  const fontBase = getBaseFontSize(window.innerWidth);
+  let fontStep = loadFontStep(fontBase);
+  let fontSize = clampFontSize(getDefaultFontSize() + fontStep * FONT_SIZE_STEP);
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
   let contentWidth = parseInt(localStorage.getItem('contentWidth')) || getDefaultContentWidth();
   
@@ -388,8 +445,10 @@
   }
   
   function updateFontSize(change) {
-    fontSize = Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, fontSize + change));
-    localStorage.setItem('fontSize', fontSize);
+    fontSize = clampFontSize(fontSize + change);
+    // 反推回級數存檔，讓這個偏好在其他裝置也成立
+    fontStep = Math.round((fontSize - getDefaultFontSize()) / FONT_SIZE_STEP);
+    writeStorage(FONT_STEP_KEY, fontStep);
     applyReadingSettings();
     updateFontSizeButtons();
   }

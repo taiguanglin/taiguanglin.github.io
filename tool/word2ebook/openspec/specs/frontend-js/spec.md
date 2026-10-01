@@ -28,7 +28,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_STEPS_*` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、`getBaseFontSize`, `getFontBoostSteps`, `getDefaultFontSize`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
+| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_STEPS_*` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、行長連動常數（`MEASURE_TARGET_CHARS` / `CONTENT_CHROME_PX` / `TOC_CONTENT_WIDTH`）、偏好儲存（`FONT_STEP_KEY` / `LEGACY_FONT_SIZE_KEY`、`readStorage`/`writeStorage`/`removeStorage`、`clampFontSize`、`migrateLegacyFontStep`、`loadFontStep`）、`getBaseFontSize`, `getFontBoostSteps`, `getDefaultFontSize`, `getDefaultContentWidth`, `isHandheldPointer`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
@@ -136,21 +136,62 @@ book) the boost SHALL NOT apply at any width: `getDefaultFontSize` SHALL return
 the bare base value (19 / 18 / 17 / 16), because a larger TOC font wraps more
 titles onto extra lines and doubles the scrolling needed to scan the book.
 
-A user-stored `localStorage['fontSize']` SHALL still win over the default (the
-load path must not persist the default on its own), so a size chosen on a TOC
-page carries over to chapter pages unchanged.
-
-The `A` (`font-normal`) button SHALL reset to `getDefaultFontSize()`, but on a
-TOC page it SHALL NOT write the result to `localStorage`. The TOC default is
-deliberately smaller, so persisting it would silently lock every chapter page to
-the compact TOC size. Explicit A+ / A- presses on a TOC page still persist —
-only the implicit "reset" is withheld.
+A reader-stored preference SHALL still win over the default (the load path must
+not persist a default on its own), so a size chosen on a TOC page carries over to
+chapter pages unchanged. See "Font Preference Stored as a Step Offset" for the
+storage format and the legacy migration.
 
 `updateFontSize` SHALL clamp to `[FONT_SIZE_MIN, FONT_SIZE_MAX]` = `[14, 28]`.
 The floor is 14px rather than 12px because Latin script stays marginally legible
 at 12px while Chinese glyph strokes merge together. The ceiling stays three
 steps above the boosted desktop default, and the A+ / A- handlers SHALL move by
 `FONT_SIZE_STEP` rather than a hard-coded 2.
+
+### Requirement: Font Preference Stored as a Step Offset
+`localStorage['fontStep']` SHALL hold the reader's font size as a signed count
+of steps relative to the current page default, not as an absolute pixel value.
+`fontSize` SHALL be `clampFontSize(getDefaultFontSize() + fontStep ×
+FONT_SIZE_STEP)`. An absolute value ties the preference to the device it was
+chosen on — 22px on a desktop becomes oversized on a 390px phone — while a step
+count ("two steps above the default") holds on every device.
+
+A legacy absolute `localStorage['fontSize']` SHALL be migrated once on load:
+`step = round((legacy − getBaseFontSize()) / FONT_SIZE_STEP)`, measured against
+the device-independent base (16/17/18/19) because that is what the old absolute
+values were derived from. The migration SHALL write `fontStep` and SHALL remove
+the legacy key so it cannot re-run on every load. A step of `0` is a legitimate
+value and SHALL NOT be treated as "unset". A reader who never touched the
+setting SHALL have no `fontStep` key written, so a future change to the default
+ladder still reaches them.
+
+`updateFontSize` SHALL recompute the step from the resulting size
+(`round((fontSize − getDefaultFontSize()) / FONT_SIZE_STEP)`) and persist it.
+The `A` (`font-normal`) button SHALL set the step to `0` and persist that; it
+no longer needs a page-type guard, because `0` means "the default" on both page
+types rather than the compact TOC size. The `A` button's selected state SHALL be
+driven by `fontStep === 0` instead of comparing against a hard-coded pixel
+value. The size is resolved once at load and SHALL NOT be recomputed on resize,
+matching the previous behaviour.
+
+#### Scenario: A desktop preference travels to a phone
+- GIVEN `fontStep` is `2`, recorded on a desktop
+- WHEN the same reader opens a chapter page on a 500px-wide phone
+- THEN the body font size SHALL be 22px (18px phone default + two steps)
+- AND NOT the 24px that the old absolute storage would have produced
+
+#### Scenario: Legacy absolute value migrates once
+- GIVEN `localStorage['fontSize']` is `16` and no `fontStep`, on a desktop
+- WHEN the page loads
+- THEN `fontStep` SHALL be written as `0`
+- AND `localStorage['fontSize']` SHALL be removed
+- AND the chapter page SHALL render at the 20px default
+
+#### Scenario: Resetting writes a portable step
+- GIVEN `fontStep` is `2` on a TOC page
+- WHEN the user presses `A`
+- THEN `fontStep` SHALL be `0`
+- AND the TOC SHALL render at its 16px default
+- AND a chapter page opened afterwards SHALL render at 20px, not 16px
 
 ### Requirement: Measure-Linked Content Width
 `getDefaultContentWidth()` SHALL size the column from the font size rather than
@@ -198,18 +239,11 @@ width button shows as selected, which correctly means "no explicit choice".
 - THEN the body font size SHALL be 16px
 - AND `/ebook/chapter_01.html` on the same viewport and same session SHALL be 20px
 
-#### Scenario: Resetting on a TOC page must not shrink the chapters
-- GIVEN no `localStorage['fontSize']` and a viewport wider than 768px
-- WHEN the user presses `A` on `/wenda2_ebook/index.html`
-- THEN the TOC SHALL render at 16px
-- AND `localStorage['fontSize']` SHALL remain unset
-- AND opening a chapter page afterwards SHALL still render at 20px
-
 #### Scenario: Stored preference is kept
-- GIVEN `localStorage['fontSize']` is `16`
-- WHEN the page applies reading settings
-- THEN the body font size SHALL stay 16px
-- AND pressing `A` SHALL reset it to the new default (20px on desktop)
+- GIVEN `fontStep` is `1`
+- WHEN a chapter page applies reading settings on a desktop
+- THEN the body font size SHALL be 22px
+- AND the `A` button SHALL NOT be shown as selected
 
 #### Scenario: Landscape phone is not treated as a desktop
 - GIVEN a touch-primary device reporting an 844px-wide viewport

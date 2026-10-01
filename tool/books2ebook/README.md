@@ -105,25 +105,33 @@ toggle（localStorage `sutraPinEnabled`，預設 ON）；錨點跳轉時短暫�
 
 ## 一鍵重建
 
-依照機器上裝有 pymupdf/opencc 的環境，取用其中一種 python（兩台機器可能不同）：
+**用 `tool/word_audio_map2/.venv`（依賴已鎖版）**，不要用系統 python：
 
 ```bash
-# 1) 內建系統 python（/usr/bin/python3，某些機器已含 pymupdf/opencc）
-/usr/bin/python3 tool/books2ebook/gen_all.py
+tool/word_audio_map2/.venv/bin/python tool/books2ebook/gen_all.py
 
-# 2) framework 版 python 3.13（/Library/Frameworks/.../3.13/bin/python3，
-#    另一台機器用的是這個，含 pymupdf/opencc）
-/Library/Frameworks/Python.framework/Versions/3.13/bin/python3 tool/books2ebook/gen_all.py
+# 等價寫法：
+tool/word_audio_map2/.venv/bin/python tool/books2ebook/main.py --books-dir books --out ebook
 ```
 
-兩者擇一即可，三種等價寫法：
+### ⚠️ 為什麼指定這一個 python
 
-```bash
-# 等價：
-<PYTHON> tool/books2ebook/main.py
-# 其它路徑：
-<PYTHON> tool/books2ebook/main.py --books-dir books --out ebook
-```
+**本工具的產出文字會隨 PyMuPDF 版本改變**。PDF 文字抽取在斷行處怎麼補空格
+會隨版本不同而變，而 `parsers._join()` 正是靠「上一段結尾 + 下一段開頭」決定
+要不要插空格——所以同一支 parser 換個 pymupdf 就可能產出不同的文字。
+
+實測（2026-09）：在 PyMuPDF 1.28.2 下重建，8 個章節 HTML 有 72 段文字與版控
+不同（`18 岁` → `18岁` 之類的數字空格差異），`search_index*.json` 的 MD5 跟著
+變。也就是說**版控中的 `ebook/` 文字無法由任意環境重現**，且這種雜訊混進
+功能提交會讓 diff 無法 review。
+
+因此：
+
+- 依賴版本鎖在 **`tool/word_audio_map2/requirements.txt`**（全部 `==`），
+  理由與升版流程寫在該檔頭與 `tool/word_audio_map2/README.md`。
+- 升版**必須與重建產物同一個提交**，且事先 review 文字 diff，
+  確認是預期的內容差異而非抽取層雜訊。
+- 純抽取雜訊（只有空格／全形半形之差）不要混進功能提交。
 
 ## 輸出
 

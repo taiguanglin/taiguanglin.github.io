@@ -135,8 +135,17 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
 > 註：若未來不再新增/修改講經 PDF 或音檔，**上述標記【可刪除】的三個講經工具（`build_jiangjing_pdfs.py`、`jiangjing2audio.py`、`normalize_jiangjing_audio.py`）可整包移除**；`gen_all.py` 重建電子書時只需：讀 `books/*.pdf` → 解析/分段 → 產生 HTML → 依 `audio_map.py` 映射插入播放鈕，不再涉及 PDF 組裝與音檔轉檔。
 
 > 註：`.venv`（`tool/word_audio_map2/.venv`）是唯一裝有 docx / opencc / slugify /
-> yaml / jieba / pymupdf 的環境，`gen_all.py`（word2ebook）與 `build_maps.py`、
-> `audio_map2/tools/*.py` 都以它為 python。
+> yaml / jieba / pymupdf 的環境，`gen_all.py`（word2ebook）、`gen_all.py`（books2ebook）
+> 與 `build_maps.py`、`audio_map2/tools/*.py` 都以它為 python。
+>
+> ⚠️ **依賴已鎖版**：安裝依 `tool/word_audio_map2/requirements.txt`（全部 `==`），
+> 重建電子書一律用該 venv，**不要用系統 python**。原因：PDF 文字抽取在斷行處
+> 怎麼補空格會隨 PyMuPDF 版本改變，`books2ebook` 的 `_join()` 依賴「上段結尾 +
+> 下段開頭」判斷是否插空格，換版本會讓 `ebook/*.html` 的**文字**（不只是空白）
+> 產生大量與內容無關的差異，連帶 `search_index` 的 MD5 也變——等於版控中的產物
+> 無法由新環境重現。實測（2026-09，PyMuPDF 1.28.2）重建 `ebook/` 就有 72 段差異。
+> 升版**必須與重建產物同一個提交**，且事先 review 文字 diff 以區分「預期內容差異」
+> 與「抽取層雜訊」。細節見 `requirements.txt` 檔頭與兩份工具 README。
 
 ---
 

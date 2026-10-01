@@ -61,12 +61,11 @@
         addFontAdjustFeedback(e.target);
         break;
       case 'font-normal':
+        // 存的是「相對預設的級數」，所以這裡可以直接寫 0：代表「回到預設」，
+        // 在目錄頁寫入也不會把內文鎖死（舊版存絕對 px 時才需要頁型守衛）。
+        fontStep = 0;
+        writeStorage(FONT_STEP_KEY, 0);
         fontSize = getDefaultFontSize();
-        // 總目錄頁的「A」只重置當前畫面、不寫入偏好：目錄頁的預設刻意比較小
-        // （行數是找書的關鍵），寫進 localStorage 會把所有內文頁鎖死在舊字級。
-        if (!isIndexPage()) {
-          localStorage.setItem('fontSize', fontSize);
-        }
         applyReadingSettings();
         updateFontSizeButtons();
         break;

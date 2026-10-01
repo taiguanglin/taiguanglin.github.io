@@ -24,8 +24,35 @@ cd tool/word_audio_map2
 .venv/bin/python build_maps.py --month 2024-12
 ```
 
-首次安裝：`python3 -m venv .venv && .venv/bin/pip install opencc-python-reimplemented`
-（OpenCC 做 繁↔簡 normalize，比對 SRT 用）。
+首次安裝（**依賴已鎖版，勿手動升級**）：
+
+```bash
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+```
+
+這個 `.venv` 不只給本目錄用——它也是 **`tool/word2ebook/gen_all.py`（問答錄 2）
+與 `tool/books2ebook/gen_all.py`（十本書）唯一的 python**（`book_audio_map` 依賴
+docx / opencc / slugify / yaml / jieba / pymupdf）。OpenCC 做 繁↔簡 normalize，
+比對 SRT 用。
+
+### ⚠️ 為什麼鎖版（`requirements.txt` 全用 `==`）
+
+產生器的**輸出文字會隨套件版本改變**，不只是由 repo 內的程式碼決定。最明顯的
+是 PyMuPDF：PDF 文字抽取在斷行處怎麼補空格會隨版本變，而 books2ebook 的
+`_join()` 正是靠「上一段結尾字元 + 下一段開頭字元」決定要不要插空格。
+
+實測（2026-09）：用同一支 parser、同一個 `_join` regex，在 PyMuPDF 1.28.2 下
+重建 `ebook/`，有 **72 段文字**與版控中的版本不同（`18 岁` → `18岁` 之類的
+數字空格差異），`search_index` 的 MD5 跟著變。也就是說版控中的 `ebook/` 文字
+**無法由新環境重現**。
+
+實務規則：
+
+- 只在明確需要時升版，且**升版與重建產物必須同一個提交**。
+- 升 `pymupdf` / `opencc-python-reimplemented` / `python-docx` 之前，先 build 一份
+  專門 review 文字 diff——要能分辨「預期的內容差異」與「抽取層雜訊」。
+- 純文字雜訊（只有空格／全形半形之差）不該混在功能提交裡，否則無法 review。
 
 ### 一次性修正與審計腳本（依電子書 block 邊界）
 
