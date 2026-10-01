@@ -628,6 +628,9 @@ function flushEditorTimesIntoMap() {
         const entry = items[idx];
         const input = card.querySelector('.marker-input');
         if (!entry || !input) continue;
+        // 「未對齊」（音檔未讀／純文字答覆）不是格式錯誤，也不是 0 秒：維持 null 跳過，
+        // 否則整份儲存會被這些段擋下。
+        if (String(input.value || '').includes(UNALIGNED_MARK)) continue;
         const range = parseTimeMarkerValue(input.value);
         if (!range || !Number.isFinite(range.start) || !Number.isFinite(range.end)) {
             const label = entry.kind === 'opening' ? '開場'
@@ -635,7 +638,7 @@ function flushEditorTimesIntoMap() {
                 : `第 ${entry.number} 段`;
             return {
                 ok: false,
-                message: `${label} 時間格式無效，請使用 00:00:00.000 - 00:00:00.000`,
+                message: `${label} 時間格式無效，請使用 00:01:30.000 - 00:01:45.000`,
             };
         }
         const hadTimes = entry.item.start != null && entry.item.end != null;
@@ -1293,7 +1296,7 @@ function renderSegmentCard(entry, segmentIndex) {
     timeInput.addEventListener('change', () => {
         const range = parseTimeMarkerValue(timeInput.value);
         if (!range) {
-            setStatus('時間格式無效，請使用 時間：00:00:00.000 - 00:00:00.000', 'error');
+            setStatus('時間格式無效，請使用 時間：00:01:30.000 - 00:01:45.000', 'error');
             timeInput.value = formatTimeMarker(item, kind);
             return;
         }
@@ -1660,12 +1663,21 @@ function blurIfBlocksShortcuts(el) {
     }
 }
 
+// 沒有對齊時間（音檔未讀／純文字答覆）的段落顯示用的時間標記。
+// 刻意不放成「00:00:00.000」：那會被 parseTimeMarkerValue 讀成 [0, 0] 的合法區間，
+// ▶ 按鈕因而可點，點下去什麼都沒播到卻寫入 meta.lastPlayed，把未校對的段標成已聽過。
+const UNALIGNED_MARK = '—（未對齊）';
+
 function formatTimeMarker(item, kind) {
     const prefix = kind === 'opening' ? '開場時間'
         : kind === 'closing' ? '收場時間'
         : '時間';
-    const start = item.start != null ? secondsToTimecode(roundSeconds(item.start)) : '00:00:00.000';
-    const end = item.end != null ? secondsToTimecode(roundSeconds(item.end)) : '00:00:00.000';
+    if (item.start == null || item.end == null
+        || !Number.isFinite(item.start) || !Number.isFinite(item.end)) {
+        return `${prefix}：${UNALIGNED_MARK}`;
+    }
+    const start = secondsToTimecode(roundSeconds(item.start));
+    const end = secondsToTimecode(roundSeconds(item.end));
     return `${prefix}：${start} - ${end}`;
 }
 
@@ -1678,7 +1690,11 @@ function updatePlayButton(button, markerText, segmentIndex, title, zeroLocked = 
     }
     const range = parseTimeMarkerValue(markerText);
     if (!range) {
-        button.textContent = '▶ 時間格式無效';
+        // 「未對齊」＝音檔裡沒有這一段（音檔未讀／純文字答覆），不是 0 秒，
+        // 也不是「零長度（師父未念）」——三者不可混為一談。
+        button.textContent = String(markerText || '').includes(UNALIGNED_MARK)
+            ? '☐ 未對齊（音檔無此段，須人工填時間）'
+            : '▶ 時間格式無效';
         button.disabled = true;
         button.onclick = null;
         return;
