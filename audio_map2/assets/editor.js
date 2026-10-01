@@ -1,5 +1,5 @@
 import { createAudioController } from './audio.js';
-import { getFile, isConflict, loadMapJson, putFile, testToken } from './github.js';
+import { getFile, getLastCommit, isConflict, loadMapJson, putFile, testToken } from './github.js';
 import { parseRanges, secondsToTimecode, timecodeToSeconds } from './parser.js';
 import {
     clearDraft,
@@ -46,6 +46,7 @@ const state = {
     draftTimer: null,
     draftFirstAt: null,
     saving: false,
+    dataSource: null,
     activeSegmentIndex: null,
     usingDraft: false,
     /** 做過合併／分拆／刪除的 session（`month#session_id`）：結構變更後段落位移，
@@ -537,20 +538,56 @@ function mapPath(month) {
     return `audio_map2/${month}.json`;
 }
 
+/** "剛剛 / 12 分鐘前 / 3 小時前" — how trustworthy "this is fresh" feels. */
+function relativeAge(date) {
+    const mins = Math.round((Date.now() - date.getTime()) / 60000);
+    if (mins < 1) return '剛剛';
+    if (mins < 60) return `${mins} 分鐘前`;
+    const hours = Math.round(mins / 60);
+    if (hours < 24) return `${hours} 小時前`;
+    return `${Math.round(hours / 24)} 天前`;
+}
+
+/** Compact stamp for the badge, full stamp + age for the tooltip. */
+function formatCommitTime(iso) {
+    const date = iso ? new Date(iso) : null;
+    if (!date || Number.isNaN(date.getTime())) {
+        return { short: '時間未知', full: '最後異動時間：讀不到（離線或 API 額度用完）' };
+    }
+    const pad = (n) => String(n).padStart(2, '0');
+    return {
+        short: `${date.getMonth() + 1}/${date.getDate()} ${pad(date.getHours())}:${pad(date.getMinutes())}`,
+        full: `最後異動時間：${date.toLocaleString('zh-TW')}（${relativeAge(date)}）`,
+    };
+}
+
 /**
- * Persistent "which copy of the JSON is on screen?" indicator. The status pill
- * cannot carry it: every play, time tweak and save overwrites that line, so the
- * answer would be gone seconds after loading. Hover for the exact URL fetched.
+ * Persistent "which copy of the JSON is on screen, and how old is it?"
+ * indicator. The status pill cannot carry it: every play, time tweak and save
+ * overwrites that line, so the answer would be gone seconds after loading.
+ * Hover for the exact URL fetched and how to read the timestamp.
  */
-function renderDataSource(source, url) {
+function renderDataSource(source, url, commitDate) {
     const badge = els.dataSourceBadge;
     if (!badge) return;
+    state.dataSource = { source, url, commitDate: commitDate || null };
     const isRaw = source === 'raw';
-    badge.textContent = isRaw ? '來源 GitHub raw' : '來源 已部署檔案';
+    const when = formatCommitTime(state.dataSource.commitDate);
+    badge.textContent = `來源 ${isRaw ? 'GitHub raw' : '已部署檔案'} · ${when.short}`;
     badge.dataset.source = source;
-    badge.title = isRaw
-        ? `直接讀 GitHub raw（${url}）\ncommit 後幾秒即生效，不用等 GitHub Pages 建置。`
-        : `讀本站已部署的檔案（${url}）\nGitHub Pages 建置完成前，這裡可能是舊版。\n讀不到 raw 時的後備來源。`;
+    const readHow = isRaw
+        ? '讀的就是 main 上最新 commit 的內容，時間＝你實際看到的版本。'
+        : '讀的是這個網址伺服的檔案（localhost＝本機工作樹；線上＝Pages 部署副本）。'
+            + '上面是 main 最後 commit 的時間：內容可能比它新（本機未 commit 的修改）'
+            + '或舊（Pages 建置未完成）。';
+    badge.title = [
+        `來源：${isRaw ? 'GitHub raw' : '本站已部署檔案'}`,
+        `網址：${url}`,
+        when.full,
+        readHow,
+        '判斷新舊：剛存完就重新整理，這裡的時間應該接近你按儲存的時間；'
+            + '若仍是舊時間，代表遠端還是存檔前的版本。',
+    ].join('\n');
     badge.classList.remove('hidden');
 }
 
@@ -862,6 +899,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         let text;
         let sha = '';
         let localMap = null;
+        let commitInfo = null;
         let source = 'deployed';
 
         const loaded = await loadMapJson(path, `${MAP_BASE}${month}.json`);
@@ -871,10 +909,20 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         text = localText;
 
         try {
-            const remote = await getFile(path);
-            sha = remote.sha;
-            if (forceRemote) {
-                text = remote.text;
+            // Run both in parallel: sha for the save, last-commit time for the
+            // source badge. Neither is required to render the map.
+            const [remote, lastCommit] = await Promise.allSettled([
+                getFile(path),
+                getLastCommit(path),
+            ]);
+            if (remote.status === 'fulfilled') {
+                sha = remote.value.sha;
+                if (forceRemote) {
+                    text = remote.value.text;
+                }
+            }
+            if (lastCommit.status === 'fulfilled') {
+                commitInfo = lastCommit.value;
             }
         } catch {
             // Public fetch / no PAT: save will re-fetch sha later.
@@ -911,7 +959,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         els.saveButton.disabled = true;
         els.draftBadge.classList.toggle('hidden', !state.usingDraft);
         setStatus(`已載入 ${month}（${state.map.sessions?.length || 0} sessions）`, 'ok');
-        renderDataSource(source, loaded.url);
+        renderDataSource(source, loaded.url, commitInfo?.date);
     } catch (error) {
         hideDataSource();
         els.fileList.innerHTML = `<div class="empty-state error">載入失敗：${escapeHtml(error.message)}</div>`;
@@ -2688,6 +2736,15 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         if (state.sessionId) renderEditor();
         recomputeDirty();
         setStatus(`已存到 GitHub：${path}`, 'ok');
+        // The PUT response carries the new commit's own timestamp — show it now
+        // so a reload can be checked against it ("did my save really land?").
+        if (state.dataSource) {
+            renderDataSource(
+                state.dataSource.source,
+                state.dataSource.url,
+                result.commit?.committer?.date || new Date().toISOString(),
+            );
+        }
     } catch (error) {
         if (isConflict(error) && !force) {
             els.conflictPreview.textContent = error.message || '遠端版本衝突';

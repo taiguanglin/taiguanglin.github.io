@@ -53,9 +53,14 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
   `raw.githubusercontent.com/…/main/audio_map2/<month>.json`，commit 完**幾秒內**就看到新資料，
   不用等 Pages 建置（建置失敗時也不會卡住）。localhost／`file://` 一律讀本機檔案（預覽工作樹）。
   raw 讀不到（離線／被擋）會自動退回已部署檔案，並記住不再每次都等逾時。
-  **topbar 常駐徽章 `#dataSourceBadge`** 會標「來源 GitHub raw」（綠）或「來源 已部署檔案」（黃），
-  滑過有完整說明與實際抓取的 URL——**看見舊資料先看這顆**。`#saveStatus` 是會被播放／校時／存檔
-  洗掉的暫時訊息，不能拿它當來源依據。
+  **topbar 常駐徽章 `#dataSourceBadge`** 會標「來源 GitHub raw · 10/1 22:42」（綠）或
+  「來源 已部署檔案 · 10/1 22:42」（黃）；滑過有完整 URL、**該 JSON 在 main 最後一次 commit 的
+  時間**（含「8 小時前」相對時間）與判讀說明——**看見舊資料先看這顆**。`#saveStatus` 是會被播放／
+  校時／存檔洗掉的暫時訊息，不能拿它當來源依據。
+  - 時間來源是 `getLastCommit()`（commits API）。raw **沒有** `Last-Modified`、contents API 也**沒有**
+    日期欄，commits API 是唯一來源；`Promise.allSettled` 與既有的 `getFile` 並行，不拖慢載入。
+  - 讀不到（離線／額度用完）顯示「時間未知」，**不猜**。存檔成功時 PUT 回應自帶新 commit 時間，
+    徽章立刻更新——重新整理後時間對得上＝存檔確實落地。
 - 快捷鍵：`P` 播放暫停、`↑↓` 段落導覽、`N` 定位下一個未確認段（`Shift`+`N` 下一個已確認；
   只捲動不播放、不寫 `lastPlayed`）。
 - topbar「跳瀏工具列」⤒/⤓ 同款循環定位（右鍵／長按才定位並播放）；徽章顯示本月份剩餘未確認
