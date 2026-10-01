@@ -62,7 +62,11 @@
         break;
       case 'font-normal':
         fontSize = getDefaultFontSize();
-        localStorage.setItem('fontSize', fontSize);
+        // 總目錄頁的「A」只重置當前畫面、不寫入偏好：目錄頁的預設刻意比較小
+        // （行數是找書的關鍵），寫進 localStorage 會把所有內文頁鎖死在舊字級。
+        if (!isIndexPage()) {
+          localStorage.setItem('fontSize', fontSize);
+        }
         applyReadingSettings();
         updateFontSizeButtons();
         break;

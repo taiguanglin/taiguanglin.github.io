@@ -15,7 +15,7 @@ cascade order.
 
 | File | Responsibility |
 |---|---|
-| `00-base.css` | `:root` design tokens (colors, radii, shadows), `body`, headings `h1–h4`, `p`, `img`, `a`, `hr`, `.toc`, `.question`, `.answer`, Q&A meta elements, dark-mode base |
+| `00-base.css` | `:root` design tokens (colors, radii, shadows), `body`, headings `h1–h4` (em-based type scale), `p`, `img`, `a`, `hr`, `.toc`, `.question`, `.answer`, Q&A meta elements, dark-mode base |
 | `01a-layout.css` | Reading toolbar, scrollbar, font/line-height controls, reading progress bar, action buttons, Q&A interaction overlays, toast notifications |
 | `01b-floating-toc.css` | Floating TOC panel, TOC header, content area, items, tabs; dark-mode floating-TOC variants |
 | `01c-bookmarks.css` | Bookmark list items, homepage bookmark groups, visual bookmark indicators, current-chapter info bar; dark-mode bookmark variants |
@@ -25,7 +25,7 @@ cascade order.
 | `04b-toc-dark.css` | Dark-mode overrides for all TOC, floating-TOC, and bookmark elements inside the TOC panel |
 | `04c-qa-audio.css` | QA chapter styles: source banner, per-segment `qa-meta-bar` (number + speaker-icon-only `.qa-play` button — no visible time label, the range living only in the mini-player's progress row — + status badge), `qa-opening`, the bottom floating `qa-player` (seek row with `−5s`/progress/`+5s`, play/pause toggle, Bilibili-style volume control — a pink SVG speaker icon (~3/4 emoji size, `fill: var(--color-primary)`, sound waves hidden and a slash shown when muted) whose popup (numeric 0–100 readout + vertical rotated range slider filled up to `--qa-volume-pct` with the primary colour) appears on hover; a `::before` bridge spans the 10px gap above the button so hovering from button to slider stays continuous), loading states (`.qa-play.loading`, `.qa-play-icon--spinner`, `.qa-player.is-loading`, indeterminate progress pulse) with matching `body.dark-mode` overrides (icon uses `#ff91af` in dark mode); dark-mode variants. Ordered before `05-responsive.css` so its `@media` overrides win. Responsive rules for these live in `05-responsive.css`. Also hosts 講經段落跟播 styles: `.para-track-toggle` (per-lecture follow-play text checkbox inserted next to `.qa-play`, `on` state = gradient fill), `body.para-track-on` (pointer cursor on playable `.para-block[data-start]`, synced with the toggle), `.para-block.para-active` (warm-glow background + inset left accent via `box-shadow` + `font-weight: 600`; no `transform: scale()` — scaling would widen the block and clip on narrow screens); the previous paragraph gets no visual change (no dimming), each with `body.dark-mode` variants. Also hosts 經文置頂（sutra pin）styles: `.sutra-pin-toggle` (shares the `.para-track-toggle` pill look via grouped selectors), `.sutra-pin-group` (plain in-flow wrapper bounding each sutra's sticky range: sutra → next sutra / heading / image; no padding/border/overflow so margins collapse through), `.sutra-pin-host` (`position: sticky; top: 0` — the sutra itself holds at the viewport top at full size with no clone and no added chrome, so size and background are pixel-identical and there is no white edge), `position: static` overrides for `.sutra-pin-group.sutra-pin-tall` (sutra taller than 45% of the viewport never sticks), `body.sutra-pin-off` (toggle off) and `body.sutra-pin-suppress` (anchor-jump protection) |
 | `04d-image-lightbox.css` | Content-image `cursor: zoom-in`; full-screen `.img-lightbox` overlay (toolbar, stage, transform-based zoom/pan); mobile tap targets and safe-area padding; `body.dark-mode` variants. Ordered before `05-responsive.css` |
-| `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px incl. QA player full-width), small-phone (≤400px) |
+| `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px incl. QA player full-width), small-phone (≤400px). Line-height and heading sizes are deliberately **not** overridden here — see "CSS Custom Properties" and "Type Scale Follows the Reading Font Size" |
 | `06-ux-plus.css` | 2026-09 UX 改善元件（無 `@media`）：深色「墨夜」面板（`body.dark-neutral`，深灰＋暖金）、閱讀位置提示條、音檔續播膠囊、`.toc-count` 可點樣式、`.anchor-share` 錨點鈕、`mark.w2e-hl` 命中高亮、搜尋結果 `.kb-focus`、目錄 backdrop、目錄縮排導引線（`.toc ul ul` 虛線＋浮動目錄深層邊線）。**不含** `.w2e-backtop`（常駐回到頂端鈕已移除，只留功能選單內的 ↑）、**不含**任何 `.w2e-bm-*`（首頁總目錄底部的「我的書籤」管理區塊已移除） |
 
 ### Requirement: Single Output File
@@ -43,6 +43,37 @@ Base typography variables SHALL be defined in `:root` within `00-base.css`:
 - `--line-height` (default `1.6`)
 
 Components that use dynamic line-height MUST reference `var(--line-height)`.
+
+No `@media` block MAY re-declare `line-height` on `body` (or on any element whose
+line-height comes from `--line-height`) with a literal value. A media query has
+the same specificity as the base rule but wins on source order because
+`05-responsive.css` is concatenated after `00-base.css`, so a literal there
+silently overrides the value the reading settings write to `--line-height` and
+the 緊密／正常／寬鬆 buttons stop working on that viewport.
+
+#### Scenario: Line-height buttons on a tablet
+- GIVEN a viewport of 700px and a `--line-height` written by the reading settings
+- WHEN the user presses the 寬鬆 (2.0) button
+- THEN the body line-height SHALL become 2.0
+- AND it SHALL stay 2.0 at 400px-wide viewports as well
+
+### Requirement: Type Scale Follows the Reading Font Size
+`h1`–`h4`, `.questioner`, `.answerer`, `.question-time` and (for `ebook/`,
+`books.css`) `.answer-time`, `.label-heading` SHALL be sized in `em` so they
+scale with the body size the reading settings write to `body`. The heading
+ratios SHALL be `1.6 / 1.3 / 1.15 / 1.0` — slightly tighter than the browser
+defaults of `2 / 1.5 / 1.17 / 1`, because a 2em `h1` on a phone leaves barely
+ten characters per line.
+
+No `@media` block MAY re-declare a heading `font-size` in `px`. Pinning them
+per breakpoint decouples the hierarchy from the reading size: with the default
+body raised to 19px on tablets, a pinned 22px `h2` collapses the h2-to-body
+ratio from 1.29 to 1.16 and the page loses its heading structure.
+
+#### Scenario: Raising the font raises the headings with it
+- GIVEN a tablet body font size of 19px
+- WHEN the heading scale is computed
+- THEN `h2` SHALL be `1.3em` (≈25px), not a fixed 22px
 
 ### Requirement: Dark Mode
 Dark mode overrides SHALL be implemented with the `body.dark-mode` selector.

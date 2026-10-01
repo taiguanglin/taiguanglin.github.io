@@ -2784,18 +2784,35 @@ function addHomepageBookmarkEventListeners() {
   // 手機不額外加強（維持原預設），因為小螢幕本來就靠基礎值偏大來兼顧可讀性。
   // 總目錄頁（index / index_trad）則一律不加強：目錄要能一覽更多章節，
   // 字級一大就得多行才有重點、且捲動距離翻倍，反而不好找書。
-  // 上下界一併留出空間，讓加強後的預設值上下仍各有四級（±8px）可調。
+  // 上下界一併留出空間，讓加強後的預設值上下仍各有三級（±6px）可調。
+  //   下限 14px：12px 的中文在非 Retina 螢幕上筆畫會糊在一起，
+  //   拉丁文 12px 勉強可讀、中文不行，中文實務下限約 14px。
   const FONT_SIZE_STEP = 2;                        // A+／A- 每按一級的 px 差
   const FONT_STEPS_SMALL_PHONE = 0;                // ≤400px：不快調
   const FONT_STEPS_PHONE = 0;                      // ≤600px：不加調
   const FONT_STEPS_TABLET = 1;                     // ≤768px：+1 級（A+ 按一次）
   const FONT_STEPS_DESKTOP = 2;                    // >768px：+2 級（A+ 按兩次）
-  const FONT_SIZE_MIN = 12;
+  const FONT_SIZE_MIN = 14;
   const FONT_SIZE_MAX = 28;
   const FONT_BASE_SMALL_PHONE = 19;                // 基礎值（不含加強級數）
   const FONT_BASE_PHONE = 18;
   const FONT_BASE_TABLET = 17;
   const FONT_BASE_DESKTOP = 16;
+
+  // 中文長文的行長：每行 30–45 字可讀、35–40 字最舒服。超過 45 字眼睛回到
+  // 行首時容易跳錯行。內文實際行長 = 內容寬 − 左右 padding(15×2) − 邊框(4)。
+  const MEASURE_TARGET_CHARS = 40;                 // 目標行長（字／行）
+  const CONTENT_CHROME_PX = 34;                    // .question/.answer 的 padding + 邊框
+  const CONTENT_WIDTH_MIN = 600;
+  const CONTENT_WIDTH_MAX = 1000;
+  const TOC_CONTENT_WIDTH = 800;                   // 總目錄沿用 800px 固定寬度
+
+  // 觸控為主的裝置（`pointer: coarse`）：手機橫向、平板橫向視窗雖寬，
+  // 閱讀距離與握持角度仍是「手持」，不該吃桌面的 +2 級。
+  // 桌機縮放不影響此判斷——觸控筆電的主要指標滑鼠仍是 fine。
+  function isHandheldPointer() {
+    return !!(window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
+  }
 
   // 依螢幕寬度取基礎字級
   function getBaseFontSize(screenWidth) {
@@ -2806,7 +2823,8 @@ function addHomepageBookmarkEventListeners() {
     } else if (screenWidth <= 768) {
       return FONT_BASE_TABLET;
     }
-    return FONT_BASE_DESKTOP;
+    // 觸控為主（手機／平板橫向）不論視窗多寬都算平板級，避免掉進桌面的 16px 基礎值
+    return isHandheldPointer() ? FONT_BASE_TABLET : FONT_BASE_DESKTOP;
   }
 
   // 依螢幕寬度取加強級數（幾次 A+）
@@ -2818,7 +2836,7 @@ function addHomepageBookmarkEventListeners() {
     } else if (screenWidth <= 768) {
       return FONT_STEPS_TABLET;
     }
-    return FONT_STEPS_DESKTOP;
+    return isHandheldPointer() ? FONT_STEPS_TABLET : FONT_STEPS_DESKTOP;
   }
 
   // 根据屏幕尺寸设置默认字体大小（总目录页不加强，其余按视窗宽度加强）
@@ -2831,12 +2849,23 @@ function addHomepageBookmarkEventListeners() {
     }
     return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);
   }
-  
+
+  // 內容寬度跟著字級走，讓行長穩穩落在中文舒適區：
+  // 舊版寬螢幕（≥1400px）固定給 1000px，20px 下等於每行 48 字，偏長。
+  // 改成「目標字數 × 字級」，不論字級調到 14 還是 28，行長都不會失控；
+  // 使用者明確按過寬度鈕時，仍以 localStorage 的偏好為準。
+  function getDefaultContentWidth() {
+    // 總目錄維持 800px：章節標題是短標籤不是散文，且沿用既有版面避免大改
+    if (isIndexPage()) {
+      return TOC_CONTENT_WIDTH;
+    }
+    const byMeasure = MEASURE_TARGET_CHARS * fontSize + CONTENT_CHROME_PX;
+    return Math.max(CONTENT_WIDTH_MIN, Math.min(CONTENT_WIDTH_MAX, Math.round(byMeasure)));
+  }
+
   let fontSize = parseInt(localStorage.getItem('fontSize')) || getDefaultFontSize();
   let lineHeight = parseFloat(localStorage.getItem('lineHeight')) || 1.6;
-  // D2 長文排印：寬螢幕（≥1400px）預設給較寬內容（1000px），
-  // 其餘維持 800px；使用者曾在寬度鈕明確選擇時以其偏好為準。
-  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || (window.innerWidth >= 1400 ? 1000 : 800);
+  let contentWidth = parseInt(localStorage.getItem('contentWidth')) || getDefaultContentWidth();
   
   function applyReadingSettings() {
     // 使用!important确保字体大小设置在移动设备上生效
@@ -3351,7 +3380,11 @@ function addHomepageBookmarkEventListeners() {
         break;
       case 'font-normal':
         fontSize = getDefaultFontSize();
-        localStorage.setItem('fontSize', fontSize);
+        // 總目錄頁的「A」只重置當前畫面、不寫入偏好：目錄頁的預設刻意比較小
+        // （行數是找書的關鍵），寫進 localStorage 會把所有內文頁鎖死在舊字級。
+        if (!isIndexPage()) {
+          localStorage.setItem('fontSize', fontSize);
+        }
         applyReadingSettings();
         updateFontSizeButtons();
         break;
@@ -6086,8 +6119,11 @@ function addHomepageBookmarkEventListeners() {
     if (!sutras.length || !document.body) return;
 
     var PIN_KEY = 'sutraPinEnabled';
-    var TALL_RATIO = 0.45;           // 經文高 > 45% 視窗高 → 不停留
-                                     // （停留經文最多佔畫面 45%，至少留 55% 讀講解）
+    // 經文高 > 55% 視窗高 → 不停留（至少留 45% 畫面讀講解）
+    // 2026-09 由 0.45 提高：閱讀設定的預設字級 16→20px 後，同一段經文的行高
+    // 多了 25%，45% 門檻等於把「可停留的經文長度」從約 16 行砍到 13 行，
+    // 常見的段落長度會突然不再置頂。55% 讓原本的停留體驗回來。
+    var TALL_RATIO = 0.55;
 
     function loadState(key, dflt) {
       try {

@@ -39,8 +39,11 @@
     if (!sutras.length || !document.body) return;
 
     var PIN_KEY = 'sutraPinEnabled';
-    var TALL_RATIO = 0.45;           // 經文高 > 45% 視窗高 → 不停留
-                                     // （停留經文最多佔畫面 45%，至少留 55% 讀講解）
+    // 經文高 > 55% 視窗高 → 不停留（至少留 45% 畫面讀講解）
+    // 2026-09 由 0.45 提高：閱讀設定的預設字級 16→20px 後，同一段經文的行高
+    // 多了 25%，45% 門檻等於把「可停留的經文長度」從約 16 行砍到 13 行，
+    // 常見的段落長度會突然不再置頂。55% 讓原本的停留體驗回來。
+    var TALL_RATIO = 0.55;
 
     function loadState(key, dflt) {
       try {
