@@ -7095,10 +7095,10 @@
           "end_label": null,
           "confidence": 0.0,
           "status": "auto",
-          "notes": "空答案：无争斗门派答案併入#35（雪晴）",
+          "notes": "空答案：无争斗门派答案併入#35（雪晴）；修正 HTML 對應：原指向 question-6449305c9f94（那是第 3 問的 block，與 #37 重複）。電子書把第 1、2 問併在同一個 block question-42bfc3846f9c，故改指該 block；第 2 問的回答併在 #35 的 answer_text 內，本段無獨立 answer block，已移除無關的 answer-66e66b2c3cb6",
           "srt_preview": "但是你你血清嗯世间各教育各教教育戒杀但却有门派都争斗甚至宗教战争怎么看这个情况啊因为人本来就是喜欢杀的啊众生本来就有很强烈的杀戮之心杀戮的习气所以不管什么理论给他们都会拿来作为杀生的呃杀戮的战争的理由的所以你给的这宗教哪怕他是戒杀的宗教他后面也会被拿来作为一个杀戮的一个呃理论根据我者宗教理由吧啊所以这是指众生的问题啊并",
           "chapter_question_ids": [
-            "question-6449305c9f94"
+            "question-42bfc3846f9c"
           ],
           "chapter_indexes": [
             4
@@ -7109,9 +7109,7 @@
           "q_preview": "2、若无争斗，门派很快消失又该怎么办？",
           "answer_preview": "",
           "meta": {},
-          "chapter_answer_ids": [
-            "answer-66e66b2c3cb6"
-          ],
+          "chapter_answer_ids": [],
           "html_verbatim": false
         },
         {
