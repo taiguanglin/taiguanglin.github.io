@@ -1,5 +1,5 @@
 import { createAudioController } from './audio.js';
-import { getFile, isConflict, putFile, testToken } from './github.js';
+import { getFile, isConflict, loadMapJson, putFile, testToken } from './github.js';
 import { parseRanges, secondsToTimecode, timecodeToSeconds } from './parser.js';
 import {
     clearDraft,
@@ -516,6 +516,11 @@ function mapPath(month) {
     return `audio_map2/${month}.json`;
 }
 
+/** Say which copy is on screen, so "still the old data?" is answerable. */
+function mapSourceLabel(source) {
+    return source === 'raw' ? '來源 GitHub raw' : '來源已部署檔案';
+}
+
 function serializeMap(map) {
     return `${JSON.stringify(map, null, 2)}\n`;
 }
@@ -809,15 +814,18 @@ async function loadMonth(month, { forceRemote = false } = {}) {
     const draft = forceRemote ? null : getDraft(path);
 
     try {
-        // Prefer local working-tree JSON (has PDF answer_text). GitHub is only
-        // used for save SHA / optional force-remote pull.
+        // Prefer the freshly committed file: on GitHub Pages the deployed copy
+        // only refreshes after a build finishes, so `loadMapJson` reads raw
+        // there and falls back to the deployed copy. GitHub is also used for the
+        // save SHA / optional force-remote pull.
         let text;
         let sha = '';
         let localMap = null;
+        let source = 'deployed';
 
-        const localRes = await fetch(`${MAP_BASE}${month}.json`, { cache: 'no-store' });
-        if (!localRes.ok) throw new Error(`無法載入 ${month}.json (${localRes.status})`);
-        const localText = await localRes.text();
+        const loaded = await loadMapJson(path, `${MAP_BASE}${month}.json`);
+        const localText = loaded.text;
+        source = loaded.source;
         localMap = JSON.parse(localText);
         text = localText;
 
@@ -843,7 +851,8 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         }
 
         let map = JSON.parse(text);
-        // Drafts / GitHub copies may predate answer_text — overlay PDF text from local.
+        // Drafts / older copies may predate answer_text — overlay PDF text from
+        // the freshly loaded file.
         map = mergePdfTextFrom(map, localMap);
         state.map = map;
         state.originalMap = cloneMap(map);
@@ -860,7 +869,10 @@ async function loadMonth(month, { forceRemote = false } = {}) {
         els.editorRoot.innerHTML = '';
         els.saveButton.disabled = true;
         els.draftBadge.classList.toggle('hidden', !state.usingDraft);
-        setStatus(`已載入 ${month}（${state.map.sessions?.length || 0} sessions）`, 'ok');
+        setStatus(
+            `已載入 ${month}（${state.map.sessions?.length || 0} sessions・${mapSourceLabel(source)}）`,
+            'ok',
+        );
     } catch (error) {
         els.fileList.innerHTML = `<div class="empty-state error">載入失敗：${escapeHtml(error.message)}</div>`;
         setStatus(`載入失敗：${error.message}`, 'error');

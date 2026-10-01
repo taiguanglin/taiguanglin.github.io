@@ -1,6 +1,9 @@
 import { getPat } from './storage.js';
 
 const API_ROOT = 'https://api.github.com';
+const RAW_ROOT = 'https://raw.githubusercontent.com';
+/** Raw goes through a CDN that can stall outright on blocked networks. */
+const RAW_TIMEOUT_MS = 8000;
 export const GITHUB_CONFIG = {
     owner: 'taiguanglin',
     repo: 'taiguanglin.github.io',
@@ -46,6 +49,69 @@ async function getRawFile(path) {
     );
     if (!response.ok) throw new Error(`HTTP ${response.status} ${path}`);
     return response.text();
+}
+
+/**
+ * Whether the page runs on a real web host (GitHub Pages) instead of a local
+ * preview server. A local preview must read the working tree, so it never
+ * substitutes raw GitHub content.
+ */
+export function isRemoteHost() {
+    const { protocol, hostname } = window.location;
+    if (protocol !== 'http:' && protocol !== 'https:') return false;
+    return !/^(localhost|127(\.\d+){3}|0\.0\.0\.0|\[::1\])$/i.test(hostname);
+}
+
+/** Canonical raw URL for a repo path on the configured branch. */
+export function rawFileUrl(path) {
+    return `${RAW_ROOT}/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/${GITHUB_CONFIG.branch}/${encodePath(path)}`;
+}
+
+let rawUnreachable = false;
+
+/**
+ * Read a map JSON, preferring the just-committed file over the deployed copy.
+ *
+ * A GitHub Pages deploy only publishes `main` once its build finishes, so a
+ * freshly pushed JSON stays invisible for minutes — or forever when the build
+ * fails. Reading `raw.githubusercontent.com` shows the committed file within
+ * seconds. Falls back to the deployed copy when raw is unreachable, and stays
+ * on it for the rest of the session so a blocked network costs one timeout
+ * rather than one per month switch.
+ *
+ * @param {string} repoPath repo-relative path, e.g. `audio_map2/2024-02.json`
+ * @param {string} deployedUrl the same file as served by the current origin
+ * @returns {Promise<{text: string, source: 'raw'|'deployed', url: string}>}
+ */
+export async function loadMapJson(repoPath, deployedUrl) {
+    if (isRemoteHost() && !rawUnreachable) {
+        const url = rawFileUrl(repoPath);
+        try {
+            return { text: await fetchText(url, repoPath, RAW_TIMEOUT_MS), source: 'raw', url };
+        } catch (error) {
+            rawUnreachable = true;
+            console.warn('[github] raw 讀取失敗，改用已部署檔案：', error);
+        }
+    }
+    const url = new URL(deployedUrl, window.location.href).href;
+    return { text: await fetchText(url, url), source: 'deployed', url };
+}
+
+async function fetchText(url, label, timeoutMs = 0) {
+    const controller = timeoutMs ? new AbortController() : null;
+    const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+    try {
+        // `no-store` so a commit shows up on the next reload instead of waiting
+        // out the raw CDN's max-age.
+        const response = await fetch(url, { cache: 'no-store', signal: controller?.signal });
+        if (!response.ok) throw new Error(`HTTP ${response.status}（${label}）`);
+        return await response.text();
+    } catch (error) {
+        if (error?.name === 'AbortError') throw new Error(`讀取逾時（${timeoutMs / 1000}s，${label}）`);
+        throw error;
+    } finally {
+        if (timer) clearTimeout(timer);
+    }
 }
 
 export async function putFile(path, text, sha, message, { force = false } = {}) {
