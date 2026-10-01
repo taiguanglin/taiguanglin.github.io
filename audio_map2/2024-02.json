@@ -20149,9 +20149,9 @@
         "text": "",
         "text_preview": "",
         "start": 0,
-        "end": 2.3,
+        "end": 2.2,
         "start_label": "00:00:00.000",
-        "end_label": "00:00:02.300",
+        "end_label": "00:00:02.200",
         "confidence": 0.85,
         "status": "manual",
         "notes": "",
@@ -20163,10 +20163,10 @@
           "question_time": "2024-02-28",
           "q_text": "师父，我好几年前因为家庭关系恶劣，以嗔恨心发过愿，说以后生生世世都不要碰到我丈夫跟婆婆，这怎么办?后果是不是很严重?不会以后不能度他们了吧?",
           "answer_text": "采薇，以前发过所谓的恶愿，现在忏悔，在佛前忏悔。你就这么忏悔就行，我在佛前忏悔以前发过多少遍恶愿，现在开始我要发正确的愿，我要度所有和我有缘的众生，尤其是我的丈夫跟婆婆这些人，我一定要度，你这么想就可以了。你不用把他们作为心理负担来压着自己，好吧。",
-          "start": 2.3,
-          "end": 63.9,
-          "start_label": "00:00:02.300",
-          "end_label": "00:01:03.900",
+          "start": 2.2,
+          "end": 30.919,
+          "start_label": "00:00:02.200",
+          "end_label": "00:00:30.919",
           "confidence": 0.92,
           "status": "manual",
           "notes": "name",
@@ -20185,17 +20185,21 @@
           "chapter_answer_ids": [
             "answer-b918d73daa2f"
           ],
-          "html_verbatim": true
+          "html_verbatim": true,
+          "meta": {
+            "lastPlayed": "2026-10-01 22:34",
+            "lastEdited": "2026-10-01 22:33"
+          }
         },
         {
           "questioner": "净红",
           "question_time": "2024-02-28 20:26",
           "q_text": "顶礼太师父。\n1、师父说发心的时候讲到有些人成为阿罗汉后不愿意出来度人消业。请问怎么样发心发愿才能一直不退转，不退大菩提心？",
           "answer_text": "净红，怎么不退大菩提心？精进修行，你的修为越高，菩提心会变得越坚固，尤其是到了四禅基本上就不会再变了，因为四禅开始已经没有痛苦了。你看到了人世间真正的痛苦，别人的痛苦，你也就有了坚定的菩提心。其实你看地藏经，地藏菩萨也是反复的发愿，这不是一次发愿就可以，每一世都是坚固的发愿、反复的发愿就可以。",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
+          "start": 30.919,
+          "end": 63.99,
+          "start_label": "00:00:30.919",
+          "end_label": "00:01:03.990",
           "confidence": 0,
           "status": "manual",
           "notes": "僅點名「進洪／淨紅」，大菩提心答體未讀（約30s靜音後接 #03）（）",
@@ -20214,16 +20218,20 @@
           "chapter_answer_ids": [
             "answer-2eef7647a04a"
           ],
-          "html_verbatim": true
+          "html_verbatim": true,
+          "meta": {
+            "lastEdited": "2026-10-01 22:35",
+            "lastPlayed": "2026-10-01 22:35"
+          }
         },
         {
           "questioner": "净红",
           "question_time": "2024-02-28 20:26",
           "q_text": "2、这些不愿意度人的阿罗汉是因为当初没有发大菩提心吗？",
           "answer_text": "那些不愿意度人的阿罗汉，是因为当初没有发大菩提心吗？一开始就没有发，但是机缘巧合下他就成了。一开始传法的方法也不是那么完善，可以说是一通乱打，后来逐渐传法的事情就变得有规范了，这也是有个过程的。",
-          "start": 63.9,
+          "start": 63.99,
           "end": 134.34,
-          "start_label": "00:01:03.900",
+          "start_label": "00:01:03.990",
           "end_label": "00:02:14.340",
           "confidence": 0.92,
           "status": "manual",
@@ -20243,7 +20251,10 @@
           "chapter_answer_ids": [
             "answer-b2c5e3217168"
           ],
-          "html_verbatim": true
+          "html_verbatim": true,
+          "meta": {
+            "lastPlayed": "2026-10-01 22:35"
+          }
         },
         {
           "questioner": "青白瓷",
