@@ -1,7 +1,23 @@
+import {
+    clearDraft,
+    getDraft,
+    hasDraft,
+    initDraftStore,
+    listDraftPaths,
+    setDraft,
+} from './draft_store.js';
+
+/**
+ * 草稿（`get/set/clearDraft`）本體在 IndexedDB，不在 localStorage：一個月份 JSON 就是
+ * 1–3 MB，localStorage 的額度是三個審核 UI 共用的，寫滿會讓存檔在 `flushDraft()` 直接
+ * 掛掉。`hasDraft()`／`listDraftPaths()` 仍是同步的（讀 localStorage 索引）。
+ * 這裡原樣轉出，editor.js 只需要 import storage.js。
+ */
+export { clearDraft, getDraft, hasDraft, initDraftStore, listDraftPaths, setDraft };
+
 const PREFIX = 'audioMapEditor:';
 const PAT_KEY = `${PREFIX}pat`;
 const PREFS_KEY = `${PREFIX}prefs`;
-const DRAFT_PREFIX = `${PREFIX}draft:`;
 const PENDING_SAVE_KEY = `${PREFIX}pendingSave`;
 
 const DEFAULT_PREFS = {
@@ -32,7 +48,7 @@ export function getPat() {
 export function setPat(token) {
     const cleanToken = token.trim();
     if (cleanToken) {
-        localStorage.setItem(PAT_KEY, cleanToken);
+        safeSetItem(PAT_KEY, cleanToken);
     } else {
         localStorage.removeItem(PAT_KEY);
     }
@@ -54,43 +70,7 @@ export function getPrefs() {
 }
 
 export function setPrefs(nextPrefs) {
-    localStorage.setItem(PREFS_KEY, JSON.stringify({ ...getPrefs(), ...nextPrefs }));
-}
-
-export function getDraft(path) {
-    try {
-        return JSON.parse(localStorage.getItem(draftKey(path)) || 'null');
-    } catch {
-        return null;
-    }
-}
-
-export function setDraft(path, text, sha) {
-    localStorage.setItem(draftKey(path), JSON.stringify({
-        path,
-        text,
-        sha,
-        savedAt: new Date().toISOString(),
-    }));
-}
-
-export function clearDraft(path) {
-    localStorage.removeItem(draftKey(path));
-}
-
-export function listDraftPaths() {
-    const paths = new Set();
-    for (let index = 0; index < localStorage.length; index += 1) {
-        const key = localStorage.key(index);
-        if (key?.startsWith(DRAFT_PREFIX)) {
-            paths.add(key.slice(DRAFT_PREFIX.length));
-        }
-    }
-    return paths;
-}
-
-function draftKey(path) {
-    return `${DRAFT_PREFIX}${path}`;
+    safeSetItem(PREFS_KEY, JSON.stringify({ ...getPrefs(), ...nextPrefs }));
 }
 
 /**
@@ -108,7 +88,7 @@ export function getPendingSave() {
 }
 
 export function setPendingSave(path) {
-    localStorage.setItem(PENDING_SAVE_KEY, JSON.stringify({
+    safeSetItem(PENDING_SAVE_KEY, JSON.stringify({
         path,
         startedAt: new Date().toISOString(),
     }));
@@ -116,4 +96,28 @@ export function setPendingSave(path) {
 
 export function clearPendingSave() {
     localStorage.removeItem(PENDING_SAVE_KEY);
+}
+
+let quotaWarned = false;
+
+/**
+ * localStorage 寫入不讓例外外洩。
+ *
+ * 這些 key 都只有幾百 bytes，寫不進去代表**整個 origin 的額度**被別的東西塞滿（過去就是
+ * localStorage 裡的舊草稿）。讓 `QuotaExceededError` 從 `setPendingSave()` 丟出去，會在
+ * 第一個 `await` 之前就中止整個上傳——就是「按儲存卻沒反應」的原因。額度在啟動時由
+ * `initDraftStore()` 搬走舊草稿回收，這裡只是最後一道不炸掉整條流程的保險。
+ */
+function safeSetItem(key, value) {
+    try {
+        localStorage.setItem(key, value);
+    } catch (error) {
+        if (error?.name !== 'QuotaExceededError' && error?.name !== 'NS_ERROR_DOM_QUOTA_REACHED') {
+            throw error;
+        }
+        if (!quotaWarned) {
+            quotaWarned = true;
+            console.warn('[storage] localStorage 額度已滿，這次偏好設定／存檔標記沒有寫入：', error);
+        }
+    }
 }

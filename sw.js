@@ -7,10 +7,15 @@
  *  - 搜尋索引 search_index*.json → stale-while-revalidate（體積大但讀過一次即離線可用）。
  *  - 音檔（.opus/.mp3，/audio/ 另站）→ 網路直連，永不快取（避免佔滿儲存）。
  *  - 其他（根目錄行銷頁等）→ 直接放行，不介入。
+ *
+ * ⚠️ `isAsset()` 對**任何**同源 .js/.css 都回 true（包含 audio_map、audio_map2、audio_map3
+ * 這三個審核 UI 的 assets），而靜態資產是 cache-first：改到這些檔案時必須同時換 VERSION，
+ * 否則已經裝了 SW 的瀏覽器會繼續吃舊快取、看不到修正。
+ * VERSION 換掉 → activate 刪掉舊 cache ＋ clients.claim()。
  */
 'use strict';
 
-var VERSION = 'v1-2026-09';
+var VERSION = 'v1-2026-10';
 var STATIC_CACHE = 'tgl-ebook-static-' + VERSION;
 var PAGES_CACHE = 'tgl-ebook-pages-' + VERSION;
 

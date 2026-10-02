@@ -50,11 +50,19 @@ cd <repo root> && python3 -m http.server 8931   # 或 audio/serve.py（需 Range
   - 讀不到（離線／額度用完）顯示「時間未知」，**不猜**。存檔成功時 PUT 回應自帶新 commit 時間，
     徽章立刻更新——重新整理後時間對得上＝存檔確實落地。
 - **防遺失機制（不要改壞它）**（與 audio_map2 同款）：本機草稿是唯一能救回「按了儲存但沒存完就
-  離開」的東西。`scheduleDraft()` 800ms debounce 有 **2500ms 硬上限**（`DRAFT_MAX_DELAY_MS`）；
-  `flushDraft()` 在**第一個 await 之前**同步寫檔，並由 `beforeunload`／`pagehide`／
-  `visibilitychange:hidden`（手機切 app、下拉重整）觸發——這些同步點是防止「離頁時 pending timer 被
-  取消 → 草稿從未寫入 → 成果靜默消失」的唯一防線。`pendingSave` 標記（`storage.js`）記錄「上傳開始
-  但沒完成」，成功才清除，下次看到草稿時對話框會明說上次上傳未完成。存檔失敗不會丟任何東西。
+  離開」的東西。
+  - **草稿本體在 IndexedDB**（`assets/draft_store.js`，三個審核 UI 共用同一份模組與 database，
+    key 帶 `audio_map3/…` 路徑所以不會互相覆蓋），localStorage 只留 metadata 索引（約 120 bytes），
+    `listDraftPaths()`／`hasDraft()` 仍同步。⚠️ 別改回 localStorage 存文字：一個系列 JSON 就是
+    0.5–1.9 MB，額度約 5 MB 且三個 UI 共用，寫滿時 `setItem` 丟 `QuotaExceededError`，而存檔流程
+    會先 `flushDraft()` 再上傳，於是整個上傳被中止（2026-10 實際發生過）。舊草稿由
+    `initDraftStore()` 自動搬進 IndexedDB，順便把額度還回去。
+  - `scheduleDraft()` 800ms debounce 有 **2500ms 硬上限**（`DRAFT_MAX_DELAY_MS`）；
+    `flushDraft()` 回傳 promise 且**永不 reject**，`saveCurrentMap()` 會 `await` 它再上傳；
+    `beforeunload`／`pagehide`／`visibilitychange:hidden`（手機切 app、下拉重整）也各自觸發。
+    IDB 沒有同步 API，離頁點只能啟動寫入，真正有時間落地的是 `visibilitychange:hidden`。
+  - `pendingSave` 標記（`storage.js`，經 `safeSetItem()` 不會拋 quota 例外）記錄「上傳開始但沒完成」，
+    成功才清除，下次看到草稿時對話框會明說上次上傳未完成。存檔失敗不會丟任何東西。
 
 ### 「零長度」標記（`"zero": true`，2026-09 新增，與 audio_map2 同步）
 

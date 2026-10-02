@@ -7,6 +7,8 @@ import {
     getDraft,
     getPat,
     getPrefs,
+    hasDraft,
+    initDraftStore,
     listDraftPaths,
     setDraft,
     setPat,
@@ -137,6 +139,9 @@ bootstrap();
 
 async function bootstrap() {
     els.monthSelect.innerHTML = MONTHS.map((m) => `<option value="${m}">${m}</option>`).join('');
+    // 開 IndexedDB 並把舊版 localStorage 草稿搬過去（順便把塞爆的額度還回來）；
+    // 必須在第一次 getDraft／setDraft 之前完成。
+    await initDraftStore();
     bindEvents();
     setupMiniPlayer();
     setupSidebarControls();
@@ -673,7 +678,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
     state.usingDraft = false;
 
     const path = mapPath(month);
-    const draft = forceRemote ? null : getDraft(path);
+    const draft = forceRemote ? null : await getDraft(path);
 
     try {
         // Prefer local working-tree JSON (has PDF answer_text). GitHub is only
@@ -705,7 +710,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
                 sha = draft.sha || sha;
                 state.usingDraft = true;
             } else if (choice === 'discard') {
-                clearDraft(path);
+                await clearDraft(path);
             }
         }
 
@@ -1549,7 +1554,7 @@ function recomputeDirty() {
     state.dirty = dirty;
     els.saveButton.disabled = !dirty && !state.usingDraft;
     els.savePlayedButton?.classList.toggle('hidden', !dirty);
-    els.draftBadge.classList.toggle('hidden', !state.usingDraft && !getDraft(mapPath(state.month)));
+    els.draftBadge.classList.toggle('hidden', !state.usingDraft && !hasDraft(mapPath(state.month)));
     for (const card of els.editorRoot.querySelectorAll('.segment-card')) {
         const dirtyMark = card.querySelector('.segment-dirty');
         if (!dirtyMark) continue;
@@ -1572,16 +1577,35 @@ function recomputeDirty() {
     else setStatus('有未儲存變更', 'ok');
 }
 
+/**
+ * Write the local draft now, cancelling any pending debounce.
+ *
+ * The write is async (IndexedDB, see `draft_store.js` — a month JSON does not
+ * fit localStorage), so the save path `await`s this before starting the upload;
+ * the unload hooks just fire it. It never rejects: a draft that cannot be
+ * written is a warning, never a reason to abort a GitHub save.
+ */
+function flushDraft() {
+    clearTimeout(state.draftTimer);
+    state.draftTimer = null;
+    if (!state.map) return Promise.resolve();
+    // Best-effort: include any in-progress marker edits in the local draft.
+    flushEditorTimesIntoMap();
+    const path = mapPath(state.month);
+    els.draftBadge.classList.remove('hidden');
+    return setDraft(path, serializeMap(state.map), state.currentSha)
+        .then(() => {
+            state.draftPaths = listDraftPaths();
+        })
+        .catch((error) => {
+            console.error('[draft] 本機草稿寫入失敗', error);
+            setStatus('⚠ 本機草稿寫入失敗：離開頁面會遺失未儲存變更，請直接存到 GitHub', 'error');
+        });
+}
+
 function scheduleDraft() {
     clearTimeout(state.draftTimer);
-    state.draftTimer = setTimeout(() => {
-        if (!state.map) return;
-        // Best-effort: include any in-progress marker edits in the local draft.
-        flushEditorTimesIntoMap();
-        setDraft(mapPath(state.month), serializeMap(state.map), state.currentSha);
-        state.draftPaths = listDraftPaths();
-        els.draftBadge.classList.remove('hidden');
-    }, 800);
+    state.draftTimer = setTimeout(() => flushDraft(), 800);
 }
 
 function resetHistory() {
@@ -1649,6 +1673,9 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         return;
     }
     const path = mapPath(state.month);
+    // Land the local copy before the upload starts, so a reload mid-PUT still
+    // finds a recoverable draft. Draft failures must not abort the save.
+    await flushDraft();
     setStatus('上傳中…', 'loading');
     try {
         if (!state.currentSha) {
@@ -1671,7 +1698,7 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         state.originalMap = cloneMap(payload);
         state.dirty = false;
         state.usingDraft = false;
-        clearDraft(path);
+        await clearDraft(path);
         els.draftBadge.classList.add('hidden');
         resetHistory();
         if (state.sessionId) renderEditor();

@@ -9,6 +9,8 @@ import {
     getPat,
     getPendingSave,
     getPrefs,
+    hasDraft,
+    initDraftStore,
     listDraftPaths,
     setDraft,
     setPat,
@@ -163,6 +165,9 @@ bootstrap();
 
 async function bootstrap() {
     els.monthSelect.innerHTML = MONTHS.map((m) => `<option value="${m}">${m}</option>`).join('');
+    // 開 IndexedDB 並把舊版 localStorage 草稿搬過去（順便把塞爆的額度還回來）；
+    // 必須在第一次 getDraft／setDraft 之前完成。
+    await initDraftStore();
     bindEvents();
     setupMiniPlayer();
     setupSidebarControls();
@@ -274,7 +279,9 @@ function bindEvents() {
         await saveCurrentMap({ force: true });
     });
     window.addEventListener('beforeunload', (event) => {
-        // Never lose the local copy because the page went away mid-save.
+        // Never lose the local copy because the page went away mid-save. The
+        // IndexedDB write cannot be awaited here, so this only starts it —
+        // `visibilitychange` is the hook with enough lead time to land.
         if (state.dirty) flushDraft();
         // An upload in flight is the dangerous case: the remote copy may still
         // be the pre-save version, so warn even if the map looks clean.
@@ -889,7 +896,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
     state.usingDraft = false;
 
     const path = mapPath(month);
-    const draft = forceRemote ? null : getDraft(path);
+    const draft = forceRemote ? null : await getDraft(path);
 
     try {
         // Prefer the freshly committed file: on GitHub Pages the deployed copy
@@ -935,7 +942,7 @@ async function loadMonth(month, { forceRemote = false } = {}) {
                 sha = draft.sha || sha;
                 state.usingDraft = true;
             } else if (choice === 'discard') {
-                clearDraft(path);
+                await clearDraft(path);
             }
         }
 
@@ -2578,7 +2585,7 @@ function recomputeDirty() {
     state.dirty = dirty;
     els.saveButton.disabled = !dirty && !state.usingDraft;
     els.savePlayedButton?.classList.toggle('hidden', !dirty);
-    els.draftBadge.classList.toggle('hidden', !state.usingDraft && !getDraft(mapPath(state.month)));
+    els.draftBadge.classList.toggle('hidden', !state.usingDraft && !hasDraft(mapPath(state.month)));
     for (const card of els.editorRoot.querySelectorAll('.segment-card')) {
         const dirtyMark = card.querySelector('.segment-dirty');
         if (!dirtyMark) continue;
@@ -2606,17 +2613,31 @@ function recomputeDirty() {
  *
  * The debounce below is the only thing standing between an edit and a durable
  * local copy, so every moment where the page could go away — starting a save,
- * unloading, backgrounding the tab — must flush synchronously instead of
- * waiting for a timer that an unload will silently cancel.
+ * unloading, backgrounding the tab — must flush instead of waiting for a timer
+ * that an unload will silently cancel.
+ *
+ * The write itself is async (IndexedDB, see `draft_store.js` — a 1–3 MB month
+ * JSON does not fit localStorage), so callers that must not start an upload
+ * before the copy landed `await` this; the unload hooks just fire it. It never
+ * rejects: a draft that cannot be written is a warning, never a reason to abort
+ * a GitHub save.
  */
 function flushDraft() {
     clearTimeout(state.draftTimer);
     state.draftTimer = null;
-    if (!state.map) return;
+    state.draftFirstAt = null;
+    if (!state.map) return Promise.resolve();
     flushEditorTimesIntoMap();
-    setDraft(mapPath(state.month), serializeMap(state.map), state.currentSha);
-    state.draftPaths = listDraftPaths();
+    const path = mapPath(state.month);
     els.draftBadge.classList.remove('hidden');
+    return setDraft(path, serializeMap(state.map), state.currentSha)
+        .then(() => {
+            state.draftPaths = listDraftPaths();
+        })
+        .catch((error) => {
+            console.error('[draft] 本機草稿寫入失敗', error);
+            setStatus('⚠ 本機草稿寫入失敗：離開頁面會遺失未儲存變更，請直接存到 GitHub', 'error');
+        });
 }
 
 function scheduleDraft() {
@@ -2700,9 +2721,11 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         return;
     }
     const path = mapPath(state.month);
-    // Persist locally *before* the first await: a reload during the upload must
-    // find a recoverable draft, and a leftover marker tells the next load why.
-    flushDraft();
+    // Land the local copy *before* the upload starts: a reload during the PUT
+    // must find a recoverable draft, and a leftover marker tells the next load
+    // why. Draft failures are swallowed here on purpose — the remote save is
+    // the thing the user asked for.
+    await flushDraft();
     setPendingSave(path);
     state.saving = true;
     setStatus('上傳中…（請勿重新整理；本機草稿已暫存）', 'loading');
@@ -2728,7 +2751,7 @@ async function saveCurrentMap({ force = false, reason = 'edit' } = {}) {
         state.dirty = false;
         state.usingDraft = false;
         state.structEditedSessions.clear();
-        clearDraft(path);
+        await clearDraft(path);
         clearPendingSave();
         state.draftFirstAt = null;
         els.draftBadge.classList.add('hidden');
