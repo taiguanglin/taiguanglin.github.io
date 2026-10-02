@@ -16,6 +16,22 @@ never hand-edit `wenda2_ebook/` for timings.
 > Word editor (`assets/editor.word.js` +
 > `tool/word2ebook/data/audio_map_word/word-*.json`) has been removed.
 
+## 本機草稿（2026-10：改用 IndexedDB）
+
+`assets/draft_store.js` 與 `/audio_map2/`、`/audio_map3/` 各有一份**完全相同**的副本，三個 UI
+共用同一個 IndexedDB database（key 帶 `audio_map/…` 路徑所以不會互相覆蓋），localStorage 只留
+每個草稿一筆約 120 bytes 的 metadata 索引。
+
+- **為什麼不用 localStorage 存草稿本體**：localStorage 額度約 5 MB／origin 且**三個審核 UI 共用**，
+  塞滿時 `setItem` 丟 `QuotaExceededError`；存檔流程在第一個 `await` 之前會先 `flushDraft()`，
+  那個例外會直接中止整個上傳（2026-10 在 audio_map2 實際發生過）。
+- `bootstrap()` 開頭 `await initDraftStore()`：把舊版留在 localStorage 的草稿搬進 IndexedDB 並
+  縮小索引，這就是把額度還回去的動作。`hasDraft()`／`listDraftPaths()` 維持同步。
+- `flushDraft()` 回傳 promise 且永不 reject（草稿寫不進去只 warn）；`saveCurrentMap()` 會
+  `await` 它再上傳。`beforeunload`／`pagehide`／`visibilitychange:hidden` 也會觸發，但 IDB 沒有
+  同步 API，離頁只能啟動寫入。
+- 改这三个 UI 的任何一份 `draft_store.js` 時，另外兩份要**一起**改（`diff` 應該沒有輸出）。
+
 ---
 
 ## index.html — PDF month maps proofreading UI（第 13–21 章）

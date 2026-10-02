@@ -68,13 +68,24 @@ python3 -m http.server -d /Users/paul/tai/taiguanglin.github.io 8000
 - **完成＝實際聽過**：播放該段才寫入 `meta.lastPlayed`、session 才變綠；只微調時間不算完成。
   要持久化（寫回 GitHub JSON）按底部「💾 儲存」或「存收聽進度」。
 - **防遺失機制（不要改壞它）**：本機草稿是唯一能救回「按了儲存但沒存完就離開」的東西。
+  - **草稿本體在 IndexedDB**（`assets/draft_store.js`；`/audio_map/`、`/audio_map3/` 各有一份**相同**
+    的副本，共用同一個 database，key 帶 `audio_map2/…` 路徑所以三個 UI 不會互相覆蓋）。
+    localStorage 只留每個草稿一筆 metadata 索引（`audioMapEditor:draft:<path>`，約 120 bytes），
+    所以 `listDraftPaths()`／`hasDraft()`／草稿徽章仍是同步的。
+    ⚠️ **不要**改回把文字塞 localStorage：一個月份 JSON 就是 1–3.4 MB，而 localStorage 額度約 5 MB
+    且**三個 UI 共用**；寫滿時 `setItem` 丟 `QuotaExceededError`，而存檔流程在第一個 `await` 之前
+    會先 `flushDraft()`，於是整個上傳被中止（2026-10 實際發生過）。舊版留在 localStorage 的草稿會由
+    `initDraftStore()`（`bootstrap()` 開頭 await）自動搬進 IndexedDB 並縮小索引，順便把額度還回去。
   - `scheduleDraft()` 是 800ms debounce，但有 **2500ms 硬上限**（`DRAFT_MAX_DELAY_MS`）——
     連續校稿不會把本機副本無限期往後推。
-  - `flushDraft()` 在**第一個 await 之前**同步寫檔：按「儲存到 GitHub」時會先存本機草稿再上傳，
-    `beforeunload`／`pagehide`／`visibilitychange:hidden`（手機切 app、下拉重整）也各自觸發。
-    ⚠️ 這些同步點是防止「離頁時 pending timer 被取消 → 草稿從未寫入 → 成果靜默消失」的唯一防線。
+  - `flushDraft()` **回傳 promise、而且永不 reject**（草稿只是保險，寫不進去只 warn，不擋存檔）。
+    按「儲存到 GitHub」時 `saveCurrentMap()` 會 `await flushDraft()` 再上傳——上傳途中重整仍找得回草稿。
+    `beforeunload`／`pagehide`／`visibilitychange:hidden`（手機切 app、下拉重整）也各自觸發；
+    ⚠️ IDB 沒有同步 API，這些離頁點只能「啟動」寫入，真正有充分時間落地的是
+    `visibilitychange:hidden`（還有 debounce 已經寫過的那份）。
   - `pendingSave` 標記（`storage.js`）記錄「上傳開始但沒完成」；存檔成功才清除。下次開頁看到草稿時，
-    對話框會明說上次上傳未完成、遠端仍是存檔前版本。
+    對話框會明說上次上傳未完成、遠端仍是存檔前版本。該 key 與 prefs／PAT 走 `safeSetItem()`：
+    localStorage 滿時只 warn 不拋（拋出去同樣會中止存檔）。
   - 存檔**失敗不會丟任何東西**：草稿與標記都留著，可直接重試。
 
 ### 卡片顏色
