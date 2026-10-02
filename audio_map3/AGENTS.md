@@ -37,18 +37,18 @@ cd <repo root> && python3 -m http.server 8931   # 或 audio/serve.py（需 Range
   段數（確認＝`meta.lastPlayed` 有值**或 `zero: true`**；開場不計入，與側邊欄統計一致）。
 - 儲存：GitHub PAT（Contents: Read and write）存回 `<series>.json`；「下載 JSON」備援；未存修改
   留在 localStorage 草稿。
-- **`<series>.json` 的來源隨網站位置切換**（`github.js` 的 `loadMapJson`）：在 `taiguanglin.info`
-  （任何非 localhost 主機）改讀 `raw.githubusercontent.com/…/main/audio_map3/<series>.json`，
-  commit 完**幾秒內**就看到新資料，不用等 Pages 建置（建置失敗時也不會卡住）。localhost／`file://`
-  一律讀本機檔案。raw 讀不到（離線／被擋）會自動退回已部署檔案並記住，不再每次都等逾時。
-  **topbar 常駐徽章 `#dataSourceBadge`** 標「來源 GitHub raw · 9/8 15:57」（綠）或
-  「來源 已部署檔案 · 9/8 15:57」（黃）；滑過有完整 URL、**該 JSON 在 main 最後一次 commit 的時間**
-  （含「24 天前」相對時間）與判讀說明——**看見舊資料先看這顆**。`#saveStatus` 是會被播放／校時／存檔
-  洗掉的暫時訊息，不能拿它當來源依據。
-  - 時間來源是 `getLastCommit()`（commits API）：raw **沒有** `Last-Modified`、contents API 也**沒有**
-    日期欄。以 `Promise.allSettled` 與既有的 `getFile` 並行，不拖慢載入。
-  - 讀不到（離線／額度用完）顯示「時間未知」，**不猜**。存檔成功時 PUT 回應自帶新 commit 時間，
-    徽章立刻更新——重新整理後時間對得上＝存檔確實落地。
+- **`<series>.json` 只讀同源檔案**（與 `/audio_map/` 相同，`loadMonth()` 裡直接 `fetch`）：
+  localhost／本機預覽讀工作樹，線上讀 Pages 部署副本，**不再**繞去
+  `raw.githubusercontent.com`（2026-10 移除：那個讀法在部分網路下不穩，8 秒逾時＋退回同一個
+  已部署檔案，實際只是多一個失敗點）。代價：commit 後要等 Pages 建置才看得到新資料；要立刻確認
+  遠端版本用衝突對話框的「重新載入遠端」（走 contents API）。
+  **topbar 常駐徽章 `#dataSourceBadge`** 標「來源 本站檔案 · 9/8 15:57」，滑過有完整 URL、
+  **該 JSON 在 main 最後一次 commit 的時間**（含「24 天前」相對時間）與判讀說明——**看見舊資料先看
+  這顆**。`#saveStatus` 是會被播放／校時／存檔洗掉的暫時訊息，不能拿它當來源依據。
+  - 時間來源是 `getLastCommit()`（commits API）：同源檔案**沒有** `Last-Modified`、contents API 也
+    **沒有**日期欄。以 `Promise.allSettled` 與既有的 `getFile` 並行，不拖慢載入。
+  - 讀不到（離線／額度用完）顯示「時間未知」並把徽章轉成虛線灰（`data-unknown="true"`），**不猜**。
+    存檔成功時 PUT 回應自帶新 commit 時間，徽章立刻更新——重新整理後時間對得上＝存檔確實落地。
 - **防遺失機制（不要改壞它）**（與 audio_map2 同款）：本機草稿是唯一能救回「按了儲存但沒存完就
   離開」的東西。
   - **草稿本體在 IndexedDB**（`assets/draft_store.js`，三個審核 UI 共用同一份模組與 database，
