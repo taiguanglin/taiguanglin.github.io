@@ -6,7 +6,9 @@
      ——原經文楷體區塊（sutra-text 錨點）、文言經文啟發式。
      額外再跑一次「放寬版」掃描（現代助詞門檻 +5）並印出供人工複查，
      但放寬版只警告、不判失敗（講解文字本來就偏書面語，會誤報）。
-  2. **連結有效**：每條 `url` 的 `<檔名>#<id>` 都能在對應的電子書 HTML 找到。
+  2. **連結有效**：每條 `url` 的 `<檔名>#<id>` 在**繁、簡兩種頁面**都要找得到
+     ——`lang-switch.js` 會把偏好簡體的讀者轉到 `XX.html`，只查繁體頁會漏掉
+     「前往原文對簡體讀者無效」這種問題。
   3. **結構**：條數達 `select_1095.TARGET`、無重複文字、單一來源不超過 SRC_CAP。
   4. **引用欄位**：text / url / title 齊全。
 
@@ -54,14 +56,21 @@ def main() -> int:
         warns.append(f'待複查 {q["url"]}：{q["text"][:50]}…')
 
     # 2. 連結 ---------------------------------------------------------------
-    ids: set[str] = set()
+    # 繁簡雙頁都要查：lang-switch.js 會把偏好簡體的讀者轉到對應的簡體頁
+    # （XX_trad.html ↔ XX.html），錨點 id 必須在兩邊都存在，否則「前往原文」
+    # 對簡體讀者會落到頁首。
+    ids: dict[str, set[str]] = {}
     for sub in ('ebook', 'wenda2_ebook'):
-        for f in (ROOT / sub).glob('*_trad.html'):
-            ids |= {f'{f.name}#{i}'
-                    for i in re.findall(r'\bid="([^"]+)"', f.read_text(encoding='utf-8'))}
+        for f in (ROOT / sub).glob('*.html'):
+            ids[f'{sub}/{f.name}'] = set(
+                re.findall(r'\bid="([^"]+)"', f.read_text(encoding='utf-8')))
     for q in quotes:
-        if q['url'].split('/', 1)[-1] not in ids:
-            errors.append(f'斷鏈 {q["url"]}')
+        page, _, anchor = q['url'].partition('#')
+        if anchor not in ids.get(page, set()):
+            errors.append(f'斷鏈（繁體頁）{q["url"]}')
+        simp = page.replace('_trad.html', '.html')
+        if simp != page and anchor not in ids.get(simp, set()):
+            errors.append(f'斷鏈（簡體頁 {simp}）{q["url"]}')
 
     # 3. 結構 ---------------------------------------------------------------
     if len(quotes) != select_1095.TARGET:

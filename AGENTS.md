@@ -59,7 +59,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `mindmap.html` | 坐禪與講經心智圖：自包含互動名詞心智圖（hand-edited）。 |
 | `wenda2_mindmap.html` | 問答錄2心智圖：57 個高頻名詞／11 主幹；自包含單頁，**已凍結為手工維護**（產生器＋語料 `tool/wenda2_curation/` 已於 2026-09-28 移除，互動引擎原從 `mindmap.html` 拷貝）。 |
 | `shared.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
-| `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；電子書區（`EBOOK_DIRS`：`/wenda2_ebook/`、`/ebook/`）依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。 |
+| `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；電子書區（`EBOOK_DIRS`：`/wenda2_ebook/`、`/ebook/`）依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。⚠️ **跨語系轉址必須保留 `location.hash`**，且繁簡雙頁的段落 id（`p-*`／`answer-*`／`s*`）必須完全相同——首頁「每日精選」的「前往原文」靠這條才能落到引文段落。改 id 產生方式或轉址邏輯後跑 `node tool/site_chrome/lang_switch_harness.js`。 |
 | `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
 | `robots.txt`, `CNAME` | Crawl / domain config. |
 | `sw.js`, `manifest.webmanifest` | PWA（2026-09）：兩套電子書頁（`/wenda2_ebook/`、`/ebook/`）由 word2ebook `17-theme-pwa.js` 註冊根 SW；音檔永不快取。manifest 被兩套電子書模板 `<head>` 引用。 |
