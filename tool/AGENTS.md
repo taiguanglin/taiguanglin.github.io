@@ -20,7 +20,7 @@
 | `tool/audio_denoiser/` | Facebook Denoiser 語音去雜音（ASR 前處理）。 | mp3/wav → mp3/wav | `README.md` |
 | `tool/stories2html/` | 實修故事原始檔 → HTML 閱讀頁 + index/sitemap 補丁。 | `stories/<原始檔>` → `stories/<slug>.html` | `README.md`（metadata SoT：`docs.py`） |
 | `tool/fonts/` | 全站字型自架子集管線：掃站用頁面語料（含 OpenCC 簡體聯集）→ pyftsubset 產十字重 woff2＋`fonts.css`，取代 Google Fonts 外鏈（大陸連不上）。 | root/`wenda2/`/`stories/` 頁面語料 → `fonts/` | `README.md`（執行用 word_audio_map2 的 venv；fonttools 在 `.pylibs`） |
-| `tool/daily_quotes/` | 首頁「每日精選」語料管線：從兩套電子書索引抽候選（長度 60–400、黑名單、CJK 比例 ≥60%、排除純文言經文、md5 去重）→ `candidates.json`（16,382 條）；固定種子抽 2,400 條交 AI 評分（0–10）→ `select_1095.py` 以 score≥7 為骨架、其餘按可讀性啟發式補足→ repo 根目錄 `daily_quotes.json`（1,095 條，單一來源 ≤70%），由 `index.html` 依日期播種輪播。 | `{wenda2_ebook,ebook}/search_index_trad.json` → `build_quotes.py` → `candidates.json`；＋`candidates_sample.json`／`scores/batch_*.json` → `select_1095.py` → `daily_quotes.json` | **`README.md`** |
+| `tool/daily_quotes/` | 首頁「每日精選」語料管線：從兩套電子書索引抽候選（長度 60–400、黑名單、CJK 比例 ≥60%、**排除經文**（`scripture_filter.py` 三道防線）、md5 去重）→ `candidates.json`（15,299 條）；固定種子抽 2,400 條交 AI 評分（0–10）→ `select_1095.py` 以 score≥7 為骨架、其餘按可讀性啟發式補足→ repo 根目錄 `daily_quotes.json`（1,095 條，單一來源 ≤70%），由 `index.html` 依日期播種輪播；`audit_quotes.py` 稽核成品（有經文／斷鏈即 exit 1）。 | `{wenda2_ebook,ebook}/search_index_trad.json` → `build_quotes.py` → `candidates.json`；＋`candidates_sample.json`／`scores/batch_*.json` → `select_1095.py` → `daily_quotes.json` → `audit_quotes.py` | **`README.md`** |
 | `tool/jiangjing_para_map/` | 講經系列「段落 ↔ SRT 字元時間流」對齊 → `audio_map3/<series>.json`；重跑保留已 confirmed 段落與 reviewed 講次。books2ebook 只注入 reviewed 講次的段落時間。 | ebook HTML 段落 + `audio/srt/jiangjing/*.srt` → `audio_map3/*.json` | `README.md` |
 | `tool/build_jiangjing_pdfs.py` | 【一次性已完成】組裝講經系列 PDF：合併（六祖壇經 2 PDF、楞嚴 docx→PDF）、四十二章/楞伽直接複製原檔（已含目錄）、其餘補檔首可點擊 TOC（含頁數）。**講經 5 本 PDF 已產出且驗證無誤，若未來不再新增/修改講經 PDF，此工具與下方兩個音檔工具可一併刪除。** | 來源 PDF/docx → `books/06…09*.pdf` + 感恩 | 檔首 docstring |
 | `tool/series2audio.py` | 新錄音系列（義理／圓覺經／心經／金剛經）mp3·m4a → **去雜音（DNS64）+ 音量正規化** → opus（16kbps / mono / 48kHz / voip），輸出 `audio/yili/` 與 `audio/jiangjing/`。等於把 `jiangjing2audio.py` + `audio_denoiser/denoise_jiangjing.py` + `normalize_jiangjing_audio.py` 三步併成一步（模型每個 worker 只載入一次）。 | `~/Downloads/Tai师父*/音頻/*.mp3`／`*.m4a` → `audio/{yili,jiangjing}/*.opus` | 檔首 docstring |
@@ -85,23 +85,26 @@ wenda2_ebook/search_index_trad.json（只取 answer 條目）┐
 ebook/search_index_trad.json（content + answer 條目）  ┘
         │ tool/daily_quotes/build_quotes.py
         │   規則過濾：長度 60–400、黑名單（敷衍回答／亂碼問號／URL／時間戳行…）、
-        │   CJK 比例 ≥60%、排除純文言經文（古典對話標記＋現代語助詞 ≤2）、md5 去重；
+        │   CJK 比例 ≥60%、**排除經文**（見下）、md5 去重；
         │   clean() 會去掉開頭署名「Taiguanglin」與前導時間段
         ▼
-   tool/daily_quotes/candidates.json            16,382 條（完整候選池，已進版控）
+   tool/daily_quotes/candidates.json            15,299 條（完整候選池，已進版控）
         │ 固定種子抽樣 2,400 條 → candidates_sample.json → 分批交 AI 評分 0–10
         ▼
    tool/daily_quotes/scores/batch_00..23.json   2,400 筆
         │   ⚠️ 每筆的 `idx` 是**索引進 candidates_sample.json 的位置**，不是 candidates.json
         ▼
    tool/daily_quotes/select_1095.py
-        │   骨架：score ≥ 7（353 條，按分數降冪）
-        │   補足：candidates.json 中未被評分過的候選，按 heuristic() 可讀性啟發排序（742 條）
+        │   骨架：score ≥ 7（341 條，按分數降冪）
+        │   補足：candidates.json 中未被評分過的候選，按 heuristic() 可讀性啟發排序（754 條）
         │          （長度窗、結尾標點、教學詞加分；前導時間戳／暱稱／英文代號、連續問號、
         │            括號不配對、數字比例過高、提問句罰分）
         │   來源上限：單一來源（ebook）≤ 70%（其餘靠 wenda2 平衡）
+        │   ⚠️ 骨架與補足**都**要再過一次 scripture_filter（經文不得進入成品）
         ▼
    daily_quotes.json（repo 根目錄，1,095 條）
+        │ tool/daily_quotes/audit_quotes.py：經文／斷鏈／重複／條數／來源配額，
+        │   有問題 exit 1。重跑管線後務必跑一次再提交（--strict 連放寬掃描也擋）
         ├─ index.html：fetch 後以本地日期播種（day*2654435761+97 取正模）輪播；
         │  同日同機一致，清單長度變動會重洗順序；附前一天／後一天／前後一個月跳轉
         └─ tool/fonts/build_fonts.py：把整個 daily_quotes.json 納入字型子集語料
@@ -110,6 +113,31 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
 
 > 註：`candidates.json`、`candidates_sample.json`、`scores/` **皆納入版控**（可重用的候選池與既有 AI 分數）；只有 `batches/`（評分前的暫存分批）在 `tool/daily_quotes/.gitignore` 內被忽略。
 > 註：`candidates_sample.json` 沒有產生腳本（當初以固定種子人工抽樣）。要提升品質時：從 `candidates.json` 抽更多樣本評分 → 擴充／覆蓋 `scores/` → 調整 `select_1095.py` 的 `TARGET`（目前 1095＝三年份）後重跑；分數與啟發式比例可能隨過濾規則微調而變動，重跑後請更新 README 的數字。
+
+#### 經文不得進入每日精選（`scripture_filter.py`）
+
+**經文判定只有這一個來源**，`build_quotes.py`／`select_1095.py` 都 import 它——不要再
+在各腳本裡另寫一份（過去正是兩份弱規則各自漂移，導致經文漏進成品，例如六祖壇經
+「師示眾云：善知識！本來正教，無有頓漸……」）。三道防線：
+
+- **A. 結構錨點（權威）**：`tool/books2ebook` 用兩種結構標出經文——
+  ① 講經系列以楷體排的**原經文** `<div class="sutra-text para-block" id="p-x">`；
+  ② 《金剛經 心經》《圓覺經》每章的**白話譯文**，即落在
+  `<div class="label-heading">譯文</div>` 與下一個 label 之間的段落
+  （`解析`／`註解`／`本章大義` 才是老師的講解，保留）。這些 id 與
+  `search_index*.json` 的 url 一一對應（實測 sutra-text 4,231/4,231 全中）。
+  **不要用文字規則取代它**——很多經文沒有 `佛告`／`善知識` 之類的對話標記。
+- **B. 文言啟發式（補漏）**：古典對話／稱謂標記 **且** 現代語助詞 ≤ 3。抓的是不在
+  上述區塊的經文（書末附錄等），實測精確率 100%。
+- **C. 人工複查清單**（`exclude.json`）：講經書「解析」區段裡偶爾整段其實是經文
+  白話譯文，A/B 分不出來，由人工複查後列名排除（附判斷依據）。
+
+⚠️ 不要改成「現代助詞密度低就排除」：講經講解本身就是書面語，會大量誤殺。
+⚠️ **引用 ≠ 經文**：師父講解時引一兩句經文是正常的，只要師父自己的話是主體就保留。
+
+新增講經電子書或改 `books2ebook` 的楷體判定後，務必重跑
+`build_quotes.py` → `select_1095.py` → `audit_quotes.py`；規則涵蓋不到「解析區段
+裡夾帶的整段譯文」，重建後仍應把成品再送一次人工複查。
 
 ### 分段與章節對應（word_audio_map2）
 
