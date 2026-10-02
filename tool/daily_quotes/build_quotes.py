@@ -13,6 +13,9 @@
 import json, re, sys, hashlib
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from scripture_filter import is_scripture  # noqa: E402  經文過濾的單一真相來源
+
 ROOT = Path(__file__).resolve().parents[2]
 
 MIN_LEN, MAX_LEN = 60, 400  # 展開全文理想長度
@@ -35,14 +38,6 @@ def normalize(s: str) -> str:
     return s
 
 LEAD_TS_PATTERN = re.compile(r'^\s*\d{1,2}:\d{2}(?::\d{2})?\s*[-–—~]\s*\d{1,2}:\d{2}(?::\d{2})?\s+')
-
-# 原經文（文言段落）偵測：古典對話標記＋幾乎無現代語助詞
-SCRIPT_DIALOG = re.compile(r'曰\s*[：:“"‘’]|佛[言問]|問曰|對曰|[師祖]曰|如是我聞|爾時|世尊|沙門')
-STRONG_MODERN = '的了我你他這那們嗎呢吧啦呦噢啊呀耶'
-def _strong_count(t): return sum(1 for ch in t if ch in STRONG_MODERN)
-def is_scripture(t):
-    """純原文經文段落（相對於師父的現代講解／翻譯）應排除。"""
-    return bool(SCRIPT_DIALOG.search(t)) and _strong_count(t) <= 2
 
 def clean(s: str) -> str:
     # 去掉 answer 開頭常見的 "Taiguanglin " 署名
@@ -82,7 +77,7 @@ def collect():
         d = date_prefix_len(c)
         if d is not None:
             c = normalize(c[d:])
-        if is_scripture(c):
+        if is_scripture(ROOT, f"wenda2_ebook/{x['url']}", c):
             continue
         if not ok(c):
             continue
@@ -100,7 +95,7 @@ def collect():
         if x.get('type') not in ('content', 'answer'):
             continue
         c = clean(x['content'])
-        if is_scripture(c):
+        if is_scripture(ROOT, f"ebook/{x['url']}", c):
             continue
         if not ok(c):
             continue
