@@ -20,12 +20,12 @@ export async function getFile(path) {
     const file = await request(
         `/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${encodePath(path)}?ref=${GITHUB_CONFIG.branch}`,
     );
-    // Files >1 MB come back with empty `content` — refetch raw text instead.
+    // Files >1 MB come back with empty `content` — ask for the text instead.
     let text;
     if (file.content) {
         text = decodeBase64(file.content);
     } else {
-        text = await getRawFile(path);
+        text = await getFileText(path);
     }
     return {
         path: file.path,
@@ -36,7 +36,8 @@ export async function getFile(path) {
     };
 }
 
-async function getRawFile(path) {
+/** Full text of a file through the contents API (files >1 MB carry no `content`). */
+async function getFileText(path) {
     const token = getPat();
     const headers = { Accept: 'application/vnd.github.raw' };
     if (token) headers.Authorization = `Bearer ${token}`;
