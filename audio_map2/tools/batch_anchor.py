@@ -94,10 +94,15 @@ def main():
 
     jobs = []                                        # (sid, label, global_start, text)
     for s in sessions:
-        bounds = [('opening', s['opening'], s['opening'].get('text') or '')]
+        # 有些月份整段沒有該 block（`closing: null`／`opening: null`，共 18 個 session
+        # 散在 2024-06/08/09、2025-02/03）——這些 session 就少一���邊界。
+        bounds = []
+        if s.get('opening'):
+            bounds.append(('opening', s['opening'], s['opening'].get('text') or ''))
         for g in s['segments']:
             bounds.append((f"#{g['index']}", g, g.get('answer_text') or ''))
-        bounds.append(('closing', s['closing'], s['closing'].get('text') or ''))
+        if s.get('closing'):
+            bounds.append(('closing', s['closing'], s['closing'].get('text') or ''))
         for label, g, txt in bounds:
             st = g.get('start')
             if st is None:

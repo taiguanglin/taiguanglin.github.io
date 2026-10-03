@@ -117,8 +117,13 @@ def main():
     # 結構校驗
     issues = 0
     for s in d['sessions']:
-        seq = [('opening', s['opening'])] + \
-              [(f"#{g['index']}", g) for g in s['segments']] + [('closing', s['closing'])]
+        # opening／closing 可能整個不存在（2024-06/08/09、2025-02/03 共 18 個 session）
+        seq = []
+        if s.get('opening'):
+            seq.append(('opening', s['opening']))
+        seq += [(f"#{g['index']}", g) for g in s['segments']]
+        if s.get('closing'):
+            seq.append(('closing', s['closing']))
         real = [(l, g) for l, g in seq if g.get('start') is not None]
         for i in range(len(real) - 1):
             a, b = real[i][1], real[i + 1][1]
@@ -135,16 +140,18 @@ def main():
             if g.get('start') is None and (g.get('start_label') or g.get('end_label')):
                 issues += 1
                 print(f"  ✗ null 段殘留 label {s['session_id']} #{g['index']}")
-        if not s.get('opening') or s['opening'].get('start') is None:
+        if s.get('opening') is not None and s['opening'].get('start') is None:
             issues += 1
-            print(f"  ✗ 無 opening {s['session_id']}")
-        if not s.get('closing') or s['closing'].get('start') is None:
+            print(f"  ✗ 無 opening 時間 {s['session_id']}")
+        if s.get('closing') is not None and s['closing'].get('start') is None:
             issues += 1
-            print(f"  ✗ 無 closing {s['session_id']}")
+            print(f"  ✗ 無 closing 時間 {s['session_id']}")
 
     for s in d['sessions']:
         sid = s['session_id']
         for label in ('closing', 'opening'):
+            if not s.get(label):
+                continue
             if (sid, label) in STRUCT_NOTE:
                 note, conf, status = STRUCT_NOTE[(sid, label)]
                 b = s[label]

@@ -77,6 +77,7 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
 | **`review_batch.py --month M [--pick prefix\|first_word] [--weak] [--dmin 0.5] [--session S --label #N]`** | **人工過目主工具（2024-11）**：一次印多個邊界的「新舊錨點之間字級時間軸」＋答案開頭 ＋匹配文字，`«起»`／`«新»` 標出兩個錨點各落在哪個字。`--pick` 過濾 basis、`--weak` 只看 weak、`--dmin` 只看 \|Δ\| 超過多少的 |
 | **`review_fixes.py`／`inspect_span.py --session S --label N [--span B A]`** | 單邊界深看：新錨點前後字級時間軸 ＋ SRT cue ＋ Word 首詞 |
 | **`reanchor.py --month M --session S --index N [--index …] [--near A B]`** | 用整場轉錄把**整段錯位／窗口太短**的段重新定位：0%（跳過首詞）/30/60/85% 四個探針在整場的佳命中時間，自動標「窗外」。`--near` 限絕對區間搜尋 |
+| **`onset_at.py --month M --session S --at T --span B A`** | 在**任意**時刻量雙解碼器字級 onset（`batch_anchor` 的固定窗抓不到時用；`--at 5.0 --span 1 8` = [4, 13]）。**窗寬會影響結果**：人名落在 VAD 空隙裡時，把窗收窄到 3–5s 才抓得到（2024-08 `08-16 #15`） |
 | **`swap_order.py --month M --swap <sid>:<iA>:<iB> --inplace`** | **依音訊序重排 `segments[]`**（SKILL §1 鐵律允許改 `segments[]` 順序）：交換相鄰兩段、連帶重編 `index`／`stable_key`、兩段都加 `reordered:` note。⚠️ 重排後要**刪掉被重排段的舊快取重跑**，且 `apply_alignment.py --verify-text` 必須以 `question_id` 配對（已內建） |
 | **`full_transcribe.py --month M`** | 整場字級轉錄（`/tmp/am2_<month>/full/<sid>.json`），**多段分檔自動接軌**（`2024-12-09-wechat` 上下檔 offset 2927.255） |
 | **`drift_curve.py`／`driftmap.py`** | 整場轉錄的時間軸漂移校準。用 SRT cue 當參考點，**中位數分桶 ＋ 斜率上限的單調迴歸（PAVA）**——⚠️ 絕對不能用 running max，單一離群點會把整條曲線抬高後降不下來 |
@@ -123,7 +124,10 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
    **兩輪收斂**：第 1 輪套用後**重跑 `batch_anchor.py`**（視窗跟著新 `start` 走）→
    `propose_fixes.py` 再跑一次 → 只把新發現的錯補進 `overrides.json` 並用 `--only-overrides` 套用。
    2024-12 實測第 2 輪又找出 13 個真錯，第 3 輪才收斂；2024-11 第 2 輪又找出 16 個（含 4 個
-   9–59s 的整段錯位），第 3 輪才收斂。人工判讀用 `review_batch.py`（一次一批）最有效率。
+   9–59s 的整段錯位），第 3 輪才收斂；2024-09 做到第 4 輪才收斂（第 2 輪 16 個、第 3 輪 5 個、
+   收尾前的「`#2` 手動實測」再補 6 個）。人工判讀用 `review_batch.py`（一次一批）最有效率。
+   **雙解碼器對單字／字母名會差 0.9–1.1s**，「取較早者」的結果下一輪會翻回去——
+   這類一律寫進 `overrides` 當保護值，否則每輪震盪（2024-09 有 8 筆是這種）。
    ⚠️ `find_word` 的命中窗可能**整體錯位一格**（人名「聖輝」落在「說盛」上得 0.588、
    落在「盛輝」上得 1.0）；所以必須「**先只留分數 ≥0.9 的窗，再在其中取最早**」，
    否則「取最早」會讓錯位窗勝出、把錨點釘在上一句尾巴上（2024-11 實測 −3.3s～−4.6s）。
@@ -296,6 +300,15 @@ cue 的**起點**（把過渡語算進本段、人名 onset 留在窗外 0.3–3
 - [ ] **跑過至少兩輪「重測 → 只補 overrides」**（2024-12 第 2 輪又找出 13 個真錯；
       2024-11 做到第 3 輪，第 2 輪又找出 16 個真錯、含 4 個 9–59s 的整段錯位）
 - [ ] **`segments[]` 指數序＝音訊序**（`apply_alignment.py` 會擋；用 `swap_order.py` 重排）
+- [ ] **`#1` 是 null 佔位段的場，`#2.start` 與 `opening.end` 各自用 `onset_at.py` 量首字**
+      （鏈接得起來不代表對；2024-09 六場全是這個形狀，兩場錯 15–24s）
+- [ ] **`opening.text` 為空字串時開場錨點要手動量**（自動管線不產生候選）；
+      **但要先確認音檔有沒有開場框語**：有（2024-09「今天是…」）→ 量首字；
+      **無（2024-08 一開口就是第一題叫名）→ 留 `0.0` 讓給 `#1`**，否則開場變零長度並與 `#1` 相撞
+- [ ] **沒有 `closing` block 的 session**（全庫 18 個）末段 `end` 維持原值（等於音檔長度）、
+      不算結構問題
+- [ ] **`apply_alignment.py` 報「非嚴格遞增」時往回追**：相鄰兩段 `start` 相同通常代表
+      其中一段**整段錯位**（2024-08 `#44`/`#45` 同為 3232.2，往回追挖出 `#43` 錯 236 秒）
 - [ ] **`closing`／`opening` 的 `text` 真的在它被錨的那個位置被唸出**
       （2024-11-11 的收場 block 其實是檔案中段的「貼吧→微信」問答，已在 `notes` 標 ⚠️）
 - [ ] 文字欄位 0 違改（`apply_alignment.py --verify-text <backup>` 或 git diff 驗證）

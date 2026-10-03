@@ -72,9 +72,13 @@ def main():
     report = []
     for s in d['sessions']:
         sid = s['session_id']
-        blocks = [('opening', s['opening'])]
+        # `opening`／`closing` 可能整個不存在（2024-06/08/09、2025-02/03 共 18 個 session）
+        blocks = []
+        if s.get('opening'):
+            blocks.append(('opening', s['opening']))
         blocks += [(f"#{g['index']}", g) for g in s['segments']]
-        blocks.append(('closing', s['closing']))
+        if s.get('closing'):
+            blocks.append(('closing', s['closing']))
 
         # 1) 決定每個「佔時間」的邊界新 start
         news, skipped = {}, []
@@ -91,9 +95,7 @@ def main():
                 news[label] = float(g['start'])
 
         # 2) 單調性檢查：start 必須嚴格遞增（含 opening／closing）
-        seq = [('opening', news['opening'])] + \
-              [(l, news[l]) for l, _g in blocks[1:-1] if l not in skipped] + \
-              [('closing', news['closing'])]
+        seq = [(l, news[l]) for l, _g in blocks if l not in skipped]
         bad = [(seq[i][0], seq[i][1], seq[i + 1][0], seq[i + 1][1])
                for i in range(len(seq) - 1) if seq[i + 1][1] <= seq[i][1]]
         if bad:
@@ -130,14 +132,23 @@ def main():
                 kept += 1
             g['start_label'] = hhmmss(g['start'])
 
-        # end 鏈：end[i] := start[i+1]（null 段跳過）；末段 := closing.start
-        real = [(l, g) for l, g in blocks[1:-1] if l not in skipped]
-        for i, (label, g) in enumerate(real):
-            nxt_end = news[real[i + 1][0]] if i + 1 < len(real) else news['closing']
+        # end 鏈：end[i] := start[i+1]（null 段跳過）；末段 := closing.start。
+        # **沒有 closing block 的 session**（2024-06/08/09、2025-02 共 18 個）：末段 end
+        # 維持原值（等於音檔長度），不要去猜。
+        segs_only = [(l, g) for l, g in blocks if l not in ('opening', 'closing')
+                     and l not in skipped]
+        for i, (label, g) in enumerate(segs_only):
+            if i + 1 < len(segs_only):
+                nxt_end = news[segs_only[i + 1][0]]
+            elif 'closing' in news:
+                nxt_end = news['closing']
+            else:
+                continue
             g['end'] = round(nxt_end, 3)
             g['end_label'] = hhmmss(g['end'])
-        s['opening']['end'] = round(news[real[0][0]], 3)
-        s['opening']['end_label'] = hhmmss(s['opening']['end'])
+        if s.get('opening') and segs_only:
+            s['opening']['end'] = round(news[segs_only[0][0]], 3)
+            s['opening']['end_label'] = hhmmss(s['opening']['end'])
         report.append(f'  ✓ {sid}: 邊界 {len(seq)} 個（跳過 null {len(skipped)} 段）')
 
     # 文字欄位 0 違改驗證。**用 `question_id` 配對、不用 index**：依音訊序重排
@@ -148,14 +159,18 @@ def main():
         vb = {}
         for s in before['sessions']:
             sid = s['session_id']
-            vb[(sid, 'opening')] = s['opening']
-            vb[(sid, 'closing')] = s['closing']
+            if s.get('opening'):
+                vb[(sid, 'opening')] = s['opening']
+            if s.get('closing'):
+                vb[(sid, 'closing')] = s['closing']
             for g in s['segments']:
                 vb[(sid, g.get('question_id') or f"#{g['index']}")] = g
         viol = 0
         for s in d['sessions']:
             sid = s['session_id']
             for label in ('opening', 'closing'):
+                if not s.get(label):
+                    continue
                 g = s[label]
                 o = vb.get((sid, label))
                 if o is None:
