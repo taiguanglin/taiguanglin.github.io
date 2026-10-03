@@ -225,6 +225,9 @@ cue 的**起點**（把過渡語算進本段、人名 onset 留在窗外 0.3–3
     時間校準後可 `conf/status` 升級但**保留**該 `待人工確認`。
   - **段與段時間重疊靠重推鏈修復**：`build_maps` 產物可能重疊（`2025-01-14-wechat #5` end 越過 `#6/#7`）；
     只要把每段 `start` 校準後由 `start` 鏈重推所有 `end`，重疊自動消失。
+  - **`null` 佔位段可能帶「殘留 label」**（2025-01-13-tieba #6 `start/end=None` 但 label 殘留
+    `00:19:17.809`）。**看到 `start=None` 就清掉 `start_label`/`end_label` 為 `''`**，否則審核 UI
+    顯示不存在的時間。重推鏈時**必須排除 null 佔位段**。
   - **`index` 缺號是凍結的既有狀態**（2025-01-15-wechat 缺 5，已併入 #6，`notes` 有 `merged:` 標記）。
     `validate_resplit.py` 會報 non-contiguous ERROR；`index`／`stable_key`／`question_id` 屬文字欄位，
     **不要重編**。
