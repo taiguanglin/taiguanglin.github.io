@@ -44,9 +44,13 @@ def main():
     for s in d['sessions']:
         if args.session and s['session_id'] != args.session:
             continue
-        seq = [('opening', s['opening'], s['opening'].get('text') or '')]
+        # opening／closing 可能整個不存在（2024-06/08/09、2025-02/03 共 18 個 session）
+        seq = []
+        if s.get('opening'):
+            seq.append(('opening', s['opening'], s['opening'].get('text') or ''))
         seq += [(f"#{g['index']}", g, g.get('answer_text') or '') for g in s['segments']]
-        seq.append(('closing', s['closing'], s['closing'].get('text') or ''))
+        if s.get('closing'):
+            seq.append(('closing', s['closing'], s['closing'].get('text') or ''))
         for label, g, txt in seq:
             st = g.get('start')
             if st is None or not norm(txt):
