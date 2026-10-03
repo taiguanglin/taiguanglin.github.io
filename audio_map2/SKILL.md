@@ -76,9 +76,9 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
 | **`onset_at.py --month M --session S --at T`** | 在**任意**時刻量一次雙解碼器 onset（`batch_anchor` 的 ±9s 窗抓不到 20–60s 的整段錯位時用） |
 | **`review_batch.py --month M [--pick prefix\|first_word] [--weak] [--dmin 0.5] [--session S --label #N]`** | **人工過目主工具（2024-11）**：一次印多個邊界的「新舊錨點之間字級時間軸」＋答案開頭 ＋匹配文字，`«起»`／`«新»` 標出兩個錨點各落在哪個字。`--pick` 過濾 basis、`--weak` 只看 weak、`--dmin` 只看 \|Δ\| 超過多少的 |
 | **`review_fixes.py`／`inspect_span.py --session S --label N [--span B A]`** | 單邊界深看：新錨點前後字級時間軸 ＋ SRT cue ＋ Word 首詞 |
-| **`reanchor.py --month M --session S --index N [--index …] [--near A B]`** | 用整場轉錄把**整段錯位／窗口太短**的段重新定位：0%（跳過首詞）/30/60/85% 四個探針在整場的佳命中時間，自動標「窗外」。`--near` 限絕對區間搜尋 |
+| **`reanchor.py --month M --session S --index N [--index …] [--near A B]`** | 用整場轉錄把**整段錯位／窗口太短**的段重新定位：0%（跳過首詞）/30/60/85% 四個探針在整場的佳命中時間，自動標「窗外」。`--near` 限絕對區間搜尋。⚠️ **探針也會失手**：0% 與 30% 探針**同時落到窗外且分數 <0.5** 時（2024-06 `06-17 #13`、`06-22 #11`），改用 `full/` 整場轉錄**以答案裡的關鍵字搜尋**定位時間，再用 `onset_at.py` 實測——不能因為探針失手就放棄。⚠️ **得到的是「首個實字」不是「首詞」**：之後要用 `first_word`／`prefix` 探針回頭確認首詞本身的位置（2024-06 `06-17 #4`、`06-21 #4`、`06-20 #17` 都因此晚了 3.6s）|
 | **`onset_at.py --month M --session S --at T --span B A`** | 在**任意**時刻量雙解碼器字級 onset（`batch_anchor` 的固定窗抓不到時用；`--at 5.0 --span 1 8` = [4, 13]）。**窗寬會影響結果**：人名落在 VAD 空隙裡時，把窗收窄到 3–5s 才抓得到（2024-08 `08-16 #15`） |
-| **`swap_order.py --month M --swap <sid>:<iA>:<iB> --inplace`** | **依音訊序重排 `segments[]`**（SKILL §1 鐵律允許改 `segments[]` 順序）：交換相鄰兩段、連帶重編 `index`／`stable_key`、兩段都加 `reordered:` note。⚠️ 重排後要**刪掉被重排段的舊快取重跑**，且 `apply_alignment.py --verify-text` 必須以 `question_id` 配對（已內建） |
+| **`swap_order.py --month M {--swap\|--move} <sid>:<iA>:<iB> --inplace`** | **依音訊序重排 `segments[]`**（SKILL §1 鐵律允許改 `segments[]` 順序）：連帶重編 `index`／`stable_key`、兩段都加 `reordered:` note。`--swap A:B` 限**相鄰**兩段；`--move A:B` **不限相鄰**，處理 3 段以上的**循環錯位**（2024-07 `07-15 #44/#45/#46`：音檔序 #46→#44→#45，`--move 44:46 --move 45:46`）。⚠️ 守衛只認「後段 `start` 比前段早才算順序問題」，**必須先把正確時間寫進 JSON 再重排**，否則舊值本身遞增會被判「不是順序問題」而拒絕。⚠️ 重排後要**刪掉被重排段的舊快取重跑**，且 `apply_alignment.py --verify-text` 必須以 `question_id` 配對（已內建） |
 | **`full_transcribe.py --month M`** | 整場字級轉錄（`/tmp/am2_<month>/full/<sid>.json`），**多段分檔自動接軌**（`2024-12-09-wechat` 上下檔 offset 2927.255） |
 | **`drift_curve.py`／`driftmap.py`** | 整場轉錄的時間軸漂移校準。用 SRT cue 當參考點，**中位數分桶 ＋ 斜率上限的單調迴歸（PAVA）**——⚠️ 絕對不能用 running max，單一離群點會把整條曲線抬高後降不下來 |
 | `funasr_anchor_verify.py --month M --date D [--source S] [--only ...]` | 單場互動式：批次印每個邊界的 SRT cue ＋ 雙解碼器字級時間軸 ＋ Δ 表（2024-12 已被上面的批次工具取代，單場除錯仍好用） |
@@ -299,7 +299,9 @@ cue 的**起點**（把過渡語算進本段、人名 onset 留在窗外 0.3–3
       與 chapter 對應）要重估 `conf`/`status` 並在 `notes` 說明依據
 - [ ] **跑過至少兩輪「重測 → 只補 overrides」**（2024-12 第 2 輪又找出 13 個真錯；
       2024-11 做到第 3 輪，第 2 輪又找出 16 個真錯、含 4 個 9–59s 的整段錯位）
-- [ ] **`segments[]` 指數序＝音訊序**（`apply_alignment.py` 會擋；用 `swap_order.py` 重排）
+- [ ] **`weak`（分數<0.62）超過 1/4 邊界時，不要把 `propose_fixes` 的 delta 當候選清單**（2024-06 是 51/214，第一輪只有 53/214 判 OK）：**每一個 weak 都改跑 `reanchor.py` 內容探針**
+- [ ] **`content_check` 報「後內文超出」時先確認首／中探針是否在窗內**——在窗內就是撞到別段的重複字串（2024-06 的 2 個 BAD 全是這類），當假陽性處理、**不要重排段落**
+- [ ] **`segments[]` 指數序＝音訊序**（`apply_alignment.py` 會擋；用 `swap_order.py` 重排）。**判斷順序錯位類型**：先用 `reanchor.py` 的內容探針把相關各段**各自定位**，**看定位出來的先後順序**——相鄰對調用 `--swap`，**3 段以上循環錯位用 `--move` 兩次**。循環錯位在時間軸上長得像「每段都錯 100 多秒」（2024-07 `07-15 #44/#45/#46` 各錯 146–212s）
 - [ ] **`#1` 是 null 佔位段的場，`#2.start` 與 `opening.end` 各自用 `onset_at.py` 量首字**
       （鏈接得起來不代表對；2024-09 六場全是這個形狀，兩場錯 15–24s）
 - [ ] **`opening.text` 為空字串時開場錨點要手動量**（自動管線不產生候選）；

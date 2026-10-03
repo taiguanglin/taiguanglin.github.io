@@ -416,7 +416,12 @@ body.dark-mode .nav-home a:hover { color: var(--color-primary-light); }
 .reading-toolbar::-webkit-scrollbar-thumb { background: rgba(231, 84, 128, 0.4); border-radius: 3px; transition: background 0.2s ease; }
 .reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(231, 84, 128, 0.6); }
 
-.reading-toolbar.hidden { transform: translateX(100%); opacity: 0; }
+/* 收起時必須一起關掉命中測試：opacity:0 的面板仍佔位、仍可被滑鼠命中，
+   會吃掉它覆蓋區域的 :hover 與點擊。工具欄 translateX(100%) 後左緣剛好落在
+   內容欄右緣附近（視窗 ≲830px 時重疊），於是段落右上角的 hover 選單被無形的
+   面板攔截，滑鼠移過去「什麼都沒出現」。教訓與 .action-menu-items /
+   .qa-player 一致：隱藏態一律 pointer-events: none。 */
+.reading-toolbar.hidden { transform: translateX(100%); opacity: 0; pointer-events: none; }
 
 .toolbar-header {
     display: flex;
@@ -1936,6 +1941,21 @@ body.para-track-on .para-block[data-start] {
 body.sutra-pin-off .sutra-pin-host,
 body.sutra-pin-suppress .sutra-pin-host {
     position: static;
+}
+
+/* ---- 錨點讓位：scroll-margin-top = 經文停留時要留的高度 ----------------
+   停留中的經文佔住視窗最上方，於是任何「把目標對齊到視窗頂」的跳轉——
+   網站外部直接開啟 page#id、章節錨點、浮動目錄、書籤、.toc-count 直跳、
+   章節頁 ?q= 搜尋結果——都會把目標段落送到停留經文底下，看得到自己剛跳到
+   哪裡。唯一能一處罩住全部跳轉路徑的機制是 scroll-margin（瀏覽器對
+   scrollIntoView / 片段錨點導覽皆遵守），故把「本群經文停留時的高度 + 間隙」
+   寫成 --w2e-pin-reserve，由 09c 量測後逐群以 inline style 設定（值為 0
+   時行為與從前完全相同，非講經頁零影響）。 */
+.sutra-pin-group {
+    --w2e-pin-reserve: 0px;
+}
+.sutra-pin-group :is(.para-block, h1, h2, h3, h4, h5, h6, .label-heading) {
+    scroll-margin-top: var(--w2e-pin-reserve);
 }
 
 .qa-play--disabled {

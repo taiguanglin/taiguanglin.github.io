@@ -233,6 +233,21 @@ body.sutra-pin-suppress .sutra-pin-host {
     position: static;
 }
 
+/* ---- 錨點讓位：scroll-margin-top = 經文停留時要留的高度 ----------------
+   停留中的經文佔住視窗最上方，於是任何「把目標對齊到視窗頂」的跳轉——
+   網站外部直接開啟 page#id、章節錨點、浮動目錄、書籤、.toc-count 直跳、
+   章節頁 ?q= 搜尋結果——都會把目標段落送到停留經文底下，看得到自己剛跳到
+   哪裡。唯一能一處罩住全部跳轉路徑的機制是 scroll-margin（瀏覽器對
+   scrollIntoView / 片段錨點導覽皆遵守），故把「本群經文停留時的高度 + 間隙」
+   寫成 --w2e-pin-reserve，由 09c 量測後逐群以 inline style 設定（值為 0
+   時行為與從前完全相同，非講經頁零影響）。 */
+.sutra-pin-group {
+    --w2e-pin-reserve: 0px;
+}
+.sutra-pin-group :is(.para-block, h1, h2, h3, h4, h5, h6, .label-heading) {
+    scroll-margin-top: var(--w2e-pin-reserve);
+}
+
 .qa-play--disabled {
     display: inline-flex;
     align-items: center;

@@ -24,7 +24,12 @@
 .reading-toolbar::-webkit-scrollbar-thumb { background: rgba(231, 84, 128, 0.4); border-radius: 3px; transition: background 0.2s ease; }
 .reading-toolbar::-webkit-scrollbar-thumb:hover { background: rgba(231, 84, 128, 0.6); }
 
-.reading-toolbar.hidden { transform: translateX(100%); opacity: 0; }
+/* 收起時必須一起關掉命中測試：opacity:0 的面板仍佔位、仍可被滑鼠命中，
+   會吃掉它覆蓋區域的 :hover 與點擊。工具欄 translateX(100%) 後左緣剛好落在
+   內容欄右緣附近（視窗 ≲830px 時重疊），於是段落右上角的 hover 選單被無形的
+   面板攔截，滑鼠移過去「什麼都沒出現」。教訓與 .action-menu-items /
+   .qa-player 一致：隱藏態一律 pointer-events: none。 */
+.reading-toolbar.hidden { transform: translateX(100%); opacity: 0; pointer-events: none; }
 
 .toolbar-header {
     display: flex;

@@ -124,10 +124,17 @@ body.dark-mode .toc-item.toc-level-5 > a { color: #ffd1e0; }
 body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
 
 /* ---- .para-block 內文段落互動按鈕（複製 / 書籤 / 分享） ----------------
-   沿用 wenda2_ebook 的 .qa-actions 按鈕，但位置改到段落「外右上角」上方，
-   避免遮住滑鼠所在的段落文字（可能遮到上一段，但不遮當下段落）。
+   沿用 wenda2_ebook 的 .qa-actions 按鈕，位置同樣在段落「盒子內」右上角。
 
-   互動改為「⋯」disclosure menu：滑鼠移入段落時，只出現一個低對比、小佔位的
+   ⚠️ 必須留在盒子內：00-base.css 的長文效能最佳化替 .para-block 設了
+   `content-visibility: auto`，它等於套用 paint containment，會把溢出段落
+   邊界的所有後代裁掉。舊版把按鈕列放到段落外（bottom:100%，理由是「不遮住
+   當下段落的文字」），結果整列被裁掉——「⋯」從來沒有真的畫出來過，
+   自然也永遠 hover 不到、點不到（wenda2_ebook 的 .question/.answer 按鈕
+   在盒子內，所以同一套 .qa-actions 在問答錄2 正常）。同理，被移到段落外
+   左上角的書籤標識（bottom:100%）也是看不見的。
+
+   互動為「⋯」disclosure menu：滑鼠移入段落時，只出現一個低對比、小佔位的
    「⋯」提示氣泡，不再直接亮出三個按鈕；唯有滑鼠移上該 ⋯（或用鍵盤聚焦）才
    展開完整按鈕（複製 / 書籤 / 分享），大幅降低單純移動滑鼠時的閱讀干擾。 */
 .para-block {
@@ -208,13 +215,14 @@ body.dark-mode .sutra-text.para-block:hover {
   box-shadow: 0 2px 8px rgba(255, 105, 180, 0.20);
 }
 
-/* 按鈕容器：置於段落正上方、靠右。用 bottom:100% 讓容器下緣貼齊段落頂端，
-   消除段落與容器之間的縫隙；並以 ::before 延伸一段透明熱區向下與段落重疊，
-   使滑鼠從段落移到容器（⋯ → 按鈕）的過程永遠不離開命中區，避免突然消失。 */
+/* 按鈕容器：段落盒子內右上角（見上方⚠️：不可移到段落外，會被
+   content-visibility: auto 的 paint containment 裁掉）。
+   pointer-events:none 直到 .para-block:hover——氣泡在段落內，
+   滑鼠移到氣泡上時仍在段落內，:hover 不會中斷，因此不需要額外熱區橋接。 */
 .para-block .qa-actions {
-  top: auto;
-  bottom: 100%;
-  right: 0;
+  top: 2px;
+  bottom: auto;
+  right: 2px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -223,19 +231,6 @@ body.dark-mode .sutra-text.para-block:hover {
   transition: opacity 0.2s ease;
   pointer-events: none;
   z-index: 5;
-}
-
-/* 透明熱區（加大命中範圍）：向右上角移動時，滑鼠不必精準對到 ⋯ 氣泡。
-   往左延伸為 ⋯ 氣泡寬度（22px）的 3 倍，並向下、向上各貼近段落與按鈕列，
-   使「段落 → ⋯ → 按鈕」的移動過程維持連續命中，不會半途消失。 */
-.para-block .qa-actions::before {
-  content: "";
-  position: absolute;
-  top: -6px;
-  bottom: -18px;
-  left: auto;
-  right: 0;
-  width: 66px; /* 22px × 3 */
 }
 
 /* 「⋯」提示氣泡（預設狀態）：低對比、小佔位，僅作為「這裡有動作」的線索 */
@@ -259,16 +254,14 @@ body.dark-mode .para-block .qa-actions::after {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位。
-   展開後按鈕需疊在 ::before 透明熱區「之上」（position + z-index），
-   否則寬熱區會蓋住 書籤/分享 按鈕，導致無法點擊。 */
+/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位 */
 .para-block .qa-actions .qa-btn {
   display: none;
-  position: relative;
-  z-index: 1;
 }
 
-/* 段落 hover → 顯示 ⋯（container 取得 pointer-events） */
+/* 段落 hover → 顯示 ⋯（container 取得 pointer-events）。
+   氣泡在段落盒子內，滑鼠移到 ⋯ 上時仍算 .para-block:hover，故展開後
+   按鈕列不會中斷。 */
 .para-block:hover .qa-actions,
 .para-block .qa-actions:hover,
 .para-block .qa-actions:focus-within {
@@ -287,14 +280,14 @@ body.dark-mode .para-block .qa-actions::after {
   display: flex;
 }
 
-/* 書籤圖示移到段落左上角，下緣貼齊段落頂端（`bottom: 100%`），高度 10px
-   使圖示貼近文字，與右上 `.qa-actions` 按鈕列的視覺距離一致。 */
+/* 書籤標識：段落盒子內左上角（與 .qa-actions 同理，不可移到段落外，
+   否則被 content-visibility: auto 的 paint containment 裁掉）。
+   落在左側 border(4px)+padding(12px) 的預留空間內，不壓首字。 */
 .para-block.bookmarked .bookmark-indicator {
-  top: auto;
-  bottom: 100%;
+  top: 0;
+  bottom: auto;
+  left: 1px;
   right: auto;
-  left: 0;
-  display: flex;
-  align-items: center;
-  height: 10px;
+  font-size: 11px;
+  line-height: 1;
 }
