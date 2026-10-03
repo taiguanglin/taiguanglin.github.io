@@ -179,6 +179,7 @@ def main():
                     if k in o and o[k] != g.get(k):
                         viol += 1
                         print(f'  ✗✗ 文字欄位被改動 {sid} {label}.{k}')
+            reordered_session = any('reordered:' in (x.get('notes') or '') for x in s['segments'])
             for g in s['segments']:
                 o = vb.get((sid, g.get('question_id') or f"#{g['index']}"))
                 if o is None:
@@ -187,8 +188,9 @@ def main():
                     viol += 1
                     continue
                 for k in TEXT_KEYS_SEG:
-                    if k in REORDER_OK and 'reordered:' in (g.get('notes') or ''):
-                        continue      # 重排段的 index/stable_key 本來就會換位
+                    if k in REORDER_OK and (reordered_session
+                                            or 'reordered:' in (g.get('notes') or '')):
+                        continue      # 重排後整場 index/stable_key 都會換位，不只被搬的那幾段
                     if k in o and o[k] != g.get(k):
                         viol += 1
                         print(f'  ✗✗ 文字欄位被改動 {sid} #{g["index"]}.{k}')

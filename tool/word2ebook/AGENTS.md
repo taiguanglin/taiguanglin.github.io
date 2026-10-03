@@ -107,7 +107,7 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 | `core/chapter_finalizer.py` | Shared block→`Chapter` finalize (QA merge, back-to-top, QA counts, chapter TOC) used by the Word, PDF, and QA parsers | ~190 |
 | `core/content_processor.py` | Extracts search items from HTML; assigns element IDs | 216 |
 | `generators/html_generator.py` | `HTMLGenerator` — renders chapter/index pages via `I18nTemplateManager`; simplified/traditional variants unified via `_generate_chapters`/`_generate_index`; QA banner + `{{qa_*}}` placeholder substitution + homepage QA source link | ~250 |
-| `generators/toc_generator.py` | `TOCGenerator` — builds TOC HTML; public `generate_qa_count_metadata()` API | ~260 |
+| `generators/toc_generator.py` | `TOCGenerator` — builds TOC HTML; public `generate_qa_count_metadata()` API; `resolve_display_level()` mirrors JS `selectValidLevel()`; emits the **server-side initial TOC state** (`toc-expandable` / `hidden` / expand-icon state) so pages render correctly before `script.js` arrives | ~380 |
 | `generators/search_generator.py` | `SearchIndexGenerator` — reads HTML, calls `ContentProcessor`, writes `search_index*.json` | 176 |
 | `templates/i18n_templates.py` | `I18nTemplateManager` — sole template source; renders chapter + index pages for both languages | 306 |
 | `templates/static_assets.py` | `StaticAssetsManager` — concatenates CSS/JS module files for output | 162 |
@@ -139,7 +139,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `03d-reading-settings.js` | Font/line-height/width/theme persistence via localStorage; `updateReadingProgress`, `showToast`, `copyText` |
 | `04-events.js` | Global event listeners that wire all modules together |
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
-| `06-toc-collapse.js` | TOC expand/collapse and level filtering; manual expand state snapshot/restored via `sessionStorage` (`tocExpandState:<dir>` per book, `data-id` stable keys) so back/forward keeps the user's expanded TOC |
+| `06-toc-collapse.js` | TOC expand/collapse and level filtering; manual expand state snapshot/restored via `sessionStorage` (`tocExpandState:<dir>` per book, `data-id` stable keys) so back/forward keeps the user's expanded TOC. **Only applies the user's `localStorage` preference on top of the already-correct server-rendered state** — `defaultLevel` (index 2 / chapter 3), `selectValidLevel()` snapping, and `setTocDisplayLevel()` visibility/icon rules must stay in sync with `DEFAULT_TOC_LEVEL_*` / `resolve_display_level()` in `toc_generator.py`, or the TOC visibly reflows on startup |
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
 | `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback; exposes `W2E.qaAudio` (isolated IIFE) |
 | `09b-para-track.js` | 講經「段落跟播」：講次 h2 旁「段落跟播」toggle（`paraTrackEnabled`），播放中高亮當前段落並平滑捲動、點段落即播（經 `W2E.qaAudio` 掛接；isolated IIFE） |

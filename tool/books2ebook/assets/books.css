@@ -124,15 +124,18 @@ body.dark-mode .toc-item.toc-level-5 > a { color: #ffd1e0; }
 body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
 
 /* ---- .para-block 內文段落互動按鈕（複製 / 書籤 / 分享） ----------------
-   沿用 wenda2_ebook 的 .qa-actions 按鈕，位置同樣在段落「盒子內」右上角。
+   沿用 wenda2_ebook 的 .qa-actions 按鈕，但位置改到段落「外」右上角（段落
+   上方），因此不會遮住滑鼠所在當下段落的文字；被它蓋到的是「上一段」的末行，
+   那個位置本來就是空的機會最多。
 
-   ⚠️ 必須留在盒子內：00-base.css 的長文效能最佳化替 .para-block 設了
-   `content-visibility: auto`，它等於套用 paint containment，會把溢出段落
-   邊界的所有後代裁掉。舊版把按鈕列放到段落外（bottom:100%，理由是「不遮住
-   當下段落的文字」），結果整列被裁掉——「⋯」從來沒有真的畫出來過，
-   自然也永遠 hover 不到、點不到（wenda2_ebook 的 .question/.answer 按鈕
-   在盒子內，所以同一套 .qa-actions 在問答錄2 正常）。同理，被移到段落外
-   左上角的書籤標識（bottom:100%）也是看不見的。
+   ⚠️ 這需要解除本段的 paint containment：00-base.css 的長文效能最佳化替
+   .para-block 設了 `content-visibility: auto`，它等於 paint containment，會把
+   溢出段落邊界的後代整片裁掉——舊版把按鈕列放在段落外卻因此從來沒有真的畫出
+   來過（wenda2_ebook 的 .question/.answer 按鈕在盒子內，所以問答錄2 正常）。
+   解法不是把按鈕塞回盒子裡（那會壓到當下段落的文字、也不是本意），而是在需要
+   時暫時解除本段的 containment：見下方 .para-block:hover / :focus-within /
+   .bookmarked。解除僅限當下這一段（hover 必然表示它已在畫面上、正被渲染），
+   對長文效能最佳化沒有影響。
 
    互動為「⋯」disclosure menu：滑鼠移入段落時，只出現一個低對比、小佔位的
    「⋯」提示氣泡，不再直接亮出三個按鈕；唯有滑鼠移上該 ⋯（或用鍵盤聚焦）才
@@ -146,6 +149,16 @@ body.dark-mode .toc-item.toc-level-6 > a { color: #ffd1e0; }
      經文段落 .sutra-text 自帶 border + padding，不在此列。 */
   border-left: 4px solid transparent;
   padding-left: 12px;
+}
+
+/* 解除 paint containment，讓段落「外」的 ⋯ 氣泡與書籤標識畫得出來、也點得到。
+   hover / focus-within 是氣泡出現的時機；.bookmarked 是書籤標識常駐的時機。
+   被 hover 的段落必然已在視窗內、正被渲染，因此不會用到 contain-intrinsic-size
+   的估算高度，切換不會造成文件高度變動或捲動位移。 */
+.para-block:hover,
+.para-block:focus-within,
+.para-block.bookmarked {
+  content-visibility: visible;
 }
 
 /* 經文段落自帶 4px 邊框與 15px 左右 padding，沿用自身設定即可 */
@@ -215,14 +228,13 @@ body.dark-mode .sutra-text.para-block:hover {
   box-shadow: 0 2px 8px rgba(255, 105, 180, 0.20);
 }
 
-/* 按鈕容器：段落盒子內右上角（見上方⚠️：不可移到段落外，會被
-   content-visibility: auto 的 paint containment 裁掉）。
-   pointer-events:none 直到 .para-block:hover——氣泡在段落內，
-   滑鼠移到氣泡上時仍在段落內，:hover 不會中斷，因此不需要額外熱區橋接。 */
+/* 按鈕容器：段落「外」右上角——容器下緣貼齊段落頂端（bottom:100%），氣泡
+   因此坐在段落上方那條空隙裡，不遮當下段落的任何一個字。
+   依賴 .para-block:hover 解除 paint containment（見上），否則整列被裁掉。 */
 .para-block .qa-actions {
-  top: 2px;
-  bottom: auto;
-  right: 2px;
+  top: auto;
+  bottom: 100%;
+  right: 0;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -231,6 +243,20 @@ body.dark-mode .sutra-text.para-block:hover {
   transition: opacity 0.2s ease;
   pointer-events: none;
   z-index: 5;
+}
+
+/* 命中範圍加大：氣泡本身只有 22px，要精準對上很彆扭。容器在段落 hover 時
+   已有 pointer-events:auto，因此這塊透明熱區真正生效——往上多包 2px，
+   往下延伸 14px 進段落內、往左延伸 44px，讓滑鼠從段落裡往右上角移過來時
+   不必瞄準，也不會經過「離開熱區 → 選單消失 → 要重來」的空檔。
+   熱區只在選單可見（段落已 hover）時存在，不影響未 hover 時的選字與點擊。 */
+.para-block .qa-actions::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  bottom: -14px;
+  left: -44px;
+  right: -2px;
 }
 
 /* 「⋯」提示氣泡（預設狀態）：低對比、小佔位，僅作為「這裡有動作」的線索 */
@@ -254,9 +280,12 @@ body.dark-mode .para-block .qa-actions::after {
   background: rgba(255, 255, 255, 0.08);
 }
 
-/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位 */
+/* 預設只顯示 ⋯，三個按鈕完全隱藏、不佔位。展開後的按鈕必須疊在上面的透明
+   熱區之上（position + z-index），否則熱區會攔住 書籤/分享 按鈕。 */
 .para-block .qa-actions .qa-btn {
   display: none;
+  position: relative;
+  z-index: 1;
 }
 
 /* 段落 hover → 顯示 ⋯（container 取得 pointer-events）。
@@ -280,14 +309,14 @@ body.dark-mode .para-block .qa-actions::after {
   display: flex;
 }
 
-/* 書籤標識：段落盒子內左上角（與 .qa-actions 同理，不可移到段落外，
-   否則被 content-visibility: auto 的 paint containment 裁掉）。
-   落在左側 border(4px)+padding(12px) 的預留空間內，不壓首字。 */
+/* 書籤標識：段落「外」左上角（段落上方），與 .qa-actions 同一側的選單區，
+   一樣需要 .para-block.bookmarked 解除 paint containment 才看得見。 */
 .para-block.bookmarked .bookmark-indicator {
-  top: 0;
-  bottom: auto;
-  left: 1px;
+  top: auto;
+  bottom: 100%;
   right: auto;
-  font-size: 11px;
-  line-height: 1;
+  left: 0;
+  display: flex;
+  align-items: center;
+  height: 10px;
 }

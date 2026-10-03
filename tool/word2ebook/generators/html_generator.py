@@ -7,7 +7,7 @@ from typing import List, Optional, Dict
 from pathlib import Path
 
 from models.document_models import Chapter, TOCItem, QACountMetadata
-from generators.toc_generator import TOCGenerator
+from generators.toc_generator import TOCGenerator, DEFAULT_TOC_LEVEL_CHAPTER
 from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
 from utils.i18n_utils import I18nProcessor
@@ -148,12 +148,27 @@ class HTMLGenerator:
                 "seo.chapter_description", is_traditional,
                 "《坐禪之問答錄2》" + clean_title,
             ).format(title=clean_title)
+            # 層級按鈕的 .active 必須與 chapter_toc 實際渲染的顯示層級一致，
+            # 否則 JS 啟動時會搬移高亮（按鈕跳動）。
+            toc_display_level = self.toc_generator.resolve_display_level(
+                {item.level for item in chapter.toc_items},
+                DEFAULT_TOC_LEVEL_CHAPTER,
+                button_levels={2, 3, 4},
+            )
+            level_btns = self.i18n_template_manager.build_level_buttons(
+                (2, 3, 4), toc_display_level
+            )
+            if is_traditional:
+                level_btns = self.i18n_processor.to_traditional(level_btns)
+            else:
+                level_btns = self.i18n_processor.ensure_simplified(level_btns)
             html_content = self.i18n_template_manager.render_chapter(
                 is_traditional=is_traditional,
                 title=title,
                 chapter_title=chapter_title_html,
                 chapter_qa_count="",
                 chapter_toc=chapter_toc,
+                chapter_toc_level_btns=level_btns,
                 content=content_body,
                 prev_link=prev_link,
                 next_link=next_link,

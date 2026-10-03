@@ -111,6 +111,51 @@ navigation). The chapter TOC heading SHALL be an `<h2 id="chapter-toc-header">`.
 - AND expand icons SHALL be `<button>` elements with `aria-expanded="true"`
 - AND no `data-default-visible` attribute SHALL appear
 
+### Requirement: Server-Rendered TOC Initial State
+TOC HTML SHALL be emitted in its correct *initial display state* so that pages
+render correctly before (or without) `script.js`. This is progressive
+enhancement: JS remains responsible only for applying the user's
+`localStorage` preference on top.
+
+Every TOC `<li>` SHALL carry:
+- `toc-expandable` **iff** it has a child `<ul>` — REQUIRED, because
+  `04a-toc-levels.css` styles leaves via `.toc-item:not(.toc-expandable)
+  { display: flex }`. When the class is absent (its historical source was a
+  JS-only `initializeTocExpandableItems()`), every `<li>` matches the
+  `:not()` selector and the nested `<ul>` becomes a flex sibling, laying the
+  TOC out horizontally in columns — the "weirdly arranged TOC" seen before JS
+  loads. Leaf items SHALL NOT carry the class.
+- `hidden` **iff** `data-level` exceeds that page's resolved display level
+  (index 2, chapter 3), matching `06-toc-collapse.js`'s
+  `setTocDisplayLevel()`.
+
+Expand icons SHALL be pre-set to the state JS would compute: `▼` /
+`aria-expanded="true"` when the item's level is *below* the display level,
+`▶` + `.collapsed` / `aria-expanded="false"` when equal.
+
+`resolve_display_level()` SHALL snap the default level to a level that
+actually has items (and a matching level button), replicating JS
+`selectValidLevel()` (nearest level wins; ties resolve to the smaller level).
+The chapter page's `.toc-level-btn.active` SHALL be placed on that same
+resolved level via `I18nTemplateManager.build_level_buttons()`, otherwise JS
+moves the highlight on startup and the button visibly jumps.
+
+`books2ebook` SHALL follow the same contract (its `_expand_icon_html()` and
+TOC builders are the mirror implementation).
+
+#### Scenario: TOC is correct with JavaScript disabled
+- GIVEN a generated index or chapter page
+- WHEN rendered with script execution disabled
+- THEN the TOC SHALL lay out as a single indented column (not side-by-side)
+- AND items deeper than the default level SHALL already be hidden
+- AND expand icons SHALL already show the correct expanded/collapsed glyph
+
+#### Scenario: No layout jump when JS starts
+- GIVEN the same page rendered with and without JS
+- WHEN comparing visible item count, per-level counts, indent offsets, icon
+  states, and the active level button
+- THEN they SHALL be identical, so no visible reflow occurs on startup
+
 ### Requirement: Page Landmarks
 Every page SHALL wrap the site-navigation header in `<header>` (with the nav
 links inside `<nav class="nav-home" aria-label>`), and the main content

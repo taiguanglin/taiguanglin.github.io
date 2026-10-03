@@ -19,6 +19,12 @@
 除了「相鄰兩段對調」，2024-07 實測還有**三段循環錯位**（音檔順序 #46 → #44 → #45，
 JSON 順序 #44 → #45 → #46），用 `--move` 兩次即可（`--move A:B` 不必相鄰）。
 
+2024-03 另有**「整段要往後／往前挪好幾位」**的形狀（不是對調）：例如
+`2024-03-01-main` 的音訊序是 #1(1.87) → **#4(38.25)** → #2(63.33) → #3(89.66)，
+JSON 順序卻是 #1 → #2 → #3 → #4，`--move` 做不到（那是交換不是搬移）。
+→ 用 `--shift A:B`：**把 A 搬到 B 的位置，中間的段整體平移一位**（兩個方向都支援）。
+相鄰對調也可以用 `--shift B:A` 表達（等價於 `--swap A:B`）。
+
 用法:
     .venv/bin/python swap_order.py --month 2024-11 \
         --swap 2024-11-11-main:20:21 --swap 2024-11-12-main:14:15 --inplace
@@ -43,6 +49,9 @@ def main():
                     help='<session_id>:<indexA>:<indexB>（**不必相鄰**，任意兩段對調；'
                          '處理「三段循環錯位」用：44/45/46 要變成 46/44/45 時，'
                          'swap 44:46 再 swap 45:46 即可）')
+    ap.add_argument('--shift', action='append', default=[],
+                    help='<session_id>:<indexA>:<indexB>：把 A **搬到 B 的位置**（A 必���不等於 B），'
+                         '中間的段整體平移一位；用於「不是對調而是整段挪位」的順序錯位')
     ap.add_argument('--note', default='依音訊順序（音檔先答後者的題）重排；原 Word 收錄順序相反')
     ap.add_argument('--inplace', action='store_true')
     args = ap.parse_args()
@@ -51,7 +60,7 @@ def main():
     d = json.load(open(p, encoding='utf-8'))
     by_sid = {s['session_id']: s for s in d['sessions']}
 
-    for spec in args.swap + args.move:
+    for spec in args.shift + args.swap + args.move:
         sid, a, b = spec.rsplit(':', 2)
         a, b = int(a), int(b)
         adjacent = spec in args.swap
@@ -63,6 +72,19 @@ def main():
             raise SystemExit(f'--swap 只支援相鄰兩段（實得 index {a} 在第 {ia} 位、{b} 在第 {ib} 位）；'
                              f'不相鄰請改用 --move')
         ga, gb = segs[ia], segs[ib]
+        if spec in args.shift:
+            # A 搬到「搬完之後」的第 ib 位；pop 會讓後面的段往前挪一位，故往後搬要 -1 補償
+            target = ib - 1 if ia < ib else ib
+            segs.insert(target, segs.pop(ia))
+            for i, g in enumerate(segs, start=1):
+                g['index'] = i
+                g['stable_key'] = f'{sid}#{i}'
+            n = ga.get('notes') or ''
+            if 'reordered:' not in n:
+                ga['notes'] = (n + ' | ' if n else '') + \
+                    f'reordered:整段搬到原 #{b} 的位置（依音訊序）— {args.note}'
+            print(f'  ✓ {sid}: 搬移 #{a} → 原 #{b} 的位置（現為 #{ib + 1}）')
+            continue
         # 先驗證：只有「後段的 start 比前段早」才是順序問題；否則不准動
         if (ga.get('start') is not None and gb.get('start') is not None
                 and gb['start'] >= ga['start']):

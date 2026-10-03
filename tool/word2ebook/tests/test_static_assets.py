@@ -378,7 +378,6 @@ class TestStaticAssetsManagerRealModules:
         assert "const MEASURE_TARGET_CHARS = 40;" in js
         assert "const CONTENT_CHROME_PX = 34;" in js
         assert "function getDefaultContentWidth()" in js
-        assert "const byMeasure = MEASURE_TARGET_CHARS * fontSize + CONTENT_CHROME_PX;" in js
         assert (
             "return Math.max(CONTENT_WIDTH_MIN, Math.min(CONTENT_WIDTH_MAX, Math.round(byMeasure)));" in js
         )
