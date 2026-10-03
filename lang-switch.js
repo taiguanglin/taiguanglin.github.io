@@ -66,6 +66,17 @@
             var wantTrad = pref === 'trad';
             if (wantTrad !== isTradPage) {
                 var target = wantTrad ? base + '_trad.html' : base + '.html';
+                /* 帶錨點進來時（例如首頁「每日精選」的「前往原文」→ ebook/…_trad.html#p-xxx）：
+                 * 繁簡雙頁的段落 id 由同一份來源產生、完全相同（逐檔比對 11+22 組皆一致），
+                 * 所以直接把 hash 帶過去，讓瀏覽器原生錨點跳轉接手。
+                 *
+                 * 這裡「不能」走下面的 langjump：本檔是 defer，執行時瀏覽器通常還沒
+                 * 套用片段捲動（scrollY 仍是 0），量到的位置會是整本書的頁首 ——
+                 * 等於把「跳到該段」變成「跳到目錄」，正是前往原文失效的原因。 */
+                if (location.hash && location.hash.length > 1) {
+                    location.replace(target + location.search + location.hash);
+                    return;
+                }
                 /* U10 簡繁切換保留閱讀位置：記下目前最近的標題錨點與捲動比例，
                  * 目標頁的 11-reading-resume.js 據此原位恢復。 */
                 try {

@@ -26,6 +26,9 @@ python3 tool/site_chrome/check_site.py
 node tool/site_chrome/dropdown_harness.js
 # 不帶參數測 4 個代表頁；帶參數可測任意頁面
 node tool/site_chrome/dropdown_harness.js index.html wenda2/chapter-01.html
+
+# lang-switch.js 跨語系轉址（含首頁「前往原文」的錨點保留；不依賴 jsdom）
+node tool/site_chrome/lang_switch_harness.js
 ```
 
 ### dropdown_harness.js 在做什麼
@@ -40,6 +43,25 @@ node tool/site_chrome/dropdown_harness.js index.html wenda2/chapter-01.html
 - 點擊選單外部會收合、點擊選單內部不會誤收
 
 因為它吃的是實際輸出，所以生成器改版或手改頁面導致標記漂移時會直接失敗。
+
+### lang_switch_harness.js 在做什麼
+
+用 Node 的 `vm` 跑**真正的 `lang-switch.js`**，只替掉它會碰到的少數全域
+（`location` / `localStorage` / `sessionStorage` / `navigator` / `document`），斷言
+跨語系轉址的行為。守住一條重要不變量：
+
+> **繁簡雙頁的段落 id 必須完全相同**，且跨語系轉址時**必須把 `location.hash`
+> 一起帶過去**。
+
+首頁「每日精選」的「前往原文」永遠連到 `ebook/…_trad.html#p-xxx`（語料是繁體）。
+偏好簡體的讀者會被轉到簡體頁；舊版轉址只帶 `location.search`、漏掉 hash，再加上
+`lang-switch.js` 是 `defer`、執行時瀏覽器通常還沒套用片段捲動（`scrollY` 仍是 0），
+算出的「最近標題」會是整本書的目錄 —— 於是「跳到該段」變成「跳到書的開頭」。
+
+改 `books2ebook`／`word2ebook` 的 id 產生方式時（例如改成用轉換後文字做雜湊），
+這個 harness 與下面 `audit_quotes.py` 的連結檢查都會失效：
+`wenda2_ebook` 已經有 `content-*` 這類「隨繁簡文字變動」的 id，
+`daily_quotes.json` 引用的 `p-*`／`answer-*` 則必須跨語系穩定。
 
 ## 涵蓋頁面
 
