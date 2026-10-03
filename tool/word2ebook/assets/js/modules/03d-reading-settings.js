@@ -569,6 +569,67 @@
     }
   }
   
+  // 目標是否需要為「經文置頂」留白（講經頁的 sticky 群內）
+  function anchorNeedsHeadroom(el) {
+    return !!(window.W2E && W2E.sutraPin && W2E.sutraPin.reserveFor &&
+              W2E.sutraPin.reserveFor(el) > 0);
+  }
+
+  // 錨點目標應停在視窗的哪個位置（距離視窗頂端的偏移）
+  // - 目標位於「經文置頂」的 sticky 群內（講經頁）：置頂中的經文佔住視窗最上方，
+  //   偏移必須 ≥ 停留經文高度，否則目標（尤其長段落的段首）會被經文蓋住。
+  //   09c 另外把同一個高度寫成群上的 scroll-margin-top，讓外部連結的原生
+  //   片段錨點導覽也自動留白。
+  // - 其他頁面沒有這層遮擋，維持原有的置中。
+  function anchorTargetOffset(el) {
+    if (anchorNeedsHeadroom(el)) {
+      return W2E.sutraPin.reserveFor(el);
+    }
+    return Math.max(0, (window.innerHeight - el.getBoundingClientRect().height) / 2);
+  }
+
+  function anchorTargetScrollTop(el) {
+    const absTop = el.getBoundingClientRect().top + window.pageYOffset;
+    const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    return Math.max(0, Math.min(absTop - anchorTargetOffset(el), max));
+  }
+
+  // 反覆把目標拉回正確位置，直到連續兩次量測都已在位（或逾時／使用者接手）。
+  //
+  // 為什麼需要：00-base.css 對 .question/.answer/.para-block 設了
+  // `content-visibility: auto` + `contain-intrinsic-size: auto 240px`，
+  // 視窗外的區塊先以估計高度佔位、捲動經過後才換成真實高度。於是捲動過程中
+  // 文件總高持續變動，任何「捲一次算好的位置」必然落偏（實測偏移數百 px，
+  // 有時目標直接被推到視窗外）。停止捲動後被跳過的區塊集合固定，目標的絕對
+  // 位置才會穩定，因此用短週期重測試斂即可。
+  //
+  // 使用者一開始自己捲（wheel/touch/方向鍵）就立刻放手，不跟使用者搖滾輪。
+  function settleAnchorTo(el) {
+    let stable = 0;
+    let tries = 0;
+    let userScrolled = false;
+    const stop = () => { userScrolled = true; };
+    window.addEventListener('wheel', stop, { passive: true, once: true });
+    window.addEventListener('touchstart', stop, { passive: true, once: true });
+    window.addEventListener('keydown', (e) => {
+      if (/^(Arrow|Page|Home|End|Space)/.test(e.key)) stop();
+    });
+
+    const tick = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const want = anchorTargetScrollTop(el);
+      if (Math.abs(want - window.pageYOffset) > 2) {
+        window.scrollTo(0, want);
+        stable = 0;
+      } else if (++stable >= 2) {
+        return;
+      }
+      if (++tries >= 40) return;   // 約 6 秒上限
+      setTimeout(tick, 150);
+    };
+    setTimeout(tick, 150);
+  }
+
   // 處理頁面加載時的錨點跳轉
   function handleInitialAnchor() {
     const hash = window.location.hash;
@@ -579,10 +640,13 @@
       if (targetElement) {
         // 延遲滾動，確保頁面布局完成
         setTimeout(() => {
+          // 目標在「經文置頂」的 sticky 群內（講經頁）時用 block:'start'，
+          // 讓 09c 寫在群上的 scroll-margin-top 生效；其餘維持置中。
           targetElement.scrollIntoView({
             behavior: 'smooth',
-            block: 'center'
+            block: anchorNeedsHeadroom(targetElement) ? 'start' : 'center'
           });
+          settleAnchorTo(targetElement);
           
           // 添加臨時高亮效果；使用 class，避免經文的漸層背景蓋住 background-color。
           targetElement.classList.remove('anchor-target-highlight');

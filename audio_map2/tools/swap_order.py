@@ -16,9 +16,16 @@
 由 `validate_relink.py` 檢查，`question_id` 跟著自己的文字走、不動）。兩段都追加
 `reordered:` 說明依據。
 
+除了「相鄰兩段對調」，2024-07 實測還有**三段循環錯位**（音檔順序 #46 → #44 → #45，
+JSON 順序 #44 → #45 → #46），用 `--move` 兩次即可（`--move A:B` 不必相鄰）。
+
 用法:
     .venv/bin/python swap_order.py --month 2024-11 \
         --swap 2024-11-11-main:20:21 --swap 2024-11-12-main:14:15 --inplace
+
+    # 三段循環：44/45/46 → 46/44/45
+    .venv/bin/python swap_order.py --month 2024-07 \
+        --move 2024-07-15-main:44:46 --move 2024-07-15-main:45:46 --inplace
 """
 import argparse
 import json
@@ -30,8 +37,12 @@ REPO = Path(__file__).resolve().parents[2]
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--month', required=True)
-    ap.add_argument('--swap', action='append', required=True,
+    ap.add_argument('--swap', action='append', default=[],
                     help='<session_id>:<indexA>:<indexB>（兩者必須相鄰）')
+    ap.add_argument('--move', action='append', default=[],
+                    help='<session_id>:<indexA>:<indexB>（**不必相鄰**，任意兩段對調；'
+                         '處理「三段循環錯位」用：44/45/46 要變成 46/44/45 時，'
+                         'swap 44:46 再 swap 45:46 即可）')
     ap.add_argument('--note', default='依音訊順序（音檔先答後者的題）重排；原 Word 收錄順序相反')
     ap.add_argument('--inplace', action='store_true')
     args = ap.parse_args()
@@ -40,15 +51,17 @@ def main():
     d = json.load(open(p, encoding='utf-8'))
     by_sid = {s['session_id']: s for s in d['sessions']}
 
-    for spec in args.swap:
+    for spec in args.swap + args.move:
         sid, a, b = spec.rsplit(':', 2)
         a, b = int(a), int(b)
+        adjacent = spec in args.swap
         s = by_sid[sid]
         segs = s['segments']
         ia = next(i for i, g in enumerate(segs) if g['index'] == a)
         ib = next(i for i, g in enumerate(segs) if g['index'] == b)
-        if ib != ia + 1:
-            raise SystemExit(f'{spec}: 只支援相鄰兩段（實得 index {a} 在第 {ia} 位、{b} 在第 {ib} 位）')
+        if adjacent and ib != ia + 1:
+            raise SystemExit(f'--swap 只支援相鄰兩段（實得 index {a} 在第 {ia} 位、{b} 在第 {ib} 位）；'
+                             f'不相鄰請改用 --move')
         ga, gb = segs[ia], segs[ib]
         # 先驗證：只有「後段的 start 比前段早」才是順序問題；否則不准動
         if (ga.get('start') is not None and gb.get('start') is not None

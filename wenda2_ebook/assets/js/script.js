@@ -3346,6 +3346,67 @@ function addHomepageBookmarkEventListeners() {
     }
   }
   
+  // 目標是否需要為「經文置頂」留白（講經頁的 sticky 群內）
+  function anchorNeedsHeadroom(el) {
+    return !!(window.W2E && W2E.sutraPin && W2E.sutraPin.reserveFor &&
+              W2E.sutraPin.reserveFor(el) > 0);
+  }
+
+  // 錨點目標應停在視窗的哪個位置（距離視窗頂端的偏移）
+  // - 目標位於「經文置頂」的 sticky 群內（講經頁）：置頂中的經文佔住視窗最上方，
+  //   偏移必須 ≥ 停留經文高度，否則目標（尤其長段落的段首）會被經文蓋住。
+  //   09c 另外把同一個高度寫成群上的 scroll-margin-top，讓外部連結的原生
+  //   片段錨點導覽也自動留白。
+  // - 其他頁面沒有這層遮擋，維持原有的置中。
+  function anchorTargetOffset(el) {
+    if (anchorNeedsHeadroom(el)) {
+      return W2E.sutraPin.reserveFor(el);
+    }
+    return Math.max(0, (window.innerHeight - el.getBoundingClientRect().height) / 2);
+  }
+
+  function anchorTargetScrollTop(el) {
+    const absTop = el.getBoundingClientRect().top + window.pageYOffset;
+    const max = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    return Math.max(0, Math.min(absTop - anchorTargetOffset(el), max));
+  }
+
+  // 反覆把目標拉回正確位置，直到連續兩次量測都已在位（或逾時／使用者接手）。
+  //
+  // 為什麼需要：00-base.css 對 .question/.answer/.para-block 設了
+  // `content-visibility: auto` + `contain-intrinsic-size: auto 240px`，
+  // 視窗外的區塊先以估計高度佔位、捲動經過後才換成真實高度。於是捲動過程中
+  // 文件總高持續變動，任何「捲一次算好的位置」必然落偏（實測偏移數百 px，
+  // 有時目標直接被推到視窗外）。停止捲動後被跳過的區塊集合固定，目標的絕對
+  // 位置才會穩定，因此用短週期重測試斂即可。
+  //
+  // 使用者一開始自己捲（wheel/touch/方向鍵）就立刻放手，不跟使用者搖滾輪。
+  function settleAnchorTo(el) {
+    let stable = 0;
+    let tries = 0;
+    let userScrolled = false;
+    const stop = () => { userScrolled = true; };
+    window.addEventListener('wheel', stop, { passive: true, once: true });
+    window.addEventListener('touchstart', stop, { passive: true, once: true });
+    window.addEventListener('keydown', (e) => {
+      if (/^(Arrow|Page|Home|End|Space)/.test(e.key)) stop();
+    });
+
+    const tick = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const want = anchorTargetScrollTop(el);
+      if (Math.abs(want - window.pageYOffset) > 2) {
+        window.scrollTo(0, want);
+        stable = 0;
+      } else if (++stable >= 2) {
+        return;
+      }
+      if (++tries >= 40) return;   // 約 6 秒上限
+      setTimeout(tick, 150);
+    };
+    setTimeout(tick, 150);
+  }
+
   // 處理頁面加載時的錨點跳轉
   function handleInitialAnchor() {
     const hash = window.location.hash;
@@ -3356,10 +3417,13 @@ function addHomepageBookmarkEventListeners() {
       if (targetElement) {
         // 延遲滾動，確保頁面布局完成
         setTimeout(() => {
+          // 目標在「經文置頂」的 sticky 群內（講經頁）時用 block:'start'，
+          // 讓 09c 寫在群上的 scroll-margin-top 生效；其餘維持置中。
           targetElement.scrollIntoView({
             behavior: 'smooth',
-            block: 'center'
+            block: anchorNeedsHeadroom(targetElement) ? 'start' : 'center'
           });
+          settleAnchorTo(targetElement);
           
           // 添加臨時高亮效果；使用 class，避免經文的漸層背景蓋住 background-color。
           targetElement.classList.remove('anchor-target-highlight');
@@ -6158,11 +6222,18 @@ function addHomepageBookmarkEventListeners() {
   //      → position: static）：停留中的經文會蓋住其後講解，經文若高到
   //      接近或超過整個畫面，就沒空間讀講解，該段一律放棄置頂。
   //   4. 「經文置頂」toggle（講次 h2 旁，localStorage sutraPinEnabled，
-  //      預設 ON；關閉時 body.sutra-pin-off → 全部照常捲動）。    //   5. 錨點跳轉（hashchange／帶 hash 載入／程式化 scrollIntoView）時短暫
-    //      body.sutra-pin-suppress 停停留，避免蓋住目錄/搜尋/書籤跳轉目標；
-    //      09b 跟播捲動前可呼叫 W2E.sutraPin.reserveFor(el) 取得停留經文
-    //      高度作為捲動上限（當前段頂 − 經文高 − 24px），使高亮段落永遠
-    //      落在停留經文下方、不被蓋住。
+  //      預設 ON；關閉時 body.sutra-pin-off → 全部照常捲動）。
+  //   5. 錨點跳轉讓位：把「本群經文停留時的高度 + 間隙」寫成群的
+  //      --w2e-pin-reserve（04c-qa-audio.css 據此設 .para-block/標題的
+  //      scroll-margin-top），使所有把目標對齊視窗頂的跳轉（外部連結、
+  //      章節錨點、浮動目錄、書籤、.toc-count 直跳、?q= 搜尋結果）都會
+  //      停在停留經文「下方」，不會被蓋住。經文高度隨字級/版面變化，
+  //      故與過長判定一起在 scheduleTallCheck 重算。
+  //   6. 另以 body.sutra-pin-suppress 在 hashchange／帶 hash 載入／
+  //      程式化 scrollIntoView 時短路暫停停留，避免蓋住跳轉目標；
+  //      09b 跟播捲動前可呼叫 W2E.sutraPin.reserveFor(el) 取得停留經文
+  //      高度作為捲動上限（當前段頂 − 經文高 − 24px），使高亮段落永遠
+  //      落在停留經文下方、不被蓋住。
   //
   // 以具名 IIFE 隔離作用域（本檔被串接進共用的 DOMContentLoaded 函式中）。
   // ============================================================
@@ -6180,6 +6251,8 @@ function addHomepageBookmarkEventListeners() {
     // 多了 25%，45% 門檻等於把「可停留的經文長度」從約 16 行砍到 13 行，
     // 常見的段落長度會突然不再置頂。55% 讓原本的停留體驗回來。
     var TALL_RATIO = 0.55;
+    // 錨點讓位時，目標段落頂端與停留經文底端之間留的白（避免緊貼）
+    var RESERVE_GAP = 16;
 
     function loadState(key, dflt) {
       try {
@@ -6306,9 +6379,14 @@ function addHomepageBookmarkEventListeners() {
     });
     if (pre.groups.length) sections.unshift(pre);
 
-    // ---- 過長經文不停留 --------------------------------------------------
+    // ---- 過長經文不停留 + 錨點讓位高度 ----------------------------------
     // 停留中的經文天生會蓋住其後講解（sticky 本質）；經文若高到接近或超過
     // 整個畫面，停留後幾乎沒有空間讀講解，該段就放棄置頂。
+    // 同時把「經文高 + 間隙」寫進群的 --w2e-pin-reserve：CSS 用它當群內
+    // 目標（段落 / 標題 / label）的 scroll-margin-top，讓所有把目標對齊
+    // 視窗頂的跳轉都停在停留經文下方。停用置頂（.sutra-pin-tall）或用
+    // toggle 關閉置頂時歸零（此值為 inline style，樣式表覆寫無效，故
+    // syncToggleUI 會觸發重算）。
     function applyTallClasses() {
       var vh = window.innerHeight;
       if (!vh) return;
@@ -6316,8 +6394,11 @@ function addHomepageBookmarkEventListeners() {
         var sutra = g.firstElementChild &&
                     g.firstElementChild.firstElementChild;
         if (!sutra || !sutra.classList.contains('sutra-text')) return;
-        g.classList.toggle('sutra-pin-tall',
-                           sutra.offsetHeight > vh * TALL_RATIO);
+        var h = sutra.offsetHeight;
+        var tall = h > vh * TALL_RATIO;
+        g.classList.toggle('sutra-pin-tall', tall);
+        g.style.setProperty('--w2e-pin-reserve',
+                            (!pinOn || tall) ? '0px' : (h + RESERVE_GAP) + 'px');
       });
     }
 
@@ -6395,6 +6476,8 @@ function addHomepageBookmarkEventListeners() {
         var box = t.querySelector('input[type="checkbox"]');
         if (box && box.checked !== pinOn) box.checked = pinOn;
       });
+      // 讓位高度是 inline style（優先級高於樣式表），關閉置頂時必須重算
+      scheduleTallCheck();
     }
 
     syncToggleUI();
@@ -6424,20 +6507,24 @@ function addHomepageBookmarkEventListeners() {
     // 帶錨點載入：目標會停在視窗最頂
     if (location.hash) suppressPin(800);
 
-    // ---- 對外介面：供 09b-para-track 讓出停留經文的高度 ------------------
+    // 視窗頂 → 目標之間要留的高度（= 停留經文高度 + 間隙）。
+    // 逐群寫在群的 --w2e-pin-reserve（CSS 端轉成 scroll-margin-top）；
+    // 09b 跟播與 03d 錨點讓位直接呼叫本函式，兩者用同一個數字。
+    // 置頂關閉或該經文過長（不會停留）時回 0。
+    function reserveFor(el) {
+      if (!pinOn || !el || !el.closest) return 0;
+      var g = el.closest('.sutra-pin-group');
+      if (!g || g.classList.contains('sutra-pin-tall')) return 0;
+      var sutra = g.firstElementChild && g.firstElementChild.firstElementChild;
+      return sutra && sutra.classList.contains('sutra-text')
+        ? sutra.offsetHeight + RESERVE_GAP : 0;
+    }
+
+    // ---- 對外介面 ------------------------------------------------------
     window.W2E = window.W2E || {};
     window.W2E.sutraPin = {
-      // 跟播捲動前呼叫：目標段落若屬於某個 sticky 群，回傳該群經文高度
-      // （捲動後這段經文會停在視窗頂；09b 以「段頂 − 此高度 − 24px」為
-      // 捲動上限，使高亮段落落在停留經文下方）
-      reserveFor: function (el) {
-        if (!pinOn || !el || !el.closest) return 0;
-        var g = el.closest('.sutra-pin-group');
-        if (!g || g.classList.contains('sutra-pin-tall')) return 0;
-        var sutra = g.firstElementChild && g.firstElementChild.firstElementChild;
-        return sutra && sutra.classList.contains('sutra-text')
-          ? sutra.offsetHeight : 0;
-      },
+      // 09b 跟播捲動前呼叫；03d 帶錨點載入時據此決定對齊方式
+      reserveFor: reserveFor,
       isEnabled: function () { return pinOn; }
     };
   })();
