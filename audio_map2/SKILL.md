@@ -65,12 +65,27 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
 
 | 檔案 | 用途 |
 |------|------|
-| **`funasr_anchor_verify.py --month M --date D [--source S] [--only ...]`** | **收尾主力**：批次印每個邊界（`opening`／每段／`closing`）的 SRT cue ＋ **opus+mp3 雙解碼器字級時間軸** ＋ Δ 表（Δ＝`start` 之後第一個字 − `start`；Δ<0.15 且 `start` 前一個字是過渡語＝錨在過渡語、必修）。需 funasr 環境 |
+| **`batch_anchor.py --month M`** | **量測主力（2024-12 起）**：對每個邊界切 `[start−4, start+8]` 的 12s 短窗，opus+mp3 雙解碼器字級 onset，落盤 `/tmp/am2_<month>/<sid>__<label>.json`（**可續跑**，已存在就跳過）。全月 399 邊界約 4 分鐘 |
+| **`propose_fixes.py --month M`** | 依快取產 `fixes.json` 候選：整詞/變形/長度≥3前綴比對 →（不中）**退級探針**（跳過首詞的答案前綴，3/5/8/12/16/20 字，`use_var=False`）→（不中）標 `weak` 交人工。含四條**信賴規則**：R1 首詞 ≤2 字需分數 ≥0.9（拼音全中）才採用；R2 分數 <0.75 交人工；R3 命中窗第一字是虛詞/語氣字而答案首詞不以它開頭 → 前移；R4 短詞（≤3 字）的 VAR 變形長度 > 首詞+2 時丟棄 |
+| **`apply_alignment.py --month M [--overrides o.json] [--only-overrides] [--inplace]`** | 套用 `fixes.json`＋`overrides.json`，**由 `start` 鏈反推所有 `end`**、重算 `*_label`、單調性檢查、`--verify-text` 驗文字欄位 0 違改。`--only-overrides` = 第二輪只補新發現的錯 |
+| **`post_align.py --month M --inplace`** | 收尾：修過期 `notes`（STALE 表）、標註已驗證、重算 `stats`、結構校驗（鏈／倒序／null label） |
+| **`content_check.py --month M [--tol 3.5]`** | **內容定位（不可省）**：整場字級轉錄＋拼音模糊比對。0% 探針**跳過首詞**（人名被聽歪會讓探針滑到正文、量到假偏差），50/85% 探針驗內文確在窗內 |
+| **`cross_check.py --month M --tol 3.5`** | 字級短窗錨點 ↔ 整場轉錄內容起點的**獨立互證**（兩種完全不同的量法）。`tol` 要吃進整場轉錄的局部 VAD 抖動（實測 ±5s） |
+| **`listen_check.py --month M [--tol 0.55] [--win 6]`** | **播放端視角**：從 `start` 播下去 6s 內必須聽得到答案開頭（窗長要夠，2.5s 會因名字逐字母慢唸而誤判） |
+| **`dup_scan.py --month M`** | 掃「首詞在視窗內被唸不只一次」，抓被跳過的第一次（±1.2s 聚類） |
+| **`onset_at.py --month M --session S --at T`** | 在**任意**時刻量一次雙解碼器 onset（`batch_anchor` 的 ±9s 窗抓不到 20–60s 的整段錯位時用） |
+| **`review_batch.py --month M [--pick prefix\|first_word] [--weak] [--dmin 0.5] [--session S --label #N]`** | **人工過目主工具（2024-11）**：一次印多個邊界的「新舊錨點之間字級時間軸」＋答案開頭 ＋匹配文字，`«起»`／`«新»` 標出兩個錨點各落在哪個字。`--pick` 過濾 basis、`--weak` 只看 weak、`--dmin` 只看 \|Δ\| 超過多少的 |
+| **`review_fixes.py`／`inspect_span.py --session S --label N [--span B A]`** | 單邊界深看：新錨點前後字級時間軸 ＋ SRT cue ＋ Word 首詞 |
+| **`reanchor.py --month M --session S --index N [--index …] [--near A B]`** | 用整場轉錄把**整段錯位／窗口太短**的段重新定位：0%（跳過首詞）/30/60/85% 四個探針在整場的佳命中時間，自動標「窗外」。`--near` 限絕對區間搜尋 |
+| **`swap_order.py --month M --swap <sid>:<iA>:<iB> --inplace`** | **依音訊序重排 `segments[]`**（SKILL §1 鐵律允許改 `segments[]` 順序）：交換相鄰兩段、連帶重編 `index`／`stable_key`、兩段都加 `reordered:` note。⚠️ 重排後要**刪掉被重排段的舊快取重跑**，且 `apply_alignment.py --verify-text` 必須以 `question_id` 配對（已內建） |
+| **`full_transcribe.py --month M`** | 整場字級轉錄（`/tmp/am2_<month>/full/<sid>.json`），**多段分檔自動接軌**（`2024-12-09-wechat` 上下檔 offset 2927.255） |
+| **`drift_curve.py`／`driftmap.py`** | 整場轉錄的時間軸漂移校準。用 SRT cue 當參考點，**中位數分桶 ＋ 斜率上限的單調迴歸（PAVA）**——⚠️ 絕對不能用 running max，單一離群點會把整條曲線抬高後降不下來 |
+| `funasr_anchor_verify.py --month M --date D [--source S] [--only ...]` | 單場互動式：批次印每個邊界的 SRT cue ＋ 雙解碼器字級時間軸 ＋ Δ 表（2024-12 已被上面的批次工具取代，單場除錯仍好用） |
 | `readspan.py <json> <date> <source> <t0> <t1>` | 印時間窗原始 SRT 文字＋毫秒 cue（收斂邊界核心） |
-| `first_char_audit.py --month M --date D --source S` | 逐段第一字稽核（`OK/EARLY/LATE/prev-tail/???`；**VAR 表權威**）。⚠️ **只驗「首詞所在 cue 是否與 start 重疊」，不驗 start 落在哪個 cue**，且**完全不檢查 opening/closing**——2025-01-17 有 31/31 個 `start` 全錯卻全報 `OK`。只能當篩選器，不能當收案依據 |
+| `first_char_audit.py --month M --date D --source S` | 逐段第一字稽核（`OK/EARLY/LATE/prev-tail/???`；**VAR 表權威**）。⚠️ **只驗「首詞所在 cue 是否與 start 重疊」，不驗 start 落在哪個 cue**，且**完全不檢查 opening/closing**——2025-01-17 有 31/31 個 `start` 全錯卻全報 `OK`；**2024-12 整月 `LATE 0` 而實際 310 個 `start` 錯**。只能當篩選器，不能當收案依據 |
 | `funasr_ctx.py`／`funasr_onset_scan.py`／`funasr_verify.py` | 字流判讀／候選錨點掃描／複驗 |
 | `funasr_char_onset.py <opus> <t0> <t1> 關鍵詞…` | 字級 onset（combined cue 才需；模型載入 ~40s，**多窗合併批次**） |
-| `funasr_session_transcribe.py`／`funasr_dump.py` | 產生 `/tmp/funasr_cache/<sid>.json`（字級 cache） |
+| `funasr_session_transcribe.py`／`funasr_dump.py` | 產生 `/tmp/funasr_cache/<sid>.json`（字級 cache；只處理單檔，分檔請用 `full_transcribe.py`） |
 | `xscan.py` | 掃過渡標記（重排偵測） |
 | `seqloc.py`／`audit.py`／`session_overview.py`／`finalize.py` | anchor 假說／錯位篩選／session 摘要／notes＋stats 收尾 |
 
@@ -78,6 +93,7 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
 模型已在本機 `~/.cache/modelscope`，不必重下）。**絕對時間只信 10–25s 短窗 ＋ opus/mp3 雙解碼器
 一致**；窗寬改變會讓同一個字級 onset 漂 1–2s（實測 `#17 Jhone` 在 14s 窗與 20s 窗差 1.66s），
 跨窗不一致時取**較早**者並在 `notes` 記錄跨窗區間。
+「一致」要理解成**至少一個聽到且兩個不衝突**，不是兩個都要聽到（實測 opus 會整段丟掉人名）。
 
 ## 4. golden 方法論與通用規則
 
@@ -98,17 +114,33 @@ SRT 原始檔就帶毫秒，直接讀原始 cue：`from common import parse_srt_
 1. **全景盤點**：逐 session 列段數、null、`conf<0.8`、`status=auto`、待人工數；golden 不動。
 2. **找 reading-order 重排**：`xscan.py` 對照過渡語順序 vs `index` 順序；重排後必須
    `end[i]==start[i+1]`、無 overlap、無倒序（`segments[]` 是播放順序）。
-3. **逐段收斂**：`funasr_anchor_verify.py` 印每個邊界的 cue ＋ 雙解碼器字級時間軸 → 找 answer-head
-   獨特字串（人名／主題詞／唸回題幹）→ 依 §2 判定過渡語歸屬，取**該詞第一個字**的字級 onset ＝ `start`；
-   `end[i] := start[i+1]`（鏈由 start 反推，不要各自估算）。回寫 ms 原值、label 以 `HH:MM:SS.mmm` 同步。
+3. **逐段收斂（批次管線，2024-12／2024-11 驗證）**：
+   `batch_anchor.py --month M` → `propose_fixes.py --month M` → `review_fixes.py` 逐邊界過目 →
+   人工判讀寫進 `overrides.json` → `apply_alignment.py --month M --overrides o.json --inplace`
+   （**`end[i] := start[i+1]`，鏈由 start 反推**，label 以 `HH:MM:SS.mmm` 同步）。
+   判讀時依 §2 判定過渡語歸屬，取**該詞第一個字**的字級 onset ＝ `start`；
+   `weak` 與 `|Δ|>0.5s` 的邊界一律人工看 `inspect_span.py`。
+   **兩輪收斂**：第 1 輪套用後**重跑 `batch_anchor.py`**（視窗跟著新 `start` 走）→
+   `propose_fixes.py` 再跑一次 → 只把新發現的錯補進 `overrides.json` 並用 `--only-overrides` 套用。
+   2024-12 實測第 2 輪又找出 13 個真錯，第 3 輪才收斂；2024-11 第 2 輪又找出 16 個（含 4 個
+   9–59s 的整段錯位），第 3 輪才收斂。人工判讀用 `review_batch.py`（一次一批）最有效率。
+   ⚠️ `find_word` 的命中窗可能**整體錯位一格**（人名「聖輝」落在「說盛」上得 0.588、
+   落在「盛輝」上得 1.0）；所以必須「**先只留分數 ≥0.9 的窗，再在其中取最早**」，
+   否則「取最早」會讓錯位窗勝出、把錨點釘在上一句尾巴上（2024-11 實測 −3.3s～−4.6s）。
 4. **短窗重轉／字級**：cue 讀不出時用 `tool/sense_voice` 對時間窗重跑（sentence 級毫秒 cue）或字級
    onset。**絕對時間只信「10–25s 短窗 ＋ mp3/opus 雙解碼器一致」**（長窗／整檔會漂移、漏字）。仍無解
    或音檔沒讀 → `null/0.0`＋note。**例外：檔頭 0–5s 短窗的 VAD 會整段丟字，此時用整場轉錄取
    開場 onset**（整場轉錄在檔頭反而準，實測與 cue[0] 差 0.04–0.05s）。
-5. **內容定位檢查（不可省，2025-01-17 實測抓到 56s 整段錯位）**：整場 FunASR 字級轉錄
-   → `/tmp/funasr_cache/<sid>_full.json`；用 `pypinyin`＋`difflib` 在**拼音音節級**模糊比對，把每段
-   `answer_text` 的內文片段定位回音檔，確認它落在自己的 `[start, end]` 內。
-   ⚠️ 整場轉錄**只能驗內容位置，不能取絕對時間**（實測中段漂 2–3s）。
+5. **內容定位檢查（不可省，2025-01-17 實測抓到 56s 整段錯位）**：`full_transcribe.py --month M`
+   → `content_check.py`（內含 `driftmap` 漂移校正）；用 `pypinyin`＋`difflib` 在**拼音音節級**模糊比對，
+   把每段 `answer_text` 的內文片段定位回音檔，確認它落在自己的 `[start, end]` 內。
+   - **0% 探針要跳過首詞**：人名被 ASR 聽歪（`恒河沙丫`→`红河沙洋`）時，含名字的探針會整段滑到正文，
+     量到假的 +8s 偏差（2024-12-09-wechat #28 實測）。
+   - 方向性：**內容必須不晚於 `start`**。`start > 內容起點 + tol` 才算整段錯位；反過來
+     「內容比 start 晚」是正常情況（人名沒被唸出）。
+   ⚠️ 整場轉錄**用來驗內容位置，不要取絕對時間**。2024-12 實測它與 SRT 全月偏差 ≤0.8s
+   （`drift_curve.py` 量測），但**局部仍有 ±5s 的 VAD 抖動**（2024-12-13-tieba 1300s 處整場比
+   短窗晚 5.8s）——絕對時間仍以短窗為準，抖動範圍靠 `cross_check.py --tol 3.5` 吸收。
    稽核＋Δ 表都抓不到的錯只有這一類能抓（`wechat #3` 錨到音檔裡重複出現兩次的同一句）。
 6. **信心度收口**（依 §1.5）。
 7. **收尾**：誤加單數 `note` 併回 `notes`；清掉已核實的 `待人工確認`／`no-anchor:clamped` 標記；重算
@@ -153,11 +185,24 @@ cue 的**起點**（把過渡語算進本段、人名 onset 留在窗外 0.3–3
 
 ## 7. 逐月結論（可外推教訓；逐段明細見 git 歷史）
 
-- **时间序月（2025-03、2024-12、2024-05）**：套 golden 後每場 `LATE 0`、鏈 0 斷點。2024-12（376 段）
-  `LATE 47→0`、`??? 123→64`；2024-05（290 段）修正 187 段、`matched 280→288`。拆檔時間軸
-  （09-wechat 上下檔）offset 2927.255，JSON `start` 一律 global。
+- **时间序月（2025-03、2024-05）**：套 golden 后每场 `LATE 0`、链 0 断点。2024-05（290 段）
+  修正 187 段、`matched 280→288`。拆檔时间轴（09-wechat 上下檔）offset 2927.255，JSON `start` 一律 global。
+  ⚠️ **2024-12 原以为已完成（`LATE 0`、`??? 123→64`），2026-10-02 用字级 onset 重校才发现
+  `LATE 0` 是假阴性**：310 个 `start` 实际有误（>4s 10 个、2–4s 40 个、0.5–2s 78 个、
+  <0.5s 182 个），并抓到 3 个整段错位（最大 `09-wechat #29` −58.56s）。
+  **「cue 级稽核全绿」不等于对齐完成**，细节见 `AGENTS.md` 的「2024-12 毫秒级重校」。
 - **2024-05 工具鏈教訓（勿用整檔重轉取代短窗）**：ASR 字級絕對時間隨 VAD 視窗漂移（16s／60s／整檔
   可差 2–5s）；長窗會漏字；窗尾字/秒 ≥7 代表 VAD 少配時間、值不可用。
+  **2024-12 更正**：整檔轉錄的漂移其實很小（與 SRT 全月偏差 ≤0.8s），但**局部抖動可達 ±5s**；
+  所以「整檔不能用」過於悲觀、「整檔可當絕對時間」則過於樂觀。正確口徑是
+  **整檔用來驗內容位置、也用來量檔頭；中段絕對時間仍以 10–25s 短窗為準**。
+- **`batch_anchor.py` 的兩個實作陷阱**（都踩過）：
+  (1) 分檔（`media_parts` > 1）必須把 offset 加回時間戳，否則 part-1 的邊界全是本地時間；
+  (2) `ffmpeg -ss` 給負值會被當 0，視窗起點要夾在 0 並把窗往後延，否則開場算出負數 start。
+- **`VAR` 表對短詞會產生離譜變形**（2024-12 實測）：`variants('云')` 會生出 `下一个问题`（5 字），
+  害人名以 1.0 分命中音檔裡的「下一個問」。短詞只接受長度 ≤ `len+2` 的變形；
+  VAR 也不該套在任意「答案前綴」上（退級探針要 `use_var=False`）。
+  VAR 變形還可能在首詞前塞助詞（`的啊第二个问`），命中窗第一字是虛詞時要前移到窗內第一個實字。
 - **主題式月（2024-02…2024-08）**：音檔是主題式講解、ASR 差，每段都要判讀；Word 為改寫稿。SRT 常
   亂窗／空窗，第一詞只能靠 FunASR 字級 onset；名未轉出／SRT 亂窗屬**誠實極限**。
 - **2024-03（已完成）**：FunASR VAD 空洞（整區無字級）以 ffmpeg 切片強轉補錨，並與主 cache 雙驗
@@ -232,13 +277,25 @@ cue 的**起點**（把過渡語算進本段、人名 onset 留在窗外 0.3–3
 ## 8. 完成定義
 
 - [ ] 每段從 `start` 播放，第一個聽到的詞＝段落文字第一個詞（允許 ASR 變形）
+      → 工具化：`listen_check.py --month M --tol 0.55 --win 6`（2024-12 實測 389/399 通過，
+      剩下 10 個逐個人工核為 ASR 變形／人名沒唸出，位置正確）
 - [ ] `start` 絕不晚於第一詞 onset（`EARLY ≤1.5s` 合法）；鏈完整（`end[i] == start[i+1]`）
 - [ ] **`start` 之前不含過渡語／上一段尾字／上一段正文**（過渡語歸屬依 §2，以字級 onset 切；
-      印 `start` 前 3s 確認）
+      印 `start` 前 3s 確認；`dup_scan.py` 檢查是否漏掉更早的同詞出現）
 - [ ] **每段答案內文確實落在 `[start, end]` 內**（整場字級轉錄＋拼音模糊比對；抓整段錯位）
+      → `content_check.py --month M --tol 3.5`
+- [ ] **短窗錨點與整場轉錄互證**：`cross_check.py --month M --tol 3.5` 沒有未解的大偏差
 - [ ] **`opening`／`closing` 的第一字也收尾**（稽核不檢查它們；`closing` 注意 Word 講者標記；
-      `opening` 注意文字首詞可能不是「今天」）
-- [ ] **人名／字母名唸兩次時錨在第一次**；`notes` 已過期者（`conf=0` 卻有完整 `answer_text`
+      `opening` 文字首詞可能不是「今天」，且**開場以整場轉錄的檔頭為準**——短窗 VAD 會整段丟掉 0–4s）
+- [ ] **人名／字母名唸兩次時錨在第一次**（但若兩次之間講的是上一題內容則取第二次，
+      見 `AGENTS.md` 2024-12 教訓 8）；`notes` 已過期者（`conf=0` 卻有完整 `answer_text`
       與 chapter 對應）要重估 `conf`/`status` 並在 `notes` 說明依據
-- [ ] 文字欄位 0 違改（git diff 驗證）；修正段 `notes` 記錄錨點證據（含跨窗／解碼器分歧）
+- [ ] **跑過至少兩輪「重測 → 只補 overrides」**（2024-12 第 2 輪又找出 13 個真錯；
+      2024-11 做到第 3 輪，第 2 輪又找出 16 個真錯、含 4 個 9–59s 的整段錯位）
+- [ ] **`segments[]` 指數序＝音訊序**（`apply_alignment.py` 會擋；用 `swap_order.py` 重排）
+- [ ] **`closing`／`opening` 的 `text` 真的在它被錨的那個位置被唸出**
+      （2024-11-11 的收場 block 其實是檔案中段的「貼吧→微信」問答，已在 `notes` 標 ⚠️）
+- [ ] 文字欄位 0 違改（`apply_alignment.py --verify-text <backup>` 或 git diff 驗證）
+- [ ] `post_align.py` 結構 issues 0、stats 已重算；`validate_resplit.py` 沒有**新增**錯誤
+- [ ] 修正段 `notes` 記錄錨點證據（含跨窗／解碼器分歧）
 - [ ] 交付：`<month>.json` ＋回報（重排 block、修正段含 ms、誠實空缺理由、stats）
