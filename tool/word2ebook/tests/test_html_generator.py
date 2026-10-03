@@ -7,6 +7,7 @@ from unittest.mock import MagicMock, patch
 from models.document_models import Chapter, TOCItem, QAPair, ConversionConfig
 from generators.html_generator import HTMLGenerator
 from generators.toc_generator import TOCGenerator
+from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
 from config.settings import Settings
 
@@ -120,6 +121,81 @@ class TestCollapsibleChapterToc:
         assert "data-default-visible" not in html
         assert 'target="_blank"' not in html
         assert 'href="01.html"' in html
+
+
+# ---------------------------------------------------------------------------
+# TOC 初始狀態（回歸測試：JS 尚未載入時 HTML 本身必須已排版正確）
+# ---------------------------------------------------------------------------
+
+class TestTOCInitialState:
+    """伺服器端必須輸出正確的初始 TOC 狀態，否則 script.js 到位前會亂版。
+
+    根因：``04a-toc-levels.css`` 用 ``.toc-item:not(.toc-expandable)``
+    決定葉節點排版，而 ``.toc-expandable`` 原本只由 JS 補上 —— JS 未執行時
+    全部 ``li`` 命中 ``:not(...)`` 拿到 ``display:flex``，巢狀 ``<ul>``
+    被拉成橫向並排。
+    """
+
+    ITEMS = [
+        (2, "A", "a"), (3, "A1", "a1"), (3, "A2", "a2"),
+        (4, "A2a", "a2a"), (2, "B", "b"),
+    ]
+
+    def test_expandable_items_carry_class(self):
+        html = TOCGenerator().build_collapsible_chapter_toc(self.ITEMS)
+        # 有子節點者（level 2 的 A、level 3 的 A2）必須帶 toc-expandable
+        assert 'class="toc-item toc-level-2 toc-expandable"' in html
+        assert 'class="toc-item toc-level-3 toc-expandable"' in html
+        # 葉節點不得帶（否則會失去 display:flex）
+        assert 'class="toc-item toc-level-2" data-level="2"' in html
+
+    def test_no_item_that_has_children_lacks_expandable(self):
+        """穩健性：任何含展開鈕的 li 都必須同時有 toc-expandable。"""
+        html = TOCGenerator().build_collapsible_chapter_toc(self.ITEMS)
+        for li in html.split("<li")[1:]:
+            tag = li.split(">")[0]
+            if "toc-expand-icon" in li.split(">", 2)[-1][:200] or "toc-expand-icon" in tag:
+                assert "toc-expandable" in tag, li[:120]
+
+    def test_index_page_default_level_two(self):
+        html = TOCGenerator().build_collapsible_chapter_toc(
+            self.ITEMS, is_index_page=True
+        )
+        # 第 3 層以上先隱藏；第 2 層展開鈕為收合
+        assert 'class="toc-item toc-level-3 hidden"' in html
+        assert 'class="toc-item toc-level-4 hidden"' in html
+        assert 'aria-expanded="false">▶<' in html
+
+    def test_chapter_page_default_level_three(self):
+        html = TOCGenerator().build_collapsible_chapter_toc(self.ITEMS)
+        # 章節頁預設第 3 層 → 只有第 4 層隱藏
+        assert 'class="toc-item toc-level-4 hidden"' in html
+        assert 'class="toc-item toc-level-3 hidden"' not in html
+
+    def test_resolve_display_level_snaps_to_present_level(self):
+        """只有第 2 層時必須退到第 2 層，與 JS selectValidLevel() 一致。"""
+        resolve = TOCGenerator.resolve_display_level
+        assert resolve({2}, 3, button_levels={2, 3, 4}) == 2
+        assert resolve({2, 3}, 3, button_levels={2, 3, 4}) == 3
+        assert resolve({2, 3, 4}, 2, button_levels={1, 2, 3, 4}) == 2
+        # 完全沒有項目 → 保留預設
+        assert resolve(set(), 3, button_levels={2, 3, 4}) == 3
+
+    def test_chapter_toc_without_deep_levels_is_fully_visible(self):
+        """只有單層標題的章節不應有任何 .hidden（否則 JS 啟動前目錄是空的）。"""
+        html = TOCGenerator().build_collapsible_chapter_toc([(2, "A", "a"), (2, "B", "b")])
+        assert "hidden" not in html
+
+    def test_index_chapter_node_is_expandable(self, sample_chapters):
+        html = TOCGenerator().build_index_toc(sample_chapters)
+        assert 'class="toc-item toc-chapter toc-expandable"' in html
+
+    def test_chapter_level_buttons_active_matches_level(self):
+        """層級按鈕的 .active 必須標在實際顯示層級上（否則 JS 啟動後高亮跳動）。"""
+        btns = I18nTemplateManager.build_level_buttons((2, 3, 4), 2)
+        assert 'class="toc-level-btn active" data-level="2"' in btns
+        assert 'data-level="3"' in btns
+        assert 'toc-level-btn active" data-level="3"' not in btns
 
 
 # ---------------------------------------------------------------------------

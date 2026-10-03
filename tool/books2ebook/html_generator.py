@@ -331,6 +331,23 @@ _INDEX_SEARCH_TMPL = """
 """
 
 
+def _expand_icon_html(level, expanded):
+    """展開鈕初始標記，與共用 JS 06-toc-collapse.js 的 setTocIconState() 一致。
+
+    展開 → ``▼`` / ``aria-expanded="true"``；收合 → ``▶`` ＋ ``.collapsed``
+    （``.collapsed`` 由共用 04a-toc-levels.css 旋轉 -90deg）。
+    """
+    return (
+        '<button type="button" class="toc-expand-icon{cls}" data-level="{level}"'
+        ' aria-label="展开或收合子目录" aria-expanded="{aria}">{glyph}</button>'
+    ).format(
+        level=level,
+        cls="" if expanded else " collapsed",
+        aria="true" if expanded else "false",
+        glyph="▼" if expanded else "▶",
+    )
+
+
 def _toc_header_controls(levels, active, header_tag, header_text, header_id):
     # 單層目錄無切換必要：只留標題，不渲染「顯示層級」控制列
     if len(levels) <= 1:
@@ -500,14 +517,22 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         elif open_li:
             parts.append("</li>\n")
             open_li = False
-        icon = (
-            '<button type="button" class="toc-expand-icon" data-level="%d"'
-            ' aria-label="展开或收合子目录" aria-expanded="true">▼</button>' % lvl
-        ) if expandable else ""
+        # 伺服器端即輸出正確初始狀態，HTML 未載入 JS 也不會亂版：
+        #  · .toc-expandable —— 必需，否則共用 CSS 的
+        #    `.toc-item:not(.toc-expandable){display:flex}` 會把巢狀 <ul>
+        #    拉成橫向並排（未套 JS 時目錄排列很怪的根因）
+        #  · .hidden —— 超出顯示層級者先隱藏，與 JS setTocDisplayLevel() 同規則
+        #  · 展開鈕 —— 層級 < 顯示層級為展開，= 為收合
+        li_classes = "toc-item toc-level-%d" % lvl
+        if expandable:
+            li_classes += " toc-expandable"
+        if lvl > active_level:
+            li_classes += " hidden"
+        icon = _expand_icon_html(lvl, expanded=lvl < active_level) if expandable else ""
         parts.append(
-            '<li class="toc-item toc-level-%d" data-level="%d">'
+            '<li class="%s" data-level="%d">'
             '%s<a href="#%s">%s</a><span class="toc-count">(%d)</span>\n'
-            % (lvl, lvl, icon, b["sid"], esc(b["text"]), b["count"])
+            % (li_classes, lvl, icon, b["sid"], esc(b["text"]), b["count"])
         )
         open_li = True
         prev_lvl = lvl
@@ -701,6 +726,10 @@ def render_chapter(book, blocks, image_src_map, is_trad,
 
 def render_index(books_meta, source_pdfs, is_trad):
     """books_meta: [{config, blocks}]（已 annotate）。"""
+    # 首頁預設顯示到第 2 層（與共用 JS 06-toc-collapse.js 的
+    # `defaultLevel = isChapterPage ? '3' : '2'` 一致）。下方會依此
+    # 伺服器端輸出 .hidden / 展開鈕狀態，使 JS 未載入時已是正確畫面。
+    display_level = 2
     lines = ["<ul class='toc-level-1'>"]
     for i, bm in enumerate(books_meta):
         bc = bm["config"]
@@ -710,18 +739,23 @@ def render_index(books_meta, source_pdfs, is_trad):
         # 收集該書的標題節點，映射 h2→2, h3→3, h4→4
         headings = [b for b in blocks if b["kind"] in _HEADING_KINDS]
         kind_to_level = {"h2": 2, "h3": 3, "h4": 4, "h5": 5, "h6": 6}
-        # 書籍節點（第 1 層）
+        # 書籍節點（第 1 層）。.toc-expandable 必須由伺服器端輸出：
+        # 共用 CSS 的 `.toc-item:not(.toc-expandable){display:flex}` 會把
+        # 巢狀 <ul> 拉成橫向並排（該 class 原本只由 JS 補上，故 JS 未就緒時
+        # 首頁目錄會排列錯亂）。
+        book_expandable = bool(headings)
         book_icon = (
-            '<button type="button" class="toc-expand-icon" data-level="1"'
-            ' aria-label="展开或收合子目录" aria-expanded="true">▼</button>'
-            if headings else ""
+            _expand_icon_html(1, expanded=1 < display_level) if book_expandable else ""
         )
+        book_classes = "toc-item toc-chapter"
+        if book_expandable:
+            book_classes += " toc-expandable"
         lines.append(
-            '<li class="toc-item toc-chapter" data-level="1" data-chapter="%d">'
+            '<li class="%s" data-level="1" data-chapter="%d">'
             '%s'
             '<a href="%s">%s</a>'
             '<span class="toc-count">(%d)</span>'
-            % (i, book_icon, f, esc(bc.title), total)
+            % (book_classes, i, book_icon, f, esc(bc.title), total)
         )
         # 構建樹：每個節點 {block, children}
         root_children = []
@@ -747,15 +781,20 @@ def render_index(books_meta, source_pdfs, is_trad):
                 lvl = node["level"]
                 has_children = len(node["children"]) > 0
                 icon = (
-                    '<button type="button" class="toc-expand-icon" data-level="%d"'
-                    ' aria-label="展开或收合子目录" aria-expanded="true">▼</button>' % lvl
+                    _expand_icon_html(lvl, expanded=lvl < display_level)
                     if has_children else ""
                 )
+                # 與 JS setTocDisplayLevel() 同規則：超出顯示層級者先隱藏
+                li_classes = "toc-item toc-level-%d" % lvl
+                if has_children:
+                    li_classes += " toc-expandable"
+                if lvl > display_level:
+                    li_classes += " hidden"
                 lines.append(
-                    '<li class="toc-item toc-level-%d" data-level="%d" data-chapter="%d">'
+                    '<li class="%s" data-level="%d" data-chapter="%d">'
                     '%s<a href="%s#%s">%s</a>'
                     '<span class="toc-count">(%d)</span>'
-                    % (lvl, lvl, i, icon, f, b["sid"], esc(b["text"]), b["count"])
+                    % (li_classes, lvl, i, icon, f, b["sid"], esc(b["text"]), b["count"])
                 )
                 if has_children:
                     _render_nodes(node["children"])

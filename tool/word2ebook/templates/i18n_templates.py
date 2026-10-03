@@ -3,6 +3,11 @@
 from typing import Dict, Any
 from config.settings import Constants
 from utils.config_utils import get_i18n_text
+from generators.toc_generator import DEFAULT_TOC_LEVEL_CHAPTER
+
+# 章節頁模板渲染的層級按鈕（data-level 2/3/4）。
+# ⚠️ 需與 JS 06-toc-collapse.js 的可選層級範圍一致。
+_LEVEL_BTN_LEVELS_CHAPTER = (2, 3, 4)
 
 
 # 防閃爍（P2-21/P2-23）：在 <head> 內同步執行，首繪前依偏好（或首次造訪的
@@ -54,8 +59,33 @@ class I18nTemplateManager:
         i18n_kwargs.setdefault('html_lang', 'zh-Hant' if is_traditional else 'zh-Hans')
         i18n_kwargs.setdefault('seo_title', i18n_kwargs.get('title', ''))
         i18n_kwargs.setdefault('seo_head', '')
-            
+        # 章節頁層級按鈕列：active 必須標在「該章實際解析出的顯示層級」上，
+        # 否則 JS selectValidLevel() 啟動後會搬移高亮，造成按鈕跳動。
+        i18n_kwargs.setdefault(
+            'chapter_toc_level_btns',
+            self.build_level_buttons(
+                _LEVEL_BTN_LEVELS_CHAPTER, DEFAULT_TOC_LEVEL_CHAPTER
+            ),
+        )
+
         return self.get_template('chapter').format(**i18n_kwargs)
+
+    @staticmethod
+    def build_level_buttons(levels, active_level: int) -> str:
+        """渲染「顯示層級」按鈕列，``active_level`` 該顆帶 ``.active``。
+
+        與 ``_toc_header_controls()``（books2ebook）同構；繁簡化交由呼叫端的
+        i18n_processor 處理，故此處固定輸出簡體標題。
+        """
+        btns = []
+        for lv in levels:
+            act = " active" if lv == active_level else ""
+            title = "显示第%d层" % lv if lv == levels[0] else "显示前%d层" % lv
+            btns.append(
+                '<button class="toc-level-btn%s" data-level="%d" title="%s">%s</button>'
+                % (act, lv, title, lv)
+            )
+        return "".join(btns)
     
     def render_index(self, is_traditional: bool = False, **kwargs) -> str:
         """渲染首頁模板"""
@@ -168,11 +198,7 @@ class I18nTemplateManager:
   <h2 id="chapter-toc-header">{chapter_toc_title}</h2>
   <div class="toc-level-controls">
     <div class="toc-level-label">{show_level}</div>
-    <div class="toc-level-buttons-vertical">
-      <button class="toc-level-btn" data-level="2" title="显示第2层">2</button>
-      <button class="toc-level-btn active" data-level="3" title="显示前3层">3</button>
-      <button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
-    </div>
+    <div class="toc-level-buttons-vertical">{chapter_toc_level_btns}</div>
   </div>
 </div>
 

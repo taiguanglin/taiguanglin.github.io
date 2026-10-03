@@ -54,16 +54,12 @@ try {
 <h2 id="chapter-toc-header">本章目錄</h2>
 <div class="toc-level-controls">
 <div class="toc-level-label">顯示層級</div>
-<div class="toc-level-buttons-vertical">
-<button class="toc-level-btn" data-level="2" title="显示第2层">2</button>
-<button class="toc-level-btn active" data-level="3" title="显示前3层">3</button>
-<button class="toc-level-btn" data-level="4" title="显示前4层">4</button>
-</div>
+<div class="toc-level-buttons-vertical"><button class="toc-level-btn" data-level="2" title="顯示第2層">2</button><button class="toc-level-btn active" data-level="3" title="顯示前3層">3</button><button class="toc-level-btn" data-level="4" title="顯示前4層">4</button></div>
 </div>
 </div>
 <div class="toc" id="chapter-toc">
 <ul>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#xiu-xing-yao-ling">修行要領</a><span class="toc-count">(235)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#xiu-xing-yao-ling">修行要領</a><span class="toc-count">(235)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#mu-biao-zhong-dian-tai-du-xin-xin">目標/重點/態度/信心</a><span class="toc-count">(32)</span>
 </li>
@@ -93,7 +89,7 @@ try {
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#fo-pu-sa">佛菩薩</a><span class="toc-count">(28)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#fo-pu-sa">佛菩薩</a><span class="toc-count">(28)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#di-cang-pu-sa">地藏菩薩</a><span class="toc-count">(15)</span>
 </li>
@@ -107,7 +103,7 @@ try {
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#bu-tong-fa-men-yu-xuan-ze">不同法門與選擇</a><span class="toc-count">(66)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#bu-tong-fa-men-yu-xuan-ze">不同法門與選擇</a><span class="toc-count">(66)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#nan-chuan-xiao-cheng-si-nian-chu">南傳/小乘/四念處</a><span class="toc-count">(21)</span>
 </li>
@@ -123,7 +119,7 @@ try {
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#gao-seng-da-de">高僧大德</a><span class="toc-count">(33)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#gao-seng-da-de">高僧大德</a><span class="toc-count">(33)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#jiu-mo-luo-shi">鳩摩羅什</a><span class="toc-count">(1)</span>
 </li>
@@ -143,7 +139,7 @@ try {
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#fo-jiao-bai-ke">佛教百科</a><span class="toc-count">(140)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#fo-jiao-bai-ke">佛教百科</a><span class="toc-count">(140)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#fo-jing-fo-xue-ming-ci-ren-wu-yu-gong-an">佛經佛學名詞/人物與公案</a><span class="toc-count">(41)</span>
 </li>
@@ -157,27 +153,27 @@ try {
 </li>
 <li class="toc-item toc-level-3" data-level="3"><a href="#si-yuan-huo-dong-fo-shi-yi-gong-guan-li">寺院活動/佛事/義工/管理</a><span class="toc-count">(11)</span>
 </li>
-<li class="toc-item toc-level-3" data-level="3"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="3" type="button">▼</button><a href="#chu-jia">出家</a><span class="toc-count">(15)</span>
+<li class="toc-item toc-level-3 toc-expandable" data-level="3"><button aria-expanded="false" aria-label="展開或收合子目錄" class="toc-expand-icon collapsed" data-level="3" type="button">▶</button><a href="#chu-jia">出家</a><span class="toc-count">(15)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4"><a href="#wei-he-ru-he-chu-jia">為何/如何出家</a><span class="toc-count">(8)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#wei-he-ru-he-chu-jia">為何/如何出家</a><span class="toc-count">(8)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#dui-seng-bao-de-li-yi">對僧寶的禮儀</a><span class="toc-count">(7)</span>
-</li>
-</ul>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#dui-seng-bao-de-li-yi">對僧寶的禮儀</a><span class="toc-count">(7)</span>
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#wai-dao-jiao-pai">外道教派</a><span class="toc-count">(44)</span>
+</ul>
+</li>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#wai-dao-jiao-pai">外道教派</a><span class="toc-count">(44)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#fo-fa-yu-wai-dao-de-qu-bie">佛法與外道的區別</a><span class="toc-count">(7)</span>
 </li>
-<li class="toc-item toc-level-3" data-level="3"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="3" type="button">▼</button><a href="#dao-jiao">道教</a><span class="toc-count">(16)</span>
+<li class="toc-item toc-level-3 toc-expandable" data-level="3"><button aria-expanded="false" aria-label="展開或收合子目錄" class="toc-expand-icon collapsed" data-level="3" type="button">▶</button><a href="#dao-jiao">道教</a><span class="toc-count">(16)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4"><a href="#shen-xian">神仙</a><span class="toc-count">(6)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#shen-xian">神仙</a><span class="toc-count">(6)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#xiu-fa">修法</a><span class="toc-count">(6)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#xiu-fa">修法</a><span class="toc-count">(6)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#jing-dian-li-lun">經典理論</a><span class="toc-count">(4)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#jing-dian-li-lun">經典理論</a><span class="toc-count">(4)</span>
 </li>
 </ul>
 </li>
@@ -189,53 +185,53 @@ try {
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#xiu-xing-yu-sheng-huo">修行與生活</a><span class="toc-count">(316)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#xiu-xing-yu-sheng-huo">修行與生活</a><span class="toc-count">(316)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#xiu-xing-ren-de-sheng-huo-tai-du">修行人的生活態度</a><span class="toc-count">(42)</span>
 </li>
-<li class="toc-item toc-level-3" data-level="3"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="3" type="button">▼</button><a href="#hong-chen-suo-shi">紅塵瑣事</a><span class="toc-count">(110)</span>
+<li class="toc-item toc-level-3 toc-expandable" data-level="3"><button aria-expanded="false" aria-label="展開或收合子目錄" class="toc-expand-icon collapsed" data-level="3" type="button">▶</button><a href="#hong-chen-suo-shi">紅塵瑣事</a><span class="toc-count">(110)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4"><a href="#jia-ting-fu-mu-lian-ai-hun-yin">家庭父母戀愛婚姻</a><span class="toc-count">(6)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#jia-ting-fu-mu-lian-ai-hun-yin">家庭父母戀愛婚姻</a><span class="toc-count">(6)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#hai-zi-jiao-yu-ying-yang">孩子教育/營養</a><span class="toc-count">(17)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#hai-zi-jiao-yu-ying-yang">孩子教育/營養</a><span class="toc-count">(17)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#gong-zuo-xue-xi-lin-li-jiao-you">工作學習鄰里交友</a><span class="toc-count">(31)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#gong-zuo-xue-xi-lin-li-jiao-you">工作學習鄰里交友</a><span class="toc-count">(31)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#hong-bai-shi-ban-li">紅白事辦理</a><span class="toc-count">(14)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#hong-bai-shi-ban-li">紅白事辦理</a><span class="toc-count">(14)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#yang-chong-wu-wei-liu-lang-dong-wu">養寵物/喂流浪動物</a><span class="toc-count">(9)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#yang-chong-wu-wei-liu-lang-dong-wu">養寵物/喂流浪動物</a><span class="toc-count">(9)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#feng-shui-suan-ming-min-su">風水算命民俗</a><span class="toc-count">(24)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#feng-shui-suan-ming-min-su">風水算命民俗</a><span class="toc-count">(24)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#chuan-zhao-da-ban-xiu-xian-yu-le">穿著打扮/休閒娛樂</a><span class="toc-count">(7)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#chuan-zhao-da-ban-xiu-xian-yu-le">穿著打扮/休閒娛樂</a><span class="toc-count">(7)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#li-cai-tou-zi-mai-fang-xiao-fei">理財投資買房消費</a><span class="toc-count">(2)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#li-cai-tou-zi-mai-fang-xiao-fei">理財投資買房消費</a><span class="toc-count">(2)</span>
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-3" data-level="3"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="3" type="button">▼</button><a href="#zhi-bing-yang-sheng">治病養生</a><span class="toc-count">(78)</span>
+<li class="toc-item toc-level-3 toc-expandable" data-level="3"><button aria-expanded="false" aria-label="展開或收合子目錄" class="toc-expand-icon collapsed" data-level="3" type="button">▶</button><a href="#zhi-bing-yang-sheng">治病養生</a><span class="toc-count">(78)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4"><a href="#bing-zheng-yu-liao-fa">病症與療法</a><span class="toc-count">(33)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#bing-zheng-yu-liao-fa">病症與療法</a><span class="toc-count">(33)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#yun-dong-zhan-zhuang">運動/站樁</a><span class="toc-count">(6)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#yun-dong-zhan-zhuang">運動/站樁</a><span class="toc-count">(6)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#shui-mian-shui-jue-zi-shi">睡眠/睡覺姿勢</a><span class="toc-count">(21)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#shui-mian-shui-jue-zi-shi">睡眠/睡覺姿勢</a><span class="toc-count">(21)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#xing-zhan-zuo-zi">行站坐姿</a><span class="toc-count">(1)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#xing-zhan-zuo-zi">行站坐姿</a><span class="toc-count">(1)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#shen-ti-jie-gou-ji-neng">身體結構機能</a><span class="toc-count">(16)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#shen-ti-jie-gou-ji-neng">身體結構機能</a><span class="toc-count">(16)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#xian-xie-gu-sui-qi-guan-yi-zhi">獻血/骨髓/器官移植</a><span class="toc-count">(1)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#xian-xie-gu-sui-qi-guan-yi-zhi">獻血/骨髓/器官移植</a><span class="toc-count">(1)</span>
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-3" data-level="3"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="3" type="button">▼</button><a href="#meng-jing">夢境</a><span class="toc-count">(76)</span>
+<li class="toc-item toc-level-3 toc-expandable" data-level="3"><button aria-expanded="false" aria-label="展開或收合子目錄" class="toc-expand-icon collapsed" data-level="3" type="button">▶</button><a href="#meng-jing">夢境</a><span class="toc-count">(76)</span>
 <ul>
-<li class="toc-item toc-level-4" data-level="4"><a href="#jie-meng">解夢</a><span class="toc-count">(50)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#jie-meng">解夢</a><span class="toc-count">(50)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#wu-meng-qing-ming-meng-meng-kao-meng-zhong-xiu-xing">無夢/清明夢/夢考/夢中修行</a><span class="toc-count">(10)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#wu-meng-qing-ming-meng-meng-kao-meng-zhong-xiu-xing">無夢/清明夢/夢考/夢中修行</a><span class="toc-count">(10)</span>
 </li>
-<li class="toc-item toc-level-4" data-level="4"><a href="#tuo-meng-tai-meng-gan-ying-meng">託夢/胎夢/感應夢</a><span class="toc-count">(16)</span>
+<li class="toc-item toc-level-4 hidden" data-level="4"><a href="#tuo-meng-tai-meng-gan-ying-meng">託夢/胎夢/感應夢</a><span class="toc-count">(16)</span>
 </li>
 </ul>
 </li>
@@ -243,7 +239,7 @@ try {
 </li>
 </ul>
 </li>
-<li class="toc-item toc-level-2" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#taiguanglindao-chang">Taiguanglin道場</a><span class="toc-count">(107)</span>
+<li class="toc-item toc-level-2 toc-expandable" data-level="2"><button aria-expanded="true" aria-label="展開或收合子目錄" class="toc-expand-icon" data-level="2" type="button">▼</button><a href="#taiguanglindao-chang">Taiguanglin道場</a><span class="toc-count">(107)</span>
 <ul>
 <li class="toc-item toc-level-3" data-level="3"><a href="#chuan-fa-an-pai-ji-hua">傳法安排/計劃</a><span class="toc-count">(42)</span>
 </li>
@@ -1910,7 +1906,7 @@ try {
 </div>
 <div class="answer" id="answer-48cb683e4bb7">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:17:54 - 00:18:46" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E8%B2%BC%E5%90%A7%E7%AD%94%E7%96%91.opus" data-end="1126.080" data-label="00:17:54 - 00:18:46" data-start="1074.070" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">至於看書，如果你是想做研究或者寫書這些，有必要的話可以看。但如果你是想修行、求解脫的話，時間還是用在正經的修行上，不要花在過多的其他事上。<br/>當然如果你是修行之餘，休息時候看點書，這個倒可以。但是不要把重點放在看書上。因為你解脫了，哪怕不是解脫，你去了天界，這個世界知識都用不上，這個世界的知識只在這個世界有用，離開這裡啥都用不了。而且到了那個世界都不用上學，你就知道這個世界所有知識了，所以沒必要花時間。</div>
 </div>
@@ -2612,7 +2608,7 @@ try {
 </div>
 <div class="answer" id="answer-bef03a4eaf25">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:40:01 - 00:41:33" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E5%BE%AE%E4%BF%A1%E5%85%AC%E7%9C%BE%E8%99%9F%E7%AD%94%E7%96%91.opus" data-end="2493.500" data-label="00:40:01 - 00:41:33" data-start="2401.300" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">如善，可以。禪淨都是那些不瞭解真正修行、宇宙真相、如來真意的人，才胡亂分什麼禪淨，都是不同修行方法而已。最終的目的都是解脫，還有往生極樂世界。禪宗倒是不講究往生極樂世界，禪宗的說法比較極端的就即身成佛，這輩子死了就可以成佛。<br/>因為他們對業的理論沒有那麼完善，所以以為只要自己放下，沒有妄想，就可以往生或者自己就可以解脫了，但實際上不是這樣的。<br/>至於可不可以一邊打坐一邊唸佛，我們都是一邊打坐一邊唸佛啊。我教的淨土唸佛三昧，就是一邊打坐一邊唸佛，念著念著然後再觀佛，最後思佛，只要保持這種狀態就可以了。<br/>一邊參唸佛是誰，一邊發願往生淨土，這個也可以。修行法門和願是兩回事，法門是法門，願是願。願是最終的目標、結果，修行法門是當下每天堅持做的修行，這兩者不衝突。</div>
 </div>
@@ -3062,7 +3058,7 @@ try {
 </div>
 <div class="answer" id="answer-0cc496d639cb">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:34:21 - 00:34:47" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E8%B2%BC%E5%90%A7%E7%AD%94%E7%96%91.opus" data-end="2087.790" data-label="00:34:21 - 00:34:47" data-start="2061.490" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">下一個問題，第八代根器之人是什麼意思？這個是編輯書的那些朋友們總結的，不是我自己說的。但是我也覺得沒什麼差的，按現在說法就是文字妄想很多的人，還有連呼吸都已經倒過來的，就是用胸來呼吸的，我們這些普通人，就是這個意思。</div>
 </div>
@@ -3384,7 +3380,7 @@ try {
 </div>
 <div class="answer" id="answer-dd6cb3794839">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:14:57 - 00:16:10" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E5%BE%AE%E4%BF%A1%E5%85%AC%E7%9C%BE%E8%99%9F%E7%AD%94%E7%96%91.opus" data-end="970.360" data-label="00:14:57 - 00:16:10" data-start="897.570" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">觀呀觀自在，開悟，我在書上給開悟做的定義是，到了四禪就算開悟。和明心見性、大徹大悟沒啥關係，大徹大悟是很普及的說法，哪怕你看個小說，突然悟到了什麼，也可以叫大徹大悟。<br/>明心見性是佛學上的說法。如果嚴格按境界來說，是成佛了才能叫明心見性。但是，從我們一般人的境界裡，哪怕你不是修行人，你只是看了佛經之後知道了：原來人有生不滅的自性，我們應該怎樣修行回到那個境界——你有了這個想法，那也叫明心見性了。因為性是這個世界的真相，可以這麼解釋。<br/>心是自己的意識，知道我們這個世界真相、我們意識的結構、我應該怎麼做了，有了這樣認知也可以叫明心見性，這叫理悟，也可以叫明心見性。我指的開悟是修行境界上，專指四禪以上才叫開悟。</div>
 </div>
@@ -6707,7 +6703,7 @@ try {
 </div>
 <div class="answer" id="answer-1817efc8f869">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:00:14 - 00:03:55" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E5%BE%AE%E4%BF%A1%E5%85%AC%E7%9C%BE%E8%99%9F%E7%AD%94%E7%96%91.opus" data-end="235.848" data-label="00:00:14 - 00:03:55" data-start="14.703" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">第一個問題，《坐禪1》裡講到五乘佛法，還有其他資料裡看到是人乘、天乘、聲聞乘、緣覺乘、菩薩乘……。<br/>緣覺乘的含義是什麼？按書上的說法，緣覺是根據十二因緣法悟道的人。十二因緣法是講這個世界怎麼產生的過程：無明緣行,行緣識,識緣名色,名色緣六入,六入緣觸,觸緣受,受緣愛,愛緣取,取緣有,有緣生,生緣老死憂悲苦惱，是這樣的。也就是說，它是根據“這個世界怎麼產生”這個邏輯來悟；就是打坐的時候想知道，這個世界到底是怎麼產生的？以這個念頭開始的。<br/>佛最初講四諦法，是從苦開始入手的。大部分人是不去想宇宙怎麼產生的——這個問題很少有人想。大部分人都是在自己的生活中承受著各種痛苦，想攝取這些人，就得先講苦。所以佛講法是從這裡開始入手。<br/>人天乘算是積福的修法。<br/>聲聞乘算是正常的修行人。聲聞乘從字面上看，是靠語言或者聲音來悟道，不能算是悟道，就是學法；靠語言來傳授，然後用耳朵來聽，聽完學法，用這個程度能達到的最高境界叫聲聞乘。一般通常是四禪左右，無色界定還到不了，叫聲聞乘。 <br/>再往上就可以稱之為緣覺乘，就是靠十二因緣法來悟。有些書上強調緣覺乘是自己悟的，並不是有人傳授的——留下這樣的說法，是因為佛不能說有再來人修行的事；還有搭檔體系，這些都不能說。<br/>這些再來人在自己搭檔的指導下，沒有明確的人世間的師承關係也會悟道。但是外人看不出來他到底怎麼悟道；實際上因為他是再來人嘛，他能自己悟，佛又不能把這個真相告訴大家；所以就說有些人靠自己也能悟道，就給他們起名叫緣覺乘。實際上靠自己是悟不了的，凡夫靠自己是絕對悟不了的。要不然佛怎麼說那些全是外道，因為有些內容你靠自己根本想象不出來。<br/>我們從出生開始，就已經生活在這樣的境界裡——你眼睛看著外部世界，在這裡已經有了內外分別、有了我相人相，這些最基礎的分別相。已經有了這個相了，在這樣的境界裡，什麼人才會想到看到的一切都是幻境，我得滅我的六根境界？能想到這個問題的人幾乎沒有，都是在觀察和思維當中追求真相。你只要一直觀察，那就解脫不了；擺脫不了自己的六根境界，那就達不到那個境界，解脫是不可能。<br/>所以，佛是把這個靠自己（應該是再來人）在沒有明確的人間師承關係下能悟的這些人，給他們一個藉口，也算是一種方便的說法。</div>
 </div>
@@ -7557,7 +7553,7 @@ try {
 </div>
 <div class="answer" id="answer-9bbfb09f3485">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:37:37 - 00:38:14" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E8%B2%BC%E5%90%A7%E7%AD%94%E7%96%91.opus" data-end="2294.720" data-label="00:37:37 - 00:38:14" data-start="2257.320" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">小合波羅，《地藏經》裡說塑畫地藏菩薩形象有大功德，所以你說做佛菩薩的形象，你只要不是拿出來隨便玩，哪怕就算不供起來，只是正常的保管，這個沒有什麼。<br/>如果你想賣，有人願意買，這個也沒有什麼，因為你付出勞動了，這也算是一種功德。不用想什麼忌諱、不恭敬這些問題。</div>
 </div>
@@ -9083,7 +9079,7 @@ try {
 </div>
 <div class="answer" id="answer-25169a2679af">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:05:40 - 00:14:57" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E5%BE%AE%E4%BF%A1%E5%85%AC%E7%9C%BE%E8%99%9F%E7%AD%94%E7%96%91.opus" data-end="897.570" data-label="00:05:40 - 00:14:57" data-start="340.100" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">千湍盈泰，降頭蠱術，這是控制一些我們看不見的眾生，用控制其他道的眾生來害人的一種方法。<br/>邏輯其實挺簡單。比如南洋有一種，是故意殺小孩，還得虐殺；因為他需要壞的情緒，憤怒、恐懼這樣的情緒，所以故意虐殺。之後用咒語或者他們所謂的做法，把他的意識困在一個小瓶子裡或者罈子裡；然後用咒語來驅使他，讓他去觀察什麼人或者去害什麼人。做法的時候讓他覺得，他要去對付的那個人就是傷害他的人，把這種仇恨轉移到其他人身上，以這種方式來做法。<br/>這些當然不是什麼正道了。而且像降頭蠱術這種法，別人是輕易不能破的；誰下的就得去找當事人來破，讓他自己解，而不是直接破。所以一般解法也不是有人給你降頭了，就找別人來給你破降頭。不是直接破降頭；而是破下降頭的人，應該是和他法術對攻吧，就是鬥法。和降頭已經沒有關係了，就是兩個人鬥法；你把對方打敗了，他做的降頭自然而然就解掉了。<br/>因為他也知道有人來攻擊他。在那個境界裡，有人來攻擊他，肯定是因為他曾經做過什麼事，他也知道他幹這個事有風險。所以，自己實在扛不下去了就把這個解了，那就過去了。<br/>以前在韓國的時候，有人去東南亞，應該是越南，我記得那個男的在韓國已經結了婚，有孩子；但是出差去越南工作的時間裡，在那裡又和一個越南女人同居了。<br/>最後，沒有好聚好散的結束，應該錢沒到位；所以那邊就施法給他弄了一下。然後他就連續幾天吃不下飯，更重要的是拉不了；吃也吃不了，拉也拉不了，連續幾天；到處去醫院看，也沒有什麼明確的方法；但是還死不了。<br/>最後找寺院裡來問，然後師父告訴他，你是不是在外邊招惹什麼人，你去把該還的還了。他自己說，他在越南的時候可能惹了一個女人；據他知道，那個女人家裡有人就是做降頭這種事的。他本來是根本不相信的，現在事情來了他就沒有辦法。所以師父叫他回越南去找那個女人，和她談談，該給的錢給到，她只要願意放下了，說不定在那邊做法，就能活下來。<br/>出家人是不會輕易干預這種事的。出家人和道士不是一回事。道士說不定願意拿錢給人消災；佛門出家人是儘量不參與別人業的，教你怎麼解就可以了，不會直接幫忙。後來應該是他自己去越南談了，好像給了不少錢，最後沒死，還是回來了。我記得有這樣的事兒。<br/>所以，降頭、蠱術這種事，都是你幹了壞事惹來的。一般他們是不會輕易無緣無故給人下的，他們也有他們的行規，不會無緣無故下。哪怕你找人下降頭，他們也會問：這個人是怎麼坑你的？還是怎麼害你的？值不值得下這個頭？<br/>因為幹壞事的人，他的惡念，他的惡行才能感召到這些攻擊他的靈體。你無緣無故的給一個好人、大善人弄個降頭，可能攻擊不到他。因為人家沒有惡念，降頭、鬼這些沒有辦法向他產生影響；而且又沒有業緣，這樣是傷不到的。所以一般他們下這個東西也是先問事主：你是怎麼被人坑了，那個人是怎麼害你的，他都會問，值不值得弄。所以你只要做一個正常人、做一個好人的話，不會染上這種事。<br/>這與部分道家利用符咒，借他力做好事救人原理是相通的嗎？借他力是怎麼個借法，也算是差不多的。符咒是另一套理論，符咒是和這個世界低階別的管理員之間的一種暗號，符咒是一種暗號。你戴著這個，管理員看著你，不管你是誰，先把帶符咒的人保護著；有這個作用，有管這個事兒的，所以符咒還是有用的。<br/>有人專門做過測試，我以前在韓國時候看過一個電視，他們就專門做測試，怎麼做呢？就說一個人會畫什麼符，不管什麼符，肯定是有好處的。問這個畫符的人，你說符有啥好處？<br/>他說這是財神符，對賺錢有幫助。咱們就測一下，怎麼測呢？先找另一個完全不認識的人，是有種靈體感應力的，或者說能量的感應力。同時給他放好幾張符，不是直接讓他看到；就是把好幾個符都放在一個紅色的信封裡，然後讓他去感應一下，就是把手放到信封上面感覺一下；然後這個人就判斷出來這張不一樣，然後拿出來，這個是有真符的。的確真的能感應出來，說明這個東西一旦畫上符的話，肯定和普通的紙有點區別。<br/>然後怎麼判斷提高財運的符是不是有這個效果？電視節目製作組又拿去做實驗。就讓一個人扮演乞丐，每天一個時間段在一個地方討飯，連續幾天、每天討到多少，做個統計。然後帶著這個符再去討飯幾天，結果發現帶符的時候討到的錢，的確比沒帶符的時候多不少。說明這個還是有點效果的。但是討飯這個倒是可以做，其他更複雜的測試就沒辦法做了，畢竟拿錢去投資做生意這個就不好做。所以最後的結論是：這個符的確有效果。<br/>後來可能節目下了，因為韓國雖然是允許這類節目電視上播，但是過度的宣傳，對人們也沒有什麼好的影響，所以後來整個電視臺或者國家層面上，開始禁止過度渲染這種靈異類的節目。<br/>十幾年前，我在那裡看過，我覺得這節目本身做的挺好的。所以這個符咒肯定是有用的，不然怎麼有人繼續傳承這事做著呢。</div>
 </div>
@@ -10535,7 +10531,7 @@ try {
 </div>
 <div class="answer" id="answer-f4b2736ffcaf">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:13:08 - 00:14:15" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E8%B2%BC%E5%90%A7%E7%AD%94%E7%96%91.opus" data-end="855.920" data-label="00:13:08 - 00:14:15" data-start="788.960" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">下一個問題，情商和為人處事的能力，這個以前好像也講過了。你得有大願，有度人的大菩提心，你就沒有恐懼感。你想想看，你為什麼要躲人、怕和人打交道，怕和人打交道就是一種自卑感。自卑感的前提是什麼？覺得自己能力不足，又怕別人怎麼說，也很在乎別人的眼光，別人怎麼看你，你對這些很在乎。<br/>如果你把這些都放下了，自然而然就沒有什麼恐懼、自卑、討厭別人打交道。所以向來大乘都是以發願為修行的第一步——你有這個，哪怕當下修為不高，但是你有這樣的大願，影響還是很大的，因為佛菩薩加持也大。</div>
 </div>
@@ -10551,7 +10547,7 @@ try {
 </div>
 <div class="answer" id="answer-457e235eed58">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:37:25 - 00:40:01" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E5%BE%AE%E4%BF%A1%E5%85%AC%E7%9C%BE%E8%99%9F%E7%AD%94%E7%96%91.opus" data-end="2401.300" data-label="00:37:25 - 00:40:01" data-start="2245.150" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">Bingoe，你說你感覺壓力大、焦慮的狀態，是因為領導給你的壓力，那你就直接跟領導說吧。你要是想著沒有辦法跟領導正常說話，那就沒有辦法。你想解決自己的問題的話，就勇敢面對這個問題。<br/>你覺得是領導給了你這麼大的壓力，那你就直接跟他說吧，他讓你做的某些事情不合理，所以對你產生壓力了，不適合；你這麼告訴他，然後跟他好好談談，這樣更適合。<br/>你不願意去找領導直接交流的話，還有一個簡單的方法，就是自己多運動一點，多出汗；一旦運動到一定程度，累了，出汗了，然後好好睡一覺，有些壓力就排解過去了。<br/>實際上，很多人都是很在意周圍人的眼光的。但是這個和自己的修為還是有緊密關係的，你的修為達到一定境界之後，你就不在意別人的想法。所以每天堅持磕頭、唸佛、打坐，這個正常的修行要堅持做，堅持三年五年下來，修為上去了，你根本就不在意別人的想法了。<br/>而且工作這個事兒，有時候抓得很緊，就是你對未來很迷茫，或者說這份工作你認為很重要——這樣的想法的時候，你會很在意工作裡發生的事，還有人際關係，還有領導的看法。<br/>如果你修到一定程度，就知道每個人都有自己的福報。你的福報該有多少，雖然明確的不知道，但是起碼你修行之後做了很多好事；哪怕放生什麼的，有了一定的善行積累之後，你就會覺得——人還是靠福報而活著。所以就算這個公司黃了，或者把你給炒掉了，你有足夠的功德的話，還是能過得好。有這樣的信心的話，你在工作上也就變得比較遊刃有餘。<br/>你當下是很在意這些事、還有這些人、還有領導看法，還有對這份工作，你是很在意的，越在意的話會更是焦慮的狀態吧。<br/>所以我勸你還是正常修行，多做點功德。你對未來沒有迷茫的時候，就不會有那麼多焦慮了。</div>
 </div>
@@ -15745,7 +15741,7 @@ try {
 </div>
 <div class="answer" id="answer-afcdb77eb192">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:16:14 - 00:17:54" class="qa-play qa-play--inline" data-audio="../audio/2025%E5%B9%B42%E6%9C%8815%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E8%B2%BC%E5%90%A7%E7%AD%94%E7%96%91.opus" data-end="1074.070" data-label="00:16:14 - 00:17:54" data-start="974.580" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">Fun09，剛才好像掉了筆，不好意思，聲音錄進去了。<br/>我不敢說書看得很多，就一般正常的看了些書，還沒有很多很多，我自己都覺得沒有看那麼多書。<br/>佛經雖然看了不少，但是還沒到像某些人敢自稱三藏法師那種，我可不敢自稱是三藏法師，因為還沒有經律論通達的程度。有一段時間有過那種想法，想看完所有的佛經，《大藏經》都想看一遍。但是那個時候修行也到了一定程度，還是把時間都用來打坐去了，所以《大藏經》也沒有全部看完，只是把幾個重點的該看的都看完了。<br/>人生經歷簡單的很，我的人生非常簡單。大學上了一年半，然後出來在外邊逛蕩了半年，就上山去了；然後就沒有什麼了，都是在寺院裡的生活；最後父母生病了，所以下山照顧，就這麼簡單。<br/>我在外都沒有怎麼正經工作過，就半年逛蕩的時候稍微幹了幾份工作，每一個都沒超過兩個星期，幹過三四份工作，然後就沒什麼事了，人生經歷非常簡單。</div>
 </div>

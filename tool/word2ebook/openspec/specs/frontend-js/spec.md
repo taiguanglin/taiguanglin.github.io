@@ -202,6 +202,8 @@ border). This keeps the CJK measure at 40 characters per line — inside the
 30–45 comfortable band — for every default font size, and still ≥34 characters
 at the 28px ceiling.
 
+In-paragraph overlays (ebook's top-right `⋯` bubble and bookmark mark) SHALL NOT be given room by shrinking the text column: they sit outside the paragraph box so the measure is untouched.
+
 The previous rule (`innerWidth >= 1400 ? 1000 : 800`) SHALL no longer exist: at
 20px it produced a 48-character measure on wide screens. TOC pages SHALL keep a
 fixed 800px column, since chapter titles are short labels rather than prose and
@@ -479,6 +481,23 @@ All TOC expand-icon mutations SHALL go through `setTocIconState(icon, expanded)`
 which toggles the collapsed class, swaps ▼/▶, and keeps `aria-expanded` in sync
 (`06-toc-collapse.js`). The handler MUST be delegated and idempotent for
 `<button>` icons (no double-toggle).
+
+### Requirement: TOC Level Resolution Agrees With the Server
+`selectValidLevel()` and the generators' `resolve_display_level()` SHALL agree,
+because JS re-applies the level on startup and any disagreement causes a visible
+reflow of an already-correct server-rendered TOC:
+- default level — index 2, chapter 3 (`DEFAULT_TOC_LEVEL_INDEX` /
+  `DEFAULT_TOC_LEVEL_CHAPTER` in `toc_generator.py` mirror
+  `defaultLevel = isChapterPage ? '3' : '2'`);
+- snapping — when the default level has no items, the *nearest* level that has
+  both items and a level button wins, ties resolving to the smaller level;
+- `setTocDisplayLevel()` visibility — items with `data-level` greater than the
+  target level get `.hidden`, matching the server-emitted `hidden` class;
+- icon state — items *below* the target level expand, items *at* it collapse.
+
+JS SHALL treat the server-rendered state as the baseline and only override it
+with the user's stored preference; `initializeTocExpandableItems()` SHALL remain
+a no-op re-assertion of the already-present `toc-expandable` class.
 
 ### Requirement: QA Play Button Accessibility
 Rendered QA play buttons SHALL include

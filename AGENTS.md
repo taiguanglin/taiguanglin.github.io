@@ -43,6 +43,12 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     ⚠️ `robots.txt` 不是存取控制，`audio_map*` 的 PAT 輸入仍無保護——真正的修法是把工具移出公開 repo。
 
 11. **頁面顯示用圖片一律 WebP** — 全站圖片格式的 SoT 是 `tool/word2ebook/utils/image_markup.py`（`encode_webp` / `webp_dimensions`），`word2ebook`、`books2ebook`、`stories2html` 三個生成器皆引用它，品質一律 `WEBP_QUALITY`(85)。新增圖片產出時請走同一條路徑，不要再落地 PNG/JPEG。**兩個例外必須維持 PNG**：`images/taiguanglin.png`（`og:image`，社群 crawler 不支援 WebP）與 `images/buddha.png`（`manifest.webmanifest` 的 PWA icon）——`index.html` 的 `<img>` 改用另出的 `images/buddha.webp`，manifest 仍指 PNG。
+12. **兩套電子書的初始畫面必須由伺服器端渲染完成（不得留給 JS）** — `wenda2_ebook/` 與 `ebook/` 的目錄（TOC）在 `script.js` 到位前就會被繪製，因此 HTML 必須自帶正確的初始狀態，否則使用者會先看到亂版畫面：
+    - **`.toc-expandable` 是版面關鍵 class，不是裝飾** — `04a-toc-levels.css` 用 `.toc-item:not(.toc-expandable){display:flex}` 排葉節點。過去此 class 只由 JS 的 `initializeTocExpandableItems()` 補上，JS 未執行時全部 `<li>` 命中 `:not()`，巢狀 `<ul>` 被拉成 flex 兄弟而**橫向並排成多欄**——這就是「CSS/JS 沒載入完時目錄排列很怪」的真正根因（不是 CSS 慢）。故 `toc_generator.py` / `books2ebook/html_generator.py` 必須在有子 `<ul>` 時就輸出它。
+    - **顯示層級與展開鈕也要預先輸出** — 依預設層級（首頁 2 層／章節頁 3 層）預先加上 `.hidden`、並把該層展開鈕輸出為 `▶`＋`aria-expanded="false"`，與 JS `setTocDisplayLevel()` 同規則。JS 之後只負責套用 `localStorage` 偏好。
+    - **兩邊的層級解析必須一致** — `DEFAULT_TOC_LEVEL_INDEX`/`DEFAULT_TOC_LEVEL_CHAPTER`（`toc_generator.py`）、`resolve_display_level()` 與 JS 的 `defaultLevel` / `selectValidLevel()` 必須同規則（無該層時取**最近**層、同距離取較小者），章節頁 `.toc-level-btn.active` 也要標在解析後的層級（`I18nTemplateManager.build_level_buttons()`），否則 JS 啟動時按鈕高亮會跳動。
+    - **不要用「載入中」轉圈圈蓋住這個問題** — 轉圈圈期間內容仍是亂的（只是被蓋住），還延後了可讀時間。改用漸進增强後關 JS 也能正常閱讀，爬蟲與無 JS 使用者一併受益。
+    - 驗證方式：`tests/test_html_generator.py::TestTOCInitialState`（回歸測試守住上述 class／層級規則）。
 
 ---
 
