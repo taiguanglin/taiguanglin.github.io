@@ -82,7 +82,7 @@ confirmed 鐵錨同等 pin 住。人工校正「誤留極短長度的沒念段�
 | ③ 序列重錨 | **`skills/milli-align/scripts/seq_align.py`**（雙向邊界最佳化 → 短前綴滑動 DTW → run-onset） | **現行匹配器**：逐段產出 start 提案（`--mode final/bopt`）；`--mode metric` 是「首字有沒有對到」的**唯一客觀指標** |
 | ④ 人工確認 | `index.html`（試聽＋段尾自停＋`lastPlayed`→`confirmed`＋講層 `reviewed`） | **毫秒級最終裁判** |
 
-**別再踩的五條教訓：**
+**別再踩的九條教訓：**（第 8 條含 zero 錨點陷阱）
 
 1. **`method` 標籤 ≠ 實際演算法**（已確認的 sishierzhang 1–8 期 JSON 一律標 `ngram`，但硬經文段
    位置實際來自 DTW）——**看 `conf` ＋客觀稽核，不看 method 字串**。
@@ -94,10 +94,32 @@ confirmed 鐵錨同等 pin 住。人工校正「誤留極短長度的沒念段�
 4. **`span_audit` 的 ok-rate 量不到邊界品質**：L13 r2→r3 它一直是 88.5%，但「每段首字對到音檔
    首字」的指標從 65% 拉到 80%（詳見 `reports/lengqie_L13_earcheck.md`）。**驗收要跑
    `seq_align.py --mode metric`**，兩者都要看。
-5. **長音檔 ASR 會在同音錯字密集區整段掉字**：L14 有 **30.3s** 空窗（2039.8–2070.1）、
+5. **ASR 掉字會讓「結構」錯掉，不只是精度變差**：L20 主 dump 有 **32.7s 完全無字**
+   （783.7–816.4），r1 依它定的段界把 **[47]–[51] 整區錯置約 30 秒**，而 `span_audit`
+   完全看不出來（同樣靠主 dump 比對）——**只有 `seq_align --mode metric` 暴露出來**
+   （±0.7s 內只有 46%）。掉字區的處置見下一條。
+6. **ASR 會在同音錯字密集區整段掉字**：L14 有 **30.3s** 空窗（2039.8–2070.1）、
    另有 5 處 8–13s 空窗，音檔其實連續有聲。這些區域的 `span_audit` span_bad／d_head 低是
    **量測假象**，判段界必須用 `skills/milli-align/scripts/clip_probe.py --chars` 切片複驗，
    且**切片時基要先驗**（L14 r2 因此把 [106]/[107] 定錯 1.5–2.4s）。見 SKILL §6b。
+   **複驗順序**：① 掃 ≥3s 空窗找掉字區 → ② **先驗時基**（挑兩個非掉字區，切片與主 dump
+   逐字比對，差 <1s 才可信）→ ③ 驗過才用切片字級時間定段界。定段界用
+   `clip_probe.py --chars --times`（逐字「字+精確秒數」），**不要**用只有行首時間的 `--chars`。
+7. **`win.py` 的行內插值不能拿來定段界**（誤差可達 2s，L16 實測兩次踩到，其中一次把
+   本來精確的值改壞）。插值只用來定位「要看哪一段」，最終取值用
+   **`seq_align.py --mode chars --seg N`**（逐字＋精確秒數）。
+8. **`milli_refine` 的 READ 身分必須「變更前」記錄**：裁決表同時改相鄰兩段且後段 start
+   後移時，事後用 `end > start` 判定會把先套的那段踢出 READ 集合 → 產生**負長度 span 並靜靜
+   寫進 SoT**（L18 r2 [48]/[49] 實測）。已修（`reads_before` + 鏈後 abort 安全網）。
+   **相鄰兩段都改時，table 裡兩邊都要列**（只改一段會留下舊 `end`）。
+   附帶：`zero: true` 的 `start` 必須寫「**鏈後的值**（＝下一 READ 段的 start）**，
+   不能寫原 span 的任意值**——寫錯 `milli_refine --apply` 會變成非 idempotent
+   （每次都被鏈 pass 覆寫）。**驗收連跑 2–3 次 `--apply`，第 2、3 次必須是「0 段變更」。**
+9. **永不對整個 `<series>.json` 下 `git checkout`**：L17 輪為測試「裁決表單次套用可重現」
+   而 `git checkout`，把已套用的 L13／L14／L16 修正**全部沖掉**（靠四張裁決表重套才救回）。
+   - `milli_refine --apply` 本身 **idempotent**（第二次跑＝0 段變更）——在同一份工作樹上直接
+     跑第二次就能證明可重現，**不需要**還原 git。
+   - 每次套用後的驗證**必須涵蓋先前所有講次**（非目標講次 byte-identical），不能只看目標講次。
 
 > 對齊**新講次**請走 [`skills/milli-align/SKILL.md`](skills/milli-align/SKILL.md) §7 流程
 > （首字指標 → 提案 → 逐段判讀 → refine → 回頭檢驗 → 驗收），**不要**只重跑 `realign_dtw.py`。

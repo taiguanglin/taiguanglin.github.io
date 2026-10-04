@@ -1028,6 +1028,50 @@ def mode_bopt(series, lecture, out_table=None, span=6.0, step=0.10,
     return table
 
 
+def mode_chars(series, lecture, lo=None, hi=None, seg=None, width=40, hi2=None):
+    """印**精確字元時間**（`字+秒` 逐字），取代 `win.py` 的行內插值。
+
+    為什麼要這個（§10d 的教訓）：`win.py` 印的是「行首時間 + 該行文字」，
+    行內等距插值在行長不均時**誤差可達 2 秒**——L16 實測兩次踩到，其中一次
+    把本來精確的值改壞（[97]「好了」真實 1930.52＝原值，插值成 1929.72）。
+    **定段界的最終取值一律用本模式**（`win.py` 只用來定位「要看哪一段」）。
+
+    用法：
+      --mode chars --lo 452 --hi 460        # 指定秒數窗
+      --mode chars --seg 33 --pad 3          # 以段落 [33] 的 start 為中心
+      --mode chars --seg 97 --pad 3 --hi2 -2   # 同時帶上前段尾（抓吞尾）
+    """
+    lec, st, _ = load(series, lecture)
+    ts = [st.t_of(q) for q in range(len(st.norm))]
+    ps = lec["paragraphs"]
+
+    def q_at(t):
+        lo_, hi_, out = 0, len(ts), 0
+        while lo_ < hi_:
+            mid = (lo_ + hi_) // 2
+            v = ts[mid]
+            if v is None or v <= t:
+                out = mid
+                lo_ = mid + 1
+            elif v is None:
+                lo_ = mid + 1
+            else:
+                hi_ = mid
+        return out
+
+    if seg is not None:
+        s = ps[int(seg)]["start"]
+        pad = float(lo) if lo is not None else 3.0
+        hi2 = float(hi2) if hi2 is not None else (float(hi) if hi is not None else pad)
+        a, b = q_at(s - pad), q_at(s + hi2)
+    else:
+        a, b = q_at(float(lo)), q_at(float(hi))
+    items = [(st.norm[q], ts[q]) for q in range(a, b) if ts[q] is not None]
+    for i in range(0, len(items), width):
+        print("  " + " ".join(f"{c}{t:.2f}" for c, t in items[i:i + width]))
+    return items
+
+
 def mode_metric(series, lecture, out_json=None):
     """客觀量測：start −「本段第一個被念出的字」時間（毫秒級驗收口徑）。
 
@@ -1328,7 +1372,7 @@ def main():
     ap.add_argument("--series", required=True)
     ap.add_argument("--lecture", required=True)
     ap.add_argument("--mode", choices=("rough", "verify", "heads", "reanchor",
-                                       "evidence", "tol", "propose", "bopt", "final", "metric", "batch",
+                                       "evidence", "tol", "propose", "bopt", "final", "metric", "chars", "batch",
                                        "window", "view"),
                     default="verify")
     ap.add_argument("--i", type=int, default=0, help="window 模式的段落索引")
@@ -1338,6 +1382,10 @@ def main():
     ap.add_argument("--after", type=float, default=8.0)
     ap.add_argument("--width", type=int, default=16)
     ap.add_argument("--json")
+    ap.add_argument("--lo", help="chars 模式的秒數窗起")
+    ap.add_argument("--hi", help="chars 模式的秒數窗迄")
+    ap.add_argument("--seg", type=int, help="chars 模式以段落 start 為中心")
+    ap.add_argument("--hi2", type=float, help="chars 模式 start 之後的秒數（預設同 --lo）")
     ap.add_argument("--list", default="", help="batch 模式的段落索引（逗號分隔）")
     ap.add_argument("--table", help="batch 模式讀入的提案 JSON")
     a = ap.parse_args()
@@ -1361,6 +1409,8 @@ def main():
         mode_final(a.series, a.lecture, a.json)
     elif a.mode == "metric":
         mode_metric(a.series, a.lecture, a.json)
+    elif a.mode == "chars":
+        mode_chars(a.series, a.lecture, a.lo, a.hi, a.seg, int(a.width), a.hi2)
     elif a.mode == "view":
         mode_view(a.series, a.lecture, a.i_from, a.i_to, a.pad, a.width)
     elif a.mode == "batch":

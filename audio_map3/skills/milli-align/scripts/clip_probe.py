@@ -53,6 +53,8 @@ def main():
                     help="印**字級**時間（相對切片起點的絕對時間）而非句級；"
                          "定段界需要字級，句級只能確認「大致有沒有念」")
     ap.add_argument("--width", type=int, default=14, help="--chars 每行字數")
+    ap.add_argument("--times", action="store_true",
+                    help="逐字印「字+精確秒數」（切片版 chars；定段界用這個）")
     a = ap.parse_args()
 
     wins = []
@@ -106,7 +108,14 @@ def main():
                     ch = buf[i:i + a.width]
                     t0 = ch[0][0]
                     ts0 = f"{t0:8.2f}" if t0 is not None else "   nan  "
-                    print(f"  [{ts0}] {''.join(c for _, c in ch)}")
+                    if a.times:
+                        # 逐字＋**精確秒數**（切片版）。定段界的最終取值一律用這個，
+                        # 不要從 `[ts0] + 一行字` 反推（那是 §10d 講的插值陷阱）。
+                        print("  " + " ".join(
+                            (f"{c}{t:.2f}" if t is not None else f"{c}nan")
+                            for t, c in ch))
+                    else:
+                        print(f"  [{ts0}] {''.join(c for _, c in ch)}")
                 continue
             for s in (item.get("sentence_info") or []):
                 print(f"  {lo + s['start'] / 1000:8.2f}-{lo + s['end'] / 1000:8.2f} {s['text']}")
