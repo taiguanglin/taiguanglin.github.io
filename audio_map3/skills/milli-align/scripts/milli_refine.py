@@ -54,12 +54,18 @@ def main():
             sys.exit(2)
         by_i[e["i"]] = e
 
-    # READ 身分必須在**變更前**記錄：相鄰兩段同時改且順序使後段 start 後移時，
-    # 先套的那段 end 會被夾到自己的 start 之下，事後用 `end > start` 判定就會
-    # 把它踢出 READ 集合，鏈 pass 便永遠接不上（L18 r2 [48]/[49] 實測）。
-    # 判準＝「沒有 zero 標記 且 起訖不等」——含已損壞的負長度段，讓本程式能自我修復。
-    reads_before = {i for i, p in enumerate(paras)
-                    if not p.get("zero") and p["end"] != p["start"]}
+    # READ 身分**只看有無實寬 span**，與 `zero` 標記無關。理由有二：
+    #  (a) 變更前必須記錄：相鄰兩段同時改且順序使後段 start 後移時，事後用任何
+    #      條件判定都會把先套的那段誤判掉，鏈 pass 便接不上（L18 r2 [48]/[49] 實測）。
+    #  (b) **`zero` 標記 + 實寬 span 是資料不一致**（L22 [84]：confirmed + zero:true
+    #      卻有 3.85s 實寬）。若照 `zero` 標記排除，它會被踢出 READ 集合，
+    #      使前一段的 end 被錯接到再下一段 → 產生鏈破口。實寬優先，並印出警告。
+    reads_before = {i for i, p in enumerate(paras) if p["end"] != p["start"]}
+    inconsistent_zero = [i for i, p in enumerate(paras)
+                         if p.get("zero") and p["end"] != p["start"]]
+    if inconsistent_zero:
+        print(f"warn: 段 {inconsistent_zero} 有 zero 標記卻有實寬 span"
+              f"（資料不一致；依實寬當 READ 處理。confirmed 段請人耳裁決後手動修）")
 
     # confirmed 段（如 L7 講首 4 個 zero 塊）不可被 table 觸及；
     # 其餘未 confirmed 段可改（golden 講次由 reviewed=true 整講擋下）。
