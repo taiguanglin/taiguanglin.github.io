@@ -11,6 +11,7 @@ from templates.static_assets import (
     JS_WRAPPER_OPEN,
     JS_WRAPPER_CLOSE,
 )
+from templates.i18n_templates import I18nTemplateManager
 
 
 # ---------------------------------------------------------------------------
@@ -187,6 +188,17 @@ class TestStaticAssetsManagerSingleFile:
 class TestStaticAssetsManagerRealModules:
     """Verify the real assets/js/modules and assets/css/modules produce correct output."""
 
+    @staticmethod
+    def _prepaint_js() -> str:
+        """閱讀設置引擎（首繪前執行，standalone，不進 script.js）。
+
+        字級／行距／內容寬度的真相來源已從 modules/03d 搬到這裡，讓它能在
+        <head> 同步執行、首繪前套用。斷言字級規則時要讀這份，不是 script.js。
+        """
+        return (
+            Path(__file__).parent.parent / "assets" / "js" / "reading-prepaint.js"
+        ).read_text(encoding="utf-8")
+
     def test_real_css_content_length(self):
         mgr = StaticAssetsManager()
         css = mgr.get_full_css_content()
@@ -348,8 +360,11 @@ class TestStaticAssetsManagerRealModules:
         assert "classList.add('anchor-target-highlight')" in js
 
     def test_real_js_default_font_size_is_boosted_per_device(self):
-        """閱讀設置預設字級：電腦 +2 級（A+ 兩次）、平板 +1 級（A+ 一次）、手機不加。"""
-        js = StaticAssetsManager().get_full_js_content()
+        """閱讀設置預設字級：電腦 +2 級（A+ 兩次）、平板 +1 級（A+ 一次）、手機不加。
+
+        規則住在 reading-prepaint.js（首繪前套用）；03d 只保留 A+／A- 的接線。
+        """
+        js = self._prepaint_js()
         assert "const FONT_SIZE_STEP = 2;" in js
         assert "const FONT_STEPS_SMALL_PHONE = 0;" in js
         assert "const FONT_STEPS_PHONE = 0;" in js
@@ -365,36 +380,106 @@ class TestStaticAssetsManagerRealModules:
         assert "matchMedia('(pointer: coarse)')" in js
         assert "isHandheldPointer() ? FONT_BASE_TABLET : FONT_BASE_DESKTOP" in js
         assert "isHandheldPointer() ? FONT_STEPS_TABLET : FONT_STEPS_DESKTOP" in js
-        # A+／A- 走常數；夾限收斂到 clampFontSize()（載入路徑與按鈕共用同一支）
-        assert "updateFontSize(FONT_SIZE_STEP)" in js
-        assert "updateFontSize(-FONT_SIZE_STEP)" in js
-        assert "fontSize = clampFontSize(fontSize + change);" in js
         assert "function clampFontSize(size) {" in js
         assert "return Math.max(FONT_SIZE_MIN, Math.min(FONT_SIZE_MAX, size));" in js
 
-    def test_real_js_content_width_follows_font_size(self):
+        # A+／A- 的接線留在 03d，但夾限改由引擎收斂（同一支 clampFontSize）
+        bundle = StaticAssetsManager().get_full_js_content()
+        assert "updateFontSize(FONT_SIZE_STEP)" in bundle
+        assert "updateFontSize(-FONT_SIZE_STEP)" in bundle
+        assert "({ fontSize, fontStep } = R.setFontSize(fontSize + change));" in bundle
+        assert "state.fontSize = clampFontSize(px);" in js
+
+    def test_prepaint_js_applies_before_first_paint(self):
+        """reading-prepaint.js 必須在 <head> 同步載入並立即套用。
+
+        這是章節頁不整頁重排的唯一依據：若改成 defer（或 03d 才套用），
+        body 會先以 16px/800px 畫出來，script.js 到位後再跳到 20px/834px。
+        """
+        js = self._prepaint_js()
+        # 立即套用（檔尾自我調用），不是等 DOMContentLoaded
+        assert "apply();" in js          # 檔尾立即套用
+        assert "document.addEventListener" not in js
+        assert "document.readyState" not in js
+        # 狀態寫在 <html> 的 CSS 自訂屬性上 —— <body> 此刻還不存在
+        assert "root.setProperty('--w2e-font-size', fontSize + 'px');" in js
+        assert "root.setProperty('--w2e-content-width', getContentWidth() + 'px');" in js
+        assert "root.setProperty('--line-height', lineHeight);" in js
+        # 程式碼（去掉註解後）不得碰 document.body.style —— <body> 尚未建立
+        code = re.sub(r"//[^\n]*", "", js)
+        assert "document.body.style" not in code
+
+    def test_prepaint_js_is_loaded_synchronously_after_stylesheets(self):
+        """模板必須同步 <script src>（無 defer），且排在樣式表「之後」。
+
+        順序是對的關鍵，不是偏好：
+        · 不可 defer —— 否則首繪後才套字級，章節頁會整頁重排；
+        · 必須在樣式表之後 —— 它注入的 dynamic-toc-styles 與 04a 的
+          `.toc > ul > li { line-height: 1.4 !important }` 權重相同、同為
+          !important（動態樣式給 1.6），勝負由來源順序決定。插在樣式表之前
+          會讓目錄行距在 script.js 重套時改變（實測 li 30.8px → 35.2px）。
+        """
+        for name in ("chapter", "index"):
+            tmpl = I18nTemplateManager().get_template(name)
+            tag = '<script src="assets/js/reading-prepaint.js"></script>'
+            assert tag in tmpl, name
+            assert "defer" not in tag, f"{name}: 閱讀設置不可 defer"
+            head = tmpl.split("</head>")[0]
+            assert head.index(tag) > head.rindex('<link rel="stylesheet"'), (
+                f"{name}: reading-prepaint.js 必須排在最後一個 stylesheet 之後"
+            )
+
+    def test_css_body_reads_prepaint_variables(self):
+        """00-base.css 的 body 規則消費 pre-paint 變數（無 JS 時退回原值）。"""
+        css = StaticAssetsManager().get_full_css_content()
+        assert "max-width: var(--w2e-content-width, 800px)" in css
+        assert "font-size: var(--w2e-font-size, 16px)" in css
+
+    def test_03d_delegates_to_shared_reading_engine(self):
+        """03d 不得自帶一份字級引擎，否則兩份會漂移。"""
+        bundle = StaticAssetsManager().get_full_js_content()
+        assert "const R = window.W2EReading;" in bundle
+        assert "function applyReadingSettings() {" in bundle
+        # 引擎的常數／算法不得留在 bundle 裡（否則會有第二份真相）
+        for leaked in ("const MEASURE_TARGET_CHARS = 40;", "const CONTENT_CHROME_PX = 34;",
+                       "const FONT_STEPS_DESKTOP = 2;", "function getBaseFontSize(screenWidth) {",
+                       "function getFontBoostSteps(screenWidth) {"):
+            assert leaked not in bundle, leaked
+        # 03d 只留轉呼叫
+        assert "const FONT_SIZE_STEP = R.FONT_SIZE_STEP;" in bundle
+        assert "function getDefaultFontSize() { return R.getDefaultFontSize(); }" in bundle
+        # 動態 TOC／搜尋樣式改由引擎注入，03d 不再自建
+        assert "dynamic-toc-styles" not in bundle
+        assert "applySearchFontStyles" not in bundle
+
+    def test_real_js_content_width_follows_font_size(self):  # noqa: D401
         """內容寬度依行長目標連動：舊版寬螢幕固定 1000px，20px 下等於每行 48 字。"""
-        js = StaticAssetsManager().get_full_js_content()
+        js = self._prepaint_js()
+        # 行長聯動的引擎只存在於 pre-paint 檔，bundle 內不得有第二份
         assert "const MEASURE_TARGET_CHARS = 40;" in js
+        assert "MEASURE_TARGET_CHARS" not in StaticAssetsManager().get_full_js_content()
         assert "const CONTENT_CHROME_PX = 34;" in js
-        assert "function getDefaultContentWidth()" in js
+        # 字級改由參數帶入（引擎在套用時呼叫），不再是 module-scope 變數
+        assert "function getDefaultContentWidth(fontSize) {" in js
         assert (
             "return Math.max(CONTENT_WIDTH_MIN, Math.min(CONTENT_WIDTH_MAX, Math.round(byMeasure)));" in js
         )
         # 目錄頁維持 800px 固定寬度；內文才跟字級連動
         assert "return TOC_CONTENT_WIDTH;" in js
         assert (
-            "let contentWidth = parseInt(localStorage.getItem('contentWidth')) || getDefaultContentWidth();" in js
+            "contentWidth: parseInt(readStorage('contentWidth'), 10) || getDefaultContentWidth(fontSize)" in js
         )
         # 舊的視窗寬度特例必須消失
         assert "window.innerWidth >= 1400 ? 1000 : 800" not in js
 
     def test_real_js_index_page_keeps_unboosted_default_font_size(self):
         """總目錄頁（index / index_trad）不加大預設字級：目錄要多行才好看得完。"""
-        js = StaticAssetsManager().get_full_js_content()
+        js = self._prepaint_js()
         assert "function getBaseFontSize(screenWidth)" in js
         assert "function getFontBoostSteps(screenWidth)" in js
         assert "if (isIndexPage()) {" in js
+        # 本檔獨立於 script.js，故自帶頁型判斷，規則須與 00-base.js 相同
+        assert "f === 'index.html' || f === 'index_trad.html'" in js
         # 加強級數只在非目錄頁加總；目錄頁直接回傳基礎值
         assert "return base + FONT_SIZE_STEP * getFontBoostSteps(screenWidth);" in js
         idx = js.find("function getDefaultFontSize()")
@@ -417,21 +502,21 @@ class TestStaticAssetsManagerRealModules:
     def test_real_js_stores_font_size_as_step_offset_with_migration(self):
         """字級偏好存「相對預設的級數」而非絕對 px，讓偏好在各裝置都成立；
         舊的絕對 px 首次載入換算後移除舊 key。"""
-        js = StaticAssetsManager().get_full_js_content()
+        js = self._prepaint_js()
         assert "const FONT_STEP_KEY = 'fontStep';" in js
         assert "const LEGACY_FONT_SIZE_KEY = 'fontSize';" in js
         # 載入：級數 → 字級，並夾在上下界內
-        assert "let fontStep = loadFontStep(fontBase);" in js
-        assert "let fontSize = clampFontSize(getDefaultFontSize() + fontStep * FONT_SIZE_STEP);" in js
+        assert "var step = loadFontStep(base);" in js
+        assert "var fontSize = clampFontSize(getDefaultFontSize() + step * FONT_SIZE_STEP);" in js
         # 遷移：以基礎值為基準換算，並清掉舊 key（避免每次載入重跑）
         assert "const step = Math.round((legacy - base) / FONT_SIZE_STEP);" in js
         assert "removeStorage(LEGACY_FONT_SIZE_KEY);" in js
         # 0 是合法級數，不能被當成「沒設定過」
         assert "if (!isNaN(stored)) return stored;" in js
         # 調整後反推級數存檔
-        assert "fontStep = Math.round((fontSize - getDefaultFontSize()) / FONT_SIZE_STEP);" in js
+        assert "state.fontStep = Math.round((state.fontSize - getDefaultFontSize()) / FONT_SIZE_STEP);" in js
         # 「A（正常）」的選中判準是級數為 0，不是寫死的 px
-        assert "if (fontStep === 0) {" in js
+        assert "if (fontStep === 0) {" in StaticAssetsManager().get_full_js_content()
         assert re.search(r"fontSize\s*===\s*16", js) is None
 
     def test_real_css_does_not_override_body_line_height(self):

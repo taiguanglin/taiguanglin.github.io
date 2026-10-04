@@ -230,6 +230,10 @@ Every generated HTML page SHALL reference:
 - `assets/css/style.css` via a `<link>` tag
 - `assets/js/script.js` via a `<script>` tag
 - `assets/js/i18n-text.js`, `assets/js/search-cache.js` via `<script>` tags
+- `assets/js/reading-prepaint.js` via a **synchronous** `<script>` tag placed
+  **after the last `<link rel="stylesheet">`** (never `defer`) — see
+  "Reading Settings Pre-Paint" in `frontend-js/spec.md` for why both the missing
+  `defer` and the ordering are load-bearing
 - `/lang-switch.js` (site root) via a `<script defer>` tag — the sitewide 繁/簡
   switcher: on ebook pages it redirects `XX.html` ↔ `XX_trad.html` to match the
   stored/browser preference instead of converting in place

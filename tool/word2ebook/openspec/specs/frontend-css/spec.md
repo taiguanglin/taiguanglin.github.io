@@ -133,6 +133,22 @@ dark.
 styling on `button.toc-expand-icon` (no background/border/padding, inherit font)
 since the expand affordance changed from `<span>` to `<button>`.
 
+### Requirement: Body Font Size And Width Come From Pre-Paint Variables
+`00-base.css`'s `body` rule SHALL take `font-size` and `max-width` from
+`var(--w2e-font-size, 16px)` and `var(--w2e-content-width, 800px)`, written by
+`reading-prepaint.js` on `<html>` before first paint; the fallbacks SHALL keep
+the previous no-JS rendering. `body` SHALL NOT be sized via inline style,
+because `<body>` does not exist yet when the pre-paint script runs.
+
+### Requirement: Equal-Specificity Important Declarations Are Order-Sensitive
+`04a-toc-levels.css` pins `.toc { line-height: 1.4 !important }` and
+`.toc > ul > li { line-height: 1.4 !important }` (fixed leading, immune to
+the global line-height control). `reading-prepaint.js` injects the same
+selectors at `line-height: 1.6 !important` for the reading setting. These
+have identical specificity, so **source order decides**. Any stylesheet or
+`<style>` injected at the same level SHALL be inserted after `style.css`, or
+the TOC row leading silently changes when the setting is re-applied.
+
 ### Requirement: TOC Item Layout Must Not Depend on JS
 `.toc-item:not(.toc-expandable) { display: flex }` styles leaf TOC rows, so
 `.toc-expandable` is load-bearing for layout, not decoration. The generators

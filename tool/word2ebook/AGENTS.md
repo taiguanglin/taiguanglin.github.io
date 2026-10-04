@@ -136,7 +136,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `03a-bookmark-data.js` | Bookmark CRUD, localStorage persistence, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | Bookmark panel UI helpers: `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | Font/line-height/width/theme persistence via localStorage; `updateReadingProgress`, `showToast`, `copyText` |
+| `03d-reading-settings.js` | 閱讀設置的**事件接線**（轉呼叫 `window.W2EReading`）＋跨模組狀態變數 `fontStep`/`fontSize`/`lineHeight`/`contentWidth`（供 02 按鈕狀態、04 重設讀寫）＋`updateReadingProgress`, `showToast`, `copyText`。**字級引擎已搬到 `assets/js/reading-prepaint.js`**（見下），此處不得留第二份 |
 | `04-events.js` | Global event listeners that wire all modules together |
 | `05-search-btn-visibility.js` | Shows/hides the bottom search button based on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse and level filtering; manual expand state snapshot/restored via `sessionStorage` (`tocExpandState:<dir>` per book, `data-id` stable keys) so back/forward keeps the user's expanded TOC. **Only applies the user's `localStorage` preference on top of the already-correct server-rendered state** — `defaultLevel` (index 2 / chapter 3), `selectValidLevel()` snapping, and `setTocDisplayLevel()` visibility/icon rules must stay in sync with `DEFAULT_TOC_LEVEL_*` / `resolve_display_level()` in `toc_generator.py`, or the TOC visibly reflows on startup |
@@ -157,6 +157,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | File | Responsibility |
 |------|---------------|
 | `assets/js/i18n-text.js` | `window.I18N_TEXT` dictionary |
+| `assets/js/reading-prepaint.js` | **閱讀設置引擎（字級階梯、行長連動、偏好儲存、動態 TOC／搜尋樣式生成）＋`<head>` 內同步套用**。模板以**同步** `<script src>`（不可 defer）引用，且必須排在**最後一個 stylesheet 之後**；套用方式是寫 `<html>` 的 `--w2e-font-size` / `--w2e-content-width` / `--line-height`（`<body>` 當時還不存在）。暴露 `window.W2EReading` 供 `03d` 讀寫。⚠️ 放在 `assets/js/` 而非 `assets/js/modules/`，否則會被 `StaticAssetsManager` 併進 `script.js` |
 | `assets/js/search-cache.js` | `SearchCacheManager` class (IndexedDB cache for search index) |
 | `assets/js/jieba_rs_wasm.js` | Auto-generated jieba WASM JS glue |
 | `assets/js/jieba_rs_wasm_bg.wasm` | jieba WASM binary (~6.5 MB) — do not edit |

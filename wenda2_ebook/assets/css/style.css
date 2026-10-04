@@ -57,7 +57,12 @@
     --color-neutral-hairline:  #3a3f4a;
 }
 
-body { font-family: var(--font-sans); margin: auto; max-width: 800px; line-height: var(--line-height); background: var(--color-bg-page); color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
+/* 字級與行寬由 reading-prepaint.js 在 <head> 內同步寫入 <html> 的
+   --w2e-font-size / --w2e-content-width（見 03d 的說明），因此首繪就已是
+   最終值，不會在 script.js 到位後整頁重排。沒有 JS 時（變數不存在）退回
+   原本的 16px / 800px，與重構前一致。
+   ⚠️ 不要在這裡用 body 的 inline style 設定——pre-paint 階段 <body> 還不存在。*/
+body { font-family: var(--font-sans); margin: auto; max-width: var(--w2e-content-width, 800px); font-size: var(--w2e-font-size, 16px); line-height: var(--line-height); background: var(--color-bg-page); color: #333; transition: 0.3s; overflow-wrap: break-word; word-wrap: break-word; }
 
 /* 標題字級用 em：跟著 body 縮放，閱讀設定放大字級時層級關係不會被壓平。
    比例取 1.6 / 1.3 / 1.15 / 1.0——比瀏覽器預設（2 / 1.5 / 1.17 / 1）略收，

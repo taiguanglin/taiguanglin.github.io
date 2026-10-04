@@ -48,7 +48,11 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - **顯示層級與展開鈕也要預先輸出** — 依預設層級（首頁 2 層／章節頁 3 層）預先加上 `.hidden`、並把該層展開鈕輸出為 `▶`＋`aria-expanded="false"`，與 JS `setTocDisplayLevel()` 同規則。JS 之後只負責套用 `localStorage` 偏好。
     - **兩邊的層級解析必須一致** — `DEFAULT_TOC_LEVEL_INDEX`/`DEFAULT_TOC_LEVEL_CHAPTER`（`toc_generator.py`）、`resolve_display_level()` 與 JS 的 `defaultLevel` / `selectValidLevel()` 必須同規則（無該層時取**最近**層、同距離取較小者），章節頁 `.toc-level-btn.active` 也要標在解析後的層級（`I18nTemplateManager.build_level_buttons()`），否則 JS 啟動時按鈕高亮會跳動。
     - **不要用「載入中」轉圈圈蓋住這個問題** — 轉圈圈期間內容仍是亂的（只是被蓋住），還延後了可讀時間。改用漸進增强後關 JS 也能正常閱讀，爬蟲與無 JS 使用者一併受益。
-    - 驗證方式：`tests/test_html_generator.py::TestTOCInitialState`（回歸測試守住上述 class／層級規則）。
+    - **閱讀設定（字級／行距／內容寬度）同樣必須首繪前套用** — 過去由 `03d` 在 `DOMContentLoaded` 才寫 `body` 的 inline style，章節頁會先以 16px／800px 畫出來、再跳到 20px／834px（實測 CLS≈0.005、目錄縮排位移 17px）。引擎已搬到位於 `tool/word2ebook/assets/js/reading-prepaint.js` 的 **standalone** 檔（兩套電子書共用，暴露 `window.W2EReading`），模板以**同步 `<script src>`（不可 defer）** 引用。
+    - ⚠️ **必須排在「最後一個 stylesheet 之後」** — 它注入的動態 TOC 樣式與 `04a-toc-levels.css` 的 `.toc > ul > li { line-height: 1.4 !important }` **權重相同且都帶 `!important`**（動態樣式給 1.6），勝負由**來源順序**決定。插在樣式表之前會讓 `03d` 重套時行距改變、整個目錄位移（li 30.8px→35.2px）。
+    - 因為此時 `<body>` 還不存在，只能寫 `<html>` 的 CSS 自訂屬性（`--w2e-font-size` / `--w2e-content-width` / `--line-height`），由 `00-base.css` 的 `body` 規則消費。
+    - 章節頁的層級按鈕只渲染「該章確實有標題」的層級（對應 JS `detectAndHideLevelButtons()`），否則控制列會在 JS 隱藏按鈕後縮短而位移。
+    - 驗證方式：`tests/test_html_generator.py::TestTOCInitialState`（TOC 初始狀態）＋ `tests/test_static_assets.py` 的 `test_prepaint_js_*` / `test_03d_delegates_to_shared_reading_engine`（pre-paint 套用、樣式表順序、03d 不得留第二份引擎）。
 
 ---
 

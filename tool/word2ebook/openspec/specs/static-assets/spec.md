@@ -101,10 +101,16 @@ The wrapper constants are `JS_WRAPPER_OPEN` and `JS_WRAPPER_CLOSE` defined in
 In addition to `script.js` and `style.css`, the converter SHALL copy:
 - `assets/js/i18n-text.js`
 - `assets/js/search-cache.js`
+- `assets/js/reading-prepaint.js` (閱讀設置引擎；模板以**同步** `<script src>`
+  引用，見 `frontend-js/spec.md` 的 "Reading Settings Pre-Paint" — 必須原樣
+  複製，否則首繪前套不到字級／行寬而整頁重排)
 - `assets/js/jieba_rs_wasm.js`
 - `assets/js/jieba_rs_wasm_bg.wasm` (binary)
 
 These files are copied verbatim from the source `assets/js/` directory.
+`reading-prepaint.js` lives at `assets/js/` (NOT `assets/js/modules/`) so that
+`StaticAssetsManager` does NOT concatenate it into `script.js`; it must stay a
+separate file that both ebook builds share.
 
 ### Requirement: Test Isolation
 `StaticAssetsManager` SHALL expose an `_assets_base` attribute that tests can
