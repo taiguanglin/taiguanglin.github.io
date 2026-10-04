@@ -73,15 +73,16 @@ confirmed 鐵錨同等 pin 住。人工校正「誤留極短長度的沒念段�
 
 ## 0a. 產線現實（2026-09 定稿，最優先讀）
 
-**「毫秒級對齊」是三種東西疊出來的，不是單一對齊器：**
+**「毫秒級對齊」是四種東西疊出來的，不是單一對齊器：**
 
 | 階段 | 工具 | 角色 |
 |------|------|------|
 | ① 粗對 | `tool/jiangjing_para_map/build_maps.py`（`method=ngram`，SRT 字元流 + difflib/bigram） | SoT 產出器、唯一寫入 `reviewed`/`confirmed` 標籤者；品質不均（硬講次 avg_conf≈0.3） |
 | ② 精修 | `realign_dtw.py`（FunASR 字級 dump + DTW） | 高訊號對齊器（`dtw-evid`／`interp`／…），**歷史路線**，已被 milli-align 取代 |
-| ③ 人工確認 | `index.html`（試聽＋段尾自停＋`lastPlayed`→`confirmed`＋講層 `reviewed`） | **毫秒級最終裁判** |
+| ③ 序列重錨 | **`skills/milli-align/scripts/seq_align.py`**（雙向邊界最佳化 → 短前綴滑動 DTW → run-onset） | **現行匹配器**：逐段產出 start 提案（`--mode final/bopt`）；`--mode metric` 是「首字有沒有對到」的**唯一客觀指標** |
+| ④ 人工確認 | `index.html`（試聽＋段尾自停＋`lastPlayed`→`confirmed`＋講層 `reviewed`） | **毫秒級最終裁判** |
 
-**別再踩的三條教訓：**
+**別再踩的五條教訓：**
 
 1. **`method` 標籤 ≠ 實際演算法**（已確認的 sishierzhang 1–8 期 JSON 一律標 `ngram`，但硬經文段
    位置實際來自 DTW）——**看 `conf` ＋客觀稽核，不看 method 字串**。
@@ -90,10 +91,17 @@ confirmed 鐵錨同等 pin 住。人工校正「誤留極短長度的沒念段�
 3. **重跑安全靠 `confirmed` 旗標，不靠 method**：`build_maps.py` 的 `merge_existing` 與
    `realign_dtw.py` 的 pin 都會在原樣保留 `confirmed` 段的 `start/end`。已確認講次是**鐵錨**，
    任何重跑前後都要驗證 byte-level 不變。
+4. **`span_audit` 的 ok-rate 量不到邊界品質**：L13 r2→r3 它一直是 88.5%，但「每段首字對到音檔
+   首字」的指標從 65% 拉到 80%（詳見 `reports/lengqie_L13_earcheck.md`）。**驗收要跑
+   `seq_align.py --mode metric`**，兩者都要看。
+5. **長音檔 ASR 會在同音錯字密集區整段掉字**：L14 有 **30.3s** 空窗（2039.8–2070.1）、
+   另有 5 處 8–13s 空窗，音檔其實連續有聲。這些區域的 `span_audit` span_bad／d_head 低是
+   **量測假象**，判段界必須用 `skills/milli-align/scripts/clip_probe.py --chars` 切片複驗，
+   且**切片時基要先驗**（L14 r2 因此把 [106]/[107] 定錯 1.5–2.4s）。見 SKILL §6b。
 
 > 對齊**新講次**請走 [`skills/milli-align/SKILL.md`](skills/milli-align/SKILL.md) §7 流程
-> （golden offsets → audit → 判讀 → refine → 回頭檢驗 → 驗收），**不要**只重跑 `realign_dtw.py`。
-> golden 慣例（鏈、段首 lead-in、講首導言、搜尋窗、語速）見該 SKILL §2。
+> （首字指標 → 提案 → 逐段判讀 → refine → 回頭檢驗 → 驗收），**不要**只重跑 `realign_dtw.py`。
+> golden 慣例（鏈、段首 lead-in、講首導言、搜尋窗、語速）見該 SKILL §2，序列對齊器見 §6a。
 
 ## 1. 核心心智模型
 

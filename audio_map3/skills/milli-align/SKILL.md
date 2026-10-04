@@ -15,7 +15,8 @@ description: >-
 `ebook/<K>.html`（SUTRA/COMM 分類）。產線、資料模型、注入、已知限制見
 [`../../AGENTS.md`](../../AGENTS.md)。
 
-量測腳本（`scripts/`）：`golden_offsets.py`（golden 慣例）、`milli_audit.py`（證據稽核）、
+量測腳本（`scripts/`）：**`seq_align.py`（序列式對齊器＋首字指標，見 §6a，正典在此）**、
+`golden_offsets.py`（golden 慣例）、`milli_audit.py`（證據稽核）、
 `milli_refine.py`（套用，正典在此勿在 /tmp 重建）、`zero_audit.py`／`zero_probe.py`、`clip_probe.py`、
 `batch_verify.py`、`win.py`、`series_cls.py`。
 
@@ -164,6 +165,74 @@ span，**尾段念誦留在下一 COMM 的 span 內**（L7 [67]/[74]）。
 | 说颂言 | 说顺言 | 摩帝菩萨 | 摩地菩萨 |
 | 是故大慧 | 事会／下在 | 但住心量 | 赞助心量 |
 | 观察三有无始时来 | 山有三有五尺以来 | 生死涅槃二种平等 | 三十年前暗动平凡 |
+
+## 6a. 序列式對齊器 `seq_align.py`（現行匹配器，L13 r3 起）
+
+§3a 的結論是「換 ASR 無用，改匹配器」。本檔就是那個匹配器，**每講的提案都從它來**。
+
+| 模式 | 用途 |
+|------|------|
+| `--mode final` | **提案**：雙向邊界最佳化 → 短前綴滑動 DTW 精確定位首字 → start（產出 adjudication table 草稿） |
+| `--mode bopt` | 只做雙向邊界最佳化（看 tail/head 分數 diagnose 用） |
+| `--mode metric` | **首字指標**（驗收用，見下） |
+| `--mode batch --list 11,22,45 --table t.json` | 批次目視：逐段印「前段尾／本段頭／邊界前後 ASR」，判讀提案用 |
+| `--mode window --i N` / `--mode tol` / `--mode verify` | 單段視窗／分塊 DTW 證據表／全文覆蓋稽核 |
+
+**雙向邊界最佳化（`bopt`/`final` 的核心）**：對每個相鄰 READ 段邊界 B，
+同時算 `tail(B)=DTW(前段末 24 字, [B−9s,B])` 與 `head(B)=DTW(本段頭 24 字, [B, B+9s])`，
+取 `argmax(tail+head)`。單看段頭必然被**回音／半念段**拖走（§4.8a）。
+**必須過信賴門檻**才提案：`sum(B*) ≥ sum(現值)+0.04 且 head ≥0.60 且 tail ≥0.55`
+——否則整段不動。實測無門檻時 [24] 會被一段假命中拖到 328.04，吞掉前段「那為什麼不一樣呢」。
+
+**run_onset 只能吸收「首字之前的那一段停頓」**，不可往前吞整句：
+回退量 = `min(0.7s, 與前一個 ASR 字元的間隔)`。連續語音間隔 0.2–0.5s → 只回退那個間隔；
+靜停 ≥0.7s → 回退滿 0.7s。（誤寫成「逐字往回走到間隙 >0.7 為止」會一路吞掉整段前文，
+L13 實測把 [58] 的 start 拉到 14.5s 前。）
+
+### 首字指標（`--mode metric`）＝唯一能量化「首字有沒有對到」的口徑
+
+量 `start −（本段第一個被念出的字）的時間`。兩個必備修正：
+1. **`dtw_span` 的 `j_first` 可能落在「被 DEL 掉的 pattern 字」上**（段頭同音錯字時極常見）
+   → 必須再驗 `sim_char(段首字, 該位置 ASR 字) ≥ 0.8`，否則量到的是「DTW 開始嘗試的位置」。
+2. 短前綴會對**重引**產生假命中 → 用 20 字前綴，且要求路徑吃掉 ≥10 個 ASR 字。
+
+golden 基準（L1／L4，人耳確認）：median −0.2～−0.3s、**±0.5s 內 75–76%**、
+晚 >0.5s = 0%、早 >0.5s = 24–25%（**「早」是正常的**：引導語歸前段）。
+**要消滅的是「晚」**——晚 0.5s 以上＝點段落就聽不到開頭第一字。
+
+> `span_audit`／`milli_audit` 量的是「整段有沒有對到」，同樣 ok-rate 可以有完全不同的
+> 邊界品質（L13 r2 的 span_audit 88.5% 沒動過，但首字指標從 65% 拉到 80%）。**兩者都要看。**
+
+### 6b. 掉字區：**必須**用 40s 切片複驗（`clip_probe.py`）
+
+長音檔的**全域** `timestamp` 時間軸是對的（`sentence_info`／SRT 才是壓縮的），但**字級流
+在同音錯字密集區會整段掉字**——音檔連續有聲、字級流卻是空的。這時：
+- **不可**因字級稀疏就判 zero／錯位；`span_audit` 的 `d_head` 低、`span_bad` 多半是這個假象。
+- 用切片重跑 ASR 取得**當地**的字級時間：
+  ```bash
+  tool/sense_voice/.venv/bin/python audio_map3/skills/milli-align/scripts/clip_probe.py \
+      --series lengqie --lecture 14 --windows "2035-2075,1828-1868" --chars --width 14
+  ```
+  （`--chars` 印字級＋絕對時間；不加則印句級，只夠確認「有沒有念」。VAD 段長上限必須
+  `--vad-ms 10000`，否則 40s 切片只認出尾 10s。切片長度固定 ~40s。）
+
+**切片的時基要先驗**（SKILL §5 的老教訓，本輪再次實證）：找兩處「切片與全檔都有字」的
+區域比對同一句話的時間——L14 實測差 <0.5s～1s，可信；但 **ASR 分段差異仍帶 ±1s**。
+L14 r2 就是吃了這個虧：用切片把 [106]/[107] 定在 2059.20，而切片字級顯示該句在 2061.7。
+
+**掉字掃描**（先找出哪些區要切片）：
+```bash
+tool/sense_voice/.venv/bin/python - <<'PY'
+import sys; sys.path.insert(0,'audio_map3/skills/milli-align/scripts')
+sys.path.insert(0,'tool/jiangjing_para_map')
+from seq_align import load
+lec, st, _ = load('lengqie', '14')
+ts=[(st.t_of(q), st.norm[q]) for q in range(len(st.norm))]
+ts=[(t,c) for t,c in ts if t is not None]
+g=sorted(((ts[k+1][0]-ts[k][0], ts[k][0], ts[k+1][0]) for k in range(len(ts)-1)), reverse=True)
+print([x for x in g if x[0] >= 3.0][:12])   # ≥3s 空窗（越大越要切片）
+PY
+```
 | 住灭法 | 猪病房 | 力通自在 | 绿通自在 |
 | 阿罗汉 | 二百万 | 俱时而起无差别相各了自境 | 聚势而起无差别向过流之尽 |
 | 众生识所现 | 众城学所县 | 圣智 | 自动／圣只 |
@@ -176,14 +245,26 @@ span，**尾段念誦留在下一 COMM 的 span 內**（L7 [67]/[74]）。
 **7.1 備齊輸入**：`ls /tmp/funasr_cache/<series>/`（缺先跑 `funasr_dump.py --series <s>`）；統一用
 `tool/sense_voice/.venv/bin/python`。
 
-**7.2 證據稽核**：
+**7.2 證據稽核**：先量**首字指標**（決定這講要不要動），再看 defect：
 ```bash
+tool/sense_voice/.venv/bin/python audio_map3/skills/milli-align/scripts/seq_align.py \
+  --series lengqie --lecture 13 --mode metric          # ±0.5s 內？晚 >0.5s？
+tool/sense_voice/.venv/bin/python audio_map3/skills/milli-align/scripts/seq_align.py \
+  --series lengqie --lecture 13 --mode final --json /tmp/t.json   # 提案表草稿
 tool/sense_voice/.venv/bin/python audio_map3/skills/milli-align/scripts/milli_audit.py --series lengqie --lecture 5
 ```
 逐段檢查頭部逐字／拼音命中（窗內）、語速、zero 逐字不念驗證、鏈完整性、COMM 零寬。
 **自報 conf 不可信，以此稽核為準。**
 
-**7.3 逐段判讀**（defect 才需要）：開 ASR 視窗聽「字」（`scripts/win.py` 或）：
+**7.3 逐段判讀**：**提案全部都要看**，因為 `final` 的提案會同時出現真缺陷與回音假命中
+（L13 r3：採納 28、駁回 14）。用批次目視一次看多段：
+```bash
+tool/sense_voice/.venv/bin/python audio_map3/skills/milli-align/scripts/seq_align.py \
+  --series lengqie --lecture 13 --mode batch --list 11,22,25,60 \
+  --table /tmp/t.json --pad 3 --after 9
+```
+（印「前段尾／本段頭／邊界前後 ASR」，`«`＝現值起點、`*`＝提案起點。）
+單段或需要更細時間軸時用 `scripts/win.py`：
 ```bash
 tool/sense_voice/.venv/bin/python - <<'PY'
 import sys; sys.path.insert(0,'tool/jiangjing_para_map')
@@ -208,7 +289,8 @@ tool/sense_voice/.venv/bin/python audio_map3/skills/milli-align/scripts/milli_re
 
 **7.5 回頭檢驗**：重跑 §7.2，直到①全段 conf ≥0.8（天生弱者列人工清單）②鏈完整
 （`end[i]=start[next READ]`、末段=duration、zero 起訖相等錨在鏈上）③zero 段全通過逐字不念驗證
-④段首重掃 LATE=0、**邊界雙向抽驗**無吞尾。
+④**首字指標：晚 >0.5s 的段降到 ≤2%**（golden 基準 0%）、±0.7s 內 ≥75%（golden L1 82%／L4 75%）、
+**邊界雙向抽驗**無吞尾。
 
 **7.6 驗收寫檔**：
 ```bash
@@ -228,6 +310,7 @@ tool/sense_voice/.venv/bin/python tool/jiangjing_para_map/pin_check.py lengqie
 ## 9. 完成定義
 
 - [ ] 每段 conf 由證據支撐、start 落在「實際念出第一字」的 run-onset（永不晚於內容字）
+- [ ] **首字指標（§6a）：晚 >0.5s ≤2%、±0.7s 內 ≥75%**
 - [ ] 每個 SUTRA 段量過 R 並按 §3 判型（全念＝實寬；半念→2.a zero＋講解段攜帶／2.b span 恰蓋 R；不念＝zero）
 - [ ] zero 段逐字驗證通過；2.a 的講解段 start 釘在引文 run-onset
 - [ ] 鏈完整（停頓 ≤2s 歸下段 lead-in；末段=duration）；講首三段結構符合慣例
@@ -238,7 +321,34 @@ tool/sense_voice/.venv/bin/python tool/jiangjing_para_map/pin_check.py lengqie
 ## 10. 逐講驗收（楞伽 L5–L42；span_audit 口徑）
 
 L5 124 段（ok90/skip13/unk20/bad1）、L6 91.7%、L7 94.7%、L8 **100%**（r4 重掃 66/67、吞尾
-11.6s）、L9 88%、L10 91.1%、L11 92.4%、L12 86.3%、L13 88.5%、L14 81.1%（假 zero 5）、
+11.6s）、L9 88%、L10 91.1%、L11 92.4%、L12 86.3%、L13 88.5%（**r3 已補首字指標，見下**）、
+L14 81.1%（假 zero 5）、
 L15 78.4%（推翻 8 假 zero）；L16–L42 批次 526 筆修正、鏈破口 0、>120s span 0。
 bad+unknown 多為 ASR 天花板／假警報，逐一查明後列人工清單。各講 earcheck 與 adjudication table
 在 `tool/jiangjing_para_map/reports/`。
+
+### 10a. L13 r3（2026-10，首字指標口徑的第一講）
+
+`span_audit` 口徑不動（88.5%、span_bad 0），但**首字指標**從 ±0.7s 內 65% → **80%**、
+晚 >0.5s 6% → **2%**（golden 基準 0%／L1 82%／L4 75%）。28 段重錨，其中
+7 段是「點段落聽不到開頭第一字」的真缺陷（[25]/[43]/[60]/[63]/[98]/[123]/[129]，
+最大 [63] 晚 1.96s）、10 段是吞前段尾音（最大 [22] 2.8s）、1 段講首邊界（[11] 早 3.05s）。
+同時**駁回 14 筆工具提案**（全是回音假命中）。細節與逐段依據見
+`reports/lengqie_L13_earcheck.md`。
+
+### 10b. L14 r3（2026-10，掉字區必須切片）
+
+首字指標 ±0.7s 內 46% → **67%**、晚 >0.5s 13% → **8%**（殘餘 3 個已查證為量測假陽性）。
+25 段重錨，最大兩筆：**[98] 晚 8.8s**（段前半 11s 全聽不到）、[108] 早 3.5s。
+本講的關鍵是 **30.3s 掉字區（2039.8–2070.1）**：全檔字級流空白但音檔連續有聲，
+`span_audit` 因此報 4 個 span_bad——**切片複驗證實內容都在原位**，是量測假象而非位置錯誤。
+另修正 r2 用切片定 [106]/[107] 邊界時的時基偏移（≈1.5–2.4s）。細節見
+`reports/lengqie_L14_earcheck.md`（§2 有掉字區清單與切片時基驗證數據）。
+
+### 10c. L15 r4（2026-10，複引陷阱）
+
+首字指標 ±0.7s 內 59% → **68%**、晚 >0.5s 9% → **5%**。15 段重錨，最大兩筆：
+**[28] 早 4.8s**（吞掉前段「…有一個字叫『墜』的墜」）、[46] 晚 2.5s（整句經文開頭聽不到）。
+本講無 L14 級的掉字（最大空窗 4.6s），故不需切片。**新陷阱**（L15 實測）：段落開頭是
+**經文複引**時，教師會先逐字念經文再展開，`--mode metric` 量到的是展開處（假警報，
+[48]/[62]/[92] 各差 4–5s）。**邊界要取複引處**。細節見 `reports/lengqie_L15_earcheck.md` §3c。

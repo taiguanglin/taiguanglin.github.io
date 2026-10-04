@@ -49,6 +49,10 @@ def main():
     ap.add_argument("--len", type=float, default=CLIP_LEN)
     ap.add_argument("--vad-ms", type=int, default=10000,
                     help="VAD 單段上限（毫秒）；切片複驗必須 ≤10000，見下方註解")
+    ap.add_argument("--chars", action="store_true",
+                    help="印**字級**時間（相對切片起點的絕對時間）而非句級；"
+                         "定段界需要字級，句級只能確認「大致有沒有念」")
+    ap.add_argument("--width", type=int, default=14, help="--chars 每行字數")
     a = ap.parse_args()
 
     wins = []
@@ -86,8 +90,25 @@ def main():
             except Exception as e:              # noqa: BLE001
                 print(f"\n===== {lo:.1f}-{hi:.1f}  FAILED {type(e).__name__}: {e}")
                 continue
+            item = res[0]
             print(f"\n===== {lo:.1f}-{hi:.1f} =====")
-            for s in (res[0].get("sentence_info") or []):
+            if a.chars:
+                buf = []
+                for k, c in enumerate(item.get("text") or ""):
+                    if c.isspace():
+                        continue
+                    ts = (item.get("timestamp") or [])
+                    t = (lo + ts[k][0] / 1000) if k < len(ts) else None
+                    buf.append((t, c))
+                if not buf:
+                    print("  （切片無字）")
+                for i in range(0, len(buf), a.width):
+                    ch = buf[i:i + a.width]
+                    t0 = ch[0][0]
+                    ts0 = f"{t0:8.2f}" if t0 is not None else "   nan  "
+                    print(f"  [{ts0}] {''.join(c for _, c in ch)}")
+                continue
+            for s in (item.get("sentence_info") or []):
                 print(f"  {lo + s['start'] / 1000:8.2f}-{lo + s['end'] / 1000:8.2f} {s['text']}")
 
 
