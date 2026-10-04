@@ -59,8 +59,10 @@ class I18nTemplateManager:
         i18n_kwargs.setdefault('html_lang', 'zh-Hant' if is_traditional else 'zh-Hans')
         i18n_kwargs.setdefault('seo_title', i18n_kwargs.get('title', ''))
         i18n_kwargs.setdefault('seo_head', '')
-        # 章節頁層級按鈕列：active 必須標在「該章實際解析出的顯示層級」上，
-        # 否則 JS selectValidLevel() 啟動後會搬移高亮，造成按鈕跳動。
+        # 章節頁層級按鈕列。只渲染「該章確實有標題」的層級，且 active 標在
+        # 實際解析出的顯示層級上 —— 兩者都必須與 JS 的
+        # detectAndHideLevelButtons() / selectValidLevel() 一致，否則
+        # script.js 啟動後會藏按鈕、搬高亮，使用者看到控制列位移與按鈕跳動。
         i18n_kwargs.setdefault(
             'chapter_toc_level_btns',
             self.build_level_buttons(
@@ -71,12 +73,23 @@ class I18nTemplateManager:
         return self.get_template('chapter').format(**i18n_kwargs)
 
     @staticmethod
-    def build_level_buttons(levels, active_level: int) -> str:
+    def build_level_buttons(levels, active_level: int, present_levels=None) -> str:
         """渲染「顯示層級」按鈕列，``active_level`` 該顆帶 ``.active``。
+
+        ``present_levels`` 給定時，只渲染該章確實有標題的層級（對應 JS
+        ``detectAndHideLevelButtons()`` 會隱藏按鈕的層級）。少一層按鈕，
+        控制列就少一顆圓鈕的寬度；若留到 JS 才隱藏，控制列會在首繪後縮短
+        而造成位移。
 
         與 ``_toc_header_controls()``（books2ebook）同構；繁簡化交由呼叫端的
         i18n_processor 處理，故此處固定輸出簡體標題。
         """
+        if present_levels is not None:
+            usable = [lv for lv in levels if lv in present_levels]
+            # 全章都沒有任何標題時，仍保留按鈕列（與 JS 一致：至少有一顆）
+            levels = usable or list(levels)
+            if active_level not in levels:
+                active_level = levels[0]
         btns = []
         for lv in levels:
             act = " active" if lv == active_level else ""
@@ -169,6 +182,9 @@ class I18nTemplateManager:
 {dark_mode_prepaint}
 {favicon_tag}
 <link rel="stylesheet" href="assets/css/style.css">
+<!-- 閱讀設置首繪前套用。同步載入（不可 defer）、且必須在樣式表之後；
+     理由見 openspec/specs/frontend-js/spec.md「Reading Settings Pre-Paint」。 -->
+<script src="assets/js/reading-prepaint.js"></script>
 <script src="assets/js/i18n-text.js"></script>
 <script src="assets/js/script.js" defer></script>
 <script src="/lang-switch.js" defer></script>
@@ -243,6 +259,8 @@ class I18nTemplateManager:
 {dark_mode_prepaint}
 {favicon_tag}
 <link rel="stylesheet" href="assets/css/style.css">
+<!-- 閱讀設置首繪前套用：見章節頁模板的說明（不可 defer，且須在樣式表之後）。 -->
+<script src="assets/js/reading-prepaint.js"></script>
 {minisearch_script}
 <script src="assets/js/i18n-text.js"></script>
 <script src="assets/js/search-cache.js"></script>

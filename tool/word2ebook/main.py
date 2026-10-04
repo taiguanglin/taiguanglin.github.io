@@ -195,7 +195,16 @@ class Word2EBookConverter:
             with open(cache_js_path, 'r', encoding='utf-8') as f:
                 cache_js_content = f.read()
             self.file_manager.write_file("assets/js/search-cache.js", cache_js_content)
-        
+
+        # 閱讀設置引擎：模板以同步 <script src>（非 defer）在 <head> 引用，
+        # 必須原樣複製到輸出目錄，否則首繪前套不到字級／行寬而整頁重排。
+        # 03d-reading-settings.js 透過 window.W2EReading 讀寫同一份狀態。
+        prepaint_js_path = Path(__file__).parent / "assets" / "js" / "reading-prepaint.js"
+        if prepaint_js_path.exists():
+            with open(prepaint_js_path, 'r', encoding='utf-8') as f:
+                prepaint_js_content = f.read()
+            self.file_manager.write_file("assets/js/reading-prepaint.js", prepaint_js_content)
+
         # 复制 MiniSearch 本地自架包（中国网络 CDN 不可靠；模板改为 defer 引用，
         # 运行期 CDN 兜底逻辑见 01e-search-ui.js ensureMiniSearchLoaded）
         minisearch_js_path = Path(__file__).parent / "assets" / "js" / "minisearch.min.js"

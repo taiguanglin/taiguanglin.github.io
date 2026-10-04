@@ -28,7 +28,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | 字級階梯常數（`FONT_SIZE_STEP` / `FONT_STEPS_*` / `FONT_SIZE_MIN` / `FONT_SIZE_MAX` / `FONT_BASE_*`）、行長連動常數（`MEASURE_TARGET_CHARS` / `CONTENT_CHROME_PX` / `TOC_CONTENT_WIDTH`）、偏好儲存（`FONT_STEP_KEY` / `LEGACY_FONT_SIZE_KEY`、`readStorage`/`writeStorage`/`removeStorage`、`clampFontSize`、`migrateLegacyFontStep`、`loadFontStep`）、`getBaseFontSize`, `getFontBoostSteps`, `getDefaultFontSize`, `getDefaultContentWidth`, `isHandheldPointer`, `applyReadingSettings`, font/line-height/width updates, `updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor` |
+| `03d-reading-settings.js` | 閱讀設置的**事件接線**（`applyReadingSettings`、`updateFontSize`/`updateLineHeight`/`updateContentWidth`、轉呼叫 `window.W2EReading`）＋跨模組共用的狀態變數（`fontStep`/`fontSize`/`lineHeight`/`contentWidth`，供 02 按鈕狀態與 04 重設讀寫）＋`updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor`。**字級引擎本身已搬到 `assets/js/reading-prepaint.js`**（見下），此處不得再留第二份 |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
@@ -110,6 +110,43 @@ when the key is unset, first paint SHALL honor the OS preference via
 `matchMedia('(prefers-color-scheme: dark)')` (the inline head script applies
 `dark-mode` to `<html>` pre-paint; `00-base.js` re-applies it to `<body>` and
 removes it from `<html>`).
+
+### Requirement: Reading Settings Pre-Paint
+Font size, line height, content width, and the TOC/search font sizes derived
+from them SHALL be applied **before first paint**, not on `DOMContentLoaded`.
+
+The single source of truth SHALL be `assets/js/reading-prepaint.js`
+(standalone, copied verbatim, exposed as `window.W2EReading`). It SHALL execute
+synchronously in `<head>` and apply itself on load. `03d-reading-settings.js`
+SHALL only wire user interactions to `W2EReading` and SHALL NOT keep a second
+copy of the ladder constants or the derived-CSS generation.
+
+Rationale (measured): applying these from `DOMContentLoaded` painted chapter
+pages at 16px/800px and then re-laid-out to 20px/834px, shifting the whole TOC
+(indent 251px → 234px) and reporting CLS ≈ 0.005.
+
+Because it runs before `<body>` exists, `reading-prepaint.js` SHALL write CSS
+custom properties on `<html>` — `--w2e-font-size`, `--w2e-content-width`,
+`--line-height` — which `00-base.css`'s `body` rule consumes, and SHALL NOT use
+`document.body.style`.
+
+#### Scenario: Script tag placement is load-bearing
+- GIVEN `reading-prepaint.js` injects a `<style>` whose `.toc > ul > li`
+  declaration has the same specificity as `04a-toc-levels.css`'s
+  `.toc > ul > li { line-height: 1.4 !important }`, both `!important`
+- WHEN the `<script src="assets/js/reading-prepaint.js">` tag precedes the
+  stylesheet links in `<head>`
+- THEN the injected style loses the cascade, TOC line height renders as 1.4
+- AND when `03d` re-injects it later (now after the stylesheet) line height
+  becomes 1.6, shifting every TOC row
+- THEREFORE the template SHALL place the tag after the **last** stylesheet link,
+  and SHALL NOT mark it `defer`
+
+#### Scenario: No layout shift on load
+- GIVEN any generated index or chapter page loaded with JS enabled
+- WHEN measured under throttled network until the deferred bundle has run
+- THEN cumulative layout shift SHALL be 0
+- AND `body` width/font-size SHALL already equal the final values at first paint
 
 ### Requirement: Default Reading Font Size
 The system SHALL derive the default body font size from the viewport width as

@@ -30,6 +30,9 @@ try {
 </script>
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="assets/css/style.css" rel="stylesheet"/>
+<!-- 閱讀設置首繪前套用。同步載入（不可 defer）、且必須在樣式表之後；
+     理由見 openspec/specs/frontend-js/spec.md「Reading Settings Pre-Paint」。 -->
+<script src="assets/js/reading-prepaint.js"></script>
 <script src="assets/js/i18n-text.js"></script>
 <script defer="" src="assets/js/script.js"></script>
 <script defer="" src="/lang-switch.js"></script>
@@ -54,7 +57,7 @@ try {
 <h2 id="chapter-toc-header">本章目录</h2>
 <div class="toc-level-controls">
 <div class="toc-level-label">显示层级</div>
-<div class="toc-level-buttons-vertical"><button class="toc-level-btn" data-level="2" title="显示第2层">2</button><button class="toc-level-btn active" data-level="3" title="显示前3层">3</button><button class="toc-level-btn" data-level="4" title="显示前4层">4</button></div>
+<div class="toc-level-buttons-vertical"><button class="toc-level-btn" data-level="2" title="显示第2层">2</button><button class="toc-level-btn active" data-level="3" title="显示前3层">3</button></div>
 </div>
 </div>
 <div class="toc" id="chapter-toc">
@@ -195,7 +198,7 @@ try {
 </div>
 <div class="answer" id="answer-abba1ed4f135">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:02:14 - 00:03:10" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8828%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="190.830" data-label="00:02:14 - 00:03:10" data-start="134.137" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:02:14 - 00:03:10" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8828%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="190.770" data-label="00:02:14 - 00:03:10" data-start="134.300" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">法号明灯，你说的对。宁可得罪君子，也不得罪小人，有这样的话。和心态好的人交往，你就算小小的得罪伤害他，他也不那么在意。虽然这个业的轮转过程中，你也会遭到报复。但是，也不是他存心要报复你的。而且这种轮转过程中本来是恶业的话，导致对方产生了很不好的情绪要报复他，随著时间推移，这个是累加利息的，一般这种心态好的人，累加利息的概率就低，或者程度非常少。<br/>所以说，跟心态好的人交往就比跟心态不好的人交往要好得多，可以这么说。</div>
 </div>
@@ -1762,7 +1765,7 @@ try {
 </div>
 <div class="answer" id="answer-7d869787fc63">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:07:49 - 00:08:24" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="504.600" data-label="00:07:49 - 00:08:24" data-start="469.600" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:07:54 - 00:08:23" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="503.220" data-label="00:07:54 - 00:08:23" data-start="474.380" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">看我写的书我发愿要度，业缘和佛缘是不一样的，得先搞清楚这个。你看那个书算是结了佛缘，我发愿度这是我个人的愿，和你并没有业缘，也可以度。就像地藏菩萨度那些地狱中的人一样，他和那些地狱中的众生没有业缘，但是他以愿力来度的。观音菩萨以愿力来帮助众生，救苦救难，这都是一样的道理。</div>
 </div>
@@ -5111,7 +5114,7 @@ try {
 </div>
 <div class="answer" id="answer-80298d48eda6">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:02:57 - 00:03:55" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="235.190" data-label="00:02:57 - 00:03:55" data-start="177.800" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:02:58 - 00:04:21" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="261.360" data-label="00:02:58 - 00:04:21" data-start="178.480" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">再来人和被度的人之间彼此消业，他们之间会发生什么事消业？不管是恶缘也好，善缘也好，都有互相的消业。每个业都不一样，没有办法说每个业有什么关系，这个都不一样嘛，人人都不一样。<br/>但是，如果是恶业要消的话，一般通常放在前世的前世这样，最好是放在前世。因为你当世下去消了恶业，我把你暴揍一顿，然后我告诉你我是你师父，以后你得跟著我修，这个就有点难了吧，是吧？对方难以接受。<br/>所以，把这个恶业放到前世消一下。但是，消了这个恶业这个缘是肯定已经记上了，你不是消了恶业，两个人就彻底没关系了，互相之间已经成了对方心中的众生。所以说，消了恶业之后，把这个缘从恶业开始转化为善业，然后到下一世差不多的时候，就以善业的方式出现。</div>
 </div>
@@ -6684,7 +6687,7 @@ try {
 </div>
 <div class="answer" id="answer-4bee402d3037">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:11:37 - 00:12:33" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="753.999" data-label="00:11:37 - 00:12:33" data-start="697.180" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:11:37 - 00:12:46" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="766.000" data-label="00:11:37 - 00:12:46" data-start="697.260" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">尘念，我不知道你的亲人现在怎么样了。我看到的一些说法是，水滴筹也是个商业运作的公司，他们中间抽成很厉害的。那种说法，我不知道是不是真的。你筹到的，如果你病好了，或者这事已经结束了，回头你能还回去的就还回去呗。<br/>我在B站上也看过一个女孩，算是唱歌赚钱的女孩，说是肾脏需要移植，但是一直在拿这个来收钱。然后等钱都赚够了，她还在拿这个收钱，所以有人把她给举报了，她就不再出现了，还有这样的人。反正你收的够了，把这个事结束了，不管是病好了还是他怎么样了，不是你的该还回去的就还回去吧。</div>
 </div>

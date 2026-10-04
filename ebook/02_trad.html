@@ -19,6 +19,10 @@ try {
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="stylesheet" href="/wenda2_ebook/assets/css/style.css">
 <link rel="stylesheet" href="assets/css/books.css">
+<!-- 閱讀設置首繪前套用。同步載入（不可 defer）、且必須在樣式表之後；
+     理由見 tool/word2ebook/openspec/specs/frontend-js/spec.md「Reading Settings Pre-Paint」。
+     與 wenda2_ebook 共用同一份引擎。 -->
+<script src="/wenda2_ebook/assets/js/reading-prepaint.js"></script>
 <script src="/wenda2_ebook/assets/js/i18n-text.js"></script>
 <script src="assets/js/w2e-config.js" defer></script>
 <meta name="description" content="《坐禪之問答錄》——TaiGuangLin 禪師著述/講經全文電子書，支援全文檢索與簡繁切換。">

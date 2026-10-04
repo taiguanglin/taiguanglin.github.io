@@ -148,15 +148,15 @@ class HTMLGenerator:
                 "seo.chapter_description", is_traditional,
                 "《坐禪之問答錄2》" + clean_title,
             ).format(title=clean_title)
-            # 層級按鈕的 .active 必須與 chapter_toc 實際渲染的顯示層級一致，
-            # 否則 JS 啟動時會搬移高亮（按鈕跳動）。
+            # 層級按鈕必須反映「該章實際有哪些層級」且 active 標在實際顯示層級，
+            # 否則 JS detectAndHideLevelButtons()／selectValidLevel() 啟動後會
+            # 藏按鈕、搬高亮，控制列位移且按鈕跳動。
+            present_levels = {item.level for item in chapter.toc_items}
             toc_display_level = self.toc_generator.resolve_display_level(
-                {item.level for item in chapter.toc_items},
-                DEFAULT_TOC_LEVEL_CHAPTER,
-                button_levels={2, 3, 4},
+                present_levels, DEFAULT_TOC_LEVEL_CHAPTER, button_levels={2, 3, 4},
             )
             level_btns = self.i18n_template_manager.build_level_buttons(
-                (2, 3, 4), toc_display_level
+                (2, 3, 4), toc_display_level, present_levels=present_levels
             )
             if is_traditional:
                 level_btns = self.i18n_processor.to_traditional(level_btns)

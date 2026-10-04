@@ -222,6 +222,10 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="stylesheet" href="{shared_style_css}">
 <link rel="stylesheet" href="assets/css/books.css">
+<!-- 閱讀設置首繪前套用。同步載入（不可 defer）、且必須在樣式表之後；
+     理由見 tool/word2ebook/openspec/specs/frontend-js/spec.md「Reading Settings Pre-Paint」。
+     與 wenda2_ebook 共用同一份引擎。 -->
+<script src="{shared_reading_prepaint_js}"></script>
 <script src="{shared_i18n_js}"></script>
 <script src="assets/js/w2e-config.js" defer></script>
 {extra_head}
@@ -691,6 +695,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         html_lang="zh-Hant" if is_trad else "zh-Hans",
         prepaint_head=_DARK_MODE_PREPAINT,
         shared_style_css=shared_asset_url("css/style.css"),
+        shared_reading_prepaint_js=shared_asset_url("js/reading-prepaint.js"),
         shared_i18n_js=shared_asset_url("js/i18n-text.js"),
         shared_script_js=shared_asset_url("js/script.js"),
         extra_head=_build_seo_head(
@@ -832,6 +837,7 @@ def render_index(books_meta, source_pdfs, is_trad):
         html_lang="zh-Hant" if is_trad else "zh-Hans",
         prepaint_head=_DARK_MODE_PREPAINT,
         shared_style_css=shared_asset_url("css/style.css"),
+        shared_reading_prepaint_js=shared_asset_url("js/reading-prepaint.js"),
         shared_i18n_js=shared_asset_url("js/i18n-text.js"),
         shared_script_js=shared_asset_url("js/script.js"),
         extra_head=_build_seo_head(

@@ -30,6 +30,9 @@ try {
 </script>
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="assets/css/style.css" rel="stylesheet"/>
+<!-- 閱讀設置首繪前套用。同步載入（不可 defer）、且必須在樣式表之後；
+     理由見 openspec/specs/frontend-js/spec.md「Reading Settings Pre-Paint」。 -->
+<script src="assets/js/reading-prepaint.js"></script>
 <script src="assets/js/i18n-text.js"></script>
 <script defer="" src="assets/js/script.js"></script>
 <script defer="" src="/lang-switch.js"></script>
@@ -2164,7 +2167,7 @@ try {
 </div>
 <div class="answer" id="answer-f00b04db3728">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:30:30 - 00:31:25" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="1885.773" data-label="00:30:30 - 00:31:25" data-start="1830.630" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:30:33 - 00:31:25" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="1885.850" data-label="00:30:33 - 00:31:25" data-start="1833.930" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">然後女眾這個問題，這個不能說什麼可能性之類的問題，就只能看每個人的因緣，不能大眾來說。我個人覺得，女眾遇到善知識指導的可能性，好像比男眾還要高一些。<br/>因為在修行這個問題上，男性相當有自負感，這個自負反而會把善知識推開的，尤其是一個修行稍微有一點感覺的更是如此。女眾這方面這種自負感更少，這種自負感、貢高我慢心更少，所以更容易接觸到那種善知識。但問題是，修行過程比男眾要長，只能這麼解釋吧。</div>
 </div>
@@ -3853,7 +3856,7 @@ try {
 </div>
 <div class="answer" id="answer-0b7ab2d9884d">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:23:47 - 00:25:21" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B43%E6%9C%8826%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="1521.580" data-label="00:23:47 - 00:25:21" data-start="1427.470" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:23:49 - 00:25:18" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B43%E6%9C%8826%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="1518.140" data-label="00:23:49 - 00:25:18" data-start="1429.630" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">“賺錢如何避開以佛法牟利的嫌疑？”你避開不了那就正常賺錢就可以了。有些事情咱們就叫寺院附近賺錢的那些人叫佛商嘛，專門賣個佛像、小金牌這些的，人家拿那個賺錢也是他們該賺的錢，也談不上什麼。<br/>就像我現在講法，講完法之後，要是向大家討個飯的話，大家願意給的話，那肯定不是什麼一塊兩塊吧，如果你在外邊給錢的話，可能是一塊兩塊。但是我雖然說我不拿佛法賺錢，但是人家給，你們給的話，肯定是衝著這個佛法給的。所以說這個東西就沒有辦法斬得特別斷的。我雖然嘴上說是我傳法不求回報，大家也是佈施，希望大家不求回報的佈施，我是這樣希望，但是大家肯定是衝著我講了佛法才佈施的嘛。<br/>所以說，有沒有用佛法牟利這個嫌疑，怎麼避開？這些問題根本不值得談，沒有辦法用這個來徹底割開的，所以你該賺錢就賺錢。只是你沒有傷害人，沒有欺騙這就可以了。</div>
 </div>
@@ -4958,7 +4961,7 @@ try {
 </div>
 <div class="answer" id="answer-d8c7d421bb3b">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:32:11 - 00:34:32" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="2072.770" data-label="00:32:11 - 00:34:32" data-start="1931.610" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:32:11 - 00:34:32" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="2072.840" data-label="00:32:11 - 00:34:32" data-start="1931.710" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">小貓咪柴，身體虹化至少是四禪以上的。但是他個人四禪以上，在那個關鍵時刻、最後死的時候，有可能他的護法神、他的本尊，一般密宗叫本尊，他拜的那個本尊給他強大的加持力，一下子讓他顯相成為虹化的這種現象，有這個可能。可能他自己修禪並沒有到那麼高的境界，可能也就一、二禪的基礎，但是他的本尊想讓周圍人看看，所以就給他來這麼一下子，也有可能這樣的。<br/>實際上現在密宗設計的時候，一開始給他設計的時候，是成為一個合格的修行者，輪迴著繼續來修行，這是給他們定的規格。<br/>三個宗派三個派系，大乘、密宗，還有小乘，都有給他們設計的大概方向。<br/>大乘是能成為阿羅漢，不行的話去極樂世界或者天界。天界都算少的，起碼是往極樂世界帶，然後能直接成為阿羅漢就最好。在正法時代、像法時代是能往阿羅漢方向努力，這是大乘。<br/>然後中間的密宗是成為一個輪迴修行的修行人，好的修行人，正經的修行人，能輪迴著連續來，這麼一個方向。<br/>而小乘呢，給他們定的規格，做一個合格的人，先做人。所以小乘對修行不是那麼很執念的，對理論研究更深入，他們就喜歡搞研究理論。<br/>為什麼小乘地方、小乘國家那麼多人信小乘佛法，因為那個佛法就是很普世化，就是世間化。如果過於宗教化，尤其是往修行方面過於強求的話，和世間人間就脫離得比較大，反而普及開來就難。但是它相當的俗世化，所以就信的人多。但是信得人多又怎麼樣，你看泰國那樣的，90%信佛，犯罪率還是很高。</div>
 </div>
@@ -7845,7 +7848,7 @@ try {
 </div>
 <div class="answer" id="answer-ed24c96938f4">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:40:36 - 00:41:17" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="2477.700" data-label="00:40:36 - 00:41:17" data-start="2436.600" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:40:37 - 00:41:17" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="2477.780" data-label="00:40:37 - 00:41:17" data-start="2437.750" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">志在解脫，寫文疏就像你說的，你認為他有幫助，那就有幫助，這個世界全是你的心願化成。你有強烈的願望把它寫出來，這樣讓師父們見證一下，讓佛菩薩見證一下，那就有加持應驗的可能性嘛。<br/>我是對這種形式化的東西並不在意的人，可能我已經走過來了，所以這樣。但是對初學來說，這種形式化、儀式感也很重要，他們就願意信這個，那就沒辦法。所以一開始就做點什麼，什麼對你感覺好，對你的心態、信心都有幫助的，都做，沒有關係的。</div>
 </div>
@@ -12945,7 +12948,7 @@ try {
 </div>
 <div class="answer" id="answer-0d88836e1106">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:29:02 - 00:29:13" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="1753.500" data-label="00:29:02 - 00:29:13" data-start="1742.300" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:29:03 - 00:29:14" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="1754.270" data-label="00:29:03 - 00:29:14" data-start="1743.530" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">果慧，夢境就算了，不用太在意，真來了那就來了。如果是真的給你定好的師父的話，該來的時候會來的，你不用想那麼多。</div>
 </div>
@@ -12961,7 +12964,7 @@ try {
 </div>
 <div class="answer" id="answer-1cd3cbbdaf47">
 <div class="answer-meta">
-<span class="answerer">Taiguanglin</span><button aria-label="播放 00:42:37 - 00:43:26" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="2606.540" data-label="00:42:37 - 00:43:26" data-start="2557.383" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
+<span class="answerer">Taiguanglin</span><button aria-label="播放 00:42:37 - 00:43:26" class="qa-play qa-play--inline" data-audio="../audio/2024%E5%B9%B42%E6%9C%8829%E6%97%A5Tai%E5%B8%AB%E7%88%B6%E7%AD%94%E7%96%91.opus" data-end="2606.540" data-label="00:42:37 - 00:43:26" data-start="2557.510" type="button"><span class="qa-play-icon"><svg aria-hidden="true" class="qa-play-speaker" focusable="false" height="1em" viewBox="0 0 24 24" width="1em"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" fill="currentColor"></path></svg></span></button>
 </div>
 <div class="answer-text">貼吧使用者QPKMRab，解夢這真是，不少人開始問夢境。夢境都是假的，不必要放在心上，除非夢境裡給了你一個明確的資訊的話，還有點可以考慮看看。但是，一般這種夢都是假的，尤其是什麼念釋迦牟尼佛作用更大，哪有什麼念哪個佛作用更大更小的？佛都是一樣的，平等的佛。<br/>但是，每個佛在不同的世界，所以你念經，想去極樂世界，你就唸阿彌陀佛，你想去地藏菩薩那，你就唸地藏菩薩。釋迦牟尼佛也是現在控制這個世界的最高領導人，你念他也可以，就看你想去哪裡吧。</div>
 </div>

@@ -30,6 +30,9 @@ try {
 </script>
 <link href="favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="assets/css/style.css" rel="stylesheet"/>
+<!-- 閱讀設置首繪前套用。同步載入（不可 defer）、且必須在樣式表之後；
+     理由見 openspec/specs/frontend-js/spec.md「Reading Settings Pre-Paint」。 -->
+<script src="assets/js/reading-prepaint.js"></script>
 <script src="assets/js/i18n-text.js"></script>
 <script defer="" src="assets/js/script.js"></script>
 <script defer="" src="/lang-switch.js"></script>
@@ -54,7 +57,7 @@ try {
 <h2 id="chapter-toc-header">本章目錄</h2>
 <div class="toc-level-controls">
 <div class="toc-level-label">顯示層級</div>
-<div class="toc-level-buttons-vertical"><button class="toc-level-btn active" data-level="2" title="顯示第2層">2</button><button class="toc-level-btn" data-level="3" title="顯示前3層">3</button><button class="toc-level-btn" data-level="4" title="顯示前4層">4</button></div>
+<div class="toc-level-buttons-vertical"><button class="toc-level-btn active" data-level="2" title="顯示第2層">2</button></div>
 </div>
 </div>
 <div class="toc" id="chapter-toc">

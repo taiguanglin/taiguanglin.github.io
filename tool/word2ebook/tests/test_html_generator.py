@@ -190,6 +190,30 @@ class TestTOCInitialState:
         html = TOCGenerator().build_index_toc(sample_chapters)
         assert 'class="toc-item toc-chapter toc-expandable"' in html
 
+    def test_chapter_level_buttons_only_render_present_levels(self):
+        """只渲染該章確實有標題的層級按鈕（對應 JS detectAndHideLevelButtons）。
+
+        少渲染一顆按鈕，控制列就少一顆圓鈕的寬度；若留到 JS 才隱藏，
+        控制列會在首繪後縮短而位移。
+        """
+        btns = I18nTemplateManager.build_level_buttons((2, 3, 4), 3, present_levels={2})
+        assert 'data-level="2"' in btns
+        assert 'data-level="3"' not in btns
+        assert 'data-level="4"' not in btns
+        # active 必須落在實際渲染的層級上
+        assert 'toc-level-btn active" data-level="2"' in btns
+
+    def test_chapter_level_buttons_active_falls_back_when_level_absent(self):
+        """active 指定的層級若不在按鈕列內，退到第一顆（不會沒有 active）。"""
+        btns = I18nTemplateManager.build_level_buttons((2, 3, 4), 3, present_levels={2, 4})
+        assert 'toc-level-btn active" data-level="2"' in btns
+
+    def test_chapter_level_buttons_without_present_levels_keeps_all(self):
+        """未提供 present_levels 時維持全部按鈕（最小重建／測試相容）。"""
+        btns = I18nTemplateManager.build_level_buttons((2, 3, 4), 3)
+        for lv in (2, 3, 4):
+            assert 'data-level="%d"' % lv in btns
+
     def test_chapter_level_buttons_active_matches_level(self):
         """層級按鈕的 .active 必須標在實際顯示層級上（否則 JS 啟動後高亮跳動）。"""
         btns = I18nTemplateManager.build_level_buttons((2, 3, 4), 2)
