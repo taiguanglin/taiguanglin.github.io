@@ -2901,39 +2901,6 @@ body.dark-neutral .answerer { color: #e0b36a; }
 body.dark-neutral .nav-footer a { background: #2a2f3a; color: #e6dcc8; box-shadow: none; }
 body.dark-neutral .w2e-toc-backdrop { background: rgba(0, 0, 0, 0.55); }
 
-/* ---- 閱讀位置提示條（11-reading-resume.js） ---- */
-.w2e-resume-bar {
-    position: fixed;
-    top: 12px;
-    left: 50%;
-    transform: translate(-50%, -140%);
-    display: flex;
-    align-items: center;
-    gap: var(--radius-md);
-    padding: 8px var(--radius-lg);
-    background: var(--color-primary);
-    color: #fff;
-    border-radius: 999px;
-    box-shadow: var(--shadow-lg);
-    font-size: 14px;
-    z-index: 9995;
-    opacity: 0;
-    transition: transform 0.3s ease, opacity 0.3s ease;
-    max-width: 92vw;
-}
-.w2e-resume-bar.visible { transform: translate(-50%, 0); opacity: 1; }
-.w2e-resume-bar button {
-    border: none;
-    background: rgba(255, 255, 255, 0.22);
-    color: #fff;
-    border-radius: 999px;
-    padding: 4px 10px;
-    cursor: pointer;
-    font-size: 13px;
-}
-.w2e-resume-bar .w2e-resume-close { padding: 4px 8px; }
-body.dark-mode .w2e-resume-bar { background: #5a2d49; }
-
 /* ---- 音檔續播膠囊（13-player-persist.js） ---- */
 .w2e-audio-resume {
     position: fixed;
