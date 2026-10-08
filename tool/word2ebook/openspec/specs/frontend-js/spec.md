@@ -37,8 +37,8 @@ Source JavaScript SHALL be split into ordered module files under
 | `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
 | `09b-para-track.js` | 講經「段落跟播」（講經書頁，段落帶 `data-start`/`data-end` 時啟動；經 `08-qa-audio.js` 暴露的 `W2E.qaAudio` 掛接）：講次 h2 旁插入「段落跟播」toggle（`paraTrackEnabled`，預設 ON）— ON 時播放中依 `audio.currentTime` 高亮當前段落（`.para-active`，上一段不做任何視覺改變）並平滑捲動（目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)；若目標段落屬於經文置頂 sticky 群，另以「當前段頂 − `W2E.sutraPin.reserveFor(el)` − 24px」為捲動上限，使高亮段落永遠落在停留經文下方不被蓋住，僅段落切換時觸發，timeupdate 節流 250ms）；跟播 ON 時點擊段落即播放所屬講次並 seek 至段首，之後一路順播到底（無段末自停；拖選／反白選取文字、點擊段落內按鈕連結時不觸發）；isolated IIFE |
 | `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留，頁面含 `.sutra-text` 時啟動）：向下捲動時讓「即將捲出視窗頂」的那段原經文以原生 `position: sticky; top: 0` 停在視窗最上方——停留中的經文就是原版經文本身（原尺寸、原樣式、無白邊），講解段落從其下方滑過（Confluence 固定表頭概念）。為每段經文包 `.sutra-pin-host`（只包層、不搬動順序），再以「經文 → 下一邊界」包 `.sutra-pin-group` 限制 sticky 範圍：邊界 = 下一段經文、任何 h1–h6（章節名/品名小節名）、任何 figure/img 圖片（取文件順序最先者；無邊界則到下一經文頂層節點/章節尾）——因此停留中的經文天生不會蓋住下一段經文、章節名或圖片，會遮住之前先讓位歸位（隨畫面捲走），進入新章節亦自然失效。過長（> 45% 視窗高）的經文整段不停留（`.sutra-pin-tall`），且經文高度隨閱讀設定（字級／行距／版面寬）、視窗縮放或字型載入改變時會重新量測（`ResizeObserver` + `<html>/<body>` inline style `MutationObserver` + `document.fonts.ready`），避免放大字級後接近滿版的經文仍卡在置頂、蓋住講解；講次 h2 旁「經文置頂」toggle（`sutraPinEnabled`，預設 ON；關閉 → `body.sutra-pin-off` 全部照常捲動）；錨點跳轉（`hashchange`／帶 hash 載入／攔截 `scrollIntoView`）時 `body.sutra-pin-suppress` 短暫停停留避免蓋住跳轉目標；把「停留經文高 + 16px 間隙」寫進群的 `--w2e-pin-reserve`（inline style，與 `applyTallClasses` 同一次量測；置頂關閉或 `.sutra-pin-tall` 時歸零，切換 toggle 時重算），CSS 據此轉成群內目標的 `scroll-margin-top`，使所有把目標對齊視窗頂的跳轉（外部連結的原生片段錨點導覽、章節錨點、浮動目錄、書籤、`.toc-count` 直跳）都停在停留經文下方；暴露 `W2E.sutraPin.reserveFor(el)`（回傳同一個「經文高 + 間隙」）供 09b 跟播捲動取捲動上限（高亮段落永遠在停留經文下方）與 03d 錨點讓位使用；isolated IIFE |
-| `10-search-return.js` | ~~「回到搜尋結果」浮動按鈕~~（2026-09 移除：依賴快照跨分頁複製，出現時機不穩）。現僅保留 index 頁持續快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage），供上一頁返回時由 01e 還原查詢、已顯示筆數與捲動位置 |
-| `11-reading-resume.js` | 閱讀位置記憶（`localStorage w2e:readpos`，頁面→捲動比例，LRU 40 頁）：重回同頁且無錨點時頂部提示「回到上次閱讀位置（X%）」；**總目錄頁（`isIndexPage()`）只有目錄無正文，既不記錄也不提示，並清除舊版殘留的目錄頁紀錄**；優先消化 `/lang-switch.js` 寫入的 `sessionStorage w2e:langjump`（簡繁雙頁切換原位恢復，總目錄頁也照樣消化以免標記外溢） |
+| `10-search-return.js` | ~~「回到搜尋結果」浮動按鈕~~（2026-09 移除：依賴快照跨分頁複製，出現時機不穩）。現僅保留 index 頁持續快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage），供上一頁返回時由 01e 還原查詢、已顯示筆數與捲動位置；另負責**簡繁切換原位恢復**——消化 `/lang-switch.js` 寫入的 `w2e:langjump`（優先同 id 錨點，其次比例，讀完即清） |
+| `11-reading-resume.js` | **已移除（2026-10）**：閱讀位置記憶（`w2e:readpos`）與「上次讀到 XX%」提示條功能裁撤；簡繁切換原位恢復由 10 消化 `w2e:langjump` 承接 |
 | `13-player-persist.js` | 音檔跨頁續播：定時（3s）與 `pagehide` 把 `{src, t, file, range, page, anchor}` 快照進 `sessionStorage w2e:playerState`（經 `W2E.qaAudio` 讀取）；任何頁載入後若有 12 小時內快照，左下浮出續播膠囊——同頁交回 08 播放器重播並 `seekAbs`，他頁自建 `Audio` 從斷點續播；✕ 丟棄 |
 | `14-search-plus.js` | 搜尋補強：`/` 或 Ctrl/Cmd+K 啟用並聚焦搜尋框；結果區 ↓/↑ 移動 `.kb-focus`、Enter 開啟、Esc 取消，結果列表重繪（換搜尋/換頁）時以 `MutationObserver`（childList/subtree）重置鍵盤焦點（不得使用已棄用的 `DOMSubtreeModified`）；章節頁帶 `?q=`（01e 開新頁時附加）且有錨點時，於錨點所在區塊以 `<mark class="w2e-hl">` 標出查詢詞 |
 | `15-mobile-toc.js` | 行動版目錄操作：≤768px 開啟浮動目錄時鋪 `.w2e-toc-backdrop`（點擊即關）；左緣 ≤28px 起右滑開啟、目錄內左滑關閉。**不**再建立常駐的 `.w2e-backtop` 回到頂端鈕——「回到頂端」只由右下角功能選單（`02-reader-ux.js` 的 `data-action="top"`）提供 |
@@ -327,6 +327,15 @@ a row (max ~6s), and SHALL stop immediately when the user scrolls
 - GIVEN a chapter page with no `.sutra-text`
 - WHEN it loads with a fragment
 - THEN the target SHALL be vertically centred with `scroll-margin-top: 0`
+
+#### Scenario: In-page TOC anchor click lands on target
+- GIVEN any chapter page and an in-page `#…` anchor link (TOC, back-links)
+- WHEN the link is clicked and the smooth scroll finishes
+- THEN `05-search-btn-visibility.js` SHALL re-measure and correct the
+  position every 150ms until stable twice in a row (same convergence rules
+  as `settleAnchorTo`: max ~6s, user input cancels), because
+  `content-visibility` height estimates change the document height mid-scroll
+  and a one-shot scroll lands off-target (observed ±600px in both books)
 
 ### Requirement: Stable Q&A IDs
 JavaScript IDs for Q&A elements SHALL be computed using the same algorithm as

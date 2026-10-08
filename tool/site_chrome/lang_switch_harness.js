@@ -117,7 +117,7 @@ check(
     'got: ' + r3.replaced
 );
 check(
-    '無錨點：仍寫入 langjump 供 11-reading-resume.js 原位恢復',
+    '無錨點：仍寫入 langjump 供 10-search-return.js 原位恢復',
     typeof r3.session._map['w2e:langjump'] === 'string',
     'got: ' + JSON.stringify(r3.session._map['w2e:langjump'])
 );

@@ -8,12 +8,24 @@ from pathlib import Path
 
 from models.document_models import Chapter, TOCItem, QACountMetadata
 from generators.toc_generator import TOCGenerator, DEFAULT_TOC_LEVEL_CHAPTER
-from templates.i18n_templates import I18nTemplateManager
 from utils.file_utils import FileManager
 from utils.i18n_utils import I18nProcessor
 from utils.config_utils import get_i18n_text, get_book_title
 from utils.favicon_utils import FaviconManager
 from config.settings import Settings, Constants
+
+# I18nTemplateManager 延遲取用：templates.i18n_templates 也 import 本套件的
+# generators.toc_generator，直接頂層 import 會造成 templates ↔ generators
+# 循環匯入（視誰先被 import 而定，pytest 收集 test_static_assets 時即炸）。
+I18nTemplateManager = None
+
+
+def _i18n_manager():
+    global I18nTemplateManager
+    if I18nTemplateManager is None:
+        from templates.i18n_templates import I18nTemplateManager as _M
+        I18nTemplateManager = _M
+    return I18nTemplateManager
 
 
 class HTMLGenerator:
@@ -35,7 +47,7 @@ class HTMLGenerator:
     ):
         self.settings = settings
         self.file_manager = file_manager
-        self.i18n_template_manager = I18nTemplateManager()
+        self.i18n_template_manager = _i18n_manager()
         self.toc_generator = TOCGenerator()
         self.i18n_processor = I18nProcessor()
         self.input_file = input_file

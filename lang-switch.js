@@ -78,7 +78,7 @@
                     return;
                 }
                 /* U10 簡繁切換保留閱讀位置：記下目前最近的標題錨點與捲動比例，
-                 * 目標頁的 11-reading-resume.js 據此原位恢復。 */
+                 * 目標頁的 11-search-return.js 據此原位恢復。 */
                 try {
                     var jump = { id: null, frac: 0 };
                     var doc = document.documentElement;

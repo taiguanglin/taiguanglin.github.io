@@ -57,6 +57,43 @@
 
 
   // 平滑滾動章節內 TOC 與回到頂部
+  //
+  // 為什麼 scrollIntoView 之後還要「收斂」：00-base.css 對
+  // .question/.answer/.para-block 設了 `content-visibility: auto` +
+  // `contain-intrinsic-size: auto 240px`，視窗外的區塊先以估計高度佔位、
+  // 渲染後才換成真實高度。平滑捲動的落點是啟動當下的文件高度算出來的；
+  // 捲動途中經過的區塊一個個換成真實高度後，文件總高跟著變，落點必然偏移
+  // （ebook/ 實測偏 600+ px，方向取決於上方高度是膨脤還是縮小，兩本書都會發生）。
+  // 03d 的 settleAnchorTo 只接在「帶錨點載入」路徑；頁內點擊（目錄、書籤、
+  // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
+  // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）；使用者一開始自己捲
+  // 就立刻放手，不跟使用者搶滚輪。
+  function settleInPageAnchor(el) {
+    let stable = 0;
+    let tries = 0;
+    let userScrolled = false;
+    const stop = () => { userScrolled = true; };
+    window.addEventListener('wheel', stop, { passive: true, once: true });
+    window.addEventListener('touchstart', stop, { passive: true, once: true });
+    window.addEventListener('keydown', (e) => {
+      if (/^(Arrow|Page|Home|End|Space)/.test(e.key)) stop();
+    });
+
+    const tick = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset);
+      if (Math.abs(want - window.pageYOffset) > 2) {
+        window.scrollTo(0, want);
+        stable = 0;
+      } else if (++stable >= 2) {
+        return;
+      }
+      if (++tries >= 40) return;   // 約 6 秒上限
+      setTimeout(tick, 150);
+    };
+    setTimeout(tick, 150);
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -65,6 +102,8 @@
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         history.pushState(null, null, href);
+        // href="" 或單純 "#"（回到頁頂）不需要收斂
+        if (href.length > 1) settleInPageAnchor(target);
       }
     });
   });
