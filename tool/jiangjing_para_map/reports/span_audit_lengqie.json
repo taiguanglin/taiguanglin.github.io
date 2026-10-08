@@ -44,6 +44,11 @@
    "ok": 99,
    "total": 116,
    "rate": 0.853
+  },
+  "39": {
+   "ok": 81,
+   "total": 99,
+   "rate": 0.818
   }
  },
  "rows": [
@@ -439,7 +444,7 @@
     {
      "pid": "p-sa7ce6be0",
      "i": 27,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 326.7,
      "end": 347.14,
@@ -589,7 +594,7 @@
     {
      "pid": "p-sf36a69b5",
      "i": 37,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 532.35,
      "end": 537.9,
@@ -604,7 +609,7 @@
     {
      "pid": "p-sd5e3f7c1",
      "i": 38,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 537.9,
      "end": 560.1,
@@ -662,7 +667,7 @@
     {
      "pid": "p-s14932e50",
      "i": 42,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 596.81,
      "end": 626.05,
@@ -825,7 +830,7 @@
     {
      "pid": "p-s3e0399c1",
      "i": 53,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 846.5,
      "end": 850.05,
@@ -840,7 +845,7 @@
     {
      "pid": "p-s64f798da",
      "i": 54,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 850.05,
      "end": 876.99,
@@ -870,7 +875,7 @@
     {
      "pid": "p-sffb25284",
      "i": 56,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 879.5,
      "end": 918.68,
@@ -915,7 +920,7 @@
     {
      "pid": "p-s7cf31893",
      "i": 59,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 969.88,
      "end": 998.65,
@@ -945,7 +950,7 @@
     {
      "pid": "p-s70f0dbcc",
      "i": 61,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1027.96,
      "end": 1050.87,
@@ -976,7 +981,7 @@
     {
      "pid": "p-s99a0bbd7",
      "i": 63,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1074.98,
      "end": 1093.5,
@@ -1021,7 +1026,7 @@
     {
      "pid": "p-s597cb682",
      "i": 66,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1147.7,
      "end": 1171.36,
@@ -1051,7 +1056,7 @@
     {
      "pid": "p-seaaed63b",
      "i": 68,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1179.4,
      "end": 1207.34,
@@ -1096,7 +1101,7 @@
     {
      "pid": "p-s3c6e870b",
      "i": 71,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1250.5,
      "end": 1284.7,
@@ -1111,7 +1116,7 @@
     {
      "pid": "p-seef8b421",
      "i": 72,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1284.7,
      "end": 1312.16,
@@ -1141,7 +1146,7 @@
     {
      "pid": "p-s55214742",
      "i": 74,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1315.3,
      "end": 1371.01,
@@ -1337,10 +1342,10 @@
     {
      "pid": "p-se38e0489",
      "i": 87,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1528.54,
-     "end": 1535.0,
+     "end": 1535,
      "is_sutra": true,
      "verdict": "unknown",
      "ev": {
@@ -1352,9 +1357,9 @@
     {
      "pid": "p-s7939caec",
      "i": 88,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
-     "start": 1535.0,
+     "start": 1535,
      "end": 1563.07,
      "is_sutra": false,
      "verdict": "span_ok",
@@ -1487,7 +1492,7 @@
     {
      "pid": "p-sc48c427a",
      "i": 97,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1713.68,
      "end": 1744.49,
@@ -1718,7 +1723,7 @@
     {
      "pid": "p-s72e96d27",
      "i": 11,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 31.35,
      "end": 67.5,
@@ -1733,7 +1738,7 @@
     {
      "pid": "p-s040f5bc1",
      "i": 12,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 67.5,
      "end": 93.2,
@@ -1748,7 +1753,7 @@
     {
      "pid": "p-s38a5e1b1",
      "i": 13,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 93.2,
      "end": 102.61,
@@ -1763,7 +1768,7 @@
     {
      "pid": "p-s57505b5e",
      "i": 14,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 102.61,
      "end": 116.22,
@@ -1778,7 +1783,7 @@
     {
      "pid": "p-sfac90265",
      "i": 15,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 116.22,
      "end": 123.15,
@@ -1793,7 +1798,7 @@
     {
      "pid": "p-s433259ef",
      "i": 16,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 123.15,
      "end": 133.73,
@@ -1808,7 +1813,7 @@
     {
      "pid": "p-s5cebe16d",
      "i": 17,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 133.73,
      "end": 139.78,
@@ -1823,7 +1828,7 @@
     {
      "pid": "p-sb7564495",
      "i": 18,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 139.78,
      "end": 157.39,
@@ -1838,7 +1843,7 @@
     {
      "pid": "p-s96329bb8",
      "i": 19,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 157.39,
      "end": 199.16,
@@ -1883,7 +1888,7 @@
     {
      "pid": "p-sdd0f01ff",
      "i": 22,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 251.35,
      "end": 270.2,
@@ -1928,7 +1933,7 @@
     {
      "pid": "p-s85e949fb",
      "i": 25,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 295.76,
      "end": 311.05,
@@ -1943,7 +1948,7 @@
     {
      "pid": "p-s7f31d00d",
      "i": 26,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 311.05,
      "end": 363.81,
@@ -1958,7 +1963,7 @@
     {
      "pid": "p-s08426b3b",
      "i": 27,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 363.81,
      "end": 386.6,
@@ -1973,7 +1978,7 @@
     {
      "pid": "p-s50a3a12c",
      "i": 28,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 386.6,
      "end": 409.81,
@@ -1988,7 +1993,7 @@
     {
      "pid": "p-sf44570b1",
      "i": 29,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 409.81,
      "end": 444.86,
@@ -2003,7 +2008,7 @@
     {
      "pid": "p-sa5e6eb2c",
      "i": 30,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 444.86,
      "end": 465.01,
@@ -2018,7 +2023,7 @@
     {
      "pid": "p-s013c0cca",
      "i": 31,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 465.01,
      "end": 472.68,
@@ -2063,7 +2068,7 @@
     {
      "pid": "p-s0a520ea5",
      "i": 34,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 525.38,
      "end": 558.16,
@@ -2078,7 +2083,7 @@
     {
      "pid": "p-sd1cf47a8",
      "i": 35,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 558.16,
      "end": 583.8,
@@ -2121,7 +2126,7 @@
     {
      "pid": "p-scb749aa5",
      "i": 38,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 614.34,
      "end": 643.32,
@@ -2136,7 +2141,7 @@
     {
      "pid": "p-s18bb6f54",
      "i": 39,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 643.32,
      "end": 660.83,
@@ -2151,7 +2156,7 @@
     {
      "pid": "p-s2f75054f",
      "i": 40,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 660.83,
      "end": 694.71,
@@ -2166,7 +2171,7 @@
     {
      "pid": "p-s56794d29",
      "i": 41,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 694.71,
      "end": 715.93,
@@ -2196,7 +2201,7 @@
     {
      "pid": "p-sa11c63dd",
      "i": 43,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 725.11,
      "end": 744.54,
@@ -2211,7 +2216,7 @@
     {
      "pid": "p-s99f6c5b0",
      "i": 44,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 744.54,
      "end": 768.17,
@@ -2226,7 +2231,7 @@
     {
      "pid": "p-s3c45cfc6",
      "i": 45,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 768.17,
      "end": 790.18,
@@ -2241,7 +2246,7 @@
     {
      "pid": "p-s9aa2d688",
      "i": 46,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 790.18,
      "end": 836.55,
@@ -2256,7 +2261,7 @@
     {
      "pid": "p-s70179690",
      "i": 47,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 836.55,
      "end": 876.11,
@@ -2271,7 +2276,7 @@
     {
      "pid": "p-sf9a1aa18",
      "i": 48,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 876.11,
      "end": 878.78,
@@ -2287,7 +2292,7 @@
     {
      "pid": "p-s768be9eb",
      "i": 49,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 878.78,
      "end": 906.58,
@@ -2302,7 +2307,7 @@
     {
      "pid": "p-sfd3a0701",
      "i": 50,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 906.58,
      "end": 939.98,
@@ -2317,7 +2322,7 @@
     {
      "pid": "p-sf62ba8ce",
      "i": 51,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 939.98,
      "end": 953.03,
@@ -2332,7 +2337,7 @@
     {
      "pid": "p-sbdb08780",
      "i": 52,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 953.03,
      "end": 1001.69,
@@ -2347,7 +2352,7 @@
     {
      "pid": "p-sb46f6893",
      "i": 53,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1001.69,
      "end": 1026.84,
@@ -2362,7 +2367,7 @@
     {
      "pid": "p-s9cf38a44",
      "i": 54,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.75,
      "start": 1026.84,
      "end": 1037.63,
@@ -2377,7 +2382,7 @@
     {
      "pid": "p-s376ba046",
      "i": 55,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1037.63,
      "end": 1052.68,
@@ -2392,7 +2397,7 @@
     {
      "pid": "p-scfd6dd2d",
      "i": 56,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1052.68,
      "end": 1074.25,
@@ -2407,7 +2412,7 @@
     {
      "pid": "p-sd528b222",
      "i": 57,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1074.25,
      "end": 1081.62,
@@ -2437,7 +2442,7 @@
     {
      "pid": "p-s828bb72e",
      "i": 59,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1090.45,
      "end": 1113.57,
@@ -2467,7 +2472,7 @@
     {
      "pid": "p-sc8af93c0",
      "i": 61,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1149.25,
      "end": 1190.4,
@@ -2513,7 +2518,7 @@
     {
      "pid": "p-sb56c75a7",
      "i": 64,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1215.21,
      "end": 1230.5,
@@ -2528,7 +2533,7 @@
     {
      "pid": "p-sec4d7dc1",
      "i": 65,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1230.5,
      "end": 1235.23,
@@ -2543,7 +2548,7 @@
     {
      "pid": "p-s5679a22d",
      "i": 66,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1235.23,
      "end": 1266.6,
@@ -2558,7 +2563,7 @@
     {
      "pid": "p-sb54dfa6d",
      "i": 67,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1266.6,
      "end": 1303.09,
@@ -2573,7 +2578,7 @@
     {
      "pid": "p-s9801aeca",
      "i": 68,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1303.09,
      "end": 1309.63,
@@ -2588,7 +2593,7 @@
     {
      "pid": "p-s4576a57d",
      "i": 69,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1309.63,
      "end": 1329.27,
@@ -2603,7 +2608,7 @@
     {
      "pid": "p-s0ff52717",
      "i": 70,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1329.27,
      "end": 1340.83,
@@ -2618,7 +2623,7 @@
     {
      "pid": "p-s70feaf88",
      "i": 71,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1340.83,
      "end": 1404.83,
@@ -2648,7 +2653,7 @@
     {
      "pid": "p-sbcc4fc1b",
      "i": 73,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1427.3,
      "end": 1436,
@@ -2693,7 +2698,7 @@
     {
      "pid": "p-s571a07b8",
      "i": 76,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1460.26,
      "end": 1500.75,
@@ -2708,7 +2713,7 @@
     {
      "pid": "p-s148f4f91",
      "i": 77,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1500.75,
      "end": 1503.52,
@@ -2738,7 +2743,7 @@
     {
      "pid": "p-s9ff0698a",
      "i": 79,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1546.7,
      "end": 1552.82,
@@ -2783,7 +2788,7 @@
     {
      "pid": "p-s552836a2",
      "i": 82,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1616.96,
      "end": 1619.32,
@@ -2798,7 +2803,7 @@
     {
      "pid": "p-s93fb45dc",
      "i": 83,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1619.32,
      "end": 1636.41,
@@ -2813,7 +2818,7 @@
     {
      "pid": "p-se267884a",
      "i": 84,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1636.41,
      "end": 1676.09,
@@ -2843,7 +2848,7 @@
     {
      "pid": "p-s6a5b3dde",
      "i": 86,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1691.95,
      "end": 1700.86,
@@ -2889,7 +2894,7 @@
     {
      "pid": "p-s79f2032c",
      "i": 89,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1738.21,
      "end": 1762.8,
@@ -3037,7 +3042,7 @@
     {
      "pid": "p-s6717e902",
      "i": 8,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 14.64,
      "end": 38.79,
@@ -3067,7 +3072,7 @@
     {
      "pid": "p-s87097b70",
      "i": 10,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 61.79,
      "end": 86.52,
@@ -3097,7 +3102,7 @@
     {
      "pid": "p-s75e69c6f",
      "i": 12,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 94.08,
      "end": 130.5,
@@ -3112,7 +3117,7 @@
     {
      "pid": "p-s191366bd",
      "i": 13,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 130.5,
      "end": 139.31,
@@ -3127,7 +3132,7 @@
     {
      "pid": "p-s2a6a4a45",
      "i": 14,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 139.31,
      "end": 146.17,
@@ -3142,7 +3147,7 @@
     {
      "pid": "p-s97b20834",
      "i": 15,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 146.17,
      "end": 167.38,
@@ -3157,7 +3162,7 @@
     {
      "pid": "p-s3b6bff61",
      "i": 16,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 167.38,
      "end": 175.71,
@@ -3172,7 +3177,7 @@
     {
      "pid": "p-s69b7db01",
      "i": 17,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 175.71,
      "end": 210.01,
@@ -3187,7 +3192,7 @@
     {
      "pid": "p-s0e597996",
      "i": 18,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 210.01,
      "end": 232.35,
@@ -3217,7 +3222,7 @@
     {
      "pid": "p-s3733a141",
      "i": 20,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 237.45,
      "end": 267.95,
@@ -3232,7 +3237,7 @@
     {
      "pid": "p-sbbc7ff00",
      "i": 21,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 267.95,
      "end": 271.11,
@@ -3247,7 +3252,7 @@
     {
      "pid": "p-s9a6951f8",
      "i": 22,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 271.11,
      "end": 286.29,
@@ -3262,7 +3267,7 @@
     {
      "pid": "p-sbeeb821b",
      "i": 23,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 286.29,
      "end": 309.67,
@@ -3277,7 +3282,7 @@
     {
      "pid": "p-s497b34a1",
      "i": 24,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 309.67,
      "end": 334.74,
@@ -3292,7 +3297,7 @@
     {
      "pid": "p-sa37f64ff",
      "i": 25,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 334.74,
      "end": 340.22,
@@ -3307,7 +3312,7 @@
     {
      "pid": "p-sdf3277f9",
      "i": 26,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 340.22,
      "end": 368.44,
@@ -3322,7 +3327,7 @@
     {
      "pid": "p-sdcae7372",
      "i": 27,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 368.44,
      "end": 391.71,
@@ -3337,7 +3342,7 @@
     {
      "pid": "p-s231aba54",
      "i": 28,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 391.71,
      "end": 416.96,
@@ -3352,7 +3357,7 @@
     {
      "pid": "p-sdd8f7490",
      "i": 29,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 416.96,
      "end": 423.76,
@@ -3367,7 +3372,7 @@
     {
      "pid": "p-s7a0b2dc0",
      "i": 30,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 423.76,
      "end": 443.47,
@@ -3382,7 +3387,7 @@
     {
      "pid": "p-s72c8aa95",
      "i": 31,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 443.47,
      "end": 447.85,
@@ -3397,7 +3402,7 @@
     {
      "pid": "p-sff89f4c5",
      "i": 32,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 447.85,
      "end": 464.45,
@@ -3412,7 +3417,7 @@
     {
      "pid": "p-scb7e909f",
      "i": 33,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 464.45,
      "end": 500.05,
@@ -3427,7 +3432,7 @@
     {
      "pid": "p-s85817e3a",
      "i": 34,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 500.05,
      "end": 534.23,
@@ -3442,7 +3447,7 @@
     {
      "pid": "p-sb6b50929",
      "i": 35,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 534.23,
      "end": 539.04,
@@ -3457,7 +3462,7 @@
     {
      "pid": "p-s7489b9f7",
      "i": 36,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 539.04,
      "end": 562.28,
@@ -3475,7 +3480,7 @@
      "method": "ngram",
      "conf": 0.85,
      "start": 562.28,
-     "end": 587.0,
+     "end": 587,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -3487,9 +3492,9 @@
     {
      "pid": "p-s69a83f82",
      "i": 38,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
-     "start": 587.0,
+     "start": 587,
      "end": 602.8,
      "is_sutra": false,
      "verdict": "span_ok",
@@ -3532,7 +3537,7 @@
     {
      "pid": "p-sdc2f28a7",
      "i": 41,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 662.73,
      "end": 699.26,
@@ -3547,7 +3552,7 @@
     {
      "pid": "p-s047bbfa7",
      "i": 42,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 699.26,
      "end": 705.5,
@@ -3577,7 +3582,7 @@
     {
      "pid": "p-sd65023a8",
      "i": 44,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 749.95,
      "end": 754.95,
@@ -3607,7 +3612,7 @@
     {
      "pid": "p-s4adb11d3",
      "i": 46,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 796.5,
      "end": 800.96,
@@ -3622,7 +3627,7 @@
     {
      "pid": "p-s62de13f1",
      "i": 47,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 800.96,
      "end": 809.67,
@@ -3637,7 +3642,7 @@
     {
      "pid": "p-s8a50ca25",
      "i": 48,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 809.67,
      "end": 818.53,
@@ -3652,7 +3657,7 @@
     {
      "pid": "p-sfa7bdf1b",
      "i": 49,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 818.53,
      "end": 870.31,
@@ -3667,7 +3672,7 @@
     {
      "pid": "p-s973837aa",
      "i": 50,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 870.31,
      "end": 878.65,
@@ -3682,7 +3687,7 @@
     {
      "pid": "p-sd7c9ebdd",
      "i": 51,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 878.65,
      "end": 887.63,
@@ -3712,7 +3717,7 @@
     {
      "pid": "p-sa6cac125",
      "i": 53,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 901.6,
      "end": 907.11,
@@ -3727,7 +3732,7 @@
     {
      "pid": "p-s43ffc0d8",
      "i": 54,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 907.11,
      "end": 925.02,
@@ -3742,7 +3747,7 @@
     {
      "pid": "p-s97743b54",
      "i": 55,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 925.02,
      "end": 931.47,
@@ -3757,7 +3762,7 @@
     {
      "pid": "p-s47e80fcb",
      "i": 56,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 931.47,
      "end": 968.82,
@@ -3772,7 +3777,7 @@
     {
      "pid": "p-s3e8b97ae",
      "i": 57,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 968.82,
      "end": 985.59,
@@ -3787,7 +3792,7 @@
     {
      "pid": "p-s960453c1",
      "i": 58,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 985.59,
      "end": 1010.28,
@@ -3802,7 +3807,7 @@
     {
      "pid": "p-s1d5fba60",
      "i": 59,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1010.28,
      "end": 1054.42,
@@ -3817,7 +3822,7 @@
     {
      "pid": "p-s73fa05ee",
      "i": 60,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1054.42,
      "end": 1066.77,
@@ -3832,7 +3837,7 @@
     {
      "pid": "p-se822fc59",
      "i": 61,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1066.77,
      "end": 1089.05,
@@ -3847,7 +3852,7 @@
     {
      "pid": "p-sfe04c308",
      "i": 62,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1089.05,
      "end": 1095.69,
@@ -3862,7 +3867,7 @@
     {
      "pid": "p-s3536d62c",
      "i": 63,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1095.69,
      "end": 1137.06,
@@ -3892,7 +3897,7 @@
     {
      "pid": "p-sb5425408",
      "i": 65,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1146.35,
      "end": 1212.71,
@@ -3907,7 +3912,7 @@
     {
      "pid": "p-sf8a94a45",
      "i": 66,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1212.71,
      "end": 1215.35,
@@ -3922,7 +3927,7 @@
     {
      "pid": "p-sb8c050fc",
      "i": 67,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1215.35,
      "end": 1220.88,
@@ -3937,7 +3942,7 @@
     {
      "pid": "p-sa0a3ecbf",
      "i": 68,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1220.88,
      "end": 1245.26,
@@ -3952,7 +3957,7 @@
     {
      "pid": "p-sa92573d3",
      "i": 69,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1245.26,
      "end": 1284.17,
@@ -3967,7 +3972,7 @@
     {
      "pid": "p-s9cd86b9e",
      "i": 70,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1284.17,
      "end": 1286.05,
@@ -3982,7 +3987,7 @@
     {
      "pid": "p-s6b02bd40",
      "i": 71,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1286.05,
      "end": 1317.14,
@@ -3997,7 +4002,7 @@
     {
      "pid": "p-s80302f42",
      "i": 72,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1317.14,
      "end": 1347.63,
@@ -4012,7 +4017,7 @@
     {
      "pid": "p-s9751162e",
      "i": 73,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1347.63,
      "end": 1354.28,
@@ -4027,7 +4032,7 @@
     {
      "pid": "p-s827fbe5d",
      "i": 74,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1354.28,
      "end": 1386.43,
@@ -4042,7 +4047,7 @@
     {
      "pid": "p-sc939371d",
      "i": 75,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1386.43,
      "end": 1391.66,
@@ -4057,7 +4062,7 @@
     {
      "pid": "p-sb30f310d",
      "i": 76,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1391.66,
      "end": 1404.49,
@@ -4072,7 +4077,7 @@
     {
      "pid": "p-sf3ffcaf7",
      "i": 77,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1404.49,
      "end": 1411.33,
@@ -4087,7 +4092,7 @@
     {
      "pid": "p-s0c824980",
      "i": 78,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1411.33,
      "end": 1433.94,
@@ -4102,7 +4107,7 @@
     {
      "pid": "p-s9abea73c",
      "i": 79,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1433.94,
      "end": 1442.47,
@@ -4117,7 +4122,7 @@
     {
      "pid": "p-sfd3b178a",
      "i": 80,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1442.47,
      "end": 1466.21,
@@ -4132,7 +4137,7 @@
     {
      "pid": "p-s7b576e10",
      "i": 81,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1466.21,
      "end": 1472.45,
@@ -4147,7 +4152,7 @@
     {
      "pid": "p-s0938b98b",
      "i": 82,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1472.45,
      "end": 1491.22,
@@ -4162,10 +4167,10 @@
     {
      "pid": "p-sc4274272",
      "i": 83,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1491.22,
-     "end": 1502.0,
+     "end": 1502,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -4177,9 +4182,9 @@
     {
      "pid": "p-sac3587ff",
      "i": 84,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
-     "start": 1502.0,
+     "start": 1502,
      "end": 1517.45,
      "is_sutra": false,
      "verdict": "span_ok",
@@ -4192,7 +4197,7 @@
     {
      "pid": "p-s627c213d",
      "i": 85,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1517.45,
      "end": 1538.16,
@@ -4207,7 +4212,7 @@
     {
      "pid": "p-seea6c043",
      "i": 86,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1538.16,
      "end": 1542.7,
@@ -4237,7 +4242,7 @@
     {
      "pid": "p-s1c6971a3",
      "i": 88,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1556.16,
      "end": 1581.67,
@@ -4252,7 +4257,7 @@
     {
      "pid": "p-s8854a248",
      "i": 89,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1581.67,
      "end": 1587.08,
@@ -4267,7 +4272,7 @@
     {
      "pid": "p-saefc122d",
      "i": 90,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1587.08,
      "end": 1617.22,
@@ -4282,7 +4287,7 @@
     {
      "pid": "p-sb06209b3",
      "i": 91,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.95,
      "start": 1617.22,
      "end": 1647.48,
@@ -4297,7 +4302,7 @@
     {
      "pid": "p-s90da940c",
      "i": 92,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1647.48,
      "end": 1677.44,
@@ -4312,7 +4317,7 @@
     {
      "pid": "p-s45c5de23",
      "i": 93,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1677.44,
      "end": 1678.554,
@@ -4443,7 +4448,7 @@
     {
      "pid": "p-sd8b6d2c5",
      "i": 8,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 15.82,
      "end": 19.42,
@@ -4458,7 +4463,7 @@
     {
      "pid": "p-s637f3a71",
      "i": 9,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 19.42,
      "end": 33.23,
@@ -4473,7 +4478,7 @@
     {
      "pid": "p-s9d97c807",
      "i": 10,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 33.23,
      "end": 35.99,
@@ -4489,7 +4494,7 @@
     {
      "pid": "p-s659c2bf9",
      "i": 11,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 35.99,
      "end": 86.8,
@@ -4519,7 +4524,7 @@
     {
      "pid": "p-s7e133824",
      "i": 13,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 92.31,
      "end": 135.65,
@@ -4534,7 +4539,7 @@
     {
      "pid": "p-sf1a108d0",
      "i": 14,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 135.65,
      "end": 162.63,
@@ -4549,7 +4554,7 @@
     {
      "pid": "p-s27102e71",
      "i": 15,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 162.63,
      "end": 170.42,
@@ -4594,7 +4599,7 @@
     {
      "pid": "p-sfcf52d35",
      "i": 18,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 203.56,
      "end": 207.66,
@@ -4609,7 +4614,7 @@
     {
      "pid": "p-s0e920095",
      "i": 19,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 207.66,
      "end": 226.86,
@@ -4624,7 +4629,7 @@
     {
      "pid": "p-sbd4b99dd",
      "i": 20,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 226.86,
      "end": 242.72,
@@ -4639,7 +4644,7 @@
     {
      "pid": "p-s38a45d1d",
      "i": 21,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 242.72,
      "end": 245.72,
@@ -4654,7 +4659,7 @@
     {
      "pid": "p-s1e04adc1",
      "i": 22,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 245.72,
      "end": 264.62,
@@ -4669,7 +4674,7 @@
     {
      "pid": "p-sf235dadc",
      "i": 23,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 264.62,
      "end": 275.48,
@@ -4684,7 +4689,7 @@
     {
      "pid": "p-scdef2fe8",
      "i": 24,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 275.48,
      "end": 319.31,
@@ -4699,7 +4704,7 @@
     {
      "pid": "p-s7cb88028",
      "i": 25,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 319.31,
      "end": 386.79,
@@ -4714,7 +4719,7 @@
     {
      "pid": "p-s3023cd6f",
      "i": 26,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 386.79,
      "end": 407.92,
@@ -4729,7 +4734,7 @@
     {
      "pid": "p-s5c618803",
      "i": 27,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 407.92,
      "end": 414.91,
@@ -4744,7 +4749,7 @@
     {
      "pid": "p-s548508c6",
      "i": 28,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 414.91,
      "end": 420.66,
@@ -4759,7 +4764,7 @@
     {
      "pid": "p-s99d9b2b6",
      "i": 29,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 420.66,
      "end": 456.54,
@@ -4774,7 +4779,7 @@
     {
      "pid": "p-s35485553",
      "i": 30,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 456.54,
      "end": 487.55,
@@ -4789,7 +4794,7 @@
     {
      "pid": "p-s8ddbeac3",
      "i": 31,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 487.55,
      "end": 493.43,
@@ -4804,7 +4809,7 @@
     {
      "pid": "p-s8906b6cc",
      "i": 32,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 493.43,
      "end": 525.9,
@@ -4819,7 +4824,7 @@
     {
      "pid": "p-sedbc614d",
      "i": 33,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 525.9,
      "end": 548.43,
@@ -4834,7 +4839,7 @@
     {
      "pid": "p-s8a3ca33e",
      "i": 34,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 548.43,
      "end": 554.43,
@@ -4849,7 +4854,7 @@
     {
      "pid": "p-sf8d20f02",
      "i": 35,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 554.43,
      "end": 588.41,
@@ -4864,7 +4869,7 @@
     {
      "pid": "p-sb962fd17",
      "i": 36,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 588.41,
      "end": 600.67,
@@ -4879,7 +4884,7 @@
     {
      "pid": "p-s00ab31bc",
      "i": 37,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 600.67,
      "end": 610.03,
@@ -4894,7 +4899,7 @@
     {
      "pid": "p-s723e5c3f",
      "i": 38,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 610.03,
      "end": 630.49,
@@ -4909,7 +4914,7 @@
     {
      "pid": "p-s89b3456f",
      "i": 39,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 630.49,
      "end": 640.56,
@@ -4939,7 +4944,7 @@
     {
      "pid": "p-s772f79aa",
      "i": 41,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 671.88,
      "end": 707.66,
@@ -4954,7 +4959,7 @@
     {
      "pid": "p-s010585ca",
      "i": 42,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 707.66,
      "end": 733.67,
@@ -4969,7 +4974,7 @@
     {
      "pid": "p-scf757fdc",
      "i": 43,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 733.67,
      "end": 776.74,
@@ -4984,7 +4989,7 @@
     {
      "pid": "p-s94e4e221",
      "i": 44,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 776.74,
      "end": 789.85,
@@ -4999,7 +5004,7 @@
     {
      "pid": "p-s6f09b446",
      "i": 45,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.7,
      "start": 789.85,
      "end": 795.21,
@@ -5015,7 +5020,7 @@
     {
      "pid": "p-s741a054b",
      "i": 46,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.7,
      "start": 795.21,
      "end": 821.56,
@@ -5031,7 +5036,7 @@
     {
      "pid": "p-s0e495890",
      "i": 47,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 821.56,
      "end": 842.5,
@@ -5046,7 +5051,7 @@
     {
      "pid": "p-sc8c1c94c",
      "i": 48,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 842.5,
      "end": 855.06,
@@ -5061,7 +5066,7 @@
     {
      "pid": "p-sfa9eb790",
      "i": 49,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 855.06,
      "end": 880.06,
@@ -5076,7 +5081,7 @@
     {
      "pid": "p-sd7e30f94",
      "i": 50,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 880.06,
      "end": 901.85,
@@ -5091,7 +5096,7 @@
     {
      "pid": "p-s564ef873",
      "i": 51,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 901.85,
      "end": 913.21,
@@ -5136,7 +5141,7 @@
     {
      "pid": "p-scc1c36eb",
      "i": 54,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 958.34,
      "end": 980.73,
@@ -5151,7 +5156,7 @@
     {
      "pid": "p-s2f5c0067",
      "i": 55,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 980.73,
      "end": 1005.71,
@@ -5166,7 +5171,7 @@
     {
      "pid": "p-s98f6ae11",
      "i": 56,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1005.71,
      "end": 1015.1,
@@ -5181,7 +5186,7 @@
     {
      "pid": "p-s9b08e7a2",
      "i": 57,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1015.1,
      "end": 1021.37,
@@ -5196,7 +5201,7 @@
     {
      "pid": "p-se296b382",
      "i": 58,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1021.37,
      "end": 1057.8,
@@ -5211,7 +5216,7 @@
     {
      "pid": "p-s44bc2ab5",
      "i": 59,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1057.8,
      "end": 1076.17,
@@ -5226,7 +5231,7 @@
     {
      "pid": "p-s162c9570",
      "i": 60,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1076.17,
      "end": 1083.39,
@@ -5241,7 +5246,7 @@
     {
      "pid": "p-s82f53b31",
      "i": 61,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1083.39,
      "end": 1109.63,
@@ -5256,7 +5261,7 @@
     {
      "pid": "p-s39d8709d",
      "i": 62,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1109.63,
      "end": 1118.85,
@@ -5271,7 +5276,7 @@
     {
      "pid": "p-s8acab435",
      "i": 63,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1118.85,
      "end": 1126.93,
@@ -5301,7 +5306,7 @@
     {
      "pid": "p-s80dc8a60",
      "i": 65,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1160.82,
      "end": 1192.38,
@@ -5316,7 +5321,7 @@
     {
      "pid": "p-s096e1d53",
      "i": 66,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1192.38,
      "end": 1194.28,
@@ -5331,7 +5336,7 @@
     {
      "pid": "p-sfb3471f9",
      "i": 67,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1194.28,
      "end": 1196.67,
@@ -5376,7 +5381,7 @@
     {
      "pid": "p-s50a580cd",
      "i": 70,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1242.93,
      "end": 1248.05,
@@ -5391,7 +5396,7 @@
     {
      "pid": "p-s046dcbd1",
      "i": 71,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1248.05,
      "end": 1272.81,
@@ -5421,10 +5426,10 @@
     {
      "pid": "p-s0a4846df",
      "i": 73,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1322.07,
-     "end": 1341.0,
+     "end": 1341,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -5436,9 +5441,9 @@
     {
      "pid": "p-s1412518b",
      "i": 74,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
-     "start": 1341.0,
+     "start": 1341,
      "end": 1351.44,
      "is_sutra": true,
      "verdict": "unknown",
@@ -5451,7 +5456,7 @@
     {
      "pid": "p-s82259e1b",
      "i": 75,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1351.44,
      "end": 1394.75,
@@ -5466,7 +5471,7 @@
     {
      "pid": "p-sb5bf944b",
      "i": 76,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.7,
      "start": 1394.75,
      "end": 1397.1,
@@ -5496,7 +5501,7 @@
     {
      "pid": "p-s27537352",
      "i": 78,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1431.29,
      "end": 1435.68,
@@ -5511,7 +5516,7 @@
     {
      "pid": "p-s5d009634",
      "i": 79,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1435.68,
      "end": 1461.21,
@@ -5526,7 +5531,7 @@
     {
      "pid": "p-sb5b877c8",
      "i": 80,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1461.21,
      "end": 1487.09,
@@ -5571,7 +5576,7 @@
     {
      "pid": "p-sfcde0a81",
      "i": 83,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1515.75,
      "end": 1553.39,
@@ -5586,7 +5591,7 @@
     {
      "pid": "p-se464baeb",
      "i": 84,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1553.39,
      "end": 1559.38,
@@ -5616,7 +5621,7 @@
     {
      "pid": "p-se7d684a3",
      "i": 86,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1583.94,
      "end": 1591.61,
@@ -5646,7 +5651,7 @@
     {
      "pid": "p-sba50d4f7",
      "i": 88,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1610.8,
      "end": 1643.89,
@@ -5676,7 +5681,7 @@
     {
      "pid": "p-sf2e5f0df",
      "i": 90,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.7,
      "start": 1649.81,
      "end": 1667.51,
@@ -5691,7 +5696,7 @@
     {
      "pid": "p-se4fbe409",
      "i": 91,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1667.51,
      "end": 1676.84,
@@ -5706,7 +5711,7 @@
     {
      "pid": "p-s81d3084e",
      "i": 92,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1676.84,
      "end": 1681.65,
@@ -5721,7 +5726,7 @@
     {
      "pid": "p-s5b6bc3a9",
      "i": 93,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1681.65,
      "end": 1686.39,
@@ -5736,7 +5741,7 @@
     {
      "pid": "p-s68ba0a22",
      "i": 94,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1686.39,
      "end": 1713.74,
@@ -5766,7 +5771,7 @@
     {
      "pid": "p-se3dc4a65",
      "i": 96,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1754.91,
      "end": 1760,
@@ -5796,7 +5801,7 @@
     {
      "pid": "p-s9ae18699",
      "i": 98,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1804.33,
      "end": 1808.92,
@@ -5811,7 +5816,7 @@
     {
      "pid": "p-s909c7652",
      "i": 99,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1808.92,
      "end": 1833.39,
@@ -5826,7 +5831,7 @@
     {
      "pid": "p-sc66cffbf",
      "i": 100,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1833.39,
      "end": 1842.49,
@@ -5886,7 +5891,7 @@
     {
      "pid": "p-sbc8b63b5",
      "i": 104,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 2073.47,
      "end": 2093.66,
@@ -5901,7 +5906,7 @@
     {
      "pid": "p-sb1405350",
      "i": 105,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 2093.66,
      "end": 2134.23,
@@ -5916,7 +5921,7 @@
     {
      "pid": "p-s7dec042d",
      "i": 106,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 2134.23,
      "end": 2158.41,
@@ -5931,7 +5936,7 @@
     {
      "pid": "p-sa5fdb926",
      "i": 107,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 2158.41,
      "end": 2188.47,
@@ -5946,7 +5951,7 @@
     {
      "pid": "p-s9abe8695",
      "i": 108,
-     "method": "dtw-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 2188.47,
      "end": 2191.227,
@@ -6078,7 +6083,7 @@
     {
      "pid": "p-s81ffad15",
      "i": 8,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 9.02,
      "end": 25.28,
@@ -6093,7 +6098,7 @@
     {
      "pid": "p-scc72af1c",
      "i": 9,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 25.28,
      "end": 54.33,
@@ -6108,7 +6113,7 @@
     {
      "pid": "p-s12866bd4",
      "i": 10,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 54.33,
      "end": 58.61,
@@ -6123,7 +6128,7 @@
     {
      "pid": "p-s48b4b19f",
      "i": 11,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 58.61,
      "end": 120.75,
@@ -6138,7 +6143,7 @@
     {
      "pid": "p-sdfd83441",
      "i": 12,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 120.75,
      "end": 143.51,
@@ -6153,7 +6158,7 @@
     {
      "pid": "p-sad1df9fc",
      "i": 13,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 143.51,
      "end": 164.64,
@@ -6168,7 +6173,7 @@
     {
      "pid": "p-sc947271a",
      "i": 14,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 164.64,
      "end": 197.59,
@@ -6183,7 +6188,7 @@
     {
      "pid": "p-s37efb0fb",
      "i": 15,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 197.59,
      "end": 233.55,
@@ -6198,7 +6203,7 @@
     {
      "pid": "p-s5b06bc7f",
      "i": 16,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 233.55,
      "end": 252.47,
@@ -6213,7 +6218,7 @@
     {
      "pid": "p-s789b8f32",
      "i": 17,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 252.47,
      "end": 284.88,
@@ -6228,7 +6233,7 @@
     {
      "pid": "p-s4db2be6d",
      "i": 18,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 284.88,
      "end": 301.25,
@@ -6243,7 +6248,7 @@
     {
      "pid": "p-s1803c627",
      "i": 19,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 301.25,
      "end": 318.01,
@@ -6258,7 +6263,7 @@
     {
      "pid": "p-s8c8e1635",
      "i": 20,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 318.01,
      "end": 325.33,
@@ -6273,7 +6278,7 @@
     {
      "pid": "p-sa697be19",
      "i": 21,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 325.33,
      "end": 351.52,
@@ -6303,7 +6308,7 @@
     {
      "pid": "p-s7018c563",
      "i": 23,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 380.59,
      "end": 405.67,
@@ -6318,7 +6323,7 @@
     {
      "pid": "p-sb592d5dd",
      "i": 24,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 405.67,
      "end": 411.88,
@@ -6348,7 +6353,7 @@
     {
      "pid": "p-sde70cb93",
      "i": 26,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 455.62,
      "end": 494.93,
@@ -6378,7 +6383,7 @@
     {
      "pid": "p-s67f7e77e",
      "i": 28,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 535.14,
      "end": 548.39,
@@ -6393,7 +6398,7 @@
     {
      "pid": "p-sdaabf0f7",
      "i": 29,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 548.39,
      "end": 562.97,
@@ -6423,7 +6428,7 @@
     {
      "pid": "p-sf472a7ed",
      "i": 31,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 597.72,
      "end": 626.81,
@@ -6453,7 +6458,7 @@
     {
      "pid": "p-se7467be4",
      "i": 33,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 638.74,
      "end": 676.35,
@@ -6468,7 +6473,7 @@
     {
      "pid": "p-sc25d42cf",
      "i": 34,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 676.35,
      "end": 708.94,
@@ -6498,7 +6503,7 @@
     {
      "pid": "p-s2427f241",
      "i": 36,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 745.13,
      "end": 752.92,
@@ -6513,7 +6518,7 @@
     {
      "pid": "p-sfa4856ae",
      "i": 37,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 752.92,
      "end": 781.02,
@@ -6573,7 +6578,7 @@
     {
      "pid": "p-s30f0d42f",
      "i": 41,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 807.13,
      "end": 855.01,
@@ -6603,7 +6608,7 @@
     {
      "pid": "p-s35f7671c",
      "i": 43,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 865.77,
      "end": 909.89,
@@ -6618,7 +6623,7 @@
     {
      "pid": "p-s23c4fcae",
      "i": 44,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 909.89,
      "end": 917.11,
@@ -6633,7 +6638,7 @@
     {
      "pid": "p-s74915c30",
      "i": 45,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 917.11,
      "end": 948.42,
@@ -6663,7 +6668,7 @@
     {
      "pid": "p-se1afbb81",
      "i": 47,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 969.69,
      "end": 981.97,
@@ -6678,7 +6683,7 @@
     {
      "pid": "p-s40fb1dc6",
      "i": 48,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 981.97,
      "end": 1016.08,
@@ -6693,7 +6698,7 @@
     {
      "pid": "p-s4a0c92f0",
      "i": 49,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1016.08,
      "end": 1033.94,
@@ -6708,7 +6713,7 @@
     {
      "pid": "p-s43bd226a",
      "i": 50,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1033.94,
      "end": 1049.14,
@@ -6723,7 +6728,7 @@
     {
      "pid": "p-s78c5ed33",
      "i": 51,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1049.14,
      "end": 1067.83,
@@ -6738,7 +6743,7 @@
     {
      "pid": "p-s3ca2d09c",
      "i": 52,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1067.83,
      "end": 1072.39,
@@ -6753,7 +6758,7 @@
     {
      "pid": "p-sab3e65db",
      "i": 53,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1072.39,
      "end": 1103.42,
@@ -6768,7 +6773,7 @@
     {
      "pid": "p-sc5fe454e",
      "i": 54,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1103.42,
      "end": 1124.05,
@@ -6783,7 +6788,7 @@
     {
      "pid": "p-s938f04b8",
      "i": 55,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1124.05,
      "end": 1160.28,
@@ -6798,7 +6803,7 @@
     {
      "pid": "p-sebc152bc",
      "i": 56,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1160.28,
      "end": 1186.24,
@@ -6813,7 +6818,7 @@
     {
      "pid": "p-s3edebb80",
      "i": 57,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1186.24,
      "end": 1204.45,
@@ -6828,7 +6833,7 @@
     {
      "pid": "p-s7a40c098",
      "i": 58,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1204.45,
      "end": 1210.26,
@@ -6843,7 +6848,7 @@
     {
      "pid": "p-safa7c18e",
      "i": 59,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1210.26,
      "end": 1235.68,
@@ -6858,7 +6863,7 @@
     {
      "pid": "p-sc92530bd",
      "i": 60,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1235.68,
      "end": 1256.93,
@@ -6873,7 +6878,7 @@
     {
      "pid": "p-s642f5195",
      "i": 61,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1256.93,
      "end": 1287.54,
@@ -6888,7 +6893,7 @@
     {
      "pid": "p-s77040947",
      "i": 62,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1287.54,
      "end": 1314.22,
@@ -6903,7 +6908,7 @@
     {
      "pid": "p-s9e41e286",
      "i": 63,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1314.22,
      "end": 1319.99,
@@ -6933,7 +6938,7 @@
     {
      "pid": "p-sc7abe0ec",
      "i": 65,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1346.29,
      "end": 1360.22,
@@ -6948,7 +6953,7 @@
     {
      "pid": "p-s5dbf4983",
      "i": 66,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1360.22,
      "end": 1362.2,
@@ -6963,7 +6968,7 @@
     {
      "pid": "p-s3bf76f56",
      "i": 67,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1362.2,
      "end": 1393.17,
@@ -6978,7 +6983,7 @@
     {
      "pid": "p-s6fa0595c",
      "i": 68,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1393.17,
      "end": 1417.53,
@@ -7008,7 +7013,7 @@
     {
      "pid": "p-scc9d81d8",
      "i": 70,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1436.03,
      "end": 1459.66,
@@ -7023,7 +7028,7 @@
     {
      "pid": "p-s8bff2725",
      "i": 71,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1459.66,
      "end": 1470.04,
@@ -7039,7 +7044,7 @@
     {
      "pid": "p-sfe1a281a",
      "i": 72,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1470.04,
      "end": 1481.33,
@@ -7054,7 +7059,7 @@
     {
      "pid": "p-s7dccda84",
      "i": 73,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1481.33,
      "end": 1494.5,
@@ -7069,7 +7074,7 @@
     {
      "pid": "p-sbaeeb4c4",
      "i": 74,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1494.5,
      "end": 1517.16,
@@ -7084,7 +7089,7 @@
     {
      "pid": "p-s09e2d173",
      "i": 75,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1517.16,
      "end": 1565.14,
@@ -7099,7 +7104,7 @@
     {
      "pid": "p-sa7332b4d",
      "i": 76,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1565.14,
      "end": 1583.54,
@@ -7114,7 +7119,7 @@
     {
      "pid": "p-s64331d33",
      "i": 77,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1583.54,
      "end": 1607.43,
@@ -7129,7 +7134,7 @@
     {
      "pid": "p-s53ac94c8",
      "i": 78,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1607.43,
      "end": 1629.09,
@@ -7144,7 +7149,7 @@
     {
      "pid": "p-s4b7ec8a7",
      "i": 79,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1629.09,
      "end": 1679.91,
@@ -7159,7 +7164,7 @@
     {
      "pid": "p-s9fa83762",
      "i": 80,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1679.91,
      "end": 1694.82,
@@ -7174,7 +7179,7 @@
     {
      "pid": "p-sc72ac5e3",
      "i": 81,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1694.82,
      "end": 1705.5,
@@ -7189,7 +7194,7 @@
     {
      "pid": "p-s90293aa3",
      "i": 82,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1705.5,
      "end": 1728.35,
@@ -7204,7 +7209,7 @@
     {
      "pid": "p-s58077eaf",
      "i": 83,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1728.35,
      "end": 1742.12,
@@ -7219,7 +7224,7 @@
     {
      "pid": "p-s57573a8d",
      "i": 84,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1742.12,
      "end": 1779.38,
@@ -7249,7 +7254,7 @@
     {
      "pid": "p-s224bcb65",
      "i": 86,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1783.32,
      "end": 1808.72,
@@ -7264,7 +7269,7 @@
     {
      "pid": "p-s93f54e83",
      "i": 87,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1808.72,
      "end": 1837.93,
@@ -7279,7 +7284,7 @@
     {
      "pid": "p-se9a8615f",
      "i": 88,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1837.93,
      "end": 1861.2,
@@ -7309,7 +7314,7 @@
     {
      "pid": "p-s2617ea87",
      "i": 90,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1900.66,
      "end": 1904.87,
@@ -7339,7 +7344,7 @@
     {
      "pid": "p-sdb68cace",
      "i": 92,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1920.25,
      "end": 1942.87,
@@ -7354,7 +7359,7 @@
     {
      "pid": "p-s04631273",
      "i": 93,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1942.87,
      "end": 1946.69,
@@ -7369,7 +7374,7 @@
     {
      "pid": "p-s0cf0a3d3",
      "i": 94,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1946.69,
      "end": 1978.52,
@@ -7384,7 +7389,7 @@
     {
      "pid": "p-s0dff237e",
      "i": 95,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1978.52,
      "end": 2009.78,
@@ -7399,7 +7404,7 @@
     {
      "pid": "p-s722dd0fa",
      "i": 96,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 2009.78,
      "end": 2026.25,
@@ -7412,7 +7417,7 @@
     {
      "pid": "p-s83cdf1a4",
      "i": 97,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 2026.25,
      "end": 2028.548,
@@ -7519,7 +7524,7 @@
     {
      "pid": "p-sd9b5780b",
      "i": 6,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 18.4,
      "end": 40.52,
@@ -7534,7 +7539,7 @@
     {
      "pid": "p-sfc46e963",
      "i": 7,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 40.52,
      "end": 82.61,
@@ -7549,7 +7554,7 @@
     {
      "pid": "p-sc6a62428",
      "i": 8,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 82.61,
      "end": 106.73,
@@ -7564,7 +7569,7 @@
     {
      "pid": "p-s60e8ee16",
      "i": 9,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 106.73,
      "end": 114.6,
@@ -7579,7 +7584,7 @@
     {
      "pid": "p-se9e5fa8c",
      "i": 10,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 114.6,
      "end": 155.31,
@@ -7594,7 +7599,7 @@
     {
      "pid": "p-s1a33ca5a",
      "i": 11,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 155.31,
      "end": 187.05,
@@ -7609,7 +7614,7 @@
     {
      "pid": "p-s49008751",
      "i": 12,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 187.05,
      "end": 192.95,
@@ -7624,7 +7629,7 @@
     {
      "pid": "p-saeafbd08",
      "i": 13,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 192.95,
      "end": 217.73,
@@ -7639,7 +7644,7 @@
     {
      "pid": "p-s0bcd7a5a",
      "i": 14,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 217.73,
      "end": 247.86,
@@ -7654,7 +7659,7 @@
     {
      "pid": "p-sfd268122",
      "i": 15,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 247.86,
      "end": 257.35,
@@ -7669,7 +7674,7 @@
     {
      "pid": "p-sb2ac4df6",
      "i": 16,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 257.35,
      "end": 274.2,
@@ -7684,7 +7689,7 @@
     {
      "pid": "p-s98e2648f",
      "i": 17,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 274.2,
      "end": 324.94,
@@ -7699,7 +7704,7 @@
     {
      "pid": "p-s3d4633ed",
      "i": 18,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 324.94,
      "end": 357.96,
@@ -7714,7 +7719,7 @@
     {
      "pid": "p-s6dc82e34",
      "i": 19,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 357.96,
      "end": 393.44,
@@ -7729,7 +7734,7 @@
     {
      "pid": "p-s46bccae2",
      "i": 20,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 393.44,
      "end": 405.75,
@@ -7744,7 +7749,7 @@
     {
      "pid": "p-sd54d6be7",
      "i": 21,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 405.75,
      "end": 430.38,
@@ -7759,7 +7764,7 @@
     {
      "pid": "p-sb9b809fc",
      "i": 22,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 430.38,
      "end": 437.39,
@@ -7789,7 +7794,7 @@
     {
      "pid": "p-s523dfbf2",
      "i": 24,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 457.89,
      "end": 493.07,
@@ -7819,7 +7824,7 @@
     {
      "pid": "p-sfb403685",
      "i": 26,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 519.19,
      "end": 550.6,
@@ -7834,7 +7839,7 @@
     {
      "pid": "p-sb3d0cc89",
      "i": 27,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 550.6,
      "end": 570.99,
@@ -7849,7 +7854,7 @@
     {
      "pid": "p-s30900134",
      "i": 28,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 570.99,
      "end": 610.18,
@@ -7864,7 +7869,7 @@
     {
      "pid": "p-s391efd81",
      "i": 29,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 610.18,
      "end": 616.42,
@@ -7879,7 +7884,7 @@
     {
      "pid": "p-sd761d581",
      "i": 30,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 616.42,
      "end": 657.56,
@@ -7894,7 +7899,7 @@
     {
      "pid": "p-s8c7db3fd",
      "i": 31,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 657.56,
      "end": 663.57,
@@ -7909,7 +7914,7 @@
     {
      "pid": "p-s3f5e8264",
      "i": 32,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 663.57,
      "end": 695.78,
@@ -7924,7 +7929,7 @@
     {
      "pid": "p-s0cceb0d3",
      "i": 33,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 695.78,
      "end": 720.17,
@@ -7969,7 +7974,7 @@
     {
      "pid": "p-sf05bde7c",
      "i": 36,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 761.8,
      "end": 777.9,
@@ -7984,7 +7989,7 @@
     {
      "pid": "p-s10d0b537",
      "i": 37,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 777.9,
      "end": 787.19,
@@ -8014,7 +8019,7 @@
     {
      "pid": "p-s1795ab31",
      "i": 39,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 805.79,
      "end": 808.55,
@@ -8045,7 +8050,7 @@
     {
      "pid": "p-s0f7bfec3",
      "i": 41,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 842.47,
      "end": 854.32,
@@ -8075,7 +8080,7 @@
     {
      "pid": "p-sd28fc1de",
      "i": 43,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 867.82,
      "end": 909.6,
@@ -8090,7 +8095,7 @@
     {
      "pid": "p-s4cb24a91",
      "i": 44,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 909.6,
      "end": 938.5,
@@ -8105,7 +8110,7 @@
     {
      "pid": "p-s00fe6c96",
      "i": 45,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 938.5,
      "end": 951.16,
@@ -8120,7 +8125,7 @@
     {
      "pid": "p-sa02d5bbe",
      "i": 46,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 951.16,
      "end": 978.66,
@@ -8165,7 +8170,7 @@
     {
      "pid": "p-s00f4259f",
      "i": 49,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1018.37,
      "end": 1022.04,
@@ -8180,7 +8185,7 @@
     {
      "pid": "p-sbf341b09",
      "i": 50,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1022.04,
      "end": 1061.95,
@@ -8195,7 +8200,7 @@
     {
      "pid": "p-scdb513c3",
      "i": 51,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.75,
      "start": 1061.95,
      "end": 1099.11,
@@ -8210,7 +8215,7 @@
     {
      "pid": "p-sca443e27",
      "i": 52,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1099.11,
      "end": 1164.79,
@@ -8225,7 +8230,7 @@
     {
      "pid": "p-s19a55dd3",
      "i": 53,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1164.79,
      "end": 1222.31,
@@ -8240,7 +8245,7 @@
     {
      "pid": "p-s26e1edc7",
      "i": 54,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1222.31,
      "end": 1244.16,
@@ -8270,7 +8275,7 @@
     {
      "pid": "p-secc2b4a2",
      "i": 56,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1262.07,
      "end": 1272.35,
@@ -8300,7 +8305,7 @@
     {
      "pid": "p-s4a4e1e22",
      "i": 58,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 1309.38,
      "end": 1337.99,
@@ -8315,7 +8320,7 @@
     {
      "pid": "p-s4fc8b4fb",
      "i": 59,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1337.99,
      "end": 1355.94,
@@ -8345,7 +8350,7 @@
     {
      "pid": "p-s3990472f",
      "i": 61,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1385.97,
      "end": 1418.84,
@@ -8375,7 +8380,7 @@
     {
      "pid": "p-sa1564fb8",
      "i": 63,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1448.99,
      "end": 1457.67,
@@ -8390,7 +8395,7 @@
     {
      "pid": "p-sd9adae9c",
      "i": 64,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1457.67,
      "end": 1484.98,
@@ -8406,7 +8411,7 @@
     {
      "pid": "p-sdeab4e2d",
      "i": 65,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1484.98,
      "end": 1499.76,
@@ -8421,7 +8426,7 @@
     {
      "pid": "p-saf96342c",
      "i": 66,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1499.76,
      "end": 1511.15,
@@ -8436,7 +8441,7 @@
     {
      "pid": "p-s053ff162",
      "i": 67,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1511.15,
      "end": 1530.56,
@@ -8466,7 +8471,7 @@
     {
      "pid": "p-sdd93fad7",
      "i": 69,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1585.15,
      "end": 1609.42,
@@ -8496,7 +8501,7 @@
     {
      "pid": "p-sb444f651",
      "i": 71,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1642.79,
      "end": 1649.47,
@@ -8511,7 +8516,7 @@
     {
      "pid": "p-s7e66a811",
      "i": 72,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1649.47,
      "end": 1670.94,
@@ -8556,7 +8561,7 @@
     {
      "pid": "p-sc91c789b",
      "i": 75,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1728.78,
      "end": 1759.55,
@@ -8662,7 +8667,7 @@
     {
      "pid": "p-seb6ae23f",
      "i": 5,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.9,
      "start": 1.57,
      "end": 32.28,
@@ -8677,10 +8682,10 @@
     {
      "pid": "p-sb37e2f8b",
      "i": 6,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.7,
      "start": 32.28,
-     "end": 35.0,
+     "end": 35,
      "is_sutra": true,
      "verdict": "span_ok",
      "ev": {
@@ -8692,9 +8697,9 @@
     {
      "pid": "p-sb4fd28e8",
      "i": 7,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
-     "start": 35.0,
+     "start": 35,
      "end": 39.12,
      "is_sutra": true,
      "verdict": "span_ok",
@@ -8707,7 +8712,7 @@
     {
      "pid": "p-s507dd8cd",
      "i": 8,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 39.12,
      "end": 72.51,
@@ -8750,7 +8755,7 @@
     {
      "pid": "p-s9163b46d",
      "i": 11,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 86.57,
      "end": 88.72,
@@ -8765,7 +8770,7 @@
     {
      "pid": "p-sbf565eca",
      "i": 12,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 88.72,
      "end": 116.92,
@@ -8795,7 +8800,7 @@
     {
      "pid": "p-sd8f2686b",
      "i": 14,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 137.45,
      "end": 149.47,
@@ -8810,7 +8815,7 @@
     {
      "pid": "p-s7910e654",
      "i": 15,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 149.47,
      "end": 158.54,
@@ -8855,7 +8860,7 @@
     {
      "pid": "p-sd1dff3ab",
      "i": 18,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 211.29,
      "end": 235.15,
@@ -8870,7 +8875,7 @@
     {
      "pid": "p-sed0c0dd0",
      "i": 19,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 235.15,
      "end": 277.15,
@@ -8885,7 +8890,7 @@
     {
      "pid": "p-s366149e8",
      "i": 20,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 277.15,
      "end": 282.44,
@@ -8915,7 +8920,7 @@
     {
      "pid": "p-sd1b4cbd4",
      "i": 22,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 312.1,
      "end": 353.77,
@@ -8930,7 +8935,7 @@
     {
      "pid": "p-s4635de2b",
      "i": 23,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 353.77,
      "end": 387.3,
@@ -8945,7 +8950,7 @@
     {
      "pid": "p-s81c6766f",
      "i": 24,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 387.3,
      "end": 389.44,
@@ -8960,7 +8965,7 @@
     {
      "pid": "p-sa595c5cd",
      "i": 25,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 389.44,
      "end": 411.81,
@@ -9005,7 +9010,7 @@
     {
      "pid": "p-sf8e2749f",
      "i": 28,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 457.41,
      "end": 479.79,
@@ -9020,7 +9025,7 @@
     {
      "pid": "p-s7a490558",
      "i": 29,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 479.79,
      "end": 486.55,
@@ -9035,7 +9040,7 @@
     {
      "pid": "p-s6623a44a",
      "i": 30,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 486.55,
      "end": 493.44,
@@ -9065,7 +9070,7 @@
     {
      "pid": "p-s2a7afcc7",
      "i": 32,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 530.24,
      "end": 543.09,
@@ -9080,7 +9085,7 @@
     {
      "pid": "p-s72eaf450",
      "i": 33,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.86,
      "start": 543.09,
      "end": 553.89,
@@ -9095,7 +9100,7 @@
     {
      "pid": "p-s482c3a6c",
      "i": 34,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 553.89,
      "end": 573.22,
@@ -9125,7 +9130,7 @@
     {
      "pid": "p-sa7855743",
      "i": 36,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 612.49,
      "end": 647.56,
@@ -9140,7 +9145,7 @@
     {
      "pid": "p-s88923890",
      "i": 37,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.757,
      "start": 647.56,
      "end": 650.71,
@@ -9170,7 +9175,7 @@
     {
      "pid": "p-s22427599",
      "i": 39,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 688.82,
      "end": 722.48,
@@ -9185,7 +9190,7 @@
     {
      "pid": "p-s4e793a60",
      "i": 40,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 722.48,
      "end": 727.4,
@@ -9200,7 +9205,7 @@
     {
      "pid": "p-s6f302a8f",
      "i": 41,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 727.4,
      "end": 745.3,
@@ -9215,7 +9220,7 @@
     {
      "pid": "p-s27bee68c",
      "i": 42,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 745.3,
      "end": 761.25,
@@ -9230,7 +9235,7 @@
     {
      "pid": "p-s8d3e8deb",
      "i": 43,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 761.25,
      "end": 803.04,
@@ -9245,7 +9250,7 @@
     {
      "pid": "p-s7e11105b",
      "i": 44,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 803.04,
      "end": 823.34,
@@ -9260,7 +9265,7 @@
     {
      "pid": "p-s65b0aec7",
      "i": 45,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 823.34,
      "end": 832.84,
@@ -9275,7 +9280,7 @@
     {
      "pid": "p-s9b59e614",
      "i": 46,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 832.84,
      "end": 871.9,
@@ -9290,7 +9295,7 @@
     {
      "pid": "p-s2f7b328f",
      "i": 47,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 871.9,
      "end": 877.04,
@@ -9305,7 +9310,7 @@
     {
      "pid": "p-s1dc6dac4",
      "i": 48,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 877.04,
      "end": 888.37,
@@ -9320,7 +9325,7 @@
     {
      "pid": "p-sfc247c8b",
      "i": 49,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 888.37,
      "end": 898.76,
@@ -9335,7 +9340,7 @@
     {
      "pid": "p-seaa6d17b",
      "i": 50,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.817,
      "start": 898.76,
      "end": 923.47,
@@ -9350,7 +9355,7 @@
     {
      "pid": "p-s1f5137e8",
      "i": 51,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 923.47,
      "end": 928.46,
@@ -9366,7 +9371,7 @@
     {
      "pid": "p-s97424449",
      "i": 52,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.86,
      "start": 928.46,
      "end": 966.33,
@@ -9381,7 +9386,7 @@
     {
      "pid": "p-s360f3487",
      "i": 53,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 966.33,
      "end": 972.97,
@@ -9396,7 +9401,7 @@
     {
      "pid": "p-sf25a5611",
      "i": 54,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 972.97,
      "end": 977.14,
@@ -9411,7 +9416,7 @@
     {
      "pid": "p-s477204b9",
      "i": 55,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 977.14,
      "end": 1009.53,
@@ -9441,10 +9446,10 @@
     {
      "pid": "p-s3d48afab",
      "i": 57,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1028.97,
-     "end": 1034.0,
+     "end": 1034,
      "is_sutra": false,
      "verdict": "span_ok",
      "ev": {
@@ -9456,9 +9461,9 @@
     {
      "pid": "p-sdd048ec9",
      "i": 58,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
-     "start": 1034.0,
+     "start": 1034,
      "end": 1047.42,
      "is_sutra": true,
      "verdict": "span_ok",
@@ -9486,7 +9491,7 @@
     {
      "pid": "p-sf9c132f6",
      "i": 60,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1081.41,
      "end": 1085.11,
@@ -9501,7 +9506,7 @@
     {
      "pid": "p-s7d378919",
      "i": 61,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1085.11,
      "end": 1129.66,
@@ -9516,7 +9521,7 @@
     {
      "pid": "p-s83922607",
      "i": 62,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1129.66,
      "end": 1161.36,
@@ -9531,7 +9536,7 @@
     {
      "pid": "p-s5d857bff",
      "i": 63,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1161.36,
      "end": 1183.17,
@@ -9546,7 +9551,7 @@
     {
      "pid": "p-s1d94d6e2",
      "i": 64,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1183.17,
      "end": 1189.72,
@@ -9561,7 +9566,7 @@
     {
      "pid": "p-se64cd0d0",
      "i": 65,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1189.72,
      "end": 1233.15,
@@ -9589,7 +9594,7 @@
     {
      "pid": "p-s59f9e2d4",
      "i": 67,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1233.15,
      "end": 1250.09,
@@ -9604,7 +9609,7 @@
     {
      "pid": "p-sf793c71a",
      "i": 68,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1250.09,
      "end": 1281.33,
@@ -9619,7 +9624,7 @@
     {
      "pid": "p-s18c264d7",
      "i": 69,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1281.33,
      "end": 1310.36,
@@ -9634,7 +9639,7 @@
     {
      "pid": "p-sb8459952",
      "i": 70,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1310.36,
      "end": 1313.03,
@@ -9649,7 +9654,7 @@
     {
      "pid": "p-s6e36f785",
      "i": 71,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1313.03,
      "end": 1316.18,
@@ -9665,7 +9670,7 @@
     {
      "pid": "p-s58fa547b",
      "i": 72,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1316.18,
      "end": 1361.35,
@@ -9680,7 +9685,7 @@
     {
      "pid": "p-s79d332f7",
      "i": 73,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1361.35,
      "end": 1384.75,
@@ -9695,7 +9700,7 @@
     {
      "pid": "p-sc14b984b",
      "i": 74,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1384.75,
      "end": 1426.72,
@@ -9710,7 +9715,7 @@
     {
      "pid": "p-se029c185",
      "i": 75,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1426.72,
      "end": 1437.02,
@@ -9725,7 +9730,7 @@
     {
      "pid": "p-s44a988ac",
      "i": 76,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1437.02,
      "end": 1471.11,
@@ -9740,7 +9745,7 @@
     {
      "pid": "p-se7b9a08e",
      "i": 77,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1471.11,
      "end": 1503.28,
@@ -9755,7 +9760,7 @@
     {
      "pid": "p-sae69df14",
      "i": 78,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1503.28,
      "end": 1539.41,
@@ -9770,7 +9775,7 @@
     {
      "pid": "p-sfd08b76a",
      "i": 79,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1539.41,
      "end": 1574.38,
@@ -9785,7 +9790,7 @@
     {
      "pid": "p-sfd451216",
      "i": 80,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1574.38,
      "end": 1580.24,
@@ -9800,7 +9805,7 @@
     {
      "pid": "p-s0a78de04",
      "i": 81,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1580.24,
      "end": 1615.12,
@@ -9815,7 +9820,7 @@
     {
      "pid": "p-s38ba652b",
      "i": 82,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1615.12,
      "end": 1634.91,
@@ -9830,7 +9835,7 @@
     {
      "pid": "p-s48985d7e",
      "i": 83,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1634.91,
      "end": 1653.08,
@@ -9860,7 +9865,7 @@
     {
      "pid": "p-s1bf9eac9",
      "i": 85,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1673.58,
      "end": 1697.33,
@@ -9875,7 +9880,7 @@
     {
      "pid": "p-s10b06c94",
      "i": 86,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1697.33,
      "end": 1739.85,
@@ -9890,7 +9895,7 @@
     {
      "pid": "p-s7bcda0fb",
      "i": 87,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1739.85,
      "end": 1746.217,
@@ -10020,7 +10025,7 @@
     {
      "pid": "p-sf0eae912",
      "i": 8,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 0.66,
      "end": 10.16,
@@ -10050,7 +10055,7 @@
     {
      "pid": "p-sd8ea40e1",
      "i": 10,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 17.78,
      "end": 65.66,
@@ -10080,7 +10085,7 @@
     {
      "pid": "p-s0cc78df3",
      "i": 12,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 103.42,
      "end": 143.29,
@@ -10110,7 +10115,7 @@
     {
      "pid": "p-sd183af58",
      "i": 14,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 176.39,
      "end": 202.61,
@@ -10125,7 +10130,7 @@
     {
      "pid": "p-scee713a4",
      "i": 15,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 202.61,
      "end": 234.34,
@@ -10140,7 +10145,7 @@
     {
      "pid": "p-s17c04e4a",
      "i": 16,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 234.34,
      "end": 256.81,
@@ -10155,7 +10160,7 @@
     {
      "pid": "p-sda337f74",
      "i": 17,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 256.81,
      "end": 276.84,
@@ -10170,7 +10175,7 @@
     {
      "pid": "p-s6a99c0a4",
      "i": 18,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 276.84,
      "end": 314.82,
@@ -10185,7 +10190,7 @@
     {
      "pid": "p-s448e35a7",
      "i": 19,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 314.82,
      "end": 359.73,
@@ -10200,7 +10205,7 @@
     {
      "pid": "p-s77914b57",
      "i": 20,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 359.73,
      "end": 367.52,
@@ -10215,7 +10220,7 @@
     {
      "pid": "p-s97fa79a4",
      "i": 21,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 367.52,
      "end": 392.15,
@@ -10230,7 +10235,7 @@
     {
      "pid": "p-s7ab9db4b",
      "i": 22,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.86,
      "start": 392.15,
      "end": 398.45,
@@ -10260,7 +10265,7 @@
     {
      "pid": "p-sa7dbd40d",
      "i": 24,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 415.68,
      "end": 423.84,
@@ -10275,7 +10280,7 @@
     {
      "pid": "p-s9cbe295b",
      "i": 25,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 423.84,
      "end": 442.9,
@@ -10290,7 +10295,7 @@
     {
      "pid": "p-s8e1fde4a",
      "i": 26,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 442.9,
      "end": 447.07,
@@ -10305,7 +10310,7 @@
     {
      "pid": "p-s7a18f02c",
      "i": 27,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 447.07,
      "end": 491.43,
@@ -10320,7 +10325,7 @@
     {
      "pid": "p-sf50bdf5a",
      "i": 28,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 491.43,
      "end": 529.65,
@@ -10335,7 +10340,7 @@
     {
      "pid": "p-s2f6025b6",
      "i": 29,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 529.65,
      "end": 542.76,
@@ -10350,7 +10355,7 @@
     {
      "pid": "p-sbe89c2b9",
      "i": 30,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 542.76,
      "end": 561.5,
@@ -10365,7 +10370,7 @@
     {
      "pid": "p-s8d2f6ddc",
      "i": 31,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 561.5,
      "end": 580.04,
@@ -10395,7 +10400,7 @@
     {
      "pid": "p-s958c348b",
      "i": 33,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 625.64,
      "end": 658.31,
@@ -10425,7 +10430,7 @@
     {
      "pid": "p-s4f983448",
      "i": 35,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 683.64,
      "end": 714.27,
@@ -10440,7 +10445,7 @@
     {
      "pid": "p-s62dcace3",
      "i": 36,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 714.27,
      "end": 719.68,
@@ -10470,7 +10475,7 @@
     {
      "pid": "p-sb702f297",
      "i": 38,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.86,
      "start": 727.82,
      "end": 737.1,
@@ -10485,7 +10490,7 @@
     {
      "pid": "p-s28990c2c",
      "i": 39,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.8,
      "start": 737.1,
      "end": 788.04,
@@ -10515,7 +10520,7 @@
     {
      "pid": "p-s1b63b8f4",
      "i": 41,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 796.57,
      "end": 819.1,
@@ -10545,7 +10550,7 @@
     {
      "pid": "p-sbeca634b",
      "i": 43,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 830.46,
      "end": 834.88,
@@ -10560,7 +10565,7 @@
     {
      "pid": "p-s40d8b73d",
      "i": 44,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 834.88,
      "end": 844.22,
@@ -10575,7 +10580,7 @@
     {
      "pid": "p-s44d6abec",
      "i": 45,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 844.22,
      "end": 877.4,
@@ -10590,7 +10595,7 @@
     {
      "pid": "p-s91a61123",
      "i": 46,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 877.4,
      "end": 903.58,
@@ -10605,7 +10610,7 @@
     {
      "pid": "p-s308e9c39",
      "i": 47,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 903.58,
      "end": 923.37,
@@ -10635,7 +10640,7 @@
     {
      "pid": "p-s17053d81",
      "i": 49,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 956.55,
      "end": 969.23,
@@ -10650,7 +10655,7 @@
     {
      "pid": "p-s70aa97d9",
      "i": 50,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 969.23,
      "end": 983.33,
@@ -10680,7 +10685,7 @@
     {
      "pid": "p-s77e78ff4",
      "i": 52,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1000.5,
      "end": 1010.48,
@@ -10695,7 +10700,7 @@
     {
      "pid": "p-sbc6b0b51",
      "i": 53,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1010.48,
      "end": 1013.12,
@@ -10710,7 +10715,7 @@
     {
      "pid": "p-sbe37dd3b",
      "i": 54,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1013.12,
      "end": 1017.46,
@@ -10725,7 +10730,7 @@
     {
      "pid": "p-sace15a83",
      "i": 55,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1017.46,
      "end": 1055.94,
@@ -10740,7 +10745,7 @@
     {
      "pid": "p-sabf8e6e5",
      "i": 56,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1055.94,
      "end": 1061.33,
@@ -10755,7 +10760,7 @@
     {
      "pid": "p-s747bd922",
      "i": 57,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1061.33,
      "end": 1081.67,
@@ -10770,7 +10775,7 @@
     {
      "pid": "p-sb8bb3bcf",
      "i": 58,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1081.67,
      "end": 1087.25,
@@ -10785,7 +10790,7 @@
     {
      "pid": "p-sf1d36146",
      "i": 59,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1087.25,
      "end": 1101.92,
@@ -10800,7 +10805,7 @@
     {
      "pid": "p-s8e77d85b",
      "i": 60,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1101.92,
      "end": 1106.09,
@@ -10815,7 +10820,7 @@
     {
      "pid": "p-s52185d37",
      "i": 61,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1106.09,
      "end": 1134.25,
@@ -10830,7 +10835,7 @@
     {
      "pid": "p-s8a0dfc31",
      "i": 62,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1134.25,
      "end": 1173.64,
@@ -10845,7 +10850,7 @@
     {
      "pid": "p-s38544314",
      "i": 63,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1173.64,
      "end": 1176.74,
@@ -10861,7 +10866,7 @@
     {
      "pid": "p-s6a4f387e",
      "i": 64,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1176.74,
      "end": 1229.6,
@@ -10891,7 +10896,7 @@
     {
      "pid": "p-s20a1b054",
      "i": 66,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1248.89,
      "end": 1277.76,
@@ -10906,7 +10911,7 @@
     {
      "pid": "p-s36508d78",
      "i": 67,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.5,
      "start": 1277.76,
      "end": 1323.15,
@@ -10921,7 +10926,7 @@
     {
      "pid": "p-sfb1b462b",
      "i": 68,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1323.15,
      "end": 1326.55,
@@ -10936,7 +10941,7 @@
     {
      "pid": "p-seda1fd0c",
      "i": 69,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1326.55,
      "end": 1380.93,
@@ -10951,7 +10956,7 @@
     {
      "pid": "p-se4c39207",
      "i": 70,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1380.93,
      "end": 1394.5,
@@ -10981,7 +10986,7 @@
     {
      "pid": "p-s0285a7fb",
      "i": 72,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1423.02,
      "end": 1433.13,
@@ -10996,7 +11001,7 @@
     {
      "pid": "p-s87e5c710",
      "i": 73,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1433.13,
      "end": 1469.78,
@@ -11011,7 +11016,7 @@
     {
      "pid": "p-s2996f71d",
      "i": 74,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1469.78,
      "end": 1493.06,
@@ -11026,7 +11031,7 @@
     {
      "pid": "p-sc7042fa6",
      "i": 75,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1493.06,
      "end": 1506.98,
@@ -11041,7 +11046,7 @@
     {
      "pid": "p-s651c31dc",
      "i": 76,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1506.98,
      "end": 1533.07,
@@ -11056,7 +11061,7 @@
     {
      "pid": "p-sb4390de5",
      "i": 77,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1533.07,
      "end": 1562.9,
@@ -11071,7 +11076,7 @@
     {
      "pid": "p-s3543b9d9",
      "i": 78,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.6,
      "start": 1562.9,
      "end": 1566.18,
@@ -11086,7 +11091,7 @@
     {
      "pid": "p-se9f9a6b0",
      "i": 79,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1566.18,
      "end": 1628.3,
@@ -11101,7 +11106,7 @@
     {
      "pid": "p-s10fb7d2f",
      "i": 80,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1628.3,
      "end": 1671.47,
@@ -11116,7 +11121,7 @@
     {
      "pid": "p-s8a0c6a9b",
      "i": 81,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1671.47,
      "end": 1675.06,
@@ -11146,7 +11151,7 @@
     {
      "pid": "p-s4629456d",
      "i": 83,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1694.53,
      "end": 1700.69,
@@ -11161,7 +11166,7 @@
     {
      "pid": "p-sa191b6a8",
      "i": 84,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1700.69,
      "end": 1748.22,
@@ -11176,7 +11181,7 @@
     {
      "pid": "p-s9a44f1ec",
      "i": 85,
-     "method": "char-evid",
+     "method": "ngram",
      "conf": 0.85,
      "start": 1748.22,
      "end": 1750.35,
@@ -12916,6 +12921,1486 @@
       "d_head": 1.0,
       "t_head": 2087.18,
       "d_blk": 1.0
+     }
+    }
+   ]
+  },
+  {
+   "lecture": "39",
+   "verdicts": {
+    "skip_ok": 9,
+    "span_ok": 72,
+    "unknown": 17,
+    "span_bad": 1
+   },
+   "details": [
+    {
+     "pid": "p-sc72425fa",
+     "i": 0,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-s41e8a6ac",
+     "i": 1,
+     "method": "ngram",
+     "conf": 0.95,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-sa9ae19fa",
+     "i": 2,
+     "method": "ngram",
+     "conf": 0.95,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-s8a8a98ff",
+     "i": 3,
+     "method": "ngram",
+     "conf": 0.95,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-sd0a456f7",
+     "i": 4,
+     "method": "ngram",
+     "conf": 0.88,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-sc0cc5b40",
+     "i": 5,
+     "method": "ngram",
+     "conf": 0.88,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-sbaa74a4f",
+     "i": 6,
+     "method": "ngram",
+     "conf": 0.88,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-s2591e40c",
+     "i": 7,
+     "method": "ngram",
+     "conf": 0.95,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-s39a33060",
+     "i": 8,
+     "method": "ngram",
+     "conf": 0.95,
+     "start": 0,
+     "end": 0,
+     "is_sutra": true,
+     "verdict": "skip_ok",
+     "ev": {
+      "verbatim": false
+     }
+    },
+    {
+     "pid": "p-s4c6a3587",
+     "i": 9,
+     "method": "ngram",
+     "conf": 0.9,
+     "start": 0.79,
+     "end": 11.28,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.828,
+      "t_head": 0.99,
+      "d_blk": 0.828
+     }
+    },
+    {
+     "pid": "p-sf7774ad7",
+     "i": 10,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 11.28,
+     "end": 21.02,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.883,
+      "t_head": 11.28,
+      "d_blk": 0.891
+     }
+    },
+    {
+     "pid": "p-s7e471a76",
+     "i": 11,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 21.02,
+     "end": 71.1,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.854,
+      "t_head": 21.02,
+      "d_blk": 0.777
+     }
+    },
+    {
+     "pid": "p-sb35992a2",
+     "i": 12,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 71.1,
+     "end": 76.78,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.767,
+      "t_head": 71.1,
+      "d_blk": 0.365
+     }
+    },
+    {
+     "pid": "p-s40e240e4",
+     "i": 13,
+     "method": "char-evid",
+     "conf": 0.85,
+     "start": 76.78,
+     "end": 98.87,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.812,
+      "t_head": 76.78,
+      "d_blk": 0.691
+     }
+    },
+    {
+     "pid": "p-s5000f528",
+     "i": 14,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 98.87,
+     "end": 135.9,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.871,
+      "t_head": 98.87,
+      "d_blk": 0.887
+     }
+    },
+    {
+     "pid": "p-se999933c",
+     "i": 15,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 135.9,
+     "end": 152.89,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.979,
+      "t_head": 135.64,
+      "d_blk": 0.952
+     }
+    },
+    {
+     "pid": "p-sec528ebb",
+     "i": 16,
+     "method": "char-evid",
+     "conf": 0.85,
+     "start": 152.89,
+     "end": 175.51,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.942,
+      "t_head": 152.89,
+      "d_blk": 0.905
+     }
+    },
+    {
+     "pid": "p-s51d146fc",
+     "i": 17,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 175.51,
+     "end": 195.0,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.613,
+      "t_head": 175.51,
+      "d_blk": 0.683
+     }
+    },
+    {
+     "pid": "p-sd06baaa7",
+     "i": 18,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 195.0,
+     "end": 226.79,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.846,
+      "t_head": 195.0,
+      "d_blk": 0.759
+     }
+    },
+    {
+     "pid": "p-sad90b949",
+     "i": 19,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 226.79,
+     "end": 239.55,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.808,
+      "t_head": 226.79,
+      "d_blk": 0.805
+     }
+    },
+    {
+     "pid": "p-sb5cb817a",
+     "i": 20,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 239.55,
+     "end": 248.55,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.85,
+      "t_head": 239.55,
+      "d_blk": 0.269
+     }
+    },
+    {
+     "pid": "p-sf5ca1f70",
+     "i": 21,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 248.55,
+     "end": 271.57,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.612,
+      "t_head": 248.55,
+      "d_blk": 0.733
+     }
+    },
+    {
+     "pid": "p-s78df3b12",
+     "i": 22,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 271.57,
+     "end": 293.23,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.988,
+      "t_head": 271.57,
+      "d_blk": 0.849
+     }
+    },
+    {
+     "pid": "p-sc92863fb",
+     "i": 23,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 293.23,
+     "end": 312.5,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.842,
+      "t_head": 292.77,
+      "d_blk": 0.889
+     }
+    },
+    {
+     "pid": "p-s240dc17d",
+     "i": 24,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 312.5,
+     "end": 350.79,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.788,
+      "t_head": 312.5,
+      "d_blk": 0.823
+     }
+    },
+    {
+     "pid": "p-seeb352b7",
+     "i": 25,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 350.79,
+     "end": 355.87,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.504,
+      "t_head": 350.31,
+      "d_blk": 0.323
+     }
+    },
+    {
+     "pid": "p-sa11f002d",
+     "i": 26,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 355.87,
+     "end": 375.11,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.508,
+      "t_head": 355.87,
+      "d_blk": 0.689
+     }
+    },
+    {
+     "pid": "p-s83be9234",
+     "i": 27,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 375.11,
+     "end": 407.23,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.475,
+      "t_head": 373.61,
+      "d_blk": 0.603
+     }
+    },
+    {
+     "pid": "p-sfa775f83",
+     "i": 28,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 407.23,
+     "end": 411.63,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.375,
+      "t_head": 407.23,
+      "d_blk": -0.042
+     }
+    },
+    {
+     "pid": "p-s6475ec11",
+     "i": 29,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 411.63,
+     "end": 425.9,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.646,
+      "t_head": 411.63,
+      "d_blk": 0.729
+     }
+    },
+    {
+     "pid": "p-sa6cdb480",
+     "i": 30,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 425.9,
+     "end": 471.44,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.654,
+      "t_head": 425.9,
+      "d_blk": 0.527,
+      "note": "head-in-span"
+     }
+    },
+    {
+     "pid": "p-s16fc2585",
+     "i": 31,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 471.44,
+     "end": 497.0,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.892,
+      "t_head": 471.44,
+      "d_blk": 0.736
+     }
+    },
+    {
+     "pid": "p-s6c731133",
+     "i": 32,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 497.0,
+     "end": 536.45,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.425,
+      "t_head": 497.0,
+      "d_blk": -0.037
+     }
+    },
+    {
+     "pid": "p-s088c89d2",
+     "i": 33,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 536.45,
+     "end": 577.31,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.517,
+      "t_head": 535.41,
+      "d_blk": 0.656
+     }
+    },
+    {
+     "pid": "p-sc4d74aee",
+     "i": 34,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 577.31,
+     "end": 584.59,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.463,
+      "t_head": 577.31,
+      "d_blk": 0.396
+     }
+    },
+    {
+     "pid": "p-s160d4fed",
+     "i": 35,
+     "method": "char-evid",
+     "conf": 0.6,
+     "start": 584.59,
+     "end": 599.86,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.733,
+      "t_head": 583.15,
+      "d_blk": 0.573
+     }
+    },
+    {
+     "pid": "p-sacde2001",
+     "i": 36,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 599.86,
+     "end": 621.12,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.758,
+      "t_head": 599.86,
+      "d_blk": 0.722
+     }
+    },
+    {
+     "pid": "p-sb3142e57",
+     "i": 37,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 621.12,
+     "end": 635.39,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.746,
+      "t_head": 621.12,
+      "d_blk": 0.695
+     }
+    },
+    {
+     "pid": "p-s5918c28b",
+     "i": 38,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 635.39,
+     "end": 649.95,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.808,
+      "t_head": 635.39,
+      "d_blk": 0.573
+     }
+    },
+    {
+     "pid": "p-s565496e6",
+     "i": 39,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 649.95,
+     "end": 678.31,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.5,
+      "t_head": 648.47,
+      "d_blk": 0.608
+     }
+    },
+    {
+     "pid": "p-s894d4e6f",
+     "i": 40,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 678.31,
+     "end": 713.72,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.438,
+      "t_head": 676.86,
+      "d_blk": 0.626
+     }
+    },
+    {
+     "pid": "p-s677892cf",
+     "i": 41,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 713.72,
+     "end": 737.33,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.804,
+      "t_head": 713.72,
+      "d_blk": 0.589
+     }
+    },
+    {
+     "pid": "p-sd79504c8",
+     "i": 42,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 737.33,
+     "end": 741.91,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.446,
+      "t_head": 736.52,
+      "d_blk": 0.088
+     }
+    },
+    {
+     "pid": "p-sdec38209",
+     "i": 43,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 741.91,
+     "end": 774.61,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.642,
+      "t_head": 741.91,
+      "d_blk": 0.64
+     }
+    },
+    {
+     "pid": "p-sddead6c9",
+     "i": 44,
+     "method": "char-evid",
+     "conf": 0.85,
+     "start": 774.61,
+     "end": 806.82,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.871,
+      "t_head": 774.61,
+      "d_blk": 0.698
+     }
+    },
+    {
+     "pid": "p-s32d7d795",
+     "i": 45,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 806.82,
+     "end": 824.66,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.833,
+      "t_head": 806.82,
+      "d_blk": 0.828
+     }
+    },
+    {
+     "pid": "p-s39ff468e",
+     "i": 46,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 824.66,
+     "end": 851.66,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.8,
+      "t_head": 824.66,
+      "d_blk": 0.741
+     }
+    },
+    {
+     "pid": "p-s72520390",
+     "i": 47,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 851.66,
+     "end": 867.17,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.896,
+      "t_head": 851.66,
+      "d_blk": 0.865
+     }
+    },
+    {
+     "pid": "p-s02a08431",
+     "i": 48,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 867.17,
+     "end": 893.0,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.754,
+      "t_head": 867.17,
+      "d_blk": 0.731
+     }
+    },
+    {
+     "pid": "p-sf239d75e",
+     "i": 49,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 893.0,
+     "end": 898.67,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.696,
+      "t_head": 893.0,
+      "d_blk": 0.1
+     }
+    },
+    {
+     "pid": "p-sfd5806e5",
+     "i": 50,
+     "method": "ngram",
+     "conf": 0.72,
+     "start": 898.67,
+     "end": 930.78,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.783,
+      "t_head": 898.67,
+      "d_blk": 0.672
+     }
+    },
+    {
+     "pid": "p-s3a993c23",
+     "i": 51,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 930.78,
+     "end": 977.68,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.742,
+      "t_head": 929.91,
+      "d_blk": 0.797
+     }
+    },
+    {
+     "pid": "p-s6d189d7f",
+     "i": 52,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 977.68,
+     "end": 986.71,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.942,
+      "t_head": 977.68,
+      "d_blk": 0.894
+     }
+    },
+    {
+     "pid": "p-s14365f2b",
+     "i": 53,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 986.71,
+     "end": 990.62,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.782,
+      "t_head": 986.71,
+      "d_blk": 0.782
+     }
+    },
+    {
+     "pid": "p-s78987345",
+     "i": 54,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 990.62,
+     "end": 997.52,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.933,
+      "t_head": 990.62,
+      "d_blk": 0.933
+     }
+    },
+    {
+     "pid": "p-sbf121166",
+     "i": 55,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 997.52,
+     "end": 1002.1,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.83,
+      "t_head": 996.98,
+      "d_blk": 0.83
+     }
+    },
+    {
+     "pid": "p-sa7dc15e5",
+     "i": 56,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1002.1,
+     "end": 1020.12,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.775,
+      "t_head": 1002.1,
+      "d_blk": 0.765
+     }
+    },
+    {
+     "pid": "p-s0ef2c70f",
+     "i": 57,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1020.12,
+     "end": 1074.09,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.825,
+      "t_head": 1020.12,
+      "d_blk": 0.594
+     }
+    },
+    {
+     "pid": "p-s1325e2a7",
+     "i": 58,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1074.09,
+     "end": 1082.44,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.433,
+      "t_head": 1072.67,
+      "d_blk": 0.307
+     }
+    },
+    {
+     "pid": "p-s41dab7e4",
+     "i": 59,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1082.44,
+     "end": 1102.52,
+     "is_sutra": false,
+     "verdict": "span_bad",
+     "ev": {
+      "d_head": 0.321,
+      "t_head": 1092.7,
+      "d_blk": 0.635,
+      "probe": 0.794
+     }
+    },
+    {
+     "pid": "p-s1d60b182",
+     "i": 60,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1102.52,
+     "end": 1114.09,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.871,
+      "t_head": 1101.22,
+      "d_blk": 0.41
+     }
+    },
+    {
+     "pid": "p-se8e3face",
+     "i": 61,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1114.09,
+     "end": 1159.14,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.863,
+      "t_head": 1114.09,
+      "d_blk": 0.818
+     }
+    },
+    {
+     "pid": "p-s6cd095c4",
+     "i": 62,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1159.14,
+     "end": 1163.07,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.744,
+      "t_head": 1158.72,
+      "d_blk": 0.744
+     }
+    },
+    {
+     "pid": "p-s6823f3b3",
+     "i": 63,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1163.07,
+     "end": 1188.09,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.742,
+      "t_head": 1163.07,
+      "d_blk": 0.721
+     }
+    },
+    {
+     "pid": "p-s14efed00",
+     "i": 64,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1188.09,
+     "end": 1207.48,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.721,
+      "t_head": 1188.09,
+      "d_blk": 0.749
+     }
+    },
+    {
+     "pid": "p-s8ae1e26a",
+     "i": 65,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1207.48,
+     "end": 1248.06,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.825,
+      "t_head": 1207.48,
+      "d_blk": 0.789
+     }
+    },
+    {
+     "pid": "p-sc34607b2",
+     "i": 66,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1248.06,
+     "end": 1255.22,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.721,
+      "t_head": 1248.06,
+      "d_blk": 0.696
+     }
+    },
+    {
+     "pid": "p-s78f77996",
+     "i": 67,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1255.22,
+     "end": 1282.74,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.537,
+      "t_head": 1254.35,
+      "d_blk": 0.54
+     }
+    },
+    {
+     "pid": "p-sf6e9277c",
+     "i": 68,
+     "method": "ngram",
+     "conf": 0.86,
+     "start": 1282.74,
+     "end": 1287.32,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.304,
+      "t_head": 1282.42,
+      "d_blk": 0.281
+     }
+    },
+    {
+     "pid": "p-s3c7b5c7f",
+     "i": 69,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1287.32,
+     "end": 1315.25,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.617,
+      "t_head": 1285.83,
+      "d_blk": 0.531
+     }
+    },
+    {
+     "pid": "p-s58953f23",
+     "i": 70,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 1315.25,
+     "end": 1319.7,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.735,
+      "t_head": 1315.25,
+      "d_blk": 0.735
+     }
+    },
+    {
+     "pid": "p-s4dbe29e2",
+     "i": 71,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1319.7,
+     "end": 1330.05,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.679,
+      "t_head": 1321.05,
+      "d_blk": 0.679
+     }
+    },
+    {
+     "pid": "p-sbe79d4a2",
+     "i": 72,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1330.05,
+     "end": 1340.67,
+     "is_sutra": true,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.804,
+      "t_head": 1330.05,
+      "d_blk": 0.627
+     }
+    },
+    {
+     "pid": "p-sb741a909",
+     "i": 73,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1340.67,
+     "end": 1383.36,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.763,
+      "t_head": 1340.53,
+      "d_blk": 0.664
+     }
+    },
+    {
+     "pid": "p-sbfae84d1",
+     "i": 74,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1383.36,
+     "end": 1406.59,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.792,
+      "t_head": 1383.36,
+      "d_blk": 0.817
+     }
+    },
+    {
+     "pid": "p-sbeb127c3",
+     "i": 75,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1406.59,
+     "end": 1421.34,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.821,
+      "t_head": 1406.59,
+      "d_blk": 0.852
+     }
+    },
+    {
+     "pid": "p-s29038525",
+     "i": 76,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1421.34,
+     "end": 1452.3,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.913,
+      "t_head": 1422.66,
+      "d_blk": 0.913
+     }
+    },
+    {
+     "pid": "p-s5abdb021",
+     "i": 77,
+     "method": "char-evid",
+     "conf": 0.85,
+     "start": 1452.3,
+     "end": 1467.68,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.813,
+      "t_head": 1452.3,
+      "d_blk": 0.687
+     }
+    },
+    {
+     "pid": "p-sfa713739",
+     "i": 78,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1467.68,
+     "end": 1473.79,
+     "is_sutra": true,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.721,
+      "t_head": 1467.48,
+      "d_blk": -0.148
+     }
+    },
+    {
+     "pid": "p-sb270af80",
+     "i": 79,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1473.79,
+     "end": 1480.23,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.312,
+      "t_head": 1472.31,
+      "d_blk": 0.441
+     }
+    },
+    {
+     "pid": "p-s6e5885c5",
+     "i": 80,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1480.23,
+     "end": 1490.06,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.504,
+      "t_head": 1480.01,
+      "d_blk": 0.504
+     }
+    },
+    {
+     "pid": "p-s0d83f823",
+     "i": 81,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1490.06,
+     "end": 1512.37,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.942,
+      "t_head": 1490.06,
+      "d_blk": 0.9
+     }
+    },
+    {
+     "pid": "p-s78a5232a",
+     "i": 82,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 1512.37,
+     "end": 1527.49,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.921,
+      "t_head": 1512.37,
+      "d_blk": 0.763
+     }
+    },
+    {
+     "pid": "p-s868de0bf",
+     "i": 83,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1527.49,
+     "end": 1542.3,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.833,
+      "t_head": 1526.65,
+      "d_blk": 0.853
+     }
+    },
+    {
+     "pid": "p-sad6c6a0f",
+     "i": 84,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1542.3,
+     "end": 1563.75,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.733,
+      "t_head": 1541.88,
+      "d_blk": 0.703
+     }
+    },
+    {
+     "pid": "p-s9579d239",
+     "i": 85,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1563.75,
+     "end": 1579.91,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.933,
+      "t_head": 1563.75,
+      "d_blk": 0.893
+     }
+    },
+    {
+     "pid": "p-s441c76ff",
+     "i": 86,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1579.91,
+     "end": 1607.56,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.875,
+      "t_head": 1579.07,
+      "d_blk": 0.841
+     }
+    },
+    {
+     "pid": "p-s4e3de73e",
+     "i": 87,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 1607.56,
+     "end": 1619.38,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.925,
+      "t_head": 1607.56,
+      "d_blk": 0.903
+     }
+    },
+    {
+     "pid": "p-sacd61e05",
+     "i": 88,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1619.38,
+     "end": 1639.21,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.575,
+      "t_head": 1618.0,
+      "d_blk": 0.606
+     }
+    },
+    {
+     "pid": "p-s32992bfa",
+     "i": 89,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1639.21,
+     "end": 1646.02,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.725,
+      "t_head": 1639.03,
+      "d_blk": 0.693
+     }
+    },
+    {
+     "pid": "p-sa237baaa",
+     "i": 90,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1646.02,
+     "end": 1657.22,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.867,
+      "t_head": 1645.42,
+      "d_blk": 0.831
+     }
+    },
+    {
+     "pid": "p-sc3afcde4",
+     "i": 91,
+     "method": "char-evid",
+     "conf": 0.75,
+     "start": 1657.22,
+     "end": 1663.65,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.6,
+      "t_head": 1657.22,
+      "d_blk": 0.538
+     }
+    },
+    {
+     "pid": "p-s14cd4fdb",
+     "i": 92,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1663.65,
+     "end": 1672.79,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.808,
+      "t_head": 1663.83,
+      "d_blk": 0.781
+     }
+    },
+    {
+     "pid": "p-s231d0b79",
+     "i": 93,
+     "method": "ngram",
+     "conf": 0.85,
+     "start": 1672.79,
+     "end": 1683.74,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.675,
+      "t_head": 1672.63,
+      "d_blk": 0.652
+     }
+    },
+    {
+     "pid": "p-s90ee2169",
+     "i": 94,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1683.74,
+     "end": 1693.76,
+     "is_sutra": false,
+     "verdict": "unknown",
+     "ev": {
+      "d_head": 0.508,
+      "t_head": 1683.48,
+      "d_blk": 0.524
+     }
+    },
+    {
+     "pid": "p-s8f8447c4",
+     "i": 95,
+     "method": "char-evid",
+     "conf": 0.65,
+     "start": 1693.76,
+     "end": 1709.71,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.813,
+      "t_head": 1692.69,
+      "d_blk": 0.838
+     }
+    },
+    {
+     "pid": "p-sa45e31d6",
+     "i": 96,
+     "method": "char-evid",
+     "conf": 0.8,
+     "start": 1709.71,
+     "end": 1728.52,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.963,
+      "t_head": 1709.71,
+      "d_blk": 0.944
+     }
+    },
+    {
+     "pid": "p-s3a830815",
+     "i": 97,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1728.52,
+     "end": 1764.94,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.783,
+      "t_head": 1727.51,
+      "d_blk": 0.859
+     }
+    },
+    {
+     "pid": "p-s70de0245",
+     "i": 98,
+     "method": "char-evid",
+     "conf": 0.7,
+     "start": 1764.94,
+     "end": 1766.883,
+     "is_sutra": false,
+     "verdict": "span_ok",
+     "ev": {
+      "d_head": 0.675,
+      "t_head": 1764.35,
+      "d_blk": 0.675
      }
     }
    ]
