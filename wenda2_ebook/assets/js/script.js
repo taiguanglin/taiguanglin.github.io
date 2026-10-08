@@ -3499,6 +3499,56 @@ function addHomepageBookmarkEventListeners() {
 
 
   // 平滑滾動章節內 TOC 與回到頂部
+  //
+  // 為什麼 scrollIntoView 之後還要「收斂」：00-base.css 對
+  // .question/.answer/.para-block 設了 `content-visibility: auto` +
+  // `contain-intrinsic-size: auto 240px`，視窗外的區塊先以估計高度佔位、
+  // 渲染後才換成真實高度。平滑捲動的落點是啟動當下的文件高度算出來的；
+  // 捲動途中經過的區塊一個個換成真實高度後，文件總高跟著變，落點必然偏移
+  // （ebook/ 實測偏 600+ px，方向取決於上方高度是膨脤還是縮小，兩本書都會發生）。
+  // 03d 的 settleAnchorTo 只接在「帶錨點載入」路徑；頁內點擊（目錄、書籤、
+  // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
+  // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）；使用者一開始自己捲
+  // 就立刻放手，不跟使用者搶滚輪。
+  //
+  // ⚠️ 不能「連續兩次量測相同」就收工：scrollIntoView 的落點本來就是用
+  // 同一套估算高度算的，動畫剛結束時 want 與 scrollY 短暫一致，接著上方
+  // 區塊換成真實高度、目標又滑走（ebook/ 實測定格偏 755px）。故：
+  //   · 至少量測 MIN_TICKS 次（約 1.8s）才允許收工；
+  //   · 文件總高一變（估算→真實）就把 stable 歸零重算。
+  function settleInPageAnchor(el) {
+    const MIN_TICKS = 12;   // 約 1.8s：等 scrollIntoView 動畫結束＋高度換算
+    const MAX_TICKS = 40;   // 約 6s 上限
+    const TICK_MS = 150;
+    let stable = 0;
+    let tries = 0;
+    let lastHeight = document.documentElement.scrollHeight;
+    let userScrolled = false;
+    const stop = () => { userScrolled = true; };
+    window.addEventListener('wheel', stop, { passive: true, once: true });
+    window.addEventListener('touchstart', stop, { passive: true, once: true });
+    window.addEventListener('keydown', (e) => {
+      if (/^(Arrow|Page|Home|End|Space)/.test(e.key)) stop();
+    });
+
+    const tick = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const height = document.documentElement.scrollHeight;
+      if (height !== lastHeight) { lastHeight = height; stable = 0; }
+      const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset);
+      if (Math.abs(want - window.pageYOffset) > 2) {
+        window.scrollTo(0, want);
+        stable = 0;
+      } else {
+        stable++;
+      }
+      tries++;
+      if ((tries >= MIN_TICKS && stable >= 3) || tries >= MAX_TICKS) return;
+      setTimeout(tick, TICK_MS);
+    };
+    setTimeout(tick, TICK_MS);
+  }
+
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
@@ -3507,6 +3557,8 @@ function addHomepageBookmarkEventListeners() {
         e.preventDefault();
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         history.pushState(null, null, href);
+        // href="" 或單純 "#"（回到頁頂）不需要收斂
+        if (href.length > 1) settleInPageAnchor(target);
       }
     });
   });
@@ -6098,15 +6150,15 @@ function addHomepageBookmarkEventListeners() {
     };
   })();
 // ============================================================
-// 10-search-return.js — 「回到搜尋結果」浮動按鈕 + 搜尋狀態快照/還原
+// 10-search-return.js — 搜尋狀態快照/還原 + 簡繁切換原位恢復
 //
 // 兩端配合（都在本 bundle 內）：
-//   ① 章節頁：URL 帶 ?q=（由 index 的 buildSearchReturnUrl 附加）時，
-//      顯示「回到搜尋結果」浮動按鈕，點擊返回 index.html?q=…#q=…；
-//      離開前再把 TOC 展開快照寫一次（saveTocExpandSnapshot 定義於 06）。
-//   ② index 頁：搜尋／分頁／捲動時把 {q, scope, displayed, scrollY}
+//   ① index 頁：搜尋／分頁／捲動時把 {q, scope, displayed, scrollY}
 //      存進 sessionStorage（per-tab），restoreSearchFromHash（01e）回來時
 //      一併還原「已顯示筆數」與「捲動位置」。
+//   ② 簡繁切換原位恢復：/lang-switch.js 在 ebook 雙頁跳轉前寫入
+//      sessionStorage('w2e:langjump') = {id, frac}；本模組偵測到後直接
+//      還原（優先同 id 錨點，其次比例），讀完即清。
 // ============================================================
 
 // 搜尋狀態快照鍵（sessionStorage：關閉分頁即失效，不同分頁互不干擾）
@@ -6211,172 +6263,42 @@ function restoreSearchScroll(targetY) {
 // 仍由 01e 的 restoreSearchFromHash 還原查詢與捲動位置。
 // ------------------------------------------------------------
 
-initSearchSnapshotCapture();
-// ============================================================
-// 11-reading-resume.js — 閱讀位置記憶 + 簡繁切換原位恢復
+// ------------------------------------------------------------
+// 簡繁切換原位恢復（原 11-reading-resume.js 的 ②；該模組已移除）
 //
-// ① 閱讀位置：捲動時（節流）與離頁前把「頁面 → 捲動比例」存入
-//    localStorage('w2e:readpos')（上限 40 頁，LRU 淘汰）。再次進入同頁、
-//    且 URL 無錨點時，頂部浮出「回到上次閱讀位置（XX%）」提示條；
-//    點「回到位置」平滑捲回，點 ✕ 或 12 秒後自動消失。
-//    **總目錄頁（index.html / index_trad.html）只有目錄、沒有正文**，
-//    既不記錄也不提示（並清掉舊版留下的殘留紀錄）。
-// ② 簡繁切換原位恢復：/lang-switch.js 在 ebook 雙頁跳轉前寫入
-//    sessionStorage('w2e:langjump') = {id, frac}；本模組偵測到後直接
-//    還原（優先同 id 錨點，其次比例），不顯示提示條。
-// ============================================================
+// /lang-switch.js 在 ebook 雙頁跳轉前寫入 sessionStorage('w2e:langjump')
+// = {id, frac}：本端偵測到後直接還原（優先同 id 錨點，其次比例），讀完即清。
+// 總目錄頁只有目錄沒有正文，也照樣消化（避免標記外溢到下一頁）。
+// ------------------------------------------------------------
+function scrollToFraction(frac) {
+  var doc = document.documentElement;
+  var total = doc.scrollHeight - window.innerHeight;
+  if (total <= 0) return;
+  window.scrollTo(0, Math.round(frac * total));
+}
 
-;(function () {
-  var POS_KEY = 'w2e:readpos';
-  var JUMP_KEY = 'w2e:langjump';
-  var MAX_ENTRIES = 40;
-  var SAVE_THROTTLE_MS = 500;
-
-  function docFraction() {
-    var doc = document.documentElement;
-    var total = doc.scrollHeight - window.innerHeight;
-    if (total <= 0) return 0;
-    return Math.max(0, Math.min(1, (window.scrollY || 0) / total));
-  }
-
-  function scrollToFraction(frac, smooth) {
-    var doc = document.documentElement;
-    var total = doc.scrollHeight - window.innerHeight;
-    if (total <= 0) return;
-    var top = Math.round(frac * total);
-    window.scrollTo(0, top);
-    void smooth;
-  }
-
-  function readPositions() {
-    try { return JSON.parse(localStorage.getItem(POS_KEY) || '{}'); } catch (e) { return {}; }
-  }
-
-  function writePositions(map) {
-    try {
-      var keys = Object.keys(map);
-      if (keys.length > MAX_ENTRIES) {
-        keys.sort(function (a, b) { return (map[a].ts || 0) - (map[b].ts || 0); });
-        while (keys.length > MAX_ENTRIES) { delete map[keys.shift()]; }
-      }
-      localStorage.setItem(POS_KEY, JSON.stringify(map));
-    } catch (e) { /* 隱私模式等 */ }
-  }
-
-  var pageKey = window.location.pathname;
-
-  // 總目錄頁只有目錄、沒有正文，不適用「回到上次閱讀位置」
-  function isTocOnlyPage() {
-    return typeof isIndexPage === 'function' && isIndexPage();
-  }
-
-  function save() {
-    if (isTocOnlyPage()) return;
-    var frac = docFraction();
-    if (frac <= 0) return;
-    var map = readPositions();
-    map[pageKey] = { frac: Math.round(frac * 1000) / 1000, ts: Date.now() };
-    writePositions(map);
-  }
-
-  // 清掉總目錄頁的歷史紀錄（修正前的舊版會寫進來）
-  function pruneTocOnlyEntries() {
-    var map = readPositions();
-    var changed = false;
-    Object.keys(map).forEach(function (k) {
-      var f = k.split('/').pop() || 'index.html';
-      if (f === 'index.html' || f === 'index_trad.html') { delete map[k]; changed = true; }
-    });
-    if (changed) writePositions(map);
-  }
-
-  // ---- 簡繁切換原位恢復（優先於閱讀位置提示） --------------------------
-  function tryLangJumpRestore() {
-    var raw = null;
-    try { raw = sessionStorage.getItem(JUMP_KEY); } catch (e) { return false; }
-    if (!raw) return false;
-    try { sessionStorage.removeItem(JUMP_KEY); } catch (e) {}
-    var info = null;
-    try { info = JSON.parse(raw); } catch (e) { return false; }
-    if (!info) return false;
-    setTimeout(function () {
-      var el = info.id && document.getElementById(info.id);
-      if (el) {
-        el.scrollIntoView({ block: 'start' });
-      } else if (typeof info.frac === 'number') {
-        scrollToFraction(info.frac, false);
-      }
-    }, 60);
-    return true;
-  }
-
-  // ---- 回到上次閱讀位置提示條 ------------------------------------------
-  function showResumeBar(entry) {
-    var isTrad = typeof isTraditionalChinesePage === 'function' && isTraditionalChinesePage();
-    var pct = Math.round(entry.frac * 100);
-
-    var bar = document.createElement('div');
-    bar.className = 'w2e-resume-bar';
-    bar.setAttribute('role', 'status');
-    bar.innerHTML =
-      '<span class="w2e-resume-text">' +
-        (isTrad ? '上次讀到 ' + pct + '%' : '上次读到 ' + pct + '%') +
-      '</span>' +
-      '<button type="button" class="w2e-resume-go">' +
-        (isTrad ? '回到位置' : '回到位置') +
-      '</button>' +
-      '<button type="button" class="w2e-resume-close" aria-label="' +
-        (isTrad ? '關閉' : '关闭') + '">✕</button>';
-    document.body.appendChild(bar);
-
-    var dismissTimer = setTimeout(dismiss, 12000);
-    requestAnimationFrame(function () { bar.classList.add('visible'); });
-
-    function dismiss() {
-      clearTimeout(dismissTimer);
-      bar.classList.remove('visible');
-      setTimeout(function () { bar.remove(); }, 300);
+function tryLangJumpRestore() {
+  var raw = null;
+  try { raw = sessionStorage.getItem('w2e:langjump'); } catch (e) { return false; }
+  if (!raw) return false;
+  try { sessionStorage.removeItem('w2e:langjump'); } catch (e) {}
+  var info = null;
+  try { info = JSON.parse(raw); } catch (e) { return false; }
+  if (!info) return false;
+  setTimeout(function () {
+    var el = info.id && document.getElementById(info.id);
+    if (el) {
+      el.scrollIntoView({ block: 'start' });
+    } else if (typeof info.frac === 'number' && info.frac > 0) {
+      scrollToFraction(info.frac);
     }
+  }, 60);
+  return true;
+}
 
-    bar.querySelector('.w2e-resume-go').addEventListener('click', function () {
-      dismiss();
-      requestAnimationFrame(function () { scrollToFraction(entry.frac, true); });
-    });
-    bar.querySelector('.w2e-resume-close').addEventListener('click', dismiss);
-  }
+tryLangJumpRestore();
 
-  function maybeOfferResume() {
-    // 簡繁切換原位恢復優先（順帶清掉 sessionStorage 標記，避免外溢到下一頁）
-    var jumped = tryLangJumpRestore();
-    // 總目錄頁只有目錄、沒有正文 —— 不提示（並清掉舊版殘留紀錄）
-    if (isTocOnlyPage()) { pruneTocOnlyEntries(); return; }
-    // 帶錨點／搜尋跳轉進來時不打擾
-    if (window.location.hash && window.location.hash.length > 1) return;
-    if (jumped) return;
-    var entry = readPositions()[pageKey];
-    if (!entry) return;
-    if (entry.frac < 0.03 || entry.frac > 0.98) return;
-    var ageDays = (Date.now() - (entry.ts || 0)) / 86400000;
-    if (ageDays > 30) return;
-    showResumeBar(entry);
-  }
-
-  // ---- 持續記錄 ------------------------------------------------------
-  var lastSave = 0;
-  window.addEventListener('scroll', function () {
-    var now = Date.now();
-    if (now - lastSave < SAVE_THROTTLE_MS) return;
-    lastSave = now;
-    save();
-  }, { passive: true });
-  window.addEventListener('pagehide', save);
-  document.addEventListener('visibilitychange', function () {
-    if (document.visibilityState === 'hidden') save();
-  });
-
-  // 等首屏穩定後再判斷（避免與錨點跳轉、字型載入打架）
-  setTimeout(maybeOfferResume, 400);
-})();
+initSearchSnapshotCapture();
 // ============================================================
 // 13-player-persist.js — 音檔播放跨頁持續性
 //

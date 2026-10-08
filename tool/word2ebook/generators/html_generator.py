@@ -25,7 +25,7 @@ def _i18n_manager():
     if I18nTemplateManager is None:
         from templates.i18n_templates import I18nTemplateManager as _M
         I18nTemplateManager = _M
-    return I18nTemplateManager
+    return I18nTemplateManager()
 
 
 class HTMLGenerator:

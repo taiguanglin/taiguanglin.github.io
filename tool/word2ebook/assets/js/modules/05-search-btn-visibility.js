@@ -68,9 +68,19 @@
   // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
   // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）；使用者一開始自己捲
   // 就立刻放手，不跟使用者搶滚輪。
+  //
+  // ⚠️ 不能「連續兩次量測相同」就收工：scrollIntoView 的落點本來就是用
+  // 同一套估算高度算的，動畫剛結束時 want 與 scrollY 短暫一致，接著上方
+  // 區塊換成真實高度、目標又滑走（ebook/ 實測定格偏 755px）。故：
+  //   · 至少量測 MIN_TICKS 次（約 1.8s）才允許收工；
+  //   · 文件總高一變（估算→真實）就把 stable 歸零重算。
   function settleInPageAnchor(el) {
+    const MIN_TICKS = 12;   // 約 1.8s：等 scrollIntoView 動畫結束＋高度換算
+    const MAX_TICKS = 40;   // 約 6s 上限
+    const TICK_MS = 150;
     let stable = 0;
     let tries = 0;
+    let lastHeight = document.documentElement.scrollHeight;
     let userScrolled = false;
     const stop = () => { userScrolled = true; };
     window.addEventListener('wheel', stop, { passive: true, once: true });
@@ -81,17 +91,20 @@
 
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      const height = document.documentElement.scrollHeight;
+      if (height !== lastHeight) { lastHeight = height; stable = 0; }
       const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset);
       if (Math.abs(want - window.pageYOffset) > 2) {
         window.scrollTo(0, want);
         stable = 0;
-      } else if (++stable >= 2) {
-        return;
+      } else {
+        stable++;
       }
-      if (++tries >= 40) return;   // 約 6 秒上限
-      setTimeout(tick, 150);
+      tries++;
+      if ((tries >= MIN_TICKS && stable >= 3) || tries >= MAX_TICKS) return;
+      setTimeout(tick, TICK_MS);
     };
-    setTimeout(tick, 150);
+    setTimeout(tick, TICK_MS);
   }
 
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
