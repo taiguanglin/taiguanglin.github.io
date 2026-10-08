@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-10-08T02:54:14.971Z",
+  "generated_at": "2026-10-08T06:22:50.348Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -11809,7 +11809,7 @@
           "pid": "p-s4f21cb12",
           "text": "“如兔马等角，凡愚妄取”，就像兔和马都是没有角的动物，但是愚痴凡夫们会想象出这些东西，再在之上产生执着，叫“妄取”。",
           "start": 1204.057,
-          "end": 1221.59,
+          "end": 1220.79,
           "conf": 0.85,
           "method": "ngram",
           "confirmed": true
@@ -11817,135 +11817,134 @@
         {
           "pid": "p-s3f94c87b",
           "text": "“唯自证圣智所行之处”，指前面“自心所见非有性故，离有无生故”，离有无生的状态，是靠自己往里灭妄想的修行所达到的境界。",
-          "start": 1221.59,
-          "end": 1243.27,
+          "start": 1220.79,
+          "end": 1242.47,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9581fab2",
           "text": "“非诸愚夫二分别境”，“二分别”，在这里专指有无分别，因为后边说了“妄起有、无分别”，不是愚痴凡夫们的有无分别境界。",
-          "start": 1243.27,
-          "end": 1264.18,
+          "start": 1242.47,
+          "end": 1263.386,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-seef84797",
           "text": "大慧，身及资生器世间等，一切皆是藏识影像，所取能取二种相现，彼诸愚夫，堕生住灭二见中故，于中妄起有、无分别。大慧，汝于此义当勤修学。",
-          "start": 1264.18,
-          "end": 1264.18,
+          "start": 1263.386,
+          "end": 1268.972,
           "conf": 0.45,
           "method": "miss",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s8d2a560f",
           "text": "“身及资生器世间等，一切皆是藏识影像”，肉身、外面的所有物质世界和承载这个物质世界的虚空，都是我们第八识阿赖耶识产生的妄想、分别、执着和合而成，都是在藏识当中产生的幻境、影像。",
-          "start": 1264.18,
-          "end": 1300.12,
+          "start": 1268.972,
+          "end": 1298.692,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sadffd453",
           "text": "“所取能取二种相现”，会产生所取和能取的二种相。也就是从最初的人、我分别产生出所取和能取。“能取”是主体，“所取”是对象——主体“取”的对象。",
-          "start": 1300.12,
-          "end": 1326,
+          "start": 1298.692,
+          "end": 1324.718,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4b58a01a",
           "text": "“彼诸愚夫，堕生住灭二见中故”，愚痴凡夫们堕在生住灭二见中，在这里应该省略了“有无”二字——堕在生住灭的有无二见中，“生住灭”指物质、生命的生住灭。他认为他们有或者没有物质、生命的生住灭，堕入这样的二见中也是一种我见。“于中妄起有、无分别”，在这种状态里虚妄地升起有和无的分别。“大慧，汝于此义当勤修学”，你应该了解这些义理。",
-          "start": 1326,
+          "start": 1324.718,
           "end": 1365.3,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s29fc9dde",
           "text": "复次，大慧，有五种种性，何等为五？谓声闻乘种性，缘觉乘种性，如来乘种性，不定种性，无种性。",
           "start": 1365.3,
-          "end": 1371.2,
+          "end": 1369.966,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sced0a48d",
           "text": "这里“种性”是根器的意思。五种根器——“声闻乘种性，缘觉乘种性，如来乘种性，不定种性，无种性”。这个解释在《圆觉经》里出现过一次。但是在这里说的全是菩萨的境界，和我们理解的声闻、缘觉不是一个层次。可能写书的人也不知道该怎么给它起名字来分别，就直接用原来的那些名词了。但是下边解释的都不是我们所理解的声闻和缘觉的那个境界。",
-          "start": 1371.2,
-          "end": 1408.46,
+          "start": 1369.966,
+          "end": 1407.352,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s80f75507",
           "text": "大慧，云何知是声闻乘种性？谓若闻说于蕴界处自相、共相，若知若证举身毛竖，心乐修习，于缘起相不乐观察，应知此是声闻乘种性。",
-          "start": 1408.46,
-          "end": 1430.482,
+          "start": 1407.352,
+          "end": 1410.055,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se09603c3",
           "text": "怎么知道是声闻乘种性呢？只有到八地的人自相、共相才能成立，八地菩萨才有的境界。听到八地菩萨自相共相的境界之后非常开心，愿意修习。但是对无明缘行这个缘起——最初妄想的产生，然后经过等觉地、十地、九地、八地，这样下来的过程，他并不想要观察。应知此是声闻乘种性。",
-          "start": 1430.482,
-          "end": 1459.82,
+          "start": 1410.055,
+          "end": 1455.77,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s43aa0194",
           "text": "有些人从当下的环境中生起了解决问题的欲望，比如我们大部分人修行是为了解决自身的痛苦，从自身的痛苦当中摆脱出来，从自身的痛苦当中想象出了一个没有痛苦的状态，然后往这个方向努力。这种在理论上可以称之为“声闻乘”。而对这个世界最初怎么产生的本相问题感兴趣，从而修行的人，称为“缘觉乘”。",
-          "start": 1459.82,
-          "end": 1502.35,
+          "start": 1455.77,
+          "end": 1502.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6f762f65",
           "text": "这样看的话，声闻乘是为了解决当下的问题，不管是求离苦也好，求财也好，反正从我们当下的问题开始解决，这样的人称为“声闻乘”。就是以离苦心、识苦——认为当下苦的这种心态开始修行的人叫“声闻乘”。缘觉乘是求道心——想知道宇宙真相，以这个目的来修行的人叫“缘觉乘”。",
-          "start": 1502.35,
-          "end": 1534.26,
+          "start": 1502.7,
+          "end": 1533.292,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scc8142f9",
           "text": "这是普遍的认知，一般大部分人都这么说的，对凡夫都是这么解释的。但是在这里讲的完全不是这种解释，全是菩萨的境界。",
-          "start": 1534.26,
-          "end": 1548.8,
+          "start": 1533.292,
+          "end": 1548.12,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbbdce84b",
           "text": "前面讲“谓若闻说于蕴界处自相、共相，若知若证举身毛竖，心乐修习”，听到八地菩萨的境界之后他就开心了。“于缘起相不乐观察”，对妄想最初怎么产生这些问题并不关心。“应知此是声闻乘种性”，这样的人叫声闻乘种性。",
-          "start": 1548.8,
-          "end": 1568.87,
+          "start": 1548.12,
+          "end": 1567.589,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s40dc8852",
           "text": "彼于自乘见所证已，于五、六地断烦恼结，不断烦恼习，住不思议死，正师子吼言：我生已尽，梵行已立，所作已办，不受后有，修习人无我，乃至生于得涅槃觉。",
-          "start": 1568.41,
-          "end": 1568.41,
+          "start": 1567.589,
+          "end": 1567.589,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": true,
@@ -11954,407 +11953,407 @@
         {
           "pid": "p-sd9e20560",
           "text": "“彼于自乘见所证已，于五、六地断烦恼结”，这些人可以修到五、六地菩萨境界。“断烦恼结，不断烦恼习”，“结”和“习”有什么区别？这和前面讲的妄想，对我们凡夫来说，每一个妄想都有内容，但是最初产生的执着是对妄想本身的执着，或者是维持那个妄想、守住当下妄想的执着，是这么说的吧？",
-          "start": 1568.87,
-          "end": 1601.02,
+          "start": 1567.589,
+          "end": 1599.937,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9cb490c0",
           "text": "菩萨的境界也是如此，理论上是一样的。“不断烦恼习”，“烦恼习”就是打妄想的习气，打妄想的习气在。但是断了烦恼结，他就不再专注于某个特定的妄想当中。也就是他开始进入一个没有特定妄想的、一直打妄想的那种状态。",
-          "start": 1601.02,
-          "end": 1626.57,
+          "start": 1599.937,
+          "end": 1625.572,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se4484ab2",
           "text": "要是再往下跌落的话，他就喜欢打某一种妄想。这样看的话，喜欢打某一种妄想的状态称之为“有结”，“结”就是结缚、绑缚或者捆缚的意思。结成一个疙瘩那种说法，我们大概可以这样理解。就是他经常喜欢打某一种妄想，那就成为一个结。如果没有了这个结，只是不停地打新的妄想，这叫“断了结有习气”。",
-          "start": 1626.57,
-          "end": 1659.43,
+          "start": 1625.572,
+          "end": 1659.101,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb3bded8",
           "text": "“住不思议死”，菩萨没有生死，但是写书的人就愿意这么说，给菩萨弄个“死”字。",
-          "start": 1659.43,
-          "end": 1672.87,
+          "start": 1659.101,
+          "end": 1672.214,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s689986c7",
           "text": "这样的人认为“我生已尽”，生死的问题已经解决了；“梵行已立”，不再犯戒了，“梵行”可以理解为严格的戒行，在菩萨的境界里就是不乱动妄想；“所作已办”，该做的事都做完了；“不受后有”，不堕入轮回。“人无我”就是菩萨境界。“乃至生于得涅槃觉”，产生了涅槃觉。",
-          "start": 1672.87,
-          "end": 1703.72,
+          "start": 1672.214,
+          "end": 1702.806,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s02881977",
           "text": "在这里“我生已尽，梵行已立，所作已办，不受后有，修习人无我”，在很多佛经里这讲的都是阿罗汉的境界。但是在这里直接拿来说了。",
-          "start": 1703.72,
-          "end": 1716.78,
+          "start": 1702.806,
+          "end": 1715.681,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8c70744f",
           "text": "大慧，复有众生求证涅槃，言能觉知我、人、众生、养者、取者，此是涅槃，复有说言见一切法因作者有，此是涅槃。",
-          "start": 1716.78,
-          "end": 1728.36,
+          "start": 1715.681,
+          "end": 1722.736,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sab789d92",
           "text": "有些众生追求涅槃，他们说什么是“涅槃”？能感知到、能觉知到我、人、众生、寿者。你要彻底觉知的话，得超越这些我、人、众生、寿者的分别心，那就是菩萨境界。“取者”就是我这个主体。这也要超越，就是我相得彻底灭掉，这样的状态叫涅槃。",
-          "start": 1728.36,
-          "end": 1747.45,
+          "start": 1722.736,
+          "end": 1746.45,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s061714e6",
           "text": "“复有说言见一切法因作者有”，还说一切妄想、分别、执着都是因为有人在造作，以此为涅槃。",
-          "start": 1747.45,
-          "end": 1758.76,
+          "start": 1746.45,
+          "end": 1757.896,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sac5dc160",
           "text": "大慧，彼无解脱，以未能见法无我故，此是声闻乘及外道种性，于未出中，生出离想，应勤修习，舍此恶见。",
-          "start": 1758.76,
-          "end": 1759.83,
+          "start": 1757.896,
+          "end": 1759.216,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdbbaa5d1",
           "text": "这样的人没有解脱，他们还没有到法无我的状态——八地菩萨的境界。这些都叫声闻乘及外道种性。还没有成佛之前就已经生起了这种涅槃的想象。我们应该断除这样的恶见。",
-          "start": 1759.83,
-          "end": 1787.75,
+          "start": 1759.216,
+          "end": 1787.137,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sae615c50",
           "text": "大慧，云何知是缘觉乘种性？谓若闻说缘觉乘法，举身毛竖，悲泣流泪，离愦闹缘，无所染着，有时闻说现种种身，或聚或散神通变化，其心信受无所违逆，当知此是缘觉乘种性，应为其说缘觉乘法。",
-          "start": 1787.75,
-          "end": 1790,
+          "start": 1787.137,
+          "end": 1789.421,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1dfda85a",
           "text": "怎么知道是缘觉种性呢？“无明缘行”这个理论——最初的无明开始生起妄想，妄想不断地增加，到妄想、分别、执着产生——“无明缘行，行缘识，识缘名色……”，他听到这样的理论之后非常开心，“无所染着”，他尽量不去生起妄想。",
-          "start": 1790,
-          "end": 1829.45,
+          "start": 1789.421,
+          "end": 1828.264,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4d1f3012",
           "text": "“或聚或散神通变化，其心信受无所违逆”，到这里，他只要知道这个世界是由最底层的妄想和合而成，那所有的神通变化他都能接受。虽然他自己不能变，但是可以接受。因为这一切都是妄想和合而成，还有什么不可能的东西？你看到天上飞来飞去的神仙也好，什么飞碟飞来飞去也好，外星人也好，都是妄想和合而成，有什么不可能的？",
-          "start": 1829.45,
-          "end": 1860.49,
+          "start": 1828.264,
+          "end": 1859.686,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s34aedcf6",
           "text": "也有可能你把自己的眼睛按一下，再看外边，眼前就有什么黑点、飞蚊这种东西，都是有可能的。这些都是妄想和合而成，有什么不能接受的？",
-          "start": 1860.49,
+          "start": 1859.686,
           "end": 1872.36,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sad540fe0",
           "text": "“或聚或散神通变化，其心信受无所违逆”，所以对任何神通变化、任何看上去不可思议的事情他都能接受。因为他知道这个世界是最初的无明——最初的妄想和合而成的。“当知此是缘觉乘种性，应为其说缘觉乘法”，就知道这是对这个世界的本相感兴趣的人，我们称他为“缘觉乘”，应该为他们说缘觉乘法。",
           "start": 1872.36,
-          "end": 1899.35,
+          "end": 1898.55,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc06f97c8",
           "text": "大慧，如来乘种性所证法有三种，所谓自性无自性法，内身自证圣智法，外诸佛刹广大法。",
-          "start": 1899.35,
-          "end": 1904.4,
+          "start": 1898.55,
+          "end": 1902.833,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd37e145f",
           "text": "第三种是如来乘种性，“所谓自性无自性法，内身自证圣智法，外诸佛刹广大法”三种法。",
-          "start": 1904.4,
-          "end": 1916.61,
+          "start": 1902.833,
+          "end": 1916.41,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s624b810f",
           "text": "“所谓自性无自性法”，“自性”是“一切法之自性”，前面省略了几个词，也就是法的本体无自性，它的本体是不存在的，这算是义理。理论上你所看到的所有的妄想、分别、执着和合而成的物质世界也好、身体也好，都没有本体，都是无根之木、无根之草。你只要有这样的观念，就算到了“自性无自性法”。“内身自证圣智法”，这是修心的问题，也就是往里灭自己妄想的过程。“外诸佛刹广大法”，这是消业和度人，到其他佛刹学习和度人的法。",
-          "start": 1916.61,
-          "end": 1972.8,
+          "start": 1916.41,
+          "end": 1971.1,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se1107077",
           "text": "大慧，若有闻说此一一法及自心所现、身财建立阿赖耶识不思议境，不惊、不怖、不畏，当知此是如来乘性。",
-          "start": 1972.8,
-          "end": 1978.13,
+          "start": 1971.1,
+          "end": 1977.207,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s95b3917c",
           "text": "听到这样的法，一切都是自己的意识里产生的妄想。“身财”是肉身和器世界。听到这样的法都是在阿赖耶识里的不思议境——初妄无因，最底层的初始设定。对这样的理论他信受、接受，而且不惊、不怖、不畏，我们就可以认为他是如来乘种性。",
-          "start": 1978.13,
-          "end": 2025.6,
+          "start": 1977.207,
+          "end": 2022.915,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb6634a38",
           "text": "大慧，不定种性者，谓闻说彼三种法时，随生信解，而顺修学。",
-          "start": 2025.6,
-          "end": 2033.02,
+          "start": 2022.915,
+          "end": 2032.498,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saf22f76b",
           "text": "实际上不定种性的人的根器更高，所以放到后边，因为他内心没有我见。其实我们接受什么样的信息也好、听什么说法也好、讲课也好，实际上我们绝大部分都是带着我见来修行、学习，所以当对方说的和你最底层的我见相契合的时候，你就心生欢喜愿意接受。如果说法和你想的完全不一样的话，那就无法接受，这和你的我见相抵触了。",
-          "start": 2033.02,
-          "end": 2073.42,
+          "start": 2032.498,
+          "end": 2074.658,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbf79059d",
           "text": "但是不定种性者没有这样的我见，所以你说什么法他就接受什么法，你说的是缘觉乘法，他就接受缘觉乘法，说的是声闻乘法，他就接受声闻乘法，什么法他都能接受。因为他已经基本上没有什么自己坚定地坚持的那种我见，所以这种人根器更高。",
-          "start": 2073.42,
-          "end": 2101.82,
+          "start": 2074.658,
+          "end": 2100.918,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se3d75657",
           "text": "大慧，为初治地人而说种性，欲令其入无影像地作此建立。",
-          "start": 2101.82,
-          "end": 2105.31,
+          "start": 2100.918,
+          "end": 2105.01,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0edfcdcb",
           "text": "“初治地人”，看作是初地菩萨，刚刚成为初地菩萨的人。这些都是为他们解说这样的不同根器。“无影像地”，就是八地以上的境界。为了让他们进入八地以上境界，而分别出这个乘来解释或者传授。",
-          "start": 2105.31,
-          "end": 2129.21,
+          "start": 2105.01,
+          "end": 2128.142,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6644dd7c",
           "text": "大慧，彼住三昧乐声闻，若能证知自所依识，见法无我净烦恼习，毕竟当得如来之身。",
-          "start": 2129.21,
-          "end": 2139.6,
+          "start": 2128.142,
+          "end": 2138.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s51845d91",
           "text": "这些人如果住在三昧当中，喜欢学习、喜欢听法。靠自己证悟到自己所依的识，进入到法无我的境界——八地菩萨境界，净烦恼习。前面说五、六地的菩萨还没有断烦恼习，到这里八地就开始断烦恼习了，这种不断打妄想的习气快灭掉了，八地菩萨开始进入妄想更加细微的状态。“毕竟当得如来之身”，所以最后能成佛了。",
-          "start": 2139.6,
-          "end": 2188.14,
+          "start": 2138.25,
+          "end": 2186.493,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbd0d977a",
           "text": "下面一段是总结性的偈语颂言。",
-          "start": 2188.14,
-          "end": 2191.57,
+          "start": 2186.493,
+          "end": 2190.459,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7ebaf527",
           "text": "预流一来果，不还阿罗汉；",
-          "start": 2191.57,
-          "end": 2194.95,
+          "start": 2190.459,
+          "end": 2193.041,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2b2492a1",
           "text": "这是小乘四果的名字，“预流”是须陀洹，“一来果”是斯陀含，“不还”是阿那含，加上阿罗汉，这是小乘四果。",
-          "start": 2194.95,
-          "end": 2210,
+          "start": 2193.041,
+          "end": 2208.938,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sce358ae0",
           "text": "是等诸圣人，其心悉迷惑。",
-          "start": 2210,
-          "end": 2213.24,
+          "start": 2208.938,
+          "end": 2211.612,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa5948a14",
           "text": "这些小乘四果的人内心都是迷惑的。",
-          "start": 2213.24,
-          "end": 2216.56,
+          "start": 2211.612,
+          "end": 2215.476,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s91d728d7",
           "text": "我所立三乘，一乘及非乘；",
-          "start": 2216.56,
-          "end": 2219.79,
+          "start": 2215.476,
+          "end": 2217.771,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4161b444",
           "text": "佛说的三乘既是一乘，也是非乘。",
-          "start": 2219.79,
-          "end": 2225.35,
+          "start": 2217.771,
+          "end": 2223.829,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1769c2a4",
           "text": "为愚夫少智，乐寂诸圣说。",
-          "start": 2225.35,
-          "end": 2229.48,
+          "start": 2223.829,
+          "end": 2227.415,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sde69e786",
           "text": "为这些愚痴凡夫们所说的方便法。",
-          "start": 2229.48,
-          "end": 2238.5,
+          "start": 2227.415,
+          "end": 2237.359,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s155a5ec7",
           "text": "第一义法门，远离于二取；",
-          "start": 2238.5,
-          "end": 2241.7,
+          "start": 2237.248,
+          "end": 2237.448,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbd76dfbd",
           "text": "第一义法门——最底层的真相是远离于二取的。“二取”就是有无。",
-          "start": 2241.7,
-          "end": 2248.45,
+          "start": 2237.448,
+          "end": 2247.293,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf85968b4",
           "text": "住于无境界，何建立三乘？",
-          "start": 2248.45,
-          "end": 2252.3,
+          "start": 2247.293,
+          "end": 2250.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf6402899",
           "text": "安住在无的境界当中，所以没有什么三乘之名，也没有什么三乘好建立。",
-          "start": 2252.3,
-          "end": 2260.52,
+          "start": 2250.95,
+          "end": 2259.552,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf7cfa2ba",
           "text": "诸禅及无量，无色三摩提；",
-          "start": 2260.52,
-          "end": 2265.47,
+          "start": 2259.552,
+          "end": 2264.213,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd288b1ce",
           "text": "如来所说的诸禅三昧、灭尽定诸法。",
-          "start": 2265.47,
-          "end": 2271.73,
+          "start": 2264.213,
+          "end": 2269.359,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9ab3e194",
           "text": "乃至灭受想，唯心不可得。",
-          "start": 2271.73,
-          "end": 2277.9,
+          "start": 2269.359,
+          "end": 2275.901,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf6504a9b",
           "text": "“灭受想”也是一种定。远离了自性的话都不可得。这一期就讲到这里。",
-          "start": 2277.9,
+          "start": 2275.901,
           "end": 2287.822,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
