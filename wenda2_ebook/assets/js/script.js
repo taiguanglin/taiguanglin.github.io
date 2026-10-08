@@ -2001,55 +2001,83 @@ if (isIndexPage()) {
   }
 
   // 為問答添加互動按鈕
+  // 長文啟動效能：overlay（.qa-actions）改為 IntersectionObserver 惰性建立
+  // ——區塊接近視窗時才建立（rootMargin 提前 600px，一次一批），啟動不再
+  // 一次生成全頁上萬個 DOM 節點（《楞伽经》4265 段 ≈ 1.7 萬節點、
+  // 問答錄2 第04章 ≈ 4.8 萬），DOMContentLoaded 主線程時間回復 O(視窗)。
+  // 按鈕本來就只在 hover / focus-within 顯示（01a-layout.css、books.css），
+  // 鍵盤 Tab 順序對「看得到」的區塊不變；點擊事件由 04-events 以事件代理
+  // （closest）處理，與 overlay 建立時機無關。position: relative 的定位
+  // 基準改由 01a-layout.css 供給，不再逐塊寫行內 style。
+  function addQAActionsToElement(element) {
+    // 冪等護欄：同一元素不重複建（IO unobserve 之外的第二道保險）
+    if (element.dataset.qaActions === '1') return;
+    element.dataset.qaActions = '1';
+
+    // 確保元素有唯一ID（用於分享功能）
+    let prefix;
+    if (element.classList.contains('question')) {
+      prefix = 'question';
+    } else if (element.classList.contains('answer')) {
+      prefix = 'answer';
+    } else {
+      prefix = 'paragraph';
+    }
+    ensureElementId(element, prefix);
+
+    const actions = document.createElement('div');
+    actions.className = 'qa-actions';
+
+    const isQuestion = element.classList.contains('question');
+    const isAnswer = element.classList.contains('answer');
+    const isParagraph = element.classList.contains('para-block');
+
+    // 首頁不顯示書籤按鈕
+    let actionsHtml = '';
+
+    if (isQuestion) {
+      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
+    } else if (isAnswer) {
+      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
+    } else if (isParagraph) {
+      // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
+      actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
+    }
+
+    actions.innerHTML = actionsHtml;
+    element.appendChild(actions);
+  }
+
   function addQAActions() {
     const qaElements = document.querySelectorAll('.question, .answer, .para-block');
-    qaElements.forEach((element) => {
-      // 確保元素有唯一ID（用於分享功能）
-      let prefix;
-      if (element.classList.contains('question')) {
-        prefix = 'question';
-      } else if (element.classList.contains('answer')) {
-        prefix = 'answer';
-      } else {
-        prefix = 'paragraph';
-      }
-      ensureElementId(element, prefix);
-      
-      element.style.position = 'relative';
-      const actions = document.createElement('div');
-      actions.className = 'qa-actions';
-      
-      const isQuestion = element.classList.contains('question');
-      const isAnswer = element.classList.contains('answer');
-      const isParagraph = element.classList.contains('para-block');
-      
-      // 首頁不顯示書籤按鈕
-      let actionsHtml = '';
-      
-      if (isQuestion) {
-        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
-        if (!currentChapter.isHomepage) {
-          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-        }
-        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
-      } else if (isAnswer) {
-        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
-        if (!currentChapter.isHomepage) {
-          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-        }
-        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
-      } else if (isParagraph) {
-        // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
-        actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
-        if (!currentChapter.isHomepage) {
-          actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-        }
-        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
-      }
-      
-      actions.innerHTML = actionsHtml;
-      element.appendChild(actions);
-    });
+    if (!qaElements.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      // 無 IO 支援時退回舊行為（全量建立），確保功能不缺
+      qaElements.forEach((element) => addQAActionsToElement(element));
+      return;
+    }
+
+    const overlayObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        overlayObserver.unobserve(entry.target);
+        addQAActionsToElement(entry.target);
+      });
+    }, { rootMargin: '600px 0px' });
+    qaElements.forEach((element) => overlayObserver.observe(element));
   }
 
 // ============================================================
@@ -5833,6 +5861,9 @@ function addHomepageBookmarkEventListeners() {
   //   1. 為每段經文包一層 .sutra-pin-host（只包層、不搬動順序，sticky 的
   //      定位單位），09b-para-track 以 nextElementSibling 掃描段落的邏輯
   //      照常運作（.para-block 節點不變）。
+  //      2026-10 起講經系列由 books2ebook 在建置期直接輸出 host/group
+  //      包層；本模組偵測到既有包層即沿用（host 偵測見程式碼、group 偵測
+  //      見「包 sticky 群」段落），runtime 包法僅作為未包層頁面的後備。
   //   2. 再以「經文 → 邊界元素」為範圍包 .sutra-pin-group：邊界 = 下一段
   //      經文、任何 h1–h6（章節名/品名小節名）、任何圖片（figure/img），
   //      取文件順序最先者；章節尾（下一個 h2）之前若無這些邊界就到章節尾
@@ -5932,6 +5963,11 @@ function addHomepageBookmarkEventListeners() {
     // 邊界（文件順序取最先者）：下一段經文的 host、h1–h6 章節名/小節名、
     // figure/img 圖片。sticky 範圍被限制在群內 → 停留中的經文永遠蓋不到
     // 這些元素（群底緣最多貼齊邊界頂緣）。指標依文件順序單向推進，O(n)。
+    // 2026-10 起講經系列頁面由 books2ebook 在建置期直接輸出
+    // .sutra-pin-group / .sutra-pin-host（結構靜態已知）；此處偵測到既有
+    // 包層即沿用、跳過 DOM 手術——長文啟動不再插入/搬移近全頁的節點
+    // （楞伽經 1482 群 ≈ 3000 次節點移動）。runtime 包法保留作為
+    // 未包層頁面（舊產物/其他來源）的後備。
     var BOUNDARY_SEL = 'h1,h2,h3,h4,h5,h6,img,figure';
     var boundaries = Array.prototype.slice.call(
       document.body.querySelectorAll(BOUNDARY_SEL)
@@ -5941,6 +5977,11 @@ function addHomepageBookmarkEventListeners() {
     sutras.forEach(function (s, i) {
       var host = hosts[i];
       var parent = host.parentNode;
+      // 建置期包層：host 的父層已是群 → 直接採用，本段免手術
+      if (parent.classList && parent.classList.contains('sutra-pin-group')) {
+        groups.push(parent);
+        return;
+      }
       var group = document.createElement('div');
       group.className = 'sutra-pin-group';
 
@@ -6008,24 +6049,70 @@ function addHomepageBookmarkEventListeners() {
     // 視窗頂的跳轉都停在停留經文下方。停用置頂（.sutra-pin-tall）或用
     // toggle 關閉置頂時歸零（此值為 inline style，樣式表覆寫無效，故
     // syncToggleUI 會觸發重算）。
-    function applyTallClasses() {
+    //
+    // 長文啟動效能（2026-10）：量測改為「接近視窗才量」——
+    //   · measuredGroups 記錄已量過的群；resize／字型／閱讀設定變化與
+    //     toggle 重算只掃這些群，不再每次全頁（楞伽經 1482 群）掃一遍。
+    //   · 未量過的群交 IntersectionObserver：進入視窗前緣（rootMargin
+    //     100px）時量一次即退訂。此時經文已被 content-visibility 真實
+    //     render，量到的是實際高度——舊版啟動即全量掃，視窗外群量到的
+    //     全是 contain-intrinsic-size 的 240px 佔位值，讓位高度初始
+    //     並不準；量過後 `contain-intrinsic-size: auto` 會記住實際高度，
+    //     之後的觸發重算即使該群已捻出視窗也能量到正確值。
+    //   · 未量群維持 CSS 預設 --w2e-pin-reserve: 0px（04c-qa-audio.css），
+    //     行為與無經文置頂的頁面一致；錨點跳轉的路徑由 reserveFor()
+    //     即時量測（目標必然已在視窗內、經文已 render）。
+    //   · 讀寫分批：先讀完本批所有高度、再一次寫 class/inline style，
+    //     避免逐群 read→write 交錯連續觸發 reflow（layout thrashing）。
+    var measuredGroups = [];
+
+    function measureGroups(list) {
+      if (!list || !list.length) return;
       var vh = window.innerHeight;
       if (!vh) return;
-      groups.forEach(function (g) {
-        var sutra = g.firstElementChild &&
-                    g.firstElementChild.firstElementChild;
-        if (!sutra || !sutra.classList.contains('sutra-text')) return;
-        var h = sutra.offsetHeight;
+      var heights = [];
+      for (var i = 0; i < list.length; i++) {
+        var st = list[i].firstElementChild && list[i].firstElementChild.firstElementChild;
+        heights.push(st && st.classList.contains('sutra-text') ? st.offsetHeight : null);
+      }
+      for (var j = 0; j < list.length; j++) {
+        var h = heights[j];
+        if (h == null) continue;
+        var g = list[j];
         var tall = h > vh * TALL_RATIO;
         g.classList.toggle('sutra-pin-tall', tall);
         g.style.setProperty('--w2e-pin-reserve',
                             (!pinOn || tall) ? '0px' : (h + RESERVE_GAP) + 'px');
-      });
+        if (measuredGroups.indexOf(g) === -1) measuredGroups.push(g);
+      }
+    }
+
+    function applyTallClasses() {
+      measureGroups(measuredGroups);
+    }
+
+    // 未量群：進入視窗前緣量一次即退訂（尺寸其後的變化由下方
+    // ResizeObserver / resize / style 觸發 applyTallClasses 重算）
+    if (window.IntersectionObserver) {
+      var groupObserver = new IntersectionObserver(function (entries) {
+        var pending = [];
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          groupObserver.unobserve(en.target);
+          pending.push(en.target);
+        });
+        measureGroups(pending);
+      }, { rootMargin: '100px 0px' });
+      groups.forEach(function (g) { groupObserver.observe(g); });
+    } else {
+      // 無 IO 支援：退回全量（行為同舊版）
+      measureGroups(groups);
     }
 
     // 經文高度會隨閱讀設定（字級／行距／版面寬）、視窗縮放、字型或圖片載入
     // 而改變。若只在載入時量一次，使用者把字級調大後，原本不算高的經文可能
-    // 變成接近滿版卻仍卡在置頂狀態（蓋住講解）；因此任何尺寸變化都重新量測。
+    // 變成接近滿版卻仍卡在置頂狀態（蓋住講解）；因此任何尺寸變化都重新量測
+    // （重算範圍＝已量過的群，見 measureGroups 註解）。
     var tallScheduled = false;
     function scheduleTallCheck() {
       if (tallScheduled) return;
@@ -6035,7 +6122,6 @@ function addHomepageBookmarkEventListeners() {
       else setTimeout(run, 50);
     }
 
-    applyTallClasses();
     window.addEventListener('resize', scheduleTallCheck);
     window.addEventListener('orientationchange', scheduleTallCheck);
     window.addEventListener('load', scheduleTallCheck);
@@ -6812,4 +6898,148 @@ initSearchSnapshotCapture();
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(function () {});
   }
 })();
+  // ============================================================
+  // 18-chapter-prefetch.js — 章節頁預取（暖機 Service Worker 快取）
+  //
+  // 「載入時間特別長」的主因之一：章節頁首訪要整檔下載（楞伽經 1.38MB →
+  // gzip 392KB），而 sw.js 對電子書頁面採 stale-while-revalidate——
+  // 只快取「造訪過」的頁面，每開一個新章節都重新下載一次。
+  //
+  // 本模組用兩個入口把章節頁提前塞進 SW 的 PAGES_CACHE：
+  //   1. 指標／觸控／鍵盤聚焦即將點擊的連結（pointerenter、touchstart、
+  //      focusin 事件代理）——點擊前先抓，使用者意圖明確，不受省流量
+  //      設定限制（反正點下去也要下載同一份）。
+  //   2. 首頁閒置時逐一預取同語言的全部章節頁（requestIdleCallback、
+  //      低優先、逐一序列避免搶頻寬），讓「點任何一章」都近乎瞬開。
+  //      受 navigator.connection 守門：saveData 或 2g/3g 不做整批預取。
+  //
+  // 預取走 fetch() → 經過 sw.js 的 fetch handler（isEbookHtml → swr()）
+  // 直接寫入 PAGES_CACHE；同時也暖 HTTP 快取，SW 尚未接管時亦有幫助。
+  // 跨語言頁（*_trad.html）刻意不預取，避免資料量翻倍；fetch 皆以
+  // priority:'low' 發出（不支援的瀏覽器自動忽略此選項）。
+  //
+  // 以具名 IIFE 隔離作用域（本檔被串接進共用的 DOMContentLoaded 函式中）。
+  // ============================================================
+  ;(function () {
+    // script.js 只在兩套電子書頁面載入，此為雙保險
+    var path = window.location.pathname;
+    if (!/^\/(wenda2_ebook|ebook)\//.test(path)) return;
+
+    var prefetched = {};   // "pathname?search" -> true（去重；含進行中）
+    var isTrad = (typeof isTraditionalChinesePage === 'function')
+      && isTraditionalChinesePage();
+    var isIndex = (typeof isIndexPage === 'function') ? isIndexPage() : false;
+
+    // 只預取「同目錄、副檔名 .html、同語言、非本頁」的站內連結
+    function linkTarget(raw) {
+      if (!raw) return null;
+      raw = String(raw).trim();
+      if (/^(https?:|mailto:|tel:|data:)/i.test(raw)) return null;
+      if (!/\.html?(\?|#|$)/i.test(raw)) return null;   // 純錨點/其他副檔名不取
+      var url;
+      try { url = new URL(raw, window.location.href); } catch (e) { return null; }
+      if (url.origin !== window.location.origin) return null;
+      if (url.pathname === window.location.pathname) return null;   // 本頁（含錨點）
+      // 同目錄：根目錄與其他子站的導覽頁不預取
+      var dir = window.location.pathname.replace(/[^/]*$/, '');
+      if (url.pathname.indexOf(dir) !== 0) return null;
+      // 語言變體：只預取與當前頁同語言的頁面，避免資料量翻倍
+      if (/_trad\.html?$/i.test(url.pathname) !== isTrad) return null;
+      return url;
+    }
+
+    function fetchKey(url) {
+      return url.pathname + url.search;
+    }
+
+    function prefetch(url) {
+      var key = fetchKey(url);
+      if (prefetched[key]) return;
+      prefetched[key] = true;
+      var cached = (window.caches && window.caches.match)
+        ? window.caches.match(key).catch(function () { return null; })
+        : Promise.resolve(null);
+      cached.then(function (hit) {
+        // SW 已有此頁（含先前版本快取）→ 不重抓
+        if (hit) return null;
+        return fetch(key, { priority: 'low' });
+      }).catch(function () {
+        // 失敗靜默（離線、404、字檔大小寫……），解鎖讓懸停可重試
+        delete prefetched[key];
+        return null;
+      });
+    }
+
+    // ---- 1. 指標即將點擊：事件代理預取 -------------------------------
+    var onIntent = function (e) {
+      var t = e.target;
+      var a = (t && t.closest) ? t.closest('a[href]') : null;
+      if (!a) return;
+      var url = linkTarget(a.getAttribute('href'));
+      if (url) prefetch(url);
+    };
+    document.addEventListener('pointerenter', onIntent, true);
+    document.addEventListener('touchstart', onIntent, true);
+    document.addEventListener('focusin', onIntent, true);
+
+    // ---- 2. 首頁閒置：整批預取同語言章節頁 ---------------------------
+    function bulkTargets() {
+      var seen = {};
+      var out = [];
+      var links = document.querySelectorAll('a[href]');
+      for (var i = 0; i < links.length; i++) {
+        var url = linkTarget(links[i].getAttribute('href'));
+        if (!url) continue;
+        var key = fetchKey(url);
+        if (seen[key]) continue;
+        seen[key] = true;
+        out.push(url);
+      }
+      return out;
+    }
+
+    function connectionAllowsBulk() {
+      var c = navigator.connection || navigator.webkitConnection || null;
+      if (!c) return true;          // 無資訊（多半為桌面/不限制）→ 允許
+      if (c.saveData) return false; // 使用者要求省流量
+      var t = c.effectiveType;
+      if (t === 'slow-2g' || t === '2g' || t === '3g') return false;
+      return true;
+    }
+
+    function runBulkPrefetch() {
+      if (!isIndex || !connectionAllowsBulk()) return;
+      var queue = bulkTargets();
+      var i = 0;
+      var step = function () {
+        if (i >= queue.length) return;
+        var url = queue[i++];
+        var key = fetchKey(url);
+        if (prefetched[key]) { step(); return; }
+        prefetched[key] = true;
+        var cached = (window.caches && window.caches.match)
+          ? window.caches.match(key).catch(function () { return null; })
+          : Promise.resolve(null);
+        cached
+          .then(function (hit) { return hit ? null : fetch(key, { priority: 'low' }); })
+          .catch(function () { return null; })  // 失敗靜默，續下一個
+          .then(step);                          // 逐一序列，不搶點擊的頻寬
+      };
+      step();
+    }
+
+    function idle(fn) {
+      if (window.requestIdleCallback) {
+        window.requestIdleCallback(fn, { timeout: 3000 });
+      } else {
+        setTimeout(fn, 1200);   // Safari 等無 rIC：load 後 1.2s 再開始
+      }
+    }
+
+    if (document.readyState === 'complete') {
+      idle(runBulkPrefetch);
+    } else {
+      window.addEventListener('load', function () { idle(runBulkPrefetch); });
+    }
+  })();
 });

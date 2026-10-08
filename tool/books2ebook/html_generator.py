@@ -577,9 +577,19 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     _seen_heading = False
     cur_section = book.title
     _series = getattr(book, "series", None)  # 講經系列：段落級 data-start/data-end 注入
+    # 經文置頂（sutra pin）包層自 2026-10 起於建置期直接輸出：每段
+    # .sutra-text 原經文包進 .sutra-pin-group > .sutra-pin-host，其後的講解
+    # 段落（para/strong/label/qa/hr）落在同一群內；遇到邊界——下一段經文、
+    # h2–h6 標題、圖片 figure——先閉群再輸出，邊界本身留在群外。群界規則與
+    # 09c-sutra-pin.js 的 runtime 包法完全一致；09c 偵測到既有包層即跳過
+    # DOM 手術（長文啟動不再搬移近全頁的兄弟節點）。
+    _pin_group_open = False
     for b in blocks:
         k = b["kind"]
         if k in _HEADING_KINDS:
+            if _pin_group_open:
+                body.append("</div>")
+                _pin_group_open = False
             if _seen_heading:
                 body.append(_back_to_toc)
             _seen_heading = True
@@ -608,9 +618,18 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section)
         elif k == "quote":
+            # 先閉上一群（下一段經文是邊界），再開新群包本段經文；
+            # host 即 sticky 定位單位，group 限制停留範圍（見 09c/CSS）
+            if _pin_group_open:
+                body.append("</div>")
+                _pin_group_open = False
+            body.append('<div class="sutra-pin-group">')
+            body.append('<div class="sutra-pin-host">')
             body.append('<div class="sutra-text para-block" id="%s"%s>%s</div>'
                         % (b["pid"], para_time_attrs(_series, b["pid"]),
                            nl2br(esc(b["text"]))))
+            body.append("</div>")  # /sutra-pin-host（group 保持開著，收講解段落）
+            _pin_group_open = True
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section)
         elif k == "label":
@@ -621,6 +640,11 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                 # 統一 <img> 標記（lazy + 語意 alt + 實檔寬高）來自 word2ebook
                 # 的 utils/image_markup.py——經 main.py 以 importlib 載入共用
                 abs_img = os.path.join(out_dir, src) if out_dir else None
+                if _pin_group_open:
+                    # 有實際輸出的 figure 是邊界（無 src 者不輸出、也非邊界，
+                    # 與 09c 只認 DOM 中實際存在的 img/figure 一致）
+                    body.append("</div>")
+                    _pin_group_open = False
                 body.append(
                     '<figure class="book-img">%s</figure>'
                     % render_img_tag(src, cur_section, abs_img)
@@ -675,6 +699,11 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                 if ahtml:
                     body.append(ahtml)
             body.append("<hr/>")
+
+    # 迴圈結束仍開著的經文群收尾
+    if _pin_group_open:
+        body.append("</div>")
+        _pin_group_open = False
 
 # 單書內頁：只回本系列總目錄（跨書連結僅出現在首頁）
     _book_toc_href = "index_trad.html" if is_trad else "index.html"

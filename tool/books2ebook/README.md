@@ -85,8 +85,21 @@
 Confluence 表格固定表頭概念），講解段落從其下方滑過。停留範圍由
 `.sutra-pin-group` 限制在「該經文 → 下一邊界（下一段經文、h1–h6 章節名/品名、
 圖片）」之間，因此天生不會蓋住經文、章節名或圖片——會遮住之前就先讓位歸位；
-進入新章節自然失效。過長（> 45% 視窗高，接近或超過整個畫面就沒空間讀講解）的經文
-不停留；且經文高度隨閱讀設定（字級／行距／版面寬）、視窗縮放或字型載入改變時會重新
+進入新章節自然失效。
+
+**2026-10 長文載入效能：包層改於建置期輸出。** `html_generator.render_chapter`
+對每個 `quote` 區塊直接輸出 `<div class="sutra-pin-group"><div class="sutra-pin-host">…</div>…</div>`
+（其後的 para/strong/label/qa/hr 落在同一群內；遇到下一個邊界——下一段經文、
+h2–h6 標題、實際輸出的 figure——先閉群，邊界留在群外；無 src 而未輸出的 img
+不是邊界，與 09c 只認 DOM 中實際元素一致）。09c 偵測到既有包層即沿用、跳過
+runtime DOM 手術——楞伽經 1482 群不再於啟動時插入/搬移近全頁節點；runtime
+包法保留作為未包層頁面的後備。過長經文判定（> 55% 視窗高不停留）與錨點讓位高度
+（`--w2e-pin-reserve`）的量測亦改為**接近視窗才量**：IntersectionObserver
+（rootMargin 100px）進入前緣量一次，此時經文已被 `content-visibility` 真實
+render，量到實際高度而非 240px 佔位值；resize／字級變化只重算已量過的群，
+啟動不再全頁掃描（讀寫分批，避免 layout thrashing）。
+
+過長經文不停留；且經文高度隨閱讀設定（字級／行距／版面寬）、視窗縮放或字型載入改變時會重新
 量測（`ResizeObserver`／inline style 監看／`document.fonts.ready`），放大字級後接近滿版
 的經文不會仍卡在置頂。段落跟播高亮（`.para-active`）在 `04c-qa-audio.css` 是半透明
 暖色；經文若同時置頂，下方講解會透過半透明底色看見，故 `books.css` 針對

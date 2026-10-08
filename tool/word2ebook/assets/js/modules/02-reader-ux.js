@@ -489,54 +489,82 @@
   }
 
   // 為問答添加互動按鈕
+  // 長文啟動效能：overlay（.qa-actions）改為 IntersectionObserver 惰性建立
+  // ——區塊接近視窗時才建立（rootMargin 提前 600px，一次一批），啟動不再
+  // 一次生成全頁上萬個 DOM 節點（《楞伽经》4265 段 ≈ 1.7 萬節點、
+  // 問答錄2 第04章 ≈ 4.8 萬），DOMContentLoaded 主線程時間回復 O(視窗)。
+  // 按鈕本來就只在 hover / focus-within 顯示（01a-layout.css、books.css），
+  // 鍵盤 Tab 順序對「看得到」的區塊不變；點擊事件由 04-events 以事件代理
+  // （closest）處理，與 overlay 建立時機無關。position: relative 的定位
+  // 基準改由 01a-layout.css 供給，不再逐塊寫行內 style。
+  function addQAActionsToElement(element) {
+    // 冪等護欄：同一元素不重複建（IO unobserve 之外的第二道保險）
+    if (element.dataset.qaActions === '1') return;
+    element.dataset.qaActions = '1';
+
+    // 確保元素有唯一ID（用於分享功能）
+    let prefix;
+    if (element.classList.contains('question')) {
+      prefix = 'question';
+    } else if (element.classList.contains('answer')) {
+      prefix = 'answer';
+    } else {
+      prefix = 'paragraph';
+    }
+    ensureElementId(element, prefix);
+
+    const actions = document.createElement('div');
+    actions.className = 'qa-actions';
+
+    const isQuestion = element.classList.contains('question');
+    const isAnswer = element.classList.contains('answer');
+    const isParagraph = element.classList.contains('para-block');
+
+    // 首頁不顯示書籤按鈕
+    let actionsHtml = '';
+
+    if (isQuestion) {
+      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
+    } else if (isAnswer) {
+      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
+    } else if (isParagraph) {
+      // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
+      actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
+    }
+
+    actions.innerHTML = actionsHtml;
+    element.appendChild(actions);
+  }
+
   function addQAActions() {
     const qaElements = document.querySelectorAll('.question, .answer, .para-block');
-    qaElements.forEach((element) => {
-      // 確保元素有唯一ID（用於分享功能）
-      let prefix;
-      if (element.classList.contains('question')) {
-        prefix = 'question';
-      } else if (element.classList.contains('answer')) {
-        prefix = 'answer';
-      } else {
-        prefix = 'paragraph';
-      }
-      ensureElementId(element, prefix);
-      
-      element.style.position = 'relative';
-      const actions = document.createElement('div');
-      actions.className = 'qa-actions';
-      
-      const isQuestion = element.classList.contains('question');
-      const isAnswer = element.classList.contains('answer');
-      const isParagraph = element.classList.contains('para-block');
-      
-      // 首頁不顯示書籤按鈕
-      let actionsHtml = '';
-      
-      if (isQuestion) {
-        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
-        if (!currentChapter.isHomepage) {
-          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-        }
-        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
-      } else if (isAnswer) {
-        actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
-        if (!currentChapter.isHomepage) {
-          actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-        }
-        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
-      } else if (isParagraph) {
-        // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
-        actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
-        if (!currentChapter.isHomepage) {
-          actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-        }
-        actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
-      }
-      
-      actions.innerHTML = actionsHtml;
-      element.appendChild(actions);
-    });
+    if (!qaElements.length) return;
+
+    if (!('IntersectionObserver' in window)) {
+      // 無 IO 支援時退回舊行為（全量建立），確保功能不缺
+      qaElements.forEach((element) => addQAActionsToElement(element));
+      return;
+    }
+
+    const overlayObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        overlayObserver.unobserve(entry.target);
+        addQAActionsToElement(entry.target);
+      });
+    }, { rootMargin: '600px 0px' });
+    qaElements.forEach((element) => overlayObserver.observe(element));
   }
 

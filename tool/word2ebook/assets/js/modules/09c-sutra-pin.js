@@ -12,6 +12,9 @@
   //   1. 為每段經文包一層 .sutra-pin-host（只包層、不搬動順序，sticky 的
   //      定位單位），09b-para-track 以 nextElementSibling 掃描段落的邏輯
   //      照常運作（.para-block 節點不變）。
+  //      2026-10 起講經系列由 books2ebook 在建置期直接輸出 host/group
+  //      包層；本模組偵測到既有包層即沿用（host 偵測見程式碼、group 偵測
+  //      見「包 sticky 群」段落），runtime 包法僅作為未包層頁面的後備。
   //   2. 再以「經文 → 邊界元素」為範圍包 .sutra-pin-group：邊界 = 下一段
   //      經文、任何 h1–h6（章節名/品名小節名）、任何圖片（figure/img），
   //      取文件順序最先者；章節尾（下一個 h2）之前若無這些邊界就到章節尾
@@ -111,6 +114,11 @@
     // 邊界（文件順序取最先者）：下一段經文的 host、h1–h6 章節名/小節名、
     // figure/img 圖片。sticky 範圍被限制在群內 → 停留中的經文永遠蓋不到
     // 這些元素（群底緣最多貼齊邊界頂緣）。指標依文件順序單向推進，O(n)。
+    // 2026-10 起講經系列頁面由 books2ebook 在建置期直接輸出
+    // .sutra-pin-group / .sutra-pin-host（結構靜態已知）；此處偵測到既有
+    // 包層即沿用、跳過 DOM 手術——長文啟動不再插入/搬移近全頁的節點
+    // （楞伽經 1482 群 ≈ 3000 次節點移動）。runtime 包法保留作為
+    // 未包層頁面（舊產物/其他來源）的後備。
     var BOUNDARY_SEL = 'h1,h2,h3,h4,h5,h6,img,figure';
     var boundaries = Array.prototype.slice.call(
       document.body.querySelectorAll(BOUNDARY_SEL)
@@ -120,6 +128,11 @@
     sutras.forEach(function (s, i) {
       var host = hosts[i];
       var parent = host.parentNode;
+      // 建置期包層：host 的父層已是群 → 直接採用，本段免手術
+      if (parent.classList && parent.classList.contains('sutra-pin-group')) {
+        groups.push(parent);
+        return;
+      }
       var group = document.createElement('div');
       group.className = 'sutra-pin-group';
 
@@ -187,24 +200,70 @@
     // 視窗頂的跳轉都停在停留經文下方。停用置頂（.sutra-pin-tall）或用
     // toggle 關閉置頂時歸零（此值為 inline style，樣式表覆寫無效，故
     // syncToggleUI 會觸發重算）。
-    function applyTallClasses() {
+    //
+    // 長文啟動效能（2026-10）：量測改為「接近視窗才量」——
+    //   · measuredGroups 記錄已量過的群；resize／字型／閱讀設定變化與
+    //     toggle 重算只掃這些群，不再每次全頁（楞伽經 1482 群）掃一遍。
+    //   · 未量過的群交 IntersectionObserver：進入視窗前緣（rootMargin
+    //     100px）時量一次即退訂。此時經文已被 content-visibility 真實
+    //     render，量到的是實際高度——舊版啟動即全量掃，視窗外群量到的
+    //     全是 contain-intrinsic-size 的 240px 佔位值，讓位高度初始
+    //     並不準；量過後 `contain-intrinsic-size: auto` 會記住實際高度，
+    //     之後的觸發重算即使該群已捻出視窗也能量到正確值。
+    //   · 未量群維持 CSS 預設 --w2e-pin-reserve: 0px（04c-qa-audio.css），
+    //     行為與無經文置頂的頁面一致；錨點跳轉的路徑由 reserveFor()
+    //     即時量測（目標必然已在視窗內、經文已 render）。
+    //   · 讀寫分批：先讀完本批所有高度、再一次寫 class/inline style，
+    //     避免逐群 read→write 交錯連續觸發 reflow（layout thrashing）。
+    var measuredGroups = [];
+
+    function measureGroups(list) {
+      if (!list || !list.length) return;
       var vh = window.innerHeight;
       if (!vh) return;
-      groups.forEach(function (g) {
-        var sutra = g.firstElementChild &&
-                    g.firstElementChild.firstElementChild;
-        if (!sutra || !sutra.classList.contains('sutra-text')) return;
-        var h = sutra.offsetHeight;
+      var heights = [];
+      for (var i = 0; i < list.length; i++) {
+        var st = list[i].firstElementChild && list[i].firstElementChild.firstElementChild;
+        heights.push(st && st.classList.contains('sutra-text') ? st.offsetHeight : null);
+      }
+      for (var j = 0; j < list.length; j++) {
+        var h = heights[j];
+        if (h == null) continue;
+        var g = list[j];
         var tall = h > vh * TALL_RATIO;
         g.classList.toggle('sutra-pin-tall', tall);
         g.style.setProperty('--w2e-pin-reserve',
                             (!pinOn || tall) ? '0px' : (h + RESERVE_GAP) + 'px');
-      });
+        if (measuredGroups.indexOf(g) === -1) measuredGroups.push(g);
+      }
+    }
+
+    function applyTallClasses() {
+      measureGroups(measuredGroups);
+    }
+
+    // 未量群：進入視窗前緣量一次即退訂（尺寸其後的變化由下方
+    // ResizeObserver / resize / style 觸發 applyTallClasses 重算）
+    if (window.IntersectionObserver) {
+      var groupObserver = new IntersectionObserver(function (entries) {
+        var pending = [];
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          groupObserver.unobserve(en.target);
+          pending.push(en.target);
+        });
+        measureGroups(pending);
+      }, { rootMargin: '100px 0px' });
+      groups.forEach(function (g) { groupObserver.observe(g); });
+    } else {
+      // 無 IO 支援：退回全量（行為同舊版）
+      measureGroups(groups);
     }
 
     // 經文高度會隨閱讀設定（字級／行距／版面寬）、視窗縮放、字型或圖片載入
     // 而改變。若只在載入時量一次，使用者把字級調大後，原本不算高的經文可能
-    // 變成接近滿版卻仍卡在置頂狀態（蓋住講解）；因此任何尺寸變化都重新量測。
+    // 變成接近滿版卻仍卡在置頂狀態（蓋住講解）；因此任何尺寸變化都重新量測
+    // （重算範圍＝已量過的群，見 measureGroups 註解）。
     var tallScheduled = false;
     function scheduleTallCheck() {
       if (tallScheduled) return;
@@ -214,7 +273,6 @@
       else setTimeout(run, 50);
     }
 
-    applyTallClasses();
     window.addEventListener('resize', scheduleTallCheck);
     window.addEventListener('orientationchange', scheduleTallCheck);
     window.addEventListener('load', scheduleTallCheck);

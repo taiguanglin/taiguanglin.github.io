@@ -132,7 +132,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |
 | `01d-search-perform.js` | `performSearch`, `displayPagedResults`, `loadMoreResults` |
 | `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, clear, collapse, load-more); result items open in **new tab** (`window.open(..., '_blank', 'noopener')`); search state (`#q=…&scope=…` hash, written by 01d) auto-restores + auto-activates search on back-navigation |
-| `02-reader-ux.js` | Reading toolbar, floating TOC creation, DOM setup, action buttons, Q&A action overlays |
+| `02-reader-ux.js` | Reading toolbar, floating TOC creation, DOM setup, action buttons, Q&A action overlays（2026-10 長文效能：`.qa-actions` overlay 改 IntersectionObserver 惰性建立，接近視窗 600px 才建、一次一批；`position: relative` 定位基準改由 `01a-layout.css` 供給，不再逐塊寫行內 style——啟動不再 O(全頁段落數)，楞伽經 4265 段省下 ≈1.7 萬節點、問答錄2 04 章 ≈4.8 萬） |
 | `03a-bookmark-data.js` | Bookmark CRUD, localStorage persistence, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | Bookmark panel UI helpers: `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
@@ -143,7 +143,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `07-floating-controls.js` | Floating action button menu, floating level controls |
 | `08-qa-audio.js` | QA per-segment audio: wires `.qa-play` buttons, bottom floating mini-player (seekable progress, ±5s skip, play/pause), seek-to-start + auto-stop-at-end, loading/buffer progress feedback; exposes `W2E.qaAudio` (isolated IIFE) |
 | `09b-para-track.js` | 講經「段落跟播」：講次 h2 旁「段落跟播」toggle（`paraTrackEnabled`），播放中高亮當前段落並平滑捲動、點段落即播（經 `W2E.qaAudio` 掛接；isolated IIFE） |
-| `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留）：頁面含 `.sutra-text` 時啟動；以原生 `position: sticky` 讓即將捲出視窗頂的經文停在視窗頂（原尺寸、無白邊），`.sutra-pin-group` 以「下一段經文/標題 h1–h6/圖片」為界限制停留範圍，天生不遮這些內容；過長（> 45% 視窗高）經文不停留，且高度改變（閱讀設定／縮放／字型載入）時重新量測；`sutraPinEnabled` toggle、錨點跳轉暫停、`W2E.sutraPin.reserveFor` 供跟播讓位（isolated IIFE） |
+| `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留）：頁面含 `.sutra-text` 時啟動；以原生 `position: sticky` 讓即將捲出視窗頂的經文停在視窗頂（原尺寸、無白邊），`.sutra-pin-group` 以「下一段經文/標題 h1–h6/圖片」為界限制停留範圍，天生不遮這些內容；過長（> 55% 視窗高）經文不停留，且高度改變（閱讀設定／縮放／字型載入）時重新量測；`sutraPinEnabled` toggle、錨點跳轉暫停、`W2E.sutraPin.reserveFor` 供跟播讓位（isolated IIFE）。2026-10 長文效能：books2ebook 建置期即輸出 `.sutra-pin-group`/`.sutra-pin-host` 包層，本模組偵測到既有包層即沿用、跳過 runtime DOM 手術；量測改由 IntersectionObserver「接近視窗才量」（讀寫分批），resize／字級變化只重算已量過的群，啟動不再全頁掃 1482 群 |
 | `10-search-return.js` | 「回到搜尋結果」浮動按鈕已移除（2026-09：快照跨分頁複製不穩、按鈕鮮少出現）。僅保留 index 頁快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage）供返回時由 01e 還原；另負責**簡繁切換原位恢復**——消化 `/lang-switch.js` 寫入的 `w2e:langjump`（優先同 id 錨點，其次比例，讀完即清；2026-10 起，原屬已刪除的 11-reading-resume） |
 | `11-reading-resume.js` | **已移除（2026-10）**：閱讀位置記憶（`w2e:readpos`）與「上次讀到 XX%／回到位置」提示條功能裁撤，不重建；簡繁切換原位恢復改由 `10-search-return.js` 消化 `w2e:langjump` |
 | `13-player-persist.js` | Cross-page audio persistence: snapshots `{src, t, file, page, anchor}` from `W2E.qaAudio` into `sessionStorage w2e:playerState`; resume pill on any page (same-page hands back to 08's player + `seekAbs`, other pages spawn their own `Audio`) |
@@ -151,6 +151,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `15-mobile-toc.js` | Mobile TOC ergonomics: tap-out backdrop (≤768px), edge-swipe open / panel-swipe close. 「回到頂端」只留功能選單（☰ → ↑）內的按鈕，無常駐懸浮鈕 |
 | `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3 |
 | `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint script in templates adds it to `<html>`); registers root `/sw.js` under the two ebook dirs for offline reading |
+| `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能）：以事件代理在 `pointerenter`/`touchstart`/`focusin` 即時預取即將點擊的同目錄章節連結；首頁閒置（`requestIdleCallback`，fallback `setTimeout`）逐一以 `priority:'low'` 序列預取**同語言**全部章節頁，經 sw.js 的 `swr()` 直接暖機 PAGES_CACHE（跨語言 `*_trad.html` 刻意不取）。整批預取受 `navigator.connection` 守門：`saveData` 或 2g/3g 不做（hover 預取不受限）；先查 `caches.match` 已有即略過（isolated IIFE） |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 
