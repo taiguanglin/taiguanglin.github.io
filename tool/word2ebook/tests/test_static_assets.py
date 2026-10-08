@@ -686,7 +686,6 @@ def test_real_js_bundle_contains_ux_modules():
     mgr = StaticAssetsManager()  # 預設即真實 assets 目錄
     js = mgr.get_full_js_content()
     for marker in [
-        "w2e:readpos",          # 11-reading-resume
         "w2e:playerState",      # 13-player-persist
         "w2e-audio-resume",     # 13-player-persist
         "kb-focus",             # 14-search-plus 鍵盤導覽
@@ -698,12 +697,37 @@ def test_real_js_bundle_contains_ux_modules():
         assert marker in js, f"串接後的 script.js 缺少 {marker}"
 
 
+def test_real_js_bundle_drops_reading_resume_module():
+    """「上次讀到 XX%／回到位置」提示條（11-reading-resume.js）已於 2026-10 徹底移除。
+
+    模組檔刪除（編號 11 保留空缺、不重排）；簡繁切換的原位恢復改由
+    10-search-return.js 消化 w2e:langjump（見其測試）。
+    """
+    mgr = StaticAssetsManager()
+    for bundle in (mgr.get_full_js_content(), mgr.get_full_css_content()):
+        assert "w2e:readpos" not in bundle
+        assert "w2e-resume-bar" not in bundle
+        assert "上次讀到" not in bundle and "上次读到" not in bundle
+        assert "回到位置" not in bundle
+    assert not (Path(__file__).resolve().parents[1]
+                / "assets" / "js" / "modules" / "11-reading-resume.js").exists()
+
+
+def test_langjump_consumed_by_search_return_module():
+    """w2e:langjump（簡繁切換原位恢復）改由 10-search-return.js 消化：
+    有 id 就精準定位、只有 frac 就比例恢復，讀完即清 key。"""
+    src = (Path(__file__).resolve().parents[1]
+           / "assets" / "js" / "modules" / "10-search-return.js").read_text(encoding="utf-8")
+    assert "w2e:langjump" in src
+    assert "scrollToFraction" in src
+    assert "removeItem" in src
+
+
 def test_real_css_bundle_contains_ux_module():
     mgr = StaticAssetsManager()  # 預設即真實 assets 目錄
     css = mgr.get_full_css_content()
     for marker in [
         ".dark-neutral",        # 墨夜面板
-        ".w2e-resume-bar",
         ".w2e-audio-resume",
         ".anchor-share",
         "mark.w2e-hl",
@@ -732,16 +756,6 @@ def test_real_bundles_drop_persistent_backtop_button():
     assert "w2e-backtop" not in mgr.get_full_js_content()
     assert "w2e-backtop" not in mgr.get_full_css_content()
     assert 'data-action="top"' in mgr.get_full_js_content()
-
-
-def test_reading_resume_skips_toc_only_index_pages():
-    """總目錄頁只有目錄、沒有正文，不得出現「上次讀到 XX%」提示條。"""
-    js = StaticAssetsManager().get_full_js_content()
-    assert "isTocOnlyPage" in js          # 11-reading-resume 的頁面類型判斷
-    assert "pruneTocOnlyEntries" in js   # 清除舊版殘留的目錄頁紀錄
-    # 兩道關卡：儲存時不寫、顯示前不彈
-    assert "if (isTocOnlyPage()) return;" in js
-    assert "if (isTocOnlyPage()) { pruneTocOnlyEntries(); return; }" in js
 
 
 def test_search_plus_focus_reset_uses_mutation_observer():

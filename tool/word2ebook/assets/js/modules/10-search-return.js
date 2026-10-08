@@ -1,13 +1,13 @@
 // ============================================================
-// 10-search-return.js — 「回到搜尋結果」浮動按鈕 + 搜尋狀態快照/還原
+// 10-search-return.js — 搜尋狀態快照/還原 + 簡繁切換原位恢復
 //
 // 兩端配合（都在本 bundle 內）：
-//   ① 章節頁：URL 帶 ?q=（由 index 的 buildSearchReturnUrl 附加）時，
-//      顯示「回到搜尋結果」浮動按鈕，點擊返回 index.html?q=…#q=…；
-//      離開前再把 TOC 展開快照寫一次（saveTocExpandSnapshot 定義於 06）。
-//   ② index 頁：搜尋／分頁／捲動時把 {q, scope, displayed, scrollY}
+//   ① index 頁：搜尋／分頁／捲動時把 {q, scope, displayed, scrollY}
 //      存進 sessionStorage（per-tab），restoreSearchFromHash（01e）回來時
 //      一併還原「已顯示筆數」與「捲動位置」。
+//   ② 簡繁切換原位恢復：/lang-switch.js 在 ebook 雙頁跳轉前寫入
+//      sessionStorage('w2e:langjump') = {id, frac}；本模組偵測到後直接
+//      還原（優先同 id 錨點，其次比例），讀完即清。
 // ============================================================
 
 // 搜尋狀態快照鍵（sessionStorage：關閉分頁即失效，不同分頁互不干擾）
@@ -111,5 +111,40 @@ function restoreSearchScroll(targetY) {
 // 保留 index 頁的搜尋狀態快照：使用者直接用瀏覽器返回/回到 index 時
 // 仍由 01e 的 restoreSearchFromHash 還原查詢與捲動位置。
 // ------------------------------------------------------------
+
+// ------------------------------------------------------------
+// 簡繁切換原位恢復（原 11-reading-resume.js 的 ②；該模組已移除）
+//
+// /lang-switch.js 在 ebook 雙頁跳轉前寫入 sessionStorage('w2e:langjump')
+// = {id, frac}：本端偵測到後直接還原（優先同 id 錨點，其次比例），讀完即清。
+// 總目錄頁只有目錄沒有正文，也照樣消化（避免標記外溢到下一頁）。
+// ------------------------------------------------------------
+function scrollToFraction(frac) {
+  var doc = document.documentElement;
+  var total = doc.scrollHeight - window.innerHeight;
+  if (total <= 0) return;
+  window.scrollTo(0, Math.round(frac * total));
+}
+
+function tryLangJumpRestore() {
+  var raw = null;
+  try { raw = sessionStorage.getItem('w2e:langjump'); } catch (e) { return false; }
+  if (!raw) return false;
+  try { sessionStorage.removeItem('w2e:langjump'); } catch (e) {}
+  var info = null;
+  try { info = JSON.parse(raw); } catch (e) { return false; }
+  if (!info) return false;
+  setTimeout(function () {
+    var el = info.id && document.getElementById(info.id);
+    if (el) {
+      el.scrollIntoView({ block: 'start' });
+    } else if (typeof info.frac === 'number' && info.frac > 0) {
+      scrollToFraction(info.frac);
+    }
+  }, 60);
+  return true;
+}
+
+tryLangJumpRestore();
 
 initSearchSnapshotCapture();

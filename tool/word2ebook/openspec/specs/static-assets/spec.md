@@ -69,18 +69,21 @@ priority order:
   required
 
 #### Scenario: 2026-09 UX modules are auto-included
-- GIVEN `assets/js/modules/11-reading-resume.js`, `13-player-persist.js` …
-  `17-theme-pwa.js` (no `12-bookmarks-manager.js` — 首頁「我的書籤」區塊已移除)
+- GIVEN `assets/js/modules/13-player-persist.js` …
+  `17-theme-pwa.js` (no `12-bookmarks-manager.js` — 首頁「我的書籤」區塊已移除；
+  no `11-reading-resume.js` — 閱讀位置提示條已移除，2026-10)
   and `assets/css/modules/06-ux-plus.css`
 - WHEN `get_full_css_content()` / `get_full_js_content()` are called
-- THEN the bundled JS SHALL contain the reading-resume (`w2e:readpos`),
+- THEN the bundled JS SHALL contain
   player-persist (`w2e:playerState`), search-plus (`kb-focus`, `w2e-hl`),
   mobile-TOC (`w2e-toc-backdrop`), jump-share (`anchor-share`), and
   theme/PWA (`theme-dark-neutral`, `sw.js`) behaviours AFTER the
   `10-search-return.js` block, the bundled CSS SHALL
-  contain `.dark-neutral` / `.w2e-resume-bar` / `.w2e-audio-resume` /
+  contain `.dark-neutral` / `.w2e-audio-resume` /
   `.anchor-share` rules, NEITHER bundle SHALL contain any
-  `w2e-bm-*` / `我的書籤` rule or markup, and no build-config change is required
+  `w2e-bm-*` / `我的書籤` rule or markup, NEITHER bundle SHALL contain any
+  `w2e:readpos` / `w2e-resume-bar` / `上次讀到` / `回到位置` trace, and no
+  build-config change is required
 
 ### Requirement: Concatenation Ordering
 When concatenating module files, files SHALL be sorted lexicographically by
