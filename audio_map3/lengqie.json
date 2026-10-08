@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-10-08T06:22:57.090Z",
+  "generated_at": "2026-10-08T06:23:10.520Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -11170,7 +11170,7 @@
       "audio": "2025年1月13日Tai师父讲经·楞伽经(13).opus",
       "title": "楞伽经（13）",
       "duration": 2287.822,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-s89993411",
