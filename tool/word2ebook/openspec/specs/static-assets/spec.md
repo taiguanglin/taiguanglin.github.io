@@ -85,6 +85,13 @@ priority order:
   `w2e:readpos` / `w2e-resume-bar` / `上次讀到` / `回到位置` trace, and no
   build-config change is required
 
+#### Scenario: 2026-10 chapter-prefetch module is auto-included
+- GIVEN `assets/js/modules/18-chapter-prefetch.js`
+- WHEN `get_full_js_content()` is called
+- THEN the bundled JS SHALL contain the chapter-prefetch behaviour
+  (`18-chapter-prefetch.js`, `connectionAllowsBulk`, `priority: 'low'`)
+  AFTER the `17-theme-pwa.js` block, with no build-config change required
+
 ### Requirement: Concatenation Ordering
 When concatenating module files, files SHALL be sorted lexicographically by
 filename. The numeric prefix (`00-`, `01-`, …) enforces the correct order.

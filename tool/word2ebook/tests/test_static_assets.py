@@ -697,6 +697,70 @@ def test_real_js_bundle_contains_ux_modules():
         assert marker in js, f"串接後的 script.js 缺少 {marker}"
 
 
+# ---------------------------------------------------------------------------
+# 長文載入效能（2026-10）：overlay 惰性建立、章節頁預取、經文置頂包層
+# ---------------------------------------------------------------------------
+
+_JS_MODULES = Path(__file__).resolve().parents[1] / "assets" / "js" / "modules"
+
+
+def test_qa_actions_overlay_is_lazy():
+    """02-reader-ux 的 .qa-actions 改為 IntersectionObserver 惰性建立。
+
+    啟動一次建全頁 overlay（楞伽經 4265 段 ≈ 1.7 萬節點；問答錄2 04 章
+    ≈ 4.8 萬）是長文頁 DOMContentLoaded 的主要成本之一；按鈕本來就只在
+    hover/focus 顯示，接近視窗才建立行為等價。position: relative 的定位
+    基準改由 01a-layout.css 供給，不得再逐塊寫行內 style。
+    """
+    src = (_JS_MODULES / "02-reader-ux.js").read_text(encoding="utf-8")
+    assert "function addQAActionsToElement" in src
+    assert "function addQAActions()" in src
+    assert "IntersectionObserver" in src
+    assert "rootMargin: '600px 0px'" in src
+    # 冪等護欄：同一元素不得重複建 overlay
+    assert "dataset.qaActions" in src
+    # 行內 position 寫入已移交 CSS
+    assert "style.position" not in src
+    css = StaticAssetsManager().get_full_css_content()
+    assert ".question, .answer, .para-block { position: relative; }" in css
+
+
+def test_chapter_prefetch_module_in_bundle():
+    """18-chapter-prefetch.js：章節頁預取暖機 SW PAGES_CACHE（掛在 17 之後）。"""
+    mgr = StaticAssetsManager()
+    js = mgr.get_full_js_content()
+    for marker in [
+        "18-chapter-prefetch.js",
+        "priority: 'low'",       # 不搶點擊的頻寬
+        "connectionAllowsBulk",  # saveData／2g/3g 守門
+        "pointerenter",          # 指標意圖即時預取
+    ]:
+        assert marker in js, f"串接後的 script.js 缺少 {marker}"
+    assert js.find("17-theme-pwa.js") < js.find("18-chapter-prefetch.js"), \
+        "18-chapter-prefetch.js 必須串接在 17-theme-pwa.js 之後"
+    src = (_JS_MODULES / "18-chapter-prefetch.js").read_text(encoding="utf-8")
+    # 跨語言頁（*_trad.html）刻意不預取，避免資料量翻倍
+    assert "_trad\\.html?" in src
+    # 只在兩套電子書目錄作用
+    assert "wenda2_ebook|ebook" in src
+
+
+def test_sutra_pin_reuses_build_time_groups_and_measures_lazily():
+    """09c：建置期包層直接沿用（不動 DOM）、量測接近視窗才量且讀寫分批。"""
+    src = (_JS_MODULES / "09c-sutra-pin.js").read_text(encoding="utf-8")
+    # 建置期包層偵測：host 的父層已是 .sutra-pin-group → 跳過 DOM 手術
+    assert "parent.classList.contains('sutra-pin-group')" in src
+    # 量測惰性化：IO 前緣量一次、之後只重算已量過的群
+    assert "measuredGroups" in src
+    assert "rootMargin: '100px 0px'" in src
+    # 無 IO 後備仍全量（行為同舊版）
+    assert "measureGroups(groups)" in src
+    # 讀寫分批：先讀完本批高度再一次寫 class/inline style
+    assert "var heights = [];" in src
+    # 舊的「啟動即全量掃」不得復活
+    assert "groups.forEach(function (g) {\n        var sutra" not in src
+
+
 def test_real_js_bundle_drops_reading_resume_module():
     """「上次讀到 XX%／回到位置」提示條（11-reading-resume.js）已於 2026-10 徹底移除。
 

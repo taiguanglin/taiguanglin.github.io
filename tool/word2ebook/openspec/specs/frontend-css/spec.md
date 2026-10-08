@@ -16,7 +16,7 @@ cascade order.
 | File | Responsibility |
 |---|---|
 | `00-base.css` | `:root` design tokens (colors, radii, shadows), `body`, headings `h1–h4` (em-based type scale), `p`, `img`, `a`, `hr`, `.toc`, `.question`, `.answer`, Q&A meta elements, dark-mode base. Also holds the long-text perf rule `.question, .answer, .para-block, article.qa-pair { content-visibility: auto; contain-intrinsic-size: auto 240px }` — ⚠️ `content-visibility: auto` implies **paint containment**, so any overlay positioned *outside* the block's box (`bottom: 100%`, negative `top`, …) is clipped away and can never be hovered or clicked; overlays on these blocks must stay inside the padding box. Its estimated heights also make the document height change during a scroll, so scroll targets computed once can land off-target (see the initial-anchor requirement in `frontend-js/spec.md`) |
-| `01a-layout.css` | Reading toolbar, scrollbar, font/line-height controls, reading progress bar, action buttons, Q&A interaction overlays, toast notifications |
+| `01a-layout.css` | Reading toolbar, scrollbar, font/line-height controls, reading progress bar, action buttons, Q&A interaction overlays, toast notifications. 2026-10 起也供給 `.question, .answer, .para-block { position: relative }`——`.qa-actions` overlay 的定位基準（原由 02-reader-ux 啟動時逐塊寫行內 style，改樣式表一次供給，搭配該模組的惰性建立） |
 | `01b-floating-toc.css` | Floating TOC panel, TOC header, content area, items, tabs; dark-mode floating-TOC variants |
 | `01c-bookmarks.css` | Bookmark list items, homepage bookmark groups, visual bookmark indicators, current-chapter info bar; dark-mode bookmark variants |
 | `02-search-btn.css` | Search activation button styles (top and bottom) |
