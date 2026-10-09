@@ -230,7 +230,17 @@ body.dark-mode .sutra-text.para-block:hover {
 
 /* 按鈕容器：段落「外」右上角——容器下緣貼齊段落頂端（bottom:100%），氣泡
    因此坐在段落上方那條空隙裡，不遮當下段落的任何一個字。
-   依賴 .para-block:hover 解除 paint containment（見上），否則整列被裁掉。 */
+   依賴 .para-block:hover 解除 paint containment（見上），否則整列被裁掉。
+
+   z-index 取 7：必須高於經文置頂的 .sutra-pin-host（04c-qa-audio.css 的
+   z-index: 6）。段落彼此只有 15px 間距，按鈕列卻有 28px 高，列頂一定會往上
+   溢出約 13px 蓋進「上一段」。上一段是普通段落時只是壓到空白——普通段落是
+   position: relative、z-index auto（無堆疊上下文），贏不了本列，所以看起來
+   沒事；上一段是經文時，經文被包在 position: sticky + z-index: 6 的
+   .sutra-pin-host 裡，整個 host 是堆疊上下文，會把本列壓在底下：經文底色不
+   透明，按鈕上緣被切掉一截，該處也點不到（經文置頂無論有沒有 engage 都如此）。
+   抬高本列不影響置頂：置頂只需要壓過「段落內文」（position: relative、
+   z-index auto），6 仍遠高於 auto，經文照樣蓋住滑過的講解段落。 */
 .para-block .qa-actions {
   top: auto;
   bottom: 100%;
@@ -242,7 +252,7 @@ body.dark-mode .sutra-text.para-block:hover {
   opacity: 0;
   transition: opacity 0.2s ease;
   pointer-events: none;
-  z-index: 5;
+  z-index: 7;
 }
 
 /* 命中範圍加大：氣泡本身只有 22px，要精準對上很彆扭。容器在段落 hover 時

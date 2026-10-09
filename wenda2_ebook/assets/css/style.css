@@ -1933,7 +1933,10 @@ body.para-track-on .para-block[data-start] {
    .para-block 為 position:relative（⋯ 選單定位用），與 sticky 同層
    painted，後者在樹序較早會被滑過的段落蓋字——抬高讓講解段落
    從停留經文的「下方」滑過（被經文底色遮住，如表格列滑過表頭）。
-   取 6：高於段落 ⋯ 選單（z-index: 5），低於浮動目錄/工具列（800+）。 */
+   取 6：高於段落內文（position: relative、z-index auto），低於浮動目錄/工具列
+   （800+）。段落右上角的 ⋯ 選單（books.css 的 z-index: 7）刻意再高於本層——
+   否則緊接在經文之後的段落，其選單會被經文底色切掉且點不到（該列高 28px、
+   段落間距僅 15px，列頂必然溢出進上一段）；見 books.css 的對應註解。 */
 .sutra-pin-host {
     position: sticky;
     top: 0;
