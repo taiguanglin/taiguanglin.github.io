@@ -229,7 +229,14 @@ conversion, so each badge ends up in the correct script without double-conversio
 Every generated HTML page SHALL reference:
 - `assets/css/style.css` via a `<link>` tag
 - `assets/js/script.js` via a `<script>` tag
-- `assets/js/i18n-text.js`, `assets/js/search-cache.js` via `<script>` tags
+- `assets/js/i18n-text.js` via a `<script>` tag; `assets/js/search-cache.js`
+  (index pages only) via a `<script defer>` tag — it is consumed exclusively by
+  `initSearch()` (user click or `#q=` restore), and `defer` keeps it off the
+  render-blocking path while still executing (in document order) before
+  `script.js`, so `window.searchCacheManager` is always ready; a synchronous
+  include would block first paint for a 14 KB script that no pre-paint code
+  needs (parity with the books2ebook pages, which carry no blocking
+  search-cache include)
 - `assets/js/reading-prepaint.js` via a **synchronous** `<script>` tag placed
   **after the last `<link rel="stylesheet">`** (never `defer`) — see
   "Reading Settings Pre-Paint" in `frontend-js/spec.md` for why both the missing

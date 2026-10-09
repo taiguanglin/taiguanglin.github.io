@@ -33,7 +33,11 @@ try {
 <script src="assets/js/reading-prepaint.js"></script>
 <script src="assets/js/minisearch.min.js" defer></script>
 <script src="assets/js/i18n-text.js"></script>
-<script src="assets/js/search-cache.js"></script>
+<!-- search-cache.js 僅在 initSearch()（使用者點擊或 #q= 還原）時才被讀取，
+     defer 即可（defer 依文件順序先於 script.js 執行，searchCacheManager
+     必已就緒）；同步載入會多擋 14KB 的首繪——ebook/ 的頁面即不把它放在
+     render-blocking 路徑上（見 books2ebook html_generator），兩邊對齊。 -->
+<script src="assets/js/search-cache.js" defer></script>
 <script src="assets/js/script.js" defer></script>
 <script src="/lang-switch.js" defer></script>
 </head>
