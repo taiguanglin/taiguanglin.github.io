@@ -1,7 +1,7 @@
 """回歸測試：段落互動選單與經文置頂的錨點讓位。
 
 這兩項都曾因「元素放在 content-visibility: auto 的盒子外、而沒有解除
-containment」而整個消失，因此以原始碼斷言（不跑瀏覽器）守住三條不变量：
+containment」而整個消失，因此以原始碼斷言（不跑瀏覽器）守住四條不变量：
 
 1. `.para-block` 的 `.qa-actions` / `.bookmark-indicator` 必須留在段落
    padding box 之**外**（`bottom: 100%`，段落右上角上方）——這是刻意設計：
@@ -10,6 +10,8 @@ containment」而整個消失，因此以原始碼斷言（不跑瀏覽器）守
 2. 09c 必須把「停留經文高 + 間隙」寫成群的 `--w2e-pin-reserve`，且 CSS
    端確實把它轉成群內目標的 `scroll-margin-top`，否則跳轉後的高亮段落
    會被置頂經文蓋住。
+3. 段落選單必須壓過 `.sutra-pin-host`（否則緊接經文的段落，其按鈕列會被
+   經文底色切掉、該處點不到）；反向地，經文仍必須壓過段落內文。
 """
 
 import re
@@ -89,6 +91,38 @@ def test_hot_zone_does_not_swallow_the_buttons(books_css):
     body = _rule_body(books_css, ".para-block .qa-actions .qa-btn")
     assert "position: relative" in body
     assert "z-index: 1" in body
+
+
+def _z_index(rule: str) -> int:
+    m = re.search(r"z-index:\s*(\d+)", rule)
+    assert m, "規則內沒有 z-index： " + rule[:60]
+    return int(m.group(1))
+
+
+def test_para_menu_paints_above_the_sutra_pin_host(books_css, sutra_css):
+    """段落選單必須壓過經文置頂的 .sutra-pin-host。
+
+    段落彼此只有 15px 間距、按鈕列卻有 28px 高，列頂必然溢出進「上一段」。
+    上一段是普通段落時只是壓到空白（普通段落 z-index auto，贏不了選單）；上一段
+    是經文時，經文包在 position: sticky + z-index 的 .sutra-pin-host 內，整個
+    host 是堆疊上下文，會把選單壓到底下——經文底色不透明，按鈕上緣被切掉、該處
+    也點不到（經文置頂有沒有 engage 都一樣）。
+
+    這是 books.css 與 04c-qa-audio.css 之間的跨檔案契約，任一邊改 z-index 都
+    要一起更新。
+    """
+    menu = _z_index(_rule_body(books_css, ".para-block .qa-actions"))
+    host = _z_index(_rule_body(sutra_css, ".sutra-pin-host"))
+    assert menu > host, (
+        "段落 ⋯ 選單 (z-index: %d) 必須高於 .sutra-pin-host (z-index: %d)，"
+        "否則緊接經文的段落其按鈕會被經文切掉且點不到" % (menu, host)
+    )
+
+
+def test_sutra_host_still_covers_sliding_paragraphs(sutra_css):
+    """選單抬高後，置頂仍必須壓過段落內文（否則講解文字會蓋住停留經文）。"""
+    host = _z_index(_rule_body(sutra_css, ".sutra-pin-host"))
+    assert host >= 1, "z-index: auto 會被後面 position: relative 的段落內文蓋字"
 
 
 def test_bookmark_indicator_sits_above_the_paragraph(books_css):
