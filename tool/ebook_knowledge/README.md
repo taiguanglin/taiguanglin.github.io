@@ -121,26 +121,20 @@ python3 tool/ebook_knowledge/find_quote.py --pid 01/p-s87b4b470 --sent 2,3
 | `data/dumps/` | 閱讀傾印（生成物） |
 | `data/notes/` | 逐書閱讀筆記（寫作素材，生成物） |
 
-## 站點整合（已部署，不索引）
+## 站點整合（已於 2026-10-11 下線）
 
-- 輸出在 **`hidden/`** 下，入口是 **`hidden/index.html`**（四本複習書的入口）。
-- **`hidden/` 已進版控並部署**，但定位是「不索引的未公開頁」：有網址就能讀，
-  搜尋引擎不收錄、也不掛全站導覽。⚠️ 靜態 Pages 沒有存取控制。
-- 三重守門（缺一不可）：
-  1. 每頁自帶 `<meta name="robots" content="noindex, nofollow, noarchive">`
-     （`render.py` 的 `head()` 統一注入）；
-  2. 不列入 `sitemap.xml`；
-  3. `robots.txt` 有 `Disallow: /hidden/`。
-  由 `tool/site_chrome/check_site.py` 守門；該檢查對不存在的 hidden 頁面會略過。
-- 全站導覽與 landing 頁（`index.html`、`wenda2.html`）**刻意不放**這些入口；
-  `lang-switch.js` 的 `EBOOK_DIRS` 也**刻意不含** `/hidden/`（避免在公開 JS 裡
-  留下路徑線索）——因此 hidden 內是以 OpenCC 即時轉換，而非雙頁跳轉。
-- 兩本複習書與 `/ebook/` 原典電子書、以及 hidden 內的問答錄2 複習對
-  互相交叉連結（頁尾「相關閱讀」）。
-- ⚠️ 要**正式公開**（讓搜尋引擎收錄、首頁加入口）才需要動守門：移除各頁 noindex、
-  加進 `sitemap.xml`、拿掉 `robots.txt` 的 `Disallow: /hidden/`，並同步
-  `check_site.py` 與 `lang-switch.js` 的 `EBOOK_DIRS`。
-- 語料快取（`data/`）維持 gitignore；`hidden/` 產出物要 commit。
+- 輸出目錄 **`hidden/` 已從版控與部署移除**（commit `15bbfd7`）：直接網址不再可達；
+  `robots.txt` 的 `Disallow: /hidden/` 與 `check_site.py` 的 hidden 相關登錄已同步清除。
+- 內容 SoT（`src/*.py`＋`data/corpus.json` 快取）保留，可隨時重建。
+- 若要重新上線：`build_all.py` 重建後需一併恢復三重守門——每頁自帶 noindex
+  （`render.py` 的 `head()` 統一注入）、不列入 `sitemap.xml`、
+  `robots.txt` 加回 `Disallow: /hidden/`，並登錄回 `check_site.py`；
+  維持「不掛全站導覽、`lang-switch.js` `EBOOK_DIRS` 不含 `/hidden/`」的既有隔離
+  （hidden 內以 OpenCC 即時轉換，而非雙頁跳轉）。
+- 頁尾交叉連結（`render.py` `SIBLINGS`）指向 hidden 內的問答錄2 複習對
+  （wenda2_keypoints／wenda2_lens）；下線狀態下這些連結沒有目標，
+  重建輸出僅供本地預覽，重新上線前請先確認對方是否也在線。
+- 語料快取（`data/`）維持 gitignore；`hidden/` 產出物已不再部署、不再 commit。
 - 頁面用公開的 `/fonts/fonts.css`；原書頁面本身不載入自架字型，故**不為 hidden
   重建字型子集**（罕用字走系統字型回退）。
 

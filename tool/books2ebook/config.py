@@ -67,19 +67,29 @@ TYPE_CONTENT = "content"
 class BookConfig:
     """單本書的設定與解析器名稱。
 
-    title      : 電子書顯示標題
+    title      : 電子書顯示標題（同時是 PDF 內文標題匹配用字串——勿加裝飾前綴）
     pdf        : books/ 底下的檔名
     parser     : parsers.py 對應的解析函式 key
     skip_pages :略過前面 N 頁（封面/裝飾頁）
+    kind       : "book"=著作；"preface"=卷首（非著作，顯示時冠「卷首・」前綴）
     """
 
-    def __init__(self, number, title, pdf, parser, skip_pages=0, series=None):
+    def __init__(self, number, title, pdf, parser, skip_pages=0, series=None,
+                 kind="book"):
         self.number = number            # 1-based 序號（決定檔名 01..10 與顯示順序）
         self.title = title
         self.pdf = pdf
         self.parser = parser
         self.skip_pages = skip_pages
         self.series = series            # 音檔系列 key（audio_map.AUDIO_MAP 的主鍵）; None=無音檔
+        self.kind = kind                # "book" / "preface"（顯示層用，解析與錨點一律用 title）
+
+    @property
+    def display_title(self):
+        """顯示用標題：卷首冠「卷首・」前綴（TOC、上下本導覽、<h1>）；其餘同 title。"""
+        if self.kind == "preface":
+            return "卷首・%s" % self.title
+        return self.title
 
     @property
     def filename(self):
@@ -96,7 +106,7 @@ BOOKS = [
     BookConfig(3, "03《坐禅2》", "03《坐禅2·次世代版终极佛法》.pdf", "zuochan2",
                skip_pages=3),
     BookConfig(4, "感恩与讲经", "感恩与讲经（2024年4月14日）.pdf",
-               "ganen", skip_pages=1, series="ganen"),
+               "ganen", skip_pages=1, series="ganen", kind="preface"),
     BookConfig(5, "04 讲《金刚经 心经》", "04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf", "jingang"),
     BookConfig(6, "05 讲《圆觉经》", "05 TaiGuangLin禅师讲《圆觉经》最终版.pdf", "yuanjue"),
     BookConfig(7, "06 讲《四十二章经》", "06 Tai师父讲《四十二章经》.pdf",

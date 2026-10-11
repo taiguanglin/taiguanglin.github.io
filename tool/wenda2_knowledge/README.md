@@ -123,19 +123,19 @@ ch18「2026-01～03 補齊」把月度章節裡的**修正與補充**單獨抽�
 | `data/corpus.json` | 生成物（快取，勿手改、不進版控） |
 | `data/dumps/` | 閱讀傾印（生成物） |
 
-## 站點整合（已部署，不索引）
+## 站點整合（已於 2026-10-11 下線）
 
-- 輸出在 **`hidden/`** 下，入口是 **`hidden/index.html`**（四本複習書的入口）。
-- **`hidden/` 已進版控並部署**，定位是「不索引的未公開頁」：有網址就能讀，
-  搜尋引擎不收錄、也不掛全站導覽。⚠️ 靜態 Pages 沒有存取控制。
-- 三重守門（由 `tool/site_chrome/check_site.py` 守門，缺檔會略過）：
-  1. 每頁自帶 `<meta name="robots" content="noindex, nofollow, noarchive">`；
-  2. 不列入 `sitemap.xml`；
-  3. `robots.txt` 有 `Disallow: /hidden/`。
-- 全站導覽與 landing 頁（`index.html`、`wenda2.html`）**刻意不放**這些入口；
-  `lang-switch.js` 的 `EBOOK_DIRS` 也**刻意不含** `/hidden/`。
-- 兩本複習書與 `/wenda2_ebook/` 原書、與 hidden 內的原典複習書
-  互相交叉連結（頁尾「相關閱讀」）。
+- 輸出目錄 **`hidden/` 已從版控與部署移除**（commit `15bbfd7`）：直接網址不再可達；
+  `robots.txt` 的 `Disallow: /hidden/` 與 `check_site.py` 的 hidden 相關登錄已同步清除。
+- 內容 SoT（`src/*.py`＋`data/corpus.json` 快取）保留，可隨時重建。
+- 若要重新上線：`build_all.py` 重建後需一併恢復三重守門——每頁自帶
+  `<meta name="robots" content="noindex, nofollow, noarchive">`、
+  不列入 `sitemap.xml`、`robots.txt` 加回 `Disallow: /hidden/`，
+  並登錄回 `check_site.py` 的 `NOINDEX_PAGES` / `ROBOTS_TXT_DISALLOW`；
+  維持「不掛全站導覽、`lang-switch.js` `EBOOK_DIRS` 不含 `/hidden/`」的既有隔離。
+- 頁尾交叉連結（`render.py` `SIBLINGS`）指向 hidden 內另一對複習書
+  （ebook_keypoints／ebook_lens）；下線狀態下這些連結沒有目標，
+  重建輸出僅供本地預覽，重新上線前請先確認對方是否也在線。
 - 頁面用公開的 `/fonts/fonts.css`；原書頁面本身不載入自架字型，故**不為 hidden
   重建字型子集**（罕用字走系統字型回退）。要改成自架字型覆蓋率 100% 再重跑
   `tool/word_audio_map2/.venv/bin/python tool/fonts/build_fonts.py` 即可。

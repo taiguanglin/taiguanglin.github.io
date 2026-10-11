@@ -488,11 +488,11 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     nav_next = ""
     if prev_book:
         p = prev_book.filename_trad if is_trad else prev_book.filename
-        nav_prev = '<a href="%s">⬅️ %s</a>' % (p, esc(prev_book.title))
+        nav_prev = '<a href="%s">⬅️ %s</a>' % (p, esc(prev_book.display_title))
     if next_book:
         n = next_book.filename_trad if is_trad else next_book.filename
-        nav_next = "<a href=\"%s\">%s ➡️</a>" % (n, esc(next_book.title))
-    topnav_next = ("<a href=\"%s\">%s ➡️</a>" % (next_book.filename_trad if is_trad else next_book.filename, esc(next_book.title))) if next_book else ""
+        nav_next = "<a href=\"%s\">%s ➡️</a>" % (n, esc(next_book.display_title))
+    topnav_next = ("<a href=\"%s\">%s ➡️</a>" % (next_book.filename_trad if is_trad else next_book.filename, esc(next_book.display_title))) if next_book else ""
 
     # ---- 章內目錄 ----
     used_levels = sorted({int(b["kind"][1]) for b in headings})
@@ -711,10 +711,19 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     _header_class = "header-nav"
     _nav_left_content = f'<a href="{_book_toc_href}">{_book_toc_text}</a>'
     _lang_switch_links = build_lang_switch_links(book.filename, book.filename_trad, is_trad)
-    # SEO：<title>「書名・系列名｜站名」；meta 以簡體寫入，繁版整頁轉換
+    # SEO：<title>「書名・系列名｜站名」；meta 以簡體寫入，繁版整頁轉換。
+    # 卷首（kind="preface"）不是著作：<title> 以「講經系列卷首」標示身分，
+    # 描述也改為感謝文＋講經緣起，不套「著述/講經全文」句式。
     _clean_title = _seo_clean_title(book.title)
-    _seo_title = "%s・%s｜%s" % (_clean_title, SITE_TITLE, SEO_SITE_NAME)
-    _seo_description = SEO_CHAPTER_DESCRIPTION.format(title=_clean_title)
+    if getattr(book, "kind", "book") == "preface":
+        _seo_title = "%s・讲经系列卷首｜%s" % (_clean_title, SEO_SITE_NAME)
+        _seo_description = (
+            "%s——讲经系列卷首（感谢文与讲经开讲缘起），"
+            "TaiGuangLin 禅师全文电子书，支持全文检索与简繁切换。" % _clean_title
+        )
+    else:
+        _seo_title = "%s・%s｜%s" % (_clean_title, SITE_TITLE, SEO_SITE_NAME)
+        _seo_description = SEO_CHAPTER_DESCRIPTION.format(title=_clean_title)
     _page_filename = book.filename_trad if is_trad else book.filename
     html = _HEAD_TMPL.format(
         title=esc(_seo_title),
@@ -737,7 +746,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     # <main> 語意地標：正文（含章節目錄、內文、上下冊導航）皆屬主要內容
     html += "<main>\n"
     html += '<h1 id="%s">%s<span class="chapter-qa-count">(%d)</span></h1>\n' % (
-        slug_id(book.title), esc(book.title), total)
+        slug_id(book.title), esc(book.display_title), total)
     html += _toc_header_controls(toc_levels, active_level,
                                  "h2", "本章目录", "chapter-toc-header")
     html += '<div class="toc" id="chapter-toc">\n%s\n</div>\n' % chapter_toc_html
@@ -789,7 +798,7 @@ def render_index(books_meta, source_pdfs, is_trad):
             '%s'
             '<a href="%s">%s</a>'
             '<span class="toc-count">(%d)</span>'
-            % (book_classes, i, book_icon, f, esc(bc.title), total)
+            % (book_classes, i, book_icon, f, esc(bc.display_title), total)
         )
         # 構建樹：每個節點 {block, children}
         root_children = []
