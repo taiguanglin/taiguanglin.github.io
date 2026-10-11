@@ -29,13 +29,14 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - **不得**出現在 `sitemap.xml`
     - `robots.txt` 對 `/audio_map/`、`/audio_map2/`、`/audio_map3/` 有 `Disallow`
 
-    **`hidden/`（四本複習電子書＋入口頁）已於 2026-10-11 從版控與部署移除**
-    （commit `15bbfd7`）：舊網址直接 404，`robots.txt` 的 `Disallow: /hidden/` 與
-    `check_site.py` 的 hidden 相關登錄已同步清除。內容 SoT 保留在
-    `tool/wenda2_knowledge/`、`tool/ebook_knowledge/`（`src/*.py`；
-    `data/corpus.json` 是重建得回來的語料快取，維持 gitignore）。若要重新上線，
-    重建後需同步恢復 noindex／不列 sitemap／robots Disallow 三重守門，
-    並維持「不掛全站導覽、`EBOOK_DIRS` 不含 `/hidden/`」的既有隔離。
+    **`hidden/`（四本複習電子書＋入口頁）與其兩套產生器
+    （`tool/wenda2_knowledge/`、`tool/ebook_knowledge/`）已於 2026-10-11 全數移除**
+    （hidden/ 下線＝commit `15bbfd7`）：舊網址直接 404，`robots.txt` 的
+    `Disallow: /hidden/` 與 `check_site.py` 的 hidden 相關登錄已同步清除。
+    產生器連同內容 SoT（`src/*.py`）一併刪除——git 歷史（`3c40066` 及更早）可完整
+    回溯。若要重新上線：先從歷史還原產生器與語料管線，重建後恢復 noindex／
+    不列 sitemap／robots Disallow 三重守門，並維持「不掛全站導覽、
+    `EBOOK_DIRS` 不含 `/hidden/`」的既有隔離。
 
     ⚠️ `session_knowledge.html`（查證工程紀錄）已於 2026-09 徹底移除，連同 `SESSION_KNOWLEDGE.md`、`tool/session_knowledge/`（含 `mm_harness.js`）與 `style.css` 的 `.sk-*` 區段；不要重新引入。
     ⚠️ `robots.txt` 不是存取控制，`audio_map*` 的 PAT 輸入仍無保護——真正的修法是把工具移出公開 repo。
@@ -107,7 +108,6 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/stories2html/` | Stories → HTML readers + index/sitemap patches | `README.md` |
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
 | `tool/site_chrome/` | 全站共用導覽 SoT → 「圖解」3 入口＋圖解頁 JSON-LD 寫回；`sync.py`（含 `--check`）、`check_site.py` 一致性檢查、`dropdown_harness.js` 下拉互動測試 | `README.md` |
-| `tool/wenda2_knowledge/` | 問答錄2 的兩本複習電子書：**重點知識**（18 章主題章節＋自測）＋**另一個讀法**（第二人稱敘事）。**輸出 `hidden/` 已於 2026-10-11 下線**（從版控與部署移除）。**SoT 是 `src/*.py`**（引文只寫 qid ＋ 句號或貼原文，文字建置時從語料取）；`data/corpus.json` 是 `extract_corpus.py` 的生成物 | `README.md` |
 
 ---
 
@@ -190,7 +190,6 @@ mp3  →  (optional) tool/audio_denoiser
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
 | Infographic / mindmap | `infographic/`, `infographic.html`, `mindmap.html` | Commit |
 | 問答錄2心智圖內容 | `wenda2_mindmap.html`（**手工維護**；產生器已移除） | 直接改頁面 → `python3 tool/site_chrome/sync.py --check` → `check_site.py` → commit |
-| 兩本複習電子書的內容（輸出未部署） | `tool/wenda2_knowledge/src/*.py`（引文只寫 qid＋句號，文字建置時從語料取） | `venv/bin/python tool/wenda2_knowledge/audit.py` 驗引文 → `build_all.py` 重建 |
 
 ---
 
@@ -204,7 +203,7 @@ mp3  →  (optional) tool/audio_denoiser
 | Root `script.js` vs ebook `script.js` | Root `script.js` 已移除（root chrome JS 是 `shared.js`）；ebook bundle 與其同名無關，由 `tool/word2ebook/assets/js/modules/` 串接而成。 |
 | `scripts/` | Empty; ignore unless something is added. |
 | Production `/audio/` | Code expects same-origin audio; files are not in this git repo. Local preview needs the symlink. |
-| `hidden/` | **已於 2026-10-11 從版控與部署移除**（commit `15bbfd7`）：目錄已不存在，舊網址 404。曾為四本複習電子書（兩套 knowledge 產生器的輸出）；內容 SoT 仍在 `tool/wenda2_knowledge/`、`tool/ebook_knowledge/`。 |
+| `hidden/` | **已於 2026-10-11 從版控與部署移除**（commit `15bbfd7`）：目錄已不存在，舊網址 404。曾為四本複習電子書；產生器 `tool/wenda2_knowledge/`、`tool/ebook_knowledge/` 已同日整包刪除，僅 git 歷史可回溯。 |
 | 「圖解」下拉選單 | 全站統一 3 個入口：名詞圖解（`infographic.html`）／坐禪與講經心智圖（`mindmap.html`）／問答錄2心智圖（`wenda2_mindmap.html`）。三頁皆為獨立終點頁，無「檢視切換」下一層。下拉單一真相來源為 `tool/site_chrome/sync.py`；生成或修改頁面後執行 `python3 tool/site_chrome/sync.py`，以 `--check` 驗證 root、`wenda2/`、`stories/` 的共用 chrome 頁。 |
 | 導覽列頂層順序 | 全站統一：首頁／禪師／入門路徑／著作／問答錄 2／圖解 ▾／實修故事／下載資料——認識、兩大系列＋共用知識工具相連、延伸內容、行動（下載）最後。 |
 
