@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""一次建出《坐禪與講經十書》的兩本複習電子書。
+"""一次建出《坐禪與講經系列》的兩本複習電子書。
 
     tool/word_audio_map2/.venv/bin/python tool/ebook_knowledge/build_all.py
 

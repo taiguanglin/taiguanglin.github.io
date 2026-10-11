@@ -46,12 +46,12 @@ ORIGIN = "https://taiguanglin.info"
 # 站內相關電子書互相連結用的標籤
 SIBLINGS = {
     "ebook_keypoints": [
-        ("/ebook/index_trad.html", "十書原典"),
+        ("/ebook/index_trad.html", "原典電子書"),
         ("/hidden/ebook_lens/index.html", "另一個讀法"),
         ("/hidden/wenda2_keypoints/index.html", "問答錄2・重點知識"),
     ],
     "ebook_lens": [
-        ("/ebook/index_trad.html", "十書原典"),
+        ("/ebook/index_trad.html", "原典電子書"),
         ("/hidden/ebook_keypoints/index.html", "重點知識"),
         ("/hidden/wenda2_lens/index.html", "問答錄2・另一個讀法"),
     ],
@@ -139,7 +139,7 @@ def footer(book: dict, trad: bool) -> str:
     return f"""<footer class="foot">
   <div class="wrap">
     <p class="foot__line">{esc(book['title'])}｜{esc(book['kind'])}｜{esc(book['audience'])}</p>
-    <p class="foot__line">全書引文皆逐字取自 <a href="{ebook}">《坐禪》《坐禪之問答錄》《坐禪2》與講經系列十本書</a>，
+    <p class="foot__line">全書引文皆逐字取自 <a href="{ebook}">《坐禪》《坐禪之問答錄》《坐禪2》與講經系列九本著作及卷首《感恩與講經》</a>，
       點擊任一引文的出處可跳回原書該段原文。</p>
     <p class="foot__line">相關閱讀：{sib} ｜
       <a href="index{lang}.html">{"簡體版" if trad else "繁體版"}</a></p>
@@ -204,7 +204,7 @@ def render_scene(book: dict, corpus: Corpus, ch: dict, trad: bool) -> str:
     <p class="scene__part">{esc(pick(ch.get('part', ''), trad))}</p>
     <h2>{esc(pick(ch['title'], trad))}</h2>
     <p class="notice"><strong>整理說明：</strong>{esc(AI_NOTICE)}
-      下面這段敘事是 AI 依十本書內容重組的閱讀脈絡，引文則是 Tai 師父原話逐字。</p>
+      下面這段敘事是 AI 依九本書與《感恩與講經》內容重組的閱讀脈絡，引文則是 Tai 師父原話逐字。</p>
     <div class="narrative">
 """)
     for p in ch.get("narrative", []):

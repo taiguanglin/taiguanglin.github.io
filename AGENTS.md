@@ -22,7 +22,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 5. **Do not confuse site chrome with ebook assets** — root `shared.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`). Root `script.js` was retired (superseded by `shared.js`); only the ebook bundles keep an `assets/js/script.js`.
 6. **Internal editors** (`/audio_map/`, `/audio_map2/`) are editorial UIs.
 7. **AI-generated content disclaimer** — `infographic.html`, `mindmap.html` and `wenda2_mindmap.html` must all display `本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。` Do not remove it when editing these pages.
-8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-mark`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
+8. **Shared chrome CSS lives in root `style.css`** — `index.html`'s embedded `<style>` is page-local. Any class reused by other root pages (nav `logo-name`/`logo-sub`, `footer-top`, `dharma-section`, …) must also have rules in `style.css`, or those pages break. Note `:not(.x)` cannot test for a *child* `.x` — use `:not(:has(.x))`.
 9. **`mindmap.html`「三大初始設定」永遠只有三條** — 主幹 `b-truth` 固定為三個葉節點：`axiom-eternal`（自性恆常）、`axiom-firstthought`（初妄無因）、`axiom-onebody`（諸佛同體）。這是內容鐵律：**不可**在此主幹新增任何其他條目，也不可把其他節點移入。其他主題（如七處徵心、十番顯見等《楞嚴經》內容）一律屬「經典依據」主幹 `b-sutra`。若發現 `b-truth` 出現第 4 個葉節點，即為錯誤，必須移出。
 10. **內部頁不得被索引** — `audio_map*/index.html`（含 GitHub PAT 輸入欄位的校稿工具）部署於公開 Pages，但一律不得被搜尋引擎索引。三條件缺一不可，由 `tool/site_chrome/check_site.py` 自動守門：
     - 頁面自帶 `<meta name="robots" content="noindex, nofollow, noarchive">`
@@ -88,9 +88,9 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. Its `index.html`（粉色串流頁、置頂大悲咒 player）**由 `tool/audio_index/index_template.html` 產生**：改樣板→跑 `python3 tool/audio_index/build_index.py`，不要手改 `audio/index.html`（該頁自帶 CSS/JS，不載入根 `style.css`）。 |
 | `audio_map/` | Editorial UI | `index.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
-| `books/` | **Source** | 十本 PDF 原書（`01《坐禅》`…`05《圆觉经》` 坐禅系列 + `06…09`、感恩 講經系列）。 |
+| `books/` | **Source** | 九本著作 PDF＋《感恩與講經》卷首一篇（坐禪系列 `01…05`＋講經系列 `06…09`，共 10 個 PDF；感恩與講經**不算一本書**）。 |
 | `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。 |
-| `ebook/` | **Generated** | 坐禅系列 + 講經系列共十本合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
+| `ebook/` | **Generated** | 坐禪系列與講經系列**九本著作**＋卷首《感恩與講經》的合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
 | `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)
@@ -101,7 +101,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | Path | Purpose | Docs |
 |------|---------|------|
 | `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook/`（含前 12/13–21 章播放鈕注入） | **`AGENTS.md`**, `README.md`, `openspec/` |
-| `tool/books2ebook/` | `books/` 十本 PDF → `ebook/` 坐禅+講經系列电子书 | `README.md` |
+| `tool/books2ebook/` | `books/` 九本著作＋感恩卷首 → `ebook/` 坐禅+講經系列电子书 | `README.md` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | Align 時間序 Word 彙總 ↔ SRT → `audio_map2/*.json` | `README.md` |
 | `tool/sense_voice/` | Chinese ASR → `.srt`/`.txt` | `README.md` |
@@ -127,10 +127,10 @@ tool/word2ebook/gen_all.py  (+ data/audio_map/*.json inject)
    wenda2_ebook/     ← published; do not hand-edit for features
 ```
 
-### 坐禅系列 + 講經系列电子书（books/ 十本合集）
+### 坐禅系列 + 講經系列电子书（books/ 九本著作＋感恩卷首）
 
 ```
-books/*.pdf  (01《坐禅》…09《楞严经》 等十本)
+books/*.pdf  (01《坐禅》…09《楞严经》 九本著作＋《感恩与讲经》卷首一篇)
         │
         ▼
 tool/books2ebook/gen_all.py  （沿用 wenda2_ebook/assets 風格，含簡/繁與全量搜尋）

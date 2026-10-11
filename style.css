@@ -2615,7 +2615,6 @@ a.topic-item:hover { background: var(--sakura-50); color: var(--sakura-700); tra
 .lightbox-close:hover, .lightbox-nav:hover { background: rgba(255, 255, 255, .26); }
 .lightbox-nav:hover { transform: translateY(-50%) scale(1.06); }
 
-.lightbox-close::before { content: ''; width: 15px; height: 15px; background: none; }
 .lightbox-caption { margin-top: 18px; font-family: var(--font-serif); font-size: 15px; letter-spacing: .08em; color: #f7e6ee; }
 
 /* CSS 繪製的燈箱圖示（不依賴 Font Awesome） */

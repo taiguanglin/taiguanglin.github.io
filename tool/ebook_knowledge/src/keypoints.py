@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""《坐禪與講經十書・重點知識》— 完整內容 SoT（組裝 keypoints_a…keypoints_e）。
+"""《坐禪與講經系列・重點知識》— 完整內容 SoT（組裝 keypoints_a…keypoints_e）。
 
 拆成五個檔案只是為了讓每次編輯的 diff 不要長到看不出重點；
 SoT 仍然是這裡組出來的 `BOOK`。
@@ -23,4 +23,4 @@ for i, ch in enumerate(_all, 1):
 BOOK["chapters"] = _all
 BOOK["slug"] = "ebook_keypoints"
 BOOK["kind"] = "重點知識"
-BOOK["audience"] = "已經讀完坐禪系列與講經系列十本書的人"
+BOOK["audience"] = "已經讀完坐禪系列與講經系列九本著作的人"

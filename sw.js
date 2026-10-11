@@ -54,7 +54,7 @@ function swr(request, cacheName) {
           }
         }
         return resp;
-      }).catch(function () { return cached; });
+      }).catch(function () { return cached || Response.error(); });
       return cached || fetched;
     });
   });

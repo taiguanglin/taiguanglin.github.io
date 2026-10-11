@@ -134,7 +134,7 @@ ch18「2026-01～03 補齊」把月度章節裡的**修正與補充**單獨抽�
   3. `robots.txt` 有 `Disallow: /hidden/`。
 - 全站導覽與 landing 頁（`index.html`、`wenda2.html`）**刻意不放**這些入口；
   `lang-switch.js` 的 `EBOOK_DIRS` 也**刻意不含** `/hidden/`。
-- 兩本複習書與 `/wenda2_ebook/` 原書、與 hidden 內的十書複習對
+- 兩本複習書與 `/wenda2_ebook/` 原書、與 hidden 內的原典複習書
   互相交叉連結（頁尾「相關閱讀」）。
 - 頁面用公開的 `/fonts/fonts.css`；原書頁面本身不載入自架字型，故**不為 hidden
   重建字型子集**（罕用字走系統字型回退）。要改成自架字型覆蓋率 100% 再重跑

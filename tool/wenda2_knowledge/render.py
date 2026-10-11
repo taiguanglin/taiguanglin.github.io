@@ -48,12 +48,12 @@ SIBLINGS = {
     "wenda2_keypoints": [
         ("/wenda2_ebook/index_trad.html", "問答錄2 原書"),
         ("/hidden/wenda2_lens/index.html", "另類讀法"),
-        ("/hidden/ebook_keypoints/index.html", "十書複習・重點知識"),
+        ("/hidden/ebook_keypoints/index.html", "原典複習・重點知識"),
     ],
     "wenda2_lens": [
         ("/wenda2_ebook/index_trad.html", "問答錄2 原書"),
         ("/hidden/wenda2_keypoints/index.html", "重點知識"),
-        ("/hidden/ebook_lens/index.html", "十書複習・另一個讀法"),
+        ("/hidden/ebook_lens/index.html", "原典複習・另一個讀法"),
     ],
 }
 

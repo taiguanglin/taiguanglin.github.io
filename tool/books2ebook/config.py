@@ -49,7 +49,8 @@ OG_IMAGE_PATH = "images/og-default.jpg"
 SEO_HREFLANG_DEFAULT = "zh-Hant"   # x-default 指向繁體首選頁
 SEO_SITE_NAME = "TaiGuangLin 禅师"
 SEO_INDEX_DESCRIPTION = (
-    "TaiGuangLin 禅师坐禅系列与讲经系列十本著作完整电子书，"
+    "TaiGuangLin 禅师坐禅系列与讲经系列九本著作完整电子书"
+    "（含讲经系列卷首《感恩与讲经》一篇），"
     "支持全文检索、书签与简繁切换。"
 )
 SEO_CHAPTER_DESCRIPTION = (

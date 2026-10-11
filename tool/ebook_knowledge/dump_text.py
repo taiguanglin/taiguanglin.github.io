@@ -10,7 +10,7 @@
 
 用法
 ----
-    python3 tool/ebook_knowledge/dump_text.py            # 十本書全部傾印
+    python3 tool/ebook_knowledge/dump_text.py            # 全部語料傾印
     python3 tool/ebook_knowledge/dump_text.py --book 1    # 只傾印書 01
 """
 
