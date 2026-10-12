@@ -25,3 +25,10 @@ tool/fonts/build/
 # 複習電子書（tool/wenda2_knowledge、tool/ebook_knowledge → hidden/ 輸出）
 # 已於 2026-10-11 整包移除：hidden/ 部署由 commit 15bbfd7 下線，
 # 兩套產生器連同 src 內容 SoT 同日刪除（git 歷史可回溯）。
+
+# OpenClaw / agent 本機設定與狀態：不進版控、不得部署到公開 Pages
+.openclaw/
+IDENTITY.md
+SOUL.md
+USER.md
+.agent_*.json
