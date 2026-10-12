@@ -271,6 +271,11 @@ def parse_wendalu(ctx):
                 new_q_left = min(q_left, line.x0) if q_left is not None else line.x0
                 if qa is None or (indented and m):
                     body = t[m.end():].strip() if m else t
+                    if m:
+                        # 原書「名字：：內容」雙冒號誤植（02《坐禅之问答录》頁 289
+                        # 「圆圆柔柔摘月光：：四天王天…」）：_SPEAKER_RE 只吃掉第一個
+                        # 冒號，內文開頭殘留的第二個冒號會被當成題目文字 → 一律去除。
+                        body = re.sub(r"^[：:]+", "", body).strip()
                     body, qtime = _split_qa_time(body)
                     flush_qa()
                     qa = {
