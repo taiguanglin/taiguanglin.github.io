@@ -90,7 +90,6 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `books/` | **Source** | 九本著作 PDF＋《感恩與講經》卷首一篇（坐禪系列 `01…05`＋講經系列 `06…09`，共 10 個 PDF；感恩與講經**不算一本書**）。 |
 | `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。 |
 | `ebook/` | **Generated** | 坐禪系列與講經系列**九本著作**＋卷首《感恩與講經》的合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
-| `scripts/` | Empty | Placeholder directory; no scripts yet. |
 
 ### Tools (`tool/`)
 
@@ -201,7 +200,6 @@ mp3  →  (optional) tool/audio_denoiser
 | `問答錄2/` vs `wenda2_ebook/` | Source documents vs build output. |
 | `audio_map/` vs `tool/word2ebook/data/audio_map/` | UI vs JSON source of truth. |
 | Root `script.js` vs ebook `script.js` | Root `script.js` 已移除（root chrome JS 是 `shared.js`）；ebook bundle 與其同名無關，由 `tool/word2ebook/assets/js/modules/` 串接而成。 |
-| `scripts/` | Empty; ignore unless something is added. |
 | Production `/audio/` | Code expects same-origin audio; files are not in this git repo. Local preview needs the symlink. |
 | `hidden/` | **已於 2026-10-11 從版控與部署移除**（commit `15bbfd7`）：目錄已不存在，舊網址 404。曾為四本複習電子書；產生器 `tool/wenda2_knowledge/`、`tool/ebook_knowledge/` 已同日整包刪除，僅 git 歷史可回溯。 |
 | 「圖解」下拉選單 | 全站統一 3 個入口：名詞圖解（`infographic.html`）／坐禪與講經心智圖（`mindmap.html`）／問答錄2心智圖（`wenda2_mindmap.html`）。三頁皆為獨立終點頁，無「檢視切換」下一層。下拉單一真相來源為 `tool/site_chrome/sync.py`；生成或修改頁面後執行 `python3 tool/site_chrome/sync.py`，以 `--check` 驗證 root、`wenda2/`、`stories/` 的共用 chrome 頁。 |
