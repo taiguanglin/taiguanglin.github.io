@@ -11,7 +11,7 @@
 |------|--------|-------------|------|
 | `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；13–21 章（PDF）播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/site_chrome/` | 全站共用導覽的單一真相來源：把「圖解」下拉 3 入口（名詞圖解／坐禪與講經心智圖／問答錄2心智圖）、圖解頁 JSON-LD 寫回所有共用 chrome 頁；並附站台一致性檢查（AI 免責聲明、canonical、連結／錨點、sitemap、圖片屬性、`b-truth` 三節點）＋免 jsdom 的下拉互動測試。 | `sync.py` 定義 → root／`wenda2/`／`stories/` HTML；`dropdown_harness.js` 驗互動 | `README.md` |
-| `tool/books2ebook/` | 坐禅系列 + 講經系列九本著作（＋卷首《感恩與講經》一篇）→ 靜態電子書（簡/繁、全量搜尋、每講播放鈕）。 | `books/*.pdf` → `ebook/` | `README.md` |
+| `tool/books2ebook/` | 坐禅系列 + 講經系列九本著作（＋卷首《感恩與講經》一篇）→ 靜態電子書（簡/繁、全量搜尋、每講播放鈕、講經段落跟播）。`sync_para_pids.py` 修 pid 漂移；`pytest tests/` 守門「已校對講次真的能跟播」。 | `books/*.pdf` + `audio_map3/*.json` → `ebook/` | `README.md` |
 | `tool/pdf_audio_map/` | 對齊 PDF 章節（13–21）↔ 音檔時間 → 音訊映射 JSON（SoT：`tool/word2ebook/data/audio_map/`）。 | SRT/opus → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | 對齊**時間序** Word 彙總（2024-02…2025-05）↔ SRT → `audio_map2/*.json`（`build_maps.py`）。段上的 `chapter_question_ids` 供前 12 章注入；**分段會隨 `build_maps.py` 的 Q&A 偵測調整**，重分段後以 `link_chapters.py` 重新寫回章節對應（詳見「分段與章節對應」）。 | docx + SRT → `audio_map2/*.json` | `README.md` |
 | `tool/sense_voice/` | FunASR 中文 ASR → `.srt`/`.txt`（被 `pdf_audio_map/fill_misses.py` 呼叫做補漏）。 | mp3/wav → srt/txt | `README.md` |

@@ -21,27 +21,24 @@
   （空白掃描、標點、繁簡…）都會讓 pid 失效，已校對的時間會「靜默消失」**——注入器只是查不到
   對應元素，不會報錯。已發生過：`2251ec4`（時間戳／冒號格式掃描）改了十來段文字（`67 年`→
   `67年`、`A 和B 不一样`→`A和B不一样`），四十二章就有 **10 個 confirmed 段**在重建時失去
-  `data-start`。→ **每次重建 `ebook/` 後必查三件事**（`reviewed` 段是否全數注入）：
+  `data-start`。
+- **校稿／重建之後的固定三步**（`ebook/` 不重建＝讀者看不到新校對成果）：
   ```bash
-  python3 - <<'EOF'
-  import json, re
-  for s, b in [('ganen','04'), ('sishierzhang','07'), ('lengqie','08')]:
-      d = json.load(open(f'audio_map3/{s}.json', encoding='utf-8'))
-      html = open(f'ebook/{b}.html', encoding='utf-8').read()
-      inj = set(re.findall(r'id="(p-[^"]+)"[^>]*data-start=', html))
-      valid = {p['pid'] for k, v in d['lectures'].items() if v.get('reviewed')
-               for p in v['paragraphs']
-               if not p.get('zero') and p.get('start') is not None
-               and p.get('end') is not None and p['end'] > p['start']}
-      print(b, len(valid), len(valid & inj), 'LOST', len(valid - inj))
-  EOF
+  V=tool/word_audio_map2/.venv/bin/python
+  # ① pid 有沒有漂移（掃全部系列，含尚未校對的講次——等校對完才發現＝整批白做）
+  $V tool/books2ebook/sync_para_pids.py            # 有 WARN 才繼續下一步
+  $V tool/books2ebook/sync_para_pids.py --apply    # 只改 pid/text；時間與 confirmed/zero 不動
+  # ② 重建（注入器只認 reviewed 講次）
+  (cd tool/books2ebook && ../../tool/word_audio_map2/.venv/bin/python gen_all.py)
+  # ③ 驗收：已校對講次必須真的能跟播（缺 ebook/ 產物會 skip，不會假綠）
+  (cd tool/books2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/)
   ```
-  `LOST > 0` 就是 pid 對不上：以「去掉所有空白後文字完全相同」在 `ebook/<book>.html` 找新 pid，
-  改寫 JSON 裡那筆的 `pid` 與 `text`（**時間／`confirmed`／`zero` 一律不動**），再重建。
-- ⚠️ **注入成功 ≠ 跟播會出現**：前端 `09b-para-track.js` 以「文件順序」劃講次並收 `.para-block`，
-  若日後又改回「h2 直接兄弟節點」掃描，經文之後被 `.sutra-pin-group` 包住的段落會整批漏掉
-  （症狀＝部分講次的 toggle 不見或只跟到開頭幾段）。驗收請用 `09b` 的 TreeWalker 語意模擬，
-  不要只數 HTML 裡有幾個 `data-start`。
+  `tests/test_follow_along_build.py` 才是守門的那道：它斷言「reviewed 講次的每一段都有
+  `data-start`」「每個 reviewed 講次都出現跟播段落」「沒有注入了卻歸不到任何講次的段落」
+  「HTML 的時間逐一等於 SoT」。**只數 HTML 有幾個 `data-start` 不算驗收**——注入成功不等於
+  跟播會出現：`09b-para-track.js` 以「文件順序」劃講次並收 `.para-block`，若日後又改回
+  「h2 直接兄弟節點」掃描，經文之後被 `.sutra-pin-group` 包住的段落會整批漏掉
+  （症狀＝部分講次的 toggle 不見或只跟到開頭幾段）。
 - 交付：`audio_map3/<series>.json`（UTF-8、`ensure_ascii=False`、按講次排序；保留 golden 講次
   的 confirmed 段）＋人工試聽清單（`tool/jiangjing_para_map/reports/`）。
 

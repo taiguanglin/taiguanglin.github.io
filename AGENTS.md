@@ -52,6 +52,10 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - 因為此時 `<body>` 還不存在，只能寫 `<html>` 的 CSS 自訂屬性（`--w2e-font-size` / `--w2e-content-width` / `--line-height`），由 `00-base.css` 的 `body` 規則消費。
     - 章節頁的層級按鈕只渲染「該章確實有標題」的層級（對應 JS `detectAndHideLevelButtons()`），否則控制列會在 JS 隱藏按鈕後縮短而位移。
     - 驗證方式：`tests/test_html_generator.py::TestTOCInitialState`（TOC 初始狀態）＋ `tests/test_static_assets.py` 的 `test_prepaint_js_*` / `test_03d_delegates_to_shared_reading_engine`（pre-paint 套用、樣式表順序、03d 不得留第二份引擎）。
+13. **講經「段落跟播」是讀者便利功能，已校對講次必須真的出現在 `ebook/` 頁面上** — 整條鏈任一環壞掉都**不會報錯**，讀者只會看到「某幾段／某幾講沒有跟播」。三個必守的不變量（`tool/books2ebook/tests/test_follow_along_build.py` 逐條驗收）：
+    - **pid 是段落文字雜湊**（`p-` + `md5(文字 + 段序)`，`html_generator.slug_id`）。改動段落文字的正規化（空白掃描、標點、繁簡…）→ pid 換掉 → 已校對的 `start/end` 掛到不存在的元素上，**該段靜默失去跟播**（注入器只是查不到、不報錯）。修：`python3 tool/books2ebook/sync_para_pids.py --apply`（只改 `pid`/`text`）→ 重建 `ebook/`。`2251ec4` 曾讓四十二章 10 個 confirmed 段失效。
+    - **`reviewed=true` 是唯一開關**（`para_audio_map.py`；`end<=start` 或 `zero:true` 的段落依設計不注入）。所以「校稿 UI 勾完 → 必須重建 `ebook/` 才生效」；`audio_map3/*.json` 與 `ebook/*.html` 不得手改後直接 commit。
+    - **前端要以文件順序收集段落**：`09b-para-track.js` 用 `createTreeWalker(document.body)`，因 09c 經文置頂的 `.sutra-pin-group` 讓經文之後的段落變成 h2 的**孫節點**；改回「h2 直接兄弟節點」會讓四十二章 L2 之後整講認不到。驗收指令：`cd tool/books2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/`（缺 `ebook/` 產物會 skip），配套 `cd tool/word2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/`。
 
 ---
 
@@ -88,7 +92,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `audio_map/` | Editorial UI | `index.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
 | `books/` | **Source** | 九本著作 PDF＋《感恩與講經》卷首一篇（坐禪系列 `01…05`＋講經系列 `06…09`，共 10 個 PDF；感恩與講經**不算一本書**）。 |
-| `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。 |
+| `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。pid 漂移用 `tool/books2ebook/sync_para_pids.py` 修（規則 13）。 |
 | `ebook/` | **Generated** | 坐禪系列與講經系列**九本著作**＋卷首《感恩與講經》的合集靜態電子書（簡/繁、全量搜尋、每講播放鈕）。Rebuild from `tool/books2ebook/gen_all.py`。 |
 
 ### Tools (`tool/`)
@@ -183,6 +187,7 @@ mp3  →  (optional) tool/audio_denoiser
 |-----------------|-------|--------|
 | Ebook UI / behaviour / search / i18n | `tool/word2ebook/` | `python3 gen_all.py` (see tool `AGENTS.md`) |
 | 坐禅系列电子书 UI / 搜尋 / 簡繁 | `tool/books2ebook/` | `python3 gen_all.py`（同上；資產影印 wenda2_ebook 並附 books.css）|
+| 段落跟播（校稿後要讀者真的用得到） | `audio_map3/*.json` ＋ `tool/books2ebook/` | `sync_para_pids.py --apply` → `gen_all.py` → `pytest tool/books2ebook/tests`（規則 13）|
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |
 | Play-button time ranges | `tool/word2ebook/data/audio_map/` (or `/audio_map/` UI / `pdf_audio_map`) | Rebuild ebook |
 | Site landing / nav / about | Root HTML + `shared.js` / `style.css` | Commit |

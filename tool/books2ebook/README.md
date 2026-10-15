@@ -74,7 +74,35 @@
   預設 ON）。ON 時播放中即時高亮當前段落（`.para-active` 暖光暈＋加粗，上一段不變），
   並平滑捲動使當前段停在視窗上方且保留上一段底部可見。
 - 跟播 ON 時點擊任一段落 → 直接從該段起點播放，之後一路順播到底，不在段末自停。
-  拖選／反白選取文字、點擊段落內按鈕連結時不觸發；可點播段落顯示手形游標。
+  拖選／反白選取文字、點擊段落內按鈕連結時不觸發；**只有真的可點播的段落**（09b 掛上
+  `.para-clickable`）顯示手形游標。
+
+**pid 是段落文字雜湊（`p-` + `md5(文字 + 段序)`）**——改動段落文字的正規化（空白掃描、
+標點、繁簡）就會換 pid，已校對的 `start/end` 會靜默失去跟播（注入器查不到元素、不報錯）。
+`2251ec4` 曾讓四十二章 10 個 confirmed 段失效。修正用 `sync_para_pids.py`（只改
+`pid`／`text`，時間與 `confirmed`／`zero` 不動），之後重建 `ebook/`：
+
+```bash
+tool/word_audio_map2/.venv/bin/python tool/books2ebook/sync_para_pids.py           # 先檢查
+tool/word_audio_map2/.venv/bin/python tool/books2ebook/sync_para_pids.py --apply  # 再套用
+```
+
+### 測試（段落跟播的建置契約）
+
+`tests/` 直接讀**版控中的建置產物**（`audio_map3/*.json` ＋ `ebook/*.html`）做端到端斷言，
+守門「已校對講次一定要讓讀者用得到段落跟播」：
+
+```bash
+cd tool/books2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/
+```
+
+| 檔案 | 守門的事 |
+|------|---------|
+| `test_follow_along_build.py` | ① reviewed 講次的每一段都有 `data-start`；② HTML 上的時間逐一等於 SoT（不得手改產物）；③ 零寬／`zero` 段不注入；④ **每個** pid 都存在於書中（含未校對講次，及早發現漂移）；⑤ 以 09b 的文件順序模擬掃描，reviewed 的每一講都有可跟播段落、且沒有「注入了卻歸不到任何講次」的段落；⑥ 繁簡版覆蓋率一致；⑦ 三個已校對系列維持非空 reviewed；⑧ 部署用的 `wenda2_ebook/assets` 保有 TreeWalker／`.para-clickable` 契約；⑨ 注入器讀到的內容與 HTML 一致 |
+| `test_para_audio_map.py` | `para_audio_map.load_series()` 的閘門：只注入 reviewed ∧ `end>start` ∧ 非 `zero`；壞檔降級為空 |
+
+缺 `ebook/` 建置產物時會自動 skip（不是失敗）。**改了 `audio_map3/*.json`、`ebook/*.html`
+產生器，或 `wenda2_ebook/assets` 的跟播邏輯，都要跑一次。**
 
 ### 講經經文置頂（原經文原尺寸停留）
 
