@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>三千大千世界 · 對數尺度立體模型｜TaiGuangLin</title>
+<meta name="description" content="依 Tai 師父開示，以對數尺度與 three.js 呈現娑婆世界：無色界、色界、欲界、須彌山、銀河系、人間與地獄。">
+<link rel="stylesheet" href="/fonts/fonts.css">
+<script src="/lang-switch.js" defer></script>
+<style>
+:root{--gold:#f4d58d;--ink:#e9e4ff}
+html,body{margin:0;height:100%;background:#02010a;color:var(--ink);font-family:"Noto Serif TC",serif;overflow:hidden}
+#c{position:fixed;inset:0}
+.hud{position:fixed;left:20px;top:18px;max-width:360px;pointer-events:none}
+.hud h1{margin:0;font-size:22px;letter-spacing:.2em;color:var(--gold);text-shadow:0 0 18px #f4d58d88}
+.hud p{margin:.4em 0 0;font-size:12.5px;opacity:.78;line-height:1.6}
+#panel{position:fixed;right:16px;top:16px;bottom:60px;width:300px;overflow:auto;background:#0b0820cc;border:1px solid #f4d58d33;border-radius:12px;padding:10px 12px;backdrop-filter:blur(8px);font-size:13px}
+#panel h2{font-size:14px;color:var(--gold);margin:10px 0 4px;letter-spacing:.1em}
+#panel .row{display:flex;justify-content:space-between;gap:6px;padding:3px 6px;border-radius:6px;cursor:pointer}
+#panel .row:hover,#panel .row.on{background:#f4d58d22}
+#panel .row b{font-weight:normal}
+#panel .row i{font-style:normal;opacity:.6;font-family:monospace}
+#info{position:fixed;left:20px;bottom:64px;max-width:420px;background:#0b0820dd;border-left:3px solid var(--gold);padding:10px 14px;border-radius:6px;font-size:13.5px;line-height:1.7;display:none}
+#info h3{margin:0 0 4px;color:var(--gold);font-size:16px}
+.bar{position:fixed;left:0;right:0;bottom:0;padding:8px 16px;font-size:11.5px;background:#000a;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.bar button{background:#f4d58d22;color:var(--ink);border:1px solid #f4d58d55;border-radius:16px;padding:4px 12px;cursor:pointer;font-family:inherit}
+.disc{opacity:.7;margin-left:auto}
+.lbl{position:absolute;font-size:12px;text-shadow:0 0 6px #000,0 0 2px #000;pointer-events:none;white-space:nowrap;transform:translate(-50%,-50%)}
+@media(max-width:760px){#panel{display:none}}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<div id="labels"></div>
+<div class="hud"><h1>三千大千世界</h1>
+<p>對數尺度：由外而內每下一層，光子能量 ×4、空間 ÷64（4³）。半徑依 log₆₄ 等距排開，二十八天＋人間＋地獄一眼可見。點選右側層名可飛入。</p></div>
+<div id="panel"></div>
+<div id="info"></div>
+<div class="bar">
+<button id="bOut">全景</button><button id="bGal">銀河系＝小世界</button><button id="bSum">須彌山</button><button id="bSpin">自轉 開/關</button>
+<span class="disc">本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。</span>
+</div>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {EffectComposer} from 'three/addons/postprocessing/EffectComposer.js';
+import {RenderPass} from 'three/addons/postprocessing/RenderPass.js';
+import {UnrealBloomPass} from 'three/addons/postprocessing/UnrealBloomPass.js';
+
+/* 由外而內。n＝光子能量 4ⁿ。原文明載：無所有處 4¹、淨居五天 4⁴–4⁸、四禪下四天 4⁹–4¹²、三禪 4¹³–4¹⁵、二禪 4¹⁶–4¹⁸、初禪 4¹⁹–4²¹、人間 4²⁸、地獄 4²⁹ 起；天名依《坐禪》原文（遍淨/無量淨/少淨、光音/無量光/少光、大梵/梵輔/梵眾、無想/廣果/福愛/福生）。 */
+const G=[
+ {g:'無色界四天',c:0x9fb8ff,d:'無形無色，只有虛空與意識。最外層非想非非想處天出現最小光子；如洋蔥層層往內包。',L:['非想非非想處天','無所有處天','識無邊處天','空無邊處天']},
+ {g:'色界・四禪九天',c:0xc6a6ff,d:'淨居五天光子能量 4⁴–4⁸，天人基本處於深定。下四天從無想天 4⁹ 起，此層天界出現黑暗。仍是同心球殼層層包裹。',L:['色究竟天','善現天','善見天','無熱天','無煩天','無想天','廣果天','福愛天','福生天']},
+ {g:'色界・三禪三天',c:0x7fe0ff,d:'球面上 1000 個小球如複眼鑲嵌；每串三球（遍淨→無量淨→少淨）如糖葫蘆，全指向世界中心。全是光子，無物。',L:['遍淨天','無量淨天','少淨天']},
+ {g:'色界・二禪三天',c:0x7dffc2,d:'每個少淨天球下又出現 1000 個二禪小球成串（光音→無量光→少光）；二禪開始有霧氣般之物。',L:['光音天','無量光天','少光天']},
+ {g:'色界・初禪三天',c:0xfff08a,d:'初禪三天（大梵→梵輔→梵眾）起，一路串到欲界與人間，是一串不可拆分的糖葫蘆。',L:['大梵天','梵輔天','梵眾天']},
+ {g:'欲界六天',c:0xffb36b,d:'依淫慾強弱分層，越往下越重。人間到四天王天及其上一天依地而居，故中央有須彌山為柱。',L:['他化自在天','化樂天','兜率天','夜摩天','忉利天（山頂帝釋天宮）','四天王天（山腰）']},
+ {g:'人間',c:0x6ec3ff,d:'光子能量 4²⁸。一個銀河系＝一個小世界（娑婆世界有十億個）；四旋臂對應四大部洲，地球在一條旋臂的邊緣。天界在黑洞方向，地獄在反方向。',L:['人間（銀河系／地球）']},
+ {g:'地獄',c:0xff4a3a,d:'光子能量 4²⁹ 起，越往下越大；最接近大世界中心點，時間尺度更長。',L:['地獄']}
+];
+const layers=[];let n=0;
+G.forEach(g=>g.L.forEach(name=>layers.push({name,n:n++,group:g.g,color:g.c,desc:g.d})));
+const N=layers.length;
+const R=i=>9+(N-1-i)*1.6;
+
+const cv=document.getElementById('c');
+const renderer=new THREE.WebGLRenderer({canvas:cv,antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);
+renderer.toneMapping=THREE.ACESFilmicToneMapping;
+const scene=new THREE.Scene();scene.fog=new THREE.FogExp2(0x02010a,0.003);
+const cam=new THREE.PerspectiveCamera(50,innerWidth/innerHeight,0.01,3000);
+const HOME=new THREE.Vector3(80,46,108);cam.position.copy(HOME);
+const ctl=new OrbitControls(cam,cv);ctl.enableDamping=true;ctl.autoRotate=true;ctl.autoRotateSpeed=0.35;
+const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,cam));
+composer.addPass(new UnrealBloomPass(new THREE.Vector2(innerWidth,innerHeight),0.5,0.55,0.35));
+
+{const g=new THREE.BufferGeometry(),p=[],c=[];for(let i=0;i<9000;i++){const v=new THREE.Vector3().randomDirection().multiplyScalar(400+Math.random()*800);p.push(v.x,v.y,v.z);const k=.5+Math.random()*.5;c.push(k,k,k*1.1);}
+g.setAttribute('position',new THREE.Float32BufferAttribute(p,3));g.setAttribute('color',new THREE.Float32BufferAttribute(c,3));
+scene.add(new THREE.Points(g,new THREE.PointsMaterial({size:.9,vertexColors:true,transparent:true,opacity:.5})));}
+
+const shellMat=(col,a)=>new THREE.ShaderMaterial({transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending,
+ uniforms:{c:{value:new THREE.Color(col)},a:{value:a},t:{value:0},hi:{value:0}},
+ vertexShader:`varying vec3 vN;varying vec3 vV;varying vec2 vU;void main(){vU=uv;vec4 mv=modelViewMatrix*vec4(position,1.);vN=normalize(normalMatrix*normal);vV=normalize(-mv.xyz);gl_Position=projectionMatrix*mv;}`,
+ fragmentShader:`uniform vec3 c;uniform float a,t,hi;varying vec3 vN;varying vec3 vV;varying vec2 vU;
+ void main(){float f=pow(1.-abs(dot(vN,vV)),2.5);float grid=smoothstep(.97,1.,abs(sin(vU.x*60.+t*.2)))*.12+smoothstep(.98,1.,abs(sin(vU.y*40.)))*.09;
+ gl_FragColor=vec4(c*(f*.95+grid*.55+hi*.6),(f*.85+grid*.55)*a+hi*.12);}`});
+const shells=[];const root=new THREE.Group();scene.add(root);
+layers.forEach((L,i)=>{if(L.group==='人間'||L.group==='地獄')return;
+ L.r=R(i);const m=new THREE.Mesh(new THREE.SphereGeometry(L.r,96,64),shellMat(L.color,0.05+0.11*(i/N)));
+ m.userData=L;root.add(m);shells.push(m);});
+
+function compound(i0,col,count,size,step){const r=R(i0)-0.2;
+ const im=new THREE.InstancedMesh(new THREE.SphereGeometry(size,10,8),new THREE.MeshBasicMaterial({color:col,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false}),count*3);
+ const M=new THREE.Matrix4();let k=0;
+ for(let j=0;j<count;j++){const y=1-2*(j+.5)/count,rr=Math.sqrt(1-y*y),th=j*2.39996;
+  const dir=new THREE.Vector3(Math.cos(th)*rr,y,Math.sin(th)*rr);
+  for(let s=0;s<3;s++){const sc=1-s*.18;M.makeScale(sc,sc,sc).setPosition(dir.clone().multiplyScalar(r-s*step));im.setMatrixAt(k++,M);}}
+ root.add(im);}
+const idx=name=>layers.findIndex(l=>l.name.startsWith(name));
+compound(idx('遍淨天'),0x9feeff,1000,.2,1.6);
+compound(idx('光音天'),0x9dffd0,1000,.13,1.6);
+
+// 中央主串：初禪→欲界，須彌山從人間升到忉利天
+const axis=new THREE.Group();root.add(axis);
+const top=R(idx('忉利天'));
+{const H=top;const mat=new THREE.ShaderMaterial({transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,uniforms:{t:{value:0}},
+  vertexShader:`varying vec2 vU;void main(){vU=uv;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float t;varying vec2 vU;void main(){float b=.5+.5*sin(vU.y*50.-t*3.);vec3 c=mix(vec3(1.,.7,.3),vec3(1.,.96,.75),vU.y);gl_FragColor=vec4(c*(.55+b*.6),.6);}`});
+ const m=new THREE.Mesh(new THREE.CylinderGeometry(1.1,0,H,48,1,true),mat);m.position.y=H/2;axis.add(m);axis.userData.mat=mat;
+ const palace=new THREE.Mesh(new THREE.OctahedronGeometry(.8),new THREE.MeshBasicMaterial({color:0xfff2b0}));palace.position.y=H;axis.add(palace);axis.userData.palace=palace;
+ for(let i=idx('大梵天');i<=idx('四天王天');i++){const b=new THREE.Mesh(new THREE.SphereGeometry(.5,24,16),new THREE.MeshBasicMaterial({color:layers[i].color}));b.position.y=R(i);axis.add(b);}}
+
+// 銀河系
+const galaxy=new THREE.Group();root.add(galaxy);
+{const P=[],C=[],cnt=30000;const c1=new THREE.Color(0xffe6b0),c2=new THREE.Color(0x6ec3ff);
+ for(let i=0;i<cnt;i++){const arm=i%4,t=Math.pow(Math.random(),.7),r=.7+t*7;const a=arm*Math.PI/2+r*.8+(Math.random()-.5)*.6*(1-t*.4);
+  P.push(Math.cos(a)*r+(Math.random()-.5)*.3,(Math.random()-.5)*.4*(1-t),Math.sin(a)*r+(Math.random()-.5)*.3);
+  const c=c1.clone().lerp(c2,t);C.push(c.r,c.g,c.b);}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));g.setAttribute('color',new THREE.Float32BufferAttribute(C,3));
+ galaxy.add(new THREE.Points(g,new THREE.PointsMaterial({size:.07,vertexColors:true,transparent:true,opacity:.9,blending:THREE.AdditiveBlending,depthWrite:false})));
+ galaxy.add(new THREE.Mesh(new THREE.SphereGeometry(.4,32,16),new THREE.MeshBasicMaterial({color:0})));
+ const ring=new THREE.Mesh(new THREE.TorusGeometry(.62,.08,16,80),new THREE.MeshBasicMaterial({color:0xffc070}));ring.rotation.x=Math.PI/2;galaxy.add(ring);
+ const earth=new THREE.Mesh(new THREE.SphereGeometry(.12,16,12),new THREE.MeshBasicMaterial({color:0x4fb3ff}));earth.position.set(5.2,0,1.8);galaxy.add(earth);galaxy.userData.earth=earth;}
+// 地獄
+const hell=new THREE.Group();hell.position.y=-1;root.add(hell);
+{const P=[];for(let i=0;i<6000;i++){const t=Math.random(),a=t*30+Math.random()*.3,r=.2+t*2.4;P.push(Math.cos(a)*r,-t*6,Math.sin(a)*r);}
+ const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.Float32BufferAttribute(P,3));
+ hell.add(new THREE.Points(g,new THREE.PointsMaterial({size:.08,color:0xff3b2a,transparent:true,opacity:.85,blending:THREE.AdditiveBlending,depthWrite:false})));}
+layers[idx('人間')].obj=galaxy;layers[idx('地獄')].obj=hell;
+
+const lab=document.getElementById('labels');const tags=[];
+const tag=(txt,pos,col,obj)=>{const d=document.createElement('div');d.className='lbl';d.textContent=txt;d.style.color='#'+new THREE.Color(col).getHexString();lab.appendChild(d);tags.push({d,pos,obj});};
+G.forEach(g=>{const L=layers[idx(g.L[0])];
+ if(L.r)tag(g.g,new THREE.Vector3(L.r*.7,L.r*.7,0),g.c);});
+tag('銀河系（人間）',new THREE.Vector3(7.5,1.2,0),0x6ec3ff);
+tag('地獄',new THREE.Vector3(2.8,-6,0),0xff4a3a);
+tag('須彌山頂・帝釋天宮',new THREE.Vector3(1.8,top+1,0),0xfff2b0);
+tag('地球',new THREE.Vector3(0,.5,0),0x4fb3ff,galaxy.userData.earth);
+
+const panel=document.getElementById('panel'),info=document.getElementById('info');const rows=[];
+G.forEach(g=>{const h=document.createElement('h2');h.textContent=g.g;panel.appendChild(h);
+ layers.filter(l=>l.group===g.g).forEach(L=>{const r=document.createElement('div');r.className='row';
+  r.innerHTML=`<b>${L.name}</b><i>4<sup>${L.n}</sup> · 64<sup>−${L.n}</sup></i>`;r.onclick=()=>focus(L,r);panel.appendChild(r);rows.push(r);L.row=r;});});
+let fly=null;
+const flyTo=(p,t)=>{fly={p0:cam.position.clone(),t0:ctl.target.clone(),p1:p,t1:t,k:0};};
+function focus(L,row){rows.forEach(x=>x.classList.remove('on'));(row||L.row).classList.add('on');
+ shells.forEach(s=>s.material.uniforms.hi.value=s.userData===L?1:0);
+ info.style.display='block';info.innerHTML=`<h3>${L.name}</h3><div>${L.group}｜光子能量 4<sup>${L.n}</sup>，相對空間 64<sup>−${L.n}</sup></div><p>${L.desc}</p>`;
+ if(L.r)flyTo(new THREE.Vector3(L.r*1.2,L.r*.5,L.r*1.5),new THREE.Vector3());
+ else if(L.obj===galaxy)flyTo(new THREE.Vector3(7,6,10),new THREE.Vector3());
+ else flyTo(new THREE.Vector3(6,-3,9),new THREE.Vector3(0,-4,0));}
+document.getElementById('bOut').onclick=()=>{flyTo(HOME.clone(),new THREE.Vector3());info.style.display='none';rows.forEach(x=>x.classList.remove('on'));shells.forEach(s=>s.material.uniforms.hi.value=0);};
+document.getElementById('bGal').onclick=()=>focus(layers[idx('人間')]);
+document.getElementById('bSum').onclick=()=>{focus(layers[idx('忉利天')]);flyTo(new THREE.Vector3(14,top*.7,22),new THREE.Vector3(0,top*.55,0));};
+document.getElementById('bSpin').onclick=()=>ctl.autoRotate=!ctl.autoRotate;
+
+const clock=new THREE.Clock(),v=new THREE.Vector3();
+function loop(){requestAnimationFrame(loop);const t=clock.getElapsedTime();
+ shells.forEach(s=>s.material.uniforms.t.value=t);axis.userData.mat.uniforms.t.value=t;axis.userData.palace.rotation.y=t;
+ galaxy.rotation.y=t*.05;hell.rotation.y=-t*.3;
+ if(fly){fly.k=Math.min(1,fly.k+.012);const e=fly.k<.5?2*fly.k*fly.k:1-Math.pow(-2*fly.k+2,2)/2;
+  cam.position.lerpVectors(fly.p0,fly.p1,e);ctl.target.lerpVectors(fly.t0,fly.t1,e);if(fly.k>=1)fly=null;}
+ ctl.update();composer.render();
+ tags.forEach(({d,pos,obj})=>{if(obj)obj.getWorldPosition(v),v.y+=.5;else v.copy(pos).applyMatrix4(root.matrixWorld);v.project(cam);
+  d.style.display=v.z<1?'block':'none';d.style.left=(v.x*.5+.5)*innerWidth+'px';d.style.top=(-v.y*.5+.5)*innerHeight+'px';});}
+loop();
+addEventListener('resize',()=>{cam.aspect=innerWidth/innerHeight;cam.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);composer.setSize(innerWidth,innerHeight);});
+</script>
+</body>
+</html>

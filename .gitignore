@@ -22,6 +22,10 @@ tool/fonts/src/
 tool/fonts/.pylibs/
 tool/fonts/build/
 
+# 三千大千世界模型素材（tool/world_model）：由電子書產物抽出的中間檔與
+# 彙整稿體積大、且是既有內容的重組，不進版控也不部署；要重生跑 build_doc.py。
+tool/world_model/build/
+
 # 複習電子書（tool/wenda2_knowledge、tool/ebook_knowledge → hidden/ 輸出）
 # 已於 2026-10-11 整包移除：hidden/ 部署由 commit 15bbfd7 下線，
 # 兩套產生器連同 src 內容 SoT 同日刪除（git 歷史可回溯）。

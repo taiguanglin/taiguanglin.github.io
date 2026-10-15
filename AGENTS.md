@@ -107,6 +107,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `tool/stories2html/` | Stories → HTML readers + index/sitemap patches | `README.md` |
 | `tool/audio_index/` | 掃描 `audio/` → `audio/index.html`（置頂大悲咒播放器、類別／年份篩選） | `README.md` |
 | `tool/site_chrome/` | 全站共用導覽 SoT → 「圖解」3 入口＋圖解頁 JSON-LD 寫回；`sync.py`（含 `--check`）、`check_site.py` 一致性檢查、`dropdown_harness.js` 下拉互動測試 | `README.md` |
+| `tool/world_model/` | 兩套電子書產物 → 三千大千世界模型圖素材（16 主題章、逐字、帶錨點）；`build/` 已 gitignore | `README.md` |
 
 ---
 
