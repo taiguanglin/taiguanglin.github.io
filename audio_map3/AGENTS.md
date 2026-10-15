@@ -15,7 +15,33 @@
 - **注入器只讀 `reviewed` + `start`/`end`**，不讀 `method`/`conf`/`confirmed`；跟播閘門＝講層
   `reviewed=true`；`end <= start`（零寬／不念的經文段）跳過、不注入。`method`/`conf` 純屬校對
   與稽核 metadata。想生效：UI 勾「本講校對完成」並存回（**agent 不代勾**）。
-- 重新注入：`cd tool/books2ebook && python3 gen_all.py`。
+- 重新注入：`cd tool/books2ebook && python3 gen_all.py`（**必須**用
+  `tool/word_audio_map2/.venv/bin/python`，見根 `AGENTS.md` 的 venv 鎖版）。
+- ⚠️ **`pid` 是段落文字的雜湊（`p-` + `md5(text + 段序)`）**，所以**任何改動段落文字的正規化
+  （空白掃描、標點、繁簡…）都會讓 pid 失效，已校對的時間會「靜默消失」**——注入器只是查不到
+  對應元素，不會報錯。已發生過：`2251ec4`（時間戳／冒號格式掃描）改了十來段文字（`67 年`→
+  `67年`、`A 和B 不一样`→`A和B不一样`），四十二章就有 **10 個 confirmed 段**在重建時失去
+  `data-start`。→ **每次重建 `ebook/` 後必查三件事**（`reviewed` 段是否全數注入）：
+  ```bash
+  python3 - <<'EOF'
+  import json, re
+  for s, b in [('ganen','04'), ('sishierzhang','07'), ('lengqie','08')]:
+      d = json.load(open(f'audio_map3/{s}.json', encoding='utf-8'))
+      html = open(f'ebook/{b}.html', encoding='utf-8').read()
+      inj = set(re.findall(r'id="(p-[^"]+)"[^>]*data-start=', html))
+      valid = {p['pid'] for k, v in d['lectures'].items() if v.get('reviewed')
+               for p in v['paragraphs']
+               if not p.get('zero') and p.get('start') is not None
+               and p.get('end') is not None and p['end'] > p['start']}
+      print(b, len(valid), len(valid & inj), 'LOST', len(valid - inj))
+  EOF
+  ```
+  `LOST > 0` 就是 pid 對不上：以「去掉所有空白後文字完全相同」在 `ebook/<book>.html` 找新 pid，
+  改寫 JSON 裡那筆的 `pid` 與 `text`（**時間／`confirmed`／`zero` 一律不動**），再重建。
+- ⚠️ **注入成功 ≠ 跟播會出現**：前端 `09b-para-track.js` 以「文件順序」劃講次並收 `.para-block`，
+  若日後又改回「h2 直接兄弟節點」掃描，經文之後被 `.sutra-pin-group` 包住的段落會整批漏掉
+  （症狀＝部分講次的 toggle 不見或只跟到開頭幾段）。驗收請用 `09b` 的 TreeWalker 語意模擬，
+  不要只數 HTML 裡有幾個 `data-start`。
 - 交付：`audio_map3/<series>.json`（UTF-8、`ensure_ascii=False`、按講次排序；保留 golden 講次
   的 confirmed 段）＋人工試聽清單（`tool/jiangjing_para_map/reports/`）。
 

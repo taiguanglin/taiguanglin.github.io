@@ -602,6 +602,9 @@
             if (text.scrollHeight > text.clientHeight + 2) {
                 toggle.style.display = '';
             }
+            // 手形游標與點擊行為同一個判斷來源：可摺疊才給 pointer。
+            // 全文已顯示時點了沒反應，掛手指頭只會誘發無效點擊。
+            text.classList.toggle('is-expandable', toggle.style.display !== 'none');
         }
 
         function setLoaded() {

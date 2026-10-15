@@ -607,6 +607,42 @@ class TestStaticAssetsManagerRealModules:
         assert ".para-block.para-active" in css
         assert "body.dark-mode .para-block.para-active" in css
 
+    def test_para_track_collects_paragraphs_in_document_order(self):
+        """09b 段落歸屬必須以「文件順序」劃講次，不得只掃 h2 的直接兄弟節點。
+
+        09c 經文置頂自2026-10 起由 books2ebook 建置期輸出
+        `.sutra-pin-group > .sutra-pin-host > .sutra-text.para-block` 包層，
+        經文之後的講解段落因此是 h2 的**孫節點**。舊的 `h2.nextElementSibling`
+        掃描只認得第一段經文之前的直屬段落：四十二章 L1 只認 24/63 段、L2 起
+        一段都認不到 →「段落跟播」toggle 要麼只跟到一小截、要麼整個不出現。
+        """
+        js = StaticAssetsManager().get_full_js_content()
+        assert "document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT)" in js, \
+            "09b must walk the body in document order to find every .para-block"
+        # 去掉行註解後才檢查：說明註解裡本來就會提到被淘汰的舊寫法
+        code = re.sub(r"^\s*//.*$", "", js, flags=re.M)
+        assert "h2.nextElementSibling" not in code, \
+            "09b must not rely on h2's direct siblings (nested sutra-pin-group paragraphs)"
+        # 講次邊界仍是 h2：任何 h2 結束前一講，含 .qa-play 的 h2 開新講次
+        assert "playBtnByH2.get(el)" in js
+
+    def test_para_cursor_only_on_clickable_paragraphs(self):
+        """手形游標只能出現在「真的可點播」的段落上。
+
+        `[data-start]` 只代表有時間；不屬於任何講次區段的段落點了不會 seek 也不會
+        播放，掛手指頭等於假承諾。因此 09b 在建立講次索引時逐段掛
+        `.para-clickable`，CSS 據此上 pointer。
+        """
+        js = StaticAssetsManager().get_full_js_content()
+        assert "classList.add('para-clickable')" in js, \
+            "09b must mark clickable paragraphs with .para-clickable"
+        css = StaticAssetsManager().get_full_css_content()
+        assert "body.para-track-on .para-block.para-clickable {" in css, \
+            "cursor:pointer must key off .para-clickable, not [data-start]"
+        css_code = re.sub(r"/\*.*?\*/", "", css, flags=re.S)  # 去掉註解再比對選擇器
+        assert "body.para-track-on .para-block[data-start]" not in css_code, \
+            "a paragraph with a time but no lecture must NOT get cursor:pointer"
+
     def test_real_js_has_sutra_pin_after_para_track(self):
         """09c-sutra-pin.js（講經經文置頂）串接在 09b-para-track.js 之後。"""
         js = StaticAssetsManager().get_full_js_content()

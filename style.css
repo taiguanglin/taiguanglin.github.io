@@ -1037,9 +1037,16 @@ ul, ol { list-style-position: outside; }
     font-size: 16px;
     line-height: 2;
     color: var(--ink);
-    cursor: pointer;
+    cursor: default;
     transition: opacity .25s var(--ease);
 }
+
+/* 只有「內文尚未全部顯示」（有摺疊、可點擊展開／收合）時才給手形游標；
+   全文已顯示時點下去沒有任何變動，掛手指頭等於假承諾。
+   `.is-expandable` 由 index.html 的 updateToggleVisibility() 依實際量測結果
+   （scrollHeight > clientHeight，即「展開全文」鈕可見）同步，與點擊處理器的
+   判斷條件完全一致。 */
+.daily-quote-text.is-expandable { cursor: pointer; }
 
 /* 切換日期時，文字區整組淡出、換好（已轉換完畢）才淡入，避免繁簡閃爍 */
 .daily-quote-label,

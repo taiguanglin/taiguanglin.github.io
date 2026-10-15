@@ -5582,7 +5582,11 @@ function addHomepageBookmarkEventListeners() {
     //      使高亮段落永遠落在停留經文下方）。僅在段落切換時捲動。
   //   2. 跟播 ON 時點擊任一段落 → 播放所屬講次音檔並 seek 至該段起點，
   //      之後一路順播到底，不在段末自停。拖選文字、有反白選區，或點到
-  //      段落內按鈕/連結時不觸發；可點播段落顯示手形游標（body.para-track-on）。
+  //      段落內按鈕/連結時不觸發；**只有真的可點播的段落**才顯示手形游標——
+  //      建立講次索引時逐段掛 `.para-clickable`，CSS 據此上 pointer
+  //      （body.para-track-on .para-block.para-clickable）。不跟播的段落
+  //      （沒有時間、或不屬於任何講次區段）保持文字游標，點了沒反應就不該
+  //      掛手指頭。
   //   3. toggle 即時生效、不需重新載入；只操作 .para-active
   //      一個 class，不與搜尋高亮等其他模組衝突。
   //
@@ -5630,31 +5634,58 @@ function addHomepageBookmarkEventListeners() {
     // ---- 建立「講次 → 段落清單」索引 ----------------------------------
     // 講次 = 含 .qa-play 的 h2；其後直到下一個 h2 之間、且帶齊
     // data-start/data-end 的 .para-block 為該講段落（h3 小節不打斷歸屬）。
+    //
+    // ⚠️ 必須以「文件順序」走訪（TreeWalker），不可只掃 h2 的直接兄弟節點：
+    // 09c 經文置頂自 2026-10 起由 books2ebook 建置期直接輸出
+    // `.sutra-pin-group > .sutra-pin-host > .sutra-text.para-block` 包層，經文
+    // 之後的講解段落因此是 h2 的**孫節點**。舊的 `h2.nextElementSibling` 掃描
+    // 只認得第一段經文之前的那些直屬段落：四十二章 L1 只認 24/63 段（其餘段落在
+    // 經文之後，落在包層內），L2–L14 一段都認不到 →「段落跟播」toggle 要麼只跟到
+    // 一小截、要麼整個不出現。lengqie/liuzutanjing/lengyanjing 同一原因。
     var sections = [];          // [{btn, paras:[{el,start,end}]}]
     var paraSection = new Map(); // el → section
+    var playBtnByH2 = new Map(); // h2 → .qa-play（同一 h2 只認第一個鈕）
     Array.prototype.slice.call(
       document.querySelectorAll('h2 .qa-play')
     ).forEach(function (btn) {
       var h2 = btn.closest('h2');
-      if (!h2) return;
-      var list = [];
-      var node = h2.nextElementSibling;
-      while (node && node.tagName !== 'H2') {
-        if (node.classList && node.classList.contains('para-block') &&
-            node.hasAttribute('data-start') && node.hasAttribute('data-end')) {
-          var s = parseFloat(node.getAttribute('data-start'));
-          var e = parseFloat(node.getAttribute('data-end'));
-          if (isFinite(s) && isFinite(e) && e > s) {
-            list.push({ el: node, start: s, end: e });
-          }
+      if (h2 && !playBtnByH2.has(h2)) playBtnByH2.set(h2, btn);
+    });
+
+    if (document.body && typeof document.createTreeWalker === 'function') {
+      var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_ELEMENT);
+      var cur = null;
+      while (walker.nextNode()) {
+        var el = walker.currentNode;
+        // 任何 h2 都是講次邊界：有播放鈕者開新講次，其餘（頁首「本章目录」等）
+        // 結束前一講，與原本 nextElementSibling 掃描的語意一致。
+        if (el.tagName === 'H2') {
+          var btn = playBtnByH2.get(el);
+          cur = btn ? { btn: btn, paras: [] } : null;
+          if (cur) sections.push(cur);
+          continue;
         }
-        node = node.nextElementSibling;
+        if (!cur || !el.classList || !el.classList.contains('para-block')) continue;
+        if (!el.hasAttribute('data-start') || !el.hasAttribute('data-end')) continue;
+        var s = parseFloat(el.getAttribute('data-start'));
+        var e = parseFloat(el.getAttribute('data-end'));
+        if (isFinite(s) && isFinite(e) && e > s) {
+          cur.paras.push({ el: el, start: s, end: e });
+        }
       }
-      if (!list.length) return;
-      list.sort(function (a, b) { return a.start - b.start; });
-      var sec = { btn: btn, paras: list };
-      sections.push(sec);
-      list.forEach(function (p) { paraSection.set(p.el, sec); });
+    }
+
+    // 一段時間都沒對到的講次不建 toggle；段內依時間排序後才掛 paraSection
+    sections = sections.filter(function (sec) { return sec.paras.length > 0; });
+    sections.forEach(function (sec) {
+      sec.paras.sort(function (a, b) { return a.start - b.start; });
+      sec.paras.forEach(function (p) {
+        paraSection.set(p.el, sec);
+        // `.para-clickable` = 手形游標的唯一依據：只有真的歸屬某講（點了會 seek
+        // 並播放）才掛。不可改回 `.para-block[data-start]`：那只代表「有時間」，
+        // 不屬於任何講次區段的段落點了沒有反應，手指頭是假承諾。
+        p.el.classList.add('para-clickable');
+      });
     });
     if (!sections.length) return;
 

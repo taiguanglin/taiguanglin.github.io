@@ -173,8 +173,11 @@
 }
 
 /* 跟播開啟時（body.para-track-on 由 09b-para-track.js 隨開關同步），
-   可點播的段落顯示手形游標，提示點擊即播；關閉跟播時恢復文字游標 */
-body.para-track-on .para-block[data-start] {
+   「真的可點播」的段落才顯示手形游標，提示點擊即播；關閉跟播時恢復文字游標。
+   選擇器用 09b 掛上的 `.para-clickable`（建立講次索引時逐段加上），**不可**改回
+   `.para-block[data-start]`：`[data-start]` 只代表有時間，若該段不屬於任何講次
+   區段（沒有跟播），點下去沒有任何反應，掛手指頭等於假承諾。 */
+body.para-track-on .para-block.para-clickable {
     cursor: pointer;
 }
 
