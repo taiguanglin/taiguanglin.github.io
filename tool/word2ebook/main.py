@@ -12,6 +12,7 @@ if str(current_dir) not in sys.path:
 
 from models.document_models import ConversionConfig
 from config.settings import Settings, DEFAULT_SETTINGS, Constants
+from utils.env_guard import ensure_locked_pymupdf, reexec_into_venv
 from utils.file_utils import FileManager, ImageHandler
 from core.document_parser import DocumentParser
 from core.pdf_parser import PDFParser
@@ -304,6 +305,12 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     """主函数"""
+    # 環境守門：CLI 直跑時切換到鎖版 venv（已在其內則 no-op），再驗
+    # PyMuPDF 版本（不符即失敗）——PDF 抽字空白隨版本漂移會連動 pid 與
+    # search_index（root AGENTS.md 規則 13；見 utils/env_guard.py）。
+    reexec_into_venv(__file__)
+    ensure_locked_pymupdf()
+
     parser = create_argument_parser()
     args = parser.parse_args()
     

@@ -5,6 +5,9 @@
 
     python3 gen_all_and_push.py
 
+任何直譯器皆可：非鎖版環境會自動切換到鎖版 venv
+（``tool/word_audio_map2/.venv``；PyMuPDF 版本由 ``main.build()`` 守門）。
+
 依序執行：
 
     git pull \\
@@ -21,6 +24,7 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import subprocess
 import sys
 import traceback
@@ -34,7 +38,20 @@ DEFAULT_COMMIT_MESSAGE = "Rebuild ebook from books PDFs"
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
 
-import main  # noqa: E402
+
+def _load_env_guard():
+    """以 spec 載入 word2ebook 的 env_guard（兩工具共用守門 SoT）。
+
+    必須在 ``import main`` 之前就緒：main → extract → pymupdf 會在
+    非鎖版直譯器上 import 失敗，re-exec 得先發生。
+    """
+    path = TOOL_DIR.parent / "word2ebook" / "utils" / "env_guard.py"
+    spec = importlib.util.spec_from_file_location("_w2e_env_guard", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入共用環境守門模組：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
 
 
 def _run_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
@@ -77,6 +94,8 @@ def sync_to_local() -> int:
 
 def rebuild() -> int:
     """執行 gen_all.py 的完整重建（books/ → ebook/）。"""
+    import main  # noqa: E402  # 鎖版 venv 內才有 pymupdf/docx/opencc
+
     try:
         main.build()
     except SystemExit as exc:
@@ -149,6 +168,10 @@ def create_argument_parser() -> argparse.ArgumentParser:
 
 def main_entry() -> int:
     args = create_argument_parser().parse_args()
+
+    # CLI 入口先切換鎖版 venv（execv 成功時不返回，整個腳本於 venv 重跑；
+    # pytest 保險絲與 W2E_SKIP_ENV_GUARD 見 env_guard）。
+    _load_env_guard().reexec_into_venv(__file__)
 
     print("🚀 gen_all_and_push — 同步 → 重建 → 提交 → 推送")
     print()

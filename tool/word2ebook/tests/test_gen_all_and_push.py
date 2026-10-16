@@ -98,9 +98,12 @@ def test_ensure_venv_execv_outside_pytest(monkeypatch, tmp_path):
 def test_ensure_venv_missing_venv_is_noop(monkeypatch, tmp_path, capsys):
     """venv 不存在時：印警告、不 re-exec（沿用當前直譯器）。"""
     monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
+    # 委派 env_guard 後多了 under_locked_venv() 前置判斷：測試環境的
+    # sys.prefix 就是真正的 venv，先換成非 venv 才會走到「venv 缺檔」分支。
+    monkeypatch.setattr(sys, "prefix", str(tmp_path / "elsewhere"))
     monkeypatch.setattr(os, "execv", lambda *a, **k: pytest.fail("不應 execv"))
     import gen_all_and_push as gap
     monkeypatch.setattr(gap, "VENV_PYTHON", tmp_path / "nope" / "bin" / "python")
-    _ensure_venv()  # 不丟例外＝通過
+    gap._ensure_venv()  # 不丟例外＝通過
     out = capsys.readouterr()
     assert "找不到 canonical venv" in out.err

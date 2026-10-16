@@ -146,7 +146,13 @@ toggle（localStorage `sutraPinEnabled`，預設 ON）；錨點跳轉時短暫�
 
 ## 一鍵重建
 
-**用 `tool/word_audio_map2/.venv`（依賴已鎖版）**，不要用系統 python：
+**用 `tool/word_audio_map2/.venv`（依賴已鎖版）**。2026-10 起
+`gen_all.py`／`gen_all_and_push.py` 內建守門：以其他直譯器啟動會**自動切換**
+到該 venv（`utils/env_guard.py`），且 `main.build()` 會驗 PyMuPDF 版本與
+`requirements.txt` 的 pin 一致、不符即拒絕建置。換版重建會讓抽字空白、
+段落 pid 與 `search_index` 一起漂移——2026-10-16 的 17a21bc 曾以
+`/usr/bin/python3`（PyMuPDF 1.26.5）重建，36 段文字漂移、10 段已校對跟播
+靜默遺失；完整調查見 repo 根目錄 `search_index_rebuild_research.md`：
 
 ```bash
 tool/word_audio_map2/.venv/bin/python tool/books2ebook/gen_all.py
@@ -229,8 +235,8 @@ tool/word_audio_map2/.venv/bin/python tool/books2ebook/main.py --books-dir books
 
 ```
 cd tool/books2ebook
-/usr/bin/python3 dev_peek.py [N]       # 看第 N 本書的標題階層
-/usr/bin/python3 dev_peek.py 2 -v      # 連區塊 JSON 一併印出
+../../tool/word_audio_map2/.venv/bin/python dev_peek.py [N]   # 看第 N 本書的標題階層
+../../tool/word_audio_map2/.venv/bin/python dev_peek.py 2 -v # 連區塊 JSON 一併印出
 ```
 
 ## 與站點的連動

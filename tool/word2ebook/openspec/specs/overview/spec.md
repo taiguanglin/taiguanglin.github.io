@@ -191,11 +191,42 @@ after staging, the script SHALL skip commit and push and exit successfully.
 - THEN the system SHALL report that there is nothing to commit and SHALL NOT run
   `git commit` or `git push`
 
+### Requirement: Locked-Build Environment Guard
+All ebook rebuild entry points (`main.py`, `gen_all.py`, `gen_all_and_push.py`)
+SHALL run inside the locked venv `tool/word_audio_map2/.venv`. When started
+under any other interpreter, the entry script SHALL re-exec itself with the
+venv python (`os.execv`) before importing heavy dependencies. Every build
+SHALL also verify that the interpreter's PyMuPDF version equals the
+`pymupdf==` pin in `tool/word_audio_map2/requirements.txt` and SHALL exit
+non-zero on mismatch — PyMuPDF version changes alter PDF text-extraction
+whitespace and silently drift paragraph pids and search indexes
+(root AGENTS.md rule 13; the 17a21bc rebuild under `/usr/bin/python3`
+PyMuPDF 1.26.5 vs the locked 1.28.2 lost 10 reviewed follow-along segments).
+
+#### Scenario: Rebuild under a non-venv interpreter
+- GIVEN the user runs `python3 gen_all.py` with any system python
+- WHEN the locked venv exists
+- THEN the script SHALL replace the process with the venv python before any
+  heavy import and rerun itself with identical arguments
+
+#### Scenario: PyMuPDF version mismatch
+- GIVEN the interpreter's PyMuPDF version differs from the locked pin
+- WHEN a rebuild starts
+- THEN the system SHALL exit non-zero before parsing PDFs, naming both
+  versions and pointing at the locked venv
+
+#### Scenario: Guard fuses
+- GIVEN `PYTEST_CURRENT_TEST` is set (pytest) or `W2E_SKIP_ENV_GUARD=1`
+- WHEN an entry script runs
+- THEN the system SHALL NOT re-exec and SHALL skip the version check
+
 ## Technical Notes
 
 - Entry point: `main.py::main()`
 - Site full rebuild: `gen_all.py::main()` (問答錄 2 preset paths)
 - Site full rebuild + git push: `gen_all_and_push.py::main()`
+- Environment guard (venv re-exec + PyMuPDF pin check): `utils/env_guard.py`
+  — shared SoT, loaded by books2ebook via `importlib` spec loader
 - Core converter class: `main.Word2EBookConverter`
 - Pipeline orchestration: `Word2EBookConverter.convert()`; source parsing in
   `Word2EBookConverter._parse_chapters()`

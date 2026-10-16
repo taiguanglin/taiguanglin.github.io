@@ -1,9 +1,9 @@
 """dev_verify.py — 對已產生的 ebook/ 輸出做一致性驗證（不需重建）。
 
-用法：
-    /usr/bin/python3 dev_verify.py            # 驗證預設輸出目錄 ebook/
-    /usr/bin/python3 dev_verify.py --out DIR
-    /usr/bin/python3 dev_verify.py --http     # 另外對 localhost:8084 做 HTTP 存在性檢查
+用法（任何 python 皆可，純 stdlib）：
+    python3 dev_verify.py                   # 驗證預設輸出目錄 ebook/
+    python3 dev_verify.py --out DIR
+    python3 dev_verify.py --http             # 另外對 localhost:8084 做 HTTP 存在性檢查
 
 檢查項目：
   A. 檔案齊全（01–05、_trad、index、assets、favicon、搜尋索引）

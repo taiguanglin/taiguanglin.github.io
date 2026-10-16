@@ -53,11 +53,31 @@ def _load_image_markup():
     return module
 
 
+def _load_env_guard():
+    """載入 word2ebook 的環境守門 SoT（``env_guard.py``）。
+
+    與 :func:`_load_i18n_processor` 同理由：該模組僅依賴 stdlib，
+    可獨立載入。``build()`` 開頭會用 :func:`ensure_locked_pymupdf` 驗
+    PyMuPDF 版本與鎖版 pin 一致——換版會讓 PDF 抽字空白、段落 pid 與
+    search_index 漂移（root AGENTS.md 規則 13）。
+    """
+    path = os.path.abspath(os.path.join(
+        os.path.dirname(__file__), "..", "word2ebook", "utils", "env_guard.py"
+    ))
+    spec = importlib.util.spec_from_file_location("_w2e_env_guard", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入共用環境守門模組：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 _IMAGE_MARKUP = _load_image_markup()
 file_to_webp = _IMAGE_MARKUP.file_to_webp
 
 
 _TAIWAN_CHINESE = _load_i18n_processor()
+_ENV_GUARD = _load_env_guard()
 _HTML_TAG_RE = re.compile(r"(<[^>]*>)", re.DOTALL)
 _HTML_RAW_BLOCK_RE = re.compile(
     r"(<(?:script|style)\b[^>]*>.*?</(?:script|style)\s*>)",
@@ -260,6 +280,10 @@ def copy_assets(out_dir):
 
 
 def build(books_dir=None, out_dir=None):
+    # PyMuPDF 版本守門：與 tool/word_audio_map2/requirements.txt 的 pin
+    # 不符即失敗，避免換版重建讓文字/pid/search_index 靜默漂移。
+    _ENV_GUARD.ensure_locked_pymupdf()
+
     books_dir = books_dir or config.DEFAULT_BOOKS_DIR
     out_dir = out_dir or config.DEFAULT_OUTPUT_DIR
 

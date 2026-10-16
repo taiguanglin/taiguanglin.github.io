@@ -19,6 +19,11 @@
 
 PDF 章節的逐段音檔播放鈕由 ``data/audio_map/*.json`` 在建置時注入
 （見 ``tool/pdf_audio_map/`` 與站台 ``/audio_map/`` 微調工具）。
+
+環境守門（2026-10 起）：任何直譯器執行本腳本都會自動切換到鎖版 venv
+（``tool/word_audio_map2/.venv``），並驗證 PyMuPDF 版本與
+``tool/word_audio_map2/requirements.txt`` 的 pin 一致——版本差異會改變
+PDF 抽字空白，造成段落 pid 與 search_index 漂移（root AGENTS.md 規則 13）。
 """
 
 from __future__ import annotations
@@ -38,8 +43,10 @@ OUTPUT_FOLDER = REPO_ROOT / "wenda2_ebook"
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
 
+# 輕量依賴（僅 stdlib）：import 階段不得拉進 docx/pymupdf，
+# 否則非 venv 直譯器會在 re-exec 切換前就 import 失敗。
+from utils.env_guard import ensure_locked_pymupdf, reexec_into_venv  # noqa: E402
 from config.settings import DEFAULT_SETTINGS  # noqa: E402
-from main import Word2EBookConverter  # noqa: E402
 from models.document_models import ConversionConfig  # noqa: E402
 
 
@@ -77,6 +84,12 @@ def validate_paths() -> bool:
 
 
 def main() -> int:
+    # 非鎖版環境先切換 venv（os.execv 成功時不返回，整個腳本於 venv 重跑）；
+    # 之後才 import 重依賴（docx / pymupdf），並驗證 PyMuPDF 版本。
+    reexec_into_venv(__file__)
+    from main import Word2EBookConverter  # noqa: E402
+    ensure_locked_pymupdf()
+
     print("📚 gen_all — 完整重建 wenda2_ebook（Word + 兩份 PDF）")
     print(f"   Word:   {DOCX_FILE}")
     for pdf in PDF_FILES:

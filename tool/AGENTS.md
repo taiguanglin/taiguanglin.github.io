@@ -174,6 +174,14 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
 > 無法由新環境重現。實測（2026-09，PyMuPDF 1.28.2）重建 `ebook/` 就有 72 段差異。
 > 升版**必須與重建產物同一個提交**，且事先 review 文字 diff 以區分「預期內容差異」
 > 與「抽取層雜訊」。細節見 `requirements.txt` 檔頭與兩份工具 README。
+>
+> 🔒 **2026-10 起由 `utils/env_guard.py` 自動把關**（word2ebook／books2ebook 共用
+> SoT）：兩工具的 `gen_all.py`／`gen_all_and_push.py` 與 word2ebook `main.py`
+> 偵測到非鎖版直譯器會自動 `os.execv` 切換到該 venv，且建置前驗
+> `pymupdf.__version__` 與 pin 一致、不符即 exit 1（pytest 環境與
+> `W2E_SKIP_ENV_GUARD=1` 不切換、不檢查）。背景事故：2026-10-16 的 17a21bc 以
+> `/usr/bin/python3`（1.26.5）重建 `ebook/`，36 段空白漂移、10 段已校對跟播
+> 靜默遺失——完整調查見 repo 根目錄 `search_index_rebuild_research.md`。
 
 ---
 

@@ -21,7 +21,6 @@
 from __future__ import annotations
 
 import argparse
-import os
 import subprocess
 import sys
 from pathlib import Path
@@ -41,33 +40,21 @@ DEFAULT_COMMIT_MESSAGE = "Rebuild wenda2_ebook from Word + PDFs"
 def _ensure_venv() -> None:
     """若當前直譯器非 canonical venv，自動以該 venv python 重新執行自己。
 
-    venv 的 ``bin/python`` 是 symlink 指向 base python，因此不能用 realpath 比對
-    執行檔；改用 ``sys.prefix``（venv 內會指到 .venv 目錄本身）來判斷。
+    實作抽到共用 SoT ``utils/env_guard.py``（word2ebook 與 books2ebook
+    共用同一套守門：pytest 保險絲、``W2E_SKIP_ENV_GUARD``、venv 不存在
+    時的警告語意都在那裡）。保留本函數名稱與模組常數，維持既有測試介面。
 
     ⚠️ 只能在 ``main()`` 內呼叫，**不可**在 import 時執行：``os.execv`` 會把
     整個行程換掉——若在 pytest import/collection 期間觸發，會以測試進程的
     argv 完整重跑 pull → rebuild → commit → push（曾因此發生未授權 push）。
-
-    保險絲：偵測到 pytest（``PYTEST_CURRENT_TEST``）時一律不 re-exec。
     """
-    if os.environ.get("PYTEST_CURRENT_TEST"):
-        return
-    venv_prefix = _VENV_DIR.resolve()
-    current_prefix = Path(sys.prefix).resolve()
-    if VENV_PYTHON.exists():
-        if current_prefix != venv_prefix:
-            os.execv(str(VENV_PYTHON), [str(VENV_PYTHON), str(Path(__file__).resolve()), *sys.argv[1:]])
-    else:
-        print(
-            f"⚠️  找不到 canonical venv：{VENV_PYTHON}\n"
-            "   將沿用當前直譯器執行；若缺少 docx 等相依套件，請先建立該 venv。",
-            file=sys.stderr,
-        )
+    reexec_into_venv(__file__, venv_dir=_VENV_DIR, venv_python=VENV_PYTHON)
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
 
 from gen_all import main as gen_all_main  # noqa: E402
+from utils.env_guard import reexec_into_venv  # noqa: E402
 
 
 def _run_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
