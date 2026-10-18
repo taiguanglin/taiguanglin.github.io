@@ -330,3 +330,55 @@ body.dark-mode .para-block .qa-actions::after {
   align-items: center;
   height: 10px;
 }
+
+/* ---- 墨夜（dark-neutral）面板適配 ---------------------------------------
+   17-theme-pwa.js 切墨夜時 body 同時掛 dark-mode 與 dark-neutral；上面所有
+   body.dark-mode 規則在墨夜下仍生效，粉色／暗紫會整批漏進中性暖金面板
+   （經文整塊 #4a2c3a、時間章 #d4a5b8、標籤 #ff91af…）。style.css 的
+   06-ux-plus.css 已有墨夜鏡像區塊，但那是 word2ebook 的 00–05 模組；
+   本檔專屬規則（sutra-text、answer-time、label-heading、h5/h6、
+   目錄第 5/6 層、段落 hover）在這裡逐一以 +dark-neutral 覆寫，值對齊
+   00-base.css 的 --color-neutral-* tokens。更動上方 dark-mode 規則時，
+   本區要同步。 */
+
+body.dark-mode.dark-neutral .sutra-text {
+  background: var(--color-neutral-surface);
+  color: var(--color-neutral-text);
+  border-left-color: var(--color-neutral-accent);
+}
+
+/* 與 06-ux-plus.css 對 .question-time 的墨夜鏡像同款，兩種時間章外觀一致 */
+body.dark-mode.dark-neutral .answer-time {
+  background: rgba(90, 45, 73, 0.4);
+  color: #d4a5b8;
+  border: 1px solid rgba(217, 168, 108, 0.2);
+}
+
+body.dark-mode.dark-neutral .label-heading { color: var(--color-neutral-accent); }
+
+body.dark-mode.dark-neutral h5 { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral h6 { color: var(--color-neutral-muted); }
+
+body.dark-mode.dark-neutral .toc-item.toc-level-5 > a { color: var(--color-neutral-muted); }
+body.dark-mode.dark-neutral .toc-item.toc-level-6 > a { color: var(--color-neutral-muted); }
+
+body.dark-mode.dark-neutral .sutra-text.para-block {
+  border-left-color: var(--color-neutral-accent);
+}
+
+/* 經文跟播高亮維持「不透明」前提（見上方 .sutra-text.para-block.para-active
+   註解）：把 06 鏡像的暖金 rgba 疊在深色面板上等效轉成實色 */
+body.dark-mode.dark-neutral .sutra-text.para-block.para-active {
+  background: linear-gradient(135deg, #3a352c 0%, #302c24 100%);
+}
+
+body.dark-mode.dark-neutral .para-block:hover {
+  background-color: rgba(217, 168, 108, 0.08);
+  box-shadow: 0 2px 8px rgba(217, 168, 108, 0.15);
+}
+
+body.dark-mode.dark-neutral .sutra-text.para-block:hover {
+  background: #343029;
+  border-left-color: var(--color-neutral-accent-2);
+  box-shadow: 0 2px 8px rgba(217, 168, 108, 0.15);
+}

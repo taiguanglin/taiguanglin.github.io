@@ -2473,7 +2473,12 @@ function initializeHomepageTOC() {
       e.preventDefault();
       const href = e.target.getAttribute('href');
       if (href && href.startsWith('#')) {
-        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const el = document.querySelector(href);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // 與 05 的 # 錨點同套收斂：遠跳到未渲染內容後高度會變，需重測試斂
+          settleInPageAnchor(el);
+        }
       } else if (href) {
         window.location.href = href;
       }
@@ -3303,6 +3308,10 @@ function addHomepageBookmarkEventListeners() {
       const element = document.querySelector(target);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // 跳到「從未渲染」的遠處章節時，content-visibility 的估算高度會在
+        // 捲動途中換成真實高度，一次性捲動必然落偏（與 05 的 # 錨點同病），
+        // 故同用 settleInPageAnchor 短週期重測試斂，一次點擊即定位正確。
+        settleInPageAnchor(element);
         // 移除自動關閉sidebar，讓用戶可以連續導航
         // floatingTOC.classList.remove('visible');
       }
@@ -3368,7 +3377,16 @@ function addHomepageBookmarkEventListeners() {
           element.classList.remove('anchor-target-highlight');
         }, 3000);
 
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.scrollIntoView({
+          behavior: 'smooth',
+          // 目標在「經文置頂」的 sticky 群內（講經頁）時對齊視窗頂，
+          // 讓 09c 寫在群上的 scroll-margin-top 生效；其餘置中。
+          // 與 03d handleInitialAnchor 同規則，settleAnchorTo 才收斂得回同一落點。
+          block: anchorNeedsHeadroom(element) ? 'start' : 'center'
+        });
+        // 同浮動目錄項：content-visibility 高度換算會讓一次性捲動落偏，
+        // 用 03d 的 settleAnchorTo（置中＋經文讓位）重測試斂。
+        settleAnchorTo(element);
         // 移除自動關閉側邊欄，讓用戶可以連續瀏覽書籤
         // floatingTOC.classList.remove('visible');
       }
@@ -3536,14 +3554,26 @@ function addHomepageBookmarkEventListeners() {
   // （ebook/ 實測偏 600+ px，方向取決於上方高度是膨脤還是縮小，兩本書都會發生）。
   // 03d 的 settleAnchorTo 只接在「帶錨點載入」路徑；頁內點擊（目錄、書籤、
   // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
-  // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）；使用者一開始自己捲
-  // 就立刻放手，不跟使用者搶滚輪。
+  // 浮動目錄項（04-events）、首頁目錄清單（03b）、.toc-count 直跳（16）、
+  // lightbox「跳回圖片處」（09）也共用本函式——它們與 # 錨點同樣會跳到
+  // 「從未渲染」的遠處內容，一次性捲動必然落偏；16/09 是隔離 IIFE，
+  // 經 W2E.settleInPageAnchor 呼叫。
+  // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）：目標的
+  // scroll-margin-top（講經頁 = 09c 逐群寫入的經文讓位高度）也要扣掉，
+  // 否則收斂會把 scrollIntoView 特意留給停留經文的空間又拉回去。
+  // 使用者一開始自己捲就立刻放手，不跟使用者搶滚輪。
   //
   // ⚠️ 不能「連續兩次量測相同」就收工：scrollIntoView 的落點本來就是用
   // 同一套估算高度算的，動畫剛結束時 want 與 scrollY 短暫一致，接著上方
   // 區塊換成真實高度、目標又滑走（ebook/ 實測定格偏 755px）。故：
   //   · 至少量測 MIN_TICKS 次（約 1.8s）才允許收工；
   //   · 文件總高一變（估算→真實）就把 stable 歸零重算。
+  function anchorScrollMarginTop(el) {
+    // getComputedStyle 不支援 scroll-margin-top 的舊瀏覽器回 0（= 舊行為）
+    const v = parseFloat(getComputedStyle(el).scrollMarginTop);
+    return isNaN(v) ? 0 : v;
+  }
+
   function settleInPageAnchor(el) {
     const MIN_TICKS = 12;   // 約 1.8s：等 scrollIntoView 動畫結束＋高度換算
     const MAX_TICKS = 40;   // 約 6s 上限
@@ -3563,7 +3593,8 @@ function addHomepageBookmarkEventListeners() {
       if (userScrolled || !document.body.contains(el)) return;
       const height = document.documentElement.scrollHeight;
       if (height !== lastHeight) { lastHeight = height; stable = 0; }
-      const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset);
+      const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset
+                                       - anchorScrollMarginTop(el));
       if (Math.abs(want - window.pageYOffset) > 2) {
         window.scrollTo(0, want);
         stable = 0;
@@ -3576,6 +3607,9 @@ function addHomepageBookmarkEventListeners() {
     };
     setTimeout(tick, TICK_MS);
   }
+
+  // 供隔離 IIFE 模組（16-jump-share、09-image-lightbox）使用的對外介面
+  W2E.settleInPageAnchor = settleInPageAnchor;
 
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
@@ -5347,6 +5381,11 @@ function addHomepageBookmarkEventListeners() {
     // Wait a frame so body overflow is restored before scrolling.
     requestAnimationFrame(() => {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 從 lightbox 跳回圖片所在處常是遠跳：content-visibility 高度換算會讓
+      // 一次性捲動落偏，共用 05 的收斂迴圈（隔離 IIFE，經 W2E 呼叫）。
+      if (window.W2E && typeof window.W2E.settleInPageAnchor === 'function') {
+        window.W2E.settleInPageAnchor(target);
+      }
       if (target.id) {
         try {
           history.replaceState(null, '', `#${target.id}`);
@@ -6845,6 +6884,11 @@ initSearchSnapshotCapture();
       var q = firstQuestionInSection(heading);
       var target = q || heading;
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 遠跳到未渲染的問答時，content-visibility 估算高度會在捲動途中換成
+      // 真實高度而落偏——共用 05 的收斂迴圈（本模組是隔離 IIFE，經 W2E 呼叫）
+      if (window.W2E && typeof window.W2E.settleInPageAnchor === 'function') {
+        window.W2E.settleInPageAnchor(target);
+      }
       if (q) {
         q.classList.remove('anchor-target-highlight');
         void q.offsetWidth;

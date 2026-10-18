@@ -26,7 +26,7 @@ cascade order.
 | `04c-qa-audio.css` | QA chapter styles: source banner, per-segment `qa-meta-bar` (number + speaker-icon-only `.qa-play` button — no visible time label, the range living only in the mini-player's progress row — + status badge), `qa-opening`, the bottom floating `qa-player` (seek row with `−5s`/progress/`+5s`, play/pause toggle, Bilibili-style volume control — a pink SVG speaker icon (~3/4 emoji size, `fill: var(--color-primary)`, sound waves hidden and a slash shown when muted) whose popup (numeric 0–100 readout + vertical rotated range slider filled up to `--qa-volume-pct` with the primary colour) appears on hover; a `::before` bridge spans the 10px gap above the button so hovering from button to slider stays continuous), loading states (`.qa-play.loading`, `.qa-play-icon--spinner`, `.qa-player.is-loading`, indeterminate progress pulse) with matching `body.dark-mode` overrides (icon uses `#ff91af` in dark mode); dark-mode variants. Ordered before `05-responsive.css` so its `@media` overrides win. Responsive rules for these live in `05-responsive.css`. Holds the ebook-only paragraph overlay contract (see the `books2ebook` copy of this module for the selectors themselves): the top-right `⋯` disclosure bubble and the bookmark mark sit **outside** the `.para-block` box (`bottom: 100%`), so they cover the tail of the *previous* paragraph rather than the paragraph under the cursor — and the text column is never narrowed to make room. Because `content-visibility: auto` on `.para-block` is paint containment (which would clip them away), `.para-block:hover, :focus-within, .bookmarked` set `content-visibility: visible` to lift it for that one block; a hovered block is necessarily already rendered, so `contain-intrinsic-size` never applies and the toggle cannot move the scroll position. The `.qa-actions::before` hit zone (44px left, 14px below the bubble) makes the 22px bubble forgiving to approach, and `.qa-btn { position: relative; z-index: 1 }` keeps the expanded buttons above it. Also hosts 講經段落跟播 styles: `.para-track-toggle` (per-lecture follow-play text checkbox inserted next to `.qa-play`, `on` state = gradient fill), `body.para-track-on` (pointer cursor **only** on `.para-block.para-clickable` — the class 09b adds to paragraphs it actually wired to a lecture; `[data-start]` alone is not enough because a paragraph with a time but no follow-play section would look clickable and do nothing), `.para-block.para-active` (warm-glow background + inset left accent via `box-shadow` + `font-weight: 600`; no `transform: scale()` — scaling would widen the block and clip on narrow screens); the previous paragraph gets no visual change (no dimming), each with `body.dark-mode` variants. Also hosts 經文置頂（sutra pin）styles: `.sutra-pin-toggle` (shares the `.para-track-toggle` pill look via grouped selectors), `.sutra-pin-group` (plain in-flow wrapper bounding each sutra's sticky range: sutra → next sutra / heading / image; no padding/border/overflow so margins collapse through), `.sutra-pin-host` (`position: sticky; top: 0` — the sutra itself holds at the viewport top at full size with no clone and no added chrome, so size and background are pixel-identical and there is no white edge), `position: static` overrides for `.sutra-pin-group.sutra-pin-tall` (sutra taller than 45% of the viewport never sticks), `body.sutra-pin-off` (toggle off) and `body.sutra-pin-suppress` (anchor-jump protection), plus `.sutra-pin-group { --w2e-pin-reserve: 0px }` with `.sutra-pin-group :is(.para-block, h1, h2, h3, h4, h5, h6, .label-heading) { scroll-margin-top: var(--w2e-pin-reserve) }` — 09c writes the pinned sutra's height + gap as an inline `--w2e-pin-reserve` per group, so every scroll that aligns a target to the viewport top (external `#fragment` navigation, in-page anchors, floating TOC, bookmarks, `.toc-count`) leaves the target below the pinned sutra; the value is 0 on pages without sutra pinning, so behaviour there is unchanged |
 | `04d-image-lightbox.css` | Content-image `cursor: zoom-in`; full-screen `.img-lightbox` overlay (toolbar, stage, transform-based zoom/pan); mobile tap targets and safe-area padding; `body.dark-mode` variants. Ordered before `05-responsive.css` |
 | `05-responsive.css` | All `@media` breakpoints: screen-height toolbar positioning, search/TOC tablet (≤768px), floating-controls wide (≥800px), mobile (≤600px incl. QA player full-width), small-phone (≤400px). Line-height and heading sizes are deliberately **not** overridden here — see "CSS Custom Properties" and "Type Scale Follows the Reading Font Size" |
-| `06-ux-plus.css` | 2026-09 UX 改善元件（無 `@media`）：深色「墨夜」面板（`body.dark-neutral`，深灰＋暖金）、閱讀位置提示條、音檔續播膠囊、`.toc-count` 可點樣式、`.anchor-share` 錨點鈕、`mark.w2e-hl` 命中高亮、搜尋結果 `.kb-focus`、目錄 backdrop、目錄縮排導引線（`.toc ul ul` 虛線＋浮動目錄深層邊線）。**不含** `.w2e-backtop`（常駐回到頂端鈕已移除，只留功能選單內的 ↑）、**不含**任何 `.w2e-bm-*`（首頁總目錄底部的「我的書籤」管理區塊已移除） |
+| `06-ux-plus.css` | 2026-09 UX 改善元件（無 `@media`）：深色「墨夜」面板（`body.dark-neutral`，深灰＋暖金；含「鏡像覆寫補遺」區塊——完整稽核 00–05 所有 dark-mode 規則，補齊被同特異度基礎鏡像蓋掉的 active/hover 狀態與硬編碼粉色殘留，見「Dark-Neutral (墨夜) Mirror Completeness」需求）、閱讀位置提示條、音檔續播膠囊、`.toc-count` 可點樣式、`.anchor-share` 錨點鈕、`mark.w2e-hl` 命中高亮、搜尋結果 `.kb-focus`、目錄 backdrop、目錄縮排導引線（`.toc ul ul` 虛線＋浮動目錄深層邊線）。**不含** `.w2e-backtop`（常駐回到頂端鈕已移除，只留功能選單內的 ↑）、**不含**任何 `.w2e-bm-*`（首頁總目錄底部的「我的書籤」管理區塊已移除） |
 
 ### Requirement: Single Output File
 `StaticAssetsManager` SHALL concatenate all `modules/*.css` files (sorted by
@@ -80,6 +80,31 @@ Dark mode overrides SHALL be implemented with the `body.dark-mode` selector.
 Every component that has a light-mode appearance SHOULD have a corresponding
 dark-mode override, avoiding the use of `!important` except where strictly
 necessary for specificity.
+
+### Requirement: Dark-Neutral (墨夜) Mirror Completeness
+The 墨夜 palette (`body.dark-mode.dark-neutral`, mirrored in
+`06-ux-plus.css`) SHALL cover every `body.dark-mode` rule from modules 00–05
+(and `books2ebook`'s `books.css` for its own rules) whose state or colour
+would otherwise be lost or leak pink/plum into the neutral panel. In
+particular:
+- State/active/hover rules (`.floating-toc-tab.active`, `.toc-level-btn`
+  active/hover, `.floating-level-btn` active/hover, `.ctrl-btn`/`.qa-btn`
+  hovers, font-adjust click feedback, nav hover feedback) SHALL have
+  `dark-neutral` overrides with higher specificity than the mirror's own base
+  rules — the base mirror rules carry equal specificity to the source
+  `dark-mode` rules and, coming later in the cascade, silently erase those
+  states otherwise.
+- Hardcoded pink/plum values with no token remap (search panel
+  `#2d1e2e`/`#4a2c4a`, TOC level-3 `#ffc4d6`, `qa-play--disabled`,
+  `qa-opening`, player progress track/range/hover chips, scrollbar tracks)
+  SHALL have `dark-neutral` counterparts using the `--color-neutral-*` tokens.
+- `books.css` SHALL carry its own `dark-neutral` section (sutra text,
+  answer-time chip, label-heading, h5/h6, TOC levels 5–6, paragraph/sutra
+  hovers, opaque sutra follow-play highlight), because the shared
+  `06-ux-plus.css` mirror only covers modules 00–05.
+- The active floating-TOC tab SHALL be clearly indicated (warm-gold text +
+  underline + bold, plus a faint gold background tint), on par with the
+  day/night themes.
 
 ### Requirement: Initial Anchor Highlight
 `.anchor-target-highlight` SHALL show a three-second red inset highlight that

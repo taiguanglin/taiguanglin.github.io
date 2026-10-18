@@ -257,6 +257,11 @@
     // Wait a frame so body overflow is restored before scrolling.
     requestAnimationFrame(() => {
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 從 lightbox 跳回圖片所在處常是遠跳：content-visibility 高度換算會讓
+      // 一次性捲動落偏，共用 05 的收斂迴圈（隔離 IIFE，經 W2E 呼叫）。
+      if (window.W2E && typeof window.W2E.settleInPageAnchor === 'function') {
+        window.W2E.settleInPageAnchor(target);
+      }
       if (target.id) {
         try {
           history.replaceState(null, '', `#${target.id}`);

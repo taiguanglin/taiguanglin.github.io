@@ -26,15 +26,15 @@ Source JavaScript SHALL be split into ordered module files under
 | `01e-search-ui.js` | `getSearchElements`, `initSearch`, search event bindings (input, scope buttons, clear, collapse, load-more), hash-based search-state restore + auto-activate on back, result items open in new tab |
 | `02-reader-ux.js` | Q&A ID generation, reading toolbar, floating TOC creation, action buttons, Q&A action overlays（2026-10 長文效能：`.qa-actions` overlay 改 IntersectionObserver 惰性建立——`rootMargin: '600px 0px'` 進入前緣才建、建後 `unobserve`、`dataset.qaActions` 冪等護欄；無 IO 支援時退回全量。按鈕本就只在 hover/focus 顯示、點擊由 04-events 事件代理處理，行為等價而啟動不再 O(全頁段落數)；`position: relative` 定位基準改由 `01a-layout.css` 供給，不得逐塊寫行內 style） |
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
-| `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`, `renderBookmarkChaptersBatch`, toast messages |
+| `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`（首頁目錄清單的頁內 `#` 跳轉同樣以 `settleInPageAnchor` 收斂）, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
 | `03d-reading-settings.js` | 閱讀設置的**事件接線**（`applyReadingSettings`、`updateFontSize`/`updateLineHeight`/`updateContentWidth`、轉呼叫 `window.W2EReading`）＋跨模組共用的狀態變數（`fontStep`/`fontSize`/`lineHeight`/`contentWidth`，供 02 按鈕狀態與 04 重設讀寫）＋`updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor`。**字級引擎本身已搬到 `assets/js/reading-prepaint.js`**（見下），此處不得再留第二份 |
-| `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load |
-| `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll |
+| `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load. 浮動目錄項點擊以 `scrollIntoView(block:'start')` ＋ `settleInPageAnchor` 收斂；書籤項點擊以 `anchorNeedsHeadroom ? 'start' : 'center'` ＋ `settleAnchorTo`（與 03d 帶錨點載入同規則）——兩者都是「跳到從未渲染的遠處內容」，不收斂會落偏、需點兩三次才定位 |
+| `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll; binds in-page `#…` anchor clicks to smooth scroll **plus the `settleInPageAnchor` settle loop** — `want` = 目標頂 − `getComputedStyle(el).scrollMarginTop`（含 09c 逐群寫入的經文讓位高度），與 `scrollIntoView(block:'start')` 語義一致；本迴圈同時供 04（浮動目錄項）、03b（首頁目錄清單）直接呼叫，並以 `W2E.settleInPageAnchor` 供隔離 IIFE 模組（16 `.toc-count`、09 lightbox 跳回圖片處）呼叫 |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
 | `07-floating-controls.js` | Floating TOC level-control panel, scroll/resize synchronisation |
 | `08-qa-audio.js` | QA per-segment audio playback: wires `.qa-play` buttons, builds the bottom floating mini-player (seekable progress bar, ±5s skip, play/pause toggle, Bilibili-style volume control — hovering the speaker button shows a popup with a vertical slider persisted in `localStorage`, moving away hides it, clicking the speaker toggles mute/unmute), seeks to each segment's start and auto-stops at its end; shows loading/buffer progress on the play button and mini-player until playback can start |
-| `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE |
+| `09-image-lightbox.js` | Same-page image lightbox for `img[src*="assets/images/"]`: open original, zoom/pan, prev/next within the HTML page; keyboard Esc/arrows/+/-; isolated IIFE;「跳回圖片所在處」遠跳後經 `W2E.settleInPageAnchor` 收斂 |
 | `09b-para-track.js` | 講經「段落跟播」（講經書頁，段落帶 `data-start`/`data-end` 時啟動；經 `08-qa-audio.js` 暴露的 `W2E.qaAudio` 掛接）：講次 = 含 `.qa-play` 的 h2，段落歸屬以 **`document.createTreeWalker(document.body)` 的文件順序**劃界（任何 h2 都是講次邊界；h3 小節不打斷歸屬），**不得**退回「h2 的直接兄弟節點」掃描：09c 的 `.sutra-pin-group > .sutra-pin-host` 包層使經文之後的講解段落成為 h2 的孫節點，直接兄弟掃描會整批漏掉（四十二章 L1 只認 24/63 段、L2 起全部漏掉）——沒有任何可跟播段落的講次不建 toggle；講次 h2 旁插入「段落跟播」toggle（`paraTrackEnabled`，預設 ON）— ON 時播放中依 `audio.currentTime` 高亮當前段落（`.para-active`，上一段不做任何視覺改變）並平滑捲動（目標 = min(當前段頂 − 22% 視窗高, 當前段頂 − 上一段高 − 24px)；若目標段落屬於經文置頂 sticky 群，另以「當前段頂 − `W2E.sutraPin.reserveFor(el)` − 24px」為捲動上限，使高亮段落永遠落在停留經文下方不被蓋住，僅段落切換時觸發，timeupdate 節流 250ms）；跟播 ON 時點擊段落即播放所屬講次並 seek 至段首，之後一路順播到底（無段末自停；拖選／反白選取文字、點擊段落內按鈕連結時不觸發）；手形游標只掛在**真的可點播**的段落上——建立講次索引時逐段加 `.para-clickable`，CSS 以 `body.para-track-on .para-block.para-clickable` 上 pointer，**不得**改用 `.para-block[data-start]`（有時間 ≠ 會響應，沒有跟播的段落點了沒反應，掛手指頭是假承諾）；isolated IIFE |
 | `09c-sutra-pin.js` | 講經「經文置頂」（原經文原尺寸停留，頁面含 `.sutra-text` 時啟動）：向下捲動時讓「即將捲出視窗頂」的那段原經文以原生 `position: sticky; top: 0` 停在視窗最上方——停留中的經文就是原版經文本身（原尺寸、原樣式、無白邊），講解段落從其下方滑過（Confluence 固定表頭概念）。2026-10 起 books2ebook 於建置期即輸出 `.sutra-pin-host`/`.sutra-pin-group` 包層，本模組偵測到既有包層即沿用、跳過 runtime DOM 手術；未包層頁面才 runtime 包法：為每段經文包 host（只包層、不搬動順序），再以「經文 → 下一邊界」包 group 限制 sticky 範圍：邊界 = 下一段經文、任何 h1–h6（章節名/品名小節名）、任何 figure/img 圖片（取文件順序最先者；無邊界則到章節尾）——因此停留中的經文天生不會蓋住下一段經文、章節名或圖片，會遮住之前先讓位歸位（隨畫面捲走），進入新章節亦自然失效。過長（> 55% 視窗高）的經文整段不停留（`.sutra-pin-tall`）；量測為長文效能改為**接近視窗才量**（2026-10）：未量群交 IntersectionObserver（`rootMargin: '100px 0px'`，量一次即退訂，此時經文已被 content-visibility 真實 render、量到實際高度而非 240px 佔位值），已量群記入 `measuredGroups`，經文高度隨閱讀設定（字級／行距／版面寬）、視窗縮放或字型載入改變時只重算已量群（`ResizeObserver` + `<html>/<body>` inline style `MutationObserver` + `document.fonts.ready`）；量測採「先讀完本批高度、再一次寫 class/inline style」分批，避免 read→write 交錯的 layout thrashing；無 IO 支援退回全量。講次 h2 旁「經文置頂」toggle（`sutraPinEnabled`，預設 ON；關閉 → `body.sutra-pin-off` 全部照常捲動）；錨點跳轉（`hashchange`／帶 hash 載入／攔截 `scrollIntoView`）時 `body.sutra-pin-suppress` 短暫停停留避免蓋住跳轉目標；把「停留經文高 + 16px 間隙」寫進群的 `--w2e-pin-reserve`（inline style，與量測同批寫入；置頂關閉或 `.sutra-pin-tall` 時歸零，切換 toggle 時重算；未量群維持 CSS 預設 0px，行為與無置頂頁一致），CSS 據此轉成群內目標的 `scroll-margin-top`，使所有把目標對齊視窗頂的跳轉（外部連結的原生片段錨點導覽、章節錨點、浮動目錄、書籤、`.toc-count` 直跳）都停在停留經文下方；暴露 `W2E.sutraPin.reserveFor(el)`（即時量測回傳「經文高 + 間隙」）供 09b 跟播捲動取捲動上限（高亮段落永遠在停留經文下方）與 03d 錨點讓位使用；isolated IIFE |
 | `10-search-return.js` | ~~「回到搜尋結果」浮動按鈕~~（2026-09 移除：依賴快照跨分頁複製，出現時機不穩）。現僅保留 index 頁持續快照 `{q, scope, displayed, scrollY}`（`w2eSearchSnapshot`，sessionStorage），供上一頁返回時由 01e 還原查詢、已顯示筆數與捲動位置；另負責**簡繁切換原位恢復**——消化 `/lang-switch.js` 寫入的 `w2e:langjump`（優先同 id 錨點，其次比例，讀完即清） |
@@ -42,7 +42,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `13-player-persist.js` | 音檔跨頁續播：定時（3s）與 `pagehide` 把 `{src, t, file, range, page, anchor}` 快照進 `sessionStorage w2e:playerState`（經 `W2E.qaAudio` 讀取）；任何頁載入後若有 12 小時內快照，左下浮出續播膠囊——同頁交回 08 播放器重播並 `seekAbs`，他頁自建 `Audio` 從斷點續播；✕ 丟棄 |
 | `14-search-plus.js` | 搜尋補強：`/` 或 Ctrl/Cmd+K 啟用並聚焦搜尋框；結果區 ↓/↑ 移動 `.kb-focus`、Enter 開啟、Esc 取消，結果列表重繪（換搜尋/換頁）時以 `MutationObserver`（childList/subtree）重置鍵盤焦點（不得使用已棄用的 `DOMSubtreeModified`）；章節頁帶 `?q=`（01e 開新頁時附加）且有錨點時，於錨點所在區塊以 `<mark class="w2e-hl">` 標出查詢詞 |
 | `15-mobile-toc.js` | 行動版目錄操作：≤768px 開啟浮動目錄時鋪 `.w2e-toc-backdrop`（點擊即關）；左緣 ≤28px 起右滑開啟、目錄內左滑關閉。**不**再建立常駐的 `.w2e-backtop` 回到頂端鈕——「回到頂端」只由右下角功能選單（`02-reader-ux.js` 的 `data-action="top"`）提供 |
-| `16-jump-share.js` | `.toc-count` 可點：直跳該主題第一則 `.question`（無則退回錨點）；章節頁 h2/h3[id] hover/focus 出現 🔗 錨點鈕複製「頁面#錨點」 |
+| `16-jump-share.js` | `.toc-count` 可點：直跳該主題第一則 `.question`（無則退回錨點）；章節頁 h2/h3[id] hover/focus 出現 🔗 錨點鈕複製「頁面#錨點」；跳轉後經 `W2E.settleInPageAnchor` 收斂（隔離 IIFE） |
 | `17-theme-pwa.js` | 深色第二面板「墨夜」：`localStorage w2e:darkPalette=neutral` 時 `body.dark-neutral`（防閃爍由模板 prepaint 掛 `<html>`）；供 04-events.js 的 `theme-dark-neutral` 動作呼叫；`/wenda2_ebook/`、`/ebook/` 下註冊根 `/sw.js`（PWA 離線） |
 | `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能，只於 `/wenda2_ebook/`、`/ebook/` 作用）：(a) 事件代理——`pointerenter`/`touchstart`/`focusin`（capture）命中同目錄、同語言、副檔名 `.html` 的站內連結即 `fetch`（先 `caches.match`，已有則略過；失敗解鎖允許重試）；(b) 首頁閒置整批——`window load` + `requestIdleCallback`（無 rIC 退 `setTimeout 1200ms`）後，逐一**序列**以 `fetch(…, {priority:'low'})` 預取全部同語言章節頁（fetch 會經 `sw.js` 的 `swr()` 寫入 PAGES_CACHE），守門：`navigator.connection.saveData` 或 `effectiveType` 為 2g/slow-2g/3g 時不整批（hover 預取不受限）；跨語言 `*_trad.html` 刻意不預取（避免資料量翻倍）；isolated IIFE |
 
@@ -337,6 +337,22 @@ a row (max ~6s), and SHALL stop immediately when the user scrolls
   as `settleAnchorTo`: max ~6s, user input cancels), because
   `content-visibility` height estimates change the document height mid-scroll
   and a one-shot scroll lands off-target (observed ±600px in both books)
+
+#### Scenario: Sidebar TOC / bookmark jump lands on target in one click
+- GIVEN any chapter page with many never-rendered blocks ahead of the target
+- WHEN the user clicks a floating-TOC item in the sidebar panel
+- THEN `04-events.js` SHALL smooth-scroll with `block:'start'` and run the
+  same `settleInPageAnchor` loop (subtracting the target's
+  `scroll-margin-top`), so the chapter text rests at the viewport top after a
+  single click instead of requiring two or three clicks
+- WHEN the user clicks a bookmark item in the sidebar panel
+- THEN the page SHALL smooth-scroll with `anchorNeedsHeadroom ? 'start' :
+  'center'` and run `settleAnchorTo` (03d), matching the on-load anchor path
+- GIVEN the homepage TOC list, a chapter-page `.toc-count` badge, or the
+  image lightbox's jump-to-source
+- WHEN any of these performs an in-page jump
+- THEN the same settle loop SHALL run (03b directly; 16 and 09 via
+  `W2E.settleInPageAnchor`, since they are isolated IIFEs)
 
 ### Requirement: Stable Q&A IDs
 JavaScript IDs for Q&A elements SHALL be computed using the same algorithm as

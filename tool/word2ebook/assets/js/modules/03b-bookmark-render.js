@@ -86,7 +86,12 @@ function initializeHomepageTOC() {
       e.preventDefault();
       const href = e.target.getAttribute('href');
       if (href && href.startsWith('#')) {
-        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const el = document.querySelector(href);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // 與 05 的 # 錨點同套收斂：遠跳到未渲染內容後高度會變，需重測試斂
+          settleInPageAnchor(el);
+        }
       } else if (href) {
         window.location.href = href;
       }

@@ -3281,3 +3281,81 @@ body.dark-mode.dark-neutral .img-lightbox__toolbar {
     background: rgba(0, 0, 0, 0.55);
     border-bottom-color: rgba(217, 168, 108, 0.35);
 }
+
+/* ============================================================
+   墨夜鏡像覆寫補遺（完整稽核）
+   上面「自動產生」的鏡像區塊漏掉了三類規則，導致墨夜下：
+   ① 狀態提示被「同特異度、更晚出現」的本檔基礎規則蓋掉——
+      分頁/層級鈕的 .active、各 :hover 回饋全部消失（與
+      .floating-toc-tab.active 同病：01b 來源規則 (0,3,1) 輸給
+      06 的 (0,3,1) 基礎規則）；
+   ② 硬編碼粉色/暗紫值沒有對應覆寫——粉色直接漏進中性暖金面板
+      （搜尋面板整片 #2d1e2e 暗紫、目錄第 3 層 #ffc4d6 等）；
+   ③ 部分基礎規則的特異度反過來蓋掉來源的狀態規則（如
+      .qa-play--disabled 的灰化被 .qa-play 基礎規則蓋掉）。
+   本區逐條補上；更動 00–05 的粉色/暗色規則時，這裡也要同步。
+   ============================================================ */
+
+/* ---- 00-base：導覽列 hover 回饋（基礎鏡像同特異度、較晚，蓋掉了 hover） ---- */
+body.dark-mode.dark-neutral .lang-switch a:hover { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .nav-home a:hover { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .nav-footer a:hover { box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45); }
+body.dark-mode.dark-neutral .top-nav-buttons a:hover { box-shadow: 0 3px 8px rgba(0, 0, 0, 0.45); }
+
+/* ---- 01a：工具列按鈕 hover／點擊回饋、捲軸軌道 ------------------------- */
+body.dark-mode.dark-neutral .reading-toolbar::-webkit-scrollbar-track { background: rgba(60, 60, 60, 0.3); }
+body.dark-mode.dark-neutral .ctrl-btn:hover { background: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .qa-btn:hover { background: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .ctrl-btn.font-adjust:hover { background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 100%); border-color: #777; color: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4); }
+body.dark-mode.dark-neutral .ctrl-btn.font-adjust:active { background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%); }
+body.dark-mode.dark-neutral .ctrl-btn.font-adjust.clicked { background: linear-gradient(135deg, var(--color-neutral-accent-2) 0%, var(--color-neutral-accent-deep) 100%); color: white; border-color: var(--color-neutral-accent-2); }
+
+/* ---- 01b：浮動目錄分頁 active 提示（本 bug 的主角）與捲軸軌道 -------------
+   06 的 .floating-toc-tab 基礎規則（中性文字色＋髮絲線）把 active 的
+   金色文字與底線也一併蓋掉，於是「目錄／書籤」兩個分頁看起來完全一樣。
+   這裡以較高特異度恢復：暖金文字＋暖金底線＋粗體，再加一圈淡金底色
+   作為「反白」式提示（與 .floating-toc-item.active 的處理同一家族）。 */
+body.dark-mode.dark-neutral .floating-toc-tab.active {
+    color: var(--color-neutral-accent-2);
+    border-bottom-color: var(--color-neutral-accent-2);
+    font-weight: 600;
+    background: rgba(217, 168, 108, 0.12);
+}
+body.dark-mode.dark-neutral .floating-toc-content::-webkit-scrollbar-track { background: rgba(60, 60, 60, 0.3); }
+
+/* ---- 01c：書籤面板時間戳 ------------------------------------------------ */
+body.dark-mode.dark-neutral .bookmark-time { color: var(--color-neutral-muted); opacity: 0.7; }
+
+/* ---- 03-search：搜尋面板整體換色（原為暗紫 #2d1e2e／紫框 #4a2c4a） ----- */
+body.dark-mode.dark-neutral .search-container { background: linear-gradient(135deg, var(--color-neutral-surface) 0%, var(--color-neutral-bg) 100%); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral #search-input { background: var(--color-neutral-surface); color: var(--color-neutral-text); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral #search-input::placeholder { color: var(--color-neutral-muted); }
+body.dark-mode.dark-neutral .search-scope { background: var(--color-neutral-surface); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .search-scope-btn { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .search-scope-btn + .search-scope-btn { border-left-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .search-scope-btn:hover { background: rgba(217, 168, 108, 0.12); color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .search-results-header { border-bottom-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .search-loading { background: var(--color-neutral-surface); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .search-loading-spinner { border-color: var(--color-neutral-hairline); border-top-color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .search-result-item { background: var(--color-neutral-surface); border-left-color: var(--color-neutral-accent); }
+body.dark-mode.dark-neutral .search-clear { background: var(--color-neutral-hairline); color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .search-clear:hover { background: var(--color-neutral-accent-2); color: var(--color-neutral-bg); }
+
+/* ---- 04a/04b：層級鈕與展開圖示的 hover／active -------------------------- */
+body.dark-mode.dark-neutral .toc-level-btn:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); }
+body.dark-mode.dark-neutral .toc-level-btn.active { background: linear-gradient(135deg, var(--color-neutral-accent-2) 0%, var(--color-neutral-accent-deep) 100%); color: white; }
+body.dark-mode.dark-neutral .floating-level-btn:hover { background: linear-gradient(135deg, #3a3a3a 0%, #4a4a4a 100%); }
+body.dark-mode.dark-neutral .floating-level-btn.active { background: linear-gradient(135deg, var(--color-neutral-accent-2) 0%, var(--color-neutral-accent-deep) 100%); color: white; }
+body.dark-mode.dark-neutral .toc-expand-icon:hover { color: var(--color-neutral-accent-2); }
+
+/* ---- 04b：目錄第 3 層連結（鏡像只覆了第 1/2/4 層） ----------------------- */
+body.dark-mode.dark-neutral .toc-item.toc-level-3 > a { color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .toc ul ul ul > li > a { color: var(--color-neutral-text) !important; }
+
+/* ---- 04c：播放器／播放鈕的零星暗紫殘留 ----------------------------------- */
+body.dark-mode.dark-neutral .qa-play--disabled { background: #333; color: var(--color-neutral-muted); border-color: var(--color-neutral-hairline); }
+body.dark-mode.dark-neutral .qa-opening { background: var(--color-neutral-surface); color: var(--color-neutral-text); }
+body.dark-mode.dark-neutral .qa-player-progress { background: rgba(70, 70, 70, 0.6); }
+body.dark-mode.dark-neutral .qa-player-range { color: var(--color-neutral-accent-2); }
+body.dark-mode.dark-neutral .qa-player-close:hover { background: rgba(217, 168, 108, 0.15); }
+body.dark-mode.dark-neutral .qa-player-volume-btn:hover { background: rgba(217, 168, 108, 0.15); }

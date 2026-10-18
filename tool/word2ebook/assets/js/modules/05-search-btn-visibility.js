@@ -66,14 +66,26 @@
   // （ebook/ 實測偏 600+ px，方向取決於上方高度是膨脤還是縮小，兩本書都會發生）。
   // 03d 的 settleAnchorTo 只接在「帶錨點載入」路徑；頁內點擊（目錄、書籤、
   // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
-  // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）；使用者一開始自己捲
-  // 就立刻放手，不跟使用者搶滚輪。
+  // 浮動目錄項（04-events）、首頁目錄清單（03b）、.toc-count 直跳（16）、
+  // lightbox「跳回圖片處」（09）也共用本函式——它們與 # 錨點同樣會跳到
+  // 「從未渲染」的遠處內容，一次性捲動必然落偏；16/09 是隔離 IIFE，
+  // 經 W2E.settleInPageAnchor 呼叫。
+  // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）：目標的
+  // scroll-margin-top（講經頁 = 09c 逐群寫入的經文讓位高度）也要扣掉，
+  // 否則收斂會把 scrollIntoView 特意留給停留經文的空間又拉回去。
+  // 使用者一開始自己捲就立刻放手，不跟使用者搶滚輪。
   //
   // ⚠️ 不能「連續兩次量測相同」就收工：scrollIntoView 的落點本來就是用
   // 同一套估算高度算的，動畫剛結束時 want 與 scrollY 短暫一致，接著上方
   // 區塊換成真實高度、目標又滑走（ebook/ 實測定格偏 755px）。故：
   //   · 至少量測 MIN_TICKS 次（約 1.8s）才允許收工；
   //   · 文件總高一變（估算→真實）就把 stable 歸零重算。
+  function anchorScrollMarginTop(el) {
+    // getComputedStyle 不支援 scroll-margin-top 的舊瀏覽器回 0（= 舊行為）
+    const v = parseFloat(getComputedStyle(el).scrollMarginTop);
+    return isNaN(v) ? 0 : v;
+  }
+
   function settleInPageAnchor(el) {
     const MIN_TICKS = 12;   // 約 1.8s：等 scrollIntoView 動畫結束＋高度換算
     const MAX_TICKS = 40;   // 約 6s 上限
@@ -93,7 +105,8 @@
       if (userScrolled || !document.body.contains(el)) return;
       const height = document.documentElement.scrollHeight;
       if (height !== lastHeight) { lastHeight = height; stable = 0; }
-      const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset);
+      const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset
+                                       - anchorScrollMarginTop(el));
       if (Math.abs(want - window.pageYOffset) > 2) {
         window.scrollTo(0, want);
         stable = 0;
@@ -106,6 +119,9 @@
     };
     setTimeout(tick, TICK_MS);
   }
+
+  // 供隔離 IIFE 模組（16-jump-share、09-image-lightbox）使用的對外介面
+  W2E.settleInPageAnchor = settleInPageAnchor;
 
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {

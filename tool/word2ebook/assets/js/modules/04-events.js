@@ -267,6 +267,10 @@
       const element = document.querySelector(target);
       if (element) {
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // 跳到「從未渲染」的遠處章節時，content-visibility 的估算高度會在
+        // 捲動途中換成真實高度，一次性捲動必然落偏（與 05 的 # 錨點同病），
+        // 故同用 settleInPageAnchor 短週期重測試斂，一次點擊即定位正確。
+        settleInPageAnchor(element);
         // 移除自動關閉sidebar，讓用戶可以連續導航
         // floatingTOC.classList.remove('visible');
       }
@@ -332,7 +336,16 @@
           element.classList.remove('anchor-target-highlight');
         }, 3000);
 
-        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        element.scrollIntoView({
+          behavior: 'smooth',
+          // 目標在「經文置頂」的 sticky 群內（講經頁）時對齊視窗頂，
+          // 讓 09c 寫在群上的 scroll-margin-top 生效；其餘置中。
+          // 與 03d handleInitialAnchor 同規則，settleAnchorTo 才收斂得回同一落點。
+          block: anchorNeedsHeadroom(element) ? 'start' : 'center'
+        });
+        // 同浮動目錄項：content-visibility 高度換算會讓一次性捲動落偏，
+        // 用 03d 的 settleAnchorTo（置中＋經文讓位）重測試斂。
+        settleAnchorTo(element);
         // 移除自動關閉側邊欄，讓用戶可以連續瀏覽書籤
         // floatingTOC.classList.remove('visible');
       }

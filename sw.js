@@ -15,7 +15,7 @@
  */
 'use strict';
 
-var VERSION = 'v1-2026-10d';
+var VERSION = 'v1-2026-10e';
 var STATIC_CACHE = 'tgl-ebook-static-' + VERSION;
 var PAGES_CACHE = 'tgl-ebook-pages-' + VERSION;
 

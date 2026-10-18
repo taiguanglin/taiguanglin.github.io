@@ -45,6 +45,11 @@
       var q = firstQuestionInSection(heading);
       var target = q || heading;
       target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // 遠跳到未渲染的問答時，content-visibility 估算高度會在捲動途中換成
+      // 真實高度而落偏——共用 05 的收斂迴圈（本模組是隔離 IIFE，經 W2E 呼叫）
+      if (window.W2E && typeof window.W2E.settleInPageAnchor === 'function') {
+        window.W2E.settleInPageAnchor(target);
+      }
       if (q) {
         q.classList.remove('anchor-target-highlight');
         void q.offsetWidth;

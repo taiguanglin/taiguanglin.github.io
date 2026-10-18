@@ -884,3 +884,78 @@ def test_share_toast_uses_gettext_for_traditional():
     assert "'段落連結已複製'" in src and "'問題連結已複製'" in src and "'回答連結已複製'" in src
     # 硬編舊字串不得殘留（含 toast 與註解）
     assert "鏈接已複製" not in src
+
+
+# ---------------------------------------------------------------------------
+# 側邊欄跳轉收斂：浮動目錄／書籤項與 # 錨點同一套 settle（2026-10 修正）
+# ---------------------------------------------------------------------------
+
+def test_sidebar_jump_paths_settle():
+    """側邊欄（浮動目錄／書籤）跳到「從未渲染」的遠處內容時，content-visibility
+    的估算高度會在捲動途中換成真實高度，一次性 scrollIntoView 必然落偏
+    （使用者須點兩三次才定位）。這些路徑必須與 05 的 # 錨點同用收斂迴圈。
+    """
+    # 04-events：浮動目錄項 + 書籤項
+    ev = (_JS_MODULES / "04-events.js").read_text(encoding="utf-8")
+    assert "settleInPageAnchor(element)" in ev, "浮動目錄項點擊後必須收斂"
+    assert "settleAnchorTo(element)" in ev, "書籤項點擊後必須收斂"
+    # 書籤項的對齊方式須與 03d handleInitialAnchor 同規則（讓位 → start，否則 center）
+    assert "anchorNeedsHeadroom(element) ? 'start' : 'center'" in ev
+    # 05：收斂迴圈扣除 scroll-margin-top（經文置頂讓位高度），並掛上 W2E 供隔離 IIFE 呼叫
+    sv = (_JS_MODULES / "05-search-btn-visibility.js").read_text(encoding="utf-8")
+    assert "scrollMarginTop" in sv, "want 必須扣除目標的 scroll-margin-top"
+    assert "W2E.settleInPageAnchor = settleInPageAnchor;" in sv
+    # 03b：首頁目錄清單的頁內 # 跳轉
+    bm = (_JS_MODULES / "03b-bookmark-render.js").read_text(encoding="utf-8")
+    assert "settleInPageAnchor(el)" in bm
+    # 16 / 09：隔離 IIFE 經 W2E 呼叫
+    jp = (_JS_MODULES / "16-jump-share.js").read_text(encoding="utf-8")
+    assert "window.W2E.settleInPageAnchor" in jp
+    lb = (_JS_MODULES / "09-image-lightbox.js").read_text(encoding="utf-8")
+    assert "window.W2E.settleInPageAnchor" in lb
+
+
+# ---------------------------------------------------------------------------
+# 墨夜（dark-neutral）鏡像補遺：分頁 active 提示與同病規則（2026-10 修正）
+# ---------------------------------------------------------------------------
+
+_DARK_NEUTRAL_MUST_MIRROR = [
+    # 狀態提示（被 06 同特異度基礎鏡像蓋掉 → 消失）
+    "body.dark-mode.dark-neutral .floating-toc-tab.active",
+    "body.dark-mode.dark-neutral .toc-level-btn.active",
+    "body.dark-mode.dark-neutral .toc-level-btn:hover",
+    "body.dark-mode.dark-neutral .floating-level-btn.active",
+    "body.dark-mode.dark-neutral .floating-level-btn:hover",
+    "body.dark-mode.dark-neutral .ctrl-btn:hover",
+    "body.dark-mode.dark-neutral .qa-btn:hover",
+    "body.dark-mode.dark-neutral .ctrl-btn.font-adjust.clicked",
+    "body.dark-mode.dark-neutral .lang-switch a:hover",
+    "body.dark-mode.dark-neutral .nav-footer a:hover",
+    "body.dark-mode.dark-neutral .toc-expand-icon:hover",
+    # 硬編碼粉色/暗紫殘留
+    "body.dark-mode.dark-neutral .search-container",
+    "body.dark-mode.dark-neutral #search-input",
+    "body.dark-mode.dark-neutral .search-result-item",
+    "body.dark-mode.dark-neutral .toc-item.toc-level-3 > a",
+    "body.dark-mode.dark-neutral .toc ul ul ul > li > a",
+    "body.dark-mode.dark-neutral .qa-play--disabled",
+    "body.dark-mode.dark-neutral .qa-opening",
+    "body.dark-mode.dark-neutral .qa-player-progress",
+    "body.dark-mode.dark-neutral .reading-toolbar::-webkit-scrollbar-track",
+    "body.dark-mode.dark-neutral .floating-toc-content::-webkit-scrollbar-track",
+]
+
+
+def test_dark_neutral_mirror_state_and_pink_overrides():
+    """墨夜面板：06 的基礎鏡像規則與 00–05 來源規則同特異度且更晚出現，
+    會把 active/hover 狀態整個蓋掉（floating-toc-tab.active 即此病——
+    「目錄／書籤」分頁在墨夜下無任何提示）；硬編碼粉色值則直接漏進
+    中性暖金面板。補遺區必須逐一覆寫（見 frontend-css spec 的
+    Dark-Neutral Mirror Completeness 需求）。
+    """
+    css = StaticAssetsManager().get_full_css_content()
+    for sel in _DARK_NEUTRAL_MUST_MIRROR:
+        assert sel in css, f"墨夜鏡像缺少 {sel}"
+    # 分頁 active 提示必須有暖金文字＋底線（不是只靠 bold）
+    assert ("body.dark-mode.dark-neutral .floating-toc-tab.active {\n"
+            "    color: var(--color-neutral-accent-2);") in css

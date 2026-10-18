@@ -186,7 +186,7 @@ tool/word_audio_map2/.venv/bin/python tool/books2ebook/main.py --books-dir books
 |---|---|
 | `ebook/index.html` / `index_trad.html` | 首頁目錄（搜尋入口→10 本書→各章小節） |
 | `ebook/01.html` … `10.html`（各附 `_trad`）| 單書正文 |
-| `ebook/assets/css/books.css` | 經文/標籤/插圖等附加樣式（本工具自有） |
+| `ebook/assets/css/books.css` | 經文/標籤/插圖等附加樣式（本工具自有；含 `body.dark-mode.dark-neutral`「墨夜」區段——本檔的 dark-mode 規則在墨夜下仍生效，須逐一以 `+dark-neutral` 覆寫成 `--color-neutral-*` 暖金面板，改動上方 dark-mode 規則時兩區同步） |
 | `ebook/assets/js/w2e-config.js` | ebook 專用搜尋範圍：`['question','answer','content','heading']`（01d-search-perform 讀取），取代舊的字串 patch |
 | `ebook/assets/img/bN/` | 書內插圖（以 xref 去重）|
 | `/wenda2_ebook/assets/css/style.css` | **共用**（不複製）：由 `StaticAssetsManager` 串接的 SoT 樣式，HTML 以站點絕對路徑引用 |
