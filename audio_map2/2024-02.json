@@ -20218,9 +20218,9 @@
           "end": 64.34,
           "start_label": "00:00:31.130",
           "end_label": "00:01:04.340",
-          "confidence": 0,
+          "confidence": 0.9,
           "status": "manual",
-          "notes": "僅點名「進洪／淨紅」，大菩提心答體未讀（約30s靜音後接 #03）（） | anchor:字級 manual",
+          "notes": "僅點名「進洪／淨紅」，大菩提心答體未讀（約30s靜音後接 #03）（） | anchor:字級 manual | 2026-10-18 使用者確認（比照 2025-01-17-wechat #1/#2 處理）：本段為人工特殊錨定段（自動對齊無法比對、依人工聽檔定窗，見前述 notes），已於 2026-10-01 在審核 UI 複聽確認（meta.lastPlayed），依指示 confidence 0→0.9，之後不再標低信心；重建電子書後本段對應 block 的播放鈕即生效",
           "srt_preview": "",
           "chapter_question_ids": [
             "question-f0681c154012"
@@ -20283,9 +20283,9 @@
           "end": 134.3,
           "start_label": "00:01:32.910",
           "end_label": "00:02:14.300",
-          "confidence": 0,
+          "confidence": 0.9,
           "status": "manual",
-          "notes": "青白瓷業雙向／殺業問答未見獨立可對窗口（） | anchor:字級 manual",
+          "notes": "青白瓷業雙向／殺業問答未見獨立可對窗口（） | anchor:字級 manual | 2026-10-18 使用者確認（比照 2025-01-17-wechat #1/#2 處理）：本段為人工特殊錨定段（自動對齊無法比對、依人工聽檔定窗，見前述 notes），已於 2026-10-01 在審核 UI 複聽確認（meta.lastPlayed），依指示 confidence 0→0.9，之後不再標低信心；重建電子書後本段對應 block 的播放鈕即生效",
           "srt_preview": "",
           "chapter_question_ids": [
             "question-888eaea0ac3e"
@@ -21968,9 +21968,9 @@
           "end": 76.74,
           "start_label": "00:00:50.110",
           "end_label": "00:01:16.740",
-          "confidence": 0,
+          "confidence": 0.9,
           "status": "manual",
-          "notes": "無記空／快斷片狀態答未見可對內容；#01 後直接 #03（） | anchor:字級 manual",
+          "notes": "無記空／快斷片狀態答未見可對內容；#01 後直接 #03（） | anchor:字級 manual | 2026-10-18 使用者確認（比照 2025-01-17-wechat #1/#2 處理）：本段為人工特殊錨定段（自動對齊無法比對、依人工聽檔定窗，見前述 notes），已於 2026-10-01 在審核 UI 複聽確認（meta.lastPlayed），依指示 confidence 0→0.9，之後不再標低信心；重建電子書後本段對應 block 的播放鈕即生效",
           "srt_preview": "",
           "chapter_question_ids": [
             "question-b90aa5131f49"
