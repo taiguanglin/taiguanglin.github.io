@@ -275,9 +275,16 @@
     /* ---------- Smooth anchor scroll (same page) ---------- */
     document.querySelectorAll('a[href^="#"]:not([data-download-trigger])').forEach(function (a) {
         a.addEventListener('click', function (e) {
-            var id = a.getAttribute('href');
+            /* ⚠️ 綁定時 href 可能是 "#"，之後才被改寫成跨頁 URL——首頁
+               「每日精選」的「前往原文」就是這樣（初始 href="#" 被 quote
+               腳本改寫成 wenda2_ebook/xx.html#answer-…）。點擊當下必須
+               重新檢查仍是「純同頁錨點」才攔截；整段 URL 交給瀏覽器正常
+               導覽（丟給 querySelector 會直接 SyntaxError）。 */
+            var id = a.getAttribute('href') || '';
             if (!id || id === '#') return;
-            var target = document.querySelector(id);
+            if (id.charAt(0) !== '#' || id.indexOf('#', 1) !== -1) return;
+            /* getElementById 不會因 id 含特殊字而丟 SyntaxError */
+            var target = document.getElementById(id.slice(1));
             if (!target) return;
             e.preventDefault();
             var offset = 90;

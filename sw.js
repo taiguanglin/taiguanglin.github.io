@@ -15,7 +15,7 @@
  */
 'use strict';
 
-var VERSION = 'v1-2026-10g';
+var VERSION = 'v1-2026-10h';
 var STATIC_CACHE = 'tgl-ebook-static-' + VERSION;
 var PAGES_CACHE = 'tgl-ebook-pages-' + VERSION;
 
@@ -47,10 +47,11 @@ function swr(request, cacheName) {
     return cache.match(request, { ignoreSearch: true }).then(function (cached) {
       var fetched = fetch(request).then(function (resp) {
         if (resp.ok) {
-          cache.put(request, resp.clone());
+          /* 同步 clone（見 cacheFirst 的說明），put 失敗不影響瀏覽 */
+          cache.put(request, resp.clone()).catch(function () {});
           /* 無 hash 的失敗頁也寫進去無妨；hash 不同視同新頁不處理 */
           if (request.url.indexOf('#') === -1) {
-            cache.put(new Request(request.url.split('#')[0]), resp.clone());
+            cache.put(new Request(request.url.split('#')[0]), resp.clone()).catch(function () {});
           }
         }
         return resp;
@@ -64,8 +65,16 @@ function cacheFirst(request) {
   return caches.match(request, { ignoreSearch: true }).then(function (cached) {
     if (cached) return cached;
     return fetch(request).then(function (resp) {
+      /* ⚠️ clone 必須在「把 resp 交還頁面」之前同步做：放進 caches.open()
+         的非同步回呼裡，等 IDB 開好 cache 時頁面多半已開始消費 body
+         （Response 一旦標記 used 就不能 clone）→ TypeError: body is
+         already used，資產沒快取到（離線失效）且未處理的 rejection 洗版。
+         SW 換版清空快取後每個請求都是 miss，便會大量爆發。 */
       if (resp.ok) {
-        caches.open(STATIC_CACHE).then(function (cache) { cache.put(request, resp.clone()); });
+        var copy = resp.clone();
+        caches.open(STATIC_CACHE).then(function (cache) {
+          cache.put(request, copy);
+        }).catch(function () { /* 快取寫入失敗（如 quota）不影響瀏覽 */ });
       }
       return resp;
     });
