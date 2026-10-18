@@ -1571,8 +1571,9 @@ function applyAm2CardExtras(node, item, kind) {
 }
 
 /** Build a row of links to the exact HTML question/answer anchors in
- *  wenda2_ebook (simplified `NN.html` + traditional `NN_trad.html`), so the
- *  reviewer can jump to the canonical block while aligning audio. */
+ *  wenda2_ebook (`NN.html`), so the reviewer can jump to the canonical block
+ *  while aligning audio. 繁體版由電子書頁內建的繁簡切換到達（段落 id 相同、
+ *  lang-switch 保留 location.hash），故不再另設「繁」連結。 */
 function applyAm2HtmlLinks(body, item) {
     const qids = item.chapter_question_ids || [];
     const aids = item.chapter_answer_ids || [];
@@ -1657,22 +1658,6 @@ function applyAm2HtmlLinks(body, item) {
             ));
             row.appendChild(pair);
         });
-    }
-
-    // a single 繁 switch for the whole row (first pair's chapter is enough)
-    if (chapter) {
-        const qn = String(chapter).padStart(2, '0');
-        // answer-only mapping (圖片題 block) has no question id to anchor on
-        const anchor = qids[0] || aids[0] || null;
-        const trad = document.createElement('a');
-        trad.className = 'am2-html-link am2-html-link--trad';
-        trad.href = `/wenda2_ebook/${qn}_trad.html${anchor ? `#${anchor}` : ''}`;
-        trad.target = '_blank';
-        trad.rel = 'noopener';
-        trad.textContent = '繁';
-        trad.title = '在繁體電子書開啟';
-        trad.addEventListener('click', (ev) => ev.stopPropagation());
-        row.appendChild(trad);
     }
 
     body.appendChild(row);
