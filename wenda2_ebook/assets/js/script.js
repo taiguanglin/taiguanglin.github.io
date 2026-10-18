@@ -31,6 +31,13 @@ function getText(simplifiedText, traditionalText) {
   return isTraditionalChinesePage() ? traditionalText : simplifiedText;
 }
 
+// 捲動行為偵錯開關（預設關閉、零輸出）：localStorage 設 'w2e:scrollDebug'='1'
+// 時，03d 面板同步與 05／03d 的收斂迴圈會輸出定位過程與「外部捲動介入」
+// 警示，供回報畫面閃跳問題時直接提供 console 記錄。
+function scrollDebugOn() {
+  try { return localStorage.getItem('w2e:scrollDebug') === '1'; } catch (e) { return false; }
+}
+
 // ------------------------------------------------------------------ //
 // 暗色模式初始化                                                       //
 // 1. 已有偏好（localStorage 'darkMode'）→ 照偏好。                      //
@@ -2907,10 +2914,26 @@ function addHomepageBookmarkEventListeners() {
         
         // 如果item不在容器的可視區域內，則滾動到該位置
         if (itemRect.top < containerRect.top + 60 || itemRect.bottom > containerRect.bottom - 20) {
-          activeItem.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
+          // ⚠️ 只能捲動面板自己的內容，絕不可用 activeItem.scrollIntoView()：
+          // scrollIntoView 會「連帶捲動所有可捲動祖先」，包括視窗。面板是
+          // position: fixed——項目根本不會隨視窗捲動而移動，瀏覽器卻仍會
+          // 為了把項目對齊視窗中央而捲動視窗，把文件拉離閱讀位置。這個
+          // 「第二個捲動寫入者」與 05 的收斂迴圈互搶捲軸，就是目錄跳轉時
+          // 「畫面在原位置與目標之間來回閃跳 3-4 秒」的元兇（平時開著側欄
+          // 閱讀、章節切換時也會被小幅度拉扯）。改為直接捲動面板內容。
+          const content = tocContainer.querySelector('.floating-toc-content');
+          if (content) {
+            const contentRect = content.getBoundingClientRect();
+            const delta = (itemRect.top + itemRect.height / 2)
+                        - (contentRect.top + contentRect.height / 2);
+            content.scrollTo({
+              top: Math.max(0, content.scrollTop + delta),
+              behavior: 'smooth'
+            });
+            if (scrollDebugOn()) {
+              console.log('[w2e] 側欄面板同步：僅捲動 .floating-toc-content，delta=', Math.round(delta));
+            }
+          }
         }
       }
     }
@@ -2982,11 +3005,17 @@ function addHomepageBookmarkEventListeners() {
   // 有時目標直接被推到視窗外）。停止捲動後被跳過的區塊集合固定，目標的絕對
   // 位置才會穩定，因此用短週期重測試斂即可。
   //
+  // 收斂的 scrollTo 是瞬時的，會中途砍掉 scrollIntoView 的平滑動畫——
+  // 兩個捲動寫入者同時在場，畫面上就是抖動。故先輪詢等平滑捲動結束
+  // （scrollY 連續兩次不動；上限 1.6s 保險），同一時間只留一個寫入者。
+  //
   // 使用者一開始自己捲（wheel/touch/方向鍵）就立刻放手，不跟使用者搖滾輪。
   function settleAnchorTo(el) {
     let stable = 0;
     let tries = 0;
+    let lastWritten = null;   // 上次自己寫入的位置：偵測是否有別人也在捲視窗
     let userScrolled = false;
+    const debug = scrollDebugOn();
     const stop = () => { userScrolled = true; };
     window.addEventListener('wheel', stop, { passive: true, once: true });
     window.addEventListener('touchstart', stop, { passive: true, once: true });
@@ -2997,16 +3026,38 @@ function addHomepageBookmarkEventListeners() {
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
       const want = anchorTargetScrollTop(el);
-      if (Math.abs(want - window.pageYOffset) > 2) {
+      const y = window.pageYOffset;
+      if (debug && lastWritten !== null && Math.abs(y - lastWritten) > 4) {
+        console.warn('[w2e-anchor-settle] 外部捲動介入（非本迴圈所寫）',
+                     { 預期: Math.round(lastWritten), 實際: Math.round(y) });
+      }
+      if (Math.abs(want - y) > 2) {
         window.scrollTo(0, want);
+        lastWritten = want;
         stable = 0;
       } else if (++stable >= 2) {
         return;
       }
-      if (++tries >= 40) return;   // 約 6 秒上限
+      tries++;
+      if (tries >= 40) return;   // 約 6 秒上限
       setTimeout(tick, 150);
     };
-    setTimeout(tick, 150);
+
+    const t0 = Date.now();
+    let lastY = window.pageYOffset;
+    const waitAnimation = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const y = window.pageYOffset;
+      const still = (y === lastY);
+      lastY = y;
+      if (still || Date.now() - t0 > 1600) {
+        if (debug) console.log('[w2e-anchor-settle] 平滑捲動結束，開始收斂', { y: Math.round(y) });
+        tick();
+        return;
+      }
+      setTimeout(waitAnimation, 120);
+    };
+    setTimeout(waitAnimation, 150);
   }
 
   // 處理頁面加載時的錨點跳轉
@@ -3552,12 +3603,12 @@ function addHomepageBookmarkEventListeners() {
   // 渲染後才換成真實高度。平滑捲動的落點是啟動當下的文件高度算出來的；
   // 捲動途中經過的區塊一個個換成真實高度後，文件總高跟著變，落點必然偏移
   // （ebook/ 實測偏 600+ px，方向取決於上方高度是膨脤還是縮小，兩本書都會發生）。
-  // 03d 的 settleAnchorTo 只接在「帶錨點載入」路徑；頁內點擊（目錄、書籤、
-  // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
-  // 浮動目錄項（04-events）、首頁目錄清單（03b）、.toc-count 直跳（16）、
-  // lightbox「跳回圖片處」（09）也共用本函式——它們與 # 錨點同樣會跳到
-  // 「從未渲染」的遠處內容，一次性捲動必然落偏；16/09 是隔離 IIFE，
-  // 經 W2E.settleInPageAnchor 呼叫。
+  // 03d 的 settleAnchorTo 接在「帶錨點載入」與書籤項點擊路徑；其餘頁內點擊
+  // （目錄、回到頂部以外的 # 錨點）都在這裡，兩邊用同樣的「等動畫→短週期
+  // 重測」收斂。浮動目錄項（04-events）、首頁目錄清單（03b）、.toc-count
+  // 直跳（16）、lightbox「跳回圖片處」（09）也共用本函式——它們與 # 錨點
+  // 同樣會跳到「從未渲染」的遠處內容，一次性捲動必然落偏；16/09 是隔離
+  // IIFE，經 W2E.settleInPageAnchor 呼叫。
   // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）：目標的
   // scroll-margin-top（講經頁 = 09c 逐群寫入的經文讓位高度）也要扣掉，
   // 否則收斂會把 scrollIntoView 特意留給停留經文的空間又拉回去。
@@ -3575,12 +3626,14 @@ function addHomepageBookmarkEventListeners() {
   }
 
   function settleInPageAnchor(el) {
-    const MIN_TICKS = 12;   // 約 1.8s：等 scrollIntoView 動畫結束＋高度換算
+    const MIN_TICKS = 12;   // 約 1.8s：等高度換算（240px 估計→真實）收斂
     const MAX_TICKS = 40;   // 約 6s 上限
     const TICK_MS = 150;
+    const debug = scrollDebugOn();
     let stable = 0;
     let tries = 0;
     let lastHeight = document.documentElement.scrollHeight;
+    let lastWritten = null;   // 上次自己寫入的位置：偵測是否有別人也在捲視窗
     let userScrolled = false;
     const stop = () => { userScrolled = true; };
     window.addEventListener('wheel', stop, { passive: true, once: true });
@@ -3595,17 +3648,48 @@ function addHomepageBookmarkEventListeners() {
       if (height !== lastHeight) { lastHeight = height; stable = 0; }
       const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset
                                        - anchorScrollMarginTop(el));
-      if (Math.abs(want - window.pageYOffset) > 2) {
+      const y = window.pageYOffset;
+      if (debug && lastWritten !== null && Math.abs(y - lastWritten) > 4) {
+        // 收斂期間視窗被本迴圈以外的力量拉走＝還有第二個捲動寫入者
+        // （歷史案例：03d 側欄同步的 scrollIntoView 連帶捲動視窗）
+        console.warn('[w2e-settle] 外部捲動介入（非本迴圈所寫）',
+                     { 預期: Math.round(lastWritten), 實際: Math.round(y), 第: tries, 次嘗試 });
+      }
+      if (Math.abs(want - y) > 2) {
         window.scrollTo(0, want);
+        lastWritten = want;
         stable = 0;
       } else {
         stable++;
       }
       tries++;
+      if (debug) {
+        console.log('[w2e-settle]', { 嘗試: tries, want: Math.round(want),
+          y: Math.round(window.pageYOffset), stable: stable, 文件高: height });
+      }
       if ((tries >= MIN_TICKS && stable >= 3) || tries >= MAX_TICKS) return;
       setTimeout(tick, TICK_MS);
     };
-    setTimeout(tick, TICK_MS);
+
+    // 先等發動的平滑捲動結束才開始修正：下面的 scrollTo 是瞬時的，會中途
+    // 砍掉 scrollIntoView 的平滑動畫——兩個捲動寫入者同時在場，畫面就是
+    // 抖動／閃跳（與 03d 側欄面板同步互搶視窗的教訓同源）。輪詢 scrollY
+    // 連續兩次不動＝動畫結束；上限 1.6s 後無論如何開始（保險）。
+    const t0 = Date.now();
+    let lastY = window.pageYOffset;
+    const waitAnimation = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const y = window.pageYOffset;
+      const still = (y === lastY);
+      lastY = y;
+      if (still || Date.now() - t0 > 1600) {
+        if (debug) console.log('[w2e-settle] 平滑捲動結束，開始收斂', { y: Math.round(y) });
+        tick();
+        return;
+      }
+      setTimeout(waitAnimation, 120);
+    };
+    setTimeout(waitAnimation, TICK_MS);
   }
 
   // 供隔離 IIFE 模組（16-jump-share、09-image-lightbox）使用的對外介面

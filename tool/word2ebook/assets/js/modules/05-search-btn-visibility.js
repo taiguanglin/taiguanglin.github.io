@@ -64,12 +64,12 @@
   // 渲染後才換成真實高度。平滑捲動的落點是啟動當下的文件高度算出來的；
   // 捲動途中經過的區塊一個個換成真實高度後，文件總高跟著變，落點必然偏移
   // （ebook/ 實測偏 600+ px，方向取決於上方高度是膨脤還是縮小，兩本書都會發生）。
-  // 03d 的 settleAnchorTo 只接在「帶錨點載入」路徑；頁內點擊（目錄、書籤、
-  // 回到頂部以外的 # 錨點）都在這裡，故這裡也用同一套短週期重測試斂。
-  // 浮動目錄項（04-events）、首頁目錄清單（03b）、.toc-count 直跳（16）、
-  // lightbox「跳回圖片處」（09）也共用本函式——它們與 # 錨點同樣會跳到
-  // 「從未渲染」的遠處內容，一次性捲動必然落偏；16/09 是隔離 IIFE，
-  // 經 W2E.settleInPageAnchor 呼叫。
+  // 03d 的 settleAnchorTo 接在「帶錨點載入」與書籤項點擊路徑；其餘頁內點擊
+  // （目錄、回到頂部以外的 # 錨點）都在這裡，兩邊用同樣的「等動畫→短週期
+  // 重測」收斂。浮動目錄項（04-events）、首頁目錄清單（03b）、.toc-count
+  // 直跳（16）、lightbox「跳回圖片處」（09）也共用本函式——它們與 # 錨點
+  // 同樣會跳到「從未渲染」的遠處內容，一次性捲動必然落偏；16/09 是隔離
+  // IIFE，經 W2E.settleInPageAnchor 呼叫。
   // 收斂用 block:'start' 對齊（與 scrollIntoView 一致）：目標的
   // scroll-margin-top（講經頁 = 09c 逐群寫入的經文讓位高度）也要扣掉，
   // 否則收斂會把 scrollIntoView 特意留給停留經文的空間又拉回去。
@@ -87,12 +87,14 @@
   }
 
   function settleInPageAnchor(el) {
-    const MIN_TICKS = 12;   // 約 1.8s：等 scrollIntoView 動畫結束＋高度換算
+    const MIN_TICKS = 12;   // 約 1.8s：等高度換算（240px 估計→真實）收斂
     const MAX_TICKS = 40;   // 約 6s 上限
     const TICK_MS = 150;
+    const debug = scrollDebugOn();
     let stable = 0;
     let tries = 0;
     let lastHeight = document.documentElement.scrollHeight;
+    let lastWritten = null;   // 上次自己寫入的位置：偵測是否有別人也在捲視窗
     let userScrolled = false;
     const stop = () => { userScrolled = true; };
     window.addEventListener('wheel', stop, { passive: true, once: true });
@@ -107,17 +109,48 @@
       if (height !== lastHeight) { lastHeight = height; stable = 0; }
       const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset
                                        - anchorScrollMarginTop(el));
-      if (Math.abs(want - window.pageYOffset) > 2) {
+      const y = window.pageYOffset;
+      if (debug && lastWritten !== null && Math.abs(y - lastWritten) > 4) {
+        // 收斂期間視窗被本迴圈以外的力量拉走＝還有第二個捲動寫入者
+        // （歷史案例：03d 側欄同步的 scrollIntoView 連帶捲動視窗）
+        console.warn('[w2e-settle] 外部捲動介入（非本迴圈所寫）',
+                     { 預期: Math.round(lastWritten), 實際: Math.round(y), 第: tries, 次嘗試 });
+      }
+      if (Math.abs(want - y) > 2) {
         window.scrollTo(0, want);
+        lastWritten = want;
         stable = 0;
       } else {
         stable++;
       }
       tries++;
+      if (debug) {
+        console.log('[w2e-settle]', { 嘗試: tries, want: Math.round(want),
+          y: Math.round(window.pageYOffset), stable: stable, 文件高: height });
+      }
       if ((tries >= MIN_TICKS && stable >= 3) || tries >= MAX_TICKS) return;
       setTimeout(tick, TICK_MS);
     };
-    setTimeout(tick, TICK_MS);
+
+    // 先等發動的平滑捲動結束才開始修正：下面的 scrollTo 是瞬時的，會中途
+    // 砍掉 scrollIntoView 的平滑動畫——兩個捲動寫入者同時在場，畫面就是
+    // 抖動／閃跳（與 03d 側欄面板同步互搶視窗的教訓同源）。輪詢 scrollY
+    // 連續兩次不動＝動畫結束；上限 1.6s 後無論如何開始（保險）。
+    const t0 = Date.now();
+    let lastY = window.pageYOffset;
+    const waitAnimation = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const y = window.pageYOffset;
+      const still = (y === lastY);
+      lastY = y;
+      if (still || Date.now() - t0 > 1600) {
+        if (debug) console.log('[w2e-settle] 平滑捲動結束，開始收斂', { y: Math.round(y) });
+        tick();
+        return;
+      }
+      setTimeout(waitAnimation, 120);
+    };
+    setTimeout(waitAnimation, TICK_MS);
   }
 
   // 供隔離 IIFE 模組（16-jump-share、09-image-lightbox）使用的對外介面

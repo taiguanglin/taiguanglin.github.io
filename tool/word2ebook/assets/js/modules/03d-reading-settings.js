@@ -97,10 +97,26 @@
         
         // 如果item不在容器的可視區域內，則滾動到該位置
         if (itemRect.top < containerRect.top + 60 || itemRect.bottom > containerRect.bottom - 20) {
-          activeItem.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
-          });
+          // ⚠️ 只能捲動面板自己的內容，絕不可用 activeItem.scrollIntoView()：
+          // scrollIntoView 會「連帶捲動所有可捲動祖先」，包括視窗。面板是
+          // position: fixed——項目根本不會隨視窗捲動而移動，瀏覽器卻仍會
+          // 為了把項目對齊視窗中央而捲動視窗，把文件拉離閱讀位置。這個
+          // 「第二個捲動寫入者」與 05 的收斂迴圈互搶捲軸，就是目錄跳轉時
+          // 「畫面在原位置與目標之間來回閃跳 3-4 秒」的元兇（平時開著側欄
+          // 閱讀、章節切換時也會被小幅度拉扯）。改為直接捲動面板內容。
+          const content = tocContainer.querySelector('.floating-toc-content');
+          if (content) {
+            const contentRect = content.getBoundingClientRect();
+            const delta = (itemRect.top + itemRect.height / 2)
+                        - (contentRect.top + contentRect.height / 2);
+            content.scrollTo({
+              top: Math.max(0, content.scrollTop + delta),
+              behavior: 'smooth'
+            });
+            if (scrollDebugOn()) {
+              console.log('[w2e] 側欄面板同步：僅捲動 .floating-toc-content，delta=', Math.round(delta));
+            }
+          }
         }
       }
     }
@@ -172,11 +188,17 @@
   // 有時目標直接被推到視窗外）。停止捲動後被跳過的區塊集合固定，目標的絕對
   // 位置才會穩定，因此用短週期重測試斂即可。
   //
+  // 收斂的 scrollTo 是瞬時的，會中途砍掉 scrollIntoView 的平滑動畫——
+  // 兩個捲動寫入者同時在場，畫面上就是抖動。故先輪詢等平滑捲動結束
+  // （scrollY 連續兩次不動；上限 1.6s 保險），同一時間只留一個寫入者。
+  //
   // 使用者一開始自己捲（wheel/touch/方向鍵）就立刻放手，不跟使用者搖滾輪。
   function settleAnchorTo(el) {
     let stable = 0;
     let tries = 0;
+    let lastWritten = null;   // 上次自己寫入的位置：偵測是否有別人也在捲視窗
     let userScrolled = false;
+    const debug = scrollDebugOn();
     const stop = () => { userScrolled = true; };
     window.addEventListener('wheel', stop, { passive: true, once: true });
     window.addEventListener('touchstart', stop, { passive: true, once: true });
@@ -187,16 +209,38 @@
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
       const want = anchorTargetScrollTop(el);
-      if (Math.abs(want - window.pageYOffset) > 2) {
+      const y = window.pageYOffset;
+      if (debug && lastWritten !== null && Math.abs(y - lastWritten) > 4) {
+        console.warn('[w2e-anchor-settle] 外部捲動介入（非本迴圈所寫）',
+                     { 預期: Math.round(lastWritten), 實際: Math.round(y) });
+      }
+      if (Math.abs(want - y) > 2) {
         window.scrollTo(0, want);
+        lastWritten = want;
         stable = 0;
       } else if (++stable >= 2) {
         return;
       }
-      if (++tries >= 40) return;   // 約 6 秒上限
+      tries++;
+      if (tries >= 40) return;   // 約 6 秒上限
       setTimeout(tick, 150);
     };
-    setTimeout(tick, 150);
+
+    const t0 = Date.now();
+    let lastY = window.pageYOffset;
+    const waitAnimation = () => {
+      if (userScrolled || !document.body.contains(el)) return;
+      const y = window.pageYOffset;
+      const still = (y === lastY);
+      lastY = y;
+      if (still || Date.now() - t0 > 1600) {
+        if (debug) console.log('[w2e-anchor-settle] 平滑捲動結束，開始收斂', { y: Math.round(y) });
+        tick();
+        return;
+      }
+      setTimeout(waitAnimation, 120);
+    };
+    setTimeout(waitAnimation, 150);
   }
 
   // 處理頁面加載時的錨點跳轉

@@ -30,6 +30,13 @@ function getText(simplifiedText, traditionalText) {
   return isTraditionalChinesePage() ? traditionalText : simplifiedText;
 }
 
+// 捲動行為偵錯開關（預設關閉、零輸出）：localStorage 設 'w2e:scrollDebug'='1'
+// 時，03d 面板同步與 05／03d 的收斂迴圈會輸出定位過程與「外部捲動介入」
+// 警示，供回報畫面閃跳問題時直接提供 console 記錄。
+function scrollDebugOn() {
+  try { return localStorage.getItem('w2e:scrollDebug') === '1'; } catch (e) { return false; }
+}
+
 // ------------------------------------------------------------------ //
 // 暗色模式初始化                                                       //
 // 1. 已有偏好（localStorage 'darkMode'）→ 照偏好。                      //

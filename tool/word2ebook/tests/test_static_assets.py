@@ -959,3 +959,30 @@ def test_dark_neutral_mirror_state_and_pink_overrides():
     # 分頁 active 提示必須有暖金文字＋底線（不是只靠 bold）
     assert ("body.dark-mode.dark-neutral .floating-toc-tab.active {\n"
             "    color: var(--color-neutral-accent-2);") in css
+
+
+def test_sidebar_autoscroll_never_scrolls_window():
+    """03d 側欄面板同步不得用 scrollIntoView（2026-10 閃跳修正）。
+
+    scrollIntoView 會連帶捲動所有可捲動祖先——包括視窗。側欄面板是
+    position: fixed，項目根本不會隨視窗捲動而移動，瀏覽器卻仍會為了
+    「把項目對齊視窗中央」捲動視窗，把文件拉離閱讀位置。這個第二個
+    捲動寫入者與 05 收斂迴圈互搶捲軸＝目錄跳轉時畫面在原位置與目標
+    之間來回閃跳 3-4 秒才定格。只准捲動 .floating-toc-content。
+    """
+    src = (_JS_MODULES / "03d-reading-settings.js").read_text(encoding="utf-8")
+    # 註解允許提及（說明為何禁用）；實際呼叫（帶參數物件）不得存在
+    assert "activeItem.scrollIntoView({" not in src, "面板同步只可捲動面板內容"
+    assert "querySelector('.floating-toc-content')" in src
+    assert "content.scrollTo(" in src
+
+    # 收斂迴圈（05 與 03d）：先等發動的平滑捲動結束才開始修正——瞬時
+    # scrollTo 會中途砍掉平滑動畫，兩個寫入者同時在場畫面就是抖動。
+    for name in ("05-search-btn-visibility.js", "03d-reading-settings.js"):
+        mod = (_JS_MODULES / name).read_text(encoding="utf-8")
+        assert "waitAnimation" in mod, f"{name} 收斂前必須等平滑捲動結束"
+        assert "外部捲動介入" in mod, f"{name} 須能回報互搶證據（w2e:scrollDebug）"
+
+    # 偵錯開關：預設關閉，localStorage 'w2e:scrollDebug'='1' 開啟
+    base = (_JS_MODULES / "00-base.js").read_text(encoding="utf-8")
+    assert "function scrollDebugOn" in base

@@ -28,7 +28,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `03a-bookmark-data.js` | Bookmark storage/migration, CRUD, chapter detection, visual indicators, `toggleBookmark` |
 | `03b-bookmark-render.js` | `showBookmarkAddedFeedback`, `initializeHomepageTOC`（首頁目錄清單的頁內 `#` 跳轉同樣以 `settleInPageAnchor` 收斂）, `renderBookmarkChaptersBatch`, toast messages |
 | `03c-bookmark-ui.js` | `renderIndexTOC`, `showBookmarkLoadingIndicator`, `renderBookmarks`, `updateBookmarkCount` |
-| `03d-reading-settings.js` | 閱讀設置的**事件接線**（`applyReadingSettings`、`updateFontSize`/`updateLineHeight`/`updateContentWidth`、轉呼叫 `window.W2EReading`）＋跨模組共用的狀態變數（`fontStep`/`fontSize`/`lineHeight`/`contentWidth`，供 02 按鈕狀態與 04 重設讀寫）＋`updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor`。**字級引擎本身已搬到 `assets/js/reading-prepaint.js`**（見下），此處不得再留第二份 |
+| `03d-reading-settings.js` | 閱讀設置的**事件接線**（`applyReadingSettings`、`updateFontSize`/`updateLineHeight`/`updateContentWidth`、轉呼叫 `window.W2EReading`）＋跨模組共用的狀態變數（`fontStep`/`fontSize`/`lineHeight`/`contentWidth`，供 02 按鈕狀態與 04 重設讀寫）＋`updateReadingProgress`, `updateCurrentSection`, `showToast`, `copyText`, `handleInitialAnchor`、`settleAnchorTo` 收斂迴圈（先等發動的平滑捲動結束、再短週期重測修正）。`updateCurrentSection` 的側欄自動同步**只捲動 `.floating-toc-content`**（絕不可用 `scrollIntoView`——它連帶捲動視窗，與收斂迴圈互搶造成跳轉閃跳）。**字級引擎本身已搬到 `assets/js/reading-prepaint.js`**（見下），此處不得再留第二份 |
 | `04-events.js` | Click delegation, scroll/resize handlers, component initialisation on load. 浮動目錄項點擊以 `scrollIntoView(block:'start')` ＋ `settleInPageAnchor` 收斂；書籤項點擊以 `anchorNeedsHeadroom ? 'start' : 'center'` ＋ `settleAnchorTo`（與 03d 帶錨點載入同規則）——兩者都是「跳到從未渲染的遠處內容」，不收斂會落偏、需點兩三次才定位 |
 | `05-search-btn-visibility.js` | Smart show/hide of top/bottom search activation buttons on scroll; binds in-page `#…` anchor clicks to smooth scroll **plus the `settleInPageAnchor` settle loop** — `want` = 目標頂 − `getComputedStyle(el).scrollMarginTop`（含 09c 逐群寫入的經文讓位高度），與 `scrollIntoView(block:'start')` 語義一致；本迴圈同時供 04（浮動目錄項）、03b（首頁目錄清單）直接呼叫，並以 `W2E.settleInPageAnchor` 供隔離 IIFE 模組（16 `.toc-count`、09 lightbox 跳回圖片處）呼叫 |
 | `06-toc-collapse.js` | TOC expand/collapse, level display buttons, `renderIndexTOC`, manual expand-state snapshot/restore (`sessionStorage` per book, `data-id` stable keys) |
@@ -353,6 +353,27 @@ a row (max ~6s), and SHALL stop immediately when the user scrolls
 - WHEN any of these performs an in-page jump
 - THEN the same settle loop SHALL run (03b directly; 16 and 09 via
   `W2E.settleInPageAnchor`, since they are isolated IIFEs)
+
+#### Scenario: Sidebar jump never flickers between two positions
+- GIVEN the sidebar panel is open and the user clicks a far-away TOC item
+  (or the click starts any settle loop)
+- THEN `updateCurrentSection`'s sidebar auto-scroll SHALL scroll only the
+  panel's own `.floating-toc-content` and SHALL NOT use
+  `activeItem.scrollIntoView()` — scrollIntoView also scrolls the window
+  (the panel is `position: fixed`, so its items never move with window
+  scroll, but the browser scrolls the window anyway to "center" them),
+  creating a second window writer that fights the settle loop: the viewport
+  ping-pongs between the old and target positions for 3-4 s
+- WHEN a settle loop starts after an initiating `scrollIntoView({behavior:
+  'smooth'})`
+  - THEN the loop SHALL first wait for that smooth scroll to finish (poll
+    `scrollY` until it stops changing, 1.6 s cap) before making any
+    instant correction, so only one window writer is active at a time
+- GIVEN `localStorage 'w2e:scrollDebug' = '1'`
+- THEN the settle loops (05, 03d) and the sidebar panel sync SHALL log
+  their decisions and warn `外部捲動介入` whenever an external writer moves
+  the window mid-settle, so window-writer fights can be diagnosed from a
+  user console transcript; with the flag unset there SHALL be no logging
 
 ### Requirement: Stable Q&A IDs
 JavaScript IDs for Q&A elements SHALL be computed using the same algorithm as
