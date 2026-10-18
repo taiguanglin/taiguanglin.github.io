@@ -986,3 +986,30 @@ def test_sidebar_autoscroll_never_scrolls_window():
     # 偵錯開關：預設關閉，localStorage 'w2e:scrollDebug'='1' 開啟
     base = (_JS_MODULES / "00-base.js").read_text(encoding="utf-8")
     assert "function scrollDebugOn" in base
+
+
+def test_settle_loops_are_single_flight():
+    """收斂迴圈「單飛」（2026-10 連點閃跳修正）。
+
+    收斂迴圈最短要跑 1.8s（MIN_TICKS=12）；使用者在這期間再點另一個
+    目錄項，兩個 want 不同的迴圈會同時對視窗 scrollTo 互搶——畫面在
+    兩個目標間來回閃跳（使用者 console 實測：stable 不斷歸零、兩個
+    want 交錯）。每個回合必須持有 w2eSettleRunId 編號，較新的跳轉使
+    舊迴圈立即讓位（含等動畫階段）。
+    """
+    base = (_JS_MODULES / "00-base.js").read_text(encoding="utf-8")
+    assert "let w2eSettleRunId = 0;" in base, "單飛編號須宣告在共用 scope"
+
+    for name in ("05-search-btn-visibility.js", "03d-reading-settings.js"):
+        mod = (_JS_MODULES / name).read_text(encoding="utf-8")
+        assert "++w2eSettleRunId" in mod, f"{name} 啟動收斂須取得回合編號"
+        # 迴圈本體與等動畫階段都要讓位（各出現 2 次）
+        assert mod.count("myRun !== w2eSettleRunId") == 2, \
+            f"{name} tick 與 waitAnimation 都要檢查是否已被取代"
+
+    # 偵錯輸出不得殘留「省略值屬性」字面量（2026-10 曾因 { 第: tries, 次嘗試 }
+    # 的 次嘗試 被當成未定義變數 → debug 開啟時 ReferenceError 當場炸掉迴圈，
+    # 反而「修好」了互搶、關掉又復發的假象）
+    for name in ("05-search-btn-visibility.js", "03d-reading-settings.js"):
+        mod = (_JS_MODULES / name).read_text(encoding="utf-8")
+        assert "次嘗試" not in mod

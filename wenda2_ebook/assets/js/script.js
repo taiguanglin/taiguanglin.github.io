@@ -38,6 +38,14 @@ function scrollDebugOn() {
   try { return localStorage.getItem('w2e:scrollDebug') === '1'; } catch (e) { return false; }
 }
 
+// 收斂迴圈「單飛」守門（03d settleAnchorTo 與 05 settleInPageAnchor 共用）：
+// 每次啟動收斂先 ++w2eSettleRunId 取得自己的回合編號，迴圈每步（含等動畫
+// 階段）檢查編號是否仍最新。使用者在前一回合結束前（最短 1.8s）又點了
+// 另一個目錄項時，舊目標的迴圈必須立即讓位給新回合——否則兩個 want 不同的
+// 迴圈同時對視窗 scrollTo 互搶，畫面就在兩個目標之間來回閃跳
+// （2026-10 實測：連點兩個目錄項即重現，stable 不斷歸零）。
+let w2eSettleRunId = 0;
+
 // ------------------------------------------------------------------ //
 // 暗色模式初始化                                                       //
 // 1. 已有偏好（localStorage 'darkMode'）→ 照偏好。                      //
@@ -3008,9 +3016,13 @@ function addHomepageBookmarkEventListeners() {
   // 收斂的 scrollTo 是瞬時的，會中途砍掉 scrollIntoView 的平滑動畫——
   // 兩個捲動寫入者同時在場，畫面上就是抖動。故先輪詢等平滑捲動結束
   // （scrollY 連續兩次不動；上限 1.6s 保險），同一時間只留一個寫入者。
+  // 單飛：收斂期間使用者再點另一個目錄項（want 不同）時，兩個迴圈互搶
+  // 一樣是閃跳——故每回合持有 w2eSettleRunId 編號，較新的跳轉使舊迴圈
+  // 立即讓位（含等動畫階段），永遠只有最新目標在收斂。
   //
   // 使用者一開始自己捲（wheel/touch/方向鍵）就立刻放手，不跟使用者搖滾輪。
   function settleAnchorTo(el) {
+    const myRun = ++w2eSettleRunId;   // 單飛：較新的跳轉會使本迴圈失效
     let stable = 0;
     let tries = 0;
     let lastWritten = null;   // 上次自己寫入的位置：偵測是否有別人也在捲視窗
@@ -3025,6 +3037,7 @@ function addHomepageBookmarkEventListeners() {
 
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 已被較新的跳轉取代，讓位
       const want = anchorTargetScrollTop(el);
       const y = window.pageYOffset;
       if (debug && lastWritten !== null && Math.abs(y - lastWritten) > 4) {
@@ -3047,6 +3060,7 @@ function addHomepageBookmarkEventListeners() {
     let lastY = window.pageYOffset;
     const waitAnimation = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 等動畫期間也被新跳轉取代
       const y = window.pageYOffset;
       const still = (y === lastY);
       lastY = y;
@@ -3629,6 +3643,7 @@ function addHomepageBookmarkEventListeners() {
     const MIN_TICKS = 12;   // 約 1.8s：等高度換算（240px 估計→真實）收斂
     const MAX_TICKS = 40;   // 約 6s 上限
     const TICK_MS = 150;
+    const myRun = ++w2eSettleRunId;   // 單飛：較新的跳轉會使本迴圈失效
     const debug = scrollDebugOn();
     let stable = 0;
     let tries = 0;
@@ -3644,6 +3659,7 @@ function addHomepageBookmarkEventListeners() {
 
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 已被較新的跳轉取代，讓位
       const height = document.documentElement.scrollHeight;
       if (height !== lastHeight) { lastHeight = height; stable = 0; }
       const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset
@@ -3653,7 +3669,7 @@ function addHomepageBookmarkEventListeners() {
         // 收斂期間視窗被本迴圈以外的力量拉走＝還有第二個捲動寫入者
         // （歷史案例：03d 側欄同步的 scrollIntoView 連帶捲動視窗）
         console.warn('[w2e-settle] 外部捲動介入（非本迴圈所寫）',
-                     { 預期: Math.round(lastWritten), 實際: Math.round(y), 第: tries, 次嘗試 });
+                     { 預期: Math.round(lastWritten), 實際: Math.round(y), 嘗試: tries });
       }
       if (Math.abs(want - y) > 2) {
         window.scrollTo(0, want);
@@ -3679,6 +3695,7 @@ function addHomepageBookmarkEventListeners() {
     let lastY = window.pageYOffset;
     const waitAnimation = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 等動畫期間也被新跳轉取代
       const y = window.pageYOffset;
       const still = (y === lastY);
       lastY = y;

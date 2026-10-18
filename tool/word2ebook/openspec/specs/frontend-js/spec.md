@@ -369,6 +369,14 @@ a row (max ~6s), and SHALL stop immediately when the user scrolls
   - THEN the loop SHALL first wait for that smooth scroll to finish (poll
     `scrollY` until it stops changing, 1.6 s cap) before making any
     instant correction, so only one window writer is active at a time
+- WHEN a new in-page jump starts while a previous settle loop is still
+  running (each loop's minimum runtime is ~1.8 s, e.g. the user clicks
+  another TOC item right after the first)
+- THEN the new loop SHALL supersede the old one immediately: every loop
+  holds a run id from the shared `w2eSettleRunId` counter (00-base), and a
+  mismatch makes the old loop step down in **both** its wait-animation and
+  tick phases — two live loops with different targets fighting over the
+  window is precisely the position ping-pong flicker
 - GIVEN `localStorage 'w2e:scrollDebug' = '1'`
 - THEN the settle loops (05, 03d) and the sidebar panel sync SHALL log
   their decisions and warn `外部捲動介入` whenever an external writer moves

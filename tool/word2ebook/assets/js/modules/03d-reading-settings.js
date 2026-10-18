@@ -191,9 +191,13 @@
   // 收斂的 scrollTo 是瞬時的，會中途砍掉 scrollIntoView 的平滑動畫——
   // 兩個捲動寫入者同時在場，畫面上就是抖動。故先輪詢等平滑捲動結束
   // （scrollY 連續兩次不動；上限 1.6s 保險），同一時間只留一個寫入者。
+  // 單飛：收斂期間使用者再點另一個目錄項（want 不同）時，兩個迴圈互搶
+  // 一樣是閃跳——故每回合持有 w2eSettleRunId 編號，較新的跳轉使舊迴圈
+  // 立即讓位（含等動畫階段），永遠只有最新目標在收斂。
   //
   // 使用者一開始自己捲（wheel/touch/方向鍵）就立刻放手，不跟使用者搖滾輪。
   function settleAnchorTo(el) {
+    const myRun = ++w2eSettleRunId;   // 單飛：較新的跳轉會使本迴圈失效
     let stable = 0;
     let tries = 0;
     let lastWritten = null;   // 上次自己寫入的位置：偵測是否有別人也在捲視窗
@@ -208,6 +212,7 @@
 
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 已被較新的跳轉取代，讓位
       const want = anchorTargetScrollTop(el);
       const y = window.pageYOffset;
       if (debug && lastWritten !== null && Math.abs(y - lastWritten) > 4) {
@@ -230,6 +235,7 @@
     let lastY = window.pageYOffset;
     const waitAnimation = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 等動畫期間也被新跳轉取代
       const y = window.pageYOffset;
       const still = (y === lastY);
       lastY = y;

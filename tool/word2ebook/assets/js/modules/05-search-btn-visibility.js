@@ -90,6 +90,7 @@
     const MIN_TICKS = 12;   // 約 1.8s：等高度換算（240px 估計→真實）收斂
     const MAX_TICKS = 40;   // 約 6s 上限
     const TICK_MS = 150;
+    const myRun = ++w2eSettleRunId;   // 單飛：較新的跳轉會使本迴圈失效
     const debug = scrollDebugOn();
     let stable = 0;
     let tries = 0;
@@ -105,6 +106,7 @@
 
     const tick = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 已被較新的跳轉取代，讓位
       const height = document.documentElement.scrollHeight;
       if (height !== lastHeight) { lastHeight = height; stable = 0; }
       const want = Math.max(0, el.getBoundingClientRect().top + window.pageYOffset
@@ -114,7 +116,7 @@
         // 收斂期間視窗被本迴圈以外的力量拉走＝還有第二個捲動寫入者
         // （歷史案例：03d 側欄同步的 scrollIntoView 連帶捲動視窗）
         console.warn('[w2e-settle] 外部捲動介入（非本迴圈所寫）',
-                     { 預期: Math.round(lastWritten), 實際: Math.round(y), 第: tries, 次嘗試 });
+                     { 預期: Math.round(lastWritten), 實際: Math.round(y), 嘗試: tries });
       }
       if (Math.abs(want - y) > 2) {
         window.scrollTo(0, want);
@@ -140,6 +142,7 @@
     let lastY = window.pageYOffset;
     const waitAnimation = () => {
       if (userScrolled || !document.body.contains(el)) return;
+      if (myRun !== w2eSettleRunId) return;   // 等動畫期間也被新跳轉取代
       const y = window.pageYOffset;
       const still = (y === lastY);
       lastY = y;

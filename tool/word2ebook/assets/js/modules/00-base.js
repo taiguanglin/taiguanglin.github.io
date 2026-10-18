@@ -37,6 +37,14 @@ function scrollDebugOn() {
   try { return localStorage.getItem('w2e:scrollDebug') === '1'; } catch (e) { return false; }
 }
 
+// 收斂迴圈「單飛」守門（03d settleAnchorTo 與 05 settleInPageAnchor 共用）：
+// 每次啟動收斂先 ++w2eSettleRunId 取得自己的回合編號，迴圈每步（含等動畫
+// 階段）檢查編號是否仍最新。使用者在前一回合結束前（最短 1.8s）又點了
+// 另一個目錄項時，舊目標的迴圈必須立即讓位給新回合——否則兩個 want 不同的
+// 迴圈同時對視窗 scrollTo 互搶，畫面就在兩個目標之間來回閃跳
+// （2026-10 實測：連點兩個目錄項即重現，stable 不斷歸零）。
+let w2eSettleRunId = 0;
+
 // ------------------------------------------------------------------ //
 // 暗色模式初始化                                                       //
 // 1. 已有偏好（localStorage 'darkMode'）→ 照偏好。                      //
