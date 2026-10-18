@@ -30,6 +30,15 @@ function getText(simplifiedText, traditionalText) {
   return isTraditionalChinesePage() ? traditionalText : simplifiedText;
 }
 
+// 開發日誌開關（預設關閉、零輸出）：localStorage 設 'w2e:debug'='1' 時，
+// 各模組的開發診斷日誌（搜尋索引建立、目錄層級選擇、浮動按鈕、書籤遷移、
+// IndexedDB 快取…）才會輸出。一般使用者的 console 保持乾淨；真正的
+// 錯誤路徑仍照常 console.warn/error。reading-prepaint.js 與
+// search-cache.js 是獨立載入的檔案，各自持有同鍵的本份判斷。
+function debugOn() {
+  try { return localStorage.getItem('w2e:debug') === '1'; } catch (e) { return false; }
+}
+
 // 捲動行為偵錯開關（預設關閉、零輸出）：localStorage 設 'w2e:scrollDebug'='1'
 // 時，03d 面板同步與 05／03d 的收斂迴圈會輸出定位過程與「外部捲動介入」
 // 警示，供回報畫面閃跳問題時直接提供 console 記錄。

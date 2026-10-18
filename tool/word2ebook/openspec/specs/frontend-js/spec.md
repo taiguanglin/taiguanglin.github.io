@@ -396,6 +396,27 @@ their multi-id lookups are removed.
 - WHEN the JavaScript `generateStableContentId` function runs
 - THEN the resulting hash SHALL match the Python `IDGenerator.generate_stable_qa_id` output
 
+### Requirement: Console Output Discipline
+The ebook pages SHALL keep the browser console clean for regular readers:
+development diagnostics are gated behind `localStorage 'w2e:debug' = '1'`
+(default off, zero output), while genuine error paths keep their
+`console.warn` / `console.error`.
+
+#### Scenario: Dev logs gated behind w2e:debug
+- GIVEN the flag is unset (default)
+- WHEN a page loads, search indexes build or restore from cache, the TOC
+  display level is chosen, reading settings apply, bookmarks migrate, the
+  floating controls adapt, or the IndexedDB search cache runs
+- THEN none of these SHALL emit `console.log` output: modules 01a, 01b,
+  01e, 03a, 06, 07 (gated on the shared `debugOn()` helper from 00-base)
+  and the standalone `reading-prepaint.js` / `search-cache.js` (gated on
+  their own local `W2E_DEBUG` flag, same localStorage key — they load
+  outside the concatenated IIFE scope); error paths (index download
+  failure, jieba degradation, cache init failure…) still warn normally
+- GIVEN `localStorage 'w2e:debug' = '1'`
+- THEN those diagnostics SHALL print again, so problems can be traced from
+  a user console transcript
+
 ### Requirement: Bookmark Navigation
 `jumpToBookmark` SHALL navigate in the same tab (`window.location.href`),
 consistent with search-result and TOC navigation (no tab accumulation).

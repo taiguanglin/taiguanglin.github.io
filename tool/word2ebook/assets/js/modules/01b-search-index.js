@@ -50,7 +50,7 @@ function createProgressUI(searchStatus, initialText) {
 async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
   console.time('📇 分詞+索引建立時間 (分批處理)');
   const isTrad = isTraditionalChinesePage();
-  console.log(isTrad
+  if (debugOn()) console.log(isTrad
     ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
     : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
 
@@ -87,14 +87,14 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
 
   searchStatus.removeChild(progress.container);
   console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
-  console.log('✅ 索引建立完成！');
+  if (debugOn()) console.log('✅ 索引建立完成！');
 }
 
 // 分批建立索引並收集處理後數據（供緩存使用）
 async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems) {
   console.time('📇 分詞+索引建立時間 (分批處理)');
   const isTrad = isTraditionalChinesePage();
-  console.log(isTrad
+  if (debugOn()) console.log(isTrad
     ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
     : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
 
@@ -131,7 +131,7 @@ async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, search
   }
 
   console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
-  console.log('✅ 索引建立完成！');
+  if (debugOn()) console.log('✅ 索引建立完成！');
 }
 
 // 支持緩存的索引建立（優先嘗試從緩存恢復）
@@ -152,7 +152,7 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
 
   if (processedData) {
     console.time('📇 從緩存恢復索引');
-    console.log('⚡ 從緩存恢復處理後的搜索索引...');
+    if (debugOn()) console.log('⚡ 從緩存恢復處理後的搜索索引...');
     try {
       const BATCH_SIZE = 1000;
       const totalItems = processedData.length;
@@ -173,17 +173,17 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
       }
 
       console.timeEnd('📇 從緩存恢復索引');
-      console.log(isTrad ? '⚡ 從緩存快速恢復索引完成！' : '⚡ 从缓存快速恢复索引完成！');
+      if (debugOn()) console.log(isTrad ? '⚡ 從緩存快速恢復索引完成！' : '⚡ 从缓存快速恢复索引完成！');
     } catch (error) {
       console.warn('從緩存恢復失敗，將重新建立索引:', error);
       await buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled);
     }
   } else {
-    console.log('🔄 執行完整的分詞和索引建立流程...');
+    if (debugOn()) console.log('🔄 執行完整的分詞和索引建立流程...');
     const processedItems = [];
     await buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems);
     if (cacheManager && processedItems.length > 0) {
-      console.log('💾 保存處理後的索引到緩存...');
+      if (debugOn()) console.log('💾 保存處理後的索引到緩存...');
       await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled, currentHash);
     }
   }

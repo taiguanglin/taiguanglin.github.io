@@ -199,12 +199,12 @@
     // 取交集：既有內容又有按鈕的層級
     const validLevels = availableLevels.filter(level => visibleButtons.includes(level));
     
-    console.log('有內容的層級:', availableLevels, '可見按鈕層級:', visibleButtons, '有效層級:', validLevels);
-    console.log('保存的層級:', savedLevelNum, '最大層級:', maxLevelNum);
+    if (debugOn()) console.log('有內容的層級:', availableLevels, '可見按鈕層級:', visibleButtons, '有效層級:', validLevels);
+    if (debugOn()) console.log('保存的層級:', savedLevelNum, '最大層級:', maxLevelNum);
     
     // 如果保存的層級在有效層級中，直接使用
     if (validLevels.includes(savedLevelNum)) {
-      console.log('使用保存的層級:', savedLevelNum);
+      if (debugOn()) console.log('使用保存的層級:', savedLevelNum);
       return savedLevel;
     }
     
@@ -226,7 +226,7 @@
       }
     }
     
-    console.log('智能選擇的層級:', selectedLevel, '原因: 最接近保存的層級', savedLevelNum);
+    if (debugOn()) console.log('智能選擇的層級:', selectedLevel, '原因: 最接近保存的層級', savedLevelNum);
     return selectedLevel.toString();
   }
 
@@ -262,7 +262,7 @@
       });
     }
     
-    console.log('检测到的最大目录层级:', maxLevel);
+    if (debugOn()) console.log('检测到的最大目录层级:', maxLevel);
     
     // 隐藏超出实际层级的按钮
     const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');

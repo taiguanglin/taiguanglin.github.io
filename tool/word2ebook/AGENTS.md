@@ -126,7 +126,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 
 | File | Responsibility |
 |------|---------------|
-| `00-base.js` | `W2E` global namespace, dark mode init, shared helpers: `isIndexPage`, `isTraditionalChinesePage`, `getText`, `scrollDebugOn`（捲動偵錯開關，`localStorage 'w2e:scrollDebug'='1'`，預設零輸出） |
+| `00-base.js` | `W2E` global namespace, dark mode init, shared helpers: `isIndexPage`, `isTraditionalChinesePage`, `getText`, `scrollDebugOn`（捲動偵錯開關，`localStorage 'w2e:scrollDebug'='1'`，預設零輸出）, `debugOn`（開發日誌開關，`localStorage 'w2e:debug'='1'`——01a/01b/01e/03a/06/07 的診斷 `console.log` 一律經此 gate，預設零輸出；錯誤路徑的 `console.warn`/`error` 不 gate。獨立載入的 `reading-prepaint.js`／`search-cache.js` 各自持有同鍵的 `W2E_DEBUG` 本份） |
 | `01a-search-init.js` | Search state variables, `activateSearch`, loading/error UI, `loadSearchIndexWithProgress`, Jieba WASM init, `segmentWithJieba` |
 | `01b-search-index.js` | `createSearchConfig`, `buildSearchIndexInBatches`, `buildSearchIndexInBatchesWithCache` |
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |

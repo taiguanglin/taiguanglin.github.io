@@ -228,14 +228,14 @@
     try {
       // 檢查是否已經初始化
       if (chineseSegmenter) {
-        console.log(isTraditionalChinesePage() ? 
+        if (debugOn()) console.log(isTraditionalChinesePage() ? 
           '✅ jieba-wasm 已初始化，跳過重複初始化' : 
           '✅ jieba-wasm 已初始化，跳过重复初始化');
         return true;
       }
 
       // 引入 jieba_rs_wasm.js 模塊
-      console.log(isTraditionalChinesePage() ? 
+      if (debugOn()) console.log(isTraditionalChinesePage() ? 
         '⏳ 正在載入 jieba_rs_wasm.js...' : 
         '⏳ 正在载入 jieba_rs_wasm.js...');
       
@@ -253,7 +253,7 @@
         }
       };
       
-      console.log(isTraditionalChinesePage() ? 
+      if (debugOn()) console.log(isTraditionalChinesePage() ? 
         '✅ jieba-wasm 已啟用，支持高性能中文分詞' : 
         '✅ jieba-wasm 已启用，支持高性能中文分词');
       return true;
@@ -296,7 +296,7 @@
         
         // 每2000次調用輸出一次統計（避免日誌過多）
         if (segmentationStats.calls % 2000 === 0) {
-          console.log(isTraditionalChinesePage() ? 
+          if (debugOn()) console.log(isTraditionalChinesePage() ? 
             `🔤 jieba-wasm 統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
             `🔤 jieba-wasm 统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
         }

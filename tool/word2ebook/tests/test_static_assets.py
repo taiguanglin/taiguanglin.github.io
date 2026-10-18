@@ -1013,3 +1013,32 @@ def test_settle_loops_are_single_flight():
     for name in ("05-search-btn-visibility.js", "03d-reading-settings.js"):
         mod = (_JS_MODULES / name).read_text(encoding="utf-8")
         assert "次嘗試" not in mod
+
+
+def test_dev_console_logs_are_gated():
+    """開發日誌一律 gate 在 'w2e:debug' 之後（2026-10 console 減噪）。
+
+    一般使用者的 console 必須乾淨：模組裡所有診斷 console.log（搜尋
+    索引建立、目錄層級選擇、浮動按鈕、字級套用、IndexedDB 快取…）都
+    要掛在 debugOn() / W2E_DEBUG 之後（預設零輸出）；錯誤路徑的
+    console.warn/error 不在此限（真錯誤仍要能看到）。
+    """
+    gated_modules = ["01a-search-init.js", "01b-search-index.js",
+                     "01e-search-ui.js", "03a-bookmark-data.js",
+                     "06-toc-collapse.js", "07-floating-controls.js"]
+    for m in gated_modules:
+        src = (_JS_MODULES / m).read_text(encoding="utf-8")
+        assert not re.search(r'^\s*console\.log\(', src, flags=re.M), \
+            f"{m} 不得有未 gate 的 console.log"
+        assert "debugOn()" in src, f"{m} 的日誌須經 debugOn() gate"
+
+    assets_js = _JS_MODULES.parent
+    for standalone in ("reading-prepaint.js", "search-cache.js"):
+        src = (assets_js / standalone).read_text(encoding="utf-8")
+        assert not re.search(r'^\s*console\.log\(', src, flags=re.M), \
+            f"{standalone} 不得有未 gate 的 console.log"
+        assert "W2E_DEBUG" in src, f"{standalone} 須自持 W2E_DEBUG 開關"
+
+    base = (_JS_MODULES / "00-base.js").read_text(encoding="utf-8")
+    assert "function debugOn" in base, "debugOn() 須宣告在共用 scope"
+    assert "'w2e:debug'" in base

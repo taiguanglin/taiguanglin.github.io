@@ -2,6 +2,11 @@
  * 搜索緩存管理器 - 使用 IndexedDB 緩存搜索相關數據
  */
 
+/* 開發日誌開關：localStorage 'w2e:debug'='1' 才輸出（預設零輸出）。
+   本檔獨立於 script.js 的 scope，故自持一份（與 00-base.js 的 debugOn() 同鍵）。 */
+var W2E_DEBUG = false;
+try { W2E_DEBUG = localStorage.getItem('w2e:debug') === '1'; } catch (e) {}
+
 class SearchCacheManager {
   constructor() {
     this.dbName = 'SearchCache';
@@ -30,7 +35,7 @@ class SearchCacheManager {
       
       request.onsuccess = () => {
         this.db = request.result;
-        console.log('✅ IndexedDB 初始化成功');
+        if (W2E_DEBUG) console.log('✅ IndexedDB 初始化成功');
         resolve(this.db);
       };
       
@@ -54,7 +59,7 @@ class SearchCacheManager {
           db.createObjectStore(this.stores.metadata, { keyPath: 'key' });
         }
         
-        console.log('📦 IndexedDB 數據庫結構已創建');
+        if (W2E_DEBUG) console.log('📦 IndexedDB 數據庫結構已創建');
       };
     });
   }
@@ -102,7 +107,7 @@ class SearchCacheManager {
       const store = transaction.objectStore(this.stores.searchIndex);
       await this.promisifyRequest(store.put(cacheData));
       
-      console.log(`💾 搜索索引已緩存: ${key} (${this.formatSize(cacheData.size)})`);
+      if (W2E_DEBUG) console.log(`💾 搜索索引已緩存: ${key} (${this.formatSize(cacheData.size)})`);
       return true;
     } catch (error) {
       console.warn('緩存搜索索引失敗:', error);
@@ -124,7 +129,7 @@ class SearchCacheManager {
       const result = await this.promisifyRequest(store.get(key));
       
       if (result) {
-        console.log(`📦 從緩存加載搜索索引: ${key} (${this.formatSize(result.size)})`);
+        if (W2E_DEBUG) console.log(`📦 從緩存加載搜索索引: ${key} (${this.formatSize(result.size)})`);
         return result.data;
       }
       return null;
@@ -156,7 +161,7 @@ class SearchCacheManager {
       const store = transaction.objectStore(this.stores.processedIndex);
       await this.promisifyRequest(store.put(cacheData));
       
-      console.log(`💾 處理後索引已緩存: ${key} (${this.formatSize(cacheData.size)})`);
+      if (W2E_DEBUG) console.log(`💾 處理後索引已緩存: ${key} (${this.formatSize(cacheData.size)})`);
       return true;
     } catch (error) {
       console.warn('緩存處理後索引失敗:', error);
@@ -179,7 +184,7 @@ class SearchCacheManager {
       const result = await this.promisifyRequest(store.get(key));
       
       if (result && result.segmenterEnabled === segmenterEnabled) {
-        console.log(`📦 從緩存加載處理後索引: ${key} (${this.formatSize(result.size)})`);
+        if (W2E_DEBUG) console.log(`📦 從緩存加載處理後索引: ${key} (${this.formatSize(result.size)})`);
         return result.data;
       }
       return null;
@@ -249,7 +254,7 @@ class SearchCacheManager {
 
       const remoteHashData = await this.fetchHashFile(hashFileName);
       if (!remoteHashData) {
-        console.log('📡 無法獲取遠程哈希文件，將重新下載索引');
+        if (W2E_DEBUG) console.log('📡 無法獲取遠程哈希文件，將重新下載索引');
         return { needsUpdate: true, hashData: null };
       }
 
@@ -257,15 +262,15 @@ class SearchCacheManager {
       const localHashData = await this.getMetadata(localHashKey);
 
       if (!localHashData) {
-        console.log('💾 本地無哈希記錄，需要下載');
+        if (W2E_DEBUG) console.log('💾 本地無哈希記錄，需要下載');
         return { needsUpdate: true, hashData: remoteHashData };
       }
 
       const needsUpdate = localHashData.hash !== remoteHashData.hash;
       if (needsUpdate) {
-        console.log(`🔄 檢測到內容更新 (${localHashData.hash.substring(0,8)} → ${remoteHashData.hash.substring(0,8)})`);
+        if (W2E_DEBUG) console.log(`🔄 檢測到內容更新 (${localHashData.hash.substring(0,8)} → ${remoteHashData.hash.substring(0,8)})`);
       } else {
-        console.log(`✅ 內容未變更 (${remoteHashData.hash.substring(0,8)})`);
+        if (W2E_DEBUG) console.log(`✅ 內容未變更 (${remoteHashData.hash.substring(0,8)})`);
       }
 
       return { needsUpdate: needsUpdate, hashData: remoteHashData };
@@ -320,7 +325,7 @@ class SearchCacheManager {
             const key = cursor.value.key;
             // 檢查是否是相同語言的處理後索引
             if (key.includes(`processed_index_${lang}_`)) {
-              console.log(`🗑️ 清除處理後索引緩存: ${key}`);
+              if (W2E_DEBUG) console.log(`🗑️ 清除處理後索引緩存: ${key}`);
               cursor.delete();
               deletedCount++;
             }
@@ -328,9 +333,9 @@ class SearchCacheManager {
           } else {
             // 遍歷完成
             if (deletedCount > 0) {
-              console.log(`✅ 已清除 ${deletedCount} 個舊的處理後索引緩存`);
+              if (W2E_DEBUG) console.log(`✅ 已清除 ${deletedCount} 個舊的處理後索引緩存`);
             } else {
-              console.log(`ℹ️ 沒有找到需要清除的處理後索引緩存`);
+              if (W2E_DEBUG) console.log(`ℹ️ 沒有找到需要清除的處理後索引緩存`);
             }
             resolve();
           }
@@ -365,7 +370,7 @@ class SearchCacheManager {
         this.promisifyRequest(transaction.objectStore(this.stores.metadata).clear())
       ]);
       
-      console.log('🗑️ 所有搜索緩存已清除');
+      if (W2E_DEBUG) console.log('🗑️ 所有搜索緩存已清除');
       return true;
     } catch (error) {
       console.warn('清除緩存失敗:', error);

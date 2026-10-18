@@ -63,10 +63,10 @@
     // 调试模式：检查元素是否正确创建
     const debugMode = window.location.hash.includes('debug');
     if (debugMode) {
-      console.log('FloatingControls found:', floatingControls);
-      console.log('Screen size:', window.innerWidth, 'x', window.innerHeight);
-      console.log('Device pixel ratio:', window.devicePixelRatio);
-      console.log('User agent:', navigator.userAgent);
+      if (debugOn()) console.log('FloatingControls found:', floatingControls);
+      if (debugOn()) console.log('Screen size:', window.innerWidth, 'x', window.innerHeight);
+      if (debugOn()) console.log('Device pixel ratio:', window.devicePixelRatio);
+      if (debugOn()) console.log('User agent:', navigator.userAgent);
     }
     
     // 绑定浮动按钮事件
@@ -81,7 +81,7 @@
       floatingControls.style.removeProperty('zIndex');
       floatingControls.style.removeProperty('position');
       if (debugMode) {
-        console.log('Floating controls styles reset');
+        if (debugOn()) console.log('Floating controls styles reset');
       }
     }
     
@@ -103,7 +103,7 @@
       }
       
       if (debugMode) {
-        console.log('Styles applied for:', isMobile ? 'mobile' : 'desktop', 
+        if (debugOn()) console.log('Styles applied for:', isMobile ? 'mobile' : 'desktop', 
                    `(${window.innerWidth}px)`);
       }
     }
@@ -129,7 +129,7 @@
       
       // 调试输出
       if (debugMode && currentScrollY > 50) {
-        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
+        if (debugOn()) console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
       }
       
       if (shouldShowFloating) {
@@ -155,7 +155,7 @@
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         if (debugMode) {
-          console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
+          if (debugOn()) console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
         }
         // 重新应用字体设置，确保在屏幕尺寸变化时字体调整依然有效
         applyReadingSettings();
@@ -169,7 +169,7 @@
     function handleOrientationChange() {
       setTimeout(() => {
         if (debugMode) {
-          console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
+          if (debugOn()) console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
         }
         // 重新应用字体设置，确保方向变化后字体调整依然有效
         applyReadingSettings();

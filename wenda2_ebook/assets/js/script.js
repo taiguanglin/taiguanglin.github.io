@@ -31,6 +31,15 @@ function getText(simplifiedText, traditionalText) {
   return isTraditionalChinesePage() ? traditionalText : simplifiedText;
 }
 
+// 開發日誌開關（預設關閉、零輸出）：localStorage 設 'w2e:debug'='1' 時，
+// 各模組的開發診斷日誌（搜尋索引建立、目錄層級選擇、浮動按鈕、書籤遷移、
+// IndexedDB 快取…）才會輸出。一般使用者的 console 保持乾淨；真正的
+// 錯誤路徑仍照常 console.warn/error。reading-prepaint.js 與
+// search-cache.js 是獨立載入的檔案，各自持有同鍵的本份判斷。
+function debugOn() {
+  try { return localStorage.getItem('w2e:debug') === '1'; } catch (e) { return false; }
+}
+
 // 捲動行為偵錯開關（預設關閉、零輸出）：localStorage 設 'w2e:scrollDebug'='1'
 // 時，03d 面板同步與 05／03d 的收斂迴圈會輸出定位過程與「外部捲動介入」
 // 警示，供回報畫面閃跳問題時直接提供 console 記錄。
@@ -301,14 +310,14 @@ document.documentElement.classList.remove('dark-mode');
     try {
       // 檢查是否已經初始化
       if (chineseSegmenter) {
-        console.log(isTraditionalChinesePage() ? 
+        if (debugOn()) console.log(isTraditionalChinesePage() ? 
           '✅ jieba-wasm 已初始化，跳過重複初始化' : 
           '✅ jieba-wasm 已初始化，跳过重复初始化');
         return true;
       }
 
       // 引入 jieba_rs_wasm.js 模塊
-      console.log(isTraditionalChinesePage() ? 
+      if (debugOn()) console.log(isTraditionalChinesePage() ? 
         '⏳ 正在載入 jieba_rs_wasm.js...' : 
         '⏳ 正在载入 jieba_rs_wasm.js...');
       
@@ -326,7 +335,7 @@ document.documentElement.classList.remove('dark-mode');
         }
       };
       
-      console.log(isTraditionalChinesePage() ? 
+      if (debugOn()) console.log(isTraditionalChinesePage() ? 
         '✅ jieba-wasm 已啟用，支持高性能中文分詞' : 
         '✅ jieba-wasm 已启用，支持高性能中文分词');
       return true;
@@ -369,7 +378,7 @@ document.documentElement.classList.remove('dark-mode');
         
         // 每2000次調用輸出一次統計（避免日誌過多）
         if (segmentationStats.calls % 2000 === 0) {
-          console.log(isTraditionalChinesePage() ? 
+          if (debugOn()) console.log(isTraditionalChinesePage() ? 
             `🔤 jieba-wasm 統計: ${segmentationStats.calls} 次調用, 平均耗時: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms` :
             `🔤 jieba-wasm 统计: ${segmentationStats.calls} 次调用, 平均耗时: ${(segmentationStats.totalTime / segmentationStats.calls).toFixed(2)}ms`);
         }
@@ -441,7 +450,7 @@ function createProgressUI(searchStatus, initialText) {
 async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled) {
   console.time('📇 分詞+索引建立時間 (分批處理)');
   const isTrad = isTraditionalChinesePage();
-  console.log(isTrad
+  if (debugOn()) console.log(isTrad
     ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
     : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
 
@@ -478,14 +487,14 @@ async function buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, 
 
   searchStatus.removeChild(progress.container);
   console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
-  console.log('✅ 索引建立完成！');
+  if (debugOn()) console.log('✅ 索引建立完成！');
 }
 
 // 分批建立索引並收集處理後數據（供緩存使用）
 async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems) {
   console.time('📇 分詞+索引建立時間 (分批處理)');
   const isTrad = isTraditionalChinesePage();
-  console.log(isTrad
+  if (debugOn()) console.log(isTrad
     ? `🔄 開始分批分詞並建立索引 ${searchIndex.length} 條記錄...`
     : `🔄 开始分批分词并建立索引 ${searchIndex.length} 条记录...`);
 
@@ -522,7 +531,7 @@ async function buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, search
   }
 
   console.timeEnd('📇 分詞+索引建立時間 (分批處理)');
-  console.log('✅ 索引建立完成！');
+  if (debugOn()) console.log('✅ 索引建立完成！');
 }
 
 // 支持緩存的索引建立（優先嘗試從緩存恢復）
@@ -543,7 +552,7 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
 
   if (processedData) {
     console.time('📇 從緩存恢復索引');
-    console.log('⚡ 從緩存恢復處理後的搜索索引...');
+    if (debugOn()) console.log('⚡ 從緩存恢復處理後的搜索索引...');
     try {
       const BATCH_SIZE = 1000;
       const totalItems = processedData.length;
@@ -564,17 +573,17 @@ async function buildSearchIndexInBatchesWithCache(miniSearch, searchIndex, searc
       }
 
       console.timeEnd('📇 從緩存恢復索引');
-      console.log(isTrad ? '⚡ 從緩存快速恢復索引完成！' : '⚡ 从缓存快速恢复索引完成！');
+      if (debugOn()) console.log(isTrad ? '⚡ 從緩存快速恢復索引完成！' : '⚡ 从缓存快速恢复索引完成！');
     } catch (error) {
       console.warn('從緩存恢復失敗，將重新建立索引:', error);
       await buildSearchIndexInBatches(miniSearch, searchIndex, searchStatus, segmenterEnabled);
     }
   } else {
-    console.log('🔄 執行完整的分詞和索引建立流程...');
+    if (debugOn()) console.log('🔄 執行完整的分詞和索引建立流程...');
     const processedItems = [];
     await buildSearchIndexInBatchesAndCache(miniSearch, searchIndex, searchStatus, segmenterEnabled, processedItems);
     if (cacheManager && processedItems.length > 0) {
-      console.log('💾 保存處理後的索引到緩存...');
+      if (debugOn()) console.log('💾 保存處理後的索引到緩存...');
       await cacheManager.cacheProcessedIndex(processedItems, isTraditional, segmenterEnabled, currentHash);
     }
   }
@@ -1150,7 +1159,7 @@ function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
     : (isTrad ? '使用傳統搜尋模式' : '使用传统搜索模式');
 
   console.timeEnd('🚀 搜索初始化總時間');
-  console.log(isTrad ? '🎉 搜尋初始化流程完成！' : '🎉 搜索初始化流程完成！');
+  if (debugOn()) console.log(isTrad ? '🎉 搜尋初始化流程完成！' : '🎉 搜索初始化流程完成！');
 
   elements.searchStatus.innerHTML = `
     <div class="search-status-success">
@@ -1309,7 +1318,7 @@ async function initSearch() {
   if (!isIndexPage()) return;
 
   console.time('🚀 搜索初始化總時間');
-  console.log('📊 開始搜索初始化流程...');
+  if (debugOn()) console.log('📊 開始搜索初始化流程...');
 
   const elements = getSearchElements();
   if (!elements.searchInput || !elements.searchContainer) return;
@@ -1320,7 +1329,7 @@ async function initSearch() {
     if (window.searchCacheManager) {
       await window.searchCacheManager.init();
       cacheManager = window.searchCacheManager;
-      console.log('💾 緩存管理器初始化成功');
+      if (debugOn()) console.log('💾 緩存管理器初始化成功');
     }
   } catch (err) {
     console.warn('緩存管理器初始化失敗，將使用標準流程:', err);
@@ -1360,15 +1369,15 @@ async function initSearch() {
       elements.searchStatus.appendChild(cacheMsg);
       searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
       if (!searchIndex) {
-        console.log('📡 緩存數據丟失，重新下載...');
+        if (debugOn()) console.log('📡 緩存數據丟失，重新下載...');
         needsUpdate = true;
       } else {
-        console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
+        if (debugOn()) console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
       }
     }
 
     if (needsUpdate) {
-      console.log('📡 從網絡加載搜索索引...');
+      if (debugOn()) console.log('📡 從網絡加載搜索索引...');
       if (!hashData && cacheManager) {
         const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
         hashData = await cacheManager.fetchHashFile(`${indexFileName}.hash`);
@@ -1385,16 +1394,16 @@ async function initSearch() {
         await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
         if (hashData) {
           await cacheManager.saveHashMetadata(hashData, isTraditional);
-          console.log('🗑️ 清除舊的處理後索引緩存...');
+          if (debugOn()) console.log('🗑️ 清除舊的處理後索引緩存...');
           await cacheManager.clearOldProcessedIndexes(isTraditional, hashData.hash);
         }
       }
     }
 
-    console.log(`📋 索引記錄數: ${searchIndex.length}`);
+    if (debugOn()) console.log(`📋 索引記錄數: ${searchIndex.length}`);
 
     const segmenterEnabled = await segmenterPromise;
-    console.log(isTraditionalChinesePage()
+    if (debugOn()) console.log(isTraditionalChinesePage()
       ? `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}`
       : `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
 
@@ -2122,7 +2131,7 @@ function migrateOldBookmarks() {
     if (traditional.length) localStorage.setItem('ebook-bookmarks-traditional', JSON.stringify(traditional));
     localStorage.removeItem('ebook-bookmarks');
     localStorage.setItem('bookmarks-migrated', 'true');
-    console.log(`书签迁移完成: 简体 ${simplified.length} 个, 繁体 ${traditional.length} 个`);
+    if (debugOn()) console.log(`书签迁移完成: 简体 ${simplified.length} 个, 繁体 ${traditional.length} 个`);
   } catch (e) {
     console.error('书签迁移失败:', e);
     localStorage.setItem('bookmarks-migrated', 'true');
@@ -3927,12 +3936,12 @@ function addHomepageBookmarkEventListeners() {
     // 取交集：既有內容又有按鈕的層級
     const validLevels = availableLevels.filter(level => visibleButtons.includes(level));
     
-    console.log('有內容的層級:', availableLevels, '可見按鈕層級:', visibleButtons, '有效層級:', validLevels);
-    console.log('保存的層級:', savedLevelNum, '最大層級:', maxLevelNum);
+    if (debugOn()) console.log('有內容的層級:', availableLevels, '可見按鈕層級:', visibleButtons, '有效層級:', validLevels);
+    if (debugOn()) console.log('保存的層級:', savedLevelNum, '最大層級:', maxLevelNum);
     
     // 如果保存的層級在有效層級中，直接使用
     if (validLevels.includes(savedLevelNum)) {
-      console.log('使用保存的層級:', savedLevelNum);
+      if (debugOn()) console.log('使用保存的層級:', savedLevelNum);
       return savedLevel;
     }
     
@@ -3954,7 +3963,7 @@ function addHomepageBookmarkEventListeners() {
       }
     }
     
-    console.log('智能選擇的層級:', selectedLevel, '原因: 最接近保存的層級', savedLevelNum);
+    if (debugOn()) console.log('智能選擇的層級:', selectedLevel, '原因: 最接近保存的層級', savedLevelNum);
     return selectedLevel.toString();
   }
 
@@ -3990,7 +3999,7 @@ function addHomepageBookmarkEventListeners() {
       });
     }
     
-    console.log('检测到的最大目录层级:', maxLevel);
+    if (debugOn()) console.log('检测到的最大目录层级:', maxLevel);
     
     // 隐藏超出实际层级的按钮
     const allLevelButtons = document.querySelectorAll('.toc-level-btn, .floating-level-btn');
@@ -4381,10 +4390,10 @@ function addHomepageBookmarkEventListeners() {
     // 调试模式：检查元素是否正确创建
     const debugMode = window.location.hash.includes('debug');
     if (debugMode) {
-      console.log('FloatingControls found:', floatingControls);
-      console.log('Screen size:', window.innerWidth, 'x', window.innerHeight);
-      console.log('Device pixel ratio:', window.devicePixelRatio);
-      console.log('User agent:', navigator.userAgent);
+      if (debugOn()) console.log('FloatingControls found:', floatingControls);
+      if (debugOn()) console.log('Screen size:', window.innerWidth, 'x', window.innerHeight);
+      if (debugOn()) console.log('Device pixel ratio:', window.devicePixelRatio);
+      if (debugOn()) console.log('User agent:', navigator.userAgent);
     }
     
     // 绑定浮动按钮事件
@@ -4399,7 +4408,7 @@ function addHomepageBookmarkEventListeners() {
       floatingControls.style.removeProperty('zIndex');
       floatingControls.style.removeProperty('position');
       if (debugMode) {
-        console.log('Floating controls styles reset');
+        if (debugOn()) console.log('Floating controls styles reset');
       }
     }
     
@@ -4421,7 +4430,7 @@ function addHomepageBookmarkEventListeners() {
       }
       
       if (debugMode) {
-        console.log('Styles applied for:', isMobile ? 'mobile' : 'desktop', 
+        if (debugOn()) console.log('Styles applied for:', isMobile ? 'mobile' : 'desktop', 
                    `(${window.innerWidth}px)`);
       }
     }
@@ -4447,7 +4456,7 @@ function addHomepageBookmarkEventListeners() {
       
       // 调试输出
       if (debugMode && currentScrollY > 50) {
-        console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
+        if (debugOn()) console.log(`Scroll: ${currentScrollY}px, Mobile: ${isMobile}, Threshold: ${scrollThreshold}, ControlsVisible: ${areControlsVisible}, TocContentVisible: ${isTocContentAvailable}, Show: ${shouldShowFloating}`);
       }
       
       if (shouldShowFloating) {
@@ -4473,7 +4482,7 @@ function addHomepageBookmarkEventListeners() {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         if (debugMode) {
-          console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
+          if (debugOn()) console.log('Resize detected, new size:', window.innerWidth, 'x', window.innerHeight);
         }
         // 重新应用字体设置，确保在屏幕尺寸变化时字体调整依然有效
         applyReadingSettings();
@@ -4487,7 +4496,7 @@ function addHomepageBookmarkEventListeners() {
     function handleOrientationChange() {
       setTimeout(() => {
         if (debugMode) {
-          console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
+          if (debugOn()) console.log('Orientation changed, new size:', window.innerWidth, 'x', window.innerHeight);
         }
         // 重新应用字体设置，确保方向变化后字体调整依然有效
         applyReadingSettings();

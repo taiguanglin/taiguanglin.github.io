@@ -74,7 +74,7 @@ function finalizeSearchSetup(elements, segmenterEnabled, indexLength) {
     : (isTrad ? '使用傳統搜尋模式' : '使用传统搜索模式');
 
   console.timeEnd('🚀 搜索初始化總時間');
-  console.log(isTrad ? '🎉 搜尋初始化流程完成！' : '🎉 搜索初始化流程完成！');
+  if (debugOn()) console.log(isTrad ? '🎉 搜尋初始化流程完成！' : '🎉 搜索初始化流程完成！');
 
   elements.searchStatus.innerHTML = `
     <div class="search-status-success">
@@ -233,7 +233,7 @@ async function initSearch() {
   if (!isIndexPage()) return;
 
   console.time('🚀 搜索初始化總時間');
-  console.log('📊 開始搜索初始化流程...');
+  if (debugOn()) console.log('📊 開始搜索初始化流程...');
 
   const elements = getSearchElements();
   if (!elements.searchInput || !elements.searchContainer) return;
@@ -244,7 +244,7 @@ async function initSearch() {
     if (window.searchCacheManager) {
       await window.searchCacheManager.init();
       cacheManager = window.searchCacheManager;
-      console.log('💾 緩存管理器初始化成功');
+      if (debugOn()) console.log('💾 緩存管理器初始化成功');
     }
   } catch (err) {
     console.warn('緩存管理器初始化失敗，將使用標準流程:', err);
@@ -284,15 +284,15 @@ async function initSearch() {
       elements.searchStatus.appendChild(cacheMsg);
       searchIndex = await cacheManager.getCachedSearchIndex(isTraditional);
       if (!searchIndex) {
-        console.log('📡 緩存數據丟失，重新下載...');
+        if (debugOn()) console.log('📡 緩存數據丟失，重新下載...');
         needsUpdate = true;
       } else {
-        console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
+        if (debugOn()) console.log('⚡ 從緩存加載搜索索引（哈希驗證通過）');
       }
     }
 
     if (needsUpdate) {
-      console.log('📡 從網絡加載搜索索引...');
+      if (debugOn()) console.log('📡 從網絡加載搜索索引...');
       if (!hashData && cacheManager) {
         const indexFileName = isTraditional ? 'search_index_trad.json' : 'search_index.json';
         hashData = await cacheManager.fetchHashFile(`${indexFileName}.hash`);
@@ -309,16 +309,16 @@ async function initSearch() {
         await cacheManager.cacheSearchIndex(searchIndex, isTraditional);
         if (hashData) {
           await cacheManager.saveHashMetadata(hashData, isTraditional);
-          console.log('🗑️ 清除舊的處理後索引緩存...');
+          if (debugOn()) console.log('🗑️ 清除舊的處理後索引緩存...');
           await cacheManager.clearOldProcessedIndexes(isTraditional, hashData.hash);
         }
       }
     }
 
-    console.log(`📋 索引記錄數: ${searchIndex.length}`);
+    if (debugOn()) console.log(`📋 索引記錄數: ${searchIndex.length}`);
 
     const segmenterEnabled = await segmenterPromise;
-    console.log(isTraditionalChinesePage()
+    if (debugOn()) console.log(isTraditionalChinesePage()
       ? `📝 分詞器狀態: ${segmenterEnabled ? '已啟用' : '未啟用'}`
       : `📝 分词器状态: ${segmenterEnabled ? '已启用' : '未启用'}`);
 

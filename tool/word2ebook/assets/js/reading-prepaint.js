@@ -16,6 +16,12 @@
 (function (global) {
   'use strict';
 
+  // 開發日誌開關：localStorage 'w2e:debug'='1' 才輸出（預設零輸出）。
+  // 本檔在 <head> 同步載入、獨立於 script.js 的 scope，故自持一份
+  // （與 00-base.js 的 debugOn() 同鍵）。
+  var W2E_DEBUG = false;
+  try { W2E_DEBUG = localStorage.getItem('w2e:debug') === '1'; } catch (e) {}
+
   // 03d 與本檔都在同一個 concatenated scope 之外，故各自判斷頁型。
   // 規則與 00-base.js 的 isIndexPage() 相同。
   function isIndexPage() {
@@ -186,7 +192,7 @@ function applyTocStyles(fontSize, lineHeight) {
   const level4Size = Math.round(responsiveBaseFontSize * 0.9); // 第四層：更小
   
   // 調試信息
-  console.log('字體設置應用:', {
+  if (W2E_DEBUG) console.log('字體設置應用:', {
     screenWidth,
     fontSize,
     responsiveBaseFontSize,
@@ -334,7 +340,7 @@ function applySearchFontStyles(fontSize, lineHeight) {
   const activateBtnFontSize = Math.max(13, Math.round(baseFontSize * 0.9)); // 激活按鈕最小13px
   
   // 調試信息
-  console.log('搜索字體設置應用:', {
+  if (W2E_DEBUG) console.log('搜索字體設置應用:', {
     baseFontSize,
     inputFontSize,
     contentFontSize,

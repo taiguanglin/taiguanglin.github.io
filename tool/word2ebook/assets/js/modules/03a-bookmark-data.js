@@ -25,7 +25,7 @@ function migrateOldBookmarks() {
     if (traditional.length) localStorage.setItem('ebook-bookmarks-traditional', JSON.stringify(traditional));
     localStorage.removeItem('ebook-bookmarks');
     localStorage.setItem('bookmarks-migrated', 'true');
-    console.log(`书签迁移完成: 简体 ${simplified.length} 个, 繁体 ${traditional.length} 个`);
+    if (debugOn()) console.log(`书签迁移完成: 简体 ${simplified.length} 个, 繁体 ${traditional.length} 个`);
   } catch (e) {
     console.error('书签迁移失败:', e);
     localStorage.setItem('bookmarks-migrated', 'true');
