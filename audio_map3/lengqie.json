@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-10-17T12:53:37.262Z",
+  "generated_at": "2026-10-18T01:52:31.895Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -15211,7 +15211,7 @@
       "audio": "2025年1月17日Tai师父讲经·楞伽经(17).opus",
       "title": "楞伽经（17）",
       "duration": 2354.672,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-s1af86dd4",
@@ -15858,479 +15858,479 @@
           "pid": "p-sc4f2afe3",
           "text": "佛言：“大慧，有四种言说分别相。所谓相言说，梦言说，计著过恶言说，无始妄想言说。",
           "start": 1424.1,
-          "end": 1426.83,
+          "end": 1428.038,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf11b8295",
           "text": "语言有四种分别之相，“所谓相言说，梦言说，计著过恶言说，无始妄想言说”，这是我们说话的四种原因。",
-          "start": 1426.83,
-          "end": 1444.33,
+          "start": 1428.038,
+          "end": 1442.539,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1b489dce",
           "text": "大慧，相言说者，所谓执著自分别色相生；",
-          "start": 1444.33,
-          "end": 1446.9,
+          "start": 1442.539,
+          "end": 1448.597,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s63c29b7c",
           "text": "执着于自己分别认知的色相中而说的话。比如，吃饭的时候这个好吃、不好吃都是从我们味觉的认知上来说的。在外边看到美女，就说这个人漂亮、那个人不漂亮，这样的语言都是执着于自己分别认知出来的相而说的。",
-          "start": 1446.9,
-          "end": 1482.29,
+          "start": 1448.597,
+          "end": 1481.062,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s31189484",
           "text": "梦言说者，谓梦先所经境界，觉已忆念，依不实境生；",
-          "start": 1482.29,
-          "end": 1488.63,
+          "start": 1481.062,
+          "end": 1484.687,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa36ffc40",
           "text": "还有一类语言是根据自己的梦境而说，这根本不是外面真实存在的事物，而是你做梦的时候梦到的那些景象，根据这些景象而说的话。睡觉时候做了梦，醒来之后回忆这个梦境，根据这个不实的境界而说的语言叫“梦言说者”。",
-          "start": 1488.63,
-          "end": 1517.99,
+          "start": 1484.687,
+          "end": 1517.116,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s96be2eda",
           "text": "计著过恶言说者，谓忆念怨仇先所作业；",
-          "start": 1517.99,
-          "end": 1530.4,
+          "start": 1517.116,
+          "end": 1529.426,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s400e1564",
           "text": "第三个“计著过恶言说者”是想起了过去其他人或者自己做过的坏事。“谓忆念怨仇先所作业”，就是想起了以前这些仇人、冤亲债主以及和自己关系不好的人干的坏事，从而说出来的话。",
-          "start": 1530.4,
-          "end": 1553.01,
+          "start": 1529.426,
+          "end": 1556.06,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s19bd1d28",
           "text": "生无始妄想言说者，以无始戏论妄执习气生。",
-          "start": 1553.01,
+          "start": 1556.06,
           "end": 1556.06,
           "conf": 0.35,
           "method": "miss",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-se7f00424",
           "text": "最后一个是过去的无始戏论及习气。各种错误的见解当中生起的妄论，这样说话产生了习气。有些人说话停不下来，喜欢说话的人很多，主要是因为形成说话的习气了，所以不得不说。一旦成为习气，自己也很难控制，说起来没完没了。",
           "start": 1556.06,
-          "end": 1594.07,
+          "end": 1592.967,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s91c77963",
           "text": "这是四种说话的原因。",
-          "start": 1594.07,
-          "end": 1598.32,
+          "start": 1592.967,
+          "end": 1597.72,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s119a74c3",
           "text": "大慧复言：“世尊，愿更为说言语分别所行之相，何处何因云何而起？”佛言：“大慧，依头胸喉鼻唇颚齿舌和合而起。”",
-          "start": 1598.32,
-          "end": 1607.81,
+          "start": 1597.72,
+          "end": 1607.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf353ebe4",
           "text": "再说一下语言分别的所行之相，它是怎么生起来的？这语言是怎么说出来的？下面佛是根据生理学回答的，就是一个人作为生命体是怎么说话的。“大慧，依头胸喉鼻唇颚齿舌和合而起”，是根据整个说话的器官和合而起。他没有说其他什么深奥的佛理，而是直接说，说话是你动嘴然后说的。",
-          "start": 1607.81,
-          "end": 1639.21,
+          "start": 1607.11,
+          "end": 1638.91,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc2efddc7",
           "text": "大慧复言：“世尊，言语分别为异不异？”",
-          "start": 1639.21,
-          "end": 1639.21,
+          "start": 1638.91,
+          "end": 1643.963,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s1ab4309c",
           "text": "这又是一个逻辑问题。我们仔细看一下这个逻辑，在这里两个译本选择的词语都不一样。另一个译本是“世尊，言说妄想，为异为不异”，所说的话和妄想为异不异呢？我们就按照“语言分别”来看。",
-          "start": 1639.21,
-          "end": 1675.05,
+          "start": 1643.963,
+          "end": 1674.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbea66e7a",
           "text": "佛言：“大慧，非异非不异，何以故？",
-          "start": 1675.05,
-          "end": 1677.71,
+          "start": 1674.95,
+          "end": 1676.681,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s217deb1d",
           "text": "这个好懂，“异”是不同，“不异”是同。我们讲分别心的时候讲过，有“同分别”和“异分别”两种分别，把它理解为这个就可以了。但是佛说这两者既不是不同，也不是同，反正话很绕口，否定了不同，也否定了同。",
-          "start": 1677.71,
-          "end": 1708.29,
+          "start": 1676.681,
+          "end": 1708.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa03140f9",
           "text": "分别为因起言语故，若异者分别不应为因；若不异者，语言不应显义，是故非异亦非不异。”",
-          "start": 1708.29,
-          "end": 1717.58,
+          "start": 1708.19,
+          "end": 1715.621,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s252a96b5",
           "text": "以分别心作为原因，从而生起了语言。如果语言之间有差别、不同的话，分别就不应该成为因。",
-          "start": 1717.58,
-          "end": 1736.6,
+          "start": 1715.621,
+          "end": 1735.207,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0a05537f",
           "text": "如果语言本身就不同，说出来话本身就有不一样的地方，这个分别心就不能成为因。因为分别心成为因了，才看出语言有不同。这是先有了分别心，然后才分别出语言的不同。但是如果语言本来就有分别差异，就不需要分别心来认知。这是个很奇怪的逻辑。",
-          "start": 1736.6,
-          "end": 1767.57,
+          "start": 1735.207,
+          "end": 1767.533,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s76f71c39",
           "text": "“若不异者，语言不应显义”，如果都是同样的语言，就像一个字反复地说一样，它没有差别，就没有办法表达意思。“是故非异亦非不异”，所以语言上的分别既不是不同，也不是同。",
-          "start": 1767.57,
-          "end": 1802.39,
+          "start": 1767.533,
+          "end": 1801.791,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2093fbdf",
           "text": "另一个译本是用妄想来说，“大慧，若言说妄想异者，妄想不应是因”。如果言说和妄想不一样的话，妄想就不应该是语言的因。两个事物不一样，没有相同属性，就不能形成因果。“若不异者，语不显义”，如果妄想和语言一样，语就不能显义。因为语言成了妄想，妄想就不能表达真实的意义。后面还说“而有显示，是故非异非不异”，在这里最后的结论也是“非异非不异”。",
-          "start": 1802.39,
-          "end": 1856.39,
+          "start": 1801.791,
+          "end": 1856.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb0cb267a",
           "text": "言语分别为异不异呢？是非异非不异。言说妄想为异不异呢？也是非异非不异。",
-          "start": 1856.39,
-          "end": 1866.26,
+          "start": 1856.19,
+          "end": 1865.519,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7b4d9b79",
           "text": "对于这样的逻辑问题，我们简单了解一下就可以了，你不要深入地思考。如果你能一下子想明白就好，如果很烧脑地去思考，反而越想越糊涂。在有些问题上佛的逻辑和我们真的不太一样。",
-          "start": 1866.26,
-          "end": 1881.44,
+          "start": 1865.519,
+          "end": 1882.316,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbb8e430b",
           "text": "所以“若不异者，语言不应显义”，这倒是好理解。但是前面“分别为因起言语故，若异者分别不应为因”，这到底是什么意思呢？从我的角度看，“分别为因起言语故”指语言都是从我们的分别心上生起，先有分别心，然后再执着——语言其实是分别之上再生起执着之后才说出来的，这是它的本来面目。",
-          "start": 1881.44,
-          "end": 1913.45,
+          "start": 1882.316,
+          "end": 1913.55,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4f9a6fda",
           "text": "“若异者分别不应为因”，如果语言本来就不同的话，那分别心不应该为因——本来不同就不需要分别心来认知。因为有了分别心才有了不同的认知，它本身就有不同的地方，就不需要用分别心来认知，直接就感知到它不一样。",
-          "start": 1913.45,
-          "end": 1954.92,
+          "start": 1913.55,
+          "end": 1953.72,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saa862d49",
           "text": "从菩萨的妄想境界里看，每一个众生之自相本来就有不一样的地方，因为每一个众生都不同。本来不一样的地方可以被了了分明地感知到。这个时候菩萨没有分别心，但他还是了了分明地感知到不同的妄想。",
-          "start": 1954.92,
-          "end": 1979.32,
+          "start": 1953.72,
+          "end": 1978.82,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scfc99e71",
           "text": "有了分别心之后，先出现的是我和其他众生之分别，从而产生了更大的区别，这个时候产生的不同之处是根据分别心产生的。因为我用分别心给它添了一种新的标签，从而产生了更大的不同。",
-          "start": 1979.32,
-          "end": 2005.29,
+          "start": 1978.82,
+          "end": 2004.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s26ef7524",
           "text": "但是每个众生都有不一样的妄想，它本来就不一样，在我了了分明、了解得很清楚的情况下，根本不需要再用分别心来认知。一旦生起分别心，你所认识的世界本来是一样的，也会变成不一样；本来不一样，也有可能变成更不一样的。",
-          "start": 2005.29,
-          "end": 2034.93,
+          "start": 2004.89,
+          "end": 2034.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s73204094",
           "text": "这个逻辑有点难以解释，大家这么理解就可以了，反正最后结论都是非异非不异。",
-          "start": 2034.93,
-          "end": 2045.79,
+          "start": 2034.13,
+          "end": 2044.892,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s68fdd42b",
           "text": "语言不能显示佛法的真实义，但是不用语言又没有办法传法，最后佛要说的就是这个内容。所以我们听法不要在文字上过度地执着，而是从文字上看到真实的义之后，应该把重点放到真实的修行上。",
-          "start": 2045.79,
-          "end": 2073.13,
+          "start": 2044.892,
+          "end": 2072.93,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf5c711e5",
           "text": "大慧复言：“世尊，为言语是第一义？为所说是第一义？”",
-          "start": 2073.13,
-          "end": 2077.91,
+          "start": 2072.93,
+          "end": 2077.61,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s68d80138",
           "text": "到底语言是第一义——真相呢？还是说出来的内容是第一义呢？言语本身和言语的内容，这两者到底哪个是第一义？",
-          "start": 2077.91,
-          "end": 2091.43,
+          "start": 2077.61,
+          "end": 2090.523,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3f475a5b",
           "text": "佛告大慧：“非言语是，亦非所说，何以故？",
-          "start": 2091.43,
-          "end": 2095.77,
+          "start": 2090.523,
+          "end": 2094.339,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s741be3be",
           "text": "言语本身不是第一义。说出来的那些内容也不是第一义。",
-          "start": 2095.77,
-          "end": 2102.53,
+          "start": 2094.339,
+          "end": 2101.698,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s19c9f80e",
           "text": "第一义者，是圣乐处，因言而入，非即是言。",
-          "start": 2102.53,
-          "end": 2107.78,
+          "start": 2101.698,
+          "end": 2104.84,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9dc29bde",
           "text": "第一义是圣乐处——佛的境界，但是要靠语言来入，但不是语言。语言只是引导你去佛的境界的媒介，可以说是用来引导的指月之手，但它并不是佛的境界。",
-          "start": 2107.78,
-          "end": 2133.94,
+          "start": 2104.84,
+          "end": 2132.938,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb5c37fc7",
           "text": "第一义者是圣智内自证境，非言语分别智境。言语分别不能显示。",
-          "start": 2133.94,
-          "end": 2139.4,
+          "start": 2132.938,
+          "end": 2138.107,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9cf5dd5b",
           "text": "真相是佛的真实的境界，而不是用语言分别认识的分别智境，用语言分别无法显示佛的自证圣智的智境。",
-          "start": 2139.4,
-          "end": 2155.22,
+          "start": 2138.107,
+          "end": 2154.041,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s68360a4e",
           "text": "大慧，言语者起灭动摇展转因缘生。若展转缘生，于第一义不能显示。",
-          "start": 2155.22,
-          "end": 2159.38,
+          "start": 2154.041,
+          "end": 2158.378,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1cefec34",
           "text": "言语都是妄想的起灭和动摇辗转因缘从而生起的。在妄想的辗转上，根据缘生起来，它不能显示第一义。因为第一义没有缘，也没有辗转的妄想。",
-          "start": 2159.38,
-          "end": 2182.2,
+          "start": 2158.378,
+          "end": 2175.786,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7ba3860c",
           "text": "第一义者，无自他相，言语有相不能显示；第一义者但唯自心，种种外想悉皆无有，言语分别不能显示。是故，大慧，应当远离言语分别。",
-          "start": 2182.2,
-          "end": 2194,
+          "start": 2175.786,
+          "end": 2179.451,
           "conf": 0.5,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s04c8d828",
           "text": "在佛的第一义真相——佛的自性当中，自己的相和他相都不存在。语言只要说出来，就是有相的，也就是分别心里产生的，所以它不能显示无自他相的状态。",
-          "start": 2194,
-          "end": 2199.83,
+          "start": 2179.451,
+          "end": 2199.492,
           "conf": 0.5,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s28bb9e4e",
           "text": "第一义就是属于自心。你做的所有妄想、对外的想象本来就不存在。用语言的分别无法显示佛的第一义境。所以我们应该远离这个语言的分别。",
-          "start": 2199.83,
-          "end": 2225.85,
+          "start": 2199.492,
+          "end": 2224.396,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s08993a83",
           "text": "尔时，世尊重说颂言：诸法无自性：亦复无言说；不见空空义，愚夫故流转。",
-          "start": 2225.85,
-          "end": 2234.27,
+          "start": 2224.396,
+          "end": 2232.996,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s383e8205",
           "text": "“诸法”，妄想、分别、执着。这些妄想、分别、执着都没有本体，也就没有可说的。“不见空空义”，把空意都给空掉了。也就是把你认为这个世界是空的认知也给彻底空掉，达到佛的大空、究竟空的境界，这才是我们要达到的最终目标。“愚夫故流转”，愚夫因为不见空空义，所以在六道轮回继续轮转。",
-          "start": 2234.27,
-          "end": 2273,
+          "start": 2232.996,
+          "end": 2271.436,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7f53cb80",
           "text": "一切法无性，离言语分别；诸有如梦化，非生死涅槃。",
-          "start": 2273,
-          "end": 2275.7,
+          "start": 2271.436,
+          "end": 2275.4,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9328df6f",
           "text": "一切法——妄想、分别、执着都没有本体，离开了言语分别看不到一切法无性的真相。“诸有如梦化，非生死涅槃”，都像梦境一样，生死涅槃也像梦境一般。",
-          "start": 2275.7,
-          "end": 2298.77,
+          "start": 2275.4,
+          "end": 2297.588,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se2a02cfa",
           "text": "如王及长者，为令诸子喜；先示相似物，后赐真实者。",
-          "start": 2298.77,
-          "end": 2305.29,
+          "start": 2297.588,
+          "end": 2304.43,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s86f00480",
           "text": "这就是一种度人的方便法。王及长者们为了让孩子们生起欢喜心，先拿一点小的好东西给他们，再把真实的更好的给他。",
-          "start": 2305.29,
-          "end": 2324.88,
+          "start": 2304.43,
+          "end": 2323.668,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5ab28da2",
           "text": "我今亦复然，先说相似法；后乃为其演，自证实际法。",
-          "start": 2324.88,
-          "end": 2330.6,
+          "start": 2323.668,
+          "end": 2329.508,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s280811fe",
           "text": "先说这个相似法，也就是方便法。“相”是分别心。用分别心中产生的语言来传递一些法，然后再为其演“自证实际法”——最高的第一义——最后再讲佛的境界。先讲这些方便法，把人引入修行当中，然后再讲最真实的法。",
-          "start": 2330.6,
-          "end": 2353.68,
+          "start": 2329.508,
+          "end": 2351.57,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a8dd4b8",
           "text": "今天就说到这里。",
-          "start": 2353.68,
+          "start": 2351.57,
           "end": 2354.672,
           "conf": 1,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
