@@ -1,0 +1,2022 @@
+[
+ {
+  "month": "2024-02",
+  "sid": "2024-02-12-main",
+  "segkey": "2024-02-12-main#3",
+  "index": 3,
+  "start": 232.03,
+  "end": 289.94,
+  "lp": false,
+  "block": "question-9e3ced3bc753",
+  "ch": 12,
+  "aid": "answer-16e1d0bb7ef9",
+  "dq": 0,
+  "da": -11,
+  "moves": [
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 11,
+    "n_seg": 0,
+    "probe": "Taiguanglin",
+    "spoken": false,
+    "cut": 234,
+    "blk_text": "Taiguanglin",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-12-main",
+  "segkey": "2024-02-12-main#11",
+  "index": 11,
+  "start": 717.24,
+  "end": 735.055,
+  "lp": false,
+  "block": "question-4c49503bbed5",
+  "ch": 2,
+  "aid": "answer-04b58fe81dc7",
+  "dq": 0,
+  "da": 210,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 210,
+    "probe": "新的问题基本上回答完了把规矩",
+    "spoken": false,
+    "cut": 335,
+    "blk_text": "",
+    "seg_text": "新的问题基本上回答完了把规矩讲清楚我没神通也不讲神通不讲禅定中的具体境界不干预他人因果善护众生慧根客观理性解释其他宗派的"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-15-main",
+  "segkey": "2024-02-15-main#16",
+  "index": 16,
+  "start": 499.59,
+  "end": 513.61,
+  "lp": false,
+  "block": "question-1744f0ee78c3",
+  "ch": 10,
+  "aid": "answer-b7cdde49b81f",
+  "dq": -26,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 26,
+    "n_seg": 0,
+    "probe": "顶礼师父顶礼观音菩萨合十合十",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "顶礼师父顶礼观音菩萨合十合十合十有两个问题请师父赐教",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-17-main",
+  "segkey": "2024-02-17-main#31",
+  "index": 31,
+  "start": 1569.23,
+  "end": 1670.7,
+  "lp": false,
+  "block": "question-1013fe14c241",
+  "ch": 11,
+  "aid": "answer-5a08fe85dfe2",
+  "dq": -168,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 168,
+    "n_seg": 0,
+    "probe": "请教师父我目前打坐双盘也就3",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "请教师父我目前打坐双盘也就30min60min打坐的时候先念阿弥陀佛静下心来然后就试着按师父说的参思情一想念到阿弥陀佛会",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-18-main",
+  "segkey": "2024-02-18-main#39",
+  "index": 39,
+  "start": 1397.26,
+  "end": 1450.57,
+  "lp": false,
+  "block": "question-e0e6dbbb1889",
+  "ch": 12,
+  "aid": "answer-d1d9c4c51115",
+  "dq": 0,
+  "da": 99,
+  "moves": [
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 10,
+    "n_seg": 25,
+    "probe": "因为没有大愿没有愿望没有一个",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "zhugewuyue",
+    "seg_text": "因为没有大愿没有愿望没有一个明确的目标所以开始懈怠"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 3,
+    "n_seg": 22,
+    "probe": "你要做什么你要成佛你要普渡众",
+    "spoken": false,
+    "cut": 38,
+    "blk_text": "然后定",
+    "seg_text": "你要做什么你要成佛你要普渡众生还是出离你得有"
+   },
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 8,
+    "n_seg": 0,
+    "probe": "发个愿发不了大愿",
+    "spoken": false,
+    "cut": 70,
+    "blk_text": "发个愿发不了大愿",
+    "seg_text": ""
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 22,
+    "n_seg": 1,
+    "probe": "发个小愿也行比如我在短时间内",
+    "spoken": false,
+    "cut": 71,
+    "blk_text": "发个小愿也行比如我在短时间内要念多少遍经啊定",
+    "seg_text": "这"
+   },
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 21,
+    "probe": "怎么来的呢就是我把这个世界给",
+    "spoken": false,
+    "cut": 75,
+    "blk_text": "",
+    "seg_text": "怎么来的呢就是我把这个世界给你画的清楚一些"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 10,
+    "n_seg": 8,
+    "probe": "去做嘛还能怎么办呢谁",
+    "spoken": false,
+    "cut": 100,
+    "blk_text": "去做嘛还能怎么办呢谁",
+    "seg_text": "你把目标定在那你"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 33,
+    "n_seg": 2,
+    "probe": "懈怠我一开始都很懈怠的就算出",
+    "spoken": false,
+    "cut": 110,
+    "blk_text": "懈怠我一开始都很懈怠的就算出家也有人懈怠也有人经常早课逃跑然后被罚",
+    "seg_text": "知道"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 6,
+    "n_seg": 17,
+    "probe": "什么样那你也没有办法把目标定",
+    "spoken": false,
+    "cut": 117,
+    "blk_text": "很正常的事情",
+    "seg_text": "什么样那你也没有办法把目标定在远处"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 6,
+    "n_seg": 97,
+    "probe": "在你看得见的地方是吧我现在讲",
+    "spoken": false,
+    "cut": 138,
+    "blk_text": "坚持继续坚持",
+    "seg_text": "在你看得见的地方是吧我现在讲法就是告诉你这个世界是什么样子的最终的目的地在哪里你如果不去那里不去向那个方向努力的话你大概"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-19-main",
+  "segkey": "2024-02-19-main#42",
+  "index": 42,
+  "start": 1626.01,
+  "end": 1717.12,
+  "lp": false,
+  "block": "question-6ed80c503f5f",
+  "ch": 12,
+  "aid": "answer-5e86f425347e",
+  "dq": 0,
+  "da": 235,
+  "moves": [
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 10,
+    "n_seg": 35,
+    "probe": "有人问自己生活困苦做了献血现",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "442022梦基本上",
+    "seg_text": "有人问自己生活困苦做了献血现在生活困苦怎么办呢我可以这么告诉你你献什么"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 3,
+    "n_seg": 60,
+    "probe": "可以如果你想纯粹的做好事的话",
+    "spoken": false,
+    "cut": 41,
+    "blk_text": "是幻觉",
+    "seg_text": "可以如果你想纯粹的做好事的话那你献什么都可以别说献血了什么献内脏啊也什么都可以献你像释迦牟尼佛一样把肉都给割肉喂鹰也可以"
+   },
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 76,
+    "probe": "要想在这辈子在禅定中有所进步",
+    "spoken": false,
+    "cut": 114,
+    "blk_text": "",
+    "seg_text": "要想在这辈子在禅定中有所进步那不要献血血本来就是好不容易得到的拿来的一点能量你把它给献掉了前面讲女性月经那个事你都看到了"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 4,
+    "n_seg": 12,
+    "probe": "你要想做好事还想修禅定就",
+    "spoken": false,
+    "cut": 201,
+    "blk_text": "阿弥陀佛",
+    "seg_text": "你要想做好事还想修禅定就"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 1,
+    "n_seg": 148,
+    "probe": "生吧这个就最简单了吧你去持续",
+    "spoken": false,
+    "cut": 216,
+    "blk_text": "光",
+    "seg_text": "生吧这个就最简单了吧你去持续放生然后念地藏经回向给你的冤亲债主然后发愿持戒最基本的几个做到了然后就是打坐一点一点打坐从单"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 15,
+    "n_seg": 4,
+    "probe": "类的那都是佛经里的实际上自性",
+    "spoken": false,
+    "cut": 387,
+    "blk_text": "类的那都是佛经里的实际上自性是",
+    "seg_text": "后财运有"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 11,
+    "n_seg": 3,
+    "probe": "自性根本没有实体你也看",
+    "spoken": false,
+    "cut": 397,
+    "blk_text": "自性根本没有实体你也看",
+    "seg_text": "这样好"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 60,
+    "n_seg": 1,
+    "probe": "到什么纯粹的虚空但是也不能算",
+    "spoken": false,
+    "cut": 401,
+    "blk_text": "到什么纯粹的虚空但是也不能算虚空因为虚空也是妄想和合而成所以是超越虚空的存在从我们凡夫的视角根本想象不到你只能这么理解了",
+    "seg_text": "好"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-22-main",
+  "segkey": "2024-02-22-main#63",
+  "index": 63,
+  "start": 2325.47,
+  "end": 2384.21,
+  "lp": false,
+  "block": "question-ee0a2c6fec5a",
+  "ch": 3,
+  "aid": "answer-84a3d939315f",
+  "dq": -47,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 8,
+    "n_seg": 0,
+    "probe": "所以我接着就问了",
+    "spoken": false,
+    "cut": 141,
+    "blk_text": "所以我接着就问了",
+    "seg_text": ""
+   },
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 13,
+    "n_seg": 0,
+    "probe": "匿名20242221544",
+    "spoken": false,
+    "cut": 458,
+    "blk_text": "匿名20242221544",
+    "seg_text": ""
+   },
+   {
+    "field": "q",
+    "op": "replace",
+    "n_blk": 2,
+    "n_seg": 9,
+    "probe": "wyy991015",
+    "spoken": false,
+    "cut": 645,
+    "blk_text": "匿名",
+    "seg_text": "wyy991015"
+   },
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 17,
+    "n_seg": 0,
+    "probe": "打坐磕头念佛20242221",
+    "spoken": false,
+    "cut": 979,
+    "blk_text": "打坐磕头念佛20242221958",
+    "seg_text": ""
+   },
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 16,
+    "n_seg": 0,
+    "probe": "慧觉观自在202422220",
+    "spoken": false,
+    "cut": 1168,
+    "blk_text": "慧觉观自在20242222013",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-02",
+  "sid": "2024-02-23-main",
+  "segkey": "2024-02-23-main#37",
+  "index": 37,
+  "start": 1822.71,
+  "end": 1884.08,
+  "lp": false,
+  "block": "question-6ed80c503f5f",
+  "ch": 12,
+  "aid": "answer-5e86f425347e",
+  "dq": 0,
+  "da": 426,
+  "moves": [
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 9,
+    "n_seg": 11,
+    "probe": "有人问刚出生的小孩子晚",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "442022梦基本",
+    "seg_text": "有人问刚出生的小孩子晚"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 1,
+    "n_seg": 12,
+    "probe": "喜欢哭闹这有两种可能一种",
+    "spoken": false,
+    "cut": 13,
+    "blk_text": "都",
+    "seg_text": "喜欢哭闹这有两种可能一种"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 3,
+    "n_seg": 15,
+    "probe": "他自己有冤亲债主的业障还有一",
+    "spoken": false,
+    "cut": 28,
+    "blk_text": "幻觉但",
+    "seg_text": "他自己有冤亲债主的业障还有一种"
+   },
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 59,
+    "probe": "这个小孩子能感受到其他不干净",
+    "spoken": false,
+    "cut": 45,
+    "blk_text": "",
+    "seg_text": "这个小孩子能感受到其他不干净的东西哪怕是冤亲债主找大人们的有鬼来找大人们的小孩子能感受到所以他就哭有这个可能性怎么办呢"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 7,
+    "n_seg": 55,
+    "probe": "就多念地藏经回向给这些冤亲债",
+    "spoken": false,
+    "cut": 111,
+    "blk_text": "说阿弥陀佛放光",
+    "seg_text": "就多念地藏经回向给这些冤亲债主对已经生病的人有一个最极端的办法你要自己能行的话就试试什么办法呢尤其是像这种癌症"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 9,
+    "n_seg": 2,
+    "probe": "那都是佛经里的实际",
+    "spoken": false,
+    "cut": 180,
+    "blk_text": "那都是佛经里的实际",
+    "seg_text": "身体"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 21,
+    "n_seg": 1,
+    "probe": "自性是没有实体的自性根本没有",
+    "spoken": false,
+    "cut": 183,
+    "blk_text": "自性是没有实体的自性根本没有实体你也看不到",
+    "seg_text": "长"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 4,
+    "n_seg": 64,
+    "probe": "你可以找个非常清静的地方或者",
+    "spoken": false,
+    "cut": 190,
+    "blk_text": "虚空但是",
+    "seg_text": "你可以找个非常清静的地方或者说修行的地方然后让你的家人拿你的钱去不断的放生布施把功德回向给你的冤亲债主同时你在这种清净的"
+   },
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 30,
+    "probe": "别吃就喝稀粥只能看到几粒米的",
+    "spoken": false,
+    "cut": 263,
+    "blk_text": "",
+    "seg_text": "别吃就喝稀粥只能看到几粒米的那种煮米的水只能算煮米的水稀粥都"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 2,
+    "n_seg": 247,
+    "probe": "就漂着几粒米那种水喝这种水一",
+    "spoken": false,
+    "cut": 301,
+    "blk_text": "虚空",
+    "seg_text": "就漂着几粒米那种水喝这种水一直坚持打坐你不用管双盘单盘一开始从散盘单盘开始但是后来也可以慢慢坐到双盘人就靠着墙一直打坐一"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 32,
+    "n_seg": 17,
+    "probe": "虚空也是妄想和合而成所以是超",
+    "spoken": false,
+    "cut": 578,
+    "blk_text": "虚空也是妄想和合而成所以是超越虚空的存在从我们凡夫的视角根本想象",
+    "seg_text": "小孩子自己不知道自己会不会死他感受"
+   },
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 4,
+    "n_seg": 8,
+    "probe": "种最后的一个时刻",
+    "spoken": false,
+    "cut": 599,
+    "blk_text": "么理解了",
+    "seg_text": "种最后的一个时刻"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-02-main",
+  "segkey": "2024-03-02-main#31",
+  "index": 31,
+  "start": 1804.54,
+  "end": 1904.64,
+  "lp": false,
+  "block": "question-f56bd44336eb",
+  "ch": 4,
+  "aid": "answer-f053795d67ad",
+  "dq": 30,
+  "da": 293,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 30,
+    "probe": "2关于她看到阿弥陀佛的事我也",
+    "spoken": false,
+    "cut": 289,
+    "blk_text": "",
+    "seg_text": "2关于她看到阿弥陀佛的事我也不知是真假阿弥陀佛我该如何和她说"
+   },
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 293,
+    "probe": "至于她说她看到了阿弥陀佛那就",
+    "spoken": false,
+    "cut": 97,
+    "blk_text": "",
+    "seg_text": "至于她说她看到了阿弥陀佛那就根据她的情况你觉得你说你看到了阿弥陀佛是真的能够让她增加信心你就这么说如果你感觉告诉她是真的"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-02-main",
+  "segkey": "2024-03-02-main#42",
+  "index": 42,
+  "start": 2549.33,
+  "end": 2605.83,
+  "lp": false,
+  "block": "question-e2659b929821",
+  "ch": 11,
+  "aid": "answer-2e8b780a6db7",
+  "dq": 65,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "replace",
+    "n_blk": 14,
+    "n_seg": 79,
+    "probe": "顶礼师父可以说娑婆世界里的这",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "2024A1422M1422",
+    "seg_text": "顶礼师父可以说娑婆世界里的这些众生以前都有过佛的状态吗如果是的话那修禅定应该曾经都有过禅定的状态和体验吧现在打坐也应该可"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-02-main",
+  "segkey": "2024-03-02-main#48",
+  "index": 48,
+  "start": null,
+  "end": null,
+  "lp": false,
+  "block": "question-2acb36b13cda",
+  "ch": 12,
+  "aid": "answer-f1109b6cf41e",
+  "dq": 7,
+  "da": -18,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 7,
+    "probe": "阁下该如何应对",
+    "spoken": false,
+    "cut": 31,
+    "blk_text": "",
+    "seg_text": "阁下该如何应对"
+   },
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 18,
+    "n_seg": 0,
+    "probe": "阁下该如何应对Taiguan",
+    "spoken": false,
+    "cut": 174,
+    "blk_text": "阁下该如何应对Taiguanglin",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-06-main",
+  "segkey": "2024-03-06-main#31",
+  "index": 31,
+  "start": 1332.55,
+  "end": 1367.35,
+  "lp": false,
+  "block": "question-afb8878b9922",
+  "ch": 4,
+  "aid": "answer-9bf114f515a9",
+  "dq": 8,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 8,
+    "probe": "微信群内代问彼岸",
+    "spoken": false,
+    "cut": 1,
+    "blk_text": "",
+    "seg_text": "微信群内代问彼岸"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-09-main",
+  "segkey": "2024-03-09-main#38",
+  "index": 38,
+  "start": 1772.83,
+  "end": 1794.77,
+  "lp": false,
+  "block": "question-97273370c3e2",
+  "ch": 12,
+  "aid": "answer-ce144b0febc0",
+  "dq": 18,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 18,
+    "probe": "宁缺岁岁平安20240309",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "宁缺岁岁平安202403091002"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-13-main",
+  "segkey": "2024-03-13-main#5",
+  "index": 5,
+  "start": 193.41,
+  "end": 573.38,
+  "lp": false,
+  "block": "question-a74e71aff1dc",
+  "ch": 4,
+  "aid": "answer-df6a2685d539",
+  "dq": 0,
+  "da": 7,
+  "moves": [
+   {
+    "field": "a",
+    "op": "replace",
+    "n_blk": 2,
+    "n_seg": 9,
+    "probe": "Wyy991015",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "匿名",
+    "seg_text": "Wyy991015"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-13-main",
+  "segkey": "2024-03-13-main#32",
+  "index": 32,
+  "start": 1847.33,
+  "end": 1904.61,
+  "lp": false,
+  "block": "question-378d450fcda3",
+  "ch": 12,
+  "aid": "answer-7192ab7f72c5",
+  "dq": 23,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 23,
+    "probe": "Iloveyoumoreth",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "Iloveyoumorethanicansay"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-22-main",
+  "segkey": "2024-03-22-main#37",
+  "index": 37,
+  "start": 2107.64,
+  "end": 2132.02,
+  "lp": false,
+  "block": "question-5fe0057116ce",
+  "ch": 10,
+  "aid": "answer-c500cc7a47db",
+  "dq": 27,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 27,
+    "probe": "十年前的书有说到磕大头可以矫",
+    "spoken": false,
+    "cut": 21,
+    "blk_text": "",
+    "seg_text": "十年前的书有说到磕大头可以矫正脊椎是否对长短脚也有帮助"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-23-main",
+  "segkey": "2024-03-23-main#35",
+  "index": 35,
+  "start": 1593.09,
+  "end": 1654.47,
+  "lp": false,
+  "block": "question-09cd3ded5452",
+  "ch": 12,
+  "aid": "answer-586de447b5eb",
+  "dq": -118,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 118,
+    "n_seg": 0,
+    "probe": "顶礼师父地藏经曾经陆陆续续读",
+    "spoken": false,
+    "cut": 196,
+    "blk_text": "顶礼师父地藏经曾经陆陆续续读了几百遍23年忽然感觉到被干扰尤其是期间给家人诵了49遍后家人似乎有了好的感应她并不知道我在",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-26-main",
+  "segkey": "2024-03-26-main#33",
+  "index": 33,
+  "start": null,
+  "end": null,
+  "lp": false,
+  "block": "question-c1b73148e10e",
+  "ch": 1,
+  "aid": "answer-8d966f3cfbed",
+  "dq": 0,
+  "da": -310,
+  "moves": [
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 310,
+    "n_seg": 0,
+    "probe": "情执重那肯定是啊佛也说了嘛情",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "情执重那肯定是啊佛也说了嘛情不重不生娑婆这个是众生的共病娑婆世界的众生的通病也没有办法有过多的解释因为人就是这样有了思情",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-27-main",
+  "segkey": "2024-03-27-main#39",
+  "index": 39,
+  "start": 2474.75,
+  "end": 2493.92,
+  "lp": false,
+  "block": "question-9ac4633ccabc",
+  "ch": 2,
+  "aid": "answer-10f8ea1060be",
+  "dq": -62,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 62,
+    "n_seg": 0,
+    "probe": "易奇八字里的喜用神代表什么和",
+    "spoken": false,
+    "cut": 42,
+    "blk_text": "易奇八字里的喜用神代表什么和八字里面的喜用神对应属性的人相处确实比忌神的合得来这有什么说法吗是否只是属于世间法和佛法有关",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-28-main",
+  "segkey": "2024-03-28-main#9",
+  "index": 9,
+  "start": 654.26,
+  "end": 749.54,
+  "lp": false,
+  "block": "question-787dbd14c508",
+  "ch": 3,
+  "aid": "answer-2bc38be96ab4",
+  "dq": 0,
+  "da": -140,
+  "moves": [
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 140,
+    "n_seg": 0,
+    "probe": "看到不修行的人觉得可怜这种是",
+    "spoken": true,
+    "cut": 0,
+    "blk_text": "看到不修行的人觉得可怜这种是不是失去了平等心没有佛经里说了凡夫叫可怜悯之人那意思就是你能可怜别人说明你的心性已经提高到一",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SPOKEN"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-28-main",
+  "segkey": "2024-03-28-main#32",
+  "index": 32,
+  "start": 2215.03,
+  "end": 2261.43,
+  "lp": false,
+  "block": "question-e7ae31d1f234",
+  "ch": 8,
+  "aid": "answer-383a3c4d6517",
+  "dq": -42,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 42,
+    "n_seg": 0,
+    "probe": "打坐只能莲花座观呼吸降魔坐腿",
+    "spoken": false,
+    "cut": 71,
+    "blk_text": "打坐只能莲花座观呼吸降魔坐腿盘不上去是不是就先盯莲花座坐直到坐到两个小时再去练降魔坐",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-03",
+  "sid": "2024-03-30-main",
+  "segkey": "2024-03-30-main#7",
+  "index": 7,
+  "start": 487.24,
+  "end": 582.48,
+  "lp": false,
+  "block": "question-c4fe4db25c64",
+  "ch": 4,
+  "aid": "answer-f1ff837e359f",
+  "dq": 20,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 20,
+    "probe": "skywatch202403",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "skywatch202403301642"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-04",
+  "sid": "2024-04-08-main",
+  "segkey": "2024-04-08-main#1",
+  "index": 1,
+  "start": 0.58,
+  "end": 286.97,
+  "lp": false,
+  "block": "question-e22bac69f3c7",
+  "ch": 12,
+  "aid": "answer-038cbc3bfcaf",
+  "dq": -9,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 9,
+    "n_seg": 0,
+    "probe": "现心中不禁产生疑问",
+    "spoken": false,
+    "cut": 210,
+    "blk_text": "现心中不禁产生疑问",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-04",
+  "sid": "2024-04-22-main",
+  "segkey": "2024-04-22-main#13",
+  "index": 13,
+  "start": 971.83,
+  "end": 1029.91,
+  "lp": false,
+  "block": "question-9dec4d1f5d54",
+  "ch": 4,
+  "aid": "answer-5a2f8544395d",
+  "dq": 10,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 10,
+    "probe": "2404171851",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "2404171851"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-04",
+  "sid": "2024-04-23-main",
+  "segkey": "2024-04-23-main#21",
+  "index": 21,
+  "start": 1600.95,
+  "end": 1759.51,
+  "lp": false,
+  "block": "question-0686e85f7327",
+  "ch": 5,
+  "aid": "answer-b9e063d12fcf",
+  "dq": -38,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 38,
+    "n_seg": 0,
+    "probe": "还有就是工作时间较长的人边干",
+    "spoken": false,
+    "cut": 129,
+    "blk_text": "还有就是工作时间较长的人边干活边持咒念佛长时间把持咒念佛融入工作中修行恰当吗",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-04",
+  "sid": "2024-04-25-main",
+  "segkey": "2024-04-25-main#19",
+  "index": 19,
+  "start": 1227.77,
+  "end": 1330.34,
+  "lp": false,
+  "block": "question-fd5d3da20234",
+  "ch": 4,
+  "aid": "answer-21d86559e4f9",
+  "dq": -11,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "replace",
+    "n_blk": 11,
+    "n_seg": 31,
+    "probe": "所以敢问师父现在可以开示之前",
+    "spoken": false,
+    "cut": 92,
+    "blk_text": "Taiguanglin",
+    "seg_text": "所以敢问师父现在可以开示之前所说的这个现实的破绽是怎么回事了吗"
+   },
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 31,
+    "n_seg": 0,
+    "probe": "所以敢问师父现在可以开示之前",
+    "spoken": false,
+    "cut": 212,
+    "blk_text": "所以敢问师父现在可以开示之前所说的这个现实的破绽是怎么回事了吗",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-04",
+  "sid": "2024-04-26-main",
+  "segkey": "2024-04-26-main#19",
+  "index": 19,
+  "start": 1673.09,
+  "end": 1751.1,
+  "lp": false,
+  "block": "question-e8ccf38762bc",
+  "ch": 7,
+  "aid": "answer-a7d746d45a85",
+  "dq": 0,
+  "da": -11,
+  "moves": [
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 9,
+    "n_seg": 0,
+    "probe": "二禅二天二禅一天的",
+    "spoken": false,
+    "cut": 131,
+    "blk_text": "二禅二天二禅一天的",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-05",
+  "sid": "2024-05-20-main",
+  "segkey": "2024-05-20-main#35",
+  "index": 34,
+  "start": 1653.47,
+  "end": 1708.72,
+  "lp": false,
+  "block": "question-96d09e12c0b0",
+  "ch": 7,
+  "aid": "answer-d7458769ac8e",
+  "dq": -8,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 8,
+    "n_seg": 0,
+    "probe": "师父请教关于念经",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "师父请教关于念经",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-05",
+  "sid": "2024-05-21-main",
+  "segkey": "2024-05-21-main#1",
+  "index": 1,
+  "start": 11.58,
+  "end": 120.74,
+  "lp": false,
+  "block": "question-2d87d6d90ae3",
+  "ch": 6,
+  "aid": "answer-c2b79048a68e",
+  "dq": -7,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 7,
+    "n_seg": 0,
+    "probe": "顶礼Tai师父",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "顶礼Tai师父",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-05",
+  "sid": "2024-05-22-main",
+  "segkey": "2024-05-22-main#9",
+  "index": 9,
+  "start": 491.51,
+  "end": 550.52,
+  "lp": false,
+  "block": "question-6da76bd4cd26",
+  "ch": 7,
+  "aid": "answer-65b161718520",
+  "dq": 17,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 17,
+    "probe": "小猫弥弥弥202405212",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "小猫弥弥弥202405212215"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-06",
+  "sid": "2024-06-22-main",
+  "segkey": "2024-06-22-main#9",
+  "index": 9,
+  "start": 515.85,
+  "end": 624.0,
+  "lp": false,
+  "block": "question-b43acbced0a9",
+  "ch": 12,
+  "aid": "answer-fb82ef1e2878",
+  "dq": 18,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 18,
+    "probe": "佳菲猫66620240622",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "佳菲猫666202406221243"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-07",
+  "sid": "2024-07-15-main",
+  "segkey": "2024-07-15-main#13",
+  "index": 13,
+  "start": 541.18,
+  "end": 599.37,
+  "lp": false,
+  "block": "question-dc28c2a9e3a5",
+  "ch": 10,
+  "aid": "answer-b88e1d8f682c",
+  "dq": 81,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 81,
+    "probe": "1打坐过程中舌抵上腭有些人分",
+    "spoken": false,
+    "cut": 33,
+    "blk_text": "",
+    "seg_text": "1打坐过程中舌抵上腭有些人分泌出足够多的口水甚至是满嘴我自己只是分泌出很少的口水是不是跟妄想有关妄念多口水分泌少此处没有"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-08",
+  "sid": "2024-08-12-main",
+  "segkey": "2024-08-12-main#43",
+  "index": 43,
+  "start": 2934.49,
+  "end": 3169.92,
+  "lp": false,
+  "block": "question-2c97cf33bd62",
+  "ch": 7,
+  "aid": "answer-0f76dfebb7d3",
+  "dq": 18,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 18,
+    "probe": "精致宠物工作室1582960",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "精致宠物工作室15829603868"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-08",
+  "sid": "2024-08-16-main",
+  "segkey": "2024-08-16-main#3",
+  "index": 3,
+  "start": 94.8,
+  "end": 164.03,
+  "lp": false,
+  "block": "question-bb71709ee1bf",
+  "ch": 12,
+  "aid": "answer-89caef112e9a",
+  "dq": 17,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 17,
+    "probe": "虔诚的行者202408161",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "虔诚的行者202408161712"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-09-main",
+  "segkey": "2024-09-09-main#15",
+  "index": 15,
+  "start": 1242.24,
+  "end": 1310.82,
+  "lp": false,
+  "block": "question-5bc93eccadfd",
+  "ch": 4,
+  "aid": "answer-581e238fd7da",
+  "dq": 0,
+  "da": -36,
+  "moves": [
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 36,
+    "n_seg": 0,
+    "probe": "您说这辈子有些业没消的话就不",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "您说这辈子有些业没消的话就不能去极乐世界具体什么业每个人都不一样这个不好",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-09-main",
+  "segkey": "2024-09-09-main#38",
+  "index": 38,
+  "start": 3597.96,
+  "end": 3660.13,
+  "lp": false,
+  "block": "question-9c936488085a",
+  "ch": 6,
+  "aid": "answer-e8a05a717ba6",
+  "dq": 0,
+  "da": 6,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 6,
+    "probe": "还有宽净法师",
+    "spoken": false,
+    "cut": 145,
+    "blk_text": "",
+    "seg_text": "还有宽净法师"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-09-main",
+  "segkey": "2024-09-09-main#48",
+  "index": 48,
+  "start": 4628.08,
+  "end": 4670.91,
+  "lp": false,
+  "block": "question-d538f015942a",
+  "ch": 10,
+  "aid": "answer-6f06f30da883",
+  "dq": 0,
+  "da": 14,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 14,
+    "probe": "今天的到这里就结束了谢谢各位",
+    "spoken": false,
+    "cut": 141,
+    "blk_text": "",
+    "seg_text": "今天的到这里就结束了谢谢各位"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-12-main",
+  "segkey": "2024-09-12-main#34",
+  "index": 34,
+  "start": 3832.87,
+  "end": 3930.63,
+  "lp": false,
+  "block": "question-76e8a7b06003",
+  "ch": 10,
+  "aid": "answer-2fd67dc31590",
+  "dq": 11,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 11,
+    "probe": "02409121325",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "02409121325"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-12-main",
+  "segkey": "2024-09-12-main#39",
+  "index": 39,
+  "start": 4448.49,
+  "end": 4604.1,
+  "lp": false,
+  "block": "question-08584bacc798",
+  "ch": 2,
+  "aid": "answer-4bce017f3c0f",
+  "dq": 0,
+  "da": 14,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 14,
+    "probe": "好了到这里今天的回答就结束了",
+    "spoken": true,
+    "cut": 720,
+    "blk_text": "",
+    "seg_text": "好了到这里今天的回答就结束了"
+   }
+  ],
+  "verdict": "SPOKEN"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-13-main",
+  "segkey": "2024-09-13-main#38",
+  "index": 38,
+  "start": 3321.01,
+  "end": 3497.52,
+  "lp": false,
+  "block": "question-ec2d55f5356a",
+  "ch": 2,
+  "aid": "answer-9ef3249ba7d1",
+  "dq": 0,
+  "da": 11,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 11,
+    "probe": "好了今天的回答就到这里",
+    "spoken": true,
+    "cut": 752,
+    "blk_text": "",
+    "seg_text": "好了今天的回答就到这里"
+   }
+  ],
+  "verdict": "SPOKEN"
+ },
+ {
+  "month": "2024-09",
+  "sid": "2024-09-14-main",
+  "segkey": "2024-09-14-main#26",
+  "index": 26,
+  "start": 2226.45,
+  "end": 2308.16,
+  "lp": false,
+  "block": "question-8cff82ff186d",
+  "ch": 2,
+  "aid": "answer-2ad3affb2096",
+  "dq": 0,
+  "da": 131,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 131,
+    "probe": "还有像我婆婆这样靠念阿弥陀佛",
+    "spoken": false,
+    "cut": 200,
+    "blk_text": "",
+    "seg_text": "还有像我婆婆这样靠念阿弥陀佛去极乐世界的我可以求她加持吗你最好还是不要求她了人家好不容易去了你在这里又吸引她干什么你要求"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-11",
+  "sid": "2024-11-12-main",
+  "segkey": "2024-11-12-main#8",
+  "index": 8,
+  "start": 883.66,
+  "end": 972.13,
+  "lp": false,
+  "block": "question-82b3f88b54b4",
+  "ch": 11,
+  "aid": "answer-5287822a8112",
+  "dq": 22,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 22,
+    "probe": "11月12号微信公众号的问题",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "11月12号微信公众号的问题从上面开始回答邓"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-11",
+  "sid": "2024-11-13-main",
+  "segkey": "2024-11-13-main#46",
+  "index": 46,
+  "start": 4700.58,
+  "end": 4835.25,
+  "lp": false,
+  "block": "question-14b6c2183de9",
+  "ch": 2,
+  "aid": "answer-fa72cacd398e",
+  "dq": 13,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 13,
+    "probe": "法在dharmaaksar",
+    "spoken": false,
+    "cut": 1,
+    "blk_text": "",
+    "seg_text": "法在dharmaaksar"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-12",
+  "sid": "2024-12-11-wechat",
+  "segkey": "2024-12-11-wechat#6",
+  "index": 6,
+  "start": 296.581,
+  "end": 448.81,
+  "lp": true,
+  "block": "question-f2a78f7bfc5b",
+  "ch": 12,
+  "aid": "answer-c461d362cb5b",
+  "dq": -6,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 6,
+    "n_seg": 0,
+    "probe": "弟子的问题是",
+    "spoken": false,
+    "cut": 262,
+    "blk_text": "弟子的问题是",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2024-12",
+  "sid": "2024-12-13-tieba",
+  "segkey": "2024-12-13-tieba#8",
+  "index": 8,
+  "start": 490.45,
+  "end": 659.11,
+  "lp": true,
+  "block": "question-9b286f46a57a",
+  "ch": 2,
+  "aid": "answer-3cd047dbabbd",
+  "dq": 0,
+  "da": -87,
+  "moves": [
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 87,
+    "n_seg": 0,
+    "probe": "师父在公众号再次回复阿吉倪这",
+    "spoken": false,
+    "cut": 654,
+    "blk_text": "师父在公众号再次回复阿吉倪这个在贴吧回答了两边都发没有关系不过我会选择回答的已经回答过的就算了不过我还是很赞叹啊感觉好像",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-01",
+  "sid": "2025-01-13-tieba",
+  "segkey": "2025-01-13-tieba#6",
+  "index": 6,
+  "start": 801.59,
+  "end": 862.15,
+  "lp": true,
+  "block": "question-2200edc6a822",
+  "ch": 12,
+  "aid": "answer-516b00454567",
+  "dq": -56,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 56,
+    "n_seg": 0,
+    "probe": "顶礼Tai师父师父每个月上线",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "顶礼Tai师父师父每个月上线解惑给了我们信心而且又要精进修行不然心里上会觉得这一个月对不起师父呵呵有关佛理的问题",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-01",
+  "sid": "2025-01-13-wechat",
+  "segkey": "2025-01-13-wechat#23",
+  "index": 23,
+  "start": 2264.5,
+  "end": 2342.71,
+  "lp": true,
+  "block": "question-7006a329ac55",
+  "ch": 2,
+  "aid": "answer-01b3dada6c3d",
+  "dq": -8,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 8,
+    "n_seg": 0,
+    "probe": "Hyacinth",
+    "spoken": false,
+    "cut": 207,
+    "blk_text": "Hyacinth",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-01",
+  "sid": "2025-01-14-tieba",
+  "segkey": "2025-01-14-tieba#31",
+  "index": 31,
+  "start": 3116.01,
+  "end": 3281.86,
+  "lp": true,
+  "block": "question-c2697f5f0ab2",
+  "ch": 11,
+  "aid": "answer-5a090b9434f3",
+  "dq": -63,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 63,
+    "n_seg": 0,
+    "probe": "顶礼Tai师父我想再详细请教",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "顶礼Tai师父我想再详细请教一下参思情师父讲思情是从膻中发出我体会到了刚开始还很强烈现在就是如何抓住这个思情有拿不准的地",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-01",
+  "sid": "2025-01-15-tieba",
+  "segkey": "2025-01-15-tieba#1",
+  "index": 1,
+  "start": 10.94,
+  "end": 123.55,
+  "lp": true,
+  "block": "question-9fcb5fc4e33f",
+  "ch": 1,
+  "aid": "answer-2d8bfb82b138",
+  "dq": 16,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 16,
+    "probe": "苏七念12025011519",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "苏七念1202501151926"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-01",
+  "sid": "2025-01-15-tieba",
+  "segkey": "2025-01-15-tieba#22",
+  "index": 22,
+  "start": 1739.61,
+  "end": 1840.5,
+  "lp": true,
+  "block": "question-75103693da0e",
+  "ch": 7,
+  "aid": "answer-e2328ddfea66",
+  "dq": -8,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 8,
+    "n_seg": 0,
+    "probe": "dwjsxwll",
+    "spoken": false,
+    "cut": 450,
+    "blk_text": "dwjsxwll",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-01",
+  "sid": "2025-01-17-wechat",
+  "segkey": "2025-01-17-wechat#1",
+  "index": 1,
+  "start": 10.51,
+  "end": 104.29,
+  "lp": false,
+  "block": "question-b9cbfd283633",
+  "ch": 5,
+  "aid": "answer-538c7b63da53",
+  "dq": -51,
+  "da": -103,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 51,
+    "n_seg": 0,
+    "probe": "关于打坐我现在坐的感觉还不错",
+    "spoken": false,
+    "cut": 47,
+    "blk_text": "关于打坐我现在坐的感觉还不错处于那种清醒的睡眠状态就是意识清楚但身心放松如同睡眠状态的舒适感这是对的吗",
+    "seg_text": ""
+   },
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 103,
+    "n_seg": 0,
+    "probe": "还有打坐感觉不错处于那种清醒",
+    "spoken": false,
+    "cut": 364,
+    "blk_text": "还有打坐感觉不错处于那种清醒的睡眠状态什么叫清醒的睡眠状态睡眠应该是没有知觉的状态就是意识不清楚的状态打坐应该意识是清醒",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-02",
+  "sid": "2025-02-10-tieba",
+  "segkey": "2025-02-10-tieba#26",
+  "index": 26,
+  "start": 2995.94,
+  "end": 3006.66,
+  "lp": true,
+  "block": "question-0af75af5c2fc",
+  "ch": 12,
+  "aid": "answer-f3bc2d8438df",
+  "dq": -7,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 7,
+    "n_seg": 0,
+    "probe": "2025210",
+    "spoken": false,
+    "cut": 20,
+    "blk_text": "2025210",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-02",
+  "sid": "2025-02-14-tieba",
+  "segkey": "2025-02-14-tieba#5",
+  "index": 5,
+  "start": 289.68,
+  "end": 402.614,
+  "lp": true,
+  "block": "question-f1217ada5e70",
+  "ch": 10,
+  "aid": "answer-beb45e50f42a",
+  "dq": 106,
+  "da": -106,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 106,
+    "probe": "五六年灭淫欲这个有可能吗不知",
+    "spoken": false,
+    "cut": 311,
+    "blk_text": "",
+    "seg_text": "五六年灭淫欲这个有可能吗不知道每个人境界都不一样有些人上辈子已经修了可能就这辈子很快就灭了上辈子没有的人就这辈子来的话基"
+   },
+   {
+    "field": "a",
+    "op": "delete",
+    "n_blk": 106,
+    "n_seg": 0,
+    "probe": "五六年灭淫欲这个有可能吗不知",
+    "spoken": false,
+    "cut": 335,
+    "blk_text": "五六年灭淫欲这个有可能吗不知道每个人境界都不一样有些人上辈子已经修了可能就这辈子很快就灭了上辈子没有的人就这辈子来的话基",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-02",
+  "sid": "2025-02-15-wechat",
+  "segkey": "2025-02-15-wechat#17",
+  "index": 17,
+  "start": 1795.39,
+  "end": 1857.96,
+  "lp": true,
+  "block": "question-e6285dd191ab",
+  "ch": 7,
+  "aid": "answer-7d4255ca3569",
+  "dq": 11,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 11,
+    "probe": "ཌༀMrAyongༀད",
+    "spoken": false,
+    "cut": 1,
+    "blk_text": "",
+    "seg_text": "ཌༀMrAyongༀད"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-03",
+  "sid": "2025-03-15-wechat",
+  "segkey": "2025-03-15-wechat#15",
+  "index": 15,
+  "start": 1062.131,
+  "end": 1133.25,
+  "lp": true,
+  "block": "question-f80ffea8f8f2",
+  "ch": 4,
+  "aid": "answer-c0f37d31c6fe",
+  "dq": 16,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 16,
+    "probe": "Cynthia19点后请直接",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "Cynthia19点后请直接电话"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-05",
+  "sid": "2025-05-14-tieba",
+  "segkey": "2025-05-14-tieba#20",
+  "index": 20,
+  "start": 2016.458,
+  "end": 2254.1,
+  "lp": true,
+  "block": "question-2d1611c48721",
+  "ch": 2,
+  "aid": "answer-f1a4c38eea62",
+  "dq": 179,
+  "da": 563,
+  "moves": [
+   {
+    "field": "q",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 179,
+    "probe": "师父那个机缘还说我是观音菩萨",
+    "spoken": false,
+    "cut": 56,
+    "blk_text": "",
+    "seg_text": "师父那个机缘还说我是观音菩萨的弟子也是那个机缘介绍我看坐禅的但您在答疑中曾说观音菩萨的弟子基本都成就了观音菩萨收了多少弟"
+   },
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 563,
+    "probe": "下一个问题观音菩萨的弟子基本",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "下一个问题观音菩萨的弟子基本都成就了他一直在收徒他的初代弟子和他缘分近的人基本都已经成就了都是等觉菩萨了快要成佛的人了应"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-05",
+  "sid": "2025-05-15-tieba",
+  "segkey": "2025-05-15-tieba#15",
+  "index": 15,
+  "start": 2196.1,
+  "end": 2495,
+  "lp": true,
+  "block": "question-c73fcc1b66e3",
+  "ch": 2,
+  "aid": "answer-2d771528913c",
+  "dq": 0,
+  "da": 850,
+  "moves": [
+   {
+    "field": "a",
+    "op": "insert",
+    "n_blk": 0,
+    "n_seg": 850,
+    "probe": "心画世间从你的问题当中看出来",
+    "spoken": false,
+    "cut": 0,
+    "blk_text": "",
+    "seg_text": "心画世间从你的问题当中看出来的确是中国人信佛都是功利性的这句话是对的大部分人都是如此想从信仰当中得到好处甚至可以说如何和"
+   }
+  ],
+  "verdict": "SILENT"
+ },
+ {
+  "month": "2025-05",
+  "sid": "2025-05-17-tieba",
+  "segkey": "2025-05-17-tieba#36",
+  "index": 36,
+  "start": 2506.2,
+  "end": 2589.502,
+  "lp": true,
+  "block": "question-fb3d1a951956",
+  "ch": 12,
+  "aid": "answer-48a6dfaf6b5c",
+  "dq": -319,
+  "da": 0,
+  "moves": [
+   {
+    "field": "q",
+    "op": "delete",
+    "n_blk": 319,
+    "n_seg": 0,
+    "probe": "Taiguanglin心画世",
+    "spoken": false,
+    "cut": 541,
+    "blk_text": "Taiguanglin心画世间你是作家吗写小说的吗文章写得很好你说的对真正要成道的话是很难的但是往生是不那么难的所以当下",
+    "seg_text": ""
+   }
+  ],
+  "verdict": "SILENT"
+ }
+]
