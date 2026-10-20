@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-10-18T01:52:31.895Z",
+  "generated_at": "2026-10-20T09:30:39.791Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -16483,11 +16483,11 @@
         {
           "pid": "p-s7ade8f3c",
           "text": "《楞伽经》第十八期，这本书的八十七页开始。",
-          "start": 1.37,
+          "start": 1.17,
           "end": 7.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s16a7453b",
@@ -16496,322 +16496,324 @@
           "end": 17.5,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7221a4b0",
           "text": "这里的四种都是一种语言形式，但也是我们众生最执着的那些内容。任何问题从哲学上一直探究到最后，都会归结到这几样问题上：",
           "start": 17.5,
-          "end": 31.62,
+          "end": 31.82,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4d197f7a",
           "text": "“一异”，“一”是同样的意思，“异”是不同的意思；“俱不俱”，俱备、不俱备的意思。最常说的俱备、不俱备是自性——众生有没有不生不灭的自性；还有我们看到的妄想有没有自性，这里妄想的自性指本体。我们都称之为“俱不俱”；",
-          "start": 31.62,
-          "end": 66,
+          "start": 31.82,
+          "end": 65.9,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0fe20ec4",
           "text": "“有无、非有无”，另一个译本写成了“非有非无”，都是一个意思，就是一个事物存在、不存在的问题；",
-          "start": 66,
-          "end": 76.88,
+          "start": 65.9,
+          "end": 76.78,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sadee25ae",
           "text": "“常、无常”，恒常和无常——变化不断，这两种状态到底是哪一个。从哲学上看，我们看到的一切事物最后都归类到这四种问题上。",
-          "start": 76.88,
-          "end": 93.48,
+          "start": 76.78,
+          "end": 93.33,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s63ee91d0",
           "text": "一切外道所不能行，自证圣智者所行境界，远离妄计自相共相，入于真实第一义境，渐净诸地入如来位，以无功用本愿力故，",
-          "start": 93.48,
-          "end": 93.63,
+          "start": 93.33,
+          "end": 93.33,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sc3cd6e74",
           "text": "“一切外道所不能行，自证圣智者所行境界”，都是外道们不行的、达不到的那个境界，也就是佛的境界。",
-          "start": 93.63,
-          "end": 102.5,
+          "start": 93.33,
+          "end": 109.135,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s19320a9f",
           "text": "“妄计自相共相”，这是妄想生起的三种原因（之一），前面讲过了。第一种是“初妄无因”，无缘无故地生起第一个妄想；然后是“缘起自性”，根据前面的妄想在自己内心里再生起新的妄想；还有“自相、共相”，自己的妄想和其他众生之妄想混杂在一起的那个相，从一个菩萨的视角观察、感知它们之后，在这之上又生起妄想。这是三种生起妄想的原因。",
-          "start": 102.5,
-          "end": 153.66,
+          "start": 109.135,
+          "end": 153.56,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s19f08856",
           "text": "在这里“妄计自相共相”也就是第三种妄想（生起）的原因，远离这第三个原因，然后“入于真实第一义境”，也就是佛的境界。",
-          "start": 153.66,
-          "end": 165.75,
+          "start": 153.56,
+          "end": 165.45,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3b3f9372",
           "text": "“渐净诸地入如来位”，逐渐达到每个菩萨地，最后达到如来位。“以无功用本愿力故”，“无功用”就是无造作的。“本愿力”就是普度众生的大愿。这都是无造作的，全靠普度众生的大愿。因为有这个大愿，所有修行才能正常地进行。后面专门讲所有菩萨都是在佛的加持力下修行。",
-          "start": 165.75,
+          "start": 165.45,
           "end": 199.85,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1860dec1",
           "text": "如如意宝普现一切无边境界，一切诸法皆是自心所见差别，令我及余诸菩萨等，于如是等法，离妄计自性自共相见，速证阿耨多罗三藐三菩提，普令众生具足圆满一切功德。",
           "start": 199.85,
-          "end": 199.95,
+          "end": 199.85,
           "conf": 0.89,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s13c5eb84",
           "text": "“如如意宝普现一切无边境界”，这是一种比喻，就像一个宝珠可以反射出所有的境界，外边的所有境界都可以真实地反映出来，就像一面圆形的镜子。“一切诸法皆是自心所见差别”，就像如意宝现无边境界一样，一切妄想、分别、执着都是我们心中看到的差别相而已。",
-          "start": 199.95,
-          "end": 237.42,
+          "start": 199.85,
+          "end": 243.096,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8efcef34",
           "text": "“令我及余诸菩萨等，于如是等法”，让我们这些菩萨在佛所说的正法上。“离妄计自性自共相见”，“自性”不是第八识阿赖耶识的自性，而是本体的意思。“妄计自性”就是我们虚妄计度地认为妄想有本体。“自共相见”，在自相、共相上产生见——执着。“速证阿耨多罗三藐三菩提”，离上面这几样，然后成佛。“普令众生具足圆满一切功德”，让所有众生都能成佛。",
-          "start": 237.42,
-          "end": 287.6,
+          "start": 243.096,
+          "end": 285.311,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s34888c64",
           "text": "前面是问“离一异、俱不俱、有无、非有无、常、无常”等这个问题，下边就是你好好修行，最后能达到这个境界。他用长篇大论来解释了。",
-          "start": 287.6,
+          "start": 285.311,
           "end": 298.2,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4d4fb465",
           "text": "佛言：“大慧，善哉！善哉！汝哀愍世间请我此义，多所利益，多所安乐。",
           "start": 298.2,
-          "end": 306.5,
+          "end": 307.778,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s736a87c5",
           "text": "你问这样的义利益很大，未来会安乐很多众生。",
-          "start": 306.5,
-          "end": 312.08,
+          "start": 307.778,
+          "end": 312.651,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3349104e",
           "text": "大慧，凡夫无智不知心量，妄习为因，执著外物分别一异、俱不俱、有无非有无、常无常等一切自性。",
-          "start": 312.08,
-          "end": 322.74,
+          "start": 312.651,
+          "end": 322.54,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8ca9dbd1",
           "text": "凡夫智慧不行，没有心的真相——可以看作意识的真相，以虚妄的习气为原因，执着于心外之物。实际上心外之物也是心里产生的，就像前面说的一切诸法皆是自心所见差别，这个“外物”也是自心所见差别。“分别一异、俱不俱、有无非有无、常无常等一切自性”，“自性”也就是妄想的本体。在我们看到的一切事物的本体上，我们凡夫执着到底有没有、同不同或者存不存在等这些问题。",
-          "start": 322.74,
-          "end": 371.05,
+          "start": 322.54,
+          "end": 370.85,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s76fd251f",
           "text": "大慧，譬如群兽为渴所逼，于热时焰而生水想，迷惑驰趣不知非水。",
-          "start": 371.05,
-          "end": 378.75,
+          "start": 370.85,
+          "end": 378.55,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd2b92a96",
           "text": "就像动物们在口渴的时候、热的时候会想起水——想要喝水，迷惑地乱跑，但不知道这不是水。也就是动物渴了去喝水，它认为这是水，可以解渴，但是它不知道这个水的本相不是水。",
-          "start": 378.75,
-          "end": 407.85,
+          "start": 378.55,
+          "end": 407.65,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc29b2fd8",
           "text": "愚痴凡夫亦复如是，无始戏论分别所熏，三毒烧心，乐色境界，见生住灭取内外法，堕一异等执著之中。",
-          "start": 407.85,
-          "end": 412.8,
+          "start": 407.65,
+          "end": 412.3,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc5a9c69a",
           "text": "这些凡夫也是如此。“无始戏论”，过去的、无始以来的那些错误的观念。“分别所熏”，被这些错误的观念熏陶，也就是执着于这些错误的观念。“三毒”是贪、嗔、痴。“乐色境界”，喜欢由色组成的境界——外境。对于凡夫来说，外边都可以称之为色的境界。",
-          "start": 412.8,
-          "end": 442.26,
+          "start": 412.3,
+          "end": 442.928,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s103175c4",
           "text": "“见生住灭取内外法”，在妄想和事物的生、住、灭上执着，产生我见，然后“取内外法”，就是一种执着，“取”是执着，“见”也是执着。“取内外法”，在菩萨境界是自己的妄想和其他众生之妄想；在凡夫境界里，自己心里的想法叫“内法”，外边的一切境界可称之为“外法”。“堕一异等执著之中”，堕同和不同这样的执着当中。",
-          "start": 442.26,
-          "end": 477.5,
+          "start": 442.928,
+          "end": 476.427,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s781ecd16",
           "text": "大慧，如乾闼婆城非城非非城，无智之人，无始时来，执著城种妄习熏故，而作城想，外道亦尔，以无始来妄习熏故，不能了达自心所现，著一异等种种言说。",
-          "start": 477.5,
-          "end": 481,
+          "start": 476.427,
+          "end": 480.5,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s17095e7b",
           "text": "前面讲过“乾闼婆城”是一种幻城，是假的不存在的东西，它不是城，也不是不是城，也就是“非非城”是城。“种”是大种，也就是四大的意思。“妄习熏故”，执着于这些妄习，形成了一种习气，所以说是被妄习熏了。",
-          "start": 481,
-          "end": 516,
+          "start": 480.5,
+          "end": 523.073,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s26e6947d",
           "text": "没有智慧的人无始以来执着于四大和合而成的城，把假的不存在的城当作真城，执着（于此）。外道也是如此，被无始以来的虚妄习气所感染，沉入到这种习气当中。他们不能通达一切都是自己心里所现的境界而已，执着于“一异等种种言说”，后面省略了“俱不俱、有无非有无、常无常”。",
-          "start": 516,
-          "end": 558.99,
+          "start": 523.073,
+          "end": 558.285,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7dadbb1a",
           "text": "大慧，譬如有人梦见男女象马车步城邑园林种种严饰，觉已忆念彼不实事。",
-          "start": 558.99,
-          "end": 565.96,
+          "start": 558.285,
+          "end": 565.56,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s20bcd0e8",
           "text": "大慧，汝意云何，如是之人是黠慧不？答言：“不也。”",
-          "start": 565.96,
-          "end": 572.64,
+          "start": 565.56,
+          "end": 571.94,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93ab9e98",
           "text": "就像一个人梦见这样、这样的景象，醒来之后又开始忆念这些梦境里的景象。大慧，你觉得这样的人聪明不？大慧菩萨回答：“不”。",
-          "start": 572.64,
-          "end": 592.95,
+          "start": 571.94,
+          "end": 591.456,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-see8761c6",
           "text": "大慧，外道亦尔，恶见所噬不了唯心，执著一异有无等见。",
-          "start": 592.95,
-          "end": 597.04,
+          "start": 591.456,
+          "end": 596.34,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd7aa83e6",
           "text": "外道也是如此，他们沉浸、执着于恶见当中，不知道万物唯心造，一切万物都是从心里显现出来的境界而已，执着于同不同、有无、存在不存在、俱备不俱备、常无常等这样的见解当中。",
-          "start": 597.04,
-          "end": 619.5,
+          "start": 596.34,
+          "end": 619.3,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5df54f20",
           "text": "前面说了，如果一个人对梦境执着，按佛说的意思就是不聪明。我回答了很多问题，有些人也问一些关于梦境的问题，有些是有加持的、佛菩萨刻意给你的梦境，这种梦境通常会在凌晨将醒的时候做，而且梦里的景象非常的清晰，会让你记住关键的信息，这算是一种加持的梦。其他大部分梦我们醒来之后都会忘记，这都不是什么有意义的梦，所以不需要执着。",
-          "start": 619.5,
-          "end": 658.6,
+          "start": 619.3,
+          "end": 664.145,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbef55c8f",
           "text": "我们应该有的正确观念是你把这个现实也当作梦境来看，因为现实的确是被我们的业和习气污染之后形成的梦境。报身也是业和习气和合而成的结果，就是一个假象的物体。既然我们看到的世间也是梦，我们睡觉的时候做的梦就是梦中梦了，所以更不需要执着。",
-          "start": 658.6,
-          "end": 703.65,
+          "start": 664.145,
+          "end": 702.466,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s15111fc7",
           "text": "大慧，譬如画像无高无下，愚夫妄见作高下想，未来外道亦复如是，",
-          "start": 703.65,
-          "end": 711,
+          "start": 702.466,
+          "end": 710.4,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se103bd1a",
           "text": "就像画像没有高和下，愚痴凡夫们有虚妄的见解，作高下想，都是相待地产生分别心，之后再执着于它，未来的外道也这样。",
-          "start": 711,
-          "end": 731.15,
+          "start": 710.4,
+          "end": 732.317,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf37b4e82",
           "text": "恶见熏习妄心增长，执一异等自坏坏他，于离有无，无生之论，亦说为无，此谤因果，拔善根本，应知此人分别有无起自他见，当堕地狱，欲求胜法，宜速远离。",
-          "start": 731.15,
+          "start": 732.317,
           "end": 734,
           "conf": 0.5,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6c43925b",
