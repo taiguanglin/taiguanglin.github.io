@@ -583,13 +583,31 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     # h2–h6 標題、圖片 figure——先閉群再輸出，邊界本身留在群外。群界規則與
     # 09c-sutra-pin.js 的 runtime 包法完全一致；09c 偵測到既有包層即跳過
     # DOM 手術（長文啟動不再搬移近全頁的兄弟節點）。
+    #
+    # **連續多段經文共用同一個 host**：一段經文常被原書縮排切成數段（例：
+    # 《圓覺經》每章原文 2–12 段、《金剛經》每章 1–8 段）。若每段各開一
+    # 群，sticky 的活動範圍就只剩經文自身的高度 → 等於沒有置頂效果。因此
+    # 連續的經文段落一律收進**同一個** .sutra-pin-host（sticky 定位單位），
+    # 整段經文會一起停在視窗最上方；講解段落仍落在同一群內。
+    # （各段經文仍各自帶自己的 id/pid，搜尋索引與段落錨點不受影響。）
     _pin_group_open = False
+    _pin_host_open = False
+    _prev_kind = None
+
+    def _close_pin():
+        """關閉經文置頂包層（host 先於 group）。"""
+        nonlocal _pin_group_open, _pin_host_open
+        if _pin_host_open:
+            body.append("</div>")   # /sutra-pin-host
+            _pin_host_open = False
+        if _pin_group_open:
+            body.append("</div>")   # /sutra-pin-group
+            _pin_group_open = False
+
     for b in blocks:
         k = b["kind"]
         if k in _HEADING_KINDS:
-            if _pin_group_open:
-                body.append("</div>")
-                _pin_group_open = False
+            _close_pin()
             if _seen_heading:
                 body.append(_back_to_toc)
             _seen_heading = True
@@ -618,18 +636,18 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section)
         elif k == "quote":
-            # 先閉上一群（下一段經文是邊界），再開新群包本段經文；
-            # host 即 sticky 定位單位，group 限制停留範圍（見 09c/CSS）
-            if _pin_group_open:
-                body.append("</div>")
-                _pin_group_open = False
-            body.append('<div class="sutra-pin-group">')
-            body.append('<div class="sutra-pin-host">')
+            # 經文：host 即 sticky 定位單位，group 限制停留範圍（見 09c/CSS）。
+            # 上一段不是經文時才另開一群（下一段經文是邊界）；連續的經文段落
+            # 則併入同一個 host，整段經文一起停留。
+            if not (_pin_group_open and _prev_kind == "quote"):
+                _close_pin()
+                body.append('<div class="sutra-pin-group">')
+                body.append('<div class="sutra-pin-host">')
+                _pin_group_open = True
+                _pin_host_open = True
             body.append('<div class="sutra-text para-block" id="%s"%s>%s</div>'
                         % (b["pid"], para_time_attrs(_series, b["pid"]),
                            nl2br(esc(b["text"]))))
-            body.append("</div>")  # /sutra-pin-host（group 保持開著，收講解段落）
-            _pin_group_open = True
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section)
         elif k == "label":
@@ -640,11 +658,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                 # 統一 <img> 標記（lazy + 語意 alt + 實檔寬高）來自 word2ebook
                 # 的 utils/image_markup.py——經 main.py 以 importlib 載入共用
                 abs_img = os.path.join(out_dir, src) if out_dir else None
-                if _pin_group_open:
-                    # 有實際輸出的 figure 是邊界（無 src 者不輸出、也非邊界，
-                    # 與 09c 只認 DOM 中實際存在的 img/figure 一致）
-                    body.append("</div>")
-                    _pin_group_open = False
+                _close_pin()
                 body.append(
                     '<figure class="book-img">%s</figure>'
                     % render_img_tag(src, cur_section, abs_img)
@@ -700,10 +714,10 @@ def render_chapter(book, blocks, image_src_map, is_trad,
                     body.append(ahtml)
             body.append("<hr/>")
 
+        _prev_kind = k
+
     # 迴圈結束仍開著的經文群收尾
-    if _pin_group_open:
-        body.append("</div>")
-        _pin_group_open = False
+    _close_pin()
 
 # 單書內頁：只回本系列總目錄（跨書連結僅出現在首頁）
     _book_toc_href = "index_trad.html" if is_trad else "index.html"

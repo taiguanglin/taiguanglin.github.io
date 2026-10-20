@@ -275,6 +275,9 @@
         ['最多隻能', '最多只能'], ['最多隻是', '最多只是'],
         ['差不多隻有', '差不多只有'], ['業很多隻能', '業很多只能'],
         ['三幹大幹世界', '三千大千世界'], ['幹世界', '千世界'],
+        /* 「威音王」是佛名，「威音王后」＝威音王＋之後（非皇后義）；
+         * 「踩著自己的頭髮過去」＝頭髮義（與 _CONTEXT_FIXES 同步） */
+        ['威音王后', '威音王後'], ['的頭發過去', '的頭髮過去'],
     ];
     function fixPhrases(text) {
         for (var i = 0; i < PHRASE_FIXES.length; i++) {
@@ -284,12 +287,103 @@
         }
         return text;
     }
+    /* ---------- 台灣慣用詞字典「劫持」保護（與 i18n_utils._PHRASE_PROTECT 同源，
+     * 兩份必須同步維護） ----------
+     * OpenCC cn→tw（＝Python 的 s2twp）的 TWPhrasesIT 詞典會把一般語義的
+     * 常用詞整詞換成 IT 術語／專名：对象→物件、循环→迴圈、万象→永珍
+     * （永珍＝寮國首都）、奔驰→賓士、呼出→撥出、自性能→自效能……
+     * 一般頁面（繁體手寫 chrome＋簡體故事原稿）在轉換前先把這些詞換成
+     * PUA 哨兵（OpenCC 不轉換私用區字元），轉換後還原成台灣正體形式。
+     * 每筆 [輸入形式, 輸出形式]——簡繁兩種輸入形式各一筆（root 頁面多為
+     * 繁體寫成，cn→tw 對繁體輸入一樣會套用 TWPhrasesIT）。 */
+    var PHRASE_PROTECT = [
+        ['对象', '對象'], ['對象', '對象'], ['对像', '對象'], ['對像', '對象'],
+        ['循环', '循環'], ['循環', '循環'],
+        ['万象', '萬象'], ['萬象', '萬象'],
+        ['奔驰', '奔馳'], ['奔馳', '奔馳'],
+        ['发布', '發布'], ['發布', '發布'], ['發佈', '發布'],
+        ['呼出', '呼出'], ['信道', '信道'],
+        ['任务', '任務'], ['任務', '任務'],
+        ['性能', '性能'],
+        ['指针', '指針'], ['指針', '指針'],
+        ['调用', '調用'], ['調用', '調用'],
+        ['调度', '調度'], ['調度', '調度'],
+        ['调回', '調回'], ['調回', '調回'],
+        ['集成', '集成'],
+        ['抛出', '拋出'], ['拋出', '拋出'],
+        ['溢出', '溢出'], ['局部', '局部'],
+        ['镜像', '鏡像'], ['鏡像', '鏡像'],
+        ['映射', '映射'],
+        ['范式', '範式'], ['範式', '範式'],
+        ['仿真', '仿真'], ['元音', '元音'],
+        ['性价比', '性價比'], ['性價比', '性價比'],
+        ['持久', '持久'], ['程序', '程序'],
+        ['进程', '進程'], ['進程', '進程'],
+        ['运行', '運行'], ['運行', '運行'],
+        ['连接', '連接'], ['連接', '連接'],
+        ['支持', '支持'],
+        ['高级', '高級'], ['高級', '高級'],
+        ['激活', '激活'],
+        ['扩展', '擴展'], ['擴展', '擴展'],
+        ['刷新', '刷新'],
+        ['社区', '社區'], ['社區', '社區'],
+        ['图像', '圖像'], ['圖像', '圖像'],
+        ['实例', '實例'], ['實例', '實例'],
+        ['脚本', '腳本'], ['腳本', '腳本'],
+        ['导入', '導入'], ['導入', '導入'],
+        ['分区', '分區'], ['分區', '分區'],
+        ['周围', '周圍'], ['周圍', '周圍'],
+    ];
+    function protectPhrases(text) {
+        var marks = [];
+        for (var i = 0; i < PHRASE_PROTECT.length; i++) {
+            var s = String.fromCharCode(0xE000 + i);
+            if (text.indexOf(s) !== -1) continue;  /* 來源天然含哨兵：跳過該詞 */
+            if (text.indexOf(PHRASE_PROTECT[i][0]) === -1) continue;
+            text = text.split(PHRASE_PROTECT[i][0]).join(s);
+            marks.push(i);
+        }
+        return { text: text, marks: marks };
+    }
+    function unprotectPhrases(text, marks) {
+        for (var k = 0; k < marks.length; k++) {
+            var i = marks[k];
+            text = text.split(String.fromCharCode(0xE000 + i)).join(PHRASE_PROTECT[i][1]);
+        }
+        return text;
+    }
+    /* 同詞二形收斂（與 i18n_utils 的 _NIAN_RECITE／_HUIXIANG_DEDICATION 同步）：
+     * OpenCC 只轉部分片語，同頁「唸佛／念佛」「回向／迴向」混雜——
+     * 台灣用法（教育部辭典「念佛」條）與佛門慣用（迴向文）一律統一。 */
+    function fixUniformForms(text) {
+        text = text.split('唸').join('念');
+        text = text.split('回向').join('迴向');
+        return text;
+    }
+    /* 阿拉伯數字＋量詞「只」漏轉（OpenCC 片語字典只收中文數詞前綴）：
+     * 「2只貓貓」→「2隻貓貓」。用捕獲組而非 lookbehind（Safari < 16.4）。 */
+    var DIGIT_ZHI_RE = /([0-9０-９])只(?=[貓狗雞鴨鳥兔豬牛羊魚蟲蟻鼠手腳眼])/g;
+    function fixDigitZhi(text) {
+        if (text.indexOf('只') === -1) return text;
+        return text.replace(DIGIT_ZHI_RE, '$1隻');
+    }
     function ensureConverters() {
         if (!tw2cn) tw2cn = window.OpenCC.Converter({ from: 'tw', to: 'cn' });
         if (!cn2tw) {
             var raw = window.OpenCC.Converter({ from: 'cn', to: 'tw' });
             cn2tw = function (s) {
-                return fixPhrases(fixMian(fixYun(fixLi(fixHou(fixFaHair(fixOnlyZhi(raw(s))))))));
+                var prot = protectPhrases(s);
+                var out = raw(prot.text);
+                out = unprotectPhrases(out, prot.marks);
+                out = fixOnlyZhi(out);
+                out = fixDigitZhi(out);
+                out = fixFaHair(out);
+                out = fixHou(out);
+                out = fixLi(out);
+                out = fixYun(out);
+                out = fixMian(out);
+                out = fixUniformForms(out);
+                return fixPhrases(out);
             };
         }
     }

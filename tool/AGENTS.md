@@ -18,9 +18,11 @@
 | `tool/audio_denoiser/` | Facebook Denoiser 語音去雜音（ASR 前處理）。 | mp3/wav → mp3/wav | `README.md` |
 | `tool/stories2html/` | 實修故事原始檔 → HTML 閱讀頁 + index/sitemap 補丁。 | `stories/<原始檔>` → `stories/<slug>.html` | `README.md`（metadata SoT：`docs.py`） |
 | `tool/fonts/` | 全站字型自架子集管線：掃站用頁面語料（含 OpenCC 簡體聯集）→ pyftsubset 產十字重 woff2＋`fonts.css`，取代 Google Fonts 外鏈（大陸連不上）。 | root/`wenda2/`/`stories/` 頁面語料 → `fonts/` | `README.md`（執行用 word_audio_map2 的 venv；fonttools 在 `.pylibs`） |
-| `tool/daily_quotes/` | 首頁「每日精選」語料管線：從兩套電子書索引抽候選（長度 60–400、黑名單、CJK 比例 ≥60%、**排除經文**（`scripture_filter.py` 三道防線）、md5 去重）→ `candidates.json`（15,299 條）；固定種子抽 2,400 條交 AI 評分（0–10）→ `select_1095.py` 以 score≥7 為骨架、其餘按可讀性啟發式補足→ repo 根目錄 `daily_quotes.json`（1,095 條，單一來源 ≤70%），由 `index.html` 依日期播種輪播；`audit_quotes.py` 稽核成品（有經文／斷鏈即 exit 1）。 | `{wenda2_ebook,ebook}/search_index_trad.json` → `build_quotes.py` → `candidates.json`；＋`candidates_sample.json`／`scores/batch_*.json` → `select_1095.py` → `daily_quotes.json` → `audit_quotes.py` | **`README.md`** |
+| `tool/daily_quotes/` | 首頁「每日精選」語料管線：從兩套電子書索引抽候選（長度 60–400、黑名單、CJK 比例 ≥60%、**排除經文**（`scripture_filter.py` 三道防線）、md5 去重）→ `candidates.json`（15,299 條）；固定種子抽 2,400 條交 AI 評分（0–10）→ `select_1095.py` 以 score≥7 為骨架、其餘按可讀性啟發式補足→ repo 根目錄 `daily_quotes.json`（1,095 條，單一來源 ≤70%），由 `index.html` 依日期播種輪播；`audit_quotes.py` 稽核成品（有經文／斷鏈即 exit 1）；**`refresh_sample.py` 把凍結的 `candidates_sample.json` 的文字／網址對齊現況電子書**（條數與順序不可動 → AI 評分的 idx 對應關係不變），`select_1095.py` 另會以「文字」重新定位樣本裡過期的 pid（pid＝段落文字雜湊，區塊切分一改就換）。 | `{wenda2_ebook,ebook}/search_index_trad.json` → `build_quotes.py` → `candidates.json`；＋`candidates_sample.json`／`scores/batch_*.json` → `select_1095.py` → `daily_quotes.json` → `audit_quotes.py` | **`README.md`** |
 | `tool/jiangjing_para_map/` | 講經系列「段落 ↔ SRT 字元時間流」對齊 → `audio_map3/<series>.json`；重跑保留已 confirmed 段落與 reviewed 講次。books2ebook 只注入 reviewed 講次的段落時間。 | ebook HTML 段落 + `audio/srt/jiangjing/*.srt` → `audio_map3/*.json` | `README.md` |
+| `tool/qa_curation/` | 問答錄2「拆分＋分類」準則 SoT：把第 1–12 章（5,789 則人工分類）逐一實證檢驗後，整理成供 LLM 對第 13–21 章（未分類月度答疑）執行「問題拆分＋12 章主題分類」的操作準則——主準則（鐵律/拆分統計/分類總綱/輸出 schema）＋12 個逐章準則檔＋skill 檔。分類母體＝分類精選工作表「答疑汇总」A–D 欄。 | 13–21 章問答串 → JSONL（`section_path`＋信心＋依據） | **`README.md`**, `wenda2_split_classify_criteria.md`, `SKILL.md`, `chapters/` |
 | `tool/world_model/` | 三千大千世界模型圖素材：把兩套電子書的**生成產物**抽成純文字語料，再依 16 個主題章（宇宙總綱／三千大千世界／須彌山／**世界的基本構造**／三界二十八天／人間／地獄／六道／佛國／光子物理／六根複眼／時間劫／神通）逐字彙整，供餵大模型畫世界模型圖。讀電子書而非 PDF/Word，是為了拿到全量段落索引（可驗證無遺漏）、穩定錨點（可回溯）、並免寫第二套 PDF 解析器。`verify.py` 逐行回比原始 HTML。 | `wenda2_ebook/*_trad.html` + `ebook/*_trad.html` → `build/world_model_{source,core}.md` + `.jsonl`（`build/` 已 gitignore） | `README.md` |
+| `tool/fix_yuanjue_sutra_numbers.py` | 【一次性來源修訂】《圓覺經》PDF：「解析」的經文條目排成「編號（一般字型）＋經文（粗體）」→ 條目與後面的講解黏成同一段，該條經文沒有經文區塊、**「經文置頂」對它失效**。此工具把條目編號改成與經文同粗體（**文字逐字不變**，只換字型；粗體數字略寬 0.42pt → 後面的「. 」同步右移）。全書 188 處；名相注釋（粗體詞頭在行中）不修。可重複執行。 | `books/05 TaiGuangLin禅师讲《圆觉经》最终版.pdf` → 同檔（增量存檔） | 檔首 docstring |
 | `tool/build_jiangjing_pdfs.py` | 【一次性已完成】組裝講經系列 PDF：合併（六祖壇經 2 PDF、楞嚴 docx→PDF）、四十二章/楞伽直接複製原檔（已含目錄）、其餘補檔首可點擊 TOC（含頁數）。**講經 5 本 PDF 已產出且驗證無誤，若未來不再新增/修改講經 PDF，此工具與下方兩個音檔工具可一併刪除。** | 來源 PDF/docx → `books/06…09*.pdf` + 感恩 | 檔首 docstring |
 | `tool/series2audio.py` | 新錄音系列（義理／圓覺經／心經／金剛經）mp3·m4a → **去雜音（DNS64）+ 音量正規化** → opus（16kbps / mono / 48kHz / voip），輸出 `audio/yili/` 與 `audio/jiangjing/`。等於把 `jiangjing2audio.py` + `audio_denoiser/denoise_jiangjing.py` + `normalize_jiangjing_audio.py` 三步併成一步（模型每個 worker 只載入一次）。 | `~/Downloads/Tai师父*/音頻/*.mp3`／`*.m4a` → `audio/{yili,jiangjing}/*.opus` | 檔首 docstring |
 | `tool/audio_index/` | 掃描整個 `audio/` 目錄產生入口頁 `audio/index.html`（粉色系、置頂大悲咒、類別下拉篩選）；新增任何 `*.opus` 都會自動進清單。 | `audio/**/*.opus` → `audio/index.html` | **`README.md`** + `index_template.html` |
@@ -126,6 +128,8 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
   `<div class="label-heading">譯文</div>` 與下一個 label 之間的段落
   （`解析`／`註解`／`本章大義` 才是老師的講解，保留）。這些 id 與
   `search_index*.json` 的 url 一一對應（實測 sutra-text 4,231/4,231 全中）。
+  2026-10 起《金剛經 心經》《圓覺經》「解析」裡**重引的經文條目**（粗體、
+  前面帶數字編號）也改以經文區塊輸出 → 同樣由 ① 涵蓋。
   **不要用文字規則取代它**——很多經文沒有 `佛告`／`善知識` 之類的對話標記。
 - **B. 文言啟發式（補漏）**：古典對話／稱謂標記 **且** 現代語助詞 ≤ 3。抓的是不在
   上述區塊的經文（書末附錄等），實測精確率 100%。

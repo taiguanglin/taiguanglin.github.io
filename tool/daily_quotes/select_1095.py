@@ -35,6 +35,25 @@ TEACH = ('所以', '因此', '也就是', '其實', '就是說', '換句話', '�
 
 # 經文過濾統一由 scripture_filter 處理（結構錨點 + 文言啟發式），此處不另立規則。
 
+def _current_urls_by_text():
+    """{段落文字: 目前電子書的 url}——用來把樣本裡過期的 pid 重新定位。
+
+    來源：現況的搜尋索引（ebook/ 與 wenda2_ebook/ 的 search_index_trad.json），
+    以 build_quotes.clean() 同一套正規化處理文字，才能與樣本／候選池對上。
+    """
+    from build_quotes import clean
+    out = {}
+    for sub in ('ebook', 'wenda2_ebook'):
+        path = ROOT / sub / 'search_index_trad.json'
+        if not path.exists():
+            continue
+        for x in json.load(open(path, encoding='utf-8')):
+            if x.get('type') not in ('content', 'answer'):
+                continue
+            out.setdefault(clean(x['content']), '%s/%s' % (sub, x['url']))
+    return out
+
+
 def heuristic(t):
     s = 4.0
     n = len(t)
@@ -60,16 +79,26 @@ def main():
     sample = json.load(open(TD / 'candidates_sample.json'))
     pool = json.load(open(TD / 'candidates.json'))
 
+    # 樣本檔（凍結的 AI 評分集）裡的 url 可能過期：pid 是「段落文字雜湊」
+    # （md5(文字+段序)），電子書重建、區塊切分一改（例：把經文條目切成
+    # 獨立區塊）就會整批換 pid → 連結斷掉，且經文過濾也失效（過期 url 不在
+    # 現況的經文錨點裡 → 被誤當成不是經文而混進成品）。
+    # 故以「文字」重新定位目前的名稱；定位不到者不進骨架。
+    current = _current_urls_by_text()
+
     # 1) 骨架：AI score>=7（idx 對應 sample 位置）
     scored = []
     for i in range(24):
         for x in json.load(open(TD / f'scores/batch_{i:02d}.json')):
             if x['score'] >= MIN_SCORE:
                 it = sample[x['idx']]
-                if is_scripture(ROOT, it['url'], it['text']):
+                url = current.get(it['text'])
+                if not url:
+                    continue          # 文字已不存在於現況電子書 → 略過
+                if is_scripture(ROOT, url, it['text']):
                     continue
                 scored.append({
-                    'text': it['text'], 'url': it['url'], 'title': it['title'],
+                    'text': it['text'], 'url': url, 'title': it['title'],
                     'source': it['source'], 'score': x['score'],
                 })
     scored.sort(key=lambda q: -q['score'])

@@ -428,7 +428,12 @@ _JG_LABEL_RE = re.compile(r"^(译文|注解|解析|本章大义)[：:]?$")
 _JG_NUM_RE = re.compile(r"^\s*\d{1,2}[.．]\s*")
 _CJK_RE = re.compile(r"[\u4e00-\u9fff]+")
 _JG_NGRAM = 4
-_JG_MIN_RATIO = 0.6
+# 判定「這段粗體文字確實是經文」時的 n-gram 重疊門檻。
+# 門檻若取 0.6，會把「引用一段經文 ＋ 老師自己的話」的白話也算成經文
+# （例：圓覺經「即离，不作方便。离幻即觉，亦无渐次。”佛已然答复，菩萨修行」
+# ——後半是老師的話）。真正的經文條目重疊比都在 0.75 以上，門檻取 0.7
+# 可排除該類誤判。
+_SUTRA_MIN_RATIO = 0.7
 
 
 def _cjk_only(text):
@@ -442,13 +447,14 @@ class _SutraCorpus:
     （詞頭後緊接宋體說明，如「阿修罗：我们可以理解为……」）。字型分工可先
     濾掉後者；剩下的仍混有少量白話講解（如「对于五眼有不同的解释。」、咒語
     的白話翻譯），故再與原經文比對。書中重引時偶有省字（原文「以音声求我」
-    重引作「音声求我」）或異體字（著／着），因此用字元 n-gram 的重疊比例而
-    非完全比對。
+    重引作「音声求我」）或異體字（著／着），因此用字元 n-gram 的重疊比例
+    而非完全比對。
     """
 
-    def __init__(self, texts):
+    def __init__(self, texts, min_ratio=_SUTRA_MIN_RATIO):
         joined = _cjk_only("".join(texts))
         self._text = joined
+        self._min_ratio = min_ratio
         n = _JG_NGRAM
         self._grams = {joined[i:i + n] for i in range(len(joined) - n + 1)}
 
@@ -461,7 +467,7 @@ class _SutraCorpus:
             return probe in self._text
         grams = [probe[i:i + n] for i in range(len(probe) - n + 1)]
         hit = sum(1 for g in grams if g in self._grams)
-        return hit / len(grams) >= _JG_MIN_RATIO
+        return hit / len(grams) >= self._min_ratio
 
 
 def parse_jingang(ctx):
@@ -484,7 +490,11 @@ def parse_jingang(ctx):
             if para_emph and not para_has_body and _JG_LABEL_RE.match(text):
                 ctx.append("label", text.rstrip("：:"))
             elif para_emph and not para_has_body and corpus.matches(text):
-                ctx.append("strong", text)
+                # 「解析」中重引的原經文（整段黑體且命中經文語料）——與
+                # FZSHJW 排的原文同樣是經文，輸出為 quote（經文區塊），
+                # 讀者才能在講解時把這段經文置頂（見 html_generator 的
+                # .sutra-pin-host 與 09c-sutra-pin.js）。
+                ctx.append("quote", text)
             else:
                 ctx.append("para", text)
         if quote.strip():
@@ -1015,6 +1025,32 @@ _SUTRA_NUM_RE = re.compile(r"^\d+\.\s*[一二三四]者.*病")
 # 解析中「若诸菩萨...」類編號經文
 _SUTRA_NUM_RE2 = re.compile(r"^\d+\.\s*若诸菩萨")
 _SUTRA_KEYWORDS = ("若复有人作如是言", "彼圆觉性", "欲求圆觉", "离四病者", "若诸菩萨")
+# 《圓覺經》的粗體字型（經文條目用粗體排，名相詞頭也用粗體）
+_XJ_BOLD_FONT = "MicrosoftYaHei-Bold"
+
+
+def _bold_sutra_tail(line, corpus):
+    """回傳「行尾的粗體經文」文字；此行不是經文重引則回傳 None。
+
+    《圓覺經》的「解析」把經文條目排成「編號（一般字型）＋經文（粗體）」，
+    例：「1. 一切障碍即究竟觉。」（編號一般字型、經文粗體）；而「名相注釋」
+    排成「粗體詞頭（行中）＋說明（一般字型）」，例：「2. 得念失念：這是指…」。
+    兩者都含粗體，須同時滿足下列兩點才能區分開：
+
+    1. 粗體文字命中全書原經文語料（n-gram 重疊比）；
+    2. 粗體位於**行尾**（其後沒有一般字型的說明文字）。
+
+    第 2 點是關鍵：名相詞頭後面接著說明，粗體不在行尾，故不會被誤判。
+    """
+    spans = [s for s in line.spans if s[0].strip()]
+    if not spans:
+        return None
+    if not spans[-1][1].startswith(_XJ_BOLD_FONT):
+        return None
+    bold_text = "".join(t for t, f, _ in spans if f.startswith(_XJ_BOLD_FONT)).strip()
+    if not bold_text or not corpus.matches(bold_text):
+        return None
+    return bold_text
 
 
 def parse_yuanjue(ctx):
@@ -1022,6 +1058,9 @@ def parse_yuanjue(ctx):
     quote = ""
     body_left = None
     quote_left = None
+    # 本段是否為「經文條目」（見 _bold_sutra_tail）：獨立成段的經文條目輸出為
+    # 經文區塊（quote），讓讀者在讀講解時能把這段經文置頂。
+    para_sutra = None
 
     # 預先收集全書 KaiTi 經文語料，用於判斷解析中重引的經文句（即使首行為常規字體）
     _quote_corpus_parts = []
@@ -1034,6 +1073,8 @@ def parse_yuanjue(ctx):
                 if _ct:
                     _quote_corpus_parts.append(_ct)
     _quote_corpus = "".join(_quote_corpus_parts)
+    # n-gram 語料（與《金剛經》共用 _SutraCorpus）：判斷粗體條目是否真為經文
+    _sutra_corpus = _SutraCorpus(_quote_corpus_parts)
 
     def _is_quote_substring(txt: str) -> bool:
         # 去編號後，取前 15 字判斷是否出現在原經文語料中
@@ -1044,13 +1085,18 @@ def parse_yuanjue(ctx):
         return probe in _quote_corpus
 
     def flush():
-        nonlocal para, quote, quote_left
+        nonlocal para, quote, quote_left, para_sutra
         if para.strip():
-            ctx.append("para", para.strip())
+            # 整段就是「經文條目」→ 輸出為經文區塊
+            if para_sutra is not None and para.strip() == para_sutra:
+                ctx.append("quote", para.strip())
+            else:
+                ctx.append("para", para.strip())
         if quote.strip():
             ctx.append("quote", quote.strip())
         para, quote = "", ""
         quote_left = None
+        para_sutra = None
 
     for pno, ls in _iter_pages(ctx):
         for line in ls:
@@ -1058,7 +1104,7 @@ def parse_yuanjue(ctx):
             if not t:
                 continue
             f, s = line.font, line.size
-            bold = f.startswith("MicrosoftYaHei-Bold")
+            bold = f.startswith(_XJ_BOLD_FONT)
             if s >= 17 and (f == "KaiTi" or bold):
                 flush()
                 ctx.heading("h2", t)
@@ -1084,6 +1130,8 @@ def parse_yuanjue(ctx):
                     flush()
                 quote = _join(quote, t)
             elif bold:
+                # 整行粗體 = 解析中重引的原經文（名相詞頭的粗體後面接著說明，
+                # 不會整行皆粗體）。同樣輸出為經文區塊（見文末的 strong→quote）。
                 if para.strip() or quote.strip():
                     flush()
                 ctx.append_strong_line(t)
@@ -1095,7 +1143,7 @@ def parse_yuanjue(ctx):
                     ctx.append("para", t)
                     body_left = None
                     continue
-                # 解析中重引經文：編號「1. 一者作病…」或「1. 若诸菩萨…」等雖為常規字體，仍應視為粗體經文獨立成行
+                # 解析中重引經文：編號「1. 一者作病…」或「1. 若诸菩萨…」等雖為常規字體，仍應視為經文獨立成行
                 _is_sutra = _SUTRA_NUM_RE.match(t) is not None or _SUTRA_NUM_RE2.match(t) is not None
                 if not _is_sutra and re.match(r"^\d+\.", t):
                     if any(kw in t for kw in _SUTRA_KEYWORDS):
@@ -1120,6 +1168,9 @@ def parse_yuanjue(ctx):
                     ctx.append_strong_line(t)
                     body_left = None
                     continue
+                # 「編號（一般字型）＋經文（粗體）」的經文條目：粗體在行尾且命中
+                # 經文語料 → 整段視為經文（獨立成段時輸出為經文區塊）。
+                _is_bold_sutra = _bold_sutra_tail(line, _sutra_corpus) is not None
                 if quote.strip():
                     flush()
                 if re.match(r"^\d{1,2}[.．]", t):
@@ -1130,9 +1181,18 @@ def parse_yuanjue(ctx):
                     body_left = min(body_left, line.x0)
                 if para.strip() and _is_indent_start(line, body_left):
                     flush()
+                if _is_bold_sutra and not para.strip():
+                    para_sutra = t
                 para = _join(para, t)
         ctx.add_images_for_page(pno)
     flush()
+    # 解析中重引的經文（原本以粗體 strong 區塊輸出）改為經文區塊（quote），
+    # 讀者讀講解時才能把這段經文置頂（見 09c-sutra-pin.js）。
+    # 少數粗體段落其實是老師的白話（引用經文但夾雜自己的話），以經文語料的
+    # n-gram 重疊比再確認一次，不像經文者維持一般段落。
+    for _b in ctx.blocks:
+        if _b["kind"] == "strong":
+            _b["kind"] = "quote" if _sutra_corpus.matches(_b["text"]) else "para"
     return True
 
 

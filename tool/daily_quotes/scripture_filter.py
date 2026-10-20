@@ -10,6 +10,8 @@ A. **結構錨點（權威）**——`tool/books2ebook` 用兩種結構標出經
    1. 講經系列以楷體字型排的**原經文** → `<div class="sutra-text para-block" id="p-x">`
       （見 `tool/books2ebook/parsers.py` 的「各書楷體（原經文）字型集合」與
       `html_generator.py` 的 `k == "quote"` 分支）；
+      2026-10 起《金剛經 心經》《圓覺經》「解析」裡**重引的經文條目**
+      （粗體、前面帶數字編號）也改以經文區塊輸出，同樣由本規則涵蓋。
    2. 《金剛經 心經》《圓覺經》每章的**白話譯文** → 落在
       `<div class="label-heading">譯文</div>` 與下一個 label 之間的所有段落
       （`解析`／`註解`／`本章大義` 才是老師的講解，保留）。

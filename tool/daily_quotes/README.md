@@ -19,6 +19,11 @@
      HTML 的 id 對應。
 4. `audit_quotes.py` — 稽核成品（見下）；有經文／斷鏈／重複就 `exit 1`。
 
+> **電子書重建（尤其改了區塊切分，如《圓覺經》修訂原檔 PDF）後要重跑整條
+> 管線**：`build_quotes.py` → `refresh_sample.py` → `select_1095.py` →
+> `audit_quotes.py`。少了 `refresh_sample.py`，樣本裡過期的 pid 會讓經文過濾
+> 失準（經文混進成品）並造成斷鏈。
+
 > `score` 欄 = AI 分；`heuristic` 欄 = 啟發式分（無 AI 分的條目才帶）。
 
 ## 排除經文（`scripture_filter.py`）
@@ -79,6 +84,13 @@ python3 tool/daily_quotes/audit_quotes.py --strict   # 放寬版文言掃描也�
   或對 `candidates.json` 抽更多樣、評完後改 `select_1095.py` 的 `TARGET`。
 - 電子書重建後 `search_index*.json` 會變，`candidates.json` 應重跑，否則會留下
   指向已不存在段落的**斷鏈**（稽核會擋下）。
+- **`candidates_sample.json` 是凍結的評分集**（條數與順序不可動 → `scores/` 的
+  `idx` 對應關係不變），但它記錄的「文字／網址」會過期：pid 是段落文字雜湊
+  （md5(文字+段序)），區塊切分一改就整批換 pid；繁簡／台灣用語規則更新後文字
+  也會變。用 `python3 refresh_sample.py` 把它的文字／網址對齊現況電子書
+  （不新增、不刪除、不重排）。`select_1095.py` 另會以「文字」重新定位樣本裡
+  過期的 pid——**這不只是連結問題**：過期 url 不在現況的經文錨點裡 → 經文過濾
+  失準，經文會混進成品。
 
 ## 前端（`index.html`）
 

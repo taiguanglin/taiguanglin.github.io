@@ -193,11 +193,32 @@ def test_reserve_gap_is_defined_once(sutra_js):
 
 
 def test_reserve_for_returns_height_plus_gap(sutra_js):
-    """reserveFor 與 --w2e-pin-reserve 用同一個數字（09b 與 03d 共用）。"""
+    """reserveFor 與 --w2e-pin-reserve 用同一個數字（09b 與 03d 共用）。
+
+    量的是 **host 整體高度**而非第一段經文：建置期（books2ebook）會把連續
+    多段經文併進同一個 .sutra-pin-host（否則 sticky 的活動範圍只剩經文自身
+    高度 → 等於沒有置頂效果），只量第一段會嚴重低估讓位高度，目標段落會
+    被停留經文蓋住。
+    """
     start = sutra_js.index("function reserveFor(el)")
     body = sutra_js[start:sutra_js.index("window.W2E = window.W2E || {};", start)]
-    assert "sutra.offsetHeight + RESERVE_GAP" in body
+    assert "host.offsetHeight + RESERVE_GAP" in body
     assert "sutra-pin-tall" in body
+
+
+def test_measure_groups_measures_whole_host(sutra_js):
+    """過長判定也必須量 host 整體高度（否則長經文不會被判定為不停留）。"""
+    start = sutra_js.index("function measureGroups(list)")
+    body = sutra_js[start:sutra_js.index("function applyTallClasses()", start)]
+    assert "host.offsetHeight" in body
+    # 不可只量第一段經文（firstElementChild.firstElementChild）
+    assert "firstElementChild.firstElementChild" not in body
+
+
+def test_sutra_hosts_are_deduped(sutra_js):
+    """一個 host 可能含多段經文 → host 清單必須去重，否則同一群會被重複量測。"""
+    assert "hosts.indexOf(host) === -1" in sutra_js
+    assert "hostOf" in sutra_js
 
 
 def test_pin_reserve_recomputed_on_toggle(sutra_js):

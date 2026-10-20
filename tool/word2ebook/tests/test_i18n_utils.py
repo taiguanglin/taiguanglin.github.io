@@ -345,3 +345,176 @@ class TestI18nProcessor:
         once = processor.ensure_simplified("測試文字")
         twice = processor.ensure_simplified(once)
         assert isinstance(twice, str)
+
+    # ---- TW-phrase hijack protection（_PHRASE_PROTECT）----
+
+    def test_to_traditional_duixiang_not_wujian(self, processor):
+        # 使用者回報的原始案件：s2twp 台灣慣用詞把「对象」整詞換成「物件」
+        result = processor.to_traditional("視周圍所有人為自己未來要度化的对象")
+        assert result == "視周圍所有人為自己未來要度化的對象"
+        assert "物件" not in result
+
+    def test_to_traditional_duixiang_all_senses(self, processor):
+        # 度化／講授／觀照／結婚對象：全部是「對象」，絕不「物件」
+        assert processor.to_traditional("禅定中要消灭的对象") == "禪定中要消滅的對象"
+        assert processor.to_traditional("《圆觉经》的讲授对象是菩萨") == "《圓覺經》的講授對象是菩薩"
+        assert processor.to_traditional("观照的对象") == "觀照的對象"
+        assert processor.to_traditional("找对象") == "找對象"
+        assert "跟對象異地" in processor.to_traditional("跟对象异地")
+
+    def test_to_traditional_fixes_source_typo_duixiang(self, processor):
+        # 來源錯字「对像」（＝对象）→ 繁體正確形式「對象」
+        assert processor.to_traditional("这就叫报复对像存在") == "這就叫報復對象存在"
+
+    def test_to_traditional_keeps_genuine_wujian(self, processor):
+        # 簡體原文真的用「物件」（實物義）→ 繁體保持「物件」
+        assert "老物件" in processor.to_traditional("家里有一些老物件")
+
+    def test_to_traditional_xunhuan_not_huiquan(self, processor):
+        # 循环→迴圈 是 IT 詞劫持；血液／氣血循環
+        assert processor.to_traditional("第04节 血液循环") == "第04節 血液循環"
+        assert "氣血循環" in processor.to_traditional("气血循环")
+
+    def test_to_traditional_wanxiang_not_yongzhen(self, processor):
+        # 万象→永珍（永珍＝寮國首都）劫持；《壇經》「萬象皆現」
+        assert processor.to_traditional("忽遇风吹云散，上下俱明，万象皆现。") == \
+            "忽遇風吹雲散，上下俱明，萬象皆現。"
+
+    def test_to_traditional_benchi_not_bensi(self, processor):
+        # 奔驰→賓士（車牌）劫持；《楞伽經》「愚夫執實奔馳而取」
+        assert processor.to_traditional("愚夫执实奔驰而取") == "愚夫執實奔馳而取"
+
+    def test_to_traditional_fabu_not_shichu(self, processor):
+        # 发布→釋出（軟體發布）劫持；本語料是公布義
+        assert processor.to_traditional("国家宗教局发布相关公告") == "國家宗教局發布相關公告"
+
+    def test_to_traditional_huchu_not_bochu(self, processor):
+        # 呼出→撥出（撥打電話）劫持；本語料是呼吸吐納
+        assert processor.to_traditional("再让气自然呼出去") == "再讓氣自然呼出去"
+
+    def test_to_traditional_xinda_stays_xindao(self, processor):
+        # 「信佛还是信道」＝信＋道，不被信道→通道劫持
+        assert processor.to_traditional("不管你信佛还是信道") == "不管你信佛還是信道"
+
+    def test_to_traditional_zixingneng_stays(self, processor):
+        # 「自性能」＝自性＋能（《壇經》），不被性能→效能劫持
+        assert processor.to_traditional("当自性能含万法是大") == "當自性能含萬法是大"
+        assert processor.to_traditional("如果自性能生起妄想") == "如果自性能生起妄想"
+
+    def test_to_traditional_qiangdiaoyong_stays(self, processor):
+        # 「强调用」＝強調＋用；「强调度人」＝強調＋度人——
+        # 不被調用→呼叫、調度→排程劫持
+        assert processor.to_traditional("师强调用鼻子吸气") == "師強調用鼻子吸氣"
+        assert processor.to_traditional("但强调度人时不分亲疏") == "但強調度人時不分親疏"
+
+    def test_to_traditional_zhizhen_vs_zhenjiu(self, processor):
+        # 「指针灸」＝指＋針灸，不被指针→指標劫持
+        assert processor.to_traditional("这种针艾指针灸、艾灸") == "這種針艾指針灸、艾灸"
+
+    def test_to_traditional_renwu_not_gong(self, processor):
+        # 多任務→多工 劫持「很多任務」→「很多工」
+        assert processor.to_traditional("我做了很多任务") == "我做了很多任務"
+        assert processor.to_traditional("只要完成每天的任务就行") == "只要完成每天的任務就行"
+
+    def test_to_traditional_lianjie_not_lianxian(self, processor):
+        # 血管／神經「連接」不被連接→連線劫持
+        assert processor.to_traditional("心脏连接着六根大血管") == "心臟連接著六根大血管"
+
+    def test_to_traditional_yunxing_not_zhixing(self, processor):
+        # 「氣的運行」不被運行→執行劫持
+        assert processor.to_traditional("保证气的运行自如") == "保證氣的運行自如"
+
+    def test_to_traditional_zhichi_not_zhiyuan(self, processor):
+        # 「家人支持學佛」 endorsement 義不被支持→支援劫持
+        assert processor.to_traditional("预计家人不会支持学佛") == "預計家人不會支持學佛"
+
+    def test_to_traditional_chengxu_stays_procedure(self, processor):
+        # 「練氣的程序」＝步驟義（56×），不被程序→程式劫持
+        assert processor.to_traditional("这是道家练气的程序") == "這是道家練氣的程序"
+        # 「文明進程」不被進程→程序劫持
+        assert processor.to_traditional("严重影响文明进程") == "嚴重影響文明進程"
+
+    def test_to_traditional_gaoji_consistent(self, processor):
+        # 高級→高階 會和未轉換的初級／中階混用；統一成「高級」
+        assert processor.to_traditional("分初级、中级、高级") == "分初級、中級、高級"
+
+    def test_to_traditional_jihuo_stays(self, processor):
+        # 「激活神經系統」生物義不被激活→啟用劫持
+        assert processor.to_traditional("激活神经系统") == "激活神經系統"
+
+    def test_to_traditional_zhouwei_no_zhou_hijack(self, processor):
+        # 「一周围／上周围／下周围」：一周／上週／下週 貪婪匹配劫持成「週圍」
+        assert processor.to_traditional("我们这一周围已经解脱的菩萨罗汉们") == \
+            "我們這一周圍已經解脫的菩薩羅漢們"
+        assert processor.to_traditional("忽悠商业上周围的人") == "忽悠商業上周圍的人"
+        assert processor.to_traditional("了解一下周围有什么") == "瞭解一下周圍有什麼"
+        assert "週圍" not in processor.to_traditional("看周围")
+
+    def test_to_traditional_misc_hijacks(self, processor):
+        assert processor.to_traditional("元音老人") == "元音老人"          # 不→母音
+        assert processor.to_traditional("把线扩展成一个面") == "把線擴展成一個面"
+        assert processor.to_traditional("风灾是局部性的刷新") == "風災是局部性的刷新"
+        assert "去當地的社區看看" in processor.to_traditional("去当地的社区看看")
+        assert processor.to_traditional("全息图像一样") == "全息圖像一樣"
+        assert "的實例" in processor.to_traditional("恶人得善终的实例")
+        assert "仿真花" in processor.to_traditional("仿真花可以供佛吗")
+        assert processor.to_traditional("语言学范式") == "語言學範式"
+        assert processor.to_traditional("就像镜像一样重叠") == "就像鏡像一樣重疊"
+        assert "匯集成" in processor.to_traditional("汇集成一个整体")
+        assert "拋出去" in processor.to_traditional("把神识给抛出去")
+        assert "溢出來" in processor.to_traditional("精液还会自己溢出来吗")
+        assert "分區域" in processor.to_traditional("要分区域呢")
+        assert "持久不斷" in processor.to_traditional("大愿持久不断")
+        assert "性價比" in processor.to_traditional("性价比高")
+        assert "調回來" in processor.to_traditional("这回调回来半个多月")
+
+    def test_to_traditional_keeps_legitimate_tw_it_terms(self, processor):
+        # 受保護詞彙不可影響正確的台灣化
+        assert processor.to_traditional("软件和鼠标") == "軟體和滑鼠"
+        assert processor.to_traditional("获取信息") == "獲取資訊"
+        assert processor.to_traditional("概率很高") == "機率很高"
+        assert processor.to_traditional("通过习气这个第一指标") == "透過習氣這個第一指標"
+        assert processor.to_traditional("芯片和内存") == "晶片和記憶體"
+        assert "伺服器" in processor.to_traditional("游戏服务器")
+
+    # ---- 同詞二形收斂（唸→念、回向→迴向）----
+
+    def test_to_traditional_nian_uniform(self, processor):
+        # STPhrases 只轉部分片語造成「唸佛／念佛」混雜 → 一律「念」
+        assert "唸" not in processor.to_traditional("合掌念佛，磕下去念佛")
+        assert "念《地藏經》" in processor.to_traditional("先念《地藏经》")
+        assert "唸" not in processor.to_traditional("一边念佛号一边念咒")
+
+    def test_to_traditional_huixiang_uniform(self, processor):
+        # STPhrases 只轉裸詞「回向」造成「回向／迴向」混雜 → 一律「迴向」
+        result = processor.to_traditional("念完做大回向和小回向，再回向给他")
+        assert "迴向" in result and "回向" not in result
+        assert result == "念完做大迴向和小迴向，再迴向給他"
+
+    # ---- 其他新修正 ----
+
+    def test_to_traditional_weiyinwang_hou(self, processor):
+        # 「威音王后」＝威音王＋之後（禪宗術語），非皇后義
+        result = processor.to_traditional("没有什么威音王前威音王后的")
+        assert result == "沒有什麼威音王前威音王後的"
+
+    def test_to_traditional_toufa_guoqu(self, processor):
+        # 然燈佛故事「踩著自己的頭髮過去」——OpenCC 貪婪匹配失準的個案
+        result = processor.to_traditional("然灯佛踩着自己的头发过去")
+        assert result == "然燈佛踩著自己的頭髮過去"
+        # 一般「頭髮」與「頭＋發X」不受影響
+        assert processor.to_traditional("头发变白") == "頭髮變白"
+        assert processor.to_traditional("总是头发胀") == "總是頭發脹"  # 頭＋發脹（正確）
+
+    def test_to_traditional_digit_zhi_measure(self, processor):
+        # 阿拉伯數字＋量詞「只」漏轉（片語字典只收中文數詞前綴）
+        assert processor.to_traditional("我学佛是因为2只猫猫才学的") == "我學佛是因為2隻貓貓才學的"
+        assert processor.to_traditional("一只猫") == "一隻貓"  # 既有行為不變
+
+    def test_protect_phrases_pua_passthrough(self, processor):
+        # 保護／還原機制：哨兵必須完整還原，不得殘留 PUA 字元
+        result = processor.to_traditional("对象和程序还有高级支持，周围都是循环")
+        assert "\ue000" not in result
+        for i in range(60):
+            assert chr(0xE000 + i) not in result
+        assert result == "對象和程序還有高級支持，周圍都是循環"

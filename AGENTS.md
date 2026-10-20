@@ -56,6 +56,12 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - **pid 是段落文字雜湊**（`p-` + `md5(文字 + 段序)`，`html_generator.slug_id`）。改動段落文字的正規化（空白掃描、標點、繁簡…）→ pid 換掉 → 已校對的 `start/end` 掛到不存在的元素上，**該段靜默失去跟播**（注入器只是查不到、不報錯）。修：`python3 tool/books2ebook/sync_para_pids.py --apply`（只改 `pid`/`text`）→ 重建 `ebook/`。`2251ec4` 曾讓四十二章 10 個 confirmed 段失效。
     - **`reviewed=true` 是唯一開關**（`para_audio_map.py`；`end<=start` 或 `zero:true` 的段落依設計不注入）。所以「校稿 UI 勾完 → 必須重建 `ebook/` 才生效」；`audio_map3/*.json` 與 `ebook/*.html` 不得手改後直接 commit。
     - **前端要以文件順序收集段落**：`09b-para-track.js` 用 `createTreeWalker(document.body)`，因 09c 經文置頂的 `.sutra-pin-group` 讓經文之後的段落變成 h2 的**孫節點**；改回「h2 直接兄弟節點」會讓四十二章 L2 之後整講認不到。驗收指令：`cd tool/books2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/`（缺 `ebook/` 產物會 skip），配套 `cd tool/word2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/`。
+14. **「經文」必須真的以經文區塊輸出（`.sutra-text`），且改經文判定盡量不要改動區塊切分** — 「經文置頂」（`09c-sutra-pin.js` 的 sticky）是講經書的核心閱讀功能，但它只對 `.sutra-text` 生效。書裡的經文有兩種排法：**原經文**（楷體／宋體大字獨立成段）與**「解析」裡重引的經文條目**（**粗體**、**前面帶數字編號**，例：「3．闻是章句乃至一念生净信者…」「1. 一切障碍即究竟觉。」）。後者若留成一般粗體段落，置頂對它**完全失效**（讀者只會覺得「這本書的置頂有時有時沒有」）。故 `tool/books2ebook/parsers.py` 必須把兩者都判為 `quote`（經文區塊）：
+    - 講經系列（04 卷首／07 四十二章／08 楞伽／09 六祖壇經／10 楞嚴）＝**楷體字型**即經文。
+    - 《金剛經 心經》（書 05）、《圓覺經》（書 06）＝**由成書 PDF 轉換而來**，除原經文外還有粗體／帶編號的重引條目；判準是「命中全書經文語料的 n-gram 重疊比 ≥ 0.7」（`parsers._SUTRA_MIN_RATIO`）——門檻 0.6 會把「引用經文 ＋ 老師自己的話」誤判成經文（例：圓覺經「即离，不作方便…佛已然答复，菩萨修行」）。《圓覺經》另有「編號（一般字型）＋經文（粗體）」的混排行，靠「**粗體位於行尾**」與名相注釋（「粗體詞頭 ＋ 一般字型說明」）區分開。
+    - ⚠️ **盡量只改「區塊種類」，不要改「區塊數／區塊文字」**：pid 是 `md5(段落文字 + 段序)`（見規則 13），區塊數一變全書後續段落的 pid 全變 → 已校對的跟播段落靜默失效、`search_index` 與 `daily_quotes.json` 的連結全斷。真的必須改區塊切分時（如修訂原檔 PDF），改完務必重跑 `tool/daily_quotes/` 的三支管線並用 `refresh_sample.py` 對齊樣本。守門：`tool/books2ebook/tests/test_sutra_markup.py`。
+    - ⚠️ **連續的經文段落必須共用同一個 `.sutra-pin-host`**：原書常把一段經文縮排切成數段（《圓覺經》每章 2–12 段、《六祖壇經》最多 16 段）。若每段各開一個 host，sticky 的活動範圍只剩經文自身高度 → **等於沒有置頂效果**。故 `html_generator.render_chapter` 把連續經文收進同一個 host，`09c-sutra-pin.js` 的量測（過長判定＋`--w2e-pin-reserve`）也須量 **host 整體高度**並對 host 清單去重。
+    - 《金剛經 心經》《圓覺經》的「解析」把經文條目排成「編號（一般字型）＋經文（粗體）」，會讓條目與後面的講解黏成同一段 → 該條沒有經文區塊、置頂對它失效。已用 `tool/fix_yuanjue_sutra_numbers.py` **修訂原檔 PDF**（編號改成與經文同粗體；文字逐字不變）。 改動經文判定（或原檔）後，務必重跑 `tool/daily_quotes/` 的 `build_quotes.py` → `select_1095.py` → `audit_quotes.py`（經文錨點與 pid 變了，候選池與成品都會變；`candidates_sample.json` 的 url 也要用 `refresh_sample.py` 對齊）。
 
 ---
 

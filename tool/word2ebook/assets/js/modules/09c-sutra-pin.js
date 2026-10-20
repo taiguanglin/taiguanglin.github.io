@@ -15,6 +15,10 @@
   //      2026-10 起講經系列由 books2ebook 在建置期直接輸出 host/group
   //      包層；本模組偵測到既有包層即沿用（host 偵測見程式碼、group 偵測
   //      見「包 sticky 群」段落），runtime 包法僅作為未包層頁面的後備。
+  //      建置期的包層會讓**連續多段經文共用同一個 host**（原書常把一段
+  //      經文縮排切成數段；若各包一 host，sticky 的活動範圍就只剩經文
+  //      自身高度 → 等於沒有置頂效果），故 host 需去重、量測需量 host
+  //      整體高度（見 measureGroups / reserveFor）。
   //   2. 再以「經文 → 邊界元素」為範圍包 .sutra-pin-group：邊界 = 下一段
   //      經文、任何 h1–h6（章節名/品名小節名）、任何圖片（figure/img），
   //      取文件順序最先者；章節尾（下一個 h2）之前若無這些邊界就到章節尾
@@ -94,19 +98,27 @@
     }
 
     // ---- 為每段經文包 host（只包層，不改變 DOM 順序）-------------------
+    // hostOf[i] = 第 i 段經文所屬的 host；hosts = 去重後的 host 清單。
+    // 建置期（books2ebook）輸出的包層會讓**連續多段經文共用同一個 host**
+    // （一段經文常被原書縮排切成數段，若各包一 host，sticky 的活動範圍就
+    // 只剩經文自身高度 → 等於沒有置頂效果），故 host 必須去重、量測時
+    // 量「host 整體高度」而非第一段經文。
+    var hostOf = [];
     var hosts = [];
     sutras.forEach(function (s) {
       var parent = s.parentNode;
-      if (!parent) return;
+      if (!parent) { hostOf.push(null); return; }
+      var host;
       if (parent.classList && parent.classList.contains('sutra-pin-host')) {
-        hosts.push(parent);
-        return;
+        host = parent;
+      } else {
+        host = document.createElement('div');
+        host.className = 'sutra-pin-host';
+        parent.insertBefore(host, s);
+        host.appendChild(s);
       }
-      var host = document.createElement('div');
-      host.className = 'sutra-pin-host';
-      parent.insertBefore(host, s);
-      host.appendChild(s);
-      hosts.push(host);
+      hostOf.push(host);
+      if (hosts.indexOf(host) === -1) hosts.push(host);
     });
     if (!hosts.length) return;
 
@@ -126,11 +138,12 @@
     var bPtr = 0;
     var groups = [];
     sutras.forEach(function (s, i) {
-      var host = hosts[i];
+      var host = hostOf[i];
+      if (!host) return;
       var parent = host.parentNode;
       // 建置期包層：host 的父層已是群 → 直接採用，本段免手術
       if (parent.classList && parent.classList.contains('sutra-pin-group')) {
-        groups.push(parent);
+        if (groups.indexOf(parent) === -1) groups.push(parent);
         return;
       }
       var group = document.createElement('div');
@@ -151,8 +164,8 @@
       // 候選收尾點（映射到本經文父節點的直接子層）：下一段經文的 host、
       // 第一個 h/img 邊界；取文件順序最前者為群尾。
       var cands = [];
-      if (sutras[i + 1]) {
-        var nh = topLevelWithin(hosts[i + 1], parent);
+      if (hostOf[i + 1]) {
+        var nh = topLevelWithin(hostOf[i + 1], parent);
         if (nh && nh !== host && isBefore(host, nh)) cands.push(nh);
       }
       if (endEl) {
@@ -223,8 +236,11 @@
       if (!vh) return;
       var heights = [];
       for (var i = 0; i < list.length; i++) {
-        var st = list[i].firstElementChild && list[i].firstElementChild.firstElementChild;
-        heights.push(st && st.classList.contains('sutra-text') ? st.offsetHeight : null);
+        // 量「host 整體高度」：一個 host 可能含多段經文（建置期把連續經文
+        // 併進同一 host），只量第一段會嚴重低估，導致過長判定失準、
+        // 讓位高度（--w2e-pin-reserve）不足，目標段落會被停留經文蓋住。
+        var host = list[i].firstElementChild;
+        heights.push(host ? host.offsetHeight : null);
       }
       for (var j = 0; j < list.length; j++) {
         var h = heights[j];
@@ -373,9 +389,9 @@
       if (!pinOn || !el || !el.closest) return 0;
       var g = el.closest('.sutra-pin-group');
       if (!g || g.classList.contains('sutra-pin-tall')) return 0;
-      var sutra = g.firstElementChild && g.firstElementChild.firstElementChild;
-      return sutra && sutra.classList.contains('sutra-text')
-        ? sutra.offsetHeight + RESERVE_GAP : 0;
+      // 與 measureGroups 一致：量 host 整體高度（host 可能含多段經文）
+      var host = g.firstElementChild;
+      return host ? host.offsetHeight + RESERVE_GAP : 0;
     }
 
     // ---- 對外介面 ------------------------------------------------------
