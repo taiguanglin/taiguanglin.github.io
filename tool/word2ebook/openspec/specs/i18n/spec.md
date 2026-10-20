@@ -318,6 +318,119 @@ preserved so genuine body text is never deleted.
 - WHEN `I18nProcessor.standardize_variant_chars` is called
 - THEN the result SHALL still contain `_x005F_`
 
+### Requirement: Protect General-Vocabulary Words from TW-Phrase Hijacking
+The s2twp profile's Taiwan-vocabulary dictionaries (TWPhrasesIT etc.) replace
+whole words with IT jargon or proper nouns even in general Buddhist/Q&A prose,
+producing mistranslations such as `对象→物件` (the originally reported
+`視周圍所有人為自己未來要度化的物件`), `循环→迴圈`, `万象→永珍` (Vientiane!),
+`奔驰→賓士` (Mercedes-Benz), `自性能→自效能` (Platform Sutra), `师强调用→師強呼叫`,
+`血管连接→血管連線`, `很多任务→很多工`, `威音王…信道→通道`. A corpus audit of
+`ebook/` + `wenda2_ebook/` (2026-12, every `s2tw` vs `s2twp` divergence checked
+against its simplified source) confirmed that **every** occurrence of the words
+in `_PHRASE_PROTECT` in this corpus carries its general sense, and Taiwan
+standard written Chinese uses the same word (對象、循環、支持、連接、運行…).
+
+`I18nProcessor.to_traditional` SHALL therefore, after the t2s normalisation
+step and before the s2twp step, replace every occurrence of the protected
+phrases in `_PHRASE_PROTECT` with single Private Use Area sentinel characters
+(one per phrase, `\uE000` + index; OpenCC does not convert PUA characters), and
+after conversion restore each sentinel to its designated Taiwan-standard form
+(e.g. `对象→對象`, `对像→對象`, `循环→循環`, `性能→性能`, `周围→周圍`).
+If a sentinel character already occurs in the source text, protection for that
+entry SHALL be skipped (never restore into pre-existing PUA). Legitimate
+Taiwan localisation of genuinely-IT vocabulary (軟體、滑鼠、資訊、伺服器、機率、
+程式碼…) SHALL remain untouched, and source-faithful words the corpus genuinely
+uses (物件、執行、啟用、高端→高階、連線、通道) SHALL keep converting as before.
+
+`lang-switch.js` (client-side OpenCC-JS `cn→tw` conversion for regular pages)
+SHALL mirror this protection table (with both simplified and traditional input
+forms, since site chrome is authored in Traditional) plus the uniform-form and
+digit-measure fixes below; the two copies MUST be kept in sync.
+
+#### Scenario: 對象 never hijacked to 物件
+- GIVEN simplified text containing `对象` in any sense (度化对象、讲授对象、找对象)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the output SHALL contain `對象` and SHALL NOT contain `物件`
+
+#### Scenario: source-typo 对像 corrected
+- GIVEN the source typo `对像` (＝对象)
+- WHEN `to_traditional` is called
+- THEN the output SHALL be `對象`
+
+#### Scenario: Platform-Sutra 自性能 preserved
+- GIVEN `当自性能含万法是大`
+- WHEN `to_traditional` is called
+- THEN the output SHALL be `當自性能含萬法是大` (not 自效能)
+
+#### Scenario: 一周围 not hijacked to 一週圍
+- GIVEN `我们这一周围已经解脱的菩萨罗汉们` (一周/上週/下週 greedily match 周围)
+- WHEN `to_traditional` is called
+- THEN the output SHALL be `我們這一周圍已經解脫的菩薩羅漢們` (Taiwan standard is 周圍)
+
+#### Scenario: 强调用 / 强调度人 not split
+- GIVEN `师强调用鼻子吸气` and `但强调度人时不分亲疏`
+- WHEN `to_traditional` is called
+- THEN the outputs SHALL be `師強調用鼻子吸氣` and `但強調度人時不分親疏`
+
+#### Scenario: legitimate TW localisation untouched
+- GIVEN `软件和鼠标`, `获取信息`, `概率很高`
+- WHEN `to_traditional` is called
+- THEN the outputs SHALL keep `軟體和滑鼠`, `獲取資訊`, `機率很高`
+
+#### Scenario: no PUA residue
+- GIVEN text containing multiple protected phrases
+- WHEN `to_traditional` is called
+- THEN the output SHALL contain no character in the range `\uE000`–`\uE0FF`
+
+### Requirement: Uniform-Form Convergence (唸→念, 回向→迴向)
+OpenCC's phrase dictionaries convert only some inflections, leaving the same
+word in two shapes on the same page. `to_traditional` SHALL converge, on the
+traditional side, `唸` → `念` (STPhrases converts 念佛→唸佛 but not 念《地藏經》;
+Taiwan MOE dictionary and CBETA use 念; the simplified source uses only 念
+and t2s already normalises 唸→念) and `回向` → `迴向` (STPhrases converts only
+the bare word; 大回向/小回向/回向給 stayed unconverted while 迴向文 mixed on
+the same page; all 2,102 corpus occurrences are the Buddhist dedication term —
+no 回＋向 verb-complement usage exists in the corpus).
+
+#### Scenario: recitation uniform
+- GIVEN `合掌念佛` and `念《地藏经》`
+- WHEN `to_traditional` is called
+- THEN the outputs SHALL be `合掌念佛` and `念《地藏經》` with no `唸` anywhere
+
+#### Scenario: dedication uniform
+- GIVEN `做大回向和小回向，再回向给他`
+- WHEN `to_traditional` is called
+- THEN the output SHALL contain only `迴向` forms
+
+### Requirement: Digit-Prefixed Measure Word 隻
+OpenCC's phrase dictionaries cover Chinese-numeral measure phrases (一只猫)
+but miss Arabic-numeral ones. `to_traditional` SHALL convert `只` to `隻` when
+preceded by an Arabic/full-width digit and followed by an animal or body-part
+noun (貓狗雞鴨鳥兔豬牛羊魚蟲蟻鼠手腳眼), e.g. `2只猫猫` → `2隻貓貓`.
+
+#### Scenario: digit measure word converted
+- GIVEN `我学佛是因为2只猫猫才学的`
+- WHEN `to_traditional` is called
+- THEN the output SHALL be `我學佛是因為2隻貓貓才學的`
+
+### Requirement: Manual Context Corrections for Ambiguous Cases
+`_CONTEXT_FIXES` SHALL include corpus-audited manual corrections where the
+generic rules cannot decide: `威音王后→威音王後` (威音王 is a Buddha's name;
+威音王前/後 are Chan-school terms for before/after, not queen; the 后→後 rule
+is suppressed by the 皇/王 prefix) and `的頭發過去→的頭髮過去` (然燈佛 story
+「踩著自己的頭髮過去」 — OpenCC greedily mis-matches this one 头发 as 頭＋發).
+
+#### Scenario: 威音王後
+- GIVEN `没有什么威音王前威音王后的`
+- WHEN `to_traditional` is called
+- THEN the output SHALL be `沒有什麼威音王前威音王後的`
+
+#### Scenario: 然燈佛 hair passage
+- GIVEN `然灯佛踩着自己的头发过去`
+- WHEN `to_traditional` is called
+- THEN the output SHALL be `然燈佛踩著自己的頭髮過去`, while `总是头发胀`
+        (head + swollen) keeps `頭發脹`
+
 ### Requirement: Filename Conventions
 Traditional Chinese variants of HTML files SHALL use the `_trad.html` suffix.
 - `I18nProcessor.get_traditional_filename("01.html")` → `"01_trad.html"`
