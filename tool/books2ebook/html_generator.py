@@ -232,7 +232,7 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <script src="{shared_script_js}" defer></script>
 <script src="/lang-switch.js" defer></script>
 </head>
-<body>
+<body{body_attrs}>
 <div id="top"></div>
 <header class="{header_class}">
 <nav class="nav-home" aria-label="站内导航">
@@ -590,6 +590,14 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     # 連續的經文段落一律收進**同一個** .sutra-pin-host（sticky 定位單位），
     # 整段經文會一起停在視窗最上方；講解段落仍落在同一群內。
     # （各段經文仍各自帶自己的 id/pid，搜尋索引與段落錨點不受影響。）
+    #
+    # **成書 PDF 轉檔的書（sutra_pin=False：金剛經 心經／圓覺經）不置頂**：
+    # 經文區塊照常輸出（搜尋錨點／經文樣式／每日精選經文防線都靠它），但
+    # 不輸出任何包層，且 <body> 帶 no-sutra-pin——09c 見到即整頁跳過（連
+    # runtime 後備包法也不做），也不會有「經文置頂」toggle。置頂是為
+    # 「段落中有獨立經文區塊＋隨段跟播」的講經書設計的閱讀輔助，成書轉檔
+    # 的排版（經文與講解交錯、重引條目散在「解析」裡）不適用。
+    _pin_enabled = bool(getattr(book, "sutra_pin", True))
     _pin_group_open = False
     _pin_host_open = False
     _prev_kind = None
@@ -645,8 +653,9 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         elif k == "quote":
             # 經文：host 即 sticky 定位單位，group 限制停留範圍（見 09c/CSS）。
             # 上一段不是經文時才另開一群（下一段經文是邊界）；連續的經文段落
-            # 則併入同一個 host，整段經文一起停留。
-            if not (_pin_group_open and _prev_kind == "quote"):
+            # 則併入同一個 host，整段經文一起停留。sutra_pin=False 的書
+            # （成書 PDF 轉檔）不開包層——經文照樣輸出 .sutra-text，只是不停留。
+            if _pin_enabled and not (_pin_group_open and _prev_kind == "quote"):
                 _close_pin()
                 body.append('<div class="sutra-pin-group">')
                 body.append('<div class="sutra-pin-host">')
@@ -746,8 +755,12 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         _seo_title = "%s・%s｜%s" % (_clean_title, SITE_TITLE, SEO_SITE_NAME)
         _seo_description = SEO_CHAPTER_DESCRIPTION.format(title=_clean_title)
     _page_filename = book.filename_trad if is_trad else book.filename
+    # 成書 PDF 轉檔（sutra_pin=False）的書頁：body 帶 no-sutra-pin，
+    # 09c-sutra-pin.js 見到即整頁跳過（runtime 後備包法也不做）。
+    _body_attrs = "" if _pin_enabled else ' class="no-sutra-pin"'
     html = _HEAD_TMPL.format(
         title=esc(_seo_title),
+        body_attrs=_body_attrs,
         header_class=_header_class,
         nav_left_content=_nav_left_content,
         lang_switch_links=_lang_switch_links,
@@ -890,6 +903,7 @@ def render_index(books_meta, source_pdfs, is_trad):
     _index_filename = "index_trad.html" if is_trad else "index.html"
     html = _HEAD_TMPL.format(
         title=esc(_seo_title),
+        body_attrs="",
         header_class=_header_class,
         nav_left_content=_nav_left_content,
         lang_switch_links=_lang_switch_links,

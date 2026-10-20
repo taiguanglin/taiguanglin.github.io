@@ -72,10 +72,18 @@ class BookConfig:
     parser     : parsers.py 對應的解析函式 key
     skip_pages :略過前面 N 頁（封面/裝飾頁）
     kind       : "book"=著作；"preface"=卷首（非著作，顯示時冠「卷首・」前綴）
+    sutra_pin  : 是否提供「經文置頂」。成書 PDF 轉檔的兩本（金剛經 心經／
+                 圓覺經）為 False：經文區塊（.sutra-text——搜尋錨點、經文
+                 樣式與每日精選的經文防線都靠它）照常輸出，但不輸出
+                 .sutra-pin-group/.sutra-pin-host 包層、頁面 body 帶
+                 no-sutra-pin（09c 的 runtime 後備包法也一併跳過）、
+                 沒有「經文置頂」toggle。置頂是為「段落中有獨立經文區塊＋
+                 隨段跟播」的講經書設計的閱讀輔助；成書轉檔的排版（經文與
+                 講解交錯、重引條目散在「解析」裡）不適用。
     """
 
     def __init__(self, number, title, pdf, parser, skip_pages=0, series=None,
-                 kind="book"):
+                 kind="book", sutra_pin=True):
         self.number = number            # 1-based 序號（決定檔名 01..10 與顯示順序）
         self.title = title
         self.pdf = pdf
@@ -83,6 +91,7 @@ class BookConfig:
         self.skip_pages = skip_pages
         self.series = series            # 音檔系列 key（audio_map.AUDIO_MAP 的主鍵）; None=無音檔
         self.kind = kind                # "book" / "preface"（顯示層用，解析與錨點一律用 title）
+        self.sutra_pin = sutra_pin      # 經文置頂（False=成書 PDF 轉檔：不置頂，見 docstring）
 
     @property
     def display_title(self):
@@ -107,8 +116,10 @@ BOOKS = [
                skip_pages=3),
     BookConfig(4, "感恩与讲经", "感恩与讲经（2024年4月14日）.pdf",
                "ganen", skip_pages=1, series="ganen", kind="preface"),
-    BookConfig(5, "04 讲《金刚经 心经》", "04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf", "jingang"),
-    BookConfig(6, "05 讲《圆觉经》", "05 TaiGuangLin禅师讲《圆觉经》最终版.pdf", "yuanjue"),
+    BookConfig(5, "04 讲《金刚经 心经》", "04《次世代版终极佛法·TaiGuangLin禅师讲金刚经 心经》.pdf", "jingang",
+               sutra_pin=False),
+    BookConfig(6, "05 讲《圆觉经》", "05 TaiGuangLin禅师讲《圆觉经》最终版.pdf", "yuanjue",
+               sutra_pin=False),
     BookConfig(7, "06 讲《四十二章经》", "06 Tai师父讲《四十二章经》.pdf",
                "sishierzhang", skip_pages=0, series="sishierzhang"),
     BookConfig(8, "07 讲《楞伽经》", "07 Tai师父讲《楞伽经》.pdf",

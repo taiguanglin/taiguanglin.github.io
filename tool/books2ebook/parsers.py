@@ -491,9 +491,9 @@ def parse_jingang(ctx):
                 ctx.append("label", text.rstrip("：:"))
             elif para_emph and not para_has_body and corpus.matches(text):
                 # 「解析」中重引的原經文（整段黑體且命中經文語料）——與
-                # FZSHJW 排的原文同樣是經文，輸出為 quote（經文區塊），
-                # 讀者才能在講解時把這段經文置頂（見 html_generator 的
-                # .sutra-pin-host 與 09c-sutra-pin.js）。
+                # FZSHJW 排的原文同樣是經文，輸出為 quote（經文區塊）：
+                # 經文樣式、搜尋錨點與每日精選的經文防線都以它為對象
+                # （本書不提供經文置頂，見 config.BookConfig 的 sutra_pin）。
                 ctx.append("quote", text)
             else:
                 ctx.append("para", text)
@@ -1186,8 +1186,9 @@ def parse_yuanjue(ctx):
                 para = _join(para, t)
         ctx.add_images_for_page(pno)
     flush()
-    # 解析中重引的經文（原本以粗體 strong 區塊輸出）改為經文區塊（quote），
-    # 讀者讀講解時才能把這段經文置頂（見 09c-sutra-pin.js）。
+    # 解析中重引的經文（原本以粗體 strong 區塊輸出）改為經文區塊（quote）：
+    # 經文樣式、搜尋錨點與每日精選的經文防線都以它為對象（本書不提供
+    # 經文置頂，見 config.BookConfig 的 sutra_pin）。
     # 少數粗體段落其實是老師的白話（引用經文但夾雜自己的話），以經文語料的
     # n-gram 重疊比再確認一次，不像經文者維持一般段落。
     for _b in ctx.blocks:

@@ -6,6 +6,11 @@
   // 「畫面繼續捲動、上方經文段落卻停留」的閱讀效果（Confluence 固定表頭
   // 概念）；不管有沒有開啟段落跟播都會生效。
   //
+  // 例外：body.no-sutra-pin（books2ebook 對成書 PDF 轉檔的書——金剛經
+  // 心經／圓覺經——依書籍設定輸出）整頁不提供置頂：這兩本的經文區塊
+  // 只用於樣式與搜尋錨點，建置期不輸出包層，本模組連 runtime 後備
+  // 包法也一併跳過（沒有 toggle、沒有 sticky、沒有讓位高度）。
+  //
   // 做法：原生 position: sticky——停留中的經文就是原版經文本身，原尺寸、
   // 原樣式、無白邊；講解段落從它下方滑過。
   //
@@ -46,6 +51,13 @@
   // ============================================================
   ;(function () {
     if (typeof isIndexPage === 'function' && isIndexPage()) return;
+
+    // 成書 PDF 轉檔的書（金剛經 心經／圓覺經）不提供經文置頂：books2ebook
+    // 對 sutra_pin=False 的書在 <body> 輸出 no-sutra-pin。此處直接整頁
+    // 返回——runtime 後備包法（把 .sutra-text 包進 host/group）對這些
+    // 頁面同樣不做，否則建置期省下的包層會在這裡被補回來。
+    if (document.body && document.body.classList &&
+        document.body.classList.contains('no-sutra-pin')) return;
 
     var sutras = Array.prototype.slice.call(
       document.querySelectorAll('.sutra-text')
