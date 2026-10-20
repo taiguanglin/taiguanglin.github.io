@@ -521,27 +521,28 @@
     const isParagraph = element.classList.contains('para-block');
 
     // 首頁不顯示書籤按鈕
+    // 按鈕順序：分享 → 加入書籤 → 複製（複製在最右邊）
     let actionsHtml = '';
 
     if (isQuestion) {
-      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
-      if (!currentChapter.isHomepage) {
-        actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
-      }
       actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享问题', '分享問題')}">📤</button>`;
-    } else if (isAnswer) {
-      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
       if (!currentChapter.isHomepage) {
         actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
       }
+      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
+    } else if (isAnswer) {
       actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享回答', '分享回答')}">📤</button>`;
+      if (!currentChapter.isHomepage) {
+        actionsHtml += `<button class="qa-btn" data-action="bookmark-qa" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
+      }
+      actionsHtml += `<button class="qa-btn" data-action="copy-qa" title="${getText('复制问答', '複製問答')}">📋</button>`;
     } else if (isParagraph) {
-      // 內文段落（ebook）：複製段落 / 加入書籤 / 分享段落
-      actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
+      // 內文段落（ebook）：分享段落 / 加入書籤 / 複製段落（複製在最右邊）
+      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
       if (!currentChapter.isHomepage) {
         actionsHtml += `<button class="qa-btn" data-action="bookmark-para" title="${getText('加入书签', '加入書籤')}">🔖</button>`;
       }
-      actionsHtml += `<button class="qa-btn" data-action="share" title="${getText('分享段落', '分享段落')}">📤</button>`;
+      actionsHtml += `<button class="qa-btn" data-action="copy-para" title="${getText('复制段落', '複製段落')}">📋</button>`;
     }
 
     actions.innerHTML = actionsHtml;
