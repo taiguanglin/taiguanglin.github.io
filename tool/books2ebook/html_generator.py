@@ -606,6 +606,13 @@ def render_chapter(book, blocks, image_src_map, is_trad,
 
     for b in blocks:
         k = b["kind"]
+        if _pin_host_open and k not in _HEADING_KINDS and k not in ("quote", "img"):
+            # 經文結束、講解開始：先關 host（sticky 本體**只含經文**——host 過高
+            # 會被 09c 量成「過長」而整段放棄置頂，等於沒有經文置頂效果），
+            # 群保持開啟：其後的講解段落落在群內＝sticky 活動範圍，會從停留
+            # 經文的下方滑過。邊界（標題/圖片/下一段經文）由 _close_pin() 閉群。
+            body.append("</div>")   # /sutra-pin-host
+            _pin_host_open = False
         if k in _HEADING_KINDS:
             _close_pin()
             if _seen_heading:

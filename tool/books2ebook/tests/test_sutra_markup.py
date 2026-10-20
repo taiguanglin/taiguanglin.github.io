@@ -49,6 +49,9 @@ class SutraScanner(HTMLParser):
     - `sutra_ids`：每段經文的 id
     - `host_sutras`：每個 .sutra-pin-host 內含的經文段數
     - `bad_host`：不在 .sutra-pin-host 內的經文 id
+    - `host_extras`：每個混入「非經文內容」的 host 的雜物數（見
+      test_pin_host_contains_only_scripture——host 是 sticky 本體，
+      混入講解段落會整段過高，被 09c 量成「過長」而放棄置頂）
     """
 
     def __init__(self, html):
@@ -56,6 +59,7 @@ class SutraScanner(HTMLParser):
         self.sutra_ids = []
         self.host_sutras = []
         self.bad_host = []
+        self.host_extras = []
         self._frames = []
         self.feed(html)
 
@@ -65,7 +69,7 @@ class SutraScanner(HTMLParser):
         a = dict(attrs)
         cls = (a.get("class") or "").split()
         if tag == "div" and "sutra-pin-host" in cls:
-            self._frames.append({"host": True, "n": 0})
+            self._frames.append({"host": True, "n": 0, "extras": 0})
             return
         if tag == "div" and "sutra-text" in cls:
             self.sutra_ids.append(a.get("id"))
@@ -75,16 +79,25 @@ class SutraScanner(HTMLParser):
                     break
             else:
                 self.bad_host.append(a.get("id"))
-        self._frames.append({"host": False})
+            self._frames.append({"sutra": True})
+            return
+        # 其他元素：若往上第一個標記層是 host（中間沒隔經文本體）→ host 混入雜物
+        for f in reversed(self._frames):
+            if f.get("sutra"):
+                break
+            if f.get("host"):
+                f["extras"] += 1
+                break
+        self._frames.append({})
 
     def handle_endtag(self, tag):
-        if tag in VOID_TAGS or tag != "div":
-            return
-        if not self._frames:
+        if tag in VOID_TAGS or not self._frames:
             return
         f = self._frames.pop()
         if f.get("host"):
             self.host_sutras.append(f["n"])
+            if f["extras"]:
+                self.host_extras.append(f["extras"])
 
 
 def scan(html):
@@ -152,6 +165,26 @@ def test_consecutive_scripture_shares_one_host(ebook_dir, book):
         "縮排切成數段，若各開一個 host，置頂的活動範圍只剩經文自身高度，"
         "等於沒有置頂效果（host 內經文段數：%s）"
         % (book, sorted(set(s.host_sutras))))
+
+
+@pytest.mark.artifacts
+@pytest.mark.parametrize("book", ALL_BOOKS)
+def test_pin_host_contains_only_scripture(ebook_dir, book):
+    """host（sticky 本體）只能含經文段落。
+
+    講解段落（para/strong）、「譯文」label、qa、article 都必須落在
+    .sutra-pin-group 內、host 之外：host 過高會被 09c 的「過長不停留」
+    規則（> 45% 視窗高）整段壓成 position: static——置頂勾了也沒效果
+    （2026-12 事故：建置期 host 從不關閉，經文後的講解全落進 host）。
+    """
+    html = book_html(ebook_dir, book)
+    s = scan(html)
+    if not s.host_sutras:
+        pytest.skip("書 %s 沒有經文置頂包層" % book)
+    assert not s.host_extras, (
+        "書 %s 有 %d 個 .sutra-pin-host 混入非經文內容（各含 %s 個雜物）："
+        "講解段落須落在群內、host 之外，否則 host 過高會被停用置頂"
+        % (book, len(s.host_extras), s.host_extras[:5]))
 
 
 @pytest.mark.artifacts
