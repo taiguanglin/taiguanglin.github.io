@@ -43,7 +43,7 @@ Source JavaScript SHALL be split into ordered module files under
 | `14-search-plus.js` | 搜尋補強：`/` 或 Ctrl/Cmd+K 啟用並聚焦搜尋框；結果區 ↓/↑ 移動 `.kb-focus`、Enter 開啟、Esc 取消，結果列表重繪（換搜尋/換頁）時以 `MutationObserver`（childList/subtree）重置鍵盤焦點（不得使用已棄用的 `DOMSubtreeModified`）；章節頁帶 `?q=`（01e 開新頁時附加）且有錨點時，於錨點所在區塊以 `<mark class="w2e-hl">` 標出查詢詞 |
 | `15-mobile-toc.js` | 行動版目錄操作：≤768px 開啟浮動目錄時鋪 `.w2e-toc-backdrop`（點擊即關）；左緣 ≤28px 起右滑開啟、目錄內左滑關閉。**不**再建立常駐的 `.w2e-backtop` 回到頂端鈕——「回到頂端」只由右下角功能選單（`02-reader-ux.js` 的 `data-action="top"`）提供 |
 | `16-jump-share.js` | `.toc-count` 可點：直跳該主題第一則 `.question`（無則退回錨點）；章節頁 h2/h3[id] hover/focus 出現 🔗 錨點鈕複製「頁面#錨點」；跳轉後經 `W2E.settleInPageAnchor` 收斂（隔離 IIFE） |
-| `17-theme-pwa.js` | 深色第二面板「墨夜」：`localStorage w2e:darkPalette=neutral` 時 `body.dark-neutral`（防閃爍由模板 prepaint 掛 `<html>`）；供 04-events.js 的 `theme-dark-neutral` 動作呼叫；`/wenda2_ebook/`、`/ebook/` 下註冊根 `/sw.js`（PWA 離線） |
+| `17-theme-pwa.js` | 深色第二面板「墨夜」：`localStorage w2e:darkPalette=neutral` 時 `body.dark-neutral`（防閃爍由模板 prepaint 掛 `<html>` 與 `<body>`——body 級由模板第一個子元素內聯腳本套用，見 html-generation spec）；供 04-events.js 的 `theme-dark-neutral` 動作呼叫；`/wenda2_ebook/`、`/ebook/` 下註冊根 `/sw.js`（PWA 離線） |
 | `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能，只於 `/wenda2_ebook/`、`/ebook/` 作用）：(a) 事件代理——`pointerenter`/`touchstart`/`focusin`（capture）命中同目錄、同語言、副檔名 `.html` 的站內連結即 `fetch`（先 `caches.match`，已有則略過；失敗解鎖允許重試）；(b) 首頁閒置整批——`window load` + `requestIdleCallback`（無 rIC 退 `setTimeout 1200ms`）後，逐一**序列**以 `fetch(…, {priority:'low'})` 預取全部同語言章節頁（fetch 會經 `sw.js` 的 `swr()` 寫入 PAGES_CACHE），守門：`navigator.connection.saveData` 或 `effectiveType` 為 2g/slow-2g/3g 時不整批（hover 預取不受限）；跨語言 `*_trad.html` 刻意不預取（避免資料量翻倍）；isolated IIFE |
 
 > 編號 `12-bookmarks-manager.js`（首頁總目錄底部的「我的書籤」跨章節管理區塊）已移除，
@@ -108,9 +108,12 @@ be skipped and a short cache-loading message MAY be shown instead.
 The system SHALL read `localStorage['darkMode']` on page load and add the
 `dark-mode` class to `<body>` if the value is `'true'` (`shouldUseDarkMode`);
 when the key is unset, first paint SHALL honor the OS preference via
-`matchMedia('(prefers-color-scheme: dark)')` (the inline head script applies
-`dark-mode` to `<html>` pre-paint; `00-base.js` re-applies it to `<body>` and
-removes it from `<html>`).
+`matchMedia('(prefers-color-scheme: dark)')`. The theme classes SHALL be on
+`<body>` before its first paint: the inline head script resolves the
+preference (recording it in `window.__W2E_THEME_*` and applying it to
+`<html>`), and the first-child inline body script (template-level, see
+html-generation spec) applies it to `<body>`; `00-base.js` then re-applies it
+idempotently at DOM ready and removes the temporary `<html>` class.
 
 ### Requirement: Reading Settings Pre-Paint
 Font size, line height, content width, and the TOC/search font sizes derived

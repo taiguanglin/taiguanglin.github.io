@@ -22,9 +22,11 @@
 try {
   var __dm = localStorage.getItem('darkMode');
   if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
-  if (__dm === 'true') {
+  window.__W2E_THEME_DARK = (__dm === 'true');
+  window.__W2E_THEME_NEUTRAL = window.__W2E_THEME_DARK && localStorage.getItem('w2e:darkPalette') === 'neutral';
+  if (window.__W2E_THEME_DARK) {
     document.documentElement.classList.add('dark-mode');
-    if (localStorage.getItem('w2e:darkPalette') === 'neutral') document.documentElement.classList.add('dark-neutral');
+    if (window.__W2E_THEME_NEUTRAL) document.documentElement.classList.add('dark-neutral');
   }
 } catch (e) {}
 </script>
@@ -38,6 +40,14 @@ try {
 <script defer="" src="/lang-switch.js"></script>
 </head>
 <body>
+<script>
+try {
+  if (window.__W2E_THEME_DARK) {
+    document.body.classList.add('dark-mode');
+    if (window.__W2E_THEME_NEUTRAL) document.body.classList.add('dark-neutral');
+  }
+} catch (e) {}
+</script>
 <div id="top"></div>
 <header class="header-nav">
 <nav aria-label="站內導覽" class="nav-home">

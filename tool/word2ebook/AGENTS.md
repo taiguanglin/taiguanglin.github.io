@@ -126,7 +126,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 
 | File | Responsibility |
 |------|---------------|
-| `00-base.js` | `W2E` global namespace, dark mode init, shared helpers: `isIndexPage`, `isTraditionalChinesePage`, `getText`, `scrollDebugOn`（捲動偵錯開關，`localStorage 'w2e:scrollDebug'='1'`，預設零輸出）, `debugOn`（開發日誌開關，`localStorage 'w2e:debug'='1'`——01a/01b/01e/03a/06/07 的診斷 `console.log` 一律經此 gate，預設零輸出；錯誤路徑的 `console.warn`/`error` 不 gate。獨立載入的 `reading-prepaint.js`／`search-cache.js` 各自持有同鍵的 `W2E_DEBUG` 本份） |
+| `00-base.js` | `W2E` global namespace, dark mode init, shared helpers: `isIndexPage`, `isTraditionalChinesePage`, `getText`, `scrollDebugOn`（捲動偵錯開關，`localStorage 'w2e:scrollDebug'='1'`，預設零輸出）, `debugOn`（開發日誌開關，`localStorage 'w2e:debug'='1'`——01a/01b/01e/03a/06/07 的診斷 `console.log` 一律經此 gate，預設零輸出；錯誤路徑的 `console.warn`/`error` 不 gate。獨立載入的 `reading-prepaint.js`／`search-cache.js` 各自持有同鍵的 `W2E_DEBUG` 本份）。dark mode init 於 DOM 就緒重新套用 `<body>`（冪等）——主題 class 已由模板 head＋body 兩段內聯防閃腳本（`DARK_MODE_PREPAINT_SCRIPT`／`DARK_MODE_BODY_PREPAINT_SCRIPT`）首繪前掛好，00-base 另移除 `<html>` 上的暫時類別 |
 | `01a-search-init.js` | Search state variables, `activateSearch`, loading/error UI, `loadSearchIndexWithProgress`, Jieba WASM init, `segmentWithJieba` |
 | `01b-search-index.js` | `createSearchConfig`, `buildSearchIndexInBatches`, `buildSearchIndexInBatchesWithCache` |
 | `01c-search-highlight.js` | `escapeHtml`, `getBestContextForHighlight`, `highlightSearchTerm` |
@@ -150,7 +150,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `14-search-plus.js` | Search UX: `/` / Ctrl+K focus, ↓/↑/Enter keyboard navigation on results, keyboard-focus reset via `MutationObserver` when the results list re-renders (never the removed `DOMSubtreeModified`), and chapter-page `<mark class="w2e-hl">` term highlighting driven by the `?q=` param that 01e appends when opening results |
 | `15-mobile-toc.js` | Mobile TOC ergonomics: tap-out backdrop (≤768px), edge-swipe open / panel-swipe close. 「回到頂端」只留功能選單（☰ → ↑）內的按鈕，無常駐懸浮鈕 |
 | `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3 |
-| `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint script in templates adds it to `<html>`); registers root `/sw.js` under the two ebook dirs for offline reading |
+| `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint scripts in templates add the theme classes to `<html>` **and to `<body>`** — the body-level script is the first child of `<body>`，否則每次頁面切換會先閃日間配色才轉暗); registers root `/sw.js` under the two ebook dirs for offline reading |
 | `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能）：以事件代理在 `pointerenter`/`touchstart`/`focusin` 即時預取即將點擊的同目錄章節連結；首頁閒置（`requestIdleCallback`，fallback `setTimeout`）逐一以 `priority:'low'` 序列預取**同語言**全部章節頁，經 sw.js 的 `swr()` 直接暖機 PAGES_CACHE（跨語言 `*_trad.html` 刻意不取）。整批預取受 `navigator.connection` 守門：`saveData` 或 2g/3g 不做（hover 預取不受限）；先查 `caches.match` 已有即略過（isolated IIFE） |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):

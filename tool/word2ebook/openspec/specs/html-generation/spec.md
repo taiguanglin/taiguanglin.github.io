@@ -166,15 +166,42 @@ outside `<main>`.
 ### Requirement: Dark-Mode Pre-Paint Script
 Both templates SHALL include a synchronous inline `<head>` script that reads
 `localStorage['darkMode']` (falling back to
-`matchMedia('(prefers-color-scheme: dark)')` on first visit) and adds the
-`dark-mode` class to `<html>` before first paint, preventing the flash of the
-wrong theme. `00-base.js` later moves the class to `<body>` (per the
-`body.dark-mode` CSS contract) and removes it from `<html>`.
+`matchMedia('(prefers-color-scheme: dark)')` on first visit), stores the
+resolved decision in `window.__W2E_THEME_DARK` / `window.__W2E_THEME_NEUTRAL`,
+and adds the `dark-mode` class to `<html>` before first paint, preventing the
+flash of the wrong canvas background. `00-base.js` later re-applies the class
+to `<body>` (per the `body.dark-mode` CSS contract; idempotent) and removes it
+from `<html>`.
 When `localStorage['w2e:darkPalette'] === 'neutral'`, the same pre-paint
-script SHALL also add the `dark-neutral` class to `<html>`; `17-theme-pwa.js`
-later moves it to `<body>` (per the `body.dark-neutral` CSS contract).
+script SHALL also add the `dark-neutral` class to `<html>`;
+`17-theme-pwa.js` later re-applies it to `<body>` (per the
+`body.dark-neutral` CSS contract).
 (books2ebook's `_DARK_MODE_PREPAINT` mirrors this snippet and must stay in
 sync.)
+
+Both templates SHALL additionally include a second synchronous inline script
+as the **first child of `<body>`** (`DARK_MODE_BODY_PREPAINT_SCRIPT`) that
+applies the decision recorded by the head script to `<body>`
+(`dark-mode` / `dark-neutral`). All content theming lives on
+`body.dark-mode` (the `<html>` class only recolors the canvas), so without
+this script the first paint of every page navigation renders the light
+palette and only switches dark when the deferred `script.js` runs — a
+flash of the day palette that is jarring at night.
+
+#### Scenario: Chapter navigation does not flash the light theme
+- GIVEN `localStorage['darkMode']` is `'true'`
+- WHEN the browser paints a freshly opened chapter/index page
+- THEN `<body>` SHALL already carry `dark-mode` (applied by the first-child
+  inline script), so no visible theme change occurs after `script.js` runs
+- AND the runtime theme buttons (`04-events.js`) keep toggling only the
+  `<body>` classes as before
+
+#### Scenario: Script failure degrades to the previous behavior
+- GIVEN the head script could not record the decision (e.g. `localStorage`
+  access throws)
+- WHEN the body script runs
+- THEN it SHALL add no class (the globals are unset), and `00-base.js`
+  restores the theme at DOM ready exactly as before this requirement
 
 ### Requirement: PWA Head Tags
 Both templates SHALL include `<meta name="theme-color" content="#e75480">` and

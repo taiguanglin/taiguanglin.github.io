@@ -42,16 +42,34 @@ _MINISEARCH_HEAD = (
     '<script src="assets/js/w2e-config.js" defer></script>'
 ) % shared_asset_url("js/minisearch.min.js")
 
-# 防閃爍：首繪前依深色偏好把 dark-mode 掛到 <html>（00-base.js 於 DOM 就緒後
-# 改掛 <body> 並移除）。與 word2ebook templates/i18n_templates.py 的
-# DARK_MODE_PREPAINT_SCRIPT 同源——兩份需同步修改。
+# 防閃爍：首繪前依深色偏好把 dark-mode 掛到 <html>，並把決定結果存到
+# window.__W2E_THEME_* 供 _DARK_MODE_BODY_PREPAINT 取用；00-base.js 於
+# DOM 就緒後重新套用 <body>（冪等）並移除 <html> 的暫時類別。
+# 與 word2ebook templates/i18n_templates.py 的 DARK_MODE_PREPAINT_SCRIPT
+# 同源——兩份需同步修改。
 _DARK_MODE_PREPAINT = """<script>
 try {
   var __dm = localStorage.getItem('darkMode');
   if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
-  if (__dm === 'true') {
+  window.__W2E_THEME_DARK = (__dm === 'true');
+  window.__W2E_THEME_NEUTRAL = window.__W2E_THEME_DARK && localStorage.getItem('w2e:darkPalette') === 'neutral';
+  if (window.__W2E_THEME_DARK) {
     document.documentElement.classList.add('dark-mode');
-    if (localStorage.getItem('w2e:darkPalette') === 'neutral') document.documentElement.classList.add('dark-neutral');
+    if (window.__W2E_THEME_NEUTRAL) document.documentElement.classList.add('dark-neutral');
+  }
+} catch (e) {}
+</script>"""
+
+# 防閃爍（內容層）：內容配色都掛在 body.dark-mode（html.dark-mode 只改
+# canvas 底色），body 的類別原要到 deferred script.js 才補上——頁面切換時
+# 首繪先以日間配色繪製、再整頁轉暗。此腳本必須是 <body> 的第一個子元素，
+# 同步把 head 腳本的決定套到 <body>，後續內容首繪即為夜間配色。
+# 與 word2ebook 的 DARK_MODE_BODY_PREPAINT_SCRIPT 同源——兩份需同步修改。
+_DARK_MODE_BODY_PREPAINT = """<script>
+try {
+  if (window.__W2E_THEME_DARK) {
+    document.body.classList.add('dark-mode');
+    if (window.__W2E_THEME_NEUTRAL) document.body.classList.add('dark-neutral');
   }
 } catch (e) {}
 </script>"""
@@ -233,6 +251,7 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <script src="/lang-switch.js" defer></script>
 </head>
 <body{body_attrs}>
+{prepaint_body}
 <div id="top"></div>
 <header class="{header_class}">
 <nav class="nav-home" aria-label="站内导航">
@@ -766,6 +785,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         lang_switch_links=_lang_switch_links,
         html_lang="zh-Hant" if is_trad else "zh-Hans",
         prepaint_head=_DARK_MODE_PREPAINT,
+        prepaint_body=_DARK_MODE_BODY_PREPAINT,
         shared_style_css=shared_asset_url("css/style.css"),
         shared_reading_prepaint_js=shared_asset_url("js/reading-prepaint.js"),
         shared_i18n_js=shared_asset_url("js/i18n-text.js"),
@@ -909,6 +929,7 @@ def render_index(books_meta, source_pdfs, is_trad):
         lang_switch_links=_lang_switch_links,
         html_lang="zh-Hant" if is_trad else "zh-Hans",
         prepaint_head=_DARK_MODE_PREPAINT,
+        prepaint_body=_DARK_MODE_BODY_PREPAINT,
         shared_style_css=shared_asset_url("css/style.css"),
         shared_reading_prepaint_js=shared_asset_url("js/reading-prepaint.js"),
         shared_i18n_js=shared_asset_url("js/i18n-text.js"),

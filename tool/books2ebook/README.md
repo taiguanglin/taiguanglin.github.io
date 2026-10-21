@@ -250,6 +250,7 @@ tool/word_audio_map2/.venv/bin/python tool/books2ebook/main.py --books-dir books
 | `/wenda2_ebook/assets/js/script.js` | **共用**（不複製）：SoT 串接的 JS bundle |
 | `/wenda2_ebook/assets/js/{i18n-text,minisearch.min,search-cache,jieba_rs_wasm,jieba_rs_wasm_bg}.{js,wasm}` | **共用**（不複製）：本地自架夥伴檔案 |
 | `ebook/search_index*.json` + `.hash` | 全量搜尋索引（與 wenda2_ebook 同格式） |
+| 每頁內聯防閃腳本 ×2 | 深色主題首繪前套用：`_DARK_MODE_PREPAINT`（`<head>`，掛 `<html>` 並把決定存 `window.__W2E_THEME_*`）＋ `_DARK_MODE_BODY_PREPAINT`（`<body>` 第一個子元素，把 `dark-mode`／`dark-neutral` 掛上 `<body>`——內容配色主體，晚於首繪才補就會閃日間配色）。與 word2ebook 模板同源，`tests/test_dark_prepaint.py` 守兩份同步 |
 
 頁首導覽依頁面層級區分：總目錄頁顯示「首頁」（固定連到
 `../index.html`）與「問答錄2」；單書內頁只顯示「坐禪與講經總目錄」，

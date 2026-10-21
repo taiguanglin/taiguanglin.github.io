@@ -1,5 +1,7 @@
 """Tests for generators/html_generator.py"""
 
+import re
+
 import pytest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -465,3 +467,79 @@ class TestSourceFilename:
         assert ">book.docx</a>" in content
         assert ">answers.pdf</a>" in content
         assert 'download="answers.pdf"' in content
+
+
+# ---------------------------------------------------------------------------
+# Dark-mode 防閃爍（首繪前套用）
+# ---------------------------------------------------------------------------
+
+_HEAD_PREPAINT_MARK = "window.__W2E_THEME_DARK"
+_BODY_PREPAINT_MARK = "document.body.classList.add('dark-mode')"
+_BODY_FIRST_CHILD_RE = re.compile(r"<body>\s*(<script>.*?</script>)", re.DOTALL)
+
+
+class TestDarkModePrepaint:
+    """夜間模式不得在頁面切換時閃日間配色：主題 class 必須首繪前就掛上
+    <body>（內容配色主體），而不是等 deferred script.js 在 DOM 就緒補上。
+    head 腳本先算好偏好並存 window.__W2E_THEME_*；body 第一個子元素的內聯
+    腳本同步把 class 套到 <body>。"""
+
+    def _chapter_html(self, html_gen, sample_chapters, output_dir):
+        html_gen.generate_chapter_pages(
+            sample_chapters, generate_traditional=False, generate_simplified=True
+        )
+        return (output_dir / "01.html").read_text(encoding="utf-8")
+
+    def _index_html(self, html_gen, sample_chapters, output_dir, tmp_path):
+        fake_input = tmp_path / "book.docx"
+        fake_input.touch()
+        cfg = ConversionConfig(
+            input_file=fake_input, output_folder=output_dir,
+            generate_simplified=True, generate_traditional=False,
+        )
+        html_gen.generate_index_pages(
+            sample_chapters, cfg,
+            generate_traditional=False, generate_simplified=True,
+        )
+        return (output_dir / "index.html").read_text(encoding="utf-8")
+
+    @staticmethod
+    def _assert_body_prepaint(content):
+        # head 腳本：算偏好 → 存全域 → 掛 <html>
+        head = content[: content.index("</head>")]
+        assert _HEAD_PREPAINT_MARK in head
+        assert "window.__W2E_THEME_NEUTRAL" in head
+        assert "documentElement.classList.add('dark-mode')" in head
+        # body 腳本：<body> 的第一個子元素，套到 <body>（含墨夜）
+        m = _BODY_FIRST_CHILD_RE.search(content)
+        assert m, "body 防閃腳本必須緊跟在 <body> 之後（第一個子元素）"
+        first_child = m.group(1)
+        assert _BODY_PREPAINT_MARK in first_child
+        assert "document.body.classList.add('dark-neutral')" in first_child
+
+    def test_chapter_page_applies_dark_mode_before_first_paint(
+        self, html_gen, sample_chapters, output_dir
+    ):
+        self._assert_body_prepaint(
+            self._chapter_html(html_gen, sample_chapters, output_dir)
+        )
+
+    def test_index_page_applies_dark_mode_before_first_paint(
+        self, html_gen, sample_chapters, output_dir, tmp_path
+    ):
+        self._assert_body_prepaint(
+            self._index_html(html_gen, sample_chapters, output_dir, tmp_path)
+        )
+
+    def test_body_prepaint_only_toggles_classes(self):
+        """腳本只掛 class，不得自帶主題判斷（決定只在 head 算一次）。"""
+        from templates.i18n_templates import (
+            DARK_MODE_BODY_PREPAINT_SCRIPT,
+            DARK_MODE_PREPAINT_SCRIPT,
+        )
+
+        assert "localStorage" not in DARK_MODE_BODY_PREPAINT_SCRIPT
+        assert "matchMedia" not in DARK_MODE_BODY_PREPAINT_SCRIPT
+        assert "localStorage" in DARK_MODE_PREPAINT_SCRIPT
+        assert DARK_MODE_BODY_PREPAINT_SCRIPT.startswith("<script>")
+        assert DARK_MODE_BODY_PREPAINT_SCRIPT.endswith("</script>")

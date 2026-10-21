@@ -11,15 +11,35 @@ _LEVEL_BTN_LEVELS_CHAPTER = (2, 3, 4)
 
 
 # 防閃爍（P2-21/P2-23）：在 <head> 內同步執行，首繪前依偏好（或首次造訪的
-# 作業系統深色偏好）把 dark-mode 掛到 <html>。00-base.js 於 DOM 就緒後把
-# 類別移到 <body> 並移除 <html> 上的暫時類別。
+# 作業系統深色偏好）把 dark-mode 掛到 <html>，並把決定結果存到
+# window.__W2E_THEME_*，供 DARK_MODE_BODY_PREPAINT_SCRIPT 於 <body> 開頭
+# 取用。00-base.js 於 DOM 就緒後重新套用 <body>（冪等）並移除 <html> 上的
+# 暫時類別。
 DARK_MODE_PREPAINT_SCRIPT = """<script>
 try {
   var __dm = localStorage.getItem('darkMode');
   if (__dm === null && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) __dm = 'true';
-  if (__dm === 'true') {
+  window.__W2E_THEME_DARK = (__dm === 'true');
+  window.__W2E_THEME_NEUTRAL = window.__W2E_THEME_DARK && localStorage.getItem('w2e:darkPalette') === 'neutral';
+  if (window.__W2E_THEME_DARK) {
     document.documentElement.classList.add('dark-mode');
-    if (localStorage.getItem('w2e:darkPalette') === 'neutral') document.documentElement.classList.add('dark-neutral');
+    if (window.__W2E_THEME_NEUTRAL) document.documentElement.classList.add('dark-neutral');
+  }
+} catch (e) {}
+</script>"""
+
+# 防閃爍（內容層）：所有內容配色都掛在 body.dark-mode（html.dark-mode 只改
+# canvas 底色），而 body 的類別原本要到 deferred script.js（DOM 就緒）才由
+# 00-base.js 補上——頁面切換時首繪會先以日間配色繪製、再整頁轉暗（夜讀時
+# 特別刺眼）。故在 <body> 的第一個子元素位置同步執行此腳本，把 head 腳本
+# 的決定套到 <body>：任何後續內容的首繪就已經是夜間配色。此後 00-base.js /
+# 17-theme-pwa.js 的啟動邏輯照舊執行（同鍵值，冪等），行為不變。
+# 放在 <head> 做不到這件事——當時 <body> 還不存在。
+DARK_MODE_BODY_PREPAINT_SCRIPT = """<script>
+try {
+  if (window.__W2E_THEME_DARK) {
+    document.body.classList.add('dark-mode');
+    if (window.__W2E_THEME_NEUTRAL) document.body.classList.add('dark-neutral');
   }
 } catch (e) {}
 </script>"""
@@ -131,6 +151,7 @@ class I18nTemplateManager:
             'level': get_i18n_text('level_control.level', is_traditional, '層級'),
             'collapse_expand_level_control': get_i18n_text('level_control.collapse_expand', is_traditional, '收縮/展開層級控制'),
             'dark_mode_prepaint': DARK_MODE_PREPAINT_SCRIPT,
+            'dark_mode_body_prepaint': DARK_MODE_BODY_PREPAINT_SCRIPT,
         }
     
     def _get_index_i18n_kwargs(self, is_traditional: bool) -> Dict[str, str]:
@@ -162,6 +183,7 @@ class I18nTemplateManager:
             'cross_href': "../ebook/index_trad.html" if is_traditional else "../ebook/index.html",
             'cross_text': get_i18n_text('navigation.cross_ebook', is_traditional, '📚 坐禪與講經' if is_traditional else '📚 坐禅与讲经'),
             'dark_mode_prepaint': DARK_MODE_PREPAINT_SCRIPT,
+            'dark_mode_body_prepaint': DARK_MODE_BODY_PREPAINT_SCRIPT,
             'minisearch_script': (
                 f'<script src="{Constants.MINISEARCH_LOCAL_PATH}" defer></script>'
                 if Constants.MINISEARCH_LOCAL_PATH else ''
@@ -190,6 +212,7 @@ class I18nTemplateManager:
 <script src="/lang-switch.js" defer></script>
 </head>
 <body>
+{dark_mode_body_prepaint}
 <div id="top"></div>
 <header class="header-nav">
   <nav class="nav-home" aria-label="站內導覽">
@@ -272,6 +295,7 @@ class I18nTemplateManager:
 <script src="/lang-switch.js" defer></script>
 </head>
 <body>
+{dark_mode_body_prepaint}
 <header class="header-nav index-header">
   <nav class="nav-home" aria-label="站內導覽">
     <a href="{site_home_href}">{site_home_text}</a> | <a href="{cross_href}">{cross_text}</a>
