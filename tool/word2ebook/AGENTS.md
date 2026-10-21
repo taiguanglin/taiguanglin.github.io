@@ -151,7 +151,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `15-mobile-toc.js` | Mobile TOC ergonomics: tap-out backdrop (≤768px), edge-swipe open / panel-swipe close. 「回到頂端」只留功能選單（☰ → ↑）內的按鈕，無常駐懸浮鈕 |
 | `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3 |
 | `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint scripts in templates add the theme classes to `<html>` **and to `<body>`** — the body-level script is the first child of `<body>`，否則每次頁面切換會先閃日間配色才轉暗); registers root `/sw.js` under the two ebook dirs for offline reading |
-| `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能）：以事件代理在 `pointerenter`/`touchstart`/`focusin` 即時預取即將點擊的同目錄章節連結；首頁閒置（`requestIdleCallback`，fallback `setTimeout`）逐一以 `priority:'low'` 序列預取**同語言**全部章節頁，經 sw.js 的 `swr()` 直接暖機 PAGES_CACHE（跨語言 `*_trad.html` 刻意不取）。整批預取受 `navigator.connection` 守門：`saveData` 或 2g/3g 不做（hover 預取不受限）；先查 `caches.match` 已有即略過（isolated IIFE） |
+| `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能）：以事件代理在 `pointerenter`/`touchstart`/`focusin` 即時預取即將點擊的同目錄章節連結；首頁閒置（`requestIdleCallback`，fallback `setTimeout`）逐一以 `priority:'low'` 序列預取**同語言**全部章節頁，經 sw.js 的 `networkFirst()` 直接暖機 PAGES_CACHE——頁面已改 network-first、線上開啟仍會重驗，預取主要保障離線可用（跨語言 `*_trad.html` 刻意不取）。整批預取受 `navigator.connection` 守門：`saveData` 或 2g/3g 不做（hover 預取不受限）；先查 `caches.match` 已有即略過（isolated IIFE） |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 

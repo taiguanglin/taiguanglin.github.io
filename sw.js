@@ -2,11 +2,16 @@
  *
  * 策略：
  *  - 靜態資產（電子書 CSS/JS/WASM、字型、vendor、圖片）→ cache-first。
- *  - 電子書頁面（/wenda2_ebook/、/ebook/ 下的 .html）→ stale-while-revalidate，
- *    離線時可開啟所有「曾讀過」的章節。
- *  - 搜尋索引 search_index*.json → stale-while-revalidate（體積大但讀過一次即離線可用）。
+ *  - 電子書頁面（/wenda2_ebook/、/ebook/ 下的 .html）與搜尋索引
+ *    search_index*.json → network-first：每次導覽都以 cache:'no-cache'
+ *    重驗（GitHub Pages 支援 ETag 條件請求，未變更回 304、近乎零成本），
+ *    有網路時永遠拿到最新版——校對後重建、push 上站，使用者「打開」
+ *    即是新版，不再需要 Cmd+Shift+R；只有離線才回頭吃快取。
+ *    ⚠️ 這裡曾是 stale-while-revalidate（先回快取舊頁、背景才更新）——
+ *    部署後第一次打開必然是舊版，正是「要手動強制重新載入」的根因
+ *    （2026-10-21 改 network-first）。
  *  - 音檔（.opus/.mp3，/audio/ 另站）→ 網路直連，永不快取（避免佔滿儲存）。
- *  - 其他（根目錄行銷頁等）→ 直接放行，不介入。
+ *  - 其他（根目錄行銷頁等）→ 直接放行，不介入（HTTP 層快取 ≤10 分鐘）。
  *
  * ⚠️ `isAsset()` 對**任何**同源 .js/.css 都回 true（包含 audio_map、audio_map2、audio_map3
  * 這三個審核 UI 的 assets），而靜態資產是 cache-first：改到這些檔案時必須同時換 VERSION，
@@ -15,7 +20,7 @@
  */
 'use strict';
 
-var VERSION = 'v1-2026-10j';
+var VERSION = 'v1-2026-10k';
 var STATIC_CACHE = 'tgl-ebook-static-' + VERSION;
 var PAGES_CACHE = 'tgl-ebook-pages-' + VERSION;
 
@@ -41,22 +46,25 @@ function isAudio(url) {
   return /\.(opus|mp3|m4a|wav|ogg)$/.test(url.pathname) || url.pathname.indexOf('/audio/') === 0;
 }
 
-/* 每導覽一頁就把該頁 HTML 存進 PAGES_CACHE（每頁頂多一筆），離線時命中 */
-function swr(request, cacheName) {
+/* network-first：先向伺服器重驗（cache:'no-cache' → ETag 條件請求，
+ * 未變更回 304、近乎零成本），成功回應同步寫進快取供離線使用；
+ * 只有網路失敗（離線）才回頭吃快取。 */
+function networkFirst(request, cacheName) {
   return caches.open(cacheName).then(function (cache) {
-    return cache.match(request, { ignoreSearch: true }).then(function (cached) {
-      var fetched = fetch(request).then(function (resp) {
-        if (resp.ok) {
-          /* 同步 clone（見 cacheFirst 的說明），put 失敗不影響瀏覽 */
-          cache.put(request, resp.clone()).catch(function () {});
-          /* 無 hash 的失敗頁也寫進去無妨；hash 不同視同新頁不處理 */
-          if (request.url.indexOf('#') === -1) {
-            cache.put(new Request(request.url.split('#')[0]), resp.clone()).catch(function () {});
-          }
+    return fetch(request, { cache: 'no-cache' }).then(function (resp) {
+      if (resp.ok) {
+        /* 同步 clone（見 cacheFirst 的說明），put 失敗不影響瀏覽 */
+        cache.put(request, resp.clone()).catch(function () {});
+        /* 無 hash 的失敗頁也寫進去無妨；hash 不同視同新頁不處理 */
+        if (request.url.indexOf('#') === -1) {
+          cache.put(new Request(request.url.split('#')[0]), resp.clone()).catch(function () {});
         }
-        return resp;
-      }).catch(function () { return cached || Response.error(); });
-      return cached || fetched;
+      }
+      return resp;
+    }).catch(function () {
+      return cache.match(request, { ignoreSearch: true }).then(function (cached) {
+        return cached || Response.error();
+      });
     });
   });
 }
@@ -100,7 +108,7 @@ self.addEventListener('fetch', function (event) {
   if (isAudio(url)) return;                      /* 音檔：網路直連 */
   if (isAsset(url)) { event.respondWith(cacheFirst(request)); return; }
   if (isEbookHtml(url) || isSearchIndex(url)) {
-    event.respondWith(swr(request, isEbookHtml(url) ? PAGES_CACHE : STATIC_CACHE));
+    event.respondWith(networkFirst(request, isEbookHtml(url) ? PAGES_CACHE : STATIC_CACHE));
   }
   /* 其他請求不攔截 */
 });
