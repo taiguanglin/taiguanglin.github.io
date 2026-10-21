@@ -511,7 +511,6 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     if next_book:
         n = next_book.filename_trad if is_trad else next_book.filename
         nav_next = "<a href=\"%s\">%s ➡️</a>" % (n, esc(next_book.display_title))
-    topnav_next = ("<a href=\"%s\">%s ➡️</a>" % (next_book.filename_trad if is_trad else next_book.filename, esc(next_book.display_title))) if next_book else ""
 
     # ---- 章內目錄 ----
     used_levels = sorted({int(b["kind"][1]) for b in headings})
@@ -794,8 +793,12 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             _page_filename, is_trad, _seo_title, _seo_description, "article"
         ),
     )
+    # 頂部導覽與底部 nav-footer 同規則：上一本＋下一本都輸出
+    # （首本只有下一本、末本只有上一本），與 wenda2_ebook 的
+    # top-nav-buttons（prev_link + next_link）一致。
     html += (
-        '<div class="top-nav"><div class="top-nav-buttons">%s</div></div>\n' % topnav_next
+        '<div class="top-nav"><div class="top-nav-buttons">%s%s</div></div>\n'
+        % (nav_prev + "\n" if nav_prev else "", nav_next)
     )
     # <main> 語意地標：正文（含章節目錄、內文、上下冊導航）皆屬主要內容
     html += "<main>\n"
