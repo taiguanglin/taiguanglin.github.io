@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-10-21T09:33:18.187Z",
+  "generated_at": "2026-10-23T02:07:20.186Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -19148,289 +19148,289 @@
           "pid": "p-s2158a92d",
           "text": "《楞伽经》第二十一期。这本书的第一百零三页最下边开始。下边一段又是那种相当迷惑的、逻辑上相当混乱的说法。看两种版本都觉得有点难，看一遍、两遍都看不懂他到底在说什么，那就按照我的理解来解释。我就按照这本书来解释，不看另一个译本。",
           "start": 0.63,
-          "end": 36.1,
+          "end": 35.5,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8998f773",
           "text": "复次，大慧，见诸法非幻无有相似，故说一切法如幻。",
-          "start": 36.1,
-          "end": 41.06,
+          "start": 35.5,
+          "end": 40.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7beb0814",
           "text": "在这里，首先我们要知道一个逻辑，有两个东西A 和B， A 是A，B 是B，A 和B 不同。这个时候如果B 长得像A 的话，我们可以说A 长得像B 或者B 长得像A，但是A 和B 不一样。所以A 不是B，B 也不是A，只能说A和B 长得像，这个时候只能说相似。",
-          "start": 41.06,
-          "end": 78.26,
+          "start": 40.96,
+          "end": 82.091,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4f2b6011",
           "text": "诸法到底是幻，还是不是幻呢？在这里不是这个问题，佛的意思是“见诸法非幻无有相似”，诸法不是幻，诸法与幻不同。“故说一切法如幻”，所以说一切法像幻。也就是诸法与幻本质上不一样。“幻”是纯粹的幻觉，“诸法”是存在的。",
-          "start": 78.26,
-          "end": 119.65,
+          "start": 82.091,
+          "end": 119.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8d91c2a8",
           "text": "诸法——我们看到的、听到的这一切的确存在，谁能否定它存在呢？它的确存在，所以它不是幻。诸法与幻不同，所以只能说它像幻。因为诸法没有本体，但是它存在，所以它像幻，并不是幻觉。幻觉是真的不存在，只是眼睛迷糊，眼前短暂出现个什么假的景象，之后消失的这种才是幻觉。",
-          "start": 119.65,
-          "end": 156.4,
+          "start": 119.25,
+          "end": 155.34,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc1df5721",
           "text": "但是诸法——我们看到世界正在持续存在，我们正在这个世界当中生活，一切妄想、分别、执着都存在，我们也在世界当中和众生互动。所以我们不能说这个世界是幻觉，而是像幻觉；它不是幻觉，只是像幻觉。这样解释大家能理解吧？诸法不是幻，诸法与幻不同，所以只能说一切法像幻，而不是说诸法就是幻。",
-          "start": 156.4,
-          "end": 193.35,
+          "start": 155.34,
+          "end": 191.568,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f0dfe63",
           "text": "下面这一段就是相当迷惑的一种说法了，乍看起来是真看不懂。",
-          "start": 193.35,
-          "end": 202.25,
+          "start": 191.568,
+          "end": 200.168,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb352df46",
           "text": "大慧言：“世尊，为依执著种种幻相，言一切法犹如幻耶？为异依此执著颠倒相耶？",
-          "start": 202.25,
-          "end": 210.56,
+          "start": 200.168,
+          "end": 208.874,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4ca12d3d",
           "text": "这是大慧反问佛，是因为你——世尊执着于种种幻相，所以说所有法像幻吗？这什么逻辑呢？最简单的比喻，你自己是个坏人，所以你看谁都像个坏人，这样的逻辑大家能理解吧？你本身内心黑暗，所以看谁都像个坏人，是这种逻辑。是因为你执着于这个幻，所以你看什么都像幻觉，是这个原因吗？",
-          "start": 210.56,
-          "end": 255.11,
+          "start": 208.874,
+          "end": 253.32,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s87f5ef7d",
           "text": "“为异依此执著颠倒相耶”，还是为了把这个区别于执着颠倒相的这种状态而说的呢？也就是为了不让你执着于诸法，而说诸法像幻，是这个逻辑。",
-          "start": 255.11,
-          "end": 278.96,
+          "start": 253.32,
+          "end": 277.626,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sefeaff48",
           "text": "“异依此执著颠倒相”，在这里出现“颠倒相”，我们看到的相都是颠倒相，因为不真实；所以为了不让你执著颠倒相，区别于这个说法。这样讲大家能理解吧？",
-          "start": 278.96,
-          "end": 296.87,
+          "start": 277.626,
+          "end": 296.47,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8cf73407",
           "text": "若依执著种种幻相言一切法犹如幻者，世尊，一切法悉皆如幻，何以故？见种种色相不无因故。",
-          "start": 296.87,
-          "end": 303.56,
+          "start": 296.47,
+          "end": 301.527,
           "conf": 0.35,
           "method": "miss",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0aa8d9de",
           "text": "如果你自己执着于种种幻相，所以说诸法如幻的话，那么这个世界一切法都像幻。为什么呢？因为看到种种色相不是没有原因的。",
-          "start": 303.56,
-          "end": 335.58,
+          "start": 301.527,
+          "end": 334.38,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0d0b82de",
           "text": "不是没有原因，那就是有原因，到底是什么原因？就是因为你喜欢幻，这就是你的原因。因为你喜欢幻，所以你执着于幻，所以见种种色相都像幻，在你那里一切法悉皆如幻。这个逻辑相信大家能理解吧？",
-          "start": 335.58,
-          "end": 359.35,
+          "start": 334.38,
+          "end": 357.695,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdefc67cc",
           "text": "世尊，都无有因，令种种色相显现如幻，是故世尊，不可说言依于执著种种幻相言一切法与幻相似。",
-          "start": 359.35,
-          "end": 363.11,
+          "start": 357.695,
+          "end": 362.412,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s642d2c09",
           "text": "世尊，实际上没有原因。在没有原因的状态下，种种色相就像幻觉一样，如幻般显现出来。因为“初妄无因”，最初没有原因的状态下，一个色相显现出来，就像幻觉一样。所以你不能因为自己喜欢种种幻、执着于种种幻相，就说一切法与幻相似。",
-          "start": 363.11,
-          "end": 401.74,
+          "start": 362.412,
+          "end": 400.275,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s99b3ab35",
           "text": "好了，我们再用比较好理解的语言，把这一段翻过来。古代的逻辑和我们现在因果的逻辑有点不一样，所以大家要仔细听。",
-          "start": 401.74,
-          "end": 418.09,
+          "start": 400.275,
+          "end": 417.79,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb0ae1919",
           "text": "“复次，大慧，见诸法非幻无有相似，故说一切法如幻。”大慧言：“世尊，为依执著种种幻相，言一切法犹如幻耶？为异依此执著颠倒相耶？若依执著种种幻相言一切法犹如幻者，世尊，一切法悉皆如幻，何以故？见种种色相不无因故。世尊，都无有因，令种种色相显现如幻，是故世尊，不可说言依于执著种种幻相言一切法与幻相似。”",
-          "start": 418.09,
-          "end": 421.84,
+          "start": 417.79,
+          "end": 419.017,
           "conf": 0.55,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6491c737",
           "text": "一开始佛说，诸法不是幻，诸法与幻不同，所以说一切法像幻，而不说它是幻。这么一说，大慧就开始反问，是因为世尊你执着于幻相，所以说一切法都是幻吗？还是为了区别于执着颠倒相的这种状态，也就是为了破灭大家对幻相的执着，而说它是幻吗？在这里“幻相”指诸法，为了破灭大家对诸法的执着，而说诸法像幻吗？",
-          "start": 421.84,
-          "end": 461.1,
+          "start": 419.017,
+          "end": 459.466,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s66841f85",
           "text": "然后接着问，如果你是因为自己执着于这个幻，所以说诸法如幻的话，那么在你那里一切法都是幻觉。为什么呢？因为你见到种种色相不是没有原因，是有原因的。你见到种种色相的原因，就是你喜欢幻觉，所以你说所有法都是幻。",
-          "start": 461.1,
-          "end": 488.03,
+          "start": 459.466,
+          "end": 487.56,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc09dea39",
           "text": "然后他说，世尊，实际上没有原因，因为种种色相就像幻觉一样显现出来，这个事实如此。所以世尊你执着于种种幻相，而说“一切法与幻相似”，这样的说法是不能成立的，是不能这样说的。",
-          "start": 488.03,
-          "end": 524.54,
+          "start": 487.56,
+          "end": 522.003,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1be566e9",
           "text": "下一段，佛怎么回答呢？",
-          "start": 524.54,
-          "end": 527.33,
+          "start": 522.003,
+          "end": 525.976,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5d681835",
           "text": "佛言：“大慧，不依执著种种幻相言一切法如幻。大慧，以一切法不实，速灭如电，故说如幻。",
-          "start": 527.33,
-          "end": 532.69,
+          "start": 525.976,
+          "end": 532.1,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s24edff9b",
           "text": "佛说，我不是因为执着于种种幻相，而说一切法像幻。这个诸法——妄想、分别、执着不真实，它是没有实体的，也是没有本体的；就像电一样瞬息万变，所以说它像幻。",
-          "start": 532.69,
-          "end": 558.14,
+          "start": 532.1,
+          "end": 556.271,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa3fad5fd",
           "text": "大慧，譬如电光见已即灭，世间凡愚悉皆现见一切诸法依自分别自共相现，亦复如是，以不能观察无所有故，而妄计著种种色相。",
-          "start": 558.14,
-          "end": 560.82,
+          "start": 556.271,
+          "end": 559.295,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8cf92e62",
           "text": "电光，看到之后马上就会消失或者灭掉，它瞬息万变。世间凡愚见到的一切妄想、分别、执着，都是在“自、共相”上产生分别之后开始出现的。这些凡愚看不到空的状态——感知不到佛的大空状态，所以在种种色相上虚妄计度，才会堕入轮回。“妄计”是虚妄计度。",
-          "start": 560.82,
-          "end": 612.46,
+          "start": 559.295,
+          "end": 608.959,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfd9d2dab",
           "text": "尔时，世尊重说颂言：非幻无相似，亦非有诸法；不实速如电，如幻应当知。",
-          "start": 612.46,
-          "end": 613.7,
+          "start": 608.959,
+          "end": 613.305,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s97d8f0e3",
           "text": "“非幻无相似”，这里前面应该还有“诸法”——诸法非幻，就像前面说的“诸法非幻无有相似”这句。诸法与幻不同，我们只说诸法像幻，而不是诸法是幻。“亦非有诸法”，也没有诸法。“不实速如电”，诸法不真实，就像电一样瞬息万变。“如幻应当知”，诸法像幻，你应该知道。在这里重点还是诸法像幻，而不是幻，这个“像”和“是”要区别开来。",
-          "start": 613.7,
-          "end": 655.25,
+          "start": 613.305,
+          "end": 653.258,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5a5f519b",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如佛先说，一切诸法皆悉无生，又言如幻，将非所说前后相违。”",
-          "start": 655.25,
-          "end": 666.67,
+          "start": 653.258,
+          "end": 664.699,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s48ddb72c",
           "text": "他又开始反问，就像佛之前说的，一切法都是无生；既然无生，你怎么能又说它幻呢？是不是前后有矛盾呢？",
-          "start": 666.67,
-          "end": 684.26,
+          "start": 664.699,
+          "end": 681.984,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6ce07c80",
           "text": "“无生”和“如幻”，在这里“无生”的逻辑是诸法没有本体——妄想、分别、执着没有本体；既然没有本体，它怎么可能被生出来，所以从这个角度来说是“无生”。但是它的确生出来了，没有本体，但是确实生出来了，所以我们又说它“如幻”。",
-          "start": 684.26,
-          "end": 714.53,
+          "start": 681.984,
+          "end": 711.976,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s74831307",
           "text": "佛言：“大慧，无有相违。何以故？我了于生即是无生，唯是自心之所见故。",
-          "start": 714.53,
+          "start": 711.976,
           "end": 716.65,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sefa9e04a",
@@ -19439,7 +19439,7 @@
           "end": 735.64,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s05a485ac",
