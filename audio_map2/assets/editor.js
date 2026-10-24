@@ -114,6 +114,7 @@ const els = {
     contentRightGutterRange: document.querySelector('#contentRightGutterRange'),
     contentRightGutterValue: document.querySelector('#contentRightGutterValue'),
     autoShowMiniPlayerInput: document.querySelector('#autoShowMiniPlayerInput'),
+    resetMiniPlayerPositionButton: document.querySelector('#resetMiniPlayerPositionButton'),
     draftDialog: document.querySelector('#draftDialog'),
     draftMessage: document.querySelector('#draftMessage'),
     conflictDialog: document.querySelector('#conflictDialog'),
@@ -160,6 +161,7 @@ const audio = createAudioController({
 });
 
 const mobileDockQuery = window.matchMedia('(max-width: 900px)');
+const MINI_PLAYER_EDGE_GAP = 8;
 
 bootstrap();
 
@@ -266,6 +268,7 @@ function bindEvents() {
     els.miniPlayerExpand?.addEventListener('click', () => {
         setMiniPlayerExpanded(!state.prefs.miniPlayerExpanded);
     });
+    els.resetMiniPlayerPositionButton?.addEventListener('click', resetMiniPlayerPosition);
     els.undoButton?.addEventListener('click', () => undoEdit());
     els.redoButton?.addEventListener('click', () => redoEdit());
     els.reloadRemoteButton?.addEventListener('click', async (event) => {
@@ -429,6 +432,7 @@ function applyMiniPlayerVisibility() {
         els.playerToggle.title = text;
     }
     applyMiniPlayerExpanded();
+    if (!hidden) restoreMiniPlayerPosition();
     updateMiniPlayerHeight();
 }
 
@@ -467,6 +471,15 @@ function setMiniPlayerExpanded(expanded) {
     setPrefs({ miniPlayerExpanded: next });
     applyMiniPlayerExpanded();
     updateMiniPlayerHeight();
+}
+
+function resetMiniPlayerPosition() {
+    state.prefs.miniPlayerPos = null;
+    setPrefs({ miniPlayerPos: null });
+    clearMiniPlayerInlinePosition();
+    if (els.settingsMessage) {
+        els.settingsMessage.textContent = '播放器位置已重設。';
+    }
 }
 
 function updateMiniPlayerHeight() {
@@ -3113,12 +3126,12 @@ function setupMiniPlayer() {
         mini.classList.remove('dragging');
         handle.classList.remove('dragging');
         try { mini.releasePointerCapture(event.pointerId); } catch { /* noop */ }
-        setPrefs({
-            miniPlayerPos: {
-                left: parseFloat(mini.style.left) || 0,
-                top: parseFloat(mini.style.top) || 0,
-            },
-        });
+        const position = {
+            left: parseFloat(mini.style.left) || 0,
+            top: parseFloat(mini.style.top) || 0,
+        };
+        state.prefs.miniPlayerPos = position;
+        setPrefs({ miniPlayerPos: position });
     };
     mini.addEventListener('pointerup', stopDrag);
     mini.addEventListener('pointercancel', stopDrag);
@@ -3146,19 +3159,49 @@ function setupMiniPlayer() {
     });
 }
 
-function restoreMiniPlayerPosition() {
-    if (isMobileDock()) return;
-    const pos = state.prefs.miniPlayerPos;
-    if (!pos || typeof pos !== 'object') return;
+function clampMiniPlayerPosition(left, top) {
     const mini = els.miniPlayer;
-    if (Number.isFinite(pos.left)) {
-        mini.style.left = `${pos.left}px`;
-        mini.style.right = 'auto';
+    if (!mini) return { left, top };
+    const rect = mini.getBoundingClientRect();
+    const width = mini.offsetWidth || rect.width;
+    const height = mini.offsetHeight || rect.height;
+    const maxLeft = Math.max(
+        MINI_PLAYER_EDGE_GAP,
+        window.innerWidth - width - MINI_PLAYER_EDGE_GAP,
+    );
+    const maxTop = Math.max(
+        MINI_PLAYER_EDGE_GAP,
+        window.innerHeight - height - MINI_PLAYER_EDGE_GAP,
+    );
+    return {
+        left: clamp(left, MINI_PLAYER_EDGE_GAP, maxLeft),
+        top: clamp(top, MINI_PLAYER_EDGE_GAP, maxTop),
+    };
+}
+
+function restoreMiniPlayerPosition() {
+    const mini = els.miniPlayer;
+    if (!mini) return;
+    if (isMobileDock()) {
+        clearMiniPlayerInlinePosition();
+        return;
     }
-    if (Number.isFinite(pos.top)) {
-        mini.style.top = `${pos.top}px`;
-        mini.style.bottom = 'auto';
+    const pos = state.prefs.miniPlayerPos;
+    if (!pos || typeof pos !== 'object') {
+        clearMiniPlayerInlinePosition();
+        return;
     }
+    const rect = mini.getBoundingClientRect();
+    const left = Number.isFinite(pos.left) ? pos.left : rect.left;
+    const top = Number.isFinite(pos.top) ? pos.top : rect.top;
+    // A saved pixel position can be outside a smaller viewport after a display
+    // resolution change. Clamp it on every restore/resize so the player stays
+    // visible without discarding the user's preferred position.
+    const next = clampMiniPlayerPosition(left, top);
+    mini.style.left = `${next.left}px`;
+    mini.style.top = `${next.top}px`;
+    mini.style.right = 'auto';
+    mini.style.bottom = 'auto';
 }
 
 function clearMiniPlayerInlinePosition() {
