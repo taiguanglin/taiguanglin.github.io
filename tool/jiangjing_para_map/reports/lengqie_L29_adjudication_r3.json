@@ -1,0 +1,583 @@
+[
+  {
+    "i": 10,
+    "start": 0.23,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[keep] own_first=0.23 pause=None-None ASR 首字「正切经第二十九期」@0.23，保持原值 0.230"
+  },
+  {
+    "i": 11,
+    "start": 6.17,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=7.27 pause=5.07-7.27 實讀 own_first=7.27（引導語「我們先看原文」；經文「爾時大慧」@8.85）"
+  },
+  {
+    "i": 12,
+    "start": 17.67,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=17.77 pause=17.33-17.77 實讀 own_first=17.77（這句話還是比較好理解的）"
+  },
+  {
+    "i": 13,
+    "start": 59.28,
+    "conf": 0.35,
+    "method": "span",
+    "note": "[人工指定邊界(轉場停頓中點)] own_first=61.86 pause=None-None 實讀 own_first=61.86（經文「妄計無諸法者」）；過場語「然後下一段是…」@59.38 歸本段，邊界取過場前停頓中點"
+  },
+  {
+    "i": 14,
+    "start": 65.2,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=65.2 pause=65.2-65.2 實讀 own_first=65.20（引導語「你這句話就是邏…」）"
+  },
+  {
+    "i": 15,
+    "start": 95.328,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=95.68 pause=94.97-95.68 過場點評分 sep=1.54 head=0.74@95.68"
+  },
+  {
+    "i": 16,
+    "start": 155.69,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[keep] own_first=155.69 pause=None-None r2 首字指標為 0，保持原值 155.69"
+  },
+  {
+    "i": 17,
+    "start": 221.135,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=221.81 pause=220.46-221.81 過場點評分 sep=1.26 head=0.64@221.81"
+  },
+  {
+    "i": 18,
+    "start": 267.08,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=267.18 pause=266.85-267.18 過場點評分 sep=1.69 head=0.70@267.18"
+  },
+  {
+    "i": 19,
+    "start": 309.62,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=311.34 pause=309.29-309.72 過場點評分 sep=1.74 head=0.97@311.34"
+  },
+  {
+    "i": 20,
+    "start": 325.92,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=327.68 pause=325.54-326.02 過場點評分 sep=1.63 head=0.76@327.68"
+  },
+  {
+    "i": 21,
+    "start": 359.12,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=359.32 pause=359.12-359.32 實讀 own_first=359.32（經文「佛言大慧如是如是」）"
+  },
+  {
+    "i": 22,
+    "start": 362.31,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=362.41 pause=362.09-362.41 實讀 own_first=362.41（白話「對對你說的對…」）"
+  },
+  {
+    "i": 23,
+    "start": 405.66,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=406.16 pause=405.16-406.16 過場點評分 sep=1.39 head=0.86@406.16"
+  },
+  {
+    "i": 24,
+    "start": 412.3,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=414.24 pause=411.96-412.4 過場點評分 sep=1.26 head=0.98@414.24"
+  },
+  {
+    "i": 25,
+    "start": 430.75,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=431.23 pause=430.27-431.23 過場點評分 sep=1.60 head=0.66@431.23"
+  },
+  {
+    "i": 26,
+    "start": 453.62,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=453.72 pause=453.26-453.72 過場點評分 sep=1.77 head=0.88@453.72"
+  },
+  {
+    "i": 27,
+    "start": 456.87,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=457.74 pause=456.18-457.56 過場點評分 sep=1.66 head=0.78@457.74"
+  },
+  {
+    "i": 28,
+    "start": 511.91,
+    "conf": 0.6,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=512.32 pause=511.5-512.32 實讀 own_first=512.32（經文僅「何以故」三字@512.32-512.64；其後由[29]白話帶引→§3④半讀）"
+  },
+  {
+    "i": 29,
+    "start": 512.88,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=512.88 pause=512.88-512.88 實讀 own_first=512.88（白話「為什麼呢…」）"
+  },
+  {
+    "i": 30,
+    "start": 546.9,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[keep] own_first=546.9 pause=None-None r2 首字指標為 0，保持原值 546.90（待人耳確認「來看世界」引導語歸屬）"
+  },
+  {
+    "i": 31,
+    "start": 568.98,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=572.57 pause=568.56-569.4 過場點評分 sep=1.85 head=0.92@572.57"
+  },
+  {
+    "i": 32,
+    "start": 609.872,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=610.2 pause=609.54-610.2 過場點評分 sep=1.68 head=0.84@610.20"
+  },
+  {
+    "i": 33,
+    "start": 632.87,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=632.97 pause=632.57-632.97 過場點評分 sep=1.64 head=0.86@632.97"
+  },
+  {
+    "i": 34,
+    "start": 639.322,
+    "conf": 0.8,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=640.51 pause=638.135-640.51 實讀 own_first=640.51（白話「這個是什麼意思呢…其他境界」）"
+  },
+  {
+    "i": 35,
+    "start": 668.515,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=668.88 pause=668.15-668.88 過場點評分 sep=1.68 head=0.72@668.88"
+  },
+  {
+    "i": 36,
+    "start": 674.898,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=676.01 pause=674.54-675.25 過場點評分 sep=1.63 head=0.71@676.01"
+  },
+  {
+    "i": 37,
+    "start": 684.858,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=686.41 pause=684.37-685.35 過場點評分 sep=1.44 head=0.74@686.41"
+  },
+  {
+    "i": 38,
+    "start": 693.17,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=693.27 pause=692.8-693.27 過場點評分 sep=1.85 head=0.99@693.27"
+  },
+  {
+    "i": 39,
+    "start": 701.52,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=702.77 pause=701.21-701.83 過場點評分 sep=1.77 head=0.77@702.77"
+  },
+  {
+    "i": 40,
+    "start": 709.567,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=713.01 pause=709.25-709.89 過場點評分 sep=1.93 head=0.99@713.01"
+  },
+  {
+    "i": 41,
+    "start": 738.51,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=739.64 pause=738.3-738.61 過場點評分 sep=1.83 head=0.96@739.64"
+  },
+  {
+    "i": 42,
+    "start": 773.62,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=773.72 pause=773.38-773.72 過場點評分 sep=1.78 head=1.00@773.72"
+  },
+  {
+    "i": 43,
+    "start": 803.923,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=807.74 pause=803.25-804.6 過場點評分 sep=1.91 head=0.94@807.74"
+  },
+  {
+    "i": 44,
+    "start": 833.283,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=833.55 pause=833.01-833.55 過場點評分 sep=1.94 head=0.99@833.55"
+  },
+  {
+    "i": 45,
+    "start": 871.56,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=872.36 pause=871.18-871.66 過場點評分 sep=1.96 head=0.99@872.36"
+  },
+  {
+    "i": 46,
+    "start": 893.947,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=896.04 pause=893.63-894.26 過場點評分 sep=1.91 head=0.94@896.04"
+  },
+  {
+    "i": 47,
+    "start": 915.54,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=917.3 pause=915.16-915.64 過場點評分 sep=1.96 head=0.98@917.30"
+  },
+  {
+    "i": 48,
+    "start": 936.41,
+    "conf": 0.35,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=937.23 pause=935.59-937.23 過場點評分 sep=1.59 head=0.66@937.23"
+  },
+  {
+    "i": 49,
+    "start": 943.87,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=945.77 pause=943.49-943.97 過場點評分 sep=1.29 head=0.98@945.77"
+  },
+  {
+    "i": 50,
+    "start": 981.26,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=982.78 pause=980.92-981.36 過場點評分 sep=1.71 head=0.89@982.78"
+  },
+  {
+    "i": 51,
+    "start": 1006.94,
+    "conf": 0.6,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1007.76 pause=1006.12-1007.76 過場點評分 sep=1.29 head=0.64@1007.76"
+  },
+  {
+    "i": 52,
+    "start": 1012.298,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1012.88 pause=1011.72-1012.88 過場點評分 sep=1.14 head=0.84@1012.88"
+  },
+  {
+    "i": 53,
+    "start": 1062.572,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1062.98 pause=1062.16-1062.98 過場點評分 sep=1.64 head=0.93@1062.98"
+  },
+  {
+    "i": 54,
+    "start": 1086.205,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1089.1 pause=1085.31-1087.1 過場點評分 sep=1.69 head=0.72@1089.10"
+  },
+  {
+    "i": 55,
+    "start": 1105.668,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1109.9 pause=1105.36-1105.98 過場點評分 sep=1.69 head=0.70@1109.90"
+  },
+  {
+    "i": 56,
+    "start": 1126.43,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1126.53 pause=1126.21-1126.53 過場點評分 sep=1.14 head=0.44@1126.53"
+  },
+  {
+    "i": 57,
+    "start": 1129.7,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1129.8 pause=1129.335-1129.8 實讀 own_first=1129.80（白話「離開這個錯誤的想法…」）"
+  },
+  {
+    "i": 58,
+    "start": 1174.31,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1174.41 pause=1173.97-1174.41 實讀 own_first=1174.41（引經「獲如實印」）"
+  },
+  {
+    "i": 59,
+    "start": 1195.507,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1196.04 pause=1194.975-1196.04 實讀 own_first=1196.04（引導語「接著看下一方上…」＋經文「復次大慧」@1197.86）"
+  },
+  {
+    "i": 60,
+    "start": 1203.685,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1204.55 pause=1203.0-1204.37 過場點評分 sep=1.74 head=0.91@1204.55"
+  },
+  {
+    "i": 61,
+    "start": 1222.22,
+    "conf": 0.9,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1222.32 pause=1221.9-1222.32 過場點評分 sep=1.77 head=0.88@1222.32"
+  },
+  {
+    "i": 62,
+    "start": 1248.38,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=1248.38 pause=1248.38-1248.38 實讀 own_first=1248.38（經文「何以故」）"
+  },
+  {
+    "i": 63,
+    "start": 1250.65,
+    "conf": 0.859,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=1250.65 pause=1250.65-1250.65 實讀 own_first=1250.65（白話「法是本來是沒有的」）"
+  },
+  {
+    "i": 64,
+    "start": 1265.14,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1266.38 pause=1264.78-1265.24 過場點評分 sep=1.94 head=1.00@1266.38"
+  },
+  {
+    "i": 65,
+    "start": 1296.267,
+    "conf": 0.86,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1296.95 pause=1295.585-1296.95 實讀 own_first=1296.95（經文「一切法…」）"
+  },
+  {
+    "i": 66,
+    "start": 1300.425,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1303.32 pause=1299.67-1301.18 過場點評分 sep=1.24 head=0.89@1303.32"
+  },
+  {
+    "i": 67,
+    "start": 1325.11,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1327.07 pause=1324.88-1325.21 過場點評分 sep=1.78 head=0.84@1327.07"
+  },
+  {
+    "i": 68,
+    "start": 1336.66,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1337.92 pause=1336.43-1336.76 過場點評分 sep=1.54 head=0.76@1337.92"
+  },
+  {
+    "i": 69,
+    "start": 1370.42,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1376.2 pause=1370.1-1370.52 過場點評分 sep=1.48 head=0.66@1376.20"
+  },
+  {
+    "i": 70,
+    "start": 1383.548,
+    "conf": 0.45,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1383.8 pause=1383.295-1383.8 實讀 own_first=1383.80（引導語「那麼…」）"
+  },
+  {
+    "i": 71,
+    "start": 1390.378,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1390.66 pause=1390.1-1390.66 過場點評分 sep=1.31 head=0.76@1390.66"
+  },
+  {
+    "i": 72,
+    "start": 1441.787,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1442.41 pause=1441.16-1442.41 過場點評分 sep=1.82 head=1.00@1442.41"
+  },
+  {
+    "i": 73,
+    "start": 1444.17,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=1444.35 pause=1444.17-1444.35 實讀 own_first=1444.35（引導語「下面說了」＋經文「大慧菩薩摩訶薩應說…」）"
+  },
+  {
+    "i": 74,
+    "start": 1452.29,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=1452.41 pause=1452.29-1452.41 實讀 own_first=1452.41（白話「一切法是有的但是他像…像夢一樣」）"
+  },
+  {
+    "i": 75,
+    "start": 1485.383,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1485.68 pause=1485.085-1485.68 實讀 own_first=1485.68（白話「反復的強調的話…」）"
+  },
+  {
+    "i": 76,
+    "start": 1498.135,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1498.47 pause=1497.8-1498.47 過場點評分 sep=1.59 head=0.89@1498.47"
+  },
+  {
+    "i": 77,
+    "start": 1505.315,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1506.67 pause=1504.8-1505.83 過場點評分 sep=1.68 head=0.83@1506.67"
+  },
+  {
+    "i": 78,
+    "start": 1534.09,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1534.19 pause=1533.87-1534.19 過場點評分 sep=1.59 head=0.76@1534.19"
+  },
+  {
+    "i": 79,
+    "start": 1542.017,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1543.12 pause=1541.6-1542.44 過場點評分 sep=1.56 head=0.91@1543.12"
+  },
+  {
+    "i": 80,
+    "start": 1627.75,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1628.52 pause=1626.98-1628.52 過場點評分 sep=1.91 head=0.99@1628.52"
+  },
+  {
+    "i": 81,
+    "start": 1637.1,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1637.42 pause=1636.78-1637.42 過場點評分 sep=1.77 head=0.86@1637.42"
+  },
+  {
+    "i": 82,
+    "start": 1644.89,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1645.46 pause=1644.32-1645.46 過場點評分 sep=1.01 head=0.85@1645.46"
+  },
+  {
+    "i": 83,
+    "start": 1670.03,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1670.13 pause=1669.77-1670.13 過場點評分 sep=1.76 head=0.96@1670.13"
+  },
+  {
+    "i": 84,
+    "start": 1695.257,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1696.09 pause=1694.42-1696.09 過場點評分 sep=1.78 head=0.79@1696.09"
+  },
+  {
+    "i": 85,
+    "start": 1701.15,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1702.81 pause=1700.43-1701.87 過場點評分 sep=1.00 head=0.86@1702.81"
+  },
+  {
+    "i": 87,
+    "start": 1731.41,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=1731.41 pause=1731.41-1731.41 實讀 own_first=1731.41（白話「佛說了…不管過去未來…」）"
+  },
+  {
+    "i": 88,
+    "start": 1754.97,
+    "conf": 0.8,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1755.07 pause=1754.665-1755.07 實讀 own_first=1755.07（經文「如實法者謂修行者於心所現」）"
+  },
+  {
+    "i": 89,
+    "start": 1757.263,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1757.65 pause=1756.875-1757.65 實讀 own_first=1757.65（白話「就是這個世界的真相」）"
+  },
+  {
+    "i": 90,
+    "start": 1793.17,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1793.27 pause=1792.84-1793.27 過場點評分 sep=1.20 head=0.57@1793.27"
+  },
+  {
+    "i": 91,
+    "start": 1830.322,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 中點] own_first=1830.94 pause=1829.705-1830.94 實讀 own_first=1830.94（偈頌「爾時世尊重說頌言」）"
+  },
+  {
+    "i": 92,
+    "start": 1834.18,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-4 接觸(末字END)] own_first=1834.24 pause=1834.18-1834.24 實讀 own_first=1834.24（白話「及如實教法是凡夫所說」）"
+  },
+  {
+    "i": 93,
+    "start": 1861.0,
+    "conf": 0.85,
+    "method": "span",
+    "note": "[4.1-3 末−0.1] own_first=1861.98 pause=1860.72-1861.1 過場點評分 sep=1.81 head=1.00@1861.98"
+  }
+]
