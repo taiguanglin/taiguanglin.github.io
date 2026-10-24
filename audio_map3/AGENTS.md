@@ -316,6 +316,26 @@ confirmed 鐵錨同等 pin 住。人工校正「誤留極短長度的沒念段�
      （L21 golden 2.34s／L23 0.54s）。成果：首詞命中 60%→62%、**EARLY 0 段**、
      lead median 0.00→+0.66、pin_check 全系列 bleed **1→1（零新增）**、冪等 3 次 0 變更。
      表：`reports/lengqie_L35_adjudication_r4.json`（72 筆）／耳朵清單：`reports/lengqie_L35_earcheck_r4.md`。
+   - **L37 r3：把 R8 的適用範圍用 L21／L23 人工 golden 重新界定**（78 段全覆蓋，`method=dtw-evid`）。
+     **① R8 不是「吞到前段字就否決」**——用 79 筆人工 golden hosting 邊界回測：
+     被吞話語「拼音連續命中**前段**印出文字達閾值者＝**0 筆**」；37 筆有實質被吞話語者
+     長度 1–18 字（0.12–3.06s），**全部是老師自己的過場語／未印出話語**。
+     → 結論三分類：**短收尾句被吞 → hosting 成立**（§4.1-3 例一，golden L21 [39] 實例：
+     吞前段收尾「里产生的妄想」6 字仍判 hosting）；**前段材料長篇續講（≥8 字／≥2.5s）→ 否決**
+     （golden L21 [33] 吞 13 字、[82] 吞 4 字，兩筆 golden 都選**接觸型**）；
+     **停頓落在前段經文朗讀中間／前段印字的詞中 → 否決**（L35 r4 範圍）。
+     本講 22 段否決：經文朗讀中間 11、詞中 6、長篇續講 3、R5 共用 gap 2。
+     **② 停頓轉場制下 metric 的「早」會上升，那是設計而非缺陷**：metric 的 `d = start − t_first`，
+     邊界刻意落在首字前的停頓裡 → 「早」必然增加。健康指標是 **晚（start 在首字之後）＝0**
+     ＋ **EARLY（lead = own_first − start < −0.7s）＝0**；且**每一筆「早」都必須複核
+     start 是否真的在 ≥0.3s 停頓內**（本講 12 筆「早」：11 筆確在停頓內、1 筆 [27] 為 metric
+     命中第二個同字的重複命中假象）。
+     **③ own_first 仍會錯**：[57] r2 錨點 1061.33 落在前段 [56] 經文「…非諸聖人」朗讀**中間**
+     → 該段經文自 1055.94 讀到 1063.09，own_first ＝「不」@1063.09、邊界回正 **+1.76s**。
+     成果：67 段變更（66 前移進停頓＋1 回正）、首詞 lead median **+0.29s**、EARLY **0 段**、
+     metric「晚」**0 段**、pin_check 全系列 bleed **1→1（零新增）**、鏈破口 0 新增、
+     畸形 span 0、`--apply` 冪等（第 2/3 次 0 段變更）、非目標講次 byte-identical。
+     表：`reports/lengqie_L37_adjudication_r3.json`（78 筆）／耳朵清單：`reports/lengqie_L37_earcheck_r3.md`。
 
 > 對齊**新講次**請走 [`skills/milli-align/SKILL.md`](skills/milli-align/SKILL.md) §7 流程
 > （首字指標 → 提案 → 逐段判讀 → refine → 回頭檢驗 → 驗收），**不要**只重跑 `realign_dtw.py`。
