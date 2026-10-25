@@ -682,10 +682,17 @@ let _sepAidMap = null;
 async function loadSepChapterMap() {
     if (_sepChapterMap !== null) return;
     try {
-        const resp = await fetch('qid_to_sep_chapter.json');
+        const resp = await fetch('qid_to_sep_chapter.json', { cache: 'no-store' });
+        if (!resp.ok) {
+            console.warn('[HTML對應] qid_to_sep_chapter.json fetch failed:', resp.status);
+            _sepChapterMap = {};
+            _sepAidMap = {};
+            return;
+        }
         const data = await resp.json();
         _sepChapterMap = data.chapters || {};
         _sepAidMap = data.aids || {};
+        console.info('[HTML對應] loaded', Object.keys(_sepChapterMap).length, 'chapter entries');
     } catch {
         _sepChapterMap = {};
         _sepAidMap = {};
