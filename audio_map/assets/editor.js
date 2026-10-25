@@ -674,7 +674,7 @@ function isZeroItem(item) {
     return item?.zero === true;
 }
 
-// ---- 電子書跳轉連結（wenda2_ebook_sep NN.html#question-id）------------------
+// ---- 電子書跳轉連結（wenda2_ebook NN.html#question-id）------------------
 // qid → 分類後章節（01–12）+ answer element ID 映射，由 qid_to_sep_chapter.json 提供。
 // ⚠️ answer ID 不是簡單的字串替換（question→answer 的 hash 不同），必須從映射檔查找。
 let _sepChapterMap = null;
@@ -699,7 +699,7 @@ async function loadSepChapterMap() {
     }
 }
 
-/** 在段落卡 body 加一列「HTML 對應」連結，點擊可在 wenda2_ebook_sep 查看該問答。 */
+/** 在段落卡 body 加一列「HTML 對應」連結，點擊可在 wenda2_ebook 查看該問答。 */
 async function applyHtmlLinks(body, item) {
     const qid = item?.question_id || '';
     if (!qid) return;
@@ -733,12 +733,12 @@ async function applyHtmlLinks(body, item) {
     const pair = document.createElement('span');
     pair.className = 'am2-html-link-pair';
     pair.append(makeLink(
-        `/wenda2_ebook_sep/${qn}.html#${qid}`, '問',
+        `/wenda2_ebook/${qn}.html#${qid}`, '問',
         `在分類電子書 ${qn}.html 開啟問題 ${qid}`
     ));
     if (aid) {
         pair.append(makeLink(
-            `/wenda2_ebook_sep/${qn}.html#${aid}`, '答',
+            `/wenda2_ebook/${qn}.html#${aid}`, '答',
             `在分類電子書 ${qn}.html 開啟答案 ${aid}`
         ));
     }
@@ -1255,7 +1255,7 @@ function renderSegmentCard(entry, segmentIndex) {
 
     applySegmentEditability(node);
 
-    // HTML 對應連結（跳轉到 wenda2_ebook_sep/NN.html#question-id）
+    // HTML 對應連結（跳轉到 wenda2_ebook/NN.html#question-id）
     if (kind === 'segment' && item?.question_id) {
         applyHtmlLinks(body, item).catch(() => {});
     }
