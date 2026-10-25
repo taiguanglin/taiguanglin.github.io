@@ -23,7 +23,7 @@
         'https://cdn.jsdelivr.net/npm/opencc-js@1.0.5/dist/umd/full.js',
         'https://unpkg.com/opencc-js@1.0.5/dist/umd/full.js'
     ];
-    var EBOOK_DIRS = ['/wenda2_ebook/', '/ebook/'];
+    var EBOOK_DIRS = ['/wenda2_ebook/', '/ebook/', '/wenda2_ebook_classified/'];
 
     /* ---------- preference ---------- */
     function getStored() {

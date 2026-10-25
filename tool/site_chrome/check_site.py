@@ -28,6 +28,9 @@ NOINDEX_PAGES = (
     "audio_map/index.html",
     "audio_map2/index.html",
     "audio_map3/index.html",
+    # 分類實驗版音檔校稿 UI（tool/qa_split_ebook 管線的 audio_map1_sep/），
+    # 同樣含 PAT 輸入，三守門一體適用。
+    "audio_map1_sep/index.html",
     # 複習電子書 hidden/ 已於 2026-10-11 從版控與部署移除（commit 15bbfd7），
     # 不再登錄；若重新上線需加回並同步 robots.txt。
 )
@@ -35,6 +38,7 @@ ROBOTS_TXT_DISALLOW = (
     "/audio_map/",
     "/audio_map2/",
     "/audio_map3/",
+    "/audio_map1_sep/",
 )
 
 

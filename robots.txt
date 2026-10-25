@@ -8,6 +8,10 @@ Disallow: /audio_map/
 Disallow: /audio_map2/
 Disallow: /audio_map3/
 
+# 分類實驗版音檔校稿 UI（audio_map1_sep/，tool/qa_split_ebook 管線）：
+# 含 GitHub PAT 輸入欄位，與上面三個校稿工具同一套三守門。
+Disallow: /audio_map1_sep/
+
 # 複習電子書 hidden/（四本＋入口）已於 2026-10-11 從部署移除（commit 15bbfd7），
 # 舊網址直接 404；相關守門規則已同步自 check_site.py 移除。
 

@@ -1558,6 +1558,11 @@ class PDFParser:
             time = card["time"] or ""
             joined = " ".join(text_paras)
             qid = self.id_generator.generate_stable_qa_id(name, joined, time, "question")
+            # 補充日期：原始 PDF 文字無時間戳時，從音頻映射推導的日期表查找
+            # ⚠️ ID 用原始 time 生成（保持與 audio_map 映射的 qid 一致），補充日期只影響顯示
+            if not time:
+                from core.date_supplement import lookup_date
+                time = lookup_date(qid)
             time_html = f'<span class="question-time">{time}</span>' if time else ""
             pieces = []
             for idx, p in enumerate(paras):

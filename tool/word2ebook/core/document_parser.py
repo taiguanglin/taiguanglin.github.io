@@ -262,6 +262,14 @@ class DocumentParser:
         # 生成稳定的ID
         question_id = self.id_generator.generate_stable_qa_id(questioner, clean_content, time_info, 'question')
         
+        # 補充日期：原始文字無時間戳時，從音頻映射推導的日期表查找
+        # ⚠️ ID 用原始 time_info 生成（保持穩定），補充日期只影響顯示
+        if not time_html:
+            from core.date_supplement import lookup_date
+            supplement = lookup_date(question_id)
+            if supplement:
+                time_html = f'<span class="question-time">{supplement}</span>'
+        
         return f'''<div class="question" id="{question_id}">
     <div class="question-meta">
         <span class="questioner">{questioner}</span>

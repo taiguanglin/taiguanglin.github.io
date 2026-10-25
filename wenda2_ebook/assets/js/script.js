@@ -7115,19 +7115,19 @@ initSearchSnapshotCapture();
   // ============================================================
   // 18-chapter-prefetch.js — 章節頁預取（暖機 Service Worker 快取）
   //
-  // 「載入時間特別長」的主因之一：章節頁首訪要整檔下載（楞伽經 1.38MB →
-  // gzip 392KB），而 sw.js 對電子書頁面採 stale-while-revalidate——
-  // 只快取「造訪過」的頁面，每開一個新章節都重新下載一次。
+  // 背景：章節頁 HTML 很大（楞伽經 1.38MB → gzip 392KB）。2026-10-21 起
+  // sw.js 對電子書頁面改採 network-first——每次導覽都重驗新鮮度（ETag
+  // 條件請求，未變更回 304、近乎零成本），快取只在離線時使用。
   //
   // 本模組用兩個入口把章節頁提前塞進 SW 的 PAGES_CACHE：
   //   1. 指標／觸控／鍵盤聚焦即將點擊的連結（pointerenter、touchstart、
   //      focusin 事件代理）——點擊前先抓，使用者意圖明確，不受省流量
   //      設定限制（反正點下去也要下載同一份）。
   //   2. 首頁閒置時逐一預取同語言的全部章節頁（requestIdleCallback、
-  //      低優先、逐一序列避免搶頻寬），讓「點任何一章」都近乎瞬開。
+  //      低優先、逐一序列避免搶頻寬），讓「點任何一章」離線也開得出來。
   //      受 navigator.connection 守門：saveData 或 2g/3g 不做整批預取。
   //
-  // 預取走 fetch() → 經過 sw.js 的 fetch handler（isEbookHtml → swr()）
+  // 預取走 fetch() → 經過 sw.js 的 fetch handler（isEbookHtml → networkFirst()）
   // 直接寫入 PAGES_CACHE；同時也暖 HTTP 快取，SW 尚未接管時亦有幫助。
   // 跨語言頁（*_trad.html）刻意不預取，避免資料量翻倍；fetch 皆以
   // priority:'low' 發出（不支援的瀏覽器自動忽略此選項）。
