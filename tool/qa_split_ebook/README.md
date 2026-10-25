@@ -3,7 +3,7 @@
 把 `wenda2_ebook/` 第 13–21 章（2025年6月起的未分類月度答疑，3,452 則）
 依 `tool/qa_curation/` 準則拆分子問題、分類到既有 12 章主題樹，重組成
 **實驗電子書 `wenda2_ebook_sep/`**。全程不寫入 `wenda2_ebook/`、
-`tool/word2ebook/`；音檔映射讀 `audio_map1_sep/`（線上 SoT 的 2025-06 後複本）。
+`tool/word2ebook/`；音檔映射讀 `audio_map/`（線上 SoT 的 2025-06 後複本）。
 
 ⚠️ 實驗性質：分類由 LLM 依準則產出（低信心條目在書中標「⚑復查」、
 未歸類條目集中於 99 章），內容以原書為準。
@@ -12,7 +12,7 @@
 
 | 步 | 指令 | 說明 |
 |---|---|---|
-| 0 | `python3 sync_audio_map.py` | `tool/word2ebook/data/audio_map/` 2025-06 後月份 → `audio_map1_sep/`（只放 JSON） |
+| 0 | `python3 sync_audio_map.py` | `tool/word2ebook/data/audio_map/` 2025-06 後月份 → `audio_map/`（只放 JSON） |
 | 1 | `venv/bin/python extract.py` | 解析 `wenda2_ebook/13–21.html` → `build/items.jsonl`（含音檔對位；多段 answer-text、`-N` 後綴 id 都處理） |
 | 1b | `venv/bin/python extract_tree.py` | 自 `wenda2_ebook/01–12.html` 章內 TOC 抽 12 章主題樹（533 節點，L4 含 `hidden`）→ `build/section_tree.json`；分類 path 編號以此為準（L3 序號在 L2 內、L4 在 L3 內） |
 | 2 | `venv/bin/python distill.py` | 準則蒸餾：主指南＋逐章 digest（定位/R/N 樹）＋逐節準則 → `build/classify_guide.md`、`build/criteria_digest/` |

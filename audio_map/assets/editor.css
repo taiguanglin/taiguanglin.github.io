@@ -1332,3 +1332,38 @@ textarea.marker-heading {
         display: none;
     }
 }
+
+/* ---- 段落跳瀏（下一個未確認／已確認）------------------------------------ */
+.jump-nav {
+    align-items: center;
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-left: 0.35rem;
+    padding-left: 0.75rem;
+}
+
+.jump-nav-btn {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.85rem;
+}
+
+.jump-nav-badge {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.jump-nav-badge strong {
+    color: var(--danger, #b42318);
+}
+
+/* 跳瀏落點提示：淡出紅光暈。 */
+@keyframes jumpPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0); }
+    30% { box-shadow: 0 0 0 6px rgba(255, 138, 128, 0.25); }
+}
+
+.segment-card.jump-target {
+    animation: jumpPulse 1.6s ease-out 1;
+}

@@ -38,7 +38,7 @@ DOCX_FILE = REPO_ROOT / "問答錄2" / "wenda2_250810_截止25年5月17日答疑
 PDF_FILE = REPO_ROOT / "問答錄2" / "2025年6月-9月答疑合并（未分类）.pdf"
 PDF_FILE_NOV_MAR = REPO_ROOT / "問答錄2" / "2025年11月-2026年3月答疑合并（未分类）.pdf"
 PDF_FILES = [PDF_FILE, PDF_FILE_NOV_MAR]
-OUTPUT_FOLDER = REPO_ROOT / "wenda2_ebook"
+OUTPUT_FOLDER = REPO_ROOT / "wenda2_ebook_word"
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))

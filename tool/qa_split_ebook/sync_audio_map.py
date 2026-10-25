@@ -2,8 +2,8 @@
 """qa_split_ebook 實驗管線 Step 0：同步音檔映射（sync_audio_map）
 
 把線上 SoT（tool/word2ebook/data/audio_map/）中 **2025年6月之後** 的月份
-JSON 原樣複製到 audio_map1_sep/（實驗書的音檔資料目錄，只放 JSON）。
-複製後實驗管線只讀 audio_map1_sep/，不回寫線上資料。
+JSON 原樣複製到 audio_map/（實驗書的音檔資料目錄，只放 JSON）。
+複製後實驗管線只讀 audio_map/，不回寫線上資料。
 
 usage: python3 sync_audio_map.py
 """
@@ -13,7 +13,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 SRC = ROOT / "tool/word2ebook/data/audio_map"
-DST = ROOT / "audio_map1_sep"
+DST = ROOT / "audio_map"
 CUTOFF = (2025, 6)
 
 

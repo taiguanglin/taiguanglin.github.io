@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""gen_classified.py — 產生 wenda2_ebook_classified/（Word+PDF 全分類合併電子書）
+"""gen_classified.py — 產生 wenda2_ebook/（全分類正式版）（Word+PDF 全分類合併電子書）
 
 輸出格式與 wenda2_ebook/ 完全一致（word2ebook 管線渲染）：
   簡/繁雙語、全量搜尋、TOC、閱讀設定、暗色模式、PWA——全部沿用 word2ebook 的
@@ -25,8 +25,8 @@ from lxml import html as lhtml
 
 ROOT = Path(__file__).resolve().parents[2]
 W2E = ROOT / "tool" / "word2ebook"
-SRC = ROOT / "wenda2_ebook"
-DST = ROOT / "wenda2_ebook_classified"
+SRC = ROOT / "wenda2_ebook_word"
+DST = ROOT / "wenda2_ebook"
 BUILD = ROOT / "tool" / "qa_split_ebook" / "build"
 TREE_FILE = BUILD / "self_batches" / "tree_compact.txt"
 CHAPTERS = list(range(1, 13))
@@ -575,6 +575,39 @@ def main():
     print("✅ 靜態資源完成")
 
     total = sum(1 for ch in all_chapters for _ in range(ch.content.count('class="question"')))
+
+    # 舊章節 13-21 跳轉頁（外部已分享的 URL 不 404）
+    _REDIRECT_TPL = """<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>此章節已重新分類</title>
+<meta http-equiv="refresh" content="3;url=index{suffix}.html"/>
+<style>
+body{{font-family:-apple-system,sans-serif;background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;color:#333;text-align:center;padding:2rem}}
+.box{{background:#fff;border-radius:12px;padding:3rem;box-shadow:0 4px 12px rgba(0,0,0,.08);max-width:500px}}
+h1{{color:#e75480;font-size:1.3rem;margin-bottom:1rem}}
+p{{line-height:1.8;margin-bottom:.5rem}}
+a{{color:#e75480;font-weight:bold;text-decoration:none}}
+a:hover{{text-decoration:underline}}
+</style>
+</head>
+<body>
+<div class="box">
+<h1>📌 此章節已重新分類</h1>
+<p>第 {ch} 章的內容已按主題重新分類到第 01–12 章中。</p>
+<p>將在 3 秒後自動跳轉到總目錄。</p>
+<p><a href="index{suffix}.html">👉 立即前往總目錄</a></p>
+</div>
+</body>
+</html>"""
+    for old_ch in range(13, 22):
+        for suffix in ("", "_trad"):
+            page = _REDIRECT_TPL.format(ch=old_ch, suffix=suffix)
+            (DST / f"{old_ch:02d}{suffix}.html").write_text(page, encoding="utf-8")
+    print("✅ 舊章節跳轉頁（13-21）完成")
+
     print(f"\n[gen_classified] 完成 → {DST}（{total} 則）")
 
 

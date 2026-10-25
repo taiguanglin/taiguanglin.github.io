@@ -102,7 +102,7 @@ head -40 tool/qa_split_ebook/build/self_batches/tree_compact.txt
 
 ⚠️ venv：一律用 `tool/word_audio_map2/.venv/bin/python`（規則見 tool/AGENTS.md 鎖版要求）。
 
-## Step 7：產生全分類合併電子書 wenda2_ebook_classified/
+## Step 7：產生全分類合併電子書 wenda2_ebook/
 
 ```
 ../../word_audio_map2/.venv/bin/python gen_classified.py
@@ -121,16 +121,16 @@ head -40 tool/qa_split_ebook/build/self_batches/tree_compact.txt
 |---|---|
 | `wenda2_ebook/` | 正式上線對外公開（Word 分類 01–12 + PDF 月度 13–21） |
 | `wenda2_ebook_sep/` | PDF 分類結果預覽（僅 13–21 章的分類條目，01–12 主題樹） |
-| `audio_map1_sep/` | `wenda2_ebook_sep/` 的音頻對齊與校對 UI |
-| `wenda2_ebook_classified/` | Word + PDF 全部分類後的完整合併版（看實際效果用） |
+| `audio_map/` | `wenda2_ebook_sep/` 的音頻對齊與校對 UI |
+| `wenda2_ebook/` | Word + PDF 全部分類後的完整合併版（看實際效果用） |
 
 ## 完整工作流程（音頻校對 → 分類修正 → 電子書產出）
 
 ### 日常操作順序
 
 ```
-Step A：audio_map1_sep/ 音頻校對
-  → 瀏覽器開 http://localhost:8084/audio_map1_sep/
+Step A：audio_map/ 音頻校對
+  → 瀏覽器開 http://localhost:8084/audio_map/
   → 選月份 → 選 session → 校對每段音頻對齊（含拆分子題的 pending 段）
   → 校對中發現分類問題 → 記下 question_id
 
@@ -146,7 +146,7 @@ Step B：分類修正（如有）
 Step C：重建全分類合併電子書
   cd tool/qa_split_ebook/
   ../../word_audio_map2/.venv/bin/python gen_classified.py
-  → 產出 wenda2_ebook_classified/（Word + PDF 全分類，格式與 wenda2_ebook 完全一致）
+  → 產出 wenda2_ebook/（Word + PDF 全分類，格式與 wenda2_ebook 完全一致）
 ```
 
 ### 一鍵跑通（Step B + C 合併）
@@ -164,8 +164,8 @@ cd tool/qa_split_ebook
 |---|---|---|
 | `wenda2_ebook/` | Word 01-12 + PDF 月度 13-21 | 正式上線版 |
 | `wenda2_ebook_sep/` | 僅 PDF 分類條目（01-12 主題樹） | 分類結果預覽 |
-| `audio_map1_sep/` | 音頻對齊校對 UI | 校對 PDF 條目的音頻時間 |
-| `wenda2_ebook_classified/` | Word + PDF 全分類合併 | 看最終分類效果 |
+| `audio_map/` | 音頻對齊校對 UI | 校對 PDF 條目的音頻時間 |
+| `wenda2_ebook/` | Word + PDF 全分類合併 | 看最終分類效果 |
 
 ### gen_classified.py 的兩個來源
 

@@ -3,7 +3,7 @@
 
 把 wenda2_ebook/13–21.html（2025年6月後的未分類月度答疑，3,453 則）抽成
 build/items.jsonl：每則一行，含 question/answer 的 HTML 與純文字、來源小節、
-音檔段（鍵＝question_id，讀 audio_map1_sep/*.json——與線上 SoT
+音檔段（鍵＝question_id，讀 audio_map/*.json——與線上 SoT
 tool/word2ebook/data/audio_map/ 分離）。
 
 本工具是實驗性質，獨立於線上 word2ebook 管線：不寫入 wenda2_ebook/、
@@ -34,8 +34,8 @@ def date_supplement_lookup(qid: str) -> str:
     return _DATE_SUPPLEMENT.get(qid, "")
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "wenda2_ebook"
-AUDIO_DIR = ROOT / "audio_map1_sep"
+SRC = ROOT / "wenda2_ebook_word"
+AUDIO_DIR = ROOT / "audio_map"
 BUILD = ROOT / "tool/qa_split_ebook" / "build"
 CHAPTERS = list(range(13, 22))
 
@@ -62,7 +62,7 @@ def plain_text(el) -> str:
 
 
 def load_audio_map():
-    """audio_map1_sep/*.json → {question_id: {file,start,end,sl,el}}。"""
+    """audio_map/*.json → {question_id: {file,start,end,sl,el}}。"""
     qmap = {}
     if not AUDIO_DIR.exists():
         sys.exit(f"[extract] 找不到 {AUDIO_DIR}，請先執行 sync_audio_map.py")

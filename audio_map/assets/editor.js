@@ -15,7 +15,7 @@ import {
     setPrefs,
 } from './storage.js';
 
-const MAP_BASE = '../tool/word2ebook/data/audio_map/';
+const MAP_BASE = './';
 const MONTHS = [
     '2025-06', '2025-07', '2025-08', '2025-09',
     '2025-11', '2025-12',
@@ -120,6 +120,10 @@ const els = {
     nudgeStartButtons: document.querySelectorAll('[data-nudge-start]'),
     undoButton: document.querySelector('#undoButton'),
     redoButton: document.querySelector('#redoButton'),
+    jumpNav: document.querySelector('#jumpNav'),
+    jumpUnconfirmedButton: document.querySelector('#jumpUnconfirmedButton'),
+    jumpConfirmedButton: document.querySelector('#jumpConfirmedButton'),
+    jumpConfirmCount: document.querySelector('#jumpConfirmCount'),
     discardDraftButton: document.querySelector('#discardDraftButton'),
     loadRemoteButton: document.querySelector('#loadRemoteButton'),
     loadDraftButton: document.querySelector('#loadDraftButton'),
@@ -240,6 +244,7 @@ function bindEvents() {
         event.preventDefault();
         event.returnValue = '';
     });
+    bindJumpNav();
 }
 
 function applyPrefs() {
@@ -485,7 +490,7 @@ function setupSidebarControls() {
 }
 
 function mapPath(month) {
-    return `tool/word2ebook/data/audio_map/${month}.json`;
+    return `audio_map/${month}.json`;
 }
 
 function serializeMap(map) {
@@ -658,6 +663,163 @@ function itemKindLabel(kind, number) {
     if (kind === 'opening') return '開場';
     if (kind === 'closing') return '收場';
     return `第 ${number} 段`;
+}
+
+// ---- 段落跳瀏（下一個未確認／已確認）--------------------------------------
+// 「確認」＝ 聽過（meta.lastPlayed 有值）或勾了「零長度」（zero: true，無音可聽），
+//   與側邊欄「完成」統計同源；零長度段不會被當成未確認跳到。
+// 跳瀏＝只定位（不播放、不寫 lastPlayed，避免誤標已確認）；右鍵／長按才播放並記錄。
+
+function isZeroItem(item) {
+    return item?.zero === true;
+}
+
+// ---- 電子書跳轉連結（wenda2_ebook_sep NN.html#question-id）------------------
+// qid → 分類後章節（01–12）+ answer element ID 映射，由 qid_to_sep_chapter.json 提供。
+// ⚠️ answer ID 不是簡單的字串替換（question→answer 的 hash 不同），必須從映射檔查找。
+let _sepChapterMap = null;
+let _sepAidMap = null;
+async function loadSepChapterMap() {
+    if (_sepChapterMap !== null) return;
+    try {
+        const resp = await fetch('qid_to_sep_chapter.json');
+        const data = await resp.json();
+        _sepChapterMap = data.chapters || {};
+        _sepAidMap = data.aids || {};
+    } catch {
+        _sepChapterMap = {};
+        _sepAidMap = {};
+    }
+}
+
+/** 在段落卡 body 加一列「HTML 對應」連結，點擊可在 wenda2_ebook_sep 查看該問答。 */
+async function applyHtmlLinks(body, item) {
+    const qid = item?.question_id || '';
+    if (!qid) return;
+    await loadSepChapterMap();
+    const ch = _sepChapterMap[qid];
+    if (!ch) return;
+    const qn = String(ch).padStart(2, '0');
+    // 答案 ID：從映射檔查找（aid 的 hash 與 qid 不同，不可字串替換）
+    const aid = _sepAidMap[qid] || '';
+
+    const row = document.createElement('div');
+    row.className = 'am2-html-links';
+
+    const label = document.createElement('span');
+    label.className = 'am2-html-links-label';
+    label.textContent = 'HTML 對應';
+    row.appendChild(label);
+
+    const makeLink = (href, txt, title) => {
+        const a = document.createElement('a');
+        a.className = 'am2-html-link';
+        a.href = href;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = txt;
+        a.title = title;
+        a.addEventListener('click', (ev) => ev.stopPropagation());
+        return a;
+    };
+
+    const pair = document.createElement('span');
+    pair.className = 'am2-html-link-pair';
+    pair.append(makeLink(
+        `/wenda2_ebook_sep/${qn}.html#${qid}`, '問',
+        `在分類電子書 ${qn}.html 開啟問題 ${qid}`
+    ));
+    if (aid) {
+        pair.append(makeLink(
+            `/wenda2_ebook_sep/${qn}.html#${aid}`, '答',
+            `在分類電子書 ${qn}.html 開啟答案 ${aid}`
+        ));
+    }
+    row.appendChild(pair);
+
+    body.appendChild(row);
+}
+
+function isItemConfirmed(item) {
+    return Boolean(item?.meta?.lastPlayed) || isZeroItem(item);
+}
+
+let jumpCursor = null;
+
+/**
+ * 從 currentIndex 出發找下一段符合 wanted（true=已確認、false=未確認）的段落。
+ * 依序前進、循環整份清單，最多掃一輪（items.length 步）。
+ * @returns {number|null} 目標 index；整份都沒有符合時回 null
+ */
+function findSegmentByConfirmed(items, currentIndex, wanted) {
+    if (!items.length) return null;
+    for (let step = 1; step <= items.length; step += 1) {
+        const i = (currentIndex + step) % items.length;
+        // 開場不列入跳瀏掃描（與側邊欄統計一致：只計正文段落＋收場）。
+        if (items[i].kind === 'opening') continue;
+        if (isItemConfirmed(items[i].item) === wanted) return i;
+    }
+    return null;
+}
+
+function jumpToSegmentByConfirmed(wanted, { play = false } = {}) {
+    const items = sessionItems();
+    if (!items.length) return;
+    const current = play ? state.activeSegmentIndex : jumpCursor;
+    const startIdx = current == null ? items.length - 1 : current;
+    const target = findSegmentByConfirmed(items, startIdx, wanted);
+    if (target == null) {
+        const curLabel = itemKindLabel(items[startIdx]?.kind, items[startIdx]?.number);
+        setStatus(wanted
+            ? `「${curLabel}」之後（含循環）沒有已確認的段落`
+            : `「${curLabel}」之後（含循環）沒有未確認的段落`, 'ok');
+        return;
+    }
+    jumpCursor = target; // 這次定位的段落，下一次定位從它之後找。
+    if (play) setActiveSegment(target);
+    const card = els.editorRoot.querySelector(`.segment-card[data-segment-index="${target}"]`);
+    card?.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    if (card) {
+        card.classList.remove('jump-target');
+        void card.offsetWidth;
+        card.classList.add('jump-target');
+        card.addEventListener('animationend', () => card.classList.remove('jump-target'), { once: true });
+    }
+    const label = itemKindLabel(items[target].kind, items[target].number);
+    if (!play) {
+        // 只定位：不播放、不寫入「最後播放」，也不改變作用中段落（避免跳瀏誤標已確認）。
+        setStatus(`已定位${label}（${wanted ? '已確認' : '未確認'}）`, 'ok');
+        return;
+    }
+    playSegmentByIndex(target);
+    setStatus(`已跳到${label}（${wanted ? '已確認' : '未確認'}）並播放`, 'ok');
+}
+
+function updateJumpCount() {
+    if (!els.jumpConfirmCount) return;
+    // 與側邊欄統計一致：只計正文段落＋收場，開場（kind:'opening'）不計。
+    const unconfirmed = sessionItems()
+        .filter((e) => e.kind !== 'opening' && !isItemConfirmed(e.item)).length;
+    els.jumpConfirmCount.textContent = String(unconfirmed);
+}
+
+/** 綁定常駐跳瀏工具列（index.html 靜態 #jumpNav；確認數由 updateJumpCount 更新）。
+ *  左鍵／快捷鍵：只捲動定位（不播放、不寫「最後播放」）；右鍵／長按：定位並播放。 */
+function bindJumpNav() {
+    const bind = (btn, wanted) => {
+        if (!btn) return;
+        btn.addEventListener('click', () => jumpToSegmentByConfirmed(wanted));
+        btn.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(wanted, { play: true });
+        });
+        bindLongPressMenu(btn, (event) => {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(wanted, { play: true });
+        });
+    };
+    bind(els.jumpUnconfirmedButton, false);
+    bind(els.jumpConfirmedButton, true);
 }
 
 async function loadMonth(month, { forceRemote = false } = {}) {
@@ -930,11 +1092,14 @@ function renderEditor() {
     const items = sessionItems();
     updateMetaStrip(items);
     els.editorRoot.innerHTML = '';
+    // 常駐跳瀏工具列（#jumpNav，在 topbar 左側）。
+    els.jumpNav?.classList.remove('hidden');
     items.forEach((entry, index) => {
         els.editorRoot.append(renderSegmentCard(entry, index));
     });
     recomputeDirty();
     updateHistoryButtons();
+    updateJumpCount();
 }
 
 function updateMetaStrip(items) {
@@ -1082,6 +1247,12 @@ function renderSegmentCard(entry, segmentIndex) {
     }
 
     applySegmentEditability(node);
+
+    // HTML 對應連結（跳轉到 wenda2_ebook_sep/NN.html#question-id）
+    if (kind === 'segment' && item?.question_id) {
+        applyHtmlLinks(body, item).catch(() => {});
+    }
+
     return node;
 }
 
@@ -1934,6 +2105,12 @@ function setupMiniPlayer() {
         // 時間輸入框：僅 ←→ 留給游標，其餘快捷鍵照常。
         if (inMarker && isArrowLeftRight(event)) return;
         if (!inMarker && isTypingInEditableField(event.target)) return;
+        // Shift+N：定位到下一個「已確認」段（只捲動不播放；在 modifier guard 之前攔；無 shift 的 N 在 switch 內）。
+        if (event.code === 'KeyN' && event.shiftKey) {
+            event.preventDefault();
+            jumpToSegmentByConfirmed(true);
+            return;
+        }
         if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
 
         switch (event.code) {
@@ -1958,6 +2135,12 @@ function setupMiniPlayer() {
                 if (!player.src) return;
                 event.preventDefault();
                 if (!player.paused) player.pause();
+                break;
+            }
+            case 'KeyN': {
+                // N：定位到下一個「未確認」段（只捲動不播放；Shift+N 定位已確認段）。
+                event.preventDefault();
+                jumpToSegmentByConfirmed(false);
                 break;
             }
             case 'ArrowLeft': {

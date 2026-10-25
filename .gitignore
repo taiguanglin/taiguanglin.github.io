@@ -40,6 +40,10 @@ USER.md
 # 問答錄2「拆分＋分類」實驗管線（tool/qa_split_ebook）：
 # wenda2_ebook_sep/ 為生成產物，不自動進版控；分類產出
 # tool/qa_split_ebook/classified/ 保留追蹤供複查。
-# audio_map1_sep/（2025-06 後音檔映射副本＋校稿 UI）需進版控：
+# audio_map/（分類版音檔校稿 UI，原 audio_map1_sep）需進版控：
 # PAT 存回的目標就是 repo 內該路徑，須與線上 SoT 分離存在。
 /wenda2_ebook_sep/
+/wenda2_ebook_classified/
+/wenda2_ebook_word/
+/audio_map_orig/
+
