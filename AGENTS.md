@@ -96,7 +96,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). Page-displayed images are WebP; `taiguanglin.png` (og:image) and `buddha.png` (manifest icon) stay PNG on purpose — see rule 11. |
 | `fonts/` | Assets | 自架字型子集：Noto Serif/Sans TC 十字重 `*.woff2`＋`fonts.css`（SIL OFL 1.1，見 `fonts/OFL.txt`）。全站頁面以 `<link rel="stylesheet" href="/fonts/fonts.css">` 取代 Google Fonts 外鏈（大陸連不上）。新增頁面或新用字後跑 `tool/word_audio_map2/.venv/bin/python tool/fonts/build_fonts.py` 重建。 |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. Its `index.html`（粉色串流頁、置頂大悲咒 player）**由 `tool/audio_index/index_template.html` 產生**：改樣板→跑 `python3 tool/audio_index/build_index.py`，不要手改 `audio/index.html`（該頁自帶 CSS/JS，不載入根 `style.css`）。 |
-| `audio_map/` | Editorial UI | `index.html` = PDF month maps（13–21，已全數校對）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
+| `audio_map/` | Editorial UI | `index.html` = 分類版音頻校對 UI（原 audio_map1_sep，2025-06 後月份）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
 | `books/` | **Source** | 九本著作 PDF＋《感恩與講經》卷首一篇（坐禪系列 `01…05`＋講經系列 `06…09`，共 10 個 PDF；感恩與講經**不算一本書**）。 |
 | `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。pid 漂移用 `tool/books2ebook/sync_para_pids.py` 修（規則 13）。 |
@@ -109,7 +109,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 
 | Path | Purpose | Docs |
 |------|---------|------|
-| `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook/`（含前 12/13–21 章播放鈕注入） | **`AGENTS.md`**, `README.md`, `openspec/` |
+| `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook_word/`（內部建置來源） | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/books2ebook/` | `books/` 九本著作＋感恩卷首 → `ebook/` 坐禅+講經系列电子书 | `README.md` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | Align 時間序 Word 彙總 ↔ SRT → `audio_map2/*.json` | `README.md` |
@@ -151,9 +151,9 @@ tool/books2ebook/gen_all.py  （沿用 wenda2_ebook/assets 風格，含簡/繁�
 Audio-map pipeline (optional but used for play buttons):
 
 ```
-SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json   (PDF chapters 13–21)
+SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json   (PDF 分類條目 → audio_map/ 校對)
                                           ▲
-                                /audio_map/index.html (tweak) + inject_chapters() at build
+                                /audio_map/index.html (分類版校對) + gen_classified.py 注入播放鈕
               audio_map2/*.json  →  inject_word_chapters()  →  Word chapters 01–12 play buttons
               (audio_map2/index.html  review;  tool/word_audio_map2/  align)
 ```

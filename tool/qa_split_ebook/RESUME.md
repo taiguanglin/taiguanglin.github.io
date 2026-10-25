@@ -50,7 +50,7 @@
    tool/word_audio_map2/.venv/bin/python tool/qa_split_ebook/expand_classified.py NNN
    ```
    輸出 `in=75 out=… split=… nr=… low=…` 即通過；出現 `✗` 按訊息修正重跑。
-5. （週期性）累積約 20 批或全數完成後重跑 `gen_all.py` 更新 `wenda2_ebook_sep/`。
+5. （週期性）累積約 20 批或全數完成後（已不需要——分類預覽已整合到 wenda2_ebook/）。
 
 ## 3. 分類判定要點（已驗 12 批的實戰規則）
 
@@ -73,8 +73,8 @@
 ## 4. 全部完成時
 
 1. `expand_classified.py --all` 清點 47 批全綠
-2. `gen_all.py` 重組 `wenda2_ebook_sep/`；讀 `build/report.md` 查分布/複查/隔離
-3. 驗收：預覽 `wenda2_ebook_sep/index.html`（本地 `python3 -m http.server`）
+2. （gen_all.py 已被 gen_classified.py 取代）；讀 `build/report.md` 查分布/複查/隔離
+3. 驗收：預覽 `wenda2_ebook/index.html`（本地 `python3 -m http.server`）
    抽查 ⚑復查旗標、99 收容章是否清空（未分類殘留）
 4. 向使用者報告：分布統計、拆分/複查/deferred 數、需要人工複查的清單位置
 
@@ -119,9 +119,9 @@ head -40 tool/qa_split_ebook/build/self_batches/tree_compact.txt
 
 | 目錄 | 用途 |
 |---|---|
-| `wenda2_ebook/` | 正式上線對外公開（Word 分類 01–12 + PDF 月度 13–21） |
-| `wenda2_ebook_sep/` | PDF 分類結果預覽（僅 13–21 章的分類條目，01–12 主題樹） |
-| `audio_map/` | `wenda2_ebook_sep/` 的音頻對齊與校對 UI |
+| `wenda2_ebook/` | 正式上線版（Word + PDF 全分類合併，12 章主題樹，9,242 則） |
+| ~~wenda2_ebook_sep/~~ | （已移除）PDF 分類預覽已整合到 wenda2_ebook/ |
+| `audio_map/` | 分類版音頻校對 UI（原 audio_map1_sep） |
 | `wenda2_ebook/` | Word + PDF 全部分類後的完整合併版（看實際效果用） |
 
 ## 完整工作流程（音頻校對 → 分類修正 → 電子書產出）
@@ -140,7 +140,7 @@ Step B：分類修正（如有）
   vim build/self_classified/batch_NNN.compact
   # 2. 重跑 expand（驗證 + 產生 classified JSON）
   ../../word_audio_map2/.venv/bin/python expand_classified.py NNN
-  # 3. 重建 wenda2_ebook_sep（分類預覽版）
+  # 3. （已由 gen_classified.py 取代）
   ../../word_audio_map2/.venv/bin/python gen_all.py
 
 Step C：重建全分類合併電子書
@@ -163,7 +163,7 @@ cd tool/qa_split_ebook
 | 產物 | 內容 | 用途 |
 |---|---|---|
 | `wenda2_ebook/` | Word 01-12 + PDF 月度 13-21 | 正式上線版 |
-| `wenda2_ebook_sep/` | 僅 PDF 分類條目（01-12 主題樹） | 分類結果預覽 |
+| ~~wenda2_ebook_sep/~~ | （已移除）| — |
 | `audio_map/` | 音頻對齊校對 UI | 校對 PDF 條目的音頻時間 |
 | `wenda2_ebook/` | Word + PDF 全分類合併 | 看最終分類效果 |
 

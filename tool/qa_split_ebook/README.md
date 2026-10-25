@@ -1,8 +1,8 @@
 # qa_split_ebook — 問答錄2「拆分＋分類」實驗管線（獨立於線上 word2ebook）
 
-把 `wenda2_ebook/` 第 13–21 章（2025年6月起的未分類月度答疑，3,452 則）
+把 `wenda2_ebook_word/` 第 13–21 章（2025年6月起的未分類月度答疑，3,452 則）
 依 `tool/qa_curation/` 準則拆分子問題、分類到既有 12 章主題樹，重組成
-**實驗電子書 `wenda2_ebook_sep/`**。全程不寫入 `wenda2_ebook/`、
+**實驗電子書 `wenda2_ebook/`（全分類合併版）**。全程不寫入 `wenda2_ebook_word/`、
 `tool/word2ebook/`；音檔映射讀 `audio_map/`（線上 SoT 的 2025-06 後複本）。
 
 ⚠️ 實驗性質：分類由 LLM 依準則產出（低信心條目在書中標「⚑復查」、
@@ -13,13 +13,13 @@
 | 步 | 指令 | 說明 |
 |---|---|---|
 | 0 | `python3 sync_audio_map.py` | `tool/word2ebook/data/audio_map/` 2025-06 後月份 → `audio_map/`（只放 JSON） |
-| 1 | `venv/bin/python extract.py` | 解析 `wenda2_ebook/13–21.html` → `build/items.jsonl`（含音檔對位；多段 answer-text、`-N` 後綴 id 都處理） |
+| 1 | `venv/bin/python extract.py` | 解析 `wenda2_ebook_word/13–21.html` → `build/items.jsonl`（含音檔對位；多段 answer-text、`-N` 後綴 id 都處理） |
 | 1b | `venv/bin/python extract_tree.py` | 自 `wenda2_ebook/01–12.html` 章內 TOC 抽 12 章主題樹（533 節點，L4 含 `hidden`）→ `build/section_tree.json`；分類 path 編號以此為準（L3 序號在 L2 內、L4 在 L3 內） |
 | 2 | `venv/bin/python distill.py` | 準則蒸餾：主指南＋逐章 digest（定位/R/N 樹）＋逐節準則 → `build/classify_guide.md`、`build/criteria_digest/` |
 | 3 | `venv/bin/python make_self_batches.py` | 產 47 批精簡輸入（q 全文＋a 前 250 字；sc=true 拆分候選留全文）→ `build/self_batches/batch_NNN.slim.jsonl`＋`tree_compact.txt` |
 | 4 | **自制作業**（LLM 逐批） | 讀 `batch_NNN.slim.jsonl` → 逐則依準則判定 → 寫 `build/self_classified/batch_NNN.compact`（格式 `i\|ch-L2-L3(-L4)\|conf\|依據[\|flags]`，flags：nr／d／ru=path；拆分項另寫 `batch_NNN.splits.jsonl`，每子題一行含 path/conf/q/a 切分文，sub 連續） |
 | 5 | `venv/bin/python expand_classified.py NNN …`（或 `--all`） | compact＋splits → 完整 `build/classified/batch_NNN.jsonl`；驗證批次守恆、path 命中樹；更新 `build/self_classified/progress.json` |
-| 6 | `venv/bin/python gen_all.py` | 組裝 `wenda2_ebook_sep/`：12 章主題樹×簡繁、章目錄頁、index、全量搜尋索引（含 .hash）、播放鈕（拆分子題共用母條目音段）、99 未歸類收容章、`build/report.md` |
+| 6 | `venv/bin/python gen_all.py` | 組裝 `wenda2_ebook/`（全分類合併版）：12 章主題樹×簡繁、章目錄頁、index、全量搜尋索引（含 .hash）、播放鈕（拆分子題共用母條目音段）、99 未歸類收容章、`build/report.md` |
 
 ## 分類判定要點（詳讀 `../qa_curation/wenda2_split_classify_criteria.md`）
 
@@ -40,4 +40,4 @@
 - 已分類資料：`build/classified/batch_NNN.jsonl`（gen 前會歸檔到
   `tool/qa_split_ebook/classified/`，可進版控供複查）。
 - 尚未分類的批次會被 gen_all 放進 99 章（不丟失，條目守恆）。
-- 重新組裝：步驟 6 重跑即可（`wenda2_ebook_sep/` 會整個重建）。
+- 重新組裝：步驟 6 重跑即可（`wenda2_ebook/`（全分類合併版） 會整個重建）。

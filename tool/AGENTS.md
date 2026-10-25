@@ -9,10 +9,10 @@
 
 | 工具 | 做什麼 | 輸入 → 輸出 | Docs |
 |------|--------|-------------|------|
-| `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；13–21 章（PDF）播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
+| `tool/word2ebook/` | 問答錄 2 電子書產生器（Word + 月 PDF）。前 12 章（Word 分類）播放鈕由 `audio_map2/*.json` 注入；PDF 分類條目播放鈕由 `data/audio_map/*.json` 注入。 | `問答錄2/*.docx` + `*.pdf` → `wenda2_ebook/` | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/site_chrome/` | 全站共用導覽的單一真相來源：把「圖解」下拉 3 入口（名詞圖解／坐禪與講經心智圖／問答錄2心智圖）、圖解頁 JSON-LD 寫回所有共用 chrome 頁；並附站台一致性檢查（AI 免責聲明、canonical、連結／錨點、sitemap、圖片屬性、`b-truth` 三節點）＋免 jsdom 的下拉互動測試。 | `sync.py` 定義 → root／`wenda2/`／`stories/` HTML；`dropdown_harness.js` 驗互動 | `README.md` |
 | `tool/books2ebook/` | 坐禅系列 + 講經系列九本著作（＋卷首《感恩與講經》一篇）→ 靜態電子書（簡/繁、全量搜尋、每講播放鈕、講經段落跟播）。`sync_para_pids.py` 修 pid 漂移；`pytest tests/` 守門「已校對講次真的能跟播」。 | `books/*.pdf` + `audio_map3/*.json` → `ebook/` | `README.md` |
-| `tool/pdf_audio_map/` | 對齊 PDF 章節（13–21）↔ 音檔時間 → 音訊映射 JSON（SoT：`tool/word2ebook/data/audio_map/`）。 | SRT/opus → `data/audio_map/*.json` | `README.md` |
+| `tool/pdf_audio_map/` | 對齊 PDF 分類條目 ↔ 音檔時間 → 音訊映射 JSON（SoT：`tool/word2ebook/data/audio_map/`）。 | SRT/opus → `data/audio_map/*.json` | `README.md` |
 | `tool/word_audio_map2/` | 對齊**時間序** Word 彙總（2024-02…2025-05）↔ SRT → `audio_map2/*.json`（`build_maps.py`）。段上的 `chapter_question_ids` 供前 12 章注入；**分段會隨 `build_maps.py` 的 Q&A 偵測調整**，重分段後以 `link_chapters.py` 重新寫回章節對應（詳見「分段與章節對應」）。 | docx + SRT → `audio_map2/*.json` | `README.md` |
 | `tool/sense_voice/` | FunASR 中文 ASR → `.srt`/`.txt`（被 `pdf_audio_map/fill_misses.py` 呼叫做補漏）。 | mp3/wav → srt/txt | `README.md` |
 | `tool/audio_denoiser/` | Facebook Denoiser 語音去雜音（ASR 前處理）。 | mp3/wav → mp3/wav | `README.md` |
@@ -192,6 +192,6 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
 ## 概略原則
 
 1. **Generated 目錄勿手改**：`wenda2_ebook/`、`ebook/` 皆為建構產物；改產生器或來源後重跑對應 `gen_all.py`。
-2. **音訊播放鈕只在注入器產生**：`tool/word2ebook/core/audio_map_injector.py`（PDF 13–21）與 `inject_word_chapters()`（Word 01–12）。別手改章節 HTML。
+2. **音訊播放鈕只在注入器產生**：`tool/word2ebook/core/audio_map_injector.py`（PDF 條目）與 `inject_word_chapters()`（Word 01–12）。別手改章節 HTML。
 3. **離線媒體工具（sense_voice / audio_denoiser）為輔助流程**，不參與 Pages 佈署；只有在新音檔需要 ASR 時才用。
 4. 每個工具的尖細規則放它自己的 README/AGENTS.md；跨工具／站台級慣例放根 `AGENTS.md`。
