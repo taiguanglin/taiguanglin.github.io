@@ -112,11 +112,82 @@ def extract_word_blocks(ch: int) -> tuple[list[str], list[tuple[int, str, str]]]
 # ────────────────────────────────────────────────────────────── #
 # 來源 2：PDF 分類條目                                                     #
 # ────────────────────────────────────────────────────────────── #
-def extract_pdf_items() -> list[dict]:
+
+# ────────────────────────────────────────────────────────────── #
+# 音頻播放按鈕注入（讀 audio_map/*.json 的已校對時間）                     #
+# ────────────────────────────────────────────────────────────── #
+_AUDIO_MAP_DIR = ROOT / "audio_map"
+
+_QA_PLAY_ICON = ('<span class="qa-play-icon"><svg aria-hidden="true" '
+    'class="qa-play-speaker" focusable="false" height="1em" '
+    'viewBox="0 0 24 24" width="1em"><path '
+    'd="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05'
+    'c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71'
+    's-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" '
+    'fill="currentColor"></path></svg></span>')
+
+def _fmt_tc(sec):
+    """秒 → HH:MM:SS.mmm"""
+    if sec is None:
+        return "00:00:00.000"
+    h = int(sec // 3600)
+    m = int((sec % 3600) // 60)
+    s = sec % 60
+    return f"{h:02d}:{m:02d}:{s:06.3f}"
+
+def load_audio_map_for_play():
+    """讀 audio_map/*.json → {question_id: {file, start, end}}。"""
+    mapping = {}
+    if not _AUDIO_MAP_DIR.exists():
+        return mapping
+    import urllib.parse
+    for f in sorted(_AUDIO_MAP_DIR.glob("*.json")):
+        if "qid_to_sep" in f.name:
+            continue
+        try:
+            d = json.loads(f.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, Exception):
+            continue
+        for sess in d.get("sessions", []):
+            audio = sess.get("audio_file", "")
+            if not audio:
+                continue
+            # URL encode 音頻路徑（與 word2ebook 的注入器一致）
+            encoded = urllib.parse.quote(f"../audio/{audio}")
+            for seg in sess.get("segments", []):
+                qid = seg.get("question_id", "")
+                start = seg.get("start")
+                end = seg.get("end")
+                if qid and start is not None and end is not None:
+                    mapping[qid] = {
+                        "audio": encoded,
+                        "start": start,
+                        "end": end,
+                    }
+    return mapping
+
+def inject_play_button(a_html: str, qid: str, audio_map: dict) -> str:
+    """為 answer HTML 注入 qa-play 播放按鈕（有音頻數據時）。"""
+    if qid not in audio_map:
+        return a_html
+    info = audio_map[qid]
+    start, end = info["start"], info["end"]
+    label = f"{_fmt_tc(start)} - {_fmt_tc(end)}"
+    encoded = info["audio"]
+    btn = (f'<button aria-label="播放 {label}" class="qa-play qa-play--inline" '
+           f'data-audio="{encoded}" data-end="{end}" data-label="{label}" '
+           f'data-start="{start}" type="button">{_QA_PLAY_ICON}</button>')
+    # 插入到 answerer span 之後（answer-meta 內）
+    return a_html.replace('</span>\n</div>', f'</span>\n{btn}\n</div>', 1)
+
+
+def extract_pdf_items(_audio_map: dict = None) -> list[dict]:
     items_raw = {}
     for line in (BUILD / "items.jsonl").read_text(encoding="utf-8").splitlines():
         d = json.loads(line)
         items_raw[d["seq"]] = d
+    if _audio_map is None:
+        _audio_map = {}
 
     results = []
     for f in sorted((BUILD / "classified").glob("batch_*.jsonl")):
@@ -140,9 +211,11 @@ def extract_pdf_items() -> list[dict]:
             if r.get("split") and r.get("sub", 0) > 0:
                 q_html = fix_corrupted_text(qid, _wrap_qa(r.get("q", ""), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
                 a_html = _wrap_qa(r.get("a", ""), aid, "answer", "Taiguanglin", "")
+                a_html = inject_play_button(a_html, qid, _audio_map)
             else:
                 q_html = fix_corrupted_text(qid, _wrap_qa("".join(it["q_parts"]), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
                 a_html = _wrap_qa("".join(it["a_parts"]), aid, "answer", "Taiguanglin", "")
+                a_html = inject_play_button(a_html, qid, _audio_map)
 
             results.append({
                 "qid": qid, "aid": aid, "path": path,
@@ -484,7 +557,9 @@ def main():
     print("[gen_classified] 提取 Word 章…")
     all_chapters = []
 
-    pdf_items = extract_pdf_items()
+    audio_map_for_play = load_audio_map_for_play()
+    print(f"[gen_classified] 音頻映射（可注入播放鈕）：{len(audio_map_for_play)} 條")
+    pdf_items = extract_pdf_items(audio_map_for_play)
     print(f"[gen_classified] PDF 分類條目：{len(pdf_items)} 條")
 
     for ch in CHAPTERS:
