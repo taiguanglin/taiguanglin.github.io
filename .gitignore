@@ -47,3 +47,6 @@ USER.md
 /wenda2_ebook_word/
 /audio_map_orig/
 
+
+# qa_split_ebook build artifacts（分類管線中間產物）
+tool/qa_split_ebook/build/
