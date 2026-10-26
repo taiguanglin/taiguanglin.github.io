@@ -199,7 +199,7 @@ def main(argv: Optional[list] = None) -> int:
     parser = argparse.ArgumentParser(description="Extract PDF ebook sessions into audio_map skeletons")
     parser.add_argument("--ebook-dir", type=Path, default=EBOOK_DIR)
     parser.add_argument("--month", action="append", help="YYYY-MM (repeatable)")
-    parser.add_argument("--apply", action="store_true", help="Write JSON under data/audio_map/")
+    parser.add_argument("--apply", action="store_true", help="Write JSON under the site-root audio_map/")
     args = parser.parse_args(argv)
 
     months = set(args.month) if args.month else None

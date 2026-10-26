@@ -3,8 +3,8 @@
 
 把 wenda2_ebook/13–21.html（2025年6月後的未分類月度答疑，3,453 則）抽成
 build/items.jsonl：每則一行，含 question/answer 的 HTML 與純文字、來源小節、
-音檔段（鍵＝question_id，讀 audio_map/*.json——與線上 SoT
-tool/word2ebook/data/audio_map/ 分離）。
+音檔段（鍵＝question_id，讀 audio_map/*.json——2026-10-26 起
+audio_map/ 即單一 SoT，與校稿 UI／pdf_audio_map 共用同一份）。
 
 本工具是實驗性質，獨立於線上 word2ebook 管線：不寫入 wenda2_ebook/、
 不改 tool/word2ebook/ 任何檔案。
@@ -65,7 +65,7 @@ def load_audio_map():
     """audio_map/*.json → {question_id: {file,start,end,sl,el}}。"""
     qmap = {}
     if not AUDIO_DIR.exists():
-        sys.exit(f"[extract] 找不到 {AUDIO_DIR}，請先執行 sync_audio_map.py")
+        sys.exit(f"[extract] 找不到 {AUDIO_DIR}（單一 SoT；由 tool/pdf_audio_map/ 產生）")
     for f in sorted(AUDIO_DIR.glob("*.json")):
         data = json.loads(f.read_text(encoding="utf-8"))
         for sess in data.get("sessions", []):

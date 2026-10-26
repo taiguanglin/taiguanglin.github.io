@@ -1,6 +1,6 @@
 {
   "_description": "audio_dates_supplement: question_id → date derived from audio file names. Used by word2ebook and qa_split_ebook pipelines to supplement missing dates in HTML generation.",
-  "_source": "tool/word2ebook/data/audio_map/*.json session audio_file names",
+  "_source": "audio_map/*.json (site root; single SoT since 2026-10-26) session audio_file names",
   "dates": {
     "question-d0fe15ac00b6": "2025-06-09",
     "question-5fd3e47175be": "2025-06-09",
@@ -712,7 +712,6 @@
     "question-0afad3ea5757": "2025-07-12",
     "question-801b1d9ad710": "2025-07-12",
     "question-7b06d1173ab7": "2025-07-12",
-    "question-5bfed135e642": "2025-07-12",
     "question-845df7a6ff4d": "2025-07-12",
     "question-fcc5486d3faf": "2025-07-12",
     "question-00900f68f05b": "2025-07-12",

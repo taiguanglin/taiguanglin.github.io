@@ -1,6 +1,8 @@
 """Inject ``.qa-play`` buttons into ebook chapter HTML from audio map JSON.
 
-PDF chapters (13–21) come from ``data/audio_map/*.json``; Word chapters
+PDF chapters (13–21) come from the site-root ``audio_map/*.json`` (single
+SoT shared with the editorial UI at ``/audio_map/``; same files also feed
+``tool/qa_split_ebook``); Word chapters
 (01–12) come from the reviewed chronological maps in ``audio_map2/*.json``.
 """
 
@@ -20,7 +22,7 @@ from core.qa_play_markup import (
 from models.document_models import Chapter
 
 
-DEFAULT_MAP_DIR = Path(__file__).resolve().parent.parent / "data" / "audio_map"
+DEFAULT_MAP_DIR = Path(__file__).resolve().parents[3] / "audio_map"
 # Reviewed chronological Word↔audio maps (audio_map2/) are the source for Word
 # chapters 01–12. The legacy data/audio_map_word/*.json flow has been removed.
 DEFAULT_AUDIO_MAP2_DIR = Path(__file__).resolve().parents[3] / "audio_map2"
@@ -62,6 +64,31 @@ def _has_been_listened(item: Optional[dict]) -> bool:
     return bool(meta.get("lastPlayed"))
 
 
+def _seg_parts(item: Optional[dict]) -> Optional[List[Tuple[float, float]]]:
+    """Extra playback windows for one card（「兩段式播放」特殊情況）.
+
+    audio_map segments may carry ``parts`` — a list of ``[start, end]``
+    windows（按時間排序，第一段即該段本身的範圍）. The player
+    (``08-qa-audio.js``) plays them in order via ``data-segments``,
+    skipping whatever lies in between. Used when the teacher interleaves
+    two answers so one card's audio is split into two non-adjacent
+    windows — the audio_map2 precedent (2024-03-26 唐偉,
+    ``two_part_group``) works the same way via the word-chapter path.
+    """
+    raw = item.get("parts") if isinstance(item, dict) else None
+    if not isinstance(raw, list) or len(raw) < 2:
+        return None
+    out: List[Tuple[float, float]] = []
+    for p in raw:
+        try:
+            s, e = float(p[0]), float(p[1])
+        except (TypeError, ValueError, IndexError):
+            return None
+        if e > s:
+            out.append((s, e))
+    return out or None
+
+
 def _is_audio_map2_reviewed(item: Optional[dict]) -> bool:
     """True when a human actually listened to this audio_map2 segment.
 
@@ -77,6 +104,22 @@ def _is_audio_map2_reviewed(item: Optional[dict]) -> bool:
         return False
     # 「零長度」段（師父未念，audio_map2 UI 勾選寫回 zero: true）：無音可播，
     # 與零寬段相同，不注入播放鈕。
+    if item.get("zero") is True:
+        return False
+    return _has_been_listened(item)
+
+
+def _is_audio_map_reviewed(item: Optional[dict]) -> bool:
+    """PDF 章（``audio_map/*.json``）的同一套「可播」判定。
+
+    與 ``_is_audio_map2_reviewed`` 相同語意：要有「最後播放」紀錄，
+    且不得是校稿 UI 勾選的「零長度／師父未念」（``zero: true``）——
+    零音段沒有可播的聲音，注入播放鈕只會得到空白音檔。
+    """
+    if not item or not isinstance(item, dict):
+        return False
+    if item.get("start") is None:
+        return False
     if item.get("zero") is True:
         return False
     return _has_been_listened(item)
@@ -163,7 +206,7 @@ def _inject_section(section: str, session: dict) -> str:
     audio_rel = audio_url(session.get("audio_file") or "")
     segments = session.get("segments") or []
     # Opening play button follows whether the first Q&A segment was listened to.
-    first_segment_listened = _has_been_listened(segments[0] if segments else None)
+    first_segment_listened = _is_audio_map_reviewed(segments[0] if segments else None)
 
     opening = session.get("opening")
     opening_range = _range_tuple(opening) if first_segment_listened else None
@@ -194,7 +237,7 @@ def _inject_section(section: str, session: dict) -> str:
             seg = by_qid.get(_base_id(qid))
         if seg is None and q_index <= len(segments):
             seg = segments[q_index - 1]
-        if not (seg and _has_been_listened(seg)):
+        if not (seg and _is_audio_map_reviewed(seg)):
             continue
         answer_end = q_matches[q_index].start() if q_index < len(q_matches) else len(section)
         answer_region = section[qm.end():answer_end]
@@ -202,7 +245,8 @@ def _inject_section(section: str, session: dict) -> str:
         if not am:
             continue
         button = render_inline_answerer_play(
-            _range_tuple(seg), audio_rel, hide_if_missing=True
+            _range_tuple(seg), audio_rel, hide_if_missing=True,
+            parts=_seg_parts(seg),
         )
         if button:
             abs_pos = qm.end() + am.end()
@@ -214,7 +258,7 @@ def _inject_section(section: str, session: dict) -> str:
     # Closing play button: require closing itself to have been listened to.
     # Insert *above* the closing paragraph(s), mirroring opening (bar then text).
     closing = session.get("closing")
-    if closing and _has_been_listened(closing):
+    if closing and _is_audio_map_reviewed(closing):
         closing_bar = render_closing_meta_bar(
             _range_tuple(closing), audio_rel, hide_if_missing=True
         )

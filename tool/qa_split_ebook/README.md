@@ -10,9 +10,12 @@
 
 ## 管線（全部用鎖版 venv 執行）
 
+> 音頻映射直接讀寫站台根目錄 `audio_map/*.json`（單一 SoT，2026-10-26 起）；
+> 舊的步驟 0 `sync_audio_map.py`（把 `tool/word2ebook/data/audio_map/` 抄到
+> `audio_map/`）已隨該副本一併移除。
+
 | 步 | 指令 | 說明 |
 |---|---|---|
-| 0 | `python3 sync_audio_map.py` | `tool/word2ebook/data/audio_map/` 2025-06 後月份 → `audio_map/`（只放 JSON） |
 | 1 | `venv/bin/python extract.py` | 解析 `wenda2_ebook_word/13–21.html` → `build/items.jsonl`（含音檔對位；多段 answer-text、`-N` 後綴 id 都處理） |
 | 1b | `venv/bin/python extract_tree.py` | 自 `wenda2_ebook/01–12.html` 章內 TOC 抽 12 章主題樹（533 節點，L4 含 `hidden`）→ `build/section_tree.json`；分類 path 編號以此為準（L3 序號在 L2 內、L4 在 L3 內） |
 | 2 | `venv/bin/python distill.py` | 準則蒸餾：主指南＋逐章 digest（定位/R/N 樹）＋逐節準則 → `build/classify_guide.md`、`build/criteria_digest/` |

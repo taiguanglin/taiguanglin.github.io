@@ -7,7 +7,7 @@
     "opening_ok": 12,
     "sessions": 12,
     "fallbacks": 0,
-    "closing_ok": 10
+    "closing_ok": 12
   },
   "sessions": [
     {
@@ -6071,9 +6071,9 @@
           "stable_key": "2026nian-2yue-5ri-guan-wang#24",
           "q_preview": "师父，我被干扰的那几个月，其实有很多怪异的事情，想不明白，也不晓得要不要问？但有件事，忍不住想请教师...",
           "start": 2278.86,
-          "end": 2620.354,
+          "end": 2617.54,
           "start_label": "00:37:58.860",
-          "end_label": "00:43:40.354",
+          "end_label": "00:43:37.540",
           "confidence": 0.93,
           "status": "manual",
           "locked": false,
@@ -6090,15 +6090,15 @@
       "closing": {
         "text": "",
         "text_preview": "",
-        "start": null,
-        "end": null,
-        "start_label": null,
-        "end_label": null,
-        "confidence": 0,
-        "status": "missing",
+        "start": 2617.54,
+        "end": 2619.995,
+        "start_label": "00:43:37.540",
+        "end_label": "00:43:39.995",
+        "confidence": 0.9,
+        "status": "manual",
         "locked": false,
-        "notes": "closing-missing",
-        "srt_preview": "",
+        "notes": "leadin:closing|manual-20261025",
+        "srt_preview": "好了啊，你的事就先说到这里吧哈。",
         "meta": {
           "lastPlayed": "2026-08-14 11:11"
         }
@@ -8991,18 +8991,19 @@
       "closing": {
         "text": "",
         "text_preview": "",
-        "start": null,
-        "end": null,
-        "start_label": null,
-        "end_label": null,
-        "confidence": 0,
-        "status": "missing",
+        "start": 2912.739,
+        "end": 2912.739,
+        "start_label": "00:48:32.739",
+        "end_label": "00:48:32.739",
+        "confidence": 0.0,
+        "status": "manual",
         "locked": false,
         "notes": "no-spoken-session-close",
         "srt_preview": "",
         "meta": {
           "lastPlayed": "2026-08-14 15:49"
-        }
+        },
+        "zero": true
       }
     },
     {

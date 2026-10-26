@@ -17,8 +17,9 @@
 2025年11月–2026年3月改由第二份 PDF 產生，不再餵入 ``qa/``。
 ``qa/`` 與線上校稿工具仍可獨立使用。
 
-PDF 章節的逐段音檔播放鈕由 ``data/audio_map/*.json`` 在建置時注入
-（見 ``tool/pdf_audio_map/`` 與站台 ``/audio_map/`` 微調工具）。
+PDF 章節的逐段音檔播放鈕由站台根目錄 ``audio_map/*.json``（單一 SoT，
+即 ``/audio_map/`` 校稿 UI 使用的同一份）在建置時注入
+（見 ``tool/pdf_audio_map/``）。
 
 環境守門（2026-10 起）：任何直譯器執行本腳本都會自動切換到鎖版 venv
 （``tool/word_audio_map2/.venv``），並驗證 PyMuPDF 版本與

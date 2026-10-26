@@ -60,7 +60,9 @@ Open [`/audio_map/`](../../audio_map/). Load a month JSON, play ranges, tweak st
 
 **Do not edit `wenda2_ebook/*.html` by hand for play buttons.**
 
-This package only writes `tool/word2ebook/data/audio_map/*.json`.  
+This package only writes the site-root [`audio_map/*.json`](../../audio_map/)
+(single SoT since 2026-10-26 — the same files the `/audio_map/` browser editor
+reads and writes; the old `tool/word2ebook/data/audio_map/` copy is gone).  
 At ebook build time, [`main.py`](../word2ebook/main.py) loads those maps via
 `inject_chapters()` on in-memory `Chapter` objects, then
 `HTMLGenerator` writes `wenda2_ebook/`. Use:

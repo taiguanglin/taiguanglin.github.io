@@ -96,7 +96,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `images/` | Assets | Site-wide images (portrait, covers, favicons, social). Page-displayed images are WebP; `taiguanglin.png` (og:image) and `buddha.png` (manifest icon) stay PNG on purpose — see rule 11. |
 | `fonts/` | Assets | 自架字型子集：Noto Serif/Sans TC 十字重 `*.woff2`＋`fonts.css`（SIL OFL 1.1，見 `fonts/OFL.txt`）。全站頁面以 `<link rel="stylesheet" href="/fonts/fonts.css">` 取代 Google Fonts 外鏈（大陸連不上）。新增頁面或新用字後跑 `tool/word_audio_map2/.venv/bin/python tool/fonts/build_fonts.py` 重建。 |
 | `audio` | External (symlink) | Local `.opus` library; not in git. Play URLs assume same-origin `/audio/`. Its `index.html`（粉色串流頁、置頂大悲咒 player）**由 `tool/audio_index/index_template.html` 產生**：改樣板→跑 `python3 tool/audio_index/build_index.py`，不要手改 `audio/index.html`（該頁自帶 CSS/JS，不載入根 `style.css`）。 |
-| `audio_map/` | Editorial UI | `index.html` = 分類版音頻校對 UI（原 audio_map1_sep，2025-06 後月份）。**SoT JSON lives in** `tool/word2ebook/data/audio_map/`. Alignment rules: **`audio_map/AGENTS.md`**. |
+| `audio_map/` | Editorial UI **＋音頻映射 SoT** | `index.html` = 分類版音頻校對 UI（原 audio_map1_sep，2025-06 後月份）。**月份 JSON 的單一真相就在本目錄**（2026-10-26 起；`tool/word2ebook/data/audio_map/` 舊副本與 `qa_split_ebook/sync_audio_map.py` 已移除，產生器 `tool/pdf_audio_map/`、注入器 `tool/word2ebook`、`tool/qa_split_ebook` 皆直接讀寫這裡）。Alignment rules: **`audio_map/AGENTS.md`**. |
 | `audio_map2/` | Editorial UI + data | 時間序 Word 彙總（2024-02…2025-05）的音檔 mapping 審核：月份 JSON + `index.html` review UI。文字以 Word 為準、SRT 只取時間；完成判定以「最後播放」(`meta.lastPlayed`) 為準。Rules: **`audio_map2/AGENTS.md`**. |
 | `books/` | **Source** | 九本著作 PDF＋《感恩與講經》卷首一篇（坐禪系列 `01…05`＋講經系列 `06…09`，共 10 個 PDF；感恩與講經**不算一本書**）。 |
 | `audio_map3/` | Editorial UI + data | 講經系列「段落 ↔ 音檔」對齊校對：`<series>.json` 由 `tool/jiangjing_para_map/build_maps.py` 產出（SRT ↔ 段落），`index.html` 審核；books2ebook 只注入 `reviewed=true` 講次的段落時間（跟播功能閘門）。pid 漂移用 `tool/books2ebook/sync_para_pids.py` 修（規則 13）。 |
@@ -111,7 +111,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 |------|---------|------|
 | `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook_word/`（內部建置來源） | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/books2ebook/` | `books/` 九本著作＋感恩卷首 → `ebook/` 坐禅+講經系列电子书 | `README.md` |
-| `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio → `data/audio_map/*.json` | `README.md` |
+| `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio → `audio_map/*.json`（站台根目錄，單一 SoT） | `README.md` |
 | `tool/word_audio_map2/` | Align 時間序 Word 彙總 ↔ SRT → `audio_map2/*.json` | `README.md` |
 | `tool/sense_voice/` | Chinese ASR → `.srt`/`.txt` | `README.md` |
 | `tool/audio_denoiser/` | Denoiser preprocessing before ASR | `README.md` |
@@ -130,7 +130,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 問答錄2/*.docx + *.pdf
         │
         ▼
-tool/word2ebook/gen_all.py  (+ data/audio_map/*.json inject)
+tool/word2ebook/gen_all.py  (+ audio_map/*.json inject)
         │
         ▼
    wenda2_ebook/     ← published; do not hand-edit for features
@@ -151,7 +151,8 @@ tool/books2ebook/gen_all.py  （沿用 wenda2_ebook/assets 風格，含簡/繁�
 Audio-map pipeline (optional but used for play buttons):
 
 ```
-SRT / opus  →  tool/pdf_audio_map/  →  tool/word2ebook/data/audio_map/*.json   (PDF 分類條目 → audio_map/ 校對)
+SRT / opus  →  tool/pdf_audio_map/  →  audio_map/*.json（站台根目錄＝單一 SoT，
+                                          由 /audio_map/index.html 校對 UI 直接讀寫）
                                           ▲
                                 /audio_map/index.html (分類版校對) + gen_classified.py 注入播放鈕
               audio_map2/*.json  →  inject_word_chapters()  →  Word chapters 01–12 play buttons
@@ -196,7 +197,7 @@ mp3  →  (optional) tool/audio_denoiser
 | 坐禅系列电子书 UI / 搜尋 / 簡繁 | `tool/books2ebook/` | `python3 gen_all.py`（同上；資產影印 wenda2_ebook 並附 books.css）|
 | 段落跟播（校稿後要讀者真的用得到） | `audio_map3/*.json` ＋ `tool/books2ebook/` | `sync_para_pids.py --apply` → `gen_all.py` → `pytest tool/books2ebook/tests`（規則 13）|
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |
-| Play-button time ranges | `tool/word2ebook/data/audio_map/` (or `/audio_map/` UI / `pdf_audio_map`) | Rebuild ebook |
+| Play-button time ranges | `audio_map/*.json`（單一 SoT；經 `/audio_map/` UI 校對或 `pdf_audio_map` 產生） | Rebuild ebook |
 | Site landing / nav / about | Root HTML + `shared.js` / `style.css` | Commit |
 | 12-theme TOC pages | `wenda2.html`, `wenda2/` | Commit (no ebook rebuild) |
 | Story reader text/layout | `stories2html` + originals / `docs.py` | extract → build → verify → build_index |
@@ -211,7 +212,7 @@ mp3  →  (optional) tool/audio_denoiser
 |------|----------------|
 | `wenda2/` vs `wenda2_ebook/` | Different products. `wenda2/` = hand site TOC. `wenda2_ebook/` = generated ebook. |
 | `問答錄2/` vs `wenda2_ebook/` | Source documents vs build output. |
-| `audio_map/` vs `tool/word2ebook/data/audio_map/` | UI vs JSON source of truth. |
+| `audio_map/` 的 SoT | 2026-10-26 起 `audio_map/` 既是校對 UI 也是 JSON 唯一真相（產生器、注入器、抽取器直接讀寫同一份）；舊的 `tool/word2ebook/data/audio_map/` 副本已移除，不存在「兩份要同步」的問題。 |
 | Root `script.js` vs ebook `script.js` | Root `script.js` 已移除（root chrome JS 是 `shared.js`）；ebook bundle 與其同名無關，由 `tool/word2ebook/assets/js/modules/` 串接而成。 |
 | Production `/audio/` | Code expects same-origin audio; files are not in this git repo. Local preview needs the symlink. |
 | `hidden/` | **已於 2026-10-11 從版控與部署移除**（commit `15bbfd7`）：目錄已不存在，舊網址 404。曾為四本複習電子書；產生器 `tool/wenda2_knowledge/`、`tool/ebook_knowledge/` 已同日整包刪除，僅 git 歷史可回溯。 |

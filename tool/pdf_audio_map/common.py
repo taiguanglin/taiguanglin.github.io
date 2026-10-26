@@ -15,7 +15,7 @@ except Exception:  # pragma: no cover
 ROOT = Path(__file__).resolve().parents[2]
 EBOOK_DIR = ROOT / "wenda2_ebook"
 QA_DIR = ROOT / "qa"
-MAP_DIR = ROOT / "tool" / "word2ebook" / "data" / "audio_map"
+MAP_DIR = ROOT / "audio_map"
 DEFAULT_SRT_ROOT = (
     Path.home()
     / "Documents"

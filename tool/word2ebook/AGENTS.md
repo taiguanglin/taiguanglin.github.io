@@ -51,7 +51,7 @@ main.py
 ```
 
 **Audio play buttons are never hand-patched under `wenda2_ebook/`.**  
-PDF month maps live in `data/audio_map/` (built by `tool/pdf_audio_map/`);  
+PDF month maps live in the site-root `audio_map/` (single SoT, 2026-10-26 起；built by `tool/pdf_audio_map/`, 與校對 UI 同一份);  
 Word chapter maps (前 12 章) come from the **reviewed** `audio_map2/*.json`
 (via `chapter_question_ids`, which are already frozen into those JSONs — the
 script that wrote them has been removed).
@@ -103,7 +103,7 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 | `core/pdf_parser.py` | Parses monthly-Q&A `.pdf` → month-based `List[Chapter]` (date+source `<h2>` incl. 官网/贴吧/微信); cross-year `(year,month)` grouping; image extract via `ImageHandler`; shares `chapter_finalizer` | ~620 |
 | `core/qa_parser.py` | Parses `qa/*.txt` (AI transcripts) → month-based `List[Chapter]` across years; filename→date/source; per-segment `qa-meta-bar` (play button with percent-encoded `data-audio` + `{{qa_proofread}}`/`{{qa_unproofread}}` badge); shares `chapter_finalizer` | ~415 |
 | `core/qa_play_markup.py` | Shared `.qa-play` / meta-bar HTML helpers used by QA parser and both audio-map injectors | ~80 |
-| `core/audio_map_injector.py` | Injects play buttons into PDF chapters from `data/audio_map/*.json`, and into Word chapters 01–12 from the reviewed `audio_map2/*.json` (`chapter_question_ids` keyed) | ~390 |
+| `core/audio_map_injector.py` | Injects play buttons into PDF chapters from site-root `audio_map/*.json` (single SoT, 2026-10-26 起), and into Word chapters 01–12 from the reviewed `audio_map2/*.json` (`chapter_question_ids` keyed) | ~390 |
 | `core/chapter_finalizer.py` | Shared block→`Chapter` finalize (QA merge, back-to-top, QA counts, chapter TOC) used by the Word, PDF, and QA parsers | ~190 |
 | `core/content_processor.py` | Extracts search items from HTML; assigns element IDs | 216 |
 | `generators/html_generator.py` | `HTMLGenerator` — renders chapter/index pages via `I18nTemplateManager`; simplified/traditional variants unified via `_generate_chapters`/`_generate_index`; QA banner + `{{qa_*}}` placeholder substitution + homepage QA source link | ~250 |
@@ -196,7 +196,7 @@ Behavioral specs live in `openspec/specs/<domain>/spec.md`. They define **what t
 | `overview/spec.md` | CLI args, pipeline order, fast/skip modes, PDF + QA append, partial dev modes |
 | `document-parsing/spec.md` | `.docx` parsing rules, QA merging |
 | `pdf-parsing/spec.md` | `.pdf` → month chapters, date+source headings, reflow, source switching |
-| `pdf-audio-map/spec.md` | PDF chapters ↔ `data/audio_map` time ranges, build-time `.qa-play` injection, editor |
+| `pdf-audio-map/spec.md` | PDF chapters ↔ site-root `audio_map/*.json` time ranges, build-time `.qa-play` injection, editor |
 | `word-audio-map/spec.md` | Word chapters 01–12 ↔ reviewed `audio_map2/*.json` (`chapter_question_ids` keyed) |
 | `qa-parsing/spec.md` | `qa/*.txt` → month chapters, audio playback data, proofreading badges, encoded audio paths |
 | `html-generation/spec.md` | Chapter/index HTML structure, QA banner + badge placeholders + QA source link |
@@ -262,7 +262,7 @@ When behaviour changes in any Python module or JS/CSS module, update the matchin
 | `main.py`, `Word2EBookConverter` | `overview/spec.md` |
 | `core/document_parser.py` | `document-parsing/spec.md` |
 | `core/pdf_parser.py` | `pdf-parsing/spec.md` |
-| `core/audio_map_injector.py`, `data/audio_map/` | `pdf-audio-map/spec.md` |
+| `core/audio_map_injector.py`, site-root `audio_map/` | `pdf-audio-map/spec.md` |
 | `inject_word_chapters()` / `audio_map2/*.json` (`chapter_question_ids`) | `word-audio-map/spec.md` |
 | `core/qa_parser.py` | `qa-parsing/spec.md` |
 | `generators/html_generator.py`, `generators/toc_generator.py`, `templates/` | `html-generation/spec.md` |

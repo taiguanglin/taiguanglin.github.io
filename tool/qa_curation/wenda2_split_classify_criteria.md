@@ -34,7 +34,7 @@
 9. **重複不刪**：同文同提問人的重複提交在 1–12 章原樣保留於同節（實測僅 9 則
    id 後綴重複）。13–21 章分類時發現重複：各自分類＋標記 `duplicate_of`。
 10. **音檔斷鏈警示**：`question_id`＝MD5(提問人+時間+內容前50字)。拆分或改寫
-    問題文字會改變 id，使 `data/audio_map/*.json`（13–21 章播放鈕）與
+    問題文字會改變 id，使 `audio_map/*.json`（站台根目錄；月度分類條目播放鈕）與
     `audio_map2/*.json`（1–12 章）失去鍵連。分類產出若要回建電子書，音檔對位
     必須另行重跑管線（tool/pdf_audio_map / word_audio_map2），不屬本準則範圍。
 
@@ -283,7 +283,7 @@ wenda2_ebook/13.html … 21.html    （「YYYY年M月」章，h2＝日期＋來�
   （來源＝贴吧／微信公众号／官网），同一日期可有多個來源小節。
 - QA 已由 PDF 解析器切好：`<div class="question">`（提問人/時間/問題）＋
   `<div class="answer">`，部分答案帶 `.qa-play` 播放鈕（音檔時間來自
-  `tool/word2ebook/data/audio_map/*.json`，鍵＝`question_id`）。
+  `audio_map/*.json`（站台根目錄），鍵＝`question_id`）。
 - 提問人含「贴吧用户_XXXX」匿名形態；時間戳多為日期無時分。
 
 ### 5.2 各章統計（2026-10 實測）

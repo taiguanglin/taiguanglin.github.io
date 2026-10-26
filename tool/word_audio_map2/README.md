@@ -173,7 +173,7 @@ confidence < 0.5 → 低信心（審核 UI 紅卡提示）；stats 的 `pending`
 
 ## 輸出 JSON schema
 
-同 `tool/word2ebook/data/audio_map/*.json`（month/version/stats/sessions，
+同站台根目錄 `audio_map/*.json`（month/version/stats/sessions，
 session 內 opening/segments/closing），另加：
 
 - `docx_heading`：來源 Word 標題

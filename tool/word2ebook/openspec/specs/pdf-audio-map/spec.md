@@ -4,15 +4,16 @@
 
 Attach per-question (plus opening and closing) audio playback to PDF-sourced
 ebook chapters for 2025-06…09 and 2025-11…2026-03 without replacing PDF prose
-with `qa/` transcripts. A JSON mapping under `data/audio_map/` stores time
-ranges; the build injects `.qa-play` buttons; a browser tool at `/audio_map/`
+with `qa/` transcripts. A JSON mapping under the site-root `audio_map/` stores
+time ranges; the build injects `.qa-play` buttons; a browser tool at `/audio_map/`
 allows manual refinement.
 
 ## Requirements
 
 ### Requirement: Independent Mapping Store
-The system SHALL store month-level JSON files at
-`tool/word2ebook/data/audio_map/YYYY-MM.json`. Mapping SHALL NOT write back to
+The system SHALL store month-level JSON files at the site root
+`audio_map/YYYY-MM.json` (single SoT since 2026-10-26 — the same files the
+`/audio_map/` editor reads and writes). Mapping SHALL NOT write back to
 `qa/*.txt`. Re-alignment SHALL preserve entries with `locked: true` or
 `status: "manual"`.
 
@@ -110,6 +111,28 @@ idempotent (strips prior meta bars and inline buttons first).
 - WHEN injected
 - THEN a closing `.qa-meta-bar--closing` with `.qa-play` SHALL be inserted
   immediately before the trailing closing paragraph(s)
+
+#### Scenario: Zero-length item gets no play control
+- GIVEN a mapping segment (or a closing) the editorial UI marked as
+  「零長度／師父未念」 (`zero: true`) even though it carries a time range and
+  `meta.lastPlayed`
+- WHEN the chapter HTML is injected
+- THEN no `.qa-play` and no `.qa-meta-bar` SHALL be inserted for that item
+  (there is no audible content to play)
+
+#### Scenario: Interleaved answer plays in two parts
+- GIVEN the teacher answered another question in between, so a mapping
+  segment carries `parts` — a list of at least two `[start, end]` windows
+  (first equals the segment's own range), with notes marking the
+  special case (「兩段式播放」, mirroring the audio_map2 `two_part_group`
+  precedent)
+- WHEN the chapter HTML is injected
+- THEN the inline `.qa-play` button SHALL also carry
+  `data-segments="[[s1,e1],[s2,e2]]"` (JSON, percent-safe) so the player
+  (`08-qa-audio.js`) plays the windows in order, skipping the range in
+  between
+- AND the segment's own `data-start`/`data-end` SHALL equal the first window
+
 ### Requirement: Shared Play Markup
 Play-button HTML SHALL be produced by `core/qa_play_markup.py` so QA chapters
 and PDF audio-map injection share the same `data-*` contract consumed by

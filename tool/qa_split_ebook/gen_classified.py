@@ -19,6 +19,7 @@ usage: ../../word_audio_map2/.venv/bin/python gen_classified.py
 import json
 import re
 import sys
+from html import escape as _html_escape
 from pathlib import Path
 
 from lxml import html as lhtml
@@ -158,12 +159,21 @@ def load_audio_map_for_play():
                 qid = seg.get("question_id", "")
                 start = seg.get("start")
                 end = seg.get("end")
-                if qid and start is not None and end is not None:
-                    mapping[qid] = {
+                # 「零長度／師父未念」(zero: true) 沒有可播的聲音 → 不給播放鈕
+                if seg.get("zero") is True:
+                    continue
+                if qid and start is not None and end is not None and end > start:
+                    entry = {
                         "audio": encoded,
                         "start": start,
                         "end": end,
                     }
+                    # 「兩段式播放」：師父交錯作答時，一張卡的音檔切成
+                    # 兩個不連續視窗（parts），播放鈕帶 data-segments 連播。
+                    parts = seg.get("parts")
+                    if isinstance(parts, list) and len(parts) >= 2:
+                        entry["parts"] = parts
+                    mapping[qid] = entry
     return mapping
 
 def inject_play_button(a_html: str, qid: str, audio_map: dict) -> str:
@@ -174,8 +184,20 @@ def inject_play_button(a_html: str, qid: str, audio_map: dict) -> str:
     start, end = info["start"], info["end"]
     label = f"{_fmt_tc(start)} - {_fmt_tc(end)}"
     encoded = info["audio"]
+    # 「兩段式播放」：parts = [[s1,e1],[s2,e2],…] → data-segments，
+    # 08-qa-audio.js 依序播放、跳過中間未選範圍（比照 Word 章
+    # audio_map2 two_part_group 先例的同一份 data 契約）。
+    parts_attr = ""
+    parts = info.get("parts")
+    if isinstance(parts, list) and len(parts) >= 2:
+        parts_attr = (
+            ' data-segments="'
+            + _html_escape(json.dumps(parts, separators=(",", ":")), quote=True)
+            + '"'
+        )
     btn = (f'<button aria-label="播放 {label}" class="qa-play qa-play--inline" '
            f'data-audio="{encoded}" data-end="{end}" data-label="{label}" '
+           f'{parts_attr}'
            f'data-start="{start}" type="button">{_QA_PLAY_ICON}</button>')
     # 插入到 answerer span 之後（answer-meta 內）
     return a_html.replace('</span>\n</div>', f'</span>\n{btn}\n</div>', 1)

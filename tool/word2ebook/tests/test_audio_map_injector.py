@@ -242,6 +242,76 @@ class TestInjectHtml:
         out2 = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session2})
         assert "qa-meta-bar--closing" not in out2
 
+    def test_zero_length_items_get_no_play_control(self):
+        """校稿 UI 勾「零長度／師父未念」(zero: true) 的段與收場不注入播放鈕。"""
+        session = _session(
+            segments=[
+                {
+                    "index": 1,
+                    "question_id": "question-aaa",
+                    "start": 10.0,
+                    "end": 20.5,
+                    "status": "manual",
+                    "zero": True,
+                    "meta": {"lastPlayed": "2026-08-01 12:00"},
+                },
+                {
+                    "index": 2,
+                    "question_id": "question-bbb",
+                    "start": 20.5,
+                    "end": 30.0,
+                    "status": "manual",
+                    "meta": {"lastPlayed": "2026-08-01 12:01"},
+                },
+            ],
+            closing={
+                "text": "",
+                "start": 30.0,
+                "end": 30.0,
+                "status": "manual",
+                "zero": True,
+                "meta": {"lastPlayed": "2026-08-01 12:02"},
+            },
+        )
+        out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
+        # 零長度段無播放鈕（其餘段仍有）
+        assert out.count("qa-play--inline") == 1
+        assert 'data-start="10.000"' not in out
+        assert 'data-start="20.500"' in out
+        # 零長度收場無收場條
+        assert "qa-meta-bar--closing" not in out
+
+    def test_two_part_playback_carries_data_segments(self):
+        """交錯作答：parts = [[s1,e1],[s2,e2]] → data-segments 兩段式連播。"""
+        session = _session(
+            segments=[
+                {
+                    "index": 1,
+                    "question_id": "question-aaa",
+                    "start": 10.0,
+                    "end": 20.5,
+                    "status": "manual",
+                    "parts": [[10.0, 20.5], [53.1, 90.76]],
+                    "meta": {"lastPlayed": "2026-08-01 12:00"},
+                },
+                {
+                    "index": 2,
+                    "question_id": "question-bbb",
+                    "start": 20.5,
+                    "end": 30.0,
+                    "status": "manual",
+                    "meta": {"lastPlayed": "2026-08-01 12:01"},
+                },
+            ],
+        )
+        out = inject_html(SAMPLE_SECTION, {"2025nian-11yue-10ri-guan-wang": session})
+        assert 'data-segments="[[10.0,20.5],[53.1,90.76]]"' in out
+        # 播放鈕自身的 data-start/data-end 仍是第一段
+        btn = out[: out.index("data-segments")]
+        assert 'data-start="10.000"' in btn and 'data-end="20.500"' in btn
+        # 無 parts 的段不受影響（無 data-segments）
+        assert out.count("data-segments") == 1
+
     def test_idempotent(self):
         by_section = {"2025nian-11yue-10ri-guan-wang": _session()}
         once = inject_html(SAMPLE_SECTION, by_section)
