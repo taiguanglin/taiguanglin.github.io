@@ -36,6 +36,12 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
   師父答「以後再講」→ conf 照常、加 d flag；源檔殘缺／答案未回應的
   孤兒片段→ nr。
 - 節內排序＝時間升冪（gen 自動處理）；原文逐字不改寫。
+- **段落還原（2026-10-27 起）**：PDF 條目的多段 Q/A 逐段包 `<p>`
+  （`gen_classified._parts_to_html`；全站 CSS `p { margin: 15px 0 }` 提供段距）。
+  舊版 `"".join(parts)` 把段落無縫黏成文字牆（1,358 問、2,759 答受害）。
+  div id／錨點不變；`search_index` 內容在段落邊界多出一個空格
+  （`get_text()` 行為），屬預期差異——下次重跑 `tool/daily_quotes/`
+  管線時 `candidates.json` 會自然吸收。Word 條目沿用 docx 的 `<br/>` 軟換行，不受影響。
 
 ## 補充條目（`supplemental_items.json`，版控 SoT）
 

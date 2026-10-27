@@ -214,6 +214,20 @@ def inject_play_button(a_html: str, qid: str, audio_map: dict) -> str:
     return a_html.replace('</span>\n</div>', f'</span>\n{btn}\n</div>', 1)
 
 
+def _parts_to_html(parts) -> str:
+    """段落清單（或含 \\n 的單一文字）→ 逐段包 <p>，還原轉錄的段落結構。
+
+    stage 1 底稿的多段 Q/A＝一個 answer-text/question-text div 一段；
+    舊版 "".join(parts) 把段落無縫黏成文字牆（無任何分隔——1,358 問、
+    2,759 答受害），讀者看到的是整面不換行的長文。<p> 由全站 CSS
+    （00-base.css `p { margin: 15px 0 }`）提供段距。外層 div id 不變，
+    #answer-/#question- 錨點、搜尋索引（get_text() 逐字相同）與每日精選
+    連結全部不受影響。空段自動略過。"""
+    if isinstance(parts, str):
+        parts = parts.split("\n")
+    return "\n".join(f"<p>{t.strip()}</p>" for t in parts if t and t.strip())
+
+
 def extract_pdf_items(_audio_map: dict = None) -> list[dict]:
     items_raw = {}
     for line in (BUILD / "items.jsonl").read_text(encoding="utf-8").splitlines():
@@ -242,12 +256,12 @@ def extract_pdf_items(_audio_map: dict = None) -> list[dict]:
             aid = (it["aid"] or it["qid"].replace("question-", "answer-")) + suffix
 
             if r.get("split") and r.get("sub", 0) > 0:
-                q_html = fix_corrupted_text(qid, _wrap_qa(r.get("q", ""), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
-                a_html = _wrap_qa(r.get("a", ""), aid, "answer", "Taiguanglin", "")
+                q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(r.get("q", "")), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
+                a_html = _wrap_qa(_parts_to_html(r.get("a", "")), aid, "answer", "Taiguanglin", "")
                 a_html = inject_play_button(a_html, qid, _audio_map)
             else:
-                q_html = fix_corrupted_text(qid, _wrap_qa("".join(it["q_parts"]), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
-                a_html = _wrap_qa("".join(it["a_parts"]), aid, "answer", "Taiguanglin", "")
+                q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(it["q_parts"]), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
+                a_html = _wrap_qa(_parts_to_html(it["a_parts"]), aid, "answer", "Taiguanglin", "")
                 a_html = inject_play_button(a_html, qid, _audio_map)
 
             results.append({
