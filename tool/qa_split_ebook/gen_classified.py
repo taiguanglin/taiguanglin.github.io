@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """gen_classified.py — 產生 wenda2_ebook/（全分類正式版）（Word+PDF 全分類合併電子書）
 
+就地轉換（2026-10-26 起，``wenda2_ebook_word/`` 中繼目錄已移除）：
+本腳本是兩段式重建的 **stage 3**，SRC＝DST＝``wenda2_ebook/``——
+必須先跑 stage 1（``tool/word2ebook/gen_all.py``，重建 21 章時間序底稿）
+與 stage 2（``extract.py``，重抽 ``build/items.jsonl``），本腳本才把
+01–12 章就地轉成分類合併版、13–21 章換成跳轉頁。直接在分類完的成品上
+重跑會誤把分類內容當 Word 原章解析——腳本開頭有守門檢查。
+
 輸出格式與 wenda2_ebook/ 完全一致（word2ebook 管線渲染）：
   簡/繁雙語、全量搜尋、TOC、閱讀設定、暗色模式、PWA——全部沿用 word2ebook 的
   HTMLGenerator / SearchIndexGenerator / StaticAssetsManager。
 
 內容合併：
-  1. Word 章（wenda2_ebook/01–12.html）——解析 HTML，按 h2/h3/h4 標題映射到樹路徑
+  1. Word 章（wenda2_ebook/01–12.html，stage 1 底稿）——解析 HTML，按 h2/h3/h4 標題映射到樹路徑
   2. PDF 分類條目（build/classified/*.jsonl）——已有 ch/l2/l3/l4 樹路徑
   3. 每個樹節點下：Word 條目（保持原序）＋ PDF 條目（按日期排），合併輸出
 
@@ -26,7 +33,9 @@ from lxml import html as lhtml
 
 ROOT = Path(__file__).resolve().parents[2]
 W2E = ROOT / "tool" / "word2ebook"
-SRC = ROOT / "wenda2_ebook_word"
+# 就地流程（2026-10-26 起）：SRC＝DST。01–12 章先以 Word 底稿身分被讀取
+# （stage 1 產物），組裝完成後整個目錄被重寫成分類合併版。
+SRC = ROOT / "wenda2_ebook"
 DST = ROOT / "wenda2_ebook"
 BUILD = ROOT / "tool" / "qa_split_ebook" / "build"
 TREE_FILE = BUILD / "self_batches" / "tree_compact.txt"
@@ -575,6 +584,26 @@ def main():
     from templates.static_assets import StaticAssetsManager
     from config.settings import DEFAULT_SETTINGS
     from utils.file_utils import FileManager
+    import shutil as _sh
+    import shutil
+
+    # ── 守門：就地流程必須從 stage 1 底稿開始 ──────────────────────
+    # 13.html 在底稿狀態＝完整月度章；在分類完成狀態＝跳轉頁。
+    # 若已是跳轉頁，表示有人漏跑 stage 1 就重跑本腳本——01–12 章會被
+    # 誤當成 Word 原章二次解析，直接擋下。
+    probe = DST / "13.html"
+    if probe.exists():
+        probe_text = probe.read_text(encoding="utf-8")
+        if "此章節已重新分類" in probe_text:
+            print("❌ wenda2_ebook/13.html 已是跳轉頁（分類完成的成品），"
+                  "不是 stage 1 底稿。請先跑：")
+            print("   cd tool/word2ebook && python3 gen_all.py   （stage 1）")
+            print("   然後 extract.py（stage 2）再重跑本腳本（stage 3）。")
+            return 1
+    else:
+        print("❌ 找不到 wenda2_ebook/13.html——請先跑 stage 1："
+              "cd tool/word2ebook && python3 gen_all.py")
+        return 1
 
     print("[gen_classified] 提取 Word 章…")
     all_chapters = []
@@ -598,10 +627,15 @@ def main():
         chapter = finalize_chapter(chapter, blocks, toc, DEFAULT_SETTINGS)
         all_chapters.append(chapter)
 
-    # 輸出
+    # 輸出（就地流程：先把 stage 1 的 Word 章圖片搬到 build/ 暫存，
+    # rmtree 之後再放回——SRC＝DST，不先搬就會連同舊產物一起被刪掉。）
     print("\n[gen_classified] 渲染（word2ebook 管線）…")
+    img_stage = BUILD / "_stage_images"
+    if img_stage.exists():
+        shutil.rmtree(img_stage)
+    if (DST / "assets" / "images").exists():
+        shutil.move(str(DST / "assets" / "images"), str(img_stage))
     if DST.exists():
-        import shutil
         shutil.rmtree(DST)
     DST.mkdir(parents=True)
 
@@ -662,13 +696,15 @@ def main():
             (DST / src_name).parent.mkdir(parents=True, exist_ok=True)
             _sh.copy2(src_f, DST / src_name)
 
-    # 圖片（Word 章引用的 assets/images/*.webp——從 wenda2_ebook 複製）
-    img_src = SRC / "assets" / "images"
-    img_dst = DST / "assets" / "images"
-    if img_src.exists():
-        img_dst.mkdir(parents=True, exist_ok=True)
-        for f in img_src.glob("*"):
-            _sh.copy2(f, img_dst / f.name)
+    # 圖片（Word 章引用的 assets/images/*.webp——stage 1 產物，
+    # 稍早已搬到 build/_stage_images 暫存，現在放回。
+    # ⚠️ fm.setup_output_directory() 已預建空的 assets/images/——shutil.move
+    # 遇到既有目錄會把來源「搬進去」而不是改名，先刪掉空目錄再還原。）
+    if img_stage.exists():
+        target = DST / "assets" / "images"
+        if target.exists():
+            shutil.rmtree(target)
+        shutil.move(str(img_stage), str(target))
     print("✅ 靜態資源完成")
 
     total = sum(1 for ch in all_chapters for _ in range(ch.content.count('class="question"')))

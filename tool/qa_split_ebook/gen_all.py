@@ -7,7 +7,7 @@ build/items.jsonl ＋ build/classified/*.jsonl（LLM 拆分＋分類產出）
 
 獨立於線上 word2ebook 管線：只「讀」wenda2_ebook/（頁面版型與資產來源）、
 tool/qa_curation/ 的樹編號（section_tree.json 於 extract 階段自
-wenda2_ebook_word/01–12.html 抽得）、audio_map/（音檔映射），
+歷史底稿 wenda2_ebook/01–12.html（2026-10-26 前位於 wenda2_ebook_word/）抽得）、audio_map/（音檔映射），
 並唯讀引用 tool/word2ebook/utils/i18n_utils.py 的繁化引擎。
 不寫入以上任何目錄；輸出全部落在 wenda2_ebook_sep/ 與本工具目錄內。
 

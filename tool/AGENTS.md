@@ -22,12 +22,8 @@
 | `tool/jiangjing_para_map/` | 講經系列「段落 ↔ SRT 字元時間流」對齊 → `audio_map3/<series>.json`；重跑保留已 confirmed 段落與 reviewed 講次。books2ebook 只注入 reviewed 講次的段落時間。 | ebook HTML 段落 + `audio/srt/jiangjing/*.srt` → `audio_map3/*.json` | `README.md` |
 | `tool/qa_curation/` | 問答錄2「拆分＋分類」準則 SoT：把第 1–12 章（5,789 則人工分類）逐一實證檢驗後，整理成供 LLM 對第 13–21 章（未分類月度答疑）執行「問題拆分＋12 章主題分類」的操作準則——主準則（鐵律/拆分統計/分類總綱/輸出 schema）＋12 個逐章準則檔＋skill 檔。分類母體＝分類精選工作表「答疑汇总」A–D 欄。 | 13–21 章問答串 → JSONL（`section_path`＋信心＋依據） | **`README.md`**, `wenda2_split_classify_criteria.md`, `SKILL.md`, `chapters/` |
 | `tool/world_model/` | 三千大千世界模型圖素材：把兩套電子書的**生成產物**抽成純文字語料，再依 16 個主題章（宇宙總綱／三千大千世界／須彌山／**世界的基本構造**／三界二十八天／人間／地獄／六道／佛國／光子物理／六根複眼／時間劫／神通）逐字彙整，供餵大模型畫世界模型圖。讀電子書而非 PDF/Word，是為了拿到全量段落索引（可驗證無遺漏）、穩定錨點（可回溯）、並免寫第二套 PDF 解析器。`verify.py` 逐行回比原始 HTML。 | `wenda2_ebook/*_trad.html` + `ebook/*_trad.html` → `build/world_model_{source,core}.md` + `.jsonl`（`build/` 已 gitignore） | `README.md` |
-| `tool/fix_yuanjue_sutra_numbers.py` | 【一次性來源修訂】《圓覺經》PDF：「解析」的經文條目排成「編號（一般字型）＋經文（粗體）」→ 條目與後面的講解黏成同一段，該條經文沒有經文區塊、**「經文置頂」對它失效**。此工具把條目編號改成與經文同粗體（**文字逐字不變**，只換字型；粗體數字略寬 0.42pt → 後面的「. 」同步右移）。全書 188 處；名相注釋（粗體詞頭在行中）不修。可重複執行。 | `books/05 TaiGuangLin禅师讲《圆觉经》最终版.pdf` → 同檔（增量存檔） | 檔首 docstring |
-| `tool/build_jiangjing_pdfs.py` | 【一次性已完成】組裝講經系列 PDF：合併（六祖壇經 2 PDF、楞嚴 docx→PDF）、四十二章/楞伽直接複製原檔（已含目錄）、其餘補檔首可點擊 TOC（含頁數）。**講經 5 本 PDF 已產出且驗證無誤，若未來不再新增/修改講經 PDF，此工具與下方兩個音檔工具可一併刪除。** | 來源 PDF/docx → `books/06…09*.pdf` + 感恩 | 檔首 docstring |
-| `tool/series2audio.py` | 新錄音系列（義理／圓覺經／心經／金剛經）mp3·m4a → **去雜音（DNS64）+ 音量正規化** → opus（16kbps / mono / 48kHz / voip），輸出 `audio/yili/` 與 `audio/jiangjing/`。等於把 `jiangjing2audio.py` + `audio_denoiser/denoise_jiangjing.py` + `normalize_jiangjing_audio.py` 三步併成一步（模型每個 worker 只載入一次）。 | `~/Downloads/Tai师父*/音頻/*.mp3`／`*.m4a` → `audio/{yili,jiangjing}/*.opus` | 檔首 docstring |
+| `tool/series2audio.py` | 新錄音系列（義理／圓覺經／心經／金剛經）mp3·m4a → **去雜音（DNS64）+ 音量正規化** → opus（16kbps / mono / 48kHz / voip），輸出 `audio/yili/` 與 `audio/jiangjing/`。整合已移除的一次性三步（`jiangjing2audio.py`＋`normalize_jiangjing_audio.py`，加上 `audio_denoiser/denoise_jiangjing.py`）為一步（模型每個 worker 只載入一次）。 | `~/Downloads/Tai师父*/音頻/*.mp3`／`*.m4a` → `audio/{yili,jiangjing}/*.opus` | 檔首 docstring |
 | `tool/audio_index/` | 掃描整個 `audio/` 目錄產生入口頁 `audio/index.html`（粉色系、置頂大悲咒、類別下拉篩選）；新增任何 `*.opus` 都會自動進清單。 | `audio/**/*.opus` → `audio/index.html` | **`README.md`** + `index_template.html` |
-| `tool/jiangjing2audio.py` | 【一次性已完成】講經系列 mp3 → opus（16kbps / mono / 48kHz / voip），檔名含錄音日期，輸出到 `audio/jiangjing/<日期>Tai师父讲经·<系列>(<N>).opus`（平放）。**105 支 opus 已轉檔、正規化完畢；若講經音檔不再新增，可刪除。** | mp3 → `audio/jiangjing/*.opus` | 檔首 docstring |
-| `tool/normalize_jiangjing_audio.py` | 【一次性已完成】對齊既有答疑 opus 的平均音量（mean_volume ≈ -11 dB）：`volumedetect` 量平均音量 → `volume` + `alimiter` 補增益並重新編碼 opus。**原地更新** `audio/jiangjing/`。**已完成；若講經音檔不再新增，可刪除。** | `audio/jiangjing/*.opus`（原位） | 檔首 docstring |
 
 ### 已移除（不再保留）
 
@@ -39,6 +35,8 @@
 - ~~`tool/video_creator/`~~ — 離線 ffmpeg（聲音 + `animation.mp4` → 影片），站外獨立用途，已移除。
 - ~~`tool/session_knowledge/`~~ — 查證工程 session 紀錄生成器（`SESSION_KNOWLEDGE.md` → `session_knowledge.html`，內部 noindex 頁）。連同 `SESSION_KNOWLEDGE.md`、生成物、`.sk-*` CSS、`mm_harness.js` 於 2026-09 徹底移除，git 歷史可回溯。
 - ~~`tool/wenda2_knowledge/`~~、~~`tool/ebook_knowledge/`~~ — 兩套「複習用」電子書產生器（輸出＝`hidden/` 四本複習書＋入口，noindex 未公開頁）。`hidden/` 輸出於 2026-10-11 從部署移除（commit `15bbfd7`）；產生器連同內容 SoT（`src/*.py`）、語料快取與 README 同日整包刪除——git 歷史（`3c40066` 及更早）可完整回溯。
+- ~~`tool/fix_yuanjue_sutra_numbers.py`~~、~~`tool/build_jiangjing_pdfs.py`~~、~~`tool/jiangjing2audio.py`~~、~~`tool/normalize_jiangjing_audio.py`~~ — 四支已完成的一次性工具（2026-10-26 移除）：《圓覺經》PDF 條目編號粗體化（188 處）、講經 5 本 PDF 組裝、講經 105 支 mp3→opus 轉檔、opus 響度正規化。產物（`books/`、`audio/jiangjing/`）已落地且驗證，不需要工具本體；日後新增講經 PDF/音檔改用 `tool/series2audio.py`（音檔）並以 git 歷史回溯舊工具。
+- ~~一次性音頻對齊修正腳本~~（2026-10-26 移除）— `tool/fix_20250901_sunhong_merge.py`、`tool/fix_20250712_suxiaoya_remove.py`、`tool/pdf_audio_map/merge_20250901_sunhong.py`、`tool/pdf_audio_map/apply_audit_fixes_20261025.py`、`tool/pdf_audio_map/apply_20261026_fixes.py`、`tool/qa_split_ebook/realign_classified_seq.py`，連同兩份稽核報告 `audio_map_alignment_audit_20261025/26.md`。修正都已寫進映射 SoT（`audio_map/`）與版控產物，git 歷史（`aff3286`）可完整回溯。
 
 ---
 
@@ -48,23 +46,25 @@
 問答錄2/*.docx + *.pdf
         │
         ▼
-tool/word2ebook/  (gen_all.py)
+tool/word2ebook/  (gen_all.py —— stage 1：就地重建 wenda2_ebook/ 為 21 章時間序底稿)
    ├─ inject_chapters():           讀 audio_map/*.json（站台根目錄單一 SoT，← tool/pdf_audio_map/ 與校對 UI）
    └─ inject_word_chapters():      讀 audio_map2/*.json 的 chapter_question_ids
         │                            (由 link_chapters.py 寫回；分段調整後需重跑)
         ▼
-wenda2_ebook/  ← 建構產物，勿手改
+wenda2_ebook/  ← stage 1 底稿（01–12 Word ＋ 13–21 PDF 月度章）
+        │
+        ▼ tool/qa_split_ebook/  extract.py（stage 2：抽 13–21 → build/items.jsonl）
+        │                        gen_classified.py（stage 3：就地轉成 12 章分類合併版，
+        │                                              13–21 換成跳轉頁）
+        ▼
+wenda2_ebook/  ← 發布成品（分類合併版），勿手改
+   （wenda2_ebook_word/ 中繼目錄已於 2026-10-26 移除，不再存在）
 
 books/*.pdf ── tool/books2ebook/gen_all.py ──► ebook/
 
-講經系列（工具鏈，皆為**一次性組裝流程，已完成**）：
-來源 PDF / docx ── tool/build_jiangjing_pdfs.py ──► books/06…09*.pdf（+ 感恩）【可刪除】
-mp3 ── tool/jiangjing2audio.py ──► audio/jiangjing/<日期>Tai师父讲经·<系列>(<N>).opus（平放）【可刪除】
-                                        │
-                                        ▼ tool/normalize_jiangjing_audio.py（對齊答疑響度）【可刪除】
-                                （原地更新 audio/jiangjing/）
+講經 PDF/音檔的一次性組裝工具已移除（見上「已移除」；日後新音檔走 series2audio.py）：
 
-新錄音（後續新增系列，取代上面兩支）：
+新錄音（義理／圓覺經／心經／金剛經…）：
 ~/Downloads/Tai师父*/音頻/*.mp3|m4a
         │
         ▼ tool/series2audio.py（DNS64 去雜音 + 音量對齊 -11 dB + opus 16kbps）
@@ -164,7 +164,7 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
 
 > 有「最後播放」(`meta.lastPlayed`) 紀錄的段**任何腳本都不應改動**——人工校對音檔時間的完成判定以此為準。
 
-> 註：若未來不再新增/修改講經 PDF 或音檔，**上述標記【可刪除】的三個講經工具（`build_jiangjing_pdfs.py`、`jiangjing2audio.py`、`normalize_jiangjing_audio.py`）可整包移除**；`gen_all.py` 重建電子書時只需：讀 `books/*.pdf` → 解析/分段 → 產生 HTML → 依 `audio_map.py` 映射插入播放鈕，不再涉及 PDF 組裝與音檔轉檔。
+> 註：講經 PDF 組裝與音檔轉檔的一次性工具（`build_jiangjing_pdfs.py`、`jiangjing2audio.py`、`normalize_jiangjing_audio.py`）已於 2026-10-26 整包移除（git 歷史可回溯，見上「已移除」）。`gen_all.py` 重建電子書時只需：讀 `books/*.pdf` → 解析/分段 → 產生 HTML → 依映射插入播放鈕，不再涉及 PDF 組裝與音檔轉檔；日後新增講經音檔走 `tool/series2audio.py`。
 
 > 註：`.venv`（`tool/word_audio_map2/.venv`）是唯一裝有 docx / opencc / slugify /
 > yaml / jieba / pymupdf 的環境，`gen_all.py`（word2ebook）、`gen_all.py`（books2ebook）

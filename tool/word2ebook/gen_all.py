@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""一鍵完整重建 wenda2_ebook（Word + 兩份 PDF）。
+"""一鍵完整重建 wenda2_ebook（Word + 兩份 PDF）——stage 1 底稿。
 
 本腳本封裝問答錄 2 電子書的預設來源路徑，更新 Word/PDF
 來源後，在 ``tool/word2ebook/`` 目錄執行即可：
@@ -16,6 +16,17 @@
 
 2025年11月–2026年3月改由第二份 PDF 產生，不再餵入 ``qa/``。
 ``qa/`` 與線上校稿工具仍可獨立使用。
+
+⚠️ 兩段式流程（2026-10-26 起，``wenda2_ebook_word/`` 中繼目錄已移除）：
+本腳本是 **stage 1**，會把 ``wenda2_ebook/`` 清空重建為時間序 21 章
+底稿（01–12 Word ＋ 13–21 PDF 月度章）。發布版是 **分類合併版**，
+必須接著跑 stage 2/3（在 ``tool/qa_split_ebook/``）：
+
+    ../../word_audio_map2/.venv/bin/python extract.py         # stage 2
+    ../../word_audio_map2/.venv/bin/python gen_classified.py  # stage 3：就地轉成 12 章分類合併版
+
+只跑 stage 1 就提交，站上電子書會停在未分類的 21 章時間序版。
+``gen_all_and_push.py`` 已內建三段全跑。
 
 PDF 章節的逐段音檔播放鈕由站台根目錄 ``audio_map/*.json``（單一 SoT，
 即 ``/audio_map/`` 校稿 UI 使用的同一份）在建置時注入
@@ -39,7 +50,7 @@ DOCX_FILE = REPO_ROOT / "問答錄2" / "wenda2_250810_截止25年5月17日答疑
 PDF_FILE = REPO_ROOT / "問答錄2" / "2025年6月-9月答疑合并（未分类）.pdf"
 PDF_FILE_NOV_MAR = REPO_ROOT / "問答錄2" / "2025年11月-2026年3月答疑合并（未分类）.pdf"
 PDF_FILES = [PDF_FILE, PDF_FILE_NOV_MAR]
-OUTPUT_FOLDER = REPO_ROOT / "wenda2_ebook_word"
+OUTPUT_FOLDER = REPO_ROOT / "wenda2_ebook"
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))

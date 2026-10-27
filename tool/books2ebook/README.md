@@ -53,8 +53,10 @@
 重新數起。查播放鈕為何缺/多時，先對 `parsers` 切出的「（N）」編號，再對
 `AUDIO_MAP[series][N]`，**不要**拿書序去對音檔。
 
-單本 PDF 的組裝（合併、補 TOC、docx→PDF）另見 `tool/build_jiangjing_pdfs.py`，音源轉檔
-`tool/jiangjing2audio.py`、音量正規化 `tool/normalize_jiangjing_audio.py`。
+講經 PDF 組裝與音源轉檔的一次性工具（`build_jiangjing_pdfs.py`、`jiangjing2audio.py`、
+`normalize_jiangjing_audio.py`）已於 2026-10-26 移除——產物（`books/*.pdf`、
+`audio/jiangjing/*.opus`）已落地驗證；日後新增講經音檔改用 `tool/series2audio.py`
+（DNS64 去雜音＋響度對齊＋opus 轉檔一次完成），舊工具可自 git 歷史回溯。
 
 ### 講經段落跟播（audio_map3 段落時間注入）
 
@@ -148,9 +150,9 @@ Confluence 表格固定表頭概念），講解段落從其下方滑過。停留
 該條經文便沒有被輸出成經文區塊（當時「經文置頂」對它完全失效——2026-12
 起這兩本成書轉檔的書已不提供置頂，此修訂的持續效益是條目**各自成段**：
 經文樣式、搜尋錨點與每日精選的經文防線都正確覆蓋每一條）。
-已用 `tool/fix_yuanjue_sutra_numbers.py` **修訂原檔 PDF**（把條目編號改成與
-經文同粗體；文字內容完全不變，抽出後逐字相同），188 條經文條目於是各自成段、
-各自成經文區塊（`tests/test_sutra_markup.py` 有守門）。名相注釋
+已用一次性工具（`fix_yuanjue_sutra_numbers.py`——工具已移除、git 歷史可回溯）
+**修訂原檔 PDF**（把條目編號改成與經文同粗體；文字內容完全不變，抽出後逐字相同），
+188 條經文條目於是各自成段、各自成經文區塊（`tests/test_sutra_markup.py` 有守門）。名相注釋
 （「1. 无始：这是针对时间……」——粗體詞頭在行中）不在修訂範圍 ✓。
 
 ⚠️ 該修訂會讓《圓覺經》的**區塊數改變**（1781 → 1796）→ 全書後續段落的

@@ -6,7 +6,8 @@ build/items.jsonl：每則一行，含 question/answer 的 HTML 與純文字、�
 音檔段（鍵＝question_id，讀 audio_map/*.json——2026-10-26 起
 audio_map/ 即單一 SoT，與校稿 UI／pdf_audio_map 共用同一份）。
 
-本工具是實驗性質，獨立於線上 word2ebook 管線：不寫入 wenda2_ebook/、
+本工具是兩段式重建的 **stage 2**：唯讀解析 wenda2_ebook/ 的 13–21 章底稿
+（stage 1 由 tool/word2ebook/gen_all.py 產生）、不寫入 wenda2_ebook/、
 不改 tool/word2ebook/ 任何檔案。
 
 用法（用鎖版 venv）：
@@ -34,7 +35,9 @@ def date_supplement_lookup(qid: str) -> str:
     return _DATE_SUPPLEMENT.get(qid, "")
 
 ROOT = Path(__file__).resolve().parents[2]
-SRC = ROOT / "wenda2_ebook_word"
+# 就地流程（2026-10-26 起）：13–21 章是 stage 1（tool/word2ebook/gen_all.py）
+# 寫進 wenda2_ebook/ 的時間序底稿，stage 3 會把它們換成跳轉頁。
+SRC = ROOT / "wenda2_ebook"
 AUDIO_DIR = ROOT / "audio_map"
 BUILD = ROOT / "tool/qa_split_ebook" / "build"
 CHAPTERS = list(range(13, 22))

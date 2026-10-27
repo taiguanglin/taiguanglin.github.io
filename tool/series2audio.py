@@ -8,8 +8,8 @@
   3. 量去雜音後 mean_volume，編碼 opus 時補回增益：
      gain = TARGET_MEAN(-11.0 dB) − mean + COMP(1.4 dB，限幅器吃掉的平均值)
      濾鏡 `volume=<gain>dB,alimiter=limit=0.98:level=false:attack=3:release=60`
-  4. 輸出 opus 規格與 `tool/jiangjing2audio.py` 一致：
-     libopus / mono / 48 kHz / 16 kbps / -application voip
+  4. 輸出 opus 規格與既有 jiangjing opus（原一次性工具 jiangjing2audio.py 產出，
+     該工具已移除）一致：libopus / mono / 48 kHz / 16 kbps / -application voip
      （對齊既有 `2024年11月11日Tai師父答疑.opus` 的 17 kbps，同時長體積相當）
   5. 再量輸出的 mean_volume；與目標差 > 0.6 dB 就以修正增益重編一次。
 

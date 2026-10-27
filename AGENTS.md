@@ -16,7 +16,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 ## Golden rules
 
 1. **Know source vs output** before editing. If a path is generated, change the generator / source, then rebuild.
-2. **Never implement ebook features by editing `wenda2_ebook/`** — change `tool/word2ebook/`, then `python3 gen_all.py`. Same for play buttons: edit maps / injectors, not chapter HTML.
+2. **Never implement ebook features by editing `wenda2_ebook/`** — change `tool/word2ebook/`, then run the three-stage rebuild（`gen_all.py` → `tool/qa_split_ebook/extract.py` → `gen_classified.py`；一鍵版 `gen_all_and_push.py`，見「Main data flows」）. Same for play buttons: edit maps / injectors, not chapter HTML.
 3. **`wenda2/` is not ebook output** — hand-maintained 12-chapter TOC pages; regenerating the ebook does **not** update `wenda2/`.
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
 5. **Do not confuse site chrome with ebook assets** — root `shared.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`). Root `script.js` was retired (superseded by `shared.js`); only the ebook bundles keep an `assets/js/script.js`.
@@ -62,7 +62,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - ⚠️ **成書 PDF 轉檔的兩本（金剛經 心經／圓覺經）不提供「經文置頂」**（`BookConfig(sutra_pin=False)`）：置頂是為「段落中有獨立經文區塊＋隨段跟播」的講經書設計的閱讀輔助，成書轉檔的排版不適用。這兩本書：建置期不輸出 `.sutra-pin-group`/`.sutra-pin-host` 包層、頁面 `<body>` 帶 `no-sutra-pin`（09c 見到即整頁跳過，**連 runtime 後備包法也不做**——否則省下的包層會在瀏覽器裡被補回來）、沒有「經文置頂」toggle。經文區塊本身照常輸出，id/pid 不變。
     - ⚠️ **盡量只改「區塊種類」，不要改「區塊數／區塊文字」**：pid 是 `md5(段落文字 + 段序)`（見規則 13），區塊數一變全書後續段落的 pid 全變 → 已校對的跟播段落靜默失效、`search_index` 與 `daily_quotes.json` 的連結全斷。真的必須改區塊切分時（如修訂原檔 PDF），改完務必重跑 `tool/daily_quotes/` 的三支管線並用 `refresh_sample.py` 對齊樣本。守門：`tool/books2ebook/tests/test_sutra_markup.py`。
     - ⚠️ **連續的經文段落必須共用同一個 `.sutra-pin-host`**（僅講經系列；成書轉檔兩書無包層）：原書常把一段經文縮排切成數段（《圓覺經》每章 2–12 段、《六祖壇經》最多 16 段）。若每段各開一個 host，sticky 的活動範圍只剩經文自身高度 → **等於沒有置頂效果**。故 `html_generator.render_chapter` 把連續經文收進同一個 host，`09c-sutra-pin.js` 的量測（過長判定＋`--w2e-pin-reserve`）也須量 **host 整體高度**並對 host 清單去重。
-    - 《金剛經 心經》《圓覺經》的「解析」把經文條目排成「編號（一般字型）＋經文（粗體）」，會讓條目與後面的講解黏成同一段 → 該條沒有經文區塊（樣式／錨點／防線全失效）。已用 `tool/fix_yuanjue_sutra_numbers.py` **修訂原檔 PDF**（編號改成與經文同粗體；文字逐字不變）。 改動經文判定（或原檔）後，務必重跑 `tool/daily_quotes/` 的 `build_quotes.py` → `select_1095.py` → `audit_quotes.py`（經文錨點與 pid 變了，候選池與成品都會變；`candidates_sample.json` 的 url 也要用 `refresh_sample.py` 對齊）。
+    - 《金剛經 心經》《圓覺經》的「解析」把經文條目排成「編號（一般字型）＋經文（粗體）」，會讓條目與後面的講解黏成同一段 → 該條沒有經文區塊（樣式／錨點／防線全失效）。2026-10 已用一次性工具（`fix_yuanjue_sutra_numbers.py`，工具本身已移除、git 歷史可回溯）**修訂原檔 PDF**（編號改成與經文同粗體；文字逐字不變）。 改動經文判定（或原檔）後，務必重跑 `tool/daily_quotes/` 的 `build_quotes.py` → `select_1095.py` → `audit_quotes.py`（經文錨點與 pid 變了，候選池與成品都會變；`candidates_sample.json` 的 url 也要用 `refresh_sample.py` 對齊）。
 
 ---
 
@@ -109,7 +109,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 
 | Path | Purpose | Docs |
 |------|---------|------|
-| `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook_word/`（內部建置來源） | **`AGENTS.md`**, `README.md`, `openspec/` |
+| `tool/word2ebook/` | Word (+ PDF) → `wenda2_ebook/`（三段式就地重建：底稿 → qa_split extract → gen_classified 分類合併版） | **`AGENTS.md`**, `README.md`, `openspec/` |
 | `tool/books2ebook/` | `books/` 九本著作＋感恩卷首 → `ebook/` 坐禅+講經系列电子书 | `README.md` |
 | `tool/pdf_audio_map/` | Align PDF Q&A ↔ audio → `audio_map/*.json`（站台根目錄，單一 SoT） | `README.md` |
 | `tool/word_audio_map2/` | Align 時間序 Word 彙總 ↔ SRT → `audio_map2/*.json` | `README.md` |
@@ -126,15 +126,27 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 
 ### 問答錄 2 ebook (canonical “進入電子書”)
 
+三段式、單一目錄就地轉換（2026-10-26 起；`wenda2_ebook_word/` 中繼目錄已移除）：
+
 ```
 問答錄2/*.docx + *.pdf
         │
         ▼
 tool/word2ebook/gen_all.py  (+ audio_map/*.json inject)
+        │   stage 1：就地重建 wenda2_ebook/ 為 21 章時間序底稿
+        ▼
+   wenda2_ebook/  ← 此時是底稿，還不是成品
         │
         ▼
-   wenda2_ebook/     ← published; do not hand-edit for features
+tool/qa_split_ebook/extract.py      (stage 2：抽 13–21 → build/items.jsonl)
+tool/qa_split_ebook/gen_classified.py (stage 3：就地轉 12 章分類合併版，13–21 換跳轉頁)
+        │
+        ▼
+   wenda2_ebook/     ← published 成品；do not hand-edit for features
 ```
+
+⚠️ 只跑 stage 1 就提交＝站上電子書變回未分類 21 章版。三段全跑可用
+`tool/word2ebook/gen_all_and_push.py`（內建 pull → 三段重建 → commit → push）。
 
 ### 坐禅系列 + 講經系列电子书（books/ 九本著作＋感恩卷首）
 
@@ -193,7 +205,7 @@ mp3  →  (optional) tool/audio_denoiser
 
 | Want to change… | Edit… | Then… |
 |-----------------|-------|--------|
-| Ebook UI / behaviour / search / i18n | `tool/word2ebook/` | `python3 gen_all.py` (see tool `AGENTS.md`) |
+| Ebook UI / behaviour / search / i18n | `tool/word2ebook/` | 三段重建（`gen_all.py` → `tool/qa_split_ebook/extract.py` → `gen_classified.py`；一鍵版 `gen_all_and_push.py`） |
 | 坐禅系列电子书 UI / 搜尋 / 簡繁 | `tool/books2ebook/` | `python3 gen_all.py`（同上；資產影印 wenda2_ebook 並附 books.css）|
 | 段落跟播（校稿後要讀者真的用得到） | `audio_map3/*.json` ＋ `tool/books2ebook/` | `sync_para_pids.py --apply` → `gen_all.py` → `pytest tool/books2ebook/tests`（規則 13）|
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |

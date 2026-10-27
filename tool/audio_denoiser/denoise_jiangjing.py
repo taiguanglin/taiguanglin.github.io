@@ -41,7 +41,9 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 VENV_PY = SCRIPT_DIR / ".venv" / "bin" / "python"
 DENOISE_PY = SCRIPT_DIR / "denoise.py"
 
-# denoise.py 預設輸出 44.1k mono 128k mp3；重新編碼回 opus 的規格（與 jiangjing2audio.py 一致）
+# denoise.py 預設輸出 44.1k mono 128k mp3；重新編碼回 opus 的規格
+# （16kbps / mono / 48kHz / voip，與既有 jiangjing opus 一致；原一次性工具
+#   jiangjing2audio.py 已移除，新錄音改走 tool/series2audio.py）
 OPUS_ARGS = ["-vn", "-ac", "1", "-ar", "48000", "-c:a", "libopus", "-b:a", "16k",
              "-application", "voip"]
 

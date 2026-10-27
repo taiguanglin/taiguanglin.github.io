@@ -259,9 +259,9 @@ def test_commentary_is_not_mistaken_for_scripture(ebook_dir):
 def test_yuanjue_numbered_sutra_items_are_standalone(ebook_dir):
     """《圓覺經》「解析」的經文條目（編號＋粗體）必須**各自成段**。
 
-    2026-10 修訂原檔 PDF（`tool/fix_yuanjue_sutra_numbers.py`：把條目編號改成
-    與經文同粗體）後，條目不再與其後的講解黏成同一段 → 每條都能獨立輸出為
-    經文區塊。修訂前「1. 一切障碍即究竟觉。」會與講解黏成一段（被當成一般
+    2026-10 修訂原檔 PDF（一次性工具 `fix_yuanjue_sutra_numbers.py`——工具已
+    移除、git 歷史可回溯：把條目編號改成與經文同粗體）後，條目不再與其後的
+    講解黏成同一段 → 每條都能獨立輸出為經文區塊。修訂前「1. 一切障碍即究竟觉。」會與講解黏成一段（被當成一般
     段落）。這兩本書雖不提供經文置頂，條目仍必須各自成段——經文樣式、
     搜尋錨點與每日精選的經文防線都以「段」為單位。
     """

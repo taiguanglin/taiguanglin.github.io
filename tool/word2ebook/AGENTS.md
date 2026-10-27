@@ -21,8 +21,14 @@ Entry point: `python main.py <input.docx> <output_dir> [--pdf <a.pdf>] [--pdf <b
 Jun–Sep PDF + Nov–Mar PDF → `wenda2_ebook/`，含首頁與搜尋索引）。2025年11月–2026年3月
 改由第二份 PDF 產生，不再餵入 `qa/`。
 
+⚠️ **gen_all.py 只是三段式重建的 stage 1**（2026-10-26 起）：它把 `wenda2_ebook/`
+就地重建為 21 章「時間序底稿」（01–12 Word ＋ 13–21 PDF 月度章）。發布成品還要接著跑
+`tool/qa_split_ebook/extract.py`（stage 2）與 `gen_classified.py`（stage 3，就地轉成
+12 章分類合併版）——只跑 stage 1 就提交會讓線上電子書變回未分類版本。
+
 **重建並推送**：執行 `python3 gen_all_and_push.py` 會先 `git pull` 同步遠端到本地，
-再跑 `gen_all.py`，最後以 `git add :/`、`git commit`、`git push` 推上遠端（預設
+再依序跑三段（`gen_all.py` → `qa_split_ebook/extract.py` → `qa_split_ebook/gen_classified.py`），
+最後以 `git add :/`、`git commit`、`git push` 推上遠端（預設
 commit 訊息：`Rebuild wenda2_ebook from Word + PDFs`）。
 
 Each `--pdf` is parsed into month-based chapters (date + source sub-headings,
@@ -94,8 +100,8 @@ banner and (for the per-segment audio/badge UI) the `qa-meta-bar` markup.
 | File | Responsibility | Lines |
 |------|---------------|-------|
 | `main.py` | CLI entry, `Word2EBookConverter` orchestrator; `_parse_chapters` concatenates Word + PDF(s) + QA; repeatable `--pdf`/`--qa`/`--only-*` flags; shared `ImageHandler` | ~390 |
-| `gen_all.py` | One-shot full rebuild for 問答錄 2: Word + Jun–Sep PDF + Nov–Mar PDF → `wenda2_ebook/` (no `qa/`) | ~110 |
-| `gen_all_and_push.py` | `git pull` → `gen_all.py` → `git add :/` → `git commit` → `git push` from repo root; default message `Rebuild wenda2_ebook from Word + PDFs` | ~140 |
+| `gen_all.py` | 問答錄 2 重建 **stage 1**：Word + Jun–Sep PDF + Nov–Mar PDF → `wenda2_ebook/`（就地重建成 21 章時間序底稿，無 `qa/`；stage 2/3 見 `tool/qa_split_ebook/`） | ~110 |
+| `gen_all_and_push.py` | `git pull` → 三段重建（`gen_all.py` → `qa_split_ebook/extract.py` → `qa_split_ebook/gen_classified.py`）→ `git add :/` → `git commit` → `git push` from repo root; default message `Rebuild wenda2_ebook from Word + PDFs` | ~140 |
 | `run.py` | Thin launcher that fixes import path and delegates to `main.main()` | ~20 |
 | `models/document_models.py` | Dataclasses: `Chapter` (incl. `is_qa`), `TOCItem`, `QAPair`, `SearchItem`, `QACountMetadata`, `ConversionConfig` (incl. `pdf_files`, legacy `pdf_file`, `qa_folder`, `only_*`, start indexes) | ~210 |
 | `config/settings.py` | `Settings` dataclass, `Constants` (CDN URLs, filenames, search weights, answerer names, heading ranges, `QA_AUDIO_BASE`, `QA_INDEX_LINK`) | ~135 |
