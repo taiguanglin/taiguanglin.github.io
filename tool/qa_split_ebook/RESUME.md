@@ -162,10 +162,10 @@ cd tool/qa_split_ebook
 
 | 產物 | 內容 | 用途 |
 |---|---|---|
-| `wenda2_ebook/` | Word 01-12 + PDF 月度 13-21 | 正式上線版 |
+| stage 1 底稿 | Word 01-12 + PDF 月度 13-21 | 內部中間稿（發布前由 stage 3 覆寫） |
 | ~~wenda2_ebook_sep/~~ | （已移除）| — |
 | `audio_map/` | 音頻對齊校對 UI | 校對 PDF 條目的音頻時間 |
-| `wenda2_ebook/` | Word + PDF 全分類合併 | 看最終分類效果 |
+| `wenda2_ebook/`（stage 3 成品） | 12 個主題章（Word + PDF 全分類合併；原 13–21 月度章改為跳轉頁） | 正式上線版 |
 
 ### gen_classified.py 的兩個來源
 
