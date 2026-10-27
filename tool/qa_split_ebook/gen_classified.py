@@ -15,6 +15,8 @@
 內容合併：
   1. Word 章（wenda2_ebook/01–12.html，stage 1 底稿）——解析 HTML，按 h2/h3/h4 標題映射到樹路徑
   2. PDF 分類條目（build/classified/*.jsonl）——已有 ch/l2/l3/l4 樹路徑
+  2b. 補充條目（supplemental_items.json，版控 SoT）——PDF 有收錄但 qa-pair
+      抽取遺漏的內容（例：小節尾「师父说」結尾開示），人工歸類到樹路徑
   3. 每個樹節點下：Word 條目（保持原序）＋ PDF 條目（按日期排），合併輸出
 
 HTML 大小控制（與 wenda2_ebook 相同）：
@@ -269,6 +271,52 @@ def _wrap_qa(html: str, el_id: str, kind: str, who: str = "", time: str = "") ->
         return (f'<div class="answer" id="{el_id}">\n'
                 f'<div class="answer-meta">\n<span class="answerer">Taiguanglin</span>\n</div>\n'
                 f'<div class="answer-text">{html}</div>\n</div>')
+
+
+# ────────────────────────────────────────────────────────────── #
+# 來源 2b：補充條目（supplemental_items.json，版控 SoT）                    #
+#                                                                  #
+# 收錄 PDF 有收錄、但 extract.py（stage 2）只抽 article.qa-pair            #
+# 而帶不進分類版的內容——例如月度章 h2 小節尾「师父说」的結尾開示：           #
+# stage 1 渲染為小節尾 <p>（.qa-opening/.qa-closing 帶 play bar），        #
+# stage 2 不抽、stage 3 就掉了。此檔由人工整理（文字＝stage 1 底稿         #
+# 解析原文，僅加段落分隔），與 PDF 分類條目同一套包裝/排序/注入路徑。        #
+# ────────────────────────────────────────────────────────────── #
+SUPPLEMENTAL_FILE = Path(__file__).resolve().parent / "supplemental_items.json"
+
+
+def load_supplemental_items(audio_map: dict) -> list[dict]:
+    """supplemental_items.json → 與 extract_pdf_items 同構的條目清單。
+
+    有 audio 欄位的條目以合成 qid 註冊進 audio_map（供 inject_play_button
+    用同一條路徑注入播放鈕）——合成 qid（非 md5 十六進位）不會與 PDF
+    真實 qid 相撞，也不寫回 audio_map/*.json。
+    """
+    if not SUPPLEMENTAL_FILE.exists():
+        return []
+    d = json.loads(SUPPLEMENTAL_FILE.read_text(encoding="utf-8"))
+    import urllib.parse
+    out = []
+    for it in d.get("items", []):
+        qid = it["qid"]
+        aid = qid.replace("question-", "answer-", 1)
+        q_html = _wrap_qa(it["q_html"], qid, "question", it.get("who", ""),
+                         it.get("time", ""))
+        a_html = _wrap_qa(it["a_html"], aid, "answer", "Taiguanglin", "")
+        au = it.get("audio")
+        if au and au.get("start") is not None and au.get("end") is not None:
+            audio_map[qid] = {
+                "audio": urllib.parse.quote(f"../audio/{au['file']}"),
+                "start": au["start"],
+                "end": au["end"],
+            }
+            a_html = inject_play_button(a_html, qid, audio_map)
+        out.append({
+            "qid": qid, "aid": aid, "path": it["path"],
+            "q_html": q_html, "a_html": a_html,
+            "time": it.get("time", ""), "source": "supplemental",
+        })
+    return out
 
 
 # ────────────────────────────────────────────────────────────── #
@@ -612,6 +660,11 @@ def main():
     print(f"[gen_classified] 音頻映射（可注入播放鈕）：{len(audio_map_for_play)} 條")
     pdf_items = extract_pdf_items(audio_map_for_play)
     print(f"[gen_classified] PDF 分類條目：{len(pdf_items)} 條")
+    supplemental = load_supplemental_items(audio_map_for_play)
+    if supplemental:
+        for it in supplemental:
+            print(f"[gen_classified] 補充條目：{it['qid']} → {it['path']}")
+    pdf_items += supplemental
 
     for ch in CHAPTERS:
         word_blocks, word_toc = extract_word_blocks(ch)

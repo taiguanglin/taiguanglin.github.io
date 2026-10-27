@@ -37,6 +37,18 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
   孤兒片段→ nr。
 - 節內排序＝時間升冪（gen 自動處理）；原文逐字不改寫。
 
+## 補充條目（`supplemental_items.json`，版控 SoT）
+
+收錄 **PDF 有收錄、但 stage 1 渲染為小節尾 `<p>`、`extract.py` 只抽
+`article.qa-pair` 而帶不進分類版**的內容——例如月度章「师父说」的結尾開示
+（開場/結尾語在底稿是 h2 小節尾的 `.qa-opening`/`.qa-closing` 帶 play bar，
+不是 Q&A 卡片）。`gen_classified.py`（stage 3）讀本檔，把每條 `items` 以
+與 PDF 分類條目同一套包裝/排序/播放鈕注入路徑併入指定樹路徑（`path`）；
+`audio` 欄位以合成 qid 註冊播放鈕（不寫回 `audio_map/*.json`）。
+文字一律取自 **stage 1 底稿的解析原文**（與 PDF SoT 一致），只加段落分隔。
+新增條目後重跑 stage 2＋3 即生效（例：2025-11-13 微信結尾開示 → `12-01-13`
+正視神通）。
+
 ## 狀態與恢復
 
 - **跨 session 續跑必讀：[`RESUME.md`](RESUME.md)** ——進度判定、每批流程、
