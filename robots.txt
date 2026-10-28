@@ -16,6 +16,20 @@ Disallow: /audio_map3/
 # 內部工具的 noindex 標記位於：
 #   audio_map*/index.html    → 內部編輯 UI，無站內連結
 
+# 站內全文搜尋索引（兩套電子書各兩份 JSON ＋ 對應的 .hash）
+# 這些是給站內搜尋（MiniSearch + jieba）讀的資料檔，不是可索引內容：
+# 合計約 47 MB，讓爬蟲抓取只會浪費抓取資源、拖慢 re-crawl。
+# ⚠️ 只擋 JSON 與 .hash，不擋 assets/ 底下的 CSS/JS——搜尋引擎仍需要它們
+#    渲染頁面。
+Disallow: /wenda2_ebook/search_index.json
+Disallow: /wenda2_ebook/search_index_trad.json
+Disallow: /wenda2_ebook/search_index.json.hash
+Disallow: /wenda2_ebook/search_index_trad.json.hash
+Disallow: /ebook/search_index.json
+Disallow: /ebook/search_index_trad.json
+Disallow: /ebook/search_index.json.hash
+Disallow: /ebook/search_index_trad.json.hash
+
 # 主要頁面優化字詞：佛法,修行,打坐,雙盤,TaiGuangLin
 # 首頁：https://taiguanglin.info/
 # 故事列表：https://taiguanglin.info/stories.html

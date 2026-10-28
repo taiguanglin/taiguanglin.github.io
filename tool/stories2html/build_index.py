@@ -2,9 +2,7 @@
 # -*- coding: utf-8 -*-
 """改寫 stories.html 的故事清單、index.html 的故事卡片與 sitemap.xml，
 讓它們指向新的純 HTML 閱讀頁（原檔下載仍保留在各篇最末端）。"""
-import datetime
 import os
-import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -96,27 +94,22 @@ def patch_index_page():
 
 
 def patch_sitemap():
-    path = os.path.join(ROOT, "sitemap.xml")
-    with open(path, encoding="utf-8") as fh:
-        xml = fh.read()
+    """更新 sitemap.xml。
 
-    today = datetime.date.today().isoformat()
-    xml = re.sub(r"\n  <!-- ============ 實修故事.*?(?=\n</urlset>)", "", xml, flags=re.S)
-    entries = ["", "  <!-- ============ 實修故事（逐篇 HTML） ============ -->"]
-    for cat in CATEGORY_ORDER:
-        for d in [x for x in DOCS if x["category"] == cat]:
-            entries.append("")
-            entries.append("  <!-- %s｜%s -->" % (d["category"], d["title"]))
-            entries.append("  <url>")
-            entries.append("    <loc>%s/stories/%s.html</loc>" % (SITE, d["slug"]))
-            entries.append("    <lastmod>%s</lastmod>" % today)
-            entries.append("    <changefreq>yearly</changefreq>")
-            entries.append("    <priority>0.7</priority>")
-            entries.append("  </url>")
-    xml = xml.replace("\n</urlset>", "\n".join(entries) + "\n\n</urlset>")
-    with open(path, "w", encoding="utf-8") as fh:
-        fh.write(xml)
-    return path
+    sitemap 的單一產生器是 ``tool/site_chrome/sitemap.py``（依實際發布檔案
+    反推 URL 與 lastmod，並跳過 noindex / meta refresh 頁）。本函式只做
+    代理，避免這裡再維護一份會過期的 URL 清單。
+    """
+    import importlib.util
+
+    path = os.path.join(ROOT, "tool", "site_chrome", "sitemap.py")
+    spec = importlib.util.spec_from_file_location("_site_chrome_sitemap", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入 sitemap 產生器：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.write_sitemap()
+    return os.path.join(ROOT, "sitemap.xml")
 
 
 if __name__ == "__main__":

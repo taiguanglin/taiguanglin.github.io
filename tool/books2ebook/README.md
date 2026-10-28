@@ -314,3 +314,28 @@ cd tool/books2ebook
 ## 與站點的連動
 
 Github Pages 的首頁（`index.html`）在「學習資料」區塊收錄指向 `ebook/` 的卡片（與其它外掛工具的入口連動，對應於下方的樣式）。
+
+### SEO（搜尋引擎最佳化，2026-10-28）
+
+`ebook/` 的 22 個頁面全部是伺服器端渲染的完整全文（每頁 gzip 約 0.1–0.5 MB），
+**檔案大不是被索引的障礙**——Google 沒有公布 HTML 檔案大小上限（50 MB／50,000
+URL 是 **sitemap** 的限制，不是 HTML 的）。真正會影響索引的是：
+
+| 項目 | 現況 |
+|------|------|
+| `meta description` | 每頁帶段落數（例：「講《楞伽經》（4265 段）——…」），由 `config.SEO_CHAPTER_DESCRIPTION` 的 `{count}` 佔位符在建置期填入，不寫死 |
+| JSON-LD（結構化資料） | 每頁恰好一個 `<script type="application/ld+json">`：`Book`（系列）＋`Chapter`＋`WebPage`＋`BreadcrumbList` |
+| canonical / hreflang | 每頁 self-canonical ＋ `zh-Hant`／`zh-Hans`／`x-default` 三件套（既有） |
+| sitemap | 由 `tool/site_chrome/sitemap.py` 統一產生，`lastmod` 取 git 最後異動日，不輸出 Google 忽略的 priority／changefreq |
+| 站內搜尋索引 | `ebook/search_index*.json`（＋`.hash`，共約 9.4 MB）由 `robots.txt` `Disallow` 擋下——crawler 抓它只會浪費抓取資源 |
+
+⚠️ **繁體頁的 JSON-LD 必須在整頁轉換之後注入**：`convert_html_to_trad()` 刻意不
+處理 `<script>`／`<style>` 內文，所以 `main.py` 用 `_convert_payload_to_trad()`
+自行轉繁後才 `inject_jsonld()`。若改成在轉換前注入，繁體頁的結構化資料會是簡體。
+
+⚠️ 改章節描述模板時**不要把數字寫死**（舊版 `seo.index_description` 寫死
+「9,241 則問答」，實際已 9,242 則，搜尋摘要因此與頁面矛盾）。
+
+守門：`tool/books2ebook/tests/test_seo_jsonld.py`（JSON-LD 與描述）＋
+`tool/site_chrome/check_site.py`（產物層：每頁一個 JSON-LD、描述長度、
+self-canonical、hreflang 三件套、必須在 sitemap 內）。

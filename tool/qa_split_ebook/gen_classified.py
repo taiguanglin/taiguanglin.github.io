@@ -777,13 +777,27 @@ def main():
     total = sum(1 for ch in all_chapters for _ in range(ch.content.count('class="question"')))
 
     # 舊章節 13-21 跳轉頁（外部已分享的 URL 不 404）
+    #
+    # SEO（2026-10-28）：這些頁原本只有 meta refresh，沒有 canonical／noindex，
+    # 公開搜尋結果仍以舊標題把它們當成可索引內容。處置：
+    #   · <meta name="robots" content="noindex, follow"> — 不進索引，但把
+    #     連結權重流向總目錄（follow）。
+    #   · <link rel="canonical"> 指向對應語系的總目錄 —— canonical 與 sitemap
+    #     指向不同 URL 會互相矛盾，這裡兩者一致（跳轉頁不在 sitemap）。
+    #   · 每頁唯一 title／description（原本 18 頁共用同一個標題）。
+    #   · 跳轉延遲 3 秒 → 1 秒（crawler 與讀者都更快抵達目的地）。
+    # GitHub Pages 無法自訂 301；若日後前面加了 CDN/edge redirect，可再升級
+    # 成真正的永久轉址（見 tool/site_chrome/README.md）。
     _REDIRECT_TPL = """<!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="{lang}">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>此章節已重新分類</title>
-<meta http-equiv="refresh" content="3;url=index{suffix}.html"/>
+<title>{title}</title>
+<meta name="description" content="{description}"/>
+<meta name="robots" content="noindex, follow"/>
+<link rel="canonical" href="{canonical}"/>
+<meta http-equiv="refresh" content="1;url=index{suffix}.html"/>
 <style>
 body{{font-family:-apple-system,sans-serif;background:#f5f5f5;display:flex;justify-content:center;align-items:center;min-height:100vh;color:#333;text-align:center;padding:2rem}}
 .box{{background:#fff;border-radius:12px;padding:3rem;box-shadow:0 4px 12px rgba(0,0,0,.08);max-width:500px}}
@@ -796,17 +810,52 @@ a:hover{{text-decoration:underline}}
 <body>
 <div class="box">
 <h1>📌 此章節已重新分類</h1>
-<p>第 {ch} 章的內容已按主題重新分類到第 01–12 章中。</p>
-<p>將在 3 秒後自動跳轉到總目錄。</p>
+<p>{body_text}</p>
+<p>將在 1 秒後自動跳轉到總目錄。</p>
 <p><a href="index{suffix}.html">👉 立即前往總目錄</a></p>
 </div>
 </body>
 </html>"""
+    _SITE_BASE = "https://taiguanglin.info/wenda2_ebook"
     for old_ch in range(13, 22):
         for suffix in ("", "_trad"):
-            page = _REDIRECT_TPL.format(ch=old_ch, suffix=suffix)
+            is_trad = bool(suffix)
+            if is_trad:
+                _title = f"第 {old_ch} 章已重新分類｜《坐禪之問答錄2》"
+                _description = (
+                    f"《坐禪之問答錄2》第 {old_ch} 章的內容已按主題重新分類到第 01–12 章，"
+                    "本頁自動導向電子書總目錄。"
+                )
+                _body_text = f"第 {old_ch} 章的內容已按主題重新分類到第 01–12 章中。"
+            else:
+                _title = f"第 {old_ch} 章已重新分类｜《坐禅之问答录2》"
+                _description = (
+                    f"《坐禅之问答录2》第 {old_ch} 章的内容已按主题重新分类到第 01–12 章，"
+                    "本页自动导向电子书总目录。"
+                )
+                _body_text = f"第 {old_ch} 章的内容已按主题重新分类到第 01–12 章中。"
+            page = _REDIRECT_TPL.format(
+                ch=old_ch,
+                suffix=suffix,
+                lang="zh-Hant" if is_trad else "zh-Hans",
+                title=_title,
+                description=_description,
+                body_text=_body_text,
+                canonical=f"{_SITE_BASE}/index{suffix}.html",
+            )
             (DST / f"{old_ch:02d}{suffix}.html").write_text(page, encoding="utf-8")
     print("✅ 舊章節跳轉頁（13-21）完成")
+
+    # sitemap.xml 同步更新（單一產生器：tool/site_chrome/sitemap.py）。
+    # 跳轉頁帶 noindex → 產生器會自動排除，不會混進 sitemap。
+    import importlib.util as _ilu
+
+    _sitemap_py = ROOT / "tool" / "site_chrome" / "sitemap.py"
+    _spec = _ilu.spec_from_file_location("_site_chrome_sitemap", _sitemap_py)
+    _sitemap_mod = _ilu.module_from_spec(_spec)
+    _spec.loader.exec_module(_sitemap_mod)
+    _sitemap_mod.write_sitemap()
+    print("✅ sitemap.xml 已更新")
 
     print(f"\n[gen_classified] 完成 → {DST}（{total} 則）")
 

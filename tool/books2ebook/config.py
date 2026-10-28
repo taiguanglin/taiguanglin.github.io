@@ -54,7 +54,7 @@ SEO_INDEX_DESCRIPTION = (
     "支持全文检索、书签与简繁切换。"
 )
 SEO_CHAPTER_DESCRIPTION = (
-    "{title}——TaiGuangLin 禅师著述/讲经全文电子书，支持全文检索与简繁切换。"
+    "{title}（{count} 段）——TaiGuangLin 禅师著述/讲经全文电子书，支持全文检索与简繁切换。"
 )
 
 # 搜尋類型（與 word2ebook 的 search_index.json 相容）

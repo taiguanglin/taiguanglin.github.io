@@ -1,5 +1,6 @@
 """HTML 生成器"""
 
+import json
 import os
 import re
 from html import escape
@@ -156,10 +157,16 @@ class HTMLGenerator:
             # SEO：章名清理（去前導章號）→ <title>／og:title；meta 由 _build_seo_head 組裝
             clean_title = self._seo_clean_title(title)
             seo_title = self._build_seo_title(clean_title, is_traditional)
-            seo_description = get_i18n_text(
-                "seo.chapter_description", is_traditional,
-                "《坐禪之問答錄2》" + clean_title,
-            ).format(title=clean_title)
+            chapter_qa_count = self._chapter_qa_count(chapter)
+            seo_description = self._format_seo_text(
+                get_i18n_text(
+                    "seo.chapter_description", is_traditional,
+                    "《坐禪之問答錄2》" + clean_title,
+                ),
+                title=clean_title,
+                qa_count=chapter_qa_count,
+                chapter_count=len(chapters),
+            )
             # 層級按鈕必須反映「該章實際有哪些層級」且 active 標在實際顯示層級，
             # 否則 JS detectAndHideLevelButtons()／selectValidLevel() 啟動後會
             # 藏按鈕、搬高亮，控制列位移且按鈕跳動。
@@ -192,7 +199,17 @@ class HTMLGenerator:
                 html_lang="zh-Hant" if is_traditional else "zh-Hans",
                 seo_title=seo_title,
                 seo_head=self._build_seo_head(
-                    filename, is_traditional, seo_title, seo_description, og_type="article"
+                    filename, is_traditional, seo_title, seo_description, og_type="article",
+                    jsonld=self._build_jsonld_chapter(
+                        chapter=chapter,
+                        position=i + 1,
+                        total_chapters=len(chapters),
+                        is_traditional=is_traditional,
+                        filename=filename,
+                        seo_title=seo_title,
+                        description=seo_description,
+                        clean_title=clean_title,
+                    ),
                 ),
             )
 
@@ -214,8 +231,13 @@ class HTMLGenerator:
             source_filename = self._build_source_filename(is_traditional=True)
             book_title_locale = self.i18n_processor.to_traditional(book_title)
             seo_title = self._build_seo_title(book_title_locale, is_traditional, with_chapter=False)
-            seo_description = get_i18n_text(
-                "seo.index_description", is_traditional, book_title_locale
+            total_qa = sum(self._chapter_qa_count(ch) for ch in chapters)
+            seo_description = self._format_seo_text(
+                get_i18n_text(
+                    "seo.index_description", is_traditional, book_title_locale
+                ),
+                qa_count=total_qa,
+                chapter_count=len(chapters),
             )
             html_content = self.i18n_template_manager.render_index(
                 is_traditional=True,
@@ -227,7 +249,11 @@ class HTMLGenerator:
                 html_lang="zh-Hant",
                 seo_title=seo_title,
                 seo_head=self._build_seo_head(
-                    index_filename, is_traditional, seo_title, seo_description, og_type="website"
+                    index_filename, is_traditional, seo_title, seo_description, og_type="website",
+                    jsonld=self._build_jsonld_index(
+                        chapters, book_title_locale, is_traditional,
+                        index_filename, seo_title, seo_description,
+                    ),
                 ),
             )
         else:
@@ -237,8 +263,13 @@ class HTMLGenerator:
             source_filename = self._build_source_filename(is_traditional=False)
             book_title_locale = self.i18n_processor.ensure_simplified(book_title)
             seo_title = self._build_seo_title(book_title_locale, is_traditional, with_chapter=False)
-            seo_description = get_i18n_text(
-                "seo.index_description", is_traditional, book_title_locale
+            total_qa = sum(self._chapter_qa_count(ch) for ch in chapters)
+            seo_description = self._format_seo_text(
+                get_i18n_text(
+                    "seo.index_description", is_traditional, book_title_locale
+                ),
+                qa_count=total_qa,
+                chapter_count=len(chapters),
             )
             html_content = self.i18n_template_manager.render_index(
                 is_traditional=False,
@@ -251,7 +282,11 @@ class HTMLGenerator:
                 html_lang="zh-Hans",
                 seo_title=seo_title,
                 seo_head=self._build_seo_head(
-                    index_filename, is_traditional, seo_title, seo_description, og_type="website"
+                    index_filename, is_traditional, seo_title, seo_description, og_type="website",
+                    jsonld=self._build_jsonld_index(
+                        chapters, book_title_locale, is_traditional,
+                        index_filename, seo_title, seo_description,
+                    ),
                 ),
             )
 
@@ -268,6 +303,27 @@ class HTMLGenerator:
         text = re.sub(r"\s*[（(]\d+[)）]\s*$", "", text)
         text = text.strip()
         return text or (raw_title or "").strip()
+
+    @staticmethod
+    def _format_seo_text(text: str, **values) -> str:
+        """安全取代 SEO 文案裡的 ``{placeholder}``。
+
+        用手動取代而非 ``str.format``：文案來自 config.yaml，未來新增段落
+        文字裡若出現 ``{}`` 也不會讓建置整包失敗（未提供的 placeholder 保持
+        原樣，Google 只看得到殘留的 ``{qa_count}`` 而不會看到 KeyError）。
+        """
+        out = text or ""
+        for key, value in values.items():
+            out = out.replace("{" + key + "}", str(value))
+        return out
+
+    def _chapter_qa_count(self, chapter: Chapter) -> int:
+        """章節的問答數（H1 計數與 SEO 描述共用同一來源，避免兩處數字不一致）。"""
+        if chapter.qa_count_metadata:
+            return self.toc_generator.get_chapter_level_qa_count(chapter)
+        if chapter.content:
+            return self.toc_generator.get_total_qa_count_for_chapter(chapter.content)
+        return 0
 
     def _build_seo_title(
         self, main_title: str, is_traditional: bool, with_chapter: bool = True
@@ -286,9 +342,11 @@ class HTMLGenerator:
         seo_title: str,
         description: str,
         og_type: str,
+        jsonld: str = "",
     ) -> str:
         """組裝章節／首頁的 SEO head：meta description、canonical、
-        zh-Hans↔zh-Hant hreflang（x-default 依設定指向繁體）、og: 分享標籤。"""
+        zh-Hans↔zh-Hant hreflang（x-default 依設定指向繁體）、og: 分享標籤，
+        以及 JSON-LD 結構化資料（Book／Chapter／BreadcrumbList）。"""
         base = f"{Constants.SITE_BASE_URL}/{Constants.EBOOK_URL_PATH}/"
         canonical = base + filename
         if is_traditional:
@@ -308,21 +366,201 @@ class HTMLGenerator:
         )
         og_image = f"{Constants.SITE_BASE_URL}/{Constants.OG_IMAGE_PATH}"
         site_name = get_i18n_text("seo.site_name", is_traditional, "TaiGuangLin 禪師")
-        return "\n".join(
-            [
-                f'<meta name="description" content="{escape(description)}">',
-                f'<link rel="canonical" href="{canonical}">',
-                f'<link rel="alternate" hreflang="zh-Hant" href="{trad_href}">',
-                f'<link rel="alternate" hreflang="zh-Hans" href="{simp_href}">',
-                f'<link rel="alternate" hreflang="x-default" href="{default_href}">',
-                f'<meta property="og:type" content="{og_type}">',
-                f'<meta property="og:title" content="{escape(seo_title)}">',
-                f'<meta property="og:description" content="{escape(description)}">',
-                f'<meta property="og:url" content="{canonical}">',
-                f'<meta property="og:image" content="{og_image}">',
-                f'<meta property="og:site_name" content="{escape(site_name)}">',
-            ]
-        )
+        lines = [
+            f'<meta name="description" content="{escape(description)}">',
+            f'<link rel="canonical" href="{canonical}">',
+            f'<link rel="alternate" hreflang="zh-Hant" href="{trad_href}">',
+            f'<link rel="alternate" hreflang="zh-Hans" href="{simp_href}">',
+            f'<link rel="alternate" hreflang="x-default" href="{default_href}">',
+            f'<meta property="og:type" content="{og_type}">',
+            f'<meta property="og:title" content="{escape(seo_title)}">',
+            f'<meta property="og:description" content="{escape(description)}">',
+            f'<meta property="og:url" content="{canonical}">',
+            f'<meta property="og:image" content="{og_image}">',
+            f'<meta property="og:site_name" content="{escape(site_name)}">',
+        ]
+        if jsonld:
+            lines.append(jsonld)
+        return "\n".join(lines)
+
+    # ------------------------------------------------------------------ #
+    # JSON-LD（結構化資料）                                                 #
+    # ------------------------------------------------------------------ #
+
+    def _jsonld_script(self, payload: Dict) -> str:
+        """把 payload 輸出成 <script type="application/ld+json">。
+
+        ``<`` 一律轉成 ``<``（JSON 的 unicode 跳脫）——避免 JSON 字串裡
+        出現 ``</script>`` 提前關掉 script 區塊（XSS 向的常見坑）。
+        """
+        data = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c")
+        return f'<script type="application/ld+json">{data}</script>'
+
+    def _jsonld_lang(self, is_traditional: bool) -> str:
+        return "zh-Hant" if is_traditional else "zh-Hans"
+
+    def _jsonld_author(self, is_traditional: bool) -> Dict:
+        name = get_i18n_text("seo.site_name", is_traditional, "TaiGuangLin 禪師")
+        return {"@type": "Person", "name": name}
+
+    def _build_jsonld_index(
+        self,
+        chapters: List[Chapter],
+        book_title: str,
+        is_traditional: bool,
+        filename: str,
+        seo_title: str,
+        description: str,
+    ) -> str:
+        """首頁 JSON-LD：Book（列出各章 hasPart）＋ WebPage ＋ BreadcrumbList。"""
+        base = f"{Constants.SITE_BASE_URL}/{Constants.EBOOK_URL_PATH}/"
+        index_url = base + filename
+        lang = self._jsonld_lang(is_traditional)
+        has_part = []
+        for position, chapter in enumerate(chapters, start=1):
+            if is_traditional:
+                chapter_title = self._seo_clean_title(
+                    self.i18n_processor.to_traditional(chapter.title)
+                )
+                chapter_filename = self.i18n_processor.get_traditional_filename(
+                    chapter.filename
+                )
+            else:
+                chapter_title = self._seo_clean_title(
+                    self.i18n_processor.ensure_simplified(chapter.title)
+                )
+                chapter_filename = chapter.filename
+            has_part.append(
+                {
+                    "@type": "Chapter",
+                    "position": position,
+                    "name": chapter_title,
+                    "url": base + chapter_filename,
+                }
+            )
+        payload = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Book",
+                    "@id": f"{index_url}#book",
+                    "name": book_title,
+                    "author": self._jsonld_author(is_traditional),
+                    "inLanguage": lang,
+                    "url": index_url,
+                    "image": f"{Constants.SITE_BASE_URL}/{Constants.OG_IMAGE_PATH}",
+                    "hasPart": has_part,
+                },
+                {
+                    "@type": "WebPage",
+                    "@id": f"{index_url}#webpage",
+                    "url": index_url,
+                    "name": seo_title,
+                    "description": description,
+                    "inLanguage": lang,
+                    "isPartOf": {"@id": f"{index_url}#book"},
+                    "breadcrumb": {"@id": f"{index_url}#breadcrumb"},
+                },
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": f"{index_url}#breadcrumb",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": get_i18n_text(
+                                "seo.site_name", is_traditional, "TaiGuangLin 禪師"
+                            ),
+                            "item": f"{Constants.SITE_BASE_URL}/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": book_title,
+                            "item": index_url,
+                        },
+                    ],
+                },
+            ],
+        }
+        return self._jsonld_script(payload)
+
+    def _build_jsonld_chapter(
+        self,
+        chapter: Chapter,
+        position: int,
+        total_chapters: int,
+        is_traditional: bool,
+        filename: str,
+        seo_title: str,
+        description: str,
+        clean_title: str,
+    ) -> str:
+        """章節頁 JSON-LD：Book ＋ Chapter ＋ WebPage ＋ BreadcrumbList。"""
+        base = f"{Constants.SITE_BASE_URL}/{Constants.EBOOK_URL_PATH}/"
+        index_filename = "index_trad.html" if is_traditional else "index.html"
+        index_url = base + index_filename
+        url = base + filename
+        lang = self._jsonld_lang(is_traditional)
+        book_title = get_book_title(is_traditional, "")
+        payload = {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "Book",
+                    "@id": f"{index_url}#book",
+                    "name": book_title,
+                    "author": self._jsonld_author(is_traditional),
+                    "inLanguage": lang,
+                    "url": index_url,
+                },
+                {
+                    "@type": "Chapter",
+                    "@id": f"{url}#chapter",
+                    "name": clean_title,
+                    "position": position,
+                    "url": url,
+                    "isPartOf": {"@id": f"{index_url}#book"},
+                },
+                {
+                    "@type": "WebPage",
+                    "@id": f"{url}#webpage",
+                    "url": url,
+                    "name": seo_title,
+                    "description": description,
+                    "inLanguage": lang,
+                    "isPartOf": {"@id": f"{url}#chapter"},
+                    "breadcrumb": {"@id": f"{url}#breadcrumb"},
+                },
+                {
+                    "@type": "BreadcrumbList",
+                    "@id": f"{url}#breadcrumb",
+                    "itemListElement": [
+                        {
+                            "@type": "ListItem",
+                            "position": 1,
+                            "name": get_i18n_text(
+                                "seo.site_name", is_traditional, "TaiGuangLin 禪師"
+                            ),
+                            "item": f"{Constants.SITE_BASE_URL}/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 2,
+                            "name": book_title,
+                            "item": index_url,
+                        },
+                        {
+                            "@type": "ListItem",
+                            "position": 3,
+                            "name": clean_title,
+                            "item": url,
+                        },
+                    ],
+                },
+            ],
+        }
+        return self._jsonld_script(payload)
 
     def _build_traditional_chapter_list(self, chapters: List[Chapter]) -> List[Chapter]:
         """复制 chapters 列表，将 title/toc_items 转为繁体，保留元数据引用。"""
@@ -498,12 +736,7 @@ class HTMLGenerator:
         self, chapter_title_html: str, chapter: Chapter, is_traditional: bool
     ) -> str:
         """将章节问答总数注入到 h1 标签内部。"""
-        if chapter.qa_count_metadata:
-            total_qa = self.toc_generator.get_chapter_level_qa_count(chapter)
-        elif chapter.content:
-            total_qa = self.toc_generator.get_total_qa_count_for_chapter(chapter.content)
-        else:
-            total_qa = 0
+        total_qa = self._chapter_qa_count(chapter)
 
         if total_qa > 0 and "</h1>" in chapter_title_html:
             count_span = f'<span class="chapter-qa-count">({total_qa})</span>'

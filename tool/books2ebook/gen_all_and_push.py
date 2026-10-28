@@ -54,6 +54,17 @@ def _load_env_guard():
     return module
 
 
+def _load_indexnow():
+    """載入 tool/site_chrome/indexnow.py（推送後通知 Bing 等參與者重抓）。"""
+    path = TOOL_DIR.parent / "site_chrome" / "indexnow.py"
+    spec = importlib.util.spec_from_file_location("_site_chrome_indexnow", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("無法載入 IndexNow 通知腳本：%s" % path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
 def _run_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         ["git", *args],
@@ -108,11 +119,19 @@ def rebuild() -> int:
     return 0
 
 
-def commit_and_push(message: str) -> int:
+def commit_and_push(message: str, indexnow: bool = False) -> int:
     print()
     print("📦 準備提交並推送（repo 根目錄）")
     print(f"   {REPO_ROOT}")
     print()
+
+    # IndexNow：URL 清單在 commit 前抓，通知在 push 成功後才送。
+    indexnow_urls: list[str] = []
+    if indexnow:
+        try:
+            indexnow_urls = _load_indexnow().changed_urls()
+        except Exception as exc:
+            print(f"⚠️  IndexNow URL 收集失敗（略過通知）：{exc}")
 
     stage = _run_git(["add", ":/"], check=False)
     if stage.returncode != 0:
@@ -150,6 +169,14 @@ def commit_and_push(message: str) -> int:
         print(push.stderr.strip())
 
     print("✅ 已提交並推送到遠端")
+
+    if indexnow:
+        try:
+            module = _load_indexnow()
+            if module.notify_urls(indexnow_urls) != 0:
+                print("⚠️  IndexNow 通知未成功（不影響部署）")
+        except Exception as exc:
+            print(f"⚠️  IndexNow 通知失敗（不影響部署）：{exc}")
     return 0
 
 
@@ -162,6 +189,11 @@ def create_argument_parser() -> argparse.ArgumentParser:
         "--message",
         default=DEFAULT_COMMIT_MESSAGE,
         help=f"git commit 訊息（預設：{DEFAULT_COMMIT_MESSAGE!r}）",
+    )
+    parser.add_argument(
+        "--indexnow",
+        action="store_true",
+        help="推送成功後送出 IndexNow 通知（Bing 等參與者立刻重抓）",
     )
     return parser
 
@@ -186,7 +218,7 @@ def main_entry() -> int:
         print("❌ 重建失敗，略過 commit 與 push")
         return build_rc
 
-    return commit_and_push(args.message)
+    return commit_and_push(args.message, indexnow=args.indexnow)
 
 
 if __name__ == "__main__":

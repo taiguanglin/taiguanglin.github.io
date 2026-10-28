@@ -65,6 +65,14 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
     - ⚠️ **例外：章首「全文經文」絕不置頂**（2026-12 修正）：《四十二章經》每章開頭先用楷體排一次該章**完整經文**（文字以章標題開頭，例：「第十五章请问力明」＋全章經文）。它是章首引文、不是正在講解的經文段——若依上面的「連續經文共用 host」規則與緊接的第一句重引經文併進同一 host（第 2/3/5/15/16/31 章），置頂時「全文＋第一句」會一起停在視窗頂；即使自成一 host，章首講解捲動時整段全文也會停留。故 `html_generator._is_chapter_full_text()`（文字以最近一個標題開頭）判定的章首全文經文**不包 host/group**、另加 `.sutra-full` 標記，`09c-sutra-pin.js` 的經文清單以 `:not(.sutra-full)` 排除（runtime 後備包法同樣不包它）。只有講解中逐句重引的經文段置頂。id/pid 不變（搜尋錨點、跟播、每日精選經文防線不受影響）。守門：`tool/books2ebook/tests/test_sutra_pin_wrappers.py`（合成渲染）＋ `test_sutra_markup.py`（建置產物）。
     - 《金剛經 心經》《圓覺經》的「解析」把經文條目排成「編號（一般字型）＋經文（粗體）」，會讓條目與後面的講解黏成同一段 → 該條沒有經文區塊（樣式／錨點／防線全失效）。2026-10 已用一次性工具（`fix_yuanjue_sutra_numbers.py`，工具本身已移除、git 歷史可回溯）**修訂原檔 PDF**（編號改成與經文同粗體；文字逐字不變）。 改動經文判定（或原檔）後，務必重跑 `tool/daily_quotes/` 的 `build_quotes.py` → `select_1095.py` → `audit_quotes.py`（經文錨點與 pid 變了，候選池與成品都會變；`candidates_sample.json` 的 url 也要用 `refresh_sample.py` 對齊）。
 
+15. **搜尋引擎最佳化（SEO）的單一真相來源** — 電子書頁面「檔案很大」**不是**被索引的障礙（Google 未公布 HTML 大小上限；50 MB／50,000 URL 是 **sitemap** 的限制）。真正會讓公開搜尋結果停在舊版的，是下列四件事，都由產生器負責、不得手改產物：
+    - **`sitemap.xml` 由 `tool/site_chrome/sitemap.py` 唯一產生**（`--check` 可驗證一致性）。`<lastmod>` 取 `git log -1 --format=%cs`（必須在版本控制下產物才準），**不輸出 `<priority>`／`<changefreq>`**（Google 明確忽略）。電子書重建後會自動重產（`tool/books2ebook/gen_all.py`、`tool/qa_split_ebook/gen_classified.py` 皆呼叫）。⚠️ **不要手改 `sitemap.xml`**——下次任何生成器執行都會覆蓋。
+    - **跳轉頁（`wenda2_ebook/13–21*.html`）必須 `noindex, follow` ＋ canonical ＋ 唯一 title/description，且不得出現在 sitemap**（`tool/qa_split_ebook/gen_classified.py` 的 `_REDIRECT_TPL`）。`meta refresh` 只是臨時導向，Google 不視為 301。
+    - **每個電子書頁面必須恰好一個 JSON-LD**（`Book`＋`Chapter`＋`WebPage`＋`BreadcrumbList`）與**動態描述**（問答數／段落數由建置期計算，**不得寫死**——舊版寫死「9,241 則問答」而實際 9,242，搜尋摘要因此與頁面矛盾）。⚠️ 繁體頁的 JSON-LD 必須在 `convert_html_to_trad()` **之後**注入（該轉換器不處理 `<script>` 內文）。
+    - **站內搜尋索引 JSON（`search_index*.json` ＋ `.hash`，兩套合計約 47 MB）由 `robots.txt` `Disallow`**——crawler 抓它只浪費抓取資源；但**不可**連帶擋掉 `assets/` 的 CSS/JS（搜尋引擎仍需要它們渲染頁面）。
+    - 守門：`tool/site_chrome/check_site.py`（產物層全項自動檢查）＋ `tool/word2ebook/tests/test_seo_jsonld.py`、`tool/books2ebook/tests/test_seo_jsonld.py`、`tool/site_chrome/tests/test_sitemap.py`。
+    - **IndexNow**（`tool/site_chrome/indexnow.py`，金鑰在 repo 根 `indexnow-key.txt`）：推送後通知 Bing 等參與者立刻重抓；`gen_all_and_push.py --indexnow` 會自動送（URL 清單在 commit 前抓、通知在 push 成功後送）。
+
 ---
 
 ## Directory map
@@ -81,7 +89,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 | `wenda2_mindmap.html` | 問答錄2心智圖：57 個高頻名詞／11 主幹；自包含單頁，**已凍結為手工維護**（產生器＋語料 `tool/wenda2_curation/` 已於 2026-09-28 移除，互動引擎原從 `mindmap.html` 拷貝）。 |
 | `shared.js`, `style.css` | Shared nav / layout for root + `wenda2/` pages only. |
 | `lang-switch.js` | Sitewide 繁/簡切換：一般頁面用 OpenCC-JS 即時轉換；電子書區（`EBOOK_DIRS`：`/wenda2_ebook/`、`/ebook/`）依偏好跳轉 `XX` ↔ `XX_trad` 雙頁。偏好存 `localStorage('tgl-lang')`，首次依 `navigator.languages` 判定。**含一對多誤轉修正層**（只/隻・發/髮・後/后・裡/里，字集與 `tool/word2ebook/utils/i18n_utils.py` 同源，兩份須同步維護）。**每頁都要含** `<script src="/lang-switch.js" defer></script>`（stories2html 與 word2ebook/books2ebook 範本皆已內建）；`audio_map*/` 刻意不加。⚠️ **跨語系轉址必須保留 `location.hash`**，且繁簡雙頁的段落 id（`p-*`／`answer-*`／`s*`）必須完全相同——首頁「每日精選」的「前往原文」靠這條才能落到引文段落。改 id 產生方式或轉址邏輯後跑 `node tool/site_chrome/lang_switch_harness.js`。 |
-| `sitemap.xml` | SEO URLs; story entries updated by `build_index.py`. |
+| `sitemap.xml` | SEO URLs — **由 `tool/site_chrome/sitemap.py` 產生**（勿手改；`--check` 可驗）。 |
 | `robots.txt`, `CNAME` | Crawl / domain config. |
 | `sw.js`, `manifest.webmanifest` | PWA（2026-09）：兩套電子書頁（`/wenda2_ebook/`、`/ebook/`）由 word2ebook `17-theme-pwa.js` 註冊根 SW；音檔永不快取；電子書頁面與搜尋索引採 **network-first**（2026-10-21，每次導覽以 ETag 重驗——部署後使用者打開即最新版，只有離線才吃快取；從前 stale-while-revalidate 會先回舊頁，是「要手動 Cmd+Shift+R」的根因）。manifest 被兩套電子書模板 `<head>` 引用。 |
 

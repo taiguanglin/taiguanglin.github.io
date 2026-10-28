@@ -2,6 +2,7 @@
 
 import hashlib
 import importlib.util
+import json
 import os
 
 from config import (
@@ -268,6 +269,7 @@ _HEAD_TMPL = """<!DOCTYPE html>
 <script src="{shared_i18n_js}"></script>
 <script src="assets/js/w2e-config.js" defer></script>
 {extra_head}
+{jsonld_marker}
 <script src="{shared_script_js}" defer></script>
 <script src="/lang-switch.js" defer></script>
 </head>
@@ -286,6 +288,11 @@ _HEAD_TMPL = """<!DOCTYPE html>
 
 _TRAD_SUFFIX = "_trad"
 
+# JSON-LD（結構化資料）的插入點。繁體頁的 <script> 內文不會被
+# convert_html_to_trad() 轉換（script/style 區塊原樣保留），所以 JSON-LD
+# 由呼叫端（main.py）在整頁轉換完成後注入——繁簡各自帶正確語言。
+JSONLD_MARKER = "<!--W2E_JSONLD-->"
+
 
 def _seo_clean_title(raw_title):
     """書名清理：移除前導序號（如「01《坐禅》」→「《坐禅》」），供 og:title／描述使用。"""
@@ -293,6 +300,171 @@ def _seo_clean_title(raw_title):
 
     text = re.sub(r"^\s*\d+\s*", "", raw_title or "").strip()
     return text or (raw_title or "").strip()
+
+
+def _jsonld_base():
+    return "%s/%s/" % (SITE_BASE_URL, EBOOK_URL_PATH)
+
+
+def _jsonld_breadcrumb(items):
+    """items: [(name, url)] → BreadcrumbList 節點。"""
+    return {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {
+                "@type": "ListItem",
+                "position": position,
+                "name": name,
+                "item": url,
+            }
+            for position, (name, url) in enumerate(items, start=1)
+        ],
+    }
+
+
+def build_index_jsonld(books_meta, is_trad, seo_title, description):
+    """首頁 JSON-LD：Book（列出各章 hasPart）＋ WebPage ＋ BreadcrumbList。"""
+    base = _jsonld_base()
+    index_url = base + ("index_trad.html" if is_trad else "index.html")
+    lang = "zh-Hant" if is_trad else "zh-Hans"
+    has_part = []
+    for position, bm in enumerate(books_meta, start=1):
+        bc = bm["config"]
+        filename = bc.filename_trad if is_trad else bc.filename
+        has_part.append(
+            {
+                "@type": "Chapter",
+                "position": position,
+                "name": bc.display_title,
+                "url": base + filename,
+            }
+        )
+    return {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Book",
+                "@id": index_url + "#book",
+                "name": SITE_TITLE,
+                "author": {"@type": "Person", "name": SEO_SITE_NAME},
+                "inLanguage": lang,
+                "url": index_url,
+                "image": "%s/%s" % (SITE_BASE_URL, OG_IMAGE_PATH),
+                "hasPart": has_part,
+            },
+            {
+                "@type": "WebPage",
+                "@id": index_url + "#webpage",
+                "url": index_url,
+                "name": seo_title,
+                "description": description,
+                "inLanguage": lang,
+                "isPartOf": {"@id": index_url + "#book"},
+                "breadcrumb": {"@id": index_url + "#breadcrumb"},
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": index_url + "#breadcrumb",
+                **_jsonld_breadcrumb(
+                    [(SEO_SITE_NAME, "%s/" % SITE_BASE_URL), (SITE_TITLE, index_url)]
+                ),
+            },
+        ],
+    }
+
+
+def build_chapter_jsonld(book, is_trad, seo_title, description, position, total_books):
+    """章節頁 JSON-LD：Book（系列）＋ Chapter ＋ WebPage ＋ BreadcrumbList。"""
+    base = _jsonld_base()
+    index_url = base + ("index_trad.html" if is_trad else "index.html")
+    url = base + (book.filename_trad if is_trad else book.filename)
+    lang = "zh-Hant" if is_trad else "zh-Hans"
+    clean_title = _seo_clean_title(book.title)
+    return {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Book",
+                "@id": index_url + "#book",
+                "name": SITE_TITLE,
+                "author": {"@type": "Person", "name": SEO_SITE_NAME},
+                "inLanguage": lang,
+                "url": index_url,
+            },
+            {
+                "@type": "Chapter",
+                "@id": url + "#chapter",
+                "name": clean_title,
+                "position": position,
+                "url": url,
+                "isPartOf": {"@id": index_url + "#book"},
+            },
+            {
+                "@type": "WebPage",
+                "@id": url + "#webpage",
+                "url": url,
+                "name": seo_title,
+                "description": description,
+                "inLanguage": lang,
+                "isPartOf": {"@id": url + "#chapter"},
+                "breadcrumb": {"@id": url + "#breadcrumb"},
+            },
+            {
+                "@type": "BreadcrumbList",
+                "@id": url + "#breadcrumb",
+                **_jsonld_breadcrumb(
+                    [
+                        (SEO_SITE_NAME, "%s/" % SITE_BASE_URL),
+                        (SITE_TITLE, index_url),
+                        (clean_title, url),
+                    ]
+                ),
+            },
+        ],
+    }
+
+
+def content_weight_total(blocks):
+    """一書的「內容計量」（H1 計數、SEO 描述的段落數共用同一來源）。"""
+    return sum(_content_weight(b) for b in blocks)
+
+
+def _chapter_seo_title(book):
+    """章節頁的 <title>（卷首標為「講經系列卷首」）。"""
+    clean_title = _seo_clean_title(book.title)
+    if getattr(book, "kind", "book") == "preface":
+        return "%s・讲经系列卷首｜%s" % (clean_title, SEO_SITE_NAME)
+    return "%s・%s｜%s" % (clean_title, SITE_TITLE, SEO_SITE_NAME)
+
+
+def _chapter_seo_description(book, total):
+    """章節頁的 meta description（含段落數，讓摘要能區分各章）。"""
+    clean_title = _seo_clean_title(book.title)
+    if getattr(book, "kind", "book") == "preface":
+        return (
+            "%s（%d 段）——讲经系列卷首（感谢文与讲经开讲缘起），"
+            "TaiGuangLin 禅师全文电子书，支持全文检索与简繁切换。"
+            % (clean_title, total)
+        )
+    return SEO_CHAPTER_DESCRIPTION.format(title=clean_title, count=total)
+
+
+def inject_jsonld(html, payload):
+    """把 JSON-LD payload 注入頁面（取代 JSONLD_MARKER）。
+
+    ``</`` 一律轉義成 ``<\\/``——避免 JSON 字串裡出現 ``</script>`` 提前
+    關掉 script 區塊。
+    """
+    if payload is None:
+        return html
+    # ``<`` 一律轉成 ``<``（JSON 的 unicode 跳脫）——避免字串裡出現
+    # ``</script>`` 提前關掉 script 區塊。
+    data = json.dumps(payload, ensure_ascii=False).replace("<", "\\u003c")
+    script = '<script type="application/ld+json">%s</script>' % data
+    if JSONLD_MARKER in html:
+        return html.replace(JSONLD_MARKER, script)
+    # 沒有 marker（邊界情境）時插在 </head> 前
+    return html.replace("</head>", script + "\n</head>", 1)
 
 
 def _build_seo_head(filename, is_trad, seo_title, description, og_type):
@@ -802,15 +974,8 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     # 卷首（kind="preface"）不是著作：<title> 以「講經系列卷首」標示身分，
     # 描述也改為感謝文＋講經緣起，不套「著述/講經全文」句式。
     _clean_title = _seo_clean_title(book.title)
-    if getattr(book, "kind", "book") == "preface":
-        _seo_title = "%s・讲经系列卷首｜%s" % (_clean_title, SEO_SITE_NAME)
-        _seo_description = (
-            "%s——讲经系列卷首（感谢文与讲经开讲缘起），"
-            "TaiGuangLin 禅师全文电子书，支持全文检索与简繁切换。" % _clean_title
-        )
-    else:
-        _seo_title = "%s・%s｜%s" % (_clean_title, SITE_TITLE, SEO_SITE_NAME)
-        _seo_description = SEO_CHAPTER_DESCRIPTION.format(title=_clean_title)
+    _seo_title = _chapter_seo_title(book)
+    _seo_description = _chapter_seo_description(book, total)
     _page_filename = book.filename_trad if is_trad else book.filename
     # 成書 PDF 轉檔（sutra_pin=False）的書頁：body 帶 no-sutra-pin，
     # 09c-sutra-pin.js 見到即整頁跳過（runtime 後備包法也不做）。
@@ -831,6 +996,7 @@ def render_chapter(book, blocks, image_src_map, is_trad,
         extra_head=_build_seo_head(
             _page_filename, is_trad, _seo_title, _seo_description, "article"
         ),
+        jsonld_marker=JSONLD_MARKER,
     )
     # 頂部導覽與底部 nav-footer 同規則：上一本＋下一本都輸出
     # （首本只有下一本、末本只有上一本），與 wenda2_ebook 的
@@ -981,6 +1147,7 @@ def render_index(books_meta, source_pdfs, is_trad):
         )
         + "\n"
         + _MINISEARCH_HEAD,
+        jsonld_marker=JSONLD_MARKER,
     )
     # <main> 語意地標：書名、搜尋、目錄與來源檔連結屬主要內容；
     # 懸浮操作按鈕/懸浮目錄屬工具列，留在 main 之外。

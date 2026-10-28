@@ -57,6 +57,7 @@ class TestBodyPrepaintPlacement:
             shared_i18n_js="../wenda2_ebook/assets/js/i18n-text.js",
             shared_script_js="../wenda2_ebook/assets/js/script.js",
             extra_head="",
+            jsonld_marker="",
         )
         head = html[: html.index("</head>")]
         assert "window.__W2E_THEME_DARK" in head
@@ -76,6 +77,7 @@ class TestBodyPrepaintPlacement:
             prepaint_body=_DARK_MODE_BODY_PREPAINT,
             shared_style_css="css", shared_reading_prepaint_js="rp",
             shared_i18n_js="i18n", shared_script_js="s", extra_head="",
+            jsonld_marker="",
         )
         assert '<body class="no-sutra-pin">' in html
         body_open = html.index('<body class="no-sutra-pin">') + len(

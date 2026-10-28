@@ -286,9 +286,13 @@ template slots `{seo_title}`, `{seo_head}`, `{html_lang}`:
     trailing `(N)` count residue removed)
   - index pages: `{書名}｜{站名}`
   - 書名 from `config.yaml:book_title`; 站名 from i18n key `seo.site_name`.
-- `meta description`: i18n `seo.chapter_description` (with `{title}` substituted
-  by the cleaned chapter title) on chapters, `seo.index_description` on index
-  pages.
+- `meta description`: i18n `seo.chapter_description` on chapters,
+  `seo.index_description` on index pages. Both templates MAY contain the
+  placeholders `{title}` (cleaned chapter title), `{qa_count}` (問答數) and
+  `{chapter_count}` (章節數); the generator SHALL substitute them with values
+  computed at build time (never hard-coded in `config.yaml`) via
+  `_format_seo_text`, and SHALL leave unknown placeholders untouched instead
+  of raising.
 - `link rel=canonical` SHALL point at the page's absolute URL built from
   `Constants.SITE_BASE_URL` + `Constants.EBOOK_URL_PATH` + filename.
 - The hreflang pair `zh-Hant`/`zh-Hans` SHALL cross-link the `_trad` and
@@ -301,6 +305,37 @@ template slots `{seo_title}`, `{seo_head}`, `{html_lang}`:
   `assets/js/minisearch.min.js` via `<script … defer>`; pages SHALL NOT emit
   any third-party `<script>`, `<link rel=preconnect>`, or inline CDN-fallback
   loader (runtime fallback lives in `01e-search-ui.js`).
+
+### Requirement: Structured Data (JSON-LD)
+Every generated page (chapters and both index variants) SHALL embed exactly one
+`<script type="application/ld+json">` block describing the ebook as a schema.org
+entity:
+
+- Index pages SHALL emit a `@graph` with `Book` (including `hasPart` — one
+  `Chapter` per chapter, in order, with `position`/`name`/`url`), `WebPage`
+  and `BreadcrumbList` nodes.
+- Chapter pages SHALL emit a `@graph` with `Book` (the series), `Chapter`
+  (with `position` and `isPartOf`), `WebPage` and `BreadcrumbList` nodes.
+- `BreadcrumbList` SHALL be `TaiGuangLin 禪師 → 電子書首頁 → 章節` on chapter
+  pages and `TaiGuangLin 禪師 → 電子書首頁` on index pages.
+- The JSON SHALL be valid JSON; `<` SHALL be escaped as `<` so a string
+  containing `</script>` cannot terminate the block early.
+- The author SHALL be a `schema.org/Person` named by i18n `seo.site_name`, and
+  `inLanguage` SHALL be `zh-Hans` / `zh-Hant` matching the page variant.
+
+#### Scenario: Chapter page carries structured data
+- GIVEN a chapter at position 3 of 12
+- WHEN chapter pages are generated
+- THEN the page SHALL contain exactly one JSON-LD block whose `@graph` includes
+  a `Chapter` node with `position` 3, a `Book` node, a `WebPage` node and a
+  `BreadcrumbList` node with three `ListItem` entries
+
+#### Scenario: Description counts follow the build
+- GIVEN 12 chapters whose H1 question counts sum to 9,242
+- WHEN index pages are generated
+- THEN `meta description` SHALL read `…：9242 则问答按 12 个主题章收录…`
+  (simplified) with no hard-coded count left in `config.yaml`
+
 
 #### Scenario: Chapter SEO head
 - GIVEN a chapter titled `13二〇二五年六月`

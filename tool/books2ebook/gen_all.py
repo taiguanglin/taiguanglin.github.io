@@ -44,3 +44,14 @@ if __name__ == "__main__":
     import main  # noqa: E402
 
     main.build()
+
+    # sitemap.xml 同步更新（單一產生器：tool/site_chrome/sitemap.py）。
+    # lastmod 取自 git 最後提交日期——內容更新後 sitemap 不再停在舊日期。
+    import importlib.util  # noqa: E402
+
+    _sitemap_path = TOOL_DIR.parent / "site_chrome" / "sitemap.py"
+    _spec = importlib.util.spec_from_file_location("_site_chrome_sitemap", _sitemap_path)
+    _module = importlib.util.module_from_spec(_spec)
+    _spec.loader.exec_module(_module)
+    _module.write_sitemap()
+    print("✅ sitemap.xml 已更新")

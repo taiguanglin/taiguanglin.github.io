@@ -73,7 +73,50 @@ node tool/site_chrome/lang_switch_harness.js
 |------|------|
 | 「圖解」下拉 3 個入口（名詞圖解／坐禪與講經心智圖／問答錄2心智圖）、目前頁面高亮、相對路徑前綴 | `ITEMS` + `render()` |
 | 圖解頁的 `WebPage`＋`BreadcrumbList` JSON-LD | `SEO_PAGES` + `sync_structured_data()` |
+| **`sitemap.xml` 全文（唯一 SoT）** | `sitemap.py`（見下） |
+| **IndexNow 變更通知** | `indexnow.py`（見下） |
 | 站台不變量（AI 免責聲明、canonical、連結與錨點、sitemap、圖片屬性、`b-truth` 三節點…） | `check_site.py` |
+
+## `sitemap.py` — sitemap.xml 的唯一產生器（2026-10-28）
+
+`sitemap.xml` 過去由 `tool/stories2html/build_index.py` 局部補丁拼湊，`lastmod`
+停在 2026-10-10（內容卻在 10-27／10-28 更新過）。Google 官方說明 `<lastmod>`
+**只有在持續且準確時才會被採用**，過期的 lastmod 反而會讓爬蟲降低重抓頻率。
+
+現在 `sitemap.py` 是唯一 SoT：
+
+```sh
+python3 tool/site_chrome/sitemap.py            # 產生（寫回 repo 根 sitemap.xml）
+python3 tool/site_chrome/sitemap.py --check    # 只檢查是否與產生器一致
+```
+
+- URL 來源：主要頁面（root `*.html`）＋ `wenda2/` 章節＋ 兩套電子書的**實質頁**
+  （`wenda2_ebook/`、`ebook/`）。
+- **帶 `noindex` 或 `meta refresh` 的頁面一律不收錄**（13–21 章跳轉頁因此不會
+  出現在 sitemap）。
+- `<lastmod>` 取 `git log -1 --format=%cs`（無 git 紀錄時退回檔案 mtime）——
+  必須在版本控制下產物才準。
+- **不輸出 `<priority>`／`<changefreq>`**：Google 明確忽略這兩個欄位，留著只會
+  誤導人。
+- 電子書重建後會自動重產 sitemap（`tool/books2ebook/gen_all.py` 與
+  `tool/qa_split_ebook/gen_classified.py` 都會呼叫它）。
+
+⚠️ **不要手改 `sitemap.xml`**——下次任何生成器執行都會覆蓋。要改收錄範圍請改
+`sitemap.py`。
+
+## `indexnow.py` — 變更通知（2026-10-28）
+
+```sh
+python3 tool/site_chrome/indexnow.py --changed   # 通知本次變更的 URL
+python3 tool/site_chrome/indexnow.py --all       # 通知 sitemap 全部 URL
+```
+
+- 金鑰：環境變數 `INDEXNOW_KEY`，或 repo 根目錄 `indexnow-key.txt`（部署後即
+  `https://taiguanglin.info/indexnow-key.txt`，符合 IndexNow 的驗證要求）。
+- 每次最多 10,000 個 URL（協定上限）；送出失敗只回報、**不中斷建置流程**。
+- `tool/word2ebook/gen_all_and_push.py` 與 `tool/books2ebook/gen_all_and_push.py`
+  支援 `--indexnow`：URL 清單在 commit **前**抓（commit 後工作樹就乾淨了），
+  通知在 push 成功後才送。
 
 ## 生成器整合
 

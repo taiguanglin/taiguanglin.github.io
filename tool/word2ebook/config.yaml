@@ -263,19 +263,23 @@ i18n:
       simplified: "🌙 夜间"
       traditional: "🌙 夜間"
 
-  # SEO / 分享 meta 文字（章節與首頁 head；{title} 會代入清理後的章名）
+  # SEO / 分享 meta 文字（章節與首頁 head）
+  # {title} = 清理後的章名；{qa_count} = 該章／全書問答數（建置時計算）；
+  # {chapter_count} = 章節數（建置時計算）。
+  # ⚠️ 不要在這裡硬寫問答數：內容一改數字就會過期（2026-10 曾寫死
+  # 「9,241 則」，實際已是 9,242 則，搜尋摘要因此與頁面不一致）。
   seo:
     site_name:
       simplified: "TaiGuangLin 禅师"
       traditional: "TaiGuangLin 禪師"
 
     chapter_description:
-      simplified: "《坐禅之问答录2》{title}——TaiGuangLin 禅师针对修行者疑问的圆满开示，全文可检索、支持简繁切换。"
-      traditional: "《坐禪之問答錄2》{title}——TaiGuangLin 禪師針對修行者疑問的圓滿開示，全文可檢索、支援簡繁切換。"
+      simplified: "《坐禅之问答录2》{title}（{qa_count} 则问答）——TaiGuangLin 禅师针对修行者疑问的圆满开示，全文可检索、支持简繁切换。"
+      traditional: "《坐禪之問答錄2》{title}（{qa_count} 則問答）——TaiGuangLin 禪師針對修行者疑問的圓滿開示，全文可檢索、支援簡繁切換。"
 
     index_description:
-      simplified: "TaiGuangLin 禅师《坐禅之问答录2》完整电子书：9,241 则问答按 12 个主题章收录（2024.02 起），支持全文检索、书签与简繁切换。"
-      traditional: "TaiGuangLin 禪師《坐禪之問答錄2》完整電子書：9,241 則問答按 12 個主題章收錄（2024.02 起），支援全文檢索、書籤與簡繁切換。"
+      simplified: "TaiGuangLin 禅师《坐禅之问答录2》完整电子书：{qa_count} 则问答按 {chapter_count} 个主题章收录（2024.02 起），支持全文检索、书签与简繁切换。"
+      traditional: "TaiGuangLin 禪師《坐禪之問答錄2》完整電子書：{qa_count} 則問答按 {chapter_count} 個主題章收錄（2024.02 起），支援全文檢索、書籤與簡繁切換。"
 
 # 其他設定
 # Other settings

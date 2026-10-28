@@ -134,6 +134,21 @@ def convert_items_to_trad(items):
     return out
 
 
+def _convert_payload_to_trad(payload):
+    """把 JSON-LD payload 內所有字串轉成繁體（dict / list / str 遞迴）。
+
+    HTML 轉換器刻意不動 <script> 內文，所以 JSON-LD 必須自行轉繁，
+    否則繁體頁的結構化資料會是簡體文字。
+    """
+    if isinstance(payload, dict):
+        return {k: _convert_payload_to_trad(v) for k, v in payload.items()}
+    if isinstance(payload, list):
+        return [_convert_payload_to_trad(v) for v in payload]
+    if isinstance(payload, str):
+        return _convert_s2t(payload)
+    return payload
+
+
 def parse_books(books_dir):
     """解析所有書 → [{config, blocks}]"""
     result = []
@@ -307,24 +322,61 @@ def build(books_dir=None, out_dir=None):
         html_s, items_s = html_generator.render_chapter(
             bc, blocks, imap, is_trad=False,
             prev_book=prev_bc, next_book=next_bc, out_dir=out_dir)
+        # JSON-LD（結構化資料）：繁簡各自帶正確語言，故在整頁轉換完成後注入
+        _total = html_generator.content_weight_total(blocks)
+        _seo_title = html_generator._chapter_seo_title(bc)
+        _seo_desc = html_generator._chapter_seo_description(bc, _total)
+        html_s = html_generator.inject_jsonld(
+            html_s,
+            html_generator.build_chapter_jsonld(
+                bc, False, _seo_title, _seo_desc, i + 1, len(books_meta)
+            ),
+        )
         with open(os.path.join(out_dir, bc.filename), "w", encoding="utf-8") as f:
             f.write(html_s)
         # 繁版：以 is_trad=True 產生 _trad 連結，再用 OpenCC 轉換文字
         html_t, items_t = html_generator.render_chapter(
             bc, blocks, imap, is_trad=True,
             prev_book=prev_bc, next_book=next_bc, out_dir=out_dir)
+        html_t = convert_html_to_trad(html_t)
+        # <script> 區塊不會被轉換 → JSON-LD 文字自行轉繁後再注入
+        _jsonld_t = _convert_payload_to_trad(
+            html_generator.build_chapter_jsonld(
+                bc, True, _seo_title, _seo_desc, i + 1, len(books_meta)
+            )
+        )
+        html_t = html_generator.inject_jsonld(html_t, _jsonld_t)
         with open(os.path.join(out_dir, bc.filename_trad), "w", encoding="utf-8") as f:
-            f.write(convert_html_to_trad(html_t))
+            f.write(html_t)
         all_items["simp"].extend(items_s)
         all_items["trad"].extend(convert_items_to_trad(items_t))
         print("✅ %s → %s / %s" % (bc.title, bc.filename, bc.filename_trad))
 
     idx_s = html_generator.render_index(books_meta, source_pdfs, is_trad=False)
+    idx_s = html_generator.inject_jsonld(
+        idx_s,
+        html_generator.build_index_jsonld(
+            books_meta, False,
+            "%s｜%s" % (config.SITE_TITLE, config.SEO_SITE_NAME),
+            config.SEO_INDEX_DESCRIPTION,
+        ),
+    )
     with open(os.path.join(out_dir, "index.html"), "w", encoding="utf-8") as f:
         f.write(idx_s)
     idx_t = html_generator.render_index(books_meta, source_pdfs, is_trad=True)
+    idx_t = convert_html_to_trad(idx_t)
+    idx_t = html_generator.inject_jsonld(
+        idx_t,
+        _convert_payload_to_trad(
+            html_generator.build_index_jsonld(
+                books_meta, True,
+                "%s｜%s" % (config.SITE_TITLE, config.SEO_SITE_NAME),
+                config.SEO_INDEX_DESCRIPTION,
+            )
+        ),
+    )
     with open(os.path.join(out_dir, "index_trad.html"), "w", encoding="utf-8") as f:
-        f.write(convert_html_to_trad(idx_t))
+        f.write(idx_t)
 
 
     p1 = search_index.write_search_index(out_dir, all_items["simp"], is_trad=False)

@@ -464,6 +464,23 @@ SHALL resolve strings from this mapping. Search scope labels
 `search.scope_both`) SHALL appear in both `config.yaml` and `i18n-text.js`,
 and the index template SHALL inject them into the scope control buttons.
 
+### Requirement: SEO Description Placeholders
+The i18n keys `seo.chapter_description` and `seo.index_description` SHALL support
+the placeholders `{title}` (cleaned chapter title), `{qa_count}` (問答數) and
+`{chapter_count}` (章節數). These values SHALL be computed at build time by the
+HTML generator and substituted via `HTMLGenerator._format_seo_text`.
+
+The configuration SHALL NOT hard-code content counts (e.g. `9,241 则问答`): a
+hard-coded number silently goes stale when chapters change, and the search
+snippet then contradicts the page. Unknown placeholders SHALL be left as-is
+rather than raising a `KeyError`.
+
+#### Scenario: Counts are substituted at build time
+- GIVEN `seo.index_description` contains `{qa_count}` and `{chapter_count}`
+- WHEN index pages are generated from 12 chapters totalling 9,242 questions
+- THEN the rendered description SHALL contain `9242` and `12`, and SHALL NOT
+  contain the literal `{qa_count}` placeholder
+
 ### Requirement: Ensure Simplified Content in Search Index
 Before writing simplified search index entries, the system SHALL call
 `I18nProcessor.ensure_simplified` on each item's `title`, `content`, and
