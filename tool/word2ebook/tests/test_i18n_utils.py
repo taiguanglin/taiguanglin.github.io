@@ -183,6 +183,13 @@ class TestI18nProcessor:
         assert processor.to_traditional("软件和鼠标") == "軟體和滑鼠"
         assert processor.to_traditional("获取信息") == "獲取資訊"
 
+    def test_to_traditional_keeps_dao_mei_spelling(self, processor):
+        # OpenCC 逐字映射會把「倒霉」寫成「倒黴」；固定詞應保留「倒霉」。
+        assert processor.to_traditional("倒霉") == "倒霉"
+        assert processor.to_traditional("倒霉蛋") == "倒霉蛋"
+        assert processor.to_traditional("倒大霉") == "倒大霉"
+        assert processor.to_traditional("一件倒霉事") == "一件倒霉事"
+
     # ---- 發 / 髮 (emit vs hair) ----
 
     def test_to_traditional_fixes_fa_over_hair(self, processor):

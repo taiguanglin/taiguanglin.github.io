@@ -66,6 +66,18 @@ glyph in certain contexts.
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL remain `一隻貓`
 
+### Requirement: Preserve the Fixed Phrase 「倒霉」
+OpenCC's character dictionary maps simplified `霉` to traditional `黴`, which
+incorrectly turns the fixed phrase `倒霉` into `倒黴`. The system SHALL restore
+`倒霉` after traditional conversion and SHALL apply the same correction to its
+closely related fixed forms `倒大霉` and `倒霉蛋`. The correction SHALL be
+phrase-specific so other context-dependent uses of `霉／黴` are not changed.
+
+#### Scenario: 倒霉 phrase repaired
+- GIVEN the simplified text `倒霉` (or `倒霉蛋`, `倒大霉`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the output SHALL use `倒霉` (or `倒霉蛋`, `倒大霉`) and SHALL NOT contain `倒黴` / `倒大黴`
+
 ### Requirement: Correct s2twp "only" Over-Conversion
 The bundled `opencc-python-reimplemented` `s2twp` dictionary over-converts the
 adverb `只` (only) into the measure word `隻` after certain characters
