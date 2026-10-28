@@ -411,7 +411,9 @@ _INFERRED_DATES = {
     "question-9ec8b1120761": "2026-02-07 14:20:56",
     "question-a0d3a10132ea": "2026-03-06 10:49:04",
     "question-a11ee56f01d3": "2025-01-15 12:34:34",
-    "question-a29eaf73334c": "2024-09-11",
+    # 2024-11-11「監獄」題：原填 2024-09-11（誤抄前一題「鎧茵 2024/9/11」的日期）。
+    # 該題在 Word 裡沒有提問日期，正確是本場日期 2024-11-11（轉場句「11月11號微信的問題」）。
+    "question-a29eaf73334c": "2024-11-11",
     "question-a30cc9c4e9a7": "2024-06-08",
     "question-a6d52349a37a": "2026-01-06 16:45:36",
     "question-abade42264d9": "2024-02-20 09:16:46",
@@ -466,6 +468,54 @@ def fix_corrupted_text(qid: str, q_html: str) -> str:
             r'\g<1>' + fixed + r'\g<2>',
             q_html)
     return q_html
+
+
+# 題幹修正表（question-id → 正確的問題文字）
+# ─────────────────────────────────────────────────────────────────────────
+# 2024-11-11「監獄」題：Word 把「師父說」的轉場白與第 1 問寫在同一個段落
+#   （問答錄2/wenda2_250810_截止25年5月17日答疑_含图版.docx 第 9519 段；
+#    問答錄2/2024-2025 TAI师父答疑汇总 - 截止2025年7月12日.docx 第 22876 段）：
+#     「师父说：贴吧的问题到这里结束了，11月11号微信的问题，从这边显示的从下面开始回答。
+#       1、还有想问下在监狱的环境没有《地藏经》读，…主要是想让他以后能顺利往生。」
+# stage 1 的提問者規則（任何「XXX：」開頭都算提問者）因此把整段當成
+# 「師父说」這個提問者的問題，轉場白被併進題幹。
+# 這裡只把轉場白摘掉、留下真正的題幹。**question-id 不變**（stage 3 沿用
+# stage 1 的 id）→ audio_map2 的 chapter_question_ids / chapter_answer_ids
+# 對應不受影響，播放鈕照常注入。
+_QUESTION_TEXT_FIXES = {
+    "question-a29eaf73334c": (
+        "1、还有想问下在监狱的环境没有《地藏经》读，是让他每天念地藏王菩萨名号好，"
+        "还是念阿弥陀佛好呢？ 主要是想让他以后能顺利往生。"
+    ),
+}
+
+# 提問者修正表（question-id → 提問者；空字串＝該題在 Word 裡沒有姓名行）
+# 「師父说」是轉場標記不是提問人，該題在 Word 裡沒有姓名行。
+_QUESTIONER_FIXES = {
+    "question-a29eaf73334c": "",
+}
+
+
+def fix_question_text(qid: str, q_html: str) -> str:
+    """依 _QUESTION_TEXT_FIXES 覆寫問題文字（保留原本的 div 包裹）。"""
+    if qid not in _QUESTION_TEXT_FIXES:
+        return q_html
+    fixed = _QUESTION_TEXT_FIXES[qid]
+    return re.sub(
+        r'(<div class="question-text">)(.*?)(</div>)',
+        lambda m: m.group(1) + fixed + m.group(3),
+        q_html, count=1, flags=re.S)
+
+
+def fix_questioner(qid: str, q_html: str) -> str:
+    """依 _QUESTIONER_FIXES 覆寫提問者 span 的內容（空字串＝無提問人）。"""
+    if qid not in _QUESTIONER_FIXES:
+        return q_html
+    who = _QUESTIONER_FIXES[qid]
+    return re.sub(
+        r'(<span class="questioner">)[^<]*(</span>)',
+        lambda m: m.group(1) + who + m.group(2),
+        q_html, count=1)
 
 _TIME_RE = re.compile(
     r'<span class="question-time">([^<]+)</span>')
@@ -627,8 +677,14 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
                 q_html = _clean_questioner_span(normalize_qa_time(q_html))
                 qid_m = re.search(r'id="(question-[^"]+)"', q_html)
                 if qid_m:
-                    q_html = fix_corrupted_text(qid_m.group(1), q_html)
-                    q_html = infer_missing_date(qid_m.group(1), q_html)
+                    qid = qid_m.group(1)
+                    q_html = fix_corrupted_text(qid, q_html)
+                    # ⚠️ infer_missing_date 必須排在 fix_questioner 之前：
+                    #    它把 question-time span 插在 questioner span 之後，
+                    #    questioner 清空後其正則（[^<]+）就不再符合、日期會插不進去。
+                    q_html = infer_missing_date(qid, q_html)
+                    q_html = fix_questioner(qid, q_html)
+                    q_html = fix_question_text(qid, q_html)
                 content_blocks.append(q_html)
             content_blocks.append(normalize_qa_time(a_html))
 
