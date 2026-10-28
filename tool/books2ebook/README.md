@@ -102,7 +102,8 @@ cd tool/books2ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tes
 |------|---------|
 | `test_follow_along_build.py` | ① reviewed 講次的每一段都有 `data-start`；② HTML 上的時間逐一等於 SoT（不得手改產物）；③ 零寬／`zero` 段不注入；④ **每個** pid 都存在於書中（含未校對講次，及早發現漂移）；⑤ 以 09b 的文件順序模擬掃描，reviewed 的每一講都有可跟播段落、且沒有「注入了卻歸不到任何講次」的段落；⑥ 繁簡版覆蓋率一致；⑦ 三個已校對系列維持非空 reviewed；⑧ 部署用的 `wenda2_ebook/assets` 保有 TreeWalker／`.para-clickable` 契約；⑨ 注入器讀到的內容與 HTML 一致 |
 | `test_para_audio_map.py` | `para_audio_map.load_series()` 的閘門：只注入 reviewed ∧ `end>start` ∧ 非 `zero`；壞檔降級為空 |
-| `test_sutra_markup.py` | 經文區塊的標記與置頂包層：①《金剛經 心經》《圓覺經》的經文（原文＋粗體／帶編號的重引條目）必須輸出為 `.sutra-text`，不得留成粗體段落；② **成書轉檔兩書不置頂**：HTML 無 `.sutra-pin-*` 包層、`<body>` 帶 `no-sutra-pin`（09c 的 runtime 後備包法也跳過）；③ 講經系列：每段經文都在 `.sutra-pin-host` 內、**連續經文共用同一個 host**（否則置頂的活動範圍只剩經文高度＝沒有置頂效果）、host 只含經文；④ 經文 id 唯一且在搜尋索引中；⑤ 老師的白話講解（「即离，不作方便…佛已然答复，菩萨修行」）不得被誤標成經文；⑥ 講經系列的經文區塊不受影響 |
+| `test_sutra_markup.py` | 經文區塊的標記與置頂包層：①《金剛經 心經》《圓覺經》的經文（原文＋粗體／帶編號的重引條目）必須輸出為 `.sutra-text`，不得留成粗體段落；② **成書轉檔兩書不置頂**：HTML 無 `.sutra-pin-*` 包層、`<body>` 帶 `no-sutra-pin`（09c 的 runtime 後備包法也跳過）；③ 講經系列：每段經文都在 `.sutra-pin-host` 內、**連續經文共用同一個 host**（否則置頂的活動範圍只剩經文高度＝沒有置頂效果）、host 只含經文；④ 經文 id 唯一且在搜尋索引中；⑤ 老師的白話講解（「即离，不作方便…佛已然答复，菩萨修行」）不得被誤標成經文；⑥ 講經系列的經文區塊不受影響；⑦ **章首全文經文（`.sutra-full`）不置頂**：不在任何 host/group 內，而其後的第一句重引經文仍在 host 內 |
+| `test_sutra_pin_wrappers.py` | 建置期置頂包層規則（合成區塊、不需產物）：章首全文經文不包 host/group 並帶 `.sutra-full`、其後第一句自成一 host；連續經文共用一個 host；非章首全文的經文照常置頂；`sutra_pin=False` 的書不開包層 |
 
 缺 `ebook/` 建置產物時會自動 skip（不是失敗）。**改了 `audio_map3/*.json`、`ebook/*.html`
 產生器，或 `wenda2_ebook/assets` 的跟播邏輯，都要跑一次。**
@@ -128,10 +129,21 @@ Confluence 表格固定表頭概念），講解段落從其下方滑過。停留
 仍照常輸出——經文樣式、搜尋錨點與每日精選的經文防線（`scripture_filter.py`
 防線 A）都靠它，id/pid 不變（`test_sutra_markup.py` 有守門）。
 
+**章首「全文經文」不置頂。** 《四十二章經》每章開頭先用楷體排一次該章**完整
+經文**（文字以章標題開頭，例：「第十五章请问力明」＋全章經文），之後的講解
+才逐句重引。章首全文經文是引文、不是正在講解的經文段——若依「連續經文共用
+一個 host」規則與緊接的第一句重引經文併進同一 host（第 2/3/5/15/16/31 章），
+置頂時「全文＋第一句」會一起停在視窗頂；即使自成一 host，章首講解捲動時整段
+全文也會停留。故 `html_generator._is_chapter_full_text()`（文字以最近一個標題
+開頭）判定的章首全文經文**不包 host/group**、另加 `.sutra-full` 標記，
+`09c-sutra-pin.js` 的經文清單以 `:not(.sutra-full)` 排除（runtime 後備包法同樣
+不包它）——只有講解中逐句重引的經文段置頂。id/pid 不變。守門：
+`tests/test_sutra_pin_wrappers.py`（合成渲染）＋ `tests/test_sutra_markup.py`
+（建置產物）。
+
 **哪些段落算「經文」（決定誰以經文區塊呈現）。** 經文必須先被標成經文區塊
 （`quote` → `.sutra-text`）——講經系列的置頂、以及所有書的經文樣式／搜尋
 錨點／每日精選經文防線，都以它為對象：
-
 | 書 | 經文的排法 | 辨識方式（`parsers.py`） |
 |----|-----------|--------------------------|
 | 06/07/08/09 講經系列（＋卷首） | 楷體**原經文**獨立成段 | 字型（KaiTi 等）→ `quote` |

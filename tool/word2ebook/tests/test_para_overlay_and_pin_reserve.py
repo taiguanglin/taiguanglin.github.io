@@ -221,6 +221,20 @@ def test_sutra_hosts_are_deduped(sutra_js):
     assert "hostOf" in sutra_js
 
 
+def test_chapter_full_text_is_excluded_from_pin(sutra_js):
+    """章首「全文經文」（.sutra-full）不得置頂。
+
+    《四十二章經》每章開頭先用楷體排一次該章完整經文（文字以章標題開頭），
+    隨後講解才逐句重引。全文經文若也進置頂清單，會與緊接的第一句重引經文
+    一起停在視窗頂（建置期兩者曾共用同一個 .sutra-pin-host）；即使自成一 host，
+    章首講解捲動時整段全文也會停留。故 09c 的經文清單必須排除 .sutra-full
+    ——runtime 後備包法遍歷的正是這份清單，故連後備包法也不會包它。
+    """
+    assert "querySelectorAll('.sutra-text:not(.sutra-full)')" in sutra_js
+    # 不可另開一份含全文經文的清單（那份會被 hostOf/量測用到）
+    assert "querySelectorAll('.sutra-text')" not in sutra_js
+
+
 def test_pin_reserve_recomputed_on_toggle(sutra_js):
     """讓位高度是 inline style（優先級高於樣式表），切換 toggle 必須重算。"""
     body = _rule_body_brace(sutra_js, "function syncToggleUI() {")

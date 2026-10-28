@@ -25,6 +25,14 @@
 sticky host，活動範圍就只剩經文自身高度 → 等於沒有置頂效果。因此連續的
 經文段落必須**共用同一個 host**（同一個 .sutra-pin-group）。
 
+**例外：章首「全文經文」不置頂**（2026-12 修正）。《四十二章經》每章開頭先用
+楷體排一次該章**完整經文**（文字以章標題開頭，例：「第十五章请问力明」＋全章
+經文）。它是章首引文、不是正在講解的經文段：它若與緊接的第一句重引經文依
+「連續經文共用 host」規則併進同一個 host（第 2/3/5/15/16/31 章皆然），置頂時
+「全文＋第一句」會一起停在視窗頂；即使自成一 host，章首講解捲動時整段全文也會
+停留。故全文經文帶 `.sutra-full` 標記、**不包 host/group**，只有講解中逐句重引
+的經文段置頂。id/pid 不變（搜尋錨點、跟播、每日精選經文防線不受影響）。
+
 本模組直接讀**版控中的建置產物**（ebook/*.html）做端到端斷言。
 """
 
@@ -43,7 +51,8 @@ CHENG_SHU_BOOKS = ["05", "06"]          # 講《金剛經 心經》／講《圓�
 SERIES_BOOKS = ["07", "08", "09", "10"]  # 四十二章／楞伽／六祖壇經／楞嚴
 ALL_BOOKS = CHENG_SHU_BOOKS + SERIES_BOOKS
 
-_SUTRA_TEXT_RE = re.compile(r'<div class="sutra-text para-block" id="([^"]+)">')
+# 經文區塊：class 允許尾接其他 class（章首全文經文另帶 sutra-full 標記）
+_SUTRA_TEXT_RE = re.compile(r'<div class="sutra-text para-block[^"]*" id="([^"]+)"')
 _STRONG_BLOCK_RE = re.compile(r'<p id="(p-[^"]+)" class="para-block"><strong>', re.S)
 _PIN_MARKUP_RE = re.compile(r'sutra-pin-(?:host|group)')
 
@@ -56,8 +65,11 @@ class SutraScanner(HTMLParser):
 
     記錄：
     - `sutra_ids`：每段經文的 id
+    - `sutra_blocks`：依文件順序的經文區塊 [{id, full, in_host, in_group}]
+      （`full`＝帶 sutra-full 標記的章首全文經文，依設計**不**在 host 內）
     - `host_sutras`：每個 .sutra-pin-host 內含的經文段數
-    - `bad_host`：不在 .sutra-pin-host 內的經文 id
+    - `bad_host`：不在 .sutra-pin-host 內、且不是章首全文經文的經文 id
+    - `full_in_host`：被包進 host 的章首全文經文 id（應為空——那是事故）
     - `host_extras`：每個混入「非經文內容」的 host 的雜物數（見
       test_pin_host_contains_only_scripture——host 是 sticky 本體，
       混入講解段落會整段過高，被 09c 量成「過長」而放棄置頂）
@@ -66,8 +78,10 @@ class SutraScanner(HTMLParser):
     def __init__(self, html):
         super().__init__(convert_charrefs=True)
         self.sutra_ids = []
+        self.sutra_blocks = []
         self.host_sutras = []
         self.bad_host = []
+        self.full_in_host = []
         self.host_extras = []
         self._frames = []
         self.feed(html)
@@ -80,14 +94,28 @@ class SutraScanner(HTMLParser):
         if tag == "div" and "sutra-pin-host" in cls:
             self._frames.append({"host": True, "n": 0, "extras": 0})
             return
+        if tag == "div" and "sutra-pin-group" in cls:
+            self._frames.append({"group": True})
+            return
         if tag == "div" and "sutra-text" in cls:
-            self.sutra_ids.append(a.get("id"))
+            full = "sutra-full" in cls
+            in_host = False
             for f in reversed(self._frames):
                 if f.get("host"):
                     f["n"] += 1
+                    in_host = True
                     break
-            else:
+            if not in_host and not full:
                 self.bad_host.append(a.get("id"))
+            if in_host and full:
+                self.full_in_host.append(a.get("id"))
+            self.sutra_ids.append(a.get("id"))
+            self.sutra_blocks.append({
+                "id": a.get("id"),
+                "full": full,
+                "in_host": in_host,
+                "in_group": any(f.get("group") for f in self._frames),
+            })
             self._frames.append({"sutra": True})
             return
         # 其他元素：若往上第一個標記層是 host（中間沒隔經文本體）→ host 混入雜物
@@ -177,6 +205,10 @@ def test_every_sutra_text_is_inside_a_pin_host(ebook_dir, book):
 
     僅講經系列（有跟播、置頂有效）；成書轉檔兩書不置頂（見
     test_chengshu_books_have_no_sutra_pin）。
+
+    例外：章首「全文經文」（.sutra-full）依設計**不**在 host 內（它是
+    章首引文、絕不置頂——見 test_chapter_full_text_is_never_pinned），
+    故不列入 bad_host。
     """
     html = book_html(ebook_dir, book)
     s = scan(html)
@@ -184,14 +216,57 @@ def test_every_sutra_text_is_inside_a_pin_host(ebook_dir, book):
     assert not s.bad_host, (
         "書 %s 有 %d 段經文不在 .sutra-pin-host 內（置頂對它們無效）：%s"
         % (book, len(s.bad_host), s.bad_host[:5]))
+    assert not s.full_in_host, (
+        "書 %s 有 %d 段章首全文經文（.sutra-full）被包進 .sutra-pin-host——"
+        "全文經文絕不置頂：%s" % (book, len(s.full_in_host), s.full_in_host[:5]))
 
 
 @pytest.mark.artifacts
-@pytest.mark.parametrize("book", SERIES_BOOKS)
+@pytest.mark.parametrize("trad", [False, True])
+def test_chapter_full_text_is_never_pinned(ebook_dir, trad):
+    """《四十二章經》每章開頭的「全文經文」不得置頂。
+
+    章首全文經文（文字以章標題開頭）與緊接的第一句重引經文曾被併進同一個
+    .sutra-pin-host——置頂時「全文＋第一句」一起停在視窗頂（第 2/3/5/15/
+    16/31 章）。正確行為：全文經文是章首引文，絕不停留——帶 .sutra-full
+    標記、不在任何 host/group 內；只有講解中逐句重引的經文段置頂。
+    """
+    html = book_html(ebook_dir, "07", trad=trad)
+    s = scan(html)
+    fulls = [b for b in s.sutra_blocks if b["full"]]
+    assert len(fulls) >= 40, (
+        "《四十二章經》每章開頭都有一段全文經文（應有 42 段），只有 %d 段"
+        "帶 sutra-full 標記" % len(fulls))
+    for b in fulls:
+        assert not b["in_host"], (
+            "章首全文經文 %s 被包進 .sutra-pin-host（會與第一句一起置頂）"
+            % b["id"])
+        assert not b["in_group"], (
+            "章首全文經文 %s 落在 .sutra-pin-group 內（置頂範圍不該含它）"
+            % b["id"])
+    # 全文經文之後的第一句重引經文**仍要置頂**（只有全文經文被排除）
+    for i, b in enumerate(s.sutra_blocks):
+        if not b["full"]:
+            continue
+        nxt = s.sutra_blocks[i + 1] if i + 1 < len(s.sutra_blocks) else None
+        if nxt is None or nxt["full"]:
+            continue    # 本章沒有重引經文（下一段是下一章的全文經文）
+        assert nxt["in_host"], (
+            "章首全文經文 %s 之後的第一句重引經文 %s 不在 .sutra-pin-host 內"
+            "（置頂失效）" % (b["id"], nxt["id"]))
+
+
+@pytest.mark.artifacts
+@pytest.mark.parametrize("book", ["08", "09", "10"])
 def test_consecutive_scripture_shares_one_host(ebook_dir, book):
     """連續的經文段落必須共用同一個 host。
 
     否則 sticky 的活動範圍只剩經文自身的高度 → 等於沒有置頂效果。
+
+    《四十二章經》（07）不在此列：它的經文是「章首全文經文＋逐句重引」，
+    章首全文經文依設計不置頂（.sutra-full），故全書沒有「連續多段經文共用
+    一個 host」的實例——該規則由合成渲染測試
+    （test_sutra_pin_wrappers.py::test_consecutive_quotes_share_one_host）守住。
     """
     html = book_html(ebook_dir, book)
     s = scan(html)

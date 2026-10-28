@@ -6054,6 +6054,8 @@ function addHomepageBookmarkEventListeners() {
   //      經文縮排切成數段；若各包一 host，sticky 的活動範圍就只剩經文
   //      自身高度 → 等於沒有置頂效果），故 host 需去重、量測需量 host
   //      整體高度（見 measureGroups / reserveFor）。
+  //      **例外**：章首「全文經文」（.sutra-full）絕不置頂——不進本模組
+  //      的經文清單、不包 host/group（見下方 sutras 選取器的說明）。
   //   2. 再以「經文 → 邊界元素」為範圍包 .sutra-pin-group：邊界 = 下一段
   //      經文、任何 h1–h6（章節名/品名小節名）、任何圖片（figure/img），
   //      取文件順序最先者；章節尾（下一個 h2）之前若無這些邊界就到章節尾
@@ -6089,8 +6091,14 @@ function addHomepageBookmarkEventListeners() {
     if (document.body && document.body.classList &&
         document.body.classList.contains('no-sutra-pin')) return;
 
+    // 章首「全文經文」（.sutra-full）：books2ebook 建置期對「文字以章標題
+    // 開頭」的經文塊（例：《四十二章經》每章開頭的整章經文）加的標記。
+    // 它是章首引文、不是正在講解的經文段，**絕不置頂**——建置期不包
+    // host/group，此處從經文清單排除（後備包法遍歷的正是這份清單，故
+    // runtime 也不會把它包進去）。否則它會與緊接的第一句重引經文一起
+    // 停在視窗頂（或自成一 host，在章首講解捲動時整段全文佔住畫面）。
     var sutras = Array.prototype.slice.call(
-      document.querySelectorAll('.sutra-text')
+      document.querySelectorAll('.sutra-text:not(.sutra-full)')
     );
     if (!sutras.length || !document.body) return;
 

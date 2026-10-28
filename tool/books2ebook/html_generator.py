@@ -224,6 +224,27 @@ def annotate(blocks):
     return blocks
 
 
+def _is_chapter_full_text(text, heading):
+    """章首「全文經文」判定：區塊文字以最近一個標題的文字開頭。
+
+    《四十二章經》每章開頭先用楷體排一次**該章完整經文**（章標題＋全章
+    經文接排，例：「第十五章请问力明」＋「沙门问佛：……可谓明矣。」），
+    之後的講解才逐句重引。此區塊是章首引文，不是正在講解的經文段：
+    - 它若與緊接的第一句重引經文依「連續經文共用 host」規則併進同一個
+      .sutra-pin-host，置頂時「全文＋第一句」會一起停在視窗頂（第
+      2/3/5/15/16/31 章皆然）；
+    - 即使自成一 host，章首講解捲動時整段全文也會停留、佔掉大半畫面。
+    故全文經文**絕不置頂**：輸出帶 .sutra-full 標記、不包 host/group，
+    09c-sutra-pin.js 以 :not(.sutra-full) 將它排除（runtime 後備包法
+    也不包）。只有講解中逐句重引的經文段置頂。id/pid 不變——搜尋錨點、
+    段落跟播與每日精選的經文防線（scripture_filter 以 class 前綴比對，
+    容忍尾接 class）都不受影響。
+    """
+    if not heading or not text:
+        return False
+    return text.strip().startswith(heading.strip())
+
+
 # ---------------------------------------------------------------------- #
 # HTML 片段
 # ---------------------------------------------------------------------- #
@@ -609,6 +630,12 @@ def render_chapter(book, blocks, image_src_map, is_trad,
     # 整段經文會一起停在視窗最上方；講解段落仍落在同一群內。
     # （各段經文仍各自帶自己的 id/pid，搜尋索引與段落錨點不受影響。）
     #
+    # **例外：章首「全文經文」絕不置頂**（_is_chapter_full_text，2026-12
+    # 修正）：文字以章標題開頭的經文塊（例：《四十二章經》每章開頭的整章
+    # 經文）是章首引文，不包 host/group、帶 .sutra-full 標記——否則它與
+    # 緊接的第一句重引經文一起停在視窗頂（或自成一 host 在章首停留）。
+    # 只有講解中逐句重引的經文段置頂。詳見 _is_chapter_full_text docstring。
+    #
     # **成書 PDF 轉檔的書（sutra_pin=False：金剛經 心經／圓覺經）不置頂**：
     # 經文區塊照常輸出（搜尋錨點／經文樣式／每日精選經文防線都靠它），但
     # 不輸出任何包層，且 <body> 帶 no-sutra-pin——09c 見到即整頁跳過（連
@@ -673,14 +700,26 @@ def render_chapter(book, blocks, image_src_map, is_trad,
             # 上一段不是經文時才另開一群（下一段經文是邊界）；連續的經文段落
             # 則併入同一個 host，整段經文一起停留。sutra_pin=False 的書
             # （成書 PDF 轉檔）不開包層——經文照樣輸出 .sutra-text，只是不停留。
-            if _pin_enabled and not (_pin_group_open and _prev_kind == "quote"):
+            # 例外：章首全文經文（_is_chapter_full_text）絕不置頂——帶
+            # .sutra-full 標記、不包任何 host/group（09c 以 :not(.sutra-full)
+            # 排除，詳見函式 docstring）。sutra_pin=False 的書本來就不置頂
+            # （body 帶 no-sutra-pin），不必加此標記——輸出與從前完全一致。
+            _full = _pin_enabled and _is_chapter_full_text(b["text"], cur_section)
+            if _pin_enabled and not _full \
+                    and not (_pin_group_open and _prev_kind == "quote"):
                 _close_pin()
                 body.append('<div class="sutra-pin-group">')
                 body.append('<div class="sutra-pin-host">')
                 _pin_group_open = True
                 _pin_host_open = True
-            body.append('<div class="sutra-text para-block" id="%s"%s>%s</div>'
-                        % (b["pid"], para_time_attrs(_series, b["pid"]),
+            elif _full:
+                # 防禦性收群：全文經文不落在任何 pin 包層內（正常路徑下
+                # 它緊跟在標題後，標題已先關群）
+                _close_pin()
+            _sutra_cls = "sutra-text para-block sutra-full" if _full \
+                else "sutra-text para-block"
+            body.append('<div class="%s" id="%s"%s>%s</div>'
+                        % (_sutra_cls, b["pid"], para_time_attrs(_series, b["pid"]),
                            nl2br(esc(b["text"]))))
             add_item(TYPE_CONTENT, b["text"], "%s#%s" % (fname, b["pid"]),
                      cur_section)
