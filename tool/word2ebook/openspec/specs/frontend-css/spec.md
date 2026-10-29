@@ -81,6 +81,28 @@ Every component that has a light-mode appearance SHOULD have a corresponding
 dark-mode override, avoiding the use of `!important` except where strictly
 necessary for specificity.
 
+### Requirement: Question And Answer Backgrounds Remain Distinct
+The `.question` and `.answer` blocks SHALL use visibly different background
+colours in the day, night (`body.dark-mode`), and 墨夜
+(`body.dark-neutral` / `body.dark-mode.dark-neutral`) themes. Night and 墨夜
+answer backgrounds SHALL use dedicated gradients whose starting colour is
+different from the question block's solid surface colour, so the answer block
+does not appear to share the question block's background.
+
+#### Scenario: Night theme distinguishes question from answer
+- GIVEN the night theme is active
+- WHEN a question and its answer are rendered
+- THEN the question background SHALL be the raised plum surface (`#4a2c3a`)
+- AND the answer background SHALL start with the deeper page colour
+  (`#3b1c32`) via `--gradient-answer-dark`
+
+#### Scenario: 墨夜 theme distinguishes question from answer
+- GIVEN the 墨夜 theme is active
+- WHEN a question and its answer are rendered
+- THEN the question background SHALL be `var(--color-neutral-surface)`
+- AND the answer background SHALL start with `var(--color-neutral-bg)` via
+  `--gradient-answer-neutral`
+
 ### Requirement: Dark-Neutral (墨夜) Mirror Completeness
 The 墨夜 palette (`body.dark-mode.dark-neutral`, mirrored in
 `06-ux-plus.css`) SHALL cover every `body.dark-mode` rule from modules 00–05

@@ -21,6 +21,10 @@
     /* Gradients */
     --gradient-primary:   linear-gradient(135deg, #e75480 0%, #ff69b4 100%);
     --gradient-hr:        linear-gradient(to right, #f8c8dc, #e75480, #f8c8dc);
+    /* 回答區塊必須與問題區塊有明確不同的起始底色；夜間與墨夜皆沿用
+       各自較深的一段漸層，避免兩種區塊看起來都是同一塊底色。 */
+    --gradient-answer-dark:    linear-gradient(135deg, var(--color-bg-page-dark) 0%, #2d1627 100%);
+    --gradient-answer-neutral: linear-gradient(135deg, var(--color-neutral-bg) 0%, #101218 100%);
 
     /* Shadows */
     --shadow-sm:          0 2px 6px rgba(231, 84, 128, 0.2);
@@ -335,7 +339,7 @@ body.dark-mode .question-time {
     color: #d4a5b8; /* 更柔和的粉紅色，減少螢光感 */
     border: 1px solid rgba(255, 105, 180, 0.2); /* 淡邊框 */
 }
-body.dark-mode .answer { background: linear-gradient(135deg, #4a2c3a 0%, #3b1c32 100%); border-left-color: var(--color-primary-light); }
+body.dark-mode .answer { background: var(--gradient-answer-dark); border-left-color: var(--color-primary-light); }
 body.dark-mode .answer-text { color: #fddde6; }
 body.dark-mode .answerer { color: var(--color-primary-light); }
 

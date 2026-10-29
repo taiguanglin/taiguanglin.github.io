@@ -961,6 +961,46 @@ def test_dark_neutral_mirror_state_and_pink_overrides():
             "    color: var(--color-neutral-accent-2);") in css
 
 
+def test_question_and_answer_backgrounds_are_distinct_in_every_theme():
+    """問題與回答的底色在日間、夜間、墨夜都必須明確不同。
+
+    舊樣式的夜間／墨夜回答漸層都從問題區塊的同一個表面色起步，視覺上
+    看起來就像問題與回答共用同一塊背景；本測試守住各主題的獨立底色。
+    """
+    css = StaticAssetsManager().get_full_css_content()
+
+    # 日間：問題為純白，回答從淡暖色起步。
+    assert re.search(r"\.question\s*\{[^}]*background:\s*#fff;", css, re.S)
+    assert re.search(
+        r"\.answer\s*\{[^}]*background:\s*linear-gradient\(135deg, #fff8f0 0%,",
+        css,
+        re.S,
+    )
+
+    # 夜間：問題為較亮的 plum 表面；回答從頁面深色起步。
+    assert "body.dark-mode .question { background: #4a2c3a;" in css
+    assert "body.dark-mode .answer { background: var(--gradient-answer-dark);" in css
+    assert (
+        "--gradient-answer-dark:    linear-gradient(135deg, "
+        "var(--color-bg-page-dark) 0%, #2d1627 100%);"
+    ) in css
+    assert "--color-bg-page-dark:  #3b1c32;" in css
+
+    # 墨夜：問題為 neutral surface；回答從 neutral page 背景起步。
+    assert "body.dark-neutral .question { background: var(--color-neutral-surface);" in css
+    assert "body.dark-neutral .answer { background: var(--gradient-answer-neutral);" in css
+    assert (
+        "body.dark-mode.dark-neutral .answer { background: "
+        "var(--gradient-answer-neutral);"
+    ) in css
+    assert (
+        "--gradient-answer-neutral: linear-gradient(135deg, "
+        "var(--color-neutral-bg) 0%, #101218 100%);"
+    ) in css
+    assert "--color-neutral-bg:        #16181d;" in css
+    assert "--color-neutral-surface:   #20242c;" in css
+
+
 def test_sidebar_autoscroll_never_scrolls_window():
     """03d 側欄面板同步不得用 scrollIntoView（2026-10 閃跳修正）。
 

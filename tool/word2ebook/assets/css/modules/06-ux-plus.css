@@ -43,7 +43,7 @@ body.dark-neutral .question { background: var(--color-neutral-surface); border-l
 body.dark-neutral .question-text { color: var(--color-neutral-text); }
 body.dark-neutral .questioner { color: #e0b36a; }
 body.dark-neutral .question-time { color: var(--color-neutral-muted); }
-body.dark-neutral .answer { background: linear-gradient(135deg, var(--color-neutral-surface) 0%, var(--color-neutral-bg) 100%); border-left-color: var(--color-neutral-accent); }
+body.dark-neutral .answer { background: var(--gradient-answer-neutral); border-left-color: var(--color-neutral-accent); }
 body.dark-neutral .answer-text { color: var(--color-neutral-text); }
 body.dark-neutral .answerer { color: #e0b36a; }
 body.dark-neutral .nav-footer a { background: #2a2f3a; color: #e6dcc8; box-shadow: none; }
@@ -193,7 +193,7 @@ body.dark-mode.dark-neutral .question-time {
     color: #d4a5b8; /* 更柔和的粉紅色，減少螢光感 */
     border: 1px solid rgba(217, 168, 108, 0.2); /* 淡邊框 */
 }
-body.dark-mode.dark-neutral .answer { background: linear-gradient(135deg, var(--color-neutral-surface) 0%, var(--color-neutral-bg) 100%); border-left-color: var(--color-primary-light); }
+body.dark-mode.dark-neutral .answer { background: var(--gradient-answer-neutral); border-left-color: var(--color-primary-light); }
 body.dark-mode.dark-neutral .answer-text { color: var(--color-neutral-text); }
 /* 暗色模式下的导航按钮 */
 body.dark-mode.dark-neutral .nav-footer a { 
