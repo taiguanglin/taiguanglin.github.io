@@ -69,14 +69,21 @@ node tool/site_chrome/daily_quote_swipe_harness.js
 ### daily_quote_swipe_harness.js 在做什麼
 
 首頁「每日精選」卡片除了 ◀ ▶ 鈕，也有觸控手勢：**左滑＝後一天、右滑＝前一天**
-（Pointer Events，`index.html` 的 inline script；CSS `touch-action: pan-y pinch-zoom`
-把水平手势交給 JS、垂直捲動仍歸瀏覽器）。
+（`index.html` 的 inline script；CSS `touch-action: pan-y pinch-zoom` 讓垂直捲動仍歸瀏覽器）。
+
+⚠️ **觸控走 Touch Events，不是 Pointer Events**：Android Chrome 的 pointer 事件串流常被
+compositor 攔截而發 `pointercancel`（手勢被判定為捲動），用 Pointer Events 實作會在
+Android 手機上「完全滑不動」。故 `touchmove` listener 必須 `passive:false`，鎖定水平方向後
+`preventDefault()` 擋掉捲動；觸控筆（pen）才走 Pointer Events。畫面左右邊緣 24px 內的
+手勢不處理（留給 Android 的返回／縮放手勢）。
 
 這支 harness 用 Node 的 `vm` 跑**`index.html` 內真正的 inline script**，只替掉它會碰到的
 少數 DOM 全域（`getElementById` / `classList` / 事件派送 / `fetch`），斷言：
 
 - 左滑切到後一天、右滑切回前一天
-- 垂直手勢、位移不足的手勢、滑鼠拖曳**都不會**切換日期
+- 水平 `touchmove` 有 `preventDefault`（Android 不會被當成捲動）、垂直手勢則沒有（頁面仍可捲動）
+- 垂直手勢、位移不足的手勢、畫面邊緣的手勢、滑鼠拖曳**都不會**切換日期
+- 觸控筆（Pointer）可切換
 - 滑動後緊接著的那一下 click 會被攔截（不會誤觸「前往原文」或切換鈕）
 - 原有 ◀ ▶ 今日鈕仍可切換
 

@@ -125,10 +125,15 @@
 - 首頁：`.hero`（`hero-copy` / `hero-art`）＋ `images/hero-lotus.svg`（圓相中的禪坐身影與蓮花）。
   「每日精選」卡片（`.daily-quote`）以負 margin 疊在 hero 下緣。
 - 「每日精選」互動：以本地日期播種（`idx = day*2654435761+97`），桌面用 ◀◀ ◀ 今日 ▶ ▶▶ 鈕切換；
-  手機／平板等**有觸控**的裝置另可**左滑＝後一天、右滑＝前一天**（Pointer Events，
-  CSS `touch-action: pan-y pinch-zoom`：水平手势交給 JS、垂直捲動仍歸瀏覽器）。
+  手機／平板等**有觸控**的裝置另可**左滑＝後一天、右滑＝前一天**。
+  ⚠️ **觸控走 Touch Events（不是 Pointer Events）**：Android Chrome 的 pointer 事件串流
+  常被 compositor 攔截而發 `pointercancel`（手勢被判定為捲動），用 Pointer Events 實作會在
+  Android 手機上「完全滑不動」。故 `touchmove` listener 必須 `passive:false`，在鎖定水平方向後
+  `preventDefault()` 擋掉捲動（CSS `touch-action: pan-y pinch-zoom` 讓垂直捲動仍歸瀏覽器）；
+  觸控筆（pen）才走 Pointer Events。
   滑動後緊接著的那一下 click 會被攔截，避免誤觸「前往原文」或切換鈕；
-  滑鼠拖曳與垂直捲動不會切換日期。回歸測試：`node tool/site_chrome/daily_quote_swipe_harness.js`。
+  滑鼠拖曳、垂直捲動、位移不足與畫面左右邊緣（留給 Android 返回／縮放）都不會切換日期。
+  回歸測試：`node tool/site_chrome/daily_quote_swipe_harness.js`。
 - 頁首裝飾細線用 `images/lotus-divider.svg`（`divider-mark`）。
 - 著作／電子書卡片封面用 `images/合集.svg`（九本並列的書脊＋蓮花印記）。
 - **動效**：網頁層只保留 `.reveal` 淡入與 :hover 微抬（禁止版面層的持續動畫）。

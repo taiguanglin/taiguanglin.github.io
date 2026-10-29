@@ -81,7 +81,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 
 | Path | Role |
 |------|------|
-| `index.html` | Landing page. Stories cards may be patched by `tool/stories2html/build_index.py`. 首頁「每日精選」（`daily_quotes.json` 依本地日期播種）另有 ◀◀ ◀ 今日 ▶ ▶▶ 鈕與**觸控左右滑動**（左滑＝後一天、右滑＝前一天；Pointer Events + `touch-action: pan-y pinch-zoom`）；改手勢／門檻／DOM id 後跑 `node tool/site_chrome/daily_quote_swipe_harness.js`。 |
+| `index.html` | Landing page. Stories cards may be patched by `tool/stories2html/build_index.py`. 首頁「每日精選」（`daily_quotes.json` 依本地日期播種）另有 ◀◀ ◀ 今日 ▶ ▶▶ 鈕與**觸控左右滑動**（左滑＝後一天、右滑＝前一天）。⚠️ 觸控**必須走 Touch Events**（`touchmove` + `passive:false` + `preventDefault`）：Android Chrome 的 pointer 串流會被 compositor 以 `pointercancel` 中斷，用 Pointer Events 在手機上會完全滑不動；pen 才走 Pointer。改手勢／門檻／DOM id 後跑 `node tool/site_chrome/daily_quote_swipe_harness.js`。 |
 | `wenda2.html` | Landing for the 12 thematic chapters under `wenda2/`. |
 | `stories.html` | Stories list shell; list block updated by `build_index.py`. |
 | `infographic.html` | Gallery: `infographic/thumbs/` WebP thumbnails in the grid, `infographic/webp/` full-size WebP in the lightbox (`data-src`). |
