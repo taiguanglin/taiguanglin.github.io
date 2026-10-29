@@ -967,6 +967,8 @@ ul, ol { list-style-position: outside; }
     background: linear-gradient(135deg, #ffffff 0%, #fdf4f8 100%);
     box-shadow: var(--sh-2);
     overflow: hidden;
+    /* 觸控左右滑動切換日期：水平手势交給 JS（index.html），垂直捲動仍由瀏覽器處理 */
+    touch-action: pan-y pinch-zoom;
 }
 
 /* 右下角開示小點綴（純裝飾，不影響精選文字佈局）：
@@ -1010,7 +1012,26 @@ ul, ol { list-style-position: outside; }
 }
 
 /* 精選文字維持原佈局（全寬），僅以 z-index 浮於插圖之上 */
-.daily-quote-body { flex: 1; min-width: 0; position: relative; z-index: 1; }
+.daily-quote-body {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    z-index: 1;
+    transition: transform .28s var(--ease);
+}
+
+/* 觸控滑動跟手位移：位移量由 JS 寫在 --dq-drag-x */
+.daily-quote-card.is-swiping {
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: grabbing;
+}
+
+.daily-quote-card.is-swiping .daily-quote-body {
+    transition: none;
+    transform: translateX(var(--dq-drag-x, 0px));
+    will-change: transform;
+}
 
 .daily-quote-head {
     display: flex;
@@ -1019,6 +1040,25 @@ ul, ol { list-style-position: outside; }
     flex-wrap: wrap;
     gap: 12px;
     min-height: 32px;
+}
+
+.daily-quote-heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+}
+
+/* 滑動提示：只在有觸控能力的裝置顯示（桌面滑鼠使用者不需要） */
+.dq-swipe-hint {
+    display: none;
+    font-size: 11.5px;
+    letter-spacing: .04em;
+    color: var(--ink-mute);
+}
+
+@media (any-pointer: coarse) {
+    .dq-swipe-hint { display: inline-block; }
 }
 
 .daily-quote-label {
@@ -1123,6 +1163,7 @@ ul, ol { list-style-position: outside; }
 
 .daily-quote-card[data-state="loading"] .daily-quote-actions { visibility: hidden; }
 .daily-quote-card[data-state="loading"] .dq-nav { opacity: .45; pointer-events: none; }
+.daily-quote-card[data-state="loading"] .dq-swipe-hint { visibility: hidden; }
 
 .daily-quote-text.is-loading {
     min-height: 4em;

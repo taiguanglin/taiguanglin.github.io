@@ -124,6 +124,11 @@
 - 內頁：`section.page-hero`（淡粉漸層＋圓相水印）＋ `.crumbs` ＋ `.kicker` ＋ `h1.display` ＋ `p.lede`。
 - 首頁：`.hero`（`hero-copy` / `hero-art`）＋ `images/hero-lotus.svg`（圓相中的禪坐身影與蓮花）。
   「每日精選」卡片（`.daily-quote`）以負 margin 疊在 hero 下緣。
+- 「每日精選」互動：以本地日期播種（`idx = day*2654435761+97`），桌面用 ◀◀ ◀ 今日 ▶ ▶▶ 鈕切換；
+  手機／平板等**有觸控**的裝置另可**左滑＝後一天、右滑＝前一天**（Pointer Events，
+  CSS `touch-action: pan-y pinch-zoom`：水平手势交給 JS、垂直捲動仍歸瀏覽器）。
+  滑動後緊接著的那一下 click 會被攔截，避免誤觸「前往原文」或切換鈕；
+  滑鼠拖曳與垂直捲動不會切換日期。回歸測試：`node tool/site_chrome/daily_quote_swipe_harness.js`。
 - 頁首裝飾細線用 `images/lotus-divider.svg`（`divider-mark`）。
 - 著作／電子書卡片封面用 `images/合集.svg`（九本並列的書脊＋蓮花印記）。
 - **動效**：網頁層只保留 `.reveal` 淡入與 :hover 微抬（禁止版面層的持續動畫）。

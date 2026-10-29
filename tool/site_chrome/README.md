@@ -29,6 +29,9 @@ node tool/site_chrome/dropdown_harness.js index.html wenda2/chapter-01.html
 
 # lang-switch.js 跨語系轉址（含首頁「前往原文」的錨點保留；不依賴 jsdom）
 node tool/site_chrome/lang_switch_harness.js
+
+# 首頁「每日精選」觸控左右滑動（左滑＝後一天、右滑＝前一天；不依賴 jsdom）
+node tool/site_chrome/daily_quote_swipe_harness.js
 ```
 
 ### dropdown_harness.js 在做什麼
@@ -62,6 +65,22 @@ node tool/site_chrome/lang_switch_harness.js
 這個 harness 與下面 `audit_quotes.py` 的連結檢查都會失效：
 `wenda2_ebook` 已經有 `content-*` 這類「隨繁簡文字變動」的 id，
 `daily_quotes.json` 引用的 `p-*`／`answer-*` 則必須跨語系穩定。
+
+### daily_quote_swipe_harness.js 在做什麼
+
+首頁「每日精選」卡片除了 ◀ ▶ 鈕，也有觸控手勢：**左滑＝後一天、右滑＝前一天**
+（Pointer Events，`index.html` 的 inline script；CSS `touch-action: pan-y pinch-zoom`
+把水平手势交給 JS、垂直捲動仍歸瀏覽器）。
+
+這支 harness 用 Node 的 `vm` 跑**`index.html` 內真正的 inline script**，只替掉它會碰到的
+少數 DOM 全域（`getElementById` / `classList` / 事件派送 / `fetch`），斷言：
+
+- 左滑切到後一天、右滑切回前一天
+- 垂直手勢、位移不足的手勢、滑鼠拖曳**都不會**切換日期
+- 滑動後緊接著的那一下 click 會被攔截（不會誤觸「前往原文」或切換鈕）
+- 原有 ◀ ▶ 今日鈕仍可切換
+
+改每日精選的手勢、門檻或 DOM id 時，請一併跑這支 harness。
 
 ## 涵蓋頁面
 
