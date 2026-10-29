@@ -17,7 +17,8 @@
   2. PDF 分類條目（build/classified/*.jsonl）——已有 ch/l2/l3/l4 樹路徑
   2b. 補充條目（supplemental_items.json，版控 SoT）——PDF 有收錄但 qa-pair
       抽取遺漏的內容（例：小節尾「师父说」結尾開示），人工歸類到樹路徑
-  3. 每個樹節點下：Word 條目（保持原序）＋ PDF 條目（按日期排），合併輸出
+  3. 每個樹節點下：Word 條目＋ PDF 條目依「最終顯示日期」由早到晚合併輸出
+     （推斷日期必須在排序前補上，否則該則會被當成無時間而排到最前）
 
 HTML 大小控制（與 wenda2_ebook 相同）：
   CSS 的 content-visibility: auto 讓離屏 Q&A 不渲染，
@@ -370,11 +371,36 @@ def load_supplemental_items(audio_map: dict) -> list[dict]:
 # ────────────────────────────────────────────────────────────── #
 # 合併：Word blocks + PDF items → content_blocks + toc_items              #
 # ────────────────────────────────────────────────────────────── #
-def sort_key(t: str):
-    m = re.match(r"(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})", t or "")
+def parse_time_parts(t: str):
+    """解析時間字串 → (Y, M, D, h, m, s, has_clock, has_seconds)；失敗回 None。
+
+    支援 YYYY-M-D、YYYY/M/D、DD-MM-YYYY（日先月後）、MM-DD-YYYY；
+    時間可為 HH:MM 或 HH:MM:SS（微信後端時間戳只有 HH:MM:SS）。
+    DD/MM 兩組都 ≤12 時依 Word 源檔慣例當「日先月後」。
+    """
+    s = (t or "").strip()
+    m = re.match(
+        r"(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})日?"
+        r"(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$", s)
     if m:
-        return (int(m.group(1)), int(m.group(2)), int(m.group(3)))
-    return (9999, 12, 31)
+        y, mo, d = int(m.group(1)), int(m.group(2)), int(m.group(3))
+    else:
+        m = re.match(
+            r"(\d{1,2})[-/](\d{1,2})[-/](\d{4})"
+            r"(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?$", s)
+        if not m:
+            return None
+        first, second, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if first > 12 and second <= 12:
+            d, mo = first, second            # DD-MM-YYYY
+        elif second > 12 and first <= 12:
+            d, mo = second, first            # MM-DD-YYYY
+        else:
+            d, mo = first, second            # 皆 ≤12：依源檔當日先月後
+    has_clock = m.group(4) is not None
+    has_seconds = m.group(6) is not None
+    return (y, mo, d, int(m.group(4) or 0), int(m.group(5) or 0),
+            int(m.group(6) or 0), has_clock, has_seconds)
 
 
 
@@ -555,35 +581,23 @@ _TIME_RE = re.compile(
     r'<span class="question-time">([^<]+)</span>')
 
 def normalize_time_str(t: str) -> str:
-    """把各種日期格式正規化為 YYYY-MM-DD [HH:MM]（補零）。
+    """把各種日期格式正規化為 YYYY-MM-DD [HH:MM[:SS]]（補零）。
 
     支援：YYYY-M-D、YYYY/M/D、DD-MM-YYYY（日先月後）、MM-DD-YYYY。
+    ⚠️ 秒（HH:MM:SS）必須保留——部分微信問答的時間戳帶秒，
+    舊版把整串視為「非日期」，導致該則被當成無時間而排到最前面。
     """
     t = t.strip()
-    # YYYY-M-D [HH:MM] 或 YYYY/M/D [HH:MM] → YYYY-MM-DD [HH:MM]
-    m = re.match(r'(\d{4})[-/](\d{1,2})[-/](\d{1,2})(?:\s+(\d{1,2}):(\d{2}))?$', t)
-    if m:
-        date = f"{m.group(1)}-{int(m.group(2)):02d}-{int(m.group(3)):02d}"
-        if m.group(4):
-            date += f" {int(m.group(4)):02d}:{m.group(5)}"
-        return date
-    # DD-MM-YYYY [HH:MM]（日先月後——首組>12 或 次組>12 才確定，否則先試日先）
-    m = re.match(r'(\d{1,2})[-/](\d{1,2})[-/](\d{4})(?:\s+(\d{1,2}):(\d{2}))?$', t)
-    if m:
-        d, mo, y = int(m.group(1)), int(m.group(2)), m.group(3)
-        if d > 12 and mo <= 12:
-            # DD-MM-YYYY
-            date = f"{y}-{mo:02d}-{d:02d}"
-        elif mo > 12 and d <= 12:
-            # MM-DD-YYYY
-            date = f"{y}-{d:02d}-{mo:02d}"
-        else:
-            # 兩組都 ≤12——按 DD-MM（跟 Word 源文件一致的日先月後）
-            date = f"{y}-{mo:02d}-{d:02d}"
-        if m.group(4):
-            date += f" {int(m.group(4)):02d}:{m.group(5)}"
-        return date
-    return t
+    parts = parse_time_parts(t)
+    if not parts:
+        return t
+    y, mo, d, hh, mm, ss, has_clock, has_seconds = parts
+    date = f"{y:04d}-{mo:02d}-{d:02d}"
+    if has_clock:
+        date += f" {hh:02d}:{mm:02d}"
+        if has_seconds:
+            date += f":{ss:02d}"
+    return date
 
 
 def normalize_qa_time(html: str) -> str:
@@ -594,16 +608,20 @@ def normalize_qa_time(html: str) -> str:
 
 
 def extract_time_key(html: str) -> tuple:
-    """排序 key：無時間=(0,...) 排最前；有時間=(1,Y,M,D,分鐘)。"""
+    """排序 key：無法解析日期 → (2,) 排最後；有日期 → (1,Y,M,D,h,m,s)。
+
+    ⚠️ 必須能解析 HH:MM:SS（秒）與 YYYY/M/D、DD-MM-YYYY 等格式；
+    舊版只認「YYYY-M-D [HH:MM]」，帶秒的時間戳整串落空 → 被當成
+    無時間而排到最前（01 章「修行翻出情緒/習氣」即因此錯序）。
+    """
     m = _TIME_RE.search(html)
     if not m:
-        return (0, 0, 0, 0, 0)
-    t = normalize_time_str(m.group(1))
-    dm = re.match(r'(\d{4})-(\d{2})-(\d{2})(?:\s+(\d{2}):(\d{2}))?', t)
-    if dm:
-        return (1, int(dm.group(1)), int(dm.group(2)), int(dm.group(3)),
-                int(dm.group(4) or 0) * 60 + int(dm.group(5) or 0))
-    return (0, 0, 0, 0, 0)
+        return (2,)
+    parts = parse_time_parts(m.group(1))
+    if not parts:
+        return (2,)
+    y, mo, d, hh, mm, ss, _has_clock, _has_seconds = parts
+    return (1, y, mo, d, hh, mm, ss)
 
 
 _OLD_COUNT_RE = re.compile(r'<span class="chapter-qa-count">[^<]*</span>')
@@ -613,14 +631,39 @@ def strip_old_count(heading_html: str) -> str:
     return _OLD_COUNT_RE.sub('', heading_html)
 
 
+def _prepare_question_html(q_html: str) -> str:
+    """把提問 HTML 整理成「最終顯示」狀態（清理提問者、補日期、修正文字）。
+
+    這一步必須在排序之前完成——排序依的是 question-time span，
+    若推斷日期在排序後才補上，該則會被當成「無時間」而排到最前面。
+    """
+    if not q_html:
+        return q_html
+    q_html = _clean_questioner_span(normalize_qa_time(q_html))
+    qid_m = re.search(r'id="(question-[^"]+)"', q_html)
+    if qid_m:
+        qid = qid_m.group(1)
+        q_html = fix_corrupted_text(qid, q_html)
+        # ⚠️ infer_missing_date 必須排在 fix_questioner 之前：
+        #    它把 question-time span 插在 questioner span 之後，
+        #    questioner 清空後其正則（[^<]+）就不再符合、日期會插不進去。
+        q_html = infer_missing_date(qid, q_html)
+        q_html = fix_questioner(qid, q_html)
+        q_html = fix_question_text(qid, q_html)
+        # 推斷日期可能帶秒（HH:MM:SS），再正規化一次以統一補零格式
+        q_html = normalize_qa_time(q_html)
+    return q_html
+
+
 def build_merged_chapter(ch: int, word_blocks: list[str],
                           word_toc: list[tuple[int, str, str]],
                           pdf_items: list[dict]) -> tuple[list[str], list[tuple[int, str, str]]]:
     """合併 Word 區塊與 PDF 條目 → (content_blocks, toc_items)。
 
     - heading 剝掉舊計數 span（finalize_chapter 會加新的合併計數）
-    - Word + PDF 條目按時間排序合併（無時間排最前）
-    - 日期正規化為 YYYY-MM-DD [HH:MM]
+    - 每個小節內 Word + PDF 條目「依日期由早到晚」合併排序
+      （日期＝最終顯示的 question-time，含推斷補上的日期；無法解析者排最後）
+    - 日期正規化為 YYYY-MM-DD [HH:MM[:SS]]
     """
     heading_re = re.compile(r'<h([234])[^>]*id="([^"]+)"[^>]*>(.*?)</h\1>', re.S)
     qa_re = re.compile(r'<div class="(question|answer)"')
@@ -703,22 +746,15 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
             toc_items.append((level, name, p))
 
         all_pairs = (pd_["pairs"] if pd_ else []) + pdf_pairs
+        # ⚠️ 排序前先做「最終顯示化」：清理提問者姓名、補上推斷日期、
+        #    修正損壞文字。正文日期若在排序後才補，該則會被當成無時間
+        #    而排到最前面（2026-11 修正：01 章「修行翻出情緒/習氣」首則
+        #    2025-12-09 曾排在 2024-09-09 之前）。
+        all_pairs = [(_prepare_question_html(q), a) for q, a in all_pairs]
         all_pairs.sort(key=lambda qa: extract_time_key(qa[0]))
 
         for q_html, a_html in all_pairs:
             if q_html:
-                # 清理 Word 章的 questioner 名字（去日期）+ 修正損壞文字 + 日期正規化
-                q_html = _clean_questioner_span(normalize_qa_time(q_html))
-                qid_m = re.search(r'id="(question-[^"]+)"', q_html)
-                if qid_m:
-                    qid = qid_m.group(1)
-                    q_html = fix_corrupted_text(qid, q_html)
-                    # ⚠️ infer_missing_date 必須排在 fix_questioner 之前：
-                    #    它把 question-time span 插在 questioner span 之後，
-                    #    questioner 清空後其正則（[^<]+）就不再符合、日期會插不進去。
-                    q_html = infer_missing_date(qid, q_html)
-                    q_html = fix_questioner(qid, q_html)
-                    q_html = fix_question_text(qid, q_html)
                 content_blocks.append(q_html)
             content_blocks.append(normalize_qa_time(a_html))
 
