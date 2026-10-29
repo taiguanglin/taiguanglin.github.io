@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-10-28T09:05:33.630Z",
+  "generated_at": "2026-10-29T08:59:57.235Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -23638,7 +23638,7 @@
       "audio": "2025年3月11日Tai师父讲经·楞伽经(26).opus",
       "title": "楞伽经（26）",
       "duration": 2046.776,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-sda2c3f01",
@@ -23783,227 +23783,229 @@
         {
           "pid": "p-sbc0551cc",
           "text": "《楞伽经》第二十六期，这本书的一百二十九页下边。下边的内容没有什么特别难的，我们对佛法比较了解的人都知道的、比较普遍、普及的内容。咱们看原文。",
-          "start": 0.86,
-          "end": 18.32,
+          "start": 0.66,
+          "end": 18.52,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd59cde8e",
           "text": "复次，大慧，今为汝说外五无间，令汝及余菩萨闻是义已，于未来世不生疑惑。",
-          "start": 18.32,
-          "end": 21.3,
+          "start": 18.52,
+          "end": 21.9,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s22c95365",
           "text": "上面说了“内五无间”，就是一个修行人该做的事，如果做到了就可以解脱。下边说的是真实的、造恶业的，就是坏事。先给你们讲讲“外五无间”；他也不拆开来说，就直接说，因为大家都懂这个内容。",
-          "start": 21.3,
+          "start": 21.9,
           "end": 43.51,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6b79e0e7",
           "text": "云何外五无间？谓余教中所说无间，若有作者于三解脱不能现证，唯除如来诸大菩萨及大声闻，见其有造无间业者，为欲劝发令其改过，以神通力示同其事，寻即悔除证于解脱。",
           "start": 43.51,
-          "end": 48.93,
+          "end": 43.51,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s6bec5f5b",
           "text": "“云何外五无间？谓余教中所说无间”，就是其他教法中都讲过的那种“五无间罪”——杀父、杀母、杀阿罗汉、破和合僧、出佛身血，这叫“五无间罪”。“若有作者于三解脱不能现证”，如果做了，你就不能解脱。“三解脱”也叫“三解脱门”，就是空门、无相门、无愿门，把这个称为“三解脱门”。",
-          "start": 48.93,
-          "end": 90.75,
+          "start": 43.51,
+          "end": 92.641,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc5a4442d",
           "text": "如果凡夫做了五无间罪——五逆重罪，肯定解脱不了。除了如来、大菩萨、大声闻这些人，为了方便度人，用化身做出来给大家看看。先造五无间业，然后承受极大的果报，再忏悔、受报等，最后又解脱了。就是用化身来给你演一遍，前面说的这种事就不算了。",
-          "start": 90.75,
-          "end": 139.47,
+          "start": 92.641,
+          "end": 140.27,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s44b4fde4",
           "text": "此皆化现，非是实造，若有实造无间业者，终无现身而得解脱，唯除觉了自心所现身资所住，离我、我所分别执见，或于来世余处受生遇善知识离分别过，方证解脱。",
-          "start": 139.47,
-          "end": 142.49,
+          "start": 140.27,
+          "end": 140.27,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sdd802c1f",
           "text": "“此皆化现，非是实造”，这些都是化现的，不是真实造的。“若有实造无间业者，终无现身而得解脱”，如果真实造了无间业者，这一辈子绝对解脱不了。",
-          "start": 142.49,
-          "end": 156.33,
+          "start": 140.27,
+          "end": 159.433,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5244a760",
           "text": "“觉了自心所现身资所住”，就是义理上通达了，知道这个世界都是幻相、幻境，都是妄想、分别、执着和合而成的幻境。“离我、我所分别执见”，也就是灭了我相、人相，执着也没了。在这里不能说直接灭了我相、人相，直接灭了就是菩萨了；而是在理论上、义理上已经明白了，我相、人相是不应该有的。",
-          "start": 156.33,
-          "end": 187.95,
+          "start": 159.433,
+          "end": 188.45,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd4a1d31a",
           "text": "“或于来世余处受生遇善知识离分别过”，或者未来世受完报之后，再遇到善知识，在善知识的指导下离分别过。往里说的话，所有的过错都是因为起了妄想。从这里再往下一步，就是因为你有我相——因为有分别心，有了我相。所有的业都是以我相为基础作的，不管是善业还是恶业。所以只要把分别心灭了，所有的恶业不能说全部灭了，至少把造业的种子给毁掉、灭掉了。",
-          "start": 187.95,
-          "end": 232.64,
+          "start": 188.45,
+          "end": 232.54,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1df92499",
           "text": "“方证解脱”，离了“分别过”，就可以解脱了。",
-          "start": 232.64,
+          "start": 232.54,
           "end": 239.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdf021a34",
           "text": "尔时，世尊重说颂言：贪爱名为母，无明则是父；识了于境界，此则名为佛。",
           "start": 239.96,
-          "end": 249.29,
+          "end": 249.39,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saf351721",
           "text": "贪爱是母，无明是父，知道这些境界就叫佛。",
-          "start": 249.29,
-          "end": 253.76,
+          "start": 249.39,
+          "end": 253.96,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1c58d150",
           "text": "随眠阿罗汉，蕴聚和合僧；断彼无余间，是名无间业。",
-          "start": 253.76,
-          "end": 259,
+          "start": 253.96,
+          "end": 258.9,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa99dfff1",
           "text": "这个前面都讲过，这个世界都是执着和合而成，“眠”也在这个执着和合当中，所以把这个执着灭了，就叫阿罗汉。“蕴聚和合僧”，五蕴和合而成的这个世界，用“和合僧”来比喻这种和合的真相。",
-          "start": 259,
-          "end": 284.33,
+          "start": 258.9,
+          "end": 291.265,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd1196c72",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说诸佛体性。”",
-          "start": 284.33,
-          "end": 296.83,
+          "start": 291.265,
+          "end": 297.53,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd201a33e",
           "text": "“诸佛体性”，也就是佛的境界是什么呢？请佛说一说。佛的境界是没有办法说的，所以都是相对而说。“没有了这个就是佛的境界”，以这种方式说。佛的境界只能说是大空或者究竟空。",
-          "start": 296.83,
-          "end": 314.55,
+          "start": 297.53,
+          "end": 315.899,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s23e4908a",
           "text": "佛言：“大慧，觉二无我，除二种障，离二种死，断二烦恼，是佛体性。大慧，声闻、缘觉得此法已，亦名为佛，我以是义但说一乘。”",
-          "start": 314.55,
+          "start": 315.899,
           "end": 318.47,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se5c4e4f2",
           "text": "“二无我”是“人无我，法无我”，这已经多次出现了，到菩萨叫“人无我”；但是初地菩萨是“法有我”，八地菩萨开始称之为“法无我”。",
           "start": 318.47,
-          "end": 333.19,
+          "end": 333.09,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9f7be9ce",
           "text": "“二种障”，在书后面的解释中称为“烦恼障”和“所知障”；但是这都不是菩萨境界，凡夫的境界叫“烦恼障、所知障”。如果这是给菩萨们讲的，我认为应该是“事障、理障”。",
-          "start": 333.19,
-          "end": 348.68,
+          "start": 333.09,
+          "end": 348.98,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s077e9bba",
           "text": "在《圆觉经》里讲过二障——事障和理障。理障就是义理上不通透，义理没有通达，这叫理障。他不知道这个世界是妄想和而成的，就像外道一样，把人和外部的世界对立开来认知，这样的话解脱不了。第二种叫事障，事障就是业；有业障的话你也解脱不了，要消完业才行。",
-          "start": 348.68,
-          "end": 372.65,
+          "start": 348.98,
+          "end": 373.15,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbf05e702",
           "text": "所以我更倾向于这种解释——事障、理障，《圆觉经》本来就是给菩萨们讲的，所以这才是更适合的。“烦恼障”和“所知障”都是凡夫阶段的。",
-          "start": 372.65,
-          "end": 387.56,
+          "start": 373.15,
+          "end": 387.36,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s577c62b7",
           "text": "“二种死”，一个是分段生死——凡夫阶段的分段生死；还有变异生死，是菩萨阶段的。虽然我不太认同对菩萨也用“生死”这个词，但是既然用了，就那么说吧。",
-          "start": 387.56,
-          "end": 402.85,
+          "start": 387.36,
+          "end": 402.75,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa2f0c85c",
           "text": "“二烦恼”是现行烦恼和习气，这个凡夫和菩萨都一样。现行烦恼——现在起的妄想；习气就是，因为习气，不断地起妄想。菩萨在三昧境界里是不起妄想的，但是不住在这种三昧境界或者禅定境界的时候，根据习气还会起妄想。哪怕你打坐到一定程度，住在三昧状态里，习气还在的话，还是会起妄想。就像我们打坐到一定程度就坐不住了，因为你的习气起来了；不管是情绪上的习气，还是好动的习气，各种情绪起来，你就坐不住了。",
-          "start": 402.85,
-          "end": 449.62,
+          "start": 402.75,
+          "end": 449.52,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se2dc1565",
           "text": "所以两种烦恼，一种是现在所处的烦恼；一种是习气暂时压住了，但是还会起来的那种烦恼。",
-          "start": 449.62,
+          "start": 449.52,
           "end": 462.74,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1823c162",
@@ -24012,7 +24014,7 @@
           "end": 483.66,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9e1bb5db",
@@ -24021,387 +24023,385 @@
           "end": 501.22,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7ac9cacc",
           "text": "尔时，世尊重说颂言：善知二无我，除二障二恼，及不思议死，是故名如来。",
           "start": 501.22,
-          "end": 509.08,
+          "end": 510.151,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf5665d72",
           "text": "《金刚经》里说如来——无所来亦无所去，所以叫如来。这里就是以这个方式拆开来解释的。",
-          "start": 509.08,
-          "end": 522.08,
+          "start": 510.151,
+          "end": 523.355,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s708628ba",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如来以何密意，于大乘中唱如是言：‘我是过去一切诸佛及说百千本生之事，我于尔时作顶生王、大象、鹦鹉、月光、妙眼，如是等。’”",
-          "start": 522.08,
-          "end": 540.34,
+          "start": 523.355,
+          "end": 540.54,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa08c5796",
           "text": "这都是佛曾经讲过的一些故事，是不是他的故事，难说。因为这些故事不能全部当作真实发生过的事来看，或者说佛真实做过的事来看，他下边讲了为什么。",
-          "start": 540.34,
-          "end": 562.04,
+          "start": 540.54,
+          "end": 562.14,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s500c3c30",
           "text": "佛言：“大慧，如来应正等觉依四平等秘密意故，于大众中作如是言，我于昔时作拘留孙佛、拘那含牟尼佛、迦叶佛。",
-          "start": 562.04,
-          "end": 572.58,
+          "start": 562.14,
+          "end": 570.121,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sca1fadf6",
           "text": "“应正等觉”是如来的另一种名字。如来住在如来地的时候，根据四平等的秘密意来讲法，说过去曾经做过什么、什么佛。这样的话佛是可以说的。",
-          "start": 572.58,
-          "end": 592.82,
+          "start": 570.121,
+          "end": 592.32,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se9bafaee",
           "text": "云何为四？所谓字平等、语平等、身平等、法平等。",
-          "start": 592.82,
-          "end": 598.24,
+          "start": 592.32,
+          "end": 598.04,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s06de00f1",
           "text": "因为这四个平等，所以可以这么说。",
-          "start": 598.24,
-          "end": 601.17,
+          "start": 598.04,
+          "end": 600.67,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sebe23201",
           "text": "云何字平等？谓我名佛，一切如来亦名为佛，佛名无别，是谓字等；",
-          "start": 601.17,
-          "end": 605.06,
+          "start": 600.67,
+          "end": 604.66,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scda7be3b",
           "text": "我叫佛，所有的如来也叫佛，佛的名字没有分别，所以字上平等。",
-          "start": 605.06,
-          "end": 616.67,
+          "start": 604.66,
+          "end": 614.78,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s48f1698e",
           "text": "云何语平等？谓我作六十四种梵音声语，一切如来亦作此语，迦陵频伽梵音声性，不增不减，无有差别，是名语等；",
-          "start": 616.67,
-          "end": 616.67,
+          "start": 614.78,
+          "end": 616.207,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s205465d1",
           "text": "在语言上平等。“谓我作六十四种梵音声语”，用这种声音来说法。“一切如来亦作此语”，所有如来也都用同样的声音来说法。“迦陵频伽”是一种鸟的名字，迦陵频伽鸟。翻过来一页，后面注释当中说了：",
-          "start": 616.67,
-          "end": 637.84,
+          "start": 616.207,
+          "end": 637.74,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8a1951d9",
           "text": "又作“歌罗频伽”“迦兰频伽”等，译为“好声”，鸟名。据传这种鸟出自雪山，在壳中即能鸣叫，其号优雅悦耳。",
-          "start": 637.84,
-          "end": 649.06,
+          "start": 637.74,
+          "end": 648.86,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7cecc8e1",
           "text": "就是一种声音很好听的鸟，以这个来比喻。",
-          "start": 649.06,
-          "end": 660.31,
+          "start": 648.86,
+          "end": 660.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfc835e82",
           "text": "云何身平等？谓我与诸佛，法身色相及随形好等无差别，除为调伏种种众生，现随类身，是谓身平等；",
-          "start": 660.31,
-          "end": 666.28,
+          "start": 660.11,
+          "end": 666.18,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s91ffe131",
           "text": "法身无差别。佛的境界是大空、究竟空的境界；什么都没有的情况下，所有佛都一样。为了方便度人而随缘现出各种身形，这叫“身平等”。",
-          "start": 666.28,
-          "end": 687.49,
+          "start": 666.18,
+          "end": 687.39,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbc9e13af",
           "text": "云何法平等？谓我与诸佛，皆同证得三十七种菩提分法，是谓法等。",
-          "start": 687.49,
-          "end": 694.53,
+          "start": 687.39,
+          "end": 693.466,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3c34e707",
           "text": "我与诸佛都是根据“三十七种菩提分法”最后觉悟成佛的，所以是法平等。",
-          "start": 694.53,
-          "end": 703.73,
+          "start": 693.466,
+          "end": 699.751,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb3573396",
           "text": "是故如来应正等觉，于大众中作如是说。",
-          "start": 703.73,
-          "end": 716.981,
+          "start": 699.751,
+          "end": 703.052,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s352a22ef",
           "text": "所以佛可以对大众说，我曾经做过大象、鹦鹉、月光、妙眼，还有其他各种佛。",
-          "start": 716.981,
-          "end": 716.981,
+          "start": 703.052,
+          "end": 712.661,
           "conf": 0.35,
           "method": "miss",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-sc8dbf946",
           "text": "“三十七种菩提分法”，在网上搜就有了，也叫“三十七道品”，趣向涅槃的三十七种修行方法，可进一步分为四念处、四正勤、四神足、五根、五力、七菩提分、八正道。",
-          "start": 716.981,
-          "end": 734.41,
+          "start": 712.661,
+          "end": 734.01,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se4928589",
           "text": "这一段的内容是什么呢？这一段重点是“法身佛”。法身佛什么话都可以说，法身佛说的话都是为了度人而说；所以不管他说什么，都可以理解为一种方便法。所以他说曾经做过什么佛，就算没有做过，也没有关系。因为在佛的境界里，所有自性全部重叠在一起，所有佛都平等，所以他可以随便取别人的记忆过来说——什么顶生王、大象、鹦鹉、月光这些都可以。",
-          "start": 734.41,
-          "end": 765.52,
+          "start": 734.01,
+          "end": 765.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s27c5971b",
           "text": "有一本经叫《佛说月光菩萨经》，这部经里讲：佛曾经当过月光天子——一个国王，有人求他布施头颅——要他把脑袋割给他，最后这位天子真的把脑袋割给他了。",
-          "start": 765.52,
-          "end": 791.51,
+          "start": 765.62,
+          "end": 789.668,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se3e18423",
           "text": "所以我以前也讲过，故事就当故事来看，故事和义理要分开来看。故事是为义理服务的，是为了证明这些义理是真的，是作为论据来说的；并不是它绝对发生过，而且没有任何偏差，没有任何加工的、演绎的部分，全是真实的；不要这样看，这样看的话佛经有很多矛盾的地方。",
-          "start": 791.51,
-          "end": 819.9,
+          "start": 789.668,
+          "end": 819.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5a2870e9",
           "text": "佛在这里讲的意思是：在法身佛的境界里什么话都可以说。报身是带着业过来的，在这种情况下，如果你说谎话，伤害到别人，或者你的谎话让人产生了其他某种不好的结果，这都是要受报的。所以报身基本上不怎么说谎言来伤害别人。带着报身下来的人，大部分都是隐藏自己，以免造新的业。在法身佛的境界，都是以化身的形式来讲法。所以讲什么都没有关系，他没有果报。所以不管是什么原因，法身佛怎么讲都可以。",
-          "start": 819.9,
-          "end": 880.73,
+          "start": 819.7,
+          "end": 881.73,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a0d2390",
           "text": "尔时，世尊重说颂言：迦叶、拘留孙，拘那含是我，依四平等故，为诸佛子说。尔时，大慧菩萨摩诃萨复白佛言：“世尊，如世尊说，我于某夜成最正觉，乃至某夜当入涅槃，于其中间不说一字，亦不已说，亦不当说，不说是佛说。世尊，依何密意作如是语？”",
-          "start": 880.73,
-          "end": 904.06,
+          "start": 881.73,
+          "end": 904.66,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93eb6113",
           "text": "大慧菩萨又问，世尊说过去某夜觉悟了，乃至某夜入涅槃了；在觉悟到涅槃中间，没有说一个字；没有曾经说过，也不应该说，说了也不说是佛说。为什么你这么说呢？“最正觉”就是觉悟成佛了。",
-          "start": 904.06,
-          "end": 931.74,
+          "start": 904.66,
+          "end": 934.326,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sce9acc36",
           "text": "《金刚经》里也说，佛没有传过什么法，有这样的说法。为什么会以这样的说法来让人产生迷惑呢？",
-          "start": 931.74,
-          "end": 944.41,
+          "start": 934.326,
+          "end": 944.31,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a154037",
           "text": "佛言：“大慧，依二密法故作如是说。云何二法？谓自证法及本住法。",
-          "start": 944.41,
-          "end": 952.65,
+          "start": 944.31,
+          "end": 947.719,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa51928c7",
           "text": "因为有两个秘法，一个是自证法，一个是本住法。",
-          "start": 952.65,
-          "end": 954.91,
+          "start": 947.719,
+          "end": 954.31,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s58e7a0b5",
           "text": "云何自证法？谓诸佛所证，我亦同证，不增不减，证智所行，离言说相，离分别相，离名字相。",
-          "start": 954.91,
-          "end": 965.68,
+          "start": 954.31,
+          "end": 965.38,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scb3d0d92",
           "text": "自证法——自己悟到的法，就是自己觉悟成佛。所有佛都一样，我也同样证悟到了佛的境界。这个境界是不增不减。“证智”是以菩萨的妄想来解释，在佛的境界也可以看作“证智”。离开言说相，在菩萨和佛的境界都没有分别相，所以也就不可能有名字相。因为超越了这些所有的相，所以叫“自证法”。",
-          "start": 965.68,
-          "end": 1010.92,
+          "start": 965.38,
+          "end": 1011.12,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1e06e4d5",
           "text": "云何本住法？谓法本性如金等在矿，若佛出世，若不出世，法住法位，法界法性皆悉常住。",
-          "start": 1010.92,
-          "end": 1025.87,
+          "start": 1011.12,
+          "end": 1025.57,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9ffa740b",
           "text": "法是不变的，在这里“法”可以理解为这个世界的真相、本相。这个世界的真相一直那样，就像金的性质；不管它在矿里，还是把它做成什么金银首饰，它的本性不变。“若佛出世，若不出世”，佛不管出不出世。“法住法位”，这个世界的真相不变。“法界法性皆悉常住”，这个世界最底层的真相——我们所说的三个基本设定是不变的。",
-          "start": 1025.87,
-          "end": 1061.8,
+          "start": 1025.57,
+          "end": 1061.1,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbfd1ce63",
           "text": "大慧，譬如有人行旷野中，见向古城平坦旧道，即便随入止息游戏。",
-          "start": 1061.8,
-          "end": 1068.54,
+          "start": 1061.1,
+          "end": 1068.24,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sea8786a5",
           "text": "就像有人在旷野中行走的时候，看到了一个旧城遗址，然后进去游戏、观赏。",
-          "start": 1068.54,
-          "end": 1075.71,
+          "start": 1068.24,
+          "end": 1075.41,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s85948483",
           "text": "大慧，于汝意云何？彼作是道及以城中种种物耶？",
-          "start": 1075.71,
-          "end": 1081.81,
+          "start": 1075.41,
+          "end": 1082.21,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfddeee59",
           "text": "这个人创造了这个城和里边的各种东西吗？",
-          "start": 1081.81,
-          "end": 1087.789,
+          "start": 1082.21,
+          "end": 1087.589,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2adcbf83",
           "text": "白言：“不也。”",
-          "start": 1087.789,
-          "end": 1089.2,
+          "start": 1087.589,
+          "end": 1088.9,
           "conf": 0.86,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf53578b9",
           "text": "因为这个古城一直在，所以这里的比喻是：佛出世、出来度人，就像这行走的旅人；而这个世界的法就像这个古城一样，一直在；不管人来不来，不管有没有人来旅游，城一直在。",
-          "start": 1089.2,
-          "end": 1109.28,
+          "start": 1088.9,
+          "end": 1109.08,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s11648a1c",
           "text": "所以，佛出世或不出世，这个世界的真相一直在；不会因为佛出世了，这个世界就改变了，或者有什么变化了，不是这样看的。因为这个世界的基本设定，本来就是这样的，这一点不由任何人来改变。世界的本相、真相是超越某个人的存在，这和其他教不一样。",
-          "start": 1109.28,
-          "end": 1136.76,
+          "start": 1109.08,
+          "end": 1136.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6b48ee61",
           "text": "如果像“十字架”一样，说这是上帝创造的，那整个世界自然规律也是上帝创造的，是不是可以这样理解？",
-          "start": 1136.76,
+          "start": 1136.96,
           "end": 1150,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5d99eb3d",
@@ -24410,71 +24410,70 @@
           "end": 1166.28,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9fed4776",
           "text": "佛言：“大慧，我及诸佛所证真如，常住法性亦复如是。是故说言始从成佛，乃至涅槃，于其中间不说一字，亦不已说，亦不当说。”",
           "start": 1166.28,
-          "end": 1173.8,
+          "end": 1173.4,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3840e975",
           "text": "我和诸佛所证到的真相，这个世界的真相都是如此。“真如”就是佛的境界。所以，就像从成佛到涅槃为止，中间不说一字，也没有说过，也不当说。就算说了，也可以说“我从来没有说过法”。因为这个世界的真相本来就这样，它没有变化；不会因为我说了什么，它就有什么变化。",
-          "start": 1173.8,
-          "end": 1223.61,
+          "start": 1173.4,
+          "end": 1209.891,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s92f6d025",
           "text": "尔时，世尊重说颂言：某夜成正觉，某夜般涅槃，于此二中间，我都无所说。自证本住法，故作是密语，我及诸如来，无有少差别。",
-          "start": 1221.84,
-          "end": 1221.84,
+          "start": 1209.891,
+          "end": 1223.912,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s9d26416f",
           "text": "下一段，一百三十七页。",
-          "start": 1223.61,
-          "end": 1232.07,
+          "start": 1223.912,
+          "end": 1231.67,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s757e501a",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿说一切法有无相，令我及诸菩萨摩诃萨离此相，疾得阿耨多罗三藐三菩提。”",
-          "start": 1232.07,
-          "end": 1242.87,
+          "start": 1231.67,
+          "end": 1242.77,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s209b4b2e",
           "text": "请佛说一说，法的有无相。",
-          "start": 1242.87,
-          "end": 1245.37,
+          "start": 1242.77,
+          "end": 1245.27,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf452b598",
           "text": "佛言：“谛听，当为汝说。”大慧言：“唯。”佛言：“世间众生多堕二见，谓有见、无见。堕二见故，非出出想。",
-          "start": 1245.37,
+          "start": 1245.27,
           "end": 1255.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se52cca94",
@@ -24483,241 +24482,241 @@
           "end": 1287.44,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbb5f1d84",
           "text": "“非出出想”和“不离离相”是什么意思呢？“出想”是想要解脱的欲望，称之为“出想”；“非出出想”就是不能离开想要解脱的这个欲望。“不离离相”也是，“离相”是想要解脱的相；“不离离相”，就是不能离开解脱的相。",
           "start": 1287.44,
-          "end": 1319.33,
+          "end": 1320.43,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93053438",
           "text": "这个合到前面的有见和无见当中来看，因为我们有了“有见”，就认为有解脱这个事，也认为解脱的相一直存在；我们就一直住在有见当中，有什么涅槃相、解脱相、能往生，这种事我们都认为存在，这个叫“有见”。",
-          "start": 1319.33,
-          "end": 1350.71,
+          "start": 1320.43,
+          "end": 1347.176,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0733e46f",
           "text": "云何有见？谓实有因缘而生诸法，非不实有，实有诸法从因缘生，非无法生。大慧，如是说者，则说无因。",
-          "start": 1350.71,
-          "end": 1354.71,
+          "start": 1347.176,
+          "end": 1354.91,
           "conf": 0.55,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a310b15",
           "text": "真的有因缘这个东西来生出诸法——这些妄想、分别、执着。它并不是不真实的，而是真实的。“非、不”两个否定，那就是肯定；它是实有。“实有诸法从因缘生”，的确有诸法从因缘生。“非无法生”，并不是没有法生，它们都是真实存在的。",
-          "start": 1354.71,
-          "end": 1380.42,
+          "start": 1354.91,
+          "end": 1380.72,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3cb00588",
           "text": "如果这样说的话，反而是没有原因的，因为因缘本身是空。所以如果诸法从因缘生，因缘本身是空，那就等于没有原因。这本书里的解释是：“这样说者，不了万法唯心所现”，可能这就是作者想说的话。",
-          "start": 1380.42,
-          "end": 1406.31,
+          "start": 1380.72,
+          "end": 1405.91,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0e3ac34c",
           "text": "另一个译本里是：“大慧，彼如是说者，是说世间无因。”这个世间没有原因。如果他说这个世间有原因，都是因缘生的，那等于是说这个世间没有原因。因为在逻辑上，因缘本来就是空的、不存在的；因缘生出诸法，因缘空，诸法也不可能有，也可以说这是“无因”。",
-          "start": 1406.31,
-          "end": 1434.88,
+          "start": 1405.91,
+          "end": 1434.68,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbdb03b5e",
           "text": "云何无见？谓知受贪嗔痴已，而妄计言无。",
-          "start": 1434.88,
-          "end": 1436.22,
+          "start": 1434.68,
+          "end": 1436.02,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s76fbe23e",
           "text": "什么叫无见呢？他们知道有贪、嗔、痴。知道存在的东西，在这之上“妄计言无”。这是佛说的真实的“无”。",
-          "start": 1436.22,
-          "end": 1455.93,
+          "start": 1436.02,
+          "end": 1455.43,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s639f7726",
           "text": "前面讲过，脑子里凭空想出来的东西，佛不承认它是“无”；它是你的想象而已，不是“无”。佛说的“无”，是真实存在的东西把它灭掉了、毁掉了，这叫“无”。",
-          "start": 1455.93,
-          "end": 1473.21,
+          "start": 1455.43,
+          "end": 1473.41,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s81b675a1",
           "text": "什么叫“无见”呢？对于这样曾经存在的东西后来消失了，我们起了一种见解，认为它“无”，这叫“无见”。",
-          "start": 1473.21,
+          "start": 1473.41,
           "end": 1483.14,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s21501018",
           "text": "大慧，及彼分别有相，而不受诸法有，复有知诸如来、声闻、缘觉，无贪、嗔、痴性而计为非有，此中谁为坏者？",
           "start": 1483.14,
-          "end": 1496.98,
+          "end": 1496.78,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2ed149f4",
           "text": "“及彼分别有相”，他们这些人有了分别心，分别认知这个有相和无相。“而不受诸法有”，不接受诸法的存在，他们认为诸法没有，这叫“无见”。还有一种人，知道如来、声闻、缘觉这些人没有了“贪嗔痴性”，就执着于“无”当中。是谁在破坏呢？",
-          "start": 1496.98,
-          "end": 1534.89,
+          "start": 1496.78,
+          "end": 1534.99,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4393db4e",
           "text": "大慧白言：“谓有贪、嗔、痴性后取于无，名为坏者。”",
-          "start": 1534.89,
-          "end": 1539.95,
+          "start": 1534.99,
+          "end": 1539.65,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfc411608",
           "text": "先认为贪、嗔、痴存在，然后知道如来、声闻、缘觉这些人把贪、嗔、痴给灭掉了，所以又开始执着于“无”。没有贪、嗔、痴性，这样的认知叫破坏。",
-          "start": 1539.95,
+          "start": 1539.65,
           "end": 1553.98,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s87b6f79e",
           "text": "佛言：“善哉！汝解我问，此人非止无贪、嗔、痴名为坏者，亦坏如来、声闻、缘觉。",
           "start": 1553.98,
-          "end": 1564.89,
+          "end": 1557.477,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s67c0dd86",
           "text": "你知道我的意思。他不止破坏的是执着于没有贪、嗔、痴，执着于无，而且还破坏如来、声闻、缘觉这些圣人之法。",
-          "start": 1564.89,
+          "start": 1557.477,
           "end": 1577.83,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se1cd2e8b",
           "text": "何以故？烦恼内外不可得故，体性非异非不异故。",
           "start": 1577.83,
-          "end": 1583.43,
+          "end": 1583.53,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7126f639",
           "text": "烦恼也可以看作妄想，妄想多了成为烦恼。“烦恼内外不可得故”，它本身是没有体性、没有本体的，所以不可得。“体性非异非不异故”，体性是不存在的，所以不能说异和不异，只能说“非异”“非不异”。不存在的东西，我们不能说它“同”或者“不同”，所以干脆说它“非异”“非不异”。",
-          "start": 1583.43,
-          "end": 1609.82,
+          "start": 1583.53,
+          "end": 1610.12,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa7e2effc",
           "text": "大慧，贪、嗔、痴性若内若外皆不可得，无体性故，无可取故，声闻、缘觉及以如来本性解脱，无有能缚及缚因故。",
-          "start": 1609.82,
+          "start": 1610.12,
           "end": 1618.56,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa2bddc8e",
           "text": "贪、嗔、痴的性质，在内外都是不可得的，它没有本体。没有体性的东西，你也取不了，所以“无可取故”。",
           "start": 1618.56,
-          "end": 1638.33,
+          "end": 1638.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc0a6e5e8",
           "text": "声闻、缘觉和如来的本性是解脱的，因为生出的妄想都没有本体；对没有本体的东西我们完全可以当作幻觉来看。幻觉只要自己灭掉，就消失了，所以“无有能缚及缚因故”。",
-          "start": 1638.33,
-          "end": 1659.45,
+          "start": 1638.13,
+          "end": 1659.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb83dafde",
           "text": "这些声闻、缘觉和如来的本性是解脱的；就算有妄想，他的本来面目是佛的解脱的状态；没有能把人拖入轮回的这个东西和原因。",
-          "start": 1659.45,
-          "end": 1677.07,
+          "start": 1659.25,
+          "end": 1677.47,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5b5234b8",
           "text": "大慧，若有能缚及以缚因，则有所缚，作如是说名为坏者，是为无有相，我依此义密意而说。",
-          "start": 1677.07,
-          "end": 1683.01,
+          "start": 1677.47,
+          "end": 1683.31,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s829eefc1",
           "text": "如果有能把人捆绑住或者困住的东西，还有能困住的因，还有能困住的人。“作如是说名为坏者”，如果这样说的话，就是破坏佛法的人。“是为无有相”，就是堕入到无相和有相当中。“我依此义密意而说”，我是根据这个义理来说的。",
-          "start": 1683.01,
+          "start": 1683.31,
           "end": 1718.46,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6063a87c",
           "text": "宁起我见，如须弥山，不起空见，怀增上慢。",
           "start": 1718.46,
-          "end": 1722.1,
+          "end": 1722,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1add7a2e",
           "text": "这句算是名言了。认为自己的见解很对的这种人就称之为“我见”；深著我见的人，他们是很难接受别人的说法的。这个“我见”可以大到像须弥山一样。",
-          "start": 1722.1,
+          "start": 1722,
           "end": 1743.47,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb2ae0669",
@@ -24726,133 +24725,133 @@
           "end": 1766.76,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa457cb99",
           "text": "因此，在空的情况下，我做什么都无所谓；就像我在梦里做什么都无所谓，因为梦就是我创造出来的幻境；在我自己创造出来的幻境里，我做什么都无所谓，也没有果报。",
           "start": 1766.76,
-          "end": 1781.8,
+          "end": 1781.4,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3c1d1c79",
           "text": "如果你在现实里沉入到这个“空见”当中，会对这个世界的所有事情失去兴趣，或者不再对因果明确地分辨，因为本来都是空。你一旦这样想的话，很容易陷入到那种目空一切的状态，所以称之为“怀增上慢”。反正在你眼里全是空的，什么尊长、老少这些都不存在，他们本来都是空。",
-          "start": 1781.8,
-          "end": 1814.62,
+          "start": 1781.4,
+          "end": 1814.12,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9172129f",
           "text": "有了这样的见解的人是很难度的。所以我们在网上跟人交流，有人就拿一个“空”来怼，说什么他都拿“空”来怼；要么说什么你“着相”了这类话。说这类话的人，你是没有办法跟他正常地用逻辑来沟通的，所以这种人叫“怀增上慢”。",
-          "start": 1814.62,
+          "start": 1814.12,
           "end": 1833.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7ec46850",
           "text": "若起此见，名为坏者，堕自共见乐欲之中，不了诸法惟心所现，以不了故，见有外法刹那无常展转差别蕴界处相。相续流转起已还灭，虚妄分别，离文字相，亦成坏者。",
           "start": 1833.81,
-          "end": 1836.5,
+          "end": 1836.2,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s98dd01b5",
           "text": "有了这样的见解，就是破坏佛法的人。“堕自共见乐欲之中”，在自相、共相上又加了个“见”，在这里有了我见。“乐欲之中”，在欲望当中享乐，就喜欢这个欲望。“不了诸法惟心所现”，不知道诸法——所有的妄想、分别、执着，都是从我们心中显现出来的。",
-          "start": 1836.5,
-          "end": 1863.41,
+          "start": 1836.2,
+          "end": 1862.91,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9fc4acad",
           "text": "“以不了故”，因为不知道。“见有外法刹那无常展转差别蕴界处相。相续流转起已还灭”，在妄想不断变化的外界相中，继续流转、继续轮回。“起已还灭”，产生之后又消失，这样不断地流转。“虚妄分别，离文字相，亦成坏者”，除了离开了文字相，还虚妄分别，也叫坏者，就是破坏佛法的人。",
-          "start": 1863.41,
-          "end": 1904.69,
+          "start": 1862.91,
+          "end": 1904.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd35c0c67",
           "text": "下边是一段偈语。",
-          "start": 1904.69,
+          "start": 1904.89,
           "end": 1906.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0f8b3fd7",
           "text": "尔时，世尊重说颂言：有无是二边，乃至心所行，",
           "start": 1906.95,
-          "end": 1912.18,
+          "end": 1911.98,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5e05ee75",
           "text": "有见、无见都是二边，都堕入到二边当中，这样是解脱不了的。这都是我们妄想心里产生的错误的见解。",
-          "start": 1912.18,
-          "end": 1923.06,
+          "start": 1911.98,
+          "end": 1922.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa695e885",
           "text": "净除彼所行，平等心寂灭。",
-          "start": 1923.06,
-          "end": 1924.99,
+          "start": 1922.96,
+          "end": 1924.29,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s29c8bcc9",
           "text": "灭掉这些错误的行，进入到平等心的寂灭状态。",
-          "start": 1924.99,
-          "end": 1931.1,
+          "start": 1924.29,
+          "end": 1931.2,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-seb6cd117",
           "text": "不取于境界，非灭无所有，",
-          "start": 1931.1,
-          "end": 1934.46,
+          "start": 1931.2,
+          "end": 1934.06,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1b2db6d0",
           "text": "不要取着于外境当中，不能因为已经灭了，它就没有。",
-          "start": 1934.46,
-          "end": 1943.46,
+          "start": 1934.06,
+          "end": 1943.36,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s366277f6",
           "text": "有真如妙物，如诸圣所行。",
-          "start": 1943.46,
+          "start": 1943.36,
           "end": 1947.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s966179d6",
@@ -24861,133 +24860,133 @@
           "end": 1956.25,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s788d6026",
           "text": "本无而有生，生已而复灭，",
           "start": 1956.25,
-          "end": 1959.44,
+          "end": 1958.94,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s326bd777",
           "text": "在本来没有的状态里会生出“有”——妄想，然后妄想又会消失。",
-          "start": 1959.44,
-          "end": 1965.48,
+          "start": 1958.94,
+          "end": 1964.78,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s94bc22c8",
           "text": "因缘有及无，彼非住我法。",
-          "start": 1965.48,
-          "end": 1967.63,
+          "start": 1964.78,
+          "end": 1967.53,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa0bb99bb",
           "text": "认为因缘的存在和无，这都不是我的法说的。",
-          "start": 1967.63,
-          "end": 1976.51,
+          "start": 1967.53,
+          "end": 1976.41,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s747f19b0",
           "text": "非外道非佛，非我非余众，能以缘成有，云何而得无？",
-          "start": 1976.51,
+          "start": 1976.41,
           "end": 1982.03,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2c7ccdb4",
           "text": "外道、佛、我和余众们不是根据这个因缘而成为有的。既然不是因为缘而有的，怎么能说因为缘而消失呢？",
           "start": 1982.03,
-          "end": 1998.46,
+          "end": 1998.96,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4d4deaa9",
           "text": "谁以缘成有，而复得言无？",
-          "start": 1998.46,
-          "end": 2002.7,
+          "start": 1998.96,
+          "end": 2002.8,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4abc164c",
           "text": "是谁因为缘成为有，然后又说它无呢？",
-          "start": 2002.7,
-          "end": 2007.44,
+          "start": 2002.8,
+          "end": 2007.54,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf99b2a2c",
           "text": "恶见说为生，妄想计有无。",
-          "start": 2007.44,
-          "end": 2011.05,
+          "start": 2007.54,
+          "end": 2010.85,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4a20a025",
           "text": "恶见——错误的见解，认为有这个“生”。计较、执着于有无的都是妄想。",
-          "start": 2011.05,
-          "end": 2022.49,
+          "start": 2010.85,
+          "end": 2021.89,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s08904c7c",
           "text": "若知无所生，亦复无所灭，",
-          "start": 2022.49,
-          "end": 2024.97,
+          "start": 2021.89,
+          "end": 2024.77,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa5765f2a",
           "text": "知道这个世界本来没有妄想，也就没有可灭的。",
-          "start": 2024.97,
-          "end": 2031.4,
+          "start": 2024.77,
+          "end": 2031.3,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s28c95f0d",
           "text": "观世悉空寂，有无二俱离。",
-          "start": 2031.4,
-          "end": 2035.48,
+          "start": 2031.3,
+          "end": 2034.78,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0144675f",
           "text": "观察世界本来空寂的相貌，要远离“有无见”。好了，这一期就讲到这里。",
-          "start": 2035.48,
+          "start": 2034.78,
           "end": 2046.776,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
