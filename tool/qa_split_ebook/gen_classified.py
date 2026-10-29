@@ -116,7 +116,23 @@ def extract_word_blocks(ch: int) -> tuple[list[str], list[tuple[int, str, str]]]
             cls = el.get("class") or ""
             # ⚠️ 精確比對——不用 "in"，避免誤抓 question-meta / question-text / answer-text
             if cls == "question" or cls == "answer":
-                blocks.append(lhtml.tostring(el, encoding="unicode"))
+                html = lhtml.tostring(el, encoding="unicode")
+                # 圖片是 question/answer div 的「兄弟節點」——word2ebook 的
+                # _append_image 把圖接在區塊之後（div 與 div 之間），不在 div 內。
+                # 只序列化 div 本體會把圖整個遺失（發布版 <img> 數為 0，
+                # assets/images/ 卻有 64 個檔）。這裡把緊鄰的 <img> 一併收進
+                # 該區塊，圖才會跟著 Q&A 進入發布版。
+                imgs = []
+                sib = el.getnext()
+                while sib is not None and getattr(sib, "tag", None) == "img":
+                    imgs.append(lhtml.tostring(sib, encoding="unicode"))
+                    sib = sib.getnext()
+                if imgs:
+                    cut = html.rfind("</div>")
+                    if cut > 0:
+                        html = (html[:cut] + "\n" + "\n".join(imgs) + "\n"
+                                + html[cut:])
+                blocks.append(html)
 
     return blocks, toc_items
 
@@ -214,6 +230,21 @@ def inject_play_button(a_html: str, qid: str, audio_map: dict) -> str:
     return a_html.replace('</span>\n</div>', f'</span>\n{btn}\n</div>', 1)
 
 
+def _attach_imgs(html: str, imgs) -> str:
+    """把 stage 2 收集的 <img> 插回 question / answer div 的內部末端。
+
+    圖在 stage 1 底稿是 Q&A div 的兄弟節點（word2ebook 的 _append_image），
+    stage 2 取 inner HTML 時會遺失，故由 stage 2 單獨收集、此處插回。
+    插在 div 的最後一個 </div> 之前 → 圖隨著該問答一起輸出。
+    """
+    if not imgs or not html:
+        return html
+    cut = html.rfind("</div>")
+    if cut <= 0:
+        return html
+    return html[:cut] + "\n" + "\n".join(imgs) + "\n" + html[cut:]
+
+
 def _parts_to_html(parts) -> str:
     """段落清單（或含 \\n 的單一文字）→ 逐段包 <p>，還原轉錄的段落結構。
 
@@ -258,10 +289,13 @@ def extract_pdf_items(_audio_map: dict = None) -> list[dict]:
             if r.get("split") and r.get("sub", 0) > 0:
                 q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(r.get("q", "")), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
                 a_html = _wrap_qa(_parts_to_html(r.get("a", "")), aid, "answer", "Taiguanglin", "")
+                a_html = _attach_imgs(a_html, it.get("a_imgs"))
                 a_html = inject_play_button(a_html, qid, _audio_map)
             else:
                 q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(it["q_parts"]), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
+                q_html = _attach_imgs(q_html, it.get("q_imgs"))
                 a_html = _wrap_qa(_parts_to_html(it["a_parts"]), aid, "answer", "Taiguanglin", "")
+                a_html = _attach_imgs(a_html, it.get("a_imgs"))
                 a_html = inject_play_button(a_html, qid, _audio_map)
 
             results.append({

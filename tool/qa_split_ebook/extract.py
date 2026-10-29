@@ -51,6 +51,26 @@ def inner_html(el) -> str:
     return s.strip()
 
 
+def sibling_imgs(el) -> list[str]:
+    """Q&A 區塊裡的 <img>（兩種位置都要收）。
+
+    ① 區塊的直屬子節點——PDF 章：word2ebook 的 pdf_parser 把圖放在
+       question-text / answer-text 之後，但仍在 question / answer div 內。
+    ② 區塊之後緊鄰的兄弟節點——Word 章：_append_image 把圖接在 div 之外。
+
+    兩者都不在 question-text / answer-text 的 inner HTML 裡，只取
+    inner_html() 會把圖整個遺失（stage 1 底稿 64 張圖在 stage 2 後只剩 0 張）。
+    這裡另外收集，交給 stage 3 插回對應的 Q&A 區塊。"""
+    out = []
+    for img in el.xpath("./img"):
+        out.append(lhtml.tostring(img, encoding="unicode"))
+    sib = el.getnext()
+    while sib is not None and getattr(sib, "tag", None) == "img":
+        out.append(lhtml.tostring(sib, encoding="unicode"))
+        sib = sib.getnext()
+    return out
+
+
 def plain_text(el) -> str:
     """給 LLM 用的純文字：<br/> → 換行、<img> → [配图]。"""
     for br in el.xpath(".//br"):
@@ -106,6 +126,12 @@ def extract_chapter(ch: int, qmap: dict, stats: dict):
     for el in main:
         if not isinstance(el.tag, str):
             continue
+        if el.tag == "img" and items:
+            # 頁面層級配圖：夾在兩個 qa-pair 之間，不屬於任何問答區塊。
+            # 附在前一則答案後，否則 stage 3 只認 question/answer div，
+            # 這張圖會整個遺失。
+            items[-1]["a_imgs"].append(lhtml.tostring(el, encoding="unicode"))
+            continue
         if el.tag == "h2" and el.get("id") != "chapter-toc-header":
             # h2 文字節點（避免吃到 span 計數）
             cur_sec = (el.text or "").strip()
@@ -138,6 +164,8 @@ def extract_chapter(ch: int, qmap: dict, stats: dict):
                 "time": (tm_els[0].strip() if tm_els else "") or date_supplement_lookup(qid),
                 "q_parts": q_parts,
                 "a_parts": a_parts,
+                "q_imgs": sibling_imgs(q),
+                "a_imgs": sibling_imgs(a),
                 "q_text": "\n".join(plain_text(x) for x in qt_els),
                 "a_text": "\n".join(plain_text(x) for x in at_els),
                 "img": len(el.xpath(".//img")),
