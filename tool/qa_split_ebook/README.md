@@ -55,6 +55,34 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
 新增條目後重跑 stage 2＋3 即生效（例：2025-11-13 微信結尾開示 → `12-01-13`
 正視神通）。
 
+## 圖片保留（stage 2／stage 3）
+
+發布版電子書的插圖有三種擺放位置，**stage 2 取 inner HTML、stage 3 只序列化
+`question`／`answer` div 本體**，兩種做法都看不到圖：
+
+| 來源 | 位置 | 誰收 |
+|---|---|---|
+| Word 章 | `question`/`answer` div 的**兄弟節點**（word2ebook 的 `_append_image` 接在區塊之後） | `extract.sibling_imgs` → `gen_classified._attach_imgs` |
+| PDF 章 | div **內部**、但在 `question-text`/`answer-text` 之外（pdf_parser 的排版） | 同上 |
+| PDF 章 | 夾在兩個 `qa-pair` 之間的**頁面層級配圖** | `extract.py` 附到前一則答案 |
+
+> 2026-10-29 修：這條鏈路斷掉時，發布版的 `<img>` 數量是 **0**，而
+> `assets/images/` 裡的 64 個 WebP 都在——讀者只看到「如下面兩張圖」卻沒有圖。
+> 現已全數補回（Word 35 張 + PDF 29 張 = 64）。
+
+守門測試：
+
+```bash
+cd tool/qa_split_ebook && ../../tool/word_audio_map2/.venv/bin/python -m pytest tests/
+```
+
+`tests/test_image_preservation.py` 涵蓋三層：
+1. **單元**——`sibling_imgs` 三種位置都收得到、`_attach_imgs` 插回區塊內；
+2. **產物**——發布版每個 `<img>` 都指向存在的檔案、每個資產檔都被引用、
+   發布版確實有圖；
+3. **來源對帳**——Word 與 PDF 原始檔的每一張圖（依 WebP 內容雜湊比對）
+   都真的出現在發布版裡。改了 stage 2／3 的圖片處理後必須跑一次。
+
 ## 狀態與恢復
 
 - **跨 session 續跑必讀：[`RESUME.md`](RESUME.md)** ——進度判定、每批流程、

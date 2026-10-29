@@ -153,3 +153,45 @@ dimension-based `width`/`height` when the file parses.
 > dropped — the source `.docx` holds 35 embedded images but only 28 were
 > rendered.
 
+### Requirement: Image Preservation Across the Three-Stage Rebuild
+Every image emitted by the parser SHALL survive stage 2 and stage 3 and SHALL
+appear in the published ebook. The parser's output is not the published
+output: stage 2 (`tool/qa_split_ebook/extract.py`) reads the stage-1 draft's
+HTML, and stage 3 (`tool/qa_split_ebook/gen_classified.py`) rebuilds the 12
+thematic chapters from it.
+
+Images live in three different places, and each stage must handle all three:
+
+| Position | Produced by | Collected by | Re-inserted by |
+|---|---|---|---|
+| sibling of the `question`/`answer` div | `DocumentParser._append_image` (Word chapters) | `extract.sibling_imgs` | `gen_classified._attach_imgs` |
+| child of the `question`/`answer` div, outside `question-text`/`answer-text` | `core/pdf_parser.py` (PDF chapters) | `extract.sibling_imgs` | `gen_classified._attach_imgs` |
+| directly under `<main>`, between two `qa-pair` articles | `core/pdf_parser.py` (page-level PDF image) | `extract.py` (attached to the preceding answer) | `gen_classified._attach_imgs` |
+
+#### Scenario: Image sits outside the question/answer div
+- GIVEN a stage-1 draft whose `question` div is followed by one or more `<img>`
+  siblings
+- WHEN `gen_classified.extract_word_blocks` serialises the chapter
+- THEN the images SHALL be carried into the serialised `question` block
+- AND they SHALL NOT be dropped
+
+#### Scenario: Image sits inside the div but outside question-text
+- GIVEN a stage-1 draft whose `question` div contains `<img>` elements that are
+  siblings of its `question-text` children (the PDF layout)
+- WHEN `extract.sibling_imgs` runs
+- THEN those images SHALL be returned alongside the div's trailing images
+
+#### Scenario: Published ebook has no dangling or orphaned images
+- GIVEN a built `wenda2_ebook/`
+- WHEN the image references and the `assets/images/` directory are compared
+- THEN every `<img src="assets/images/…">` SHALL point to an existing file
+- AND every file in `assets/images/` SHALL be referenced by at least one
+  chapter
+- AND the published chapters SHALL contain images at all
+
+> Regression note (2026-10-29): this chain was broken end to end — the
+> published ebook had **0** `<img>` tags while all 64 WebP assets sat in
+> `assets/images/` (35 from the Word source, 29 from the monthly PDFs).
+> `tool/qa_split_ebook/tests/test_image_preservation.py` guards it, including a
+> source-to-published reconciliation by WebP content hash.
+

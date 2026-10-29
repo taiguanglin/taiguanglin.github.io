@@ -207,3 +207,37 @@ class TestImageBearingQuestionParagraph:
         # 三張圖的 src 必須互不相同
         srcs = re.findall(r'src="([^"]+)"', content)
         assert len(srcs) == 3 and len(set(srcs)) == 3, srcs
+
+    def test_no_embedded_image_is_dropped(self, settings, tmp_path):
+        """來源裡的每一張內嵌圖都要出現在輸出中，一張都不能少。
+
+        三種擺放位置各測一次：提問段、純圖段、回答段。這是「發布版圖片
+        全數遺失」那類回歸的底線守門——解析器少吐一張圖，後面每一段
+        管線都救不回來。
+        """
+        docx_path = tmp_path / "all_images.docx"
+        doc = Document()
+        doc.add_heading("测试章", level=1)
+        q = _add_multiline_paragraph(doc, [
+            "学生甲：2025-03-10 18:29",
+            "师父，有附图请师父查阅。",
+        ])
+        pure = _add_multiline_paragraph(doc, [""])
+        a = _add_multiline_paragraph(doc, [
+            "Taiguanglin：",
+            "姿势本身是对的。",
+        ])
+        _attach_image(q, doc, tmp_path, name="q1.png", rgb=(255, 0, 0))
+        _attach_image(q, doc, tmp_path, name="q2.png", rgb=(0, 255, 0))
+        _attach_image(pure, doc, tmp_path, name="p1.png", rgb=(0, 0, 255))
+        _attach_image(a, doc, tmp_path, name="a1.png", rgb=(255, 255, 0))
+        doc.save(docx_path)
+
+        parser = DocumentParser(settings, FileManager(tmp_path / "out"))
+        chapters, image_map = parser.parse_document(docx_path)
+
+        content = chapters[0].content
+        assert len(image_map) == 4, f"image_map 只有 {len(image_map)} 筆"
+        assert content.count("<img") == 4, content.count("<img")
+        srcs = re.findall(r'src="([^"]+)"', content)
+        assert len(set(srcs)) == 4, srcs
