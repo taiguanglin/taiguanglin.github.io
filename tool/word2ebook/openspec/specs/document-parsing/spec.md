@@ -121,3 +121,35 @@ Paragraph-embedded images SHALL be rendered through
 the paragraph text (first 40 chars) or the `文章配圖` fallback, and
 dimension-based `width`/`height` when the file parses.
 
+#### Scenario: Paragraph contains both an image and text
+- GIVEN a paragraph that holds both an embedded image and text (e.g. a question
+  header `贴吧用户_QUDy8Na：2025-03-10 18:29` plus the question body)
+- WHEN `DocumentParser._paragraph_to_html` runs
+- THEN the paragraph SHALL be classified normally (question / answer / heading /
+  regular paragraph) and the image SHALL be appended after that block
+- AND the paragraph's text SHALL NOT be discarded
+
+> Regression note (2026-10): the previous implementation returned `image_html`
+> alone as soon as an image was found, discarding the whole paragraph's text.
+> That silently dropped the questions for 2025-03-10 `贴吧用户_QUDy8Na`,
+> 2025-05-15 `猫猫|` and 2025-03-12 `心的选择`, leaving orphaned answers in the
+> published ebook.
+
+#### Scenario: Paragraph is a pure image with no text
+- GIVEN a paragraph that contains only an embedded image and no text
+- WHEN `DocumentParser._paragraph_to_html` runs
+- THEN the output SHALL be the image HTML alone
+- AND no empty `<p>` or `<div>` wrapper SHALL be emitted
+
+#### Scenario: Paragraph contains several images
+- GIVEN a paragraph that embeds more than one image (e.g. a question that
+  references 圖1／圖2／圖3, as 2025-03-10 `贴吧用户_QUDy8Na` does)
+- WHEN `DocumentParser._extract_image_from_paragraph` runs
+- THEN every image in the paragraph SHALL be emitted, in document order
+- AND each emitted `<img>` SHALL reference its own distinct asset
+
+> Regression note (2026-10): the previous implementation returned after the
+> first image of a paragraph, so the remaining attachments were silently
+> dropped — the source `.docx` holds 35 embedded images but only 28 were
+> rendered.
+

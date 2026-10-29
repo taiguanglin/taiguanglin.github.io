@@ -86,55 +86,80 @@ class DocumentParser:
         """将段落转换为 HTML"""
         # 检查是否包含图片
         image_html = self._extract_image_from_paragraph(paragraph, image_map)
-        if image_html:
-            return image_html
-        
+
         # 获取段落文本（包含换行）
         text = self._extract_paragraph_text(paragraph)
         text = self.text_processor.process_line_breaks(text)
-        
+
         if not text:
-            return ""
-        
+            # 純圖片段落：維持原行為，只輸出圖片
+            return image_html or ""
+
         # 检查分隔线
         if self.text_processor.is_separator_line(text):
             bold_mode_state["bold_mode"] = False
-            return "<hr>"
-        
+            return self._append_image("<hr>", image_html)
+
         # 处理标题
         heading_html = self._process_heading(paragraph, text, toc_list)
         if heading_html:
-            return heading_html
-        
+            return self._append_image(heading_html, image_html)
+
         # 处理问答内容
         qa_html = self._process_qa_content(text, bold_mode_state)
         if qa_html:
-            return qa_html
-        
+            return self._append_image(qa_html, image_html)
+
         # 处理普通段落
-        return self._process_regular_paragraph(text, bold_mode_state)
+        return self._append_image(
+            self._process_regular_paragraph(text, bold_mode_state), image_html)
+
+    @staticmethod
+    def _append_image(html: str, image_html: Optional[str]) -> str:
+        """把段落內的圖片附在區塊 HTML 之後
+
+        過去只要段落含圖片就直接 ``return image_html``，同段落內的文字
+        （可能是「問者：日期」標頭＋問題本文）被整段丟棄——例如
+        2025-03-10 贴吧用户_QUDy8Na、2025-05-15 猫猫|、2025-03-12 心的选择
+        三題的提問文字就是這麼從電子書消失，只留下孤立的答案。
+        純圖片段落（無文字）行為不變，仍是只輸出圖片。
+        """
+        if not image_html:
+            return html
+        return f"{html}\n{image_html}"
     
     def _extract_image_from_paragraph(self, paragraph, image_map: Dict[str, str]) -> Optional[str]:
-        """从段落中提取图片"""
+        """从段落中提取图片
+
+        同一段落可能含多張附圖（提問者附「圖1／圖2／圖3」時常見，例如
+        2025-03-10 贴吧用户_QUDy8Na 一題就有 3 張）。過去在第一張圖後即
+        ``return``，其餘附圖全被丟棄——本函式改為收集段落內所有圖片，
+        以 ``\\n`` 串接後一併輸出。
+        """
+        images: List[str] = []
+        alt = (paragraph.text or "").strip()[:40] or "文章配圖"
+
         for run in paragraph.runs:
             drawing = run.element.find(qn('w:drawing'))
             pict = run.element.find(qn('w:pict'))
-            if drawing is not None or pict is not None:
-                blips = run.element.findall('.//a:blip',
-                                          namespaces={'a': 'http://schemas.openxmlformats.org/drawingml/2006/main'})
-                for blip in blips:
-                    rId = blip.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed')
-                    if rId in image_map:
-                        rel = image_map[rId]
-                        # alt 取段落文字（無文字時退回通用描述）
-                        alt = (paragraph.text or "").strip()[:40] or "文章配圖"
+            if drawing is None and pict is None:
+                continue
+            blips = run.element.findall('.//a:blip',
+                                        namespaces={'a': 'http://schemas.openxmlformats.org/drawingml/2006/main'})
+            for blip in blips:
+                rId = blip.get('{http://schemas.openxmlformats.org/officeDocument/2006/relationships}embed')
+                if rId in image_map:
+                    rel = image_map[rId]
+                    abs_path = None
+                    try:
+                        abs_path = self.image_handler.file_manager.get_file_path(rel)
+                    except Exception:
                         abs_path = None
-                        try:
-                            abs_path = self.image_handler.file_manager.get_file_path(rel)
-                        except Exception:
-                            abs_path = None
-                        return render_img_tag(rel, alt, abs_path)
-        return None
+                    images.append(render_img_tag(rel, alt, abs_path))
+
+        if not images:
+            return None
+        return "\n".join(images)
     
     def _extract_paragraph_text(self, paragraph) -> str:
         """提取段落文本（包含换行）"""
