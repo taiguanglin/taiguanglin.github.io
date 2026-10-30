@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>娑婆世界宇宙圖｜三界天層與銀河的對數比例縮放｜TaiGuangLin 禪師</title>
+    <meta name="description" content="依《坐禪1》《坐禪2》《講金剛經》與問答錄2原文，把地球、銀河系（一個小世界）、須彌山、欲界六天、色界、四禪九天、無色界四天到三千大千世界，以對數比例縮放並用 three.js 立體呈現。">
+    <meta name="author" content="TaiGuangLin">
+    <meta name="robots" content="index, follow">
+    <meta property="og:title" content="娑婆世界宇宙圖｜三界天層與銀河的對數比例縮放">
+    <meta property="og:description" content="以 log 比例 3D 呈現銀河系、須彌山與三界三十層世界的對應">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://taiguanglin.info/cosmos.html">
+    <meta property="og:image" content="https://taiguanglin.info/images/taiguanglin.png">
+    <link rel="canonical" href="https://taiguanglin.info/cosmos.html">
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/fonts/fonts.css">
+    <script src="/lang-switch.js" defer></script>
+    <script type="importmap">
+    { "imports": {
+        "three": "./vendor/three/three.module.min.js",
+        "three/addons/OrbitControls.js": "./vendor/three/OrbitControls.js"
+    } }
+    </script>
+    <style>
+        .cz-wrap { position: relative; border-radius: 18px; overflow: hidden; background: radial-gradient(ellipse at center, #0b1030 0%, #03040c 70%); box-shadow: 0 20px 60px rgba(0,0,0,.35); }
+        #cz-canvas { display: block; width: 100%; height: min(78vh, 760px); cursor: grab; }
+        #cz-canvas:active { cursor: grabbing; }
+        .cz-hud { position: absolute; left: 16px; top: 16px; max-width: 340px; padding: 14px 16px; border-radius: 14px;
+            background: rgba(8,12,32,.72); backdrop-filter: blur(8px); color: #e9e6ff; font-size: 14px; line-height: 1.65;
+            border: 1px solid rgba(160,170,255,.25); }
+        .cz-hud h3 { margin: 0 0 6px; font-size: 17px; color: #ffd98a; letter-spacing: .04em; }
+        .cz-hud .cz-src { display: block; margin-top: 8px; font-size: 12px; color: #a9b2e8; }
+        .cz-hud .cz-scale { display:block; margin-top:6px; font-size:12px; color:#8fe3ff; font-family: var(--font-mono, monospace); }
+        .cz-bar { position: absolute; right: 16px; top: 16px; display: flex; flex-direction: column; gap: 6px; max-height: calc(100% - 32px); overflow-y: auto; }
+        .cz-bar button { all: unset; cursor: pointer; padding: 6px 12px; border-radius: 999px; font-size: 13px; color: #dfe3ff;
+            background: rgba(20,26,60,.7); border: 1px solid rgba(150,160,255,.25); text-align: right; transition: .2s; }
+        .cz-bar button:hover, .cz-bar button.on { background: rgba(255,200,110,.25); border-color: #ffc86e; color: #fff3d6; }
+        .cz-tip { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); color: #9aa3d8; font-size: 12px; background: rgba(0,0,0,.35); padding: 4px 12px; border-radius: 999px; }
+        .cz-legend { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-top: 28px; }
+        .cz-card { padding: 16px 18px; border-radius: 14px; background: var(--color-surface, #fff); border: 1px solid rgba(0,0,0,.08); }
+        .cz-card h4 { margin: 0 0 6px; font-size: 16px; }
+        .cz-card p { margin: 0; font-size: 14px; line-height: 1.7; }
+        .cz-card cite { display: block; margin-top: 8px; font-size: 12px; font-style: normal; opacity: .7; }
+        .cz-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+        .cz-table th, .cz-table td { padding: 8px 10px; border-bottom: 1px solid rgba(0,0,0,.08); text-align: left; vertical-align: top; }
+        .cz-table th { font-weight: 600; }
+        .cz-note { margin-top: 18px; font-size: 13px; opacity: .8; line-height: 1.7; }
+        .cz-fileproto { position:absolute; inset:0; z-index:5; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:24px; background:rgba(4,6,20,.92); color:#e8ecff; border-radius:inherit; }
+        .cz-fileproto h3 { color:#ffd98a; margin:0 0 10px; } .cz-fileproto code { background:#1b2150; padding:2px 8px; border-radius:6px; color:#8fe3ff; }
+        @media (max-width: 720px) { .cz-hud { max-width: 62%; font-size: 12px; } .cz-bar button { font-size: 11px; padding: 4px 9px; } }
+    </style>
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-name">TaiGuangLin</span>
+                <span class="logo-sub">次世代終極佛法</span>
+            </a>
+            <div class="nav-menu" id="nav-menu">
+                <a href="index.html" class="nav-link">首頁</a>
+                <a href="index.html#about" class="nav-link">禪師</a>
+                <a href="index.html#start" class="nav-link">入門路徑</a>
+                <a href="index.html#books" class="nav-link">著作</a>
+                <a href="wenda2.html" class="nav-link">問答錄 2</a>
+<div class="nav-dropdown" id="nav-dropdown">
+    <button type="button" class="nav-link nav-dropdown-toggle" id="dropdown-toggle" aria-expanded="false" aria-controls="nav-knowledge-menu">圖解 <span aria-hidden="true">▾</span></button>
+    <div class="nav-dropdown-menu" id="nav-knowledge-menu">
+        <a href="infographic.html" class="nav-dropdown-item">
+            <strong>名詞圖解</strong>
+            <span>用圖像快速認識核心概念</span>
+        </a>
+        <a href="mindmap.html" class="nav-dropdown-item">
+            <strong>坐禪與講經心智圖</strong>
+            <span>看懂名詞關聯與經典依據</span>
+        </a>
+        <a href="wenda2_mindmap.html" class="nav-dropdown-item">
+            <strong>問答錄2心智圖</strong>
+            <span>看懂 57 個高頻名詞關聯</span>
+        </a>
+    </div>
+</div>
+                <a href="stories.html" class="nav-link">實修故事</a>
+                <a href="index.html#downloads" class="nav-link nav-cta" data-download-trigger>下載資料</a>
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="開啟選單" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+    <div class="site-menu-veil" id="site-menu-veil"></div>
+
+    <section class="page-hero">
+        <div class="container">
+            <nav class="crumbs" aria-label="位置">
+                <a href="index.html">首頁</a><span class="crumbs-sep">/</span>
+                <span aria-current="page">娑婆世界宇宙圖</span>
+            </nav>
+            <span class="kicker">COSMOS · LOG SCALE</span>
+            <h1 class="display">娑婆世界宇宙圖</h1>
+            <p class="lede">從地球、銀河系（一個小世界）、插入銀河中心的須彌山，到欲界六天、色界、四禪九天、無色界四天，一路到十億個小世界組成的三千大千世界。依原文的「外層比下層大 64 倍以上」以對數比例縮放，3D 呈現。</p>
+        </div>
+    </section>
+
+    <section class="section" style="padding-top: var(--spacing-lg);">
+        <div class="container">
+            <div class="note-ai" style="margin-bottom: 20px;">
+                <span>本頁圖解由 AI 生成，內容僅供參考，請以 Tai 師父原文教導為準。</span>
+            </div>
+            <div class="cz-wrap">
+                <canvas id="cz-canvas" aria-label="娑婆世界三界天層與銀河的 3D 對數比例圖"></canvas>
+                <div class="cz-hud" id="cz-hud" aria-live="polite">
+                    <h3>娑婆世界</h3>
+                    <div>整個娑婆世界像一個大洋蔥：無色界四天加四禪九天共 13 層，一層套一層；往下是糖葫蘆般串起的三禪、二禪三球串，母球朝中心的一面像昆蟲複眼鑲著 1000 個小球，直到十億個小世界。點選右側層級，或直接拖曳旋轉、滾輪縮放。</div>
+                    <span class="cz-scale">比例：log₁₀，相鄰世界球 ≥ 64×（4³）</span>
+                    <span class="cz-src">《坐禪2》創造・第01節</span>
+                </div>
+                <div class="cz-bar" id="cz-bar"></div>
+                <div class="cz-tip">拖曳旋轉 · 滾輪縮放 · 點選層級飛入</div>
+            </div>
+
+            <h2 style="margin-top:48px;">對數比例怎麼來的</h2>
+            <p class="cz-note">畫面中每個世界球的半徑以 log₁₀ 換算。原文沒有給出各層的絕對尺寸，只給出<strong>相對關係</strong>，因此本圖只用下列原文數值，不另外捏造距離：</p>
+            <table class="cz-table">
+                <thead><tr><th>原文數值</th><th>在圖中的用法</th><th>出處</th></tr></thead>
+                <tbody>
+                    <tr><td>共 30 層世界，人間在第 29 層，上有 28 層天界</td><td>由內到外的層數</td><td>《坐禪2》創造・第01節</td></tr>
+                    <tr><td>外層的球比下層的球要大 64 倍以上（大梵天到人間共十個世界球串起來）</td><td>相鄰串球半徑比取 64 → 每層 +log₁₀64 ≈ 1.81</td><td>《坐禪2》創造・第01節</td></tr>
+                    <tr><td>光子以 4 倍往下層層變大；4 的立方，外邊至少 64 倍大</td><td>64× 的根據（4³）</td><td>問答錄2・三個初始設定</td></tr>
+                    <tr><td>人間光子能量單位 428，四天王天 427</td><td>HUD 標示，說明為何看不見上層</td><td>《坐禪2》創造・第01節</td></tr>
+                    <tr><td>三禪三天、二禪三天、初禪三天各分出 1000 個小球，1000³ = 10 億</td><td>三個分支層級各畫 1000 個「糖葫蘆」串（InstancedMesh，大球在外、小球指向中心），並各放一串特寫：大中小三球穿在一起、連線處重疊（天門發光），最小球朝中心的一面鑲 1000 顆小球呈昆蟲複眼</td><td>《坐禪2》創造・第01節；《講金剛經》福智無比分</td></tr>
+                    <tr><td>一個銀河系就是一個小世界</td><td>銀河系＝最內層的人間世界球</td><td>問答錄2・神仙妖精鬼王；2025-09 / 2026-03 答疑</td></tr>
+                </tbody>
+            </table>
+            <p class="cz-note">※「外層 64 倍以上」原文說的是至少，而且是以眾生個體體積來說，不是單純的空間距離（問答錄2・三個初始設定），所以圖中層距只是示意的下限。上方 13 層（四禪九天＋無色界四天）原文沒有給倍數，圖中沿用同一步距，僅供示意。</p>
+
+            <h2 style="margin-top:48px;">各層對應與原文依據</h2>
+            <div class="cz-legend">
+                <div class="cz-card"><h4>地球與銀河系</h4><p>地球在圓錐體的山腳下，4 個旋臂當中的 1 個，接近末端處。銀河系看起來像圓盤，是因為光被引力彎曲；實際上中間鼓起，像圓錐體。</p><cite>《坐禪2》創造・第01節</cite></div>
+                <div class="cz-card"><h4>須彌山</h4><p>須彌山不是銀河系本身，而是穿過銀河中心、把我們的小世界和四天王天、忉利天串起來的柱子；銀河中心的黑洞就是它插進來的位置。頂上是帝釋天宮。</p><cite>問答錄2・神仙妖精鬼王；《坐禪2》創造・第01節</cite></div>
+                <div class="cz-card"><h4>四大部洲</h4><p>銀河系的四條旋臂對應四大部洲，我們在其中一條臂上。</p><cite>問答錄2・2026年3月6日 官網答疑</cite></div>
+                <div class="cz-card"><h4>四天王天・忉利天</h4><p>地居天。銀河系中間約三分之一屬忉利天，周圍三分之二屬四天王天；忉利天分 33 個區域。上邊的世界球大、下邊的小，所以須彌山是倒立的圓錐。</p><cite>《坐禪1》欲界六天・第03節；《坐禪2》創造・第01節</cite></div>
+                <div class="cz-card"><h4>欲界六天</h4><p>四天王天、忉利天為地居天；夜摩天、兜率天、化樂天、他化自在天為空居天。有淫慾，火劫時與人間、地獄一同毀滅。</p><cite>《坐禪2》天道眾生；毀滅・第02節</cite></div>
+                <div class="cz-card"><h4>初禪三天・十球串串</h4><p>從大梵天往下到人間，共十個世界球串起來；一個大世界有十億個這樣的串串。</p><cite>《坐禪2》創造・第01節</cite></div>
+                <div class="cz-card"><h4>二禪・三禪（糖葫蘆串＋昆蟲複眼）</h4><p>遍淨天、無量淨天、少淨天像糖葫蘆一樣大中小三球穿在一起，連線處重疊叫「天門」，在一個球面上分佈成 1000 個串，大球在外、小球指向大世界中心。少淨天球朝中心的方向黏著 1000 個光音天球，像昆蟲的複眼，只分布在一個方向，球與球之間有空間隔開。二禪三天同樣是大中小三球串，再往下鑲 1000 個大梵天球，所以共 1000³ = 10 億。</p><cite>《坐禪2》創造・第01節；問答錄2・三個初始設定</cite></div>
+                <div class="cz-card"><h4>四禪九天・無色界四天</h4><p>共 13 層，像洋蔥一層套一層，眾生是純光體、沒有情緒，三災不能毀滅，只在法界大迴圈、新佛出世時全面格式化。</p><cite>《坐禪2》創造；毀滅；天道眾生</cite></div>
+                <div class="cz-card"><h4>三千大千世界</h4><p>一佛教化的大世界有十億個小世界，也就有十億個須彌山王。</p><cite>《講金剛經》福智無比分第二十四；問答錄2・2026年3月2日 官網</cite></div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="logo-name">TaiGuangLin</div>
+                    <p>次世代終極版佛法</p>
+                    <p>用現代通俗易懂的語言，傳承純正佛法智慧。</p>
+                </div>
+                <div class="footer-col">
+                    <h4>著作與電子書</h4>
+                    <ul>
+                        <li><a href="index.html#books">全部著作</a></li>
+                        <li><a href="ebook/index_trad.html" target="_blank" rel="noopener noreferrer">坐禪系列電子書</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>問答錄2</h4>
+                    <ul>
+                        <li><a href="wenda2.html">主題目錄（12 章）</a></li>
+                        <li><a href="wenda2_ebook/index_trad.html" target="_blank" rel="noopener noreferrer">完整電子書</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>更多資源</h4>
+                    <ul>
+                        <li><a href="infographic.html">名詞圖解</a></li>
+                        <li><a href="mindmap.html">坐禪與講經名詞心智圖</a></li>
+                        <li><a href="wenda2_mindmap.html">問答錄2 名詞心智圖</a></li>
+                        <li><a href="cosmos.html">娑婆世界宇宙圖</a></li>
+                        <li><a href="stories.html">實修故事</a></li>
+                        <li><a href="index.html#downloads">資料下載</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>歡迎分享給更多人結法緣</p>
+                <p>願一切眾生離苦得樂，早證菩提</p>
+            </div>
+        </div>
+    </footer>
+    <script src="shared.js" defer></script>
+    <script>
+    if (location.protocol === 'file:') document.addEventListener('DOMContentLoaded', () => {
+      const w = document.querySelector('.cz-wrap'); if (!w) return;
+      const o = document.createElement('div'); o.className = 'cz-fileproto'; o.setAttribute('role','alert');
+      o.innerHTML = '<h3>請以 HTTP 開啟本頁</h3><p>瀏覽器在 file:// 下會封鎖 3D 模組載入，所以畫面是黑的。</p><p>請在網站根目錄執行：<code>python3 -m http.server 8000</code><br>再開啟 <code>http://localhost:8000/cosmos.html</code></p>';
+      w.appendChild(o);
+    });
+    </script>
+    <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/OrbitControls.js';
+
+    /* ---------- 原文資料：由內（人間）到外（非想非非想處天） ----------
+       STEP = log10(64)：「外層的球比下層的球要大 64 倍以上」《坐禪2》創造・第01節 */
+    const STEP = Math.log10(64);
+    const SRC_CREATE = '《坐禪2》創造・第01節';
+    const LAYERS = [
+      { id:'earth',  name:'人間・銀河系', group:'人間', color:0x7fb8ff, info:'一個銀河系就是一個小世界。地球在圓錐體的山腳下，4 個旋臂當中的 1 個，接近末端處。人間光子能量單位 428。', src:SRC_CREATE+'；問答錄2・神仙妖精鬼王' },
+      { id:'sitw',   name:'四天王天', group:'欲界', color:0xffb36b, info:'地居天，須彌山山腰到山腳；分四部分各有天王掌管。光子能量單位 427，所以我們看不見。', src:'《坐禪1》欲界六天・第03節；'+SRC_CREATE },
+      { id:'daoli',  name:'忉利天', group:'欲界', color:0xffc982, info:'地居天，須彌山頂，分 33 個區域，中間天宮住著釋提桓因（帝釋天）。', src:SRC_CREATE },
+      { id:'yemo',   name:'夜摩天', group:'欲界', color:0xffd99a, info:'空居天，像鳥一樣飛來飛去，不需要著陸。', src:'《坐禪2》天道眾生' },
+      { id:'doushuai',name:'兜率天', group:'欲界', color:0xffe3ae, info:'空居天。', src:'《坐禪2》天道眾生' },
+      { id:'huale',  name:'化樂天', group:'欲界', color:0xffebc2, info:'空居天。', src:'《坐禪2》天道眾生' },
+      { id:'tahua',  name:'他化自在天', group:'欲界', color:0xfff2d6, info:'欲界最上層空居天。欲界六天、人間、地獄在火劫中毀滅。', src:'《坐禪2》毀滅・第02節' },
+      { id:'chu1',   name:'梵眾天', group:'初禪', color:0xc8f0ff, info:'初禪第一天。從大梵天往下到人間，十個世界球串成一串，一個大世界有十億個串串。', src:SRC_CREATE },
+      { id:'chu2',   name:'梵輔天', group:'初禪', color:0xb4e6ff, info:'初禪第二天。', src:SRC_CREATE },
+      { id:'chu3',   name:'大梵天', group:'初禪', color:0xa0dcff, info:'初禪第三天，結構和光音天一樣：1000 個大梵天球鑲在少光天球朝中心的一面（複眼）。從大梵天往下到人間共十個世界球串起來，外層比下層大 64 倍以上，一個大世界有十億個串串。', src:SRC_CREATE, branch:'小千' },
+      { id:'er1',    name:'二禪一天（少光天）', group:'二禪', color:0x9fd0ff, info:'光音天開始，陽神都是氣態。', src:'《坐禪1》' },
+      { id:'er2',    name:'二禪二天', group:'二禪', color:0x8fc0ff, info:'二禪中層。', src:SRC_CREATE },
+      { id:'er3',    name:'二禪三天（光音天）', group:'二禪', color:0x80b0ff, info:'光音天、無量光天、少光天三球同樣大中小穿成一串（天門重疊），一個大世界有一百萬個二禪天串串。少光天球朝中心的一面鑲著 1000 個大梵天球，與光音天黏在少淨天上的昆蟲複眼結構相同。水劫從二禪天開始。', src:'《坐禪1》；《坐禪2》毀滅・第02節', branch:'中千' },
+      { id:'san1',   name:'三禪一天', group:'三禪', color:0x9b9cff, info:'三禪一天是最小的球，都指向大球的中心點。', src:'問答錄2・三個初始設定' },
+      { id:'san2',   name:'三禪二天', group:'三禪', color:0xa98cff, info:'三禪中層；風劫後三禪天以下全面格式化。', src:'《坐禪2》毀滅・第02節' },
+      { id:'san3',   name:'三禪三天（遍淨天）', group:'三禪', color:0xb67cff, info:'遍淨天、無量淨天、少淨天大中小三球像糖葫蘆穿在一起，連線處重疊叫「天門」，外層比下一層大 64 倍以上；一個球面上分佈成 1000 個串，大球在外，小球指向大世界中心。少淨天球朝中心的一面黏著 1000 個光音天球，像昆蟲的複眼，只分布在一個方向，彼此有空間隔開。', src:SRC_CREATE+'；問答錄2・三個初始設定', branch:'大千' },
+      { id:'si',     name:'四禪九天', group:'四禪', color:0xd59bff, info:'福愛天、廣果天、無想天……淨居五天（無煩、無熱、善見、善現、色究竟天）。眾生是純光體，沒有情緒，三災不能毀滅。', src:'《坐禪1》四禪九天；《坐禪2》天道眾生', span:9 },
+      { id:'wu',     name:'無色界四天', group:'無色界', color:0xf2d7ff, info:'最外層非想非非想處天是單光子；往下無所有處天是 4 個光子堆成正四面體，往下都是 4 倍、4 倍。', src:'問答錄2・三個初始設定', span:4 }
+    ];
+    // 半徑（log 單位）：每層 +STEP；有 span 的群組佔 span 個步距
+    let acc = 1.2;
+    for (const L of LAYERS) { const n = L.span || 1; L.logR0 = acc; acc += STEP * n; L.logR = acc; }
+    const LOGMAX = acc;
+    const VIS = 46 / LOGMAX;              // log 單位 → 場景單位
+    const R = L => L.logR * VIS;
+
+    /* ---------- 場景 ---------- */
+    const canvas = document.getElementById('cz-canvas');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias:true, alpha:false });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x02030a);
+    scene.fog = new THREE.FogExp2(0x02030a, 0.0035);
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 2000);
+    camera.position.set(0, 38, 120);
+    const controls = new OrbitControls(camera, canvas);
+    controls.enableDamping = true; controls.dampingFactor = 0.06;
+    controls.minDistance = 0.4; controls.maxDistance = 400;
+    controls.autoRotate = true; controls.autoRotateSpeed = 0.25;
+    scene.add(new THREE.AmbientLight(0x6670aa, 0.6));
+    const sun = new THREE.PointLight(0xffe2b0, 3, 0, 0); scene.add(sun);
+
+    /* ---------- 背景星空 ---------- */
+    {
+      const N = 6000, pos = new Float32Array(N*3), col = new Float32Array(N*3);
+      for (let i=0;i<N;i++){
+        const r = 300 + Math.random()*600, t = Math.random()*Math.PI*2, p = Math.acos(2*Math.random()-1);
+        pos.set([r*Math.sin(p)*Math.cos(t), r*Math.cos(p), r*Math.sin(p)*Math.sin(t)], i*3);
+        const c = new THREE.Color().setHSL(0.55+Math.random()*0.15, 0.5, 0.6+Math.random()*0.4);
+        col.set([c.r,c.g,c.b], i*3);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+      g.setAttribute('color', new THREE.BufferAttribute(col,3));
+      scene.add(new THREE.Points(g, new THREE.PointsMaterial({ size:1.1, vertexColors:true, transparent:true, opacity:.8, depthWrite:false })));
+    }
+
+    /* ---------- 柔光貼圖 ---------- */
+    function glowTex(){
+      const c = document.createElement('canvas'); c.width = c.height = 128;
+      const x = c.getContext('2d'), gr = x.createRadialGradient(64,64,0,64,64,64);
+      gr.addColorStop(0,'rgba(255,255,255,1)'); gr.addColorStop(.25,'rgba(255,255,255,.55)'); gr.addColorStop(1,'rgba(255,255,255,0)');
+      x.fillStyle = gr; x.fillRect(0,0,128,128);
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+    }
+    const GLOW = glowTex();
+
+    /* ---------- 洋蔥天層：Fresnel 半透明殼 ---------- */
+    const shellMat = (color, alpha) => new THREE.ShaderMaterial({
+      uniforms:{ uColor:{value:new THREE.Color(color)}, uAlpha:{value:alpha}, uTime:{value:0} },
+      vertexShader:`varying vec3 vN; varying vec3 vV; varying vec3 vP;
+        void main(){ vec4 mv = modelViewMatrix*vec4(position,1.); vN = normalize(normalMatrix*normal); vV = normalize(-mv.xyz); vP = position;
+        gl_Position = projectionMatrix*mv; }`,
+      fragmentShader:`uniform vec3 uColor; uniform float uAlpha; uniform float uTime; varying vec3 vN; varying vec3 vV; varying vec3 vP;
+        void main(){ float f = pow(1.0 - abs(dot(vN, vV)), 2.6);
+          float band = 0.5 + 0.5*sin(vP.y*1.6 + uTime*0.6);
+          gl_FragColor = vec4(uColor * (0.6 + 0.6*band), f * uAlpha); }`,
+      transparent:true, depthWrite:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending
+    });
+    const shells = [];
+    const labelGroup = new THREE.Group(); scene.add(labelGroup);
+    LAYERS.forEach((L, i) => {
+      const r = R(L);
+      const m = new THREE.Mesh(new THREE.SphereGeometry(r, 96, 64), shellMat(L.color, i===0 ? 0.0 : 0.55));
+      m.userData.layer = L; scene.add(m); shells.push(m);
+      // 子層細線（四禪九天 9 層、無色界 4 層）
+      if (L.span) for (let k=1;k<L.span;k++){
+        const rr = (L.logR0 + STEP*k) * VIS;
+        const ring = new THREE.Mesh(new THREE.SphereGeometry(rr, 64, 32), shellMat(L.color, 0.18));
+        scene.add(ring);
+      }
+      // 赤道環
+      const eq = new THREE.Mesh(new THREE.TorusGeometry(r, 0.03 + r*0.0012, 8, 256),
+        new THREE.MeshBasicMaterial({ color:L.color, transparent:true, opacity:.35, blending:THREE.AdditiveBlending, depthWrite:false }));
+      eq.rotation.x = Math.PI/2; scene.add(eq);
+      L.anchor = new THREE.Vector3(r*Math.cos(i*0.9), r*0.18*Math.sin(i*1.7), r*Math.sin(i*0.9));
+    });
+
+    /* ---------- 銀河系（人間小世界）：四旋臂 ---------- */
+    const galaxy = new THREE.Group(); scene.add(galaxy);
+    const GR = R(LAYERS[0]) * 0.92;
+    {
+      const N = 26000, pos = new Float32Array(N*3), col = new Float32Array(N*3);
+      const cIn = new THREE.Color(0xffe6b0), cOut = new THREE.Color(0x6fa8ff);
+      for (let i=0;i<N;i++){
+        const arm = i % 4, d = Math.pow(Math.random(), 1.6);
+        const rr = d * GR, ang = arm*Math.PI/2 + d*5.2 + (Math.random()-.5)*0.55*(1.1-d);
+        const spread = (Math.random()-.5) * GR*0.08*(1-d*0.6);
+        // 圓錐：中心鼓起（《坐禪2》創造：銀河中間鼓起來，像圓錐體）
+        const y = (1-d)*GR*0.35*(Math.random()) * (Math.random()<.5?1:-0.15) + (Math.random()-.5)*GR*0.02;
+        pos.set([Math.cos(ang)*rr + spread, y, Math.sin(ang)*rr + spread], i*3);
+        const c = cIn.clone().lerp(cOut, d); col.set([c.r,c.g,c.b], i*3);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.BufferAttribute(pos,3));
+      g.setAttribute('color', new THREE.BufferAttribute(col,3));
+      galaxy.add(new THREE.Points(g, new THREE.PointsMaterial({ size:0.07, map:GLOW, vertexColors:true, transparent:true, depthWrite:false, blending:THREE.AdditiveBlending })));
+      const core = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color:0xffd28a, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false }));
+      core.scale.setScalar(GR*0.7); galaxy.add(core);
+      // 地球：旋臂末端
+      const ea = 0 + 0.86*5.2, er = 0.86*GR;
+      const earth = new THREE.Mesh(new THREE.SphereGeometry(0.05, 24, 16), new THREE.MeshBasicMaterial({ color:0x6cf0ff }));
+      earth.position.set(Math.cos(ea)*er, 0, Math.sin(ea)*er); galaxy.add(earth);
+      const halo = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color:0x6cf0ff, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false }));
+      halo.scale.setScalar(0.5); halo.position.copy(earth.position); galaxy.add(halo);
+      LAYERS[0].anchor = earth.position.clone();
+      LAYERS[0].earth = earth;
+    }
+
+    /* ---------- 須彌山：倒立圓錐柱，從忉利天頂插入銀河中心 ---------- */
+    {
+      const top = R(LAYERS[2]), h = top;
+      const geo = new THREE.ConeGeometry(R(LAYERS[1])*0.18, h, 64, 1, true);
+      geo.translate(0, -h/2, 0); geo.rotateX(Math.PI);  // 尖端朝下指向銀河中心
+      const mat = new THREE.ShaderMaterial({
+        uniforms:{ uTime:{value:0} },
+        vertexShader:`varying vec2 vUv; void main(){ vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.); }`,
+        fragmentShader:`uniform float uTime; varying vec2 vUv;
+          void main(){ float s = 0.5+0.5*sin(vUv.y*40.0 - uTime*2.0); float a = (0.25+0.5*s)*(1.0-vUv.y*0.4);
+            gl_FragColor = vec4(mix(vec3(1.0,0.75,0.35), vec3(1.0,0.95,0.8), s), a*0.55); }`,
+        transparent:true, depthWrite:false, side:THREE.DoubleSide, blending:THREE.AdditiveBlending
+      });
+      const sumeru = new THREE.Mesh(geo, mat); sumeru.position.y = 0; scene.add(sumeru);
+      sumeru.userData.mat = mat;
+      const palace = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color:0xffe9a8, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false }));
+      palace.position.set(0, h, 0); palace.scale.setScalar(2.4); scene.add(palace);
+      LAYERS[2].anchor = palace.position.clone();
+      window.__sumeru = sumeru;
+    }
+
+    /* ---------- 千倍分支：糖葫蘆串＋昆蟲複眼（InstancedMesh） ----------
+       《坐禪2》創造・第01節：大、中、小三球穿在一起，連線處重疊＝「天門」；
+       一個球面上分佈成 1000 個串，大球在外，小球指向大世界中心；
+       少淨天球指向中心的一面黏著 1000 個光音天球，像昆蟲的複眼，只分布在一個方向，
+       小球之間有空間隔開，每個連線處有一點重疊。半徑仍以 R() 對數映射，球徑比為示意。 */
+    const rimMat = (color, a) => new THREE.ShaderMaterial({
+      uniforms:{ uColor:{value:new THREE.Color(color)}, uA:{value:a}, uTime:{value:0} },
+      vertexShader:`varying vec3 vN; varying vec3 vV;
+        void main(){ mat4 m = modelMatrix;
+          #ifdef USE_INSTANCING
+            m = m * instanceMatrix;
+          #endif
+          vec4 wp = m*vec4(position,1.); vN = normalize(mat3(m)*normal); vV = normalize(cameraPosition - wp.xyz);
+          gl_Position = projectionMatrix*viewMatrix*wp; }`,
+      fragmentShader:`uniform vec3 uColor; uniform float uA; uniform float uTime; varying vec3 vN; varying vec3 vV;
+        void main(){ float f = pow(1.0-abs(dot(normalize(vN),vV)), 2.2);
+          gl_FragColor = vec4(uColor*(1.2+0.3*sin(uTime*1.5)), (0.12+f)*uA); }`,
+      transparent:true, depthWrite:false, blending:THREE.AdditiveBlending
+    });
+    const bodyMat = color => new THREE.MeshStandardMaterial({ color, emissive:color, emissiveIntensity:.55, roughness:.35, metalness:.15 });
+    const SPH = new THREE.SphereGeometry(1, 32, 20), SPHLO = new THREE.SphereGeometry(1, 12, 8);
+    const dummy = new THREE.Object3D();
+    const gateSprite = (pos, size, color) => {
+      const g = new THREE.Sprite(new THREE.SpriteMaterial({ map:GLOW, color, transparent:true, blending:THREE.AdditiveBlending, depthWrite:false }));
+      g.position.copy(pos); g.scale.setScalar(size); return g;
+    };
+    const byId = id => LAYERS.find(L => L.id === id);
+    // 串：外→內各球顏色（大、中、小）與複眼小球顏色
+    const CHAINS = {
+      san3:{ balls:['san3','san2','san1'], eye:'er3', eyeName:'光音天' },
+      er3: { balls:['er3','er2','er1'],   eye:'chu3', eyeName:'大梵天' },
+      chu3:{ balls:['chu3','chu2','chu1','tahua','huale','doushuai','yemo','daoli','sitw','earth'], eye:null }
+    };
+    const branchClouds = [], gates = [], rims = [];
+    // 黃金螺旋：球冠（cosMin..1）上 N 點
+    const capDirs = (N, cosMin) => { const out = [];
+      for (let i=0;i<N;i++){ const y = 1 - (i+.5)/N*(1-cosMin), rad = Math.sqrt(1-y*y), th = i*2.39996323;
+        out.push(new THREE.Vector3(Math.cos(th)*rad, y, Math.sin(th)*rad)); } return out; };
+    // 建一串（沿 -d 指向大世界中心），回傳每球 {c, r}
+    function chainSpec(c0, d, r0, n){ const out = []; let c = c0.clone(), r = r0;
+      for (let k=0;k<n;k++){ out.push({ c:c.clone(), r });
+        const rn = r * (n > 3 ? 0.62 : 0.4);               // 示意比例（原文為 64 倍以上，log 圖無法等比）
+        c = c.clone().addScaledVector(d, -(r + rn*0.72)); r = rn; }   // 0.72 < 1 → 連線處重疊＝天門
+      return out; }
+    LAYERS.filter(L => L.branch).forEach(L => {
+      const spec = CHAINS[L.id], rr = R(L), n = spec.balls.length;
+      // (1) 球面上 1000 個串（InstancedMesh，每一級一個）
+      const ring = new THREE.Group(), dirs = capDirs(1000, -1), r0 = rr * 0.035;
+      spec.balls.forEach((id, k) => {
+        const im = new THREE.InstancedMesh(SPHLO, bodyMat(byId(id).color), 1000);
+        dirs.forEach((d, i) => { const ch = chainSpec(d.clone().multiplyScalar(rr), d, r0, k+1)[k];
+          dummy.position.copy(ch.c); dummy.scale.setScalar(ch.r); dummy.updateMatrix(); im.setMatrixAt(i, dummy.matrix); });
+        im.instanceMatrix.needsUpdate = true; ring.add(im);
+      });
+      scene.add(ring); branchClouds.push(ring);
+      // (2) 特寫串：放在 anchor 方向，放大呈現糖葫蘆＋複眼
+      const d = L.anchor.clone().normalize(), R0 = rr * 0.11;
+      const show = new THREE.Group(), ch = chainSpec(d.clone().multiplyScalar(rr + R0*0.2), d, R0, n);
+      ch.forEach((b, k) => {
+        const col = byId(spec.balls[k]).color;
+        const m = new THREE.Mesh(SPH, new THREE.MeshPhysicalMaterial({ color:col, emissive:col, emissiveIntensity:.25,
+          transparent:true, opacity:.38, roughness:.15, transmission:.3, depthWrite:false }));
+        m.position.copy(b.c); m.scale.setScalar(b.r); show.add(m);
+        const halo = new THREE.Mesh(SPH, rimMat(col, .9)); halo.position.copy(b.c); halo.scale.setScalar(b.r*1.04); show.add(halo); rims.push(halo);
+        if (k > 0){ const prev = ch[k-1];             // 天門：兩球重疊處中點
+          const gp = prev.c.clone().addScaledVector(d, -prev.r);
+          const g = gateSprite(gp, b.r*1.6, 0xfff0b0); show.add(g); gates.push(g); }
+      });
+      // (3) 昆蟲複眼：最小球朝中心的球冠上鑲 1000 顆小球（只覆蓋一個方向）
+      if (spec.eye){
+        const host = ch[n-1], cap = Math.cos(THREE.MathUtils.degToRad(62)), N = 1000;
+        const area = 2*Math.PI*(1-cap), cell = Math.sqrt(area / N);   // 單位球上每顆所占間距
+        const er = host.r * cell * 0.36;                               // 半徑 < 半間距 → 彼此有空隙
+        const q = new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0,1,0), d.clone().negate());
+        const eyeCol = byId(spec.eye).color;
+        const eye = new THREE.InstancedMesh(SPH, bodyMat(eyeCol), N), eyeRim = new THREE.InstancedMesh(SPH, rimMat(eyeCol, .8), N);
+        const gateIM = new THREE.InstancedMesh(SPHLO, new THREE.MeshBasicMaterial({ color:0xfff3c0, transparent:true, opacity:.9, blending:THREE.AdditiveBlending, depthWrite:false }), N);
+        capDirs(N, cap).forEach((u, i) => { u.applyQuaternion(q);
+          dummy.position.copy(host.c).addScaledVector(u, host.r + er*0.75);  // 0.75 < 1 → 與母球重疊（天門）
+          dummy.scale.setScalar(er); dummy.updateMatrix(); eye.setMatrixAt(i, dummy.matrix);
+          dummy.scale.setScalar(er*1.12); dummy.updateMatrix(); eyeRim.setMatrixAt(i, dummy.matrix);
+          dummy.position.copy(host.c).addScaledVector(u, host.r); dummy.scale.setScalar(er*0.42); dummy.updateMatrix(); gateIM.setMatrixAt(i, dummy.matrix);
+        });
+        [eye, eyeRim, gateIM].forEach(m => { m.instanceMatrix.needsUpdate = true; show.add(m); });
+        rims.push(eyeRim);
+      }
+      scene.add(show);
+      L.anchor = ch[0].c.clone().addScaledVector(d, R0*1.3);
+      L.focus = { target: ch[Math.min(n-1, 2)].c.clone().lerp(ch[0].c, n > 3 ? 0.6 : 0.25), dist: R0 * (n > 3 ? 4.2 : 3.4),
+        dir: d.clone().multiplyScalar(-0.55).add(new THREE.Vector3(0.6,0.5,0.3)).normalize() };
+    });
+
+    /* ---------- 文字標籤（Sprite） ---------- */
+    function textSprite(text, color){
+      const c = document.createElement('canvas'), x = c.getContext('2d'), fs = 48;
+      x.font = `600 ${fs}px "Noto Serif TC", serif`;
+      const w = Math.ceil(x.measureText(text).width) + 40; c.width = w; c.height = fs + 28;
+      x.font = `600 ${fs}px "Noto Serif TC", serif`; x.textBaseline = 'middle';
+      x.shadowColor = 'rgba(0,0,0,.9)'; x.shadowBlur = 10;
+      x.fillStyle = '#' + new THREE.Color(color).getHexString(); x.fillText(text, 20, c.height/2);
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+      const s = new THREE.Sprite(new THREE.SpriteMaterial({ map:t, transparent:true, depthWrite:false, depthTest:false }));
+      s.userData.aspect = w / c.height; return s;
+    }
+    const labels = LAYERS.map(L => {
+      const s = textSprite(L.name, L.color); s.position.copy(L.anchor); labelGroup.add(s); return s;
+    });
+
+    /* ---------- HUD 與層級選單 ---------- */
+    const hud = document.getElementById('cz-hud'), bar = document.getElementById('cz-bar');
+    const HUD0 = hud.innerHTML;
+    const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    function showHud(L){
+      const dl = L.logR - LAYERS[0].logR;
+      const ratioTxt = L.id === 'earth' ? '基準：人間（銀河系）= 1'
+        : `相對人間 ≥ 10^${dl.toFixed(2)} ≈ ${Math.pow(10, dl).toExponential(1)} 倍（示意下限）`;
+      hud.innerHTML = `<h3>${esc(L.name)}</h3><div>${esc(L.info)}</div>` +
+        `<span class="cz-scale">${esc(L.group)}｜log₁₀ 半徑 ${L.logR.toFixed(2)}｜${ratioTxt}</span>` +
+        `<span class="cz-src">出處：${esc(L.src)}</span>`;
+    }
+    const buttons = [];
+    function addBtn(label, fn){
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = label;
+      b.addEventListener('click', () => { buttons.forEach(x => x.classList.remove('on')); b.classList.add('on'); fn(); });
+      bar.appendChild(b); buttons.push(b);
+    }
+    addBtn('全景・娑婆世界', () => { flyTo(new THREE.Vector3(0,0,0), new THREE.Vector3(0, 38, 120)); hud.innerHTML = HUD0; });
+    [...LAYERS].reverse().forEach(L => addBtn(L.name, () => {
+      if (L.focus){ flyTo(L.focus.target.clone(), L.focus.target.clone().addScaledVector(L.focus.dir, L.focus.dist)); showHud(L); return; }
+      const isEarth = L.id === 'earth';
+      const target = isEarth ? galaxy.localToWorld(L.anchor.clone()) : new THREE.Vector3();
+      const dist = isEarth ? 1.4 : R(L) * 2.3;
+      const dir = (isEarth ? new THREE.Vector3(0.4,0.6,1) : new THREE.Vector3(0.3,0.35,1)).normalize();
+      flyTo(target, target.clone().add(dir.multiplyScalar(dist))); showHud(L);
+    }));
+
+    /* ---------- 相機飛行 ---------- */
+    let fly = null;
+    function flyTo(target, pos){
+      fly = { t:0, fromT: controls.target.clone(), toT: target, fromP: camera.position.clone(), toP: pos };
+      controls.autoRotate = false;
+    }
+    const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    canvas.addEventListener('pointerdown', () => { fly = null; });
+
+    /* ---------- 尺寸 ---------- */
+    function resize(){
+      const w = canvas.clientWidth, h = canvas.clientHeight;
+      renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+    }
+    new ResizeObserver(resize).observe(canvas); resize();
+
+    /* ---------- 動畫 ---------- */
+    const clock = new THREE.Clock();
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) controls.autoRotate = false;
+    function tick(){
+      const dt = Math.min(clock.getDelta(), 0.05), et = clock.elapsedTime;
+      if (fly){
+        fly.t = Math.min(1, fly.t + dt / 2.2); const k = ease(fly.t);
+        controls.target.lerpVectors(fly.fromT, fly.toT, k); camera.position.lerpVectors(fly.fromP, fly.toP, k);
+        if (fly.t >= 1) fly = null;
+      }
+      if (!reduce){ galaxy.rotation.y += dt * 0.05; branchClouds.forEach((p, i) => p.rotation.y += dt * 0.01 * (i + 1)); }
+      rims.forEach(m => m.material.uniforms.uTime.value = et);
+      gates.forEach((g, i) => g.material.opacity = 0.65 + 0.35*Math.sin(et*2.2 + i));
+      shells.forEach(m => m.material.uniforms.uTime.value = et);
+      if (window.__sumeru) window.__sumeru.userData.mat.uniforms.uTime.value = et;
+      labels.forEach((s, i) => {
+        const L = LAYERS[i];
+        const wp = L.id === 'earth' ? galaxy.localToWorld(L.anchor.clone()) : L.anchor;
+        s.position.copy(wp);
+        const d = camera.position.distanceTo(wp), h = d * 0.035;
+        s.scale.set(h * s.userData.aspect, h, 1);
+        s.material.opacity = THREE.MathUtils.clamp(1.6 - d / (R(L) * 4 + 2), 0.15, 1);
+      });
+      controls.update(); renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    tick();
+    </script>
+</body>
+</html>
