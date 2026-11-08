@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-11-06T11:19:46.420Z",
+  "generated_at": "2026-11-08T08:10:09.878Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -28769,74 +28769,74 @@
         {
           "pid": "p-s31729d3a",
           "text": "《楞伽经》第三十一期，这本书的一百六十一页开始。这一期一大段都是在讲外道——外道的思想，而且这都是在古代佛在世的时候，那些所谓的外道、外道六师的理论。咱们简单看一遍就可以了，看他们的理论和我们佛法有什么区别。",
-          "start": 0.95,
+          "start": 0.85,
           "end": 31.14,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s72e96d27",
           "text": "目前大家还是普遍接受无神论，从佛法上看，这也是一种外道的学说，一种错误的世界观。物质在先，意识也是从物质里生出的，无神论是这样认为的。所以从这里出发的就是人死如灯灭——人死了，物质坏灭了，肉身毁坏了，那意识也就消失了。",
           "start": 31.14,
-          "end": 67.28,
+          "end": 67.38,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s040f5bc1",
           "text": "在这种观念下，人们会产生的行为逻辑就是活着的时候尽量享受。因为死了什么都没有，也就不用去想什么未来世、因果这些事。那么我们看一看，佛讲的外道都是些什么理论。",
-          "start": 67.28,
-          "end": 92.39,
+          "start": 67.38,
+          "end": 92.89,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s38a5e1b1",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，佛说涅槃，说何等法以为涅槃，而诸外道种种分别？”",
-          "start": 92.39,
+          "start": 92.89,
           "end": 101.95,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s57505b5e",
           "text": "大慧菩萨问：佛说的涅槃，真正的涅槃是什么样的？而这些外道的涅槃又是怎么样的？",
           "start": 101.95,
-          "end": 115.88,
+          "end": 114.675,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfac90265",
           "text": "佛言：“大慧，如诸外道分别涅槃，皆不随顺涅槃之相，谛听谛听，当为汝说。",
-          "start": 115.88,
-          "end": 122.74,
+          "start": 114.675,
+          "end": 122.64,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s433259ef",
           "text": "外道认为的涅槃，都是分别心里产生的涅槃，都不是真正的涅槃之相，所以我给你说一说。",
-          "start": 122.74,
-          "end": 133.35,
+          "start": 122.64,
+          "end": 133.25,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5cebe16d",
           "text": "大慧，或有外道言，见法无常，不贪境界，蕴界处灭，心、心所法不现在前，不念过、现、未来境界，如灯尽，如种败，如火灭。诸取不起，分别不生，起涅槃想。",
-          "start": 133.35,
+          "start": 133.25,
           "end": 139.39,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb7564495",
@@ -28845,7 +28845,7 @@
           "end": 157.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s96329bb8",
@@ -28854,7 +28854,7 @@
           "end": 198.42,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf3222795",
@@ -28863,7 +28863,7 @@
           "end": 237.79,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc5339a00",
@@ -28872,7 +28872,7 @@
           "end": 251.05,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdd0f01ff",
@@ -28881,7 +28881,7 @@
           "end": 269.81,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9e5e0ae9",
@@ -28890,7 +28890,7 @@
           "end": 273.53,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4af7b3b3",
@@ -28899,52 +28899,52 @@
           "end": 295.35,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s85e949fb",
           "text": "“或谓至方名得涅槃”，这是一种叫“方论者”的外道，他们认为物质、宇宙从某一处来，最后又回到那里，这叫“方论者”。",
           "start": 295.35,
-          "end": 310.36,
+          "end": 310.56,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7f31d00d",
           "text": "道教也认为这个世界从“道”中来，最后又回到“道”中去。他们认为最原始的或者最细微的、最根本的元素叫“炁”，这是宇宙最根本的元素。而人必须依附于某种物才能维持生命，要么依附于肉身，要么依附于这个“炁”。你依附的物质越是那种原始的、最根本的元素的话，就和宇宙的生命长度越接近，他们是这么认为的。",
-          "start": 310.36,
-          "end": 361.3,
+          "start": 310.56,
+          "end": 363.708,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s08426b3b",
           "text": "所以最后就是炼神还虚——回到虚空的状态，和最原始的叫“炁”的这个物质结合，那生命就会无穷无尽延长——永远活着。只要宇宙不灭，他就不灭，和宇宙同样的寿命，这是一种道家的理论。",
-          "start": 361.3,
+          "start": 363.708,
           "end": 386.03,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s50a3a12c",
           "text": "“至方名得涅槃”，这个“方”也是当时印度的那种理论。下一个叫“境界想离犹如风止”，“离”是灭的意思，“境界想”灭了，就是对外境不再起任何念头，这叫“风仙论者”。",
           "start": 386.03,
-          "end": 409.6,
+          "end": 411.314,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf44570b1",
           "text": "“或谓不见能觉、所觉名为涅槃”，“能觉、所觉”也是一种分别心，能觉的我和所觉的对象——能觉察到的、觉知到的外境的某些对象，就是我和世界对立开来。在这样的认知下，对世界会产生那种和我们不一样的行为逻辑，这样的外道称之为“违陀论师”。",
-          "start": 409.6,
+          "start": 411.314,
           "end": 444.37,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa5e6eb2c",
@@ -28953,7 +28953,7 @@
           "end": 464.79,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s013c0cca",
@@ -28962,49 +28962,49 @@
           "end": 472.31,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdfb781a9",
           "text": "“或有说言分别诸相发生于苦，而不能知自心所现”，外边的诸相都是苦中产生的，不知道这些都是从自己的心里产生的幻境。“以不知故怖畏于相”，因为不知道这个真相，所以怕这个“相”，对外境产生怕的感觉和认知。",
           "start": 472.31,
-          "end": 493.72,
+          "end": 494.72,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s27a98ec6",
           "text": "“以求无相，深生爱乐执为涅槃”，追求“无相”，对外境产生那种“无相”的认知，这种外道叫“裸形认师”。现在印度也有那种不穿衣服修行的人，完全裸着的，身上涂白色的粉一样的东西。看那些纪录片，现在还有那样的外道。",
-          "start": 493.72,
-          "end": 524.74,
+          "start": 494.72,
+          "end": 525.04,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0a520ea5",
           "text": "下面一种，“或谓觉知内外诸法自相共相、去来现在有性不坏，作涅槃想”。“内外诸法自相共相”，这是菩萨境界里出现的自相共相。“去来现在有性不坏”，过去、现在它有不生不灭的、不坏的什么东西。也就是说如果把自相共相当作不坏的东西来看待的话，也是一种错误的观念，因为自相共相也会坏掉。",
-          "start": 524.74,
+          "start": 525.04,
           "end": 557.94,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd1cf47a8",
           "text": "在佛的境界里没有自相共相，到八地菩萨才开始有自相共相，自相共相都是对其他众生的认知。至少外道不再对什么没有生命的死物有认知，而是对其他众生有认知，这种思想的外道叫“毗世论师”。",
           "start": 557.94,
-          "end": 583.8,
+          "end": 583.3,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se7381f42",
           "text": "或计我、人、众生，寿命及一切法无有坏灭，作涅槃想；复有外道，无有智慧，计有自性及以士夫求那转变作一切物以为涅槃；或有外道计福非福尽，或计不由智慧诸烦恼尽，或计自在是实作者以为涅槃；",
-          "start": 583.8,
-          "end": 583.8,
+          "start": 583.3,
+          "end": 583.3,
           "conf": 0.95,
           "method": "ngram",
           "confirmed": true,
@@ -29013,20 +29013,20 @@
         {
           "pid": "p-se5716f6e",
           "text": "下面又是新的外道，“或计我、人、众生，寿命及一切法无有坏灭，作涅槃想”。这叫“常见论师”，对我、人、众生、寿者四相和一切法无有坏灭。他们认为这个世界一直在不断变化当中，还是一直存在的，这种状态是自然的状态，本来就应该这样。有这样认知的外道叫“常见论师”。",
-          "start": 583.8,
-          "end": 613.94,
+          "start": 583.3,
+          "end": 614.04,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scb749aa5",
           "text": "还有外道，“复有外道，无有智慧，计有自性及以士夫求那转变作一切物以为涅槃”。这种外道认为有自性，有本体，这个本体会变作一切物，所以认为要回到这种自性的状态，这是一种外道叫“女人眷属论师”。",
-          "start": 613.94,
+          "start": 614.04,
           "end": 642.98,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s18bb6f54",
@@ -29035,7 +29035,7 @@
           "end": 660.46,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2f75054f",
@@ -29044,7 +29044,7 @@
           "end": 694.34,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s56794d29",
@@ -29053,7 +29053,7 @@
           "end": 716.5,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9087d7ca",
@@ -29062,7 +29062,7 @@
           "end": 724.62,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa11c63dd",
@@ -29071,43 +29071,43 @@
           "end": 744.25,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s99f6c5b0",
           "text": "因为他们没有智慧，就不能知道这个世界的真相。“以不了故执为涅槃”，他们不知道的情况下，会把世界的这种无常轮转的相看作是正常的、本来该有的状态，这种外道叫“尼犍子论师”。",
           "start": 744.25,
-          "end": 767.36,
+          "end": 767.56,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3c45cfc6",
           "text": "“或计证于谛道虚妄分别以为涅槃”，这类人认为自己证悟到了什么境界，在这之上产生分别心——认为自己悟到了什么境界，别人没有悟到，以此来分别对待，认为这就是涅槃的状态。",
-          "start": 767.36,
+          "start": 767.56,
           "end": 789.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9aa2d688",
           "text": "“或计求那与求那者而共和合一性异性，俱及不俱执为涅槃”，在另一个版本里把这个“求那”翻译成功德了，它是这么说的，“或见功德，功德所起和合，一异、俱不惧，作涅槃想”，就是喜欢积福。“求那与求那者而共和合”，也就是我和外境——我要造作的对象是和合在一起的。所以在这之上有“一性”“异性”“俱及不俱”等这种认知，执着于这种认知称之为“涅槃”，这也是一种外道。",
           "start": 789.89,
-          "end": 835.24,
+          "end": 836.498,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s70179690",
           "text": "“或计诸物从自然生，孔雀文彩棘针铦利，生宝之处出种种宝，如此等事是谁能作，即执自然以为涅槃”，还有一些人执着于认为这个世界是自然而生的，这和现在我们普遍认为的科学观、大爆炸理论是一样的。认为这个世界就是那么自然产生，从“无”中生“有”，但是却自然产生，不是某个意识所控制的。",
-          "start": 835.24,
+          "start": 836.498,
           "end": 875.76,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf9a1aa18",
@@ -29116,25 +29116,25 @@
           "end": 878.5,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s768be9eb",
           "text": "“或谓能解二十五谛即得涅槃”，“二十五谛”是印度教的哲学观、世界观，和我们以往认知的世界观还是不一样。无神论是物质第一，在物质里产生意识；佛法认为意识第一，所有物质、我们看到的一切物质都是从我们意识里产生的。这是我们所接触到的两种世界观。",
           "start": 878.5,
-          "end": 904.86,
+          "end": 906.26,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfd3a0701",
           "text": "但是“二十五谛”是印度教的一个学派，他们认为这个世界物质是物质，意识是意识，意识和物质都是永恒存在的。而要成为生命体的话，这个意识和物质要结合到一起；结合差不多了，最后还要分散，这个生命体就死了。所以这个世间真正恒常不变的是物质和意识，两者一直存在，他们是这么认为的。这是印度教的一种理论。",
-          "start": 904.86,
+          "start": 906.26,
           "end": 939.69,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf62ba8ce",
@@ -29143,7 +29143,7 @@
           "end": 952.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbdb08780",
@@ -29152,43 +29152,43 @@
           "end": 1001.4,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb46f6893",
           "text": "“或有说言时生世间，时即涅槃”，“时”是时间的意思，世界永恒存在的一种东西称之为“时间”，把它们当作涅槃。有这种理论的外道称之为“时论师”。",
           "start": 1001.4,
-          "end": 1026.04,
+          "end": 1026.483,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9cf38a44",
           "text": "“或执有物以为涅槃：或计无物以为涅槃”，都是在心外找物的这些思想，认为有物的叫“涅槃”，没有物的也称之为“涅槃”。",
-          "start": 1026.04,
+          "start": 1026.483,
           "end": 1037.33,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s376ba046",
           "text": "“或有计著有物、无物为涅槃者”，对外物产生执着了，认为物的存在或者不存在称之为“涅槃”。这是心外求法的一种外道。",
           "start": 1037.33,
-          "end": 1050.83,
+          "end": 1052.473,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scfd6dd2d",
           "text": "“或计诸物与涅槃无别作涅槃想”，还是和上一个差不多的外道。认为“物”与“涅槃”没有什么区别，把这种状态称之为“涅槃”。",
-          "start": 1050.83,
+          "start": 1052.473,
           "end": 1073.5,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd528b222",
@@ -29197,7 +29197,7 @@
           "end": 1081.19,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe7338ec",
@@ -29206,43 +29206,43 @@
           "end": 1089.78,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s828bb72e",
           "text": "“复有异彼外道所说”，我们所说的理论和外道是不一样的。“以一切智大师子吼说”是一种比喻。“能了达唯心所现，不取外境”，知道我们看到的一切境界，都是从我们意识里产生的幻境；有了这样的认知之后，对外面的境界也不产生执着。",
           "start": 1089.78,
-          "end": 1113.32,
+          "end": 1113.22,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s88299072",
           "text": "“远离四句”，“四句”是什么？“一异、俱不俱、有非有、常无常”，这个前面已经讲过了，最后能拼成九十六种语句。所以佛要追求的是“远离四句”，不是靠语言来传授佛法的。“住如实见”，进入到“如实见”的状态——如实地看到世界真相。“不堕二边”，“有无” “断常”都叫二边。",
-          "start": 1113.32,
+          "start": 1113.22,
           "end": 1148.05,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc8af93c0",
           "text": "“离能、所取”，能取和所取就是分别心，从我相和人相开始产生的。“不入诸量”，另一个译本里是“量有四种：一现见，二比知，三譬喻，四先胜相传。彼外道于四度量，悉皆不成也”，在这个“四度量”上，外道是不能证悟的。原文里是“不入诸量，不著真实”。“住于圣智所现证法”，就是在自己的法身境界里。",
           "start": 1148.05,
-          "end": 1188.06,
+          "end": 1190.491,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf6b74d38",
           "text": "“悟二无我”，“二无我”是人无我和法无我。“离二烦恼”，“二烦恼”是现行烦恼和习气。“净二种障”，这个前面讲过了，“理障、事障”，也叫“烦恼障、所知障”，有这样的说法。",
-          "start": 1188.06,
+          "start": 1190.491,
           "end": 1211.19,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s897c95ed",
@@ -29251,7 +29251,7 @@
           "end": 1213.99,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb56c75a7",
@@ -29260,7 +29260,7 @@
           "end": 1229.6,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sec4d7dc1",
@@ -29269,7 +29269,7 @@
           "end": 1235.7,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5679a22d",
@@ -29278,7 +29278,7 @@
           "end": 1266.33,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb54dfa6d",
@@ -29287,7 +29287,7 @@
           "end": 1302.7,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9801aeca",
@@ -29296,7 +29296,7 @@
           "end": 1309.2,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4576a57d",
@@ -29305,7 +29305,7 @@
           "end": 1328.98,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0ff52717",
@@ -29314,7 +29314,7 @@
           "end": 1340.62,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s70feaf88",
@@ -29323,7 +29323,7 @@
           "end": 1404.42,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1f8d474e",
@@ -29332,7 +29332,7 @@
           "end": 1425.48,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbcc4fc1b",
@@ -29341,43 +29341,43 @@
           "end": 1435.79,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se536baa8",
           "text": "什么是“正等觉自觉性”？“如来、应供、正等觉”，应该是指佛，是佛的不同名字。“正等觉自觉性”，佛的“自觉性”。大慧问的是佛的自觉性。",
           "start": 1435.79,
-          "end": 1452.54,
+          "end": 1451.051,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s75e839c1",
           "text": "佛言：“如汝所问，当为汝说。”大慧言：“唯。世尊，如来、应供、正等觉为作非作？为果为因？为相所相？为说所说？为觉所觉？如是等为异不异？”",
-          "start": 1452.54,
+          "start": 1451.051,
           "end": 1459.93,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s571a07b8",
           "text": "他说的是什么意思呢？这个“如来”就那么成佛的，到底是造作出来的，还是没有造作？“为果为因”，这个“如来”到底是“果”还是“因”？“为相所相？为说所说？为觉所觉？如是等为异不异？”问了一些形而上的问题。一般针对这些问题，佛都有一套回答的方式。",
           "start": 1459.93,
-          "end": 1500.57,
+          "end": 1498.62,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s148f4f91",
           "text": "佛言：“大慧，如来、应、正等觉非作非非作，非果非因，非相非所相，非说非所说，非觉非所觉，何以故？俱有过故。",
-          "start": 1500.57,
+          "start": 1498.62,
           "end": 1503.39,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6a19e709",
@@ -29386,7 +29386,7 @@
           "end": 1546.29,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9ff0698a",
@@ -29395,7 +29395,7 @@
           "end": 1552.6,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saec18690",
@@ -29404,7 +29404,7 @@
           "end": 1596.18,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9aeed083",
@@ -29413,7 +29413,7 @@
           "end": 1616.65,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s552836a2",
@@ -29422,25 +29422,25 @@
           "end": 1619.01,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s93fb45dc",
           "text": "如果说如来是“非作法”，就是不起妄想了，那么他就没有“体性”，也就是没有本体，这个有点矛盾了。如来一直是有本体的，不管有没有起妄想，他的自性还是存在的。",
           "start": 1619.01,
-          "end": 1630.89,
+          "end": 1635.689,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se267884a",
           "text": "另一个译本里是“若非所作者，无所得故，方便则空”。也就是说，如来如果是不起妄想的，不是造作的，那么他就没有什么可得到的，也就变成了空的状态。“同于兔角，般大之子，以无所有故”，也就是那些和兔角、石女等这样不存在的事情一样。但是他造作的妄想不存在，并不代表自性不存在。",
-          "start": 1630.89,
+          "start": 1635.689,
           "end": 1675.85,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scd2ae077",
@@ -29449,25 +29449,25 @@
           "end": 1691.73,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6a5b3dde",
           "text": "若非因非果，则非有非无，若非有非无，则超过四句。言四句者，但随世间而有言说。若超过四句，惟有言说，则如石女儿。",
           "start": 1691.73,
-          "end": 1699.97,
+          "end": 1700.612,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sea3da1bf",
           "text": "如果如来的状态不是“因”，也不是“果”的话，他就没有“有”和“无”。若没有“有”和“无”，则超过四句。“言四句者，但随世间而有言说”，所有的语言都是随顺世间的众生而说的。“若超过四句，惟有言说，则如石女儿”，如果超越这“四句”，还有言说的话，那就像石女之子一样，本来就不存在。",
-          "start": 1699.97,
+          "start": 1700.612,
           "end": 1731.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbe2c13d3",
@@ -29476,25 +29476,25 @@
           "end": 1737.38,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s79f2032c",
           "text": "石女之子只是语言上说的，他本来就不存在，所以不存在的东西就更不可能堕于“四句”中。因为不堕在“四句”当中，也就不可度量。有智慧的人应该如是知道如来所说的这个佛理——世界之真相。",
           "start": 1737.38,
-          "end": 1763.65,
+          "end": 1763.35,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se4c5ade3",
           "text": "好了，这一期就讲到这里。",
-          "start": 1763.65,
+          "start": 1763.35,
           "end": 1765.861,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
