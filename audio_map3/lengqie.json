@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-11-08T08:10:09.878Z",
+  "generated_at": "2026-11-09T09:19:44.751Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -29567,191 +29567,192 @@
         {
           "pid": "p-sdc7b61c9",
           "text": "《楞伽经》第三十二期，这本书的一百七十页中间开始。",
-          "start": 1.12,
-          "end": 7.25,
+          "start": 1.02,
+          "end": 8.706,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s41f37154",
           "text": "大慧，如我所说，诸法无我，以诸法中无有我性，故说无我。",
-          "start": 7.25,
-          "end": 14.39,
+          "start": 8.706,
+          "end": 14.911,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6717e902",
           "text": "“诸法”是妄想、分别、执着的统称，在菩萨那里，妄想也称之为“法”。“诸法无我”，菩萨是以八地为界限，七地算是一种过渡阶段；八地以上称之为“法无我”，八地以下是法有我。那么在这里无我和有我是怎么分的呢？",
-          "start": 14.39,
-          "end": 38.38,
+          "start": 14.911,
+          "end": 38.28,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s593896bb",
           "text": "我们简单理解的话，可以说是妄想的粗细不同。八地以上的菩萨妄想稍微细一些，八地以下妄想会变得粗重，从而导致自相、共相不成立。如果妄想越少，自相、共相就会成立。前面专门讲过自相、共相。",
-          "start": 38.38,
+          "start": 38.28,
           "end": 60.63,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s87097b70",
           "text": "在八地以上的菩萨那里是法无我，佛说“以诸法中无有我性，故说无我”。也就是说八地以上菩萨的妄想很细微，不能说完全没有，但是他自认为处在那种寂静的状态。",
           "start": 60.63,
-          "end": 85.09,
+          "end": 86.09,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s489e0b84",
           "text": "非是无有诸法自性，如来句义应知亦然。",
-          "start": 85.09,
+          "start": 86.09,
           "end": 92.86,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s75e69c6f",
           "text": "这本书里滥用“自性”这个词，已经出现了三种意思：第一种是我们所普遍接受的，就是根本意识；第二个意思是本体，妄想没有自性，就是这个妄想没有本体；在这里又出现的一个意思是：自性指性质——妄想的性质。妄想、分别、执着的确不一样，所以它有不同的性质。",
           "start": 92.86,
-          "end": 129.56,
+          "end": 129.86,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s191366bd",
           "text": "“非是无有诸法自性，如来句义应知亦然”，并不是这个妄想没有性质。下面专门展开来解释。",
-          "start": 129.56,
-          "end": 138.66,
+          "start": 129.86,
+          "end": 138.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2a6a4a45",
           "text": "大慧，譬如牛无马性，马无牛性，非无自性，一切诸法亦复如是。",
-          "start": 138.66,
+          "start": 138.96,
           "end": 145.29,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s97b20834",
           "text": "就像牛没有马性，它有牛性；马没有牛性，它有它的马性。“非无自性”，牛马都有它们的自性，在这个时候指的是性质，妄想本身的性质。“一切诸法亦复如是”，诸法——妄想、分别、执着都是这样。",
           "start": 145.29,
-          "end": 167.11,
+          "end": 167.01,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3b6bff61",
           "text": "无有自相，而非有即有，非诸凡愚之所能知，何故不知？以分别故。",
-          "start": 167.11,
-          "end": 175.61,
+          "start": 167.01,
+          "end": 175.31,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s69b7db01",
           "text": "诸法——妄想是没有自相的，本身是不存在的，所以说它是“非有即有”。因为它是从空中无缘无故产生出来的，所以我们说它没有自性——没有本体，从这个角度来说，它是“非有”。但是我们却生活在这个妄想和合而成的世界当中，所以它的确“有”。所以这叫“而非有即有”，就是同时占了无和有两种性质。",
-          "start": 175.61,
-          "end": 210.01,
+          "start": 175.31,
+          "end": 206.727,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0e597996",
           "text": "“非诸凡愚之所能知”，普通人是不知道的。“何故不知？以分别故”，为什么不知道？就是因为分别故。妄想的存在，是因为我们用分别心来认知的情况下，才有了有和无之类的这种见。所以，在我们意识里，对妄想产生了各种相，以及分别和执着。",
-          "start": 210.01,
-          "end": 231.59,
+          "start": 206.727,
+          "end": 231.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2fef6d56",
           "text": "一切法空，一切法无生，一切法无自性，悉亦如是。",
-          "start": 231.59,
-          "end": 237.01,
+          "start": 231.89,
+          "end": 237.21,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3733a141",
           "text": "“一切法空”，妄想、分别、执着本来是空的。“一切法无生”，因为妄想、分别、执着是没有本体的，所以可以称之为“无生”。哪怕你现在有妄想，你要是悟到了妄想本来没有本体的这个理论的话，也可以说你已经在理论上悟到了无生。“一切法无自性”，这个“自性”指本体。",
-          "start": 237.01,
-          "end": 264.54,
+          "start": 237.21,
+          "end": 267.396,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbbc7ff00",
           "text": "大慧，如来与蕴非异非不异。若不异者，应是无常，五蕴诸法是所作故。",
-          "start": 264.54,
+          "start": 267.396,
           "end": 270.39,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a6951f8",
           "text": "他在这里喜欢用“非异非不异”这样的话，翻译起来比较绕口。咱们把“非异”改成同，“非不异”改成不同，这样简单一点。",
           "start": 270.39,
-          "end": 285.45,
+          "end": 285.75,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbeeb821b",
           "text": "“如来与蕴”，“蕴界”就是色、受、想、行、识。如来是没有妄想的状态，色、受、想、行、识都是妄想和合而成的。那么如来与妄想到底是什么关系呢？佛说是“非异非不异”，就是同和不同，既是同，也有不同的属性。",
-          "start": 285.45,
-          "end": 309.07,
+          "start": 285.75,
+          "end": 308.97,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s497b34a1",
           "text": "“若不异者，应是无常”，“不异”翻译成同，如果如来和五蕴一样，应是无常。因为五蕴是无常的、不断变化的，就像海浪一样不停地翻滚，所以前面专门用“浪”来比喻。“五蕴诸法是所作故”，五蕴诸法都是我们造作出来的妄想。",
-          "start": 309.07,
+          "start": 308.97,
           "end": 334.18,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa37f64ff",
           "text": "若异者，如牛二角有异不异，互相似故不异，长短别故有异，如牛右角异左，左角异右，长短不同，色相各别。然亦不异，如于蕴于界处等。一切法亦如是。",
           "start": 334.18,
-          "end": 338.47,
+          "end": 334.18,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sdf3277f9",
           "text": "“若异者，如牛二角有异不异”，如果如来和五蕴界不同的话，就像牛的两个角一样，既同也不同。“互相似故不异”，因为牛的左右角相似，所以我们可以看作是同样的。“长短别故有异”，左右两角在细节上肯定有不一样的地方，所以称之为“有异”——不同。",
-          "start": 338.47,
+          "start": 334.18,
           "end": 367.67,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdcae7372",
@@ -29760,601 +29761,603 @@
           "end": 391.17,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s231aba54",
           "text": "“如于蕴于界处等”，应该是“如来于蕴界处”，可能写错了。“如来与蕴界处等。一切法亦如是”，就像这个牛角一样，既是同，也有不同；所以如来和蕴界处也是这样的关系，既有同样的性质，也有不同的性质。",
           "start": 391.17,
-          "end": 414.28,
+          "end": 416.338,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdd8f7490",
           "text": "大慧，如来者依解脱说，如来解脱非异非不异。",
-          "start": 414.28,
-          "end": 422.9,
+          "start": 416.338,
+          "end": 423.1,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a0b2dc0",
           "text": "“如来”这个词是根据解脱来说的，彻底解脱，到最终极的状态了，可以称之为“如来”。但是如来与解脱“非异非不异”，还是那样的关系——既有同的性质，也有不同的性质。",
-          "start": 422.9,
-          "end": 443.47,
+          "start": 423.1,
+          "end": 443.27,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s72c8aa95",
           "text": "若异者，如来便与色相相应，色相相应即是无常；若不异，修行者见应无差别，然有差别，故非不异。",
-          "start": 443.47,
-          "end": 443.99,
+          "start": 443.27,
+          "end": 443.27,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sff89f4c5",
           "text": "“若异者，如来便与色相相应”，如果如来这个名字和解脱是不同的，那么如来肯定和这个轮回世界内的色相相应。",
-          "start": 443.99,
-          "end": 465.19,
+          "start": 443.27,
+          "end": 465.09,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scb7e909f",
           "text": "“色相相应即是无常”，这个色相——轮回世界内的一切都是在无常变化的，如果如来与色相相应，那如来也就变成了无常的存在，所以也不能说如来与解脱异。如果如来与解脱是异的，那如来就变成无常的了，就不符合义理。所以前面要加“非”，如来与解脱是非异的，就是同样的。",
-          "start": 465.19,
-          "end": 497.98,
+          "start": 465.09,
+          "end": 499.831,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s85817e3a",
           "text": "“若不异，修行者见应无差别，然有差别，故非不异”，如果如来与解脱是同样的，那么修行者应无差别——解脱者应该全部都是一样的。但是修行者在解脱上还是有差别的，境界有高低，菩萨、罗汉的确有高低差别。所以如来和解脱不能不异——“非不异”。",
-          "start": 497.98,
-          "end": 532.95,
+          "start": 499.831,
+          "end": 533.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb6b50929",
           "text": "如是智与所知，非异非不异，若非异非不异，则非常非无常，非作非所作，非为非无为，非觉非所觉，非相非所相，非蕴非异蕴，非说非所说，非一非异，非俱非不俱。",
-          "start": 532.95,
-          "end": 537.29,
+          "start": 533.95,
+          "end": 533.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s7489b9f7",
           "text": "“如是智与所知”，那样的话有智慧，等于是没有妄想的状态。“所知”是知道的对象，就是前面所说的五蕴；整个妄想都是可以知道的对象，这里的妄想既包括自己的妄想，也包括其他众生之妄想。",
-          "start": 537.29,
-          "end": 561.52,
+          "start": 533.95,
+          "end": 561.72,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc472c51b",
           "text": "那么这个智慧的状态和所知道的、认知到的其他众生之妄想，以及自己的妄想，它们之间的关系是非异非不异。这和前面的逻辑是一样的。“若非异非不异”，如果是非异非不异。“则非常非无常”，一个是无常，一个是恒常不变，这两者都不是，所以称之为“非常非无常”。",
-          "start": 561.52,
-          "end": 586.75,
+          "start": 561.72,
+          "end": 586.65,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s69a83f82",
           "text": "“非作非所作”，“作”是造作的行为，“所作”是造作的对象，或者造作之后出现的、被创造出来的东西。",
-          "start": 586.75,
-          "end": 601.6,
+          "start": 586.65,
+          "end": 602.2,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfdc27cdb",
           "text": "“非为非无为”，“无为”是不用凡夫的执着心，只追求做任何事情，一直处在静静的状态，这称之“无为”。那么“为”就是有凡夫的欲望——不管是各种生理上的欲望，还是在社会上要实现的抱负，都可以称之为“有为”。那么“智与所知”这两者的关系不能称之为“为”或者“无为”，所以叫“非为非无为”。",
-          "start": 601.6,
+          "start": 602.2,
           "end": 637.04,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4e106854",
           "text": "下面也是同样的逻辑。“智与所知”的关系是“非觉非所觉”，“非相非所相”，“非蕴非异蕴”。“蕴”是蕴界处——色、受、想、行、识。所以“智与所知”的关系都可以称之为“非”，一切都是非。",
           "start": 637.04,
-          "end": 664.93,
+          "end": 665.43,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdc2f28a7",
           "text": "“非说非所说”，“智与所知”的关系也是“非说非所说”；不能说，也不能用我们可以认知的语言来解释。“所说”就是说出来的内容，所以也就没有什么所谓的内容。“非一非异”，既不是同样的，也不是不同的。“非俱非不俱”，它们具备了某种共通的属性，或者不具备，但是这里是超越了“非俱和非不俱”。",
-          "start": 664.93,
-          "end": 698.76,
+          "start": 665.43,
+          "end": 698.66,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s047bbfa7",
           "text": "以是义故，超一切量，超一切量故，惟有言说，惟有言说故，则无有生，无有生故，则无有灭，无有灭故，则如虚空。",
-          "start": 698.76,
-          "end": 705.2,
+          "start": 698.66,
+          "end": 704.4,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sedc2e993",
           "text": "在这里“量”指的是见、闻、觉、知的识的名字。因为这个是上面讲的义理，所以佛的境界是超越一切的心量，见闻觉知的意识超越这些心量，所以“惟有言说”。“惟有言说故，则无有生”，只有用语言说的内容，实际上并没有生出来。“无有生故，则无有灭”，没有生出来的，就不可能有灭。“无有灭故，则如虚空”，没有什么可灭的，所以就像虚空一样。",
-          "start": 705.2,
-          "end": 749.95,
+          "start": 704.4,
+          "end": 748.85,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd65023a8",
           "text": "大慧，虚空非作非所作，非作非所作故，远离攀缘，远离攀缘故，出过一切诸戏论法，出过一切诸戏论法，即是如来。",
-          "start": 749.95,
-          "end": 754.95,
+          "start": 748.85,
+          "end": 754.15,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s33c72193",
           "text": "虚空不是被造作出来的，虚空本身不是那个可以造作的主人公，也不是被造作出来的对象。所以要远离攀缘——对外不要执着。因为不对外境产生执着了、不攀缘了，所以出过所有的诸法戏论——在这里“出”应该是超出、超越的意思——超越所有的诸法戏论。因为超越了这个诸法戏论，就可以称之为如来。",
-          "start": 754.95,
-          "end": 796.5,
+          "start": 754.15,
+          "end": 795.9,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4adb11d3",
           "text": "如来即是正等觉体，正等觉者，永离一切诸根境界。",
-          "start": 796.5,
+          "start": 795.9,
           "end": 800.04,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s62de13f1",
           "text": "如来是正等觉体，他没有所谓的根器，所以应该算是超越了所有的根器境界。",
           "start": 800.04,
-          "end": 809.41,
+          "end": 808.71,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8a50ca25",
           "text": "下面又用点点点省略掉了很大一段。另一个译本是一段偈语，我给大家念一遍。",
-          "start": 809.41,
-          "end": 818.19,
+          "start": 808.71,
+          "end": 817.59,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfa7bdf1b",
           "text": "悉离诸根量，无事亦无因，已离觉所觉，亦离相所相。阴缘等正觉，一异莫能见，若无有见者，云何而分别？非作非不作，非事亦非因，非阴不在阴，亦非有余杂，亦非有诸性，如彼妄想见。当知亦非无，此法法自尔，以有故有无，以无故有有，若无不应受，若有不应想。或与我非我，言说量留连，沉溺于二边，自坏坏世间。解脱一切过，正观察我通，是名为正观，不毁大导师。",
-          "start": 818.19,
-          "end": 869.89,
+          "start": 817.59,
+          "end": 869.714,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s973837aa",
           "text": "“非阴不在阴”，这里“阴”指五蕴。这个偈语就不展开解释了，讲的就是前面的内容。",
-          "start": 869.89,
-          "end": 875.78,
+          "start": 869.714,
+          "end": 877.59,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd7c9ebdd",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，如佛经中分别摄取不生不灭，言此即是如来异名。",
-          "start": 875.78,
-          "end": 887.25,
+          "start": 877.59,
+          "end": 886.35,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s45d7df33",
           "text": "在这里“摄取”是传授或者演说的意思。佛经里演说不生不灭是最高的境界，也说这就是如来的异名——另一个名字。",
-          "start": 887.25,
-          "end": 901.48,
+          "start": 886.35,
+          "end": 900.78,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa6cac125",
           "text": "世尊，愿为我说，不生不灭，此则无法，云何说是如来异名？",
-          "start": 901.48,
-          "end": 906.71,
+          "start": 900.78,
+          "end": 906.11,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s43ffc0d8",
           "text": "大慧菩萨问，如果是不生不灭的话——妄想都没有生出来，那就没有法。“法”是妄想的另一种说法，是妄想、分别、执着的统称。“云何说是如来异名”，怎么能说是如来的异名呢？",
-          "start": 906.71,
-          "end": 924.62,
+          "start": 906.11,
+          "end": 924.32,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s97743b54",
           "text": "如世尊说，一切诸法不生不灭，当知此则堕有无见。世尊，若法不生，则不可取，无有少法，谁是如来？惟愿世尊为我宣说。",
-          "start": 924.62,
-          "end": 931.21,
+          "start": 924.32,
+          "end": 930.11,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s47e80fcb",
           "text": "就像世尊所说的一样，如果所有的妄想、分别、执着都是不生不灭的，听到的众生就会堕入到无见当中，他们以为这个世界本来就什么都没有。如果法是不生的，那么这样的说法不能取。如果没有任何法的话，那谁是如来呢？请佛说一说这中间的关系。",
-          "start": 931.21,
-          "end": 968.28,
+          "start": 930.11,
+          "end": 967.88,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3e8b97ae",
           "text": "佛言：“谛听，当为汝说。大慧，我说如来，非是无法，亦非摄取不生不灭，亦非待缘，亦非无义，我说无生即是如来意生法身别异之名，一切外道、声闻、独觉、七地菩萨不了其义。",
-          "start": 968.28,
-          "end": 984.48,
+          "start": 967.88,
+          "end": 984.78,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s960453c1",
           "text": "我们先看后半段，“无生”是在妄想没有本体的前提理论下才说的。“我说无生即是如来意生法身别异之名，一切外道、声闻、独觉、七地菩萨不了其义”，所以，无生就是如来的另一个名字，一切外道、声闻、独觉、七地菩萨都不知道这个真相。",
-          "start": 984.48,
+          "start": 984.78,
           "end": 1009.4,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1d5fba60",
           "text": "再往前看前面的这一段。“我说如来，非是无法”，我说的如来并不是没有法。“亦非摄取不生不灭”，也不是为了安住于不生不灭当中。“亦非待缘”，如来没有导致如来的某个前提的原因。“亦非无义”，“义”是什么？“义”是佛要说的佛理——世界真相，宇宙真相。“无义”就是没有这个真相；“非无义”，并不是没有真相。所以，如来说他是如来，肯定有他要讲的意义，并不是完全没有意义的。",
           "start": 1009.4,
-          "end": 1052.57,
+          "end": 1052.87,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s73fa05ee",
           "text": "大慧，譬如帝释地及虚空乃至手足，随一一物各有多名。非以名多而有多体，亦非无体。",
-          "start": 1052.57,
-          "end": 1064.36,
+          "start": 1052.87,
+          "end": 1065.36,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se822fc59",
           "text": "譬如帝释天、地、虚空乃至手足都是一些物体，这每一个物都有多个名字。不是因为名多了，就有多个本体，也不是没有本体。",
-          "start": 1064.36,
-          "end": 1088.87,
+          "start": 1065.36,
+          "end": 1088.07,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe04c308",
           "text": "大慧，我亦如是，于此娑婆世界，有三阿僧祇百千名号，诸凡愚人虽闻虽说，而不知是如来异名，其中或有知如来者，知无师者，知导师者，知胜导者，知普导者，知是佛者，",
-          "start": 1088.87,
-          "end": 1095.69,
+          "start": 1088.07,
+          "end": 1094.59,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3536d62c",
           "text": "佛说他也是如此，在这个娑婆世界里，有很多很多的名号。很多愚痴的人们听到了就那么说，但是不知道这就是如来的异名——另一个名字。佛在很多世界用不同的名字传法，所以很多众生接触到的佛，有可能是用不一样的名字。",
-          "start": 1095.69,
-          "end": 1136.7,
+          "start": 1094.59,
+          "end": 1136.2,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8cab63b7",
           "text": "下面又是点点点省略掉一段，这一段讲佛的各种名字，我给大家念一遍。",
-          "start": 1136.7,
-          "end": 1145.93,
+          "start": 1136.2,
+          "end": 1145.13,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb5425408",
           "text": "有三阿僧祇百千名号，愚夫悉闻，各说我名，而不解我如来异名。大慧，或有众生，知我如来者，有知一切智者，有知佛者，有知救世者，有知自觉者，有知导师者，有知广导者，有知一切导者，有知仙人者，有知梵者，有知毗纽者，有知自在者，有知胜者，有知迦毗罗者，有知真实边者，有知月者，有知日者，有知生者，有知无生者，有知无灭者，有知空者，有知如如者，有知谛者，有知实际者，有知法性者，有知涅槃者，有知常者，有知平等者，有知不二者，有知无相者，有知解脱者，有知道者，有知意生者。大慧，如是等三阿僧祇百千名号，不增不减。此及余世界，皆悉知我。",
-          "start": 1145.93,
+          "start": 1145.13,
           "end": 1212.37,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf8a94a45",
           "text": "回到我们的书。",
           "start": 1212.37,
-          "end": 1215.09,
+          "end": 1214.09,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb8c050fc",
           "text": "于此及余诸世界中，有能知我如水中月，不入不出，但诸凡愚心没二边，不能解了，然亦尊重承事供养，而不善解名字句义，执著言教，昧于真实，谓无生，无灭是无体性，不知是佛差别名号。",
-          "start": 1215.09,
-          "end": 1220.3,
+          "start": 1214.09,
+          "end": 1219.7,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa0a3ecbf",
           "text": "“有能知我如水中月，不入不出”，这是指佛的意识遍虚空，所以不能说他入或者出，没有办法用入和出来解释或者描绘他。“但诸凡愚心没二边，不能解了”，普通人们都堕入二边见——分别和执着当中，所以不能知道佛的境界。",
-          "start": 1220.3,
-          "end": 1244.92,
+          "start": 1219.7,
+          "end": 1243.979,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa92573d3",
           "text": "“然亦尊重承事供养，而不善解名字句义”，但还是供养佛，而并不真正明白这个名字句义。“执着言教”，在言教当中很执着。“昧于真实”，在真相方面反而暗昧——不懂。“谓无生，无灭是无体性”，认为无生无灭是没有体性、没有本体的。“不知是佛差别名号”，不知道这是佛的另一个名号。",
-          "start": 1244.92,
-          "end": 1283.89,
+          "start": 1243.979,
+          "end": 1282.99,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9cd86b9e",
           "text": "如因陀罗释揭罗等，以信言教，昧于真实，于一切法，如言取义，彼诸凡愚作如是言，义如言说，义说无异，何以故？义无体故。",
-          "start": 1283.89,
-          "end": 1285.93,
+          "start": 1282.99,
+          "end": 1285.33,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6b02bd40",
           "text": "“因陀罗释揭罗”是帝释天的另一个名字。“以信言教，昧于真实”，他们只相信语言，在语言上很下功夫，也相信这个语言是真实的，但是反而不知道真相。“于一切法，如言取义”，在一切法上，都根据这个语言来取意义。",
-          "start": 1285.93,
-          "end": 1309.24,
+          "start": 1285.33,
+          "end": 1308.24,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s80302f42",
           "text": "“彼诸凡愚作如是言”，这些凡愚都这么说。“义如言说”，这个真实的意义就和语言里说的一样。“义说无异”，义和这个语言是没有异的——“无异”就是同样的——义和语言是同样的。我们认为用语言表达出来的意思和这个语言是同样的。“何以故”，为什么呢？“义无体故”，这个义没有本体。",
-          "start": 1309.24,
-          "end": 1347.51,
+          "start": 1308.24,
+          "end": 1346.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9751162e",
           "text": "是人不了言音自性，谓言即义，无别义体。大慧，彼人愚痴，不知言说是生是灭，义不生灭。",
-          "start": 1347.51,
-          "end": 1354.04,
+          "start": 1346.81,
+          "end": 1353.54,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s827fbe5d",
           "text": "“是人不了言音自性”，人们不知道语言和声音的自性，在这里“自性”指性质。“谓言即义”，说这个语言就是它的意思。“无别义体”，没有别的义体。这个语言和义是区别开来的，语言不能表达真实的意义，所以不能看作“无别义体”。而愚痴的人们认为是无别义体——没有别的真实的意义。",
-          "start": 1354.04,
-          "end": 1386.23,
+          "start": 1353.54,
+          "end": 1385.13,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc939371d",
           "text": "大慧，彼人愚痴，不知言说是生是灭，义不生灭。",
-          "start": 1386.23,
-          "end": 1391.38,
+          "start": 1385.13,
+          "end": 1390.68,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb30f310d",
           "text": "这些愚痴者不知道语言是有生灭的，但是义——真相，是没有生灭的。",
-          "start": 1391.38,
+          "start": 1390.68,
           "end": 1403.37,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf3ffcaf7",
           "text": "大慧，一切言说堕于文字，义则不堕，离有离无故，无生无体故。",
           "start": 1403.37,
-          "end": 1410.99,
+          "end": 1410.29,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0c824980",
           "text": "所有语言都堕于文字当中，我们毕竟用语言说的时候，都是用文字来说的。但是义——这个真相是不堕语言文字的，是超越了有见和无见的，是无生的，也没有本体。",
-          "start": 1410.99,
-          "end": 1433.94,
+          "start": 1410.29,
+          "end": 1432.74,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9abea73c",
           "text": "大慧，如来不说堕文字法，文字有无不可得故，惟除不堕于文字者。",
-          "start": 1433.94,
-          "end": 1442.47,
+          "start": 1432.74,
+          "end": 1440.97,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfd3b178a",
           "text": "如来不说堕在文字里的那个法，文字里有见和无见都存在，一旦说出来肯定是带有有见的，所以这都不可得。除了那些听了语言传法之后，又不堕在文字当中的人。",
-          "start": 1442.47,
-          "end": 1466.21,
+          "start": 1440.97,
+          "end": 1464.81,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7b576e10",
           "text": "大慧，若人说法堕文字者，是虚诳说，何以故？诸法自性离文字故。",
-          "start": 1466.21,
-          "end": 1470.63,
+          "start": 1464.81,
+          "end": 1469.645,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0938b98b",
           "text": "如果有人说法是堕在文字当中，专门在文字上下功夫的话，是一种虚诳的、错误的说法。为什么？诸法的自性——诸法的性质是超越文字的。",
-          "start": 1470.63,
-          "end": 1490.84,
+          "start": 1469.645,
+          "end": 1489.64,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc4274272",
           "text": "是故，大慧，我经中说，我与诸佛及诸菩萨，不说一字，不答一字，所以者何？一切诸法离文字故，非不随义而分别说。",
-          "start": 1490.84,
-          "end": 1501.54,
+          "start": 1489.64,
+          "end": 1500.64,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sac3587ff",
           "text": "所以佛在经里说，佛和这些菩萨们不说一字，不答一字——讲了四十九年的法，最后还说他们什么都没有说过，因为他不希望人们堕在这个文字当中。",
-          "start": 1501.54,
-          "end": 1517.13,
+          "start": 1500.64,
+          "end": 1516.213,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s627c213d",
           "text": "“所以者何？一切诸法离文字故”，为什么呢？因为诸法都是超越文字的。“非不随义而分别说”，并不是不随义理，而只是分别说——为了众生分别说法。如果不说的话，那怎么传法呢？",
-          "start": 1517.13,
-          "end": 1537.75,
+          "start": 1516.213,
+          "end": 1536.95,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-seea6c043",
           "text": "大慧，若不说者，教法则断，教法断者，则无声闻、缘觉、菩萨、诸佛。",
-          "start": 1537.75,
-          "end": 1542.58,
+          "start": 1536.95,
+          "end": 1541.68,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5632e71f",
           "text": "如果没有人出来传法的话，法就会断。如果没有人传法，这个教法断了，那就没有声闻、缘觉、菩萨、诸佛，这些都不会出现。",
-          "start": 1542.58,
-          "end": 1555.55,
+          "start": 1541.68,
+          "end": 1554.45,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1c6971a3",
           "text": "法必须得传，那么传法就得用文字；当然，其他也有世界用不同的方式来传法。就像这本佛经里说的，有用目瞪视来让人开悟的世界，也用闻香而悟法的世界——那个世界用香气来互相交流。",
-          "start": 1555.55,
-          "end": 1581.67,
+          "start": 1554.45,
+          "end": 1580.47,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8854a248",
           "text": "若总无者，谁说？为谁？是故，大慧，菩萨摩诃萨不著文字，随宜说法，我及诸佛皆随众生烦恼解欲种种不同而为开演，令知诸法自心所见，无外境界，舍二分别，转心意识，非为成立圣自证处。",
-          "start": 1581.67,
-          "end": 1586.98,
+          "start": 1580.47,
+          "end": 1586.08,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saefc122d",
           "text": "“总无”指前面这些声闻、缘觉、菩萨、诸佛都不在了，因为教法断了，这些就都不会出现。如果前面这些声闻、缘觉、菩萨、诸佛都不在的话，谁来说法呢？又是为谁说法？“菩萨摩诃萨不著文字，随宜说法”，菩萨摩诃萨们不会执着于文字，而是随宜说法——便宜行事的意思，就是方便说法。",
-          "start": 1586.98,
-          "end": 1617.22,
+          "start": 1586.08,
+          "end": 1616.12,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb06209b3",
           "text": "“我及诸佛皆随众生烦恼解欲种种不同而为开演”，诸佛都是根据众生的根器来讲不同的法，就是方便说法。“令知诸法自心所见，无外境界”，让这些众生知道诸法——妄想、分别、执着，都是自心所见——自己心里产生的幻境，在这里没有外境界。",
-          "start": 1617.22,
-          "end": 1647.48,
+          "start": 1616.12,
+          "end": 1646.378,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s90da940c",
           "text": "“舍二分别”，舍弃二分别——有无、断常的分别。“转心意识”，就是把心、意、意识——妄想、分别、执着给灭了。“非为成立圣自证处”，并不是用语言来建立什么自证处，就是没有打算用语言来传播真正的真相、真正的解脱之法的意思。",
-          "start": 1647.48,
-          "end": 1676.92,
+          "start": 1646.378,
+          "end": 1675.82,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s45c5de23",
           "text": "这一期就讲到这里。",
-          "start": 1676.92,
+          "start": 1675.82,
           "end": 1678.554,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
