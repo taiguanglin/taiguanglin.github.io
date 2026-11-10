@@ -4,12 +4,12 @@
   "version": 1,
   "stats": {
     "sessions": 7,
-    "segments": 237,
+    "segments": 236,
     "matched": 228,
     "low_conf": 2,
     "interpolated": 0,
     "pending": 9,
-    "missing": 9,
+    "missing": 8,
     "openings_ok": 7,
     "closings_ok": 7
   },
@@ -3735,27 +3735,8 @@
         },
         {
           "questioner": "常住真心",
-          "question_time": "",
-          "q_text": "",
-          "answer_text": "",
-          "start": null,
-          "end": null,
-          "start_label": "",
-          "end_label": "",
-          "confidence": 0.0,
-          "status": "missing",
-          "notes": "空答案佔位段；無獨立口播 | 2026-10-18 length-fix：本段多出的 11 保留字 屬 #22 的 block → 搬出；時間窗不動",
-          "srt_preview": "",
-          "index": 21,
-          "question_id": "question-0deba7aaa4b2",
-          "stable_key": "2024-04-24-main#21",
-          "q_preview": "",
-          "answer_preview": ""
-        },
-        {
-          "questioner": "请问",
-          "question_time": "",
-          "q_text": "Tai师父好！首先感谢您！\n1、弟子早上睡觉起来静坐时候默念佛，一般一个半小时到两小时，但是总是刚坐十分钟、二十分钟，过会就像是睡着一样，大约前五、六十分钟；后面就是因为熬疼倒是没有那现象。请问师父怎么处理比较好？还是说坚持几年就会过去？",
+          "question_time": "2024-4-24",
+          "q_text": "Tai师父好！首先感谢您！\n请问：\n1、弟子早上睡觉起来静坐时候默念佛，一般一个半小时到两小时，但是总是刚坐十分钟、二十分钟，过会就像是睡著一样，大约前五、六十分钟；后面就是因为熬疼倒是没有那现象。请问师父怎么处理比较好？还是说坚持几年就会过去？",
           "answer_text": "常住真心，打坐的时候进入睡觉一样的状态是不好的，有可能会伤到脑细胞。你觉得自己要进入那种状态就出声念佛，一会就能清醒过来。不要让自己进入睡觉一样的状态，一直保持清醒，心静下来才是正确的。",
           "start": 1375.88,
           "end": 1465.86,
@@ -3763,7 +3744,7 @@
           "end_label": "00:24:25.860",
           "confidence": 0.95,
           "status": "manual",
-          "notes": "首字錨定:名「常住真心」＋唸回 onset cue[540]（常驻真心打坐的时候）（原 1371.86 含 #19 尾） | anchor:字級 opus/mp3 1375.90 | 2026-10-18 length-fix：自 #21 搬入本段 block 缺字（11 保留字）；時間窗不動",
+          "notes": "首字錨定:名「常住真心」＋唸回 onset cue[540]（常驻真心打坐的时候）（原 1371.86 含 #19 尾） | anchor:字級 opus/mp3 1375.90 | 2026-10-18 length-fix：自 #21 搬入本段 block 缺字（11 保留字）；時間窗不動 | 2026-11-10 merge-fix: 併入原 #21 同題前段（question-ee3489059e87）；依 wenda2_ebook 現行 block 校正文／答；時間窗與 meta 不變",
           "srt_preview": "这么问好不好常驻真心打坐的时候进入像睡觉一样的状态是不好的啊他有可能会伤到脑细胞啊所以你要看觉得自己要进入那种状态的话就默就出生念佛出生念佛啊你只要一出生那会一会儿就能清醒过来了那不要让自己进入像睡睡觉一样的状态一直保持清醒的状态下啊怎么说呢心静下来才是正确的常驻真心啊这个修心呃理论上是不应该追求感应的这这肯定的但是啊",
           "chapter_question_ids": [
             "question-ee3489059e87"
@@ -3771,15 +3752,15 @@
           "chapter_indexes": [
             10
           ],
-          "index": 22,
-          "question_id": "question-51fad198ab00",
-          "stable_key": "2024-04-24-main#22",
-          "q_preview": "Tai师父好！首先感谢您！\n1、弟子早上睡觉起来静坐时候默念佛，一般一个半小时到两小时，但是总是刚坐十分钟、二十分钟，过会就像是睡着一样，大约前五、六十分钟；后面就是因为熬疼倒是没有那现象。请问师父怎…",
+          "index": 21,
+          "question_id": "question-adbf6ff1561f",
+          "stable_key": "2024-04-24-main#21",
+          "q_preview": "Tai师父好！首先感谢您！\n请问：\n1、弟子早上睡觉起来静坐时候默念佛，一般一个半小时到两小时，但是总是刚坐十分钟、二十分钟，过会就像是睡著一样，大约前五、六十分钟；后面就是因为熬疼倒是没有那现象。请…",
           "answer_preview": "常住真心，打坐的时候进入睡觉一样的状态是不好的，有可能会伤到脑细胞。你觉得自己要进入那种状态就出声念佛，一会就能清醒过来。不要让自己进入睡觉一样的状态，一直保持清醒，心静下来才是正确的。",
           "chapter_answer_ids": [
             "answer-3e3321f4daab"
           ],
-          "html_verbatim": false
+          "html_verbatim": true
         },
         {
           "questioner": "请问",
@@ -3800,9 +3781,9 @@
           "chapter_indexes": [
             2
           ],
-          "index": 23,
-          "question_id": "question-cec4ae614b92",
-          "stable_key": "2024-04-24-main#23",
+          "index": 22,
+          "question_id": "question-0e2271cdf402",
+          "stable_key": "2024-04-24-main#22",
           "q_preview": "2、请问师父，弟子平时喜欢看《禅宗灯录》，自皈依十二年来都以“凡所有相皆是虚妄”和您之前所说“可以照相机拍下、录音机录下都是假的”为原则进行念佛、打坐。这些年一直什么都没有看到和感应到。有时候害怕时候…",
           "answer_preview": "常住真心，修行理论上肯定是不应该追求感应的，但是没有任何感应的话，信心怎么来？普通人都是信心来回跳，一会有信心，一会又懈怠。所以多多少少有点感应，你才知道自己修行的确走在正路上，佛菩萨在加持你，这样你就有了信心。长时间修行都没有任何感应，可能你的修法错了。\n我这期讲法的重点是业的轮转原理和发愿问题，你有没有发大愿普度众…",
           "chapter_answer_ids": [
@@ -3830,9 +3811,9 @@
           "chapter_indexes": [
             11
           ],
-          "index": 24,
-          "question_id": "question-8d254b38f271",
-          "stable_key": "2024-04-24-main#24",
+          "index": 23,
+          "question_id": "question-2b48cec2df80",
+          "stable_key": "2024-04-24-main#23",
           "q_preview": "念佛可以用音乐版的吗？思乡佛号版的南无阿弥陀佛特别有感觉。",
           "answer_preview": "绛紫，用音乐版的念佛跟着一起念可以，在脑子里唱也可以。念佛最后还是要达到思念佛的程度，并不是心里默念。要观佛，再思佛，到思佛那个程度就可以了。所以之前怎么念都不重要，用音乐念也可以。",
           "chapter_answer_ids": [
@@ -3859,9 +3840,9 @@
           "chapter_indexes": [
             2
           ],
-          "index": 25,
-          "question_id": "question-9be3893ba0e8",
-          "stable_key": "2024-04-24-main#25",
+          "index": 24,
+          "question_id": "question-5016b94f16de",
+          "stable_key": "2024-04-24-main#24",
           "q_preview": "顶礼师父！\n我妈是家里的内耗王，我从小都是在她的压迫下长大，因为我是独女，她逼我生二胎，不生就各种作，一哭二闹三上吊，她觉得我不生她就绝后了，因为生二胎是跟我姓，第一个跟男方姓的。去年怀了个胎停了，到…",
           "answer_preview": "淡薄，你怀了二胎之后停了，意思就是堕胎了或者自然流产之类的，总之不是好的结果。你现在应该做的事是超度婴灵，先去寺院里给孩子立个牌位。然后该做功德做功德，该发愿就发愿，先把这个事做了。\n\n至于你母亲的问题，能远离就远离，不要和她频繁地见面，各过各的生活。你可以直接跟你（母亲）说，医生告诉你不能再生孩子了，这样可不可以？这…",
           "chapter_answer_ids": [
@@ -3880,7 +3861,7 @@
           "end_label": "00:27:26.680",
           "confidence": 0.85,
           "status": "manual",
-          "notes": "名「如语」未唸出，錨定內容 onset cue[613]（那先去医院看看）；「头疼啊」讀回屬 #24 尾 | anchor:字級 opus/mp3 1600.93 | anchor:字級 opus/mp3 1600.68 prefix3 | anchor:字級 opus/mp3 1600.69 | anchor:字級 manual",
+          "notes": "名「如语」未唸出，錨定內容 onset cue[613]（那先去医院看看）；「头疼啊」讀回屬 #23 尾 | anchor:字級 opus/mp3 1600.93 | anchor:字級 opus/mp3 1600.68 prefix3 | anchor:字級 opus/mp3 1600.69 | anchor:字級 manual",
           "srt_preview": "那先去医院看看先先走个正规的途径啊先去西医院或者中医院两位都去看看他们说什么然后再根据医生的呃说法来判断啊如果医生都没有办法断定什么病啊或者说给你的呃药哦或者是开的治疗方案都对你没有用的话咱们再讲什么这个因国啊这些问题啊咱们还是先先先选择相信科学好不好啊如果你把它一定当做业障多啊啊那应该是呃先做工作然后发问嗯然后回想啊",
           "chapter_question_ids": [
             "question-50ead75b74f7"
@@ -3888,9 +3869,9 @@
           "chapter_indexes": [
             2
           ],
-          "index": 26,
-          "question_id": "question-d7a5d90e78ea",
-          "stable_key": "2024-04-24-main#26",
+          "index": 25,
+          "question_id": "question-ac74b26a0698",
+          "stable_key": "2024-04-24-main#25",
           "q_preview": "顶礼师父！以前有头痛病，自从修行后已经减少很多了，但是现在为啥每次去寺庙做义工（自愿），做上了半天以上就要头痛，而且吃止痛药也缓解不了，至少要维持两天。这是业障吗？",
           "answer_preview": "如语，先走正规的途径，西医院或者中医院都去看看，再根据医生的说法判断。如果医生都没有办法断定什么病，给你的药或者治疗方案都没有用，再讲因果问题。咱们先选择相信科学，好不好？如果你一定把它当做业障，应该先做功德，然后发愿、回向，都是基本套路，往这个方向努力就可以了。",
           "chapter_answer_ids": [
@@ -3917,9 +3898,9 @@
           "chapter_indexes": [
             10
           ],
-          "index": 27,
-          "question_id": "question-caa90acff98d",
-          "stable_key": "2024-04-24-main#27",
+          "index": 26,
+          "question_id": "question-24d0f7bc67d0",
+          "stable_key": "2024-04-24-main#26",
           "q_preview": "师父好，最近几天失眠有点严重，有什么办法可以快速入眠吗？每天1遍地藏经，1遍楞严咒，早上磕头108出汗，持续两个多月了，晚上降魔40分钟左右，十一点半躺下，但头脑清晰亢奋，睡不着是不是可以再起来打坐？…",
           "answer_preview": "Lucky，修行到一定程度，睡眠自然会减少，没必要强迫自己一直睡觉。你不睡觉第二天精神很好，那不是平白无故地给你增加修行时间吗？这段时间你打坐、念经，做什么都好。\n\n我也有一段时间，睡眠减少到一定程度之后，十一点之前躺下，到一点两点自己就会起来。我就再打个坐或者做点别的事情。早晨五点多可能又会困，再睡一个小时，和别人一…",
           "chapter_answer_ids": [
@@ -3946,9 +3927,9 @@
           "chapter_indexes": [
             4
           ],
-          "index": 28,
-          "question_id": "question-20d7477e0b38",
-          "stable_key": "2024-04-24-main#28",
+          "index": 27,
+          "question_id": "question-e40ba7ae30e7",
+          "stable_key": "2024-04-24-main#27",
           "q_preview": "师父说世界是佛创造的，为什么佛创造世界的时候不把五辛和毒品去掉？",
           "answer_preview": "",
           "chapter_answer_ids": [
@@ -3969,9 +3950,9 @@
           "status": "missing",
           "notes": "空答案佔位段；與上段問題重複；無獨立口播",
           "srt_preview": "",
-          "index": 29,
-          "question_id": "question-b0abe19f77e0",
-          "stable_key": "2024-04-24-main#29",
+          "index": 28,
+          "question_id": "question-1e4a1969c6bd",
+          "stable_key": "2024-04-24-main#28",
           "q_preview": "师父说世界是佛创造的，为什么佛创造世界时不把五辛和毒品去掉？佛创造世界，在我们这个小世界放进很多众生后，要根据众生的习气顺着创造。可以完全凭空创造出一个没有众生的世界，但是凭空创造有众生的世界，众生的…",
           "answer_preview": ""
         }
