@@ -334,6 +334,13 @@ class TestI18nProcessor:
         assert processor.to_traditional("获取信息") == "獲取資訊"
         assert processor.to_traditional("现在资讯传媒发达") == "現在資訊傳媒發達"
 
+    def test_to_traditional_keeps_information_in_send_message_context(self, processor):
+        # 此處「信息」指傳送訊息；台灣也通行「信息」，不改為 IT 義「資訊」。
+        assert processor.to_traditional("我也替你发信息了") == "我也替你發信息了"
+        assert processor.to_traditional("我也替你發資訊了") == "我也替你發信息了"
+        # 一般 IT 語境仍採台灣慣用詞「資訊」。
+        assert processor.to_traditional("获取信息") == "獲取資訊"
+
     def test_to_traditional_context_fix_sleepy_kun(self, processor):
         # 「現在困才是更大的問題」的「困」是睡意「睏」（人工判斷的個案修正）
         result = processor.to_traditional("反而你现在困才是更大的问题")

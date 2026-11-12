@@ -17,8 +17,8 @@
   2. PDF 分類條目（build/classified/*.jsonl）——已有 ch/l2/l3/l4 樹路徑
   2b. 補充條目（supplemental_items.json，版控 SoT）——PDF 有收錄但 qa-pair
       抽取遺漏的內容（例：小節尾「师父说」結尾開示），人工歸類到樹路徑
-  3. 每個樹節點下：Word 條目＋ PDF 條目依「最終顯示日期」由早到晚合併輸出
-     （推斷日期必須在排序前補上，否則該則會被當成無時間而排到最前）
+  3. 每個樹節點下：Word 條目＋ PDF 條目依「最終顯示日期」由新到舊合併輸出
+     （推斷日期必須在排序前補上，否則該則會被當成無時間而排到最後）
 
 HTML 大小控制（與 wenda2_ebook 相同）：
   CSS 的 content-visibility: auto 讓離屏 Q&A 不渲染，
@@ -26,6 +26,7 @@ HTML 大小控制（與 wenda2_ebook 相同）：
 
 usage: ../../word_audio_map2/.venv/bin/python gen_classified.py
 """
+import datetime
 import json
 import re
 import sys
@@ -41,6 +42,9 @@ W2E = ROOT / "tool" / "word2ebook"
 SRC = ROOT / "wenda2_ebook"
 DST = ROOT / "wenda2_ebook"
 BUILD = ROOT / "tool" / "qa_split_ebook" / "build"
+# 分類結果的版控 SoT（47 批）；build/classified 是可重建的歷史工作目錄，
+# 不能當唯一輸入，否則新 clone 會靜默退化成「只有 Word、沒有 PDF 條目」。
+CLASSIFIED_DIR = ROOT / "tool" / "qa_split_ebook" / "classified"
 TREE_FILE = BUILD / "self_batches" / "tree_compact.txt"
 CHAPTERS = list(range(1, 13))
 
@@ -261,15 +265,29 @@ def _parts_to_html(parts) -> str:
 
 
 def extract_pdf_items(_audio_map: dict = None) -> list[dict]:
+    items_file = BUILD / "items.jsonl"
+    if not items_file.exists():
+        raise FileNotFoundError(
+            f"找不到 stage 2 產物 {items_file}；請先執行 tool/qa_split_ebook/extract.py"
+        )
     items_raw = {}
-    for line in (BUILD / "items.jsonl").read_text(encoding="utf-8").splitlines():
+    for line in items_file.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
         d = json.loads(line)
         items_raw[d["seq"]] = d
+
+    batch_files = sorted(CLASSIFIED_DIR.glob("batch_*.jsonl"))
+    if not batch_files:
+        raise FileNotFoundError(
+            f"找不到版控分類結果 {CLASSIFIED_DIR}/batch_*.jsonl；"
+            "不能產出缺少 PDF 條目的半套成品"
+        )
     if _audio_map is None:
         _audio_map = {}
 
     results = []
-    for f in sorted((BUILD / "classified").glob("batch_*.jsonl")):
+    for f in batch_files:
         for line in f.read_text(encoding="utf-8").splitlines():
             r = json.loads(line)
             seq = r["i"]
@@ -399,8 +417,15 @@ def parse_time_parts(t: str):
             d, mo = first, second            # 皆 ≤12：依源檔當日先月後
     has_clock = m.group(4) is not None
     has_seconds = m.group(6) is not None
-    return (y, mo, d, int(m.group(4) or 0), int(m.group(5) or 0),
-            int(m.group(6) or 0), has_clock, has_seconds)
+    hour, minute, second = (int(m.group(4) or 0), int(m.group(5) or 0),
+                             int(m.group(6) or 0))
+    try:
+        datetime.date(y, mo, d)
+    except ValueError:
+        return None
+    if hour > 23 or minute > 59 or second > 59:
+        return None
+    return (y, mo, d, hour, minute, second, has_clock, has_seconds)
 
 
 
@@ -423,76 +448,40 @@ def _clean_questioner_span(q_html: str) -> str:
 
 
 
-# 前後文推斷的日期補充（HH:MM:SS → 完整 YYYY-MM-DD HH:MM:SS）
+# Word 01–12 章缺日期的 28 則。日期以「未分類答疑整理」工作表
+# 「答疑汇总」欄 U 與 audio_map2 的 session.date 交叉核對；若題幹本身
+# 明載提問時間，則以題幹時間為準（提問時間可能早於實際答疑場次）。
+# PDF 僅有 HH:MM:SS 的 39 則不在此表：stage 2 會依所屬 PDF 小節日期補齊。
 _INFERRED_DATES = {
-    "question-0306f99338b9": "2025-03-13 18:13:32",
-    "question-103d9ece1af4": "2026-01-05 15:08:29",
-    "question-13c772236fd5": "2026-03-07 16:24:23",
-    "question-1cb39ef47d6d": "2024-02-21 11:15:36",
-    "question-1cf4eea5e325": "2024-02-26",
-    "question-1d7a3d25d37d": "2026-03-04 16:08:18",
-    "question-1e93153fe69e": "2026-01-06 10:38:28",
-    "question-22b01187c115": "2025-03-15",
-    "question-2c97cf33bd62": "2024-07-16",
-    "question-2fc7a9dc34ff": "2024-02-29 17:48:10",
-    "question-30a774ef0812": "2024-03-18",
-    "question-326bf7a5c490": "2026-01-10 16:56:55",
-    "question-3351f4b26436": "2024-03-20",
-    "question-34f93eac0f96": "2025-12-12 11:31:25",
-    "question-36f022d174a3": "2025-01-14",
-    "question-383d2169aa56": "2026-02-06 10:55:05",
-    "question-3adbb87b6522": "2024-12-13",
-    "question-3e36e90ed714": "2024-02-22",
-    "question-45ebf0f8763d": "2025-12-12 12:34:34",
-    "question-48407c3384fe": "2025-12-12 09:18:18",
-    "question-4f1637fa0d48": "2026-03-06 09:19:05",
-    "question-50ff9cbb6237": "2025-12-09 09:39:18",
-    "question-5742cd4c8474": "2025-05-16",
-    "question-5c80439af98f": "2026-03-02 13:21:52",
-    "question-5ceb3c600234": "2024-02-13 13:56:45",
-    "question-631572eaa062": "2026-01-10 13:13:52",
-    "question-63f9027af1d1": "2024-12-09 13:59:10",
-    "question-68b110a1603a": "2024-03-13",
-    "question-6d03c4fd36c5": "2026-03-03 13:17:45",
-    "question-6ed80c503f5f": "2024-02-22",
-    "question-725f7c20bb35": "2024-11-16 07:59:44",
-    "question-725f7c20bb35-2": "2024-11-16 07:59:44",
-    "question-72c420b8d87c": "2026-03-05 13:29:40",
-    "question-767edcfe81a9": "2025-09-05 13:33:41",
-    "question-7d7737748d25": "2024-03-20",
-    "question-851b75e6df73": "2026-03-06 14:53:51",
-    "question-88f63acdfa6f": "2025-03-14",
-    "question-8d90ce3197b6": "2024-02-24 19:34",
-    "question-90da5d51d7dc": "2024-03-17",
-    "question-948657a47e81": "2026-03-06 09:53:41",
-    "question-972a3db5f64d": "2025-09-04 10:42:42",
-    "question-9a669911f19b": "2026-03-02 13:17:45",
-    "question-9ae98a55f387": "2026-02-06 16:29:48",
-    "question-9ec8b1120761": "2026-02-07 14:20:56",
-    "question-a0d3a10132ea": "2026-03-06 10:49:04",
-    "question-a11ee56f01d3": "2025-01-15 12:34:34",
-    # 2024-11-11「監獄」題：原填 2024-09-11（誤抄前一題「鎧茵 2024/9/11」的日期）。
-    # 該題在 Word 裡沒有提問日期，正確是本場日期 2024-11-11（轉場句「11月11號微信的問題」）。
+    "question-b23973592ba7": "2024-02-24 19:34",  # 題幹明載 2 月 24 日 19:34
+    "question-3e36e90ed714": "2024-02-23",
+    "question-90da5d51d7dc": "2024-04-26",
+    "question-4079d7f4070b": "2024-07-20",
+    "question-22b01187c115": "2025-05-15",
+    "question-86b0ac538acd": "2024-04-25",
+    "question-a30cc9c4e9a7": "2024-07-20",
+    "question-1cf4eea5e325": "2024-03-01",
+    "question-68b110a1603a": "2024-03-14",
     "question-a29eaf73334c": "2024-11-11",
-    "question-a30cc9c4e9a7": "2024-06-08",
-    "question-a6d52349a37a": "2026-01-06 16:45:36",
-    "question-abade42264d9": "2024-02-20 09:16:46",
-    "question-b23973592ba7": "2024-02-24 19:34",
-    "question-c2424a52ec4d": "2025-07-12 18:59:55",
-    "question-c85ec0f4008d": "2024-03-27",
-    "question-c886bb770d6d": "2024-03-03",
-    "question-ca01a37500b7": "2026-02-06 14:53:51",
-    "question-d76227293d13": "2024-03-16",
-    "question-e2659b929821": "2024-02-29",
-    "question-e47ca16f3a9c": "2026-03-05 13:55:26",
-    "question-f08ed1987012": "2026-03-02 17:32:58",
-    "question-f5307180dfaa": "2026-03-07 09:18:18",
-    "question-f675e3775649": "2024-03-20",
-    "question-fc1ec5d5c21b": "2024-03-09",
-    "question-fdc996d832d8": "2026-03-02 08:54:48",
-    "question-4079d7f4070b": "2025-05-16",
-    "question-86b0ac538acd": "2024-05-22",
-    "question-dc5a336f83d6": "2025-03-14",}
+    "question-5742cd4c8474": "2024-02-11",
+    "question-2c97cf33bd62": "2024-08-12",
+    "question-fc1ec5d5c21b": "2024-03-18",
+    "question-a528a36e6ef1": "2025-01-17 19:02",  # 同一提問者、同一提問的續答
+    "question-36f022d174a3": "2025-01-17",
+    "question-e2659b929821": "2024-03-02",
+    "question-3adbb87b6522": "2025-01-17",
+    "question-8d90ce3197b6": "2024-02-24 19:34",  # 題幹明載 2 月 24 日 19:34
+    "question-3351f4b26436": "2024-03-28",
+    "question-7d7737748d25": "2024-03-23",
+    "question-f675e3775649": "2024-04-22",
+    "question-88f63acdfa6f": "2024-02-11",
+    "question-30a774ef0812": "2024-05-23",
+    "question-dc5a336f83d6": "2024-05-23",
+    "question-d76227293d13": "2024-02-23",
+    "question-c886bb770d6d": "2024-03-29",
+    "question-c85ec0f4008d": "2024-04-27",
+    "question-6ed80c503f5f": "2024-02-22",
+}
 
 def infer_missing_date(qid: str, q_html: str) -> str:
     """為無日期或 HH:MM:SS only 的條目補上推斷的日期。"""
@@ -608,20 +597,20 @@ def normalize_qa_time(html: str) -> str:
 
 
 def extract_time_key(html: str) -> tuple:
-    """排序 key：無法解析日期 → (2,) 排最後；有日期 → (1,Y,M,D,h,m,s)。
+    """新到舊排序 key：無法解析日期 → (1,) 排最後。
 
-    ⚠️ 必須能解析 HH:MM:SS（秒）與 YYYY/M/D、DD-MM-YYYY 等格式；
-    舊版只認「YYYY-M-D [HH:MM]」，帶秒的時間戳整串落空 → 被當成
-    無時間而排到最前（01 章「修行翻出情緒/習氣」即因此錯序）。
+    有日期時使用負的年月日時間分量，讓 Python 的遞增排序自然得到
+    「新到舊」；同一秒的條目 key 相同，排序保持原始順序（stable sort）。
+    ⚠️ 必須能解析 HH:MM:SS（秒）與 YYYY/M/D、DD-MM-YYYY 等格式。
     """
     m = _TIME_RE.search(html)
     if not m:
-        return (2,)
+        return (1,)
     parts = parse_time_parts(m.group(1))
     if not parts:
-        return (2,)
+        return (1,)
     y, mo, d, hh, mm, ss, _has_clock, _has_seconds = parts
-    return (1, y, mo, d, hh, mm, ss)
+    return (0, -y, -mo, -d, -hh, -mm, -ss)
 
 
 _OLD_COUNT_RE = re.compile(r'<span class="chapter-qa-count">[^<]*</span>')
@@ -661,7 +650,7 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
     """合併 Word 區塊與 PDF 條目 → (content_blocks, toc_items)。
 
     - heading 剝掉舊計數 span（finalize_chapter 會加新的合併計數）
-    - 每個小節內 Word + PDF 條目「依日期由早到晚」合併排序
+    - 每個小節內 Word + PDF 條目「依日期由新到舊」合併排序
       （日期＝最終顯示的 question-time，含推斷補上的日期；無法解析者排最後）
     - 日期正規化為 YYYY-MM-DD [HH:MM[:SS]]
     """
@@ -748,8 +737,7 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
         all_pairs = (pd_["pairs"] if pd_ else []) + pdf_pairs
         # ⚠️ 排序前先做「最終顯示化」：清理提問者姓名、補上推斷日期、
         #    修正損壞文字。正文日期若在排序後才補，該則會被當成無時間
-        #    而排到最前面（2026-11 修正：01 章「修行翻出情緒/習氣」首則
-        #    2025-12-09 曾排在 2024-09-09 之前）。
+        #    而排到最後。排序規則為新到舊；同一日期保持來源順序。
         all_pairs = [(_prepare_question_html(q), a) for q, a in all_pairs]
         all_pairs.sort(key=lambda qa: extract_time_key(qa[0]))
 
@@ -800,6 +788,9 @@ def main():
     print(f"[gen_classified] 音頻映射（可注入播放鈕）：{len(audio_map_for_play)} 條")
     pdf_items = extract_pdf_items(audio_map_for_play)
     print(f"[gen_classified] PDF 分類條目：{len(pdf_items)} 條")
+    if len(pdf_items) < 3000:
+        print("❌ PDF 分類條目數量異常（預期至少 3,000）；拒絕產出缺少 PDF 內容的半套成品。")
+        return 1
     supplemental = load_supplemental_items(audio_map_for_play)
     if supplemental:
         for it in supplemental:

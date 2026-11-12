@@ -26,6 +26,10 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
 | 5 | `venv/bin/python expand_classified.py NNN …`（或 `--all`） | compact＋splits → 完整 `build/classified/batch_NNN.jsonl`；驗證批次守恆、path 命中樹；更新 `build/self_classified/progress.json` |
 | 6 | `venv/bin/python gen_all.py` | 組裝**實驗分離版** `wenda2_ebook_sep/`（gitignore，舊實驗輸出）：12 章主題樹×簡繁、章目錄頁、index、全量搜尋索引（含 .hash）、播放鈕（拆分子題共用母條目音段）、99 未歸類收容章、`build/report.md`。**線上發布版不走這步**——改由 `gen_classified.py` 就地把 `wenda2_ebook/` 轉成分類合併版（stage 3） |
 
+> **stage 3 的分類輸入以版控目錄 `tool/qa_split_ebook/classified/*.jsonl` 為準**；
+> `build/classified/` 只是可重建的歷史工作目錄，不會被當成唯一來源。新 clone
+> 若缺少版控分類檔會直接拒絕建置，不會靜默產出「只有 Word、沒有 PDF 條目」的半套成品。
+
 ## 分類判定要點（詳讀 `../qa_curation/wenda2_split_classify_criteria.md`）
 
 - 先負規則（各章 N 條）再正規則；12 是 fallback、優先序最低。
@@ -35,16 +39,16 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
   作答順序對位切分；師父合併回答→保持一則、rule 註明 merged_answer；
   師父答「以後再講」→ conf 照常、加 d flag；源檔殘缺／答案未回應的
   孤兒片段→ nr。
-- 節內排序＝時間升冪（由早到晚，gen 自動處理）；原文逐字不改寫。
+- 節內排序＝時間降冪（由新到舊，gen 自動處理）；原文逐字不改寫。
   - **排序鍵＝最終顯示的 `question-time`**：先套用日期補全（`_INFERRED_DATES`
     推斷日期、日期正規化），再排序；補日期若排在排序之後，該則會被當成
-    「無時間」而跳到小節最前面（2026-11 修正：01 章「修行翻出情緒/習氣」
-    首則 2025-12-09 曾排在 2024-09-09 之前）。
-  - 時間解析支援 `YYYY-M-D`、`YYYY/M/D`、`DD-MM-YYYY`、`MM-DD-YYYY`，
-    以及 `HH:MM` / `HH:MM:SS`（微信後端時間戳帶秒，舊版整串落空而被
-    誤判為無日期）；無法解析日期者排在小節最後。
+    「無時間」而跳到小節最後。
+  - 顯示日期統一為 `YYYY-MM-DD [HH:MM[:SS]]`。時間解析支援
+    `YYYY-M-D`、`YYYY/M/D`、`DD-MM-YYYY`（依已核對的 Word／Excel 來源
+    慣例採日先月後）、`MM-DD-YYYY`，以及 `HH:MM` / `HH:MM:SS`；
+    PDF 只有時刻時由 stage 2 依所屬小節日期補齊，無法解析日期者排最後。
   - 守門測試：`tests/test_date_ordering.py`（單元＋端到端排序＋發布版
-    12 章逐小節稽核）。
+    12 章逐小節稽核＋13–21 跳轉頁完整性）。
 - **段落還原（2026-10-27 起）**：PDF 條目的多段 Q/A 逐段包 `<p>`
   （`gen_classified._parts_to_html`；全站 CSS `p { margin: 15px 0 }` 提供段距）。
   舊版 `"".join(parts)` 把段落無縫黏成文字牆（1,358 問、2,759 答受害）。

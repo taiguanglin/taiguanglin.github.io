@@ -42,6 +42,30 @@ AUDIO_DIR = ROOT / "audio_map"
 BUILD = ROOT / "tool/qa_split_ebook" / "build"
 CHAPTERS = list(range(13, 22))
 
+# PDF 的微信貼文有時只保留「HH:MM:SS」；同一個 h2 標題則帶當日日期
+# （例如「2025年11月10日 微信公众号」）。以小節標題補齊日期，避免把
+# 39 則同場提問誤配到其他月份／舊的硬編推斷值。
+_SESSION_DATE_RE = re.compile(
+    r"(?P<year>20\d{2})\s*年\s*(?P<month>\d{1,2})\s*月\s*(?P<day>\d{1,2})\s*日"
+)
+_TIME_ONLY_RE = re.compile(r"^\d{1,2}:\d{2}(?::\d{2})?$")
+
+
+def complete_time_from_section(time_text: str, section_title: str) -> str:
+    """只有時刻的 PDF 提問時間，改由所屬小節日期補成完整時間。"""
+    time_text = (time_text or "").strip()
+    if not time_text or not _TIME_ONLY_RE.fullmatch(time_text):
+        return time_text
+    match = _SESSION_DATE_RE.search(section_title or "")
+    if not match:
+        return time_text
+    date = "{year:04d}-{month:02d}-{day:02d}".format(
+        year=int(match.group("year")),
+        month=int(match.group("month")),
+        day=int(match.group("day")),
+    )
+    return f"{date} {time_text}"
+
 
 def inner_html(el) -> str:
     """元素 inner HTML（去掉最外層標籤）。"""
@@ -154,14 +178,19 @@ def extract_chapter(ch: int, qmap: dict, stats: dict):
             # 答案可能由多個 answer-text 段組成（實測 13.html 333 則對 1,397 段）
             q_parts = [inner_html(x) for x in qt_els]
             a_parts = [inner_html(x) for x in at_els]
+            section_title = cur_sec or ""
+            raw_time = tm_els[0].strip() if tm_els else ""
+            question_time = complete_time_from_section(raw_time, section_title)
+            if not question_time:
+                question_time = date_supplement_lookup(qid)
             items.append({
                 "seq": stats["seq"],
                 "ch": ch,
                 "qid": qid,
                 "aid": aid,
-                "sec": cur_sec or "",
+                "sec": section_title,
                 "who": (who_els[0].strip() if who_els else ""),
-                "time": (tm_els[0].strip() if tm_els else "") or date_supplement_lookup(qid),
+                "time": question_time,
                 "q_parts": q_parts,
                 "a_parts": a_parts,
                 "q_imgs": sibling_imgs(q),

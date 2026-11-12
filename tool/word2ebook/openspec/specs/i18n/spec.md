@@ -46,6 +46,12 @@ glyph in certain contexts.
 - THEN the result SHALL be `軟體、滑鼠、資訊`
 - AND it SHALL NOT use Hong Kong or Mainland regional vocabulary
 
+#### Scenario: Send-message context preserves 「信息」
+- GIVEN the simplified text `我也替你发信息了` (where 「信息」 means a message, not IT data)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `我也替你發信息了`
+- AND general IT usage such as `获取信息` SHALL still become `獲取資訊`
+
 #### Scenario: Over-converted "only" is corrected
 - GIVEN the text `隻能` (over-converted "only can")
 - WHEN `I18nProcessor.to_traditional` is called

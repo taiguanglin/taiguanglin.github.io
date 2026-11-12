@@ -122,13 +122,15 @@ def resolve(chapters, ch, l2, l3, l4, warn):
 # --------------------------------------------------------------------------- #
 
 def parse_time_key(tm: str, seq: int):
+    """新到舊排序 key；無法解析日期者排最後。"""
     m = re.match(r"(\d{4})[-/年.](\d{1,2})[-/月.](\d{1,2})", tm or "")
     if m:
-        return (int(m.group(1)), int(m.group(2)), int(m.group(3)), seq)
+        return (-int(m.group(1)), -int(m.group(2)), -int(m.group(3)), seq)
     m = re.match(r"(\d{1,2})[-/](\d{1,2})[-/](\d{4})", tm or "")
     if m:
-        return (int(m.group(3)), int(m.group(2)), int(m.group(1)), seq)
-    return (9999, 12, 31, seq)
+        # Word 來源慣例為日先月後（DD-MM-YYYY）。
+        return (-int(m.group(3)), -int(m.group(1)), -int(m.group(2)), seq)
+    return (0, 0, 0, seq)
 
 
 def load_classified():
@@ -226,7 +228,7 @@ def assemble(chapters, items, rows, report):
                 stats["nr"] += 1
             if entry["conf"] == "low":
                 stats["low"] += 1
-    # 葉內排序：時間升冪（鐵律 5）
+    # 葉內排序：時間新到舊；同一日期保持抽取順序（鐵律 5）
     for ch in chapters.values():
         for l2 in ch["l2s"]:
             for n in walk(l2):
