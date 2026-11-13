@@ -17,7 +17,7 @@
   2. PDF 分類條目（build/classified/*.jsonl）——已有 ch/l2/l3/l4 樹路徑
   2b. 補充條目（supplemental_items.json，版控 SoT）——PDF 有收錄但 qa-pair
       抽取遺漏的內容（例：小節尾「师父说」結尾開示），人工歸類到樹路徑
-  3. 每個樹節點下：Word 條目＋ PDF 條目依「最終顯示日期」由新到舊合併輸出
+  3. 每個樹節點下：Word 條目＋ PDF 條目依「最終顯示日期」由舊到新合併輸出
      （推斷日期必須在排序前補上，否則該則會被當成無時間而排到最後）
 
 HTML 大小控制（與 wenda2_ebook 相同）：
@@ -656,10 +656,10 @@ def normalize_qa_time(html: str) -> str:
 
 
 def extract_time_key(html: str) -> tuple:
-    """新到舊排序 key：無法解析日期 → (1,) 排最後。
+    """舊到新排序 key：無法解析日期 → (1,) 排最後。
 
-    有日期時使用負的年月日時間分量，讓 Python 的遞增排序自然得到
-    「新到舊」；同一秒的條目 key 相同，排序保持原始順序（stable sort）。
+    有日期時直接用年月日時間分量，Python 的遞增排序即得「舊到新」；
+    同一秒的條目 key 相同，排序保持原始順序（stable sort）。
     ⚠️ 必須能解析 HH:MM:SS（秒）與 YYYY/M/D、DD-MM-YYYY 等格式。
     """
     m = _TIME_RE.search(html)
@@ -669,7 +669,7 @@ def extract_time_key(html: str) -> tuple:
     if not parts:
         return (1,)
     y, mo, d, hh, mm, ss, _has_clock, _has_seconds = parts
-    return (0, -y, -mo, -d, -hh, -mm, -ss)
+    return (0, y, mo, d, hh, mm, ss)
 
 
 _OLD_COUNT_RE = re.compile(r'<span class="chapter-qa-count">[^<]*</span>')
@@ -709,7 +709,7 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
     """合併 Word 區塊與 PDF 條目 → (content_blocks, toc_items)。
 
     - heading 剝掉舊計數 span（finalize_chapter 會加新的合併計數）
-    - 每個小節內 Word + PDF 條目「依日期由新到舊」合併排序
+    - 每個小節內 Word + PDF 條目「依日期由舊到新」合併排序
       （日期＝最終顯示的 question-time，含推斷補上的日期；無法解析者排最後）
     - 日期正規化為 YYYY-MM-DD [HH:MM[:SS]]
     """
@@ -811,7 +811,7 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
         all_pairs = (pd_["pairs"] if pd_ else []) + pdf_pairs
         # ⚠️ 排序前先做「最終顯示化」：清理提問者姓名、補上推斷日期、
         #    修正損壞文字。正文日期若在排序後才補，該則會被當成無時間
-        #    而排到最後。排序規則為新到舊；同一日期保持來源順序。
+        #    而排到最後。排序規則為舊到新；同一日期保持來源順序。
         all_pairs = [(_prepare_question_html(q), a) for q, a in all_pairs]
         all_pairs.sort(key=lambda qa: extract_time_key(qa[0]))
 

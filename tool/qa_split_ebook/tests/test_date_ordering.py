@@ -3,7 +3,7 @@
 本檔鎖住：
 * 顯示日期統一為 ``YYYY-MM-DD [HH:MM[:SS]]``；
 * PDF 只有時刻時，依所屬小節日期補齊；
-* 每個小節由新到舊排序，無法解析日期者最後；
+* 每個小節由舊到新排序，無法解析日期者最後；
 * 發布版 12 章每個小節都符合上述規則；
 * 13–21 章必須是 stage 3 跳轉頁（防止只跑 stage 1 就發布）。
 """
@@ -122,17 +122,17 @@ class TestCompleteTimeFromSection:
 
 
 class TestExtractTimeKey:
-    """排序 key 採新到舊；Python 的遞增排序即得正確輸出。"""
+    """排序 key 採舊到新；Python 的遞增排序即得正確輸出。"""
 
-    def test_later_date_has_smaller_key(self):
+    def test_later_date_has_larger_key(self):
         earlier = gc.extract_time_key('<span class="question-time">2024-09-09</span>')
         later = gc.extract_time_key('<span class="question-time">2025-12-09 09:39:18</span>')
-        assert later < earlier
+        assert later > earlier
 
     def test_seconds_are_part_of_the_key(self):
         a = gc.extract_time_key('<span class="question-time">2025-12-09 09:00:00</span>')
         b = gc.extract_time_key('<span class="question-time">2025-12-09 09:00:01</span>')
-        assert b < a
+        assert b > a
 
     def test_unparsable_sorts_last(self):
         unknown = gc.extract_time_key('<span class="question-time">09:39:18</span>')
@@ -160,7 +160,7 @@ class TestPrepareQuestionHtml:
 
 
 class TestBuildMergedChapterOrdering:
-    """端到端：小節內的 Word／PDF 條目依最終顯示日期由新到舊。"""
+    """端到端：小節內的 Word／PDF 條目依最終顯示日期由舊到新。"""
 
     @pytest.fixture(autouse=True)
     def _fake_tree(self, monkeypatch):
@@ -174,16 +174,18 @@ class TestBuildMergedChapterOrdering:
             for b in blocks if 'class="question"' in b
         ]
 
-    def test_inferred_date_does_not_jump_to_back(self):
+    def test_inferred_date_is_applied_before_sorting(self):
+        """推斷出的舊日期要真的參與排序（否則該則會被當成無時間而排最後）。"""
         blocks = [
             '<h3 id="test-sec">測試小節</h3>',
-            _question_html("question-36f022d174a3", "", text="新"),
-            _answer_html("新答"),
-            _question_html("question-plain", "2024-09-09", text="舊"),
+            _question_html("question-6ed80c503f5f", "", text="推斷為舊"),
             _answer_html("舊答"),
+            _question_html("question-plain", "2024-09-09", text="較新"),
+            _answer_html("新答"),
         ]
         out, _toc = gc.build_merged_chapter(1, blocks, [], [])
-        assert self._ids(out) == ["question-36f022d174a3", "question-plain"]
+        # 推斷日期 2024-02-22 比 2024-09-09 舊 → 舊的在前
+        assert self._ids(out) == ["question-6ed80c503f5f", "question-plain"]
 
     def test_pdf_item_merges_by_date(self):
         blocks = [
@@ -197,7 +199,7 @@ class TestBuildMergedChapterOrdering:
             "a_html": _answer_html("新答"),
         }]
         out, _toc = gc.build_merged_chapter(1, blocks, [], pdf_items)
-        assert self._ids(out) == ["question-pdf", "question-plain"]
+        assert self._ids(out) == ["question-plain", "question-pdf"]
 
     def test_orphan_answer_joins_section_with_its_own_date(self):
         """「只有回答、沒有提問」的條目要補回提問，並依補回的日期排序。"""
@@ -211,8 +213,8 @@ class TestBuildMergedChapterOrdering:
             _answer_html("舊答"),
         ]
         out, _toc = gc.build_merged_chapter(1, blocks, [], [])
-        # 2024-09-09 比 2024-03-30 新 → 在前
-        assert self._ids(out) == ["question-plain", "question-orphan-c35b152e2f56"]
+        # 2024-03-30 比 2024-09-09 舊 → 在前
+        assert self._ids(out) == ["question-orphan-c35b152e2f56", "question-plain"]
         orphan_q = next(b for b in out if "question-orphan-c35b152e2f56" in b)
         assert '<span class="question-time">2024-03-30</span>' in orphan_q
         assert "以下找不到问题，仅回答" in orphan_q
@@ -311,14 +313,14 @@ class TestPublishedEbookOrdering:
                         break
                     keys.append(parts[:6])
                 for prev, cur in zip(keys, keys[1:]):
-                    if cur > prev:
+                    if cur < prev:
                         problems.append(
                             f"{path.name} [{title}] 日期逆序：{prev} → {cur}")
 
-        assert not problems, "發布版小節內日期未由新到舊或格式未統一：\n" + "\n".join(problems)
+        assert not problems, "發布版小節內日期未由舊到新或格式未統一：\n" + "\n".join(problems)
 
     def test_pet_section_exists_and_is_ordered(self, ebook_dir):
-        """指定的「養寵物/喂流浪動物」小節必須存在，且全段由新到舊。"""
+        """指定的「養寵物/喂流浪動物」小節必須存在，且全段由舊到新。"""
         path = ebook_dir / "12.html"
         if not path.exists():
             pytest.skip("發布版電子書未建置（wenda2_ebook/ 不存在）")
@@ -331,7 +333,7 @@ class TestPublishedEbookOrdering:
         parsed = [gc.parse_time_parts(raw) for _qid, raw in entries]
         assert all(part is not None for part in parsed)
         keys = [part[:6] for part in parsed]
-        assert keys == sorted(keys, reverse=True), f"[{title}] 未由新到舊"
+        assert keys == sorted(keys), f"[{title}] 未由舊到新"
 
     def test_orphan_answers_are_published_as_dated_pairs(self, ebook_dir):
         """15 則孤立答案都要以「帶日期的問答」出現在成品裡。
