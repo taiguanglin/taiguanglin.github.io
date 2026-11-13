@@ -10,11 +10,11 @@
 2. 固定種子抽樣（`candidates_sample.json`，2400 條）→ 分批 AI 評分（0–10，
    標準：文意自足、有啟發性、適合首頁）→ `scores/batch_*.json`。
 3. `select_1095.py` — 產出 1095 條 `daily_quotes.json`：
-   - **AI 骨架**：`scores/` 中 score ≥ 7 的 341 條（品質骨幹；數字會隨過濾規則
+   - **AI 骨架**：`scores/` 中 score ≥ 7 的 340 條（品質骨幹；數字會隨過濾規則
      與電子書重建而變動，實測於現行 `daily_quotes.json`）。
    - **啟發式補充**：`candidates.json` 中尚未被評到的候選，以「可讀性啟發」
      （長度窗、結尾標點、教學詞、暱稱/時間戳/問號片段罰分、括號配對…）排序
-     補足到 1095 條（實測 754 條）；單一來源（ebook）上限 70%（實測 ebook 766／wenda2 329）。
+     補足到 1095 條（實測 755 條）；單一來源（ebook）上限 70%（實測 ebook 766／wenda2 329）。
    - `url` 含頁內錨點（如 `ebook/03_trad.html#p-sc436a366`），已驗證與電子書
      HTML 的 id 對應。
 4. `audit_quotes.py` — 稽核成品（見下）；有經文／斷鏈／重複就 `exit 1`。
@@ -78,9 +78,9 @@ python3 tool/daily_quotes/audit_quotes.py --strict   # 放寬版文言掃描也�
 
 ## 擴充 / 提升品質
 
-- `candidates.json`（15,299 條完整候選池）、`candidates_sample.json`（已 AI 評的
+- `candidates.json`（15,271 條完整候選池）、`candidates_sample.json`（已 AI 評的
   2400 條）、`scores/`（0–10 分數）皆納入版控。
-- 日後有 AI 評分容量時，可對「啟發式補充」的 754 條再跑一次 AI 評分替換，
+- 日後有 AI 評分容量時，可對「啟發式補充」的 755 條再跑一次 AI 評分替換，
   或對 `candidates.json` 抽更多樣、評完後改 `select_1095.py` 的 `TARGET`。
 - 電子書重建後 `search_index*.json` 會變，`candidates.json` 應重跑，否則會留下
   指向已不存在段落的**斷鏈**（稽核會擋下）。

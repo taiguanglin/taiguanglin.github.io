@@ -89,6 +89,73 @@ class TestSpaceSeparatedQuestionHeader:
         assert '<div class="question-text">顶礼Tai师父！</div>' in content
 
 
+class TestAnswerParagraphWithoutPrefix:
+    """整段加粗、卻漏了「Taiguanglin：」前綴的回答段落。
+
+    底稿有 2 處這種段落（ch02 2025-05-15 11:54、ch04 2024-02-14 18:28）。
+    過去它們被當成一般段落輸出 <p>，stage 3 只收 question/answer 區塊 →
+    該則的提問與回答整組從電子書消失。
+    """
+
+    def _build(self, tmp_path, *, bold=True, name="missing_prefix.docx"):
+        docx_path = tmp_path / name
+        doc = Document()
+        doc.add_heading("测试章", level=1)
+        _add_multiline_paragraph(doc, [
+            "心画世间：2025-05-15 11:54",
+            "佛菩萨是否会直接干预命运？若不回应，是因业障太重吗？",
+        ])
+        ans = _add_multiline_paragraph(doc, [
+            "佛菩萨是否会直接干预命运？极少的情况下才会做，一般不会做的。",
+        ])
+        if bold:
+            for run in ans.runs:
+                run.bold = True
+        doc.save(docx_path)
+        parser = DocumentParser(Settings(id_content_length=50,
+                                        favicon_search_patterns=["favicon.ico"]),
+                                FileManager(tmp_path / "out"))
+        chapters, _ = parser.parse_document(docx_path)
+        return chapters[0].content
+
+    def test_bold_paragraph_after_question_becomes_answer(self, settings, tmp_path):
+        content = self._build(tmp_path)
+
+        assert '<span class="answerer">Taiguanglin</span>' in content
+        assert "极少的情况下才会做" in content
+        # 不再是一般段落
+        assert "<p>" not in content
+        # 提問與回答配成同一組
+        assert '<article class="qa-pair">' in content
+        q_pos = content.find('class="question"')
+        a_pos = content.find('class="answer"')
+        assert 0 <= q_pos < a_pos
+
+    def test_non_bold_paragraph_stays_plain(self, settings, tmp_path):
+        """沒有加粗就不動它——避免把一般內文誤判成回答。"""
+        content = self._build(tmp_path, bold=False, name="not_bold.docx")
+
+        assert '<span class="answerer">Taiguanglin</span>' not in content
+        assert "<p>" in content
+
+    def test_bold_paragraph_without_preceding_question_stays_plain(self, settings, tmp_path):
+        """前一個區塊不是提問時不加粗也不補前綴（不得憑空生出回答）。"""
+        docx_path = tmp_path / "no_question.docx"
+        doc = Document()
+        doc.add_heading("测试章", level=1)
+        para = _add_multiline_paragraph(doc, ["这是一段整段加粗的说明文字。"])
+        for run in para.runs:
+            run.bold = True
+        doc.save(docx_path)
+
+        parser = DocumentParser(settings, FileManager(tmp_path / "out"))
+        chapters, _ = parser.parse_document(docx_path)
+
+        content = chapters[0].content
+        assert '<span class="answerer">Taiguanglin</span>' not in content
+        assert "<p>" in content
+
+
 def _make_1x1_png(path, rgb=(255, 0, 0)):
     """產生一張有效的 1x1 PNG（zlib 手刻，不依賴 PIL）。
 

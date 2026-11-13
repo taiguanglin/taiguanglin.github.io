@@ -56,6 +56,34 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
   （`get_text()` 行為），屬預期差異——下次重跑 `tool/daily_quotes/`
   管線時 `candidates.json` 會自然吸收。Word 條目沿用 docx 的 `<br/>` 軟換行，不受影響。
 
+## 孤立回答（`orphan_answers.json`，版控 SoT）
+
+Word 彙總（`wenda2_250810_截止25年5月17日答疑_含图版.docx`）有 **15 則回答
+前面沒有提問區塊**——提問遺失、或本來就只是一段自白／開場白。stage 1 會把它們
+輸出成 `<p>`（說明或提問文字）＋ `<div class="answer">`；stage 3 過去丟掉 `<p>`、
+留下**沒有日期、也沒有提問**的答案，結果是：
+
+- 該回答沒有排序位置（只能排該小節最後）；
+- 視覺上黏在別的問答下面（沒有自己的 `qa-pair` article）；
+- 前面的 `<p>` 說明／提問文字（例：「11月11号微信的问题3、还有一个师父…」）
+  在發布版整段不見。
+
+現在 stage 3 會用底稿那個 `<p>` 的**原文**當提問內容、用 `orphan_answers.json`
+的日期當提問日期，補成一則正常問答（`question-orphan-<hash>`），於是：
+
+- 有日期 → 可依「新到舊」排序、會落在小節裡正確的位置；
+- 會被包進自己的 `<article class="qa-pair">` → 不再黏在別的問答下面；
+- 提問者未知 → 留空（不臆造姓名）。
+
+日期來源：「未分類答疑整理」工作表（`問答錄2/1_坐禅问答汇总 分类精选工作表
+20251219v2.xlsx`，sheet「答疑汇总」，Excel 欄 U＝答疑日期），並與 `audio_map2`
+的 `session.date`、Word 內文明載的日期交叉核對；**內文明載日期優先**
+（例：`answer-334cb7fa376f` 正文「今天是2024年11月11号」→ `2024-11-11`，
+勝過 `audio_map2` session 的 `2025-03-10`）。
+
+守門測試：`tests/test_date_ordering.py::TestOrphanAnswers` 與
+`TestPublishedEbookOrdering::test_orphan_answers_are_published_as_dated_pairs`。
+
 ## 補充條目（`supplemental_items.json`，版控 SoT）
 
 收錄 **PDF 有收錄、但 stage 1 渲染為小節尾 `<p>`、`extract.py` 只抽

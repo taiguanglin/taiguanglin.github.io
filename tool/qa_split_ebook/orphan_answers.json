@@ -1,0 +1,114 @@
+{
+  "_note": "Word 彙總裡「只有回答、沒有提問」的孤立答案（stage 1 產生 <div class=\"answer\"> 但前面沒有 <div class=\"question\">）。stage 3 過去丟掉它們前面的 <p> 說明／提問文字，只留下一則沒有日期、也沒有提問的答案：該回答在發布版沒有位置（只能排該節最後），且視覺上黏在別的問答下面。本檔提供這些條目的提問日期，讓 stage 3 補成一則正常問答（可依日期排序、會被包進自己的 qa-pair article）。",
+  "_date_source": "日期取自「未分類答疑整理」工作表（問答錄2/1_坐禅问答汇总 分类精选工作表 20251219v2.xlsx，sheet『答疑汇总』，Excel 欄 U＝答疑日期），並與 audio_map2 的 session.date、Word 內文明載的日期交叉核對；內文明載日期優先（例：answer-334cb7fa376f 正文『今天是2024年11月11号』→ 2024-11-11，勝過 audio_map2 session 2025-03-10）。",
+  "_date_format": "YYYY-MM-DD（無時分者不補時間）。",
+  "items": [
+    {
+      "answer_id": "answer-c35b152e2f56",
+      "date": "2024-03-30",
+      "workbook_row": 429,
+      "seq": 1952,
+      "context": "以下找不到问题，仅回答"
+    },
+    {
+      "answer_id": "answer-f43f8f3b546a",
+      "date": "2024-02-23",
+      "workbook_row": 4252,
+      "seq": 534,
+      "context": "（此问题丢失或未收集到）"
+    },
+    {
+      "answer_id": "answer-5f3529b47a63",
+      "date": "2024-02-19",
+      "workbook_row": 4367,
+      "seq": 328,
+      "context": "（此问题丢失或未收集到）"
+    },
+    {
+      "answer_id": "answer-491b3b909738",
+      "date": "2024-02-13",
+      "workbook_row": 3391,
+      "seq": 68,
+      "context": "（问题缺失)"
+    },
+    {
+      "answer_id": "answer-9357f8acf08e",
+      "date": "2024-03-05",
+      "workbook_row": 3535,
+      "seq": 1022,
+      "context": "（问题未收录或已丢失）"
+    },
+    {
+      "answer_id": "answer-00c14f722e5f",
+      "date": "2024-08-12",
+      "workbook_row": 3227,
+      "seq": 3091,
+      "context": "3、透过观察自己嘅过去，总是让我看跟我感情深厚的已过世的爷爷嫲嫲的地方及现另一半的关系……"
+    },
+    {
+      "answer_id": "answer-ac06cd9ca00f",
+      "date": "2024-02-15",
+      "workbook_row": 1815,
+      "seq": 172,
+      "context": "(TAI师父自白)"
+    },
+    {
+      "answer_id": "answer-e044e181b6cb",
+      "date": "2024-11-11",
+      "workbook_row": 1942,
+      "seq": 3539,
+      "context": "11月11号微信的问题3、还有一个师父，我妈五十六了……"
+    },
+    {
+      "answer_id": "answer-6695f9a97903",
+      "date": "2024-11-11",
+      "workbook_row": 5672,
+      "seq": 3538,
+      "context": "11月11号微信的问题2、终于能提问了……"
+    },
+    {
+      "answer_id": "answer-cb1a35bbe48f",
+      "date": "2024-02-12",
+      "workbook_row": 5712,
+      "seq": 29,
+      "context": "(TAI师父自白)"
+    },
+    {
+      "answer_id": "answer-334cb7fa376f",
+      "date": "2024-11-11",
+      "workbook_row": 5731,
+      "seq": 3509,
+      "context": "(师父开场白)",
+      "note": "正文明载「今天是2024年11月11号」→ 內文日期優先（勝過 audio_map2 session.date 2025-03-10）"
+    },
+    {
+      "answer_id": "answer-3e42bdf461b2",
+      "date": "2024-12-09",
+      "workbook_row": 5738,
+      "seq": 3911,
+      "context": "2024/12/9(贴吧问题回答开场)"
+    },
+    {
+      "answer_id": "answer-339556cebab0",
+      "date": "2024-12-09",
+      "workbook_row": 5741,
+      "seq": 3952,
+      "context": "2024/12/9(贴吧问题答疑结尾)"
+    },
+    {
+      "answer_id": "answer-61dc46b01b0b",
+      "date": "2025-01-18",
+      "workbook_row": 5752,
+      "seq": 4598,
+      "context": "（TAI师父自白）"
+    },
+    {
+      "answer_id": "answer-297d4a8b8de0",
+      "date": "2025-03-14",
+      "workbook_row": 5757,
+      "seq": 5233,
+      "context": "(TAI师父自白)",
+      "note": "正文明载「今天好像是佛涅槃日……今天就是佛的涅槃日」→ 2025 年農曆二月十五＝2025-03-14，與工作表一致"
+    }
+  ]
+}

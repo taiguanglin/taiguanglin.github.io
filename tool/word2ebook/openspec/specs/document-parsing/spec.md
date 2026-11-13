@@ -60,6 +60,27 @@ questioner pattern (`Name：content`) and answerer pattern (`Taiguanglin：conte
 - NOTE: a marker embedded **mid-paragraph** (`…内容。Taiguanglin：回答`) is out
   of scope for this requirement; the marker regex stays anchored at line start.
 
+#### Scenario: Answer paragraph without the answerer prefix
+- GIVEN a paragraph whose runs are **all bold** (every non-empty run has
+  `bold is True`)
+- AND the paragraph matches neither the answerer pattern (`Taiguanglin：…`)
+  nor the questioner pattern (`Name：…`)
+- AND the previously emitted block was a question block
+- WHEN the parser processes the paragraph
+- THEN the system SHALL emit an `answer` div (answerer =
+  `Constants.ANSWERER_RAW_NAME`, stable id from
+  `generate_stable_qa_id(..., 'answer')`) instead of a plain `<p>`
+- AND the answer text SHALL be kept verbatim (no timestamp is stripped from the
+  body); the date of the pair comes from its question
+- AND the answer div SHALL follow its question div so the shared finalizer
+  wraps both in one `qa-pair` article
+- NOTE: the parser tracks the previous block kind (`prev_kind`: `question` /
+  `answer` / `other`) in the shared parser state; separators, headings and
+  chapter starts reset it to `other`
+- NOTE: without this branch such paragraphs were dropped by stage 3 (which only
+  collects `question`/`answer` divs), taking the whole Q&A pair out of the
+  published ebook.
+
 ### Requirement: Stable Element IDs
 The system SHALL generate stable, deterministic IDs for each Q&A pair based on
 `questioner_name + normalized_time + first_50_chars_of_content` hashed with MD5.

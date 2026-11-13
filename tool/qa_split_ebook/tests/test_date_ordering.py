@@ -199,6 +199,61 @@ class TestBuildMergedChapterOrdering:
         out, _toc = gc.build_merged_chapter(1, blocks, [], pdf_items)
         assert self._ids(out) == ["question-pdf", "question-plain"]
 
+    def test_orphan_answer_joins_section_with_its_own_date(self):
+        """「只有回答、沒有提問」的條目要補回提問，並依補回的日期排序。"""
+        blocks = [
+            '<h3 id="test-sec">測試小節</h3>',
+            '<p id="content-1">以下找不到问题，仅回答</p>',
+            '<div class="answer" id="answer-c35b152e2f56">\n'
+            '<div class="answer-meta">\n<span class="answerer">Taiguanglin</span>\n</div>\n'
+            '<div class="answer-text">孤立答</div>\n</div>',
+            _question_html("question-plain", "2024-09-09", text="舊"),
+            _answer_html("舊答"),
+        ]
+        out, _toc = gc.build_merged_chapter(1, blocks, [], [])
+        # 2024-09-09 比 2024-03-30 新 → 在前
+        assert self._ids(out) == ["question-plain", "question-orphan-c35b152e2f56"]
+        orphan_q = next(b for b in out if "question-orphan-c35b152e2f56" in b)
+        assert '<span class="question-time">2024-03-30</span>' in orphan_q
+        assert "以下找不到问题，仅回答" in orphan_q
+
+
+class TestOrphanAnswers:
+    """Word 底稿裡「只有回答、沒有提問」的孤立條目要補回提問與日期。
+
+    根因：stage 1 把「提問遺失」的回答前面那段說明／提問文字輸出成 <p>，
+    stage 3 過去丟掉 <p>、留下沒有日期也沒有提問的答案 → 該回答排該節
+    最後、視覺上黏在別的問答下面。
+    """
+
+    _A_HTML = ('<div class="answer" id="answer-c35b152e2f56">\n'
+               '<div class="answer-meta">\n<span class="answerer">Taiguanglin</span>\n</div>\n'
+               '<div class="answer-text">答</div>\n</div>')
+
+    def test_orphan_gets_dated_question(self):
+        ctx = '<p id="content-123">以下找不到问题，仅回答</p>'
+        out = gc._orphan_question_html(self._A_HTML, ctx)
+        assert 'id="question-orphan-c35b152e2f56"' in out
+        assert '<span class="question-time">2024-03-30</span>' in out
+        # 提問內容＝底稿 <p> 原文（逐字保留）
+        assert "以下找不到问题，仅回答" in out
+        # 提問者未知 → 空字串（不臆造姓名）
+        assert '<span class="questioner"></span>' in out
+
+    def test_orphan_without_known_date_is_untouched(self):
+        a_html = self._A_HTML.replace("answer-c35b152e2f56", "answer-unknown-id")
+        assert gc._orphan_question_html(a_html, '<p>說明</p>') == ""
+
+    def test_orphan_without_context_is_untouched(self):
+        assert gc._orphan_question_html(self._A_HTML, "") == ""
+
+    def test_orphan_dates_table_is_complete(self):
+        """SoT 必須涵蓋 15 則孤立答案，且日期格式統一。"""
+        assert len(gc._ORPHAN_DATES) == 15
+        for aid, date in gc._ORPHAN_DATES.items():
+            assert aid.startswith("answer-"), aid
+            assert _ISO_DATE_RE.fullmatch(date), (aid, date)
+
 
 class TestPublishedEbookOrdering:
 
@@ -278,8 +333,49 @@ class TestPublishedEbookOrdering:
         keys = [part[:6] for part in parsed]
         assert keys == sorted(keys, reverse=True), f"[{title}] 未由新到舊"
 
+    def test_orphan_answers_are_published_as_dated_pairs(self, ebook_dir):
+        """15 則孤立答案都要以「帶日期的問答」出現在成品裡。
+
+        過去它們在發布版是沒有日期、也沒有提問的孤立答案（排該節最後、
+        黏在別的問答下面）。
+        """
+        chapters = [ebook_dir / f"{ch:02d}.html" for ch in range(1, 13)]
+        if not all(path.exists() for path in chapters):
+            pytest.skip("發布版電子書未建置（wenda2_ebook/ 不存在）")
+
+        published = {}
+        for path in chapters:
+            doc = lhtml.parse(str(path)).getroot()
+            published[path.name] = doc
+
+        problems = []
+        for aid, date in gc._ORPHAN_DATES.items():
+            suffix = aid[len("answer-"):]
+            qid = f"question-orphan-{suffix}"
+            found = False
+            for name, doc in published.items():
+                answers = doc.xpath(f'//div[@class="answer"][@id="{aid}"]')
+                if not answers:
+                    continue
+                found = True
+                arts = answers[0].xpath('ancestor::article[@class="qa-pair"]')
+                if not arts:
+                    problems.append(f"{name} {aid} 未包在 qa-pair article 裡")
+                    continue
+                ts = arts[0].xpath('.//span[@class="question-time"]/text()')
+                if not ts or not _ISO_DATE_RE.fullmatch(ts[0].strip()):
+                    problems.append(f"{name} {aid} 日期缺失或格式未統一：{ts}")
+                elif ts[0].strip() != date:
+                    problems.append(f"{name} {aid} 日期不符：{ts[0]} != {date}")
+                qids = arts[0].xpath('./div[@class="question"]/@id')
+                if qids != [qid]:
+                    problems.append(f"{name} {aid} 提問 id 不符：{qids}")
+            if not found:
+                problems.append(f"{aid} 未出現在發布版")
+
+        assert not problems, "孤立答案未以帶日期的問答發布：\n" + "\n".join(problems)
+
     def test_redirect_chapters_are_classified_output(self, ebook_dir):
-        """13–21 必須是 stage 3 跳轉頁，不能是 stage 1 的月度底稿。"""
         for ch in range(13, 22):
             for suffix in (".html", "_trad.html"):
                 path = ebook_dir / f"{ch:02d}{suffix}"

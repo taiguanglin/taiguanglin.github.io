@@ -18,7 +18,7 @@
 | `tool/audio_denoiser/` | Facebook Denoiser 語音去雜音（ASR 前處理）。 | mp3/wav → mp3/wav | `README.md` |
 | `tool/stories2html/` | 實修故事原始檔 → HTML 閱讀頁 + index/sitemap 補丁。 | `stories/<原始檔>` → `stories/<slug>.html` | `README.md`（metadata SoT：`docs.py`） |
 | `tool/fonts/` | 全站字型自架子集管線：掃站用頁面語料（含 OpenCC 簡體聯集）→ pyftsubset 產十字重 woff2＋`fonts.css`，取代 Google Fonts 外鏈（大陸連不上）。 | root/`wenda2/`/`stories/` 頁面語料 → `fonts/` | `README.md`（執行用 word_audio_map2 的 venv；fonttools 在 `.pylibs`） |
-| `tool/daily_quotes/` | 首頁「每日精選」語料管線：從兩套電子書索引抽候選（長度 60–400、黑名單、CJK 比例 ≥60%、**排除經文**（`scripture_filter.py` 三道防線）、md5 去重）→ `candidates.json`（15,299 條）；固定種子抽 2,400 條交 AI 評分（0–10）→ `select_1095.py` 以 score≥7 為骨架、其餘按可讀性啟發式補足→ repo 根目錄 `daily_quotes.json`（1,095 條，單一來源 ≤70%），由 `index.html` 依日期播種輪播；`audit_quotes.py` 稽核成品（有經文／斷鏈即 exit 1）；**`refresh_sample.py` 把凍結的 `candidates_sample.json` 的文字／網址對齊現況電子書**（條數與順序不可動 → AI 評分的 idx 對應關係不變），`select_1095.py` 另會以「文字」重新定位樣本裡過期的 pid（pid＝段落文字雜湊，區塊切分一改就換）。 | `{wenda2_ebook,ebook}/search_index_trad.json` → `build_quotes.py` → `candidates.json`；＋`candidates_sample.json`／`scores/batch_*.json` → `select_1095.py` → `daily_quotes.json` → `audit_quotes.py` | **`README.md`** |
+| `tool/daily_quotes/` | 首頁「每日精選」語料管線：從兩套電子書索引抽候選（長度 60–400、黑名單、CJK 比例 ≥60%、**排除經文**（`scripture_filter.py` 三道防線）、md5 去重）→ `candidates.json`（15,271 條）；固定種子抽 2,400 條交 AI 評分（0–10）→ `select_1095.py` 以 score≥7 為骨架、其餘按可讀性啟發式補足→ repo 根目錄 `daily_quotes.json`（1,095 條，單一來源 ≤70%），由 `index.html` 依日期播種輪播；`audit_quotes.py` 稽核成品（有經文／斷鏈即 exit 1）；**`refresh_sample.py` 把凍結的 `candidates_sample.json` 的文字／網址對齊現況電子書**（條數與順序不可動 → AI 評分的 idx 對應關係不變），`select_1095.py` 另會以「文字」重新定位樣本裡過期的 pid（pid＝段落文字雜湊，區塊切分一改就換）。 | `{wenda2_ebook,ebook}/search_index_trad.json` → `build_quotes.py` → `candidates.json`；＋`candidates_sample.json`／`scores/batch_*.json` → `select_1095.py` → `daily_quotes.json` → `audit_quotes.py` | **`README.md`** |
 | `tool/jiangjing_para_map/` | 講經系列「段落 ↔ SRT 字元時間流」對齊 → `audio_map3/<series>.json`；重跑保留已 confirmed 段落與 reviewed 講次。books2ebook 只注入 reviewed 講次的段落時間。 | ebook HTML 段落 + `audio/srt/jiangjing/*.srt` → `audio_map3/*.json` | `README.md` |
 | `tool/qa_curation/` | 問答錄2「拆分＋分類」準則 SoT：把第 1–12 章（5,789 則人工分類）逐一實證檢驗後，整理成供 LLM 對第 13–21 章（未分類月度答疑）執行「問題拆分＋12 章主題分類」的操作準則——主準則（鐵律/拆分統計/分類總綱/輸出 schema）＋12 個逐章準則檔＋skill 檔。分類母體＝分類精選工作表「答疑汇总」A–D 欄。 | 13–21 章問答串 → JSONL（`section_path`＋信心＋依據） | **`README.md`**, `wenda2_split_classify_criteria.md`, `SKILL.md`, `chapters/` |
 | `tool/world_model/` | 三千大千世界模型圖素材：把兩套電子書的**生成產物**抽成純文字語料，再依 16 個主題章（宇宙總綱／三千大千世界／須彌山／**世界的基本構造**／三界二十八天／人間／地獄／六道／佛國／光子物理／六根複眼／時間劫／神通）逐字彙整，供餵大模型畫世界模型圖。讀電子書而非 PDF/Word，是為了拿到全量段落索引（可驗證無遺漏）、穩定錨點（可回溯）、並免寫第二套 PDF 解析器。`verify.py` 逐行回比原始 HTML。 | `wenda2_ebook/*_trad.html` + `ebook/*_trad.html` → `build/world_model_{source,core}.md` + `.jsonl`（`build/` 已 gitignore） | `README.md` |
@@ -90,15 +90,15 @@ ebook/search_index_trad.json（content + answer 條目）  ┘
         │   CJK 比例 ≥60%、**排除經文**（見下）、md5 去重；
         │   clean() 會去掉開頭署名「Taiguanglin」與前導時間段
         ▼
-   tool/daily_quotes/candidates.json            15,299 條（完整候選池，已進版控）
+   tool/daily_quotes/candidates.json            15,271 條（完整候選池，已進版控）
         │ 固定種子抽樣 2,400 條 → candidates_sample.json → 分批交 AI 評分 0–10
         ▼
    tool/daily_quotes/scores/batch_00..23.json   2,400 筆
         │   ⚠️ 每筆的 `idx` 是**索引進 candidates_sample.json 的位置**，不是 candidates.json
         ▼
    tool/daily_quotes/select_1095.py
-        │   骨架：score ≥ 7（341 條，按分數降冪）
-        │   補足：candidates.json 中未被評分過的候選，按 heuristic() 可讀性啟發排序（754 條）
+        │   骨架：score ≥ 7（340 條，按分數降冪）
+        │   補足：candidates.json 中未被評分過的候選，按 heuristic() 可讀性啟發排序（755 條）
         │          （長度窗、結尾標點、教學詞加分；前導時間戳／暱稱／英文代號、連續問號、
         │            括號不配對、數字比例過高、提問句罰分）
         │   來源上限：單一來源（ebook）≤ 70%（其餘靠 wenda2 平衡）

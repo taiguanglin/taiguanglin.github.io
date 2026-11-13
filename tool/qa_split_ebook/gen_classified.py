@@ -117,6 +117,11 @@ def extract_word_blocks(ch: int) -> tuple[list[str], list[tuple[int, str, str]]]
             blocks.append(lhtml.tostring(el, encoding="unicode"))
             if level >= 2 and hid:
                 toc_items.append((level, clean_heading(text), hid))
+        elif tag == "p" and el.getparent() is main:
+            # stage 1 的說明／提問段落（<p>）：本身不進發布版（與既有行為
+            # 相同），但「只有回答、沒有提問」的孤立條目要靠它補回提問內容
+            # ——留給 build_merged_chapter 使用。
+            blocks.append(lhtml.tostring(el, encoding="unicode"))
         elif tag == "div":
             cls = el.get("class") or ""
             # ⚠️ 精確比對——不用 "in"，避免誤抓 question-meta / question-text / answer-text
@@ -384,6 +389,60 @@ def load_supplemental_items(audio_map: dict) -> list[dict]:
             "time": it.get("time", ""), "source": "supplemental",
         })
     return out
+
+
+# ────────────────────────────────────────────────────────────── #
+# 來源 1b：Word 章裡「只有回答、沒有提問」的孤立條目                            #
+#                                                                  #
+# Word 彙總有 15 則回答前面沒有提問區塊（提問遺失或本來就沒有）。             #
+# stage 1 把它們輸出成 <p>（說明／提問文字）＋ <div class="answer">；          #
+# stage 3 過去丟掉 <p>、留下沒有日期也沒有提問的答案 → 該回答只能排該節最後、  #
+# 視覺上黏在別的問答下面。orphan_answers.json（版控 SoT）提供提問日期，       #
+# 讓這些條目補成一則正常問答（可依日期排序、會被包進自己的 qa-pair article）。 #
+# ────────────────────────────────────────────────────────────── #
+ORPHAN_FILE = Path(__file__).resolve().parent / "orphan_answers.json"
+
+
+def load_orphan_dates() -> dict:
+    """orphan_answers.json → {answer_id: YYYY-MM-DD}。"""
+    if not ORPHAN_FILE.exists():
+        return {}
+    d = json.loads(ORPHAN_FILE.read_text(encoding="utf-8"))
+    return {it["answer_id"]: it["date"] for it in d.get("items", [])}
+
+
+_ORPHAN_DATES = load_orphan_dates()
+
+
+def _paragraph_inner_html(p_html: str) -> str:
+    """取出 <p>…</p> 的內文（去掉 <p> 標籤本身與其 id 屬性）。"""
+    m = re.match(r"<p\b[^>]*>(.*)</p>\s*$", p_html, re.S)
+    return m.group(1) if m else ""
+
+
+def _orphan_question_html(a_html: str, ctx_html: str) -> str:
+    """為「只有回答、沒有提問」的 Word 條目補一則帶日期的提問。
+
+    提問內容＝stage 1 底稿前面那個 <p> 的原文（逐字保留，不改寫）；
+    提問日期＝orphan_answers.json 的 SoT（工作表「答疑日期」＋內文日期
+    交叉核對）。沒有日期、沒有 <p> 線索的條目回傳空字串 → 維持原行為。
+    """
+    if not ctx_html:
+        return ""
+    m = re.search(r'<div class="answer" id="([^"]+)"', a_html)
+    if not m:
+        return ""
+    aid = m.group(1)
+    date = _ORPHAN_DATES.get(aid)
+    if not date:
+        return ""
+    text = _paragraph_inner_html(ctx_html)
+    if not text.strip():
+        return ""
+    suffix = aid[len("answer-"):] if aid.startswith("answer-") else aid
+    qid = f"question-orphan-{suffix}"
+    # 提問者未知 → 空字串（與 question-a29eaf73334c 的處理一致）
+    return _wrap_qa(text, qid, "question", "", date)
 
 
 # ────────────────────────────────────────────────────────────── #
@@ -661,6 +720,8 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
     path_order = []
     cur_path = f"{ch:02d}"
     cur_q = None
+    # 最近一個 <p> 說明／提問文字（給「只有回答、沒有提問」的孤立條目用）
+    pending_ctx = None
 
     def _ensure_path(p):
         if p not in path_data:
@@ -673,6 +734,7 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
         hm = heading_re.match(blk)
         if hm:
             cur_q = None
+            pending_ctx = None
             level = int(hm.group(1))
             hid = hm.group(2)
             text = re.sub(r'<[^>]+>', '', hm.group(3)).strip()
@@ -687,14 +749,26 @@ def build_merged_chapter(ch: int, word_blocks: list[str],
             pd_["anchor"] = hid
             continue
 
+        if blk.startswith("<p"):
+            # <p> 說明／提問文字：不單獨輸出（與既有行為相同）；下一則
+            # 「沒有提問的回答」會用它補回提問內容。
+            pending_ctx = blk
+            continue
+
         if qa_re.match(blk):
             if 'class="question"' in blk[:60]:
                 cur_q = blk
+                pending_ctx = None
             elif 'class="answer"' in blk[:60] and cur_q is not None:
                 _ensure_path(cur_path)["pairs"].append((cur_q, blk))
                 cur_q = None
+                pending_ctx = None
             elif 'class="answer"' in blk[:60]:
-                _ensure_path(cur_path)["pairs"].append(("", blk))
+                # 沒有提問的回答 → 用 <p> 原文＋orphan_answers.json 的日期
+                # 補成一則正常問答（可依日期排序、會有自己的 qa-pair article）
+                _ensure_path(cur_path)["pairs"].append(
+                    (_orphan_question_html(blk, pending_ctx), blk))
+                pending_ctx = None
 
     pdf_by_path = {}
     for it in pdf_items:
