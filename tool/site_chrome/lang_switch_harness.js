@@ -170,11 +170,12 @@ check(
         langSwitchSrc.indexOf("['软件', '軟件']") !== -1
 );
 check(
-    "例外四個詞（老撾／硅／新西蘭／納米）不列入保護：維持台灣用語",
+    "例外五個詞（老撾／硅／新西蘭／納米／津巴布韋）不列入保護：維持台灣用語",
     langSwitchSrc.indexOf("['老撾', '寮國']") === -1 &&
         langSwitchSrc.indexOf("['硅', '矽']") === -1 &&
         langSwitchSrc.indexOf("['新西兰', '紐西蘭']") === -1 &&
-        langSwitchSrc.indexOf("['纳米', '奈米']") === -1
+        langSwitchSrc.indexOf("['纳米', '奈米']") === -1 &&
+        langSwitchSrc.indexOf("['津巴布韦', '津巴布韋']") === -1
 );
 
 // 9) OpenCC cn→tw 把「干」（做）誤轉成「乾」的修正層（與 i18n_utils 同步）

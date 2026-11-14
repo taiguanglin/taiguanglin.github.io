@@ -420,8 +420,8 @@ survive: `设定` → `設定` (the master's core term 「三個初始設定」)
 `设置` → `設置`; native Traditional wording in the source (e.g. 「般若智慧」)
 SHALL NOT be rewritten either.
 
-The ONLY exceptions are four words that SHALL keep their Taiwan wording:
-`老撾→寮國`, `硅→矽`, `新西兰→紐西蘭`, `纳米→奈米`.
+The ONLY exceptions are five words that SHALL keep their Taiwan wording:
+`老撾→寮國`, `硅→矽`, `新西兰→紐西蘭`, `纳米→奈米`, `津巴布韦→辛巴威`.
 
 `lang-switch.js` SHALL mirror the same protection table (with both the
 Simplified and the Traditional input forms); the two copies MUST be kept in
@@ -438,10 +438,10 @@ sync.
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the results SHALL be `三個初始設定` and `三個初始設置` respectively
 
-#### Scenario: Four exceptions keep Taiwan wording
-- GIVEN the simplified text `老挝`, `硅`, `新西兰`, `纳米`
+#### Scenario: Five exceptions keep Taiwan wording
+- GIVEN the simplified text `老挝`, `硅`, `新西兰`, `纳米`, `津巴布韦`
 - WHEN `I18nProcessor.to_traditional` is called
-- THEN the results SHALL be `寮國`, `矽`, `紐西蘭`, `奈米`
+- THEN the results SHALL be `寮國`, `矽`, `紐西蘭`, `奈米`, `辛巴威`
 
 #### Scenario: 用户 stays 用戶
 - GIVEN the simplified text `贴吧用户_QUDy8Na` (and `用户数量达到瓶颈`)

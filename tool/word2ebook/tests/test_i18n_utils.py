@@ -471,11 +471,12 @@ class TestI18nProcessor:
         assert processor.to_traditional("般若智慧") == "般若智慧"
 
     def test_to_traditional_tw_locale_exceptions(self, processor):
-        # 例外四個詞維持台灣用語
+        # 例外五個詞維持台灣用語
         assert processor.to_traditional("老挝") == "寮國"
         assert processor.to_traditional("硅") == "矽"
         assert processor.to_traditional("新西兰") == "紐西蘭"
         assert processor.to_traditional("纳米") == "奈米"
+        assert processor.to_traditional("津巴布韦") == "辛巴威"
 
     def test_to_traditional_duixiang_not_wujian(self, processor):
         # 使用者回報的原始案件：s2twp 台灣慣用詞把「对象」整詞換成「物件」
