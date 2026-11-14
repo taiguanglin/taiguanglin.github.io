@@ -402,6 +402,47 @@ vocabulary dictionary would rewrite it to the Taiwan-specific `使用者`, but
 traditional input form `用戶`) SHALL be preserved as `用戶`. Source text that
 already reads `使用者` SHALL be left untouched (it is not derived from `用户`).
 
+### Requirement: Keep Source Wording (No Taiwan Phrase Hijacking)
+
+For every Taiwan-vocabulary entry of OpenCC's `TWPhrases` dictionary that
+occurs in the corpus (`wenda2_ebook/` + `ebook/`), `I18nProcessor.to_traditional`
+SHALL keep the source's own wording instead of rewriting it into a Taiwan or
+Mainland-Chinese idiom. A corpus audit (2026-11, `s2t` vs `s2twp` diff over the
+whole of `wenda2_ebook/` and `ebook/`) found 107 such rewrites, including
+`信息→資訊`, `概率→機率`, `网络→網路`, `视频→影片`, `软件→軟體`,
+`通过→透過`, `添加→新增`, `查看→檢視`, `权限→許可權`, `设置→設定`,
+`类型→型別`, `算法→演算法`, `屏幕→螢幕`, `存储→儲存`, `文件→檔案`,
+`链接→連結`, `菜单→選單`, `字体→字型`, `硅→矽` etc.
+
+The protection SHALL be applied at the Simplified level (PUA sentinel, as with
+`_PHRASE_PROTECT`) so that distinctions that only exist in Traditional script
+survive: `设定` → `設定` (the master's core term 「三個初始設定」) while
+`设置` → `設置`; native Traditional wording in the source (e.g. 「般若智慧」)
+SHALL NOT be rewritten either.
+
+The ONLY exceptions are four words that SHALL keep their Taiwan wording:
+`老撾→寮國`, `硅→矽`, `新西兰→紐西蘭`, `纳米→奈米`.
+
+`lang-switch.js` SHALL mirror the same protection table (with both the
+Simplified and the Traditional input forms); the two copies MUST be kept in
+sync.
+
+#### Scenario: Source wording preserved
+- GIVEN the simplified text `添加剂` / `查一查看` / `最高权限`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `添加劑` / `查一查看` / `最高權限` (no `新增劑`,
+  no `查一檢視看`, no `最高許可權`)
+
+#### Scenario: Traditional-only distinction preserved
+- GIVEN the simplified text `三个初始设定` and `三个初始设置`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the results SHALL be `三個初始設定` and `三個初始設置` respectively
+
+#### Scenario: Four exceptions keep Taiwan wording
+- GIVEN the simplified text `老挝`, `硅`, `新西兰`, `纳米`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the results SHALL be `寮國`, `矽`, `紐西蘭`, `奈米`
+
 #### Scenario: 用户 stays 用戶
 - GIVEN the simplified text `贴吧用户_QUDy8Na` (and `用户数量达到瓶颈`)
 - WHEN `I18nProcessor.to_traditional` is called

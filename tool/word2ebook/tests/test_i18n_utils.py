@@ -180,8 +180,9 @@ class TestI18nProcessor:
         assert processor.to_traditional("纔羣爲裏衆") == "才群為裡眾"
 
     def test_to_traditional_uses_taiwan_phrases(self, processor):
-        assert processor.to_traditional("软件和鼠标") == "軟體和滑鼠"
-        assert processor.to_traditional("获取信息") == "獲取資訊"
+        # 語料未出現的詞仍走台灣慣用詞；語料出現過的詞維持原用詞（見下方同組測試）。
+        assert processor.to_traditional("软件和鼠标") == "軟件和滑鼠"
+        assert processor.to_traditional("获取信息") == "獲取信息"
 
     def test_to_traditional_keeps_dao_mei_spelling(self, processor):
         # OpenCC 逐字映射會把「倒霉」寫成「倒黴」；固定詞應保留「倒霉」。
@@ -379,17 +380,17 @@ class TestI18nProcessor:
         assert processor.to_traditional("十几分钟") == "十幾分鐘"
 
     def test_to_traditional_localizes_xinxi(self, processor):
-        # s2twp 將中國大陸慣用詞「信息」轉成台灣常用的「資訊」
-        assert processor.to_traditional("信息很多") == "資訊很多"
-        assert processor.to_traditional("获取信息") == "獲取資訊"
+        # 2026-11 起「信息」維持原用詞，不再改寫成台灣慣用詞「資訊」
+        assert processor.to_traditional("信息很多") == "信息很多"
+        assert processor.to_traditional("获取信息") == "獲取信息"
         assert processor.to_traditional("现在资讯传媒发达") == "現在資訊傳媒發達"
 
     def test_to_traditional_keeps_information_in_send_message_context(self, processor):
         # 此處「信息」指傳送訊息；台灣也通行「信息」，不改為 IT 義「資訊」。
         assert processor.to_traditional("我也替你发信息了") == "我也替你發信息了"
         assert processor.to_traditional("我也替你發資訊了") == "我也替你發信息了"
-        # 一般 IT 語境仍採台灣慣用詞「資訊」。
-        assert processor.to_traditional("获取信息") == "獲取資訊"
+        # 2026-11 起台灣慣用詞字典的改寫一律維持原用詞（語料中出現的詞）。
+        assert processor.to_traditional("获取信息") == "獲取信息"
 
     def test_to_traditional_context_fix_sleepy_kun(self, processor):
         # 「現在困才是更大的問題」的「困」是睡意「睏」（人工判斷的個案修正）
@@ -429,6 +430,52 @@ class TestI18nProcessor:
     def test_to_simplified_keeps_yonghu_simplified(self, processor):
         # 繁體「用戶」轉簡體仍是「用户」
         assert processor.to_simplified("用戶") == "用户"
+
+    def test_to_traditional_keeps_original_wording(self, processor):
+        # 2026-11 使用者指示：台灣慣用詞字典（TWPhrases）的改寫一律維持原用詞。
+        # 代表性詞（簡體來源 → 一般繁體），不得被改成台灣／大陸慣用詞。
+        cases = {
+            "概率": "概率", "信息": "信息", "网络": "網絡", "视频": "視頻",
+            "软件": "軟件", "音频": "音頻", "数据": "數據", "项目": "項目",
+            "通过": "通過", "联系": "聯繫", "链接": "鏈接", "算法": "算法",
+            "高级": "高級", "低端": "低端", "类型": "類型", "创建": "創建",
+            "智能": "智能", "添加": "添加", "查看": "查看", "权限": "權限",
+            "设置": "設置", "屏蔽": "屏蔽", "打开": "打開", "屏幕": "屏幕",
+            "搜索": "搜索", "消息": "消息", "保存": "保存", "默认": "默認",
+            "文件": "文件", "界面": "界面", "菜单": "菜單", "字体": "字體",
+            "兼容": "兼容", "芯片": "芯片", "打印": "打印", "存储": "存儲",
+            "互联网": "互聯網", "人工智能": "人工智能", "先进": "先進",
+        }
+        for src, expected in cases.items():
+            assert processor.to_traditional(src) == expected, src
+
+    def test_to_traditional_keeps_broken_word_fixes(self, processor):
+        # 舊的台灣慣用詞改寫會造成斷詞／語意失真，現已維持原用詞
+        assert processor.to_traditional("添加剂") == "添加劑"
+        assert processor.to_traditional("食品添加剂") == "食品添加劑"
+        assert processor.to_traditional("查一查看") == "查一查看"
+        assert processor.to_traditional("最高权限在观音菩萨那里") == "最高權限在觀音菩薩那裡"
+        assert processor.to_traditional("管理设置的机构") == "管理設置的機構"
+        assert processor.to_traditional("这种情况类型") == "這種情況類型"
+        assert processor.to_traditional("神算子邵康节") == "神算子邵康節"
+        assert processor.to_traditional("像电波是明显存在的") == "像電波是明顯存在的"
+        assert processor.to_traditional("你可以去看穴位图") == "你可以去看穴位圖"
+
+    def test_to_traditional_keeps_setting_vs_set_pair(self, processor):
+        # 簡體「设定／设置」在繁體分為「設定／設置」，不可混為一談
+        assert processor.to_traditional("三个初始设定") == "三個初始設定"
+        assert processor.to_traditional("三个初始设置") == "三個初始設置"
+
+    def test_to_traditional_keeps_native_wisdom(self, processor):
+        # 來源原生「智慧」（般若智慧）不是「智能」轉換而來，必須維持
+        assert processor.to_traditional("般若智慧") == "般若智慧"
+
+    def test_to_traditional_tw_locale_exceptions(self, processor):
+        # 例外四個詞維持台灣用語
+        assert processor.to_traditional("老挝") == "寮國"
+        assert processor.to_traditional("硅") == "矽"
+        assert processor.to_traditional("新西兰") == "紐西蘭"
+        assert processor.to_traditional("纳米") == "奈米"
 
     def test_to_traditional_duixiang_not_wujian(self, processor):
         # 使用者回報的原始案件：s2twp 台灣慣用詞把「对象」整詞換成「物件」
@@ -550,14 +597,16 @@ class TestI18nProcessor:
         assert "性價比" in processor.to_traditional("性价比高")
         assert "調回來" in processor.to_traditional("这回调回来半个多月")
 
-    def test_to_traditional_keeps_legitimate_tw_it_terms(self, processor):
-        # 受保護詞彙不可影響正確的台灣化
-        assert processor.to_traditional("软件和鼠标") == "軟體和滑鼠"
-        assert processor.to_traditional("获取信息") == "獲取資訊"
-        assert processor.to_traditional("概率很高") == "機率很高"
-        assert processor.to_traditional("通过习气这个第一指标") == "透過習氣這個第一指標"
-        assert processor.to_traditional("芯片和内存") == "晶片和記憶體"
-        assert "伺服器" in processor.to_traditional("游戏服务器")
+    def test_to_traditional_keeps_original_wording_for_corpus_words(self, processor):
+        # 2026-11 使用者指示：台灣慣用詞字典（TWPhrases）的改寫一律維持原用詞，
+        # 例外僅四個地名／單位詞（老撾→寮國、硅→矽、新西蘭→紐西蘭、納米→奈米）。
+        # 語料中出現過的詞維持原用詞；語料未出現的詞仍走台灣慣用詞（滑鼠、伺服器）。
+        assert processor.to_traditional("软件和鼠标") == "軟件和滑鼠"
+        assert processor.to_traditional("获取信息") == "獲取信息"
+        assert processor.to_traditional("概率很高") == "概率很高"
+        assert processor.to_traditional("通过习气这个第一指标") == "通過習氣這個第一指標"
+        assert processor.to_traditional("芯片和内存") == "芯片和內存"
+        assert "服務器" in processor.to_traditional("游戏服务器")
 
     # ---- 同詞二形收斂（唸→念、回向→迴向）----
 

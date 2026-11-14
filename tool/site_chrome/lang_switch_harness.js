@@ -160,6 +160,23 @@ check(
         langSwitchSrc.indexOf("['用戶', '用戶']") !== -1
 );
 
+// 8.5) 台灣慣用詞字典的改寫 → 維持原用詞（2026-11 使用者指示）
+check(
+    "lang-switch.js 的 PHRASE_PROTECT 含「概率／信息／網絡／視頻／軟件」等原用詞保護",
+    langSwitchSrc.indexOf("['概率', '概率']") !== -1 &&
+        langSwitchSrc.indexOf("['信息', '信息']") !== -1 &&
+        langSwitchSrc.indexOf("['网络', '網絡']") !== -1 &&
+        langSwitchSrc.indexOf("['视频', '視頻']") !== -1 &&
+        langSwitchSrc.indexOf("['软件', '軟件']") !== -1
+);
+check(
+    "例外四個詞（老撾／硅／新西蘭／納米）不列入保護：維持台灣用語",
+    langSwitchSrc.indexOf("['老撾', '寮國']") === -1 &&
+        langSwitchSrc.indexOf("['硅', '矽']") === -1 &&
+        langSwitchSrc.indexOf("['新西兰', '紐西蘭']") === -1 &&
+        langSwitchSrc.indexOf("['纳米', '奈米']") === -1
+);
+
 // 9) OpenCC cn→tw 把「干」（做）誤轉成「乾」的修正層（與 i18n_utils 同步）
 //    fixGan 作用在「轉換後」的繁體文字；此處直接抽出函式驗證規則本身。
 var langSrc = fs.readFileSync(SRC, 'utf8');
