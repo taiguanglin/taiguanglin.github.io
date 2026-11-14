@@ -158,6 +158,7 @@ All JS modules live in `assets/js/modules/` and are concatenated (in numeric ord
 | `16-jump-share.js` | Clickable `.toc-count` (jump to the section's first `.question`); 🔗 anchor-share buttons on h2/h3 |
 | `17-theme-pwa.js` | Second dark palette 「墨夜」 (`w2e:darkPalette=neutral` → `body.dark-neutral`; pre-paint scripts in templates add the theme classes to `<html>` **and to `<body>`** — the body-level script is the first child of `<body>`，否則每次頁面切換會先閃日間配色才轉暗); registers root `/sw.js` under the two ebook dirs for offline reading |
 | `18-chapter-prefetch.js` | 章節頁預取（2026-10 長文載入效能）：以事件代理在 `pointerenter`/`touchstart`/`focusin` 即時預取即將點擊的同目錄章節連結；首頁閒置（`requestIdleCallback`，fallback `setTimeout`）逐一以 `priority:'low'` 序列預取**同語言**全部章節頁，經 sw.js 的 `networkFirst()` 直接暖機 PAGES_CACHE——頁面已改 network-first、線上開啟仍會重驗，預取主要保障離線可用（跨語言 `*_trad.html` 刻意不取）。整批預取受 `navigator.connection` 守門：`saveData` 或 2g/3g 不做（hover 預取不受限）；先查 `caches.match` 已有即略過（isolated IIFE） |
+| `19-render-prewarm.js` | 背景預熱（向下捲動的預先渲染，2026-11）：`.question`/`.answer`/`.para-block`/`article.qa-pair` 有 `content-visibility: auto`，視窗外的區塊不排版也不繪製，使用者向下捲動時要等瀏覽器「跑到附近」才渲染 → 捲動中會看到空白／慢半拍。本模組用 IntersectionObserver（`rootMargin` 上方 −50%、下方 +300%）把「視窗下方三屏」的區塊提前`content-visibility: visible`（加 `.w2e-prewarmed`，CSS 連帶把內層 `.question`/`.answer` 一起 visible——外層不 visible 時內層不會被渲染），並把區塊內 `loading="lazy"` 的圖片改為 eager + `decode()`；離開預熱區（往回捲）即收回，交回 `contain-intrinsic-size: auto` 的記憶高度（不跳動）。進入預熱區的區塊分批處理（`requestIdleCallback`，預設每批 8 個）避免同幀大量排版掉幀；`navigator.connection.saveData`／2g／3g 時不預熱圖片（本地渲染預熱仍做）；首頁與無 IntersectionObserver 的瀏覽器不啟動；可用 `window.W2E_PREWARM = {below, keepAbove, images, batch}` 覆寫；診斷資訊掛在 `W2E.prewarm`（isolated IIFE） |
 
 **Standalone JS files** (copied directly to output, not concatenated into `script.js`):
 
@@ -177,7 +178,7 @@ All CSS modules live in `assets/css/modules/` and are concatenated (in numeric o
 
 | File | Responsibility |
 |------|---------------|
-| `00-base.css` | CSS reset, `:root` design tokens (colors, radii, shadows), typography, `.question`/`.answer`, dark-mode base |
+| `00-base.css` | CSS reset, `:root` design tokens (colors, radii, shadows), typography, `.question`/`.answer`, dark-mode base；另含長文 `content-visibility: auto` 規則與其 **`.w2e-prewarmed` 預熱例外**（19-render-prewarm.js：視窗下方的區塊提前 `content-visibility: visible`） |
 | `01a-layout.css` | Reading toolbar, progress bar, action buttons, Q&A overlays, toast notifications |
 | `01b-floating-toc.css` | Floating TOC panel, header, content area, items, tabs |
 | `01c-bookmarks.css` | Bookmark list items, homepage groups, visual indicators, current-chapter bar |

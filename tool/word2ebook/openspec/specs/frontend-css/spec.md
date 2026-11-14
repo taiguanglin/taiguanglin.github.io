@@ -163,6 +163,15 @@ scroll, while keeping state changes (theme, collapse) functional.
 and `article.qa-pair` so long chapters render without paying for offscreen
 layout work; the print block MUST override it back to `visible`.
 
+### Requirement: Background Prewarm Exception For Long Blocks
+`00-base.css` SHALL provide a `.w2e-prewarmed` exception to the rule above:
+an element carrying that class — and any `.question` / `.answer` /
+`.para-block` inside it — SHALL render with `content-visibility: visible`,
+so the region below the viewport can be laid out ahead of time (see
+`19-render-prewarm.js`). The exception SHALL be expressed with a higher
+specificity than the base rule (`.question.w2e-prewarmed`,
+`.w2e-prewarmed .question`, …) so it does not depend on stylesheet order.
+
 ### Requirement: CJK Font Stack
 `00-base.css` SHALL define `--font-sans` as a system CJK stack (PingFang TC /
 Microsoft JhengHei / Noto Sans CJK with sensible fallbacks) for `body`;

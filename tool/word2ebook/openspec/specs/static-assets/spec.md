@@ -142,6 +142,15 @@ under `assets/js/` and are copied verbatim to the output by
 runtime third-party dependency). New vendor files SHALL be added to the copy
 step, not to `modules/`.
 
+#### Scenario: Render-prewarm module is auto-included
+- GIVEN `assets/js/modules/19-render-prewarm.js`
+- WHEN `get_full_js_content()` / `get_full_css_content()` are called
+- THEN the bundled JS SHALL contain the prewarm behaviour
+  (`19-render-prewarm.js`, `w2e-prewarmed`, `W2E_PREWARM`) AFTER the
+  `18-chapter-prefetch.js` block, and the bundled CSS SHALL contain the
+  `.w2e-prewarmed { content-visibility: visible }` exception to the
+  long-block `content-visibility: auto` rule, with no build-config change required
+
 #### Scenario: minisearch vendor copy
 - GIVEN `assets/js/minisearch.min.js` exists
 - WHEN static assets are generated

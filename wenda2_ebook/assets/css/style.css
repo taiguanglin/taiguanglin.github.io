@@ -233,6 +233,22 @@ hr { border: none; height: 2px; background: var(--gradient-hr); margin: 30px 0; 
     contain-intrinsic-size: auto 240px;
 }
 
+/* 背景預熱（19-render-prewarm.js）：把「視窗下方一段區間」的區塊提前渲染，
+   使用者向下捲動時內容已在畫面上，不需等瀏覽器「跑到附近」才排版。
+   外層（article.qa-pair / .para-block）與內層（.question/.answer）都要
+   visible——外層仍是 auto 時，內層不會被渲染。
+   選擇器比上面的基礎規則多一級特異度，不受 CSS 檔案順序影響。 */
+.w2e-prewarmed,
+.question.w2e-prewarmed,
+.answer.w2e-prewarmed,
+.para-block.w2e-prewarmed,
+article.qa-pair.w2e-prewarmed,
+.w2e-prewarmed .question,
+.w2e-prewarmed .answer,
+.w2e-prewarmed .para-block {
+    content-visibility: visible;
+}
+
 /* 問答樣式 */
 .question {
     padding: 15px;
