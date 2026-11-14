@@ -152,7 +152,15 @@ check(
     'got: ' + r9.replaced
 );
 
-// 8) OpenCC cn→tw 把「干」（做）誤轉成「乾」的修正層（與 i18n_utils 同步）
+// 8) PHRASE_PROTECT 必須保留「用户／用戶」（不可被 OpenCC 改成「使用者」）
+var langSwitchSrc = fs.readFileSync(SRC, 'utf8');
+check(
+    "lang-switch.js 的 PHRASE_PROTECT 含「用户→用戶」「用戶→用戶」",
+    langSwitchSrc.indexOf("['用户', '用戶']") !== -1 &&
+        langSwitchSrc.indexOf("['用戶', '用戶']") !== -1
+);
+
+// 9) OpenCC cn→tw 把「干」（做）誤轉成「乾」的修正層（與 i18n_utils 同步）
 //    fixGan 作用在「轉換後」的繁體文字；此處直接抽出函式驗證規則本身。
 var langSrc = fs.readFileSync(SRC, 'utf8');
 var ganFn = langSrc.match(/var GAN_DRY_NEXT[\s\S]*?\n    function fixGan\(text\) \{[\s\S]*?\n    \}/);

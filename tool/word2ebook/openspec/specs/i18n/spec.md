@@ -396,6 +396,22 @@ SHALL mirror this protection table (with both simplified and traditional input
 forms, since site chrome is authored in Traditional) plus the uniform-form and
 digit-measure fixes below; the two copies MUST be kept in sync.
 
+The table SHALL also work in the opposite direction for `用户`: the Taiwan
+vocabulary dictionary would rewrite it to the Taiwan-specific `使用者`, but
+`用戶` is already standard in Traditional (HK/Taiwan) prose, so `用户` (and the
+traditional input form `用戶`) SHALL be preserved as `用戶`. Source text that
+already reads `使用者` SHALL be left untouched (it is not derived from `用户`).
+
+#### Scenario: 用户 stays 用戶
+- GIVEN the simplified text `贴吧用户_QUDy8Na` (and `用户数量达到瓶颈`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `貼吧用戶_QUDy8Na` (and `用戶數量達到瓶頸`)
+
+#### Scenario: Native 使用者 untouched
+- GIVEN the simplified text `使用者在摇动中身心业力得到净化`
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `使用者在搖動中身心業力得到淨化`
+
 #### Scenario: 對象 never hijacked to 物件
 - GIVEN simplified text containing `对象` in any sense (度化对象、讲授对象、找对象)
 - WHEN `I18nProcessor.to_traditional` is called

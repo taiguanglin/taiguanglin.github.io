@@ -412,6 +412,24 @@ class TestI18nProcessor:
 
     # ---- TW-phrase hijack protection（_PHRASE_PROTECT）----
 
+    def test_to_traditional_keeps_yonghu_not_shiyongzhe(self, processor):
+        # TWPhrasesIT 會把「用户」換成台灣慣用詞「使用者」；「用戶」在繁體語境
+        # 已通用，維持「用戶」（來源原本就寫「使用者」者則不動）
+        assert processor.to_traditional("贴吧用户_QUDy8Na") == "貼吧用戶_QUDy8Na"
+        assert processor.to_traditional("用户数量达到瓶颈") == "用戶數量達到瓶頸"
+        assert processor.to_traditional("这位是代微信用户") == "這位是代微信用戶"
+        assert processor.to_traditional("我们这些用户是没有办法的") == "我們這些用戶是沒有辦法的"
+        assert processor.to_traditional("用户") == "用戶"
+        # 繁體輸入的「用戶」也不可被改成「使用者」
+        assert processor.to_traditional("用戶") == "用戶"
+        # 來源本來就寫「使用者」者維持原樣（不是「用户」轉換來的）
+        assert processor.to_traditional("使用者在摇动中身心业力得到净化") == \
+            "使用者在搖動中身心業力得到淨化"
+
+    def test_to_simplified_keeps_yonghu_simplified(self, processor):
+        # 繁體「用戶」轉簡體仍是「用户」
+        assert processor.to_simplified("用戶") == "用户"
+
     def test_to_traditional_duixiang_not_wujian(self, processor):
         # 使用者回報的原始案件：s2twp 台灣慣用詞把「对象」整詞換成「物件」
         result = processor.to_traditional("視周圍所有人為自己未來要度化的对象")
