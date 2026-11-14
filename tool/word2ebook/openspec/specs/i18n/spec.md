@@ -251,6 +251,37 @@ not take those characters and SHALL be preserved. The `面人` phrase hijack
 - WHEN `I18nProcessor.to_traditional` is called
 - THEN the result SHALL be `麵條` (and `泡麵`)
 
+### Requirement: Correct s2twp "dry/do" (乾/幹) Over-Conversion
+Simplified `干` covers both `乾` (dry) and `幹` (to do). The `s2twp` phrase
+dictionary carries the verb phrases (`干活`, `幹嘛`, `幹了`, `幹完` …) but
+converts every `干＋的` to `乾的`, so one sentence mixes the two spellings
+(`如果你乾的就是你想幹的事`). After the pipeline, `to_traditional` SHALL
+convert the "to do" sense back to `幹`:
+
+- `乾的` → `幹的`, EXCEPT the dry contexts found in the corpus — predicate
+  `是乾的`, food `吃乾的` / `乾的米飯`, state `快乾的河`;
+- `乾死` / `乾沒了` / `乾完了` → `幹死` / `幹沒了` / `幹完了`;
+- `乾點` → `幹點` (already handled by the variant map);
+- interfere sense `不可乾的` → `不可干的` (matching the existing
+  `幹預 → 干預` convention).
+
+Dry fixed words (`乾淨`, `乾脆`, `乾坐`, `乾貨`, `乾澀`, `乾枯`, `乾眼症`,
+`乾嘔`, `乾巴`, `乾糧`, `乾果`, `乾屍`, `乾隆`, `乾闥婆`) SHALL remain `乾`.
+The client-side mirror layer (`lang-switch.js`) SHALL apply the same rule via
+`fixGan` (implemented without lookbehind, for Safari < 16.4).
+
+#### Scenario: "To do" sense repaired
+- GIVEN the simplified text `如果你干的就是你想干的事` (and `该干的事都干了`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `如果你幹的就是你想幹的事` (and `該幹的事都幹了`)
+
+#### Scenario: Dry sense preserved
+- GIVEN the simplified text `如果鼻子一直是干的` (and `吃不下主食干的米饭`,
+  `不吃干的`, `妈妈在快干的河里`)
+- WHEN `I18nProcessor.to_traditional` is called
+- THEN the result SHALL be `如果鼻子一直是乾的` (and `吃不下主食乾的米飯`,
+  `不吃乾的`, `媽媽在快乾的河裡`)
+
 ### Requirement: Sleepy "睏" Context Correction
 Simplified `困` covers both `困` (trapped/difficult) and `睏` (sleepy/drowsy).
 `s2twp` always produces `困`. Where a curated phrase unambiguously means sleepy,

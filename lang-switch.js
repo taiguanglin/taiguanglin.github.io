@@ -266,10 +266,46 @@
         }
         return out;
     }
+    /* OpenCC cn→tw 把簡體「干」（做）誤轉成「乾」（乾燥）的修正
+     * （與 i18n_utils._fix_gan_overconversion 同步，兩份須一致）。
+     * 做義的「乾的／乾死／乾沒了／乾完了／乾點」→「幹…」；
+     * 干犯義「不可乾的」→「不可干的」（同「幹預→干預、干涉、干擾」慣例）；
+     * 乾燥義（「是乾的」「吃乾的」「乾的米飯／河」「快乾的」）與乾燥義固定詞
+     * （乾淨、乾脆、乾坐、乾隆、乾闥婆…）不動。
+     * 不用 lookbehind（Safari < 16.4 不支援），改以字元位置判斷前文。 */
+    var GAN_DRY_NEXT = '米飯河';
+    var GAN_DRY_COPULA = '是吃';
+    var GAN_CLAUSE_END = '，。！？；、：,.!?;:';
+    function fixGan(text) {
+        if (text.indexOf('乾') === -1) return text;
+        text = text.split('不可乾的').join('不可干的');
+        text = text.replace(/乾(死|沒了|完了|點)/g, '幹$1');
+        /* OpenCC 片語字典漏轉的做義固定詞（與 i18n_utils._GAN_DO_WORDS 同步） */
+        text = text.split('乾活').join('幹活');
+        text = text.split('乾等').join('幹等');
+        text = text.split('乾沒用').join('幹沒用');
+        text = text.split('乾得很好').join('幹得很好');
+        var out = '';
+        var idx = 0;
+        var re = /乾的/g;
+        var m;
+        while ((m = re.exec(text)) !== null) {
+            var prev = m.index > 0 ? text.charAt(m.index - 1) : '';
+            var next = text.charAt(m.index + 2) || '';
+            var dry = (next !== '' && GAN_DRY_NEXT.indexOf(next) !== -1) ||
+                      (GAN_DRY_COPULA.indexOf(prev) !== -1 &&
+                       (next === '' || GAN_CLAUSE_END.indexOf(next) !== -1));
+            out += text.slice(idx, m.index) + (dry ? '乾的' : '幹的');
+            idx = m.index + 2;
+        }
+        out += text.slice(idx);
+        return out;
+    }
     /* 詞層級誤轉／片語劫持殘留（與 i18n_utils.variant_char_map 同源，須同步）。
      * 順序即替換順序：長詞在前。 */
     var PHRASE_FIXES = [
         ['復雜', '複雜'], ['乾擾', '干擾'], ['盡量', '儘量'],
+        /* 「乾點」（乾點事＝幹點事）——與 i18n_utils.variant_char_map 同步 */
         ['直麵人生', '直面人生'],
         /* 量詞前綴（一／多…）壓住的副詞「只」（與 i18n_utils._CONTEXT_FIXES 同步） */
         ['最多隻能', '最多只能'], ['最多隻是', '最多只是'],
@@ -281,6 +317,9 @@
         /* 「威音王」是佛名，「威音王后」＝威音王＋之後（非皇后義）；
          * 「踩著自己的頭髮過去」＝頭髮義（與 _CONTEXT_FIXES 同步） */
         ['威音王后', '威音王後'], ['的頭發過去', '的頭髮過去'],
+        /* 「干」＝做義時，OpenCC 把「要干了／不要干了」誤轉成「要乾了／不要乾了」
+         * （乾燥義的「烤乾了／弄乾了／曬乾了」正確，不動）。與 _CONTEXT_FIXES 同步。 */
+        ['這個事要乾了', '這個事要幹了'], ['這種就不要乾了', '這種就不要幹了'],
         /* 「信息」在此句指傳送訊息；台灣也通行「信息」，不改為 IT 義「資訊」。 */
         ['我也替你發資訊了', '我也替你發信息了'],
     ];
@@ -387,6 +426,7 @@
                 out = fixLi(out);
                 out = fixYun(out);
                 out = fixMian(out);
+                out = fixGan(out);
                 out = fixUniformForms(out);
                 return fixPhrases(out);
             };

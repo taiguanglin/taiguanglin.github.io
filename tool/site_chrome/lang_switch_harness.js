@@ -152,6 +152,51 @@ check(
     'got: ' + r9.replaced
 );
 
+// 8) OpenCC cn→tw 把「干」（做）誤轉成「乾」的修正層（與 i18n_utils 同步）
+//    fixGan 作用在「轉換後」的繁體文字；此處直接抽出函式驗證規則本身。
+var langSrc = fs.readFileSync(SRC, 'utf8');
+var ganFn = langSrc.match(/var GAN_DRY_NEXT[\s\S]*?\n    function fixGan\(text\) \{[\s\S]*?\n    \}/);
+check('lang-switch.js 含 fixGan 修正函式', !!ganFn);
+if (ganFn) {
+    /* 以 Function 建構式取出函式（strict mode 下 eval 不會洩漏到外層作用域） */
+    var fixGan = new Function(ganFn[0] + '\nreturn fixGan;')();
+    var ganCases = [
+        ['如果你乾的就是你想幹的事', '如果你幹的就是你想幹的事'],
+        ['該乾的事都幹了', '該幹的事都幹了'],
+        ['但是乾的精神上很累', '但是幹的精神上很累'],
+        ['那就是乾的事最後都會', '那就是幹的事最後都會'],
+        ['他們自己乾的，又不是你逼著他們乾的', '他們自己幹的，又不是你逼著他們幹的'],
+        ['非得乾死一方', '非得幹死一方'],
+        ['四千萬給乾沒了', '四千萬給幹沒了'],
+        ['乾完了再繼續打', '幹完了再繼續打'],
+        ['乾點事', '幹點事'],
+        ['外邪不可乾的角度', '外邪不可干的角度'],
+        // OpenCC 片語字典漏轉的做義固定詞
+        ['提水乾活洗尿布', '提水幹活洗尿布'],
+        ['少乾沒用的事', '少幹沒用的事'],
+        ['別乾等著', '別幹等著'],
+        ['都乾得很好，甚至超過', '都幹得很好，甚至超過'],
+        // 乾燥義不動
+        ['如果鼻子一直是乾的', '如果鼻子一直是乾的'],
+        ['吃不下主食乾的米飯', '吃不下主食乾的米飯'],
+        ['不吃乾的', '不吃乾的'],
+        ['媽媽在快乾的河裡', '媽媽在快乾的河裡'],
+        ['乾淨的米飯', '乾淨的米飯'],
+        ['乾脆就放下', '乾脆就放下'],
+        ['乾坐著', '乾坐著'],
+        ['乾隆大藏經', '乾隆大藏經'],
+        ['乾闥婆城', '乾闥婆城']
+    ];
+    for (var g = 0; g < ganCases.length; g++) {
+        var got = fixGan(ganCases[g][0]);
+        check(
+            'fixGan：' + ganCases[g][0] + ' → ' + ganCases[g][1],
+            got === ganCases[g][1],
+            'got: ' + got
+        );
+    }
+}
+
 console.log('');
 if (failures.length) {
     console.log('lang_switch_harness: ' + failures.length + ' 項失敗');

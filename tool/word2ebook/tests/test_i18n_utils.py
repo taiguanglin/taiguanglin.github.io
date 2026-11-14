@@ -190,6 +190,56 @@ class TestI18nProcessor:
         assert processor.to_traditional("倒大霉") == "倒大霉"
         assert processor.to_traditional("一件倒霉事") == "一件倒霉事"
 
+    # ---- 乾 / 幹 (dry vs to-do) ----
+
+    def test_to_traditional_fixes_gan_do_context(self, processor):
+        # OpenCC 把做義的「干」轉成「乾」，同一句出現兩種字：
+        # 「如果你乾的就是你想幹的事」→ 台灣正體一律「幹」。
+        assert processor.to_traditional(
+            "如果你干的就是你想干的事"
+        ) == "如果你幹的就是你想幹的事"
+        assert processor.to_traditional("该干的事都干了") == "該幹的事都幹了"
+        assert processor.to_traditional("他不干的事别干") == "他不幹的事別幹"
+        assert processor.to_traditional("干的事情") == "幹的事情"
+        assert processor.to_traditional("该干的好事没做") == "該幹的好事沒做"
+        assert processor.to_traditional("干的时候") == "幹的時候"
+        assert processor.to_traditional("干活的人") == "幹活的人"
+        assert processor.to_traditional("干完了再继续打") == "幹完了再繼續打"
+        assert processor.to_traditional("非得干死一方") == "非得幹死一方"
+        assert processor.to_traditional("四千万给干没了") == "四千萬給幹沒了"
+        assert processor.to_traditional("干点事") == "幹點事"
+        # 「但是乾的…」「那就是乾的事…」：前字是「是」但後接實詞，仍是做義
+        assert processor.to_traditional("但是干的精神上很累") == "但是幹的精神上很累"
+        assert processor.to_traditional("那就是干的事最后都会回到他的身上") == "那就是幹的事最後都會回到他的身上"
+        # 子句末的做義「乾的」
+        assert processor.to_traditional("他们自己干的，又不是你逼着他们干的") == "他們自己幹的，又不是你逼著他們幹的"
+        # OpenCC 片語字典漏轉的做義固定詞
+        assert processor.to_traditional("就开始提水干活洗尿布") == "就開始提水幹活洗尿布"
+        assert processor.to_traditional("希望少干没用的事") == "希望少幹沒用的事"
+        assert processor.to_traditional("也别干等着，该干嘛干嘛去") == "也別幹等著，該幹嘛幹嘛去"
+        assert processor.to_traditional("随便找个人都干得很好，甚至超过") == "隨便找個人都幹得很好，甚至超過"
+
+    def test_to_traditional_keeps_dry_gan(self, processor):
+        # 乾燥義的「乾」不可被改成「幹」
+        assert processor.to_traditional("如果鼻子一直是干的") == "如果鼻子一直是乾的"
+        assert processor.to_traditional("吃不下主食干的米饭") == "吃不下主食乾的米飯"
+        assert processor.to_traditional("不吃干的") == "不吃乾的"
+        assert processor.to_traditional("妈妈在快干的河里") == "媽媽在快乾的河裡"
+        # 乾燥義固定詞
+        assert processor.to_traditional("干净的米饭") == "乾淨的米飯"
+        assert processor.to_traditional("干脆就放下") == "乾脆就放下"
+        assert processor.to_traditional("干坐着") == "乾坐著"
+        assert processor.to_traditional("乾隆大藏经") == "乾隆大藏經"
+        assert processor.to_traditional("乾闥婆城") == "乾闥婆城"
+        assert processor.to_traditional("眼睛干涩") == "眼睛乾澀"
+        assert processor.to_traditional("干眼症") == "乾眼症"
+        # 「乾得很」是乾燥義（「乾得好」則是做義，由上一組測試涵蓋）
+        assert processor.to_traditional("嘴巴干得很，半夜起来") == "嘴巴乾得很，半夜起來"
+
+    def test_to_traditional_keeps_gan_interfere(self, processor):
+        # 「外邪不可干」是干犯義（不可侵犯），依既有慣例（幹預→干預）作「干」
+        assert processor.to_traditional("外邪不可干的角度") == "外邪不可干的角度"
+
     # ---- 發 / 髮 (emit vs hair) ----
 
     def test_to_traditional_fixes_fa_over_hair(self, processor):
