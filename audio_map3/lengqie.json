@@ -1,7 +1,7 @@
 {
   "series": "lengqie",
   "book_number": 8,
-  "generated_at": "2026-11-18T07:42:21.015Z",
+  "generated_at": "2026-11-18T10:19:45.281Z",
   "lectures": {
     "1": {
       "audio": "2024年11月11日Tai师父讲经·楞伽经(1).opus",
@@ -37359,7 +37359,7 @@
       "audio": "2025年6月13日Tai师父讲经·楞伽经(41).opus",
       "title": "楞伽经（41）",
       "duration": 1784.762,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-s278b1f94",
@@ -37454,20 +37454,20 @@
         {
           "pid": "p-s31a93ad3",
           "text": "《楞伽经》第四十一期，这本书的二百二十一页，有内容的最后一篇。这本书一直在讲菩萨的境界，但是最后讲了为什么不应该吃肉，为什么要戒肉。菩萨肯定早就不吃肉了。哪怕是凡夫，只要灭了初禅舌根境界之后，到了二禅，已经没有吃这种行为了，所以更不可能有什么吃肉的事。",
-          "start": 1.11,
-          "end": 36.97,
+          "start": 1.01,
+          "end": 36.47,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s07fe2b1e",
           "text": "在这部大乘经典的最后部分讲吃肉的问题，是告诉大家，前面讲的很多内容，重点是“空”，从佛的境界来看“五法、三自性”是往空的方向努力；但是如果你只知道这些理论，而不知道业的逻辑，就很容易陷入到执着于空的状态，从而忽略人生活中的一切行为，特别是吃肉这种行为。",
-          "start": 36.97,
+          "start": 36.47,
           "end": 70.56,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s856761ea",
@@ -37476,7 +37476,7 @@
           "end": 85.1,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa31f3035",
@@ -37485,7 +37485,7 @@
           "end": 98.25,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s264a9e93",
@@ -37494,7 +37494,7 @@
           "end": 125.86,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s852a431f",
@@ -37503,7 +37503,7 @@
           "end": 169.53,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7576c496",
@@ -37512,7 +37512,7 @@
           "end": 184.59,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb258f277",
@@ -37521,7 +37521,7 @@
           "end": 203.68,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-safab1d75",
@@ -37530,7 +37530,7 @@
           "end": 240.1,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3612b62d",
@@ -37539,7 +37539,7 @@
           "end": 254.23,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s78cd4d7b",
@@ -37548,34 +37548,34 @@
           "end": 266.72,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbfc0a9c5",
           "text": "这本书一开始讲楞伽王遇到了很多佛，到最后讲断肉品，都是在进行一种暗示，世界不是大家想象的那样——只要把心灭掉，就可以一下子成佛，还有业和度人这个事。",
           "start": 266.72,
-          "end": 290.33,
+          "end": 290.13,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0920ccb6",
           "text": "尔时，大慧菩萨摩诃萨复白佛言：“世尊，愿为我说食不食肉功德过失，我及诸菩萨摩诃萨知其义已，为未来、现在报习所熏，食肉众生而演说之，令舍肉味求于法味，",
-          "start": 290.33,
-          "end": 296.65,
+          "start": 290.13,
+          "end": 296.665,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7661788f",
           "text": "“愿为我说食不食肉功德过失”，为我们说一下不吃肉的功德和吃肉的过失。",
-          "start": 296.65,
+          "start": 296.665,
           "end": 302.52,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2961784e",
@@ -37584,7 +37584,7 @@
           "end": 339.3,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s910d21de",
@@ -37593,7 +37593,7 @@
           "end": 367.42,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8a454ea0",
@@ -37602,25 +37602,25 @@
           "end": 382.43,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9e020adc",
           "text": "“我及诸菩萨摩诃萨知其义已，为未来、现在报习所熏，食肉众生而演说之”，“报”是业报，“习”是习气。我和菩萨们知道吃肉的过错和不吃肉的功德之后，为未来和现在这些被业报和习气所污染的吃肉的众生，演说不应该吃肉的义理。“令舍肉味求于法味”，让他们舍弃肉的味道，追求佛法的味道。",
           "start": 382.43,
-          "end": 415.48,
+          "end": 417.333,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s46573bf5",
           "text": "于一切众生起大慈心，更相亲爱如一子想，住菩萨地，得阿耨多罗三藐三菩提，或二乘地，暂时止息，究竟当成无上正觉。",
-          "start": 415.48,
+          "start": 417.333,
           "end": 430.56,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc8b00f26",
@@ -37629,7 +37629,7 @@
           "end": 459.08,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s02dd53a0",
@@ -37638,34 +37638,34 @@
           "end": 467.49,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd98d5e93",
           "text": "路伽耶这样的外道，也执着于有无、断常等二边见当中，但是他们还有禁戒，“遮禁”就是禁戒。他们还不吃肉呢。佛以大悲心来普度众生，是众生所依靠的对象，是众生可以仰仗的圣人，怎么能允许自己和其他众生吃肉呢？",
           "start": 467.49,
-          "end": 505.84,
+          "end": 507.006,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc50b1edf",
           "text": "善哉！世尊，具大慈悲，哀愍世间等观众生犹如一子，愿为解说食肉过恶，不食功德，令我及诸菩萨等闻已奉行，广为他说。",
-          "start": 505.84,
-          "end": 519.36,
+          "start": 507.006,
+          "end": 520.231,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4c73aa93",
           "text": "世尊以大慈悲心，看所有众生就像自己的孩子一样。求世尊为大家说一说不吃肉的功德和吃肉的过错。让我们知道之后再为别人说。",
-          "start": 519.36,
+          "start": 520.231,
           "end": 547.84,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf299b271",
@@ -37674,25 +37674,25 @@
           "end": 554.52,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s81ec6751",
           "text": "我会为你分别解说。",
           "start": 554.52,
-          "end": 557.33,
+          "end": 557.23,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1b752e93",
           "text": "大慧，一切诸肉有无量缘，菩萨于中当生悲愍，不应噉食，我今当为汝说其少分。",
-          "start": 557.33,
+          "start": 557.23,
           "end": 568.85,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9d936a14",
@@ -37701,34 +37701,34 @@
           "end": 595.9,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb634ee52",
           "text": "大慧，一切众生从无始来，在生死中轮回不息，靡不曾作父母，兄弟、男女、眷属，乃至朋友、亲爱、侍使，易生而受鸟兽等身，云何于中取之而食？",
           "start": 595.9,
-          "end": 615.46,
+          "end": 613.238,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s381ff7b4",
           "text": "所有众生从无始来在生死中不断轮回，都曾做过我们的父母、兄弟、男女、眷属，乃至朋友、亲爱、侍使等等，都曾做过我们亲近的人，和我们都是有缘的人。死了重新投胎之后就得到鸟兽等身——投胎到畜生道了，我们怎么可以吃它们呢？",
-          "start": 615.46,
-          "end": 651.85,
+          "start": 613.238,
+          "end": 651.75,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s64c69e86",
           "text": "大慧，菩萨摩诃萨观诸众生同于己身，念肉皆从有命中来，云何而食？",
-          "start": 651.85,
+          "start": 651.75,
           "end": 660.48,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa5e8046b",
@@ -37737,25 +37737,25 @@
           "end": 676.41,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb043da3f",
           "text": "大慧，诸罗刹等，闻我此说，尚应断肉，况乐法人？大慧，菩萨摩诃萨在在生处，观诸众生皆是亲属，乃至慈念如一子想，是故不应食一切肉。",
           "start": 676.41,
-          "end": 681.84,
+          "end": 681.603,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbf5a3b2a",
           "text": "这些吃肉的罗刹鬼，听到我的说法之后也会断肉，何况这些乐法的人呢？不管在任何地方，菩萨摩诃萨看到所有众生，都应该把他们当作自己的孩子一样想，所以菩萨摩诃萨不应该吃所有的肉。",
-          "start": 681.84,
+          "start": 681.603,
           "end": 719.7,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s30aacd2e",
@@ -37764,7 +37764,7 @@
           "end": 731.01,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7c2e3397",
@@ -37773,7 +37773,7 @@
           "end": 762.39,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1d872507",
@@ -37782,7 +37782,7 @@
           "end": 793.17,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s164439c4",
@@ -37791,88 +37791,88 @@
           "end": 829.45,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd019680b",
           "text": "出家人也好，沙门也好，总之修行的人接受别人的布施、供养，也希望能得到清净的布施和供养——没有欲望、不求利、没有什么特别的目的，只是单纯以善念来布施。这种布施你做了也好，对方接受的人也好，大家都开心。",
           "start": 829.45,
-          "end": 851.66,
+          "end": 851.46,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6fd6379e",
           "text": "但是如果你布施的时候有所图，你自己的功德也会大打折扣。对于对方来说，也有一定的负担，念想都会互相之间影响，因为诸佛同体。你给别人东西的时候就想，你拿这个东西应该给我什么好处。这样的念头对对方也会产生一定的影响，只不过当下可能看不见或者感受不到。",
-          "start": 851.66,
+          "start": 851.46,
           "end": 884.41,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s874c273d",
           "text": "但是从佛的视角来看，你接受这样的供养，别人的欲望也会加到你身上，让你清净心有所污染——不能说彻底污染，但是多多少少有影响。所以修行人接受布施和供养的时候，也希望自己能得到清净的供养。一般看上去不够清净的，我们不敢接受。",
           "start": 884.41,
-          "end": 909.03,
+          "end": 909.63,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3192d39c",
           "text": "在《坐禅2》里专门讲了清净布施，希望大家看一看。希望大家布施的时候，不管你布施的是修行人，还是不修行的人，是出家人，还是不出家的人，都带着这种清净的心态去布施。",
-          "start": 909.03,
-          "end": 924.86,
+          "start": 909.63,
+          "end": 924.76,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scfc33516",
           "text": "大慧，食肉之人，众生见之，悉皆惊怖，修慈心者，云何食肉？",
-          "start": 924.86,
-          "end": 931.17,
+          "start": 924.76,
+          "end": 931.07,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0d6361a0",
           "text": "众生看到吃肉的人都会又惊又怖——看到就怕。修慈悲心的人怎么可以吃肉呢？",
-          "start": 931.17,
+          "start": 931.07,
           "end": 946.46,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2f7d89c5",
           "text": "很多不吃肉的人可能已经深有体会。比如街上有些宠物犬对什么人都乱叫，但是看到一些不吃肉的人，就比较温顺。甚至在外边小鸟有时候会不自觉地落到不吃肉的人身上。一般在城里小鸟是不愿意接近人的，除非人养的鸽子之类的，它从人手里吃食吃多了，知道人不会伤害它。但是有些人修到一定境界之后，动物们愿意亲近他。",
           "start": 946.46,
-          "end": 1014.44,
+          "end": 993.182,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa8c19188",
           "text": "大慧，譬如猎师及旃陀罗捕鱼网鸟诸恶人等，狗见惊吠，兽见奔走，空飞水陆一切众生，若有见之，咸作是念，此人气息犹如罗刹，今来至此，必当杀我，为护命故，悉皆走避。",
-          "start": 1014.44,
-          "end": 1020.87,
+          "start": 993.182,
+          "end": 1014.515,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s77d4cf07",
           "text": "“猎师”“旃陀罗捕鱼网鸟诸恶人”都是猎人。狗看到了都会叫，动物们见着都逃跑。不管是天上飞的、水里游的、还是地上跑的，这些禽兽、鱼类等看到了都会想，这个人的气息就像罗刹鬼一样。他来到这里，肯定是来杀我的，为了逃命，大家都逃跑。",
-          "start": 1020.87,
+          "start": 1014.515,
           "end": 1053.03,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8a80398e",
@@ -37881,52 +37881,52 @@
           "end": 1094.25,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb6d4ad62",
           "text": "食肉之人，亦复如是。是故菩萨为修慈行，不应食肉。",
           "start": 1094.25,
-          "end": 1099.09,
+          "end": 1098.89,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s553f1143",
           "text": "吃肉的人就像这样，可以吓跑所有的动物。菩萨修慈悲行，不应该吃肉。",
-          "start": 1099.09,
-          "end": 1109.47,
+          "start": 1098.89,
+          "end": 1109.37,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s965fd045",
           "text": "大慧，夫食肉者，身体臭秽，恶名流布，贤圣善人，不用亲狎，是故菩萨不应食肉。",
-          "start": 1109.47,
+          "start": 1109.37,
           "end": 1120.5,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sda667731",
           "text": "吃肉的人身体有恶臭，名声也不好。贤圣善人不用亲近，修行人就不应该吃肉。",
           "start": 1120.5,
-          "end": 1134.42,
+          "end": 1135.214,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s40b6a12b",
           "text": "大慧，夫血肉者，众仙所弃，群圣不食，是故菩萨不应食肉。",
-          "start": 1134.42,
+          "start": 1135.214,
           "end": 1141.27,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s68334546",
@@ -37935,25 +37935,25 @@
           "end": 1149.25,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a497428",
           "text": "大慧，菩萨为护众生信心，令于佛法不生讥谤，以慈愍故，不应食肉。",
           "start": 1149.25,
-          "end": 1155.87,
+          "end": 1155.77,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8b8702e7",
           "text": "菩萨为了保护众生的信心，让他们增长信心，不应该吃肉。一个修行人，尤其是出来传法的人，劝别人不吃肉，自己就应该不要吃肉。这样起码不破坏别人的信心，或者不给人留下用来攻击的把柄。",
-          "start": 1155.87,
+          "start": 1155.77,
           "end": 1178.87,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s168a473f",
@@ -37962,7 +37962,7 @@
           "end": 1213.39,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s771b28e3",
@@ -37971,7 +37971,7 @@
           "end": 1225.97,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7160e9f8",
@@ -37980,115 +37980,115 @@
           "end": 1233.58,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s319505ee",
           "text": "如果我的弟子们喜欢吃肉，让世人带着讥谤的心来看，他们会说：一个出家人修清净行，为什么舍弃天人所食之味？就像恶兽一样，吃得满腹都是肉，还出来游走，让众生看到都害怕。以至于坏清净的修行，还失了沙门的道。",
           "start": 1233.58,
-          "end": 1292.83,
+          "end": 1292.73,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3202edc6",
           "text": "“是故当知佛法之中，无调伏行，菩萨慈愍，为护众生令不生于如是之心，不应食肉”，所以在佛法中，为了让众生不生这样的心念，不应该吃肉。“佛法之中，无调伏行”，这一句书后面解释为佛法之中无三昧邪戒。",
-          "start": 1292.83,
-          "end": 1319.29,
+          "start": 1292.73,
+          "end": 1319.19,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2eb11daf",
           "text": "我的理解是，在佛法当中没有吃了肉，还能把这个业给调伏没的那种修行方式，也就是你吃了肉，业和果报一直在；佛法当中没有那种吃了肉，还能把你吃肉的罪行给灭掉的那种修行。只能从自己的习气开始全部灭掉，这才算正常的修行。",
-          "start": 1319.29,
-          "end": 1351.29,
+          "start": 1319.19,
+          "end": 1351.19,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa334ced5",
           "text": "大慧，如烧人肉，其气臭秽，与烧余肉，等无差别，云何于中有食不食？是故一切清净者，不应食肉。",
-          "start": 1351.29,
+          "start": 1351.19,
           "end": 1360.6,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6680628c",
           "text": "烧人肉的臭的气味和烧其他肉没有差别，都是一样的。所以没有什么吃不吃的问题，一切求清净的人都不应该吃肉。",
           "start": 1360.6,
-          "end": 1379.47,
+          "end": 1379.37,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd72f773d",
           "text": "大慧，诸善男女，塚间树下，阿兰若处，寂静修行，或住慈心，或持咒术，或求解脱，或趣大乘，以食肉故，一切障碍，不得成就，是故菩萨欲利自他，不应食肉。",
-          "start": 1379.47,
+          "start": 1379.37,
           "end": 1393.94,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfc92ed35",
           "text": "“阿兰若处”，就是清净修行的地方，我们这样理解就可以了。善男女们在清净修行的地方，不管念咒，还是打坐，还是求解脱，或求大乘，以各种目的修行。一旦吃肉的话，因为吃肉的障碍，会导致修行不能成就。所以菩萨想要利益自己和他人，不应食肉。",
           "start": 1393.94,
-          "end": 1421.5,
+          "end": 1421.4,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scc435f2b",
           "text": "大慧，夫食肉者，见其形色，则已生于贪滋味心，菩萨慈念，一切众生犹如己身，云何见之，而作食想？是故菩萨不应食肉。",
-          "start": 1421.5,
+          "start": 1421.4,
           "end": 1434.95,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc1616fa1",
           "text": "吃肉的人一旦见到这些动物的形色、状态、外貌，就开始升起贪滋味心——一看到狗、牛、马、猪，心里就想这个应该很好吃，会升起这样的念头。菩萨应该有慈悲心，看到一切众生，就像看到自己的身体一样，怎么能升起吃的想法？",
           "start": 1434.95,
-          "end": 1465.48,
+          "end": 1466.535,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1d0a6d48",
           "text": "大慧，夫食肉者，诸天远离，口气常臭，睡梦不安，觉已忧悚，夜叉恶鬼夺其精气，心多惊怖，食不知足，增长疾病，易生疮癣，恒被诸虫之所唼食，不能于食，深生厌离。",
-          "start": 1465.48,
-          "end": 1473.24,
+          "start": 1466.535,
+          "end": 1473.97,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2202bc16",
           "text": "吃肉的人，天人们远离，口气常臭，睡觉的时候经常做噩梦，睡不安宁。醒来之后在正常状态下，也有很多不好的情绪。外来的邪魔鬼道夺其精气。心里经常有惊和怖这种不好的情绪，有恐惧之心；身体病多，容易生皮肤病。身体还有很多不好的寄生虫。对吃肉这个事，不能产生深深的厌离，会一直想吃。",
-          "start": 1473.24,
-          "end": 1536.42,
+          "start": 1473.97,
+          "end": 1536.32,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa48a4f73",
           "text": "大慧，我常说言，凡所食噉作子肉想，余食尚然，云何而听弟子食肉？",
-          "start": 1536.42,
+          "start": 1536.32,
           "end": 1544.28,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb58d5e9",
@@ -38097,7 +38097,7 @@
           "end": 1566.99,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9595febe",
@@ -38106,25 +38106,25 @@
           "end": 1576.91,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s15f7722d",
           "text": "肉不美好，也不清净，吃肉会生出很多罪恶，败坏很多功德。这些天人和修行人都会舍弃。所以佛不会允许弟子们吃肉。如果有人说，佛允许弟子们吃肉了，这就是谤佛。",
           "start": 1576.91,
-          "end": 1608.29,
+          "end": 1608.49,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s621c6574",
           "text": "到现在小乘和大乘，还有人拿着吃肉的事互相争辩，我觉得没有必要。佛自己在晚期说过，早期出家刚带着弟子们修行的时候，因为大家的根器和环境等影响，不能一下子要求大家这个也不做，那个也不做。禁戒太多了，有的人会生起退失的心态，望而却步，所以以方便法，用神通变出一些肉，给大家吃。",
-          "start": 1608.29,
+          "start": 1608.49,
           "end": 1646.31,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a701d34",
@@ -38133,25 +38133,25 @@
           "end": 1677.64,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s37dc27bc",
           "text": "但是在大乘这里，所有的肉都不能吃，尤其是佛入灭之后，所有的肉都有意识，你吃了就等于和众生结了恶缘。所以佛讲大乘的时候劝弟子们都不要吃肉。",
           "start": 1677.64,
-          "end": 1694.62,
+          "end": 1695.637,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saaa67e1d",
           "text": "大慧，净美食者，应知则是粳米、粟米、大小麦、豆、酥油、石蜜，如是等类，此是过去诸佛所许，我所称说，我种姓中善男女心怀净信，久植善根，于身命财不生贪著，慈愍一切犹如己身，如是之人之所应食，非诸恶习虎狼性者心所爱重。",
-          "start": 1694.62,
+          "start": 1695.637,
           "end": 1722.26,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s796a9147",
@@ -38160,7 +38160,7 @@
           "end": 1778.4,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s69fe3077",
@@ -38169,7 +38169,7 @@
           "end": 1784.762,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
