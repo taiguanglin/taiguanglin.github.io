@@ -17,12 +17,20 @@
      補足到 1095 條（實測 755 條）；單一來源（ebook）上限 70%（實測 ebook 766／wenda2 329）。
    - `url` 含頁內錨點（如 `ebook/03_trad.html#p-sc436a366`），已驗證與電子書
      HTML 的 id 對應。
-4. `audit_quotes.py` — 稽核成品（見下）；有經文／斷鏈／重複就 `exit 1`。
+   - **只搬位、不換選文**：`python3 tool/daily_quotes/select_1095.py --repair-urls`
+     會以引文「文字」對現況電子書重新定位，修正 `daily_quotes.json` 的過期
+     網址，但保留 1,095 條選文、順序與評分欄位不變。電子書重建只是搬動章節／
+     錨點時請用這個模式；要做品質升級才走完整 `select_1095.py`（會重洗日期輪播
+     的每日內容）。
+4. `audit_quotes.py` — 稽核成品（見下）；有經文／斷鏈／連結指向的段落文字不符／
+   重複就 `exit 1`。站級 `tool/site_chrome/check_site.py` 也會呼叫本稽核。
 
 > **電子書重建（尤其改了區塊切分，如《圓覺經》修訂原檔 PDF）後要重跑整條
 > 管線**：`build_quotes.py` → `refresh_sample.py` → `select_1095.py` →
 > `audit_quotes.py`。少了 `refresh_sample.py`，樣本裡過期的 pid 會讓經文過濾
-> 失準（經文混進成品）並造成斷鏈。
+> 失準（經文混進成品）並造成斷鏈。若重建只是把既有段落搬到別的章節、**不想
+> 重洗每日輪播內容**，改跑 `select_1095.py --repair-urls`（保留選文與順序、
+> 只修網址），再跑 `audit_quotes.py`。
 
 > `score` 欄 = AI 分；`heuristic` 欄 = 啟發式分（無 AI 分的條目才帶）。
 
@@ -70,6 +78,8 @@ python3 tool/daily_quotes/audit_quotes.py --strict   # 放寬版文言掃描也�
 
 除三道硬規則外，`audit_quotes.py` 還會跑一次**放寬版**掃描（門檻放寬到 8 個現代
 助詞）並印出結果供人工複查；講解文字偏書面語會誤報，所以預設只警告。
+連結檢查有兩層：**① 繁、簡頁的 id 都存在**；**② url 對應的段落文字必須就是
+引文本身**（只查 id 存在會漏掉「id 還在、段落已搬到別章」的情況）。
 重跑 `build_quotes.py` → `select_1095.py` 後務必跑一次稽核再提交。
 
 ⚠️ 規則只能涵蓋「結構上就是經文」的段落。講經書的「解析」區段偶爾整段其實是

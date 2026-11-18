@@ -35,14 +35,21 @@ TEACH = ('所以', '因此', '也就是', '其實', '就是說', '換句話', '�
 
 # 經文過濾統一由 scripture_filter 處理（結構錨點 + 文言啟發式），此處不另立規則。
 
-def _current_urls_by_text():
-    """{段落文字: 目前電子書的 url}——用來把樣本裡過期的 pid 重新定位。
+SOURCE_NAMES = {'ebook': 'ebook', 'wenda2_ebook': 'wenda2'}
+
+
+def _current_entries_by_text():
+    """{段落文字: [{url, title, source}, ...]}——現況電子書的段落定位表。
 
     來源：現況的搜尋索引（ebook/ 與 wenda2_ebook/ 的 search_index_trad.json），
     以 build_quotes.clean() 同一套正規化處理文字，才能與樣本／候選池對上。
+
+    為什麼一定要「以文字重新定位」而不是信任既有 url：pid／答案錨點會隨電子書
+    重建而換（章節合併、月份章重新分類都會搬動段落）。曾因此讓 91 條每日精選
+    的「前往原文」落到已不存在的錨點，而舊稽核只看候選池、不看成品語意。
     """
     from build_quotes import clean
-    out = {}
+    out = collections.defaultdict(list)
     for sub in ('ebook', 'wenda2_ebook'):
         path = ROOT / sub / 'search_index_trad.json'
         if not path.exists():
@@ -50,8 +57,23 @@ def _current_urls_by_text():
         for x in json.load(open(path, encoding='utf-8')):
             if x.get('type') not in ('content', 'answer'):
                 continue
-            out.setdefault(clean(x['content']), '%s/%s' % (sub, x['url']))
+            out[clean(x['content'])].append({
+                'url': '%s/%s' % (sub, x['url']),
+                'title': x.get('title', ''),
+                'source': SOURCE_NAMES.get(sub, sub),
+            })
     return out
+
+
+def _pick_entry(entries, preferred_url=None):
+    """從同一段文字的候選定位中挑一筆；優先沿用仍有效的既有 url。"""
+    if not entries:
+        return None
+    if preferred_url:
+        for entry in entries:
+            if entry['url'] == preferred_url:
+                return entry
+    return entries[0]
 
 
 def heuristic(t):
@@ -84,7 +106,7 @@ def main():
     # 獨立區塊）就會整批換 pid → 連結斷掉，且經文過濾也失效（過期 url 不在
     # 現況的經文錨點裡 → 被誤當成不是經文而混進成品）。
     # 故以「文字」重新定位目前的名稱；定位不到者不進骨架。
-    current = _current_urls_by_text()
+    current = _current_entries_by_text()
 
     # 1) 骨架：AI score>=7（idx 對應 sample 位置）
     scored = []
@@ -92,14 +114,15 @@ def main():
         for x in json.load(open(TD / f'scores/batch_{i:02d}.json')):
             if x['score'] >= MIN_SCORE:
                 it = sample[x['idx']]
-                url = current.get(it['text'])
-                if not url:
+                entry = _pick_entry(current.get(it['text'], []))
+                if not entry:
                     continue          # 文字已不存在於現況電子書 → 略過
-                if is_scripture(ROOT, url, it['text']):
+                if is_scripture(ROOT, entry['url'], it['text']):
                     continue
                 scored.append({
-                    'text': it['text'], 'url': url, 'title': it['title'],
-                    'source': it['source'], 'score': x['score'],
+                    'text': it['text'], 'url': entry['url'],
+                    'title': entry['title'] or it.get('title', ''),
+                    'source': entry['source'], 'score': x['score'],
                 })
     scored.sort(key=lambda q: -q['score'])
 
@@ -114,9 +137,15 @@ def main():
         h = hashlib.md5(it['text'].encode()).hexdigest()
         if h in seen:
             continue
-        if is_scripture(ROOT, it['url'], it['text']):
+        # 同樣以「文字」對現況電子書重新定位：candidates.json 若未跟著重建，
+        # 舊 url 不可信（會把斷鏈帶進成品）。
+        entry = _pick_entry(current.get(it['text'], []), it.get('url'))
+        if not entry:
             continue
-        rest.append((heuristic(it['text']), it['text'], it['url'], it['title'], it['source']))
+        if is_scripture(ROOT, entry['url'], it['text']):
+            continue
+        rest.append((heuristic(it['text']), it['text'], entry['url'],
+                     entry['title'] or it.get('title', ''), entry['source']))
     rest.sort(key=lambda r: -r[0])
 
     # 3) 合併，來源上限
@@ -164,5 +193,51 @@ def main():
     print(f'輸出 {len(out)} 條（AI 骨架 {ai}、啟發式補充 {hx}）')
     print('來源:', dict(collections.Counter(q['source'] for q in out)))
 
+def repair_urls():
+    """只修正既有 daily_quotes.json 的過期網址，保留選文、順序與評分欄位。
+
+    何時用：電子書重建後章節／錨點搬位，但不想讓 1,095 條選文與日期輪播
+    順序整批重洗時。正常品質升級才走完整 main() 流程。
+
+    定位方式：以「文字」對現況繁體搜尋索引重新定位段落；定位不到就失敗，
+    絕不猜測或保留舊 url。
+    """
+    path = ROOT / 'daily_quotes.json'
+    data = json.load(open(path, encoding='utf-8'))
+    quotes = data['quotes']
+    current = _current_entries_by_text()
+    out = []
+    changed_urls = changed_titles = changed_sources = 0
+    unresolved = []
+    for i, quote in enumerate(quotes):
+        entry = _pick_entry(current.get(quote['text'], []), quote.get('url'))
+        if not entry:
+            unresolved.append((i, quote['text'][:60]))
+            out.append(quote)
+            continue
+        fixed = dict(quote, url=entry['url'])
+        if fixed['url'] != quote.get('url'):
+            changed_urls += 1
+        if entry.get('title') and fixed.get('title') != entry['title']:
+            fixed['title'] = entry['title']
+            changed_titles += 1
+        if entry.get('source') and fixed.get('source') != entry['source']:
+            fixed['source'] = entry['source']
+            changed_sources += 1
+        out.append(fixed)
+    if unresolved:
+        print('定位失敗 %d 條（未寫入）：' % len(unresolved))
+        for i, text in unresolved:
+            print('  ✗ #%d %s…' % (i, text))
+        return 1
+    data['quotes'] = out
+    json.dump(data, open(path, 'w'), ensure_ascii=False, separators=(',', ':'))
+    print('已依現況電子書修正：網址 %d、標題 %d、來源 %d（共 %d 條；選文與順序不變）'
+          % (changed_urls, changed_titles, changed_sources, len(out)))
+    return 0
+
+
 if __name__ == '__main__':
+    if '--repair-urls' in sys.argv:
+        sys.exit(repair_urls())
     main()

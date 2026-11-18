@@ -6,9 +6,10 @@
      ——原經文楷體區塊（sutra-text 錨點）、文言經文啟發式。
      額外再跑一次「放寬版」掃描（現代助詞門檻 +5）並印出供人工複查，
      但放寬版只警告、不判失敗（講解文字本來就偏書面語，會誤報）。
-  2. **連結有效**：每條 `url` 的 `<檔名>#<id>` 在**繁、簡兩種頁面**都要找得到
-     ——`lang-switch.js` 會把偏好簡體的讀者轉到 `XX.html`，只查繁體頁會漏掉
-     「前往原文對簡體讀者無效」這種問題。
+  2. **連結有效且指向同一段文字**：每條 `url` 的 `<檔名>#<id>` 在**繁、簡兩種頁面**
+     都要找得到，而且該網址必須對應現況電子書中「同一段引文文字」——
+     `lang-switch.js` 會把偏好簡體的讀者轉到 `XX.html`，只查繁體頁會漏掉
+     「前往原文對簡體讀者無效」；只查 id 存在則會漏掉「id 還在、內容已搬家」。
   3. **結構**：條數達 `select_1095.TARGET`、無重複文字、單一來源不超過 SRC_CAP。
   4. **引用欄位**：text / url / title 齊全。
 
@@ -23,6 +24,7 @@ ROOT = Path(__file__).resolve().parents[2]
 TD = ROOT / 'tool/daily_quotes'
 sys.path.insert(0, str(TD))
 import select_1095  # noqa: E402  取 TARGET / SRC_CAP
+from build_quotes import clean  # noqa: E402  與候選池同一套文字正規化
 from scripture_filter import (  # noqa: E402
     is_scripture, is_sutra_url, is_scripture_text,
     excluded_urls, SCRIPT_MARKERS, MODERN_PARTICLES,
@@ -56,6 +58,27 @@ def main() -> int:
         warns.append(f'待複查 {q["url"]}：{q["text"][:50]}…')
 
     # 2. 連結 ---------------------------------------------------------------
+    # 2a. 語意：url 必須指向「與引文文字相同」的段落。只查 id 存在不夠——
+    #     電子書重新分類後，同一個 id 可能已搬到別的章節／段落，頁面仍能跳轉
+    #     卻會落在不相干的內容（本次故障即屬此類）。
+    current_by_text: dict[str, set[str]] = collections.defaultdict(set)
+    for sub in ('ebook', 'wenda2_ebook'):
+        path = ROOT / sub / 'search_index_trad.json'
+        if not path.exists():
+            continue
+        for x in json.load(open(path, encoding='utf-8')):
+            if x.get('type') not in ('content', 'answer'):
+                continue
+            current_by_text[clean(x['content'])].add('%s/%s' % (sub, x['url']))
+    for q in quotes:
+        expected = current_by_text.get(q['text'])
+        if not expected:
+            errors.append(f'引文文字不在現況電子書索引：{q["url"]}：{q["text"][:50]}…')
+        elif q['url'] not in expected:
+            errors.append(
+                f'連結指向的段落文字不符：{q["url"]}（應為 {sorted(expected)[0]}）'
+            )
+
     # 繁簡雙頁都要查：lang-switch.js 會把偏好簡體的讀者轉到對應的簡體頁
     # （XX_trad.html ↔ XX.html），錨點 id 必須在兩邊都存在，否則「前往原文」
     # 對簡體讀者會落到頁首。

@@ -16,8 +16,9 @@
 （過期 url 不在現況的經文錨點裡 → 以為不是經文而混進成品）。
 
 本工具**只更新既有條目的文字／網址／標題**，不新增、不刪除、不重排，
-評分與 idx 的對應關係完全不變；對不上的條目（url 已不存在）原樣保留，
-由 `select_1095.py` 的「以文字重新定位」機制略過。
+評分與 idx 的對應關係完全不變；舊 url 已失效者會再用「文字」找回現況段落；
+連文字也對不上的條目原樣保留，由 `select_1095.py` 的「以文字重新定位」
+機制略過。
 
 用法：
     python3 tool/daily_quotes/refresh_sample.py            # 更新
@@ -53,23 +54,33 @@ def current_index():
 def main():
     check = '--check' in sys.argv
     index = current_index()
+    # 舊 url 已失效時，仍可用「文字」找回現況段落（章節搬位／錨點重生）。
+    by_text = {}
+    for url, (text, title) in index.items():
+        by_text.setdefault(text, (url, title))
     sample = json.load(open(SAMPLE, encoding='utf-8'))
     changed_text = changed_url = unresolved = 0
     out = []
     for it in sample:
         hit = index.get(it['url'])
         if hit is None:
-            unresolved += 1
-            out.append(it)
-            continue
+            relocated = by_text.get(it['text'])
+            if relocated is None:
+                unresolved += 1
+                out.append(it)
+                continue
+            url, title = relocated
+            changed_url += 1
+            hit = (it['text'], title)
+            it = dict(it, url=url)
         text, title = hit
         if text != it['text']:
             changed_text += 1
         if title and title != it.get('title'):
             it = dict(it, title=title)
         out.append(dict(it, text=text))
-    print('樣本 %d 條：文字更新 %d、網址待重定位 %d、url 已失效 %d'
-          % (len(sample), changed_text, 0, unresolved))
+    print('樣本 %d 條：文字更新 %d、網址重定位 %d、仍無法定位 %d'
+          % (len(sample), changed_text, changed_url, unresolved))
     if not check:
         json.dump(out, open(SAMPLE, 'w'), ensure_ascii=False, indent=1)
         print('已更新', SAMPLE)

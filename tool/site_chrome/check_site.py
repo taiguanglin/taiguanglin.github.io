@@ -109,6 +109,25 @@ def main() -> int:
     if sync.returncode:
         errors.append(sync.stdout.strip() or sync.stderr.strip())
 
+    # 首頁「每日精選」的「前往原文」連結：電子書重建搬動段落／錨點後，
+    # 舊的 daily_quotes.json 會悄悄斷鏈或跳到不相干的段落（id 仍存在）。
+    # 站級守門必須連語意一起驗，不可只看檔案存在。
+    daily_quotes = subprocess.run(
+        [sys.executable, str(ROOT / "tool/daily_quotes/audit_quotes.py")],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
+    if daily_quotes.returncode:
+        detail = daily_quotes.stdout.strip() or daily_quotes.stderr.strip()
+        failures = [
+            line.strip() for line in detail.splitlines()
+            if line.strip().startswith("✗")
+        ]
+        errors.extend(f"daily_quotes.json: {line}" for line in failures)
+        if not failures:
+            errors.append("daily_quotes.json: 每日精選稽核未通過")
+
     for rel in AI_PAGES:
         text = (ROOT / rel).read_text(encoding="utf-8")
         if AI_NOTICE not in text:
