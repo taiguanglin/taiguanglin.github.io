@@ -45,7 +45,7 @@ def test_sync_to_local_runs_git_pull():
 def test_main_skips_build_when_pull_fails():
     with patch("sys.argv", ["gen_all_and_push.py"]):
         with patch("gen_all_and_push.sync_to_local", return_value=1) as sync:
-            with patch("gen_all_and_push.gen_all_main") as gen_all:
+            with patch("gen_all_and_push.gen_all_run") as gen_all:
                 assert main() == 1
                 sync.assert_called_once()
                 gen_all.assert_not_called()

@@ -12,6 +12,12 @@ month-based chapters with per-segment audio playback and proofreading-status
 badges (see `qa-parsing/spec.md`). For 問答錄 2, Nov 2025–Mar 2026 comes from a
 second PDF, not from `qa/`.
 
+The published 問答錄 2 book is the **12-chapter classified edition**: Word and
+PDF Q&A are merged into twelve thematic chapters, and old monthly chapters
+13–21 remain only as redirect stubs. `main.py` produces the 21-chapter
+chronological draft; `gen_all.py` runs the full pipeline and finishes with the
+12-chapter edition (see “Published 問答錄 2 Edition Is Always 12 Chapters”).
+
 ## Requirements
 
 ### Requirement: CLI Entry Point
@@ -145,19 +151,70 @@ the Word/PDF parse cost.
 - WHEN the CLI parses arguments
 - THEN the system SHALL call `sys.exit(1)` with a descriptive message
 
+### Requirement: Published 問答錄 2 Edition Is Always 12 Chapters
+The published `wenda2_ebook/` SHALL always contain exactly the twelve
+classified thematic chapters `01`–`12`, no matter how many Word/PDF sources
+exist. PDF-derived Q&A MUST be merged into the existing twelve-chapter tree
+using the reviewed classification data in
+`tool/qa_split_ebook/classified/*.jsonl` (criteria:
+`tool/qa_curation/`). A PDF month MUST NOT become a new chapter `13` or higher
+in the published edition. Chapters `13`–`21` SHALL exist only as
+`noindex, follow` redirect stubs to the index and MUST NOT appear in the index
+TOC, JSON-LD `hasPart`, or `sitemap.xml`.
+
+Stage 3 SHALL fail closed when stage 2 extracts a PDF Q&A item with no
+classification record, naming the unclassified items instead of silently
+dropping them or publishing an incomplete book.
+
+#### Scenario: Default rebuild produces the 12-chapter edition
+- GIVEN the default repo layout with `問答錄2/*.docx` and monthly-Q&A PDFs
+- WHEN the user runs `python3 gen_all.py`
+- THEN `wenda2_ebook/` SHALL contain chapters `01`–`12`, index pages listing
+  only those twelve chapters, and `13.html`–`21.html` as redirect stubs
+- AND the command SHALL exit non-zero if the final output is not that shape
+
+#### Scenario: New PDF month not yet classified
+- GIVEN stage 2 extracts a PDF Q&A item that has no entry in
+  `tool/qa_split_ebook/classified/*.jsonl`
+- WHEN `gen_classified.py` runs
+- THEN it SHALL print the unclassified item ids and exit non-zero without
+  rewriting the published twelve chapters
+
+#### Scenario: Redirect stubs stay out of SEO surfaces
+- GIVEN a published `wenda2_ebook/`
+- WHEN index pages, JSON-LD, and `sitemap.xml` are inspected
+- THEN they SHALL reference only chapters `01`–`12`
+- AND every `13`–`21` page SHALL carry `noindex, follow` and a canonical link
+  to its language's index
+
 ### Requirement: Site Full-Rebuild Script
 The repository SHALL ship `gen_all.py` in the `tool/word2ebook/` directory as a
 one-command full rebuild for the 問答錄 2 ebook. The script SHALL resolve all
 source and output paths relative to the repository root (not the caller's cwd),
-validate that the Word and both PDF sources exist, then invoke the same full
-conversion pipeline as `main.py` with Word + Jun–Sep PDF + Nov–Mar PDF
-(simplified + traditional + search index, no partial mode, no `qa/`).
+validate that the Word and both PDF sources exist, then invoke the conversion
+pipeline with Word + Jun–Sep PDF + Nov–Mar PDF (simplified + traditional +
+search index, no partial mode, no `qa/`).
+
+By default the script SHALL run all three stages in order: stage 1
+(`main.py`, 21-chapter chronological draft) → stage 2
+(`tool/qa_split_ebook/extract.py`) → stage 3
+(`tool/qa_split_ebook/gen_classified.py`, in-place 12-chapter classified
+edition). It SHALL verify the final 12-chapter shape before returning success.
+`--draft-only` SHALL be the only way to stop after stage 1; that output is for
+re-classification and MUST NOT be published.
 
 #### Scenario: Full rebuild from Word and two PDFs
 - GIVEN the default repo layout with `問答錄2/*.docx` and both monthly-Q&A PDFs
 - WHEN the user runs `python3 gen_all.py` from `tool/word2ebook/`
-- THEN the system SHALL write a complete `wenda2_ebook/` output (chapters 01–21,
-  index pages, search indexes, and static assets) without a QA source link
+- THEN the system SHALL write the complete published `wenda2_ebook/` (12
+  chapters, redirect stubs, index pages, search indexes, static assets)
+  without a QA source link
+
+#### Scenario: Draft-only rebuild
+- GIVEN the user is about to re-classify newly added PDF Q&A
+- WHEN the user runs `python3 gen_all.py --draft-only`
+- THEN the system SHALL stop after stage 1 and leave the 21-chapter draft
+- AND it SHALL print that the output is not publishable
 
 #### Scenario: Missing source in gen_all
 - GIVEN one of the hard-coded source paths does not exist
@@ -168,10 +225,11 @@ conversion pipeline as `main.py` with Word + Jun–Sep PDF + Nov–Mar PDF
 ### Requirement: Site Full-Rebuild and Push Script
 The repository SHALL ship `gen_all_and_push.py` alongside `gen_all.py`. The script
 SHALL sync remote changes to the local repository first (`git pull` from the repo
-root), then run the full rebuild; on success it SHALL stage all changes
-(`git add :/`), commit with a configurable message (default:
-`New txt changes to new wenda2ebook`), and push to the remote. If `git pull` or
-the rebuild fails, subsequent steps SHALL be skipped. If there are no changes
+root), then run the full three-stage rebuild (same as `gen_all.py` without
+`--draft-only`); on success it SHALL stage all changes (`git add :/`), commit
+with a configurable message (default:
+`Rebuild wenda2_ebook from Word + PDFs`), and push to the remote. If `git pull`
+or the rebuild fails, subsequent steps SHALL be skipped. If there are no changes
 after staging, the script SHALL skip commit and push and exit successfully.
 
 #### Scenario: Pull, rebuild, commit, and push after QA edits
@@ -184,6 +242,12 @@ after staging, the script SHALL skip commit and push and exit successfully.
 - GIVEN `git pull` fails (e.g. merge conflict)
 - WHEN the user runs `python3 gen_all_and_push.py`
 - THEN the system SHALL abort without running the rebuild, commit, or push
+
+#### Scenario: Rebuild did not produce the 12-chapter edition
+- GIVEN the rebuild stops at the 21-chapter draft (e.g. stage 3 failed or was
+  skipped)
+- WHEN `gen_all_and_push.py` reaches the commit step
+- THEN it SHALL abort without staging, committing, or pushing
 
 #### Scenario: Rebuild succeeds with no diff
 - GIVEN `gen_all.py` completes but produces no file changes

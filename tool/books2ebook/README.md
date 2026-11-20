@@ -232,6 +232,13 @@ tool/word_audio_map2/.venv/bin/python tool/books2ebook/gen_all.py
 tool/word_audio_map2/.venv/bin/python tool/books2ebook/main.py --books-dir books --out ebook
 ```
 
+`gen_all_and_push.py` 會 `git add :/` 提交整個 repo，因此推送前會檢查
+`wenda2_ebook/` 是否為**固定 12 章**的發布版：若 13–21 仍是完整月度章
+（只跑了 stage 1 的 21 章底稿），會直接拒絕 commit/push 並提示先跑
+`tool/word2ebook/gen_all.py`。常見的一鍵指令
+`git pull && ./tool/word2ebook/gen_all.py && ./tool/books2ebook/gen_all_and_push.py`
+因此不會把未分類的 21 章版推上線。
+
 ### ⚠️ 為什麼指定這一個 python
 
 **本工具的產出文字會隨 PyMuPDF 版本改變**。PDF 文字抽取在斷行處怎麼補空格

@@ -288,45 +288,71 @@ def extract_pdf_items(_audio_map: dict = None) -> list[dict]:
             f"找不到版控分類結果 {CLASSIFIED_DIR}/batch_*.jsonl；"
             "不能產出缺少 PDF 條目的半套成品"
         )
+
+    rows = []
+    for f in batch_files:
+        for line in f.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                rows.append(json.loads(line))
+
+    # 覆蓋率守門（發布版永遠 12 章）：stage 2 抽出的每一則 PDF 問答都必須
+    # 有分類紀錄（併入 01–12 章的某個樹路徑）。新 PDF 月份若還沒做分類，
+    # 這裡必須失敗——否則新內容會被靜默丟掉，讀者只會看到「少了幾個月」。
+    classified_seqs = {r["i"] for r in rows}
+    missing_seqs = sorted(set(items_raw) - classified_seqs)
+    if missing_seqs:
+        print(
+            f"❌ stage 2 抽出的 PDF 問答有 {len(missing_seqs)} 則尚未分類；"
+            "發布版固定 12 章，PDF 內容必須先依 tool/qa_curation/ 準則併入 01–12 章。"
+        )
+        for seq in missing_seqs[:10]:
+            it = items_raw[seq]
+            print(f"   seq={seq}  {it.get('qid', '')}  {it.get('time', '')}")
+        if len(missing_seqs) > 10:
+            print(f"   …另有 {len(missing_seqs) - 10} 則")
+        print(
+            "   請先跑 classify 流程，把結果寫入 "
+            f"{CLASSIFIED_DIR}/batch_*.jsonl，再重跑本腳本。"
+        )
+        raise SystemExit(1)
+
     if _audio_map is None:
         _audio_map = {}
 
     results = []
-    for f in batch_files:
-        for line in f.read_text(encoding="utf-8").splitlines():
-            r = json.loads(line)
-            seq = r["i"]
-            it = items_raw.get(seq)
-            if not it:
-                continue
-            ch = r["ch"]
-            parts = [f"{ch:02d}"]
-            if r.get("l2"): parts.append(f"{r['l2']:02d}")
-            if r.get("l3"): parts.append(f"{r['l3']:02d}")
-            if r.get("l4"): parts.append(f"{r['l4']:02d}")
-            path = "-".join(parts)
+    for r in rows:
+        seq = r["i"]
+        it = items_raw.get(seq)
+        if not it:
+            continue
+        ch = r["ch"]
+        parts = [f"{ch:02d}"]
+        if r.get("l2"): parts.append(f"{r['l2']:02d}")
+        if r.get("l3"): parts.append(f"{r['l3']:02d}")
+        if r.get("l4"): parts.append(f"{r['l4']:02d}")
+        path = "-".join(parts)
 
-            suffix = f"-{r['sub']}" if r.get("split") and r.get("sub", 0) > 0 else ""
-            qid = it["qid"] + suffix
-            aid = (it["aid"] or it["qid"].replace("question-", "answer-")) + suffix
+        suffix = f"-{r['sub']}" if r.get("split") and r.get("sub", 0) > 0 else ""
+        qid = it["qid"] + suffix
+        aid = (it["aid"] or it["qid"].replace("question-", "answer-")) + suffix
 
-            if r.get("split") and r.get("sub", 0) > 0:
-                q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(r.get("q", "")), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
-                a_html = _wrap_qa(_parts_to_html(r.get("a", "")), aid, "answer", "Taiguanglin", "")
-                a_html = _attach_imgs(a_html, it.get("a_imgs"))
-                a_html = inject_play_button(a_html, qid, _audio_map)
-            else:
-                q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(it["q_parts"]), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
-                q_html = _attach_imgs(q_html, it.get("q_imgs"))
-                a_html = _wrap_qa(_parts_to_html(it["a_parts"]), aid, "answer", "Taiguanglin", "")
-                a_html = _attach_imgs(a_html, it.get("a_imgs"))
-                a_html = inject_play_button(a_html, qid, _audio_map)
+        if r.get("split") and r.get("sub", 0) > 0:
+            q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(r.get("q", "")), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
+            a_html = _wrap_qa(_parts_to_html(r.get("a", "")), aid, "answer", "Taiguanglin", "")
+            a_html = _attach_imgs(a_html, it.get("a_imgs"))
+            a_html = inject_play_button(a_html, qid, _audio_map)
+        else:
+            q_html = fix_corrupted_text(qid, _wrap_qa(_parts_to_html(it["q_parts"]), qid, "question", clean_questioner(it.get("who","")), it.get("time","")))
+            q_html = _attach_imgs(q_html, it.get("q_imgs"))
+            a_html = _wrap_qa(_parts_to_html(it["a_parts"]), aid, "answer", "Taiguanglin", "")
+            a_html = _attach_imgs(a_html, it.get("a_imgs"))
+            a_html = inject_play_button(a_html, qid, _audio_map)
 
-            results.append({
-                "qid": qid, "aid": aid, "path": path,
-                "q_html": q_html, "a_html": a_html,
-                "time": it.get("time", ""), "source": "pdf",
-            })
+        results.append({
+            "qid": qid, "aid": aid, "path": path,
+            "q_html": q_html, "a_html": a_html,
+            "time": it.get("time", ""), "source": "pdf",
+        })
     return results
 
 
@@ -1048,7 +1074,28 @@ a:hover{{text-decoration:underline}}
     _sitemap_mod.write_sitemap()
     print("✅ sitemap.xml 已更新")
 
-    print(f"\n[gen_classified] 完成 → {DST}（{total} 則）")
+    # 發布版形狀守門：永遠 12 章；13–21 只能是跳轉頁，且不得出現在目錄。
+    problems: list[str] = []
+    for ch in range(1, 13):
+        for suffix in ("", "_trad"):
+            if not (DST / f"{ch:02d}{suffix}.html").exists():
+                problems.append(f"缺少第 {ch:02d} 章{suffix}")
+    for ch in range(13, 22):
+        for suffix in ("", "_trad"):
+            page = DST / f"{ch:02d}{suffix}.html"
+            if not page.exists() or "此章節已重新分類" not in page.read_text(encoding="utf-8"):
+                problems.append(f"{page.name} 不是跳轉頁")
+    for idx_name in ("index.html", "index_trad.html"):
+        idx = DST / idx_name
+        if idx.exists() and 'href="13' in idx.read_text(encoding="utf-8"):
+            problems.append(f"{idx_name} 仍列出第 13 章以後的章節")
+    if problems:
+        print("❌ 發布版章節形狀異常（應固定為 12 章）：")
+        for problem in problems:
+            print(f"   - {problem}")
+        return 1
+
+    print(f"\n[gen_classified] 完成 → {DST}（{total} 則，固定 12 章）")
 
 
 if __name__ == "__main__":

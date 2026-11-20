@@ -16,7 +16,7 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 ## Golden rules
 
 1. **Know source vs output** before editing. If a path is generated, change the generator / source, then rebuild.
-2. **Never implement ebook features by editing `wenda2_ebook/`** — change `tool/word2ebook/`, then run the three-stage rebuild（`gen_all.py` → `tool/qa_split_ebook/extract.py` → `gen_classified.py`；一鍵版 `gen_all_and_push.py`，見「Main data flows」）. Same for play buttons: edit maps / injectors, not chapter HTML.
+2. **Never implement ebook features by editing `wenda2_ebook/`** — change `tool/word2ebook/`, then run the rebuild. `gen_all.py` now runs all three stages by default（stage 1 底稿 → `tool/qa_split_ebook/extract.py` → `gen_classified.py`），所以**任何重建的預設產物都是固定 12 章**；只有重新分類才用 `--draft-only`（21 章底稿，不可發布）。一鍵版 `gen_all_and_push.py`，見「Main data flows」。Same for play buttons: edit maps / injectors, not chapter HTML.
 3. **`wenda2/` is not ebook output** — hand-maintained 12-chapter TOC pages; regenerating the ebook does **not** update `wenda2/`.
 4. **`audio` is a local symlink** (`/Users/paul/tai/audio`), gitignored — never commit audio blobs here.
 5. **Do not confuse site chrome with ebook assets** — root `shared.js` / `style.css` ≠ `wenda2_ebook/assets/` (built from `tool/word2ebook/assets/`). Root `script.js` was retired (superseded by `shared.js`); only the ebook bundles keep an `assets/js/script.js`.
@@ -135,7 +135,8 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
 
 ### 問答錄 2 ebook (canonical “進入電子書”)
 
-三段式、單一目錄就地轉換（2026-10-26 起；`wenda2_ebook_word/` 中繼目錄已移除）：
+三段式、單一目錄就地轉換（2026-10-26 起；`wenda2_ebook_word/` 中繼目錄已移除）。
+`gen_all.py` **預設就跑完三段**，所以正常重建的產物一定是 12 章發布版：
 
 ```
 問答錄2/*.docx + *.pdf
@@ -143,19 +144,20 @@ Deploy = push to `main` (no CI build step). Site chrome for marketing pages is T
         ▼
 tool/word2ebook/gen_all.py  (+ audio_map/*.json inject)
         │   stage 1：就地重建 wenda2_ebook/ 為 21 章時間序底稿
-        ▼
-   wenda2_ebook/  ← 此時是底稿，還不是成品
-        │
+        │            （只有 --draft-only 會停在這裡，不可發布）
         ▼
 tool/qa_split_ebook/extract.py      (stage 2：抽 13–21 → build/items.jsonl)
 tool/qa_split_ebook/gen_classified.py (stage 3：就地轉 12 章分類合併版，13–21 換跳轉頁)
-        │
+        │   ↑ PDF 每一則都必須在 classified/*.jsonl 有分類紀錄，否則 stage 3 失敗
         ▼
-   wenda2_ebook/     ← published 成品；do not hand-edit for features
+   wenda2_ebook/     ← published 成品（永遠 12 章）；do not hand-edit for features
 ```
 
-⚠️ 只跑 stage 1 就提交＝站上電子書變回未分類 21 章版。三段全跑可用
-`tool/word2ebook/gen_all_and_push.py`（內建 pull → 三段重建 → commit → push）。
+⚠️ 發布版**永遠只有 12 章**：所有 PDF 月度答疑都依 `tool/qa_curation/` 準則併入
+01–12 章，13–21 只是跳轉頁。只跑 stage 1（`--draft-only`）就提交＝站上電子書變回
+未分類 21 章版；`gen_all.py` 結束前會驗證 12 章形狀，`gen_all_and_push.py` 也會
+在 push 前擋下 21 章底稿。一鍵版：`tool/word2ebook/gen_all_and_push.py`
+（內建 pull → 三段重建 → commit → push）。
 
 ### 坐禅系列 + 講經系列电子书（books/ 九本著作＋感恩卷首）
 
@@ -214,7 +216,7 @@ mp3  →  (optional) tool/audio_denoiser
 
 | Want to change… | Edit… | Then… |
 |-----------------|-------|--------|
-| Ebook UI / behaviour / search / i18n | `tool/word2ebook/` | 三段重建（`gen_all.py` → `tool/qa_split_ebook/extract.py` → `gen_classified.py`；一鍵版 `gen_all_and_push.py`） |
+| Ebook UI / behaviour / search / i18n | `tool/word2ebook/` | `gen_all.py`（預設三段全跑，固定 12 章；一鍵版 `gen_all_and_push.py`） |
 | 坐禅系列电子书 UI / 搜尋 / 簡繁 | `tool/books2ebook/` | `python3 gen_all.py`（同上；資產影印 wenda2_ebook 並附 books.css）|
 | 段落跟播（校稿後要讀者真的用得到） | `audio_map3/*.json` ＋ `tool/books2ebook/` | `sync_para_pids.py --apply` → `gen_all.py` → `pytest tool/books2ebook/tests`（規則 13）|
 | Ebook source text (Word/PDF months) | `問答錄2/` | `gen_all.py` |

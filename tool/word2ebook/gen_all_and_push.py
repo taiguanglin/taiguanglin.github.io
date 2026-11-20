@@ -5,13 +5,11 @@
 
     python3 gen_all_and_push.py
 
-依序執行（2026-10-26 起三段全跑——wenda2_ebook_word/ 中繼目錄已移除，
-stage 1 直接寫 ``wenda2_ebook/``，後兩段就地轉成分類合併版）：
+依序執行（2026-10-26 起三段全跑——wenda2_ebook_word/ 中繼目錄已移除；
+``gen_all.py`` 預設就會接續 stage 2/3，固定產出 12 章發布版）：
 
     git pull
-        && ./gen_all.py                                    # stage 1：21 章底稿
-        && (cd ../qa_split_ebook && python extract.py)     # stage 2：重抽 items.jsonl
-        && (cd ../qa_split_ebook && python gen_classified.py)  # stage 3：分類合併版
+        && ./gen_all.py          # stage 1 + 2 + 3：21 章底稿 → 12 章分類合併版
         && git add :/
         && git commit -m "Rebuild wenda2_ebook from Word + PDFs"
         && git push
@@ -39,9 +37,6 @@ REPO_ROOT = TOOL_DIR.parent.parent
 
 DEFAULT_COMMIT_MESSAGE = "Rebuild wenda2_ebook from Word + PDFs"
 
-# 兩段式重建的 stage 2/3（就地轉換）：
-QA_SPLIT_DIR = REPO_ROOT / "tool" / "qa_split_ebook"
-CLASSIFIED_STAGES = ("extract.py", "gen_classified.py")
 
 
 def _ensure_venv() -> None:
@@ -60,7 +55,7 @@ def _ensure_venv() -> None:
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
 
-from gen_all import main as gen_all_main  # noqa: E402
+from gen_all import run as gen_all_run  # noqa: E402
 from utils.env_guard import reexec_into_venv  # noqa: E402
 
 
@@ -85,25 +80,6 @@ def _run_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProc
         capture_output=True,
         check=check,
     )
-
-
-def run_classified_stages() -> int:
-    """就地轉換（stage 2/3）：extract.py 重抽 items.jsonl，gen_classified.py
-    把 stage 1 的 21 章底稿就地轉成 12 章分類合併版。
-
-    本腳本已在鎖版 venv 中執行（``_ensure_venv``），直接以 ``sys.executable``
-    （＝該 venv 的 python）跑子腳本，環境與規則完全一致。
-    """
-    for script in CLASSIFIED_STAGES:
-        print(f"\n▶️  stage：{script}")
-        proc = subprocess.run(
-            [sys.executable, str(QA_SPLIT_DIR / script)],
-            cwd=str(QA_SPLIT_DIR),
-        )
-        if proc.returncode != 0:
-            print(f"❌ {script} 失敗（exit {proc.returncode}），略過 commit 與 push")
-            return proc.returncode
-    return 0
 
 
 def has_staged_or_unstaged_changes() -> bool:
@@ -228,15 +204,12 @@ def main() -> int:
         print("❌ 同步失敗，略過後續操作")
         return sync_rc
 
-    build_rc = gen_all_main()
+    # gen_all_run() 預設三段全跑，並在最後驗證輸出固定為 12 章；
+    # 任何一段失敗（含新 PDF 條目尚未分類）都不會走到 commit/push。
+    build_rc = gen_all_run()
     if build_rc != 0:
-        print("❌ 重建失敗（stage 1），略過後續操作")
+        print("❌ 重建失敗（未產出 12 章發布版），略過 commit 與 push")
         return build_rc
-
-    classified_rc = run_classified_stages()
-    if classified_rc != 0:
-        print("❌ 分類合併（stage 2/3）失敗，略過 commit 與 push")
-        return classified_rc
 
     return commit_and_push(args.message, indexnow=args.indexnow)
 

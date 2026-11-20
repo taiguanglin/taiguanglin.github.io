@@ -61,6 +61,20 @@ containing the full table of contents with chapter links.
 - WHEN `HTMLGenerator.generate_index_pages` is called
 - THEN `index.html` SHALL contain links to all N chapter files
 
+### Requirement: Published 問答錄 2 Index Lists Exactly 12 Chapters
+For the published 問答錄 2 edition, the index pages and their JSON-LD SHALL list
+exactly chapters `01`–`12`. They MUST NOT link to, or include `Chapter` nodes
+for, chapters `13`–`21`; those pages are redirect stubs only. Stage 3
+(`tool/qa_split_ebook/gen_classified.py`) SHALL enforce this shape before it
+reports success.
+
+#### Scenario: Classified edition index
+- GIVEN the 12-chapter classified edition is generated
+- WHEN `index.html` and `index_trad.html` are inspected
+- THEN each SHALL link to its own language's chapters `01`–`12`
+- AND neither SHALL contain `href="13.html"` or `href="13_trad.html"`
+- AND the JSON-LD `Book.hasPart` SHALL contain twelve `Chapter` nodes
+
 ### Requirement: Source File Download Links
 The homepage footer (`<p class="source-filename">`) SHALL list every source file
 (the input Word document plus any `--pdf` extra sources) as a downloadable

@@ -21,15 +21,20 @@ Entry point: `python main.py <input.docx> <output_dir> [--pdf <a.pdf>] [--pdf <b
 Jun–Sep PDF + Nov–Mar PDF → `wenda2_ebook/`，含首頁與搜尋索引）。2025年11月–2026年3月
 改由第二份 PDF 產生，不再餵入 `qa/`。
 
-⚠️ **gen_all.py 只是三段式重建的 stage 1**（2026-10-26 起）：它把 `wenda2_ebook/`
-就地重建為 21 章「時間序底稿」（01–12 Word ＋ 13–21 PDF 月度章）。發布成品還要接著跑
-`tool/qa_split_ebook/extract.py`（stage 2）與 `gen_classified.py`（stage 3，就地轉成
-12 章分類合併版）——只跑 stage 1 就提交會讓線上電子書變回未分類版本。
+**發布版永遠是 12 章**（硬規則）：`gen_all.py` 預設跑完三段——stage 1 重建
+21 章時間序底稿（01–12 Word ＋ 13–21 PDF 月度章）→ stage 2
+（`tool/qa_split_ebook/extract.py`）→ stage 3
+（`gen_classified.py`，就地轉成 **固定 12 章**的分類合併版，13–21 換成跳轉頁），
+最後驗證 12 章形狀才回傳成功。PDF 產生的每一則問答都必須依
+`tool/qa_split_ebook/classified/*.jsonl`（已完成的 12 章分類）併入 01–12 章；
+新 PDF 月份若尚未分類，stage 3 會列出未分類條目並失敗，不會靜默漏掉。
+
+⚠️ 只有要重新分類（LLM 自制作業）時才用 `python3 gen_all.py --draft-only` 停在
+21 章底稿；**該底稿不可發布**。
 
 **重建並推送**：執行 `python3 gen_all_and_push.py` 會先 `git pull` 同步遠端到本地，
-再依序跑三段（`gen_all.py` → `qa_split_ebook/extract.py` → `qa_split_ebook/gen_classified.py`），
-最後以 `git add :/`、`git commit`、`git push` 推上遠端（預設
-commit 訊息：`Rebuild wenda2_ebook from Word + PDFs`）。
+再跑 `gen_all.py` 的完整三段流程，最後以 `git add :/`、`git commit`、`git push`
+推上遠端（預設 commit 訊息：`Rebuild wenda2_ebook from Word + PDFs`）。
 
 Each `--pdf` is parsed into month-based chapters (date + source sub-headings,
 including `官网` / `贴吧` / `微信公众号`, plus embedded images) and appended after

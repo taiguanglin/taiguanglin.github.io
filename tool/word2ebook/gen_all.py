@@ -1,32 +1,27 @@
 #!/usr/bin/env python3
-"""一鍵完整重建 wenda2_ebook（Word + 兩份 PDF）——stage 1 底稿。
+"""一鍵完整重建 wenda2_ebook（Word + 兩份 PDF）——預設直接產出 12 章發布版。
 
 本腳本封裝問答錄 2 電子書的預設來源路徑，更新 Word/PDF
 來源後，在 ``tool/word2ebook/`` 目錄執行即可：
 
     python3 gen_all.py
 
-等同於：
+預設會依序跑完三段（2026-10-26 起，``wenda2_ebook_word/`` 中繼目錄已移除）：
 
-    python3 main.py \\
-        "../../問答錄2/wenda2_250810_截止25年5月17日答疑_含图版.docx" \\
-        "../../wenda2_ebook" \\
-        --pdf "../../問答錄2/2025年6月-9月答疑合并（未分类）.pdf" \\
-        --pdf "../../問答錄2/2025年11月-2026年3月答疑合并（未分类）.pdf"
+    1. stage 1：Word + 兩份 PDF → ``wenda2_ebook/`` 21 章時間序底稿
+    2. stage 2：``tool/qa_split_ebook/extract.py`` → ``build/items.jsonl``
+    3. stage 3：``tool/qa_split_ebook/gen_classified.py`` → 就地轉成
+       **固定 12 章**的分類合併版（13–21 只剩跳轉頁）
 
-2025年11月–2026年3月改由第二份 PDF 產生，不再餵入 ``qa/``。
-``qa/`` 與線上校稿工具仍可獨立使用。
+發布版章節數永遠是 12。PDF 產生的每一則問答都必須依
+``tool/qa_split_ebook/classified/*.jsonl``（已完成的 12 章分類）併入
+01–12 章；stage 3 遇到尚未分類的新 PDF 條目會直接失敗，不會靜默漏掉。
 
-⚠️ 兩段式流程（2026-10-26 起，``wenda2_ebook_word/`` 中繼目錄已移除）：
-本腳本是 **stage 1**，會把 ``wenda2_ebook/`` 清空重建為時間序 21 章
-底稿（01–12 Word ＋ 13–21 PDF 月度章）。發布版是 **分類合併版**，
-必須接著跑 stage 2/3（在 ``tool/qa_split_ebook/``）：
+僅在需要重新分類（LLM 自制作業）時，才用 ``--draft-only`` 停在 21 章底稿：
 
-    ../../word_audio_map2/.venv/bin/python extract.py         # stage 2
-    ../../word_audio_map2/.venv/bin/python gen_classified.py  # stage 3：就地轉成 12 章分類合併版
+    python3 gen_all.py --draft-only
 
-只跑 stage 1 就提交，站上電子書會停在未分類的 21 章時間序版。
-``gen_all_and_push.py`` 已內建三段全跑。
+⚠️ ``--draft-only`` 的產物**不可發布**。``gen_all_and_push.py`` 已內建三段全跑。
 
 PDF 章節的逐段音檔播放鈕由站台根目錄 ``audio_map/*.json``（單一 SoT，
 即 ``/audio_map/`` 校稿 UI 使用的同一份）在建置時注入
@@ -40,11 +35,16 @@ PDF 抽字空白，造成段落 pid 與 search_index 漂移（root AGENTS.md 規
 
 from __future__ import annotations
 
+import argparse
+import subprocess
 import sys
 from pathlib import Path
 
 TOOL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = TOOL_DIR.parent.parent
+QA_SPLIT_DIR = REPO_ROOT / "tool" / "qa_split_ebook"
+CLASSIFIED_STAGES = ("extract.py", "gen_classified.py")
+REDIRECT_MARKER = "此章節已重新分類"
 
 DOCX_FILE = REPO_ROOT / "問答錄2" / "wenda2_250810_截止25年5月17日答疑_含图版.docx"
 PDF_FILE = REPO_ROOT / "問答錄2" / "2025年6月-9月答疑合并（未分类）.pdf"
@@ -95,7 +95,57 @@ def validate_paths() -> bool:
     return ok
 
 
-def main() -> int:
+def run_classified_stages() -> int:
+    """stage 2/3：把 21 章底稿就地轉成固定 12 章的分類合併版。
+
+    本函數在鎖版 venv 中執行（``run`` 已 re-exec），以 ``sys.executable``
+    跑子腳本，確保 stage 2/3 與 stage 1 使用同一套依賴與規則。
+    """
+    for script in CLASSIFIED_STAGES:
+        print(f"\n▶️  stage：{script}")
+        proc = subprocess.run(
+            [sys.executable, str(QA_SPLIT_DIR / script)],
+            cwd=str(QA_SPLIT_DIR),
+        )
+        if proc.returncode != 0:
+            print(f"❌ {script} 失敗（exit {proc.returncode}），wenda2_ebook/ 仍是 21 章底稿，不可發布")
+            return proc.returncode
+    return 0
+
+
+def verify_published_output() -> bool:
+    """確認輸出是 12 章發布版（13–21 只能是跳轉頁）。
+
+    這是「未來永遠 12 章」的最後一道守門：即使 stage 3 被跳過或人為改動，
+    也不會讓 21 章底稿被當成成品留下。
+    """
+    problems: list[str] = []
+    for ch in range(1, 13):
+        for suffix in ("", "_trad"):
+            if not (OUTPUT_FOLDER / f"{ch:02d}{suffix}.html").exists():
+                problems.append(f"缺少第 {ch:02d} 章{suffix}")
+    for ch in range(13, 22):
+        for suffix in ("", "_trad"):
+            page = OUTPUT_FOLDER / f"{ch:02d}{suffix}.html"
+            if not page.exists():
+                problems.append(f"缺少第 {ch:02d} 章跳轉頁{suffix}")
+            elif REDIRECT_MARKER not in page.read_text(encoding="utf-8"):
+                problems.append(f"{page.name} 不是跳轉頁（仍是完整章節）")
+    for idx_name in ("index.html", "index_trad.html"):
+        index = OUTPUT_FOLDER / idx_name
+        if index.exists() and 'href="13' in index.read_text(encoding="utf-8"):
+            problems.append(f"{idx_name} 仍列出第 13 章以後的章節")
+
+    if problems:
+        print("❌ 發布版章節形狀異常（應固定為 12 章）：")
+        for problem in problems:
+            print(f"   - {problem}")
+        return False
+    return True
+
+
+def run(*, draft_only: bool = False) -> int:
+    """完整重建：stage 1（＋預設 stage 2/3 分類合併）。"""
     # 非鎖版環境先切換 venv（os.execv 成功時不返回，整個腳本於 venv 重跑）；
     # 之後才 import 重依賴（docx / pymupdf），並驗證 PyMuPDF 版本。
     reexec_into_venv(__file__)
@@ -123,7 +173,36 @@ def main() -> int:
         traceback.print_exc()
         return 1
 
+    if draft_only:
+        print("\n⚠️  --draft-only：已停在 21 章時間序底稿，**不可發布**。")
+        print("   重新分類後請再跑：python3 gen_all.py（預設三段全跑）")
+        return 0
+
+    stage_rc = run_classified_stages()
+    if stage_rc != 0:
+        return stage_rc
+
+    if not verify_published_output():
+        return 1
+    print("\n✅ wenda2_ebook 已重建為固定 12 章的分類合併版")
     return 0
+
+
+def create_argument_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="重建 wenda2_ebook：預設三段全跑，固定產出 12 章發布版",
+    )
+    parser.add_argument(
+        "--draft-only",
+        action="store_true",
+        help="只跑 stage 1，停在 21 章時間序底稿（僅供重新分類，不可發布）",
+    )
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = create_argument_parser().parse_args(argv)
+    return run(draft_only=args.draft_only)
 
 
 if __name__ == "__main__":

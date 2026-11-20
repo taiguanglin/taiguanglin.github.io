@@ -46,7 +46,8 @@
 問答錄2/*.docx + *.pdf
         │
         ▼
-tool/word2ebook/  (gen_all.py —— stage 1：就地重建 wenda2_ebook/ 為 21 章時間序底稿)
+tool/word2ebook/  (gen_all.py —— 預設三段全跑，固定產出 12 章發布版；
+                    --draft-only 才是只跑 stage 1 的 21 章時間序底稿)
    ├─ inject_chapters():           讀 audio_map/*.json（站台根目錄單一 SoT，← tool/pdf_audio_map/ 與校對 UI）
    └─ inject_word_chapters():      讀 audio_map2/*.json 的 chapter_question_ids
         │                            (由 link_chapters.py 寫回；分段調整後需重跑)

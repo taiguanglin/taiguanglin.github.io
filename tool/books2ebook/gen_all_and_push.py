@@ -34,6 +34,8 @@ TOOL_DIR = Path(__file__).resolve().parent
 REPO_ROOT = TOOL_DIR.parent.parent
 
 DEFAULT_COMMIT_MESSAGE = "Rebuild ebook from books PDFs"
+WENDA2_EBOOK_DIR = REPO_ROOT / "wenda2_ebook"
+REDIRECT_MARKER = "此章節已重新分類"
 
 if str(TOOL_DIR) not in sys.path:
     sys.path.insert(0, str(TOOL_DIR))
@@ -73,6 +75,34 @@ def _run_git(args: list[str], *, check: bool = True) -> subprocess.CompletedProc
         capture_output=True,
         check=check,
     )
+
+
+def verify_wenda2_ebook_published() -> bool:
+    """推送前守門：``wenda2_ebook/`` 必須是固定 12 章的發布版。
+
+    本腳本會 ``git add :/`` 提交整個 repo；若先前只跑了 stage 1
+    （``word2ebook/gen_all.py --draft-only`` 或舊流程），21 章底稿會被
+    一起推上線。這裡直接擋下，並提示先跑完整的 ``word2ebook/gen_all.py``。
+    """
+    problems: list[str] = []
+    for ch in range(1, 13):
+        for suffix in ("", "_trad"):
+            if not (WENDA2_EBOOK_DIR / f"{ch:02d}{suffix}.html").exists():
+                problems.append(f"缺少第 {ch:02d} 章{suffix}")
+    for ch in range(13, 22):
+        for suffix in ("", "_trad"):
+            page = WENDA2_EBOOK_DIR / f"{ch:02d}{suffix}.html"
+            if not page.exists():
+                problems.append(f"缺少第 {ch:02d} 章跳轉頁{suffix}")
+            elif REDIRECT_MARKER not in page.read_text(encoding="utf-8"):
+                problems.append(f"{page.name} 不是跳轉頁（仍是 21 章底稿）")
+    if problems:
+        print("❌ wenda2_ebook/ 不是固定 12 章的發布版，拒絕 commit/push：")
+        for problem in problems:
+            print(f"   - {problem}")
+        print("   請先跑：./tool/word2ebook/gen_all.py（預設三段全跑，產出 12 章）")
+        return False
+    return True
 
 
 def has_staged_or_unstaged_changes() -> bool:
@@ -217,6 +247,10 @@ def main_entry() -> int:
     if build_rc != 0:
         print("❌ 重建失敗，略過 commit 與 push")
         return build_rc
+
+    # 整包 repo 一起提交，所以必須先確認 wenda2_ebook/ 不是 21 章底稿。
+    if not verify_wenda2_ebook_published():
+        return 1
 
     return commit_and_push(args.message, indexnow=args.indexnow)
 

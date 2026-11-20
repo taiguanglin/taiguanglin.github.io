@@ -10,7 +10,27 @@ flows」）；音檔映射讀 `audio_map/`（站台根目錄單一 SoT）。
 ⚠️ 實驗性質：分類由 LLM 依準則產出（低信心條目在書中標「⚑復查」、
 未歸類條目集中於 99 章），內容以原書為準。
 
+## 發布版不變量（硬規則）
+
+1. **線上 `wenda2_ebook/` 永遠是 12 章**（`01`–`12` 主題章）。Word 與**所有**
+   PDF 月度答疑都必須依 `tool/qa_curation/` 準則併入這 12 章；PDF 不得長成
+   第 13 章以上的新章節。
+2. **13–21 只能是跳轉頁**（`noindex, follow`＋canonical 指總目錄），不得出現在
+   目錄 TOC、JSON-LD `hasPart` 或 `sitemap.xml`。
+3. **分類覆蓋率 fail closed**：stage 2 抽出的每一則 PDF 問答都必須在版控
+   `classified/batch_*.jsonl` 有紀錄。新 PDF 月份尚未分類時，`gen_classified.py`
+   會列出未分類條目並以非零狀態結束，**不會**靜默漏掉或產出半套成品。
+4. **預設重建就是發布版**：`tool/word2ebook/gen_all.py` 預設跑 stage 1→2→3，
+   並在結束前驗證 12 章形狀；只有重新分類時才用 `--draft-only` 停在 21 章底稿
+   （該底稿不可發布）。
+5. `tool/books2ebook/gen_all_and_push.py` 會整包 `git add :/`；推送前會檢查
+   `wenda2_ebook/` 是否為 12 章發布版，若是底稿就拒絕 commit/push。
+
 ## 管線（全部用鎖版 venv 執行）
+
+> 日常重建不需要手動依序執行下表：`tool/word2ebook/gen_all.py` 預設就會跑完
+> stage 1→2→3 並驗證 12 章。只有在**重新分類**（新增 PDF 月份、要 LLM 逐批判定）
+> 時，才先用 `gen_all.py --draft-only` 產生 21 章底稿，再從 stage 1 開始往下跑。
 
 > 音頻映射直接讀寫站台根目錄 `audio_map/*.json`（單一 SoT，2026-10-26 起）；
 > 舊的步驟 0 `sync_audio_map.py`（把 `tool/word2ebook/data/audio_map/` 抄到

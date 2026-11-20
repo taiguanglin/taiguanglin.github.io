@@ -387,6 +387,17 @@ class TestPublishedEbookOrdering:
                 assert "此章節已重新分類" in text, f"{path.name} 不是 stage 3 跳轉頁"
                 assert 'class="question"' not in text, f"{path.name} 仍含月度底稿問答"
 
+    def test_index_lists_exactly_twelve_chapters(self, ebook_dir):
+        """發布版目錄永遠只有 12 章；13–21 只能是跳轉頁。"""
+        for name in ("index.html", "index_trad.html"):
+            path = ebook_dir / name
+            if not path.exists():
+                pytest.skip("發布版電子書未建置（wenda2_ebook/ 不存在）")
+            text = path.read_text(encoding="utf-8")
+            suffix = "_trad" if name.endswith("_trad.html") else ""
+            assert f'href="13{suffix}.html"' not in text, f"{name} 仍列出第 13 章"
+            assert f'href="12{suffix}.html"' in text, f"{name} 缺少第 12 章"
+
     def test_pdf_classified_entries_are_present(self, ebook_dir, repo_root):
         """抽查版控分類結果中的 qid，確保成品不是只含 Word 的半套版本。"""
         classified_dir = repo_root / "tool" / "qa_split_ebook" / "classified"
