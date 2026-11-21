@@ -108,7 +108,12 @@
 
 ## 8. ebook 重建與測試
 
-待背景重建完成後填入實際結果。
+- 最終 V1 裁決落地後，再以鎖版 `tool/word_audio_map2/.venv/bin/python` 執行 `tool/books2ebook/gen_all.py`：exit 0；10 本書與 19,424 筆搜尋索引重建完成，`sitemap.xml` 同步一致。
+- `ebook/09.html`、`ebook/09_trad.html`、`ebook/search_index.json`、`ebook/search_index_trad.json` 的 SHA-256 **皆與本期重建前相同**。原因是第三期仍 `reviewed=false`，依閘門不注入，並非漏建。
+- `sitemap.py --check`：一致；`tool/site_chrome/check_site.py`：**SITE CHECK OK**。
+- `tool/books2ebook`：**97 passed、2 skipped**（99 collected）。
+- `tool/word2ebook`：**686 passed**（僅 5 個既有 deprecation warnings）。
+- `git diff --check`：通過。
 
 ## 9. 人工完成前不可省略的最後一步
 
