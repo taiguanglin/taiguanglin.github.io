@@ -1,7 +1,7 @@
 {
   "series": "liuzutanjing",
   "book_number": 9,
-  "generated_at": "2026-11-21T06:13:55.046Z",
+  "generated_at": "2026-11-21T06:22:10.115Z",
   "lectures": {
     "1": {
       "audio": "2025年7月7日Tai师父讲经·六祖坛经(1).opus",
@@ -1538,7 +1538,7 @@
       "audio": "2025年7月9日Tai师父讲经·六祖坛经(3).opus",
       "title": "坛经（3）",
       "duration": 1807.733,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-s30466f8d",
@@ -1657,7 +1657,7 @@
           "end": 18.4,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4089a960",
@@ -1666,7 +1666,7 @@
           "end": 21.152,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s462cd1ff",
@@ -1675,26 +1675,25 @@
           "end": 69.985,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s95a03231",
           "text": "自性若迷，福何可救？汝等各去，自看智慧，取自本心般若之性，各作一偈，来呈吾看，若悟大意，付汝衣法，为第六代祖。",
           "start": 69.985,
-          "end": 69.985,
+          "end": 73.472,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s376c79b8",
           "text": "“自性若迷”，自性迷住了，“自性”在这里指第八识阿赖耶识。但是“若迷”，并不是直接从佛的境界来说，而是从我们凡夫的境界说他没有理悟，我们所说的自性恒常、初妄无因、诸佛同体这些核心义理，这些人都不知道。“福何可救”，如果他们不知道这些核心义理——佛所说的第一义谛，就算福报再多，又怎么可能用福报救得了你们？",
-          "start": 69.985,
+          "start": 73.472,
           "end": 113.039,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se460dc73",
@@ -1703,7 +1702,7 @@
           "end": 162.37,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f24b46b",
@@ -1712,7 +1711,7 @@
           "end": 191.25,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1cc9f04c",
@@ -1721,25 +1720,25 @@
           "end": 194.459,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0814739c",
           "text": "你们赶紧去办，不要推迟。“思量”就是思考，我们普通人用脑子思考的能力。用这种思考不能写出能表达佛法真义的偈子，这是没有用的。“见性”是“明心见性”的“见性”。“见性之人”，知道众生都有不生不灭的自性义理的人。但是我们这样说，只是理悟，在道理上明白了。",
           "start": 194.459,
-          "end": 237.762,
+          "end": 237.662,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4027034f",
           "text": "如果在境界上已经体悟了见性，这是很高的境界，至少禅定要达到很高境界，哪怕你能体会到人有一个分别心，用分别心可以观察全部执着的那种状态。因为在这里惠能所主张的修行方法就是佛当时所说的小乘的四念处修行方法，以及类似的修法。我认为是一样的，因为那个时代的境界差不多就是四空定到阿罗汉这个阶段的修行法。",
-          "start": 237.762,
+          "start": 237.662,
           "end": 278.02,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6eac17b7",
@@ -1748,25 +1747,25 @@
           "end": 320.381,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa38da4ae",
           "text": "“若如此者，轮刀上阵，亦得见之”，如果是这样的人，就算拿着刀上战场，也能看得出来。这是一个比喻，“轮刀上阵”是上战场杀敌的一种行为。我们佛法教大家不要杀生。如果你真见性了，无论从事什么行业也好，做什么事也好，哪怕做的这些行为和佛定下来的戒律相违背，那也能看得出来。悟的人就是悟的。",
           "start": 320.381,
-          "end": 361.325,
+          "end": 361.225,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1beb5285",
           "text": "众得处分，退而递相谓曰：“我等众人，不须澄心用意作偈，将呈和尚，有何所益？神秀上座，现为教授师，必是他得；我辈谩作偈颂，枉用心力。”",
-          "start": 361.325,
+          "start": 361.225,
           "end": 364.98,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1d802345",
@@ -1775,70 +1774,70 @@
           "end": 408.937,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5b6ef366",
           "text": "“教授师”是代师授徒的代行老师，替自己的师父教这些小师弟们。尤其是一些仪轨方面的内容还是由大师兄来教。真正的义理是由师父来教，但是一般生活方面由大师兄来指导。神秀应该是这样的上座。",
           "start": 408.937,
-          "end": 457.264,
+          "end": 457.164,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sef30f4a9",
           "text": "余人闻语，总皆息心，咸言：“我等已后依止秀师，何烦作偈。”",
-          "start": 457.264,
-          "end": 459.42,
+          "start": 457.164,
+          "end": 459.22,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s85c26911",
           "text": "这些人互相说了之后，基本都放下了，不再追求这个事了。都说：“我们以后就依止神秀上座继续修行就是了，有必要作什么偈吗？不用作了。”",
-          "start": 459.42,
-          "end": 481.195,
+          "start": 459.22,
+          "end": 481.095,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s48636472",
           "text": "神秀思惟：诸人不呈偈者，为我与他为教授师，我须作偈，将呈和尚。若不呈偈，和尚如何知我心中见解深浅。我呈偈意，求法即善，觅祖即恶，却同凡心夺其圣位奚别？若不呈偈，终不得法，大难大难。",
-          "start": 481.195,
-          "end": 482.85,
+          "start": 481.095,
+          "end": 483.68,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s581251a6",
           "text": "神秀想，这些不作偈的人，因为我是他们的教授师，所以不跟我争。我必须作一个，献给和尚看。如果我不写这个偈子，师父怎么知道我心中见解深浅，以及我对佛法的理解呢？如果我真写了偈呈上去，如果只是为了求法，这是好的；但是，如果为了得到六祖的身份，那就是恶的、不好的，与普通人们互相夺位的行为有什么区别？但是，如果我不呈偈，那就得不到这个法，真是难呐，难呐！",
-          "start": 482.85,
+          "start": 483.68,
           "end": 563.87,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s56e86dcb",
           "text": "五祖堂前，有步廊三间，拟请供奉卢珍画楞伽经变相及五祖血脉图，流传供养。",
           "start": 563.87,
-          "end": 574.372,
+          "end": 575.701,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s67b2474d",
           "text": "五祖所住的这个房间前面，有三个走道一样的地方，想请卢珍画《楞伽经变相》及“五祖血脉图”这两幅画。“卢珍”是人名，“供奉”是官名。书后面解释，“供奉”是被朝廷或者皇家聘用的官员，多为擅长文学、美术等各种技艺的人。在这里，“卢珍”应该是位画家。",
-          "start": 574.372,
+          "start": 575.701,
           "end": 611.774,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7592533a",
@@ -1847,7 +1846,7 @@
           "end": 631.102,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s78d0d8f4",
@@ -1856,7 +1855,7 @@
           "end": 667.527,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5acf50b6",
@@ -1865,7 +1864,7 @@
           "end": 681.599,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7019f40e",
@@ -1874,7 +1873,7 @@
           "end": 686.654,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf164ac39",
@@ -1883,7 +1882,7 @@
           "end": 730.723,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3f3404a2",
@@ -1892,7 +1891,7 @@
           "end": 742.866,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb0424d15",
@@ -1901,7 +1900,7 @@
           "end": 744.26,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s62663d56",
@@ -1910,7 +1909,7 @@
           "end": 802.944,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s68d77b42",
@@ -1919,7 +1918,7 @@
           "end": 809.126,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se8f76813",
@@ -1938,7 +1937,7 @@
           "end": 840.14,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s81a48278",
@@ -1947,43 +1946,43 @@
           "end": 869.557,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbac83c83",
           "text": "秀书偈了，便却归房，人总不知。秀复思惟：五祖明日见偈欢喜，即我与法有缘，若言不堪，自是我迷，宿业障重，不合得法，圣意难测。房中思想，坐卧不安，直至五更。",
           "start": 869.557,
-          "end": 874.048,
+          "end": 874.748,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbab71626",
           "text": "神秀写完偈子，回到自己房间，所有人都不知道，只有惠能知道。秀的思维，惠能也知道。",
-          "start": 874.048,
+          "start": 874.748,
           "end": 902.316,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf193466f",
           "text": "神秀心想，希望五祖弘忍明天见到之后欢喜，那就是我和佛法有缘。如果五祖弘忍说，这个偈写得不好，那就是自己的执迷，还是自己业障重。活该自己得不到法，因为是自己迷。不知道五祖弘忍的意思怎么样。",
           "start": 902.316,
-          "end": 936.476,
+          "end": 939.697,
           "conf": 0.78,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2a60214d",
           "text": "神秀一宿都没有睡觉，一直都在想。坐卧不安，一直在紧张地等待着，直到五更。",
-          "start": 936.476,
+          "start": 939.697,
           "end": 950.448,
           "conf": 0.82,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s52757014",
@@ -1992,25 +1991,25 @@
           "end": 953.768,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2d336a37",
           "text": "这个时候五祖弘忍还没有看到偈子，但是已经知道神秀还没有入门，没有见到自性。在这里，五祖弘忍和六祖惠能都是神人，都不需要见面或者干什么，就已经知道了。",
           "start": 953.768,
-          "end": 973.494,
+          "end": 981.277,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4b0b1c2b",
           "text": "等天亮之后，五祖弘忍就把官名是供奉的画家卢珍叫过来，打算到南廊壁间绘画。忽然看到这个偈。",
-          "start": 973.494,
+          "start": 981.277,
           "end": 999.895,
           "conf": 0.82,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2a9ed351",
@@ -2019,7 +2018,7 @@
           "end": 1004.671,
           "conf": 0.82,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s22365105",
@@ -2028,7 +2027,7 @@
           "end": 1018.535,
           "conf": 0.78,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7cc9ac84",
@@ -2037,7 +2036,7 @@
           "end": 1020.85,
           "conf": 0.82,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s27993016",
@@ -2046,7 +2045,7 @@
           "end": 1049.373,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa230f0b2",
@@ -2055,7 +2054,7 @@
           "end": 1051.98,
           "conf": 0.78,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scdd8e7dd",
@@ -2064,7 +2063,7 @@
           "end": 1074.674,
           "conf": 0.82,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s51a3e752",
@@ -2073,7 +2072,7 @@
           "end": 1084.141,
           "conf": 0.78,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f483f84",
@@ -2082,7 +2081,7 @@
           "end": 1088.868,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s931752a3",
@@ -2091,7 +2090,7 @@
           "end": 1108.74,
           "conf": 0.78,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s86ef375c",
@@ -2100,25 +2099,25 @@
           "end": 1112.211,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se6410de4",
           "text": "神秀说，是自己作的，但是不敢妄求六祖的位置。希望和尚慈悲，看自己有多少智慧——偈子写得好不好，或者有没有悟到佛法，请你印证一下。",
           "start": 1112.211,
-          "end": 1131.05,
+          "end": 1131.75,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-saebcbb10",
           "text": "祖曰：“汝作此偈，未见本性，只到门外，未入门内。如此见解，觅无上菩提，了不可得。",
-          "start": 1131.05,
+          "start": 1131.75,
           "end": 1137.306,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scf63ac59",
@@ -2127,7 +2126,7 @@
           "end": 1173.843,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s456c3ccc",
@@ -2136,7 +2135,7 @@
           "end": 1177.905,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4ff7e497",
@@ -2145,7 +2144,7 @@
           "end": 1222.351,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8a62bc1d",
@@ -2154,7 +2153,7 @@
           "end": 1266.11,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1c15e487",
@@ -2163,7 +2162,7 @@
           "end": 1295.772,
           "conf": 0.78,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9a589424",
@@ -2172,7 +2171,7 @@
           "end": 1328.762,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s61a3a4bb",
@@ -2181,7 +2180,7 @@
           "end": 1351.611,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s36c771bf",
@@ -2190,7 +2189,7 @@
           "end": 1361.21,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0811eb30",
@@ -2199,7 +2198,7 @@
           "end": 1384.04,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sef108e14",
@@ -2208,7 +2207,7 @@
           "end": 1392.82,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa95b16af",
@@ -2217,7 +2216,7 @@
           "end": 1418.414,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3b8be41c",
@@ -2226,7 +2225,7 @@
           "end": 1435.602,
           "conf": 0.92,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9e608bf4",
@@ -2235,7 +2234,7 @@
           "end": 1455.824,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s99fce981",
@@ -2244,7 +2243,7 @@
           "end": 1483.52,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scbc03778",
@@ -2253,7 +2252,7 @@
           "end": 1518.19,
           "conf": 0.92,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2789a25a",
@@ -2262,7 +2261,7 @@
           "end": 1546.65,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc5b8c3d5",
@@ -2271,7 +2270,7 @@
           "end": 1569.353,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5a8fbee4",
@@ -2280,79 +2279,79 @@
           "end": 1602.125,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s31a4c427",
           "text": "那么我们看惠能这个人，他是达到菩萨境界的人。我认为他更不会在大众面前讲过多的有关神秀的内容，我个人是这么想的。",
           "start": 1602.125,
-          "end": 1616.197,
+          "end": 1617.769,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s577ee42b",
           "text": "后面有一段有关佛理的内容，有人来向惠能问法，他之前已经在神秀那里学过一段法，这个时候惠能先问这个人，你在神秀那里学了什么？神秀对佛法的什么戒、定、慧这些怎么认为？问了之后，这个人回答了，然后惠能又说了自己理解的戒、定、慧等问题。这样拿佛法大义来互相辩论、互相探讨，是可以的。但是没有必要在讲故事中某个事情的过程时，刻意展现出一个人不足的地方，这不是一个菩萨能干得出来的事情，尤其是在对着大众讲法的时候。",
-          "start": 1616.197,
-          "end": 1675.337,
+          "start": 1617.769,
+          "end": 1675.537,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6ab718d8",
           "text": "所以我认为这一段有不少后人添加、演绎的内容。就像《三国演义》把《三国志》拿来写那种延伸的故事一样，甚至有篡改故事的成分。我不是说这故事本身是篡改的，而是有夸张的地方。",
-          "start": 1675.337,
-          "end": 1697.782,
+          "start": 1675.537,
+          "end": 1697.982,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s608a8769",
           "text": "所以大家对故事就当作故事来看，我们只看重点义理。前面第一篇基本上都是故事，但是在故事里的对话当中穿插了一些义理，我们重点看这些义理就够了。",
-          "start": 1697.782,
+          "start": 1697.982,
           "end": 1712.726,
           "conf": 0.88,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf081dbcf",
           "text": "此外，如果一个人真的悟了，他在禅定当中观察其他人的阳神，应该是知道这个人达到什么境界的。但是为什么一定要写个偈来表明？",
           "start": 1712.726,
-          "end": 1726.23,
+          "end": 1726.03,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s280c3ef1",
           "text": "一个肯定是演给别人看的。因为你想服众，总得拿出点什么东西来给大家看。所以这一整个过程应该是弘忍自己设计好的，为了把衣钵传下去而表演给大家看的一场戏。如果没有这场戏，直接把衣钵给了惠能，让惠能赶紧跑，后面这个故事就不像那样了，弘忍的这种行为得不到其他人的认可。",
-          "start": 1726.23,
+          "start": 1726.03,
           "end": 1755.444,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s35787875",
           "text": "在这里就算有了这个偈，后面还有人去追惠能；过了很多年之后，还有人试图去杀惠能，等等，这种事还在发生。说明在这个时代，对衣钵、名分的争夺已经非常激烈了，甚至到了动杀心的程度。所以从惠能这里开始不再往下传承衣钵是有道理的。",
           "start": 1755.444,
-          "end": 1788.507,
+          "end": 1788.307,
           "conf": 0.92,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2d1d3a1a",
           "text": "这一期就讲到这里，下一期惠能开始登场了。惠能的故事相比其他人的部分应该更细致，因为这本书的主人公就是惠能。",
-          "start": 1788.507,
+          "start": 1788.307,
           "end": 1807.733,
           "conf": 0.92,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
