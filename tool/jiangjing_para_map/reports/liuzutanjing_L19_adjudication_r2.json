@@ -366,18 +366,6 @@
     "note": "own_first 采@179.410 (weak-nearest,cov=0.00); gap 175.655→176.010(0.355)×0.374→175.788; old 179.410 Δ-3.622; zero復核另列；strict/soft重疊=0.355/0.355；主代理逐段檢視後保留此hosting/contact提案"
   },
   {
-    "i": 22,
-    "cls": "COMM",
-    "old": 217.35,
-    "old_zero": true,
-    "text": "那么，",
-    "start": 217.35,
-    "zero": true,
-    "conf": 0.9,
-    "method": "dtw-evid",
-    "note": "人工confirmed zero=true「那么，」原樣保留；不改confirmed／start／zero，避免把人工zero誤改READ；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
-  },
-  {
     "i": 23,
     "cls": "?",
     "old": 217.35,
@@ -398,7 +386,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0.123,
     "delta": 1.126,
-    "note": "own_first 是@219.250 (head,cov=0.69); gap 218.050→218.810(0.760)×0.56→218.476; old 217.350 Δ+1.126; zero復核另列；strict/soft重疊=0/0.123；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 是@219.250 (head,cov=0.69); gap 218.050→218.810(0.760)×0.56→218.476; old 217.350 Δ+1.126; zero復核另列；strict/soft重疊=0/0.123；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 24,
@@ -406,7 +395,7 @@
     "old": 220.91,
     "old_zero": false,
     "text": "你以前做了做什么呢？那么这个人，这位行思禅师答为，",
-    "start": 218.476,
+    "start": 220.18,
     "own": 220.91,
     "own_cov": 0.8,
     "own_source": "head",
@@ -416,12 +405,12 @@
       "g": 0.76
     },
     "rule": "hosting",
-    "conf": 0.9,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0.123,
     "delta": -2.434,
-    "note": "own_first 你@220.910 (head,cov=0.80); gap 218.050→218.810(0.760)×0.56→218.476; old 220.910 Δ-2.434; zero復核另列；strict/soft重疊=0/0.123；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「你」@220.910（你以前做了什麼呢…＝本段白話開頭）；自動218.476與[23]共用start；gap219.250→220.910(1.660)×.560＝220.180；舊220.910，Δ-0.730s"
   },
   {
     "i": 25,
@@ -536,7 +525,8 @@
     "strict_overlap": 1.077,
     "soft_overlap": 1.315,
     "delta": -1.52,
-    "note": "own_first 是@266.340 (head,cov=0.80); gap 263.205→264.520(1.315)×0.65→264.060; old 265.580 Δ-1.520; zero復核另列；strict/soft重疊=1.077/1.315；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 是@266.340 (head,cov=0.80); gap 263.205→264.520(1.315)×0.65→264.060; old 265.580 Δ-1.520; zero復核另列；strict/soft重疊=1.077/1.315；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 30,
@@ -544,7 +534,7 @@
     "old": 267.4,
     "old_zero": false,
     "text": "阶级落的是什么阶级呢？",
-    "start": 264.06,
+    "start": 266.878,
     "own": 267.3,
     "own_cov": 1.0,
     "own_source": "head",
@@ -554,12 +544,12 @@
       "g": 1.315
     },
     "rule": "hosting",
-    "conf": 0.9,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 1.077,
     "soft_overlap": 1.315,
     "delta": -3.34,
-    "note": "own_first 阶@267.300 (head,cov=1.00); gap 263.205→264.520(1.315)×0.65→264.060; old 267.400 Δ-3.340; zero復核另列；strict/soft重疊=1.077/1.315；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「階」@267.300（階段落的是什麼階級呢…＝本段白話開頭）；自動264.060與[29]共用start；gap266.340→267.300(.960)×.560＝266.878；舊267.400，Δ-0.522s"
   },
   {
     "i": 31,
@@ -743,7 +733,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0,
     "delta": 1.985,
-    "note": "own_first 了@318.590 (final+head,cov=0.71); gap 316.810→317.250(0.440)×0.374→316.975; old 314.990 Δ+1.985; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 了@318.590 (final+head,cov=0.71); gap 316.810→317.250(0.440)×0.374→316.975; old 314.990 Δ+1.985; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 39,
@@ -751,7 +742,7 @@
     "old": 321.99,
     "old_zero": false,
     "text": "谥弘济禅师。",
-    "start": 316.975,
+    "start": 320.494,
     "own": 321.99,
     "own_cov": 0,
     "own_source": "weak-nearest",
@@ -761,12 +752,12 @@
       "g": 0.44
     },
     "rule": "hosting",
-    "conf": 0.6,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0,
     "delta": -5.015,
-    "note": "own_first 继@321.990 (weak-nearest,cov=0.00); gap 316.810→317.250(0.440)×0.374→316.975; old 321.990 Δ-5.015; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「謚」@321.990（謚弘濟禪師…＝本段首次宣讀）；自動316.975與[38]共用start；gap318.590→321.990(3.400)×.560＝320.494；舊321.990，Δ-1.496s"
   },
   {
     "i": 40,
@@ -927,7 +918,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0,
     "delta": -0.063,
-    "note": "own_first 出@396.720 (head,cov=0.96); gap 396.380→396.720(0.340)×0.374→396.507; old 396.570 Δ-0.063; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 出@396.720 (head,cov=0.96); gap 396.380→396.720(0.340)×0.374→396.507; old 396.570 Δ-0.063; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 47,
@@ -935,7 +927,7 @@
     "old": 398.7,
     "old_zero": false,
     "text": "一开始是去嵩山，拜安国师。",
-    "start": 396.507,
+    "start": 397.829,
     "own": 398.85,
     "own_cov": 0.764,
     "own_source": "head",
@@ -945,12 +937,12 @@
       "g": 0.34
     },
     "rule": "hosting",
-    "conf": 0.8,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0,
     "delta": -2.193,
-    "note": "own_first 一@398.850 (head,cov=0.76); gap 396.380→396.720(0.340)×0.374→396.507; old 398.700 Δ-2.193; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「一」@398.700（一開始是去嵩山拜安國師…＝本段白話開頭）；自動396.507與[46]共用start；gap396.720→398.700(1.980)×.560＝397.829；舊398.700，Δ-0.871s"
   },
   {
     "i": 48,
@@ -1366,7 +1358,8 @@
     "strict_overlap": 0.466,
     "soft_overlap": 0.486,
     "delta": -0.857,
-    "note": "own_first 悉@486.860 (head,cov=0.67); gap 485.385→486.220(0.835)×0.56→485.853; old 486.710 Δ-0.857; zero復核另列；strict/soft重疊=0.466/0.486；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 悉@486.860 (head,cov=0.67); gap 485.385→486.220(0.835)×0.56→485.853; old 486.710 Δ-0.857; zero復核另列；strict/soft重疊=0.466/0.486；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 66,
@@ -1374,7 +1367,7 @@
     "old": 488.99,
     "old_zero": false,
     "text": "西天波罗多罗谶，这位波罗多罗是西方的天竺那边的第二十七祖，达摩是第二十八祖，然后到惠能是三十三祖，从达摩开始数，往下六代到惠能这里，第三十三",
-    "start": 485.853,
+    "start": 486.86,
     "own": 486.86,
     "own_cov": 0.985,
     "own_source": "head",
@@ -1384,12 +1377,12 @@
       "g": 0.835
     },
     "rule": "hosting",
-    "conf": 0.9,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0.466,
     "soft_overlap": 0.486,
     "delta": -3.137,
-    "note": "own_first 悉@486.860 (head,cov=0.98); gap 485.385→486.220(0.835)×0.56→485.853; old 488.990 Δ-3.137; zero復核另列；strict/soft重疊=0.466/0.486；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「西」@486.860（西天般若多羅谶…＝本段首次宣讀）；[65]白話另起，contact＝[65]末字END 486.860，避免共用start；舊488.990，Δ-2.130s"
   },
   {
     "i": 67,
@@ -2125,7 +2118,8 @@
     "strict_overlap": 1.075,
     "soft_overlap": 1.075,
     "delta": -2.176,
-    "note": "own_first 您@1147.810 (head,cov=0.77); gap 1145.995→1147.070(1.075)×0.65→1146.694; old 1148.870 Δ-2.176; zero復核另列；strict/soft重疊=1.075/1.075；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 您@1147.810 (head,cov=0.77); gap 1145.995→1147.070(1.075)×0.65→1146.694; old 1148.870 Δ-2.176; zero復核另列；strict/soft重疊=1.075/1.075；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 99,
@@ -2133,7 +2127,7 @@
     "old": 1149.78,
     "old_zero": false,
     "text": "看了《维摩诘经》之后，悟到了人有自性的，不生不灭的自性的义理。",
-    "start": 1146.694,
+    "start": 1148.829,
     "own": 1149.63,
     "own_cov": 0,
     "own_source": "weak-nearest",
@@ -2143,12 +2137,12 @@
       "g": 1.075
     },
     "rule": "hosting",
-    "conf": 0.6,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 1.075,
     "soft_overlap": 1.075,
     "delta": -3.086,
-    "note": "own_first 经@1149.630 (weak-nearest,cov=0.00); gap 1145.995→1147.070(1.075)×0.65→1146.694; old 1149.780 Δ-3.086; zero復核另列；strict/soft重疊=1.075/1.075；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「看」@1149.630（看了維摩詰經之後悟到了人有自性的不生不滅的自性的義理…＝本段白話開頭）；自動1146.694與[98]共用start；gap1147.810→1149.630(1.820)×.560＝1148.829；舊1149.780，Δ-0.951s"
   },
   {
     "i": 100,
@@ -2540,7 +2534,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0.464,
     "delta": -0.837,
-    "note": "own_first 我@1333.930 (head,cov=1.00); gap 1332.915→1333.390(0.475)×0.374→1333.093; old 1333.930 Δ-0.837; zero復核另列；strict/soft重疊=0/0.464；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 我@1333.930 (head,cov=1.00); gap 1332.915→1333.390(0.475)×0.374→1333.093; old 1333.930 Δ-0.837; zero復核另列；strict/soft重疊=0/0.464；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 117,
@@ -2548,7 +2543,7 @@
     "old": 1335.63,
     "old_zero": false,
     "text": "曰：“愿仁者为我证据。”",
-    "start": 1333.093,
+    "start": 1334.986,
     "own": 1335.81,
     "own_cov": 0.863,
     "own_source": "head",
@@ -2558,12 +2553,12 @@
       "g": 0.475
     },
     "rule": "hosting",
-    "conf": 0.9,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0.464,
     "delta": -2.537,
-    "note": "own_first 愿@1335.810 (head,cov=0.86); gap 1332.915→1333.390(0.475)×0.374→1333.093; old 1335.630 Δ-2.537; zero復核另列；strict/soft重疊=0/0.464；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「曰」@1335.810（曰願仁者為我證據…＝本段首次宣讀）；自動1333.093與[116]共用start；gap1333.930→1335.810(1.880)×.560＝1334.986；舊1335.630，Δ-0.644s"
   },
   {
     "i": 118,
@@ -2702,7 +2697,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0.393,
     "delta": -0.756,
-    "note": "own_first 绝@1373.220 (head,cov=0.62); gap 1371.975→1372.580(0.605)×0.56→1372.314; old 1373.070 Δ-0.756; zero復核另列；strict/soft重疊=0/0.393；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 绝@1373.220 (head,cov=0.62); gap 1371.975→1372.580(0.605)×0.56→1372.314; old 1373.070 Δ-0.756; zero復核另列；strict/soft重疊=0/0.393；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 124,
@@ -2710,7 +2706,7 @@
     "old": 1374.56,
     "old_zero": false,
     "text": "所以这个玄觉禅师跟着玄策一起来参礼这位惠能法师。",
-    "start": 1372.314,
+    "start": 1374.094,
     "own": 1374.78,
     "own_cov": 0.761,
     "own_source": "final+head",
@@ -2720,12 +2716,12 @@
       "g": 0.605
     },
     "rule": "hosting",
-    "conf": 0.8,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0.393,
     "delta": -2.246,
-    "note": "own_first 所@1374.780 (final+head,cov=0.76); gap 1371.975→1372.580(0.605)×0.56→1372.314; old 1374.560 Δ-2.246; zero復核另列；strict/soft重疊=0/0.393；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「所」@1374.780（所以這個玄覺禪師跟著玄策一起來參禮這位惠能法師…＝本段白話開頭）；自動1372.314與[123]共用start；gap1373.220→1374.780(1.560)×.560＝1374.094；舊1374.560，Δ-0.466s"
   },
   {
     "i": 125,
@@ -2748,7 +2744,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0.418,
     "delta": -1.479,
-    "note": "own_first 个@1384.830 (weak-nearest,cov=0.00); gap 1383.005→1383.640(0.635)×0.56→1383.361; old 1384.840 Δ-1.479; zero復核另列；strict/soft重疊=0/0.418；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 个@1384.830 (weak-nearest,cov=0.00); gap 1383.005→1383.640(0.635)×0.56→1383.361; old 1384.840 Δ-1.479; zero復核另列；strict/soft重疊=0/0.418；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 126,
@@ -2756,7 +2753,7 @@
     "old": 1388.33,
     "old_zero": false,
     "text": "绕着惠能禅师转了三圈之后，“振锡而立”，就是把这个锡杖往地上一杵，然后站在那里，并没有叩头行礼，就是没有顶礼。",
-    "start": 1383.361,
+    "start": 1384.049,
     "own": 1384.59,
     "own_cov": 0.746,
     "own_source": "head",
@@ -2766,12 +2763,12 @@
       "g": 0.635
     },
     "rule": "hosting",
-    "conf": 0.8,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0.418,
     "delta": -4.969,
-    "note": "own_first 那@1384.590 (head,cov=0.75); gap 1383.005→1383.640(0.635)×0.56→1383.361; old 1388.330 Δ-4.969; zero復核另列；strict/soft重疊=0/0.418；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「繞」@1384.590（繞著惠能禪師轉了三圈之後振錫而立…＝本段白話開頭）；自動1383.361與[125]共用start；gap1383.361→1384.590(1.229)×.560＝1384.049；舊1388.330，Δ-4.281s"
   },
   {
     "i": 127,
@@ -2909,7 +2906,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0,
     "delta": -1.029,
-    "note": "own_first 大@1461.130 (head,cov=0.82); gap 1459.810→1460.330(0.520)×0.56→1460.101; old 1461.130 Δ-1.029; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 大@1461.130 (head,cov=0.82); gap 1459.810→1460.330(0.520)×0.56→1460.101; old 1461.130 Δ-1.029; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 133,
@@ -2917,7 +2915,7 @@
     "old": 1463.21,
     "old_zero": false,
     "text": "在这里指他为大德，前面有人来问他的时候，他直接称“汝”——就是“你”，但是在这里这个人显得很傲慢，所以就说大德，反而尊称他，这也是一种讽刺吧",
-    "start": 1460.101,
+    "start": 1462.485,
     "own": 1463.55,
     "own_cov": 0.885,
     "own_source": "head",
@@ -2927,12 +2925,12 @@
       "g": 0.52
     },
     "rule": "hosting",
-    "conf": 0.9,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0,
     "delta": -3.109,
-    "note": "own_first 在@1463.550 (head,cov=0.88); gap 1459.810→1460.330(0.520)×0.56→1460.101; old 1463.210 Δ-3.109; zero復核另列；strict/soft重疊=0/0；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「在」@1463.550（在這裡指他為大德前面有人來問他的時候他直接稱汝…＝本段白話開頭）；自動1460.101與[132]共用start；gap1461.130→1463.550(2.420)×.560＝1462.485；舊1463.210，Δ-0.725s"
   },
   {
     "i": 134,
@@ -3093,7 +3091,8 @@
     "strict_overlap": 0.725,
     "soft_overlap": 0.725,
     "delta": -0.969,
-    "note": "own_first 是@1550.280 (head,cov=0.77); gap 1548.755→1549.480(0.725)×0.56→1549.161; old 1550.130 Δ-0.969; zero復核另列；strict/soft重疊=0.725/0.725；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 是@1550.280 (head,cov=0.77); gap 1548.755→1549.480(0.725)×0.56→1549.161; old 1550.130 Δ-0.969; zero復核另列；strict/soft重疊=0.725/0.725；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 141,
@@ -3101,7 +3100,7 @@
     "old": 1551.03,
     "old_zero": false,
     "text": "你说的对，惠能法师认可他的说法。之后呢，",
-    "start": 1549.161,
+    "start": 1550.784,
     "own": 1551.18,
     "own_cov": 0.806,
     "own_source": "final+head",
@@ -3111,12 +3110,12 @@
       "g": 0.725
     },
     "rule": "hosting",
-    "conf": 0.9,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0.725,
     "soft_overlap": 0.725,
     "delta": -1.869,
-    "note": "own_first 你@1551.180 (final+head,cov=0.81); gap 1548.755→1549.480(0.725)×0.56→1549.161; old 1551.030 Δ-1.869; zero復核另列；strict/soft重疊=0.725/0.725；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「你」@1551.180（你說的對惠能法師認可他的說法之後呢…＝本段白話開頭）；自動1549.161與[140]共用start；gap1550.280→1551.180(.900)×.560＝1550.784；舊1551.030，Δ-0.246s"
   },
   {
     "i": 142,
@@ -3162,7 +3161,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0.285,
     "delta": -0.441,
-    "note": "own_first 辞@1560.850 (weak-nearest,cov=0.00); gap 1560.265→1560.650(0.385)×0.374→1560.409; old 1560.850 Δ-0.441; zero復核另列；strict/soft重疊=0/0.285；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 辞@1560.850 (weak-nearest,cov=0.00); gap 1560.265→1560.650(0.385)×0.374→1560.409; old 1560.850 Δ-0.441; zero復核另列；strict/soft重疊=0/0.285；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 144,
@@ -3170,7 +3170,7 @@
     "old": 1561.56,
     "old_zero": false,
     "text": "师曰：“返太速乎？”",
-    "start": 1560.409,
+    "start": 1561.264,
     "own": 1561.59,
     "own_cov": 0,
     "own_source": "weak-nearest",
@@ -3180,12 +3180,12 @@
       "g": 0.385
     },
     "rule": "hosting",
-    "conf": 0.6,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0.285,
     "delta": -1.151,
-    "note": "own_first 个@1561.590 (weak-nearest,cov=0.00); gap 1560.265→1560.650(0.385)×0.374→1560.409; old 1561.560 Δ-1.151; zero復核另列；strict/soft重疊=0/0.285；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「然」@1561.590（然後玄覺才給他頂禮禮拜…＝本段白話開頭）；自動1560.409與[143]共用start；gap1560.850→1561.590(.740)×.560＝1561.264；舊1561.560，Δ-0.296s"
   },
   {
     "i": 145,
@@ -3415,7 +3415,8 @@
     "strict_overlap": 0,
     "soft_overlap": 0.284,
     "delta": -0.297,
-    "note": "own_first 说@1639.730 (weak-nearest,cov=0.00); gap 1639.255→1639.730(0.475)×0.374→1639.433; old 1639.730 Δ-0.297; zero復核另列；strict/soft重疊=0/0.284；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first 说@1639.730 (weak-nearest,cov=0.00); gap 1639.255→1639.730(0.475)×0.374→1639.433; old 1639.730 Δ-0.297; zero復核另列；strict/soft重疊=0/0.284；主代理逐段檢視後保留此hosting/contact提案",
+    "zero": false
   },
   {
     "i": 155,
@@ -3423,7 +3424,7 @@
     "old": 1641.24,
     "old_zero": false,
     "text": "曰：“无生岂有意耶？”",
-    "start": 1639.433,
+    "start": 1642.456,
     "own": 1641.23,
     "own_cov": 0,
     "own_source": "weak-nearest",
@@ -3433,12 +3434,12 @@
       "g": 0.475
     },
     "rule": "hosting",
-    "conf": 0.6,
+    "conf": 0.85,
     "method": "dtw-evid",
     "strict_overlap": 0,
     "soft_overlap": 0.284,
     "delta": -1.807,
-    "note": "own_first 传@1641.230 (weak-nearest,cov=0.00); gap 1639.255→1639.730(0.475)×0.374→1639.433; old 1641.240 Δ-1.807; zero復核另列；strict/soft重疊=0/0.284；主代理逐段檢視後保留此hosting/contact提案"
+    "note": "own_first「無」@1643.420（無生還有什麼含義嗎或者它算什麼它那裡有什麼還有更深層次的精髓嗎…＝本段白話開頭）；自動1639.433與[154]共用start；gap1641.230→1643.420(2.190)×.560＝1642.456；舊1641.240，Δ+1.216s"
   },
   {
     "i": 156,
