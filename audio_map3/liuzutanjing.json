@@ -1,7 +1,7 @@
 {
   "series": "liuzutanjing",
   "book_number": 9,
-  "generated_at": "2026-11-22T12:10:12.055Z",
+  "generated_at": "2026-11-23T01:10:09.310Z",
   "lectures": {
     "1": {
       "audio": "2025年7月7日Tai师父讲经·六祖坛经(1).opus",
@@ -3537,20 +3537,20 @@
         {
           "pid": "p-s003a34f2",
           "text": "《坛经》第五期。上一期咱们讲到这本书的第二十七页，惠能跟弘忍师父辞别之后，一路快速向南跑了两个月，到了大庾岭这个地方，后面有数百人追来，要夺他的衣钵。",
-          "start": 0.91,
-          "end": 27.648,
+          "start": 0.71,
+          "end": 27.948,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3fdbe688",
           "text": "一僧俗姓陈，名惠明。先是四品将军，性行粗糙，极意参寻，为众人先，趁及惠能。",
-          "start": 27.648,
+          "start": 27.948,
           "end": 30.99,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s77a67cb3",
@@ -3559,70 +3559,71 @@
           "end": 79.823,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1dbf7b15",
           "text": "惠能掷下衣钵于石上，曰：“此衣表信，可力争耶。”",
           "start": 79.823,
-          "end": 84.9,
+          "end": 86.951,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s35c6f0ec",
           "text": "惠能把衣钵放到了一个石头上，然后说，这衣服代表信仰、信念，或者正法，难道用力气就能争夺到吗？",
-          "start": 84.9,
-          "end": 109.806,
+          "start": 86.951,
+          "end": 104.797,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9f12cefd",
           "text": "能隐草莽中，惠明至，提掇不动。乃唤云：“行者行者，我为法来，不为衣来！”",
-          "start": 109.806,
-          "end": 111.252,
+          "start": 104.797,
+          "end": 109.706,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3ca2b093",
           "text": "惠能在草丛里躲藏了起来。惠明到了之后看到这个衣钵，想把它拿起来，居然提不动。一件衣服加一个碗肯定是不重的，但是他居然提不动，他就知道这里边有什么门道了。所以就说：“行者，我是为了求法而来，并不是为了争夺衣钵而来。”“行者”指惠能。",
-          "start": 111.252,
-          "end": 128.52,
+          "start": 109.706,
+          "end": 142.996,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s64ea5449",
           "text": "惠能遂出，盘坐石上。惠明作礼云：“望行者为我说法。”惠能云：“汝既为法而来，可屏息诸缘，勿生一念，吾为汝说。”",
-          "start": 128.52,
-          "end": 135.33,
+          "start": 142.996,
+          "end": 142.996,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sb557b964",
           "text": "惠明这么一说，惠能就从躲藏的地方走了出来，坐到石头上。惠明向惠能施礼，然后说：“希望你能为我说法。”惠能说：“你既然为了求法而来，那么把你当下的妄想全部停止，然后都摄六根，不要把注意力放到六根上——文字妄想停止，注意力也暂时熄灭，尽量处于自己已经达到的最高境界当中，不要生起一念，我给你说法。”",
-          "start": 135.33,
-          "end": 187.355,
+          "start": 142.996,
+          "end": 189.741,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f7dbe9d",
           "text": "这里的“念”，不管在这本书里，还是其他地方，大部分都指你脑子里的想法，也就是我说的文字妄想。",
-          "start": 187.355,
+          "start": 189.741,
           "end": 204.353,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s29754b6c",
@@ -3631,34 +3632,34 @@
           "end": 205.49,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa880ee51",
           "text": "过了一段时间，惠能说，不要思考什么善，也不要思考什么恶。“正与么时”就是当下，你不思善、不思恶的那个当下时刻。“那个是明上座本来面目”，就是你不生起妄想的时候，那个意识状态就是你本来的意识状态，本来就是这样。",
           "start": 205.49,
-          "end": 238.561,
+          "end": 235.144,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-seeb6e15d",
           "text": "惠明言下大悟。复问云：“上来密语密意外，还更有密意否？”",
-          "start": 238.561,
-          "end": 244.012,
+          "start": 235.144,
+          "end": 236.701,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s66045ce2",
           "text": "他这么一说，惠明听完马上就悟了。他又问：除了你刚才说的这一段之外，还有什么其他秘密的意趣吗？就是你还有什么没有教我的隐秘内容吗？",
-          "start": 244.012,
+          "start": 236.701,
           "end": 256.326,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd747dfa7",
@@ -3667,79 +3668,79 @@
           "end": 274.496,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb9ecd1c4",
           "text": "以前的祖师禅语就是说一些别人听不懂的奇怪的话，让人生起疑心，这也是一种方法。但是大部分情况下人家听不懂。如果这个人有很执着地追求佛法的那种意愿，他会一直思考这个问题，这就是疑情。他一直在想，师父对我说的这句话里到底有什么意思呢？这么一直想着、想着，可能好几天都不去想别的，就这么专注地思考或者沉浸在疑情中，这个时候就会进入一种禅定境界。",
           "start": 274.496,
-          "end": 319.627,
+          "end": 319.527,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s912e0b28",
           "text": "我们所说的参疑情就是参话头，这就是一个引导人进去的方法。但是这也会有过程，惠能就单纯说一句话，惠明听完马上就悟了。我觉得如果是这个程度，估计惠明在弘忍身边应该也能悟。但是他没有，所以一直跑到这来，听了惠能一段话之后悟了。我个人觉得惠能肯定提供了什么加持力，让他短暂地感受到了更高境界，知道了意识的本来面目。",
-          "start": 319.627,
-          "end": 359.526,
+          "start": 319.527,
+          "end": 359.426,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf002de57",
           "text": "惠能云：“与汝说者，即非密也。汝若反照，密在汝边。”",
-          "start": 359.526,
-          "end": 365.567,
+          "start": 359.426,
+          "end": 365.667,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5972de06",
           "text": "既然和你说出来，那肯定不是秘密。如果你往里观照自己的意识，不要老是把注意力放到外边，观察外边的世界，而是往里观察自己的意识，秘密就在你那边。",
-          "start": 365.567,
-          "end": 381.84,
+          "start": 365.667,
+          "end": 382.14,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7a81f834",
           "text": "明曰：“惠明虽在黄梅，实未省自己面目。今蒙指示，如人饮水，冷暖自知。今行者即惠明师也。”",
-          "start": 381.84,
-          "end": 392.857,
+          "start": 382.14,
+          "end": 393.057,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf47860cb",
           "text": "惠明说，他在黄梅弘忍在的寺院里学习修行，但是从来没有返观自己的意识，一直都在外边寻求，从来没有静下心来好好返照自己，就是上面的“反照”。今天在你的指点下，就像一个人喝水一样，冷暖自知，知道了自己有不生不灭的意识。不只是理论上悟到了，应该还有了一点体悟。今天行者就是我的师父了。",
-          "start": 392.857,
-          "end": 439.75,
+          "start": 393.057,
+          "end": 439.95,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6b2c7164",
           "text": "惠能曰：“汝若如是，吾与汝同师黄梅。善自护持。”",
-          "start": 439.75,
-          "end": 445.883,
+          "start": 439.95,
+          "end": 445.983,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8196bb25",
           "text": "如果你这么想的话，我和你都是从黄梅弘忍师父那里学法的，那么我们应该好好护念修持——按照师父讲的义理好好修行。",
-          "start": 445.883,
+          "start": 445.983,
           "end": 462.769,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9f1ba3a6",
@@ -3748,43 +3749,43 @@
           "end": 466.633,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfbd5982d",
           "text": "惠明又问惠能，自己以后该去哪里。看来他不想再回黄梅弘忍师父那里去了。",
           "start": 466.633,
-          "end": 476.64,
+          "end": 477.94,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfc7f3fff",
           "text": "所以惠能告诉他，“逢袁则止，遇蒙则居。”这是一种隐秘的话。书后面解释了，带“袁”字的地方应该是袁州，带“蒙”的地方应该是蒙山——袁州蒙山。后来惠明的确在这里定居了。前面弘忍师父跟惠能也说过这样的话，意思是到了这样的地方就该停下来之类的。",
-          "start": 476.64,
+          "start": 477.94,
           "end": 513.794,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa4c589d4",
           "text": "《水浒传》里也有类似的话，鲁智深的师父跟鲁智深说过。最后打完方腊，他们应该到了杭州。一天夜里，鲁智深打坐的时候，突然听到钱塘江大潮的潮声，醒过来之后想起了师父的话“听潮而圆，见信而寂”，听到潮信就应该死了。然后鲁智深当即收拾收拾，真的死了。",
           "start": 513.794,
-          "end": 562.43,
+          "end": 562.214,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3c7ab6fb",
           "text": "《水浒传》主要写宋朝历史故事，作者是明朝的施耐庵。《坛经》在唐朝就已经出现了。那《水浒传》应该有借鉴《坛经》的可能性。",
-          "start": 562.43,
+          "start": 562.214,
           "end": 591.37,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s973dde12",
@@ -3793,124 +3794,124 @@
           "end": 596.188,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6f753e9e",
           "text": "惠明跟惠能告别之后离开了，然后惠能继续往南走，来到曹溪山。曹溪山是广东的一座山。我们所说曹溪宗就是从这里发源，用地名作为宗派的名字。惠能来到了曹溪，又被这些坏人们找到、追逐。",
           "start": 596.188,
-          "end": 626.806,
+          "end": 627.806,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbbfa3470",
           "text": "乃于四会，避难猎人队中，凡经一十五载。时与猎人随宜说法。猎人常令守网，每见生命，尽放之。每至饭时，以菜寄煮肉锅。或问，则对曰：但吃肉边菜。",
-          "start": 626.806,
-          "end": 628.106,
+          "start": 627.806,
+          "end": 629.154,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6c8875b9",
           "text": "又逃到了四会，在猎人队伍当中居然躲藏了十五年。前面弘忍说，你离开之后，自己三年后会死，弘忍这个时候应该已经死了。",
-          "start": 628.106,
-          "end": 647.57,
+          "start": 629.154,
+          "end": 648.07,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe2e3c97",
           "text": "“时与猎人随宜说法”，惠能跟这些猎人方便说法。“猎人常令守网，每见生命，尽放之”，这个故事很显然是有意安排的。因为猎人们让他去守捕猎的网，但是每次有些动物被网兜住，他居然都放掉了。这一次两次可以，但是居然有十五年，在猎人队里一起生活，每次让你去看着网，竟然什么都抓不到，他们怎么可能不知道？所以这个猎人队估计也是安排好，来保护他的。",
-          "start": 647.57,
-          "end": 701.857,
+          "start": 648.07,
+          "end": 701.657,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7c893d91",
           "text": "“每至饭时，以菜寄煮肉锅”，每次吃饭的时候就把菜放到肉锅里一起煮。“或问，则对曰：但吃肉边菜”，如果有人问他，就说：“我只吃肉边菜。”",
-          "start": 701.857,
+          "start": 701.657,
           "end": 716.891,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc23cad55",
           "text": "这个时候大乘佛教已经是不吃肉的，从梁武帝时期开始基本不吃肉了。梁武帝和达摩祖师见过面，他们有段对话。到惠能是第六代，已经过了上百年，所以从这里开始大乘和尚们已经基本都不吃肉了。所以肯定会有人问他，你出家人还吃肉吗？他就说，我只吃肉边的菜。",
           "start": 716.891,
-          "end": 751.416,
+          "end": 752.756,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sea4187ab",
           "text": "一日思惟：时当弘法，不可终遁。遂出至广州法性寺，值印宗法师讲涅槃经。时有风吹幡动，一僧曰风动，一僧曰幡动，议论不已。",
-          "start": 751.416,
-          "end": 756.078,
+          "start": 752.756,
+          "end": 755.978,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sec2e15aa",
           "text": "有一天惠能终于想起来应该出去弘法，不能这样一直躲藏。然后惠能就来到了广州的法性寺，当时法性寺里有一位叫印宗法师的人正在讲《涅槃经》。",
-          "start": 756.078,
-          "end": 793.99,
+          "start": 755.978,
+          "end": 795.54,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfed0a243",
           "text": "“时有风吹幡动，一僧曰风动，一僧曰幡动，议论不已”，这是一个禅宗公案。“幡”是什么？就是像个旗子一样插在那里的东西。以前从佛陀时代开始，有修行人住的地方、僧团所在处就挂一个这样的幡，像旗子一样。风吹的时候幡在动，就有两个僧人在那议论、争执。有一个人说这是风在动，还有一个人说这是幡在动，他们一直争吵。",
-          "start": 793.99,
+          "start": 795.54,
           "end": 842.224,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbcd113d0",
           "text": "惠能进曰：“不是风动，不是幡动，仁者心动。”",
           "start": 842.224,
-          "end": 843.657,
+          "end": 847.775,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0561c591",
           "text": "他说，这不是风在动，也不是幡在动，是你们的心在动。",
-          "start": 843.657,
-          "end": 855.477,
+          "start": 847.775,
+          "end": 856.67,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1bb06525",
           "text": "一众骇然。印宗延至上席，征诘奥义。见惠能言简理当，不由文字。",
-          "start": 855.477,
-          "end": 856.67,
+          "start": 856.67,
+          "end": 857.924,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb18efb5",
           "text": "听到的人都吓了一跳。印宗法师就把惠能请到上席，请教佛法的奥义。惠能的回答简洁明了，讲的内容句句有理，不拘泥于文字。",
-          "start": 856.67,
+          "start": 857.924,
           "end": 894.611,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se940499b",
@@ -3919,43 +3920,43 @@
           "end": 935.69,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s46d19338",
           "text": "在这里惠能是已经悟了的人，所以他用自己的语言来讲。他本来是文盲，看的佛经肯定也不多，别人跟他提问的时候，他可能还要找人给自己念一念，这样才能知道。所以他回答问题肯定是用自己的语言组织出来的。",
           "start": 935.69,
-          "end": 962.011,
+          "end": 959.442,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s91bcc982",
           "text": "宗云：“行者定非常人。久闻黄梅衣法南来，莫是行者否？”惠能曰：“不敢。”",
-          "start": 962.011,
-          "end": 963.662,
+          "start": 959.442,
+          "end": 960.985,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5f5398d8",
           "text": "印宗法师说：“您肯定不是普通人。很久以前就听到黄梅那里弘忍法师的继承人往南来了，难道是你吗？”",
-          "start": 963.662,
-          "end": 979.55,
+          "start": 960.985,
+          "end": 980.319,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5d25a954",
           "text": "惠能说：“不敢。”这句话是承认了，非常客气地说不敢，就是承认的意思。",
-          "start": 979.55,
+          "start": 980.319,
           "end": 988.634,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s36f57199",
@@ -3964,7 +3965,7 @@
           "end": 992.711,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s12f782a8",
@@ -3973,151 +3974,151 @@
           "end": 1005.675,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sab4428d6",
           "text": "宗复问曰：“黄梅付嘱，如何指授？”",
           "start": 1005.675,
-          "end": 1012.173,
+          "end": 1010.282,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s40bd9db1",
           "text": "“黄梅”指弘忍。印宗法师又问，“弘忍法师教你了什么内容，怎么教的？”",
-          "start": 1012.173,
-          "end": 1027.007,
+          "start": 1010.282,
+          "end": 1026.907,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1c16f2ff",
           "text": "惠能曰：“指授即无，惟论见性，不论禅定解脱。”宗曰：“何不论禅定解脱？”能曰：“为是二法，不是佛法。佛法是不二之法。”宗又问：“如何是佛法不二之法？”",
-          "start": 1027.007,
-          "end": 1032.965,
+          "start": 1026.907,
+          "end": 1031.421,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s91368100",
           "text": "惠能说，教的内容倒是没有，只讲“见性”这个事，不讨论、不研究什么禅定解脱。",
-          "start": 1032.965,
-          "end": 1047.531,
+          "start": 1031.421,
+          "end": 1048.531,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6396f21a",
           "text": "印宗法师反问，为什么不谈论禅定解脱？因为当时的主要修行方法还是禅定。",
-          "start": 1047.531,
-          "end": 1058.595,
+          "start": 1048.531,
+          "end": 1060.729,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s72bfd6db",
           "text": "惠能说，因为禅定解脱是二法，不是佛法。佛法是不二之法。印宗法师又问，佛法是不二之法，这是什么意思啊？",
-          "start": 1058.595,
-          "end": 1075.74,
+          "start": 1060.729,
+          "end": 1075.54,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s338ea098",
           "text": "惠能曰：“法师讲涅槃经，明佛性是佛法不二之法。",
-          "start": 1075.74,
-          "end": 1080.68,
+          "start": 1075.54,
+          "end": 1081.926,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se7649009",
           "text": "“法师”指印宗法师。惠能说，你讲《涅槃经》肯定知道佛性是佛法不二之法——众生都有佛性，我们都有根本意识，也就是“自性恒常”。",
-          "start": 1080.68,
-          "end": 1102.466,
+          "start": 1081.926,
+          "end": 1104.929,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s900233af",
           "text": "下边开始讲一段佛经里的内容。",
-          "start": 1102.466,
-          "end": 1107.465,
+          "start": 1102.59,
+          "end": 1102.59,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc23568a4",
           "text": "如高贵德王菩萨白佛言：‘犯四重禁，作五逆罪，及一阐提等，当断善根佛性否？’",
-          "start": 1107.465,
-          "end": 1113.453,
+          "start": 1102.59,
+          "end": 1116.967,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s810a2474",
           "text": "“四重禁”是五戒的前面四个——杀、盗、淫、妄。“五逆罪”，通常所说的是杀父、杀母、杀阿罗汉、出佛身血、破和合僧——破坏僧团的和睦、内部的团结。这是五逆重罪。“一阐提”在前面讲经的时候提过了，就是断善根，成不了佛的那种人。",
-          "start": 1113.453,
-          "end": 1150.79,
+          "start": 1116.967,
+          "end": 1152.62,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s286c44fd",
           "text": "菩萨问佛，犯了四重禁和五逆罪，又是一阐提——断了善根的人，这些人是真的断了善根佛性吗？",
-          "start": 1150.79,
-          "end": 1163.96,
+          "start": 1152.62,
+          "end": 1164.537,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s03e570af",
           "text": "佛言：‘善根有二：一者常，二者无常。’佛性非常非无常，是故不断，名为不二；一者善，二者不善，佛性非善非不善，是名不二。",
-          "start": 1163.96,
-          "end": 1167.63,
+          "start": 1164.537,
+          "end": 1167.83,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s07d6c874",
           "text": "佛说，善根有两种：一种是恒常的；一种是无常的，不断变化的。而众生都有的佛性是非常非无常的，所以不断，这就叫不二。“佛性非常非无常”，不落二边的时候称之为不二，就是要放下你的分别心。第一种是善，第二种是不善，但是佛性既不是善，也不是不善，这就叫不二。这也是让你放下分别心的意思。",
-          "start": 1167.63,
-          "end": 1207.1,
+          "start": 1167.83,
+          "end": 1209.612,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9ab603a8",
           "text": "蕴之与界，凡夫见二，智者了达其性无二，无二之性即是佛性。”",
-          "start": 1207.1,
-          "end": 1211.884,
+          "start": 1209.612,
+          "end": 1211.784,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4c44baa8",
           "text": "“蕴之与界”就是五蕴世界——色、受、想、行、识五蕴形成的，我们看得见的物质世界。凡夫用分别心来看，所以称之为“见二”；而智者是没有分别心的，所以他知道世界的本相，所以是“无二”。没有分别心的状态就是佛性，就是自性的本来面目。",
-          "start": 1211.884,
+          "start": 1211.784,
           "end": 1247.438,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf8a2132e",
@@ -4126,7 +4127,7 @@
           "end": 1282.544,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s10152fa1",
@@ -4135,7 +4136,7 @@
           "end": 1325.611,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s167a94c3",
@@ -4144,160 +4145,160 @@
           "end": 1350.479,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s751a5aba",
           "text": "印宗闻说，欢喜合掌，言：“某甲讲经，犹如瓦砾；仁者论义，犹如真金。”于是为惠能剃发，愿事为师。",
           "start": 1350.479,
-          "end": 1354.44,
+          "end": 1353.433,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s59ecfe3c",
           "text": "印宗法师听了之后非常开心，合掌行礼，说，自己讲经就像瓦砾一样，惠能法师讲经就像真金一样。于是为惠能剃发，愿意把他当作师父来供奉。",
-          "start": 1354.44,
+          "start": 1353.433,
           "end": 1379.571,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdc6a9ce5",
           "text": "惠能遂于菩提树下，开东山法门：",
           "start": 1379.571,
-          "end": 1382.48,
+          "end": 1383.18,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s637b26f2",
           "text": "惠能就在菩提树下重开法门。为什么他在黄梅县学来的法门叫“东山法门”呢？后边注解说，因为弘忍禅师在的地方叫黄梅山，在黄梅县的东部，所以俗称“东山”。他的寺院也叫东禅寺，禅宗四祖道信和五祖弘忍都住在黄梅东山。所以这套法脉就叫东山法门。",
-          "start": 1382.48,
+          "start": 1383.18,
           "end": 1421.803,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sde306b20",
           "text": "惠能于东山得法，辛苦受尽，命似悬丝。",
           "start": 1421.803,
-          "end": 1426.53,
+          "end": 1427.43,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8ec7b932",
           "text": "惠能在东禅寺弘忍法师那里得到法，吃了很多苦，出来躲藏了十五年，性命像悬丝一样，一直处在非常危险的境地当中。",
-          "start": 1426.53,
-          "end": 1446.022,
+          "start": 1427.43,
+          "end": 1445.922,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf06ae201",
           "text": "今日得与使君、官僚、僧尼、道俗同此一会，莫非累劫之缘，亦是过去生中供养诸佛，同种善根，方始得闻如上顿教、得法之因。",
-          "start": 1446.022,
-          "end": 1453.899,
+          "start": 1445.922,
+          "end": 1454.799,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s66aebce6",
           "text": "他这是已经讲完前面自己要讲的故事，然后开始对这一千多个听众作一个总结性的演讲，所以专门提到使君——州官、官僚、僧尼、道俗等等。这些听众在这里就是累劫以来的善缘，也是我们在过去世中一起供养过诸佛——不只是我，所有的听众都曾经供养过诸佛，都在佛前种过善根。所以才能听到我前面讲的顿教、得法之因。",
-          "start": 1453.899,
-          "end": 1507.28,
+          "start": 1454.799,
+          "end": 1511.316,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s443d8d53",
           "text": "与“顿教”相对的是渐教。顿教是一听就悟，渐教是慢慢修的意思，实际上就是顿悟渐修。佛理可以当下就悟，真的遇到了善知识，或者看了某部经一下子有所悟，肯定是这样。没有什么渐渐悟的说法，就算慢慢理解了，也是在某一刻突然明白了；而真正修行是慢慢修，所以叫渐修。",
-          "start": 1507.28,
-          "end": 1555.154,
+          "start": 1511.316,
+          "end": 1555.054,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9395d450",
           "text": "教是先圣所传，不是惠能自智。愿闻先圣教者，各令净心，闻了各自除疑，如先代圣人无别。",
-          "start": 1555.154,
-          "end": 1558.67,
+          "start": 1555.054,
+          "end": 1558.27,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s63343c8c",
           "text": "佛法是前面一直以来继承佛法的那些祖师们所传下来的，不是惠能个人的智慧。愿意学先圣传承下来的佛法的人们，各自把内心的妄想放下，好好修行。听到正法之后就会去除自己的疑惑。这样好好修行，不再有疑惑，就和先代的圣人、大德们是一样的，没有什么分别。",
-          "start": 1558.67,
-          "end": 1612.19,
+          "start": 1558.27,
+          "end": 1610.9,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s83e5147f",
           "text": "一众闻法，欢喜作礼而退。",
-          "start": 1612.19,
-          "end": 1615.3,
+          "start": 1610.9,
+          "end": 1614.9,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa67b9a1f",
           "text": "所有人听到之后都很欢喜，开开心心地离开了。到这里算是讲完了这个故事：惠能从最初偶闻《金刚经》，开悟之后找弘忍学法，再从弘忍那里得到衣钵，然后逃亡躲藏了十五年，最终在印宗法师的法性寺重新出来传法。",
-          "start": 1615.3,
-          "end": 1652.97,
+          "start": 1614.9,
+          "end": 1652.022,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd765dbe7",
           "text": "在这里，惠能的确遵守了再来人讲法的几个重要原则：不讲特别神奇的故事。唯一稍微有一点神奇的就是把衣钵放到石头上，惠明——一个武将出身的和尚居然提不起来。这里算是有点神奇。但是大部分内容没有那种神奇的或者玄幻的故事，全部都是我们能理解的、现实里的普通故事。",
-          "start": 1652.97,
-          "end": 1690.97,
+          "start": 1652.022,
+          "end": 1690.57,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sba6192c4",
           "text": "而且通篇惠能从来没有提过自己前世是谁，或者前世做过什么；也从来没有提过这一生中，自己禅修的时候都有什么神奇的经历或者体验，这些都不提。书里从来没有这样的内容，这就是再来人讲法的一个表象。",
-          "start": 1690.97,
-          "end": 1717.13,
+          "start": 1690.57,
+          "end": 1716.83,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf89620ec",
           "text": "再来人讲法只讲内容，不讲自己个人的神奇经历，以免把人们的注意力从佛法上引导到别的地方，这是不对的。现在大家在外边听法，有些人过度地捧自己、讲自己，甚至有人说自己是观音菩萨，这种肯定是骗子。再来人讲法是不讲会让人分散注意力的内容，只讲义理。",
-          "start": 1717.13,
-          "end": 1752.15,
+          "start": 1716.83,
+          "end": 1751.323,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s42d42884",
           "text": "我们讲法人的目的是什么？只是做一个指月之手，把大家送到佛菩萨那里，以后就不需要我们这些中间讲法人了。就像《地藏经》里度地藏菩萨前世的阿罗汉一样，只告诉地藏菩萨前世应该多念佛，之后就和自己没啥关系了。",
-          "start": 1752.15,
+          "start": 1751.323,
           "end": 1784.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3513359b",
@@ -4306,7 +4307,7 @@
           "end": 1807.54,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s948c4805",
@@ -4315,25 +4316,25 @@
           "end": 1831.151,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s69423d48",
           "text": "如果过度强调中间的传法人的作用，必须由师来引导才能开悟，必须由师来引导才能解脱，这样的传法肯定是有问题的。希望大家理解。",
           "start": 1831.151,
-          "end": 1844.71,
+          "end": 1843.51,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s90d8ab01",
           "text": "这一期就讲到这里。",
-          "start": 1844.71,
+          "start": 1843.51,
           "end": 1847.247,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
