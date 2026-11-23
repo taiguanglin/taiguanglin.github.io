@@ -4,6 +4,8 @@
 table 格式（JSON list）：每筆 {"i", "start", "end"?, "conf", "method"?, "zero"?, "note"?}
   - start 為本段「實際念出第一個字」的 run-onset（毫秒級）。
   - 缺 end → 由鏈推導（end[i] = start[next READ]；末段 = duration）。
+  - 音訊證實的插講交疊可加 "preserve_end": true 保留明示 end；須附 note，
+    不得用於 zero 或末個 READ。這是例外通道，一般 end 仍由鏈重推。
   - 缺 start（null）→ 保留現值，只改 conf/zero。
   - 未列出的段落 → 完全保留現值；鏈 pass 會修其 end。
 
@@ -61,6 +63,8 @@ def main():
     #      卻有 3.85s 實寬）。若照 `zero` 標記排除，它會被踢出 READ 集合，
     #      使前一段的 end 被錯接到再下一段 → 產生鏈破口。實寬優先，並印出警告。
     reads_before = {i for i, p in enumerate(paras) if p["end"] != p["start"]}
+    monotonic_before = {i for i in range(1, len(paras))
+                        if paras[i]["start"] < paras[i - 1]["start"]}
     inconsistent_zero = [i for i, p in enumerate(paras)
                          if p.get("zero") and p["end"] != p["start"]]
     if inconsistent_zero:
@@ -117,16 +121,33 @@ def main():
 
     # 鏈 pass：READ 段依書序，end[i]=start[next READ]；末段 end=duration；
     # zero 段錨在 prev READ end（起訖相等）。confirmed 鍵絕不動。
-    # READ 判定：**變更前的身分 ∪ table 明示 zero=False**（見上方 reads_before）。
+    # READ 判定：（變更前 READ − table 明示 zero=True）∪ table 明示 zero=False。
     # 不可事後用 `end > start` 判定——夾到 start 之下的段會被誤判為 zero 而脫鏈。
+    # 也必須移除 READ→zero 的段；舊版只 union table_read，會把已標 zero 的段
+    # 重新鏈成實寬 span，造成 zero:true 與 end>start 的資料矛盾。
     table_read = {i for i, e in by_i.items() if e.get("zero") is False}
-    reads = sorted(reads_before | table_read)
+    table_zero = {i for i, e in by_i.items() if e.get("zero") is True}
+    reads = sorted((reads_before - table_zero) | table_read)
+    preserved_ends = {i: float(e["end"]) for i, e in by_i.items()
+                      if e.get("preserve_end")}
+    for i in preserved_ends:
+        if by_i[i].get("zero") or by_i[i].get("end") is None:
+            print(f"abort: preserve_end 段 [{i}] 必須是有明示 end 的非 zero READ")
+            sys.exit(2)
+        if not reads or i == reads[-1]:
+            print(f"abort: preserve_end 不得用於末個 READ [{i}]")
+            sys.exit(2)
+        if not by_i[i].get("note"):
+            print(f"abort: preserve_end 段 [{i}] 缺少音訊例外 note")
+            sys.exit(2)
     for a, b in zip(reads, reads[1:]):
         if paras[a]["end"] != paras[b]["start"]:
             paras[a]["end"] = paras[b]["start"]
     if reads and dur:
         if paras[reads[-1]]["end"] != dur:
             paras[reads[-1]]["end"] = dur
+    for i, end in preserved_ends.items():
+        paras[i]["end"] = round(end, 3)
 
     # 安全網：鏈 pass 後若仍有負長度／未接上的 span，**不寫檔**並明確報出，
     # 免得靜靜把壞資料寫進 SoT（L18 r2 曾因此產生 703.65–703.00）。
@@ -136,10 +157,13 @@ def main():
               f"（段 {bad_span}）—— table 的 start 互相衝突？")
         sys.exit(2)
     unlinked = [(a, b) for a, b in zip(reads, reads[1:])
-                if paras[a]["end"] != paras[b]["start"]]
+                if paras[a]["end"] != paras[b]["start"] and a not in preserved_ends]
     if unlinked:
         print(f"abort: 鏈仍有破口 {unlinked}")
         sys.exit(2)
+    if preserved_ends:
+        print(f"warn: 音訊例外 preserve_end {sorted(preserved_ends)}；"
+              "這些交疊／留縫已逐段記錄，不算鏈破口")
 
     def prev_read_end(i):
         for j in range(i - 1, -1, -1):
@@ -152,6 +176,18 @@ def main():
             continue  # confirmed 零段錨點絕不動
         if p["end"] <= p["start"] and p.get("zero"):
             p["start"] = p["end"] = prev_read_end(i)
+
+    # zero 錨重排後再驗 start 單調。既有違反可保留並警告（需人耳解除
+    # confirmed-zero 鐵錨），但本次套用絕不可新增違反；否則整講不寫檔。
+    monotonic_after = {i for i in range(1, len(paras))
+                       if paras[i]["start"] < paras[i - 1]["start"]}
+    new_inversions = sorted(monotonic_after - monotonic_before)
+    if new_inversions:
+        print(f"abort: 本次套用新增 start 倒序段 {new_inversions}"
+              "（可能受 confirmed-zero 擋路；請重裁，不要硬修鏈）")
+        sys.exit(2)
+    if monotonic_after:
+        print(f"warn: 保留既有 start 倒序段 {sorted(monotonic_after)}；需人工解除鐵錨後重修")
 
     # 驗證：非目標講次 byte-level 不變
     new_raw = json.dumps(doc, ensure_ascii=False, indent=2) + "\n"
@@ -172,7 +208,9 @@ def main():
             assert not p.get("confirmed"), "confirmed 被寫入！"
     assert not lec.get("reviewed"), "reviewed 被寫入！"
 
-    path.write_text(new_raw, encoding="utf-8")
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(new_raw, encoding="utf-8")
+    tmp.replace(path)
     print(f"\n已寫 {path}（{len(changes)} 段變更；confirmed/reviewed 未動）")
 
 
