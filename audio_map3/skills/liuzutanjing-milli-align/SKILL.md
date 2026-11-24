@@ -26,7 +26,8 @@ description: >-
 - 通用證據器：`audio_map3/skills/milli-align/scripts/` 的 `boundary_walk.py`、`seq_align.py`、`milli_refine.py`、`milli_audit.py`、`batch_verify.py`、`clip_probe.py`。
 - 專用保護稽核：`scripts/audit_alignment.py --baseline <施工前快照> --lectures <N或範圍>`；最後加 `--require-clean` 驗目標講次。音訊交疊例外在 table 用 `preserve_end:true`＋明示 end＋note，不能借它隱藏未解決鏈破口。
 - 停頓：先 `volumedetect` 量底噪；本系列常用 **−28dB/0.20–0.30s strict** 與 **−22dB/0.20s soft**，高底噪檔不可只用 −38dB。V4 以 gap 與實體停頓 **重疊≥0.10s** 判讀。
-- `span_audit` 的舊 regex 對巢狀 `.sutra-pin-host` 會漏段；須以 HTMLParser 適配器收齊全部 `.para-block`，不可把 63/80 之類漏讀當 pid 漂移。
+- `build_maps.parse_ebook` 已改用 HTMLParser 巢狀深度收齊全部 `.para-block`，修掉舊 regex 對 `.sutra-pin-host` 的漏段；`tool/jiangjing_para_map/tests/test_parse_ebook.py` 守門全五系列 11,772 段 pid/text 一致。不得再讓 span_audit 回退到 `BLOCK_RE`。
+- `span_audit` 只把 `end<=start` 當 zero；**短於 1 秒的實念仍按 READ 稽核**，不得再出現 L6[48] 被誤報 `skip_ok` 的假綠。
 
 ## 3. own_first：先語義、後時間
 
@@ -89,14 +90,15 @@ own_first 是「**本段語義開頭，在音檔中的第一次實際宣讀**」
 ## 7. 施工與驗收
 
 1. pull、快照、記錄 golden hash；建立 dump 與 strict/soft pauses。
-2. 全講每個未 confirmed 邊界都走 §5；先盤點既有 rN，只寫下一個未用編號，只套用自己產生的表。
-3. `milli_refine.py` dry-run→apply；第 2、3 次必須 **0 段變更**。head-zero 另查，不得只看 READ 鏈。
-4. 驗證其他講次 byte-identical、所有 confirmed／reviewed 不變、pid/text 不變、無負長度／非單調／鏈破口、末段 end=duration；交疊例外只走 `preserve_end` 並在 earcheck 逐段列出。
-5. 跑 `seq_align --mode metric`、`milli_audit`、`batch_verify`、完整 HTMLParser `span_audit`、`pin_check`。
-6. **L4／L5 分開回歸**：任何新自動規則都要報各講 MAE、±0.3s／±0.5s 比例及 contact／hosting／zero 分組；禁止只報合計平均，禁止 nearest-pause snapping。strong head/final 可低優先複核，舊 contact／weak-nearest 必須重裁。
-7. metric 未被覆蓋＝未判定，不是正確；所有 >0.7s 殘餘逐筆裁定。span unknown／bad 逐段解釋，不能為比例把 READ 改回 zero。
-8. `sync_para_pids.py`→鎖版 venv `gen_all.py`→books2ebook／word2ebook pytest→`check_site.py`。人工未勾 reviewed 前，公開 ebook 不注入新講次是正常閘門，不可代勾。
-9. 交付 SoT、rN 裁決表、耳機清單與實際驗收輸出；每個 conf≤0.65、掉字洞、zero→READ、V1/V2/V4、語序／插講都列入人工試聽。
+2. 全講每個未 confirmed 邊界都走 §5；先盤點既有 rN，只寫下一個未用編號，只套用自己產生的表。**每批 3–6 段立即把裁決追加到暫存 JSON，再續下一批**，不得把全講數值只留在模型 context；每批寫後讀回驗證 JSON，避免長講完成後因一個輸出錯誤整批遺失。
+3. **第二輪獨立複核先行**：zero 雙向翻轉、ASR 洞、首次宣讀／重引、>2s 改動、preserve_end 與 conf≤0.65 都要由未參與初裁的 agent 重看原始字流／停頓；單次 LLM 語義盲測在 L4 會退化，不得一人一案直接落地。
+4. **先 sandbox、後碰 SoT**：以鎖版 ASR venv 跑 `scripts/sandbox_episode.py --lecture <N> --table <表> --baseline <快照> --workdir /tmp/l<N>_sandbox --require-clean`。它會隔離套用 3 次驗冪等、跑結構保護及 before/after metric、batch、milli_audit；未 PASS 就回表重裁。
+5. sandbox 全綠後才對 SoT 跑 `milli_refine.py` dry-run→apply；第 2、3 次必須 **0 段變更**。head-zero 另查，不得只看 READ 鏈。
+6. 驗證其他講次 byte-identical、所有 confirmed／reviewed 不變、pid/text 不變、無負長度／非單調／鏈破口、末段 end=duration；交疊例外只走 `preserve_end` 並在 earcheck 逐段列出。
+7. **L4／L5 分開回歸**：任何新自動規則都要報各講 MAE、±0.3s／±0.5s 比例及 contact／hosting／zero 分組；禁止只報合計平均，禁止 nearest-pause snapping。strong head/final 可低優先複核，舊 contact／weak-nearest 必須重裁。
+8. 跑完整 HTMLParser `span_audit`、`pin_check`；metric 未被覆蓋＝未判定，不是正確，所有 >0.7s 殘餘逐筆裁定。span unknown／bad 逐段解釋，不能為比例把 READ 改回 zero。
+9. `sync_para_pids.py`→鎖版 venv `gen_all.py`→books2ebook／word2ebook pytest→`check_site.py`。人工未勾 reviewed 前，公開 ebook 不注入新講次是正常閘門，不可代勾。
+10. 交付 SoT、rN 裁決表、耳機清單與實際驗收輸出；每個 conf≤0.65、掉字洞、zero→READ、V1/V2/V4、語序／插講都列入人工試聽。
 
 ## 8. 第 4 期特別守門
 

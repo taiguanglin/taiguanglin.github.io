@@ -53,6 +53,11 @@ BLK_MIN = 0.55       # block-in-span coverage for acceptance
 PROBE_MIN = 0.45     # below this a whole-stream probe = "not read"
 
 
+def zero_span(start: float, end: float) -> bool:
+    """真正零寬才是 skip；短於 1 秒的實念仍必須按 READ 稽核。"""
+    return end <= start
+
+
 def char_at(t_starts, t: float, n: int) -> int:
     return max(0, min(bisect.bisect_left(t_starts, t), n - 1))
 
@@ -107,7 +112,10 @@ def main() -> int:
             is_sutra = "sutra-text" in cls
             start, end, conf, method = (p["start"], p["end"], p["conf"],
                                         p["method"])
-            zero = end - start < 1.0
+            # 只有真正零寬才是 skip；短於 1 秒的實念仍是 READ。
+            # 舊版用 <1.0s 會把「何名摩訶」這類短 R 誤報 skip_ok（L6[48]），
+            # 與 L2–L5 golden「有 R 就 READ」矛盾，也讓稽核假綠。
+            zero = zero_span(start, end)
             ev = {}
             verdict = None
 

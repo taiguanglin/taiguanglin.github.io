@@ -41,6 +41,7 @@ import re
 import subprocess
 import sys
 import urllib.parse
+from html.parser import HTMLParser
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -147,10 +148,80 @@ DATA_AUDIO_RE = re.compile(r'data-audio="([^"]+)"')
 DATA_END_RE = re.compile(r'data-end="([\d.]+)"')
 
 
+class _ParaBlockParser(HTMLParser):
+    """收齊 .sutra-pin-host/group 巢狀包層中的全部 .para-block。
+
+    舊 BLOCK_RE 會把外層 host 的開始標籤配到第一個內層 </div>，導致
+    後續段落整批消失（例如壇經 L2 80→63、L6 90→64）。HTMLParser 以
+    巢狀深度收尾，不改段落順序、pid 或文字。
+    """
+
+    _VOID = {"area", "base", "br", "col", "embed", "hr", "img", "input",
+             "link", "meta", "param", "source", "track", "wbr"}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.paragraphs = []
+        self._depth = 0
+        self._pid = self._cls = None
+        self._parts = []
+
+    @staticmethod
+    def _eligible(tag, attrs):
+        if tag not in ("p", "div"):
+            return None
+        a = dict(attrs)
+        classes = a.get("class", "").split()
+        pid = a.get("id", "")
+        if "para-block" in classes and re.fullmatch(r"p-s[0-9a-f]+", pid):
+            return pid, a.get("class", "")
+        return None
+
+    def handle_starttag(self, tag, attrs):
+        if self._depth:
+            if tag not in self._VOID:
+                self._depth += 1
+            return
+        found = self._eligible(tag, attrs)
+        if found:
+            self._pid, self._cls = found
+            self._parts = []
+            self._depth = 1
+
+    def handle_startendtag(self, tag, attrs):
+        if self._depth:
+            return
+        found = self._eligible(tag, attrs)
+        if found:
+            self.paragraphs.append({"pid": found[0], "cls": found[1], "text": ""})
+
+    def handle_endtag(self, tag):
+        if not self._depth or tag in self._VOID:
+            return
+        self._depth -= 1
+        if self._depth == 0:
+            text = re.sub(r"\s+", " ", "".join(self._parts)).strip()
+            if text:
+                self.paragraphs.append({"pid": self._pid, "cls": self._cls, "text": text})
+            self._pid = self._cls = None
+            self._parts = []
+
+    def handle_data(self, data):
+        if self._depth:
+            self._parts.append(data)
+
+
+def _parse_para_blocks(body):
+    parser = _ParaBlockParser()
+    parser.feed(body)
+    parser.close()
+    return parser.paragraphs
+
+
 def parse_ebook(path: Path):
     """Return list of lectures: {basename, title, duration, paragraphs[]}.
 
-    Paragraphs: {pid, text} in document order.
+    Paragraphs: {pid, text} in document order，含巢狀 sutra-pin 包層。
     """
     html_text = path.read_text(encoding="utf-8")
     marks = [m for m in H2_RE.finditer(html_text)]
@@ -166,17 +237,7 @@ def parse_ebook(path: Path):
         end_m = DATA_END_RE.search(inner)
         btn_end = float(end_m.group(1)) if end_m else None
         body = html_text[m.end():marks[i + 1].start() if i + 1 < len(marks) else len(html_text)]
-        paras = []
-        for b in BLOCK_RE.finditer(body):
-            attrs = b.group(2)
-            cls = ATTR_CLASS_RE.search(attrs)
-            pid = ATTR_ID_RE.search(attrs)
-            if not pid or not cls or "para-block" not in cls.group(1).split():
-                continue
-            text = strip_html(b.group(3))
-            if text:
-                paras.append({"pid": pid.group(1), "text": text,
-                              "cls": cls.group(1)})
+        paras = _parse_para_blocks(body)
         lectures.append({"basename": basename, "title": title,
                          "btn_end": btn_end, "paragraphs": paras})
     return lectures

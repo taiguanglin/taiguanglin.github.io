@@ -1,0 +1,50 @@
+[
+  {
+    "i": 15,
+    "status": "blocked_confirmed_preserved",
+    "current_start": 180.86,
+    "current_end": 180.86,
+    "current_zero": true,
+    "current_confirmed": true,
+    "suggested_start": 124.247,
+    "suggested_conf": 0.65,
+    "reason": "120–160切片獨立恢復完整「一念愚即般若絕，一念智即般若生」：一@124.650，前段「無記空狀態啊」END 122.515；選own前soft 123.918625–124.511812(.593187)×.554=124.247251→124.247。R明確存在，現行confirmed zero不成立。",
+    "required_action": "使用者試聽後自行解除confirmed並重裁；agent未改值"
+  },
+  {
+    "i": 16,
+    "status": "blocked_confirmed_preserved",
+    "current_start": 180.86,
+    "current_end": 180.86,
+    "current_zero": true,
+    "current_confirmed": true,
+    "suggested_start": 128.39,
+    "suggested_conf": 0.65,
+    "reason": "同一120–160窗在[15]尾「啊」END 128.390後，直接進本段印字引文「一念愚啊」一@128.730；128.390–128.730無strict/soft實停，contact=128.390。後續「就是妄想升起…注意力盡量減少」完整屬本段，R存在。",
+    "required_action": "使用者試聽後自行解除confirmed並重裁；agent未改值"
+  },
+  {
+    "i": 17,
+    "status": "blocked_confirmed_preserved",
+    "current_start": 180.86,
+    "current_end": 180.86,
+    "current_zero": true,
+    "current_confirmed": true,
+    "suggested_start": 148.82,
+    "suggested_conf": 0.65,
+    "reason": "140–180與145–185兩窗均恢復「我們平時…大部分情況下」，前段重複收尾「啊」END分別148.790/148.820，本段「我」分别148.950/148.900；取同為145–185窗的contact=148.820，另一窗差.030互證。149.891實停在白話開始後，不可吞作段界。",
+    "required_action": "使用者試聽後自行解除confirmed並重裁；agent未改值"
+  },
+  {
+    "i": 18,
+    "status": "blocked_confirmed_preserved",
+    "current_start": 180.86,
+    "current_end": 180.86,
+    "current_zero": true,
+    "current_confirmed": true,
+    "suggested_start": 178.477,
+    "suggested_conf": 0.65,
+    "reason": "150–190窗前段「狀態了」END 177.880，own_first=世@178.540；155–195窗對應177.950/178.590，兩窗文字均為首次「世人愚迷，不見般若」。soft 178.296208–178.690875(.394667)×.458=178.476965→178.477。R存在，不能因下段解說而zero。",
+    "required_action": "使用者試聽後自行解除confirmed並重裁；agent未改值"
+  }
+]
