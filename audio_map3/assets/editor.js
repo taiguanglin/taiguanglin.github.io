@@ -1,6 +1,7 @@
 import { createAudioController } from './audio.js';
 import { getFile, getLastCommit, isConflict, putFile, testToken } from './github.js';
 import { parseRanges, secondsToTimecode, timecodeToSeconds } from './parser.js';
+import { areAllItemsConfirmed } from './review_status.js';
 import {
     clearDraft,
     clearPat,
@@ -878,6 +879,15 @@ function mustCalibrateItems(session) {
     return items;
 }
 
+/**
+ * 本講是否已把所有需要校對的項目確認完畢。
+ * 判定與右側「確認」統計同源：正文段落＋收場；開場不計；
+ * zero 段因沒有音檔可聽，直接視為已確認。
+ */
+function isSessionFullyConfirmed(session) {
+    return areAllItemsConfirmed(mustCalibrateItems(session));
+}
+
 function itemKindLabel(kind, number) {
     if (kind === 'opening') return '開場';
     if (kind === 'closing') return '收場';
@@ -1210,6 +1220,10 @@ function selectSession(sessionId) {
     renderSessionList();
     els.fileList.querySelector('.file-item.active')?.scrollIntoView({ block: 'nearest' });
     renderEditor();
+    if (autoMarkSessionReviewed()) {
+        commitHistory();
+        setStatus('全部段落已確認，已自動勾選「本講已完成校對（reviewed）」', 'ok');
+    }
     scrollEditorToProgress();
     if (isMobileDock()) setSidebarOpen(false);
 }
@@ -1354,6 +1368,23 @@ function renderEditor() {
     updateJumpCount();
 }
 
+/**
+ * 當本講所有需要校對的段落都已確認時，自動勾選講次 reviewed。
+ * 只做 false → true；不會反向取消人工已標記的 reviewed。
+ */
+function autoMarkSessionReviewed(session = currentSession()) {
+    if (!session || session.reviewed || !isSessionFullyConfirmed(session)) return false;
+    session.reviewed = true;
+
+    const wrap = els.editorRoot?.querySelector('.session-review');
+    if (wrap) {
+        wrap.classList.add('is-reviewed');
+        const checkbox = wrap.querySelector('input[type="checkbox"]');
+        if (checkbox) checkbox.checked = true;
+    }
+    return true;
+}
+
 /** 講次層級「reviewed」控制列：切換 `session.reviewed` → 存檔寫回 `lectures.{N}.reviewed`。 */
 function renderSessionReview(session) {
     const wrap = document.createElement('div');
@@ -1371,8 +1402,9 @@ function renderSessionReview(session) {
 
     const hint = document.createElement('div');
     hint.className = 'session-review-hint';
-    hint.textContent = '勾選即把此講標為 reviewed=true（寫回 JSON「lectures」數字鍵的 "reviewed" 欄位）。'
-        + '只有 reviewed 的講次，生成 HTML（gen html）時才會注入隨段跟播時間；儲存後需重跑 books2ebook gen_all.py。';
+    hint.textContent = '全部段落確認後會自動勾選（仍可手動取消）。勾選即把此講標為 reviewed=true'
+        + '（寫回 JSON「lectures」數字鍵的 "reviewed" 欄位）。只有 reviewed 的講次，生成 HTML'
+        + '（gen html）時才會注入隨段跟播時間；儲存後需重跑 books2ebook gen_all.py。';
 
     checkbox.addEventListener('change', () => {
         const current = currentSession();
@@ -1540,12 +1572,17 @@ function renderSegmentCard(entry, segmentIndex) {
             } else {
                 meta.lastPlayed = '';
             }
+            const autoReviewed = autoMarkSessionReviewed();
             refreshSegmentMetaChips(segmentIndex);
             updateMetaStrip(sessionItems());
             renderSessionList();
             commitHistory();
-            setStatus(zeroBox.checked ? '已標記本段「零長度」（師父未念）：起訖相等、不可點播，並確認此段'
-                : '已取消「零長度」標記（此段須重新確認）', 'ok');
+            const zeroStatus = zeroBox.checked
+                ? '已標記本段「零長度」（師父未念）：起訖相等、不可點播，並確認此段'
+                : '已取消「零長度」標記（此段須重新確認）';
+            setStatus(autoReviewed
+                ? `${zeroStatus}；全部段落已確認，已自動勾選「本講已完成校對（reviewed）」`
+                : zeroStatus, 'ok');
         });
         const zeroText = document.createElement('span');
         zeroText.textContent = '零長度';
@@ -2054,11 +2091,15 @@ function onSegmentPlayed(segmentIndex) {
     const entry = sessionItems()[segmentIndex];
     if (!entry) return;
     ensureMeta(entry.item).lastPlayed = nowStamp();
+    const autoReviewed = autoMarkSessionReviewed();
     refreshSegmentMetaChips(segmentIndex);
     updateMetaStrip(sessionItems());
     scheduleDraft();
     recomputeDirty();
     renderSessionList();
+    if (autoReviewed) {
+        setStatus('全部段落已確認，已自動勾選「本講已完成校對（reviewed）」', 'ok');
+    }
 }
 
 function onSegmentEdit(segmentIndex) {

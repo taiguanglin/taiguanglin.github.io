@@ -62,6 +62,9 @@ cd <repo root> && python3 -m http.server 8931   # 或 audio/serve.py（需 Range
 - **跳瀏工具列**（topbar 左側常駐）：「⤒ 下一個未確認」「⤓ 下一個已確認」循環定位，只捲動不播放、
   不寫 `lastPlayed`；右鍵／長按＝定位並播放；快捷鍵 `N`／`Shift`+`N`；徽章顯示本講剩餘未確認
   段數（確認＝`meta.lastPlayed` 有值**或 `zero: true`**；開場不計入，與側邊欄統計一致）。
+- **全講確認後自動標記 reviewed**：右欄最下方「本講已完成校對（reviewed）」會在所有需校項目都
+  確認時自動勾選；判定與右側「確認」統計同源（正文段落＋收場；開場不計；`zero: true` 視為
+  已確認）。只會自動勾選，不會反向取消人工標記；仍須按「儲存到 GitHub」才會寫回 SoT JSON。
 - 儲存：GitHub PAT（Contents: Read and write）存回 `<series>.json`；「下載 JSON」備援；未存修改
   留在 localStorage 草稿。
 - **`<series>.json` 只讀同源檔案**（與 `/audio_map/` 相同，`loadMonth()` 裡直接 `fetch`）：
