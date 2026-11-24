@@ -49,30 +49,50 @@
         "tool/jiangjing_para_map/reports/liuzutanjing_L7_structural_r3.json",
         "tool/jiangjing_para_map/reports/liuzutanjing_L7_sandbox_r3.json"
       ]
+    },
+    "8": {
+      "entries": 92,
+      "changed": 91,
+      "zero_flips": 0,
+      "independent_review": "48 accept / 0 replace / 3 note_fix; all 19 large changes, 9 low-conf, 27 contact and protected L53 reviewed",
+      "note_fix": [
+        "53: protected zero contradiction preserved",
+        "54: two-character short tail ownership documented",
+        "71: contact is filler 啊 END 1395.420"
+      ],
+      "idempotent": "3/3 identical sha256 c393afc8c5d96a4e41b39944dbab2a280c3e0360a915583bb4185c9d3006a698",
+      "structural": "PASS; all non-target lectures including later L6/L7人工 updates preserved",
+      "metric_within_03": "11/41 -> 19/42",
+      "metric_within_07": "21/41 -> 32/42",
+      "span_ok": "84/97 -> 84/97 (same total, one bad removed)",
+      "pin": "0 -> 5 exact; bleed 0",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L8_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L8_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L8_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L8_confirmed_zero_blocked_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L8_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L8_sandbox_r3.json"
+      ]
     }
   },
-  "in_progress": 8,
-  "pending": [
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27
-  ],
+  "in_progress": null,
+  "pending": [],
   "confirmed_reviewed_policy": "Never set or modify confirmed/reviewed; L1-L5 golden and all existing confirmed paragraphs protected",
-  "final_steps_pending": "After L27: sync_para_pids, locked-venv ebook rebuild, books2ebook/word2ebook tests, check_site, full final audit"
+  "final_steps_pending": "none",
+  "scope": "Complete L6-L8 only; L9-L27 explicitly excluded by user on 2026-11-24",
+  "post_apply_external_updates": "L5 reviewed=true; L6/L7 later人工修改 and reviewed=true; final L8 apply preserves all latest values",
+  "final_verification": {
+    "sync_para_pids": "all five series OK",
+    "books2ebook_build": "complete; search index 19424/19424; sitemap updated",
+    "books2ebook_pytest": "97 passed, 2 skipped",
+    "word2ebook_pytest": "686 passed",
+    "check_site": "SITE CHECK OK",
+    "audio_map3_node_tests": "4 passed",
+    "milli_refine_unittest": "3 passed",
+    "jiangjing_para_map_unittest": "4 passed",
+    "pin_bleed": "2 existing in unprocessed L24/L27; no new bleed in L6-L8",
+    "git_diff_check": "PASS"
+  },
+  "final_report": "tool/jiangjing_para_map/reports/liuzutanjing_L6_L8_final_report.md"
 }

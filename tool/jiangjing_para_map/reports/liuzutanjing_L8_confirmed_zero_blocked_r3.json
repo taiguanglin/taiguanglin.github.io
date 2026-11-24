@@ -1,0 +1,14 @@
+[
+  {
+    "i": 53,
+    "status": "blocked_confirmed_preserved",
+    "current_start": 1047.29,
+    "current_end": 1047.29,
+    "current_zero": true,
+    "current_confirmed": true,
+    "current_conf": 0.8,
+    "current_method": "ngram",
+    "reason": "confirmed zero維持1047.290且所有欄位不動。多個切片明確恢復「自己悟了…不用向外求…指月之手…溝通或者交流」R，與zero矛盾；此處只列保護矛盾，不由review表翻轉或改confirmed。",
+    "required_action": "使用者試聽後自行解除confirmed並重裁；agent未改任何欄位"
+  }
+]
