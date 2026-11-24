@@ -1,7 +1,7 @@
 {
   "series": "liuzutanjing",
   "book_number": 9,
-  "generated_at": "2026-11-24T07:44:27.467Z",
+  "generated_at": "2026-11-24T07:44:35.630Z",
   "lectures": {
     "1": {
       "audio": "2025年7月7日Tai师父讲经·六祖坛经(1).opus",
@@ -3402,7 +3402,7 @@
       "audio": "2025年7月11日Tai师父讲经·六祖坛经(5).opus",
       "title": "坛经（5）",
       "duration": 1847.247,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-s57e5c524",
