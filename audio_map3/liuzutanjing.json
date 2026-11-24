@@ -1,7 +1,7 @@
 {
   "series": "liuzutanjing",
   "book_number": 9,
-  "generated_at": "2026-11-24T07:44:35.630Z",
+  "generated_at": "2026-11-24T07:59:43.837Z",
   "lectures": {
     "1": {
       "audio": "2025年7月7日Tai师父讲经·六祖坛经(1).opus",
@@ -5178,7 +5178,7 @@
       "audio": "2025年8月4日Tai师父讲经·六祖坛经(7).opus",
       "title": "坛经（7）",
       "duration": 1949.02,
-      "reviewed": false,
+      "reviewed": true,
       "paragraphs": [
         {
           "pid": "p-s47c1c059",
@@ -5294,19 +5294,19 @@
           "pid": "p-s3c39dc87",
           "text": "《坛经》第七期，这本书的四十三页开始。咱们上一次讲到“一切般若智，皆从自性而生，不从外入……”这一段。",
           "start": 0.36,
-          "end": 24.75,
+          "end": 24.65,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s05b44140",
           "text": "善知识！何名般若？般若者，唐言智慧也。一切处所，一切时中，念念不愚，常行智慧，即是般若行。",
-          "start": 24.75,
+          "start": 24.65,
           "end": 27.725,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s55be1bf0",
@@ -5315,164 +5315,160 @@
           "end": 92.814,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdb86fa04",
           "text": "在这里惠能说的就是这样的状态，这种状态就叫“常行智慧，即是般若行”。也就是你把妄想、分别、执着尽可能减少到你的最高境界，在这样的状态里生活，就是“般若行”。而且你在理论上要通透，并不是像前面说的无记空的状态。",
           "start": 92.814,
-          "end": 180.99,
+          "end": 124.103,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s190ba6d8",
           "text": "一念愚即般若绝，一念智即般若生。",
-          "start": 180.86,
-          "end": 180.86,
+          "start": 124.103,
+          "end": 127.883,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-sa7de97ee",
           "text": "“一念愚”就是妄想生起了，或者你把注意力放到哪里，专注地观察什么事，这个时候就算般若绝了。“一念智即般若生”，把文字妄想灭了，注意力也尽量减少，这样般若就生了。",
-          "start": 180.86,
-          "end": 180.86,
+          "start": 127.883,
+          "end": 148.171,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s61cbce72",
           "text": "平时生活中大部分情况下，我们不需要特别专注地做事，特别是工作之类的。有人跟你说话的时候，你可能要专注地听一听，然后回应。一般情况下，就算你不启用注意力，也能正常生活，可能很多人感受不到这样的状态。",
-          "start": 180.86,
-          "end": 180.86,
+          "start": 148.171,
+          "end": 175.848,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-sa1032271",
           "text": "世人愚迷，不见般若。口说般若，心中常愚。常自言我修般若，念念说空，不识真空。",
-          "start": 180.86,
-          "end": 180.86,
+          "start": 175.848,
+          "end": 179.602,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-sc662613c",
           "text": "“世人愚迷”，人世间的大部分人都愚痴、迷闷。“不见般若”，见不到般若，因为脑子里一直在打妄想。“口说般若，心中常愚”，嘴上说着般若，但是心中一直在打妄想。“常自言我修般若”，嘴上说我一直在修般若。“念念说空，不识真空”，句句不离空，但是不知道什么是真正的空。前面讲过，空和有是相对应的，那么真空就是超越空和有，没有了空和有的分别的状态。",
-          "start": 180.99,
-          "end": 222.018,
+          "start": 179.602,
+          "end": 221.918,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6fa6b71e",
           "text": "般若无形相，智慧心即是，若作如是解，即名般若智。",
-          "start": 222.018,
+          "start": 221.918,
           "end": 227.813,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sbfd6a9e8",
           "text": "般若没有形象，没有相貌，我们的智慧心也是一片空寂；如果这样解，才叫真正的般若智。",
           "start": 227.813,
-          "end": 246.48,
+          "end": 245.716,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sad5ce0e0",
           "text": "何名般若密？此是西国语，唐言到彼岸，解义离生灭。著境生灭起，如水有波浪，即名为此岸；离境无生灭，如水常通流，即名为彼岸，故号般若密。",
-          "start": 246.48,
-          "end": 249.11,
+          "start": 245.716,
+          "end": 248.21,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc0806608",
           "text": "什么是般若密？这是印度那边的梵文。唐朝的语言是去往彼岸、到彼岸，就是离开生灭，或者灭生灭，这里指妄想的生灭。只要执着于境界，就会进入妄想生灭的状态，就像水生起波浪一样，这个时候称之为此岸。离开了境界，妄想的生灭就会消失，就像水静静地流一样。这个时候称之为彼岸——对面的岸，所以叫般若蜜。",
-          "start": 249.11,
-          "end": 310.855,
+          "start": 248.21,
+          "end": 310.755,
           "conf": 0.5,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s92123168",
           "text": "善知识！迷人口念，当念之时，有妄有非。念念若行，是名真性。悟此法者，是般若法，修此行者，是般若行。不修即凡，一念修行，自身等佛。",
-          "start": 310.855,
-          "end": 315.669,
+          "start": 310.755,
+          "end": 315.469,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s122a407c",
           "text": "这些愚迷、迷闷之人，我们口念般若。当我们用口念的时候，就已经有了妄想和是非之念。所以光是嘴上念念不断，但是只要心里在起妄想，就不是惠能所说的般若行。",
-          "start": 315.669,
-          "end": 340.517,
+          "start": 315.469,
+          "end": 340.417,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0b44a4d9",
           "text": "“念念若行，是名真性”，脑子里的每一个妄想都在按照惠能所说的修行，就是把你的妄念——文字妄想、注意力等都减少到最少程度，尽量生起你的分别心来观察，这个时候称之为般若行。这是真实的，用我们更深层次的意识来修行的那种状态。",
-          "start": 340.517,
-          "end": 372.807,
+          "start": 340.417,
+          "end": 372.707,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0ae347ab",
           "text": "“悟此法者，是般若法”，悟到了这个法就是般若法——智慧法。“修此行者，是般若行”，这样修行的人就叫般若行。“不修即凡，一念修行，自身等佛”，不修行的话就是凡夫、普通人。你只要如法修行，修行的当下等于是佛。",
-          "start": 372.807,
-          "end": 400.264,
+          "start": 372.707,
+          "end": 400.164,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0c83ea10",
           "text": "善知识！凡夫即佛，烦恼即菩提。前念迷即凡夫，后念悟即佛。前念著境即烦恼，后念离境即菩提。",
-          "start": 400.264,
-          "end": 405.135,
+          "start": 400.164,
+          "end": 405.106,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s80af3ddd",
           "text": "“凡夫即佛，烦恼即菩提”，凡夫就是佛，烦恼就是菩提，这是从分别心的角度来说的。在超越分别心的状态里，没有凡夫和佛，大家都是同样的众生；烦恼、菩提都一样，有妄想和没有妄想，都是从有分别心的状态里往下说的。",
-          "start": 405.135,
-          "end": 427.653,
+          "start": 405.106,
+          "end": 427.553,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s51350acb",
           "text": "“前念迷即凡夫，后念悟即佛”，你前一个妄想迷闷，那就是凡夫；下一个妄想，你悟到了真相，那就是佛。",
-          "start": 427.653,
+          "start": 427.553,
           "end": 443.762,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s00645a64",
@@ -5481,7 +5477,7 @@
           "end": 460.331,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sb968dcea",
@@ -5490,142 +5486,142 @@
           "end": 465.047,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s87fba97f",
           "text": "“摩诃般若般若密，最尊最上最第一”，摩诃般若般若蜜是世界上最上、最尊、最为第一的修行方法。“无住无往亦无来”，“无住”当然是没有执着；“无往亦无来”，没有去，没有来，它本来就在我们心里，是我们意识层面上的一种状态，所以它没有去和来的问题。只要你把妄念减少到最少，知道这个义理，那就算是了。",
           "start": 465.047,
-          "end": 497.903,
+          "end": 497.803,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd8a79b7b",
           "text": "“三世诸佛从中出”，所有的佛都是从这样的修行中最后成佛的。“当用大智慧，打破五蕴烦恼尘劳”，用我们般若智和修行来打破五蕴——色、受、想、行、识，烦恼和尘劳。“尘劳”也是烦恼的意思。",
-          "start": 497.903,
+          "start": 497.803,
           "end": 523.263,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf08dd40a",
           "text": "基本上，惠能所主张的修行就是佛经里所说的四念处修行。他主张那个时代的人可以用这个方法修行。",
           "start": 523.263,
-          "end": 536.77,
+          "end": 536.67,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8503735b",
           "text": "“如此修行，定成佛道，变三毒为戒定慧”，这样修行的话，肯定能成佛，把贪、嗔、痴变成戒、定、慧。“三毒”是贪、嗔、痴。“定成佛道”，并不是说你直接能成佛，而是在佛法修行上，这一生就能有所成就。",
-          "start": 536.77,
-          "end": 561.738,
+          "start": 536.67,
+          "end": 561.538,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa7442c04",
           "text": "善知识！我此法门，从一般若生八万四千智慧。何以故？为世人有八万四千尘劳。若无尘劳，智慧常现，不离自性。悟此法者，即是无念。",
-          "start": 561.738,
-          "end": 568.617,
+          "start": 561.538,
+          "end": 568.517,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s39baefe0",
           "text": "“我此法门，从一般若生八万四千智慧”，我的这个法门，在一个般若状态里生出八万四千智慧——所有一切种智，可以说就是生起所有的智慧。“为世人有八万四千尘劳”，因为我们普通人有八万四千尘劳。所以智慧和尘劳是相对应的，我们有烦恼的时候，就有智慧；拿智慧来说烦恼，或者用烦恼来相对应地说智慧。这都是在有分别心的状态下说的。",
-          "start": 568.617,
-          "end": 604.05,
+          "start": 568.517,
+          "end": 603.95,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s557025e6",
           "text": "所有的法都是针对于我们这些凡夫来说的，因为我们凡夫有妄想、分别、执着，所以没有妄想、分别、执着的状态称之为智慧。如果本来就没有妄想、分别、执着，就谈不上智慧。",
-          "start": 604.05,
-          "end": 623.652,
+          "start": 603.95,
+          "end": 623.452,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4cc1c12a",
           "text": "“若无尘劳，智慧常现，不离自性”，如果没有尘劳——妄想、分别、执着的话，就叫有智慧的状态，而且是在自性里。“悟此法者，即是无念”，悟到这个法门的人处在无念的状态。",
-          "start": 623.652,
+          "start": 623.452,
           "end": 648.705,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sec4d7df1",
           "text": "无忆无著，不起诳妄，用自真如性，以智慧观照，于一切法，不取不舍，即是见性成佛道。",
           "start": 648.705,
-          "end": 662.096,
+          "end": 661.996,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s64fc0e35",
           "text": "“无忆无著”，“忆”是回忆或者忆念，都是在动妄想；然后无执着。“不起诳妄”，不起妄想。“用自真如性”，又回到我们的自性的状态里。“以智慧观照”，我们自性的没有妄想的状态，观照所有的境界——我们身体带来的境界，脑子里的妄想的境界，尽量都用分别心来观照。",
-          "start": 662.096,
-          "end": 699.652,
+          "start": 661.996,
+          "end": 698.437,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s5bdb1e88",
           "text": "“于一切法，不取不舍”，“一切法”是妄想、分别、执着的统称。“取”和“舍”都是在执着上说的。对所有的妄想、分别、执着，我们不生起执着。“即是见性成佛道”，这就叫见性成佛道，就是往成佛的方向真正努力地修行。",
-          "start": 699.652,
-          "end": 729.731,
+          "start": 698.437,
+          "end": 729.531,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s54287af3",
           "text": "善知识！若欲入甚深法界及般若三昧者，须修般若行，持诵金刚般若经，即得见性。",
-          "start": 729.731,
+          "start": 729.531,
           "end": 743.987,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s23af5ab1",
           "text": "真正想体悟佛法、成佛的话，就应该修般若行，也就是佛经里所说的四念处修行。平时要念金刚般若经，这样就可以见性，体悟到我们每个人都有不生不灭的自性，这个佛法的核心义理。",
           "start": 743.987,
-          "end": 777.31,
+          "end": 777.11,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s88dca682",
           "text": "当知此经功德，无量无边。经中分明赞叹，莫能具说。此法门是最上乘，为大智人说，为上根人说。小根小智人闻，心生不信。何以故？",
-          "start": 777.31,
-          "end": 783.011,
+          "start": 777.11,
+          "end": 782.911,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4bf4beeb",
           "text": "《金刚经》的功德无量无边。在这个经里，佛也赞叹过这个功德，所以没有办法具体地说。从这里开始讲《金刚经》的好处。",
-          "start": 783.011,
+          "start": 782.911,
           "end": 798.767,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa2333f80",
@@ -5634,7 +5630,7 @@
           "end": 828.196,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2bc50f07",
@@ -5643,7 +5639,7 @@
           "end": 834.331,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1f974f5f",
@@ -5652,79 +5648,79 @@
           "end": 858.88,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa471acfd",
           "text": "这是指小乘人听到之后反而生起不信的念头。他不信，对佛法有怀疑，甚至诽谤，这就像城邑聚落被漂流一样，反而得不到利益。因为攻击大乘佛法是有果报的，甚至你心生不信，也会有相应的影响。",
           "start": 858.88,
-          "end": 894.096,
+          "end": 893.996,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7424da1e",
           "text": "若雨大海，不增不减。若大乘人，若最上乘人，闻说金刚经，心开悟解，故知本性自有般若之智，自用智慧，常观照故，不假文字。",
-          "start": 894.096,
+          "start": 893.996,
           "end": 907.932,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6c8106dd",
           "text": "雨下到大海，大海不增不减。我们大乘人、有智慧的人、最上乘人，听到《金刚经》马上可以心开解悟，悟解佛法的核心内容，就像大雨下到大海一样。",
           "start": 907.932,
-          "end": 939.422,
+          "end": 939.322,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7ecf4d3f",
           "text": "这里天龙下雨这一段，在唐朝那个时代，大部分人都相信雨是天上的龙下的。现在有些稍微有点神通的人也说，他看到龙在行云布雨。这就见仁见智，你爱怎么相信就怎么相信。按照教科书里说的，天上的云是地上的水被太阳照射，蒸发之后到天上变成雨，再下来，也有可能是这样。大家随意相信就可以。",
-          "start": 939.422,
-          "end": 983.72,
+          "start": 939.322,
+          "end": 983.62,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc2b1fe4b",
           "text": "譬如雨水，不从天有，元是龙能兴致，令一切众生、一切草木、有情无情，悉皆蒙润。百川众流，却入大海，合为一体。",
-          "start": 983.72,
+          "start": 983.62,
           "end": 990.216,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s286d05ae",
           "text": "雨水并不是天上本来就有的，是龙造出来的。让一切众生和一切植物、草木，不管是有情众生，还是无情的物，都可以得到利益，被雨水滋润。草木、石头之类统称为“无情”。所有的河流最终都流到大海，成为一体。",
           "start": 990.216,
-          "end": 1027.565,
+          "end": 1027.465,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s17c6a703",
           "text": "众生本性般若之智，亦复如是。",
-          "start": 1027.565,
-          "end": 1030.711,
+          "start": 1027.465,
+          "end": 1030.611,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdf0d9c4f",
           "text": "我们的自性般若智慧也是如此。这句话很妙！我们每一个众生都有独立的自性，都是独立的个体。但是最终你体悟、成佛了，就会重归到一，回到诸佛同体的状态，也就是所有自性重叠的状态。",
-          "start": 1030.711,
+          "start": 1030.611,
           "end": 1061.39,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s24658539",
@@ -5733,7 +5729,7 @@
           "end": 1093.987,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf669c5fe",
@@ -5742,79 +5738,79 @@
           "end": 1133.869,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s71591245",
           "text": "有些人说他修到一定程度之后，好像要进入某个大意识里，变成那个大意识的一部分。他感觉自己可能要死了，或者消失了，所以就生起了恐惧之心，然后就掉下来，回到了我们这个状态。",
           "start": 1133.869,
-          "end": 1155.117,
+          "end": 1155.017,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sad49bfee",
           "text": "真正成佛就是回到那个状态，融入到诸佛当中去，但并不是你死了。你可以照样生起妄想。如果我们融入到诸佛当中以后，我们作为一个个体就消失了，那么我们就不可能再起妄想，不可能想干什么就干什么。但是实际上并不是。我们想生起妄想的时候，还可以生起妄想；想做事，想下来度人，都是我们个人的自由。每一个自性都是独立的个体，首先要明白这一点。并不是融入到诸佛当中，就等于是死亡。",
-          "start": 1155.117,
-          "end": 1200.872,
+          "start": 1155.017,
+          "end": 1200.772,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sa2c8d76d",
           "text": "善知识！小根之人，闻此顿教，犹如草木根性小者，若被大雨，悉皆自倒，不能增长。",
-          "start": 1200.872,
-          "end": 1209.864,
+          "start": 1200.772,
+          "end": 1209.764,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s6a70c6b3",
           "text": "所以小根小智、根器不行、没有智慧的人，听到这样的顿教——最核心的义理，就像这些草木当中，根扎得不够深的小草、小木一样，如果大雨一来，可能自己就倒了，不能增长了。",
-          "start": 1209.864,
-          "end": 1241.006,
+          "start": 1209.764,
+          "end": 1240.906,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7b7b8906",
           "text": "小根之人，亦复如是。元有般若之智，与大智人更无差别，因何闻法不自开悟？",
-          "start": 1241.006,
-          "end": 1243.137,
+          "start": 1240.906,
+          "end": 1243.037,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc0309f8c",
           "text": "小根之人就像这样的状态。原来的般若智慧与有智慧的人没有差别，也就是我们每个众生都有同样的自性。在自性层面上我们众生平等，所有人都一样。但是，为什么听到了法之后不能开悟呢？",
-          "start": 1243.137,
-          "end": 1275.358,
+          "start": 1243.037,
+          "end": 1275.258,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4888bb0a",
           "text": "缘邪见障重，烦恼根深，犹如大云覆盖于日，不得风吹，日光不现。",
-          "start": 1275.358,
-          "end": 1282.255,
+          "start": 1275.258,
+          "end": 1283.055,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s12c85110",
           "text": "一个是邪见，一个是障碍多。“障重”，看书后面的解释，有三种障，一个是《圆觉经》里的事障和理障，这是在菩萨境界里说的。事障就是你的业障；理障是义理上不通，对佛法最深的义理——三个基础设定，没有完全真实地理解。在菩萨境界里，所学的就是三个初始设定。在凡夫的境界里，又多了一个所知障，也有一种说法是烦恼障。",
-          "start": 1282.255,
+          "start": 1283.055,
           "end": 1336.404,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s86efbb43",
@@ -5823,7 +5819,7 @@
           "end": 1359.495,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s0972b29d",
@@ -5832,7 +5828,7 @@
           "end": 1399.533,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3ccbc42b",
@@ -5841,7 +5837,7 @@
           "end": 1428.391,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf4a5592b",
@@ -5850,43 +5846,43 @@
           "end": 1433.585,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3d147a16",
           "text": "般若的智慧没有大小，只有我们众生迷和悟之间的差别而已。有些众生妄想、分别、执着多，那就是迷的；有些众生妄想、分别、执着少，就更接近于悟。",
           "start": 1433.585,
-          "end": 1457.684,
+          "end": 1457.584,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sdbf46612",
           "text": "迷心外见，修行觅佛，未悟自性，即是小根；若开悟顿教，不能外修，但于自心常起正见，烦恼尘劳，常不能染，即是见性。",
-          "start": 1457.684,
+          "start": 1457.584,
           "end": 1463.146,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s82e9cfa6",
           "text": "迷了之后，在外求佛，就没有悟到自性——不知道我们每个众生都有不生不灭的自性。这种状态称之为小根。",
           "start": 1463.146,
-          "end": 1478.883,
+          "end": 1487.512,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sd30b7150",
           "text": "如果是“开悟顿教”，就会直接告诉你义理，一下子让你明白，我们每个众生都有不生不灭的自性。如果你一下就接受，并且相信了，这就算是开悟——理悟了。这样就不会在心外修行，自己心中常起正知正见，不会被妄想、分别、执着等烦恼污染。",
-          "start": 1478.883,
+          "start": 1487.512,
           "end": 1523.016,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc112850f",
@@ -5895,178 +5891,178 @@
           "end": 1538.07,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s1320f741",
           "text": "我以前也讲过，打坐的时候有妄想升起的话，你可以念佛或者做什么也好，也可以拼命地打妄想，直接让它打过去。打着打着妄想，人终究会累，累的时候就可以放下了。",
           "start": 1538.07,
-          "end": 1555.473,
+          "end": 1555.773,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s94c8f41b",
           "text": "这个前提是你对正法有理解的情况下，你理悟了——义理上通透了。在这样的状态下，你打着妄想，心里知道这样继续打妄想不对。修行就是要灭妄想的，你有这样的正知正见的话，妄想会减少。但是如果你没有这样的正知正见，你越打妄想可能陷得越深，妄想就会越来越多。所以“常不能染”就像打妄想，我们不去执着于它。",
-          "start": 1555.473,
-          "end": 1586.975,
+          "start": 1555.773,
+          "end": 1586.875,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sf5809809",
           "text": "“即是见性”，这就叫见到了我们的本来面目。",
-          "start": 1586.975,
-          "end": 1593.814,
+          "start": 1586.875,
+          "end": 1593.614,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s321b08b7",
           "text": "善知识！内外不住，去来自由，能除执心，通达无碍。能修此行，与般若经本无差别。",
-          "start": 1593.814,
-          "end": 1603.359,
+          "start": 1593.614,
+          "end": 1603.259,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sc4ab10db",
           "text": "“内外不住”，“内”是对我们内心的那些妄想和内心的习气等不执着。“外”是对外部的境界不执着。“去来自由”，我们的行为是自由的、不执着的。这既是身体的行为，也指心理上的状态。心理上和身体上都不去执着，这样称之为去来自由。",
-          "start": 1603.359,
-          "end": 1632.61,
+          "start": 1603.259,
+          "end": 1628.985,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s29a6ce36",
           "text": "“能除执心”，去掉、灭掉执着的心。“通达无碍”，这样就会通达无碍，没有障碍。“能修此行，与般若经本无差别”，如果这样修行，那么和《金刚经》里说的就没有差别了。",
-          "start": 1632.61,
-          "end": 1652.84,
+          "start": 1628.985,
+          "end": 1651.424,
           "conf": 0.5,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s692324d9",
           "text": "善知识！一切修多罗及诸文字，大小二乘，十二部经，皆因人置，因智慧性，方能建立。",
-          "start": 1652.84,
-          "end": 1663.472,
+          "start": 1651.424,
+          "end": 1661.717,
           "conf": 0.65,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s71947806",
           "text": "“修多罗”是契经的意思，就是佛经。所有的文字，大乘、小乘，以及十二部经——佛经的十二个种类。",
-          "start": 1663.472,
-          "end": 1679.897,
+          "start": 1661.717,
+          "end": 1679.797,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s59efa6ef",
           "text": "现在这一篇“般若品”，如果放到佛经里，可以看作不问自说的类型。大部分佛经都是有人提问，佛进行回答，这就叫长行。",
-          "start": 1679.897,
+          "start": 1679.797,
           "end": 1700.728,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s7526a0f2",
           "text": "但是有一种是在没有人问的情况下佛自己说的，像《阿弥陀经》是公认的自说的那类经。惠能讲的“般若品”，的确是韦刺史请他讲了，但是他没有提具体的问题。惠能觉得这一段很重要，所以他就开始讲这一段。没有人问他《金刚经》是什么内容，般若经是什么。但是他觉得，这是那个时代的人修行最重要的理论，就这么讲了。所以这应该算是自说部。",
           "start": 1700.728,
-          "end": 1750.86,
+          "end": 1750.96,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s8464584f",
           "text": "十二部经有这种问答的长行类，以及重颂、偈颂，本生，本事，授记等。本生是佛自己的故事，本事是佛讲其他一些菩萨、阿罗汉的前世故事。大家可以自己网上查一下，在这里就不展开说了。如果未来写书的话，可能会稍微展开来写。",
-          "start": 1750.86,
-          "end": 1786.061,
+          "start": 1750.96,
+          "end": 1785.961,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s2e5aa214",
           "text": "“皆因人置，因智慧性，方能建立”，都是我们人创造出来的，在智慧性上才能建立起来。所有的修行，二乘、三乘，所有的佛经，都是因为我们凡夫的妄想、分别、执着，所以佛是针对我们凡夫来讲这些经，都是相对而言的。让我们从这个执着当中回到那个没有执着的状态里。",
-          "start": 1786.061,
-          "end": 1816.7,
+          "start": 1785.961,
+          "end": 1816.6,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4f981357",
           "text": "所以这就是一种方便法，所有的佛经几乎都可以看作是方便法。像《楞伽经》这样直接讲核心义理的是相对少的。",
-          "start": 1816.7,
-          "end": 1827.35,
+          "start": 1816.6,
+          "end": 1827.25,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s24d21d8e",
           "text": "若无世人，一切万法本自不有。故知万法本自人兴，一切经书，因人说有。",
-          "start": 1827.35,
-          "end": 1831.772,
+          "start": 1827.25,
+          "end": 1831.672,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s04af1fef",
           "text": "如果没有像我们这样迷悟、迷闷的，妄想、分别、执着众多的这些众生，那么万法本来就不存在。所有的万法都是因为人，才兴起；所有经书也是因为有人，所以佛才会传播佛法，才会有佛经，也会有这个书。",
-          "start": 1831.772,
-          "end": 1865.152,
+          "start": 1831.672,
+          "end": 1865.052,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s412c815a",
           "text": "缘其人中有愚有智，愚为小人，智为大人。愚者问于智人，智者与愚人说法，愚人忽然悟解心开，即与智人无别。",
-          "start": 1865.152,
-          "end": 1870.776,
+          "start": 1865.052,
+          "end": 1870.676,
           "conf": 0.6,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4f5bbcc5",
           "text": "因为人中有愚痴的人和有智慧的人。我们管这些愚痴的人叫小人，有智慧的人叫大人。愚痴的人向有智慧的人请教，智慧的人给愚痴的人说法，愚痴的人心里就忽然悟解了，明白了这个最核心的义理——我们每一个人都有不生不灭的自性。那么我们这些愚痴的人也和智人没有差别。",
-          "start": 1870.776,
+          "start": 1870.676,
           "end": 1909.701,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfbc533c6",
           "text": "这是给当时的听众信心的一种说法。惠能肯定是智人了，从他的立场来看，下面的听众应该是不懂义理的愚人。现在有智慧的惠能，把这个核心义理告诉了愚痴的人们，所以大家心开解悟，相信了这样的义理。那么从这个时候开始，大家都是智人了。",
           "start": 1909.701,
-          "end": 1946.37,
+          "end": 1945.27,
           "conf": 0.7,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s363bd82f",
           "text": "这一段就讲到这里。",
-          "start": 1946.37,
+          "start": 1945.27,
           "end": 1949.02,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         }
       ]
     },
