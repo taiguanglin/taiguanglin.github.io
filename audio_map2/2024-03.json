@@ -35272,13 +35272,19 @@
           "end_label": "00:01:43.990",
           "confidence": 0.92,
           "status": "manual",
-          "notes": "answer_opening | anchor:字級 opus/mp3 3.88 | anchor:字級 opus/mp3 3.86 | anchor:字級 manual",
+          "notes": "answer_opening | anchor:字級 opus/mp3 3.88 | anchor:字級 opus/mp3 3.86 | anchor:字級 manual | 2026-11-25 link-fix: 對應 wenda2_ebook/02.html answer-c35b152e2f56（孤兒 block，無 question div；只掛 chapter_answer_ids）",
           "srt_preview": "嗯这个那我这里好像有一种声音，我不下地狱去下地啊，这个应该是修行过程中。呃，如果你嗯发了一个狠晕，或者说你看到一个一一佛经非常的欢喜喜啊的话，那可能这个那个佛经里或者那个愿那个愿会一直在脑子里转来转 去的那个佛经里的一些字词句，也会在脑子里…",
           "index": 1,
           "question_id": "question-198c432df888",
           "stable_key": "2024-03-30-main#1",
           "q_preview": "以下找不到问题，仅回答",
-          "answer_preview": "北京居士法宝，脑子里好像有一种声音“我不下地狱谁下地狱”。这个应该是修行过程中，如果你发了一个狠愿，或者说你看到一本佛经非常地欢喜，可能佛经里或者那个愿会一直在脑子里转来转去的，佛经里的一些词句也会在脑子里会转来转去的，这个是很正常的事情。我以前看《法华经》也是，看完那个挖井的比喻之后，感觉自己很欢喜，然后那个比喻一直…"
+          "answer_preview": "北京居士法宝，脑子里好像有一种声音“我不下地狱谁下地狱”。这个应该是修行过程中，如果你发了一个狠愿，或者说你看到一本佛经非常地欢喜，可能佛经里或者那个愿会一直在脑子里转来转去的，佛经里的一些词句也会在脑子里会转来转去的，这个是很正常的事情。我以前看《法华经》也是，看完那个挖井的比喻之后，感觉自己很欢喜，然后那个比喻一直…",
+          "chapter_answer_ids": [
+            "answer-c35b152e2f56"
+          ],
+          "chapter_indexes": [
+            2
+          ]
         },
         {
           "questioner": "翅",
