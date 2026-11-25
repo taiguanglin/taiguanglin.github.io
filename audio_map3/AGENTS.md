@@ -2,10 +2,11 @@
 
 > 校對程序、五種念誦情況、結構錯誤型態、ASR 同音對照、逐講驗收 →
 > [`skills/milli-align/SKILL.md`](skills/milli-align/SKILL.md)。
-> **《六祖壇經》專用規則（L2–L5 人工 golden 校准）** →
+> **《六祖壇經》專用規則（L2–L7 人工 golden 校准）** →
 > [`skills/liuzutanjing-milli-align/SKILL.md`](skills/liuzutanjing-milli-align/SKILL.md)；
 > L2/L3 差異見 [`GOLDEN_ANALYSIS.md`](skills/liuzutanjing-milli-align/GOLDEN_ANALYSIS.md)，
-> L4/L5 回歸見 [`GOLDEN_L4_L5_ANALYSIS.md`](skills/liuzutanjing-milli-align/GOLDEN_L4_L5_ANALYSIS.md)。
+> L4/L5 回歸見 [`GOLDEN_L4_L5_ANALYSIS.md`](skills/liuzutanjing-milli-align/GOLDEN_L4_L5_ANALYSIS.md)，
+> L6/L7 最新人工反例見 [`GOLDEN_L6_L7_ANALYSIS.md`](skills/liuzutanjing-milli-align/GOLDEN_L6_L7_ANALYSIS.md)。
 > 本檔＝資料模型、產線、UI 操作、已知限制。SoT JSON：`audio_map3/<series>.json`
 > （`ganen / sishierzhang / lengqie / liuzutanjing / lengyanjing`）。
 

@@ -1,0 +1,84 @@
+{
+  "series": "liuzutanjing",
+  "scope": "L9-L10 only; stop after L10 per user on 2026-11-25",
+  "subagent_limit": 1,
+  "golden": {
+    "L6": "90/90 confirmed, reviewed=true (user satisfied)",
+    "L7": "97/97 confirmed, reviewed=true (user satisfied)",
+    "sot_sha256_at_start": "c393afc8c5d96a4e41b39944dbab2a280c3e0360a915583bb4185c9d3006a698",
+    "baseline_snapshot": "/tmp/liuzutanjing_before_L9_r3.json"
+  },
+  "skill_updates": {
+    "skill": "audio_map3/skills/liuzutanjing-milli-align/SKILL.md",
+    "analysis": "audio_map3/skills/liuzutanjing-milli-align/GOLDEN_L6_L7_ANALYSIS.md",
+    "rules": [
+      "R existence and R ownership are separate; L6[48] is READ->zero",
+      "SUTRA first recitation and COMM own_first must be separate; L7[76]=1487.512",
+      "single-window timebase agreement is not golden; L7[83]-[85] use latest人工 values",
+      "L7[15]-[18] are now confirmed READ; never reapply old blocked suggestions",
+      "L4-L7 regressions must use latest人工 values separately",
+      "at most one sub-agent at any time"
+    ]
+  },
+  "in_progress": "L10 independent reviewer (single sub-agent)",
+  "pending": [],
+  "completed": {
+    "9": {
+      "entries": 108,
+      "changed": 108,
+      "zero_flips": 0,
+      "independent_review": "29 accept / 0 replace / 5 note_fix",
+      "idempotent": "3/3 sha256 45fd3c5ea277fa3eb3a7a40287277c7fcd2ee206d2be3e743899947167035718",
+      "structural": "PASS; all non-target and latest人工 golden preserved",
+      "metric_within_03": "7/30 -> 15/31",
+      "metric_within_07": "20/30 -> 26/31",
+      "span_ok": "103/113 -> 104/113",
+      "pin": "0 -> 1 exact; bleed 0",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L9_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L9_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L9_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L9_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L9_sandbox_r3.json"
+      ]
+    }
+  },
+  "verification": {
+    "skill_artifact": "VERDICT: PASS — claims verified",
+    "golden_analysis_artifact": "VERDICT: PASS — claims verified",
+    "L9_inputs": "ASR dump, strict/soft pauses and opus all present",
+    "L9_final": {
+      "sync_para_pids": "all five series OK",
+      "books2ebook_build": "complete 19424/19424",
+      "books2ebook_pytest": "97 passed, 2 skipped",
+      "word2ebook_pytest": "686 passed",
+      "check_site": "SITE CHECK OK",
+      "audio_map3_node_tests": "4 passed",
+      "pin_bleed": "2 existing in unprocessed L24/L27; L9 bleed 0",
+      "span_note": "L2 dump missing during final full-series run; L9 span 104/113 unaffected"
+    }
+  },
+  "L9_initial": {
+    "entries": 108,
+    "changed": 108,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "7/30 -> 15/31",
+    "metric_within_07": "20/30 -> 26/31",
+    "span_ok": "103/113 -> 104/113",
+    "pin": "0 -> 1 exact; bleed 0",
+    "high_risk": "14 changes >2s; 8 low-conf; 8 contact; 5 ASR holes"
+  },
+  "L10_initial": {
+    "entries": 107,
+    "changed": 107,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "1/28 -> 9/29",
+    "metric_within_07": "6/28 -> 15/29",
+    "span_ok": "103/116 -> 106/116",
+    "pin": "0 -> 1 exact; bleed 0",
+    "high_risk": "26 changes >2s; 11 conf<=.75; 32 contact; 2 ASR holes",
+    "followup_review": "span transitions L74 and L22 explicitly sent to reviewer"
+  }
+}
