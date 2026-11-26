@@ -38,6 +38,7 @@ def normalize(s: str) -> str:
     return s
 
 LEAD_TS_PATTERN = re.compile(r'^\s*\d{1,2}:\d{2}(?::\d{2})?\s*[-–—~]\s*\d{1,2}:\d{2}(?::\d{2})?\s+')
+TAIL_TRANSITION_PATTERN = re.compile(r'(?<=[。？！”])[^。？！”]{0,4}(?:下一[句段]|下[邊面]|繼續看|後面是)[^。？！”]{0,4}$')
 
 def clean(s: str) -> str:
     # 去掉 answer 開頭常見的 "Taiguanglin " 署名
@@ -45,6 +46,8 @@ def clean(s: str) -> str:
     s = re.sub(r'^Taiguanglin[ 　]*', '', s)
     # 去掉開頭時間段落（如 "00:12:55 - 00:13:33 白瀑印龍，…"）
     s = LEAD_TS_PATTERN.sub('', s, count=1)
+    # 去掉段尾引出下一段經文的過場語（六祖壇經 L19+ 併入前段的「下一段，」「那麼下一句，」）
+    s = TAIL_TRANSITION_PATTERN.sub('', s)
     return s
 
 def date_prefix_len(s: str):
