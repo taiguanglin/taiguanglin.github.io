@@ -1,7 +1,7 @@
 {
   "series": "liuzutanjing",
   "book_number": 9,
-  "generated_at": "2026-11-24T07:59:43.837Z",
+  "generated_at": "2026-11-26T02:53:28.477Z",
   "lectures": {
     "1": {
       "audio": "2025年7月7日Tai师父讲经·六祖坛经(1).opus",
@@ -6118,55 +6118,62 @@
           "start": 0.66,
           "end": 9.575,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s96935fd7",
           "text": "善知识！不悟即佛是众生；一念悟时，众生是佛。故知万法尽在自心，何不从自心中，顿见真如本性？",
           "start": 9.575,
-          "end": 10.883,
+          "end": 11.431,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s779505d7",
           "text": "“不悟即佛是众生”，我觉得这个可能打印的时候把字给弄反了，应该是“不悟，佛即是众生”。“一念悟时，众生是佛”，不悟的话，佛就是众生；悟的话众生就是佛。众生是佛起了妄想、分别、执着，佛就是我们这些众生没有了妄想、分别、执着。大家本来都是佛，只是有没有妄想、分别、执着的区别而已。",
-          "start": 10.883,
-          "end": 49.81,
+          "start": 11.431,
+          "end": 50.804,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s8c81253d",
           "text": "“故知万法尽在自心，何不从自心中，顿见真如本性？”一个反问句，所以我们都知道万法尽在自心，一切妄想、分别、执着，都从我们的自性中产生。所以为什么不回到我们的自性和自心中？自心和自性都是一样的。“顿见真如本性”，一下子体悟到我们有一个不生不灭的，可以生出万法的自性。",
-          "start": 49.81,
+          "start": 50.804,
           "end": 87.103,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s8ff214ee",
           "text": "菩萨戒经云：“我本元自性清净，若识自心见性，皆成佛道。”净名经云：“即时豁然，还得本心。”",
           "start": 87.103,
-          "end": 88.3,
+          "end": 88.699,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s2665e324",
           "text": "“菩萨戒经”，看后面注解也叫《梵网经》，姚秦鸠摩罗什译，《梵网经菩萨心地戒品第十》。《梵网经》主要讲戒律，十重戒和四十八轻戒等。",
-          "start": 88.3,
-          "end": 106.554,
+          "start": 88.699,
+          "end": 107.541,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-se4ccbb58",
           "text": "“我本元自性清净，若识自心见性，皆成佛道”，我们的自性本来是清净的，我们的自性当中本来没有妄想、分别、执着，所以只要能看到我们的自性，回到那个状态，大家都可以成佛。",
-          "start": 106.554,
+          "start": 107.541,
           "end": 131.416,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s46bc919d",
@@ -6174,7 +6181,8 @@
           "start": 131.416,
           "end": 156.942,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sbb130ec8",
@@ -6182,7 +6190,8 @@
           "start": 156.942,
           "end": 164.813,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s84cc1f86",
@@ -6190,87 +6199,98 @@
           "start": 164.813,
           "end": 191.737,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s5356923f",
           "text": "从这个角度来看，佛教讲究的是众生平等，是无神论；佛和我们都只是有妄想、分别、执着上的差别而已，在自性那个层面上我们本质上并没有差别。",
           "start": 191.737,
-          "end": 208.555,
+          "end": 211.058,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sbe8ed781",
           "text": "善知识！我于忍和尚处，一闻言下便悟，顿见真如本性。是以将此教法流行，令学道者顿悟菩提，各自观心，自见本性。",
-          "start": 208.555,
-          "end": 218.104,
+          "start": 211.058,
+          "end": 218.004,
           "conf": 0.6,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sc68e8122",
           "text": "我在弘忍法师那里，一听到这个法，一下就悟了，回到了我的自性当中去，看到了我的真如本性——那个不生不灭的自性。所以我要把教法流行开来，让学佛的人马上悟到，我们都有不生不灭的自性，然后往回观察我们的意识。",
-          "start": 218.104,
-          "end": 255.058,
+          "start": 218.004,
+          "end": 254.958,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s15b68ef7",
           "text": "在这里对凡夫来说，我们首先还得说是意识，观察意识里头升起的各种观念、想法、妄想。",
-          "start": 255.058,
-          "end": 271.495,
+          "start": 254.958,
+          "end": 271.395,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sf406ce4e",
           "text": "所以惠能主张的主要的修行方法就是往回观自己，基本上与我们现在所说的四念处法是一样的。",
-          "start": 271.495,
+          "start": 271.395,
           "end": 284.435,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sfe0a6272",
           "text": "若自不悟，须觅大善知识，解最上乘法者，直示正路。",
           "start": 284.435,
-          "end": 292.112,
+          "end": 292.312,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sf5c35b3d",
           "text": "“觅”是寻找的意思。如果自己不能悟，不明白义理的话，“须觅大善知识”，需要找一个有正知正见的大善知识，一个好老师来解最上乘法——佛说的最核心的义理。这个人得找这样的师父来指示正路，告诉他这个世界的真相。",
-          "start": 292.112,
-          "end": 320.44,
+          "start": 292.312,
+          "end": 320.54,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s732bb836",
           "text": "所以《楞伽经》里说悟只有顿悟，就是一下子明白了。我们嘴上可以说，我渐渐明白了什么道理，但是你明白的那个时刻、那个状态就是那么一下子的，以前不明白就是不明白。所以我们看佛经，有时候看到一句话有豁然开朗的感觉，一下子明白什么道理了。",
-          "start": 320.44,
+          "start": 320.54,
           "end": 344.29,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s4cba67ef",
           "text": "善知识的指导也是如此，如果你找对了人，他一下子就让你明白真正的道理，不需要什么长时间的学习。你一下子明白了，后面才开始更深入地了解其他佛理，这个时候有长时间的学习收获。",
           "start": 344.29,
-          "end": 362.877,
+          "end": 363.391,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s82f53eae",
           "text": "是善知识有大因缘，所谓化导令得见性。",
-          "start": 362.877,
+          "start": 363.391,
           "end": 369.779,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s92fcd37e",
@@ -6278,7 +6298,8 @@
           "start": 369.779,
           "end": 400.629,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s29de40b0",
@@ -6286,7 +6307,8 @@
           "start": 400.629,
           "end": 416.7,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s3d71510f",
@@ -6294,7 +6316,8 @@
           "start": 416.7,
           "end": 445.997,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s57c278fc",
@@ -6302,7 +6325,8 @@
           "start": 445.997,
           "end": 492.479,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s2b542631",
@@ -6310,7 +6334,8 @@
           "start": 492.479,
           "end": 510.687,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s19613e30",
@@ -6318,7 +6343,8 @@
           "start": 510.687,
           "end": 514.02,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sec3b0755",
@@ -6326,23 +6352,26 @@
           "start": 514.02,
           "end": 526.129,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s8a7d47ee",
           "text": "五戒是杀、盗、淫、妄、酒；十善，身三、口四、意三，以前也讲过；三学是戒、定、慧；六度是布施、持戒、忍辱、精进、禅定、智慧，六波罗蜜法。这都称之为善法。也就是把你往解脱方向引导的法称之为善法，把你往轮回内引导的法称之为恶法。",
           "start": 526.129,
-          "end": 564.27,
+          "end": 565.581,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s1452dc74",
           "text": "所以我们做任何事情都要想想，这是让你的执着和业变多，还是变少，首先你得思考一下这个。很多事情，如果你不需要跳出来管，最好少管；不是你这个身份管的话，就不用管。",
-          "start": 564.27,
+          "start": 565.581,
           "end": 584.225,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s35a3496b",
@@ -6350,7 +6379,8 @@
           "start": 584.225,
           "end": 603.124,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s75fb7b74",
@@ -6358,7 +6388,8 @@
           "start": 603.124,
           "end": 633.977,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s1bff6782",
@@ -6366,7 +6397,8 @@
           "start": 633.977,
           "end": 650.878,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sd0224249",
@@ -6374,7 +6406,8 @@
           "start": 650.878,
           "end": 659.912,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s74a5aaa3",
@@ -6382,7 +6415,8 @@
           "start": 659.912,
           "end": 675.143,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sec114223",
@@ -6390,7 +6424,8 @@
           "start": 675.143,
           "end": 696.159,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sfea7c337",
@@ -6398,7 +6433,8 @@
           "start": 696.159,
           "end": 708.867,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s45de6f42",
@@ -6406,7 +6442,8 @@
           "start": 708.867,
           "end": 727.17,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s8f6504af",
@@ -6414,23 +6451,26 @@
           "start": 727.17,
           "end": 748.808,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s7977efc3",
           "text": "六是因缘，讲经和讲法的因缘，或者佛出世讲法的因缘。七是譬喻，佛经里有很多譬喻，以前讲过，法喻也是一种譬喻。八是本事，一些菩萨和佛的弟子们的前世故事。九是本生，佛自己的前世故事和自己修行过程的一些经验。我以前讲过，佛经分义理和故事两部分，这些过往的故事可以看看，但是不要把它拿来和义理相混淆。",
           "start": 748.808,
-          "end": 799.215,
+          "end": 799.015,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sd9e6b0d3",
           "text": "《楞伽经》里说了，佛讲故事是比较自由的，你不能说他错了，或者无中生有，完全编出来的，他有一定的自由度。所以不能把故事当作义理来理解。",
-          "start": 799.215,
+          "start": 799.015,
           "end": 815.529,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s24229b2f",
@@ -6438,7 +6478,8 @@
           "start": 815.529,
           "end": 836.297,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s81892dc2",
@@ -6446,7 +6487,8 @@
           "start": 836.297,
           "end": 859.961,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sd4149236",
@@ -6454,7 +6496,8 @@
           "start": 859.961,
           "end": 895.84,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sa975be3f",
@@ -6462,7 +6505,8 @@
           "start": 895.84,
           "end": 915.48,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-se4473be6",
@@ -6470,7 +6514,8 @@
           "start": 915.48,
           "end": 946.761,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s63586c5a",
@@ -6478,7 +6523,8 @@
           "start": 946.761,
           "end": 975.954,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s2f04d787",
@@ -6486,7 +6532,8 @@
           "start": 975.954,
           "end": 1011.117,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s0a72306c",
@@ -6494,33 +6541,35 @@
           "start": 1011.117,
           "end": 1045.465,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sfc19ce00",
           "text": "若自悟者，不假外求。",
           "start": 1045.465,
-          "end": 1075.644,
+          "end": 1047.938,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s2bb2b929",
           "text": "如果自己悟了，就不用向外求。所以我也一直在告诉大家，不要向外求法，不要依赖于某个人，传法的人也只是指月之手，把正法告知于你，这就够了；而且告诉你怎么去往佛菩萨的怀中，怎么去和佛菩萨产生共鸣，直接和佛菩萨进行沟通或者交流。",
-          "start": 1047.29,
-          "end": 1047.29,
+          "start": 1047.938,
+          "end": 1076.765,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": true,
-          "zero": true
+          "confirmed": true
         },
         {
           "pid": "p-s98b152e7",
           "text": "这样说有点过了，但是你要知道佛菩萨就在我们身边，我们都在佛菩萨的意识中，这个道理。知道了怎么达到佛菩萨加持你的基本条件，以后的路就靠你自己走了。你不懂的，就可以向佛菩萨提问。你命运方面，也就是业的方面，有急切的需求，需要帮助，也可以用功德去兑换。",
-          "start": 1075.644,
+          "start": 1076.765,
           "end": 1106.634,
           "conf": 0.55,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s5ec0c8ad",
@@ -6528,31 +6577,35 @@
           "start": 1106.634,
           "end": 1144.855,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s3b832908",
           "text": "你有了这个基本认知的话，在佛法上算是已经理悟了最核心的那几个义理。算是理悟，还不能算是体悟，但是不管怎么说你相信了，那肯定对你后面的修行有极大的帮助。",
           "start": 1144.855,
-          "end": 1162.798,
+          "end": 1163.591,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s3e16fd2d",
           "text": "若一向执谓须他善知识方得解脱者，无有是处。",
-          "start": 1162.798,
-          "end": 1170.719,
+          "start": 1163.591,
+          "end": 1170.619,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s11c7d0f7",
           "text": "刚才我说的那句话是强调性的。你一向执着于需要外在的善知识的指导，才能解脱的话，“无有是处”，就是错误的。",
-          "start": 1170.719,
+          "start": 1170.619,
           "end": 1183.761,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s59222ea9",
@@ -6560,23 +6613,26 @@
           "start": 1183.761,
           "end": 1217.06,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s8fb4ea76",
           "text": "这并不是真正的法，真正的法应该只是把正法告知于你，之后就让你自己走路，而不是把人的腿给打断，好像必须得靠你背着才能把他背到彼岸去。这种不是我们正常的传法人，所以希望大家能够明确地分辨出来。",
           "start": 1217.06,
-          "end": 1243.178,
+          "end": 1243.078,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sf9238436",
           "text": "何以故？自心内有知识自悟。",
-          "start": 1243.178,
+          "start": 1243.078,
           "end": 1247.451,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s6e58a771",
@@ -6584,7 +6640,8 @@
           "start": 1247.451,
           "end": 1272.076,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s6293bbb2",
@@ -6592,263 +6649,296 @@
           "start": 1272.076,
           "end": 1287.225,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s97412875",
           "text": "若起邪迷，妄念颠倒，外善知识虽有教授，救不可得。",
           "start": 1287.225,
-          "end": 1295.004,
+          "end": 1294.904,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sc7104fb6",
           "text": "如果一个人迷了，产生这种颠倒的认知、颠倒的妄想，认为只能靠外部的教授才能悟，那么就算遇到了善知识教你，也救不可得。因为你一直在心外求法，只要心外求法，肯定解脱不了。",
-          "start": 1295.004,
+          "start": 1294.904,
           "end": 1322.13,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-scaa6e0ac",
           "text": "若起正真般若观照，一刹那间，妄念俱灭。",
           "start": 1322.13,
-          "end": 1327.92,
+          "end": 1327.22,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s03ab26b6",
           "text": "如果一个人起了真正的般若观照，用智慧来观照自己，那么一刹那间妄念俱灭。什么是“般若观照”？前面一直在讲般若行，相当于四念处修行一样，前提都是先相信你有一个不生不灭的自性，然后从这里开始发起观察的意识，这叫般若观照。“一刹那间，妄念俱灭”，所有的妄想一刹那间都会灭掉。",
-          "start": 1327.92,
-          "end": 1355.48,
+          "start": 1327.22,
+          "end": 1354.88,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s4d61a20a",
           "text": "当然如果你有习气的话，妄想是有的，可能自己控制不了。为什么叫习气？就是我想灭，但是一直灭不了。因为已经有了长时间打妄想的前面的因，所以现在就有这样的习气的果。这是一时之间灭不了的。",
-          "start": 1355.48,
-          "end": 1373.28,
+          "start": 1354.88,
+          "end": 1372.317,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sae2d7d00",
           "text": "但是我已经知道我们有一个不生不灭的自性，然后在这里产生了妄想，它都是虚幻的、没有本体的、可以被灭的。有了这样的正确认知之后，你只要精进修行，它都可以灭掉；就算不能顿时灭掉，但是慢慢都可以灭掉。",
-          "start": 1373.28,
-          "end": 1392.71,
+          "start": 1372.317,
+          "end": 1391.673,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-se2518b34",
           "text": "若识自性，一悟即至佛地。",
-          "start": 1392.71,
-          "end": 1395.42,
+          "start": 1391.673,
+          "end": 1394.676,
           "conf": 0.6,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s95348be9",
           "text": "只要认识到自性，悟了这个道理，可以说成佛是最终的结果，而且是必然的结果。你只要悟了这个真相的话，最后成佛是必然结果。一悟到佛地为止，可以说就没有什么障碍了。",
-          "start": 1395.42,
+          "start": 1394.676,
           "end": 1420.261,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s0850669b",
           "text": "善知识！智慧观照，内外明彻，识自本心。若识本心，即本解脱。若得解脱，即是般若三昧，即是无念。",
           "start": 1420.261,
-          "end": 1426.75,
+          "end": 1425.75,
           "conf": 0.6,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s79b3f0f0",
           "text": "用智慧观照的话，内心的妄想可以慢慢灭掉；外在的境界都是幻觉形成的，是妄想、分别和执着和合而成的幻境。这也可以看得清晰明了，能看到真相，知道它们都是从我们的自性当中产生的，这叫识自本心。",
-          "start": 1426.75,
+          "start": 1425.75,
           "end": 1452.158,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s2e89c8ca",
           "text": "“若识本心，即本解脱”，所以知道了自己的本心，就是解脱。“若得解脱，即是般若三昧”，能够解脱，称之为般若三昧。在菩萨那里，禅定称之为三昧，因为菩萨那里没有出定、入定的区别，所以不讲禅定，通常都称之为三昧。",
           "start": 1452.158,
-          "end": 1473.98,
+          "end": 1473.28,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s5654ec51",
           "text": "“即是无念”，这就叫无念。如果是和三昧对应的无念的话，这个无念指没有执着和没有分别心。但是我们看后面的解释“何名无念”，“无念”应该指没有执着，还没讲到菩萨境界。因为这里的听众都是普通人，只不过境界比我们现在一千三百年后的人要高得多，应该是他们这个时代的上根之人，只有讲这种般若行，也就是类似于四念处修行，大概能修行了。",
-          "start": 1473.98,
-          "end": 1512.58,
+          "start": 1473.28,
+          "end": 1511.88,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s60b36f88",
           "text": "不像我们有太多的情绪、注意力、文字妄想，要从这里开始讲起，他们是不需要这个的。所以我们看佛经一定要先了解佛经出现的时间和环境，后面的经、律、论，以及其他论著，也同样如此。论不是佛写的，是后面的修行人写的，首先都得了解一下那个时代众生的根器。",
-          "start": 1512.58,
-          "end": 1543.875,
+          "start": 1511.88,
+          "end": 1542.902,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sf5cb8440",
           "text": "何名无念，若见一切法，心不染著，是为无念。",
-          "start": 1543.875,
-          "end": 1547.95,
+          "start": 1542.902,
+          "end": 1548.95,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s7363ed03",
           "text": "“一切法”是妄想、分别、执着的统称。“心不染著”，就是不执着。见到一切法，你只要不执着，就叫“无念”。",
-          "start": 1547.95,
-          "end": 1557.91,
+          "start": 1548.95,
+          "end": 1556.91,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s42a5082d",
           "text": "用即遍一切处，亦不著一切处。",
-          "start": 1557.91,
-          "end": 1560.864,
+          "start": 1556.91,
+          "end": 1560.264,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-se632b9de",
           "text": "你做任何事情的时候，都可以做；用的时候就可以用，你的心怎么用，身体怎么用，这都可以。“亦不著一切处”，做的时候就做，但是后面不执着于这一切。",
-          "start": 1560.864,
-          "end": 1576.04,
+          "start": 1560.264,
+          "end": 1574.64,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-see93ffa2",
           "text": "我们很多人就生活在各种执着当中，尤其是对过去的执着，做过的事情一直在心心念念地想着；尤其是不好的事情，经常反复地拿出来重新咀嚼一遍，重新痛苦一遍；见到人，有些人就喜欢说自己曾经吃过的苦；谁关心那些问题，但是人家有些人就愿意说这些。",
-          "start": 1576.04,
-          "end": 1600.73,
+          "start": 1574.64,
+          "end": 1600.23,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sbdbe56ac",
           "text": "一个真正的修行人基本不怎么说自己过去的那些经历，如果有人求问了可以说一些。但是我们出来传法，尤其是讲大乘佛法的时候，再来人传法都不讲过去的事。你说出来，会让自己染着，也有可能让别人染着，把别人的注意力从正法当中引开，所以这是不对的。",
-          "start": 1600.73,
-          "end": 1629.54,
+          "start": 1600.23,
+          "end": 1628.385,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s9abb9dc5",
           "text": "但净本心，使六识出六门，于六尘中无染无杂，来去自由，通用无滞，即是般若三昧，自在解脱，名无念行。",
-          "start": 1629.54,
-          "end": 1634.921,
+          "start": 1628.385,
+          "end": 1633.513,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s9695a8d2",
           "text": "“但净本心”，“净”是灭妄想的意思，让你的心清净起来，不要起过多的妄念。“使六识出六门”，让我们的六识——认知六根境界的意识，“出六门”，出了六门——六根。我们的六根从外部获取信息，然后反映到六识。但是你要在这做什么？“于六尘中无染无杂”。六尘通过六门，也就是六根，反映到六识，但是在这里我们不起执着，这叫于六尘中无染无杂。",
-          "start": 1634.921,
-          "end": 1671.375,
+          "start": 1633.513,
+          "end": 1671.475,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s6af6048d",
           "text": "“来去自由，通用无滞”，在这就要做到来去自由，不执着于一切外境，也不执着于自己心里的某些观念，这叫不染着于内心，也不染着于外境。这样的话就可以做到“来去自由，通用无滞”。“无滞”就是没有障碍的意思。“即是般若三昧”，这就叫般若三昧。“自在解脱，名无念行”，这样的修法叫自在解脱，称之为无念行。前面讲般若行，这里讲无念行，这里的“无念”主要指没有执着。",
-          "start": 1671.375,
-          "end": 1713.054,
+          "start": 1671.475,
+          "end": 1714.369,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s86e98e9d",
           "text": "所以惠能教的法是直指阿罗汉的，虽然不能直指成佛。《金刚经》里超越阿罗汉，要往成为菩萨的境界修行，就是让你灭四相的指导。所以每个经都有不同的境界。惠能这里教你到阿罗汉，这已经是很高的境界了。",
-          "start": 1713.054,
-          "end": 1739.74,
+          "start": 1714.369,
+          "end": 1738.54,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s54f957f8",
           "text": "若百物不思，当令念绝，即是法缚，即名边见。",
-          "start": 1739.74,
-          "end": 1745.19,
+          "start": 1738.54,
+          "end": 1744.29,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s48b5d2f3",
           "text": "在这里又说了一句，如果你不明确了解什么叫无记空的话，可能就难以理解这句话，因为貌似和前一句有点矛盾。“若百物不思”，前面让你不执着，在这里又说不思。“百物”，我们可以认为是外境，对外境我们不去思考。“当令念绝”，我只是脑子里不起念头，“绝”就是灭了。",
-          "start": 1745.19,
-          "end": 1775.447,
+          "start": 1744.29,
+          "end": 1775.247,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sb3b36f5f",
           "text": "“即是法缚，即名边见”，这就叫“法缚”，就是执着于法，自己的观念被称之为法的这个东西给限制住了，这叫“法缚”，也叫“边见”。这也是一种执着，所以我们应该放弃。它指的就是前面说的无记空。",
-          "start": 1775.447,
-          "end": 1797.79,
+          "start": 1775.247,
+          "end": 1796.724,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-sa6b3acc1",
           "text": "我们看这一段，用前后句来对比，就理解他所说的无记空和正常的修行的区别是什么。",
-          "start": 1797.79,
-          "end": 1806.62,
+          "start": 1796.724,
+          "end": 1805.349,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s7b460b29",
           "text": "那么正常的修行是什么？净本心是六识出六门，于六尘中无染无杂，这是正确的修行。也就是用我们的六识，通过这个六根，然后认知六尘。对外境我们有认知，但是对其无染无杂。对我们感知到的外境不执着，我们该干什么还得干什么。你要干什么的话，六根还是要用。你要跟别人说话，总得用耳朵来先听，然后用嘴巴说，这都是在用六根。但是我们对这个事不去执着，这叫“无染无杂”，就是惠能所说的正确的修行。",
-          "start": 1806.62,
-          "end": 1852.536,
+          "start": 1805.349,
+          "end": 1851.706,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s52d77503",
           "text": "而错误的所谓的无记空，这种修行是“百物不思，当令念绝”，就是自己避免让外面的六尘通过六根反映到六识来。六根一直在用，但是你对外境不再起念头了，就像石头一样，这叫无记空的状态。",
-          "start": 1852.536,
-          "end": 1882.53,
+          "start": 1851.706,
+          "end": 1881.898,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s70cedc0c",
           "text": "我以前讲跌入无记空的话，看似打坐，但是时间的确过得飞快，很快就过去了，两三个小时一坐、一起来就过去了。而且在这过程中的确没有妄念，你也不知道在干什么，但时间过得挺快。自以为这是很高的境界，实际上不是。",
-          "start": 1882.53,
-          "end": 1903.75,
+          "start": 1881.898,
+          "end": 1903.05,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s367c157c",
           "text": "真正的禅定都是六识出六门，于六尘中无染无杂。你的感知都是活着的，都在感知着外边的一切，人一定是清醒的，同时感知外部的一切信息——身体的感受、温度的感受，还有听的、眼睛看的——虽然闭着眼睛，前面的黑暗你也得知道——嘴巴里的感受、鼻子的感受，这都是知道的。",
-          "start": 1903.75,
-          "end": 1933.16,
+          "start": 1903.05,
+          "end": 1932.66,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s585b4d29",
           "text": "不知道的情况下静静地坐着，甚至把自己的感知都给屏蔽掉，这称之为无记空。这叫“法缚”“边见”，是被最错误的那种观念困住。",
-          "start": 1933.16,
+          "start": 1932.66,
           "end": 1945.217,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         },
         {
           "pid": "p-s4ec1cf42",
@@ -6856,7 +6946,8 @@
           "start": 1945.217,
           "end": 1948.453,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": true
         }
       ]
     },
@@ -6922,7 +7013,8 @@
           "start": 0.54,
           "end": 8.843,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6cafcdf5",
@@ -6930,7 +7022,8 @@
           "start": 8.843,
           "end": 14.702,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf6f31ad4",
@@ -6938,7 +7031,8 @@
           "start": 14.702,
           "end": 32.33,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s88ff95a9",
@@ -6946,7 +7040,8 @@
           "start": 32.33,
           "end": 46.695,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbd3b0458",
@@ -6954,7 +7049,8 @@
           "start": 46.695,
           "end": 60.233,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-safe61d08",
@@ -6962,7 +7058,8 @@
           "start": 60.233,
           "end": 75.736,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s498626e0",
@@ -6970,7 +7067,8 @@
           "start": 75.736,
           "end": 87.68,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s89fe2a6d",
@@ -6978,7 +7076,8 @@
           "start": 87.68,
           "end": 107.855,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s83327032",
@@ -6986,7 +7085,8 @@
           "start": 107.855,
           "end": 134.133,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb5a31b59",
@@ -6994,7 +7094,8 @@
           "start": 134.133,
           "end": 166.478,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s25ec7062",
@@ -7002,7 +7103,8 @@
           "start": 166.478,
           "end": 174.522,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb182fee7",
@@ -7010,7 +7112,8 @@
           "start": 174.522,
           "end": 203.839,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0efaeb64",
@@ -7018,7 +7121,8 @@
           "start": 203.839,
           "end": 231.313,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scd8291d1",
@@ -7026,7 +7130,8 @@
           "start": 231.313,
           "end": 242.242,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbd2242a8",
@@ -7034,7 +7139,8 @@
           "start": 242.242,
           "end": 243.57,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf1b4ebb8",
@@ -7042,7 +7148,8 @@
           "start": 243.57,
           "end": 271.942,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7cce3b20",
@@ -7050,7 +7157,8 @@
           "start": 271.942,
           "end": 318.497,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd30db23a",
@@ -7058,7 +7166,8 @@
           "start": 318.497,
           "end": 323.11,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sff1974d4",
@@ -7066,7 +7175,8 @@
           "start": 323.11,
           "end": 341.824,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sea2c08c3",
@@ -7074,7 +7184,8 @@
           "start": 341.824,
           "end": 345.293,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9166405e",
@@ -7082,7 +7193,8 @@
           "start": 345.293,
           "end": 383.314,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5be36694",
@@ -7090,7 +7202,8 @@
           "start": 383.314,
           "end": 435.706,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2079181e",
@@ -7098,7 +7211,8 @@
           "start": 435.706,
           "end": 439.866,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9136ca40",
@@ -7106,7 +7220,8 @@
           "start": 439.866,
           "end": 473.321,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sddee263f",
@@ -7114,7 +7229,8 @@
           "start": 473.321,
           "end": 502.262,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc1bad425",
@@ -7122,7 +7238,8 @@
           "start": 502.262,
           "end": 514.513,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6333e0b6",
@@ -7130,7 +7247,8 @@
           "start": 514.513,
           "end": 539.159,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se1034ad1",
@@ -7138,7 +7256,8 @@
           "start": 539.159,
           "end": 542.491,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sad16adff",
@@ -7146,7 +7265,8 @@
           "start": 542.491,
           "end": 561.69,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-see8b8088",
@@ -7154,7 +7274,8 @@
           "start": 561.69,
           "end": 565.08,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sff7930e1",
@@ -7162,7 +7283,8 @@
           "start": 565.08,
           "end": 584.273,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4f66d4c0",
@@ -7170,7 +7292,8 @@
           "start": 584.273,
           "end": 606.025,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s971b60f4",
@@ -7178,7 +7301,8 @@
           "start": 606.025,
           "end": 609.612,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s40c96269",
@@ -7186,7 +7310,8 @@
           "start": 609.612,
           "end": 620.122,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9c506c2c",
@@ -7194,7 +7319,8 @@
           "start": 620.122,
           "end": 623.433,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s169511a6",
@@ -7202,7 +7328,8 @@
           "start": 623.433,
           "end": 651.704,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-see344bf3",
@@ -7210,7 +7337,8 @@
           "start": 651.704,
           "end": 654.36,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7b5c9069",
@@ -7218,7 +7346,8 @@
           "start": 654.36,
           "end": 680.51,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s18af215f",
@@ -7226,7 +7355,8 @@
           "start": 680.51,
           "end": 683.336,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7320ae96",
@@ -7234,7 +7364,8 @@
           "start": 683.336,
           "end": 691.93,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0abc0af4",
@@ -7242,7 +7373,8 @@
           "start": 691.93,
           "end": 694.87,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s58111c5d",
@@ -7250,7 +7382,8 @@
           "start": 694.87,
           "end": 720.852,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s921eac06",
@@ -7258,7 +7391,8 @@
           "start": 720.852,
           "end": 728.847,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s99d1b151",
@@ -7266,7 +7400,8 @@
           "start": 728.847,
           "end": 767.85,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4425e42f",
@@ -7274,7 +7409,8 @@
           "start": 767.85,
           "end": 788.019,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa4d63458",
@@ -7282,7 +7418,8 @@
           "start": 788.019,
           "end": 792.631,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s58f1298e",
@@ -7290,7 +7427,8 @@
           "start": 792.631,
           "end": 816.695,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-seff37a6a",
@@ -7298,7 +7436,8 @@
           "start": 816.695,
           "end": 835.052,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf42d0556",
@@ -7306,7 +7445,8 @@
           "start": 835.052,
           "end": 852.82,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7cfb1e7b",
@@ -7314,7 +7454,8 @@
           "start": 852.82,
           "end": 866.803,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfe3aec98",
@@ -7322,7 +7463,8 @@
           "start": 866.803,
           "end": 869.392,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s72035887",
@@ -7330,7 +7472,8 @@
           "start": 869.392,
           "end": 905.201,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s87027363",
@@ -7338,7 +7481,8 @@
           "start": 905.201,
           "end": 909.272,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s12a68184",
@@ -7346,7 +7490,8 @@
           "start": 909.272,
           "end": 918.918,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s79c2a15e",
@@ -7354,7 +7499,8 @@
           "start": 918.918,
           "end": 923.693,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3f87c907",
@@ -7362,7 +7508,8 @@
           "start": 923.693,
           "end": 944.34,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbb01efba",
@@ -7370,7 +7517,8 @@
           "start": 944.34,
           "end": 987.596,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3f7f806c",
@@ -7378,7 +7526,8 @@
           "start": 987.596,
           "end": 990.06,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0c97743d",
@@ -7386,7 +7535,8 @@
           "start": 990.06,
           "end": 1006.932,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1ec71aff",
@@ -7394,7 +7544,8 @@
           "start": 1006.932,
           "end": 1010.404,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s602b4d8b",
@@ -7402,7 +7553,8 @@
           "start": 1010.404,
           "end": 1045.646,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sac61c1b0",
@@ -7410,7 +7562,8 @@
           "start": 1045.646,
           "end": 1048.979,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3dbe4ecf",
@@ -7418,7 +7571,8 @@
           "start": 1048.979,
           "end": 1066.724,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8cfa0df3",
@@ -7426,7 +7580,8 @@
           "start": 1066.724,
           "end": 1069.65,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8f3b7b13",
@@ -7434,7 +7589,8 @@
           "start": 1069.65,
           "end": 1085.594,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb9bf0c0a",
@@ -7442,7 +7598,8 @@
           "start": 1085.594,
           "end": 1089.171,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s28d277f3",
@@ -7450,7 +7607,8 @@
           "start": 1089.171,
           "end": 1120.242,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8d44040c",
@@ -7458,7 +7616,8 @@
           "start": 1120.242,
           "end": 1162.7,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf56e94b9",
@@ -7466,7 +7625,8 @@
           "start": 1162.7,
           "end": 1167.128,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s48a36249",
@@ -7474,7 +7634,8 @@
           "start": 1167.128,
           "end": 1185.041,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9a5715f0",
@@ -7482,7 +7643,8 @@
           "start": 1185.041,
           "end": 1187.766,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc9d70707",
@@ -7490,7 +7652,8 @@
           "start": 1187.766,
           "end": 1204.315,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8ba9d1c8",
@@ -7498,7 +7661,8 @@
           "start": 1204.315,
           "end": 1210.882,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scdc750d8",
@@ -7506,7 +7670,8 @@
           "start": 1210.882,
           "end": 1224.619,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s98867065",
@@ -7514,7 +7679,8 @@
           "start": 1224.619,
           "end": 1228.483,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb922afde",
@@ -7522,7 +7688,8 @@
           "start": 1228.483,
           "end": 1261.538,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb65bc7cf",
@@ -7530,7 +7697,8 @@
           "start": 1261.538,
           "end": 1263.783,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sde67f76e",
@@ -7538,7 +7706,8 @@
           "start": 1263.783,
           "end": 1278.643,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb0b3668a",
@@ -7546,7 +7715,8 @@
           "start": 1278.643,
           "end": 1281.239,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf8d4d38f",
@@ -7554,7 +7724,8 @@
           "start": 1281.239,
           "end": 1303.821,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0d00da38",
@@ -7562,7 +7733,8 @@
           "start": 1303.821,
           "end": 1306.479,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s84cfb12f",
@@ -7570,7 +7742,8 @@
           "start": 1306.479,
           "end": 1335.402,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2fb3d15e",
@@ -7578,7 +7751,8 @@
           "start": 1335.402,
           "end": 1338.887,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s714cb6d0",
@@ -7586,7 +7760,8 @@
           "start": 1338.887,
           "end": 1374.75,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s23efea13",
@@ -7594,7 +7769,8 @@
           "start": 1374.75,
           "end": 1398.333,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scec7ce08",
@@ -7602,7 +7778,8 @@
           "start": 1398.333,
           "end": 1416.905,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb626971a",
@@ -7610,7 +7787,8 @@
           "start": 1416.905,
           "end": 1420.24,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9177a06f",
@@ -7618,7 +7796,8 @@
           "start": 1420.24,
           "end": 1436.61,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7c76651d",
@@ -7626,7 +7805,8 @@
           "start": 1436.61,
           "end": 1463.409,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s18ec5a16",
@@ -7634,7 +7814,8 @@
           "start": 1463.409,
           "end": 1485.517,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd99f41c3",
@@ -7642,7 +7823,8 @@
           "start": 1485.517,
           "end": 1488.406,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfc4d8aa3",
@@ -7650,7 +7832,8 @@
           "start": 1488.406,
           "end": 1503.327,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfca149a8",
@@ -7658,7 +7841,8 @@
           "start": 1503.327,
           "end": 1506.818,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sffdb957f",
@@ -7666,7 +7850,8 @@
           "start": 1506.818,
           "end": 1525.024,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4ea4561c",
@@ -7674,7 +7859,8 @@
           "start": 1525.024,
           "end": 1528.73,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0ee3ede6",
@@ -7682,7 +7868,8 @@
           "start": 1528.73,
           "end": 1550.717,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc88e6ca8",
@@ -7690,7 +7877,8 @@
           "start": 1550.717,
           "end": 1558.264,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb302ace8",
@@ -7698,7 +7886,8 @@
           "start": 1558.264,
           "end": 1585.628,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sec14fe4b",
@@ -7706,7 +7895,8 @@
           "start": 1585.628,
           "end": 1595.854,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1739db86",
@@ -7714,7 +7904,8 @@
           "start": 1595.854,
           "end": 1630.118,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf9b24208",
@@ -7722,7 +7913,8 @@
           "start": 1630.118,
           "end": 1657.544,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1d635028",
@@ -7730,7 +7922,8 @@
           "start": 1657.544,
           "end": 1691.714,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sceee9cf6",
@@ -7738,7 +7931,8 @@
           "start": 1691.714,
           "end": 1731.461,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3a4b4887",
@@ -7746,7 +7940,8 @@
           "start": 1731.461,
           "end": 1762.993,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdd6780b4",
@@ -7754,7 +7949,8 @@
           "start": 1762.993,
           "end": 1774.615,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7d20ec05",
@@ -7762,7 +7958,8 @@
           "start": 1774.615,
           "end": 1807.112,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd912cf96",
@@ -7770,7 +7967,8 @@
           "start": 1807.112,
           "end": 1826.752,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0858b7c8",
@@ -7778,7 +7976,8 @@
           "start": 1826.752,
           "end": 1829.2,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         }
       ]
     },
@@ -7884,7 +8083,8 @@
           "start": 0.7,
           "end": 20.37,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdba78bb3",
@@ -7892,7 +8092,8 @@
           "start": 20.37,
           "end": 25.514,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sda331d08",
@@ -7900,7 +8101,8 @@
           "start": 25.514,
           "end": 50.347,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se59b6942",
@@ -7908,7 +8110,8 @@
           "start": 50.347,
           "end": 57.153,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s29cc822a",
@@ -7916,7 +8119,8 @@
           "start": 57.153,
           "end": 88.496,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s115891b2",
@@ -7924,7 +8128,8 @@
           "start": 88.496,
           "end": 93.896,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s88c6ceaa",
@@ -7932,7 +8137,8 @@
           "start": 93.896,
           "end": 97.684,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s462f869e",
@@ -7940,7 +8146,8 @@
           "start": 97.684,
           "end": 103.652,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s95324dc3",
@@ -7948,7 +8155,8 @@
           "start": 103.652,
           "end": 115.584,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd541d84c",
@@ -7956,7 +8164,8 @@
           "start": 115.584,
           "end": 118.381,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sed10cc61",
@@ -7964,7 +8173,8 @@
           "start": 118.381,
           "end": 131.44,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s72da222d",
@@ -7972,7 +8182,8 @@
           "start": 131.44,
           "end": 142.61,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sce80bb0c",
@@ -7980,7 +8191,8 @@
           "start": 142.61,
           "end": 179.297,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc2a3d24c",
@@ -7988,7 +8200,8 @@
           "start": 179.297,
           "end": 201.354,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s78b0f139",
@@ -7996,7 +8209,8 @@
           "start": 201.354,
           "end": 206.614,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s36c56d62",
@@ -8004,7 +8218,8 @@
           "start": 206.614,
           "end": 267.215,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s53ceccf5",
@@ -8012,7 +8227,8 @@
           "start": 267.215,
           "end": 284.866,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7acd9dab",
@@ -8020,7 +8236,8 @@
           "start": 284.866,
           "end": 302.227,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1f1807a7",
@@ -8028,7 +8245,8 @@
           "start": 302.227,
           "end": 344.377,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd3ee5ffd",
@@ -8036,7 +8254,8 @@
           "start": 344.377,
           "end": 373.723,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s593e6557",
@@ -8044,7 +8263,8 @@
           "start": 373.723,
           "end": 404.427,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sda4443ac",
@@ -8052,7 +8272,8 @@
           "start": 404.427,
           "end": 440.49,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s20c8b7af",
@@ -8060,7 +8281,8 @@
           "start": 440.49,
           "end": 456.351,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3655cca0",
@@ -8068,7 +8290,8 @@
           "start": 456.351,
           "end": 462.787,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8d3a81fb",
@@ -8076,7 +8299,8 @@
           "start": 462.787,
           "end": 501.441,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0e1e87e9",
@@ -8084,7 +8308,8 @@
           "start": 501.441,
           "end": 525.65,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9014ce34",
@@ -8092,7 +8317,8 @@
           "start": 525.65,
           "end": 529.79,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa0f94cc5",
@@ -8100,7 +8326,8 @@
           "start": 529.79,
           "end": 546.31,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa5b7f291",
@@ -8108,7 +8335,8 @@
           "start": 546.31,
           "end": 548.47,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1b9e9943",
@@ -8116,7 +8344,8 @@
           "start": 548.47,
           "end": 569.07,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s32d9b41f",
@@ -8124,7 +8353,8 @@
           "start": 569.07,
           "end": 590.229,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd1ca8ea6",
@@ -8132,7 +8362,8 @@
           "start": 590.229,
           "end": 594.06,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5a762458",
@@ -8140,7 +8371,8 @@
           "start": 594.06,
           "end": 621.591,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0ffb6aa9",
@@ -8148,7 +8380,8 @@
           "start": 621.591,
           "end": 626.35,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfeef54f0",
@@ -8156,7 +8389,8 @@
           "start": 626.35,
           "end": 647.729,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1622354b",
@@ -8164,7 +8398,8 @@
           "start": 647.729,
           "end": 653.5,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s86913e33",
@@ -8172,7 +8407,8 @@
           "start": 653.5,
           "end": 660.937,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9ca038b2",
@@ -8180,7 +8416,8 @@
           "start": 660.937,
           "end": 666.57,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s50866f58",
@@ -8188,7 +8425,8 @@
           "start": 666.57,
           "end": 681.017,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s984855b5",
@@ -8196,7 +8434,8 @@
           "start": 681.017,
           "end": 684.49,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf40db99c",
@@ -8204,7 +8443,8 @@
           "start": 684.49,
           "end": 692.818,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saebd5a83",
@@ -8212,7 +8452,8 @@
           "start": 692.818,
           "end": 696.978,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd541ad5e",
@@ -8220,7 +8461,8 @@
           "start": 696.978,
           "end": 749.752,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc1fcf2d7",
@@ -8228,7 +8470,8 @@
           "start": 749.752,
           "end": 780.725,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saf7948c4",
@@ -8236,7 +8479,8 @@
           "start": 780.725,
           "end": 784.8,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s17522056",
@@ -8244,7 +8488,8 @@
           "start": 784.8,
           "end": 824.63,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0db58a60",
@@ -8252,7 +8497,8 @@
           "start": 824.63,
           "end": 839.78,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sab758ed5",
@@ -8260,7 +8506,8 @@
           "start": 839.78,
           "end": 841.76,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s152204db",
@@ -8268,7 +8515,8 @@
           "start": 841.76,
           "end": 866.977,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s207174ff",
@@ -8276,7 +8524,8 @@
           "start": 866.977,
           "end": 876.464,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfb43cb6b",
@@ -8284,7 +8533,8 @@
           "start": 876.464,
           "end": 894.046,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1e4cd8c4",
@@ -8292,7 +8542,8 @@
           "start": 894.046,
           "end": 897.62,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3cf60d65",
@@ -8300,7 +8551,8 @@
           "start": 897.62,
           "end": 907.902,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf03504c9",
@@ -8308,7 +8560,8 @@
           "start": 907.902,
           "end": 935.65,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s05c99715",
@@ -8316,7 +8569,8 @@
           "start": 935.65,
           "end": 952.462,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s272c2598",
@@ -8324,7 +8578,8 @@
           "start": 952.462,
           "end": 987.612,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf8929179",
@@ -8332,7 +8587,8 @@
           "start": 987.612,
           "end": 1027.675,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se15d4518",
@@ -8340,7 +8596,8 @@
           "start": 1027.675,
           "end": 1064.253,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sf5331639",
@@ -8348,7 +8605,8 @@
           "start": 1064.253,
           "end": 1074.316,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbb4873e4",
@@ -8356,7 +8614,8 @@
           "start": 1074.316,
           "end": 1124.593,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2eb2a1d9",
@@ -8364,7 +8623,8 @@
           "start": 1124.593,
           "end": 1144.404,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7a303133",
@@ -8372,7 +8632,8 @@
           "start": 1144.404,
           "end": 1167.94,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0994a09b",
@@ -8380,7 +8641,8 @@
           "start": 1167.94,
           "end": 1206.906,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc376f1e8",
@@ -8388,7 +8650,8 @@
           "start": 1206.906,
           "end": 1215.87,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s184f3fc7",
@@ -8396,7 +8659,8 @@
           "start": 1215.87,
           "end": 1235.125,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4e5d7837",
@@ -8404,7 +8668,8 @@
           "start": 1235.125,
           "end": 1237.94,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9cd1fe1f",
@@ -8412,7 +8677,8 @@
           "start": 1237.94,
           "end": 1265.242,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scfaa5d8f",
@@ -8420,7 +8686,8 @@
           "start": 1265.242,
           "end": 1273.95,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s50430d17",
@@ -8428,7 +8695,8 @@
           "start": 1273.95,
           "end": 1318.809,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s468e7a18",
@@ -8436,7 +8704,8 @@
           "start": 1318.809,
           "end": 1323.722,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s88060e4b",
@@ -8444,7 +8713,8 @@
           "start": 1323.722,
           "end": 1348.783,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1336c8b3",
@@ -8452,7 +8722,8 @@
           "start": 1348.783,
           "end": 1352.49,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7bb37eb5",
@@ -8460,7 +8731,8 @@
           "start": 1352.49,
           "end": 1371.999,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s984de401",
@@ -8468,7 +8740,8 @@
           "start": 1371.999,
           "end": 1376.09,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s811ebee4",
@@ -8476,7 +8749,8 @@
           "start": 1376.09,
           "end": 1389.667,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3c56b1a3",
@@ -8484,7 +8758,8 @@
           "start": 1389.667,
           "end": 1435.267,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8caa8c0c",
@@ -8492,7 +8767,8 @@
           "start": 1435.267,
           "end": 1465.037,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc12b5ca7",
@@ -8500,7 +8776,8 @@
           "start": 1465.037,
           "end": 1490.695,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd632ce4d",
@@ -8508,7 +8785,8 @@
           "start": 1490.695,
           "end": 1524.79,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa5029e14",
@@ -8516,7 +8794,8 @@
           "start": 1524.79,
           "end": 1562.006,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1d21f59c",
@@ -8524,7 +8803,8 @@
           "start": 1562.006,
           "end": 1575.613,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s894a60ef",
@@ -8532,7 +8812,8 @@
           "start": 1575.613,
           "end": 1581.15,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s442d04ea",
@@ -8540,7 +8821,8 @@
           "start": 1581.15,
           "end": 1593.379,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc1e5e30d",
@@ -8548,7 +8830,8 @@
           "start": 1593.379,
           "end": 1597.61,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s065776b0",
@@ -8556,7 +8839,8 @@
           "start": 1597.61,
           "end": 1603.27,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s84ee2fdb",
@@ -8564,7 +8848,8 @@
           "start": 1603.27,
           "end": 1606.49,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s437945a0",
@@ -8572,7 +8857,8 @@
           "start": 1606.49,
           "end": 1611.49,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s36400a48",
@@ -8580,7 +8866,8 @@
           "start": 1611.49,
           "end": 1615.52,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0e0581fe",
@@ -8588,7 +8875,8 @@
           "start": 1615.52,
           "end": 1629.541,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5b8decf2",
@@ -8596,7 +8884,8 @@
           "start": 1629.541,
           "end": 1635.45,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s16acbf87",
@@ -8604,7 +8893,8 @@
           "start": 1635.45,
           "end": 1665.41,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s687c6991",
@@ -8612,7 +8902,8 @@
           "start": 1665.41,
           "end": 1671.074,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd9b5a93b",
@@ -8620,7 +8911,8 @@
           "start": 1671.074,
           "end": 1676.137,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-scf635b7e",
@@ -8628,7 +8920,8 @@
           "start": 1676.137,
           "end": 1682.8,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7ab74768",
@@ -8636,7 +8929,8 @@
           "start": 1682.8,
           "end": 1694.527,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-seb827048",
@@ -8644,7 +8938,8 @@
           "start": 1694.527,
           "end": 1699.74,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saf07f3ba",
@@ -8652,7 +8947,8 @@
           "start": 1699.74,
           "end": 1709.005,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfc8ffb1a",
@@ -8660,7 +8956,8 @@
           "start": 1709.005,
           "end": 1716.72,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s00b191f7",
@@ -8668,7 +8965,8 @@
           "start": 1716.72,
           "end": 1729.724,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdee03977",
@@ -8676,7 +8974,8 @@
           "start": 1729.724,
           "end": 1734.01,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6b391132",
@@ -8684,7 +8983,8 @@
           "start": 1734.01,
           "end": 1753.439,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6ebe25d5",
@@ -8692,7 +8992,8 @@
           "start": 1753.439,
           "end": 1807.798,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3466da59",
@@ -8700,7 +9001,8 @@
           "start": 1807.798,
           "end": 1832.364,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-safc7666f",
@@ -8708,7 +9010,8 @@
           "start": 1832.364,
           "end": 1867.051,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saf52bdd3",
@@ -8716,7 +9019,8 @@
           "start": 1867.051,
           "end": 1892.443,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa5827165",
@@ -8724,7 +9028,8 @@
           "start": 1892.443,
           "end": 1922.497,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5e795c75",
@@ -8732,7 +9037,8 @@
           "start": 1922.497,
           "end": 1924.949,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         }
       ]
     },
@@ -8868,7 +9174,8 @@
           "start": 0.92,
           "end": 25.653,
           "conf": 0.95,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s11101630",
@@ -8876,7 +9183,8 @@
           "start": 25.653,
           "end": 30.926,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb9a918db",
@@ -8884,7 +9192,8 @@
           "start": 30.926,
           "end": 47.619,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s29835804",
@@ -8892,7 +9201,8 @@
           "start": 47.619,
           "end": 52.033,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se0917135",
@@ -8900,7 +9210,8 @@
           "start": 52.033,
           "end": 101.493,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9e30b068",
@@ -8908,7 +9219,8 @@
           "start": 101.493,
           "end": 108.013,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s74b38e9c",
@@ -8916,7 +9228,8 @@
           "start": 108.013,
           "end": 134.36,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7af586ae",
@@ -8924,7 +9237,8 @@
           "start": 134.36,
           "end": 166.745,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se93e6dd0",
@@ -8932,7 +9246,8 @@
           "start": 166.745,
           "end": 175.821,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s787810cf",
@@ -8940,7 +9255,8 @@
           "start": 175.821,
           "end": 201.701,
           "conf": 0.55,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5762e44c",
@@ -8948,7 +9264,8 @@
           "start": 201.701,
           "end": 211.89,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sac5f2e3c",
@@ -8956,7 +9273,8 @@
           "start": 211.89,
           "end": 226.883,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb307d1aa",
@@ -8964,7 +9282,8 @@
           "start": 226.883,
           "end": 243.225,
           "conf": 0.95,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saf815053",
@@ -8972,7 +9291,8 @@
           "start": 243.225,
           "end": 250.426,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s80c87609",
@@ -8980,7 +9300,8 @@
           "start": 250.426,
           "end": 271.944,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s46609e49",
@@ -8988,7 +9309,8 @@
           "start": 271.944,
           "end": 287.993,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-saacc450d",
@@ -8996,7 +9318,8 @@
           "start": 287.993,
           "end": 302.081,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfa12481f",
@@ -9004,7 +9327,8 @@
           "start": 302.081,
           "end": 313.611,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-se2140b6d",
@@ -9012,7 +9336,8 @@
           "start": 313.611,
           "end": 336.444,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s81c52b04",
@@ -9020,7 +9345,8 @@
           "start": 336.444,
           "end": 375.885,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1508ed45",
@@ -9028,7 +9354,8 @@
           "start": 375.885,
           "end": 411.412,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5a53789a",
@@ -9036,7 +9363,8 @@
           "start": 411.412,
           "end": 452.643,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa1884d8f",
@@ -9044,7 +9372,8 @@
           "start": 452.643,
           "end": 469.002,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s459c32dc",
@@ -9052,7 +9381,8 @@
           "start": 469.002,
           "end": 474.71,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s43cee061",
@@ -9060,7 +9390,8 @@
           "start": 474.71,
           "end": 494.245,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sdb22e924",
@@ -9068,7 +9399,8 @@
           "start": 494.245,
           "end": 523.152,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc677a195",
@@ -9076,7 +9408,8 @@
           "start": 523.152,
           "end": 529.052,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd4d3db37",
@@ -9084,7 +9417,8 @@
           "start": 529.052,
           "end": 544.774,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sac9d2af5",
@@ -9092,7 +9426,8 @@
           "start": 544.774,
           "end": 585.773,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3cd9db90",
@@ -9100,7 +9435,8 @@
           "start": 585.773,
           "end": 602.118,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-secfbeebb",
@@ -9108,7 +9444,8 @@
           "start": 602.118,
           "end": 642.395,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s35e7057e",
@@ -9116,7 +9453,8 @@
           "start": 642.395,
           "end": 673.183,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s77f218ad",
@@ -9124,7 +9462,8 @@
           "start": 673.183,
           "end": 677.192,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5efc6fa5",
@@ -9132,7 +9471,8 @@
           "start": 677.192,
           "end": 726.97,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd9e9ea67",
@@ -9140,7 +9480,8 @@
           "start": 726.97,
           "end": 733.018,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s93284adf",
@@ -9148,7 +9489,8 @@
           "start": 733.018,
           "end": 760.597,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfed88503",
@@ -9156,7 +9498,8 @@
           "start": 760.597,
           "end": 780.726,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s006d9a78",
@@ -9164,7 +9507,8 @@
           "start": 780.726,
           "end": 809.469,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8de16f46",
@@ -9172,7 +9516,8 @@
           "start": 809.469,
           "end": 828.715,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sa80b43d3",
@@ -9180,7 +9525,8 @@
           "start": 828.715,
           "end": 834.542,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s664fb3b6",
@@ -9188,7 +9534,8 @@
           "start": 834.542,
           "end": 867.298,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6b2b0ba8",
@@ -9196,7 +9543,8 @@
           "start": 867.298,
           "end": 889.176,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s482db018",
@@ -9204,7 +9552,8 @@
           "start": 889.176,
           "end": 917.54,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb6f81f93",
@@ -9212,7 +9561,8 @@
           "start": 917.54,
           "end": 931.41,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1960014a",
@@ -9220,7 +9570,8 @@
           "start": 931.41,
           "end": 954.519,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8faebe6d",
@@ -9228,7 +9579,8 @@
           "start": 954.519,
           "end": 958.23,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s6a513b6c",
@@ -9236,7 +9588,8 @@
           "start": 958.23,
           "end": 972.88,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s06008813",
@@ -9244,7 +9597,8 @@
           "start": 972.88,
           "end": 983.56,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s2c0e02b5",
@@ -9252,7 +9606,8 @@
           "start": 983.56,
           "end": 1000.37,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s27b47304",
@@ -9260,7 +9615,8 @@
           "start": 1000.37,
           "end": 1039.175,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s11c42bfb",
@@ -9268,7 +9624,8 @@
           "start": 1039.175,
           "end": 1050.56,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s34ae8665",
@@ -9276,7 +9633,8 @@
           "start": 1050.56,
           "end": 1103.49,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s0be9a7f0",
@@ -9284,7 +9642,8 @@
           "start": 1103.49,
           "end": 1108.4,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s88613d53",
@@ -9292,7 +9651,8 @@
           "start": 1108.4,
           "end": 1147.047,
           "conf": 0.65,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd0937385",
@@ -9300,7 +9660,8 @@
           "start": 1147.047,
           "end": 1154.474,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s1bdfeabe",
@@ -9308,7 +9669,8 @@
           "start": 1154.474,
           "end": 1180.498,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s559dc01b",
@@ -9316,7 +9678,8 @@
           "start": 1180.498,
           "end": 1214.31,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc556387c",
@@ -9324,7 +9687,8 @@
           "start": 1214.31,
           "end": 1218.29,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sabd6feb5",
@@ -9332,7 +9696,8 @@
           "start": 1218.29,
           "end": 1238.24,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sff8fbadc",
@@ -9340,7 +9705,8 @@
           "start": 1238.24,
           "end": 1241.142,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb0389cb4",
@@ -9348,7 +9714,8 @@
           "start": 1241.142,
           "end": 1286.341,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sba9de05f",
@@ -9356,7 +9723,8 @@
           "start": 1286.341,
           "end": 1291.26,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s57ec6b93",
@@ -9364,7 +9732,8 @@
           "start": 1291.26,
           "end": 1338.87,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sb1701d42",
@@ -9372,7 +9741,8 @@
           "start": 1338.87,
           "end": 1341.65,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s899fd675",
@@ -9380,7 +9750,8 @@
           "start": 1341.65,
           "end": 1361.066,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s62794adc",
@@ -9388,7 +9759,8 @@
           "start": 1361.066,
           "end": 1366.165,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9f98d9a7",
@@ -9396,7 +9768,8 @@
           "start": 1366.165,
           "end": 1393.08,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s4404fcda",
@@ -9404,7 +9777,8 @@
           "start": 1393.08,
           "end": 1413.226,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s9eda333f",
@@ -9412,7 +9786,8 @@
           "start": 1413.226,
           "end": 1428.922,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3f2f0417",
@@ -9420,7 +9795,8 @@
           "start": 1428.922,
           "end": 1434.55,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s66bfbfa9",
@@ -9428,7 +9804,8 @@
           "start": 1434.55,
           "end": 1461.87,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sbe6bdf69",
@@ -9436,7 +9813,8 @@
           "start": 1461.87,
           "end": 1468.164,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sc3ff7cd6",
@@ -9444,7 +9822,8 @@
           "start": 1468.164,
           "end": 1499.41,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s7ed645bd",
@@ -9452,7 +9831,8 @@
           "start": 1499.41,
           "end": 1503.12,
           "conf": 0.8,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8c8192b7",
@@ -9460,7 +9840,8 @@
           "start": 1503.12,
           "end": 1507.38,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sfd454845",
@@ -9468,7 +9849,8 @@
           "start": 1507.38,
           "end": 1515.62,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s37da18a2",
@@ -9476,7 +9858,8 @@
           "start": 1515.62,
           "end": 1545.401,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s321f5236",
@@ -9484,7 +9867,8 @@
           "start": 1545.401,
           "end": 1551.582,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s3eb7906c",
@@ -9492,7 +9876,8 @@
           "start": 1551.582,
           "end": 1603.27,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s07c257a9",
@@ -9500,7 +9885,8 @@
           "start": 1603.27,
           "end": 1640.6,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s86be918b",
@@ -9508,7 +9894,8 @@
           "start": 1640.6,
           "end": 1682.799,
           "conf": 0.9,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s8a17d884",
@@ -9516,7 +9903,8 @@
           "start": 1682.799,
           "end": 1696.902,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s426c0f7a",
@@ -9524,7 +9912,8 @@
           "start": 1696.902,
           "end": 1716.842,
           "conf": 0.7,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s194b7788",
@@ -9532,7 +9921,8 @@
           "start": 1716.842,
           "end": 1733.403,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s5afc3382",
@@ -9540,7 +9930,8 @@
           "start": 1733.403,
           "end": 1765.833,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-sd28048dd",
@@ -9548,7 +9939,8 @@
           "start": 1765.833,
           "end": 1784.185,
           "conf": 0.85,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         },
         {
           "pid": "p-s409faccd",
@@ -9556,7 +9948,8 @@
           "start": 1784.185,
           "end": 1787.818,
           "conf": 0.75,
-          "method": "dtw-evid"
+          "method": "ngram",
+          "confirmed": false
         }
       ]
     },
