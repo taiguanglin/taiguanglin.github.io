@@ -1,7 +1,7 @@
 {
   "series": "liuzutanjing",
   "book_number": 9,
-  "generated_at": "2026-11-26T08:52:36.171Z",
+  "generated_at": "2026-11-26T09:30:06.204Z",
   "lectures": {
     "1": {
       "audio": "2025年7月7日Tai师父讲经·六祖坛经(1).opus",
@@ -31454,7 +31454,8 @@
           "end": 0.67,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s6db5ba86",
@@ -31463,7 +31464,8 @@
           "end": 0.67,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sd0398e7d",
@@ -31472,7 +31474,8 @@
           "end": 0.67,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s33805a6e",
@@ -31481,7 +31484,8 @@
           "end": 0.67,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sdd6e132f",
@@ -31490,7 +31494,8 @@
           "end": 0.67,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s6b6cd929",
@@ -31499,7 +31504,8 @@
           "end": 0.67,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-s5c3afa37",
@@ -31508,147 +31514,148 @@
           "end": 0.67,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true,
+          "zero": true
         },
         {
           "pid": "p-sd5b7de7c",
           "text": "《坛经》，第二十七期，应该是最后一期了，这本书的一百八十九页。我们看这最后一段。",
-          "start": 0.67,
+          "start": 0.47,
           "end": 11.62,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s318d28c5",
           "text": "大师先天二年癸丑岁，“",
           "start": 11.62,
-          "end": 15.99,
+          "end": 15.89,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4c0922c1",
           "text": "先天”，是唐玄宗的年号，是713 年。从达摩到中国来是五百二十年，从这一年到713 年，总共过去了一百九十三年，总共传了从达摩开始算起到六代，基本上每一代有三十多年，193 年，平均下来每一代有三十二年，可以这么说吧。经历了六代人，终于完成了禅宗的本土化——中国化。",
-          "start": 15.99,
-          "end": 53.12,
+          "start": 15.89,
+          "end": 53.92,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s67322181",
           "text": "而且从惠能后边开始不再设立传衣钵的这个事，也算是去了中心化。就是避免有一个像教主一样的人，出现一个教主这样的人物，和成为朝廷的目标，这样对一个宗教来说不是太好的。",
-          "start": 53.12,
-          "end": 75.04,
+          "start": 53.92,
+          "end": 76.898,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s3b1752f3",
           "text": "我们继续看，",
-          "start": 75.04,
-          "end": 78.88,
+          "start": 76.898,
+          "end": 78.08,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se343bf5e",
           "text": "八月初三日，于国恩寺斋罢，",
-          "start": 78.88,
-          "end": 82.64,
+          "start": 78.08,
+          "end": 81.101,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s837b9248",
           "text": "这一天，八月初三日，惠能在国恩寺吃完饭。",
-          "start": 82.64,
-          "end": 105.34,
+          "start": 81.101,
+          "end": 86.99,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s9394feed",
           "text": "谓诸徒众曰：",
-          "start": 530.35,
-          "end": 530.35,
+          "start": 86.99,
+          "end": 88.635,
           "conf": 0.95,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s99b778d8",
           "text": "对所有弟子们说。",
-          "start": 530.35,
-          "end": 530.35,
+          "start": 88.635,
+          "end": 90.012,
           "conf": 0.85,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-scf549baa",
           "text": "“汝等各依位坐，吾与汝别。”",
-          "start": 530.35,
-          "end": 530.35,
+          "start": 90.012,
+          "end": 92.558,
           "conf": 0.9,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sad8b9c05",
           "text": "你们都按照自己的位置坐好，我要跟你们道别。",
-          "start": 530.35,
-          "end": 530.35,
+          "start": 92.558,
+          "end": 97.044,
           "conf": 0.867,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfeda30b9",
           "text": "法海白言：“和尚留何教法，令后代迷人得见佛性？”“",
-          "start": 530.35,
-          "end": 530.35,
+          "start": 97.044,
+          "end": 103.042,
           "conf": 0.8,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-se9c5c584",
           "text": "令后代迷人”师父还有什么要指导的，留下的教法，让后世的那些迷人们能见到佛性呢？",
-          "start": 105.34,
-          "end": 111.95,
+          "start": 103.042,
+          "end": 113.111,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-s4677ad1f",
           "text": "师言：“汝等谛听，后代迷人，若识众生，即是佛性；若不识众生，万劫觅佛难逢。",
-          "start": 111.95,
-          "end": 123.04,
+          "start": 113.111,
+          "end": 120.974,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sfe1296e3",
           "text": "你们听好，后代迷人，后世的这些迷的人们。“若识众生，即是佛性”，知道所有的众生，每一个众生都有不生不灭的佛性，先知道这一点，那才是真正能解脱的开始。“若不识众生，万劫觅佛难逢。”如果你不识众生，就是不识众生有不生不灭的自性，第一个核心义理，自性恒常这一点。“万劫觅佛难逢”，如果你不知道这一点的话，就算修行万劫，在外觅佛万劫，你都成不了佛。",
-          "start": 123.04,
-          "end": 243.06,
+          "start": 120.974,
+          "end": 159.595,
           "conf": 0.75,
           "method": "ngram",
-          "confirmed": false
+          "confirmed": true
         },
         {
           "pid": "p-sef28038d",
           "text": "吾今教汝识自心众生，见自心佛性。",
-          "start": 537.35,
+          "start": 159.595,
           "end": 537.35,
           "conf": 0.8,
           "method": "ngram",
