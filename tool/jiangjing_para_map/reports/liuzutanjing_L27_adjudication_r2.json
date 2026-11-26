@@ -1,0 +1,1530 @@
+[
+ {
+  "i": 0,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 1,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 2,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 3,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 4,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 5,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 6,
+  "start": 0.0,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": true,
+  "note": "head-zero：[0]–[6]整章經文塊，講首未整讀（導言[7]起於《坛经》@0.67）；錨0.000；舊0.67"
+ },
+ {
+  "i": 7,
+  "start": 0.47,
+  "conf": 0.9,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「HEAD」END 0.000；own_first=「唐经第二」@0.670；講首首字onset−0.200（片首strict [['strict', 0.0, 0.692, 0.692]]）；舊0.67 Δ-0.200；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 8,
+  "start": 10.664,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「我们干」END 9.930；own_first=「大是先天」@11.770；選strict=10.170-11.061(0.891)×0.554；他候選[('strict', 11.506, 11.869)]取最長；舊11.62 Δ-0.956；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 9,
+  "start": 15.221,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「岁役」END 14.910；own_first=「先天是唐」@15.990；選strict=14.708-15.634(0.926)×0.554；舊15.99 Δ-0.769；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 10,
+  "start": 53.3,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「中国化」END 53.300；own_first=「而是从会员」@53.300；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊53.12 Δ+0.180；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 11,
+  "start": 76.604,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「挺挺的的」END 75.615；own_first=「我们继续看」@77.380；選strict=75.624-76.843(1.219)×0.804；他候選[('strict', 76.843, 77.166), ('strict', 77.166, 77.389)]取最長；舊75.04 Δ+1.564；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 12,
+  "start": 78.06,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「我们继续看」END 78.060；own_first=「八月初三日你国文」@78.180；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊78.88 Δ-0.820；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 13,
+  "start": 80.766,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「是真棒」END 80.605；own_first=「这几天八月」@81.220；選strict=80.549-81.022(0.473)×0.458；舊82.64 Δ-1.874；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 14,
+  "start": 86.705,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「吃完饭」END 86.585；own_first=「魏诸涂纵曰」@87.160；選strict=86.561-86.875(0.314)×0.458；舊530.35 Δ-443.645；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 15,
+  "start": 88.669,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「涂纵曰」END 88.305；own_first=「对收音机」@88.840；選strict=88.511-88.857(0.346)×0.458；他候選[('strict', 88.31, 88.511)]取最長；舊530.35 Δ-441.681；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 16,
+  "start": 89.96,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「怎么说」END 89.960；own_first=「马路的搁」@90.100；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊530.35 Δ-440.390；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 17,
+  "start": 92.65,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「无语入冰」END 92.525；own_first=「你们都按到」@92.790；選strict=92.510-92.816(0.306)×0.458；舊530.35 Δ-437.700；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 18,
+  "start": 97.272,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「跟你们道别」END 96.395；own_first=「法海白云」@97.450；選strict=96.419-97.480(1.061)×0.804；舊530.35 Δ-433.078；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 19,
+  "start": 103.091,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「德见国幸」END 102.900；own_first=「明后代弥」@103.140；選soft=102.997-103.203(0.206)×0.458；舊105.34 Δ-2.249；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 20,
+  "start": 112.716,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「国姓们」END 112.585；own_first=「是苦等皆」@113.180；選strict=112.544-112.919(0.375)×0.458；舊111.95 Δ+0.766；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 21,
+  "start": 120.888,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「南方」END 120.535；own_first=「你们记好」@121.240；選soft=120.557-121.155(0.598)×0.554；舊123.04 Δ-2.152；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 22,
+  "start": 159.767,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「成不了光」END 158.865；own_first=「五金教炉」@160.510；選strict=159.374-160.084(0.71)×0.554；他候選[('strict', 158.911, 159.308)]取最長；舊537.35 Δ-377.583；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 23,
+  "start": 164.34,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「见自心佛性」END 164.340；own_first=「我现在教你们」@164.480；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊537.35 Δ-373.010；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 24,
+  "start": 172.317,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「老破性」END 170.585；own_first=「未初见佛」@173.170；選strict=170.573-172.742(2.169)×0.804；舊537.35 Δ-365.033；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 25,
+  "start": 178.446,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「波弥众生」END 177.935；own_first=「我们要见佛」@179.510；選strict=177.930-178.862(0.932)×0.554；他候選[('strict', 179.203, 179.543)]取最長；舊537.35 Δ-358.904；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 26,
+  "start": 205.405,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「都是一样的」END 204.310；own_first=「自信何物」@205.840；選strict=204.534-205.617(1.083)×0.804；舊537.35 Δ-331.945；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 27,
+  "start": 207.941,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「众生是国」END 207.735；own_first=「如果自行误了」@208.350；選strict=207.733-208.187(0.454)×0.458；舊537.35 Δ-329.409；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 28,
+  "start": 211.366,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「众生就是佛」END 211.365；own_first=「自信若迷」@211.780；選strict=211.240-211.516(0.276)×0.458；舊537.35 Δ-325.984；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 29,
+  "start": 213.62,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「博是众生」END 213.620；own_first=「通过自信迷」@213.780；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊537.35 Δ-323.730；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 30,
+  "start": 225.171,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「共成重重了」END 224.895；own_first=「自信平等众生取佛」@225.980；選strict=224.794-225.475(0.681)×0.554；他候選[('strict', 225.599, 225.97)]取最長；舊537.35 Δ-312.179；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 31,
+  "start": 227.82,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「众生取佛」END 227.820；own_first=「在这里简直是」@228.260；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊537.35 Δ-309.530；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 32,
+  "start": 240.505,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「那就是狂」END 239.555；own_first=「自信心邪」@240.760；選strict=240.184-240.763(0.579)×0.554；他候選[('strict', 239.526, 240.004)]取最長；舊540.15 Δ-299.645；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 33,
+  "start": 244.392,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「我是众生」END 244.260；own_first=「如果内心有」@244.480；選strict=244.262-244.546(0.284)×0.458；舊243.06 Δ+1.332；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 34,
+  "start": 250.46,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「佛便是众生」END 250.460；own_first=「那么怎么心若」@250.660；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊248.78 Δ+1.680；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 35,
+  "start": 253.605,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「在众生中」END 253.380；own_first=「如果你们的心是」@254.400；選strict=253.453-253.785(0.332)×0.458；他候選[('strict', 254.201, 254.405)]取最長；舊252.16 Δ+1.445；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 36,
+  "start": 267.06,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「跌落成众生」END 266.840；own_first=「一念平止」@267.100；選soft=266.895-267.256(0.361)×0.458；舊265.46 Δ+1.600；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 37,
+  "start": 269.565,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「即是众生成佛」END 269.100；own_first=「心是平是的」@269.680；選strict=269.388-269.775(0.387)×0.458；舊268.7 Δ+0.865；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 38,
+  "start": 282.274,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「成佛的时候呢」END 282.170；own_first=「我心我心自有佛」@282.430；選strict=281.995-282.498(0.503)×0.554；舊281.75 Δ+0.524；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 39,
+  "start": 285.851,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「自佛是真佛」END 285.690；own_first=「我心中本来」@286.070；選strict=285.724-286.002(0.278)×0.458；舊285.45 Δ+0.401；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 40,
+  "start": 292.582,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「真正的佛」END 291.150；own_first=「自若无佛性」@292.690；選strict=291.759-292.783(1.024)×0.804；他候選[('strict', 291.16, 291.728)]取最長；舊293.43 Δ-0.848；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 41,
+  "start": 295.758,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「何处求真佛」END 295.330；own_first=「如果我没有这个」@295.830；選strict=295.611-295.933(0.322)×0.458；他候選[('strict', 295.38, 295.583)]取最長；舊300.62 Δ-4.862；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 42,
+  "start": 302.965,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「在我心中」END 301.920；own_first=「古董自新是否」@303.330；選strict=302.126-303.170(1.044)×0.804；舊304.13 Δ-1.165；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 43,
+  "start": 306.55,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「愤默孤已」END 306.550；own_first=「你们的心都是光」@306.790；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊308.25 Δ-1.700；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 44,
+  "start": 312.815,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「怀疑这一点」END 311.915；own_first=「万无一物」@313.080；選strict=311.915-313.034(1.119)×0.804；舊311.32 Δ+1.495；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 45,
+  "start": 317.121,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「万重发」END 316.715；own_first=「外面本来是一物」@317.400；選strict=316.737-317.431(0.694)×0.554；舊315.24 Δ+1.881；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 47,
+  "start": 334.245,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「都是妄想」END 333.785；own_first=「顾金云」@334.340；選strict=334.119-334.395(0.276)×0.458；舊336.56 Δ-2.315；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 48,
+  "start": 337.324,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「经理说」END 337.175；own_first=「新生种种法生」@337.530；選strict=337.171-337.506(0.335)×0.458；舊340.02 Δ-2.696；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 49,
+  "start": 339.065,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「种种法生」END 338.895；own_first=「心理生气」@339.240；選strict=338.938-339.216(0.278)×0.458；舊343.35 Δ-4.285；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 50,
+  "start": 344.87,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「统创」END 344.870；own_first=「新灭神州」@345.050；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊346.64 Δ-1.770；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 51,
+  "start": 346.44,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「神州把灭」END 346.255；own_first=「熄灭了这个」@346.640；選strict=346.255-346.660(0.405)×0.458；舊349.42 Δ-2.980；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 52,
+  "start": 350.769,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「法制内容」END 350.585；own_first=「五斤留一记」@351.130；選strict=350.596-350.973(0.377)×0.458；舊352 Δ-1.231；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 53,
+  "start": 355.698,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「这国记」END 355.465；own_first=「我现在最后」@356.640；選strict=355.473-355.964(0.491)×0.458；他候選[('strict', 356.387, 356.661)]取最長；舊359.66 Δ-3.962；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 54,
+  "start": 363.346,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「真国记」END 363.165；own_first=「后代既然」@363.840；選strict=363.177-363.546(0.369)×0.458；他候選[('strict', 363.625, 363.886)]取最長；舊363.84 Δ-0.494；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 55,
+  "start": 367.934,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「自成活动」END 367.595；own_first=「后代的人呢」@368.230；選strict=367.545-368.247(0.702)×0.554；舊367.14 Δ+0.794；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 56,
+  "start": 380.659,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「生活者」END 380.465；own_first=「鲫鱼」@381.430；選strict=380.373-380.890(0.517)×0.554；他候選[('strict', 380.894, 381.295)]取最長；舊379.53 Δ+1.129；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 57,
+  "start": 382.217,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「鲫鱼」END 381.925；own_first=「是一个人然后」@382.790；選strict=381.789-382.561(0.772)×0.554；他候選[('strict', 382.562, 382.824)]取最長；舊381.43 Δ+0.787；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 58,
+  "start": 385.809,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「跟这个技能」END 384.835；own_first=「真如自信是真活」@386.060；選strict=384.782-386.059(1.277)×0.804；舊384.31 Δ+1.499；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 59,
+  "start": 390.718,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「邪剑三不是魔王」END 390.675；own_first=「真如和自信」@391.120；選strict=390.612-390.843(0.231)×0.458；舊411.93 Δ-21.212；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 60,
+  "start": 432.054,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「就就是魔王」END 431.275；own_first=「绝迷之使」@432.440；選strict=431.584-432.433(0.849)×0.554；舊415.29 Δ+16.764；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 61,
+  "start": 437.057,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「我在旁」END 436.675；own_first=「咸宁就是有」@437.330；選strict=436.719-437.329(0.61)×0.554；舊425.1 Δ+11.957；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 62,
+  "start": 456.3,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「一个物里」END 455.715；own_first=「清风谁见」@456.620；選strict=455.940-456.590(0.65)×0.554；他候選[('strict', 455.732, 455.936)]取最長；舊446.87 Δ+9.430；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 63,
+  "start": 460.449,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「来救事」END 460.175；own_first=「信中邪见信」@460.660；選strict=460.160-460.681(0.521)×0.554；舊455.32 Δ+5.129；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 64,
+  "start": 479.081,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「我们心中」END 478.620；own_first=「自荐自是正殿」@479.470；選strict=478.947-479.240(0.293)×0.458；他候選[('strict', 479.252, 479.479)]取最長；舊476.7 Δ+2.381；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 65,
+  "start": 484.856,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「真无侠」END 484.605；own_first=「正经的除去」@485.360；選strict=484.551-485.102(0.551)×0.554；舊494.98 Δ-10.124；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 66,
+  "start": 497.332,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「是分析的」END 495.900；own_first=「打声报声」@497.600；選strict=496.105-497.631(1.526)×0.804；舊499.2 Δ-1.868；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 67,
+  "start": 500.91,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「本来是一声」END 500.625；own_first=「法生告生化生」@501.440；選strict=500.626-501.138(0.512)×0.554；舊523.77 Δ-22.860；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 68,
+  "start": 527.113,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「生起来的」END 526.725；own_first=「我向信功能」@528.330；選strict=526.725-527.425(0.7)×0.554；他候選[('strict', 527.467, 527.7), ('strict', 528.07, 528.33)]取最長；舊551.03 Δ-23.917；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 69,
+  "start": 531.639,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「穿过普提」END 531.245；own_first=「如果都能在」@531.740；選strict=531.526-531.772(0.246)×0.458；他候選[('strict', 531.308, 531.52)]取最長；舊557.42 Δ-25.781；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 70,
+  "start": 557.264,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「什么的」END 556.775；own_first=「假如一个人」@557.420；選strict=557.118-557.436(0.318)×0.458；他候選[('strict', 556.746, 556.988)]取最長；舊581.19 Δ-23.926；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 72,
+  "start": 582.458,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「也会做更多的」END 581.190；own_first=「很帅气」@582.630；選strict=581.535-582.683(1.148)×0.804；舊644.91 Δ-62.452；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 73,
+  "start": 589.745,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「藏在化身中」END 589.305；own_first=「本来是从化身」@590.320；選strict=589.318-590.088(0.77)×0.554；舊659.02 Δ-69.275；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 74,
+  "start": 615.632,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「亲近的本体」END 615.230；own_first=「信使化身」@616.020；選strict=615.334-615.872(0.538)×0.554；舊674.85 Δ-59.218；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 75,
+  "start": 620.456,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「真无穷」END 620.265；own_first=「信我们的自行」@620.620；選strict=620.338-620.595(0.257)×0.458；舊693.92 Δ-73.464；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 77,
+  "start": 642.56,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「陈伟博的意思」END 642.355；own_first=「下一局」@643.380；選strict=642.333-642.829(0.496)×0.458；舊725.05 Δ-82.490；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 78,
+  "start": 648.699,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「尽心身」END 648.315；own_first=「这个银玉星」@649.360；選strict=648.394-648.944(0.55)×0.554；他候選[('strict', 649.02, 649.378)]取最長；舊733.92 Δ-85.221；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 79,
+  "start": 674.233,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「的本体当中」END 672.930；own_first=「信中各自离」@674.530；選strict=673.803-674.579(0.776)×0.554；他候選[('strict', 673.108, 673.742)]取最長；舊752.88 Δ-78.647；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 80,
+  "start": 678.741,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「见性刹那即是真」END 678.570；own_first=「在自信当中各自」@679.050；選strict=678.622-678.882(0.26)×0.458；舊764.78 Δ-86.039；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 81,
+  "start": 692.468,
+  "conf": 0.65,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「@691.60」END 691.600；own_first=「@692.58」@692.580；選strict=691.650-692.668(1.018)×0.804；舊775.29 Δ-82.822；zero=本段有R→READ/zero:false；ASR洞內，前段尾/本段頭取自clip_probe切片字級時間（±0.3s），列人耳"
+ },
+ {
+  "i": 82,
+  "start": 696.914,
+  "conf": 0.65,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「@696.40」END 696.400；own_first=「@697.24」@697.240；選strict=696.788-697.064(0.276)×0.458；他候選[('strict', 697.13, 697.34)]取最長；舊786.06 Δ-89.146；zero=本段有R→READ/zero:false；ASR洞內，前段尾/本段頭取自clip_probe切片字級時間（±0.3s），列人耳"
+ },
+ {
+  "i": 83,
+  "start": 708.327,
+  "conf": 0.65,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「@708.12」END 708.120；own_first=「@708.45」@708.450；選strict=708.126-708.564(0.438)×0.458；舊793.93 Δ-85.603；zero=本段有R→READ/zero:false；ASR洞內，前段尾/本段頭取自clip_probe切片字級時間（±0.3s），列人耳"
+ },
+ {
+  "i": 84,
+  "start": 711.627,
+  "conf": 0.65,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「@711.50」END 711.500；own_first=「@711.92」@711.920；選strict=711.530-711.741(0.211)×0.458；舊799.94 Δ-88.313；zero=本段有R→READ/zero:false；ASR洞內，前段尾/本段頭取自clip_probe切片字級時間（±0.3s），列人耳"
+ },
+ {
+  "i": 85,
+  "start": 719.894,
+  "conf": 0.65,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「@719.06」END 719.060；own_first=「@719.96」@719.960；選strict=719.611-720.122(0.511)×0.554；他候選[('strict', 719.148, 719.61)]取最長；舊805.53 Δ-85.636；zero=本段有R→READ/zero:false；ASR洞內，前段尾/本段頭取自clip_probe切片字級時間（±0.3s），列人耳"
+ },
+ {
+  "i": 86,
+  "start": 723.747,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「传播音」END 723.415；own_first=「如果你在心中」@723.890；選strict=723.621-723.896(0.275)×0.458；舊809.26 Δ-85.513；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 87,
+  "start": 733.648,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「成佛在银行」END 733.325；own_first=「不见自信万密佛」@733.920；選strict=733.256-733.964(0.708)×0.554；舊813.85 Δ-80.202；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 88,
+  "start": 737.238,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「大自然」END 736.935；own_first=「如果你我们没有」@737.310；選strict=737.122-737.375(0.253)×0.458；舊821.36 Δ-84.122；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 89,
+  "start": 761.76,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「轮回当中了」END 761.325；own_first=「遁角关门」@762.630；選strict=761.328-762.107(0.779)×0.554；他候選[('strict', 762.44, 762.647)]取最長；舊828.02 Δ-66.260；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 90,
+  "start": 766.952,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「须自凶」END 766.405；own_first=「这个顿教的」@767.550；選strict=766.412-767.386(0.974)×0.554；舊834.16 Δ-67.208；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 91,
+  "start": 776.365,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「继续玩」END 775.885；own_first=「构路当来」@776.760；選strict=775.834-776.792(0.958)×0.554；舊841.44 Δ-65.075；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 92,
+  "start": 780.71,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「大悠悠」END 780.235；own_first=「现在我把」@781.120；選strict=780.213-781.110(0.897)×0.554；舊849.94 Δ-69.230；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 93,
+  "start": 807.201,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「时光哈」END 806.725；own_first=「姓李呢」@807.800；選strict=806.667-807.630(0.963)×0.554；舊853.38 Δ-46.179；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 94,
+  "start": 815.285,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「附属了」END 815.035；own_first=「世说记告人」@815.840；選strict=814.949-815.555(0.606)×0.554；他候選[('strict', 815.555, 815.834)]取最長；舊858.29 Δ-43.005；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 95,
+  "start": 818.006,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「记告人」END 817.055；own_first=「我说完这个戏」@818.480；選strict=817.621-818.316(0.695)×0.554；舊861.55 Δ-43.544；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 96,
+  "start": 820.3,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「告诉大家」END 820.300；own_first=「如等好处」@820.320；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊868.9 Δ-48.600；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 97,
+  "start": 823.489,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「莫做事情」END 823.385；own_first=「那你好好」@824.140；選strict=823.371-823.629(0.258)×0.458；舊874.16 Δ-50.671；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 98,
+  "start": 837.19,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「哭泣」END 837.190；own_first=「受人吊问」@837.410；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊879.36 Δ-42.170；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 99,
+  "start": 838.323,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「受人吊问」END 838.175；own_first=「还有几番」@838.520；選soft=838.152-838.526(0.374)×0.458；舊883.06 Δ-44.737；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 100,
+  "start": 840.477,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「受人吊玩」END 840.355；own_first=「伸出效果」@840.640；選strict=840.355-840.622(0.267)×0.458；舊888.79 Δ-48.313；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 101,
+  "start": 842.625,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「业务地址」END 842.625；own_first=「基本上时来」@842.950；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊891.55 Δ-48.925；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 102,
+  "start": 846.93,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「非武弟子」END 846.930；own_first=「必非正」@846.930；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊894.83 Δ-47.900；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 103,
+  "start": 847.907,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「必非正」END 847.545；own_first=「这都不是」@848.340；選strict=847.690-848.164(0.474)×0.458；舊898.46 Δ-50.553；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 104,
+  "start": 853.168,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「正方哈」END 852.895；own_first=「战神自本心」@853.380；選strict=852.866-853.412(0.546)×0.554；舊901.58 Δ-48.412；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 105,
+  "start": 856.289,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「自本性」END 855.535；own_first=「有识字本心」@856.890；選strict=855.967-856.548(0.581)×0.554；他候選[('strict', 855.567, 855.826), ('strict', 856.594, 856.815)]取最長；舊905.6 Δ-49.311；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 106,
+  "start": 879.812,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「关掉」END 879.595；own_first=「无动无静」@880.200；選strict=879.519-880.047(0.528)×0.554；舊916.05 Δ-36.238；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 107,
+  "start": 881.775,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「无声无力」END 881.775；own_first=「在这里我们」@882.090；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊920.32 Δ-38.545；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 108,
+  "start": 890.135,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「着生命」END 889.855；own_first=「无去无来」@890.230；選soft=890.026-890.265(0.239)×0.458；舊923.85 Δ-33.715；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 109,
+  "start": 890.97,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「无去无来」END 890.970；own_first=「也更没有」@891.050；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊929.87 Δ-38.900；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 110,
+  "start": 892.72,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「没有去来」END 892.190；own_first=「无是无非」@892.800；選strict=892.608-892.852(0.244)×0.458；他候選[('strict', 892.303, 892.509)]取最長；舊934.12 Δ-41.400；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 111,
+  "start": 893.5,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「无是无非」END 893.500；own_first=「也没有是非」@893.500；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊937.61 Δ-44.110；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 112,
+  "start": 894.416,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「没有是非」END 894.295；own_first=「无助无王」@894.570；選strict=894.310-894.542(0.232)×0.458；舊941.07 Δ-46.654；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 113,
+  "start": 895.345,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「无助无王」END 895.265；own_first=「也没有住和往」@895.730；選strict=895.248-895.459(0.211)×0.458；舊945.38 Δ-50.035；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 114,
+  "start": 901.044,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「肌肉产生的」END 900.675；own_first=「不如等细」@901.180；選strict=900.881-901.236(0.355)×0.458；他候選[('strict', 900.567, 900.881)]取最長；舊952.53 Δ-51.486；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 115,
+  "start": 907.197,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「入践行」END 906.160；own_first=「就怕你们」@907.430；選strict=906.978-907.457(0.479)×0.458；他候選[('strict', 906.636, 906.903)]取最長；舊956.81 Δ-49.613；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 116,
+  "start": 919.642,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「人践信」END 918.775；own_first=「五灭诸侯」@919.900；選strict=919.313-919.906(0.593)×0.554；他候選[('strict', 918.786, 919.312)]取最長；舊962.88 Δ-43.238；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 117,
+  "start": 923.057,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「而我在日」END 922.425；own_first=「我去世之后」@923.230；選strict=922.895-923.249(0.354)×0.458；舊968.86 Δ-45.803；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 118,
+  "start": 931.078,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「活在世上」END 930.535；own_first=「若为武将」@931.530；選strict=930.906-931.282(0.376)×0.458；他候選[('strict', 930.504, 930.723)]取最長；舊972.2 Δ-41.122；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 119,
+  "start": 935.213,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「一无有意」END 934.500；own_first=「如果违背了」@935.370；選strict=935.067-935.385(0.318)×0.458；他候選[('strict', 934.495, 934.723)]取最長；舊978.54 Δ-43.327；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 120,
+  "start": 940.093,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「什么益处」END 939.530；own_first=「复说既元」@940.870；選strict=939.718-940.395(0.677)×0.554；他候選[('strict', 940.402, 940.623)]取最長；舊983.76 Δ-43.667；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 121,
+  "start": 941.79,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「复说既元」END 941.790；own_first=「又说了一个」@941.910；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊986.4 Δ-44.610；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 122,
+  "start": 944.082,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「一个短见」END 942.930；own_first=「物恶不修善」@944.300；選strict=943.150-944.309(1.159)×0.804；舊988.74 Δ-44.658；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 123,
+  "start": 947.095,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「疼疼不造恶」END 946.980；own_first=「物物是人」@947.460；選strict=946.998-947.210(0.212)×0.458；舊993.37 Δ-46.275；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 124,
+  "start": 985.818,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「不是这个意思」END 985.279；own_first=「就是你心里」@986.180；選strict=985.442-986.120(0.678)×0.554；舊1004.99 Δ-19.172；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 125,
+  "start": 1013.67,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「做铺垫」END 1013.670；own_first=「记记段剑」@1013.670；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1014.19 Δ-0.520；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 126,
+  "start": 1016.65,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「现无祖」END 1016.650；own_first=「寂静是安」@1016.790；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1018.43 Δ-1.780；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 127,
+  "start": 1035.53,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「作的意思」END 1035.530；own_first=「世说记端作」@1035.530；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1035.31 Δ+0.220；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 128,
+  "start": 1039.35,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「人不心语」END 1039.350；own_first=「师傅说完」@1039.550；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1048.01 Δ-8.660；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 129,
+  "start": 1047.54,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「我姓名」END 1047.450；own_first=「订单情况」@1047.570；選strict=1047.447-1047.651(0.204)×0.458；舊1051.32 Δ-3.780；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 130,
+  "start": 1048.89,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「订单情况」END 1048.890；own_first=「然后对这个」@1049.050；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1055.88 Δ-6.990；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 131,
+  "start": 1056.72,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「作画了」END 1056.720；own_first=「你是一生」@1056.760；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1059.85 Δ-3.130；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 132,
+  "start": 1062.31,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「清秀安民」END 1062.310；own_first=「当时一香」@1062.490；選strict=1061.932-1062.161(0.229)×0.458 clamp→tailEND；舊1086.32 Δ-24.010；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 133,
+  "start": 1087.414,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「禽受安宁」END 1086.680；own_first=「下一段」@1087.700；選strict=1087.261-1087.595(0.334)×0.458；舊1095.9 Δ-8.486；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 134,
+  "start": 1095.78,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「之后的事情」END 1095.780；own_first=「十一月广绍」@1095.900；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1100.24 Δ-4.460；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 135,
+  "start": 1103.84,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「莫觉之所知」END 1103.840；own_first=「后面这三个」@1103.980；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1104.28 Δ-0.440；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 136,
+  "start": 1136.548,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「怎么处置」END 1136.070；own_first=「焚乡到」@1136.710；選strict=1136.388-1136.738(0.35)×0.458；舊1128.21 Δ+8.338；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 137,
+  "start": 1139.89,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「所归言」END 1139.890；own_first=「然后呢他们」@1140.010；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1133.97 Δ+5.920；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 138,
+  "start": 1153.89,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「里被死吗」END 1153.890；own_first=「使香烟直贯」@1153.890；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1150.58 Δ+3.310；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 139,
+  "start": 1155.984,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「直贯抽心」END 1155.350；own_first=「结果这个点」@1156.080；選strict=1155.887-1156.098(0.211)×0.458；舊1154.35 Δ+1.634；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 140,
+  "start": 1161.99,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「的方向」END 1161.990；own_first=「十一月十三日千」@1162.330；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1161.33 Δ+0.660；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 141,
+  "start": 1166.46,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「一波而飞」END 1166.460；own_first=「所以到十一月」@1166.460；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1165.14 Δ+1.320；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 142,
+  "start": 1175.71,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「到那里」END 1175.710；own_first=「四年七月」@1175.890；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1175.71 Δ+0.000；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 143,
+  "start": 1179.19,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「以上以上」END 1179.190；own_first=「今年七月」@1179.190；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1179.01 Δ+0.180；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 144,
+  "start": 1195.38,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「一段时间」END 1195.380；own_first=「如果身体不服」@1195.580；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1193.21 Δ+2.170；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 145,
+  "start": 1219.32,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「有这样的说法」END 1219.320；own_first=「所以通常是」@1219.640；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1218.98 Δ+0.340；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 146,
+  "start": 1243.861,
+  "conf": 0.65,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「@1243.65」END 1243.650；own_first=「@1244.05」@1244.050；選strict=1243.673-1244.083(0.41)×0.458；舊1260.98 Δ-17.119；zero=本段有R→READ/zero:false；ASR洞內，前段尾/本段頭取自clip_probe切片字級時間（±0.3s），列人耳"
+ },
+ {
+  "i": 147,
+  "start": 1270.18,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「印象的方式」END 1270.180；own_first=「那么在去年」@1270.400；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1270.64 Δ-0.460；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 148,
+  "start": 1293.79,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「林高准吗」END 1293.790；own_first=「门人一念」@1294.070；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1294.67 Δ-0.880；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 149,
+  "start": 1306.09,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「三月十三」END 1306.090；own_first=「这个地址呢又」@1306.210；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1300.97 Δ+5.120；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 150,
+  "start": 1338.473,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「才上去」END 1337.460；own_first=「说说作文」@1338.700；選strict=1338.135-1338.745(0.61)×0.554；舊1334.86 Δ+3.613；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 151,
+  "start": 1342.55,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「继续倒行」END 1342.550；own_first=「装了这个烧到」@1342.690；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1340.53 Δ+2.020；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 152,
+  "start": 1366.56,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「一生的经历」END 1366.560；own_first=「下一句」@1366.740；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1362.62 Δ+3.940；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 153,
+  "start": 1367.56,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「下一句」END 1367.560；own_first=「唐诗春秋」@1367.680；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1365.08 Δ+2.480；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 154,
+  "start": 1371.02,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「七十有六」END 1371.020；own_first=「董慧能」@1371.200；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1370.56 Δ+0.460；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 155,
+  "start": 1379.84,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「七十六岁」END 1379.840；own_first=「你上年二」@1379.840；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1381.03 Δ-1.190；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 156,
+  "start": 1381.45,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「四乘以」END 1381.450；own_first=「二十四岁的时候」@1381.450；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1383.67 Δ-2.220；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 157,
+  "start": 1392.005,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「六组他」END 1392.005；own_first=「三十九做发」@1392.560；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1389.4 Δ+2.605；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 158,
+  "start": 1394.338,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「九做发」END 1393.935；own_first=「这个是作化」@1395.460；選strict=1394.019-1394.595(0.576)×0.554；他候選[('strict', 1394.687, 1395.211)]取最長；舊1395.32 Δ-0.982；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 159,
+  "start": 1401.84,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「个意思」END 1401.840；own_first=「那么我们往前看」@1402.000；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1400.02 Δ+1.820；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 160,
+  "start": 1438.78,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「和供奉」END 1438.780；own_first=「好从这里」@1438.780；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1402.48 Δ+36.300；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 162,
+  "start": 1467.93,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「为僧了」END 1467.930；own_first=「然后后面是」@1467.930；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1470 Δ-2.070；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 163,
+  "start": 1471.817,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「三十七载」END 1471.230；own_first=「然后就是出来」@1472.330；選strict=1471.407-1472.147(0.74)×0.554；舊1473.29 Δ-1.473；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 164,
+  "start": 1488.229,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「后半生」END 1487.810；own_first=「法法四十三人」@1488.870；選strict=1488.092-1488.391(0.299)×0.458；舊1488.87 Δ-0.641；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 165,
+  "start": 1490.903,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「法法四十三人」END 1490.370；own_first=「就是这个事的」@1491.050；選strict=1490.599-1491.147(0.548)×0.554；舊1492.07 Δ-1.167；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 166,
+  "start": 1494.95,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「弟弟们四十三人」END 1494.950；own_first=「悟道操凡者」@1494.950；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1496.33 Δ-1.380；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 167,
+  "start": 1497.33,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「莫知其数」END 1497.330；own_first=「然后悟道」@1497.470；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1500.58 Δ-3.250；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 168,
+  "start": 1524.921,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「长时间」END 1524.545；own_first=「滚着的达」@1525.230；選strict=1524.505-1525.255(0.75)×0.554；舊1523.22 Δ+1.701；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 169,
+  "start": 1535.09,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「宝应造成」END 1535.090；own_first=「这所有的东西」@1535.190；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1531.24 Δ+3.850；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 170,
+  "start": 1560.43,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「树的真相」END 1560.430；own_first=「这个是前面」@1560.430；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1556.94 Δ+3.490；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 172,
+  "start": 1580.47,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「宝林道场当中」END 1580.470；own_first=「然后呢流」@1580.630；選strict=1579.973-1580.300(0.327)×0.458 clamp→tailEND；舊1583.03 Δ-2.560；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 173,
+  "start": 1582.731,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「流传唐琴」END 1582.610；own_first=「把这个慧能」@1583.030；選soft=1582.541-1582.956(0.415)×0.458；舊1589.62 Δ-6.889；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 174,
+  "start": 1597.72,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「留存事间」END 1597.720；own_first=「理审终止」@1597.820；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1597.06 Δ+0.660；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 175,
+  "start": 1598.838,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「理审终止」END 1598.480；own_first=「然后这个传播」@1598.880；選strict=1598.710-1598.990(0.28)×0.458；舊1599.94 Δ-1.102；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 176,
+  "start": 1602.78,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「佛法要义」END 1602.780；own_first=「兴隆三宝不利」@1602.780；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1603.32 Δ-0.540；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 177,
+  "start": 1605.24,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「群生者」END 1605.240；own_first=「兴隆三宝让」@1605.400；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1606.62 Δ-1.380；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 178,
+  "start": 1616.19,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「都结束了」END 1616.190；own_first=「那么进行总结」@1616.650；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1613.03 Δ+3.160；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 179,
+  "start": 1643.38,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「就是一点」END 1643.380；own_first=「然后呢在修行」@1643.380；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1643.08 Δ+0.300；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 180,
+  "start": 1668.23,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「屏蔽掉了」END 1668.230；own_first=「六观境界从」@1668.430；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1662.5 Δ+5.730；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 181,
+  "start": 1685.12,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「的状态上」END 1685.120；own_first=「惠灵所主张」@1685.280；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1676.5 Δ+8.620；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 182,
+  "start": 1705.09,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「始练起」END 1705.090；own_first=「把会成之后」@1705.210；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1700.56 Δ+4.530；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 183,
+  "start": 1728.63,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「智慧的人」END 1728.630；own_first=「所以能够在」@1728.870；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1717.56 Δ+11.070；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 184,
+  "start": 1761.43,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「的是顺么跟着」END 1761.430；own_first=「但是修行境界」@1761.430；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1761.43 Δ+0.000；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 185,
+  "start": 1780.0,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「提都不提」END 1780.000；own_first=「因为你可能」@1780.100；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1761.43 Δ+18.570；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 186,
+  "start": 1790.18,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「有可能是那」END 1790.180；own_first=「我们在这里」@1790.180；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1773.59 Δ+16.590；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 187,
+  "start": 1812.17,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「的人来讲」END 1812.170；own_first=「惠能的把」@1812.170；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1796.35 Δ+15.820；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 188,
+  "start": 1834.34,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「罚的人吗」END 1834.340；own_first=「但是我在网络」@1834.340；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1804.23 Δ+30.110；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 189,
+  "start": 1849.88,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「化的发行」END 1849.880；own_first=「理解这点」@1850.000；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1833.8 Δ+16.080；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 190,
+  "start": 1864.167,
+  "conf": 0.85,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「跟情讲的」END 1861.915；own_first=「好拜拜」@1864.500；選strict=1863.717-1864.529(0.812)×0.554；他候選[('strict', 1861.852, 1862.217), ('strict', 1862.247, 1862.66)]取最長；舊1860.29 Δ+3.877；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 191,
+  "start": 1881.19,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「的信心」END 1881.190；own_first=「想法方法」@1881.390；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1880.75 Δ+0.440；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 192,
+  "start": 1905.2,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「善根性根」END 1905.200；own_first=「修行境界方面」@1905.340；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1903.92 Δ+1.280；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 193,
+  "start": 1923.87,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「起码的好处」END 1923.870；own_first=「如果你不缺乏」@1923.870；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1919.37 Δ+4.500；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 194,
+  "start": 1951.98,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「没有虚过哈」END 1951.980；own_first=「好了今天咱们」@1951.980；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1930.47 Δ+21.510；zero=本段有R→READ/zero:false"
+ },
+ {
+  "i": 195,
+  "start": 1972.37,
+  "conf": 0.8,
+  "method": "dtw-evid",
+  "zero": false,
+  "note": "前段尾=「就是怎么哈」END 1972.370；own_first=「谢谢大家」@1973.350；contact：te→to間strict/soft皆無≥0.10s重疊停頓，取前段末字END；舊1972.71 Δ-0.340；zero=本段有R→READ/zero:false"
+ }
+]

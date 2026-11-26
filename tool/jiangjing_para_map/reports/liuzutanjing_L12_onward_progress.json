@@ -1,0 +1,48 @@
+{
+  "series": "liuzutanjing",
+  "scope": "L12 onward, one lecture at a time",
+  "subagent_limit": 1,
+  "baseline": {
+    "sot_sha256": "d81c037bb575ff3bbbf21314530ef2491de948acaf62ba3affd69d80713d243b",
+    "snapshot": "/tmp/liuzutanjing_before_L12_r3.json",
+    "protection": "L6/L7 latest人工 golden and all other non-target lectures byte-identical"
+  },
+  "skill": "audio_map3/skills/liuzutanjing-milli-align/SKILL.md",
+  "in_progress": null,
+  "pending": [
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+  ],
+  "completed": {
+    "27": {
+      "table": "tool/jiangjing_para_map/reports/liuzutanjing_L27_adjudication_r2.json",
+      "earcheck": "tool/jiangjing_para_map/reports/liuzutanjing_L27_earcheck_r2.md",
+      "snapshot": "/tmp/liuzutanjing_pre_L27_r2.json",
+      "sot_sha256_after": "999392bd6d52886109eca38b21661a6fd16b8fe45e09c027e4979addcd168465",
+      "note": "r2 full re-adjudication (196 paragraphs, 191 rows); 5 confirmed zero anchors moved start/end only with user approval; merged user's manual [0]-[21] from remote ef22b03 (human values win; [22] start chained to human [21].end=159.595); [0]-[6] anchors kept at 0.000 to avoid inversion with [7].start=0.470; L8 reviewed=true from remote carried over; L27 reviewed NOT set"
+    }
+  },
+  "verification": {
+    "l27": {
+      "dump": "/tmp/funasr_cache/liuzutanjing/27.json (7637 chars, 6 nan)",
+      "pauses": "strict 805 / soft 898",
+      "sandbox": "PASS idempotent 3/3, structural 0 defects",
+      "metric_first_char": "covered 33->64; +-0.3s 7/33->44/64; +-0.7s 9/33->56/64",
+      "downstream": "sync_para_pids OK; books2ebook gen_all rc=0; pytest 97 passed; word2ebook 686 passed; check_site OK",
+      "merge": "remote ef22b03: [0]-[21] confirmed manual values; audit vs remote baseline -> 12 protection entries (7 head-zero + 5 confirmed zero anchors, authorized), 0 structural defects; audit vs r2 baseline -> only L8 reviewed changed"
+    }
+  }
+}
