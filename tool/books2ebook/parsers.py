@@ -957,8 +957,65 @@ def parse_lengqie(ctx):
     return _parse_jiangjing(ctx, inline_sutra_to_body=True)
 
 
+# 壇經第 19 講起，PDF 換了排版（KaiTi + MicrosoftYaHei）：經文不再獨立成行，
+# 而是與講解擠在同一視覺行（「那么，[講解] 师曰：…[經文] 你以前…[講解]」），
+# 字型交界切段後留下一、兩個字的孤立段落。以下後處理把它收斂回前 18 講
+# 「經文一行、講解一段」的樣式；只合併相鄰區塊、搬動標點，文字順序不變
+# （段落跟播要與音檔對得上）。
+_LZ_INLINE_FROM_LECTURE = 19
+_LZ_LEADIN_MAX = 12
+_OPEN_PUNCT = "“‘「『《（("
+_CLOSE_PUNCT = "”’」』》）)，。；：！？、"
+_QUOTE_END_PUNCT = "，。；：！？、”’」』》）)—…"
+
+
+def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
+    """修正「經文與講解同行」排版切出的碎片（只處理 from_lecture 之後的講次）。
+
+    1. 經文尾端的開引號/書名號屬於下一段講解（「…对，“」+「直”是…」）→ 移到下一段開頭。
+    2. 經文尾端被誤排成楷體的 1–2 字（「痴与慧对，痴」+「是对凡夫…」）→ 移到下一段開頭。
+    3. 講解句中途引用的經文（前段以開引號結尾或後段以閉標點開頭，且經文本身沒有
+       句讀收尾，如「然后呢，“」+「吾所见戒定慧又别」+「”，我见到的…」）→ 三段併成一段講解。
+    4. 引出經文的短引導語（「那么，」「下一句，」「惠能说，」）→ 併入前一段講解。
+    """
+    out = []
+    lecture = None
+    for b in blocks:
+        if b["kind"] == "h2":
+            lecture = b.get("lecture")
+        if (isinstance(lecture, int) and lecture >= from_lecture
+                and b["kind"] in ("para", "quote") and out):
+            b = dict(b)
+            prev = out[-1]
+            if prev["kind"] == "quote" and b["kind"] == "para":
+                q = prev["text"]
+                m = re.search(r"[%s]+$" % re.escape(_OPEN_PUNCT), q)
+                if not m:
+                    m = re.search(r"(?<=[，。；！？])[\u4e00-\u9fff]{1,2}$", q)
+                if m and m.start() > 0:
+                    prev["text"] = q[:m.start()]
+                    b["text"] = m.group() + b["text"]
+            if (b["kind"] == "para" and len(out) >= 2 and prev["kind"] == "quote"
+                    and out[-2]["kind"] == "para"
+                    and prev["text"][-1] not in _QUOTE_END_PUNCT
+                    and (out[-2]["text"][-1] in _OPEN_PUNCT
+                         or b["text"][0] in _CLOSE_PUNCT)):
+                out.pop()
+                out[-1]["text"] = _join(_join(out[-1]["text"], prev["text"]), b["text"])
+                continue
+            if (b["kind"] == "quote" and prev["kind"] == "para" and len(out) >= 2
+                    and out[-2]["kind"] == "para"
+                    and len(_de_space(prev["text"])) <= _LZ_LEADIN_MAX):
+                out.pop()
+                out[-1]["text"] = _join(out[-1]["text"], prev["text"])
+        out.append(b)
+    return out
+
+
 def parse_liuzutanjing(ctx):
-    return _parse_jiangjing(ctx)
+    _parse_jiangjing(ctx)
+    ctx.blocks = _fix_inline_sutra_layout(ctx.blocks)
+    return True
 
 
 def parse_lengyanjing(ctx):

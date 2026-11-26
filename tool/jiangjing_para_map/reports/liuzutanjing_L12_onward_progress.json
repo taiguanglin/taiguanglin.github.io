@@ -8,7 +8,7 @@
     "protection": "L6/L7 latest人工 golden and all other non-target lectures byte-identical"
   },
   "skill": "audio_map3/skills/liuzutanjing-milli-align/SKILL.md",
-  "in_progress": null,
+  "in_progress": "L12 independent reviewer (single sub-agent)",
   "pending": [
     12,
     13,
@@ -44,5 +44,18 @@
       "downstream": "sync_para_pids OK; books2ebook gen_all rc=0; pytest 97 passed; word2ebook 686 passed; check_site OK",
       "merge": "remote ef22b03: [0]-[21] confirmed manual values; audit vs remote baseline -> 12 protection entries (7 head-zero + 5 confirmed zero anchors, authorized), 0 structural defects; audit vs r2 baseline -> only L8 reviewed changed"
     }
+  },
+  "L12_initial": {
+    "entries": 123,
+    "changed": 122,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "4/51 -> 29/53",
+    "metric_within_07": "15/51 -> 39/53",
+    "span_ok": "105/134 -> 107/134",
+    "pin": "0 -> 5 exact; bleed 0",
+    "high_risk": "31 changes >2s; 15 conf<=.65; 92 contact; no ASR holes >=2.5s",
+    "external_change": "Only L27 changed externally; L12 and L2-L7 unchanged",
+    "followup_review": "span regressions L26/L128/L114 sent to reviewer"
   }
 }
