@@ -1024,58 +1024,148 @@ def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
 # 第 19 講起逐句念、逐句講，經文被切成半句（「无生无灭，」講解「是如来清净禅；」講解）。
 # 前 18 講是「一句完整經文一行、講解在其下」，講解內以引號重引字句。
 _LZ_CLAUSE_OPEN = "，、："
-# 維持單獨一行的經文：引出偈頌的「…偈曰：」「听吾偈。”曰：」（前 18 講偈語另起一行）；
-# 第 24 講三十六對逐對講解的清單項目「天与地对，」「无情五对：」（併成一行後講解
-# 只剩「这个也知道」，看不出在講哪一對）。
-_LZ_KEEP_LINE_RE = re.compile(r"(?:[偈颂][^，。：]*|”)曰：$|与[^，：]+对，$|[一二三四五六七八九十]+对：$")
+# 引出偈頌的「…偈曰：」「听吾偈。”曰：」維持單獨一行（前 18 講偈語另起一行）。
+_LZ_VERSE_INTRO_RE = re.compile(r"(?:[偈颂][^，。：]*|”)曰：$")
+# 第 24 講三十六對的清單項目「天与地对，」「无情五对：」：只有講解點名了該對
+# （「语和法，是相对的」）才併成一行，只說「这个也知道」的併了就看不出在講哪一對。
+_LZ_PAIR_END_RE = re.compile(r"(?:与[^，：]+对，|[一二三四五六七八九十]+对：)$")
+_LZ_PAIR_START_RE = re.compile(r"^[^，：。]{1,4}与[^，：。]{1,4}对")
 # 前 18 講講解段落 99% ≤ 190 字、最長 235 字：接起來超過此長度就維持分段，碎片例外。
 _LZ_PARA_JOIN_MAX = 240
 _LZ_PARA_FRAGMENT = 20
+# 半句合併後仍超過此段數的講次，再把整句經文接起來（前 18 講多在 80–140 段）。
+_LZ_LECTURE_MAX_PARAS = 130
+# 逐級放寬，每講取第一個能讓段數 ≤ _LZ_LECTURE_MAX_PARAS 的級別：
+# (兩句經文之間的講解最多幾字才把兩句接起, 相鄰兩段講解合計最多幾字就直接接起)；
+# None＝只接半句經文。
+_LZ_MERGE_LEVELS = (None, (40, 0), (60, 0), (80, 0), (120, 0), (120, 200))
+# 整句接起後的經文上限：前 18 講經文行 99% ≤ 80 字。
+_LZ_SENTENCE_MAX = 80
 
 
-def _merge_sutra_clauses(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
-    """把以「，、：」收尾的半句經文併入下一句經文，夾在中間的講解移到合併後的經文之下。
+def _is_verse_line(text):
+    """整行都是等長的五、六、七言句（偈頌）：前 18 講偈句自成一行，不與散文經文相併。"""
+    if not re.fullmatch(r"(?:[\u4e00-\u9fff]+[，。；？！])+[”’]?", text):
+        return False
+    segs = {len(s) for s in re.findall(r"[\u4e00-\u9fff]+", text)}
+    return len(re.findall(r"[，。；？！]", text)) >= 2 and len(segs) == 1 and segs <= {5, 6, 7}
 
-    S1 E1 S2 E2 → (S1S2) (E1E2)：經文與講解各自的先後順序不變，只是相鄰的
-    兩句經文、以及原本被 S2 隔開的 E1 尾段與 E2 首段各自接成一段（接起來
-    太長則維持兩段）。講次開頭的整段經文（第一段講解之前）、相鄰無講解的
-    經文、`_LZ_KEEP_LINE_RE` 列出的行不動。
-    """
+
+def _names_own_pair(item, expl):
+    return bool((set(re.findall(r"[\u4e00-\u9fff]", item)) - set("与对此是也")) & set(expl))
+
+
+def _repeat_para_ends(blocks):
+    """一講裡哪些逐句經文剛好念到講次開頭整段經文的段落結尾（之後是新的一段，不跨段接起）。"""
+    full, bounds, body, seen_para = "", set(), [], False
+    for i, b in enumerate(blocks):
+        if b["kind"] == "para":
+            seen_para = True
+        elif b["kind"] == "quote":
+            near_quote = any(0 <= j < len(blocks) and blocks[j]["kind"] == "quote"
+                             for j in (i - 1, i + 1))
+            if not seen_para or near_quote:
+                full += re.sub(r"[^\u4e00-\u9fff]", "", b["text"])
+                bounds.add(len(full))
+            else:
+                body.append(i)
+    ends, pos = set(), 0
+    for i in body:
+        t = re.sub(r"[^\u4e00-\u9fff]", "", blocks[i]["text"])
+        p = full.find(t, pos) if t else -1
+        if p >= 0:
+            pos = p + len(t)
+            if pos in bounds:
+                ends.add(i)
+    return ends
+
+
+def _merge_lecture_sutra(blocks, level):
+    """一講（不含 h2）的經文合併；level 見 `_LZ_MERGE_LEVELS`。"""
+    e_short, ee_max = level or (-1, 0)
+    ends = _repeat_para_ends(blocks)
+    size = lambda t: len(_de_space(t))
     out = []
-    lecture = None
     seen_para = False
     last_quote = None
+    last_end = False
     join_next = False
-    for b in blocks:
-        if b["kind"] == "h2":
-            lecture = b.get("lecture")
-            seen_para = False
-        in_scope = isinstance(lecture, int) and lecture >= from_lecture
-        if not in_scope or b["kind"] not in ("para", "quote"):
+    for i, b in enumerate(blocks):
+        if b["kind"] not in ("para", "quote"):
             last_quote = None
             join_next = False
             out.append(b)
             continue
         if b["kind"] == "quote":
-            if (last_quote is not None and out[-1]["kind"] == "para"
-                    and out[last_quote]["text"][-1] in _LZ_CLAUSE_OPEN
-                    and not _LZ_KEEP_LINE_RE.search(out[last_quote]["text"])):
-                out[last_quote] = dict(out[last_quote],
-                                       text=_join(out[last_quote]["text"], b["text"]))
-                join_next = True
-                continue
+            if last_quote is not None and out[-1]["kind"] == "para":
+                q, t = out[last_quote]["text"], b["text"]
+                single = last_quote == len(out) - 2
+                if _LZ_VERSE_INTRO_RE.search(q):
+                    ok = False
+                elif _LZ_PAIR_END_RE.search(q):
+                    nxt = blocks[i + 1] if i + 1 < len(blocks) else {"kind": None}
+                    ok = (level is not None and single
+                          and size(q) + size(t) <= _LZ_SENTENCE_MAX
+                          and (not _LZ_PAIR_START_RE.match(t)
+                               or nxt["kind"] == "para" and _names_own_pair(t, nxt["text"])))
+                elif q[-1] in _LZ_CLAUSE_OPEN:
+                    ok = True
+                else:
+                    ok = (single and not last_end
+                          and size(out[-1]["text"]) <= e_short
+                          and "偈" not in q + t
+                          and not _is_verse_line(q) and not _is_verse_line(t)
+                          and size(q) + size(t) <= _LZ_SENTENCE_MAX)
+                if ok:
+                    out[last_quote] = dict(out[last_quote], text=_join(q, t))
+                    last_end = i in ends
+                    join_next = True
+                    continue
             out.append(b)
             last_quote = len(out) - 1 if seen_para else None
+            last_end = i in ends
             join_next = False
             continue
         seen_para = True
-        if join_next:
+        if out and out[-1]["kind"] == "para":
+            la, lb = size(out[-1]["text"]), size(b["text"])
+            if join_next:
+                ok = min(la, lb) <= _LZ_PARA_FRAGMENT or la + lb <= _LZ_PARA_JOIN_MAX
+            else:
+                ok = level is not None and (
+                    min(la, lb) <= _LZ_PARA_FRAGMENT and la + lb <= _LZ_PARA_JOIN_MAX
+                    or la + lb <= ee_max)
             join_next = False
-            la, lb = len(_de_space(out[-1]["text"])), len(_de_space(b["text"]))
-            if min(la, lb) <= _LZ_PARA_FRAGMENT or la + lb <= _LZ_PARA_JOIN_MAX:
+            if ok:
                 out[-1] = dict(out[-1], text=_join(out[-1]["text"], b["text"]))
                 continue
+        join_next = False
         out.append(b)
+    return out
+
+
+def _merge_sutra_clauses(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
+    """把逐句念的經文接回一行，夾在中間的講解移到合併後的經文之下。
+
+    S1 E1 S2 E2 → (S1S2) (E1E2)：經文與講解各自的先後順序不變，只是相鄰的
+    兩句經文、以及原本被 S2 隔開的 E1 尾段與 E2 首段各自接成一段（接起來
+    太長則維持兩段）。一律接起以「，、：」收尾的半句；段數仍超過
+    `_LZ_LECTURE_MAX_PARAS` 的講次，再依 `_LZ_MERGE_LEVELS` 逐級接起中間只隔
+    一段短講解的整句、相鄰的短講解。講次開頭的整段經文（第一段講解之前）、
+    相鄰無講解的經文、偈頌與引出偈頌的行不動；整句不跨越開頭整段經文的分段。
+    """
+    starts = [i for i, b in enumerate(blocks) if b["kind"] == "h2"] + [len(blocks)]
+    out = list(blocks[:starts[0]])
+    for s, e in zip(starts, starts[1:]):
+        body = blocks[s + 1:e]
+        n = blocks[s].get("lecture")
+        if isinstance(n, int) and n >= from_lecture:
+            for level in _LZ_MERGE_LEVELS:
+                merged = _merge_lecture_sutra(body, level)
+                if sum(b["kind"] in ("para", "quote") for b in merged) <= _LZ_LECTURE_MAX_PARAS:
+                    break
+            body = merged
+        out += [blocks[s]] + body
     return out
 
 

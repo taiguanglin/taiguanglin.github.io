@@ -8,6 +8,8 @@ PDF 從第 19 期起把經文（KaiTi）與講解（MicrosoftYaHei）排在同�
 
 第二輪 `parsers._merge_sutra_clauses()` 把逐句念、逐句講的半句經文接回一行：
 S1 E1 S2 E2 → (S1S2) (E1E2)，經文與講解各自的字序不變，只是兩句經文排到一起。
+段數仍超過 130 的講次再逐級接起中間只隔一段短講解的整句（偈頌、引出偈頌的行、
+跨越講次開頭整段經文分段處除外），每講只用到剛好壓到 130 段以內的級別。
 """
 
 from parsers import _fix_inline_sutra_layout, _merge_sutra_clauses
@@ -107,6 +109,46 @@ def test_sutra_clauses_merge_into_one_line_from_lecture_19():
     for kind in ("quote", "para"):
         assert ("".join(t for k, t in _texts(out) if k == kind)
                 == "".join(t for k, t in _texts(blocks) if k == kind))
+
+
+def test_long_lectures_also_merge_whole_sentences():
+    head = [
+        ("quote", "甲曰：“一。”乙曰：“二。”"),       # lecture-top full text, paragraph 1
+        ("quote", "丙曰：“三。”"),                  # paragraph 2
+        ("para", "我们看原文。"),
+        ("quote", "甲曰：“一。”"),
+        ("para", "甲说一。"),
+        ("quote", "乙曰：“二。”"),                  # same full-text paragraph → joins 甲
+        ("para", "乙说二。"),
+        ("quote", "丙曰：“三。”"),                  # next full-text paragraph → own line
+        ("para", "丙说三。"),
+        ("quote", "偈曰："),
+        ("para", "下面是偈。"),
+        ("quote", "菩提本无树，明镜亦非台。"),       # verse line stays alone
+        ("para", "没有树。"),
+    ]
+    filler = [("quote", "师曰：“善。”"), ("para", "说好。")] * 64
+    blocks = _lecture(20, *head, *filler)
+    out = _texts(_merge_sutra_clauses(blocks))
+    assert out[:11] == [
+        ("quote", "甲曰：“一。”乙曰：“二。”"),
+        ("quote", "丙曰：“三。”"),
+        ("para", "我们看原文。"),
+        ("quote", "甲曰：“一。”乙曰：“二。”"),
+        ("para", "甲说一。乙说二。"),
+        ("quote", "丙曰：“三。”"),
+        ("para", "丙说三。"),
+        ("quote", "偈曰："),
+        ("para", "下面是偈。"),
+        ("quote", "菩提本无树，明镜亦非台。"),
+        ("para", "没有树。"),
+    ]
+    assert len(out) <= 130
+    for kind in ("quote", "para"):
+        assert ("".join(t for k, t in out if k == kind)
+                == "".join(t for k, t in _texts(blocks) if k == kind))
+    short = _lecture(20, *head[2:])                     # ≤ 130 paras: whole sentences stay apart
+    assert _merge_sutra_clauses(short) == short
 
 
 def test_sutra_clauses_before_19_are_untouched():
