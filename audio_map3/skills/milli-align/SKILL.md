@@ -195,6 +195,7 @@ max 0.0dB，此時 −38dB **靜默偵測全空**。SOP：① `volumedetect` 量
 `/tmp/l<N>_pauses.json` 供邊界走查反覆查詢。
 
 **6.3 切片紀律**（`clip_probe.py --chars --times --vad-ms 10000`，~40s 窗）：
+- **先過濾標點再對 timestamp**：`aligned_clip_chars()` 以 `PUNCT_RE` 對齊發音字；若模型 timestamp 含標點才接受 raw 對齊，數量仍不符就全部 `nan`／`invalid`，不得直接 `text[k]→ts[k]` 製造假時基漂移（L11 實證）。
 - **只信文字，不信時間戳**——文字直接告訴你「這幾秒念的是哪一段」（L30 61.7s 掉字區
   就這樣訂出內容順序）；
 - 主 dump 同區找得到對應字 → **一律用主 dump 精確值**（L33/L39/L41 三驗）；

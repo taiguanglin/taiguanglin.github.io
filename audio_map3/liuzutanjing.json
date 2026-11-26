@@ -7881,965 +7881,858 @@
         {
           "pid": "p-s75ea41e6",
           "text": "《坛经》第十期，这本书的六十二页，“疑问品第三”。韦刺史先问梁武帝的故事，为什么没有功德。",
-          "start": 0.9,
-          "end": 20.519,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 0.7,
+          "end": 20.37,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sdba78bb3",
           "text": "一日，韦刺史为师设大会斋。",
-          "start": 20.519,
-          "end": 34.015,
+          "start": 20.37,
+          "end": 25.514,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sda331d08",
           "text": "韦刺史是位地方官，为了惠能设斋供养。“大会斋”是同时请很多人，不仅请寺院里的所有人，甚至对外公开，——路过的人里有愿意来吃的，都可以来，就像农村的流水席一样。",
-          "start": 34.015,
-          "end": 50.139,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 25.514,
+          "end": 50.347,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-se59b6942",
           "text": "斋讫，刺史请师升座，同官僚士庶肃容再拜，问曰：“弟子闻和尚说法，实不可思议。今有少疑，愿大慈悲，特为解说。”",
-          "start": 50.139,
-          "end": 78.926,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 50.347,
+          "end": 57.153,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s29cc822a",
           "text": "吃完饭，刺史带着所有人一起拜惠能。他称自己是弟子，说：“听到惠能说法很不可思议。今有些疑问，请你慈悲说法，让我解除疑惑。”",
-          "start": 78.926,
-          "end": 88.768,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 57.153,
+          "end": 88.496,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s115891b2",
           "text": "师曰：“有疑即问，吾当为说。”",
-          "start": 88.768,
-          "end": 93.674,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 88.496,
+          "end": 93.896,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s88c6ceaa",
           "text": "惠能说:“有问题你就问，我给你说。”",
-          "start": 93.674,
-          "end": 94.965,
+          "start": 93.896,
+          "end": 97.684,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s462f869e",
           "text": "韦公曰：“和尚所说，可不是达磨大师宗旨乎？”师曰：“是。”",
-          "start": 94.965,
-          "end": 104.047,
+          "start": 97.684,
+          "end": 103.652,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s95324dc3",
           "text": "“和尚”是对惠能的尊称。韦刺史问：“你说的是达摩大师主张的理论吗？”",
-          "start": 104.047,
-          "end": 115.577,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 103.652,
+          "end": 115.584,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd541d84c",
           "text": "惠能说：“是。”",
-          "start": 115.577,
-          "end": 118.304,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 115.584,
+          "end": 118.381,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sed10cc61",
           "text": "公曰：“弟子闻达磨初化梁武帝，帝问云：‘朕一生造寺度僧，布施设斋，有何功德？’达磨言：‘实无功德。’弟子未达此理，愿和尚为说。”",
-          "start": 118.304,
-          "end": 131.543,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 118.381,
+          "end": 131.44,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s72da222d",
           "text": "这是梁武帝和达摩之间的一段对话。梁武帝问达摩：“自己一生造寺度僧，布施设斋，有什么功德？”达摩说：“没有功德。”",
-          "start": 131.543,
-          "end": 139.957,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 131.44,
+          "end": 142.61,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sce80bb0c",
           "text": "梁武帝一生造了很多寺院，自己也曾出家，然后还叫大臣们花钱赎他回去。这是个比较荒唐的人。在一个人口不多的时代，他的都城里就有上万名出家人，寺院据说也造了两千多座。他干了很多“造寺度僧”的事。“布施设斋”，经常供养出家的僧人。",
-          "start": 139.957,
-          "end": 179.618,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 142.61,
+          "end": 179.297,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc2a3d24c",
           "text": "“弟子未达此理，愿和尚为说”，弟子不知道为什么达摩会这么说，希望和尚解说一下。",
-          "start": 179.618,
-          "end": 202.288,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 179.297,
+          "end": 201.354,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s78b0f139",
           "text": "师曰：“实无功德，勿疑先圣之言。武帝心邪，不知正法。造寺度僧，布施设斋，名为求福，不可将福便为功德。功德在法身中，不在修福。”",
-          "start": 202.288,
-          "end": 206.322,
+          "start": 201.354,
+          "end": 206.614,
           "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s36c56d62",
           "text": "“实无功德”，真的没有功德，不要怀疑先圣说的话。武帝心邪，他不知正法。“心邪”是什么意思？他不懂佛法的核心义理，哪怕是三个初始设定中的第一个“自性恒常”，所以叫“不知正法”。所以他建造寺院、剃度出家人、布施设斋，都是求福的。这都是福德，成不了功德。",
-          "start": 206.322,
-          "end": 259.413,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 206.614,
+          "end": 267.215,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s53ceccf5",
           "text": "以前讲过，福德和功德不一样。那么在这里与惠能所说的区别又是什么？我说的福德，是在与佛法不相干的事情上做的好事；功德是在与佛法相关的事情上做的好事。",
-          "start": 259.413,
-          "end": 284.851,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 267.215,
+          "end": 284.866,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s7acd9dab",
           "text": "但问题是：你认为的佛法是真实的佛法吗？这是很重要的问题。你自认为在佛法上做功德，但是你知道佛法的核心理论吗？你在不知道的情况下，做的有可能不是功德。",
-          "start": 284.851,
-          "end": 302.259,
+          "start": 284.866,
+          "end": 302.227,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1f1807a7",
           "text": "就像你想上大学，那得读书，但是你读的那些书，真的是升大学考试会出的题吗？你有没有这个疑问？你天天读书，但读的是小说。如果是古代的话，考试是八股文，但你读别的书；或者说，现在考的是数理化，文科、理科都有它的科目，但你读别的书，然后想着去上大学。你自认为在认真备考，但是你读的内容和真实考试的题目不相关，那肯定是没有办法考上的。",
-          "start": 302.259,
-          "end": 344.693,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 302.227,
+          "end": 344.377,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd3ee5ffd",
           "text": "在这里，功德也是有解释的。首先你得懂佛法，对佛法有基本的、正常的理解，就是懂正法。大乘所说的正法就是“自性恒常”，这一点很重要。“初妄无因”，你不知道都可以。至少那是到后面讲较深义理的时候，才讲到最初的那个妄想。",
-          "start": 344.693,
-          "end": 372.22,
+          "start": 344.377,
+          "end": 373.723,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s593e6557",
           "text": "在普通凡夫阶段，我们看到世界这么纷杂，脑子里不断生起妄想。从这个阶段来看，你至少得明白“自性恒常”这个义理，每个众生都有不生不灭的自性。明白这一点后就知道，修行是不断灭除妄想、分别、执着的过程。在这个过程中，因为我们前面已经造了很多恶业，必须做功德来对冲，所以才需要功德。",
-          "start": 372.22,
-          "end": 404.504,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 373.723,
+          "end": 404.427,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sda4443ac",
           "text": "你至少理解这个义理之后，再做功德。哪怕你那个时候求的福报、功德、好处，是先让自己病好、身体健康、求财，这些都可以。起码你知道了义理，知道当下所求的这些，都是为了解决当下困苦的问题，而不是究竟的解脱生死的问题。你在知道的情况下求，和不知道的情况下单纯地求，是不一样的。",
-          "start": 404.504,
-          "end": 435.248,
+          "start": 404.427,
+          "end": 440.49,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s20c8b7af",
           "text": "所以，在这里惠能强调的就是“武帝心邪”，他在不知道正法的情况下，只是一味地做好事，那只能是有福德，没有真实的功德。",
-          "start": 435.248,
-          "end": 456.476,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 440.49,
+          "end": 456.351,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3655cca0",
           "text": "师又曰：“见性是功，平等是德。念念无滞，常见本性，真实妙用，名为功德。",
-          "start": 456.476,
-          "end": 459.445,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 456.351,
+          "end": 462.787,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s8d3a81fb",
           "text": "惠能继续说，起码你要在理论上知道有不生不灭的自性——哪怕做不到体悟，大部分人一下子是做不到体悟的——但至少你得有理悟。知道这个真相之后，再做好事，那就是“功”。“平等是德”，没有执着地做，这就叫“德”。在这里，不是往上和妄想比，而是往下和凡夫的执着心比。",
-          "start": 459.445,
-          "end": 501.462,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 462.787,
+          "end": 501.441,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s0e1e87e9",
           "text": "“念念无滞”，在念念当中没有阻碍，也就是没有执着心。“常见本性”，就是在自性当中做。“真实妙用”，用自己自性——最底层的意识，在明明白白知道的情况下做。“名为功德”，这就叫功德。",
-          "start": 501.462,
-          "end": 525.664,
+          "start": 501.441,
+          "end": 525.65,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s9014ce34",
           "text": "内心谦下是功，外行于礼是德。",
-          "start": 525.664,
-          "end": 528.8,
+          "start": 525.65,
+          "end": 529.79,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sa0f94cc5",
           "text": "“内心谦下”，内心谦卑。“下”是处下，尊重别人，把自己放在低位。“外行于礼”，在外面行为要有礼数、有礼貌。",
-          "start": 528.8,
-          "end": 559.33,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 529.79,
+          "end": 546.31,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sa5b7f291",
           "text": "自性建立万法是功，心体离念是德。",
-          "start": 559.33,
-          "end": 567.081,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 546.31,
+          "end": 548.47,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1b9e9943",
           "text": "一切法都在我们的自性当中展现出来，就是我们最底层的阿赖耶识里出现的妄想。实际上一切都是妄想和合而成，你首先得明白这个义理。",
-          "start": 567.081,
-          "end": 568.854,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 548.47,
+          "end": 569.07,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s32d9b41f",
           "text": "“念”，在这本书前面有过解释，基本上把所有的执着包含在内。所以你在内心里把执着尽量灭掉，这就是“德”。那么我们布施的时候，不要求回报、不要有贡高我慢心，把这些执着都灭掉，才是德。",
-          "start": 568.854,
-          "end": 590.202,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 569.07,
+          "end": 590.229,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd1ca8ea6",
           "text": "不离自性是功，应用无染是德。",
-          "start": 590.202,
-          "end": 593.517,
+          "start": 590.229,
+          "end": 594.06,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5a762458",
           "text": "所有的行为不离自性，你要知道，所有的念头是从自己的自性当中生起，所以不对外染着，这是“不离自性”，回到了自性当中，这叫“功”。“染”是执着。“应用无染是德”，做任何事情的时候，不带执着地做，这叫“德”。",
-          "start": 593.517,
-          "end": 621.569,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 594.06,
+          "end": 621.591,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s0ffb6aa9",
           "text": "若觅功德法身，但依此作，是真功德。",
-          "start": 621.569,
-          "end": 625.576,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 621.591,
+          "end": 626.35,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sfeef54f0",
           "text": "如果你想求功德、求法身境界——追求最终的解脱，你应该这样做，这是真正的功德。",
-          "start": 625.576,
-          "end": 647.707,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 626.35,
+          "end": 647.729,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1622354b",
           "text": "若修功德之人，心即不轻，常行普敬。",
-          "start": 647.707,
-          "end": 652.727,
+          "start": 647.729,
+          "end": 653.5,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s86913e33",
           "text": "修功德的人，心里不轻慢他人，对所有人都恭敬。",
-          "start": 652.727,
-          "end": 660.949,
+          "start": 653.5,
+          "end": 660.937,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s9ca038b2",
           "text": "心常轻人，吾我不断，即自无功。",
-          "start": 660.949,
-          "end": 667.293,
+          "start": 660.937,
+          "end": 666.57,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s50866f58",
           "text": "内心轻慢于人，自己的我相不断，这样就没有功德了。我们的这个我相一直很强大。",
-          "start": 667.293,
-          "end": 681.1,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 666.57,
+          "end": 681.017,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s984855b5",
           "text": "自性虚妄不实，即自无德。",
-          "start": 681.1,
-          "end": 686.198,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 681.017,
+          "end": 684.49,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sf40db99c",
           "text": "执着于虚妄的东西，这也是无德的。",
-          "start": 686.198,
-          "end": 692.762,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 684.49,
+          "end": 692.818,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-saebd5a83",
           "text": "为吾我自大，常轻一切故。",
-          "start": 692.762,
-          "end": 695.36,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 692.818,
+          "end": 696.978,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd541ad5e",
           "text": "自大傲慢、我相很严重的人，轻慢于一切。达摩见到梁武帝时，梁武帝的表现应该是比较傲慢的，他能看得出来。所以他才反过来说，你做的一切事是没有功德的。也可以说这是一种反向的指导方式：有人执着于这个，传法的人就会讲那个。如果你执着于出家，我就说在家也可以修行；如果你执着于出家没有用，在家也照样可以解脱，我就说出家很有用，出家功德很大。",
-          "start": 695.36,
-          "end": 749.708,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 696.978,
+          "end": 749.752,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc1fcf2d7",
           "text": "这是一种讲法的方式，就是为了断别人的执着。当初梁武帝问达摩，达摩这样回答可能也有这个意思，想破梁武帝的执着。但是梁武帝听不懂，他认为执着于这种功德也是修行。",
-          "start": 749.708,
-          "end": 780.678,
+          "start": 749.752,
+          "end": 780.725,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-saf7948c4",
           "text": "善知识！念念无间是功，心行平直是德。",
-          "start": 780.678,
-          "end": 784.732,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 780.725,
+          "end": 784.8,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s17522056",
           "text": "“念念无间”，念念之间，不离自性。所有的妄想就算升起了，也是从自性当中升起的，所以尽量减少这些不必要的妄想。“心行平直是德”，“心”是心里想的事，也就是妄想；“行”是行为。心里的想法和行为要平直。“平”是平等；“直”是直心。平等直心就是没有分别地做，或者应该是没有执着地做，这样叫“德”。",
-          "start": 784.732,
-          "end": 822.807,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 784.8,
+          "end": 824.63,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s0db58a60",
           "text": "这个时候，平等是往下和执着心相比，就是没有执着的状态。“直”是“直心是道场”的意思，就是没有谄曲。直心和谄曲相对应。",
-          "start": 822.807,
-          "end": 845.577,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 824.63,
+          "end": 839.78,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sab758ed5",
           "text": "自修性是功，自修身是德。",
-          "start": 845.577,
-          "end": 850.545,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 839.78,
+          "end": 841.76,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s152204db",
           "text": "自己在自性当中修行，这叫“功”。自己修身叫“德”。在这里，“性”应该是指内心方面的修行；“身”应该是指“五戒”“十善”这些身体、行为方面的修行。",
-          "start": 850.545,
-          "end": 867.11,
+          "start": 841.76,
+          "end": 866.977,
           "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s207174ff",
           "text": "善知识！功德须自性内见，不是布施供养之所求也，是以福德与功德别。",
-          "start": 867.11,
-          "end": 876.417,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 866.977,
+          "end": 876.464,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sfb43cb6b",
           "text": "功德应该在自己的自性当中见到，并不是靠布施、供养所能求到的，这就是福德与功德的分别。",
-          "start": 876.417,
-          "end": 894.113,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 876.464,
+          "end": 894.046,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1e4cd8c4",
           "text": "武帝不识真理，非我祖师有过。",
-          "start": 894.113,
-          "end": 896.91,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 894.046,
+          "end": 897.62,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3cf60d65",
           "text": "梁武帝不知道这个真相，并不是我的祖师有什么过错或者说错了。“祖师”应该指达摩。",
-          "start": 896.91,
-          "end": 907.883,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 897.62,
+          "end": 907.902,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sf03504c9",
           "text": "把惠能的这段话总结起来，就是一句话，梁武帝不知道真相，不懂正法。惠能所说的正法，就是三个初始设定当中的第一个“自性恒常”，所有众生都有一个不生不灭的自性。武帝可能不知道，所以他在心外求法，这是一个原因。",
-          "start": 907.883,
-          "end": 935.675,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 907.902,
+          "end": 935.65,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s05c99715",
           "text": "咱们从客观上讲，为什么达摩会这么说？一个是前面讲的，达摩想反向指导他。武帝执着于功德，那我就说你没有功德，希望能让他放下对功德的执着。",
-          "start": 935.675,
-          "end": 954.564,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 935.65,
+          "end": 952.462,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s272c2598",
           "text": "还有一个原因，要从他的身份上来看。在一部经里，有一个国王听释迦牟尼佛讲了一段法，听着很开心，就问释迦牟尼佛，我们后世的人应该怎么护持佛法，把佛法传播下去。释迦牟尼佛说，你的行为只会让佛法毁灭得更快。",
-          "start": 954.564,
-          "end": 987.358,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 952.462,
+          "end": 987.612,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sf8929179",
           "text": "因为国王不是普通人。普通人去做功德、做宣传佛法的事，也算是好事；你只要不过度，当然可以。但是国王不一样，国王的行为有一定的引导作用。他如果过度宣扬佛法，那么下边就有很多人貌似跟着做，实则知道这里边有很大的利益——至少让国王看着开心。结果就是，无论做好事，还是出家，都会有很多带着利益诉求的人进来。",
-          "start": 987.358,
-          "end": 1027.671,
+          "start": 987.612,
+          "end": 1027.675,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-se15d4518",
           "text": "如果国王站出来大兴佛法的话，后面佛法就会往邪路上走——有很多追求利益的、不是真正想要出家修行的人开始出家，贪求这里面的利益。因为古代出家都是不用交税的，在人前也可以得到尊敬——大家不仅给你钱，还得磕头。这种好事，大家都想，有可能就会出现很多坏人进入佛法，发生从内部破坏佛法的事情，所以国王不能公开地大兴佛法。",
-          "start": 1027.671,
-          "end": 1064.174,
+          "start": 1027.675,
+          "end": 1064.253,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sf5331639",
           "text": "所以达摩说梁武帝没有功德，也是希望他适可而止，不要做得太过分。",
-          "start": 1064.174,
-          "end": 1070.078,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1064.253,
+          "end": 1074.316,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sbb4873e4",
           "text": "那么国王或政府，该怎么弘扬佛法？明朝朱元璋就做得比较好，给要出家的和尚设定门槛，不能让什么人都可以出家；还有戒律上管得严一些，除了僧团内部有管戒律的部门，政府也有同样的法律部门。这个法律部门既管普通人，也同时管出家的人，管得严是比较好的做法。朱元璋没有大兴佛法，刻意地去推广佛法，结果佛法却能够比较安稳地传承下来。",
-          "start": 1070.078,
-          "end": 1117.652,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1074.316,
+          "end": 1124.593,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s2eb2a1d9",
           "text": "关于从明朝朱元璋开始的对佛教的政策，我在《坐禅2》上简单写过，在网上也可以查得到，大家可以看一看。政府都是这样保护佛教，而不是一味地推崇佛教或者其他任何宗教。",
-          "start": 1117.652,
-          "end": 1139.378,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1124.593,
+          "end": 1144.404,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s7a303133",
           "text": "如果政府一味地推崇，这里面就都变成利益场，可能有很多的坏人进入。而且这种坏人进入之后，（会形成）“劣币驱除良币”（的局面）。坏的东西进入到一定程度之后，就会把里边好的人都给排挤出去。",
-          "start": 1139.378,
-          "end": 1166.689,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1144.404,
+          "end": 1167.94,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s0994a09b",
           "text": "所以佛说，最后到了末法时代，魔子魔孙进入僧团，穿着袈裟在行邪道；这个时候真正修佛、传法的人，反而走到外边，在在家人当中开始修行、传播佛法。这是佛说的，不是我说的。这就是整个佛教演化过程当中，必然会出现的结果。",
-          "start": 1166.689,
-          "end": 1203.372,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1167.94,
+          "end": 1206.906,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc376f1e8",
           "text": "刺史又问曰：“弟子常见僧俗，念阿弥陀佛，愿生西方。请和尚说，得生彼否？愿为破疑！”",
-          "start": 1203.372,
-          "end": 1215.084,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1206.906,
+          "end": 1215.87,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s184f3fc7",
           "text": "在这里，他既讲义理，也在破执着。你一味地追求往生西方极乐世界，这也是你的执着。你该放下就得放下，放下了，反而更有可能去。这是一种反向说法的方式。",
-          "start": 1215.084,
-          "end": 1235.076,
+          "start": 1215.87,
+          "end": 1235.125,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s4e5d7837",
           "text": "师言：“使君善听，惠能与说。世尊在舍卫城中，说西方引化，经文分明，去此不远。",
-          "start": 1235.076,
-          "end": 1243.307,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1235.125,
+          "end": 1237.94,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s9cd1fe1f",
           "text": "我跟你说说。世尊在舍卫城中讲过《阿弥陀经》，以及有关阿弥陀佛的《无量寿经》《观无量寿经》，经文里分明说过，西方离这里不远。",
-          "start": 1243.307,
-          "end": 1265.128,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1237.94,
+          "end": 1265.242,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-scfaa5d8f",
           "text": "若论相说里数，有十万八千，即身中十恶八邪，便是说远。说远为其下根，说近为其上智。",
-          "start": 1265.128,
-          "end": 1274.649,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1265.242,
+          "end": 1273.95,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s50430d17",
           "text": "如果按我们现在的公里数，即距离来说，西方离我们有十万八千。众生身中的十恶八邪，即各种不好的执着，才导致十万八千的距离。说西方极乐世界远，是为下根说的；说近，是为上智说的。",
-          "start": 1274.649,
-          "end": 1317.616,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1273.95,
+          "end": 1318.809,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s468e7a18",
           "text": "人有两种，法无两般，迷悟有殊，见有迟疾。",
-          "start": 1317.616,
-          "end": 1319.341,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1318.809,
+          "end": 1323.722,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s88060e4b",
           "text": "“人有两种”，就是迷的人和悟的人。但是“法无两般”，法是没有分别的。“迷悟有殊”，迷和悟之间还是有区别的。“见有迟疾”，在建立佛法的正确见地的过程中，有些人快，有些人慢。",
-          "start": 1319.341,
-          "end": 1348.647,
+          "start": 1323.722,
+          "end": 1348.783,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1336c8b3",
           "text": "迷人念佛求生于彼；悟人自净其心。",
-          "start": 1348.647,
-          "end": 1352.647,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1348.783,
+          "end": 1352.49,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s7bb37eb5",
           "text": "不知道的、迷闷的人，他们一直念着佛，求生到极乐世界。知道义理、真相的人，自己把内心的妄想、分别、执着尽量灭掉。",
-          "start": 1352.647,
-          "end": 1371.846,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1352.49,
+          "end": 1371.999,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s984de401",
           "text": "所以佛言：‘随其心净即佛土净。’",
-          "start": 1371.846,
-          "end": 1375.473,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1371.999,
+          "end": 1376.09,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s811ebee4",
           "text": "所以佛说，众生的心净了，佛土就净了。也可以说，这是唯心论的一个核心理论——万物唯心造。",
-          "start": 1375.473,
-          "end": 1389.731,
+          "start": 1376.09,
+          "end": 1389.667,
           "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3c56b1a3",
           "text": "我们之所以处在这个肮脏、糟糕的世界，甚至我在网上看到一些视频，有人去孟加拉国旅游，看到首都的一个贫民窟里，有很多人收破烂，他们几乎就生活在垃圾堆上，甚至有小孩子在垃圾堆的水池里游泳。我看到很吃惊，还有这样的场景？为什么众生生活在这么坏的地方？肯定是因为众生的内心有很多不好的东西——妄想、分别、执着。",
-          "start": 1389.731,
-          "end": 1430.539,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1389.667,
+          "end": 1435.267,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s8caa8c0c",
           "text": "以前在寺院里，师父教大家打扫，一开始师兄每天带着打扫。有些犄角旮旯、人很少去的地方，每天还得去打扫。有些人就不愿意做了，师父就教他，我们看到这个世界里的每一颗灰尘，都是我们内心的烦恼化现，都是我们的妄想和合而成。",
-          "start": 1430.539,
-          "end": 1464.327,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1435.267,
+          "end": 1465.037,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc12b5ca7",
           "text": "所以，打扫也是修行，是灭除自心烦恼的过程，你每天把这个地方打扫得干干净净，你的内心就清净、舒畅。在灰尘多的地方打坐、修行，你的心态就不太好；一个地方一尘不染、干干净净，不管你在那里念经，还是做什么，心里都是舒畅的。",
-          "start": 1464.327,
-          "end": 1484.45,
+          "start": 1465.037,
+          "end": 1490.695,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd632ce4d",
           "text": "尤其是大雄宝殿这些地方很容易脏，有很多信众进进出出。他们进来看到这个地方很脏，心态就不好，会觉得和尚们光拿功德钱，却不好好打理寺院。他们因为生起了不好的心态，会有相应的果报，这也会对寺院有影响，所以平时要打扫干净。",
-          "start": 1484.45,
-          "end": 1523.944,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1490.695,
+          "end": 1524.79,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sa5029e14",
           "text": "所以，修行既要从内心当中打扫，把妄想、分别、执着灭除，同时对外也要有清扫的行为。虽然很多人又觉得，有洁癖是不好的，有些地方过度清扫，也是不好的业。但是我们还是认为，寺院和修行人都应该比普通的清洁水平要高一些。我个人认为这样才是比较合适的。",
-          "start": 1523.944,
-          "end": 1559.244,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1524.79,
+          "end": 1562.006,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1d21f59c",
           "text": "所以“随其心净即佛土净”，就是你的心足够清净的话，周边世界展现出来的境界也是干干净净的。",
-          "start": 1559.244,
-          "end": 1575.524,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1562.006,
+          "end": 1575.613,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s894a60ef",
           "text": "使君东方人，但心净即无罪。",
-          "start": 1575.524,
-          "end": 1580.618,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1575.613,
+          "end": 1581.15,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s442d04ea",
           "text": "“使君”指韦刺史。你是东方人，只要心里清净，尽量没有妄想、分别、执着，那就没有罪。",
-          "start": 1580.618,
-          "end": 1593.298,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1581.15,
+          "end": 1593.379,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc1e5e30d",
           "text": "虽西方人，心不净亦有愆。",
-          "start": 1593.298,
-          "end": 1597.074,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1593.379,
+          "end": 1597.61,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s065776b0",
           "text": "哪怕是西方极乐世界的人，他心不清净，那就有“愆”，“愆”是罪过。",
-          "start": 1597.074,
-          "end": 1603.062,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1597.61,
+          "end": 1603.27,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s84ee2fdb",
           "text": "东方人造罪，念佛求生西方；",
-          "start": 1603.062,
-          "end": 1604.562,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1603.27,
+          "end": 1606.49,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s437945a0",
           "text": "东方人造了很多罪业，然后就开始念佛，求生西方。",
-          "start": 1604.562,
-          "end": 1608.312,
+          "start": 1606.49,
+          "end": 1611.49,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s36400a48",
           "text": "西方人造罪，念佛求生何国？",
-          "start": 1608.312,
-          "end": 1613.929,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1611.49,
+          "end": 1615.52,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s0e0581fe",
           "text": "那么西方人做了恶业，他又能求生去哪里？西方极乐世界的人在佛菩萨的强大加持下，生不起那种恶念。",
-          "start": 1613.929,
-          "end": 1629.547,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1615.52,
+          "end": 1629.541,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5b8decf2",
           "text": "凡愚不了自性，不识身中净土，愿东愿西；悟人在处一般。",
-          "start": 1629.547,
-          "end": 1633.259,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1629.541,
+          "end": 1635.45,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s16acbf87",
           "text": "愚痴凡夫们不知道有不生不灭的自性的义理，也看不到自己心中的净土。也就是让你灭掉妄想、分别、执着的意思。所以才会想去这里，想去那里。“悟人”，理解这个义理的智人。已经悟的人不管在哪里都是一样的。",
-          "start": 1633.259,
-          "end": 1668.202,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1635.45,
+          "end": 1665.41,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s687c6991",
           "text": "所以佛言：随所住处恒安乐。",
-          "start": 1668.202,
-          "end": 1670.362,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1665.41,
+          "end": 1671.074,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd9b5a93b",
           "text": "佛说，不管在什么地方，心都可以恒常的安乐。",
-          "start": 1670.362,
-          "end": 1676.404,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1671.074,
+          "end": 1676.137,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-scf635b7e",
           "text": "使君心地但无不善，西方去此不遥。",
-          "start": 1676.404,
-          "end": 1681.964,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1676.137,
+          "end": 1682.8,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s7ab74768",
           "text": "这是称赞使君，你是心地善良的人，所以对你来说，从这里去西方并不遥远。",
-          "start": 1681.964,
-          "end": 1694.343,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1682.8,
+          "end": 1694.527,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-seb827048",
           "text": "若怀不善之心，念佛往生难到。",
-          "start": 1694.343,
-          "end": 1697.162,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1694.527,
+          "end": 1699.74,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-saf07f3ba",
           "text": "如果你怀着不善的心，那么念佛也是难以往生西方的。",
-          "start": 1697.162,
-          "end": 1710.2,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1699.74,
+          "end": 1709.005,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sfc8ffb1a",
           "text": "今劝善知识，先除十恶，即行十万；后除八邪，乃过八千。",
-          "start": 1710.2,
-          "end": 1715.973,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1709.005,
+          "end": 1716.72,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s00b191f7",
           "text": "现在劝大家先除心中的“十恶”，这样在十万八千里当中，我们已经行了十万；然后去除“八邪”，就又行了八千。",
-          "start": 1715.973,
-          "end": 1729.627,
+          "start": 1716.72,
+          "end": 1729.724,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sdee03977",
           "text": "念念见性，常行平直，到如弹指，便睹弥陀。",
-          "start": 1729.627,
-          "end": 1730.963,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1729.724,
+          "end": 1734.01,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s6b391132",
           "text": "我们在自性当中念念不断地修行。“常行平直”，也就是平等和直心。弹指之间，就可以去往极乐世界，看到阿弥陀佛。",
-          "start": 1730.963,
-          "end": 1752.699,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1734.01,
+          "end": 1753.439,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s6ebe25d5",
           "text": "“十恶八邪”是什么呢？“十恶八邪”分别是“十善业”和“八正道”的对立面。书上的解释为：“十恶：一、杀生；二、偷盗；三、邪淫；四、妄语；五、两舌，即说离间句、破语；六、恶口，即恶语、恶骂；七、绮语，即杂秽语、非应语、散语、无义语。乃从染心所发者；八、贪欲；九、嗔恚；十、愚痴。八邪：即反于‘八正道’者。一邪见、二邪思惟、三邪语、四邪业、五邪命、六邪方便、七邪念、八邪定。”",
-          "start": 1752.699,
-          "end": 1808.076,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1753.439,
+          "end": 1807.798,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3466da59",
           "text": "这一篇就解释到这里。那么极乐世界怎么去？以前有人问过，我也回答过。我是现代人，并不是惠能那个时代的人，所以不能拿惠能说的话重新翻一遍。我得从悟理上告诉你，怎么去极乐世界。",
-          "start": 1808.076,
-          "end": 1832.332,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1807.798,
+          "end": 1832.364,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-safc7666f",
           "text": "自性都是重叠在一起的，所以佛创造的佛土，也是重叠在一起的。我们每一个众生都有自己的业和习气，才会出现在各自所处的环境当中。所以你要去极乐世界的话，就心心念念阿弥陀佛，在阿弥陀佛的加持力下，把组成你肉身和当下意识的基本粒子的频率稍微变换一下，即刻就到极乐世界去。",
-          "start": 1832.332,
-          "end": 1867.024,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1832.364,
+          "end": 1867.051,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-saf52bdd3",
           "text": "也可以说，极乐世界是和我们当下重叠在一起的。所以你要去的话，在阿弥陀佛的加持力下，稍微变一下，当下就可以到。而不是像坐着飞机去外国一样飞过去的，大家要理解这一点。所以你只要心心念念求阿弥陀佛，信、愿、行做到了，基本就够了。",
-          "start": 1867.024,
-          "end": 1892.266,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1867.051,
+          "end": 1892.443,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sa5827165",
           "text": "这种去的方式，肯定是在佛菩萨的加持下，自己是做不到的。凡夫没有能力穿越其他世界，只能靠佛菩萨的加持力。所以修行全靠自己，这样的说法也是错误的。修行首先靠自己的发愿，这是第一步；发愿之后有自己的行为，那就和佛菩萨心心相应，有加持力。加持力和自己的修行，两个同时需要，少一个都成就不了。",
-          "start": 1892.266,
-          "end": 1921.928,
+          "start": 1892.443,
+          "end": 1922.497,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5e795c75",
           "text": "今天就讲到这里。",
-          "start": 1921.928,
+          "start": 1922.497,
           "end": 1924.949,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         }
       ]
     },
@@ -8973,784 +8866,697 @@
           "pid": "p-sb42b49b3",
           "text": "《坛经》第十一期，这本书的第六十八页，韦刺吏问，“往生西方极乐世界可行吗？”上一期回答过，这一期咱们继续看。",
           "start": 0.92,
-          "end": 25.707,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "end": 25.653,
+          "conf": 0.95,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s11101630",
           "text": "使君但行十善，何须更愿往生？",
-          "start": 25.707,
-          "end": 27.831,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 25.653,
+          "end": 30.926,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sb9a918db",
           "text": "你要坚持行十善，十善业是什么？身三、口四、意三。如果坚持行十善的话，又有必要发愿往生极乐世界吗？",
-          "start": 27.831,
-          "end": 47.784,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 30.926,
+          "end": 47.619,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s29835804",
           "text": "不断十恶之心，何佛即来迎请？",
-          "start": 47.784,
-          "end": 50.081,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 47.619,
+          "end": 52.033,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-se0917135",
           "text": "如果不断十恶之心，有十恶这种行为，以及心态——心里有十恶，行为和心态要区别开来。有些人心里有，但是不做出来，至少不算造了业；但是心里有的话，去西方极乐世界还是有难度的，所以很多人去不了。平时看他们天天念佛，做各种好事，但是心里的恶念没有灭尽，只是单纯在行蕴上做而已。那么什么佛会来迎请你呢？",
-          "start": 50.081,
-          "end": 102.661,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 52.033,
+          "end": 101.493,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s9e30b068",
           "text": "若悟无生顿法，见西方只在刹那；不悟念佛求生，路遥如何得达？",
-          "start": 102.661,
-          "end": 107.29,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 101.493,
+          "end": 108.013,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s74b38e9c",
           "text": "悟了无生顿法。“无生”，在《楞伽经》里专门讲过，从佛的境界来看，一切妄想、分别、执着没有本体，也就是万法没有本体，从这个角度可以说法是无生。所以八地以上菩萨可以称之为无生，悟到了无生法忍。",
-          "start": 107.29,
-          "end": 135.317,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 108.013,
+          "end": 134.36,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s7af586ae",
           "text": "那么“无生顿法”，就是至少知道人有不生不灭的自性，在这里产生的所有妄想都是没有本体的，是可以灭掉的。从道理的层面上悟到了这个义理，也就是理悟了。如果悟了这个，去西方是刹那间的事。",
-          "start": 135.317,
-          "end": 185.96,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 134.36,
+          "end": 166.745,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-se93e6dd0",
           "text": "如果没有悟到义理，只是单纯地念佛求生，等同于心外求法，那么路遥如何得达？",
-          "start": 185.96,
-          "end": 190.071,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 166.745,
+          "end": 175.821,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s787810cf",
           "text": "首先，你会认为西方极乐世界很遥远，不知道这个核心义理的情况下，心里已经认为西方极乐世界很遥远；还有需要达到这样的要求之后，才能去西方极乐世界的念头，反而难以去。",
-          "start": 190.071,
-          "end": 202.197,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 175.821,
+          "end": 201.701,
+          "conf": 0.55,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5762e44c",
           "text": "惠能与诸人移西方于刹那间，目前便见，各愿见否？",
-          "start": 202.197,
-          "end": 216.644,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 201.701,
+          "end": 211.89,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sac5f2e3c",
           "text": "惠能说，我刹那间把大家带到西方去，当下就能看见，大家想看见吗？",
-          "start": 216.644,
-          "end": 226.962,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 211.89,
+          "end": 226.883,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sb307d1aa",
           "text": "下面也是一个疑问，但是咱们不知道这是惠能显了神通，还是只是单纯嘴上说说义理，就不妄作评论。",
-          "start": 226.962,
-          "end": 243.119,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 226.883,
+          "end": 243.225,
+          "conf": 0.95,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-saf815053",
           "text": "众皆顶礼云：“若此处见，何须更愿往生？愿和尚慈悲，便现西方，普令得见。”",
-          "start": 243.119,
-          "end": 245.03,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 243.225,
+          "end": 250.426,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s80c87609",
           "text": "所有人都向惠能顶礼，问道，如果在这里就能看见西方极乐世界，何须再发愿往生呢？希望和尚慈悲，现在就现出西方来，给大家看看。",
-          "start": 245.03,
-          "end": 271.88,
+          "start": 250.426,
+          "end": 271.944,
           "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s46609e49",
           "text": "往下说了一段，还是义理。我们不知道他是单纯地靠这种义理来说服人，还是显了什么。但是在这里也没有说他显出了什么神通，只是讲了这么一段义理而已。",
-          "start": 271.88,
-          "end": 288.313,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 271.944,
+          "end": 287.993,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-saacc450d",
           "text": "对于当下我们现在的人，如果这样做，我给你看一下西方极乐世界，然后再说一通义理的话，估计有人会骂人。",
-          "start": 288.313,
-          "end": 303.63,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 287.993,
+          "end": 302.081,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sfa12481f",
           "text": "师言：“大众！世人自色身是城，眼耳鼻舌是门。外有五门，内有意门。心是地，性是王。王居心地上，性在王在，性去王无。性在身心存，性去身心坏。佛向性中作，莫向身外求。",
-          "start": 303.63,
-          "end": 315.205,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 302.081,
+          "end": 313.611,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-se2140b6d",
           "text": "这是讲六根。把我们的色身当作一个城来看的话，眼、耳、鼻、舌、身是门。外有五门，里面还有意根，这也是一个门。把六根当作门来看。",
-          "start": 315.205,
-          "end": 336.527,
+          "start": 313.611,
+          "end": 336.444,
           "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s81c52b04",
           "text": "“心是地，性是王”，由我们的妄想、分别、执着所构成的心，像土地一样；而性是土地上的王。那么“性”肯定指我们的自性，即八识阿赖耶识。“王居心地上，性在王在，性去王无”，王居住在心的土地上，心还是妄想、分别、执着。如果性在的话，那么王就在；如果性去了，王就没有了。",
-          "start": 336.527,
-          "end": 375.916,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 336.444,
+          "end": 375.885,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1508ed45",
           "text": "“性在身心存，性去身心坏”，自性在的话，身心就存在；自性离开的话，身心就坏。“佛向性中作，莫向身外求”，成佛就是回到你的自性状态，所以不要身外求法。",
-          "start": 375.916,
-          "end": 411.34,
+          "start": 375.885,
+          "end": 411.412,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5a53789a",
           "text": "我个人感觉，“性在身心存，性去身心坏”，以及“王”和“心”的比喻不是很恰当，因为性没有来去，性就一直在那里。身心坏灭是因为我们的妄想、分别、执着在变化，所以有坏灭的过程，又会再生出来；生死轮回都是妄想、分别、执着形成的，并不是性。当然妄想、分别、执着的确在性中产生，但是性本身没有变化，它一直在那里。",
-          "start": 411.34,
-          "end": 452.52,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 411.412,
+          "end": 452.643,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sa1884d8f",
           "text": "所以“性在身心存，性去身心坏”，“性”没有什么来去之说，就像如来一样。所以我个人来看，这个比喻不是很恰当，可能对那个时代的人，这样说更好理解。",
-          "start": 452.52,
-          "end": 465.045,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 452.643,
+          "end": 469.002,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s459c32dc",
           "text": "自性迷即是众生，自性觉即是佛。慈悲即是观音，喜舍名为势至。能净即释迦，平直即弥陀。",
-          "start": 465.045,
-          "end": 470.73,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 469.002,
+          "end": 474.71,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s43cee061",
           "text": "自性迷了即是众生。自性这个八识阿赖耶识里产生妄想，把自己迷住了，那就变成了众生。自性觉就是佛，妄想都灭掉了，就是佛了。所以说众生是迷了的佛，佛是觉悟的众生。",
-          "start": 470.73,
-          "end": 494.223,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 474.71,
+          "end": 494.245,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sdb22e924",
           "text": "“慈悲即是观音，喜舍名为势至”，这也是一种比喻，你有慈悲心，你也是观音菩萨；你有喜舍心，那你也是大势至菩萨。“能净即释迦，平直即弥陀”，能灭掉自己的妄想的话，那就是释迦；平等和直心，这就叫弥陀——阿弥陀佛。",
-          "start": 494.223,
-          "end": 519.705,
+          "start": 494.245,
+          "end": 523.152,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc677a195",
           "text": "人我是须弥，邪心是海水，烦恼是波浪，毒害是恶龙，虚妄是鬼神，尘劳是鱼鳖，贪嗔是地狱，愚痴是畜生。",
-          "start": 519.705,
-          "end": 529.87,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 523.152,
+          "end": 529.052,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd4d3db37",
           "text": "“人我”，人相、我相，就是人我分别心。你有分别心的话，就像有一个须弥山一样。“邪心是海水”，邪恶的心态——不好的心、恶念，就像海水。",
-          "start": 529.87,
-          "end": 547.188,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 529.052,
+          "end": 544.774,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sac9d2af5",
           "text": "须弥、海水、烦恼有先后顺序。先有须弥山，须弥山周围有香水海。所以在这里先有须弥山，然后有海水，有了海水之后再有波浪。所以，先有人我分别心，然后在这里产生了邪心这样的执着，有了这样不好的执着之后，就会产生痛苦，那就称之为“烦恼”。",
-          "start": 547.188,
-          "end": 580.147,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 544.774,
+          "end": 585.773,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3cd9db90",
           "text": "“毒害是恶龙”，在这里海水里有波浪，有波浪的世界里有妄想、分别、执着，而且有不好的、伤害别人的妄想就称之为“毒害”，像恶龙一样。",
-          "start": 580.147,
-          "end": 599.657,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 585.773,
+          "end": 602.118,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-secfbeebb",
           "text": "“虚妄是鬼神”，在这里又出现了“虚妄”，虚妄是什么呢？虚伪的、假的、虚无的。“妄”可以看作妄言或者妄语，但好像不能看作“妄想”的“妄”，而是欺骗人的、造作的、假作的那种心态，称之为“鬼神”。前面有毒害——伤害人的心，就会出现这种造假的，或者欺瞒他人的虚伪的心态，这就叫“鬼神”。",
-          "start": 599.657,
-          "end": 641.18,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 602.118,
+          "end": 642.395,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s35e7057e",
           "text": "“尘劳是鱼鳖”，尘劳是追逐红尘名利的心态，称之为“鱼鳖”。“贪嗔是地狱”，在追逐世间名利的时候，又多出了贪心和嗔心，这就会造成地狱。“愚痴是畜生”，“愚痴”简单来说就是不信因果，所以叫“畜生”。",
-          "start": 641.18,
-          "end": 670.336,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 642.395,
+          "end": 673.183,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s77f218ad",
           "text": "善知识！常行十善，天堂便至；除人我，须弥倒；去邪心，海水竭；烦恼无，波浪灭；毒害除，鱼龙绝。",
-          "start": 670.336,
-          "end": 676.96,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 673.183,
+          "end": 677.192,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5efc6fa5",
           "text": "如果经常行十善，天堂就到了；去掉人我分别心，须弥山就倒了；去掉邪恶的心——想伤害他人的这种心态或者不好的心态，海水就枯竭了；没有了烦恼，波浪就灭了，这也是比喻。烦恼从邪心当中升起，有坏的念头就会产生烦恼，因为坏的念头是难以实现的，升起来就有烦恼；毒害就是伤害他人的心态没有了，那么鱼龙就绝了。",
-          "start": 676.96,
-          "end": 726.927,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 677.192,
+          "end": 726.97,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd9e9ea67",
           "text": "自心地上觉性如来，放大光明，外照六门清净，能破六欲诸天。",
-          "start": 726.927,
-          "end": 733.37,
+          "start": 726.97,
+          "end": 733.018,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s93284adf",
           "text": "在我们自性中的觉悟的心态或者状态，在那个境界里放出大光明。把六根照得清净一些，这样就可以破六欲诸天，就是有淫欲的境界。",
-          "start": 733.37,
-          "end": 756.755,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 733.018,
+          "end": 760.597,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sfed88503",
           "text": "在这里“放大光明”，是与我们这个有黑暗的境界对比而说的。在佛的境界里，世界本来就是一片光明，甚至都不能说有光明，因为光明都是从我们的名相里出现的。",
-          "start": 756.755,
-          "end": 774.944,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 760.597,
+          "end": 780.726,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s006d9a78",
           "text": "所以，“外照六门清净，能破六欲诸天”，就是用佛的智慧来观照我们所有的妄想、分别、执着，尤其是执着部分，六根都是执着中的注意力形成的。这样用光明来观照执着心的话，就可以超越有淫欲的诸天。",
-          "start": 774.944,
-          "end": 803.182,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 780.726,
+          "end": 809.469,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s8de16f46",
           "text": "在这里“六欲诸天”可能是天界的统称，六欲天和后面诸天加起来，也可以称之为六欲诸天。但是在大部分情况下，六欲诸天只是指六欲天。",
-          "start": 803.182,
-          "end": 824.36,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 809.469,
+          "end": 828.715,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sa80b43d3",
           "text": "自性内照，三毒即除，地狱等罪，一时销灭，内外明彻，不异西方。不作此修，如何到彼？",
-          "start": 824.36,
-          "end": 833.255,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 828.715,
+          "end": 834.542,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s664fb3b6",
           "text": "返观内照，把心里的三毒——贪、嗔、痴给灭掉，地狱等罪就消灭了。心里和心外都明彻了，就和去了西方极乐世界是一样的。如果你不这样修的话，怎么能去那里呢？",
-          "start": 833.255,
-          "end": 867.342,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 834.542,
+          "end": 867.298,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s6b2b0ba8",
           "text": "再回来看“自性内照，三毒即除，地狱等罪，一时销灭”这句话。在那个时代并没有展开讲业的原理，因为这也是一种方便法，不讲业，先把人引进来；哪怕你相信即身成佛这样的说法，也先把你引进来，让你开始修行。",
-          "start": 867.342,
-          "end": 889.124,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 867.298,
+          "end": 889.176,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s482db018",
           "text": "如果把业的原理都给讲清楚了，你要度所有和你有缘的众生，才能成佛。尤其是罪业多的人，当下还在从事不好的行业的人，他可能就开始摆烂了；已经造了这么多业，修不修都没什么太大意义了，这辈子反正没什么希望了。这样一想很多人就不那么精进修行了。",
-          "start": 889.124,
-          "end": 917.122,
+          "start": 889.176,
+          "end": 917.54,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sb6f81f93",
           "text": "一开始不讲业，也不说你需要度人。所以小乘是不度人的，他们也不讲究什么普度众生的信念与大愿，只要修好自己就可以了。",
-          "start": 917.122,
-          "end": 931.522,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 917.54,
+          "end": 931.41,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1960014a",
           "text": "所以这些都是方便法。在这里也说“三毒即除，地狱等罪，一时销灭”，你只要把心里的贪、嗔、痴给灭了，那么地狱等罪也消灭。不讲你以前造过的业肯定会有相应的果报这些话。我们可以把它当作一种先把人引进来的方便法。",
-          "start": 931.522,
-          "end": 954.489,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 931.41,
+          "end": 954.519,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s8faebe6d",
           "text": "大众闻说，了然见性。",
-          "start": 954.489,
-          "end": 957.92,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 954.519,
+          "end": 958.23,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s6a513b6c",
           "text": "大众听了，都见到了自性。至少理悟到我们都有一个不生不灭的自性，在这里产生的妄想、分别、执着都是没有本体的，都是可以当作幻觉来看的，所以可以灭掉。",
-          "start": 957.92,
-          "end": 973.247,
-          "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "start": 958.23,
+          "end": 972.88,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s06008813",
           "text": "悉皆礼拜，俱叹善哉！唱言：“普愿法界众生，闻者一时悟解。”",
-          "start": 973.247,
-          "end": 982.93,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 972.88,
+          "end": 983.56,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s2c0e02b5",
           "text": "大家都向惠能礼拜之后感叹，所有法界众生们听到的话，都会一时之间解悟核心的佛法。",
-          "start": 982.93,
-          "end": 1000.751,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 983.56,
+          "end": 1000.37,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s27b47304",
           "text": "到这里，也没有说惠能真的把西方极乐世界，直接给他们现出来看了。我不知道光说这样的理论，那个时代的人会不会接受和相信；放到当下的话，可能不太能接受。现在的人都精明得很，你光说理论，不拿出什么东西来给他看看，尤其是自己说我给大家看一看西方极乐世界，然后不拿出来看的话，估计很多人不会相信这样的行为。但是可能那个时代的人比较纯真，所以光听了一段理论之后悟解了。",
-          "start": 1000.751,
-          "end": 1026.822,
+          "start": 1000.37,
+          "end": 1039.175,
           "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s11c42bfb",
           "text": "师言：“善知识！若欲修行，在家亦得，不由在寺。在家能行，如东方人心善；在寺不修，如西方人心恶。但心清净，即是自性西方。”",
-          "start": 1026.822,
-          "end": 1053.042,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1039.175,
+          "end": 1050.56,
+          "conf": 0.65,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s34ae8665",
           "text": "如果想修行的话，在家也能修行，不需要在寺。在家修行，就像东方人心善。我们就叫东方人，这是和西方极乐世界相对而说的。就算出家在寺院里待着，而不修行的话，那么和西方极乐世界的人心恶一样。让自己的心清净，灭掉没必要的妄想、分别、执着的话，这样等同于是在西方，在自性中达到了西方的境界。",
-          "start": 1053.042,
-          "end": 1102.56,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1050.56,
+          "end": 1103.49,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s0be9a7f0",
           "text": "韦公又问：“在家如何修行？愿为教授！”师言：“吾与大众说无相颂，但依此修，常与吾同处无别。若不依此修，剃发出家，于道何益？”颂曰：",
-          "start": 1102.56,
-          "end": 1107.523,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1103.49,
+          "end": 1108.4,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s88613d53",
           "text": "韦刺史又问，在家怎么修行呢？惠能说，我教大家无相颂，按照这个来修行，就等同于和我一直在一起。如果不按照无相颂来修行的话，就算剃发出家了，对于“道”没有什么利益，即在佛法上没有什么利益。“道”就是佛法。",
-          "start": 1107.523,
-          "end": 1148.35,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1108.4,
+          "end": 1147.047,
+          "conf": 0.65,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd0937385",
           "text": "心平何劳持戒？行直何用修禅？",
-          "start": 1148.35,
-          "end": 1155.505,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1147.047,
+          "end": 1154.474,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s1bdfeabe",
           "text": "“心平”，就是用平等心看待世界，又有必要持戒吗？“行直”，行为是直心，就是没有那种害人的心态，也没有不好的行为，这种叫“行直”。这样的话就不需要修禅。",
-          "start": 1155.505,
-          "end": 1180.439,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1154.474,
+          "end": 1180.498,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s559dc01b",
           "text": "在这里我们要理解，那个时代的人可能很关注持戒、修禅，大家都觉得必须持戒、修禅才能怎么怎么样。所以惠能反过来说，你只要达到这样的要求，就算没有持戒、修禅，那也可以称之为修行。所以惠能在前面就反对修禅定、求解脱。",
-          "start": 1180.439,
-          "end": 1212.173,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1180.498,
+          "end": 1214.31,
+          "conf": 0.9,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc556387c",
           "text": "恩则孝养父母，义则上下相怜。",
-          "start": 1212.173,
-          "end": 1216.17,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1214.31,
+          "end": 1218.29,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sabd6feb5",
           "text": "要懂得感恩、报恩，这就需要先做到孝养父母。（要做到）现在我们所说的讲义气，或者古人说的义，那么身份高低的人之间就要互相怜爱。",
-          "start": 1216.17,
-          "end": 1246.17,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1218.29,
+          "end": 1238.24,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sff8fbadc",
           "text": "让则尊卑和睦，忍则众恶无喧。",
-          "start": 1246.17,
-          "end": 1251.932,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1238.24,
+          "end": 1241.142,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sb0389cb4",
           "text": "要谦让，这样身份高低的人之间，都可以和睦相处。“喧”是往外宣传的意思。看到别人的坏处、毛病，不要到处传播，这叫“忍”。忍就不要到处传播恶，传播善就可以了。别人做了好事，你可以帮着宣传一下，但是别人的一些坏毛病就不要到处乱说。这是我们的一种行为准则，但是很多人刚好反着来，别人的好事不说，光说坏事，甚至无中生有地乱说。",
-          "start": 1251.932,
-          "end": 1285.572,
+          "start": 1241.142,
+          "end": 1286.341,
           "conf": 0.85,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sba9de05f",
           "text": "若能钻木出火，淤泥定生红莲。",
-          "start": 1285.572,
-          "end": 1290.255,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1286.341,
+          "end": 1291.26,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s57ec6b93",
           "text": "如果钻木就可以出火的话，淤泥肯定能生出红莲。钻木出火，从那个时代的人的理念来看，有点难以理解。木头里怎么能生出火呢？因为用我们现在科学的观点，大家都能接受，但是对那个时代的人来说，钻木出火的方法有点难以理解。虽然相信钻木是可以出火的，但是他可能难以相信，木头里可以生出火这样的自然现象。所以他用这个来比喻，如果木头里都可以生出火的话，那么淤泥里定能生出莲花。",
-          "start": 1290.255,
-          "end": 1337.985,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1291.26,
+          "end": 1338.87,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sb1701d42",
           "text": "苦口的是良药，逆耳必是忠言。",
-          "start": 1337.985,
-          "end": 1339.809,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1338.87,
+          "end": 1341.65,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s899fd675",
           "text": "大家都知道，好话是难听的，所以逆耳叫忠言，苦口的是良药。别人劝你做好事，总之，往好的方向劝的话都是不好听的。",
-          "start": 1339.809,
-          "end": 1360.99,
+          "start": 1341.65,
+          "end": 1361.066,
           "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s62794adc",
           "text": "改过必生智慧，护短心内非贤。",
-          "start": 1360.99,
-          "end": 1365.147,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1361.066,
+          "end": 1366.165,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s9f98d9a7",
           "text": "有过错的话，改了就会生出智慧来。“护短”就是我们现代人常说的“护犊子”，保护自己的孩子，哪怕是错了，也要站在自己孩子这边，这种心态叫“护短”。除了孩子之外，长官可以保护自己的手下，家庭成员之间互相偏袒，这种都叫护短心。",
-          "start": 1365.147,
-          "end": 1392.069,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1366.165,
+          "end": 1393.08,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s4404fcda",
           "text": "还有对自己的过错极力维护和辩护，这样的行为也叫护短心。有了错，你就大大方方地承认，然后改过就可以了，不需要在那一直辩解，把自己的责任都推给别人，或者否定自己的错误，这种也可以称为护短心。",
-          "start": 1392.069,
-          "end": 1413.413,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1393.08,
+          "end": 1413.226,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s9eda333f",
           "text": "有这种心态的人就叫“非贤”，不是贤圣。按照古人的说法，贤人、贤圣、君子和小人是相对的，这样的心态就是小人之心。",
-          "start": 1413.413,
-          "end": 1430.542,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1413.226,
+          "end": 1428.922,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3f2f0417",
           "text": "日用常行饶益，成道非由施钱。",
-          "start": 1430.542,
-          "end": 1434.908,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1428.922,
+          "end": 1434.55,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s66bfbfa9",
           "text": "“日用”，指平常的生活。“常行饶益”就是饶益众生的意思，多做好事，帮助其他众生，做一些利益众生的事，而不是只做利益自己的事。后面这句也是同样的话，成道、成佛并不是布施钱财而来的，是平时多做利益众生的事。",
-          "start": 1434.908,
-          "end": 1461.941,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1434.55,
+          "end": 1461.87,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sbe6bdf69",
           "text": "菩提只向心觅，何劳向外求玄。",
-          "start": 1461.941,
-          "end": 1467.97,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1461.87,
+          "end": 1468.164,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sc3ff7cd6",
           "text": "“菩提”，前面讲过是代名词，因为佛在菩提树下成道了，所以把菩提比作智慧或者佛，那么在这里应该指佛的智慧。“菩提只向心觅”，佛的智慧在你的心中，成佛也是向内求的。“何劳向外求玄”，不需要向外求玄。“玄”可以看作玄学，在这里也指佛学。",
-          "start": 1467.97,
-          "end": 1498.535,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1468.164,
+          "end": 1499.41,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s7ed645bd",
           "text": "听说依此修行，西方只在目前。",
-          "start": 1498.535,
-          "end": 1502.243,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1499.41,
+          "end": 1503.12,
+          "conf": 0.8,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s8c8192b7",
           "text": "按照这个来修行的话，西方就在眼前。",
-          "start": 1502.243,
-          "end": 1507.552,
+          "start": 1503.12,
+          "end": 1507.38,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sfd454845",
           "text": "师复曰：“善知识！总须依偈修行，见取自性，直成佛道。时不相待，众人且散，吾归曹溪。众若有疑，却来相问。”",
-          "start": 1507.552,
-          "end": 1539.763,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1507.38,
+          "end": 1515.62,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s37da18a2",
           "text": "大家按照偈语来修行，再回到自己的自性当中，这一生就能在佛法上、修行上有所成就。时间不等人，大家就散了，我回曹溪去了。大家有什么疑问，来问我就行。",
-          "start": 1539.763,
-          "end": 1545.299,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1515.62,
+          "end": 1545.401,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s321f5236",
           "text": "时，刺史、官僚、在会善男信女，各得开悟，信受奉行。",
-          "start": 1545.299,
-          "end": 1551.376,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1545.401,
+          "end": 1551.582,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s3eb7906c",
           "text": "当时的这些听众们都开悟了，理解了义理，然后信受奉行。到这里，上一期讲的是惠能对功德的理解；这一期讲的是对往生的理解，所有往生的法可以看作是方便法，都是针对一些听众来说的。当时的很多人都是嘴上一直念着阿弥陀佛，求生西方，但是在行为上和一些义理上不够通达。所以惠能就讲了这一段，主要是让你在行为上先行十善，然后在义理上要通透。",
-          "start": 1551.376,
-          "end": 1602.541,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1551.582,
+          "end": 1603.27,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s07c257a9",
           "text": "那么西方极乐世界怎么才能去？我在《坐禅2》中说了，净土法门讲究信、愿、行。信，就是相信西方极乐世界、西方三圣真实存在，也相信自己可以去。愿，有往生西方极乐世界的愿望；行，戒行、善行、修行。这些都做到了，如果感觉不够，接着再多做功德。在条件允许的情况下，多做功德来填不够的部分，基本上是可以去的。",
-          "start": 1602.541,
-          "end": 1637.455,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1603.27,
+          "end": 1640.6,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s86be918b",
           "text": "而且去的方式并不是菩萨带着你飞十万八千里，才到那里。大家首先在义理上要通透。所有的佛世界都是佛在自己的意识里创造出来的幻境，所以不同的佛世界在自性这个层面上也是重叠在一起的。所以，按现在的说法，去其他佛世界只是在佛菩萨的加持下，把构成你当下的心的意识层面的粒子给改变一下频率，这样瞬时就会到达那里。不是带着你飞来飞去。",
-          "start": 1637.455,
-          "end": 1682.811,
+          "start": 1640.6,
+          "end": 1682.799,
           "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s8a17d884",
           "text": "你只要知道这个世界的基本构造和原理，那应该更容易一些；如果你心里想着，那个世界离这里很遥远，那可能就更遥远。",
-          "start": 1682.811,
-          "end": 1696.28,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1682.799,
+          "end": 1696.902,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s426c0f7a",
           "text": "到了阿罗汉的境界，还有十方分别，有不同佛世界的分别心。在阿罗汉的境界里看，可能世界就像电影里演的平行宇宙一样，一个一个小球无限地延伸开去，每一个小球都是佛世界。",
-          "start": 1696.28,
-          "end": 1717.47,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1696.902,
+          "end": 1716.842,
+          "conf": 0.7,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s194b7788",
           "text": "但是在菩萨的世界里，这些小球——不同佛世界的区别是没有的。菩萨可以随心所欲地去任何世界，只要改变一些妄想，和那个世界的佛相应，就可以去到那个佛的世界。",
-          "start": 1717.47,
-          "end": 1733.449,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1716.842,
+          "end": 1733.403,
+          "conf": 0.75,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s5afc3382",
           "text": "所以你明白了义理，去西方极乐世界也不是很难的事。有些人也没有精进修行，只是一心念佛，算不算精进修行不好说。在惠能这里，只是嘴上一直念，都不能算修行。有些人只是单纯念佛，没有禅定功夫，平时做的好事也不是那么多，只是把基本的做一点，但是也有往生的事例。",
-          "start": 1733.449,
-          "end": 1765.995,
-          "conf": 0.8,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1733.403,
+          "end": 1765.833,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-sd28048dd",
           "text": "所以相比修禅定、求解脱，目前看来，去西方极乐世界要容易一些。而且我们这个世界的佛法剩下的时间不多，所以我劝大家先去西方极乐世界，后面的事以后再想。",
-          "start": 1765.995,
-          "end": 1784.7,
-          "conf": 0.6,
-          "method": "ngram",
-          "confirmed": false
+          "start": 1765.833,
+          "end": 1784.185,
+          "conf": 0.85,
+          "method": "dtw-evid"
         },
         {
           "pid": "p-s409faccd",
           "text": "这一期就讲到这里。",
-          "start": 1784.7,
+          "start": 1784.185,
           "end": 1787.818,
-          "conf": 0.9,
-          "method": "ngram",
-          "confirmed": false
+          "conf": 0.75,
+          "method": "dtw-evid"
         }
       ]
     },

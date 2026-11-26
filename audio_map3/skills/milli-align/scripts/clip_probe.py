@@ -21,9 +21,36 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
+sys.path.insert(0, str(ROOT / "tool" / "jiangjing_para_map"))
+from realign_dtw import PUNCT_RE  # noqa: E402
+
 DUMP_DIR = Path("/tmp/funasr_cache")
 AUDIO_DIR = Path("/Users/paul/tai/audio/jiangjing")
 CLIP_LEN = 40.0
+
+
+def aligned_clip_chars(item, lo):
+    """把含標點 text 正確對上不含標點的 timestamp。
+
+    FunASR 的 timestamp 通常逐「發音字」而非逐 text index。舊版直接以
+    text[k] 對 ts[k]，會在標點後整串錯位，製造假時基漂移。若模型確實
+    回傳含標點的 timestamp，則接受 raw 對齊；兩者數量仍不符時，全部時間
+    標 nan，寧可缺證據也不捏造毫秒值。
+    """
+    text = item.get("text") or ""
+    ts = item.get("timestamp") or []
+    raw = [c for c in text if not c.isspace()]
+    spoken = [c for c in raw if not PUNCT_RE.fullmatch(c)]
+    if len(spoken) == len(ts):
+        chars, mode = spoken, "filtered-punctuation"
+    elif len(raw) == len(ts):
+        chars, mode = raw, "raw-timestamp-includes-punctuation"
+    else:
+        warning = (f"timestamp/text count mismatch: spoken={len(spoken)} "
+                   f"raw={len(raw)} timestamps={len(ts)}; all clip times=nan")
+        return [(None, c) for c in spoken], "invalid", warning
+    buf = [(lo + ts[k][0] / 1000, c) for k, c in enumerate(chars)]
+    return buf, mode, None
 
 
 def audio_of(series, lecture):
@@ -95,13 +122,10 @@ def main():
             item = res[0]
             print(f"\n===== {lo:.1f}-{hi:.1f} =====")
             if a.chars:
-                buf = []
-                for k, c in enumerate(item.get("text") or ""):
-                    if c.isspace():
-                        continue
-                    ts = (item.get("timestamp") or [])
-                    t = (lo + ts[k][0] / 1000) if k < len(ts) else None
-                    buf.append((t, c))
+                buf, mode, warning = aligned_clip_chars(item, lo)
+                if warning:
+                    print(f"  ⚠ {warning}")
+                print(f"  [timestamp alignment: {mode}]")
                 if not buf:
                     print("  （切片無字）")
                 for i in range(0, len(buf), a.width):
