@@ -589,6 +589,9 @@ _PINRE = re.compile(r"^[^，。；：]{2,20}[品第][一二三四五六七八九
 # 略過的 metadata 行。「音」在部分 PDF 被抽成康熙部首 ⾳(U+2FB3)，故完整音頻用
 # 「完整」＋任意一字元（音/⾳）＋「频请关注」寬鬆比對。
 _META_RE = re.compile(r"^(时间[：:]|完整.频请关注)")
+# Word 修訂註記被印進 PDF（《六祖坛经》p378–379「字体: …设置格式[老]:」，7.9pt）；
+# 講經各書正文與頁碼都 ≥ 9pt。
+_REVISION_BALLOON_MAX_SIZE = 9
 
 # 各書楷體（原經文）字型集合
 _SUTRA_FONTS_STD = {"KaiTi", "HYKaiTiKW", "PingFangSC-Semibold", "STKaiti"}
@@ -820,7 +823,7 @@ def _parse_jiangjing(ctx, with_chapters=False, inline_sutra_to_body=False):
     for pno, ls in _iter_pages(ctx):
         for line in ls:
             t = _clean(line.text)
-            if not t:
+            if not t or line.size < _REVISION_BALLOON_MAX_SIZE:
                 continue
             # 講解引述經文、經文與講解緊連同行（楷+黑漢字混排）→ 整行併入正文，
             # 不拆成獨立經文；否則經文引用會錯斷成 quote 而切開講解。並進入
@@ -977,6 +980,8 @@ def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
     3. 講解句中途引用的經文（前段以開引號結尾或後段以閉標點開頭，且經文本身沒有
        句讀收尾，如「然后呢，“」+「吾所见戒定慧又别」+「”，我见到的…」）→ 三段併成一段講解。
     4. 引出經文的短引導語（「那么，」「下一句，」「惠能说，」）→ 併入前一段講解。
+    5. 講解停在句中（以漢字收尾）、下一段又是講解 → 接回同一段（p380 換頁行被
+       Word 修訂設成首行縮排而誤判為新段）。
     """
     out = []
     lecture = None
@@ -1008,13 +1013,75 @@ def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
                     and len(_de_space(prev["text"])) <= _LZ_LEADIN_MAX):
                 out.pop()
                 out[-1]["text"] = _join(out[-1]["text"], prev["text"])
+            if (b["kind"] == "para" and prev["kind"] == "para"
+                    and re.search(r"[\u4e00-\u9fff]$", prev["text"])):
+                prev["text"] = _join(prev["text"], b["text"])
+                continue
+        out.append(b)
+    return out
+
+
+# 第 19 講起逐句念、逐句講，經文被切成半句（「无生无灭，」講解「是如来清净禅；」講解）。
+# 前 18 講是「一句完整經文一行、講解在其下」，講解內以引號重引字句。
+_LZ_CLAUSE_OPEN = "，、："
+# 維持單獨一行的經文：引出偈頌的「…偈曰：」「听吾偈。”曰：」（前 18 講偈語另起一行）；
+# 第 24 講三十六對逐對講解的清單項目「天与地对，」「无情五对：」（併成一行後講解
+# 只剩「这个也知道」，看不出在講哪一對）。
+_LZ_KEEP_LINE_RE = re.compile(r"(?:[偈颂][^，。：]*|”)曰：$|与[^，：]+对，$|[一二三四五六七八九十]+对：$")
+# 前 18 講講解段落 99% ≤ 190 字、最長 235 字：接起來超過此長度就維持分段，碎片例外。
+_LZ_PARA_JOIN_MAX = 240
+_LZ_PARA_FRAGMENT = 20
+
+
+def _merge_sutra_clauses(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
+    """把以「，、：」收尾的半句經文併入下一句經文，夾在中間的講解移到合併後的經文之下。
+
+    S1 E1 S2 E2 → (S1S2) (E1E2)：經文與講解各自的先後順序不變，只是相鄰的
+    兩句經文、以及原本被 S2 隔開的 E1 尾段與 E2 首段各自接成一段（接起來
+    太長則維持兩段）。講次開頭的整段經文（第一段講解之前）、相鄰無講解的
+    經文、`_LZ_KEEP_LINE_RE` 列出的行不動。
+    """
+    out = []
+    lecture = None
+    seen_para = False
+    last_quote = None
+    join_next = False
+    for b in blocks:
+        if b["kind"] == "h2":
+            lecture = b.get("lecture")
+            seen_para = False
+        in_scope = isinstance(lecture, int) and lecture >= from_lecture
+        if not in_scope or b["kind"] not in ("para", "quote"):
+            last_quote = None
+            join_next = False
+            out.append(b)
+            continue
+        if b["kind"] == "quote":
+            if (last_quote is not None and out[-1]["kind"] == "para"
+                    and out[last_quote]["text"][-1] in _LZ_CLAUSE_OPEN
+                    and not _LZ_KEEP_LINE_RE.search(out[last_quote]["text"])):
+                out[last_quote] = dict(out[last_quote],
+                                       text=_join(out[last_quote]["text"], b["text"]))
+                join_next = True
+                continue
+            out.append(b)
+            last_quote = len(out) - 1 if seen_para else None
+            join_next = False
+            continue
+        seen_para = True
+        if join_next:
+            join_next = False
+            la, lb = len(_de_space(out[-1]["text"])), len(_de_space(b["text"]))
+            if min(la, lb) <= _LZ_PARA_FRAGMENT or la + lb <= _LZ_PARA_JOIN_MAX:
+                out[-1] = dict(out[-1], text=_join(out[-1]["text"], b["text"]))
+                continue
         out.append(b)
     return out
 
 
 def parse_liuzutanjing(ctx):
     _parse_jiangjing(ctx)
-    ctx.blocks = _fix_inline_sutra_layout(ctx.blocks)
+    ctx.blocks = _merge_sutra_clauses(_fix_inline_sutra_layout(ctx.blocks))
     return True
 
 
