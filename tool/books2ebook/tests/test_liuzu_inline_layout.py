@@ -3,13 +3,16 @@
 PDF 從第 19 期起把經文（KaiTi）與講解（MicrosoftYaHei）排在同一視覺行，
 字型交界切段會留下「那么，」「说」這類一、兩個字的孤立段落，或把開引號
 切到經文尾端。`parsers._fix_inline_sutra_layout()` 只合併相鄰區塊、搬動
-標點，文字順序與總字數必須不變（段落跟播要與音檔對得上），且第 18 講以前
+標點，文字順序與總字數必須不變（段落跟播要與音檔對得上），且其他講次
 一個區塊都不能動（已校對講次的 pid 是段落文字＋段序的雜湊）。
 
 第二輪 `parsers._merge_sutra_clauses()` 把逐句念、逐句講的半句經文接回一行：
 S1 E1 S2 E2 → (S1S2) (E1E2)，經文與講解各自的字序不變，只是兩句經文排到一起。
 段數仍超過 130 的講次再逐級接起中間只隔一段短講解的整句（偈頌、引出偈頌的行、
-跨越講次開頭整段經文分段處除外），每講只用到剛好壓到 130 段以內的級別。
+故事開頭句、跨越講次開頭整段經文分段處除外），每講只用到剛好壓到 130 段以內的級別。
+
+舊排版（經文獨立成行）但同樣超過 130 段的第 12、16、17、18 講也套用兩輪處理，
+只是不啟用「相鄰講解直接接起」那一級：舊排版的講解分段就是原書的分段。
 """
 
 from parsers import _fix_inline_sutra_layout, _merge_sutra_clauses
@@ -59,10 +62,30 @@ def test_fragments_are_folded_from_lecture_19():
     assert "".join(t for _, t in _texts(out)) == "".join(t for _, t in _texts(blocks))
 
 
-def test_lectures_before_19_are_untouched():
-    blocks = _lecture(18, ("para", "是这个意思吧？"), ("para", "那么，"),
+def test_other_lectures_before_19_are_untouched():
+    blocks = _lecture(15, ("para", "是这个意思吧？"), ("para", "那么，"),
                       ("quote", "直与曲对，“"), ("para", "直”是直心。"))
     assert _fix_inline_sutra_layout(blocks) == blocks
+
+
+def test_old_layout_lectures_fold_stray_kaiti_fragments():
+    blocks = _lecture(
+        18,
+        ("quote", "曰：“诸行无常，是生灭法。”于此疑惑。"),
+        ("quote", "志道"),                                # stray KaiTi name → next para
+        ("para", "读了一段偈语。"),
+        ("para", "法达听到偈语之后，悔恨并感谢惠能。“"),
+        ("quote", "而今而后，当谦恭一切”，"),             # re-citation set in KaiTi → next para
+        ("para", "从今以后我要谦卑。"),
+    )
+    out = _fix_inline_sutra_layout(blocks)
+    assert _texts(out) == [
+        ("quote", "曰：“诸行无常，是生灭法。”于此疑惑。"),
+        ("para", "志道读了一段偈语。"),
+        ("para", "法达听到偈语之后，悔恨并感谢惠能。"),
+        ("para", "“而今而后，当谦恭一切”，从今以后我要谦卑。"),
+    ]
+    assert "".join(t for _, t in _texts(out)) == "".join(t for _, t in _texts(blocks))
 
 
 def test_sutra_clauses_merge_into_one_line_from_lecture_19():
@@ -151,8 +174,35 @@ def test_long_lectures_also_merge_whole_sentences():
     assert _merge_sutra_clauses(short) == short
 
 
-def test_sutra_clauses_before_19_are_untouched():
-    blocks = _lecture(18, ("para", "我们看原文。"), ("quote", "无生无灭，"),
+def test_sutra_clauses_in_other_lectures_before_19_are_untouched():
+    blocks = _lecture(15, ("para", "我们看原文。"), ("quote", "无生无灭，"),
                       ("para", "自性无生无灭。"), ("quote", "是如来清净禅；"),
                       ("para", "这是清净禅。"))
     assert _merge_sutra_clauses(blocks) == blocks
+
+
+def test_old_layout_keeps_story_starts_and_opening_verses_apart():
+    head = [
+        ("quote", "师曰：“善。”常礼谢执侍，终师之世。僧志道，广州南海人也。"),  # lecture-top full text
+        ("quote", "即心名慧，即佛乃定。定慧等持，意中清净。"),               # four-character verse
+        ("para", "我们看原文。"),
+        ("quote", "常礼谢执侍，终师之世。"),
+        ("para", "他一直侍奉惠能。"),
+        ("quote", "僧志道，广州南海人也。"),               # next story → own line
+        ("para", "我们看下一个故事。"),
+        ("quote", "即心名慧，即佛乃定。"),
+        ("para", "心就是慧。"),
+        ("quote", "定慧等持，意中清净。"),                 # verse line → own line
+        ("para", "定和慧是一体的。"),
+    ]
+    filler = [("quote", "师曰：“善。”"), ("para", "说好。")] * 64
+    out = _texts(_merge_sutra_clauses(_lecture(18, *head, *filler)))
+    assert out[:len(head)] == head
+    assert len(out) <= 130
+
+
+def test_old_layout_lectures_keep_book_paragraphs():
+    paras = [("para", "讲" * 30)] * 140
+    assert len(_merge_sutra_clauses(_lecture(20, *paras))) <= 131
+    old = _lecture(18, *paras)
+    assert _merge_sutra_clauses(old) == old

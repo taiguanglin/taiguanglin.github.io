@@ -966,30 +966,39 @@ def parse_lengqie(ctx):
 # 「經文一行、講解一段」的樣式；只合併相鄰區塊、搬動標點，文字順序不變
 # （段落跟播要與音檔對得上）。
 _LZ_INLINE_FROM_LECTURE = 19
+# 舊排版（經文獨立成行）但同樣超過 130 段的講次，也套用下面的收斂與合併。
+_LZ_OLD_LAYOUT_LECTURES = frozenset({12, 16, 17, 18})
 _LZ_LEADIN_MAX = 12
 _OPEN_PUNCT = "“‘「『《（("
 _CLOSE_PUNCT = "”’」』》）)，。；：！？、"
 _QUOTE_END_PUNCT = "，。；：！？、”’」』》）)—…"
 
 
-def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
-    """修正「經文與講解同行」排版切出的碎片（只處理 from_lecture 之後的講次）。
+def _lz_resegment(lecture):
+    return isinstance(lecture, int) and (lecture >= _LZ_INLINE_FROM_LECTURE
+                                         or lecture in _LZ_OLD_LAYOUT_LECTURES)
+
+
+def _fix_inline_sutra_layout(blocks):
+    """修正「經文與講解同行」排版切出的碎片（只處理 `_lz_resegment` 的講次）。
 
     1. 經文尾端的開引號/書名號屬於下一段講解（「…对，“」+「直”是…」）→ 移到下一段開頭。
-    2. 經文尾端被誤排成楷體的 1–2 字（「痴与慧对，痴」+「是对凡夫…」）→ 移到下一段開頭。
+    2. 經文尾端被誤排成楷體的 1–2 字（「痴与慧对，痴」+「是对凡夫…」，或緊接經文、
+       自成一塊的「志道」）→ 移到下一段開頭。
     3. 講解句中途引用的經文（前段以開引號結尾或後段以閉標點開頭，且經文本身沒有
        句讀收尾，如「然后呢，“」+「吾所见戒定慧又别」+「”，我见到的…」）→ 三段併成一段講解。
     4. 引出經文的短引導語（「那么，」「下一句，」「惠能说，」）→ 併入前一段講解。
     5. 講解停在句中（以漢字收尾）、下一段又是講解 → 接回同一段（p380 換頁行被
        Word 修訂設成首行縮排而誤判為新段）。
+    6. 講解逐句重引經文時誤排成楷體的「“…”，」（第 16–18 講）→ 連同前段尾端的
+       開引號，併到下一段講解開頭（同講其他重引本來就排在講解裡）。
     """
     out = []
     lecture = None
     for b in blocks:
         if b["kind"] == "h2":
             lecture = b.get("lecture")
-        if (isinstance(lecture, int) and lecture >= from_lecture
-                and b["kind"] in ("para", "quote") and out):
+        if _lz_resegment(lecture) and b["kind"] in ("para", "quote") and out:
             b = dict(b)
             prev = out[-1]
             if prev["kind"] == "quote" and b["kind"] == "para":
@@ -997,7 +1006,12 @@ def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
                 m = re.search(r"[%s]+$" % re.escape(_OPEN_PUNCT), q)
                 if not m:
                     m = re.search(r"(?<=[，。；！？])[\u4e00-\u9fff]{1,2}$", q)
-                if m and m.start() > 0:
+                if (len(out) >= 2 and out[-2]["kind"] == "quote"
+                        and re.fullmatch(r"[\u4e00-\u9fff]{1,2}", q)):
+                    out.pop()
+                    b["text"] = q + b["text"]
+                    prev = out[-1]
+                elif m and m.start() > 0:
                     prev["text"] = q[:m.start()]
                     b["text"] = m.group() + b["text"]
             if (b["kind"] == "para" and len(out) >= 2 and prev["kind"] == "quote"
@@ -1008,6 +1022,16 @@ def _fix_inline_sutra_layout(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
                 out.pop()
                 out[-1]["text"] = _join(_join(out[-1]["text"], prev["text"]), b["text"])
                 continue
+            if (b["kind"] == "para" and len(out) >= 2 and prev["kind"] == "quote"
+                    and out[-2]["kind"] == "para"):
+                lead = re.search(r"(?<=.)[“‘]$", out[-2]["text"])
+                cite = (lead.group() if lead else "") + prev["text"]
+                if re.fullmatch(r"[“‘].*[”’]，", cite):
+                    if lead:
+                        out[-2]["text"] = out[-2]["text"][:-1]
+                    out.pop()
+                    b["text"] = _join(cite, b["text"])
+                    prev = out[-1]
             if (b["kind"] == "quote" and prev["kind"] == "para" and len(out) >= 2
                     and out[-2]["kind"] == "para"
                     and len(_de_space(prev["text"])) <= _LZ_LEADIN_MAX):
@@ -1030,6 +1054,9 @@ _LZ_VERSE_INTRO_RE = re.compile(r"(?:[偈颂][^，。：]*|”)曰：$")
 # （「语和法，是相对的」）才併成一行，只說「这个也知道」的併了就看不出在講哪一對。
 _LZ_PAIR_END_RE = re.compile(r"(?:与[^，：]+对，|[一二三四五六七八九十]+对：)$")
 _LZ_PAIR_START_RE = re.compile(r"^[^，：。]{1,4}与[^，：。]{1,4}对")
+# 機緣品每個故事的開頭「僧志道，广州南海人也。」「怀让禅师，金州杜氏子也。」：
+# 不接到上一個故事的最後一句經文後面。
+_LZ_STORY_START_RE = re.compile(r"^(?:僧[^，。]{2}|[^，。]{2,4}禅师)，[^，。]{1,8}(?:人|氏子?)也?[，。]")
 # 前 18 講講解段落 99% ≤ 190 字、最長 235 字：接起來超過此長度就維持分段，碎片例外。
 _LZ_PARA_JOIN_MAX = 240
 _LZ_PARA_FRAGMENT = 20
@@ -1043,12 +1070,12 @@ _LZ_MERGE_LEVELS = (None, (40, 0), (60, 0), (80, 0), (120, 0), (120, 200))
 _LZ_SENTENCE_MAX = 80
 
 
-def _is_verse_line(text):
+def _is_verse_line(text, sizes=(5, 6, 7)):
     """整行都是等長的五、六、七言句（偈頌）：前 18 講偈句自成一行，不與散文經文相併。"""
     if not re.fullmatch(r"(?:[\u4e00-\u9fff]+[，。；？！])+[”’]?", text):
         return False
     segs = {len(s) for s in re.findall(r"[\u4e00-\u9fff]+", text)}
-    return len(re.findall(r"[，。；？！]", text)) >= 2 and len(segs) == 1 and segs <= {5, 6, 7}
+    return len(re.findall(r"[，。；？！]", text)) >= 2 and len(segs) == 1 and segs <= set(sizes)
 
 
 def _names_own_pair(item, expl):
@@ -1056,8 +1083,12 @@ def _names_own_pair(item, expl):
 
 
 def _repeat_para_ends(blocks):
-    """一講裡哪些逐句經文剛好念到講次開頭整段經文的段落結尾（之後是新的一段，不跨段接起）。"""
-    full, bounds, body, seen_para = "", set(), [], False
+    """一講裡哪些逐句經文剛好念到講次開頭整段經文的段落結尾（之後是新的一段，不跨段接起），
+    以及哪些落在開頭整段經文的偈頌段裡（整段等長四到七言；四言單看一行分不出偈或散文）。
+
+    回傳 (ends, verse)；偈頌行也算在 ends 裡。
+    """
+    full, bounds, verses, body, seen_para = "", set(), [], [], False
     for i, b in enumerate(blocks):
         if b["kind"] == "para":
             seen_para = True
@@ -1065,25 +1096,30 @@ def _repeat_para_ends(blocks):
             near_quote = any(0 <= j < len(blocks) and blocks[j]["kind"] == "quote"
                              for j in (i - 1, i + 1))
             if not seen_para or near_quote:
+                start = len(full)
                 full += re.sub(r"[^\u4e00-\u9fff]", "", b["text"])
                 bounds.add(len(full))
+                if _is_verse_line(b["text"], (4, 5, 6, 7)):
+                    verses.append((start, len(full)))
             else:
                 body.append(i)
-    ends, pos = set(), 0
+    ends, verse, pos = set(), set(), 0
     for i in body:
         t = re.sub(r"[^\u4e00-\u9fff]", "", blocks[i]["text"])
         p = full.find(t, pos) if t else -1
         if p >= 0:
             pos = p + len(t)
-            if pos in bounds:
+            if any(s <= p and pos <= e for s, e in verses):
+                verse.add(i)
+            if pos in bounds or i in verse:
                 ends.add(i)
-    return ends
+    return ends, verse
 
 
 def _merge_lecture_sutra(blocks, level):
     """一講（不含 h2）的經文合併；level 見 `_LZ_MERGE_LEVELS`。"""
     e_short, ee_max = level or (-1, 0)
-    ends = _repeat_para_ends(blocks)
+    ends, verse = _repeat_para_ends(blocks)
     size = lambda t: len(_de_space(t))
     out = []
     seen_para = False
@@ -1111,9 +1147,9 @@ def _merge_lecture_sutra(blocks, level):
                 elif q[-1] in _LZ_CLAUSE_OPEN:
                     ok = True
                 else:
-                    ok = (single and not last_end
+                    ok = (single and not last_end and i not in verse
                           and size(out[-1]["text"]) <= e_short
-                          and "偈" not in q + t
+                          and "偈" not in q + t and not _LZ_STORY_START_RE.match(t)
                           and not _is_verse_line(q) and not _is_verse_line(t)
                           and size(q) + size(t) <= _LZ_SENTENCE_MAX)
                 if ok:
@@ -1144,23 +1180,26 @@ def _merge_lecture_sutra(blocks, level):
     return out
 
 
-def _merge_sutra_clauses(blocks, from_lecture=_LZ_INLINE_FROM_LECTURE):
+def _merge_sutra_clauses(blocks):
     """把逐句念的經文接回一行，夾在中間的講解移到合併後的經文之下。
 
     S1 E1 S2 E2 → (S1S2) (E1E2)：經文與講解各自的先後順序不變，只是相鄰的
     兩句經文、以及原本被 S2 隔開的 E1 尾段與 E2 首段各自接成一段（接起來
     太長則維持兩段）。一律接起以「，、：」收尾的半句；段數仍超過
     `_LZ_LECTURE_MAX_PARAS` 的講次，再依 `_LZ_MERGE_LEVELS` 逐級接起中間只隔
-    一段短講解的整句、相鄰的短講解。講次開頭的整段經文（第一段講解之前）、
-    相鄰無講解的經文、偈頌與引出偈頌的行不動；整句不跨越開頭整段經文的分段。
+    一段短講解的整句、相鄰的短講解（舊排版講次不用這一級）。講次開頭的整段經文
+    （第一段講解之前）、相鄰無講解的經文、偈頌與引出偈頌的行、故事開頭句不動；
+    整句不跨越開頭整段經文的分段。
     """
     starts = [i for i, b in enumerate(blocks) if b["kind"] == "h2"] + [len(blocks)]
     out = list(blocks[:starts[0]])
     for s, e in zip(starts, starts[1:]):
         body = blocks[s + 1:e]
         n = blocks[s].get("lecture")
-        if isinstance(n, int) and n >= from_lecture:
-            for level in _LZ_MERGE_LEVELS:
+        if _lz_resegment(n):
+            # 舊排版的講解分段是原書的分段，不再把相鄰講解接起（最後一級）。
+            levels = _LZ_MERGE_LEVELS[:-1] if n in _LZ_OLD_LAYOUT_LECTURES else _LZ_MERGE_LEVELS
+            for level in levels:
                 merged = _merge_lecture_sutra(body, level)
                 if sum(b["kind"] in ("para", "quote") for b in merged) <= _LZ_LECTURE_MAX_PARAS:
                     break
