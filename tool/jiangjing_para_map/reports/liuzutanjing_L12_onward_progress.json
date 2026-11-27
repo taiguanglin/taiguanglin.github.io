@@ -8,7 +8,7 @@
     "protection": "L6/L7 latest人工 golden and all other non-target lectures byte-identical"
   },
   "skill": "audio_map3/skills/liuzutanjing-milli-align/SKILL.md",
-  "in_progress": "L12 independent reviewer (single sub-agent)",
+  "in_progress": "L13 exact anchor fix proven in sandbox; waiting for user to set [39]-[48] zero anchors to 682.867 in UI",
   "pending": [
     12,
     13,
@@ -33,6 +33,27 @@
       "snapshot": "/tmp/liuzutanjing_pre_L27_r2.json",
       "sot_sha256_after": "999392bd6d52886109eca38b21661a6fd16b8fe45e09c027e4979addcd168465",
       "note": "r2 full re-adjudication (196 paragraphs, 191 rows); 5 confirmed zero anchors moved start/end only with user approval; merged user's manual [0]-[21] from remote ef22b03 (human values win; [22] start chained to human [21].end=159.595); [0]-[6] anchors kept at 0.000 to avoid inversion with [7].start=0.470; L8 reviewed=true from remote carried over; L27 reviewed NOT set"
+    },
+    "12": {
+      "entries": 123,
+      "changed": 122,
+      "zero_flips": 0,
+      "independent_review": "123 reviewed: 99 accept / 24 replace / 4 note_fix",
+      "replacements": 24,
+      "contact": "92 -> 68; short-tail hosting 30 -> 54",
+      "idempotent": "3/3 sha256 e6ab03ada1c23602ef9daa14314afcb5b6d384b1bffa4c75c7977bfde0d5fb71",
+      "structural": "PASS; all non-target and latest人工 golden preserved",
+      "metric_within_03": "4/51 -> 22/53",
+      "metric_within_07": "15/51 -> 35/53",
+      "span_ok": "105/134 -> 107/134",
+      "pin": "0 -> 5 exact; bleed 0",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L12_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L12_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L12_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L12_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L12_sandbox_r3.json"
+      ]
     }
   },
   "verification": {
@@ -43,6 +64,16 @@
       "metric_first_char": "covered 33->64; +-0.3s 7/33->44/64; +-0.7s 9/33->56/64",
       "downstream": "sync_para_pids OK; books2ebook gen_all rc=0; pytest 97 passed; word2ebook 686 passed; check_site OK",
       "merge": "remote ef22b03: [0]-[21] confirmed manual values; audit vs remote baseline -> 12 protection entries (7 head-zero + 5 confirmed zero anchors, authorized), 0 structural defects; audit vs r2 baseline -> only L8 reviewed changed"
+    },
+    "L12_final": {
+      "sync_para_pids": "all five series OK",
+      "books2ebook_build": "complete 18843/18843",
+      "books2ebook_pytest": "102 passed, 2 skipped",
+      "word2ebook_pytest": "686 passed",
+      "check_site": "SITE CHECK OK",
+      "audio_map3_node_tests": "4 passed",
+      "pin_bleed": "0 in available L12 cache",
+      "span_note": "L12 span 107/134; most other dumps were missing during final full-series run"
     }
   },
   "L12_initial": {
@@ -57,5 +88,49 @@
     "high_risk": "31 changes >2s; 15 conf<=.65; 92 contact; no ASR holes >=2.5s",
     "external_change": "Only L27 changed externally; L12 and L2-L7 unchanged",
     "followup_review": "span regressions L26/L128/L114 sent to reviewer"
+  },
+  "L13_initial": {
+    "entries": 96,
+    "changed": 95,
+    "zero_flips": 0,
+    "sandbox": "BLOCKED by confirmed-zero anchor; not applied",
+    "metric_start_only_within_03": "3/29 -> 14/30",
+    "metric_start_only_within_07": "6/29 -> 21/30",
+    "span_start_only_ok": "85/111 -> 91/111",
+    "pin_start_only": "0 -> 1 exact; bleed 0",
+    "high_risk": "24 changes >2s; 5 conf<=.65; 64 contact; 1 ASR hole",
+    "blocker": "confirmed zero [39]-[48]@704.544 vs [49]682.867 [50]688.743 [51]697.190; cannot alter confirmed or force monotonic green",
+    "followup_review": "span regressions L12/L105 sent to reviewer"
+  },
+  "L13_reviewed": {
+    "entries": 96,
+    "changed": 95,
+    "zero_flips": 0,
+    "independent_review": "96 reviewed: 91 accept / 5 replace / 6 note_fix",
+    "replacements": {
+      "16": 218.769,
+      "19": 282.62,
+      "65": 979.0,
+      "104": 1750.79,
+      "105": 1770.508
+    },
+    "sandbox": "FAIL/BLOCKED only confirmed-zero inversion; SoT not applied",
+    "blocker": "confirmed zero [39]-[48]@704.544 vs [49]682.867 [50]688.743 [51]697.190; user must re-save these anchors in UI before apply",
+    "reports": [
+      "tool/jiangjing_para_map/reports/liuzutanjing_L13_adjudication_r3.json",
+      "tool/jiangjing_para_map/reports/liuzutanjing_L13_earcheck_r3.md",
+      "tool/jiangjing_para_map/reports/liuzutanjing_L13_review_r3.json",
+      "tool/jiangjing_para_map/reports/liuzutanjing_L13_confirmed_zero_blocked_r3.json",
+      "tool/jiangjing_para_map/reports/liuzutanjing_L13_sandbox_r3.log"
+    ],
+    "simulated_resolution": {
+      "repo_modified": false,
+      "action": "Set [39]-[48] zero start/end to 682.867, keep zero/confirmed",
+      "result": "VERDICT: PASS — entries=96 changed=95 idempotent=3/3 structural=PASS",
+      "metric_within_03": "3/29 -> 14/30",
+      "metric_within_07": "6/29 -> 21/30",
+      "summary": "tool/jiangjing_para_map/reports/liuzutanjing_L13_anchor_simulation_r3.json",
+      "remaining": "User must apply this exact anchor correction in UI; only then apply SoT"
+    }
   }
 }

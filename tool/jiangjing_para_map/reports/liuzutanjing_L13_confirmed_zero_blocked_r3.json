@@ -1,0 +1,115 @@
+{
+  "lecture": 13,
+  "blocked_confirmed": [
+    {
+      "i": 39,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 40,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 41,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 42,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 43,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 44,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 45,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 46,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 47,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    },
+    {
+      "i": 48,
+      "status": "blocked_confirmed_preserved",
+      "current_start": 704.544,
+      "current_end": 704.544,
+      "current_zero": true,
+      "current_confirmed": true,
+      "required_action": "使用者在UI逐聽678–706秒，自行解除/重存此confirmed zero錨後，agent才能重跑apply；不得由agent代改"
+    }
+  ],
+  "evidence": {
+    "38": "678.795",
+    "49": "682.867",
+    "50": "688.743",
+    "51": "697.190",
+    "explanation": "[38]這一品就講到這裡→[49]咱們接著看懺悔品第六→[50]時大師見廣韶洎→[51]時這個詞。confirmed zero@704.544落在[51]廣州白話區，與真實書序矛盾。"
+  },
+  "next_required_steps": [
+    "人工解除或重存[39]–[48]錨",
+    "重跑專用sandbox三次apply與structural audit",
+    "通過後才套SoT並重建ebook"
+  ],
+  "simulated_resolution": {
+    "repo_modified": false,
+    "action": "在隔離副本把[39]–[48]的zero start/end全部設為682.867並保留zero/confirmed",
+    "result": "VERDICT: PASS — L13 sandbox entries=96 changed=95 idempotent=3/3 structural=PASS",
+    "metric": "±0.3s 3/29→14/30；±0.7s 6/29→21/30",
+    "summary": "tool/jiangjing_para_map/reports/liuzutanjing_L13_anchor_simulation_r3.json",
+    "meaning": "使用者在UI把這十個zero錨改為682.867後即可解除唯一阻擋，不必取消zero或confirmed"
+  }
+}
