@@ -8,7 +8,7 @@
     "protection": "L6/L7 latest人工 golden and all other non-target lectures byte-identical"
   },
   "skill": "audio_map3/skills/liuzutanjing-milli-align/SKILL.md",
-  "in_progress": "L13 exact anchor fix proven in sandbox; waiting for user to set [39]-[48] zero anchors to 682.867 in UI",
+  "in_progress": "L17 independent reviewer (single sub-agent)",
   "pending": [
     12,
     13,
@@ -54,6 +54,88 @@
         "tool/jiangjing_para_map/reports/liuzutanjing_L12_structural_r3.json",
         "tool/jiangjing_para_map/reports/liuzutanjing_L12_sandbox_r3.json"
       ]
+    },
+    "13": {
+      "entries": 96,
+      "changed": 95,
+      "zero_flips": 0,
+      "independent_review": "96 reviewed: 91 accept / 5 replace / 6 note_fix",
+      "anchor_fix": "User authorized [39]-[48] zero start/end 704.544 -> 682.867, zero/confirmed preserved",
+      "idempotent": "3/3 sha256 ce929ea9d4e58e6d34ead62e780f59cbc0e7f5e023b4bad369989b6e7748e50d",
+      "structural": "PASS; all non-target and latest人工 golden preserved",
+      "metric_within_03": "3/29 -> 14/30",
+      "metric_within_07": "6/29 -> 21/30",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L13_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L13_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L13_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L13_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L13_sandbox_r3.json"
+      ]
+    },
+    "14": {
+      "entries": 78,
+      "changed": 77,
+      "zero_flips": 0,
+      "independent_review": "78 reviewed: 78 accept / 0 replace / 3 note_fix",
+      "idempotent": "3/3 sha256 75eeaef913b753b4e1ec9672265e6c9b37df8b0c22b94c54d0ecccf92bb7f8bf",
+      "structural": "PASS; all non-target and latest人工 golden preserved",
+      "metric_within_03": "5/25 -> 8/26",
+      "metric_within_07": "15/25 -> 21/26",
+      "span_ok": "72/84 -> 75/84",
+      "pin": "0 exact; bleed 0",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L14_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L14_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L14_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L14_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L14_sandbox_r3.json"
+      ]
+    },
+    "15": {
+      "entries": 104,
+      "changed": 102,
+      "zero_flips": 0,
+      "independent_review": "43 reviewed: 41 accept / 2 replace / 5 note_fix",
+      "replacements": {
+        "68": 1172.116,
+        "72": 1239.593
+      },
+      "idempotent": "3/3 sha256 a164b58b7cf734b24c68fcc48dcf7576bb65c6c4a8699457fc3fe49db8d558b0",
+      "structural": "PASS; all non-target and latest人工 golden preserved",
+      "metric_within_03": "8/35 -> 6/35",
+      "metric_within_07": "16/35 -> 18/35",
+      "span_ok": "99/114 -> 102/114",
+      "pin": "0 exact; bleed 0",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L15_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L15_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L15_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L15_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L15_sandbox_r3.json"
+      ]
+    },
+    "16": {
+      "entries": 113,
+      "changed": 113,
+      "zero_flips": 0,
+      "independent_review": "113 reviewed: 112 accept / 1 replace / 2 note_fix",
+      "replacement": {
+        "75": 1087.798
+      },
+      "idempotent": "3/3 sha256 a5065ca31a949b6336e16adbfccf0c55f7e75041fe0fdeddd925d091ff124593",
+      "structural": "PASS; all non-target and latest人工 golden preserved",
+      "metric_within_03": "7/35 -> 15/35",
+      "metric_within_07": "19/35 -> 23/35",
+      "span_ok": "98/128 -> 103/128",
+      "pin": "0 exact; bleed 0",
+      "reports": [
+        "tool/jiangjing_para_map/reports/liuzutanjing_L16_adjudication_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L16_earcheck_r3.md",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L16_review_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L16_structural_r3.json",
+        "tool/jiangjing_para_map/reports/liuzutanjing_L16_sandbox_r3.json"
+      ]
     }
   },
   "verification": {
@@ -74,6 +156,46 @@
       "audio_map3_node_tests": "4 passed",
       "pin_bleed": "0 in available L12 cache",
       "span_note": "L12 span 107/134; most other dumps were missing during final full-series run"
+    },
+    "L13_final": {
+      "sync_para_pids": "all five series OK",
+      "books2ebook_build": "complete 18791/18791",
+      "books2ebook_pytest": "105 passed, 2 skipped",
+      "word2ebook_pytest": "686 passed",
+      "check_site": "SITE CHECK OK",
+      "audio_map3_node_tests": "4 passed",
+      "pin_bleed": "0 in available L12-L13 caches",
+      "span_note": "L13 span 91/111 before full apply; most other dumps were missing during final full-series run"
+    },
+    "L14_final": {
+      "sync_para_pids": "all five series OK",
+      "books2ebook_build": "complete 18791/18791",
+      "books2ebook_pytest": "105 passed, 2 skipped",
+      "word2ebook_pytest": "686 passed",
+      "check_site": "SITE CHECK OK",
+      "audio_map3_node_tests": "4 passed",
+      "pin_bleed": "0 in available L12-L14 caches",
+      "span_note": "L14 span 75/84; most other dumps were missing during final full-series run"
+    },
+    "L15_final": {
+      "sync_para_pids": "all five series OK",
+      "books2ebook_build": "complete 18791/18791",
+      "books2ebook_pytest": "105 passed, 2 skipped",
+      "word2ebook_pytest": "686 passed",
+      "check_site": "SITE CHECK OK",
+      "audio_map3_node_tests": "4 passed",
+      "pin_bleed": "0 in available L12-L15 caches",
+      "span_note": "L15 span 102/114; most other dumps were missing during final full-series run"
+    },
+    "L16_final": {
+      "sync_para_pids": "all five series OK",
+      "books2ebook_build": "complete 18791/18791",
+      "books2ebook_pytest": "105 passed, 2 skipped",
+      "word2ebook_pytest": "686 passed",
+      "check_site": "SITE CHECK OK",
+      "audio_map3_node_tests": "4 passed",
+      "pin_bleed": "0 in available L12-L16 caches",
+      "span_note": "L16 span 103/128; most other dumps were missing during final full-series run"
     }
   },
   "L12_initial": {
@@ -132,5 +254,54 @@
       "summary": "tool/jiangjing_para_map/reports/liuzutanjing_L13_anchor_simulation_r3.json",
       "remaining": "User must apply this exact anchor correction in UI; only then apply SoT"
     }
+  },
+  "L14_initial": {
+    "entries": 78,
+    "changed": 77,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "5/25 -> 8/26",
+    "metric_within_07": "15/25 -> 21/26",
+    "span_ok": "72/84 -> 75/84",
+    "pin": "0 exact; bleed 0",
+    "high_risk": "26 changes >2s; 25 conf<=.75; 8 contact; 1 ASR hole",
+    "followup_review": "span regressions L8/L9 must be included"
+  },
+  "L15_initial": {
+    "entries": 104,
+    "changed": 102,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "8/35 -> 6/35 (actual sandbox summary)",
+    "metric_within_07": "16/35 -> 18/35 (actual sandbox summary)",
+    "span_ok": "99/114 -> 102/114",
+    "pin": "0 exact; bleed 0",
+    "high_risk": "30 changes >2s; 3 conf<=.65; 12 contact; no ASR holes >=2.5s",
+    "followup_review": "span regression L96 sent to reviewer",
+    "metric_correction": "Earlier interim message numbers were not the actual summary; use measured summary values"
+  },
+  "L16_initial": {
+    "entries": 113,
+    "changed": 113,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "7/35 -> 15/35",
+    "metric_within_07": "19/35 -> 23/35",
+    "span_ok": "98/128 -> 103/128",
+    "pin": "0 exact; bleed 0",
+    "high_risk": "39 changes >2s; 20 conf<=.80; 14 contact; 3 ASR holes; L34 boundary in hole",
+    "followup_review": "span regression L79 sent to reviewer"
+  },
+  "L17_initial": {
+    "entries": 118,
+    "changed": 117,
+    "zero_flips": 0,
+    "sandbox": "PASS 3/3 structural and idempotence",
+    "metric_within_03": "0/36 -> 25/36",
+    "metric_within_07": "4/36 -> 28/36",
+    "span_ok": "109/129 -> 111/129",
+    "pin": "0 -> 10 exact; bleed 0",
+    "high_risk": "23 changes >2s; 24 conf<=.75; 107 contact; 2 ASR holes",
+    "followup_review": "span regression L32 sent to reviewer"
   }
 }

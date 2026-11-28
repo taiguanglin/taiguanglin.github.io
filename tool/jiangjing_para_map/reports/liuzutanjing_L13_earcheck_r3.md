@@ -142,3 +142,11 @@ conf=0.75 共 **53 段**：
 - [12] span_bad 是工具誤命中 [11]「執著於靜靜的妄想」的第二個「靜」；[105] span_bad 是命中 [104]「用正見來度」的「度」，均不據此改錯方向。
 - **[38]→[49]→[50]→[51] 音序仍成立**：678.795／682.867／688.743／697.190；704.544 已落在 [51] 廣州白話，不能為假綠推回。**blocked_confirmed=[39]–[48]**，沒有同時保留 confirmed 與 own_first 的合法切法。
 - 因此目前只交付最終裁決表與阻擋證據，**尚未套 SoT、未完成三次 apply／span／pin 最終驗收**。必須由使用者先逐聽 678–706 秒並自行重存這十個 confirmed-zero 錨，才能繼續。
+
+## 9. 使用者授權的錨點修正與正式套用
+
+- 使用者明確授權直接修改並解決衝突。已把 [39]–[48] 的 zero start/end 由 704.544 改為 **682.867**，保留 `zero=true`、`confirmed=true`；其餘欄位與其他講次不變。與隔離模擬方案一致。
+- 修正後 sandbox：**96 entries、95 start 改動、3/3 冪等、結構 PASS**；metric ±0.3s **3/29→14/30**、±0.7s **6/29→21/30**。
+- 已正式套用 L13，連續三次 SoT SHA-256 皆為 `ce929ea9d4e58e6d34ead62e780f59cbc0e7f5e023b4bad369989b6e7748e50d`，第 2、3 次 **0 段變更**。
+- `audit_alignment --require-clean`：**defects=0、protection_errors=0、new_defects=0**；L1–L12 與 L14–L27 canonical 全部保持，含 L6/L7 最新人工 golden；confirmed/reviewed 未改。SoT 與最終 sandbox byte-identical。
+- 全表 96 段已落地，但 conf≤0.75 與 ASR 洞段仍保留人工試聽標記，不把本節解讀成人耳確認完成。
